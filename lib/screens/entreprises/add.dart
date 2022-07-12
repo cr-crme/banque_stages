@@ -188,7 +188,11 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                 content: SingleChildScrollView(
                   child: Column(
                     children: [
-                      const Text("Personne contact en entreprise"),
+                      const ListTile(
+                        visualDensity: VisualDensity(
+                            vertical: VisualDensity.minimumDensity),
+                        title: Text("Personne contact en entreprise"),
+                      ),
                       ListTile(
                         title: TextFormField(
                           decoration: const InputDecoration(labelText: "Nom"),
@@ -224,7 +228,19 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                           ])),
                         ),
                       ),
-                      // const Text("Adresse de l'établissement")
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const ListTile(
+                          visualDensity: VisualDensity(
+                              vertical: VisualDensity.minimumDensity),
+                          title: Text("Adresse de l'établissement")),
+                      ListTile(
+                        title: TextFormField(
+                          decoration:
+                              const InputDecoration(labelText: "Addresse"),
+                        ),
+                      ),
                     ],
                   ),
                 ))
@@ -248,7 +264,9 @@ class _AddEntrepriseState extends State<AddEntreprise> {
               ),
               TextButton(
                   onPressed: details.onStepContinue,
-                  child: const Text("Prochain"))
+                  child: _currentStep == 2
+                      ? const Text("Ajouter")
+                      : const Text("Prochain"))
             ],
           ),
         ),
