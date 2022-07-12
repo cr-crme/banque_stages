@@ -130,7 +130,8 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ListTile(
-                          visualDensity: VisualDensity.compact,
+                          visualDensity: const VisualDensity(
+                              vertical: VisualDensity.minimumDensity),
                           title: Text("Métier ${index + 1}",
                               textAlign: TextAlign.left),
                           trailing: IconButton(
