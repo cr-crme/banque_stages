@@ -10,6 +10,7 @@ class AddEntreprise extends StatefulWidget {
 }
 
 class _AddEntrepriseState extends State<AddEntreprise> {
+  final _formKey = GlobalKey<FormState>();
   int _currentStep = 0;
 
   // Infos
@@ -45,7 +46,13 @@ class _AddEntrepriseState extends State<AddEntreprise> {
     });
   }
 
-  void submit() {}
+  void submit() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Submitted!')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +61,7 @@ class _AddEntrepriseState extends State<AddEntreprise> {
         title: const Text("Nouvelle entreprise"),
       ),
       body: Form(
+        key: _formKey,
         child: Stepper(
           type: StepperType.horizontal,
           currentStep: _currentStep,
@@ -76,12 +84,28 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                       ListTile(
                         title: TextFormField(
                           decoration: const InputDecoration(labelText: "Nom"),
+                          validator: (text) {
+                            if (text!.isEmpty) {
+                              return "Le champ ne peut pas être vide";
+                            }
+                            return null;
+                          },
                         ),
                       ),
                       ListTile(
                         title: TextFormField(
                           decoration: const InputDecoration(labelText: "NEQ"),
+                          validator: (text) {
+                            if (text!.isNotEmpty &&
+                                !RegExp(r'^\d{10}$').hasMatch(text)) {
+                              return "Le NEQ est composé de 10 chiffres";
+                            }
+                            return null;
+                          },
                         ),
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                       ListTile(
                           title: const Text("Types d'activités"),
@@ -196,6 +220,12 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                       ListTile(
                         title: TextFormField(
                           decoration: const InputDecoration(labelText: "Nom"),
+                          validator: (text) {
+                            if (text!.isEmpty) {
+                              return "Le champ ne peut pas être vide";
+                            }
+                            return null;
+                          },
                         ),
                       ),
                       ListTile(
@@ -214,6 +244,17 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                               child: Text("Téléphone"),
                             )
                           ])),
+                          validator: (phone) {
+                            if (phone!.isEmpty) {
+                              return "Le champ ne peut pas être vide";
+                            }
+                            if (!RegExp(
+                                    r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
+                                .hasMatch(phone)) {
+                              return "Le numéro entré doit être valide";
+                            }
+                            return null;
+                          },
                         ),
                       ),
                       ListTile(
@@ -266,7 +307,7 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                   onPressed: details.onStepContinue,
                   child: _currentStep == 2
                       ? const Text("Ajouter")
-                      : const Text("Prochain"))
+                      : const Text("Suivant"))
             ],
           ),
         ),
