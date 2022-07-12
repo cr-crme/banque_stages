@@ -19,7 +19,31 @@ class _AddEntrepriseState extends State<AddEntreprise> {
   bool _shareToOthers = true;
 
   // Métiers
-  List<Metier> _metiers = [Metier("sector", "specialisation")];
+  static const _choicesSectors = ["sector", "sector2", "sector3"];
+  static const _choicesSpecialisation = [
+    "specialisation",
+    "specialisation2",
+    "specialisation3"
+  ];
+  final List<Metier> _metiers = [
+    Metier(_choicesSectors[0], _choicesSpecialisation[0])
+  ];
+
+  void addMetier() {
+    setState(() {
+      _metiers.add(Metier(_choicesSectors[0], _choicesSpecialisation[0]));
+    });
+  }
+
+  void removeMetier(int index) {
+    setState(() {
+      _metiers.removeAt(index);
+
+      if (_metiers.isEmpty) {
+        addMetier();
+      }
+    });
+  }
 
   void submit() {}
 
@@ -94,27 +118,69 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                   ),
                 )),
             Step(
-                isActive: _currentStep == 1,
-                title: const Text("Métiers"),
-                content: SingleChildScrollView(
+              isActive: _currentStep == 1,
+              title: const Text("Métiers"),
+              content: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _metiers.length,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) => Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
                   child: Column(
-                      children: _metiers
-                          .map((Metier metier) => Column(children: [
-                                ListTile(
-                                  title: TextFormField(
-                                    decoration: const InputDecoration(
-                                        labelText: "Secteur d'activités"),
-                                  ),
-                                ),
-                                ListTile(
-                                  title: TextFormField(
-                                    decoration: const InputDecoration(
-                                        labelText: "Métier semi-spécialisé"),
-                                  ),
-                                ),
-                              ]))
-                          .toList()),
-                )),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          visualDensity: VisualDensity.compact,
+                          title: Text("Métier ${index + 1}",
+                              textAlign: TextAlign.left),
+                          trailing: IconButton(
+                            onPressed: () => removeMetier(index),
+                            icon: const Icon(Icons.delete_forever),
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text("Secteur d'activités"),
+                          trailing: DropdownButton<String>(
+                            value: _metiers[index].sector,
+                            icon: const Icon(Icons.arrow_downward),
+                            elevation: 16,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _metiers[index].sector = newValue!;
+                              });
+                            },
+                            items: _choicesSectors.map((String value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text("Métier semi-spécialisé"),
+                          trailing: DropdownButton<String>(
+                            value: _metiers[index].specialisation,
+                            icon: const Icon(Icons.arrow_downward),
+                            elevation: 16,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _metiers[index].specialisation = newValue!;
+                              });
+                            },
+                            items: _choicesSpecialisation.map((String value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ]),
+                ),
+              ),
+            ),
             Step(
                 isActive: _currentStep == 2,
                 title: const Text("Contact"),
@@ -162,6 +228,28 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                   ),
                 ))
           ],
+          controlsBuilder: (context, details) => Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Visibility(
+                visible: _currentStep == 1,
+                child: ElevatedButton(
+                  onPressed: () => addMetier(),
+                  child: const Text("Ajouter un métier"),
+                ),
+              ),
+              const Expanded(child: SizedBox()),
+              OutlinedButton(
+                  onPressed: details.onStepCancel,
+                  child: const Text("Annuler")),
+              const SizedBox(
+                width: 20,
+              ),
+              TextButton(
+                  onPressed: details.onStepContinue,
+                  child: const Text("Prochain"))
+            ],
+          ),
         ),
       ),
     );
