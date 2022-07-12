@@ -124,62 +124,62 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                 shrinkWrap: true,
                 itemCount: _metiers.length,
                 physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          visualDensity: const VisualDensity(
-                              vertical: VisualDensity.minimumDensity),
-                          title: Text("Métier ${index + 1}",
-                              textAlign: TextAlign.left),
-                          trailing: IconButton(
-                            onPressed: () => removeMetier(index),
-                            icon: const Icon(Icons.delete_forever),
-                            color: Colors.redAccent,
-                          ),
+                itemBuilder: (BuildContext context, int index) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        visualDensity: const VisualDensity(
+                            vertical: VisualDensity.minimumDensity),
+                        title: Text("Métier ${index + 1}",
+                            textAlign: TextAlign.left),
+                        trailing: IconButton(
+                          onPressed: () => removeMetier(index),
+                          icon: const Icon(Icons.delete_forever),
+                          color: Colors.redAccent,
                         ),
-                        ListTile(
-                          title: const Text("Secteur d'activités"),
-                          trailing: DropdownButton<String>(
-                            value: _metiers[index].sector,
-                            icon: const Icon(Icons.arrow_downward),
-                            elevation: 16,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                _metiers[index].sector = newValue!;
-                              });
-                            },
-                            items: _choicesSectors.map((String value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
+                      ),
+                      ListTile(
+                        title: const Text("Secteur d'activités"),
+                        trailing: DropdownButton<String>(
+                          value: _metiers[index].sector,
+                          icon: const Icon(Icons.arrow_downward),
+                          elevation: 16,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _metiers[index].sector = newValue!;
+                            });
+                          },
+                          items: _choicesSectors.map((String value) {
+                            return DropdownMenuItem(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
                         ),
-                        ListTile(
-                          title: const Text("Métier semi-spécialisé"),
-                          trailing: DropdownButton<String>(
-                            value: _metiers[index].specialisation,
-                            icon: const Icon(Icons.arrow_downward),
-                            elevation: 16,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                _metiers[index].specialisation = newValue!;
-                              });
-                            },
-                            items: _choicesSpecialisation.map((String value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
+                      ),
+                      ListTile(
+                        title: const Text("Métier semi-spécialisé"),
+                        trailing: DropdownButton<String>(
+                          value: _metiers[index].specialisation,
+                          icon: const Icon(Icons.arrow_downward),
+                          elevation: 16,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _metiers[index].specialisation = newValue!;
+                            });
+                          },
+                          items: _choicesSpecialisation.map((String value) {
+                            return DropdownMenuItem(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
                         ),
-                      ]),
-                ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      )
+                    ]),
               ),
             ),
             Step(
