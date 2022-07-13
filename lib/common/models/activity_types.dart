@@ -12,4 +12,7 @@ enum ActivityTypes {
         return name;
     }
   }
+
+  static Map<ActivityTypes, bool> get emptyMap =>
+      Map.fromIterable(ActivityTypes.values, value: (key) => false);
 }

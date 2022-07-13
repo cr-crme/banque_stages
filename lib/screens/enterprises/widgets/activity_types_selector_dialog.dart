@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '/common/models/activity_types.dart';
+import '/common/providers/activity_types_provider.dart';
 
 class ActivityTypesSelectorDialog extends StatefulWidget {
-  const ActivityTypesSelectorDialog({Key? key, required this.activityTypes})
-      : super(key: key);
-
-  final Map<ActivityTypes, bool> activityTypes;
+  const ActivityTypesSelectorDialog({Key? key}) : super(key: key);
 
   @override
   State<ActivityTypesSelectorDialog> createState() =>
@@ -17,15 +15,13 @@ class _ActivityTypesSelectorDialogState
     extends State<ActivityTypesSelectorDialog> {
   final _formKey = GlobalKey<FormState>();
 
-  Map<ActivityTypes, bool> get _activityTypes => super.widget.activityTypes;
-
   void _close() {
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
       return;
     }
     _formKey.currentState!.save();
 
-    Navigator.pop(context, _activityTypes);
+    Navigator.pop(context);
   }
 
   @override
@@ -35,14 +31,15 @@ class _ActivityTypesSelectorDialogState
         content: SingleChildScrollView(
           child: Form(
               key: _formKey,
-              child: Column(
-                  children: _activityTypes.keys
-                      .map((key) => CheckboxListTile(
-                          title: Text(key.humanName),
-                          value: _activityTypes[key],
-                          onChanged: (value) =>
-                              setState(() => _activityTypes[key] = value!)))
-                      .toList())),
+              child: Consumer<ActivityTypesProvider>(
+                builder: (context, provider, child) => Column(
+                    children: provider.activityTypes.keys
+                        .map((key) => CheckboxListTile(
+                            title: Text(key.humanName),
+                            value: provider.activityTypes[key],
+                            onChanged: (value) => provider.update(key, value!)))
+                        .toList()),
+              )),
         ),
         actions: [
           TextButton(onPressed: () => _close(), child: const Text("Ok")),
