@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'enterprises/add_enterprise.dart';
+import 'enterprises/enterprises_list.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
   static const route = "/";
+
+  void _navigateFromDrawer(BuildContext context, String route) {
+    Navigator.pop(context);
+    Navigator.pushNamed(context, route);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +18,15 @@ class Home extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Home"),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, AddEnterprise.route),
-        child: const Icon(Icons.add),
-      ),
+      drawer: Drawer(
+          child: Scaffold(
+        appBar: AppBar(),
+        body: ListTile(
+            title: TextButton(
+          onPressed: () => _navigateFromDrawer(context, EnterprisesList.route),
+          child: const Text("Entreprises"),
+        )),
+      )),
     );
   }
 }
