@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/home.dart';
-import 'screens/enterprises/add.dart';
+import 'screens/enterprises/add_enterprise.dart';
 
 void main() {
   runApp(const MyApp());
