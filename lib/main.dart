@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './screens/home.dart';
-import './screens/entreprises/add.dart';
+import 'screens/home.dart';
+import 'screens/enterprises/add.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,10 +15,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Banque de Stages',
       theme: null,
-      initialRoute: AddEntreprise.route,
+      initialRoute: AddEnterprise.route,
       routes: {
         Home.route: (context) => const Home(),
-        AddEntreprise.route: (context) => const AddEntreprise()
+        AddEnterprise.route: (context) => const AddEnterprise()
       },
     );
   }

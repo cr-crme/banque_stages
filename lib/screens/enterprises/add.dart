@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 
-class AddEntreprise extends StatefulWidget {
-  const AddEntreprise({Key? key}) : super(key: key);
+import '/common/models/activity_types.dart';
+import 'widgets/activity_types_selector_dialog.dart';
 
-  static const route = "/entreprises/add";
+class AddEnterprise extends StatefulWidget {
+  const AddEnterprise({Key? key}) : super(key: key);
+
+  static const route = "/enterprises/add";
 
   @override
-  State<AddEntreprise> createState() => _AddEntrepriseState();
+  State<AddEnterprise> createState() => _AddEnterpriseState();
 }
 
-class _AddEntrepriseState extends State<AddEntreprise> {
+class _AddEnterpriseState extends State<AddEnterprise> {
   final _formKey = GlobalKey<FormState>();
   int _currentStep = 0;
 
   // Infos
   static const _choicesRecrutedBy = ["?"];
   String _recrutedBy = _choicesRecrutedBy[0];
+
+  final Map<ActivityTypes, bool> _activityTypes =
+      Map.fromIterable(ActivityTypes.values, value: (key) => false);
 
   bool _shareToOthers = true;
 
@@ -26,27 +32,36 @@ class _AddEntrepriseState extends State<AddEntreprise> {
     "specialisation2",
     "specialisation3"
   ];
+
   final List<Metier> _metiers = [
     Metier(_choicesSectors[0], _choicesSpecialisation[0])
   ];
 
-  void addMetier() {
+  void _showActivityTypeSelector() {
+    showDialog(
+        context: context,
+        builder: (context) => ActivityTypesSelectorDialog(
+              activityTypes: _activityTypes,
+            ));
+  }
+
+  void _addMetier() {
     setState(() {
       _metiers.add(Metier(_choicesSectors[0], _choicesSpecialisation[0]));
     });
   }
 
-  void removeMetier(int index) {
+  void _removeMetier(int index) {
     setState(() {
       _metiers.removeAt(index);
 
       if (_metiers.isEmpty) {
-        addMetier();
+        _addMetier();
       }
     });
   }
 
-  void submit() {
+  void _submit() {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Submitted!')),
@@ -58,7 +73,7 @@ class _AddEntrepriseState extends State<AddEntreprise> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Nouvelle entreprise"),
+        title: const Text("Nouvelle enterprise"),
       ),
       body: Form(
         key: _formKey,
@@ -67,7 +82,7 @@ class _AddEntrepriseState extends State<AddEntreprise> {
           currentStep: _currentStep,
           onStepContinue: () => setState(() {
             if (_currentStep == 2) {
-              submit();
+              _submit();
             } else {
               _currentStep += 1;
             }
@@ -109,12 +124,19 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                       ),
                       ListTile(
                           title: const Text("Types d'activités"),
+                          subtitle: Text(
+                            _activityTypes.entries
+                                .where((e) => e.value)
+                                .map((e) => e.key.humanName)
+                                .join(", "),
+                            maxLines: 1,
+                          ),
                           trailing: TextButton(
                             child: const Text("Modifier"),
-                            onPressed: () {},
+                            onPressed: () => _showActivityTypeSelector(),
                           )),
                       ListTile(
-                        title: const Text("Entreprise recrutée par"),
+                        title: const Text("Enterprise recrutée par"),
                         trailing: DropdownButton<String>(
                           value: _recrutedBy,
                           icon: const Icon(Icons.arrow_downward),
@@ -133,7 +155,7 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                         ),
                       ),
                       SwitchListTile(
-                          title: const Text("Partager l'entreprise"),
+                          title: const Text("Partager l'enterprise"),
                           value: _shareToOthers,
                           onChanged: (bool newValue) => setState(() {
                                 _shareToOthers = newValue;
@@ -157,7 +179,7 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                         title: Text("Métier ${index + 1}",
                             textAlign: TextAlign.left),
                         trailing: IconButton(
-                          onPressed: () => removeMetier(index),
+                          onPressed: () => _removeMetier(index),
                           icon: const Icon(Icons.delete_forever),
                           color: Colors.redAccent,
                         ),
@@ -215,7 +237,7 @@ class _AddEntrepriseState extends State<AddEntreprise> {
                       const ListTile(
                         visualDensity: VisualDensity(
                             vertical: VisualDensity.minimumDensity),
-                        title: Text("Personne contact en entreprise"),
+                        title: Text("Personne contact en enterprise"),
                       ),
                       ListTile(
                         title: TextFormField(
@@ -292,7 +314,7 @@ class _AddEntrepriseState extends State<AddEntreprise> {
               Visibility(
                 visible: _currentStep == 1,
                 child: ElevatedButton(
-                  onPressed: () => addMetier(),
+                  onPressed: () => _addMetier(),
                   child: const Text("Ajouter un métier"),
                 ),
               ),
