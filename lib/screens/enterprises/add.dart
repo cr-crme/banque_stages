@@ -98,7 +98,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                     children: [
                       ListTile(
                         title: TextFormField(
-                          decoration: const InputDecoration(labelText: "Nom"),
+                          decoration: const InputDecoration(labelText: "Nom *"),
                           validator: (text) {
                             if (text!.isEmpty) {
                               return "Le champ ne peut pas être vide";
@@ -241,7 +241,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                       ),
                       ListTile(
                         title: TextFormField(
-                          decoration: const InputDecoration(labelText: "Nom"),
+                          decoration: const InputDecoration(labelText: "Nom *"),
                           validator: (text) {
                             if (text!.isEmpty) {
                               return "Le champ ne peut pas être vide";
@@ -263,7 +263,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                             Icon(Icons.phone),
                             Padding(
                               padding: EdgeInsets.only(left: 8.0),
-                              child: Text("Téléphone"),
+                              child: Text("Téléphone *"),
                             )
                           ])),
                           validator: (phone) {
