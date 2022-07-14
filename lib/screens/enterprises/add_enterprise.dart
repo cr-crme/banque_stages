@@ -87,7 +87,9 @@ class _AddEnterpriseState extends State<AddEnterprise> {
         neq: _neq!,
         activityTypes: activityTypes,
         recrutedBy: _recrutedBy,
-        shareToOthers: _shareToOthers);
+        shareToOthers: _shareToOthers,
+        jobs: _jobs,
+        contactInformation: _contactInformation);
 
     context.read<EnterprisesProvider>().add(enterprise);
     Navigator.pop(context);
