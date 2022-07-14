@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/enterprise.dart';
 import '/common/providers/activity_types_provider.dart';
+import '/common/providers/enterprises_provider.dart';
 import 'widgets/activity_types_selector_dialog.dart';
 
 class AddEnterprise extends StatefulWidget {
@@ -18,6 +20,9 @@ class _AddEnterpriseState extends State<AddEnterprise> {
   int _currentStep = 0;
 
   // Infos
+  String? _name;
+  String? _neq;
+
   static const _choicesRecrutedBy = ["?"];
   String _recrutedBy = _choicesRecrutedBy[0];
 
@@ -34,6 +39,13 @@ class _AddEnterpriseState extends State<AddEnterprise> {
   final List<Metier> _metiers = [
     Metier(_choicesSectors[0], _choicesSpecialisation[0])
   ];
+
+  // Contact
+  String? _contactName;
+  String? _function;
+  String? _phone;
+  String? _email;
+  String? _adress;
 
   void _showActivityTypeSelector(BuildContext context) {
     ActivityTypesProvider provider =
@@ -61,12 +73,26 @@ class _AddEnterpriseState extends State<AddEnterprise> {
     });
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Submitted!')),
-      );
+  void _submit(BuildContext context) {
+    if (_formKey.currentState!.validate() == false) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Assurez vous que tous les champs sont valides")));
+
+      setState(() => _currentStep = 0);
+      return;
     }
+
+    _formKey.currentState!.save();
+
+    Enterprise enterprise = Enterprise(
+        name: _name!,
+        neq: _neq,
+        activityTypes: context.read<ActivityTypesProvider>().activityTypes,
+        recrutedBy: _recrutedBy,
+        shareToOthers: _shareToOthers);
+
+    context.read<EnterprisesProvider>().add(enterprise);
+    Navigator.pop(context);
   }
 
   @override
@@ -84,7 +110,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
               currentStep: _currentStep,
               onStepContinue: () => setState(() {
                 if (_currentStep == 2) {
-                  _submit();
+                  _submit(context);
                 } else {
                   _currentStep += 1;
                 }
@@ -108,6 +134,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                 }
                                 return null;
                               },
+                              onSaved: (name) => _name = name,
                             ),
                           ),
                           ListTile(
@@ -121,6 +148,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                 }
                                 return null;
                               },
+                              onSaved: (neq) => _neq = neq,
                             ),
                           ),
                           const SizedBox(
@@ -163,11 +191,12 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                             ),
                           ),
                           SwitchListTile(
-                              title: const Text("Partager l'enterprise"),
-                              value: _shareToOthers,
-                              onChanged: (bool newValue) => setState(() {
-                                    _shareToOthers = newValue;
-                                  })),
+                            title: const Text("Partager l'enterprise"),
+                            value: _shareToOthers,
+                            onChanged: (bool newValue) => setState(() {
+                              _shareToOthers = newValue;
+                            }),
+                          ),
                         ],
                       ),
                     )),
@@ -257,12 +286,14 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                 }
                                 return null;
                               },
+                              onSaved: (name) => _contactName = name,
                             ),
                           ),
                           ListTile(
                             title: TextFormField(
                               decoration:
                                   const InputDecoration(labelText: "Fonction"),
+                              onSaved: (function) => _function = function,
                             ),
                           ),
                           ListTile(
@@ -286,6 +317,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                 }
                                 return null;
                               },
+                              onSaved: (phone) => _phone = phone,
                             ),
                           ),
                           ListTile(
@@ -298,6 +330,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                   child: Text("Courriel"),
                                 )
                               ])),
+                              onSaved: (email) => _email = email,
                             ),
                           ),
                           const SizedBox(
@@ -311,6 +344,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                             title: TextFormField(
                               decoration:
                                   const InputDecoration(labelText: "Addresse"),
+                              onSaved: (adress) => _adress = adress,
                             ),
                           ),
                         ],
