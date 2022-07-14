@@ -1,6 +1,8 @@
+import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/activity_types.dart';
 import '/common/models/enterprise.dart';
 import '/common/providers/activity_types_provider.dart';
 import '/common/providers/enterprises_provider.dart';
@@ -29,23 +31,11 @@ class _AddEnterpriseState extends State<AddEnterprise> {
   bool _shareToOthers = true;
 
   // Métiers
-  static const _choicesSectors = ["sector", "sector2", "sector3"];
-  static const _choicesSpecialisation = [
-    "specialisation",
-    "specialisation2",
-    "specialisation3"
-  ];
-
-  final List<Metier> _metiers = [
-    Metier(_choicesSectors[0], _choicesSpecialisation[0])
-  ];
+  final List<Job> _jobs = [Job()];
 
   // Contact
-  String? _contactName;
-  String? _function;
-  String? _phone;
-  String? _email;
-  String? _adress;
+  final EnterpriseContactInformation _contactInformation =
+      EnterpriseContactInformation();
 
   void _showActivityTypeSelector(BuildContext context) {
     ActivityTypesProvider provider =
@@ -59,15 +49,15 @@ class _AddEnterpriseState extends State<AddEnterprise> {
 
   void _addMetier() {
     setState(() {
-      _metiers.add(Metier(_choicesSectors[0], _choicesSpecialisation[0]));
+      _jobs.add(Job());
     });
   }
 
   void _removeMetier(int index) {
     setState(() {
-      _metiers.removeAt(index);
+      _jobs.removeAt(index);
 
-      if (_metiers.isEmpty) {
+      if (_jobs.isEmpty) {
         _addMetier();
       }
     });
@@ -84,10 +74,18 @@ class _AddEnterpriseState extends State<AddEnterprise> {
 
     _formKey.currentState!.save();
 
+    List<ActivityTypes> activityTypes = context
+        .read<ActivityTypesProvider>()
+        .activityTypes
+        .entries
+        .where((activityType) => activityType.value)
+        .map((activityType) => activityType.key)
+        .toList();
+
     Enterprise enterprise = Enterprise(
         name: _name!,
-        neq: _neq,
-        activityTypes: context.read<ActivityTypesProvider>().activityTypes,
+        neq: _neq!,
+        activityTypes: activityTypes,
         recrutedBy: _recrutedBy,
         shareToOthers: _shareToOthers);
 
@@ -162,7 +160,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                     .activityTypes
                                     .entries
                                     .where((e) => e.value)
-                                    .map((e) => e.key.humanName)
+                                    .map((e) => e.key)
                                     .join(", "),
                                 maxLines: 1,
                               ),
@@ -205,7 +203,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                   title: const Text("Métiers"),
                   content: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: _metiers.length,
+                    itemCount: _jobs.length,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,18 +222,21 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                           ListTile(
                             title: const Text("Secteur d'activités"),
                             trailing: DropdownButton<String>(
-                              value: _metiers[index].sector,
+                              value: _jobs[index].activitySector.name,
                               icon: const Icon(Icons.arrow_downward),
                               elevation: 16,
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  _metiers[index].sector = newValue!;
+                                  _jobs[index].activitySector =
+                                      JobActivitySector.values.firstWhere(
+                                          (sector) => sector.name == newValue!);
                                 });
                               },
-                              items: _choicesSectors.map((String value) {
+                              items: JobActivitySector.values
+                                  .map((JobActivitySector sector) {
                                 return DropdownMenuItem(
-                                  value: value,
-                                  child: Text(value),
+                                  value: sector.name,
+                                  child: Text(sector.toString()),
                                 );
                               }).toList(),
                             ),
@@ -243,18 +244,22 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                           ListTile(
                             title: const Text("Métier semi-spécialisé"),
                             trailing: DropdownButton<String>(
-                              value: _metiers[index].specialisation,
+                              value: _jobs[index].specialization.name,
                               icon: const Icon(Icons.arrow_downward),
                               elevation: 16,
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  _metiers[index].specialisation = newValue!;
+                                  _jobs[index].specialization =
+                                      JobSpecialization.values.firstWhere(
+                                          (specialization) =>
+                                              specialization.name == newValue!);
                                 });
                               },
-                              items: _choicesSpecialisation.map((String value) {
+                              items: JobSpecialization.values
+                                  .map((JobSpecialization specialization) {
                                 return DropdownMenuItem(
-                                  value: value,
-                                  child: Text(value),
+                                  value: specialization.name,
+                                  child: Text(specialization.toString()),
                                 );
                               }).toList(),
                             ),
@@ -286,14 +291,16 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                 }
                                 return null;
                               },
-                              onSaved: (name) => _contactName = name,
+                              onSaved: (name) =>
+                                  _contactInformation.name = name!,
                             ),
                           ),
                           ListTile(
                             title: TextFormField(
                               decoration:
                                   const InputDecoration(labelText: "Fonction"),
-                              onSaved: (function) => _function = function,
+                              onSaved: (function) =>
+                                  _contactInformation.function = function!,
                             ),
                           ),
                           ListTile(
@@ -317,7 +324,8 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                 }
                                 return null;
                               },
-                              onSaved: (phone) => _phone = phone,
+                              onSaved: (phone) =>
+                                  _contactInformation.phone = phone!,
                             ),
                           ),
                           ListTile(
@@ -330,7 +338,8 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                   child: Text("Courriel"),
                                 )
                               ])),
-                              onSaved: (email) => _email = email,
+                              onSaved: (email) =>
+                                  _contactInformation.email = email!,
                             ),
                           ),
                           const SizedBox(
@@ -339,12 +348,13 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                           const ListTile(
                               visualDensity: VisualDensity(
                                   vertical: VisualDensity.minimumDensity),
-                              title: Text("Adresse de l'établissement")),
+                              title: Text("Addresse de l'établissement")),
                           ListTile(
                             title: TextFormField(
                               decoration:
-                                  const InputDecoration(labelText: "Addresse"),
-                              onSaved: (adress) => _adress = adress,
+                                  const InputDecoration(labelText: "Adresse"),
+                              onSaved: (address) =>
+                                  _contactInformation.address = address!,
                             ),
                           ),
                         ],
@@ -379,11 +389,4 @@ class _AddEnterpriseState extends State<AddEnterprise> {
           ),
         ));
   }
-}
-
-class Metier {
-  Metier(this.sector, this.specialisation);
-
-  String sector;
-  String specialisation;
 }

@@ -35,7 +35,7 @@ class _ActivityTypesSelectorDialogState
                 builder: (context, provider, child) => Column(
                     children: provider.activityTypes.keys
                         .map((key) => CheckboxListTile(
-                            title: Text(key.humanName),
+                            title: Text(key.toString()),
                             value: provider.activityTypes[key],
                             onChanged: (value) => provider.update(key, value!)))
                         .toList()),
