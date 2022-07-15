@@ -48,22 +48,23 @@ class _EnterprisesListState extends State<EnterprisesList> {
           Consumer<EnterprisesProvider>(
               builder: (context, enterprisesProvider, child) => Column(
                   children: enterprisesProvider.enterprises
-                      .map((enterprise) => InkWell(
-                            onTap: () => _openEnterpriseDetails(enterprise),
-                            child: ListTile(
-                              title: Text(enterprise.name),
-                              subtitle: Column(
-                                  children: enterprise.jobs
-                                      .map((job) => Row(
-                                            children: [
-                                              Text(
-                                                job.specialization.toString(),
-                                              )
-                                            ],
-                                          ))
-                                      .toList()),
-                            ),
-                          ))
+                      .map(
+                        (enterprise) => ListTile(
+                          title: Text(enterprise.name),
+                          subtitle: Column(
+                              children: enterprise.jobs
+                                  .map((job) => Row(
+                                        children: [
+                                          Text(
+                                            job.specialization.toString(),
+                                          )
+                                        ],
+                                      ))
+                                  .toList()),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () => _openEnterpriseDetails(enterprise),
+                        ),
+                      )
                       .toList()))
         ],
       )),
