@@ -1,9 +1,9 @@
-import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/activity_types.dart';
 import '/common/models/enterprise.dart';
+import '/common/models/job.dart';
 import '/common/providers/activity_types_provider.dart';
 import '/common/providers/enterprises_provider.dart';
 import 'widgets/activity_types_selector_dialog.dart';
