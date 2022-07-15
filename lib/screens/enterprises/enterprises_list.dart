@@ -1,7 +1,7 @@
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import 'add_enterprise.dart';
 
