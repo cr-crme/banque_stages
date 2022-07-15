@@ -10,6 +10,11 @@ class EnterprisesProvider extends ChangeNotifier {
 
   List<Enterprise> get enterprises => _enterprises;
 
+  operator []=(int index, Enterprise enterprise) {
+    _enterprises[index] = enterprise;
+    notifyListeners();
+  }
+
   void add(Enterprise enterprise) {
     _enterprises.add(enterprise);
     notifyListeners();

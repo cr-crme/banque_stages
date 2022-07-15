@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/screens/enterprises/enterprise_details.dart';
 import 'add_enterprise.dart';
 
 class EnterprisesList extends StatefulWidget {
@@ -17,7 +18,13 @@ class EnterprisesList extends StatefulWidget {
 class _EnterprisesListState extends State<EnterprisesList> {
   bool _hideNotAvailable = true;
 
-  void _openEnterprise(Enterprise enterprise) {}
+  void _openEnterpriseDetails(Enterprise enterprise) {
+    Navigator.pushNamed(context, EnterpriseDetails.route,
+        arguments: context
+            .read<EnterprisesProvider>()
+            .enterprises
+            .indexOf(enterprise));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +49,7 @@ class _EnterprisesListState extends State<EnterprisesList> {
               builder: (context, enterprisesProvider, child) => Column(
                   children: enterprisesProvider.enterprises
                       .map((enterprise) => InkWell(
-                            onTap: () => _openEnterprise(enterprise),
+                            onTap: () => _openEnterpriseDetails(enterprise),
                             child: ListTile(
                               title: Text(enterprise.name),
                               subtitle: Column(

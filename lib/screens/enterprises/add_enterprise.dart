@@ -34,8 +34,12 @@ class _AddEnterpriseState extends State<AddEnterprise> {
   final List<Job> _jobs = [Job()];
 
   // Contact
-  final EnterpriseContactInformation _contactInformation =
-      EnterpriseContactInformation();
+  String? _contactName;
+  String? _contactFunction;
+  String? _contactPhone;
+  String? _contactEmail;
+
+  String? _address;
 
   void _showActivityTypeSelector(BuildContext context) {
     ActivityTypesProvider provider =
@@ -83,13 +87,18 @@ class _AddEnterpriseState extends State<AddEnterprise> {
         .toList();
 
     Enterprise enterprise = Enterprise(
-        name: _name!,
-        neq: _neq!,
-        activityTypes: activityTypes,
-        recrutedBy: _recrutedBy,
-        shareToOthers: _shareToOthers,
-        jobs: _jobs,
-        contactInformation: _contactInformation);
+      name: _name!,
+      neq: _neq!,
+      activityTypes: activityTypes,
+      recrutedBy: _recrutedBy,
+      shareToOthers: _shareToOthers,
+      jobs: _jobs,
+      contactName: _contactName!,
+      contactFunction: _contactFunction!,
+      contactPhone: _contactPhone!,
+      contactEmail: _contactEmail!,
+      address: _address!,
+    );
 
     context.read<EnterprisesProvider>().add(enterprise);
     Navigator.pop(context);
@@ -229,9 +238,10 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                               elevation: 16,
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  _jobs[index].activitySector =
-                                      JobActivitySector.values.firstWhere(
-                                          (sector) => sector.name == newValue!);
+                                  _jobs[index] = _jobs[index].copyWith(
+                                      activitySector: JobActivitySector.values
+                                          .firstWhere((sector) =>
+                                              sector.name == newValue!));
                                 });
                               },
                               items: JobActivitySector.values
@@ -251,10 +261,11 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                               elevation: 16,
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  _jobs[index].specialization =
-                                      JobSpecialization.values.firstWhere(
-                                          (specialization) =>
-                                              specialization.name == newValue!);
+                                  _jobs[index] = _jobs[index].copyWith(
+                                      specialization: JobSpecialization.values
+                                          .firstWhere((specialization) =>
+                                              specialization.name ==
+                                              newValue!));
                                 });
                               },
                               items: JobSpecialization.values
@@ -293,8 +304,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                 }
                                 return null;
                               },
-                              onSaved: (name) =>
-                                  _contactInformation.name = name!,
+                              onSaved: (name) => _contactName = name!,
                             ),
                           ),
                           ListTile(
@@ -302,7 +312,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                               decoration:
                                   const InputDecoration(labelText: "Fonction"),
                               onSaved: (function) =>
-                                  _contactInformation.function = function!,
+                                  _contactFunction = function!,
                             ),
                           ),
                           ListTile(
@@ -326,8 +336,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                 }
                                 return null;
                               },
-                              onSaved: (phone) =>
-                                  _contactInformation.phone = phone!,
+                              onSaved: (phone) => _contactPhone = phone!,
                             ),
                           ),
                           ListTile(
@@ -340,8 +349,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                                   child: Text("Courriel"),
                                 )
                               ])),
-                              onSaved: (email) =>
-                                  _contactInformation.email = email!,
+                              onSaved: (email) => _contactEmail = email!,
                             ),
                           ),
                           const SizedBox(
@@ -355,8 +363,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                             title: TextFormField(
                               decoration:
                                   const InputDecoration(labelText: "Adresse"),
-                              onSaved: (address) =>
-                                  _contactInformation.address = address!,
+                              onSaved: (address) => _address = address!,
                             ),
                           ),
                         ],

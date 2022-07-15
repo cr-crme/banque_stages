@@ -3,8 +3,15 @@ class Job {
       : activitySector = activitySector ?? JobActivitySector.values.first,
         specialization = specialization ?? JobSpecialization.values.first;
 
-  JobActivitySector activitySector;
-  JobSpecialization specialization;
+  Job copyWith(
+      {JobActivitySector? activitySector, JobSpecialization? specialization}) {
+    return Job(
+        activitySector: activitySector ?? this.activitySector,
+        specialization: specialization ?? this.specialization);
+  }
+
+  final JobActivitySector activitySector;
+  final JobSpecialization specialization;
 }
 
 enum JobActivitySector {

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '/common/providers/enterprises_provider.dart';
 import 'screens/enterprises/add_enterprise.dart';
+import 'screens/enterprises/enterprise_details.dart';
 import 'screens/enterprises/enterprises_list.dart';
 import 'screens/home.dart';
 
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         routes: {
           Home.route: (context) => const Home(),
           EnterprisesList.route: (context) => const EnterprisesList(),
+          EnterpriseDetails.route: (context) => const EnterpriseDetails(),
           AddEnterprise.route: (context) => const AddEnterprise()
         },
       ),
