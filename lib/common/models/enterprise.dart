@@ -1,10 +1,10 @@
 import '/common/models/activity_types.dart';
-import '/common/models/job.dart';
+import '/common/models/job_list.dart';
+import '/misc/custom_containers/item_serializable.dart';
 
-class Enterprise {
+class Enterprise extends ItemSerializable {
   Enterprise(
-      {required this.id,
-      required this.name,
+      {required this.name,
       this.neq = "",
       required this.activityTypes,
       this.recrutedBy = "",
@@ -14,7 +14,9 @@ class Enterprise {
       this.contactFunction = "",
       required this.contactPhone,
       this.contactEmail = "",
-      this.address = ""});
+      this.address = "",
+      id})
+      : super(id: id);
 
   Enterprise copyWith(
       {String? name,
@@ -22,14 +24,14 @@ class Enterprise {
       List<ActivityTypes>? activityTypes,
       String? recrutedBy,
       bool? shareToOthers,
-      List<Job>? jobs,
+      JobList? jobs,
       String? contactName,
       String? contactFunction,
       String? contactPhone,
       String? contactEmail,
-      String? address}) {
+      String? address,
+      String? id}) {
     return Enterprise(
-        id: id,
         name: name ?? this.name,
         neq: neq ?? this.neq,
         activityTypes: activityTypes ?? this.activityTypes,
@@ -40,10 +42,46 @@ class Enterprise {
         contactFunction: contactFunction ?? this.contactFunction,
         contactPhone: contactPhone ?? this.contactPhone,
         contactEmail: contactEmail ?? this.contactEmail,
-        address: address ?? this.address);
+        address: address ?? this.address,
+        id: id ?? this.id);
   }
 
-  final int id;
+  @override
+  Map<String, dynamic> serializedMap() {
+    return {
+      "name": name,
+      "neq": neq,
+      "activities": activityTypes,
+      "recrutedBy": recrutedBy,
+      "share": shareToOthers,
+      "jobs": jobs,
+      "contactName": contactName,
+      "contactFunction": contactFunction,
+      "contactPhone": contactPhone,
+      "contactEmail": contactEmail,
+      "address": address,
+    };
+  }
+
+  @override
+  Enterprise.fromSerialized(Map<String, dynamic> map)
+      : name = map['name'],
+        neq = map['neq'],
+        activityTypes = map['activityTypes'],
+        recrutedBy = map['recrutedBy'],
+        shareToOthers = map['share'],
+        jobs = map['jobs'],
+        contactName = map['contactName'],
+        contactFunction = map['contactFunction'],
+        contactPhone = map['contactPhone'],
+        contactEmail = map['contactEmail'],
+        address = map['address'],
+        super.fromSerialized(map);
+
+  @override
+  ItemSerializable deserializeItem(Map<String, dynamic> map) {
+    return Enterprise.fromSerialized(map);
+  }
 
   final String name;
   final String neq;
@@ -51,7 +89,7 @@ class Enterprise {
   final String recrutedBy;
   final bool shareToOthers;
 
-  final List<Job> jobs;
+  final JobList jobs;
 
   final String contactName;
   final String contactFunction;

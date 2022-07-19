@@ -1,4 +1,6 @@
-class Job {
+import '/misc/custom_containers/item_serializable.dart';
+
+class Job extends ItemSerializable {
   Job({JobActivitySector? activitySector, JobSpecialization? specialization})
       : activitySector = activitySector ?? JobActivitySector.values.first,
         specialization = specialization ?? JobSpecialization.values.first;
@@ -8,6 +10,21 @@ class Job {
     return Job(
         activitySector: activitySector ?? this.activitySector,
         specialization: specialization ?? this.specialization);
+  }
+
+  @override
+  Map<String, dynamic> serializedMap() {
+    return {"activitySector": activitySector, "specialization": specialization};
+  }
+
+  Job.fromSerialized(Map<String, dynamic> map)
+      : activitySector = map['activitySector'],
+        specialization = map['specialization'],
+        super.fromSerialized(map);
+
+  @override
+  ItemSerializable deserializeItem(Map<String, dynamic> map) {
+    return Job.fromSerialized(map);
   }
 
   final JobActivitySector activitySector;

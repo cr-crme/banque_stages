@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '/common/models/activity_types.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
+import '/common/models/job_list.dart';
 import '/common/providers/activity_types_provider.dart';
 import '/common/providers/enterprises_provider.dart';
 import 'widgets/activity_types_selector_dialog.dart';
@@ -31,7 +32,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
   bool _shareToOthers = true;
 
   // Métiers
-  final List<Job> _jobs = [Job()];
+  final JobList _jobs = [Job()] as JobList;
 
   // Contact
   String? _contactName;
@@ -59,7 +60,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
 
   void _removeMetier(int index) {
     setState(() {
-      _jobs.removeAt(index);
+      _jobs.remove(index);
 
       if (_jobs.isEmpty) {
         _addMetier();
@@ -88,7 +89,6 @@ class _AddEnterpriseState extends State<AddEnterprise> {
         .toList();
 
     Enterprise enterprise = Enterprise(
-      id: provider.getNextId(),
       name: _name!,
       neq: _neq!,
       activityTypes: activityTypes,

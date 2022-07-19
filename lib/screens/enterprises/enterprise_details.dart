@@ -14,7 +14,8 @@ class EnterpriseDetails extends StatefulWidget {
 }
 
 class _EnterpriseDetailsState extends State<EnterpriseDetails> {
-  late int enterpriseId = ModalRoute.of(context)!.settings.arguments as int;
+  late String enterpriseId =
+      ModalRoute.of(context)!.settings.arguments as String;
 
   bool _panelOpen = false;
   late final List<bool> _jobPanelOpen = List<bool>.filled(
@@ -72,8 +73,8 @@ class _EnterpriseDetailsState extends State<EnterpriseDetails> {
                               children: enterprise.jobs
                                   .map((job) => ExpansionPanel(
                                       canTapOnHeader: true,
-                                      isExpanded: _jobPanelOpen[
-                                          enterprise.jobs.indexOf(job)],
+                                      isExpanded: _jobPanelOpen[enterprise.jobs
+                                          .indexWhere((j) => j == job)],
                                       headerBuilder: (context, isExpanded) =>
                                           ListTile(
                                               title: Text(job.activitySector
