@@ -20,10 +20,7 @@ class _EnterprisesListState extends State<EnterprisesList> {
 
   void _openEnterpriseDetails(Enterprise enterprise) {
     Navigator.pushNamed(context, EnterpriseDetails.route,
-        arguments: context
-            .read<EnterprisesProvider>()
-            .enterprises
-            .indexOf(enterprise));
+        arguments: enterprise.id);
   }
 
   @override
@@ -47,7 +44,7 @@ class _EnterprisesListState extends State<EnterprisesList> {
               onChanged: (value) => setState(() => _hideNotAvailable = value)),
           Consumer<EnterprisesProvider>(
               builder: (context, enterprisesProvider, child) => Column(
-                  children: enterprisesProvider.enterprises
+                  children: enterprisesProvider
                       .map(
                         (enterprise) => ListTile(
                           title: Text(enterprise.name),

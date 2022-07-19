@@ -14,19 +14,14 @@ class EnterpriseDetails extends StatefulWidget {
 }
 
 class _EnterpriseDetailsState extends State<EnterpriseDetails> {
-  late int enterpriseIndex = ModalRoute.of(context)!.settings.arguments as int;
+  late int enterpriseId = ModalRoute.of(context)!.settings.arguments as int;
 
   bool _panelOpen = false;
   late final List<bool> _jobPanelOpen = List<bool>.filled(
-      context
-          .read<EnterprisesProvider>()
-          .enterprises[enterpriseIndex]
-          .jobs
-          .length,
-      false);
+      context.read<EnterprisesProvider>()[enterpriseId].jobs.length, false);
 
   void modifyEnterprise(Enterprise newEnterprise) {
-    context.read<EnterprisesProvider>()[enterpriseIndex] = newEnterprise;
+    context.read<EnterprisesProvider>()[enterpriseId] = newEnterprise;
   }
 
   @override
@@ -125,7 +120,6 @@ class _EnterpriseDetailsState extends State<EnterpriseDetails> {
                 ],
               ),
             )),
-        selector: (context, enterprises) =>
-            enterprises.enterprises[enterpriseIndex]);
+        selector: (context, enterprises) => enterprises[enterpriseId]);
   }
 }

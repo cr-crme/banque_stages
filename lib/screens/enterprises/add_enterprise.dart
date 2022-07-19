@@ -77,6 +77,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
     }
 
     _formKey.currentState!.save();
+    EnterprisesProvider provider = context.read<EnterprisesProvider>();
 
     List<ActivityTypes> activityTypes = context
         .read<ActivityTypesProvider>()
@@ -87,6 +88,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
         .toList();
 
     Enterprise enterprise = Enterprise(
+      id: provider.getNextId(),
       name: _name!,
       neq: _neq!,
       activityTypes: activityTypes,
@@ -100,7 +102,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
       address: _address!,
     );
 
-    context.read<EnterprisesProvider>().add(enterprise);
+    provider.add(enterprise);
     Navigator.pop(context);
   }
 

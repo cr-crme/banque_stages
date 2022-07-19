@@ -3,7 +3,8 @@ import '/common/models/job.dart';
 
 class Enterprise {
   Enterprise(
-      {required this.name,
+      {required this.id,
+      required this.name,
       this.neq = "",
       required this.activityTypes,
       this.recrutedBy = "",
@@ -28,6 +29,7 @@ class Enterprise {
       String? contactEmail,
       String? address}) {
     return Enterprise(
+        id: id,
         name: name ?? this.name,
         neq: neq ?? this.neq,
         activityTypes: activityTypes ?? this.activityTypes,
@@ -40,6 +42,8 @@ class Enterprise {
         contactEmail: contactEmail ?? this.contactEmail,
         address: address ?? this.address);
   }
+
+  final int id;
 
   final String name;
   final String neq;
