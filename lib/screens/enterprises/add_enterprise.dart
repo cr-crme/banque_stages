@@ -75,7 +75,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
   void _submit(BuildContext context) {
     if (_formKey.currentState!.validate() == false) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Assurez vous que tous les champs sont valides")));
+          content: Text("Assurez vous que tous les champs soient valides")));
 
       setState(() => _currentStep = 0);
       return;
