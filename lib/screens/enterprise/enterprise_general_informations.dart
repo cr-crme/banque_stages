@@ -5,6 +5,7 @@ import '/common/models/activity_type.dart';
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/activity_types_selector_dialog.dart';
+import '/common/widgets/confirm_pop_dialog.dart';
 
 class EnterpriseGeneralInformation extends StatefulWidget {
   const EnterpriseGeneralInformation({Key? key, required this.enterpriseId})
@@ -44,6 +45,15 @@ class _EnterpriseGeneralInformationState
     setState(() => _activityTypes = activityTypes);
   }
 
+  Future<bool> _onWillPop() async {
+    if (_editable) {
+      return await showDialog(
+          context: context, builder: (context) => const ConfirmPopDialog());
+    }
+
+    return true;
+  }
+
   void _toggleEdit() {
     if (_editable) {
       if (!_formKey.currentState!.validate()) {
@@ -72,71 +82,70 @@ class _EnterpriseGeneralInformationState
 
   @override
   Widget build(BuildContext context) {
-    return Selector<EnterprisesProvider, Enterprise>(
-        builder: (context, enterprise, child) => Scaffold(
-              appBar: AppBar(title: Text(enterprise.name)),
-              body: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                    child: Column(
-                  children: [
-                    ListTile(
-                      title: TextFormField(
-                        initialValue: enterprise.name,
-                        enabled: _editable,
-                        decoration: const InputDecoration(labelText: "Nom *"),
-                        validator: (text) {
-                          if (text!.isEmpty) {
-                            return "Le champ ne peut pas être vide";
-                          }
-                          return null;
-                        },
-                        onSaved: (name) => _name = name,
-                      ),
-                    ),
-                    ListTile(
-                      title: TextFormField(
-                        initialValue: enterprise.neq,
-                        enabled: _editable,
-                        decoration: const InputDecoration(labelText: "NEQ"),
-                        validator: (text) {
-                          if (text!.isNotEmpty &&
-                              !RegExp(r'^\d{10}$').hasMatch(text)) {
-                            return "Le NEQ est composé de 10 chiffres";
-                          }
-                          return null;
-                        },
-                        onSaved: (neq) => _neq = neq,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    IndexedStack(
-                      index: _editable ? 1 : 0,
-                      children: [
-                        Column(
-                          children: [
-                            ListTile(
-                              title: const Text("Types d'activités"),
-                              trailing: Text(
-                                enterprise.activityTypes.join(", "),
-                                maxLines: 1,
-                              ),
-                            ),
-                            ListTile(
-                                title: Text(
-                                    "L'enterprise a été recrutée par ${enterprise.recrutedBy}")),
-                            ListTile(
-                              title: enterprise.shareToOthers
-                                  ? const Text("L'enterprise est partagée")
-                                  : const Text(
-                                      "L'entreprise n'est pas partagée"),
-                            ),
-                          ],
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Selector<EnterprisesProvider, Enterprise>(
+            builder: (context, enterprise, child) => Scaffold(
+                  appBar: AppBar(title: Text(enterprise.name)),
+                  body: Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                      child: Column(children: [
+                        ListTile(
+                          title: TextFormField(
+                            initialValue: enterprise.name,
+                            enabled: _editable,
+                            decoration:
+                                const InputDecoration(labelText: "Nom *"),
+                            validator: (text) {
+                              if (text!.isEmpty) {
+                                return "Le champ ne peut pas être vide";
+                              }
+                              return null;
+                            },
+                            onSaved: (name) => _name = name,
+                          ),
                         ),
-                        Column(
-                          children: [
+                        ListTile(
+                          title: TextFormField(
+                            initialValue: enterprise.neq,
+                            enabled: _editable,
+                            decoration: const InputDecoration(labelText: "NEQ"),
+                            validator: (text) {
+                              if (text!.isNotEmpty &&
+                                  !RegExp(r'^\d{10}$').hasMatch(text)) {
+                                return "Le NEQ est composé de 10 chiffres";
+                              }
+                              return null;
+                            },
+                            onSaved: (neq) => _neq = neq,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        IndexedStack(index: _editable ? 1 : 0, children: [
+                          Column(
+                            children: [
+                              ListTile(
+                                title: const Text("Types d'activités"),
+                                trailing: Text(
+                                  enterprise.activityTypes.join(", "),
+                                  maxLines: 1,
+                                ),
+                              ),
+                              ListTile(
+                                  title: Text(
+                                      "L'enterprise a été recrutée par ${enterprise.recrutedBy}")),
+                              ListTile(
+                                title: enterprise.shareToOthers
+                                    ? const Text("L'enterprise est partagée")
+                                    : const Text(
+                                        "L'entreprise n'est pas partagée"),
+                              ),
+                            ],
+                          ),
+                          Column(children: [
                             ListTile(
                                 title: const Text("Types d'activités"),
                                 subtitle: Text(
@@ -173,20 +182,19 @@ class _EnterpriseGeneralInformationState
                                 _shareToOthers = newValue;
                               }),
                             ),
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                )),
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: _toggleEdit,
-                child: _editable
-                    ? const Icon(Icons.save_rounded)
-                    : const Icon(Icons.edit),
-              ),
-            ),
-        selector: (context, enterprises) => enterprises[widget.enterpriseId]);
+                          ])
+                        ])
+                      ]),
+                    ),
+                  ),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: _toggleEdit,
+                    child: _editable
+                        ? const Icon(Icons.save_rounded)
+                        : const Icon(Icons.edit),
+                  ),
+                ),
+            selector: (context, enterprises) =>
+                enterprises[widget.enterpriseId]));
   }
 }
