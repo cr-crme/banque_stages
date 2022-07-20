@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
-import '/screens/enterprises/enterprise_details.dart';
+import '/screens/enterprise/enterprise_navigator.dart';
 import 'add_enterprise.dart';
 
 class EnterprisesList extends StatefulWidget {
@@ -19,7 +19,7 @@ class _EnterprisesListState extends State<EnterprisesList> {
   bool _hideNotAvailable = true;
 
   void _openEnterpriseDetails(Enterprise enterprise) {
-    Navigator.pushNamed(context, EnterpriseDetails.route,
+    Navigator.pushNamed(context, EnterpriseNavigator.route,
         arguments: enterprise.id);
   }
 

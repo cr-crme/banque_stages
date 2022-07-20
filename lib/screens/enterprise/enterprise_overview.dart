@@ -1,28 +1,33 @@
+import 'package:crcrme_banque_stages/screens/enterprise/enterprise_contact.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/enterprise_general_informations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 
-class EnterpriseDetails extends StatefulWidget {
-  const EnterpriseDetails({Key? key}) : super(key: key);
+class EnterpriseOverview extends StatefulWidget {
+  const EnterpriseOverview(
+      {Key? key, required this.enterpriseId, required this.exit})
+      : super(key: key);
 
-  static String route = "/enterprises/enterprise";
+  static const String route = "/";
+
+  final String enterpriseId;
+  final void Function() exit;
 
   @override
-  State<EnterpriseDetails> createState() => _EnterpriseDetailsState();
+  State<EnterpriseOverview> createState() => _EnterpriseOverviewState();
 }
 
-class _EnterpriseDetailsState extends State<EnterpriseDetails> {
-  late String enterpriseId =
-      ModalRoute.of(context)!.settings.arguments as String;
-
+class _EnterpriseOverviewState extends State<EnterpriseOverview> {
   bool _panelOpen = false;
   late final List<bool> _jobPanelOpen = List<bool>.filled(
-      context.read<EnterprisesProvider>()[enterpriseId].jobs.length, false);
+      context.read<EnterprisesProvider>()[widget.enterpriseId].jobs.length,
+      false);
 
   void modifyEnterprise(Enterprise newEnterprise) {
-    context.read<EnterprisesProvider>()[enterpriseId] = newEnterprise;
+    context.read<EnterprisesProvider>()[widget.enterpriseId] = newEnterprise;
   }
 
   @override
@@ -30,9 +35,8 @@ class _EnterpriseDetailsState extends State<EnterpriseDetails> {
     return Selector<EnterprisesProvider, Enterprise>(
         builder: (context, enterprise, child) => Scaffold(
             appBar: AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => Navigator.pop(context),
+              leading: BackButton(
+                onPressed: widget.exit,
               ),
               title: Text(enterprise.name),
             ),
@@ -42,12 +46,14 @@ class _EnterpriseDetailsState extends State<EnterpriseDetails> {
                   ListTile(
                     title: const Text("Informations générales"),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () {},
+                    onTap: () => Navigator.pushNamed(
+                        context, EnterpriseGeneralInformation.route),
                   ),
                   ListTile(
                     title: const Text("Contact"),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () {},
+                    onTap: () =>
+                        Navigator.pushNamed(context, EnterpriseContact.route),
                   ),
                   ExpansionPanelList(
                     expansionCallback: (index, expanded) {
@@ -121,6 +127,6 @@ class _EnterpriseDetailsState extends State<EnterpriseDetails> {
                 ],
               ),
             )),
-        selector: (context, enterprises) => enterprises[enterpriseId]);
+        selector: (context, enterprises) => enterprises[widget.enterpriseId]);
   }
 }
