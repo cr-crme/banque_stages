@@ -75,72 +75,95 @@ class _EnterpriseJobExigencesState extends State<EnterpriseJobExigences> {
                   body: Form(
                     key: _formKey,
                     child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ListTile(
-                              title: Text(enterprise.jobs[jobId].specialization
-                                  .toString())),
-                          const ListTile(title: Text("Exigences")),
-                          const ListTile(title: Text("Âge minimum")),
-                          const ListTile(
-                              title: Text("Tenue vestimentaire requise")),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextFormField(
-                              initialValue: enterprise.jobs[jobId].uniform,
-                              onSaved: (uniform) => _uniform = uniform,
-                              enabled: _editable,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 4,
-                              maxLines: null,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                enterprise.jobs[jobId].specialization
+                                    .toString(),
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
                             ),
-                          ),
-                          const ListTile(
-                              title: Text(
-                                  "Attentes envers les stagiaires (autonomie, productivité...)")),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextFormField(
-                              initialValue: enterprise.jobs[jobId].expectations,
-                              onSaved: (expectations) =>
-                                  _expectations = expectations,
-                              enabled: _editable,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 4,
-                              maxLines: null,
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Exigences",
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge),
                             ),
-                          ),
-                          const ListTile(
-                              title: Text("Type d’encadrement des stagiaires")),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextFormField(
-                              initialValue: enterprise.jobs[jobId].supervision,
-                              onSaved: (supervision) =>
-                                  _supervision = supervision,
-                              enabled: _editable,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 4,
-                              maxLines: null,
+                            const ListTile(title: Text("Âge minimum")),
+                            const ListTile(
+                                title: Text("Tenue vestimentaire requise")),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: TextFormField(
+                                initialValue: enterprise.jobs[jobId].uniform,
+                                onSaved: (uniform) => _uniform = uniform,
+                                enabled: _editable,
+                                keyboardType: TextInputType.multiline,
+                                minLines: 4,
+                                maxLines: null,
+                              ),
                             ),
-                          ),
-                          const ListTile(title: Text("Autres commentaires")),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextFormField(
-                              initialValue: enterprise.jobs[jobId].comments,
-                              onSaved: (comments) => _comments = comments,
-                              enabled: _editable,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 4,
-                              maxLines: null,
+                            const ListTile(
+                                title: Text(
+                                    "Attentes envers les stagiaires (autonomie, productivité...)")),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: TextFormField(
+                                initialValue:
+                                    enterprise.jobs[jobId].expectations,
+                                onSaved: (expectations) =>
+                                    _expectations = expectations,
+                                enabled: _editable,
+                                keyboardType: TextInputType.multiline,
+                                minLines: 4,
+                                maxLines: null,
+                              ),
                             ),
-                          ),
-                        ],
+                            const Divider(),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Type d’encadrement des stagiaires",
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: TextFormField(
+                                initialValue:
+                                    enterprise.jobs[jobId].supervision,
+                                onSaved: (supervision) =>
+                                    _supervision = supervision,
+                                enabled: _editable,
+                                keyboardType: TextInputType.multiline,
+                                minLines: 4,
+                                maxLines: null,
+                              ),
+                            ),
+                            const Divider(),
+                            Text("Autres commentaires",
+                                style: Theme.of(context).textTheme.titleLarge),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: TextFormField(
+                                initialValue: enterprise.jobs[jobId].comments,
+                                onSaved: (comments) => _comments = comments,
+                                enabled: _editable,
+                                keyboardType: TextInputType.multiline,
+                                minLines: 4,
+                                maxLines: null,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),

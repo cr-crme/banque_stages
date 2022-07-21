@@ -66,27 +66,41 @@ class _EnterpriseJobTaskState extends State<EnterpriseJobTask> {
                   body: Form(
                     key: _formKey,
                     child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ListTile(
-                              title: Text(enterprise.jobs[jobId].specialization
-                                  .toString())),
-                          const ListTile(title: Text("Tâches principales")),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextFormField(
-                              initialValue:
-                                  enterprise.jobs[jobId].principalTask,
-                              enabled: _editable,
-                              onSaved: (principalTask) =>
-                                  _principalTask = principalTask,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 4,
-                              maxLines: null,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                enterprise.jobs[jobId].specialization
+                                    .toString(),
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
                             ),
-                          )
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Tâches principales",
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: TextFormField(
+                                initialValue:
+                                    enterprise.jobs[jobId].principalTask,
+                                enabled: _editable,
+                                onSaved: (principalTask) =>
+                                    _principalTask = principalTask,
+                                keyboardType: TextInputType.multiline,
+                                minLines: 4,
+                                maxLines: null,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),

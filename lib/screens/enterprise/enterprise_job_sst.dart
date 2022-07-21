@@ -73,84 +73,96 @@ class _EnterpriseJobSSTState extends State<EnterpriseJobSST> {
                   body: Form(
                     key: _formKey,
                     child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ListTile(
-                              title: Text(enterprise.jobs[jobId].specialization
-                                  .toString())),
-                          const ListTile(
-                              title:
-                                  Text("Santé et Sécurité du travail (SST)")),
-                          const ListTile(
-                              title: Text(
-                                  "Avez-vous identifié des situations de travail dangereuses lors de vos visites de supervision dans cette entreprise ? Si oui, lesquelles?")),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextFormField(
-                              initialValue:
-                                  enterprise.jobs[jobId].dangerousSituations,
-                              onSaved: (dangerousSituations) =>
-                                  _dangerousSituations = dangerousSituations,
-                              enabled: _editable,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 4,
-                              maxLines: null,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  enterprise.jobs[jobId].specialization
+                                      .toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall),
                             ),
-                          ),
-                          const ListTile(
-                              title: Text(
-                                  "Équipements de protection individuelle requis")),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextFormField(
-                              initialValue:
-                                  enterprise.jobs[jobId].protectionEquipements,
-                              onSaved: (protectionEquipements) =>
-                                  _protectionEquipements =
-                                      protectionEquipements,
-                              enabled: _editable,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 4,
-                              maxLines: null,
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Santé et Sécurité du travail (SST)",
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge),
                             ),
-                          ),
-                          const ListTile(
-                              title: Text(
-                                  "Est-ce qu’il y a déjà eu des accidents de stagiaire (il peut s’agir d’une blesssure mineure comme une coupure ou une brûlure)? Si oui, racontez ce qu’il s’est passé")),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextFormField(
-                              initialValue:
-                                  enterprise.jobs[jobId].accidentsHistory,
-                              onSaved: (accidentsHistory) =>
-                                  _accidentsHistory = accidentsHistory,
-                              enabled: _editable,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 4,
-                              maxLines: null,
+                            const ListTile(
+                                title: Text(
+                                    "Avez-vous identifié des situations de travail dangereuses lors de vos visites de supervision dans cette entreprise ? Si oui, lesquelles?")),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: TextFormField(
+                                initialValue:
+                                    enterprise.jobs[jobId].dangerousSituations,
+                                onSaved: (dangerousSituations) =>
+                                    _dangerousSituations = dangerousSituations,
+                                enabled: _editable,
+                                keyboardType: TextInputType.multiline,
+                                minLines: 4,
+                                maxLines: null,
+                              ),
                             ),
-                          ),
-                          const ListTile(
-                              title: Text(
-                                  "Est-ce que des stagiaires ont déjà fait face à des situations source de stress ou de violence dans cette entreprise? (p. ex. harcèlement de la part de collègues, violence verbale de clients...)")),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: TextFormField(
-                              initialValue:
-                                  enterprise.jobs[jobId].stressSituations,
-                              onSaved: (stressSituations) =>
-                                  _stressSituations = stressSituations,
-                              enabled: _editable,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 4,
-                              maxLines: null,
+                            const ListTile(
+                                title: Text(
+                                    "Équipements de protection individuelle requis")),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: TextFormField(
+                                initialValue: enterprise
+                                    .jobs[jobId].protectionEquipements,
+                                onSaved: (protectionEquipements) =>
+                                    _protectionEquipements =
+                                        protectionEquipements,
+                                enabled: _editable,
+                                keyboardType: TextInputType.multiline,
+                                minLines: 4,
+                                maxLines: null,
+                              ),
                             ),
-                          ),
-                        ],
+                            const ListTile(
+                                title: Text(
+                                    "Est-ce qu’il y a déjà eu des accidents de stagiaire (il peut s’agir d’une blesssure mineure comme une coupure ou une brûlure)? Si oui, racontez ce qu’il s’est passé")),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: TextFormField(
+                                initialValue:
+                                    enterprise.jobs[jobId].accidentsHistory,
+                                onSaved: (accidentsHistory) =>
+                                    _accidentsHistory = accidentsHistory,
+                                enabled: _editable,
+                                keyboardType: TextInputType.multiline,
+                                minLines: 4,
+                                maxLines: null,
+                              ),
+                            ),
+                            const ListTile(
+                                title: Text(
+                                    "Est-ce que des stagiaires ont déjà fait face à des situations source de stress ou de violence dans cette entreprise? (p. ex. harcèlement de la part de collègues, violence verbale de clients...)")),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: TextFormField(
+                                initialValue:
+                                    enterprise.jobs[jobId].stressSituations,
+                                onSaved: (stressSituations) =>
+                                    _stressSituations = stressSituations,
+                                enabled: _editable,
+                                keyboardType: TextInputType.multiline,
+                                minLines: 4,
+                                maxLines: null,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

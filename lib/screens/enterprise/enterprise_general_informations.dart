@@ -90,101 +90,113 @@ class _EnterpriseGeneralInformationState
                   body: Form(
                     key: _formKey,
                     child: SingleChildScrollView(
-                      child: Column(children: [
-                        ListTile(
-                          title: TextFormField(
-                            initialValue: enterprise.name,
-                            enabled: _editable,
-                            decoration:
-                                const InputDecoration(labelText: "Nom *"),
-                            validator: (text) {
-                              if (text!.isEmpty) {
-                                return "Le champ ne peut pas être vide";
-                              }
-                              return null;
-                            },
-                            onSaved: (name) => _name = name,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Informations générales",
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
                           ),
-                        ),
-                        ListTile(
-                          title: TextFormField(
-                            initialValue: enterprise.neq,
-                            enabled: _editable,
-                            decoration: const InputDecoration(labelText: "NEQ"),
-                            validator: (text) {
-                              if (text!.isNotEmpty &&
-                                  !RegExp(r'^\d{10}$').hasMatch(text)) {
-                                return "Le NEQ est composé de 10 chiffres";
-                              }
-                              return null;
-                            },
-                            onSaved: (neq) => _neq = neq,
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.name,
+                              enabled: _editable,
+                              decoration:
+                                  const InputDecoration(labelText: "Nom *"),
+                              validator: (text) {
+                                if (text!.isEmpty) {
+                                  return "Le champ ne peut pas être vide";
+                                }
+                                return null;
+                              },
+                              onSaved: (name) => _name = name,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        IndexedStack(index: _editable ? 1 : 0, children: [
-                          Column(
-                            children: [
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.neq,
+                              enabled: _editable,
+                              decoration:
+                                  const InputDecoration(labelText: "NEQ"),
+                              validator: (text) {
+                                if (text!.isNotEmpty &&
+                                    !RegExp(r'^\d{10}$').hasMatch(text)) {
+                                  return "Le NEQ est composé de 10 chiffres";
+                                }
+                                return null;
+                              },
+                              onSaved: (neq) => _neq = neq,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          IndexedStack(index: _editable ? 1 : 0, children: [
+                            Column(
+                              children: [
+                                ListTile(
+                                  title: const Text("Types d'activités"),
+                                  trailing: Text(
+                                    enterprise.activityTypes.join(", "),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                ListTile(
+                                    title: Text(
+                                        "L'enterprise a été recrutée par ${enterprise.recrutedBy}")),
+                                ListTile(
+                                  title: enterprise.shareToOthers
+                                      ? const Text("L'enterprise est partagée")
+                                      : const Text(
+                                          "L'entreprise n'est pas partagée"),
+                                ),
+                              ],
+                            ),
+                            Column(children: [
                               ListTile(
-                                title: const Text("Types d'activités"),
-                                trailing: Text(
-                                  enterprise.activityTypes.join(", "),
-                                  maxLines: 1,
+                                  title: const Text("Types d'activités"),
+                                  subtitle: Text(
+                                    _activityTypes.join(", "),
+                                    maxLines: 1,
+                                  ),
+                                  trailing: TextButton(
+                                    child: const Text("Modifier"),
+                                    onPressed: () =>
+                                        _showActivityTypeSelector(),
+                                  )),
+                              ListTile(
+                                title: const Text("Enterprise recrutée par"),
+                                trailing: DropdownButton<String>(
+                                  value: _recrutedBy,
+                                  icon: const Icon(Icons.arrow_downward),
+                                  elevation: 16,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _recrutedBy = newValue!;
+                                    });
+                                  },
+                                  items: _choicesRecrutedBy.map((String value) {
+                                    return DropdownMenuItem(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
                                 ),
                               ),
-                              ListTile(
-                                  title: Text(
-                                      "L'enterprise a été recrutée par ${enterprise.recrutedBy}")),
-                              ListTile(
-                                title: enterprise.shareToOthers
-                                    ? const Text("L'enterprise est partagée")
-                                    : const Text(
-                                        "L'entreprise n'est pas partagée"),
+                              SwitchListTile(
+                                title: const Text("Partager l'enterprise"),
+                                value: _shareToOthers,
+                                onChanged: (bool newValue) => setState(() {
+                                  _shareToOthers = newValue;
+                                }),
                               ),
-                            ],
-                          ),
-                          Column(children: [
-                            ListTile(
-                                title: const Text("Types d'activités"),
-                                subtitle: Text(
-                                  _activityTypes.join(", "),
-                                  maxLines: 1,
-                                ),
-                                trailing: TextButton(
-                                  child: const Text("Modifier"),
-                                  onPressed: () => _showActivityTypeSelector(),
-                                )),
-                            ListTile(
-                              title: const Text("Enterprise recrutée par"),
-                              trailing: DropdownButton<String>(
-                                value: _recrutedBy,
-                                icon: const Icon(Icons.arrow_downward),
-                                elevation: 16,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    _recrutedBy = newValue!;
-                                  });
-                                },
-                                items: _choicesRecrutedBy.map((String value) {
-                                  return DropdownMenuItem(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                            SwitchListTile(
-                              title: const Text("Partager l'enterprise"),
-                              value: _shareToOthers,
-                              onChanged: (bool newValue) => setState(() {
-                                _shareToOthers = newValue;
-                              }),
-                            ),
+                            ])
                           ])
-                        ])
-                      ]),
+                        ]),
+                      ),
                     ),
                   ),
                   floatingActionButton: FloatingActionButton(

@@ -74,90 +74,103 @@ class _EnterpriseContactState extends State<EnterpriseContact> {
                   body: Form(
                     key: _formKey,
                     child: SingleChildScrollView(
-                      child: Column(children: [
-                        const ListTile(
-                          title: Text("Personne contact en enterprise"),
-                        ),
-                        ListTile(
-                          title: TextFormField(
-                            initialValue: enterprise.contactName,
-                            enabled: _editable,
-                            decoration:
-                                const InputDecoration(labelText: "Nom *"),
-                            validator: (text) {
-                              if (text!.isEmpty) {
-                                return "Le champ ne peut pas être vide";
-                              }
-                              return null;
-                            },
-                            onSaved: (name) => _contactName = name!,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Contact",
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall),
                           ),
-                        ),
-                        ListTile(
-                          title: TextFormField(
-                            initialValue: enterprise.contactFunction,
-                            enabled: _editable,
-                            decoration:
-                                const InputDecoration(labelText: "Fonction"),
-                            onSaved: (function) => _contactFunction = function!,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Personne contact en enterprise",
+                                style: Theme.of(context).textTheme.titleLarge),
                           ),
-                        ),
-                        ListTile(
-                          title: TextFormField(
-                            initialValue: enterprise.contactPhone,
-                            enabled: _editable,
-                            decoration: InputDecoration(
-                                label: Row(children: const [
-                              Icon(Icons.phone),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                                child: Text("Téléphone *"),
-                              )
-                            ])),
-                            validator: (phone) {
-                              if (phone!.isEmpty) {
-                                return "Le champ ne peut pas être vide";
-                              }
-                              if (!RegExp(
-                                      r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
-                                  .hasMatch(phone)) {
-                                return "Le numéro entré doit être valide";
-                              }
-                              return null;
-                            },
-                            onSaved: (phone) => _contactPhone = phone!,
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.contactName,
+                              enabled: _editable,
+                              decoration:
+                                  const InputDecoration(labelText: "Nom *"),
+                              validator: (text) {
+                                if (text!.isEmpty) {
+                                  return "Le champ ne peut pas être vide";
+                                }
+                                return null;
+                              },
+                              onSaved: (name) => _contactName = name!,
+                            ),
                           ),
-                        ),
-                        ListTile(
-                          title: TextFormField(
-                            initialValue: enterprise.contactEmail,
-                            enabled: _editable,
-                            decoration: InputDecoration(
-                                label: Row(children: const [
-                              Icon(Icons.mail),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                                child: Text("Courriel"),
-                              )
-                            ])),
-                            onSaved: (email) => _contactEmail = email!,
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.contactFunction,
+                              enabled: _editable,
+                              decoration:
+                                  const InputDecoration(labelText: "Fonction"),
+                              onSaved: (function) =>
+                                  _contactFunction = function!,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const ListTile(
-                            title: Text("Addresse de l'établissement")),
-                        ListTile(
-                          title: TextFormField(
-                            initialValue: enterprise.address,
-                            enabled: _editable,
-                            decoration:
-                                const InputDecoration(labelText: "Adresse"),
-                            onSaved: (address) => _address = address!,
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.contactPhone,
+                              enabled: _editable,
+                              decoration: InputDecoration(
+                                  label: Row(children: const [
+                                Icon(Icons.phone),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0),
+                                  child: Text("Téléphone *"),
+                                )
+                              ])),
+                              validator: (phone) {
+                                if (phone!.isEmpty) {
+                                  return "Le champ ne peut pas être vide";
+                                }
+                                if (!RegExp(
+                                        r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
+                                    .hasMatch(phone)) {
+                                  return "Le numéro entré doit être valide";
+                                }
+                                return null;
+                              },
+                              onSaved: (phone) => _contactPhone = phone!,
+                            ),
                           ),
-                        )
-                      ]),
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.contactEmail,
+                              enabled: _editable,
+                              decoration: InputDecoration(
+                                  label: Row(children: const [
+                                Icon(Icons.mail),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0),
+                                  child: Text("Courriel"),
+                                )
+                              ])),
+                              onSaved: (email) => _contactEmail = email!,
+                            ),
+                          ),
+                          const Divider(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Addresse de l'établissement",
+                                style: Theme.of(context).textTheme.titleLarge),
+                          ),
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.address,
+                              enabled: _editable,
+                              decoration:
+                                  const InputDecoration(labelText: "Adresse"),
+                              onSaved: (address) => _address = address!,
+                            ),
+                          )
+                        ]),
+                      ),
                     ),
                   ),
                   floatingActionButton: FloatingActionButton(
