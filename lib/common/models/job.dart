@@ -4,6 +4,8 @@ class Job extends ItemSerializable {
   Job(
       {JobActivitySector? activitySector,
       JobSpecialization? specialization,
+      this.totalSlot = 1,
+      this.occupiedSlot = 0,
       this.principalTask = "",
       this.dangerousSituations = "",
       this.protectionEquipements = "",
@@ -13,13 +15,17 @@ class Job extends ItemSerializable {
       this.uniform = "",
       this.expectations = "",
       this.supervision = "",
-      this.comments = ""})
+      this.comments = "",
+      id})
       : activitySector = activitySector ?? JobActivitySector.values.first,
-        specialization = specialization ?? JobSpecialization.values.first;
+        specialization = specialization ?? JobSpecialization.values.first,
+        super(id: id);
 
   Job copyWith(
       {JobActivitySector? activitySector,
       JobSpecialization? specialization,
+      int? totalSlot,
+      int? occupiedSlot,
       String? principalTask,
       String? dangerousSituations,
       String? protectionEquipements,
@@ -29,10 +35,13 @@ class Job extends ItemSerializable {
       String? uniform,
       String? expectations,
       String? supervision,
-      String? comments}) {
+      String? comments,
+      String? id}) {
     return Job(
         activitySector: activitySector ?? this.activitySector,
         specialization: specialization ?? this.specialization,
+        totalSlot: totalSlot ?? this.totalSlot,
+        occupiedSlot: occupiedSlot ?? this.occupiedSlot,
         principalTask: principalTask ?? this.principalTask,
         dangerousSituations: dangerousSituations ?? this.dangerousSituations,
         protectionEquipements:
@@ -43,7 +52,8 @@ class Job extends ItemSerializable {
         uniform: uniform ?? this.uniform,
         expectations: expectations ?? this.expectations,
         supervision: supervision ?? this.supervision,
-        comments: comments ?? this.comments);
+        comments: comments ?? this.comments,
+        id: id ?? this.id);
   }
 
   @override
@@ -51,6 +61,8 @@ class Job extends ItemSerializable {
     return {
       "activitySector": activitySector,
       "specialization": specialization,
+      "totalSlot": totalSlot,
+      "occupiedSlot": occupiedSlot,
       "principalTask": principalTask,
       "dangerousSituations": dangerousSituations,
       "protectionEquipements": protectionEquipements,
@@ -67,6 +79,8 @@ class Job extends ItemSerializable {
   Job.fromSerialized(Map<String, dynamic> map)
       : activitySector = map['activitySector'],
         specialization = map['specialization'],
+        totalSlot = map['totalSlot'],
+        occupiedSlot = map['occupiedSlot'],
         principalTask = map['principalTask'],
         dangerousSituations = map['dangerousSituations'],
         protectionEquipements = map['protectionEquipements'],
@@ -86,6 +100,9 @@ class Job extends ItemSerializable {
 
   final JobActivitySector activitySector;
   final JobSpecialization specialization;
+
+  final int totalSlot;
+  final int occupiedSlot;
 
   final String principalTask;
 
