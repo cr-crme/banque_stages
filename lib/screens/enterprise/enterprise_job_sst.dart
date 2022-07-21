@@ -1,8 +1,8 @@
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/enterprise.dart';
+import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/confirm_pop_dialog.dart';
 
 class EnterpriseJobSST extends StatefulWidget {
@@ -23,6 +23,11 @@ class _EnterpriseJobSSTState extends State<EnterpriseJobSST> {
   final _formKey = GlobalKey<FormState>();
 
   bool _editable = false;
+
+  String? _dangerousSituations;
+  String? _protectionEquipements;
+  String? _accidentsHistory;
+  String? _stressSituations;
 
   Future<bool> _onWillPop() async {
     if (_editable) {
@@ -45,9 +50,13 @@ class _EnterpriseJobSSTState extends State<EnterpriseJobSST> {
       _formKey.currentState!.save();
       EnterprisesProvider provider = context.read<EnterprisesProvider>();
 
-      provider[widget.enterpriseId]
-          .jobs
-          .replace(provider[widget.enterpriseId].jobs[jobId].copyWith());
+      provider[widget.enterpriseId].jobs.replace(provider[widget.enterpriseId]
+          .jobs[jobId]
+          .copyWith(
+              dangerousSituations: _dangerousSituations,
+              protectionEquipements: _protectionEquipements,
+              accidentsHistory: _accidentsHistory,
+              stressSituations: _stressSituations));
     }
 
     setState(() => _editable = !_editable);
@@ -79,6 +88,10 @@ class _EnterpriseJobSSTState extends State<EnterpriseJobSST> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             child: TextFormField(
+                              initialValue:
+                                  enterprise.jobs[jobId].dangerousSituations,
+                              onSaved: (dangerousSituations) =>
+                                  _dangerousSituations = dangerousSituations,
                               enabled: _editable,
                               keyboardType: TextInputType.multiline,
                               minLines: 4,
@@ -92,6 +105,11 @@ class _EnterpriseJobSSTState extends State<EnterpriseJobSST> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             child: TextFormField(
+                              initialValue:
+                                  enterprise.jobs[jobId].protectionEquipements,
+                              onSaved: (protectionEquipements) =>
+                                  _protectionEquipements =
+                                      protectionEquipements,
                               enabled: _editable,
                               keyboardType: TextInputType.multiline,
                               minLines: 4,
@@ -105,6 +123,10 @@ class _EnterpriseJobSSTState extends State<EnterpriseJobSST> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             child: TextFormField(
+                              initialValue:
+                                  enterprise.jobs[jobId].accidentsHistory,
+                              onSaved: (accidentsHistory) =>
+                                  _accidentsHistory = accidentsHistory,
                               enabled: _editable,
                               keyboardType: TextInputType.multiline,
                               minLines: 4,
@@ -118,6 +140,10 @@ class _EnterpriseJobSSTState extends State<EnterpriseJobSST> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             child: TextFormField(
+                              initialValue:
+                                  enterprise.jobs[jobId].stressSituations,
+                              onSaved: (stressSituations) =>
+                                  _stressSituations = stressSituations,
                               enabled: _editable,
                               keyboardType: TextInputType.multiline,
                               minLines: 4,

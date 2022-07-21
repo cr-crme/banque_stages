@@ -1,8 +1,8 @@
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/enterprise.dart';
+import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/confirm_pop_dialog.dart';
 
 class EnterpriseJobTask extends StatefulWidget {
@@ -24,6 +24,8 @@ class _EnterpriseJobTaskState extends State<EnterpriseJobTask> {
 
   bool _editable = false;
 
+  String? _principalTask;
+
   Future<bool> _onWillPop() async {
     if (_editable) {
       return await showDialog(
@@ -44,6 +46,10 @@ class _EnterpriseJobTaskState extends State<EnterpriseJobTask> {
 
       _formKey.currentState!.save();
       EnterprisesProvider provider = context.read<EnterprisesProvider>();
+
+      provider[widget.enterpriseId].jobs.replace(provider[widget.enterpriseId]
+          .jobs[jobId]
+          .copyWith(principalTask: _principalTask));
     }
 
     setState(() => _editable = !_editable);
@@ -70,7 +76,11 @@ class _EnterpriseJobTaskState extends State<EnterpriseJobTask> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             child: TextFormField(
+                              initialValue:
+                                  enterprise.jobs[jobId].principalTask,
                               enabled: _editable,
+                              onSaved: (principalTask) =>
+                                  _principalTask = principalTask,
                               keyboardType: TextInputType.multiline,
                               minLines: 4,
                               maxLines: null,

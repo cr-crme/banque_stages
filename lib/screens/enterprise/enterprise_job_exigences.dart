@@ -1,8 +1,8 @@
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/enterprise.dart';
+import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/confirm_pop_dialog.dart';
 
 class EnterpriseJobExigences extends StatefulWidget {
@@ -24,6 +24,12 @@ class _EnterpriseJobExigencesState extends State<EnterpriseJobExigences> {
 
   bool _editable = false;
 
+  int? _minimumAge;
+  String? _uniform;
+  String? _expectations;
+  String? _supervision;
+  String? _comments;
+
   Future<bool> _onWillPop() async {
     if (_editable) {
       return await showDialog(
@@ -44,6 +50,15 @@ class _EnterpriseJobExigencesState extends State<EnterpriseJobExigences> {
 
       _formKey.currentState!.save();
       EnterprisesProvider provider = context.read<EnterprisesProvider>();
+
+      provider[widget.enterpriseId].jobs.replace(provider[widget.enterpriseId]
+          .jobs[jobId]
+          .copyWith(
+              minimumAge: _minimumAge,
+              uniform: _uniform,
+              expectations: _expectations,
+              supervision: _supervision,
+              comments: _comments));
     }
 
     setState(() => _editable = !_editable);
@@ -73,6 +88,8 @@ class _EnterpriseJobExigencesState extends State<EnterpriseJobExigences> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             child: TextFormField(
+                              initialValue: enterprise.jobs[jobId].uniform,
+                              onSaved: (uniform) => _uniform = uniform,
                               enabled: _editable,
                               keyboardType: TextInputType.multiline,
                               minLines: 4,
@@ -86,6 +103,9 @@ class _EnterpriseJobExigencesState extends State<EnterpriseJobExigences> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             child: TextFormField(
+                              initialValue: enterprise.jobs[jobId].expectations,
+                              onSaved: (expectations) =>
+                                  _expectations = expectations,
                               enabled: _editable,
                               keyboardType: TextInputType.multiline,
                               minLines: 4,
@@ -98,6 +118,9 @@ class _EnterpriseJobExigencesState extends State<EnterpriseJobExigences> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             child: TextFormField(
+                              initialValue: enterprise.jobs[jobId].supervision,
+                              onSaved: (supervision) =>
+                                  _supervision = supervision,
                               enabled: _editable,
                               keyboardType: TextInputType.multiline,
                               minLines: 4,
@@ -109,6 +132,8 @@ class _EnterpriseJobExigencesState extends State<EnterpriseJobExigences> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             child: TextFormField(
+                              initialValue: enterprise.jobs[jobId].comments,
+                              onSaved: (comments) => _comments = comments,
                               enabled: _editable,
                               keyboardType: TextInputType.multiline,
                               minLines: 4,
