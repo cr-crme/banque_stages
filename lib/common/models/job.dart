@@ -9,7 +9,7 @@ class Job extends ItemSerializable {
       this.principalTask = "",
       this.dangerousSituations = "",
       this.protectionEquipements = "",
-      this.accidents = "",
+      this.accidentsHistory = "",
       this.stressSituations = "",
       this.minimumAge = 0,
       this.uniform = "",
@@ -29,7 +29,7 @@ class Job extends ItemSerializable {
       String? principalTask,
       String? dangerousSituations,
       String? protectionEquipements,
-      String? accidents,
+      String? accidentsHistory,
       String? stressSituations,
       int? minimumAge,
       String? uniform,
@@ -46,7 +46,7 @@ class Job extends ItemSerializable {
         dangerousSituations: dangerousSituations ?? this.dangerousSituations,
         protectionEquipements:
             protectionEquipements ?? this.protectionEquipements,
-        accidents: accidents ?? this.accidents,
+        accidentsHistory: accidentsHistory ?? this.accidentsHistory,
         stressSituations: stressSituations ?? this.stressSituations,
         minimumAge: minimumAge ?? this.minimumAge,
         uniform: uniform ?? this.uniform,
@@ -66,7 +66,7 @@ class Job extends ItemSerializable {
       "principalTask": principalTask,
       "dangerousSituations": dangerousSituations,
       "protectionEquipements": protectionEquipements,
-      "accidents": accidents,
+      "accidentsHistory": accidentsHistory,
       "stressSituations": stressSituations,
       "minimumAge": minimumAge,
       "uniform": uniform,
@@ -84,7 +84,7 @@ class Job extends ItemSerializable {
         principalTask = map['principalTask'],
         dangerousSituations = map['dangerousSituations'],
         protectionEquipements = map['protectionEquipements'],
-        accidents = map['accidents'],
+        accidentsHistory = map['accidentsHistory'],
         stressSituations = map['stressSituations'],
         minimumAge = map['minimumAge'],
         uniform = map['uniform'],
@@ -108,7 +108,7 @@ class Job extends ItemSerializable {
 
   final String dangerousSituations;
   final String protectionEquipements;
-  final String accidents;
+  final String accidentsHistory;
   final String stressSituations;
 
   final int minimumAge;
