@@ -30,9 +30,15 @@ class _EnterprisesListState extends State<EnterprisesList> {
         title: const Text("Entreprises"),
         actions: [
           IconButton(
-              onPressed: () {},
-              tooltip: "Rechercher un stage",
-              icon: const Icon(Icons.search))
+            onPressed: () {},
+            tooltip: "Rechercher un stage",
+            icon: const Icon(Icons.search),
+          ),
+          IconButton(
+            onPressed: () {},
+            tooltip: "Ajouter une entreprise",
+            icon: const Icon(Icons.add),
+          ),
         ],
       ),
       body: SingleChildScrollView(
