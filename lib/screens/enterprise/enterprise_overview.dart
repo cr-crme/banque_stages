@@ -1,10 +1,13 @@
-import 'package:crcrme_banque_stages/screens/enterprise/enterprise_contact.dart';
-import 'package:crcrme_banque_stages/screens/enterprise/enterprise_general_informations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
+import 'enterprise_contact.dart';
+import 'enterprise_general_informations.dart';
+import 'enterprise_job_exigences.dart';
+import 'enterprise_job_sst.dart';
+import 'enterprise_job_task.dart';
 
 class EnterpriseOverview extends StatefulWidget {
   const EnterpriseOverview(
@@ -83,7 +86,7 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                                           .indexWhere((j) => j == job)],
                                       headerBuilder: (context, isExpanded) =>
                                           ListTile(
-                                              title: Text(job.activitySector
+                                              title: Text(job.specialization
                                                   .toString())),
                                       body: Padding(
                                         padding: const EdgeInsets.symmetric(
@@ -95,21 +98,30 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                                                   "Tâches et photos"),
                                               trailing: const Icon(
                                                   Icons.chevron_right),
-                                              onTap: () {},
+                                              onTap: () => Navigator.pushNamed(
+                                                  context,
+                                                  EnterpriseJobTask.route,
+                                                  arguments: job.id),
                                             ),
                                             ListTile(
                                               title: const Text(
                                                   "Santé et sécurité du travail (SST)"),
                                               trailing: const Icon(
                                                   Icons.chevron_right),
-                                              onTap: () {},
+                                              onTap: () => Navigator.pushNamed(
+                                                  context,
+                                                  EnterpriseJobSST.route,
+                                                  arguments: job.id),
                                             ),
                                             ListTile(
                                               title: const Text(
                                                   "Exigences et encadrement"),
                                               trailing: const Icon(
                                                   Icons.chevron_right),
-                                              onTap: () {},
+                                              onTap: () => Navigator.pushNamed(
+                                                  context,
+                                                  EnterpriseJobExigences.route,
+                                                  arguments: job.id),
                                             ),
                                           ],
                                         ),

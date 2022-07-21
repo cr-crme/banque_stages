@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'enterprise_contact.dart';
 import 'enterprise_general_informations.dart';
+import 'enterprise_job_exigences.dart';
+import 'enterprise_job_sst.dart';
+import 'enterprise_job_task.dart';
 import 'enterprise_overview.dart';
 
 class EnterpriseNavigator extends StatefulWidget {
@@ -32,16 +35,35 @@ class _EnterpriseNavigatorState extends State<EnterpriseNavigator> {
       onGenerateRoute: (settings) {
         late Widget page;
 
-        if (EnterpriseOverview.route == settings.name) {
-          page = EnterpriseOverview(enterpriseId: enterpriseId, exit: _exit);
-        } else if (EnterpriseGeneralInformation.route == settings.name) {
-          page = EnterpriseGeneralInformation(
-            enterpriseId: enterpriseId,
-          );
-        } else if (EnterpriseContact.route == settings.name) {
-          page = EnterpriseContact(
-            enterpriseId: enterpriseId,
-          );
+        switch (settings.name) {
+          case EnterpriseOverview.route:
+            page = EnterpriseOverview(enterpriseId: enterpriseId, exit: _exit);
+            break;
+          case EnterpriseGeneralInformation.route:
+            page = EnterpriseGeneralInformation(
+              enterpriseId: enterpriseId,
+            );
+            break;
+          case EnterpriseContact.route:
+            page = EnterpriseContact(
+              enterpriseId: enterpriseId,
+            );
+            break;
+          case EnterpriseJobTask.route:
+            page = EnterpriseJobTask(
+              enterpriseId: enterpriseId,
+            );
+            break;
+          case EnterpriseJobSST.route:
+            page = EnterpriseJobSST(
+              enterpriseId: enterpriseId,
+            );
+            break;
+          case EnterpriseJobExigences.route:
+            page = EnterpriseJobExigences(
+              enterpriseId: enterpriseId,
+            );
+            break;
         }
 
         return MaterialPageRoute(
