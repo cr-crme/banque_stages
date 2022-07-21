@@ -32,9 +32,6 @@ class _AddEnterpriseState extends State<AddEnterprise> {
 
   Set<ActivityType> _activityTypes = {};
 
-  static const _choicesRecrutedBy = ["?"];
-  String _recrutedBy = _choicesRecrutedBy[0];
-
   bool _shareToOthers = true;
 
   // Métiers
@@ -94,7 +91,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
       name: _name!,
       neq: _neq!,
       activityTypes: _activityTypes,
-      recrutedBy: _recrutedBy,
+      recrutedBy: "?",
       shareToOthers: _shareToOthers,
       jobs: _jobs,
       contactName: _contactName!,
@@ -167,32 +164,14 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                           height: 10,
                         ),
                         ListTile(
-                            title: const Text("Types d'activités"),
-                            subtitle: Text(
-                              _activityTypes.join(", "),
-                              maxLines: 1,
-                            ),
-                            trailing: TextButton(
-                              child: const Text("Modifier"),
-                              onPressed: () => _showActivityTypeSelector(),
-                            )),
-                        ListTile(
-                          title: const Text("Enterprise recrutée par"),
-                          trailing: DropdownButton<String>(
-                            value: _recrutedBy,
-                            icon: const Icon(Icons.arrow_downward),
-                            elevation: 16,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                _recrutedBy = newValue!;
-                              });
-                            },
-                            items: _choicesRecrutedBy.map((String value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                          title: const Text("Types d'activités"),
+                          subtitle: Text(
+                            _activityTypes.join(", "),
+                            maxLines: 1,
+                          ),
+                          trailing: TextButton(
+                            child: const Text("Modifier"),
+                            onPressed: () => _showActivityTypeSelector(),
                           ),
                         ),
                         SwitchListTile(
@@ -369,7 +348,7 @@ class _AddEnterpriseState extends State<AddEnterprise> {
               children: [
                 Visibility(
                   visible: _currentStep == 1,
-                  child: ElevatedButton(
+                  child: TextButton(
                     onPressed: () => _addMetier(),
                     child: const Text("Ajouter un métier"),
                   ),
