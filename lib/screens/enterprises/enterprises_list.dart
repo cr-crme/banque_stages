@@ -35,45 +35,48 @@ class _EnterprisesListState extends State<EnterprisesList> {
             icon: const Icon(Icons.search),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => Navigator.pushNamed(context, AddEnterprise.route),
             tooltip: "Ajouter une entreprise",
             icon: const Icon(Icons.add),
           ),
         ],
       ),
       body: SingleChildScrollView(
-          child: Column(
-        children: [
-          SwitchListTile(
-              title: const Text("Cacher les stages indisponibles"),
-              value: _hideNotAvailable,
-              onChanged: (value) => setState(() => _hideNotAvailable = value)),
-          Consumer<EnterprisesProvider>(
+        child: Column(
+          children: [
+            SwitchListTile(
+                title: const Text("Cacher les stages indisponibles"),
+                value: _hideNotAvailable,
+                onChanged: (value) =>
+                    setState(() => _hideNotAvailable = value)),
+            Consumer<EnterprisesProvider>(
               builder: (context, enterprisesProvider, child) => Column(
-                  children: enterprisesProvider
-                      .map(
-                        (enterprise) => ListTile(
-                          title: Text(enterprise.name),
-                          subtitle: Column(
-                              children: enterprise.jobs
-                                  .map((job) => Row(
-                                        children: [
-                                          Text(
-                                            job.specialization.toString(),
-                                          )
-                                        ],
-                                      ))
-                                  .toList()),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () => _openEnterpriseDetails(enterprise),
+                children: enterprisesProvider
+                    .map(
+                      (enterprise) => ListTile(
+                        title: Text(enterprise.name),
+                        subtitle: Column(
+                          children: enterprise.jobs
+                              .map(
+                                (job) => Row(
+                                  children: [
+                                    Text(
+                                      job.specialization.toString(),
+                                    )
+                                  ],
+                                ),
+                              )
+                              .toList(),
                         ),
-                      )
-                      .toList()))
-        ],
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, AddEnterprise.route),
-        child: const Icon(Icons.add),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _openEnterpriseDetails(enterprise),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

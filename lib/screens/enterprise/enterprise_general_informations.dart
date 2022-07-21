@@ -86,7 +86,17 @@ class _EnterpriseGeneralInformationState
         onWillPop: _onWillPop,
         child: Selector<EnterprisesProvider, Enterprise>(
             builder: (context, enterprise, child) => Scaffold(
-                  appBar: AppBar(title: Text(enterprise.name)),
+                  appBar: AppBar(
+                    title: Text(enterprise.name),
+                    actions: [
+                      IconButton(
+                        onPressed: _toggleEdit,
+                        icon: _editable
+                            ? const Icon(Icons.save_rounded)
+                            : const Icon(Icons.edit),
+                      ),
+                    ],
+                  ),
                   body: Form(
                     key: _formKey,
                     child: SingleChildScrollView(
@@ -198,12 +208,6 @@ class _EnterpriseGeneralInformationState
                         ]),
                       ),
                     ),
-                  ),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: _toggleEdit,
-                    child: _editable
-                        ? const Icon(Icons.save_rounded)
-                        : const Icon(Icons.edit),
                   ),
                 ),
             selector: (context, enterprises) =>

@@ -70,110 +70,116 @@ class _EnterpriseJobExigencesState extends State<EnterpriseJobExigences> {
         onWillPop: _onWillPop,
         child: Selector<EnterprisesProvider, Enterprise>(
             builder: (context, enterprise, child) => Form(
-                    child: Scaffold(
-                  appBar: AppBar(title: Text(enterprise.name)),
-                  body: Form(
-                    key: _formKey,
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                enterprise.jobs[jobId].specialization
-                                    .toString(),
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
+                  child: Scaffold(
+                    appBar: AppBar(
+                      title: Text(enterprise.name),
+                      actions: [
+                        IconButton(
+                          onPressed: _toggleEdit,
+                          icon: _editable
+                              ? const Icon(Icons.save_rounded)
+                              : const Icon(Icons.edit),
+                        ),
+                      ],
+                    ),
+                    body: Form(
+                      key: _formKey,
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  enterprise.jobs[jobId].specialization
+                                      .toString(),
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Exigences",
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Exigences",
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge),
+                              ),
+                              const ListTile(title: Text("Âge minimum")),
+                              const ListTile(
+                                  title: Text("Tenue vestimentaire requise")),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: TextFormField(
+                                  initialValue: enterprise.jobs[jobId].uniform,
+                                  onSaved: (uniform) => _uniform = uniform,
+                                  enabled: _editable,
+                                  keyboardType: TextInputType.multiline,
+                                  minLines: 4,
+                                  maxLines: null,
+                                ),
+                              ),
+                              const ListTile(
+                                  title: Text(
+                                      "Attentes envers les stagiaires (autonomie, productivité...)")),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: TextFormField(
+                                  initialValue:
+                                      enterprise.jobs[jobId].expectations,
+                                  onSaved: (expectations) =>
+                                      _expectations = expectations,
+                                  enabled: _editable,
+                                  keyboardType: TextInputType.multiline,
+                                  minLines: 4,
+                                  maxLines: null,
+                                ),
+                              ),
+                              const Divider(),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Type d’encadrement des stagiaires",
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: TextFormField(
+                                  initialValue:
+                                      enterprise.jobs[jobId].supervision,
+                                  onSaved: (supervision) =>
+                                      _supervision = supervision,
+                                  enabled: _editable,
+                                  keyboardType: TextInputType.multiline,
+                                  minLines: 4,
+                                  maxLines: null,
+                                ),
+                              ),
+                              const Divider(),
+                              Text("Autres commentaires",
                                   style:
                                       Theme.of(context).textTheme.titleLarge),
-                            ),
-                            const ListTile(title: Text("Âge minimum")),
-                            const ListTile(
-                                title: Text("Tenue vestimentaire requise")),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: TextFormField(
-                                initialValue: enterprise.jobs[jobId].uniform,
-                                onSaved: (uniform) => _uniform = uniform,
-                                enabled: _editable,
-                                keyboardType: TextInputType.multiline,
-                                minLines: 4,
-                                maxLines: null,
-                              ),
-                            ),
-                            const ListTile(
-                                title: Text(
-                                    "Attentes envers les stagiaires (autonomie, productivité...)")),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: TextFormField(
-                                initialValue:
-                                    enterprise.jobs[jobId].expectations,
-                                onSaved: (expectations) =>
-                                    _expectations = expectations,
-                                enabled: _editable,
-                                keyboardType: TextInputType.multiline,
-                                minLines: 4,
-                                maxLines: null,
-                              ),
-                            ),
-                            const Divider(),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Type d’encadrement des stagiaires",
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: TextFormField(
-                                initialValue:
-                                    enterprise.jobs[jobId].supervision,
-                                onSaved: (supervision) =>
-                                    _supervision = supervision,
-                                enabled: _editable,
-                                keyboardType: TextInputType.multiline,
-                                minLines: 4,
-                                maxLines: null,
-                              ),
-                            ),
-                            const Divider(),
-                            Text("Autres commentaires",
-                                style: Theme.of(context).textTheme.titleLarge),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: TextFormField(
-                                initialValue: enterprise.jobs[jobId].comments,
-                                onSaved: (comments) => _comments = comments,
-                                enabled: _editable,
-                                keyboardType: TextInputType.multiline,
-                                minLines: 4,
-                                maxLines: null,
-                              ),
-                            )
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: TextFormField(
+                                  initialValue: enterprise.jobs[jobId].comments,
+                                  onSaved: (comments) => _comments = comments,
+                                  enabled: _editable,
+                                  keyboardType: TextInputType.multiline,
+                                  minLines: 4,
+                                  maxLines: null,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: _toggleEdit,
-                    child: _editable
-                        ? const Icon(Icons.save_rounded)
-                        : const Icon(Icons.edit),
-                  ),
-                )),
+                ),
             selector: (context, enterprises) =>
                 enterprises[widget.enterpriseId]));
   }

@@ -61,56 +61,61 @@ class _EnterpriseJobTaskState extends State<EnterpriseJobTask> {
         onWillPop: _onWillPop,
         child: Selector<EnterprisesProvider, Enterprise>(
             builder: (context, enterprise, child) => Form(
-                    child: Scaffold(
-                  appBar: AppBar(title: Text(enterprise.name)),
-                  body: Form(
-                    key: _formKey,
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                enterprise.jobs[jobId].specialization
-                                    .toString(),
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Tâches principales",
+                  child: Scaffold(
+                    appBar: AppBar(
+                      title: Text(enterprise.name),
+                      actions: [
+                        IconButton(
+                          onPressed: _toggleEdit,
+                          icon: _editable
+                              ? const Icon(Icons.save_rounded)
+                              : const Icon(Icons.edit),
+                        ),
+                      ],
+                    ),
+                    body: Form(
+                      key: _formKey,
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  enterprise.jobs[jobId].specialization
+                                      .toString(),
                                   style:
-                                      Theme.of(context).textTheme.titleLarge),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: TextFormField(
-                                initialValue:
-                                    enterprise.jobs[jobId].principalTask,
-                                enabled: _editable,
-                                onSaved: (principalTask) =>
-                                    _principalTask = principalTask,
-                                keyboardType: TextInputType.multiline,
-                                minLines: 4,
-                                maxLines: null,
+                                      Theme.of(context).textTheme.headlineSmall,
+                                ),
                               ),
-                            )
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Tâches principales",
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: TextFormField(
+                                  initialValue:
+                                      enterprise.jobs[jobId].principalTask,
+                                  enabled: _editable,
+                                  onSaved: (principalTask) =>
+                                      _principalTask = principalTask,
+                                  keyboardType: TextInputType.multiline,
+                                  minLines: 4,
+                                  maxLines: null,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: _toggleEdit,
-                    child: _editable
-                        ? const Icon(Icons.save_rounded)
-                        : const Icon(Icons.edit),
-                  ),
-                )),
+                ),
             selector: (context, enterprises) =>
                 enterprises[widget.enterpriseId]));
   }
