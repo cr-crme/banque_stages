@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'enterprise_contact.dart';
-import 'enterprise_general_informations.dart';
+import 'enterprise_informations.dart';
 import 'enterprise_job_exigences.dart';
 import 'enterprise_job_sst.dart';
 import 'enterprise_job_task.dart';
@@ -39,13 +38,8 @@ class _EnterpriseNavigatorState extends State<EnterpriseNavigator> {
           case EnterpriseOverview.route:
             page = EnterpriseOverview(enterpriseId: enterpriseId, exit: _exit);
             break;
-          case EnterpriseGeneralInformation.route:
-            page = EnterpriseGeneralInformation(
-              enterpriseId: enterpriseId,
-            );
-            break;
-          case EnterpriseContact.route:
-            page = EnterpriseContact(
+          case EnterpriseInformations.route:
+            page = EnterpriseInformations(
               enterpriseId: enterpriseId,
             );
             break;

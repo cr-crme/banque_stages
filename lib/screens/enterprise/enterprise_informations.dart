@@ -7,8 +7,8 @@ import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/activity_types_selector_dialog.dart';
 import '/common/widgets/confirm_pop_dialog.dart';
 
-class EnterpriseGeneralInformation extends StatefulWidget {
-  const EnterpriseGeneralInformation({Key? key, required this.enterpriseId})
+class EnterpriseInformations extends StatefulWidget {
+  const EnterpriseInformations({Key? key, required this.enterpriseId})
       : super(key: key);
 
   static const String route = "generalInfo";
@@ -16,25 +16,24 @@ class EnterpriseGeneralInformation extends StatefulWidget {
   final String enterpriseId;
 
   @override
-  State<EnterpriseGeneralInformation> createState() =>
-      _EnterpriseGeneralInformationState();
+  State<EnterpriseInformations> createState() => _EnterpriseInformationsState();
 }
 
-class _EnterpriseGeneralInformationState
-    extends State<EnterpriseGeneralInformation> {
+class _EnterpriseInformationsState extends State<EnterpriseInformations> {
   final _formKey = GlobalKey<FormState>();
 
   bool _editable = false;
 
   String? _name;
   String? _neq;
-
   Set<ActivityType> _activityTypes = {};
-
-  static const _choicesRecrutedBy = ["?"];
-  String _recrutedBy = _choicesRecrutedBy[0];
-
   bool _shareToOthers = true;
+
+  String? _contactName;
+  String? _contactFunction;
+  String? _contactPhone;
+  String? _contactEmail;
+  String? _address;
 
   Future<void> _showActivityTypeSelector() async {
     Set<ActivityType> activityTypes = await showDialog(
@@ -70,8 +69,12 @@ class _EnterpriseGeneralInformationState
         name: _name!,
         neq: _neq!,
         activityTypes: _activityTypes,
-        recrutedBy: _recrutedBy,
         shareToOthers: _shareToOthers,
+        contactName: _contactName,
+        contactFunction: _contactFunction,
+        contactPhone: _contactPhone,
+        contactEmail: _contactEmail,
+        address: _address,
       );
 
       provider.replace(enterprise);
@@ -103,11 +106,14 @@ class _EnterpriseGeneralInformationState
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Informations générales",
-                              style: Theme.of(context).textTheme.headlineSmall,
+                          SizedBox(
+                            width: Size.infinite.width,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Informations générales",
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
                             ),
                           ),
                           ListTile(
@@ -177,25 +183,6 @@ class _EnterpriseGeneralInformationState
                                     onPressed: () =>
                                         _showActivityTypeSelector(),
                                   )),
-                              ListTile(
-                                title: const Text("Enterprise recrutée par"),
-                                trailing: DropdownButton<String>(
-                                  value: _recrutedBy,
-                                  icon: const Icon(Icons.arrow_downward),
-                                  elevation: 16,
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      _recrutedBy = newValue!;
-                                    });
-                                  },
-                                  items: _choicesRecrutedBy.map((String value) {
-                                    return DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
                               SwitchListTile(
                                 title: const Text("Partager l'enterprise"),
                                 value: _shareToOthers,
@@ -204,7 +191,94 @@ class _EnterpriseGeneralInformationState
                                 }),
                               ),
                             ])
-                          ])
+                          ]),
+                          const Divider(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Personne contact en enterprise",
+                                style: Theme.of(context).textTheme.titleLarge),
+                          ),
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.contactName,
+                              enabled: _editable,
+                              decoration:
+                                  const InputDecoration(labelText: "Nom *"),
+                              validator: (text) {
+                                if (text!.isEmpty) {
+                                  return "Le champ ne peut pas être vide";
+                                }
+                                return null;
+                              },
+                              onSaved: (name) => _contactName = name!,
+                            ),
+                          ),
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.contactFunction,
+                              enabled: _editable,
+                              decoration:
+                                  const InputDecoration(labelText: "Fonction"),
+                              onSaved: (function) =>
+                                  _contactFunction = function!,
+                            ),
+                          ),
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.contactPhone,
+                              enabled: _editable,
+                              decoration: InputDecoration(
+                                  label: Row(children: const [
+                                Icon(Icons.phone),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0),
+                                  child: Text("Téléphone *"),
+                                )
+                              ])),
+                              validator: (phone) {
+                                if (phone!.isEmpty) {
+                                  return "Le champ ne peut pas être vide";
+                                }
+                                if (!RegExp(
+                                        r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
+                                    .hasMatch(phone)) {
+                                  return "Le numéro entré doit être valide";
+                                }
+                                return null;
+                              },
+                              onSaved: (phone) => _contactPhone = phone!,
+                            ),
+                          ),
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.contactEmail,
+                              enabled: _editable,
+                              decoration: InputDecoration(
+                                  label: Row(children: const [
+                                Icon(Icons.mail),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0),
+                                  child: Text("Courriel"),
+                                )
+                              ])),
+                              onSaved: (email) => _contactEmail = email!,
+                            ),
+                          ),
+                          const Divider(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Addresse de l'établissement",
+                                style: Theme.of(context).textTheme.titleLarge),
+                          ),
+                          ListTile(
+                            title: TextFormField(
+                              initialValue: enterprise.address,
+                              enabled: _editable,
+                              decoration:
+                                  const InputDecoration(labelText: "Adresse"),
+                              onSaved: (address) => _address = address!,
+                            ),
+                          )
                         ]),
                       ),
                     ),

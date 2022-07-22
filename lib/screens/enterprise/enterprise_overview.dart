@@ -1,10 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
-import 'enterprise_contact.dart';
-import 'enterprise_general_informations.dart';
+import 'enterprise_informations.dart';
 import 'enterprise_job_exigences.dart';
 import 'enterprise_job_sst.dart';
 import 'enterprise_job_task.dart';
@@ -24,11 +25,6 @@ class EnterpriseOverview extends StatefulWidget {
 }
 
 class _EnterpriseOverviewState extends State<EnterpriseOverview> {
-  bool _panelOpen = false;
-  late final List<bool> _jobPanelOpen = List<bool>.filled(
-      context.read<EnterprisesProvider>()[widget.enterpriseId].jobs.length,
-      false);
-
   void modifyEnterprise(Enterprise newEnterprise) {
     context.read<EnterprisesProvider>()[widget.enterpriseId] = newEnterprise;
   }
@@ -38,99 +34,146 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
     return Selector<EnterprisesProvider, Enterprise>(
         builder: (context, enterprise, child) => Scaffold(
             appBar: AppBar(
-              leading: BackButton(
-                onPressed: widget.exit,
-              ),
+              leading: BackButton(onPressed: widget.exit),
               title: Text(enterprise.name),
+              actions: [
+                IconButton(
+                  onPressed: () => {log(enterprise.serialize().toString())}
+                  //  Navigator.pushNamed(
+                  //     context, EnterpriseInformations.route)
+                  ,
+                  icon: const Icon(Icons.edit),
+                ),
+              ],
+              bottom: PreferredSize(
+                preferredSize:
+                    Size.fromHeight(enterprise.jobs.length * 32 + 35),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 80, vertical: 8.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: Size.infinite.width,
+                        child: Text(
+                          "Places de stage disponibles",
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary),
+                        ),
+                      ),
+                      SizedBox(
+                        height: enterprise.jobs.length * 32,
+                        child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: enterprise.jobs.length,
+                          itemBuilder: (context, i) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.circle,
+                                  color: enterprise.jobs[i].totalSlot >
+                                          enterprise.jobs[i].occupiedSlot
+                                      ? Colors.green
+                                      : Colors.red,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                      enterprise.jobs[i].specialization
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall
+                                          ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary)),
+                                ),
+                                Text(
+                                    "${enterprise.jobs[i].totalSlot - enterprise.jobs[i].occupiedSlot} / ${enterprise.jobs[i].totalSlot}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
             body: SingleChildScrollView(
               child: Column(
                 children: [
                   ListTile(
-                    title: const Text("Informations générales"),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => Navigator.pushNamed(
-                        context, EnterpriseGeneralInformation.route),
+                    title: const Text("Types d'activités"),
+                    trailing: Text(
+                      enterprise.activityTypes.join(", "),
+                      maxLines: 2,
+                    ),
                   ),
                   ListTile(
-                    title: const Text("Contact"),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () =>
-                        Navigator.pushNamed(context, EnterpriseContact.route),
+                    title: const Text("Adresse"),
+                    trailing: Text(enterprise.address),
                   ),
-                  ExpansionPanelList(
-                    expansionCallback: (index, expanded) {
-                      setState(() {
-                        _panelOpen = !expanded;
-                        _jobPanelOpen.fillRange(0, _jobPanelOpen.length, false);
-                      });
-                    },
-                    children: [
-                      ExpansionPanel(
-                          canTapOnHeader: true,
-                          isExpanded: _panelOpen,
-                          headerBuilder: (context, isExpanded) =>
-                              const ListTile(
-                                  title: Text("Métiers proposés en stage")),
-                          body: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: ExpansionPanelList(
-                              expansionCallback: (panelIndex, isExpanded) =>
-                                  setState(() =>
-                                      _jobPanelOpen[panelIndex] = !isExpanded),
-                              children: enterprise.jobs
-                                  .map((job) => ExpansionPanel(
-                                      canTapOnHeader: true,
-                                      isExpanded: _jobPanelOpen[enterprise.jobs
-                                          .indexWhere((j) => j == job)],
-                                      headerBuilder: (context, isExpanded) =>
-                                          ListTile(
-                                              title: Text(job.specialization
-                                                  .toString())),
-                                      body: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20.0),
-                                        child: Column(
-                                          children: [
-                                            ListTile(
-                                              title: const Text(
-                                                  "Tâches et photos"),
-                                              trailing: const Icon(
-                                                  Icons.chevron_right),
-                                              onTap: () => Navigator.pushNamed(
-                                                  context,
-                                                  EnterpriseJobTask.route,
-                                                  arguments: job.id),
-                                            ),
-                                            ListTile(
-                                              title: const Text(
-                                                  "Santé et sécurité du travail (SST)"),
-                                              trailing: const Icon(
-                                                  Icons.chevron_right),
-                                              onTap: () => Navigator.pushNamed(
-                                                  context,
-                                                  EnterpriseJobSST.route,
-                                                  arguments: job.id),
-                                            ),
-                                            ListTile(
-                                              title: const Text(
-                                                  "Exigences et encadrement"),
-                                              trailing: const Icon(
-                                                  Icons.chevron_right),
-                                              onTap: () => Navigator.pushNamed(
-                                                  context,
-                                                  EnterpriseJobExigences.route,
-                                                  arguments: job.id),
-                                            ),
-                                          ],
-                                        ),
-                                      )))
-                                  .toList(),
-                            ),
-                          ))
-                    ],
+                  Card(
+                    child: ListTile(
+                      title: const Text("Informations générales"),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        EnterpriseInformations.route,
+                      ),
+                    ),
                   ),
+                  ListTile(
+                    title: Text(
+                      "Métiers proposés en stage",
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    trailing: IconButton(
+                        icon: const Icon(Icons.add), onPressed: () {}),
+                  ),
+                  Visibility(
+                    visible: enterprise.jobs.isNotEmpty,
+                    replacement: Text(
+                      "Cette entreprise n'a aucun stage disponible",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    child: ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: enterprise.jobs.length,
+                      itemBuilder: (context, index) => Card(
+                        child: ListTile(
+                          title: Text(
+                              enterprise.jobs[index].specialization.toString()),
+                          trailing: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () => enterprise.jobs.remove(index)),
+                          onTap: () => Navigator.pushNamed(
+                              context, EnterpriseJobTask.route,
+                              arguments: enterprise.jobs[index].id),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Divider(),
                   ListTile(
                     title: const Text("Historique des stages"),
                     trailing: const Icon(Icons.chevron_right),
