@@ -26,7 +26,8 @@ class _EnterpriseInformationsState extends State<EnterpriseInformations> {
 
   String? _name;
   String? _neq;
-  Set<ActivityType> _activityTypes = {};
+  late Set<ActivityType> _activityTypes = Set.of(
+      context.read<EnterprisesProvider>()[widget.enterpriseId].activityTypes);
   bool _shareToOthers = true;
 
   String? _contactName;
@@ -38,8 +39,8 @@ class _EnterpriseInformationsState extends State<EnterpriseInformations> {
   Future<void> _showActivityTypeSelector() async {
     Set<ActivityType> activityTypes = await showDialog(
         context: context,
-        routeSettings: RouteSettings(arguments: _activityTypes),
-        builder: (context) => const ActivityTypesSelectorDialog());
+        builder: (context) =>
+            ActivityTypesSelectorDialog(initialValue: _activityTypes));
 
     setState(() => _activityTypes = activityTypes);
   }

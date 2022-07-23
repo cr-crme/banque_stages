@@ -49,8 +49,8 @@ class _AddEnterpriseState extends State<AddEnterprise> {
   Future<void> _showActivityTypeSelector() async {
     Set<ActivityType> activityTypes = await showDialog(
         context: context,
-        routeSettings: RouteSettings(arguments: _activityTypes),
-        builder: (context) => const ActivityTypesSelectorDialog());
+        builder: (context) =>
+            ActivityTypesSelectorDialog(initialValue: _activityTypes));
 
     setState(() => _activityTypes = activityTypes);
   }
