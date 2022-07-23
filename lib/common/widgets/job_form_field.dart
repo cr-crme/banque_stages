@@ -29,10 +29,10 @@ class JobFormField extends FormField<Job> {
           ),
         ),
         DropdownButton<String>(
-          value: state.value?.activitySector.name,
+          value: state.value!.activitySector.name,
           icon: const Icon(Icons.arrow_downward),
           onChanged: (String? name) => state.didChange(
-            state.value?.copyWith(
+            state.value!.copyWith(
                 activitySector: JobActivitySector.values
                     .firstWhere((activity) => activity.name == name!)),
           ),
@@ -50,10 +50,10 @@ class JobFormField extends FormField<Job> {
           ),
         ),
         DropdownButton<String>(
-          value: state.value?.specialization.name,
+          value: state.value!.specialization.name,
           icon: const Icon(Icons.arrow_downward),
           onChanged: (String? name) => state.didChange(
-            state.value?.copyWith(
+            state.value!.copyWith(
                 specialization: JobSpecialization.values.firstWhere(
                     (specialization) => specialization.name == name!)),
           ),
@@ -79,7 +79,7 @@ class JobFormField extends FormField<Job> {
                 decoration:
                     const InputDecoration(border: UnderlineInputBorder()),
                 onChanged: (double value) => state
-                    .didChange(state.value?.copyWith(totalSlot: value.toInt())),
+                    .didChange(state.value!.copyWith(totalSlot: value.toInt())),
               ),
             ),
           ],

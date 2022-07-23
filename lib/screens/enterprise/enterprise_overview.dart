@@ -80,7 +80,7 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium
-                                    ?.copyWith(
+                                    !.copyWith(
                                         color: Theme.of(context)
                                             .colorScheme
                                             .onPrimary),
@@ -113,7 +113,7 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleSmall
-                                                ?.copyWith(
+                                                !.copyWith(
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .onPrimary)),
@@ -123,7 +123,7 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleSmall
-                                              ?.copyWith(
+                                              !.copyWith(
                                                   color: Theme.of(context)
                                                       .colorScheme
                                                       .onPrimary)),
@@ -153,7 +153,7 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                   ),
                   Card(
                     child: ListTile(
-                      title: const Text("Informations générales"),
+                      title: const Text("Plus d'informations"),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => Navigator.pushNamed(
                         context,
@@ -197,10 +197,12 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                     ),
                   ),
                   const Divider(),
-                  ListTile(
-                    title: const Text("Historique des stages"),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {},
+                  Card(
+                    child: ListTile(
+                      title: const Text("Historique des stages"),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {},
+                    ),
                   ),
                 ],
               ),
