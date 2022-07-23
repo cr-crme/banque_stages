@@ -8,6 +8,7 @@ import '/common/models/job_list.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/activity_types_selector_dialog.dart';
 import '/common/widgets/confirm_pop_dialog.dart';
+import '/common/widgets/job_form_field.dart';
 
 class AddEnterprise extends StatefulWidget {
   const AddEnterprise({Key? key}) : super(key: key);
@@ -192,69 +193,30 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                   itemCount: _jobs.length,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (BuildContext context, int index) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          visualDensity: const VisualDensity(
-                              vertical: VisualDensity.minimumDensity),
-                          title: Text("Métier ${index + 1}",
-                              textAlign: TextAlign.left),
-                          trailing: IconButton(
-                            onPressed: () => _removeMetier(index),
-                            icon: const Icon(Icons.delete_forever),
-                            color: Colors.redAccent,
-                          ),
+                    children: [
+                      ListTile(
+                        visualDensity: const VisualDensity(
+                            vertical: VisualDensity.minimumDensity),
+                        title: Text(
+                          "Métier ${index + 1}",
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        ListTile(
-                          title: const Text("Secteur d'activités"),
-                          trailing: DropdownButton<String>(
-                            value: _jobs[index].activitySector.name,
-                            icon: const Icon(Icons.arrow_downward),
-                            elevation: 16,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                _jobs[index] = _jobs[index].copyWith(
-                                    activitySector: JobActivitySector.values
-                                        .firstWhere((sector) =>
-                                            sector.name == newValue!));
-                              });
-                            },
-                            items: JobActivitySector.values
-                                .map((JobActivitySector sector) {
-                              return DropdownMenuItem(
-                                value: sector.name,
-                                child: Text(sector.toString()),
-                              );
-                            }).toList(),
-                          ),
+                        trailing: IconButton(
+                          onPressed: () => _removeMetier(index),
+                          icon: const Icon(Icons.delete_forever),
+                          color: Colors.redAccent,
                         ),
-                        ListTile(
-                          title: const Text("Métier semi-spécialisé"),
-                          trailing: DropdownButton<String>(
-                            value: _jobs[index].specialization.name,
-                            icon: const Icon(Icons.arrow_downward),
-                            elevation: 16,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                _jobs[index] = _jobs[index].copyWith(
-                                    specialization: JobSpecialization.values
-                                        .firstWhere((specialization) =>
-                                            specialization.name == newValue!));
-                              });
-                            },
-                            items: JobSpecialization.values
-                                .map((JobSpecialization specialization) {
-                              return DropdownMenuItem(
-                                value: specialization.name,
-                                child: Text(specialization.toString()),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        )
-                      ]),
+                      ),
+                      JobFormField(
+                        initialValue: _jobs[index],
+                        onSaved: (Job? job) =>
+                            setState(() => _jobs[index] = job!),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Step(
