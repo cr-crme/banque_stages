@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/widgets/share_with_picker_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,7 @@ class _EnterpriseInformationsState extends State<EnterpriseInformations> {
   String? _neq;
   late Set<ActivityType> _activityTypes = Set.of(
       context.read<EnterprisesProvider>()[widget.enterpriseId].activityTypes);
-  bool _shareToOthers = true;
+  String? _shareWith;
 
   String? _contactName;
   String? _contactFunction;
@@ -70,7 +71,7 @@ class _EnterpriseInformationsState extends State<EnterpriseInformations> {
         name: _name!,
         neq: _neq!,
         activityTypes: _activityTypes,
-        shareToOthers: _shareToOthers,
+        shareWith: _shareWith,
         contactName: _contactName,
         contactFunction: _contactFunction,
         contactPhone: _contactPhone,
@@ -151,48 +152,46 @@ class _EnterpriseInformationsState extends State<EnterpriseInformations> {
                           const SizedBox(
                             height: 10,
                           ),
-                          IndexedStack(index: _editable ? 1 : 0, children: [
-                            Column(
-                              children: [
-                                ListTile(
-                                  title: const Text("Types d'activités"),
-                                  trailing: Text(
-                                    enterprise.activityTypes.join(", "),
-                                    maxLines: 1,
+                          IndexedStack(
+                            index: _editable ? 1 : 0,
+                            children: [
+                              Column(
+                                children: [
+                                  ListTile(
+                                    title: const Text("Types d'activités"),
+                                    trailing: Text(
+                                      enterprise.activityTypes.join(", "),
+                                      maxLines: 1,
+                                    ),
                                   ),
-                                ),
-                                ListTile(
-                                    title: Text(
-                                        "L'enterprise a été recrutée par ${enterprise.recrutedBy}")),
-                                ListTile(
-                                  title: enterprise.shareToOthers
-                                      ? const Text("L'enterprise est partagée")
-                                      : const Text(
-                                          "L'entreprise n'est pas partagée"),
-                                ),
-                              ],
-                            ),
-                            Column(children: [
-                              ListTile(
-                                  title: const Text("Types d'activités"),
-                                  subtitle: Text(
-                                    _activityTypes.join(", "),
-                                    maxLines: 1,
-                                  ),
-                                  trailing: TextButton(
-                                    child: const Text("Modifier"),
-                                    onPressed: () =>
-                                        _showActivityTypeSelector(),
-                                  )),
-                              SwitchListTile(
-                                title: const Text("Partager l'enterprise"),
-                                value: _shareToOthers,
-                                onChanged: (bool newValue) => setState(() {
-                                  _shareToOthers = newValue;
-                                }),
+                                  ListTile(
+                                      title: Text(
+                                          "L'enterprise a été recrutée par ${enterprise.recrutedBy}")),
+                                  ListTile(title: Text(enterprise.shareWith)),
+                                ],
                               ),
-                            ])
-                          ]),
+                              Column(
+                                children: [
+                                  ListTile(
+                                      title: const Text("Types d'activités"),
+                                      subtitle: Text(
+                                        _activityTypes.join(", "),
+                                        maxLines: 1,
+                                      ),
+                                      trailing: TextButton(
+                                        child: const Text("Modifier"),
+                                        onPressed: () =>
+                                            _showActivityTypeSelector(),
+                                      )),
+                                  ShareWithPickerFormField(
+                                    initialValue: enterprise.shareWith,
+                                    onSaved: (shareWith) =>
+                                        setState(() => _shareWith = shareWith),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                           const Divider(),
                           Padding(
                             padding: const EdgeInsets.all(8.0),

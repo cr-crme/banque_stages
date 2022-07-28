@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'enterprise_informations.dart';
-import 'enterprise_job_exigences.dart';
-import 'enterprise_job_sst.dart';
-import 'enterprise_job_task.dart';
+import 'enterprise_job.dart';
 import 'enterprise_overview.dart';
 
 class EnterpriseNavigator extends StatefulWidget {
@@ -43,18 +41,8 @@ class _EnterpriseNavigatorState extends State<EnterpriseNavigator> {
               enterpriseId: enterpriseId,
             );
             break;
-          case EnterpriseJobTask.route:
-            page = EnterpriseJobTask(
-              enterpriseId: enterpriseId,
-            );
-            break;
-          case EnterpriseJobSST.route:
-            page = EnterpriseJobSST(
-              enterpriseId: enterpriseId,
-            );
-            break;
-          case EnterpriseJobExigences.route:
-            page = EnterpriseJobExigences(
+          case EnterpriseJob.route:
+            page = EnterpriseJob(
               enterpriseId: enterpriseId,
             );
             break;

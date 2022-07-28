@@ -6,7 +6,7 @@ import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/job_creator_dialog.dart';
 import 'enterprise_informations.dart';
-import 'enterprise_job_task.dart';
+import 'enterprise_job.dart';
 
 class EnterpriseOverview extends StatefulWidget {
   const EnterpriseOverview(
@@ -79,8 +79,8 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                                 textAlign: TextAlign.start,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .titleMedium
-                                    !.copyWith(
+                                    .titleMedium!
+                                    .copyWith(
                                         color: Theme.of(context)
                                             .colorScheme
                                             .onPrimary),
@@ -112,8 +112,8 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                                                 .toString(),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .titleSmall
-                                                !.copyWith(
+                                                .titleSmall!
+                                                .copyWith(
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .onPrimary)),
@@ -122,8 +122,8 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                                           "${enterprise.jobs[i].totalSlot - enterprise.jobs[i].occupiedSlot} / ${enterprise.jobs[i].totalSlot}",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .titleSmall
-                                              !.copyWith(
+                                              .titleSmall!
+                                              .copyWith(
                                                   color: Theme.of(context)
                                                       .colorScheme
                                                       .onPrimary)),
@@ -190,7 +190,7 @@ class _EnterpriseOverviewState extends State<EnterpriseOverview> {
                               icon: const Icon(Icons.delete),
                               onPressed: () => _removeJob(index)),
                           onTap: () => Navigator.pushNamed(
-                              context, EnterpriseJobTask.route,
+                              context, EnterpriseJob.route,
                               arguments: enterprise.jobs[index].id),
                         ),
                       ),

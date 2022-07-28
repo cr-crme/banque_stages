@@ -8,7 +8,7 @@ class Enterprise extends ItemSerializable {
       this.neq = "",
       required this.activityTypes,
       this.recrutedBy = "",
-      required this.shareToOthers,
+      required this.shareWith,
       required this.jobs,
       required this.contactName,
       this.contactFunction = "",
@@ -23,7 +23,7 @@ class Enterprise extends ItemSerializable {
       String? neq,
       Set<ActivityType>? activityTypes,
       String? recrutedBy,
-      bool? shareToOthers,
+      String? shareWith,
       JobList? jobs,
       String? contactName,
       String? contactFunction,
@@ -36,7 +36,7 @@ class Enterprise extends ItemSerializable {
         neq: neq ?? this.neq,
         activityTypes: activityTypes ?? this.activityTypes,
         recrutedBy: recrutedBy ?? this.recrutedBy,
-        shareToOthers: shareToOthers ?? this.shareToOthers,
+        shareWith: shareWith ?? this.shareWith,
         jobs: jobs ?? this.jobs,
         contactName: contactName ?? this.contactName,
         contactFunction: contactFunction ?? this.contactFunction,
@@ -51,9 +51,9 @@ class Enterprise extends ItemSerializable {
     return {
       "name": name,
       "neq": neq,
-      "activities": activityTypes,
+      "activityTypes": activityTypes,
       "recrutedBy": recrutedBy,
-      "share": shareToOthers,
+      "shareWith": shareWith,
       "jobs": jobs,
       "contactName": contactName,
       "contactFunction": contactFunction,
@@ -69,7 +69,7 @@ class Enterprise extends ItemSerializable {
         neq = map['neq'],
         activityTypes = map['activityTypes'],
         recrutedBy = map['recrutedBy'],
-        shareToOthers = map['share'],
+        shareWith = map['shareWith'],
         jobs = map['jobs'],
         contactName = map['contactName'],
         contactFunction = map['contactFunction'],
@@ -87,7 +87,7 @@ class Enterprise extends ItemSerializable {
   final String neq;
   final Set<ActivityType> activityTypes;
   final String recrutedBy;
-  final bool shareToOthers;
+  final String shareWith;
 
   final JobList jobs;
 

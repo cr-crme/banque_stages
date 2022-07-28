@@ -1,3 +1,4 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 
@@ -8,15 +9,27 @@ class JobFormField extends FormField<Job> {
       {Key? key,
       required Job initialValue,
       FormFieldSetter<Job>? onSaved,
-      FormFieldValidator<Job>? validator,
       AutovalidateMode? autovalidateMode})
       : super(
             key: key,
             initialValue: initialValue,
             onSaved: onSaved,
-            validator: validator,
             autovalidateMode: autovalidateMode,
+            validator: _validator,
             builder: _builder);
+
+  static const String _invalidActivitySector = "invalid_activitySector";
+  static const String _invalidSpecialization = "invalid_specialization";
+
+  static String? _validator(Job? job) {
+    if (!jobActivitySectors.contains(job!.activitySector)) {
+      return _invalidActivitySector;
+    } else if (!jobSpecializations.contains(job.specialization)) {
+      return _invalidSpecialization;
+    }
+
+    return null;
+  }
 
   static Widget _builder(FormFieldState<Job> state) {
     return Column(
@@ -28,18 +41,32 @@ class JobFormField extends FormField<Job> {
             style: Theme.of(state.context).textTheme.titleMedium,
           ),
         ),
-        DropdownButton<String>(
-          value: state.value!.activitySector.name,
-          icon: const Icon(Icons.arrow_downward),
-          onChanged: (String? name) => state.didChange(
-            state.value!.copyWith(
-                activitySector: JobActivitySector.values
-                    .firstWhere((activity) => activity.name == name!)),
+        ListTile(
+          title: AutoCompleteTextField<String>(
+            key: GlobalKey(),
+            controller:
+                TextEditingController(text: state.value!.activitySector),
+            decoration: InputDecoration(
+              labelText: "* Secteur d'activités",
+              errorText: state.errorText == _invalidActivitySector
+                  ? "Entrez une valeur valide"
+                  : null,
+            ),
+            textSubmitted: (sector) =>
+                state.didChange(state.value!.copyWith(activitySector: sector)),
+            itemSubmitted: (sector) =>
+                state.didChange(state.value!.copyWith(activitySector: sector)),
+            clearOnSubmit: false,
+            suggestions: jobActivitySectors,
+            itemBuilder: (context, suggestion) =>
+                ListTile(title: Text(suggestion)),
+            itemSorter: (a, b) => a.compareTo(b),
+            minLength: 0,
+            itemFilter: (suggestion, query) => suggestion
+                .toString()
+                .toLowerCase()
+                .startsWith(query.toLowerCase()),
           ),
-          items: JobActivitySector.values
-              .map((JobActivitySector sector) => DropdownMenuItem(
-                  value: sector.name, child: Text(sector.toString())))
-              .toList(),
         ),
         const SizedBox(height: 16),
         SizedBox(
@@ -49,20 +76,32 @@ class JobFormField extends FormField<Job> {
             style: Theme.of(state.context).textTheme.titleMedium,
           ),
         ),
-        DropdownButton<String>(
-          value: state.value!.specialization.name,
-          icon: const Icon(Icons.arrow_downward),
-          onChanged: (String? name) => state.didChange(
-            state.value!.copyWith(
-                specialization: JobSpecialization.values.firstWhere(
-                    (specialization) => specialization.name == name!)),
+        ListTile(
+          title: AutoCompleteTextField<String>(
+            key: GlobalKey(),
+            controller:
+                TextEditingController(text: state.value!.specialization),
+            decoration: InputDecoration(
+              labelText: "* Métier semi-spécialisé",
+              errorText: state.errorText == _invalidSpecialization
+                  ? "Entrez une valeur valide"
+                  : null,
+            ),
+            textSubmitted: (specialization) => state.didChange(
+                state.value!.copyWith(specialization: specialization)),
+            itemSubmitted: (specialization) => state.didChange(
+                state.value!.copyWith(specialization: specialization)),
+            clearOnSubmit: false,
+            suggestions: jobSpecializations,
+            itemBuilder: (context, suggestion) =>
+                ListTile(title: Text(suggestion)),
+            itemSorter: (a, b) => a.compareTo(b),
+            minLength: 0,
+            itemFilter: (suggestion, query) => suggestion
+                .toString()
+                .toLowerCase()
+                .startsWith(query.toLowerCase()),
           ),
-          items: JobSpecialization.values
-              .map((JobSpecialization specialization) => DropdownMenuItem(
-                    value: specialization.name,
-                    child: Text(specialization.toString()),
-                  ))
-              .toList(),
         ),
         Row(
           children: [
