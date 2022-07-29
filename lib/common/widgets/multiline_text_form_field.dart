@@ -6,7 +6,7 @@ class MultilineTextFormField extends StatelessWidget {
       : super(key: key);
 
   final String? initialValue;
-  final void Function(String?)? onSaved;
+  final void Function(String? text)? onSaved;
   final bool? enabled;
 
   @override

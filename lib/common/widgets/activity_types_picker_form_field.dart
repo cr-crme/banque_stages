@@ -8,8 +8,8 @@ class ActivityTypesPickerFormField extends FormField<Set<ActivityType>> {
   const ActivityTypesPickerFormField({
     Key? key,
     Set<ActivityType> initialValue = const {},
-    void Function(Set<ActivityType>?)? onSaved,
-    String? Function(Set<ActivityType>?)? validator,
+    void Function(Set<ActivityType>? activityTypes)? onSaved,
+    String? Function(Set<ActivityType>? activityTypes)? validator,
   }) : super(
           key: key,
           initialValue: initialValue,

@@ -10,7 +10,7 @@ class ActivityTypeCards extends StatelessWidget {
   }) : super(key: key);
 
   final Set<ActivityType> activityTypes;
-  final void Function(ActivityType)? onDeleted;
+  final void Function(ActivityType activityType)? onDeleted;
 
   @override
   Widget build(BuildContext context) {
