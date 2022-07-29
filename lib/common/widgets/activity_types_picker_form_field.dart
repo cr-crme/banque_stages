@@ -2,6 +2,7 @@ import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/activity_type.dart';
+import '/common/widgets/activity_type_cards.dart';
 
 class ActivityTypesPickerFormField extends FormField<Set<ActivityType>> {
   const ActivityTypesPickerFormField({
@@ -59,40 +60,15 @@ class ActivityTypesPickerFormField extends FormField<Set<ActivityType>> {
             visible: state.value!.isNotEmpty,
             child: const SizedBox(height: 8),
           ),
-          Wrap(
-            direction: Axis.horizontal,
-            children: state.value!
-                .map((activityType) =>
-                    _ActivityTypeChip(state: state, activityType: activityType))
-                .toList(),
+          ActivityTypeCards(
+            activityTypes: state.value!,
+            onDeleted: (activityType) {
+              state.value!.remove(activityType);
+              state.didChange(state.value);
+            },
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ActivityTypeChip extends StatelessWidget {
-  const _ActivityTypeChip(
-      {Key? key, required this.state, required this.activityType})
-      : super(key: key);
-
-  final FormFieldState<Set<ActivityType>> state;
-  final ActivityType activityType;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Chip(
-          visualDensity: VisualDensity.compact,
-          deleteIcon: const Icon(Icons.delete),
-          deleteIconColor: Theme.of(context).colorScheme.onPrimary,
-          label: Text(activityType.toString()),
-          onDeleted: () {
-            state.value!.remove(activityType);
-            state.didChange(state.value);
-          }),
     );
   }
 }
