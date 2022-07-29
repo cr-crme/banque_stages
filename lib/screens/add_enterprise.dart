@@ -15,7 +15,7 @@ import '/common/widgets/share_with_picker_form_field.dart';
 class AddEnterprise extends StatefulWidget {
   const AddEnterprise({Key? key}) : super(key: key);
 
-  static const route = "/enterprises/add";
+  static const route = "/add-enterprise";
 
   @override
   State<AddEnterprise> createState() => _AddEnterpriseState();
@@ -263,10 +263,11 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                   "Métier ${index + 1}",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
+                // TODO: Extract as a widget
                 trailing: IconButton(
                   onPressed: () => _removeMetier(index),
                   icon: const Icon(Icons.delete_forever),
-                  color: Colors.redAccent,
+                  color: Theme.of(context).colorScheme.error,
                 ),
               ),
               Padding(
@@ -361,9 +362,11 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                 height: 20,
               ),
               const ListTile(
-                  visualDensity:
-                      VisualDensity(vertical: VisualDensity.minimumDensity),
-                  title: Text("Addresse de l'établissement")),
+                visualDensity:
+                    VisualDensity(vertical: VisualDensity.minimumDensity),
+                title: Text("Addresse de l'établissement"),
+              ),
+              // TODO: Implement Google Maps (?) autocomplete
               ListTile(
                 title: TextFormField(
                   decoration: const InputDecoration(labelText: "Adresse"),

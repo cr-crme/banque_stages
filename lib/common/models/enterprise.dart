@@ -97,4 +97,5 @@ class Enterprise extends ItemSerializable {
   final String contactEmail;
 
   final String address;
+  // TODO: Add field for the HQ
 }

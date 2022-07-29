@@ -1,11 +1,11 @@
+import 'package:crcrme_banque_stages/crcrme_material_theme/lib/crcrme_material_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:crcrme_banque_stages/crcrme_material_theme/lib/crcrme_material_theme.dart';
 
 import '/common/providers/enterprises_provider.dart';
-import 'screens/enterprises/add_enterprise.dart';
-import 'screens/enterprise/enterprise_navigator.dart';
-import 'screens/enterprises/enterprises_list.dart';
+import 'screens/add_enterprise.dart';
+import 'screens/enterprise_details.dart';
+import 'screens/enterprises_list.dart';
 import 'screens/home.dart';
 
 void main() {
@@ -27,24 +27,11 @@ class MyApp extends StatelessWidget {
         title: 'Banque de Stages',
         theme: crcrmeMaterialTheme,
         initialRoute: Home.route,
-        onGenerateRoute: (settings) {
-          late Widget page;
-          if (Home.route == settings.name) {
-            page = const Home();
-          } else if (EnterprisesList.route == settings.name) {
-            page = const EnterprisesList();
-          } else if (AddEnterprise.route == settings.name) {
-            page = const AddEnterprise();
-          } else if (settings.name!.startsWith(EnterpriseNavigator.route)) {
-            page = const EnterpriseNavigator();
-          } else {
-            throw Exception('Unknown route: ${settings.name}');
-          }
-
-          return MaterialPageRoute(
-            builder: (context) => page,
-            settings: settings,
-          );
+        routes: {
+          Home.route: (context) => const Home(),
+          EnterprisesList.route: (context) => const EnterprisesList(),
+          AddEnterprise.route: (context) => const AddEnterprise(),
+          EnterpriseDetails.route: (context) => const EnterpriseDetails(),
         },
       ),
     );

@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
-import '/screens/enterprise/enterprise_navigator.dart';
 import 'add_enterprise.dart';
+import 'enterprise_details.dart';
 
 class EnterprisesList extends StatefulWidget {
   const EnterprisesList({Key? key}) : super(key: key);
 
-  static const route = "/enterprises";
+  static const route = "/enterprises-list";
 
   @override
   State<EnterprisesList> createState() => _EnterprisesListState();
@@ -19,7 +19,7 @@ class _EnterprisesListState extends State<EnterprisesList> {
   bool _hideNotAvailable = true;
 
   void _openEnterpriseDetails(Enterprise enterprise) {
-    Navigator.pushNamed(context, EnterpriseNavigator.route,
+    Navigator.pushNamed(context, EnterpriseDetails.route,
         arguments: enterprise.id);
   }
 
