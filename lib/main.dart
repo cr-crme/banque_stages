@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/providers/enterprises_provider.dart';
+import 'dummy_data.dart';
 import 'screens/add_enterprise.dart';
 import 'screens/enterprise_details.dart';
 import 'screens/enterprises_list.dart';
@@ -19,9 +20,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<EnterprisesProvider>(
-          create: (context) => EnterprisesProvider(),
-        )
+        ChangeNotifierProvider(
+            create: (context) => dummyData(EnterprisesProvider())),
       ],
       child: MaterialApp(
         title: 'Banque de Stages',
