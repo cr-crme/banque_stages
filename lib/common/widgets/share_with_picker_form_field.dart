@@ -12,8 +12,8 @@ class ShareWithPickerFormField extends FormField<String> {
   const ShareWithPickerFormField({
     Key? key,
     String initialValue = "Tout le monde",
-    void Function(String? text)? onSaved,
-    String? Function(String? text)? validator,
+    void Function(String? shareWith)? onSaved,
+    String? Function(String? shareWith)? validator,
   }) : super(
           key: key,
           initialValue: initialValue,
