@@ -3,6 +3,10 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
+import 'widgets/about_page.dart';
+import 'widgets/contact_page.dart';
+import 'widgets/jobs_page.dart';
+import 'widgets/stage_page.dart';
 
 class EnterpriseDetails extends StatefulWidget {
   const EnterpriseDetails({Key? key}) : super(key: key);
@@ -13,86 +17,99 @@ class EnterpriseDetails extends StatefulWidget {
   State<EnterpriseDetails> createState() => _EnterpriseDetailsState();
 }
 
-class _EnterpriseDetailsState extends State<EnterpriseDetails> {
-  late final String enterpriseId =
+class _EnterpriseDetailsState extends State<EnterpriseDetails>
+    with SingleTickerProviderStateMixin {
+  late final _enterpriseId =
       ModalRoute.of(context)!.settings.arguments as String;
+
+  late final TabController _tabController;
+  IconButton? _actionButton;
+
+  final _aboutPageKey = GlobalKey<AboutPageState>();
+  final _contactPageKey = GlobalKey<ContactPageState>();
+  final _jobsPageKey = GlobalKey<JobsPageState>();
+  final _stagePageKey = GlobalKey<StagePageState>();
+
+  void _updateActionButton() {
+    late void Function()? onPressed;
+    late Icon? icon;
+
+    switch (_tabController.index) {
+      case 0:
+        onPressed = _aboutPageKey.currentState?.actionButtonOnPressed;
+        icon = _aboutPageKey.currentState?.actionButtonIcon;
+        break;
+      case 1:
+        onPressed = _contactPageKey.currentState?.actionButtonOnPressed;
+        icon = _contactPageKey.currentState?.actionButtonIcon;
+        break;
+      case 2:
+        onPressed = _jobsPageKey.currentState?.actionButtonOnPressed;
+        icon = _jobsPageKey.currentState?.actionButtonIcon;
+        break;
+      case 3:
+        onPressed = _stagePageKey.currentState?.actionButtonOnPressed;
+        icon = _stagePageKey.currentState?.actionButtonIcon;
+        break;
+    }
+
+    setState(() {
+      if (onPressed == null || icon == null) {
+        _actionButton = null;
+      } else {
+        _actionButton = IconButton(
+          onPressed: () {
+            onPressed!();
+            _updateActionButton();
+          },
+          icon: icon,
+        );
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _tabController = TabController(initialIndex: 3, length: 4, vsync: this);
+    _tabController.addListener(() => _updateActionButton());
+
+    // This line makes sure that [_updateActionButton] is called while the pages are initialised
+    _tabController.animateTo(0, duration: const Duration(microseconds: 1));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Selector<EnterprisesProvider, Enterprise>(
-        builder: (context, enterprise, child) => Scaffold(
-            appBar: AppBar(
-              title: Text(enterprise.name),
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.edit),
-                ),
-              ],
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ListTile(
-                    title: Text(
-                      "Informations générales",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Row(
-                      children: [
-                        // TODO: Display an image
-                        Container(
-                          width: 120,
-                          height: 90,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: "Nom de l'entreprise",
-                            ),
-                            initialValue: enterprise.name,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ListTile(
-                    title: Text(
-                      "Places de stage disponibles",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      children: enterprise.jobs
-                          .map(
-                            (job) => ListTile(
-                              visualDensity: VisualDensity.compact,
-                              // TODO: Extract circle as a widget
-                              leading: Icon(
-                                Icons.circle,
-                                color: job.totalSlot > job.occupiedSlot
-                                    ? Colors.green
-                                    : Theme.of(context).colorScheme.error,
-                                size: 16,
-                              ),
-                              title: Text(job.specialization),
-                              trailing: Text(
-                                  "${job.totalSlot - job.occupiedSlot} / ${job.totalSlot}"),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                ],
+      builder: (context, enterprise, _) => Scaffold(
+        appBar: AppBar(
+          title: Text(enterprise.name),
+          actions: [_actionButton ?? const SizedBox.square(dimension: 56)],
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(icon: Icon(Icons.info_outline), text: "À propos"),
+              Tab(icon: Icon(Icons.person), text: "Contact"),
+              Tab(icon: Icon(Icons.location_city_rounded), text: "Métiers"),
+              Tab(
+                icon: Icon(Icons.notes_rounded),
+                text: "Stages",
               ),
-            )),
-        selector: (context, enterprises) => enterprises[enterpriseId]);
+            ],
+          ),
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            AboutPage(key: _aboutPageKey, enterprise: enterprise),
+            ContactPage(key: _contactPageKey, enterprise: enterprise),
+            JobsPage(key: _jobsPageKey, enterprise: enterprise),
+            StagePage(key: _stagePageKey, enterprise: enterprise),
+          ],
+        ),
+      ),
+      selector: (context, enterprises) => enterprises[_enterpriseId],
+    );
   }
 }
