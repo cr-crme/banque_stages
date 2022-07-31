@@ -5,14 +5,14 @@ import '/common/models/activity_type.dart';
 import '/common/widgets/activity_type_cards.dart';
 
 class ActivityTypesPickerFormField extends FormField<Set<ActivityType>> {
-  const ActivityTypesPickerFormField({
+  ActivityTypesPickerFormField({
     Key? key,
-    Set<ActivityType> initialValue = const {},
+    Set<ActivityType>? initialValue,
     void Function(Set<ActivityType>? activityTypes)? onSaved,
     String? Function(Set<ActivityType>? activityTypes)? validator,
   }) : super(
           key: key,
-          initialValue: initialValue,
+          initialValue: initialValue ?? {},
           onSaved: onSaved,
           validator: validator ?? _validator,
           builder: _builder,
@@ -36,14 +36,8 @@ class ActivityTypesPickerFormField extends FormField<Set<ActivityType>> {
                 labelText: "* Types d'activité", errorText: state.errorText),
             key: autoCompleteKey,
             itemSubmitted: (activityType) {
-              try {
-                state.value!.add(activityType);
-                state.didChange(state.value);
-              } catch (e) {
-                var value = Set.of(state.value!);
-                value.add(activityType);
-                state.didChange(value);
-              }
+              state.value!.add(activityType);
+              state.didChange(state.value);
             },
             suggestions: ActivityType.values,
             itemBuilder: (context, suggestion) =>
