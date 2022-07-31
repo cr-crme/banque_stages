@@ -235,13 +235,17 @@ class _AddEnterpriseState extends State<AddEnterprise> {
                   onSaved: (neq) => _neq = neq,
                 ),
               ),
-              ActivityTypesPickerFormField(
-                onSaved: (Set<ActivityType>? activityTypes) =>
-                    setState(() => _activityTypes = activityTypes!),
+              ListTile(
+                title: ActivityTypesPickerFormField(
+                  onSaved: (Set<ActivityType>? activityTypes) =>
+                      setState(() => _activityTypes = activityTypes!),
+                ),
               ),
-              ShareWithPickerFormField(
-                onSaved: (String? shareWith) =>
-                    setState(() => _shareWith = shareWith),
+              ListTile(
+                title: ShareWithPickerFormField(
+                  onSaved: (String? shareWith) =>
+                      setState(() => _shareWith = shareWith),
+                ),
               ),
             ],
           ),

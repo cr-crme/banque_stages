@@ -31,24 +31,24 @@ class ShareWithPickerFormField extends FormField<String> {
   }
 
   static Widget _builder(FormFieldState<String> state) {
-    return ListTile(
-      title: AutoCompleteTextField<String>(
-        key: GlobalKey(),
-        controller: TextEditingController(text: state.value),
-        decoration: InputDecoration(
-          labelText: "* Partager l'entreprise avec",
-          errorText: state.errorText,
-        ),
-        textSubmitted: (item) => state.didChange(item),
-        itemSubmitted: (item) => state.didChange(item),
-        clearOnSubmit: false,
-        suggestions: shareWithSuggestions,
-        itemBuilder: (context, suggestion) => ListTile(title: Text(suggestion)),
-        itemSorter: (a, b) => a.compareTo(b),
-        minLength: 0,
-        itemFilter: (suggestion, query) =>
-            suggestion.toString().toLowerCase().startsWith(query.toLowerCase()),
+    return AutoCompleteTextField<String>(
+      key: GlobalKey(),
+      controller: TextEditingController(text: state.value),
+      decoration: InputDecoration(
+        labelText: "* Partager l'entreprise avec",
+        errorText: state.errorText,
       ),
+      textSubmitted: (item) => state.didChange(item),
+      itemSubmitted: (item) => state.didChange(item),
+      clearOnSubmit: false,
+      suggestions: shareWithSuggestions,
+      itemBuilder: (context, suggestion) => ListTile(title: Text(suggestion)),
+      itemSorter: (a, b) => a.compareTo(b),
+      minLength: 0,
+      itemFilter: (suggestion, query) =>
+          suggestion.toString().toLowerCase().startsWith(
+                query.toLowerCase(),
+              ),
     );
   }
 }
