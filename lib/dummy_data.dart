@@ -25,16 +25,20 @@ T dummyData<T>(T dataToPopulate) {
     dataToPopulate.add(
       Enterprise(
         name: "Fausse Entreprise",
-        neq: "2395375015",
         activityTypes: {ActivityType.activity1, ActivityType.activity7},
         recrutedBy: "John Doe",
         shareWith: "Tout le monde",
         jobs: jobs,
         contactName: "Sarah White",
         contactFunction: "Secrétaire",
-        contactPhone: "514 321 9876",
+        contactPhone: "514 321 9876 poste 234",
         contactEmail: "white.sarah@fausse.ca",
         address: "1 rue Vide, Québec, QC A4A 4A4",
+        phone: "514 321 9876",
+        fax: "514 321 9870",
+        website: "fausse.ca",
+        headquartersAddress: "1 rue Vide, Québec, QC A4A 4A4",
+        neq: "2395375015",
       ),
     );
 
@@ -50,7 +54,6 @@ T dummyData<T>(T dataToPopulate) {
     dataToPopulate.add(
       Enterprise(
         name: "Test",
-        neq: "1234567890",
         activityTypes: {ActivityType.activity1, ActivityType.activity7},
         recrutedBy: "Nom Rectruté Par",
         shareWith: "Personne",
@@ -59,7 +62,12 @@ T dummyData<T>(T dataToPopulate) {
         contactFunction: "Fonction",
         contactPhone: "123 123 1234",
         contactEmail: "email@test.ca",
-        address: "0 rue XYZ, Montréal, QC A1A 1A1",
+        address: "Adresse de l'entreprise",
+        phone: "456 456 4567",
+        fax: "789 789 7890",
+        website: "example.com",
+        headquartersAddress: "Adresse du HQ",
+        neq: "1234567890",
       ),
     );
   }

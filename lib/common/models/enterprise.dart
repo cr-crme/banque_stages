@@ -3,54 +3,67 @@ import '/misc/custom_containers/item_serializable.dart';
 import 'activity_type.dart';
 
 class Enterprise extends ItemSerializable {
-  Enterprise(
-      {required this.name,
-      this.neq = "",
-      required this.activityTypes,
-      this.recrutedBy = "",
-      required this.shareWith,
-      required this.jobs,
-      required this.contactName,
-      this.contactFunction = "",
-      required this.contactPhone,
-      this.contactEmail = "",
-      this.address = "",
-      id})
-      : super(id: id);
+  Enterprise({
+    required this.name,
+    required this.activityTypes,
+    this.recrutedBy = "",
+    required this.shareWith,
+    required this.jobs,
+    required this.contactName,
+    this.contactFunction = "",
+    required this.contactPhone,
+    this.contactEmail = "",
+    this.address = "",
+    this.phone = "",
+    this.fax = "",
+    this.website = "",
+    this.headquartersAddress = "",
+    this.neq = "",
+    id,
+  }) : super(id: id);
 
-  Enterprise copyWith(
-      {String? name,
-      String? neq,
-      Set<ActivityType>? activityTypes,
-      String? recrutedBy,
-      String? shareWith,
-      JobList? jobs,
-      String? contactName,
-      String? contactFunction,
-      String? contactPhone,
-      String? contactEmail,
-      String? address,
-      String? id}) {
+  Enterprise copyWith({
+    String? name,
+    Set<ActivityType>? activityTypes,
+    String? recrutedBy,
+    String? shareWith,
+    JobList? jobs,
+    String? contactName,
+    String? contactFunction,
+    String? contactPhone,
+    String? contactEmail,
+    String? address,
+    String? phone,
+    String? fax,
+    String? website,
+    String? headquartersAddress,
+    String? neq,
+    String? id,
+  }) {
     return Enterprise(
-        name: name ?? this.name,
-        neq: neq ?? this.neq,
-        activityTypes: activityTypes ?? this.activityTypes,
-        recrutedBy: recrutedBy ?? this.recrutedBy,
-        shareWith: shareWith ?? this.shareWith,
-        jobs: jobs ?? this.jobs,
-        contactName: contactName ?? this.contactName,
-        contactFunction: contactFunction ?? this.contactFunction,
-        contactPhone: contactPhone ?? this.contactPhone,
-        contactEmail: contactEmail ?? this.contactEmail,
-        address: address ?? this.address,
-        id: id ?? this.id);
+      name: name ?? this.name,
+      activityTypes: activityTypes ?? this.activityTypes,
+      recrutedBy: recrutedBy ?? this.recrutedBy,
+      shareWith: shareWith ?? this.shareWith,
+      jobs: jobs ?? this.jobs,
+      contactName: contactName ?? this.contactName,
+      contactFunction: contactFunction ?? this.contactFunction,
+      contactPhone: contactPhone ?? this.contactPhone,
+      contactEmail: contactEmail ?? this.contactEmail,
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
+      fax: fax ?? this.fax,
+      website: website ?? this.website,
+      headquartersAddress: headquartersAddress ?? this.headquartersAddress,
+      neq: neq ?? this.neq,
+      id: id ?? this.id,
+    );
   }
 
   @override
   Map<String, dynamic> serializedMap() {
     return {
       "name": name,
-      "neq": neq,
       "activityTypes": activityTypes,
       "recrutedBy": recrutedBy,
       "shareWith": shareWith,
@@ -60,13 +73,17 @@ class Enterprise extends ItemSerializable {
       "contactPhone": contactPhone,
       "contactEmail": contactEmail,
       "address": address,
+      "phone": phone,
+      "fax": fax,
+      "website": website,
+      "headquartersAddress": headquartersAddress,
+      "neq": neq,
     };
   }
 
   @override
   Enterprise.fromSerialized(Map<String, dynamic> map)
       : name = map['name'],
-        neq = map['neq'],
         activityTypes = map['activityTypes'],
         recrutedBy = map['recrutedBy'],
         shareWith = map['shareWith'],
@@ -76,6 +93,11 @@ class Enterprise extends ItemSerializable {
         contactPhone = map['contactPhone'],
         contactEmail = map['contactEmail'],
         address = map['address'],
+        phone = map['phone'],
+        fax = map['fax'],
+        website = map['website'],
+        headquartersAddress = map['headquartersAddress'],
+        neq = map['neq'],
         super.fromSerialized(map);
 
   @override
@@ -84,7 +106,6 @@ class Enterprise extends ItemSerializable {
   }
 
   final String name;
-  final String neq;
   final Set<ActivityType> activityTypes;
   final String recrutedBy;
   final String shareWith;
@@ -97,5 +118,10 @@ class Enterprise extends ItemSerializable {
   final String contactEmail;
 
   final String address;
-  // TODO: Add field for the HQ
+  final String phone;
+  final String fax;
+  final String website;
+
+  final String headquartersAddress;
+  final String neq;
 }
