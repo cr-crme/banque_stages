@@ -15,12 +15,9 @@ class JobsPage extends StatefulWidget {
 }
 
 class JobsPageState extends State<JobsPage> {
-  void Function() get actionButtonOnPressed => _addJob;
-  Icon get actionButtonIcon => const Icon(Icons.add);
-
   late String _expandedJobId = widget.enterprise.jobs.first.id;
 
-  void _addJob() {}
+  void addJob() {}
 
   @override
   Widget build(BuildContext context) {

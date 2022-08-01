@@ -15,10 +15,7 @@ class StagePage extends StatefulWidget {
 }
 
 class StagePageState extends State<StagePage> {
-  void Function() get actionButtonOnPressed => _addStage;
-  Icon get actionButtonIcon => const Icon(Icons.add);
-
-  void _addStage() {}
+  void addStage() {}
 
   @override
   Widget build(BuildContext context) {

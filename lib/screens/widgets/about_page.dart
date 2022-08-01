@@ -28,10 +28,7 @@ class AboutPageState extends State<AboutPage> {
   String? _shareWith;
 
   bool _editing = false;
-
-  void Function() get actionButtonOnPressed => _toggleEdit;
-  Icon get actionButtonIcon =>
-      _editing ? const Icon(Icons.save) : const Icon(Icons.edit);
+  bool get editing => _editing;
 
   void _showInvalidFieldsSnakBar() {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -39,7 +36,7 @@ class AboutPageState extends State<AboutPage> {
         content: Text("Assurez vous que tous les champs soient valides")));
   }
 
-  void _toggleEdit() {
+  void toggleEdit() {
     if (!_editing) {
       setState(() => _editing = true);
       return;

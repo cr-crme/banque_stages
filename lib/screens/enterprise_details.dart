@@ -22,8 +22,10 @@ class _EnterpriseDetailsState extends State<EnterpriseDetails>
   late final _enterpriseId =
       ModalRoute.of(context)!.settings.arguments as String;
 
-  late final TabController _tabController;
-  IconButton? _actionButton;
+  late final _tabController =
+      TabController(initialIndex: 0, length: 4, vsync: this);
+
+  late IconButton _actionButton;
 
   final _aboutPageKey = GlobalKey<AboutPageState>();
   final _contactPageKey = GlobalKey<ContactPageState>();
@@ -31,52 +33,47 @@ class _EnterpriseDetailsState extends State<EnterpriseDetails>
   final _stagePageKey = GlobalKey<StagePageState>();
 
   void _updateActionButton() {
-    late void Function()? onPressed;
-    late Icon? icon;
+    late Icon icon;
 
-    switch (_tabController.index) {
-      case 0:
-        onPressed = _aboutPageKey.currentState?.actionButtonOnPressed;
-        icon = _aboutPageKey.currentState?.actionButtonIcon;
-        break;
-      case 1:
-        onPressed = _contactPageKey.currentState?.actionButtonOnPressed;
-        icon = _contactPageKey.currentState?.actionButtonIcon;
-        break;
-      case 2:
-        onPressed = _jobsPageKey.currentState?.actionButtonOnPressed;
-        icon = _jobsPageKey.currentState?.actionButtonIcon;
-        break;
-      case 3:
-        onPressed = _stagePageKey.currentState?.actionButtonOnPressed;
-        icon = _stagePageKey.currentState?.actionButtonIcon;
-        break;
+    if (_tabController.index == 0) {
+      icon = _aboutPageKey.currentState?.editing ?? false
+          ? const Icon(Icons.save)
+          : const Icon(Icons.edit);
+    } else if (_tabController.index == 1) {
+      icon = _contactPageKey.currentState?.editing ?? false
+          ? const Icon(Icons.save)
+          : const Icon(Icons.edit);
+    } else if (_tabController.index == 2) {
+      icon = const Icon(Icons.add);
+    } else if (_tabController.index == 3) {
+      icon = const Icon(Icons.add);
     }
 
     setState(() {
-      if (onPressed == null || icon == null) {
-        _actionButton = null;
-      } else {
-        _actionButton = IconButton(
-          onPressed: () {
-            onPressed!();
-            _updateActionButton();
-          },
-          icon: icon,
-        );
-      }
+      _actionButton = IconButton(
+        icon: icon,
+        onPressed: () {
+          if (_tabController.index == 0) {
+            _aboutPageKey.currentState?.toggleEdit();
+          } else if (_tabController.index == 1) {
+            _contactPageKey.currentState?.toggleEdit();
+          } else if (_tabController.index == 2) {
+            _jobsPageKey.currentState?.addJob();
+          } else if (_tabController.index == 3) {
+            _stagePageKey.currentState?.addStage();
+          }
+
+          _updateActionButton();
+        },
+      );
     });
   }
 
   @override
   void initState() {
     super.initState();
-
-    _tabController = TabController(initialIndex: 3, length: 4, vsync: this);
+    _updateActionButton();
     _tabController.addListener(() => _updateActionButton());
-
-    // This line makes sure that [_updateActionButton] is called while the pages are initialised
-    _tabController.animateTo(0, duration: const Duration(microseconds: 1));
   }
 
   @override
@@ -85,7 +82,7 @@ class _EnterpriseDetailsState extends State<EnterpriseDetails>
       builder: (context, enterprise, _) => Scaffold(
         appBar: AppBar(
           title: Text(enterprise.name),
-          actions: [_actionButton ?? const SizedBox.square(dimension: 56)],
+          actions: [_actionButton],
           bottom: TabBar(
             controller: _tabController,
             tabs: const [
