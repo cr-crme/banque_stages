@@ -45,5 +45,9 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>L'accès aux photos est nécessaire pour ajouter une image.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>L'accès à la caméra est nécessaire pour ajouter une image.</string>
 </dict>
 </plist>
