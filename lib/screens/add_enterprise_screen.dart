@@ -12,17 +12,17 @@ import '/common/widgets/confirm_pop_dialog.dart';
 import '/common/widgets/job_form_field.dart';
 import '/common/widgets/share_with_picker_form_field.dart';
 
-class AddEnterprise extends StatefulWidget {
-  const AddEnterprise({Key? key}) : super(key: key);
+class AddEnterpriseScreen extends StatefulWidget {
+  const AddEnterpriseScreen({Key? key}) : super(key: key);
 
   static const route = "/add-enterprise";
 
   @override
-  State<AddEnterprise> createState() => _AddEnterpriseState();
+  State<AddEnterpriseScreen> createState() => _AddEnterpriseScreenState();
 }
 
-class _AddEnterpriseState extends State<AddEnterprise> {
-  _AddEnterpriseState() {
+class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
+  _AddEnterpriseScreenState() {
     _jobs.add(Job());
   }
 

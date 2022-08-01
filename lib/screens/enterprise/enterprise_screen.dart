@@ -3,21 +3,21 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
-import 'widgets/about_page.dart';
-import 'widgets/contact_page.dart';
-import 'widgets/jobs_page.dart';
-import 'widgets/stage_page.dart';
+import 'pages/about_page.dart';
+import 'pages/contact_page.dart';
+import 'pages/jobs_page.dart';
+import 'pages/stage_page.dart';
 
-class EnterpriseDetails extends StatefulWidget {
-  const EnterpriseDetails({Key? key}) : super(key: key);
+class EnterpriseScreen extends StatefulWidget {
+  const EnterpriseScreen({Key? key}) : super(key: key);
 
   static const String route = "/enterprise-details";
 
   @override
-  State<EnterpriseDetails> createState() => _EnterpriseDetailsState();
+  State<EnterpriseScreen> createState() => _EnterpriseScreenState();
 }
 
-class _EnterpriseDetailsState extends State<EnterpriseDetails>
+class _EnterpriseScreenState extends State<EnterpriseScreen>
     with SingleTickerProviderStateMixin {
   late final _enterpriseId =
       ModalRoute.of(context)!.settings.arguments as String;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'enterprises_list.dart';
+import 'enterprises_list_screen.dart';
 
-class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   static const route = "/";
 
@@ -23,7 +23,8 @@ class Home extends StatelessWidget {
         appBar: AppBar(),
         body: ListTile(
             title: TextButton(
-          onPressed: () => _navigateFromDrawer(context, EnterprisesList.route),
+          onPressed: () =>
+              _navigateFromDrawer(context, EnterprisesListScreen.route),
           child: const Text("Entreprises"),
         )),
       )),

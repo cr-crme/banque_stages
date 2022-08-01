@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 
 import '/common/providers/enterprises_provider.dart';
 import 'dummy_data.dart';
-import 'screens/add_enterprise.dart';
-import 'screens/enterprise_details.dart';
-import 'screens/enterprises_list.dart';
-import 'screens/home.dart';
+import 'screens/add_enterprise_screen.dart';
+import 'screens/enterprise/enterprise_screen.dart';
+import 'screens/enterprises_list_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,12 +26,13 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Banque de Stages',
         theme: crcrmeMaterialTheme,
-        initialRoute: Home.route,
+        initialRoute: HomeScreen.route,
         routes: {
-          Home.route: (context) => const Home(),
-          EnterprisesList.route: (context) => const EnterprisesList(),
-          AddEnterprise.route: (context) => const AddEnterprise(),
-          EnterpriseDetails.route: (context) => const EnterpriseDetails(),
+          HomeScreen.route: (context) => const HomeScreen(),
+          EnterprisesListScreen.route: (context) =>
+              const EnterprisesListScreen(),
+          AddEnterpriseScreen.route: (context) => const AddEnterpriseScreen(),
+          EnterpriseScreen.route: (context) => const EnterpriseScreen(),
         },
       ),
     );

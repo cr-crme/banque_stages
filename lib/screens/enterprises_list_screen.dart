@@ -3,23 +3,23 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
-import 'add_enterprise.dart';
-import 'enterprise_details.dart';
+import 'add_enterprise_screen.dart';
+import 'enterprise/enterprise_screen.dart';
 
-class EnterprisesList extends StatefulWidget {
-  const EnterprisesList({Key? key}) : super(key: key);
+class EnterprisesListScreen extends StatefulWidget {
+  const EnterprisesListScreen({Key? key}) : super(key: key);
 
   static const route = "/enterprises-list";
 
   @override
-  State<EnterprisesList> createState() => _EnterprisesListState();
+  State<EnterprisesListScreen> createState() => _EnterprisesListScreenState();
 }
 
-class _EnterprisesListState extends State<EnterprisesList> {
+class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
   bool _hideNotAvailable = true;
 
   void _openEnterpriseDetails(Enterprise enterprise) {
-    Navigator.pushNamed(context, EnterpriseDetails.route,
+    Navigator.pushNamed(context, EnterpriseScreen.route,
         arguments: enterprise.id);
   }
 
@@ -35,7 +35,8 @@ class _EnterprisesListState extends State<EnterprisesList> {
             icon: const Icon(Icons.search),
           ),
           IconButton(
-            onPressed: () => Navigator.pushNamed(context, AddEnterprise.route),
+            onPressed: () =>
+                Navigator.pushNamed(context, AddEnterpriseScreen.route),
             tooltip: "Ajouter une entreprise",
             icon: const Icon(Icons.add),
           ),
