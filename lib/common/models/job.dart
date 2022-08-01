@@ -22,6 +22,7 @@ class Job extends ItemSerializable {
     this.minimalAge = 0,
     this.uniform = "",
     List<String>? requiredForJob,
+    List<String>? comments,
     id,
   })  : pictures = pictures ?? [],
         skillsRequired = skillsRequired ?? [],
@@ -30,6 +31,7 @@ class Job extends ItemSerializable {
         pastWounds = pastWounds ?? [],
         pastIncidents = pastIncidents ?? [],
         requiredForJob = requiredForJob ?? [],
+        comments = comments ?? [],
         super(id: id);
 
   Job copyWith({
@@ -53,6 +55,7 @@ class Job extends ItemSerializable {
     int? minimalAge,
     String? uniform,
     List<String>? requiredForJob,
+    List<String>? comments,
     String? id,
   }) {
     return Job(
@@ -79,6 +82,7 @@ class Job extends ItemSerializable {
         minimalAge: minimalAge ?? this.minimalAge,
         uniform: uniform ?? this.uniform,
         requiredForJob: requiredForJob ?? this.requiredForJob,
+        comments: comments ?? this.comments,
         id: id ?? this.id);
   }
 
@@ -105,6 +109,7 @@ class Job extends ItemSerializable {
       "minimalAge": minimalAge,
       "uniform": uniform,
       "requiredForJob": requiredForJob,
+      "comments": comments,
     };
   }
 
@@ -129,6 +134,7 @@ class Job extends ItemSerializable {
         minimalAge = map['minimalAge'],
         uniform = map['uniform'],
         requiredForJob = map['requiredForJob'],
+        comments = map['comments'],
         super.fromSerialized(map);
 
   @override
@@ -162,6 +168,8 @@ class Job extends ItemSerializable {
   final int minimalAge;
   final String uniform;
   final List<String> requiredForJob;
+
+  final List<String> comments;
 }
 
 const List<String> jobActivitySectors = [
