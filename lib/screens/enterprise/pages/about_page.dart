@@ -86,6 +86,7 @@ class AboutPageState extends State<AboutPage> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         TextFormField(
                           initialValue: widget.enterprise.name,
@@ -96,19 +97,13 @@ class AboutPageState extends State<AboutPage> {
                           onSaved: (name) => _name = name,
                         ),
                         const SizedBox(height: 8),
-                        SizedBox(
-                          width: Size.infinite.width,
-                          child: Text(
-                            "Entreprise recrutée par :",
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
+                        Text(
+                          "Entreprise recrutée par :",
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
-                        SizedBox(
-                          width: Size.infinite.width,
-                          child: Text(
-                            widget.enterprise.recrutedBy,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
+                        Text(
+                          widget.enterprise.recrutedBy,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
@@ -180,15 +175,13 @@ class AboutPageState extends State<AboutPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Visibility(
                     visible: !_editing,
-                    child: SizedBox(
-                      width: Size.infinite.width,
-                      child: Text(
-                        widget.enterprise.shareWith,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
+                    child: Text(
+                      widget.enterprise.shareWith,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                   Visibility(

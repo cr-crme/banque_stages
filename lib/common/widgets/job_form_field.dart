@@ -33,13 +33,11 @@ class JobFormField extends FormField<Job> {
 
   static Widget _builder(FormFieldState<Job> state) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(
-          width: Size.infinite.width,
-          child: Text(
-            "Secteur d'activités :",
-            style: Theme.of(state.context).textTheme.titleMedium,
-          ),
+        Text(
+          "Secteur d'activités :",
+          style: Theme.of(state.context).textTheme.titleMedium,
         ),
         ListTile(
           title: AutoCompleteTextField<String>(
@@ -69,12 +67,9 @@ class JobFormField extends FormField<Job> {
           ),
         ),
         const SizedBox(height: 16),
-        SizedBox(
-          width: Size.infinite.width,
-          child: Text(
-            "Métier semi-spécialisé :",
-            style: Theme.of(state.context).textTheme.titleMedium,
-          ),
+        Text(
+          "Métier semi-spécialisé :",
+          style: Theme.of(state.context).textTheme.titleMedium,
         ),
         ListTile(
           title: AutoCompleteTextField<String>(
