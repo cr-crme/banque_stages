@@ -175,7 +175,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Nouvelle enterprise"),
+          title: const Text("Nouvelle entreprise"),
         ),
         body: Stepper(
           type: StepperType.horizontal,
@@ -296,7 +296,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
               const ListTile(
                 visualDensity:
                     VisualDensity(vertical: VisualDensity.minimumDensity),
-                title: Text("Personne contact en enterprise"),
+                title: Text("Personne contact en entreprise"),
               ),
               ListTile(
                 title: TextFormField(
