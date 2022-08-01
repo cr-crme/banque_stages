@@ -9,6 +9,7 @@ import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/activity_types_picker_form_field.dart';
 import '/common/widgets/add_job_button.dart';
 import '/common/widgets/confirm_pop_dialog.dart';
+import '/common/widgets/delete_button.dart';
 import '/common/widgets/job_form_field.dart';
 import '/common/widgets/share_with_picker_form_field.dart';
 
@@ -267,11 +268,8 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
                   "Métier ${index + 1}",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                // TODO: Extract as a widget
-                trailing: IconButton(
+                trailing: DeleteButton(
                   onPressed: () => _removeMetier(index),
-                  icon: const Icon(Icons.delete_forever),
-                  color: Theme.of(context).colorScheme.error,
                 ),
               ),
               Padding(
