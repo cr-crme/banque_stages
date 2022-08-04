@@ -81,7 +81,7 @@ class AboutPageState extends State<AboutPage> {
                   Container(
                     width: 140,
                     height: 105,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).disabledColor,
                   ),
                   const SizedBox(width: 16),
                   Expanded(
