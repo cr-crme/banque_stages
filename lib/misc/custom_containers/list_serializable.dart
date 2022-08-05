@@ -1,7 +1,5 @@
 import './item_serializable.dart';
 
-bool isInteger(num value) => (value % 1) == 0;
-
 class TypeException implements Exception {
   final String message;
 
@@ -36,7 +34,7 @@ abstract class ListSerializable<T> extends Iterable<T> {
 
   // Iterator
   @override
-  Iterator<T> get iterator => items.iterator; // Todo make a copy here
+  Iterator<T> get iterator => items.iterator; // TODO: make a copy here
 
   // Attributes and methods
   final List<T> items = [];
@@ -45,7 +43,7 @@ abstract class ListSerializable<T> extends Iterable<T> {
     items.add(item);
   }
 
-  void replace(T item, {bool notify = true}) {
+  void replace(T item) {
     items[_getIndex(item)] = item;
   }
 

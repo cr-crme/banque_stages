@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,7 +32,7 @@ class JobsPageState extends State<JobsPage> {
     if (images == null) return;
 
     for (XFile file in images) {
-      // Add to Firebase hosting
+      StorageService.uploadEnterpriseImage(file.path);
     }
   }
 
