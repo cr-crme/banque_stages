@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.crcrme_banque_stages">
+    package="ca.crcrme.banque_stages">
    <application
         android:label="crcrme_banque_stages"
         android:name="${applicationName}"
