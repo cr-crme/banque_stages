@@ -77,6 +77,12 @@ class JobsPageState extends State<JobsPage> {
     context.read<EnterprisesProvider>().addListener(_updateExpandedSections);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    context.read<EnterprisesProvider>().removeListener(_updateExpandedSections);
+  }
+
   // TODO: Separate all ExpansionPanels
   @override
   Widget build(BuildContext context) {

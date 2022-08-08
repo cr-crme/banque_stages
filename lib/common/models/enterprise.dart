@@ -63,10 +63,10 @@ class Enterprise extends ItemSerializable {
   Map<String, dynamic> serializedMap() {
     return {
       "name": name,
-      "activityTypes": activityTypes,
+      "activityTypes": activityTypes.toList(),
       "recrutedBy": recrutedBy,
       "shareWith": shareWith,
-      "jobs": jobs,
+      "jobs": jobs.serialize(),
       "contactName": contactName,
       "contactFunction": contactFunction,
       "contactPhone": contactPhone,
@@ -83,10 +83,13 @@ class Enterprise extends ItemSerializable {
   @override
   Enterprise.fromSerialized(Map<String, dynamic> map)
       : name = map['name'],
-        activityTypes = map['activityTypes'],
+        activityTypes = (map['activityTypes'] as List<dynamic>)
+            .map((e) => e.toString())
+            .toSet(),
         recrutedBy = map['recrutedBy'],
         shareWith = map['shareWith'],
-        jobs = map['jobs'],
+        jobs = JobList.fromSerialized((map['jobs'] as Map)
+            .map((key, value) => MapEntry(key.toString(), value))),
         contactName = map['contactName'],
         contactFunction = map['contactFunction'],
         contactPhone = map['contactPhone'],

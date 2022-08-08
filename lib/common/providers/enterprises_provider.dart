@@ -1,23 +1,28 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import '/common/models/enterprise.dart';
 import '/misc/custom_containers/list_provided.dart';
 
 class EnterprisesProvider extends ListProvided<Enterprise> {
   EnterprisesProvider() : super() {
-    firestoreCollectionRef.snapshots().listen((snapshot) {
-      for (var docChange in snapshot.docChanges) {
-        var enterprise = Enterprise.fromSerialized(docChange.doc.data()!);
+    databaseRef.onValue.listen((DatabaseEvent event) {
+      for (var child in event.snapshot.children) {
+        var enterprise = Enterprise.fromSerialized((child.value! as Map)
+            .map((key, value) => MapEntry(key.toString(), value)));
 
-        switch (docChange.type) {
-          case DocumentChangeType.added:
-            add(enterprise);
+        switch (event.type) {
+          case DatabaseEventType.value:
+          case DatabaseEventType.childAdded:
+            super.add(enterprise);
             break;
-          case DocumentChangeType.modified:
-            replace(enterprise);
+          case DatabaseEventType.childChanged:
+            super.replace(enterprise);
             break;
-          case DocumentChangeType.removed:
-            remove(enterprise);
+          case DatabaseEventType.childRemoved:
+            super.remove(enterprise);
+            break;
+          case DatabaseEventType.childMoved:
+            // TODO: Handle this case.
             break;
         }
       }
@@ -33,29 +38,24 @@ class EnterprisesProvider extends ListProvided<Enterprise> {
 
   @override
   void add(Enterprise item, {bool notify = true}) {
-    firestoreCollectionRef.doc(item.id).set(item.serialize());
+    databaseRef.child(item.id).set(item.serialize());
   }
 
   @override
   void replace(Enterprise item, {bool notify = true}) {
-    firestoreCollectionRef.doc(item.id).set(item.serialize());
+    databaseRef.child(item.id).set(item.serialize());
   }
 
   @override
   operator []=(value, Enterprise item) {
-    firestoreCollectionRef.doc(super[value].id).set(item.serialize());
+    databaseRef.child(super[value].id).set(item.serialize());
   }
 
   @override
   void remove(value, {bool notify = true}) {
-    firestoreCollectionRef.doc(super[value].id).delete();
+    databaseRef.child(super[value].id).remove();
   }
 
-  /// This function exists to notify listeners about changes made to the [Enterprise.jobs] attribute
-  void notifyJobsChanges() {
-    notifyListeners();
-  }
-
-  CollectionReference<Map<String, dynamic>> get firestoreCollectionRef =>
-      FirebaseFirestore.instance.collection("enterprises");
+  DatabaseReference get databaseRef =>
+      FirebaseDatabase.instance.ref("enterprises");
 }
