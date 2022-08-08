@@ -12,9 +12,10 @@ import 'screens/enterprises_list_screen.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
-  runApp(const MyApp());
-
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
