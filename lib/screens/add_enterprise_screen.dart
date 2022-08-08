@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/activity_type.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
@@ -36,7 +35,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   String? _name;
   String? _neq;
 
-  Set<ActivityType> _activityTypes = {};
+  Set<String> _activityTypes = {};
 
   String? _shareWith;
 
@@ -238,7 +237,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
               ),
               ListTile(
                 title: ActivityTypesPickerFormField(
-                  onSaved: (Set<ActivityType>? activityTypes) =>
+                  onSaved: (Set<String>? activityTypes) =>
                       setState(() => _activityTypes = activityTypes!),
                 ),
               ),

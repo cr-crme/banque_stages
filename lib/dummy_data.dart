@@ -1,4 +1,3 @@
-import '/common/models/activity_type.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
@@ -26,7 +25,7 @@ T dummyData<T>(T dataToPopulate) {
     dataToPopulate.add(
       Enterprise(
         name: "Fausse Entreprise",
-        activityTypes: {ActivityType.activity1, ActivityType.activity7},
+        activityTypes: {activityTypes[0], activityTypes[3]},
         recrutedBy: "John Doe",
         shareWith: "Tout le monde",
         jobs: jobs,
@@ -55,7 +54,7 @@ T dummyData<T>(T dataToPopulate) {
     dataToPopulate.add(
       Enterprise(
         name: "Test",
-        activityTypes: {ActivityType.activity1, ActivityType.activity7},
+        activityTypes: {activityTypes[2], activityTypes[5]},
         recrutedBy: "Nom Rectruté Par",
         shareWith: "Personne",
         jobs: jobs,

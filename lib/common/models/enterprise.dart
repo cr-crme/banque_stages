@@ -1,6 +1,5 @@
 import '/common/models/job_list.dart';
 import '/misc/custom_containers/item_serializable.dart';
-import 'activity_type.dart';
 
 class Enterprise extends ItemSerializable {
   Enterprise({
@@ -24,7 +23,7 @@ class Enterprise extends ItemSerializable {
 
   Enterprise copyWith({
     String? name,
-    Set<ActivityType>? activityTypes,
+    Set<String>? activityTypes,
     String? recrutedBy,
     String? shareWith,
     JobList? jobs,
@@ -106,7 +105,7 @@ class Enterprise extends ItemSerializable {
   }
 
   final String name;
-  final Set<ActivityType> activityTypes;
+  final Set<String> activityTypes;
   final String recrutedBy;
   final String shareWith;
 
@@ -125,3 +124,15 @@ class Enterprise extends ItemSerializable {
   final String headquartersAddress;
   final String neq;
 }
+
+const List<String> activityTypes = [
+  "Activity Type 1",
+  "Activity Type 2",
+  "Activity Type 3",
+  "Activity Type 4",
+  "Activity Type 5",
+  "Test",
+  "A Test",
+  "B Test",
+  "C Test"
+];

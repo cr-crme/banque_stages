@@ -1,15 +1,15 @@
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 
-import '/common/models/activity_type.dart';
+import '/common/models/enterprise.dart';
 import '/common/widgets/activity_type_cards.dart';
 
-class ActivityTypesPickerFormField extends FormField<Set<ActivityType>> {
+class ActivityTypesPickerFormField extends FormField<Set<String>> {
   ActivityTypesPickerFormField({
     Key? key,
-    Set<ActivityType>? initialValue,
-    void Function(Set<ActivityType>? activityTypes)? onSaved,
-    String? Function(Set<ActivityType>? activityTypes)? validator,
+    Set<String>? initialValue,
+    void Function(Set<String>? activityTypes)? onSaved,
+    String? Function(Set<String>? activityTypes)? validator,
   }) : super(
           key: key,
           initialValue: initialValue ?? {},
@@ -18,19 +18,19 @@ class ActivityTypesPickerFormField extends FormField<Set<ActivityType>> {
           builder: _builder,
         );
 
-  static String? _validator(Set<ActivityType>? activityTypes) {
+  static String? _validator(Set<String>? activityTypes) {
     if (activityTypes!.isEmpty) return "Il faut au moins un type d'activité";
 
     return null;
   }
 
-  static Widget _builder(FormFieldState<Set<ActivityType>> state) {
-    final GlobalKey<AutoCompleteTextFieldState<ActivityType>> autoCompleteKey =
+  static Widget _builder(FormFieldState<Set<String>> state) {
+    final GlobalKey<AutoCompleteTextFieldState<String>> autoCompleteKey =
         GlobalKey();
 
     return Column(
       children: [
-        AutoCompleteTextField<ActivityType>(
+        AutoCompleteTextField<String>(
           decoration: InputDecoration(
               labelText: "* Types d'activité", errorText: state.errorText),
           key: autoCompleteKey,
@@ -38,7 +38,7 @@ class ActivityTypesPickerFormField extends FormField<Set<ActivityType>> {
             state.value!.add(activityType);
             state.didChange(state.value);
           },
-          suggestions: ActivityType.values,
+          suggestions: activityTypes,
           itemBuilder: (context, suggestion) =>
               ListTile(title: Text(suggestion.toString())),
           itemSorter: (a, b) => a.toString().compareTo(b.toString()),

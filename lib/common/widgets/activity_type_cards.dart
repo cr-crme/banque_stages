@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/activity_type.dart';
-
 class ActivityTypeCards extends StatelessWidget {
   const ActivityTypeCards({
     Key? key,
@@ -9,8 +7,8 @@ class ActivityTypeCards extends StatelessWidget {
     this.onDeleted,
   }) : super(key: key);
 
-  final Set<ActivityType> activityTypes;
-  final void Function(ActivityType activityType)? onDeleted;
+  final Set<String> activityTypes;
+  final void Function(String activityType)? onDeleted;
 
   @override
   Widget build(BuildContext context) {
