@@ -5,33 +5,21 @@ import '/misc/custom_containers/list_provided.dart';
 
 class EnterprisesProvider extends ListProvided<Enterprise> {
   EnterprisesProvider() : super() {
-    listRef.get().then((snapshot) async {
-      bool notify = false;
+    listRef.onChildAdded.listen((DatabaseEvent event) {
+      String id = event.snapshot.key!;
+      dataRef.child(id).get().then(
+            (data) => super.add(
+              Enterprise.fromSerialized(data.value! as Map),
+            ),
+          );
 
-      for (var child in snapshot.children) {
-        var data = await dataRef.child(child.key!).get();
+      // Listen to data changes
+      dataRef.child(id).onChildChanged.listen((DatabaseEvent event) {
+        var map = this[id].serialize();
+        map[event.snapshot.key!] = event.snapshot.value;
 
-        var enterprise = Enterprise.fromSerialized((data.value! as Map)
-            .map((key, value) => MapEntry(key.toString(), value)));
-
-        super.add(enterprise, notify: false);
-        notify = true;
-      }
-
-      if (notify) notifyListeners();
-    });
-
-    listRef.onChildAdded.listen((DatabaseEvent event) async {
-      if (any((enterprise) => enterprise.id == event.snapshot.key!)) return;
-      var data = await dataRef.child(event.snapshot.key!).get();
-
-      // TODO: Remove this check
-      if (any((enterprise) => enterprise.id == event.snapshot.key!)) return;
-
-      var enterprise = Enterprise.fromSerialized((data.value! as Map)
-          .map((key, value) => MapEntry(key.toString(), value)));
-
-      super.add(enterprise);
+        replace(Enterprise.fromSerialized(map));
+      });
     });
 
     listRef.onChildRemoved.listen((DatabaseEvent event) {
