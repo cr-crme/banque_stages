@@ -74,13 +74,11 @@ class JobsPageState extends State<JobsPage> {
   void initState() {
     super.initState();
     _updateExpandedSections();
-    context.read<EnterprisesProvider>().addListener(_updateExpandedSections);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    context.read<EnterprisesProvider>().removeListener(_updateExpandedSections);
+    context.read<EnterprisesProvider>().addListener(() {
+      if (mounted) {
+        _updateExpandedSections();
+      }
+    });
   }
 
   // TODO: Separate all ExpansionPanels
