@@ -5,29 +5,37 @@ import '/misc/custom_containers/list_provided.dart';
 
 class EnterprisesProvider extends ListProvided<Enterprise> {
   EnterprisesProvider() : super() {
-    databaseRef.onValue.listen((DatabaseEvent event) {
-      for (var child in event.snapshot.children) {
-        var enterprise = Enterprise.fromSerialized((child.value! as Map)
+    listRef.get().then((snapshot) async {
+      bool notify = false;
+
+      for (var child in snapshot.children) {
+        var data = await dataRef.child(child.key!).get();
+
+        var enterprise = Enterprise.fromSerialized((data.value! as Map)
             .map((key, value) => MapEntry(key.toString(), value)));
 
-        switch (event.type) {
-          case DatabaseEventType.value:
-          case DatabaseEventType.childAdded:
-            super.add(enterprise);
-            break;
-          case DatabaseEventType.childChanged:
-            super.replace(enterprise);
-            break;
-          case DatabaseEventType.childRemoved:
-            super.remove(enterprise);
-            break;
-          case DatabaseEventType.childMoved:
-            // TODO: Handle this case.
-            break;
-        }
+        super.add(enterprise, notify: false);
+        notify = true;
       }
 
-      notifyListeners();
+      if (notify) notifyListeners();
+    });
+
+    listRef.onChildAdded.listen((DatabaseEvent event) async {
+      if (any((enterprise) => enterprise.id == event.snapshot.key!)) return;
+      var data = await dataRef.child(event.snapshot.key!).get();
+
+      // TODO: Remove this check
+      if (any((enterprise) => enterprise.id == event.snapshot.key!)) return;
+
+      var enterprise = Enterprise.fromSerialized((data.value! as Map)
+          .map((key, value) => MapEntry(key.toString(), value)));
+
+      super.add(enterprise);
+    });
+
+    listRef.onChildRemoved.listen((DatabaseEvent event) {
+      super.remove(event.snapshot.key!);
     });
   }
 
@@ -38,24 +46,27 @@ class EnterprisesProvider extends ListProvided<Enterprise> {
 
   @override
   void add(Enterprise item, {bool notify = true}) {
-    databaseRef.child(item.id).set(item.serialize());
+    dataRef.child(item.id).set(item.serialize());
+    listRef.child(item.id).set(true);
   }
 
   @override
   void replace(Enterprise item, {bool notify = true}) {
-    databaseRef.child(item.id).set(item.serialize());
+    dataRef.child(item.id).set(item.serialize());
   }
 
   @override
   operator []=(value, Enterprise item) {
-    databaseRef.child(super[value].id).set(item.serialize());
+    dataRef.child(super[value].id).set(item.serialize());
   }
 
   @override
   void remove(value, {bool notify = true}) {
-    databaseRef.child(super[value].id).remove();
+    listRef.child(super[value].id).remove();
+    dataRef.child(super[value].id).remove();
   }
 
-  DatabaseReference get databaseRef =>
-      FirebaseDatabase.instance.ref("enterprises");
+  DatabaseReference get listRef =>
+      FirebaseDatabase.instance.ref("enterprises-list");
+  DatabaseReference get dataRef => FirebaseDatabase.instance.ref("enterprises");
 }
