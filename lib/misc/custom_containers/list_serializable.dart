@@ -9,8 +9,8 @@ class TypeException implements Exception {
 abstract class ListSerializable<T> extends Iterable<T> {
   // Constructors and (de)serializer
   ListSerializable();
-  ListSerializable.fromSerialized(Map<String, dynamic> map) {
-    deserialize(map);
+  ListSerializable.fromSerialized(Map map) {
+    deserialize(map.map((key, value) => MapEntry(key.toString(), value)));
   }
 
   Map<String, dynamic> serialize() {

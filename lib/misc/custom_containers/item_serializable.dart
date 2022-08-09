@@ -7,7 +7,7 @@ abstract class ItemSerializable {
   ItemSerializable({id}) : id = id ?? _counter.toString() {
     _counter += 1;
   }
-  ItemSerializable.fromSerialized(Map<String, dynamic> map)
+  ItemSerializable.fromSerialized(Map map)
       : id = map['id'] ?? Random().hashCode.toString();
 
   Map<String, dynamic> serializedMap();
