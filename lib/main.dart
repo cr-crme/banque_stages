@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:crcrme_banque_stages/crcrme_material_theme/lib/crcrme_material_theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +19,15 @@ import 'screens/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  const useFirebaseEmulators = true;
+
+  if (useFirebaseEmulators) {
+    FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
+    FirebaseDatabase.instance.useDatabaseEmulator(
+        Platform.isAndroid ? "10.0.2.2" : "localhost", 9000);
+    FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
+  }
 
   runApp(const MyApp());
 }

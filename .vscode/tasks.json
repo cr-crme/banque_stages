@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Firebase Emulator",
+            "command": "firebase emulators:start", // TODO: Import/export data
+            "type": "shell",
+            "presentation": {
+                "reveal": "always",
+                "close": true,
+                "clear": true
+            }
+        }
+    ]
+}
