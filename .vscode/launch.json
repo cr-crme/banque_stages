@@ -8,7 +8,7 @@
             "name": "Banque de Stages",
             "request": "launch",
             "type": "dart",
-            "preLaunchTask": "Open Firebase Emulator's Console"
+            "preLaunchTask": "Run Firebase Emulator"
         }
     ]
 }
