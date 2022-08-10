@@ -9,7 +9,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/providers/auth_provider.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/screens/login_screen.dart';
 import 'dummy_data.dart';
 import 'firebase_options.dart';
 import 'screens/add_enterprise_screen.dart';
@@ -40,6 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(
             create: (context) => dummyData(EnterprisesProvider())),
       ],
@@ -49,6 +52,7 @@ class MyApp extends StatelessWidget {
         initialRoute: HomeScreen.route,
         routes: {
           HomeScreen.route: (context) => const HomeScreen(),
+          LoginScreen.route: (context) => const LoginScreen(),
           EnterprisesListScreen.route: (context) =>
               const EnterprisesListScreen(),
           AddEnterpriseScreen.route: (context) => const AddEnterpriseScreen(),
