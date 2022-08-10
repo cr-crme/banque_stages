@@ -27,8 +27,8 @@ class JobsPageState extends State<JobsPage> {
   void addJob() {}
 
   void _addImage(Job job) async {
-    var provider = context.read<EnterprisesProvider>();
-    List<XFile>? images = await ImagePicker().pickMultiImage();
+    final provider = context.read<EnterprisesProvider>();
+    final images = await ImagePicker().pickMultiImage();
 
     if (images == null) return;
 
