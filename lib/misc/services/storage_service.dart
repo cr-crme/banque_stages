@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nanoid/nanoid.dart';
 import 'package:path/path.dart';
 
 abstract class StorageService {
@@ -12,7 +12,7 @@ abstract class StorageService {
 
   static Future<String> _uploadFile(String destination, File file) async {
     var ref = FirebaseStorage.instance.ref(destination +
-        Random().nextDouble().hashCode.toString() +
+        nanoid() +
         file.hashCode.toString() +
         extension(file.path));
 
