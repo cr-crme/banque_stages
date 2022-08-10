@@ -1,4 +1,3 @@
-import 'package:crcrme_banque_stages/common/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,6 +7,7 @@ import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/low_high_slider_form_field.dart';
+import '/misc/services/storage_service.dart';
 
 class JobsPage extends StatefulWidget {
   const JobsPage({
@@ -27,13 +27,17 @@ class JobsPageState extends State<JobsPage> {
   void addJob() {}
 
   void _addImage(Job job) async {
+    var provider = context.read<EnterprisesProvider>();
     List<XFile>? images = await ImagePicker().pickMultiImage();
 
     if (images == null) return;
 
     for (XFile file in images) {
-      StorageService.uploadEnterpriseImage(file.path);
+      var url = await StorageService.uploadJobImage(file);
+      job.pictures.add(url);
     }
+
+    provider.replace(widget.enterprise);
   }
 
   void _updateExpandedSections() {
@@ -118,19 +122,24 @@ class JobsPageState extends State<JobsPage> {
                           ),
                           body: Padding(
                             padding: const EdgeInsets.only(bottom: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: job.pictures.isEmpty
-                                  ? [const Text("Aucune image disponible")]
-                                  : job.pictures
-                                      .map(
-                                        (url) => Image.network(
-                                          url,
-                                          width: 240,
-                                          height: 180,
-                                        ),
-                                      )
-                                      .toList(),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: job.pictures.isEmpty
+                                    ? [const Text("Aucune image disponible")]
+                                    : job.pictures
+                                        .map(
+                                          // TODO: Make images clicables and deletables
+                                          (url) => Card(
+                                            child: Image.network(
+                                              url,
+                                              height: 250,
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                              ),
                             ),
                           ),
                         ),
