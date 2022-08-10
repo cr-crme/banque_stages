@@ -88,7 +88,8 @@ class AboutPageState extends State<AboutPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         TextFormField(
-                          initialValue: widget.enterprise.name,
+                          controller: TextEditingController(
+                              text: widget.enterprise.name),
                           decoration: const InputDecoration(
                             labelText: "Nom de l'entreprise",
                           ),
