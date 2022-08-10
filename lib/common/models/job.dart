@@ -118,28 +118,32 @@ class Job extends ItemSerializable {
         specialization = map['specialization'],
         totalSlot = map['totalSlot'],
         occupiedSlot = map['occupiedSlot'],
-        pictures = map['pictures'] ?? [],
+        pictures = _handleSerializedList(map['pictures']),
         taskVariety = map['taskVariety'],
-        skillsRequired = map['skillsRequired'] ?? [],
+        skillsRequired = _handleSerializedList(map['skillsRequired']),
         autonomyExpected = map['autonomyExpected'],
         efficiencyWanted = map['efficiencyWanted'],
         welcomingTSA = map['welcomingTSA'],
         welcomingCommunication = map['welcomingCommunication'],
         welcomingMentalDeficiency = map['welcomingMentalDeficiency'],
         welcomingMentalHealthIssue = map['welcomingMentalHealthIssue'],
-        equipmentRequired = map['equipmentRequired'] ?? [],
-        dangerousSituations = map['dangerousSituations'] ?? [],
-        pastWounds = map['pastWounds'] ?? [],
-        pastIncidents = map['pastIncidents'] ?? [],
+        equipmentRequired = _handleSerializedList(map['equipmentRequired']),
+        dangerousSituations = _handleSerializedList(map['dangerousSituations']),
+        pastWounds = _handleSerializedList(map['pastWounds']),
+        pastIncidents = _handleSerializedList(map['pastIncidents']),
         minimalAge = map['minimalAge'],
         uniform = map['uniform'],
-        requiredForJob = map['requiredForJob'] ?? [],
-        comments = map['comments'] ?? [],
+        requiredForJob = _handleSerializedList(map['requiredForJob']),
+        comments = _handleSerializedList(map['comments']),
         super.fromSerialized(map);
 
   @override
   ItemSerializable deserializeItem(Map<String, dynamic> map) {
     return Job.fromSerialized(map);
+  }
+
+  static List<String> _handleSerializedList(List? list) {
+    return (list ?? []).map((e) => e.toString()).toList();
   }
 
   final String activitySector;
