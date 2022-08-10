@@ -14,20 +14,18 @@ abstract class ListSerializable<T> extends Iterable<T> {
   }
 
   Map<String, dynamic> serialize() {
-    final serializedItem = [];
-    for (var element in items as List<ItemSerializable>) {
-      serializedItem.add(element.serialize());
+    final serializedItem = <String, dynamic>{};
+    for (final element in items as List<ItemSerializable>) {
+      serializedItem[element.id] = element.serialize();
     }
-    return {
-      'items': serializedItem,
-    };
+    return serializedItem;
   }
 
   T deserializeItem(map);
 
   void deserialize(Map<String, dynamic> map) {
     items.clear();
-    for (var element in map['items']) {
+    for (var element in map.values) {
       items.add(deserializeItem(element));
     }
   }

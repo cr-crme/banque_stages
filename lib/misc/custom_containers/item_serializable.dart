@@ -1,14 +1,11 @@
-import 'dart:math';
+import 'package:nanoid/nanoid.dart';
 
 abstract class ItemSerializable {
-  static int _counter = 0;
   final String id;
 
-  ItemSerializable({id}) : id = id ?? _counter.toString() {
-    _counter += 1;
-  }
-  ItemSerializable.fromSerialized(Map map)
-      : id = map['id'] ?? Random().hashCode.toString();
+  ItemSerializable({String? id}) : id = id ?? nanoid();
+
+  ItemSerializable.fromSerialized(Map map) : id = map['id'] ?? nanoid();
 
   Map<String, dynamic> serializedMap();
   Map<String, dynamic> serialize() {
