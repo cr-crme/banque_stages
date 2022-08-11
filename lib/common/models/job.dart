@@ -1,4 +1,4 @@
-import '/misc/custom_containers/item_serializable.dart';
+import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
 
 class Job extends ItemSerializable {
   Job({

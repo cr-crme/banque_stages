@@ -1,5 +1,7 @@
+import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
+
 import '/common/models/job_list.dart';
-import '/misc/custom_containers/item_serializable.dart';
+
 
 class Enterprise extends ItemSerializable {
   Enterprise({

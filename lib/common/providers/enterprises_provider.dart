@@ -1,5 +1,6 @@
+import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/list_firebase.dart';
+
 import '/common/models/enterprise.dart';
-import '/misc/custom_containers/list_firebase.dart';
 
 class EnterprisesProvider extends ListFirebase<Enterprise> {
   EnterprisesProvider()
