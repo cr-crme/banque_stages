@@ -1,69 +1,94 @@
-import './item_serializable.dart';
+import '../exceptions.dart';
+import 'item_serializable.dart';
 
-bool isInteger(num value) => (value % 1) == 0;
-
-class TypeException implements Exception {
-  final String message;
-
-  const TypeException(this.message);
-}
-
+/// An iterable [Map] that is made to handle [ItemSerializable].
+///
+/// It allows to serialize and deserialize the whole map easily with [serialize] and [MapSerializable.fromSerialized].
+///
+/// Written by: @pariterre and @Guibi1
 abstract class MapSerializable<T> extends Iterable<MapEntry<String, T>> {
-  // Constructors and (de)serializer
-  final Map<String, T> items = {};
+  /// Creates an empty [MapSerializable].
   MapSerializable();
+
+  /// Creates a [MapSerializable] from a map of serialized items.
   MapSerializable.fromSerialized(Map<String, dynamic> map) {
     deserialize(map);
   }
 
+  /// Serializes all of its items into a single map.
   Map<String, dynamic> serialize() {
-    final serializedItem = {};
-    items.forEach((key, element) =>
-        serializedItem[key] = (element as ItemSerializable).serialize());
-    return {
-      'items': serializedItem,
-    };
+    final serializedItem = <String, dynamic>{};
+    _items.forEach((key, element) {
+      serializedItem[key] = (element as ItemSerializable).serialize();
+    });
+    return serializedItem;
   }
 
-  T deserializeItem(Map<String, dynamic> map);
+  /// Returns a new [T] from the provided serialized data.
+  T deserializeItem(data);
 
+  /// Deserializes a map of items with the help of [deserializeItem].
   void deserialize(Map<String, dynamic> map) {
-    items.clear();
+    _items.clear();
     map['items']!.forEach((key, element) {
-      items[key] = deserializeItem(element);
+      _items[key] = deserializeItem(element);
     });
   }
 
-  // Iterator
-  @override
-  Iterator<MapEntry<String, T>> get iterator =>
-      items.entries.iterator; // Todo make a copy here
+  /// Adds [item] to the map, extending the length by one.
+  ///
+  /// This method accepts a [String] as a [key] or an [ItemSerializable], where its id is going to be used.
+  void add(T item) {
+    this[_getKey(item)] = item;
+  }
 
-  // Attributes and methods
-  void add(key, T item) => this[key] = item;
-  void replace(key, T item) => this[key] = item;
+  /// Updates the value of [item].
+  ///
+  /// This only works when the ids of the new and old value are identical.
+  void replace(T item) {
+    this[_getKey(item)] = item;
+  }
 
+  /// Sets the value of the item to [item] at the specified location.
+  ///
+  /// This method accepts a [String] as a [key] or an [ItemSerializable], where its id is going to be used.
   void operator []=(key, T item) {
-    if (key is ItemSerializable) {
-      items[key.id] = item;
-    } else {
-      items[key] = item;
-    }
+    _items[_getKey(key)] = item;
   }
 
+  /// Returns the item at the location specified by [key].
+  ///
+  /// This method accepts a [String] as a [key] or an [ItemSerializable], where its id is going to be used.
   T? operator [](key) {
-    if (key is ItemSerializable) {
-      return items[key.id];
+    return _items[_getKey(key)];
+  }
+
+  /// Removes a single item from the list.
+  ///
+  /// This method accepts a [String] as a [value] or an [ItemSerializable], where its id is going to be used.
+  void remove(value) {
+    _items.remove(_getKey(value));
+  }
+
+  /// Removes all objects from this map; the length of the map becomes zero.
+  void clear() {
+    _items.clear();
+  }
+
+  /// Returns the key represented by [value] using different methods depending of its type.
+  String _getKey(value) {
+    if (value is String) {
+      return value;
+    } else if (value is ItemSerializable) {
+      return value.id;
     } else {
-      return items[key];
+      throw const TypeException(
+          'Wrong type for getting an element of the map.');
     }
   }
 
-  void remove(key) {
-    items.remove(key);
-  }
+  final Map<String, T> _items = {};
 
-  void clear() {
-    items.clear();
-  }
+  @override
+  Iterator<MapEntry<String, T>> get iterator => _items.entries.iterator;
 }

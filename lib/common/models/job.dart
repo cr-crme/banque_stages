@@ -113,7 +113,7 @@ class Job extends ItemSerializable {
     };
   }
 
-  Job.fromSerialized(Map map)
+  Job.fromSerialized(Map<String, dynamic> map)
       : activitySector = map['activitySector'],
         specialization = map['specialization'],
         totalSlot = map['totalSlot'],

@@ -81,13 +81,14 @@ class Enterprise extends ItemSerializable {
   }
 
   @override
-  Enterprise.fromSerialized(Map map)
+  Enterprise.fromSerialized(Map<String, dynamic> map)
       : name = map['name'],
         activityTypes =
             (map['activityTypes'] as List).map((e) => e.toString()).toSet(),
         recrutedBy = map['recrutedBy'],
         shareWith = map['shareWith'],
-        jobs = JobList.fromSerialized(map['jobs']),
+        jobs = JobList.fromSerialized((map['jobs'] as Map)
+            .map((key, value) => MapEntry(key.toString(), value))),
         contactName = map['contactName'],
         contactFunction = map['contactFunction'],
         contactPhone = map['contactPhone'],

@@ -3,10 +3,11 @@ import '/misc/custom_containers/list_firebase.dart';
 
 class EnterprisesProvider extends ListFirebase<Enterprise> {
   EnterprisesProvider()
-      : super(idListPath: "enterprises-list", dataPath: "enterprises");
+      : super(availableIdsPath: "enterprises-list", dataPath: "enterprises");
 
   @override
-  Enterprise deserializeItem(map) {
-    return Enterprise.fromSerialized(map);
+  Enterprise deserializeItem(data) {
+    return Enterprise.fromSerialized(
+        (data as Map).map((key, value) => MapEntry(key.toString(), value)));
   }
 }
