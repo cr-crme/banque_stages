@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import '/common/providers/auth_provider.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/screens/login_screen.dart';
-import 'dummy_data.dart';
 import 'firebase_options.dart';
 import 'screens/add_enterprise_screen.dart';
 import 'screens/enterprise/enterprise_screen.dart';
@@ -43,15 +42,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
-        ChangeNotifierProvider(
-            create: (context) => dummyData(EnterprisesProvider())),
+        ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
       ],
       child: MaterialApp(
         title: 'Banque de Stages',
         theme: crcrmeMaterialTheme,
         initialRoute: HomeScreen.route,
+        home: const HomeScreen(),
         routes: {
-          HomeScreen.route: (context) => const HomeScreen(),
           LoginScreen.route: (context) => const LoginScreen(),
           EnterprisesListScreen.route: (context) =>
               const EnterprisesListScreen(),
