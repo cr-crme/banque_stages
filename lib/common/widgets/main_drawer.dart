@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,8 +19,33 @@ class MainDrawer extends StatelessWidget {
             child: Column(
               children: [
                 const _DrawerItem(
+                  titleText: "Accueil",
+                  icon: Icon(Icons.home_rounded),
+                  route: HomeScreen.route,
+                ),
+                const _DrawerItem(
+                  titleText: "Mes élèves",
+                  icon: Icon(Icons.school_rounded),
+                  route: EnterprisesListScreen.route,
+                ),
+                const _DrawerItem(
                   titleText: "Toutes les entreprises",
-                  icon: Icon(Icons.business_center),
+                  icon: Icon(Icons.business_center_rounded),
+                  route: EnterprisesListScreen.route,
+                ),
+                const _DrawerItem(
+                  titleText: "Documents",
+                  icon: Icon(Icons.document_scanner_rounded),
+                  route: EnterprisesListScreen.route,
+                ),
+                const _DrawerItem(
+                  titleText: "Tableau des supervisions",
+                  icon: Icon(Icons.table_chart_rounded),
+                  route: EnterprisesListScreen.route,
+                ),
+                const _DrawerItem(
+                  titleText: "Référentiel SST",
+                  icon: Icon(Icons.warning_rounded),
                   route: EnterprisesListScreen.route,
                 ),
                 provider.currentUser == null
