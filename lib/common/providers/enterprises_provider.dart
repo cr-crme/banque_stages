@@ -1,8 +1,8 @@
-import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/list_firebase.dart';
+import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/firebase_list_provided.dart';
 
 import '/common/models/enterprise.dart';
 
-class EnterprisesProvider extends ListFirebase<Enterprise> {
+class EnterprisesProvider extends FirebaseListProvided<Enterprise> {
   EnterprisesProvider()
       : super(availableIdsPath: "enterprises-list", dataPath: "enterprises");
 
