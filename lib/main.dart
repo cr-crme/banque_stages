@@ -22,14 +22,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  const useFirebaseEmulators = true;
-
-  if (useFirebaseEmulators) {
+  // Connect Firebase to local emulators
+  assert(() {
     FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
     FirebaseDatabase.instance.useDatabaseEmulator(
         !kIsWeb && Platform.isAndroid ? "10.0.2.2" : "localhost", 9000);
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
-  }
+    return true;
+  }());
 
   runApp(const MyApp());
 }
