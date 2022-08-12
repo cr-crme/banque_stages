@@ -1,14 +1,14 @@
+import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/firebase_list_provided.dart';
+
 import '/common/models/enterprise.dart';
-import '/misc/custom_containers/list_provided.dart';
 
-class EnterprisesProvider extends ListProvided<Enterprise> {
+class EnterprisesProvider extends FirebaseListProvided<Enterprise> {
+  EnterprisesProvider()
+      : super(availableIdsPath: "enterprises-list", dataPath: "enterprises");
+
   @override
-  Enterprise deserializeItem(map) {
-    return Enterprise.fromSerialized(map);
-  }
-
-  /// This function exists to notify listeners about changes made to the [Enterprise.jobs] attribute
-  void notifyJobsChanges() {
-    notifyListeners();
+  Enterprise deserializeItem(data) {
+    return Enterprise.fromSerialized(
+        (data as Map).map((key, value) => MapEntry(key.toString(), value)));
   }
 }

@@ -96,7 +96,8 @@ class ContactPageState extends State<ContactPage> {
               child: Column(
                 children: [
                   TextFormField(
-                    initialValue: widget.enterprise.contactName,
+                    controller: TextEditingController(
+                        text: widget.enterprise.contactName),
                     decoration: const InputDecoration(labelText: "* Nom"),
                     enabled: _editing,
                     validator: (text) {
@@ -109,7 +110,8 @@ class ContactPageState extends State<ContactPage> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                    initialValue: widget.enterprise.contactFunction,
+                    controller: TextEditingController(
+                        text: widget.enterprise.contactFunction),
                     decoration: const InputDecoration(labelText: "* Fonction"),
                     enabled: _editing,
                     validator: (text) {
@@ -122,7 +124,8 @@ class ContactPageState extends State<ContactPage> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                    initialValue: widget.enterprise.contactPhone,
+                    controller: TextEditingController(
+                        text: widget.enterprise.contactPhone),
                     decoration: const InputDecoration(
                       icon: Icon(Icons.phone),
                       labelText: "* Téléphone",
@@ -142,7 +145,8 @@ class ContactPageState extends State<ContactPage> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                    initialValue: widget.enterprise.contactEmail,
+                    controller: TextEditingController(
+                        text: widget.enterprise.contactEmail),
                     decoration: const InputDecoration(
                       icon: Icon(Icons.mail),
                       labelText: "* Courriel",
@@ -174,28 +178,32 @@ class ContactPageState extends State<ContactPage> {
               child: Column(
                 children: [
                   TextFormField(
-                    initialValue: widget.enterprise.address,
+                    controller:
+                        TextEditingController(text: widget.enterprise.address),
                     decoration: const InputDecoration(labelText: "Adresse"),
                     enabled: _editing,
                     onSaved: (address) => _address = address,
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                    initialValue: widget.enterprise.phone,
+                    controller:
+                        TextEditingController(text: widget.enterprise.phone),
                     decoration: const InputDecoration(labelText: "Téléphone"),
                     enabled: _editing,
                     onSaved: (phone) => _phone = phone,
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                    initialValue: widget.enterprise.fax,
+                    controller:
+                        TextEditingController(text: widget.enterprise.fax),
                     decoration: const InputDecoration(labelText: "Télécopieur"),
                     enabled: _editing,
                     onSaved: (fax) => _fax = fax,
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                    initialValue: widget.enterprise.website,
+                    controller:
+                        TextEditingController(text: widget.enterprise.website),
                     decoration: const InputDecoration(labelText: "Site web"),
                     enabled: _editing,
                     onSaved: (website) => _website = website,
@@ -215,7 +223,8 @@ class ContactPageState extends State<ContactPage> {
                 Visibility(
                   visible: !_addressesAreIdentical,
                   child: TextFormField(
-                    initialValue: widget.enterprise.headquartersAddress,
+                    controller: TextEditingController(
+                        text: widget.enterprise.headquartersAddress),
                     decoration: const InputDecoration(
                         labelText: "Adresse du siège social"),
                     enabled: _editing && !_addressesAreIdentical,
@@ -244,7 +253,8 @@ class ContactPageState extends State<ContactPage> {
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
-                  initialValue: widget.enterprise.neq,
+                  controller:
+                      TextEditingController(text: widget.enterprise.neq),
                   decoration: const InputDecoration(labelText: "NEQ"),
                   enabled: _editing,
                   onSaved: (neq) => _neq = neq,

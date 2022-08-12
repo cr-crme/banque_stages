@@ -11,20 +11,23 @@ PODS:
     - Firebase/CoreOnly
     - FirebaseStorage (~> 9.3.0)
   - firebase_auth (3.6.2):
-    - Firebase/Auth (= 9.3.0)
+    - Firebase/Auth (~> 9.3.0)
+    - Firebase/CoreOnly (~> 9.3.0)
     - firebase_core
-    - Flutter
+    - FlutterMacOS
   - firebase_core (1.20.0):
-    - Firebase/CoreOnly (= 9.3.0)
-    - Flutter
+    - Firebase/CoreOnly (~> 9.3.0)
+    - FlutterMacOS
   - firebase_database (9.1.0):
-    - Firebase/Database (= 9.3.0)
+    - Firebase/CoreOnly (~> 9.3.0)
+    - Firebase/Database (~> 9.3.0)
     - firebase_core
-    - Flutter
+    - FlutterMacOS
   - firebase_storage (10.3.4):
-    - Firebase/Storage (= 9.3.0)
+    - Firebase/CoreOnly (~> 9.3.0)
+    - Firebase/Storage (~> 9.3.0)
     - firebase_core
-    - Flutter
+    - FlutterMacOS
   - FirebaseAppCheckInterop (9.4.0)
   - FirebaseAuth (9.3.0):
     - FirebaseCore (~> 9.0)
@@ -58,7 +61,7 @@ PODS:
   - FirebaseStorageInternal (9.4.0):
     - FirebaseCore (~> 9.0)
     - GTMSessionFetcher/Core (< 3.0, >= 1.7)
-  - Flutter (1.0.0)
+  - FlutterMacOS (1.0.0)
   - GoogleDataTransport (9.2.0):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
@@ -79,8 +82,6 @@ PODS:
   - GoogleUtilities/Reachability (7.7.0):
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (2.0.0)
-  - image_picker_ios (0.0.1):
-    - Flutter
   - leveldb-library (1.22.1)
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
@@ -90,12 +91,11 @@ PODS:
   - PromisesObjC (2.1.1)
 
 DEPENDENCIES:
-  - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
-  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
-  - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
-  - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
-  - Flutter (from `Flutter`)
-  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - firebase_auth (from `Flutter/ephemeral/.symlinks/plugins/firebase_auth/macos`)
+  - firebase_core (from `Flutter/ephemeral/.symlinks/plugins/firebase_core/macos`)
+  - firebase_database (from `Flutter/ephemeral/.symlinks/plugins/firebase_database/macos`)
+  - firebase_storage (from `Flutter/ephemeral/.symlinks/plugins/firebase_storage/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
 
 SPEC REPOS:
   trunk:
@@ -119,24 +119,22 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   firebase_auth:
-    :path: ".symlinks/plugins/firebase_auth/ios"
+    :path: Flutter/ephemeral/.symlinks/plugins/firebase_auth/macos
   firebase_core:
-    :path: ".symlinks/plugins/firebase_core/ios"
+    :path: Flutter/ephemeral/.symlinks/plugins/firebase_core/macos
   firebase_database:
-    :path: ".symlinks/plugins/firebase_database/ios"
+    :path: Flutter/ephemeral/.symlinks/plugins/firebase_database/macos
   firebase_storage:
-    :path: ".symlinks/plugins/firebase_storage/ios"
-  Flutter:
-    :path: Flutter
-  image_picker_ios:
-    :path: ".symlinks/plugins/image_picker_ios/ios"
+    :path: Flutter/ephemeral/.symlinks/plugins/firebase_storage/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
 
 SPEC CHECKSUMS:
   Firebase: ef75abb1cdbc746d5a38f4e26c422c807b189b8c
-  firebase_auth: e4bd9a01f6c45764bf3bfb0cea4d5ce3673a92a2
-  firebase_core: 96214f90497b808a2cf2a24517084c5f6de37b53
-  firebase_database: 7c4734c0eeecc1bf85c08ca7aff634ce847fb8d7
-  firebase_storage: e95ec41580e311cb30b1ed7459b9e94fb4bbe672
+  firebase_auth: dc02cb252e349707c7d451fbc61b165b13c13299
+  firebase_core: 30cff5dc3d110360ba97895b6bdb6fe70b4b4060
+  firebase_database: 145800fe6e521c62e839ab2bb5c38d8850348e0a
+  firebase_storage: cd91b8c962f715175e744d0673dad9bbc056e37f
   FirebaseAppCheckInterop: 63119cdfc94b16c3e9421513c17f597aee2ea225
   FirebaseAuth: 9ebc3577fe0acf9092df21ac314024b70aebf21e
   FirebaseAuthInterop: 826d3d772b554e3675ceaab8c665008277ca9d1c
@@ -147,15 +145,14 @@ SPEC CHECKSUMS:
   FirebaseDatabase: 92350185966ddd283842aa9ca07e188691f3b8ad
   FirebaseStorage: 1414d27e15fa04f6350ef6602accef0e951c8bca
   FirebaseStorageInternal: 425c7dc7de44d9b7e07a9f8d6515bab0f1266b87
-  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GTMSessionFetcher: 681175626052e03fdde7952f7e9c7a9785719506
-  image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
 
-PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
+PODFILE CHECKSUM: c7161fcf45d4fd9025dc0f48a76d6e64e52f8176
 
 COCOAPODS: 1.11.3

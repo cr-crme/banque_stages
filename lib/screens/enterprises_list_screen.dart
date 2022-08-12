@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/dummy_data.dart';
 import 'add_enterprise_screen.dart';
 import 'enterprise/enterprise_screen.dart';
 
@@ -51,8 +52,8 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
                 onChanged: (value) =>
                     setState(() => _hideNotAvailable = value)),
             Consumer<EnterprisesProvider>(
-              builder: (context, enterprisesProvider, child) => Column(
-                children: enterprisesProvider
+              builder: (context, enterprises, child) => Column(
+                children: enterprises
                     .map(
                       (enterprise) => ListTile(
                         title: Text(enterprise.name),
@@ -74,6 +75,14 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
                       ),
                     )
                     .toList(),
+              ),
+            ),
+            Consumer<EnterprisesProvider>(
+              builder: (context, enterprises, child) => Visibility(
+                visible: enterprises.isEmpty,
+                child: ElevatedButton(
+                    onPressed: () => addDummyEnterprises(enterprises),
+                    child: const Text("Add dummy enterprises")),
               ),
             ),
           ],

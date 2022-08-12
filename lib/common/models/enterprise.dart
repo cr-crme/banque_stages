@@ -1,6 +1,7 @@
+import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
+
 import '/common/models/job_list.dart';
-import '/misc/custom_containers/item_serializable.dart';
-import 'activity_type.dart';
+
 
 class Enterprise extends ItemSerializable {
   Enterprise({
@@ -24,7 +25,7 @@ class Enterprise extends ItemSerializable {
 
   Enterprise copyWith({
     String? name,
-    Set<ActivityType>? activityTypes,
+    Set<String>? activityTypes,
     String? recrutedBy,
     String? shareWith,
     JobList? jobs,
@@ -64,10 +65,10 @@ class Enterprise extends ItemSerializable {
   Map<String, dynamic> serializedMap() {
     return {
       "name": name,
-      "activityTypes": activityTypes,
+      "activityTypes": activityTypes.toList(),
       "recrutedBy": recrutedBy,
       "shareWith": shareWith,
-      "jobs": jobs,
+      "jobs": jobs.serialize(),
       "contactName": contactName,
       "contactFunction": contactFunction,
       "contactPhone": contactPhone,
@@ -84,10 +85,12 @@ class Enterprise extends ItemSerializable {
   @override
   Enterprise.fromSerialized(Map<String, dynamic> map)
       : name = map['name'],
-        activityTypes = map['activityTypes'],
+        activityTypes =
+            (map['activityTypes'] as List).map((e) => e.toString()).toSet(),
         recrutedBy = map['recrutedBy'],
         shareWith = map['shareWith'],
-        jobs = map['jobs'],
+        jobs = JobList.fromSerialized((map['jobs'] as Map)
+            .map((key, value) => MapEntry(key.toString(), value))),
         contactName = map['contactName'],
         contactFunction = map['contactFunction'],
         contactPhone = map['contactPhone'],
@@ -106,7 +109,7 @@ class Enterprise extends ItemSerializable {
   }
 
   final String name;
-  final Set<ActivityType> activityTypes;
+  final Set<String> activityTypes;
   final String recrutedBy;
   final String shareWith;
 
@@ -125,3 +128,15 @@ class Enterprise extends ItemSerializable {
   final String headquartersAddress;
   final String neq;
 }
+
+const List<String> activityTypes = [
+  "Activity Type 1",
+  "Activity Type 2",
+  "Activity Type 3",
+  "Activity Type 4",
+  "Activity Type 5",
+  "Test",
+  "A Test",
+  "B Test",
+  "C Test"
+];

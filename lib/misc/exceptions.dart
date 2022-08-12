@@ -1,17 +1,17 @@
 class TypeException implements Exception {
-  final String message;
-
   const TypeException(this.message);
+
+  final String message;
 }
 
 class ValueException implements Exception {
-  final String message;
-
   const ValueException(this.message);
+
+  final String message;
 }
 
 class ShouldNotCall implements Exception {
-  final String message;
-
   const ShouldNotCall(this.message);
+
+  final String message;
 }

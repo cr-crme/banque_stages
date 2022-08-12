@@ -7,6 +7,7 @@ import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/low_high_slider_form_field.dart';
+import '/misc/services/storage_service.dart';
 
 class JobsPage extends StatefulWidget {
   const JobsPage({
@@ -26,13 +27,17 @@ class JobsPageState extends State<JobsPage> {
   void addJob() {}
 
   void _addImage(Job job) async {
-    List<XFile>? images = await ImagePicker().pickMultiImage();
+    final provider = context.read<EnterprisesProvider>();
+    final images = await ImagePicker().pickMultiImage();
 
     if (images == null) return;
 
     for (XFile file in images) {
-      // Add to Firebase hosting
+      var url = await StorageService.uploadJobImage(file);
+      job.pictures.add(url);
     }
+
+    provider.replace(widget.enterprise);
   }
 
   void _updateExpandedSections() {
@@ -73,7 +78,11 @@ class JobsPageState extends State<JobsPage> {
   void initState() {
     super.initState();
     _updateExpandedSections();
-    context.read<EnterprisesProvider>().addListener(_updateExpandedSections);
+    context.read<EnterprisesProvider>().addListener(() {
+      if (mounted) {
+        _updateExpandedSections();
+      }
+    });
   }
 
   // TODO: Separate all ExpansionPanels
@@ -113,19 +122,24 @@ class JobsPageState extends State<JobsPage> {
                           ),
                           body: Padding(
                             padding: const EdgeInsets.only(bottom: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: job.pictures.isEmpty
-                                  ? [const Text("Aucune image disponible")]
-                                  : job.pictures
-                                      .map(
-                                        (url) => Image.network(
-                                          url,
-                                          width: 240,
-                                          height: 180,
-                                        ),
-                                      )
-                                      .toList(),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: job.pictures.isEmpty
+                                    ? [const Text("Aucune image disponible")]
+                                    : job.pictures
+                                        .map(
+                                          // TODO: Make images clicables and deletables
+                                          (url) => Card(
+                                            child: Image.network(
+                                              url,
+                                              height: 250,
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                              ),
                             ),
                           ),
                         ),

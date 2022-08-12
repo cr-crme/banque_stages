@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/activity_type.dart';
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/activity_type_cards.dart';
@@ -24,7 +23,7 @@ class AboutPageState extends State<AboutPage> {
   final _formKey = GlobalKey<FormState>();
 
   String? _name;
-  Set<ActivityType> _activityTypes = {};
+  Set<String> _activityTypes = {};
   String? _shareWith;
 
   bool _editing = false;
@@ -89,7 +88,8 @@ class AboutPageState extends State<AboutPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         TextFormField(
-                          initialValue: widget.enterprise.name,
+                          controller: TextEditingController(
+                              text: widget.enterprise.name),
                           decoration: const InputDecoration(
                             labelText: "Nom de l'entreprise",
                           ),
