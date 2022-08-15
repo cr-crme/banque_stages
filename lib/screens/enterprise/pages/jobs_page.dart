@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/widgets/job_creator_dialog.dart';
 import '/common/widgets/low_high_slider_form_field.dart';
 import '/misc/services/storage_service.dart';
 
@@ -24,7 +25,17 @@ class JobsPage extends StatefulWidget {
 class JobsPageState extends State<JobsPage> {
   final Map<String, List> _expandedSections = {};
 
-  void addJob() {}
+  void addJob() async {
+    final provider = context.read<EnterprisesProvider>();
+
+    final newJob = await showDialog(
+        context: context, builder: (context) => const JobCreatorDialog());
+
+    if (newJob == null) return;
+
+    widget.enterprise.jobs.add(newJob);
+    provider.replace(widget.enterprise);
+  }
 
   void _addImage(Job job) async {
     final provider = context.read<EnterprisesProvider>();
