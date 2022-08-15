@@ -162,6 +162,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       contactPhone: _contactPhone!,
       contactEmail: _contactEmail!,
       address: _address!,
+      headquartersAddress: _address!,
     );
 
     provider.add(enterprise);
@@ -365,7 +366,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
               const ListTile(
                 visualDensity:
                     VisualDensity(vertical: VisualDensity.minimumDensity),
-                title: Text("Addresse de l'établissement"),
+                title: Text("Adresse de l'établissement"),
               ),
               // TODO: Implement Google Maps (?) autocomplete
               ListTile(
