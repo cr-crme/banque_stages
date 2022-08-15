@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/widgets/dialogs/add_sst_event_dialog.dart';
+import '/common/widgets/dialogs/add_text_dialog.dart';
 import '/common/widgets/dialogs/job_creator_dialog.dart';
 import '/common/widgets/form_fields/low_high_slider_form_field.dart';
 import '/misc/services/storage_service.dart';
@@ -27,27 +29,73 @@ class JobsPageState extends State<JobsPage> {
 
   void addJob() async {
     final provider = context.read<EnterprisesProvider>();
-
     final newJob = await showDialog(
         context: context, builder: (context) => const JobCreatorDialog());
 
     if (newJob == null) return;
-
     widget.enterprise.jobs.add(newJob);
     provider.replace(widget.enterprise);
   }
 
   void _addImage(Job job) async {
     final provider = context.read<EnterprisesProvider>();
-    final images = await ImagePicker().pickMultiImage();
 
+    final images = await ImagePicker().pickMultiImage();
     if (images == null) return;
 
     for (XFile file in images) {
       var url = await StorageService.uploadJobImage(file);
       job.pictures.add(url);
     }
+    provider.replace(widget.enterprise);
+  }
 
+  void _addSstEvent(Job job) async {
+    final provider = context.read<EnterprisesProvider>();
+
+    final eventType = await showDialog(
+      context: context,
+      builder: (context) => const AddSstEventDialog(),
+    );
+    if (eventType == null) return;
+
+    final description = await showDialog(
+      context: context,
+      builder: (context) => AddTextDialog(
+        title: eventType == 2
+            ? "Décrivez la situation dangereuse identifiée :"
+            : "Racontez ce qu'il s'est passé :",
+      ),
+    );
+    if (description == null) return;
+
+    switch (eventType) {
+      case SstEventType.pastWounds:
+        job.pastWounds.add(description);
+        break;
+      case SstEventType.pastIncidents:
+        job.pastIncidents.add(description);
+        break;
+      case SstEventType.dangerousSituations:
+        job.dangerousSituations.add(description);
+        break;
+      default:
+        return;
+    }
+    provider.replace(widget.enterprise);
+  }
+
+  void _addComment(Job job) async {
+    final provider = context.read<EnterprisesProvider>();
+    final newComment = await showDialog(
+      context: context,
+      builder: (context) => const AddTextDialog(
+        title: "Ajouter un commentaire",
+      ),
+    );
+
+    if (newComment == null) return;
+    job.comments.add(newComment);
     provider.replace(widget.enterprise);
   }
 
@@ -291,11 +339,13 @@ class JobsPageState extends State<JobsPage> {
                         ExpansionPanel(
                           isExpanded: _expandedSections[job.id]![3],
                           canTapOnHeader: true,
-                          headerBuilder: (context, isExpanded) =>
-                              const ListTile(
-                            title: Text(
+                          headerBuilder: (context, isExpanded) => ListTile(
+                            title: const Text(
                               "Santé et Sécurité du travail (SST)",
                             ),
+                            trailing: IconButton(
+                                onPressed: () => _addSstEvent(job),
+                                icon: const Icon(Icons.add_box_outlined)),
                           ),
                           body: SizedBox(
                             width: Size.infinite.width,
@@ -459,11 +509,13 @@ class JobsPageState extends State<JobsPage> {
                         ExpansionPanel(
                           isExpanded: _expandedSections[job.id]![5],
                           canTapOnHeader: true,
-                          headerBuilder: (context, isExpanded) =>
-                              const ListTile(
-                            title: Text(
+                          headerBuilder: (context, isExpanded) => ListTile(
+                            title: const Text(
                               "Autres commentaires",
                             ),
+                            trailing: IconButton(
+                                onPressed: () => _addComment(job),
+                                icon: const Icon(Icons.add_comment_outlined)),
                           ),
                           body: SizedBox(
                             width: Size.infinite.width,
