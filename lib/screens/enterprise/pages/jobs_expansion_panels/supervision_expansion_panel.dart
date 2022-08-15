@@ -67,7 +67,6 @@ class _RatingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Add a placeholer for invalid values
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
@@ -78,12 +77,24 @@ class _RatingBar extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 4),
-          RatingBarIndicator(
-            rating: rating,
-            itemBuilder: (context, index) => Icon(
-              Icons.star,
-              color: Theme.of(context).colorScheme.secondary,
-            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: rating < 0 || rating > 5
+                ?
+                // If value is invalid
+                const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Text("Aucune valeur pour l'instant."),
+                  )
+                :
+                // If value is valid
+                RatingBarIndicator(
+                    rating: rating,
+                    itemBuilder: (context, index) => Icon(
+                      Icons.star,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
           ),
         ],
       ),

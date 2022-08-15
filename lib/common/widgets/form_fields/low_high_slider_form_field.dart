@@ -14,9 +14,17 @@ class LowHighSliderFormField extends FormField<double> {
           builder: _builder,
         );
 
-  // TODO: Handle invalid values (display as non-existant)
+  static const int min = 1;
+  static const int max = 5;
 
   static Widget _builder(FormFieldState<double> state) {
+    if (state.value! < min || state.value! > max) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 12),
+        child: Text("Aucune donnée pour l'instant."),
+      );
+    }
+
     return SizedBox(
       width: Size.infinite.width,
       child: Row(
@@ -28,9 +36,9 @@ class LowHighSliderFormField extends FormField<double> {
               onChanged: state.widget.enabled
                   ? (double newValue) => state.didChange(newValue)
                   : null,
-              min: 1,
-              max: 5,
-              divisions: 4,
+              min: min.toDouble(),
+              max: max.toDouble(),
+              divisions: max - min,
             ),
           ),
           const Text("Élevé"),
