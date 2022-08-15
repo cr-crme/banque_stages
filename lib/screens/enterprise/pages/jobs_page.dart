@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
-import '/common/widgets/job_creator_dialog.dart';
-import '/common/widgets/low_high_slider_form_field.dart';
+import '/common/widgets/dialogs/job_creator_dialog.dart';
+import '/common/widgets/form_fields/low_high_slider_form_field.dart';
 import '/misc/services/storage_service.dart';
 
 class JobsPage extends StatefulWidget {
