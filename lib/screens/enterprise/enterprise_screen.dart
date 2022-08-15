@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'pages/about_page.dart';
 import 'pages/contact_page.dart';
 import 'pages/jobs_page.dart';
@@ -31,6 +32,10 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
   final _contactPageKey = GlobalKey<ContactPageState>();
   final _jobsPageKey = GlobalKey<JobsPageState>();
   final _stagePageKey = GlobalKey<StagePageState>();
+
+  bool get _editing =>
+      (_aboutPageKey.currentState?.editing ?? false) ||
+      (_contactPageKey.currentState?.editing ?? false);
 
   void _updateActionButton() {
     late Icon icon;
@@ -84,6 +89,16 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
           title: Text(enterprise.name),
           actions: [_actionButton],
           bottom: TabBar(
+            onTap: (index) async {
+              if (!_editing || !_tabController.indexIsChanging) return;
+
+              _tabController.index = _tabController.previousIndex;
+              if (await showDialog(
+                  context: context,
+                  builder: (context) => const ConfirmPopDialog())) {
+                _tabController.animateTo(index);
+              }
+            },
             controller: _tabController,
             tabs: const [
               Tab(icon: Icon(Icons.info_outlined), text: "À propos"),
@@ -95,6 +110,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
         ),
         body: TabBarView(
           controller: _tabController,
+          physics: _editing ? const NeverScrollableScrollPhysics() : null,
           children: [
             AboutPage(key: _aboutPageKey, enterprise: enterprise),
             ContactPage(key: _contactPageKey, enterprise: enterprise),
