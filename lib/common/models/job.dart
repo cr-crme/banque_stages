@@ -146,33 +146,40 @@ class Job extends ItemSerializable {
     return (list ?? []).map((e) => e.toString()).toList();
   }
 
+  // Details
   final String activitySector;
   final String specialization;
 
   final int totalSlot;
   final int occupiedSlot;
 
+  // Photos
   final List<String> pictures;
 
+  // Tasks
   final double taskVariety;
   final List<String> skillsRequired;
   final double autonomyExpected;
   final double efficiencyWanted;
 
+  // Supervision
   final double welcomingTSA;
   final double welcomingCommunication;
   final double welcomingMentalDeficiency;
   final double welcomingMentalHealthIssue;
 
+  // SST
   final List<String> equipmentRequired;
   final List<String> dangerousSituations;
   final List<String> pastWounds;
   final List<String> pastIncidents;
 
+  // Prerequisites
   final int minimalAge;
   final String uniform;
   final List<String> requiredForJob;
 
+  // Comments
   final List<String> comments;
 }
 
