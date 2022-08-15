@@ -5,12 +5,12 @@ import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/providers/enterprises_provider.dart';
-import '/common/widgets/activity_types_picker_form_field.dart';
 import '/common/widgets/add_job_button.dart';
-import '/common/widgets/confirm_pop_dialog.dart';
 import '/common/widgets/delete_button.dart';
-import '/common/widgets/job_form_field.dart';
-import '/common/widgets/share_with_picker_form_field.dart';
+import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
+import '/common/widgets/form_fields/job_form_field.dart';
+import '/common/widgets/form_fields/share_with_picker_form_field.dart';
 
 class AddEnterpriseScreen extends StatefulWidget {
   const AddEnterpriseScreen({Key? key}) : super(key: key);

@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/activity_type_cards.dart';
-import '/common/widgets/activity_types_picker_form_field.dart';
-import '/common/widgets/share_with_picker_form_field.dart';
+import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
+import '/common/widgets/form_fields/share_with_picker_form_field.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({
