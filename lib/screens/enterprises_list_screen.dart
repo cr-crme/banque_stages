@@ -142,8 +142,20 @@ class EnterpriseListItem extends StatelessWidget {
                       enterprise.name,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    const SizedBox(height: 8),
-                    Text(enterprise.address),
+                    Visibility(
+                      visible: enterprise.address.isNotEmpty ||
+                          enterprise.headquartersAddress.isNotEmpty,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 8),
+                          Text(
+                            enterprise.address.isEmpty
+                                ? enterprise.headquartersAddress
+                                : enterprise.address,
+                          ),
+                        ],
+                      ),
+                    ),
                     Column(
                       children: enterprise.jobs
                           .map((job) => Padding(
