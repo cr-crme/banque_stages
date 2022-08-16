@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
-import '/common/widgets/low_high_slider_form_field.dart';
+import '/common/widgets/dialogs/add_sst_event_dialog.dart';
+import '/common/widgets/dialogs/add_text_dialog.dart';
+import '/common/widgets/dialogs/job_creator_dialog.dart';
 import '/misc/services/storage_service.dart';
+import 'jobs_expansion_panels/comments_expansion_panel.dart';
+import 'jobs_expansion_panels/photo_expansion_panel.dart';
+import 'jobs_expansion_panels/prerequisites_expansion_panel.dart';
+import 'jobs_expansion_panels/sst_expansion_panel.dart';
+import 'jobs_expansion_panels/supervision_expansion_panel.dart';
+import 'jobs_expansion_panels/tasks_expansion_panel.dart';
 
 class JobsPage extends StatefulWidget {
   const JobsPage({
@@ -24,19 +31,75 @@ class JobsPage extends StatefulWidget {
 class JobsPageState extends State<JobsPage> {
   final Map<String, List> _expandedSections = {};
 
-  void addJob() {}
+  void addJob() async {
+    final provider = context.read<EnterprisesProvider>();
+    final newJob = await showDialog(
+        context: context, builder: (context) => const JobCreatorDialog());
+
+    if (newJob == null) return;
+    widget.enterprise.jobs.add(newJob);
+    provider.replace(widget.enterprise);
+  }
 
   void _addImage(Job job) async {
     final provider = context.read<EnterprisesProvider>();
-    final images = await ImagePicker().pickMultiImage();
 
+    final images = await ImagePicker().pickMultiImage();
     if (images == null) return;
 
     for (XFile file in images) {
       var url = await StorageService.uploadJobImage(file);
       job.pictures.add(url);
     }
+    provider.replace(widget.enterprise);
+  }
 
+  void _addSstEvent(Job job) async {
+    final provider = context.read<EnterprisesProvider>();
+
+    final eventType = await showDialog(
+      context: context,
+      builder: (context) => const AddSstEventDialog(),
+    );
+    if (eventType == null) return;
+
+    final description = await showDialog(
+      context: context,
+      builder: (context) => AddTextDialog(
+        title: eventType == 2
+            ? "Décrivez la situation dangereuse identifiée :"
+            : "Racontez ce qu'il s'est passé :",
+      ),
+    );
+    if (description == null) return;
+
+    switch (eventType) {
+      case SstEventType.pastWounds:
+        job.pastWounds.add(description);
+        break;
+      case SstEventType.pastIncidents:
+        job.pastIncidents.add(description);
+        break;
+      case SstEventType.dangerousSituations:
+        job.dangerousSituations.add(description);
+        break;
+      default:
+        return;
+    }
+    provider.replace(widget.enterprise);
+  }
+
+  void _addComment(Job job) async {
+    final provider = context.read<EnterprisesProvider>();
+    final newComment = await showDialog(
+      context: context,
+      builder: (context) => const AddTextDialog(
+        title: "Ajouter un commentaire",
+      ),
+    );
+
+    if (newComment == null) return;
+    job.comments.add(newComment);
     provider.replace(widget.enterprise);
   }
 
@@ -47,31 +110,6 @@ class JobsPageState extends State<JobsPage> {
             job.id, () => [true, false, false, false, false, false]);
       }
     });
-  }
-
-  // TODO: Clean this up
-  Widget _ratingBar({
-    required Widget title,
-    required double rating,
-  }) {
-    // TODO: Add a placeholer for invalid values
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          title,
-          const SizedBox(height: 4),
-          RatingBarIndicator(
-            rating: rating,
-            itemBuilder: (context, index) => Icon(
-              Icons.star,
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -85,7 +123,6 @@ class JobsPageState extends State<JobsPage> {
     });
   }
 
-  // TODO: Separate all ExpansionPanels
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -108,374 +145,32 @@ class JobsPageState extends State<JobsPage> {
                           () => _expandedSections[job.id]![panelIndex] =
                               !isExpanded),
                       children: [
-                        ExpansionPanel(
+                        PhotoExpansionPanel(
                           isExpanded: _expandedSections[job.id]![0],
-                          canTapOnHeader: true,
-                          headerBuilder: (context, isExpanded) => ListTile(
-                            title: const Text("Photos du poste de travail"),
-                            trailing: isExpanded
-                                ? IconButton(
-                                    onPressed: () => _addImage(job),
-                                    icon: const Icon(
-                                        Icons.add_photo_alternate_outlined))
-                                : null,
-                          ),
-                          body: Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: job.pictures.isEmpty
-                                    ? [const Text("Aucune image disponible")]
-                                    : job.pictures
-                                        .map(
-                                          // TODO: Make images clicables and deletables
-                                          (url) => Card(
-                                            child: Image.network(
-                                              url,
-                                              height: 250,
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                              ),
-                            ),
-                          ),
+                          job: job,
+                          addImage: _addImage,
                         ),
-                        ExpansionPanel(
+                        TasksExpansionPanel(
                           isExpanded: _expandedSections[job.id]![1],
-                          canTapOnHeader: true,
-                          headerBuilder: (context, isExpanded) =>
-                              const ListTile(
-                            title: Text(
-                                "Tâches et exigences envers les stagiaires"),
-                          ),
-                          body: SizedBox(
-                            width: Size.infinite.width,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 32),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Variété des tâches",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
-                                    child: LowHighSliderFormField(
-                                      initialValue: job.taskVariety,
-                                      enabled: false,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Compétences obligatoires",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 16),
-                                    child: Column(
-                                      children: job.skillsRequired.isEmpty
-                                          ? [
-                                              const Text(
-                                                  "Aucune compétence requise")
-                                            ]
-                                          : job.skillsRequired
-                                              .map(
-                                                  (skills) => Text("- $skills"))
-                                              .toList(),
-                                    ),
-                                  ),
-                                  Text(
-                                    "Niveau d’autonomie souhaité",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
-                                    child: LowHighSliderFormField(
-                                      initialValue: job.autonomyExpected,
-                                      enabled: false,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Rendement attendu",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
-                                    child: LowHighSliderFormField(
-                                      initialValue: job.efficiencyWanted,
-                                      enabled: false,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          job: job,
                         ),
-                        ExpansionPanel(
+                        SupervisionExpansionPanel(
                           isExpanded: _expandedSections[job.id]![2],
-                          canTapOnHeader: true,
-                          headerBuilder: (context, isExpanded) =>
-                              const ListTile(
-                            title: Text(
-                              "Type d'encadrement des stagiaires",
-                            ),
-                          ),
-                          body: SizedBox(
-                            width: Size.infinite.width,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 32),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _ratingBar(
-                                    title: Text(
-                                      "Accueil de stagiaires TSA",
-                                      style:
-                                          Theme.of(context).textTheme.bodyLarge,
-                                    ),
-                                    rating: job.welcomingTSA,
-                                  ),
-                                  _ratingBar(
-                                    title: Text(
-                                      "Accueil de stagiaires de classe communication",
-                                      style:
-                                          Theme.of(context).textTheme.bodyLarge,
-                                    ),
-                                    rating: job.welcomingCommunication,
-                                  ),
-                                  _ratingBar(
-                                    title: Text(
-                                      "Accueil de stagiaires avec une déficience intellectuelle",
-                                      style:
-                                          Theme.of(context).textTheme.bodyLarge,
-                                    ),
-                                    rating: job.welcomingMentalDeficiency,
-                                  ),
-                                  _ratingBar(
-                                    title: Text(
-                                      "Accueil de stagiaires avec un trouble de santé mentale",
-                                      style:
-                                          Theme.of(context).textTheme.bodyLarge,
-                                    ),
-                                    rating: job.welcomingMentalHealthIssue,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          job: job,
                         ),
-                        ExpansionPanel(
+                        SstExpansionPanel(
                           isExpanded: _expandedSections[job.id]![3],
-                          canTapOnHeader: true,
-                          headerBuilder: (context, isExpanded) =>
-                              const ListTile(
-                            title: Text(
-                              "Santé et Sécurité du travail (SST)",
-                            ),
-                          ),
-                          body: SizedBox(
-                            width: Size.infinite.width,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 32),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Équipements de protection individuelle requis",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 16),
-                                    child: Column(
-                                      children: job.equipmentRequired.isEmpty
-                                          ? [
-                                              const Text(
-                                                  "Aucun équipement de protection requis")
-                                            ]
-                                          : job.equipmentRequired
-                                              .map((equipment) =>
-                                                  Text("- $equipment"))
-                                              .toList(),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    "Situations dangereuses identifiées",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 16),
-                                    child: Column(
-                                      children: job.dangerousSituations.isEmpty
-                                          ? [
-                                              const Text(
-                                                  "Aucune situation dangereuse signalée")
-                                            ]
-                                          : job.dangerousSituations
-                                              .map((situation) =>
-                                                  Text("- $situation"))
-                                              .toList(),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    "Blessures d’élèves lors de stages précédents",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 16),
-                                    child: Column(
-                                      children: job.pastWounds.isEmpty
-                                          ? [
-                                              const Text(
-                                                  "Aucune blessure signalée")
-                                            ]
-                                          : job.pastWounds
-                                              .map((wound) => Text("- $wound"))
-                                              .toList(),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    "Incidents lors de stages précédents (p. ex. agression verbale, harcèlement)?",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 16),
-                                    child: Column(
-                                      children: job.pastIncidents.isEmpty
-                                          ? [
-                                              const Text(
-                                                  "Aucun incident de ce type signalé")
-                                            ]
-                                          : job.pastIncidents
-                                              .map((incident) =>
-                                                  Text("- $incident"))
-                                              .toList(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          job: job,
+                          addSstEvent: _addSstEvent,
                         ),
-                        ExpansionPanel(
+                        PrerequisitesExpansionPanel(
                           isExpanded: _expandedSections[job.id]![4],
-                          canTapOnHeader: true,
-                          headerBuilder: (context, isExpanded) =>
-                              const ListTile(
-                            title: Text(
-                              "Pré-requis pour le recrutement",
-                            ),
-                          ),
-                          body: SizedBox(
-                            width: Size.infinite.width,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 32),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Âge minimum",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 16),
-                                    child: Text("${job.minimalAge} ans"),
-                                  ),
-                                  Text(
-                                    "Uniforme en vigueur",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 16),
-                                    child: job.uniform.isEmpty
-                                        ? const Text("Aucun uniforme requis")
-                                        : Text(job.uniform),
-                                  ),
-                                  Text(
-                                    "L'élève doit :",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 16),
-                                    child: Column(
-                                      children: job.requiredForJob.isEmpty
-                                          ? [
-                                              const Text(
-                                                  "Il n'y a aucun pré-requis pour ce métier")
-                                            ]
-                                          : job.requiredForJob
-                                              .map((requirement) =>
-                                                  Text("- $requirement"))
-                                              .toList(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          job: job,
                         ),
-                        ExpansionPanel(
+                        CommentsExpansionPanel(
                           isExpanded: _expandedSections[job.id]![5],
-                          canTapOnHeader: true,
-                          headerBuilder: (context, isExpanded) =>
-                              const ListTile(
-                            title: Text(
-                              "Autres commentaires",
-                            ),
-                          ),
-                          body: SizedBox(
-                            width: Size.infinite.width,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 32),
-                              child: Column(
-                                children: job.comments.isEmpty
-                                    ? [
-                                        const Text(
-                                            "Il n'y a présentement aucun commentaire"),
-                                        const SizedBox(height: 16)
-                                      ]
-                                    : job.comments
-                                        .map((comment) => Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 16),
-                                              child: Text(comment),
-                                            ))
-                                        .toList(),
-                              ),
-                            ),
-                          ),
+                          job: job,
+                          addComment: _addComment,
                         ),
                       ],
                     )

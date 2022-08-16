@@ -7,14 +7,14 @@ class Job extends ItemSerializable {
     this.totalSlot = 1,
     this.occupiedSlot = 0,
     List<String>? pictures,
-    this.taskVariety = 2.5,
+    this.taskVariety = -1.0,
     List<String>? skillsRequired,
-    this.autonomyExpected = 2.5,
-    this.efficiencyWanted = 2.5,
-    this.welcomingTSA = 2.5,
-    this.welcomingCommunication = 2.5,
-    this.welcomingMentalDeficiency = 2.5,
-    this.welcomingMentalHealthIssue = 2.5,
+    this.autonomyExpected = -1.0,
+    this.efficiencyWanted = -1.0,
+    this.welcomingTSA = -1.0,
+    this.welcomingCommunication = -1.0,
+    this.welcomingMentalDeficiency = -1.0,
+    this.welcomingMentalHealthIssue = -1.0,
     List<String>? equipmentRequired,
     List<String>? dangerousSituations,
     List<String>? pastWounds,
@@ -118,23 +118,26 @@ class Job extends ItemSerializable {
         specialization = map['specialization'],
         totalSlot = map['totalSlot'],
         occupiedSlot = map['occupiedSlot'],
-        pictures = _handleSerializedList(map['pictures']),
-        taskVariety = map['taskVariety'],
-        skillsRequired = _handleSerializedList(map['skillsRequired']),
-        autonomyExpected = map['autonomyExpected'],
-        efficiencyWanted = map['efficiencyWanted'],
-        welcomingTSA = map['welcomingTSA'],
-        welcomingCommunication = map['welcomingCommunication'],
-        welcomingMentalDeficiency = map['welcomingMentalDeficiency'],
-        welcomingMentalHealthIssue = map['welcomingMentalHealthIssue'],
-        equipmentRequired = _handleSerializedList(map['equipmentRequired']),
-        dangerousSituations = _handleSerializedList(map['dangerousSituations']),
-        pastWounds = _handleSerializedList(map['pastWounds']),
-        pastIncidents = _handleSerializedList(map['pastIncidents']),
+        pictures = listFromSerialized(map['pictures']),
+        taskVariety = doubleFromSerialized(map['taskVariety']),
+        skillsRequired = listFromSerialized(map['skillsRequired']),
+        autonomyExpected = doubleFromSerialized(map['autonomyExpected']),
+        efficiencyWanted = doubleFromSerialized(map['efficiencyWanted']),
+        welcomingTSA = doubleFromSerialized(map['welcomingTSA']),
+        welcomingCommunication =
+            doubleFromSerialized(map['welcomingCommunication']),
+        welcomingMentalDeficiency =
+            doubleFromSerialized(map['welcomingMentalDeficiency']),
+        welcomingMentalHealthIssue =
+            doubleFromSerialized(map['welcomingMentalHealthIssue']),
+        equipmentRequired = listFromSerialized(map['equipmentRequired']),
+        dangerousSituations = listFromSerialized(map['dangerousSituations']),
+        pastWounds = listFromSerialized(map['pastWounds']),
+        pastIncidents = listFromSerialized(map['pastIncidents']),
         minimalAge = map['minimalAge'],
         uniform = map['uniform'],
-        requiredForJob = _handleSerializedList(map['requiredForJob']),
-        comments = _handleSerializedList(map['comments']),
+        requiredForJob = listFromSerialized(map['requiredForJob']),
+        comments = listFromSerialized(map['comments']),
         super.fromSerialized(map);
 
   @override
@@ -142,37 +145,49 @@ class Job extends ItemSerializable {
     return Job.fromSerialized(map);
   }
 
-  static List<String> _handleSerializedList(List? list) {
+  static List<String> listFromSerialized(List? list) {
     return (list ?? []).map((e) => e.toString()).toList();
   }
 
+  static double doubleFromSerialized(num? number, {double defaultValue = 0}) {
+    if (number is int) return number.toDouble();
+    return (number ?? defaultValue) as double;
+  }
+
+  // Details
   final String activitySector;
   final String specialization;
 
   final int totalSlot;
   final int occupiedSlot;
 
+  // Photos
   final List<String> pictures;
 
+  // Tasks
   final double taskVariety;
   final List<String> skillsRequired;
   final double autonomyExpected;
   final double efficiencyWanted;
 
+  // Supervision
   final double welcomingTSA;
   final double welcomingCommunication;
   final double welcomingMentalDeficiency;
   final double welcomingMentalHealthIssue;
 
+  // SST
   final List<String> equipmentRequired;
   final List<String> dangerousSituations;
   final List<String> pastWounds;
   final List<String> pastIncidents;
 
+  // Prerequisites
   final int minimalAge;
   final String uniform;
   final List<String> requiredForJob;
 
+  // Comments
   final List<String> comments;
 }
 
