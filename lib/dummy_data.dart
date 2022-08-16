@@ -12,8 +12,8 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
     Job(
       activitySector: jobActivitySectors[1],
       specialization: jobSpecializations[3],
-      totalSlot: 2,
-      occupiedSlot: 1,
+      positionsOffered: 2,
+      positionsOccupied: 1,
     ),
   );
   jobs.add(
@@ -48,8 +48,8 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
     Job(
       activitySector: jobActivitySectors[0],
       specialization: jobSpecializations[0],
-      totalSlot: 3,
-      occupiedSlot: 3,
+      positionsOffered: 3,
+      positionsOccupied: 3,
     ),
   );
   enterprises.add(

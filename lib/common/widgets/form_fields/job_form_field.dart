@@ -112,8 +112,8 @@ class JobFormField extends FormField<Job> {
                 spacing: 0,
                 decoration:
                     const InputDecoration(border: UnderlineInputBorder()),
-                onChanged: (double value) => state
-                    .didChange(state.value!.copyWith(totalSlot: value.toInt())),
+                onChanged: (double value) => state.didChange(
+                    state.value!.copyWith(positionsOffered: value.toInt())),
               ),
             ),
           ],
