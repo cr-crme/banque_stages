@@ -13,7 +13,7 @@ import '/common/providers/auth_provider.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/screens/login_screen.dart';
 import 'firebase_options.dart';
-import 'screens/add_enterprise_screen.dart';
+import 'screens/add_enterprise/add_enterprise_screen.dart';
 import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list_screen.dart';
 import 'screens/home_screen.dart';
