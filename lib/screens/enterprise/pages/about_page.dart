@@ -5,6 +5,7 @@ import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/activity_type_cards.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/disponibility_circle.dart';
 import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import '/common/widgets/form_fields/share_with_picker_form_field.dart';
 
@@ -138,13 +139,9 @@ class AboutPageState extends State<AboutPage> {
                       .map(
                         (job) => ListTile(
                           visualDensity: VisualDensity.compact,
-                          // TODO: Extract circle as a widget
-                          leading: Icon(
-                            Icons.circle,
-                            color: job.totalSlot > job.occupiedSlot
-                                ? Colors.green
-                                : Theme.of(context).colorScheme.error,
-                            size: 16,
+                          leading: DisponibilityCircle(
+                            availableSlots: job.totalSlot,
+                            occupiedSlots: job.occupiedSlot,
                           ),
                           title: Text(job.specialization),
                           trailing: Text(
