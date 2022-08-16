@@ -8,7 +8,7 @@ import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/add_sst_event_dialog.dart';
 import '/common/widgets/dialogs/add_text_dialog.dart';
 import '/common/widgets/dialogs/job_creator_dialog.dart';
-import '/misc/services/storage_service.dart';
+import '/misc/storage_service.dart';
 import 'jobs_expansion_panels/comments_expansion_panel.dart';
 import 'jobs_expansion_panels/photo_expansion_panel.dart';
 import 'jobs_expansion_panels/prerequisites_expansion_panel.dart';
