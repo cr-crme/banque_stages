@@ -155,6 +155,7 @@ class ContactPageState extends State<ContactPage> {
                         return null;
                       },
                       onSaved: (phone) => _contactPhone = phone!,
+                      keyboardType: TextInputType.phone,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
@@ -176,6 +177,7 @@ class ContactPageState extends State<ContactPage> {
                         return null;
                       },
                       onSaved: (email) => _contactEmail = email!,
+                      keyboardType: TextInputType.emailAddress,
                     ),
                   ],
                 ),
@@ -196,6 +198,7 @@ class ContactPageState extends State<ContactPage> {
                       decoration: const InputDecoration(labelText: "Adresse"),
                       enabled: _editing,
                       onSaved: (address) => _address = address,
+                      keyboardType: TextInputType.streetAddress,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
@@ -204,6 +207,7 @@ class ContactPageState extends State<ContactPage> {
                       decoration: const InputDecoration(labelText: "Téléphone"),
                       enabled: _editing,
                       onSaved: (phone) => _phone = phone,
+                      keyboardType: TextInputType.phone,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
@@ -213,6 +217,7 @@ class ContactPageState extends State<ContactPage> {
                           const InputDecoration(labelText: "Télécopieur"),
                       enabled: _editing,
                       onSaved: (fax) => _fax = fax,
+                      keyboardType: TextInputType.phone,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
@@ -221,6 +226,7 @@ class ContactPageState extends State<ContactPage> {
                       decoration: const InputDecoration(labelText: "Site web"),
                       enabled: _editing,
                       onSaved: (website) => _website = website,
+                      keyboardType: TextInputType.url,
                     ),
                   ],
                 ),
@@ -243,6 +249,7 @@ class ContactPageState extends State<ContactPage> {
                           labelText: "Adresse du siège social"),
                       enabled: _editing && !_addressesAreIdentical,
                       onSaved: (address) => _headquartersAddress = address,
+                      keyboardType: TextInputType.streetAddress,
                     ),
                   ),
                   SizedBox(
@@ -272,6 +279,7 @@ class ContactPageState extends State<ContactPage> {
                     decoration: const InputDecoration(labelText: "NEQ"),
                     enabled: _editing,
                     onSaved: (neq) => _neq = neq,
+                    keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 8),
                 ]),
