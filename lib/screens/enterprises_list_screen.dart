@@ -151,8 +151,9 @@ class EnterpriseListItem extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     DisponibilityCircle(
-                                        availableSlots: job.totalSlot,
-                                        occupiedSlots: job.occupiedSlot),
+                                        positionsOffered: job.positionsOffered,
+                                        positionsOccupied:
+                                            job.positionsOccupied),
                                     const SizedBox(width: 8),
                                     Text(
                                       job.specialization.toString(),

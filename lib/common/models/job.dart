@@ -4,8 +4,8 @@ class Job extends ItemSerializable {
   Job({
     this.activitySector = "",
     this.specialization = "",
-    this.totalSlot = 1,
-    this.occupiedSlot = 0,
+    this.positionsOffered = 0,
+    this.positionsOccupied = 0,
     List<String>? pictures,
     this.taskVariety = -1.0,
     List<String>? skillsRequired,
@@ -37,8 +37,8 @@ class Job extends ItemSerializable {
   Job copyWith({
     String? activitySector,
     String? specialization,
-    int? totalSlot,
-    int? occupiedSlot,
+    int? positionsOffered,
+    int? positionsOccupied,
     List<String>? pictures,
     double? taskVariety,
     List<String>? skillsRequired,
@@ -61,8 +61,8 @@ class Job extends ItemSerializable {
     return Job(
         activitySector: activitySector ?? this.activitySector,
         specialization: specialization ?? this.specialization,
-        totalSlot: totalSlot ?? this.totalSlot,
-        occupiedSlot: occupiedSlot ?? this.occupiedSlot,
+        positionsOffered: positionsOffered ?? this.positionsOffered,
+        positionsOccupied: positionsOccupied ?? this.positionsOccupied,
         pictures: pictures ?? this.pictures,
         taskVariety: taskVariety ?? this.taskVariety,
         skillsRequired: skillsRequired ?? this.skillsRequired,
@@ -91,8 +91,8 @@ class Job extends ItemSerializable {
     return {
       "activitySector": activitySector,
       "specialization": specialization,
-      "totalSlot": totalSlot,
-      "occupiedSlot": occupiedSlot,
+      "positionsOffered": positionsOffered,
+      "positionsOccupied": positionsOccupied,
       "pictures": pictures,
       "taskVariety": taskVariety,
       "skillsRequired": skillsRequired,
@@ -116,8 +116,8 @@ class Job extends ItemSerializable {
   Job.fromSerialized(Map<String, dynamic> map)
       : activitySector = map['activitySector'],
         specialization = map['specialization'],
-        totalSlot = map['totalSlot'],
-        occupiedSlot = map['occupiedSlot'],
+        positionsOffered = map['positionsOffered'],
+        positionsOccupied = map['positionsOccupied'],
         pictures = listFromSerialized(map['pictures']),
         taskVariety = doubleFromSerialized(map['taskVariety']),
         skillsRequired = listFromSerialized(map['skillsRequired']),
@@ -158,8 +158,8 @@ class Job extends ItemSerializable {
   final String activitySector;
   final String specialization;
 
-  final int totalSlot;
-  final int occupiedSlot;
+  final int positionsOffered;
+  final int positionsOccupied;
 
   // Photos
   final List<String> pictures;

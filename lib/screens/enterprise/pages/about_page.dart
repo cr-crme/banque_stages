@@ -140,12 +140,12 @@ class AboutPageState extends State<AboutPage> {
                         (job) => ListTile(
                           visualDensity: VisualDensity.compact,
                           leading: DisponibilityCircle(
-                            availableSlots: job.totalSlot,
-                            occupiedSlots: job.occupiedSlot,
+                            positionsOffered: job.positionsOffered,
+                            positionsOccupied: job.positionsOccupied,
                           ),
                           title: Text(job.specialization),
                           trailing: Text(
-                              "${job.totalSlot - job.occupiedSlot} / ${job.totalSlot}"),
+                              "${job.positionsOffered - job.positionsOccupied} / ${job.positionsOffered}"),
                         ),
                       )
                       .toList(),
