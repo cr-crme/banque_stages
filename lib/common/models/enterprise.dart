@@ -2,9 +2,9 @@ import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_seriali
 
 import '/common/models/job_list.dart';
 
-
 class Enterprise extends ItemSerializable {
   Enterprise({
+    this.photo = "",
     required this.name,
     required this.activityTypes,
     this.recrutedBy = "",
@@ -24,6 +24,7 @@ class Enterprise extends ItemSerializable {
   }) : super(id: id);
 
   Enterprise copyWith({
+    String? photo,
     String? name,
     Set<String>? activityTypes,
     String? recrutedBy,
@@ -42,6 +43,7 @@ class Enterprise extends ItemSerializable {
     String? id,
   }) {
     return Enterprise(
+      photo: photo ?? this.photo,
       name: name ?? this.name,
       activityTypes: activityTypes ?? this.activityTypes,
       recrutedBy: recrutedBy ?? this.recrutedBy,
@@ -64,6 +66,7 @@ class Enterprise extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
+      "photo": photo,
       "name": name,
       "activityTypes": activityTypes.toList(),
       "recrutedBy": recrutedBy,
@@ -84,7 +87,8 @@ class Enterprise extends ItemSerializable {
 
   @override
   Enterprise.fromSerialized(Map<String, dynamic> map)
-      : name = map['name'],
+      : photo = map['photo'],
+        name = map['name'],
         activityTypes =
             (map['activityTypes'] as List).map((e) => e.toString()).toSet(),
         recrutedBy = map['recrutedBy'],
@@ -107,6 +111,8 @@ class Enterprise extends ItemSerializable {
   ItemSerializable deserializeItem(Map<String, dynamic> map) {
     return Enterprise.fromSerialized(map);
   }
+
+  final String photo;
 
   final String name;
   final Set<String> activityTypes;
