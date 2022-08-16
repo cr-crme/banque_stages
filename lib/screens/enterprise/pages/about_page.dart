@@ -88,11 +88,13 @@ class AboutPageState extends State<AboutPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
                   children: [
-                    // TODO: Display an image
                     Container(
                       width: 140,
                       height: 105,
                       color: Theme.of(context).disabledColor,
+                      child: widget.enterprise.photo.isNotEmpty
+                          ? Image.network(widget.enterprise.photo)
+                          : null,
                     ),
                     const SizedBox(width: 16),
                     Expanded(
