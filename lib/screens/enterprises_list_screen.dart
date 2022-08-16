@@ -5,7 +5,7 @@ import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/disponibility_circle.dart';
 import '/dummy_data.dart';
-import 'add_enterprise_screen.dart';
+import 'add_enterprise/add_enterprise_screen.dart';
 import 'enterprise/enterprise_screen.dart';
 
 class EnterprisesListScreen extends StatefulWidget {
