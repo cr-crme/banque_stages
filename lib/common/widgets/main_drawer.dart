@@ -14,7 +14,7 @@ class MainDrawer extends StatelessWidget {
     return Consumer<AuthProvider>(
       builder: (context, provider, _) => Drawer(
         child: Scaffold(
-          appBar: AppBar(title: const Text("Menu principal")),
+          appBar: AppBar(title: const Text("Banque de Stages")),
           body: SingleChildScrollView(
             child: Column(
               children: [
