@@ -86,7 +86,7 @@ class Enterprise extends ItemSerializable {
   }
 
   @override
-  Enterprise.fromSerialized(Map<String, dynamic> map)
+  Enterprise.fromSerialized(map)
       : photo = map['photo'],
         name = map['name'],
         activityTypes =
@@ -108,7 +108,7 @@ class Enterprise extends ItemSerializable {
         super.fromSerialized(map);
 
   @override
-  ItemSerializable deserializeItem(Map<String, dynamic> map) {
+  ItemSerializable deserializeItem(map) {
     return Enterprise.fromSerialized(map);
   }
 

@@ -113,7 +113,7 @@ class Job extends ItemSerializable {
     };
   }
 
-  Job.fromSerialized(Map<String, dynamic> map)
+  Job.fromSerialized(map)
       : activitySector = map['activitySector'],
         specialization = map['specialization'],
         positionsOffered = map['positionsOffered'],
@@ -141,7 +141,7 @@ class Job extends ItemSerializable {
         super.fromSerialized(map);
 
   @override
-  ItemSerializable deserializeItem(Map<String, dynamic> map) {
+  ItemSerializable deserializeItem(map) {
     return Job.fromSerialized(map);
   }
 
