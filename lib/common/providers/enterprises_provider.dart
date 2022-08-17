@@ -3,8 +3,7 @@ import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/firebase_lis
 import '/common/models/enterprise.dart';
 
 class EnterprisesProvider extends FirebaseListProvided<Enterprise> {
-  EnterprisesProvider()
-      : super(availableIdsPath: "enterprises-list", dataPath: "enterprises");
+  EnterprisesProvider() : super(pathToData: "enterprises");
 
   @override
   Enterprise deserializeItem(data) {
