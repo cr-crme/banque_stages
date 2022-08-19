@@ -60,13 +60,13 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     ScaffoldMessenger.of(context).clearSnackBars();
 
     if (_currentStep == 2) {
-      _submit(context);
+      _submit();
     } else {
       setState(() => _currentStep += 1);
     }
   }
 
-  void _submit(BuildContext context) {
+  void _submit() {
     if (!_informationsKey.currentState!.validate()) {
       _showInvalidFieldsSnakBar();
       setState(() => _currentStep = 0);
