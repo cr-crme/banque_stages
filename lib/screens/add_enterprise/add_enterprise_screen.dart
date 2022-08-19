@@ -144,26 +144,30 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   }
 
   Widget _controlBuilder(BuildContext context, ControlsDetails details) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Visibility(
-          visible: _currentStep == 1,
-          child:
-              AddJobButton(onPressed: () => _jobsKey.currentState!.addMetier()),
-        ),
-        const Expanded(child: SizedBox()),
-        OutlinedButton(
-            onPressed: details.onStepCancel, child: const Text("Annuler")),
-        const SizedBox(
-          width: 20,
-        ),
-        TextButton(
-          onPressed: details.onStepContinue,
-          child:
-              _currentStep == 2 ? const Text("Ajouter") : const Text("Suivant"),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Visibility(
+            visible: _currentStep == 1,
+            child: AddJobButton(
+                onPressed: () => _jobsKey.currentState!.addMetier()),
+          ),
+          const Expanded(child: SizedBox()),
+          OutlinedButton(
+              onPressed: details.onStepCancel, child: const Text("Annuler")),
+          const SizedBox(
+            width: 20,
+          ),
+          TextButton(
+            onPressed: details.onStepContinue,
+            child: _currentStep == 2
+                ? const Text("Ajouter")
+                : const Text("Suivant"),
+          )
+        ],
+      ),
     );
   }
 }
