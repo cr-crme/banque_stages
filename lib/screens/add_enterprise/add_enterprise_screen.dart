@@ -149,7 +149,8 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       children: [
         Visibility(
           visible: _currentStep == 1,
-          child: AddJobButton(onPressed: _jobsKey.currentState!.addMetier),
+          child:
+              AddJobButton(onPressed: () => _jobsKey.currentState!.addMetier()),
         ),
         const Expanded(child: SizedBox()),
         OutlinedButton(
