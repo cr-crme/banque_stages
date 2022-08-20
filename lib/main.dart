@@ -11,12 +11,13 @@ import 'package:provider/provider.dart';
 
 import '/common/providers/auth_provider.dart';
 import '/common/providers/enterprises_provider.dart';
-import '/screens/login_screen.dart';
 import 'firebase_options.dart';
 import 'screens/add_enterprise/add_enterprise_screen.dart';
 import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/internship_forms/post_internship_evaluation_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +56,8 @@ class MyApp extends StatelessWidget {
               const EnterprisesListScreen(),
           AddEnterpriseScreen.route: (context) => const AddEnterpriseScreen(),
           EnterpriseScreen.route: (context) => const EnterpriseScreen(),
+          PostInternshipEvaluationScreen.route: (context) =>
+              const PostInternshipEvaluationScreen(),
         },
       ),
     );
