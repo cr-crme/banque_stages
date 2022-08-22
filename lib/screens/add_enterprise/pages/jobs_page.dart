@@ -14,7 +14,7 @@ class JobsPage extends StatefulWidget {
 
 class JobsPageState extends State<JobsPage> {
   JobsPageState() {
-    addMetier();
+    jobs.add(Job());
   }
 
   final _formKey = GlobalKey<FormState>();
