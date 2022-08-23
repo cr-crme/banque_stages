@@ -14,7 +14,7 @@ import '/common/providers/enterprises_provider.dart';
 import 'firebase_options.dart';
 import 'screens/add_enterprise/add_enterprise_screen.dart';
 import 'screens/enterprise/enterprise_screen.dart';
-import 'screens/enterprises_list_screen.dart';
+import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
