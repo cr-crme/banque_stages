@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/providers/auth_provider.dart';
-import '/screens/enterprises_list_screen.dart';
+import '/screens/enterprises_list/enterprises_list_screen.dart';
 import '/screens/login_screen.dart';
 
 class MainDrawer extends StatelessWidget {
