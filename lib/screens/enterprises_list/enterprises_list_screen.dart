@@ -19,13 +19,16 @@ class EnterprisesListScreen extends StatefulWidget {
 }
 
 class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
-  bool _hideNotAvailable = true;
+  bool _hideNotAvailable = false;
 
   final _searchController = TextEditingController();
 
   void _openEnterpriseScreen(Enterprise enterprise) {
-    Navigator.pushNamed(context, EnterpriseScreen.route,
-        arguments: enterprise.id);
+    Navigator.pushNamed(
+      context,
+      EnterpriseScreen.route,
+      arguments: enterprise.id,
+    );
   }
 
   List<Enterprise> _filterSelectedEnterprises(List<Enterprise> enterprises) {
