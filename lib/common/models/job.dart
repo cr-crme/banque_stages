@@ -1,9 +1,11 @@
 import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
 
+import '/misc/job_data_file_service.dart';
+
 class Job extends ItemSerializable {
   Job({
-    this.activitySector = "",
-    this.specialization = "",
+    this.activitySector,
+    this.specialization,
     this.positionsOffered = 0,
     this.positionsOccupied = 0,
     List<String>? pictures,
@@ -35,8 +37,8 @@ class Job extends ItemSerializable {
         super(id: id);
 
   Job copyWith({
-    String? activitySector,
-    String? specialization,
+    ActivitySector? activitySector,
+    Specialization? specialization,
     int? positionsOffered,
     int? positionsOccupied,
     List<String>? pictures,
@@ -89,8 +91,8 @@ class Job extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      "activitySector": activitySector,
-      "specialization": specialization,
+      "activitySector": activitySector?.id,
+      "specialization": specialization?.id,
       "positionsOffered": positionsOffered,
       "positionsOccupied": positionsOccupied,
       "pictures": pictures,
@@ -114,8 +116,9 @@ class Job extends ItemSerializable {
   }
 
   Job.fromSerialized(map)
-      : activitySector = map['activitySector'],
-        specialization = map['specialization'],
+      : activitySector = JobDataFileService.fromId(map['activitySector']),
+        specialization = JobDataFileService.fromId(map['activitySector'])
+            ?.fromId(map['specialization']),
         positionsOffered = map['positionsOffered'],
         positionsOccupied = map['positionsOccupied'],
         pictures = listFromSerialized(map['pictures']),
@@ -155,8 +158,8 @@ class Job extends ItemSerializable {
   }
 
   // Details
-  final String activitySector;
-  final String specialization;
+  final ActivitySector? activitySector;
+  final Specialization? specialization;
 
   final int positionsOffered;
   final int positionsOccupied;
@@ -190,18 +193,3 @@ class Job extends ItemSerializable {
   // Comments
   final List<String> comments;
 }
-
-const List<String> jobActivitySectors = [
-  "Secteur 1",
-  "Secteur 2",
-  "Secteur 3",
-  "Secteur 4"
-];
-const List<String> jobSpecializations = [
-  "Spécialisation 1",
-  "Spécialisation 2",
-  "Spécialisation 3",
-  "Spécialisation 4",
-  "Spécialisation 5",
-  "Spécialisation 6"
-];

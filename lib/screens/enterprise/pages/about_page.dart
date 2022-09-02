@@ -143,7 +143,7 @@ class AboutPageState extends State<AboutPage> {
                             positionsOffered: job.positionsOffered,
                             positionsOccupied: job.positionsOccupied,
                           ),
-                          title: Text(job.specialization),
+                          title: Text(job.specialization?.idWithName ?? "bad id"),
                           trailing: Text(
                               "${job.positionsOffered - job.positionsOccupied} / ${job.positionsOffered}"),
                         ),
