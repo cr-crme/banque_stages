@@ -43,42 +43,56 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Référentiel SST"),
-          actions: [
-            IconButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, AddEnterpriseScreen.route),
-              tooltip: "Ajouter une entreprise",
-              icon: const Icon(Icons.add),
-            ),
-          ],
-          bottom: SearchBar(controller: _searchController),
+          // actions: [
+          //   IconButton(
+          //     onPressed: () =>
+          //         Navigator.pushNamed(context, AddEnterpriseScreen.route),
+          //     tooltip: "Ajouter une entreprise",
+          //     icon: const Icon(Icons.add),
+          //   ),
+          // ],
+          //bottom: SearchBar(controller: _searchController),
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.center,
+          //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            //Test button
             Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  print('Hello');
+                child: Container(
+              color: Colors.blue,
+              width: 48,
+              height: 48,
+              child: InkWell(
+                onTap: () {
+                  print("hello");
                 },
-                child: const Text(
-                  'Consulter les fiches de risques',
-                  //textAlign: TextAlign.center,
-                  // overflow: TextOverflow.visible,
-                  //style: TextStyle(fontWeight: FontWeight.bold),
-                ),
               ),
-            ),
-            //Button connected to fiches de risques
-            Center(
-                child: ElevatedButton(
-              child: const Text('Bonjour!'),
-              onPressed: () {
-                print('Hello');
-              },
-            )),
+            )
+                //Test button
+                //Center(
+                // ElevatedButton(
+                //   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                //   onPressed: () {
+                //     print('Hello');
+                //   },
+                //   child: const Text(
+                //     'Consulter les fiches de risques',
+                //     //textAlign: TextAlign.center,
+                //     // overflow: TextOverflow.visible,
+                //     //style: TextStyle(fontWeight: FontWeight.bold),
+                //   ),
+                // ),
+                //),
+                //Button connected to fiches de risques
+                //Center(
+                // ElevatedButton(
+                //   child: const Text('Bonjour!'),
+                //   onPressed: () {
+                //     print('Hello');
+                //   },
+                // )
+                //),
+                )
           ],
         ));
   }
