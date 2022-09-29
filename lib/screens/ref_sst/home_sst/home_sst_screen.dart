@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -64,7 +65,10 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
               height: 48,
               child: InkWell(
                 onTap: () {
-                  print("hello");
+                  print("Clicked on sst cards list");
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => SSTCardsScreen(),
+                  ));
                 },
               ),
             )
