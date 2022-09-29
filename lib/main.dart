@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:crcrme_banque_stages/crcrme_material_theme/lib/crcrme_material_theme.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
               const EnterprisesListScreen(),
           AddEnterpriseScreen.route: (context) => const AddEnterpriseScreen(),
           EnterpriseScreen.route: (context) => const EnterpriseScreen(),
+          HomeSSTScreen.route: (context) => const HomeSSTScreen(),
           PostInternshipEvaluationScreen.route: (context) =>
               const PostInternshipEvaluationScreen(),
         },
