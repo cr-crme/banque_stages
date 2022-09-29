@@ -7,7 +7,6 @@ import '/common/providers/enterprises_provider.dart';
 import '/dummy_data.dart';
 import '/screens/add_enterprise/add_enterprise_screen.dart';
 import '/screens/enterprise/enterprise_screen.dart';
-import 'widgets/list_item.dart';
 import 'widgets/search_bar.dart';
 
 final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
@@ -59,44 +58,59 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
           //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
-                child: Container(
-              color: Colors.blue,
-              width: 48,
-              height: 48,
               child: InkWell(
-                onTap: () {
-                  print("Clicked on sst cards list");
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => SSTCardsScreen(),
-                  ));
-                },
+                  onTap: () {
+                    print("Clicked on sst cards list");
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => SSTCardsScreen(),
+                    ));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Ink(
+                      color: Colors.blue,
+                      width: 300,
+                      height: 260,
+                    ),
+                  )),
+
+              //Test button
+              //Center(
+              // ElevatedButton(
+              //   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+              //   onPressed: () {
+              //     print('Hello');
+              //   },
+              //   child: const Text(
+              //     'Consulter les fiches de risques',
+              //     //textAlign: TextAlign.center,
+              //     // overflow: TextOverflow.visible,
+              //     //style: TextStyle(fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+              //),
+              //Button connected to fiches de risques
+              //Center(
+              // ElevatedButton(
+              //   child: const Text('Bonjour!'),
+              //   onPressed: () {
+              //     print('Hello');
+              //   },
+              // )
+              //),
+            ),
+            SizedBox(height: 50),
+            Center(
+                child: InkWell(
+              onTap: () {
+                print("hello");
+              },
+              child: Ink(
+                color: Colors.blue,
+                width: 300,
+                height: 260,
               ),
-            )
-                //Test button
-                //Center(
-                // ElevatedButton(
-                //   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                //   onPressed: () {
-                //     print('Hello');
-                //   },
-                //   child: const Text(
-                //     'Consulter les fiches de risques',
-                //     //textAlign: TextAlign.center,
-                //     // overflow: TextOverflow.visible,
-                //     //style: TextStyle(fontWeight: FontWeight.bold),
-                //   ),
-                // ),
-                //),
-                //Button connected to fiches de risques
-                //Center(
-                // ElevatedButton(
-                //   child: const Text('Bonjour!'),
-                //   onPressed: () {
-                //     print('Hello');
-                //   },
-                // )
-                //),
-                )
+            ))
           ],
         ));
   }
