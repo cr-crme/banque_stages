@@ -57,22 +57,21 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
           //mainAxisAlignment: MainAxisAlignment.center,
           //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(height: 35),
             Center(
               child: InkWell(
-                  onTap: () {
-                    print("Clicked on sst cards list");
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => SSTCardsScreen(),
-                    ));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Ink(
-                      color: Colors.blue,
-                      width: 300,
-                      height: 260,
-                    ),
-                  )),
+                onTap: () {
+                  print("Clicked on sst cards list");
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => SSTCardsScreen(),
+                  ));
+                },
+                child: Ink(
+                  color: Colors.blue,
+                  width: 300,
+                  height: 260,
+                ),
+              ),
 
               //Test button
               //Center(
