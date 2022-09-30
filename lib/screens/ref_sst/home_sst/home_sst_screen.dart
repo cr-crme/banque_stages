@@ -67,10 +67,20 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                   ));
                 },
                 child: Ink(
-                  color: Colors.blue,
-                  width: 300,
-                  height: 260,
-                ),
+                    color: Colors.blue,
+                    width: 300,
+                    height: 260,
+                    child: const Center(
+                      child: Text(
+                        "Consulter les fiches de risques",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35,
+                            color: Colors.white,
+                            fontFamily: "Noto Sans"),
+                      ),
+                    )),
               ),
 
               //Test button
