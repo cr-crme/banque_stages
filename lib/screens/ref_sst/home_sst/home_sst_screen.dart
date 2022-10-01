@@ -67,18 +67,26 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                   ));
                 },
                 child: Ink(
-                  color: Colors.blue,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: Colors.blue,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey, spreadRadius: 1, blurRadius: 15)
+                    ],
+                  ),
+                  //color: Colors.blue,
                   width: 300,
                   height: 260,
                   child: const Padding(
-                    padding: EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(45.0),
                     child: Center(
                       child: Text(
                         "Consulter les fiches de risques",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 35,
+                            fontSize: 25,
                             color: Colors.white,
                             fontFamily: "Noto Sans"),
                       ),
