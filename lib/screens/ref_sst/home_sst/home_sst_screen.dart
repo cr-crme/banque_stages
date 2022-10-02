@@ -1,22 +1,6 @@
 import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '/common/models/enterprise.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/dummy_data.dart';
-import '/screens/add_enterprise/add_enterprise_screen.dart';
-import '/screens/enterprise/enterprise_screen.dart';
 import 'widgets/search_bar.dart';
-
-final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
-  onPrimary: Colors.black87,
-  primary: Colors.grey[300],
-  padding: EdgeInsets.symmetric(horizontal: 16),
-  shape: const RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(2)),
-  ),
-);
 
 class HomeSSTScreen extends StatefulWidget {
   const HomeSSTScreen({Key? key}) : super(key: key);
@@ -28,8 +12,6 @@ class HomeSSTScreen extends StatefulWidget {
 }
 
 class _HomeSSTScreenState extends State<HomeSSTScreen> {
-  bool _hideNotAvailable = false;
-
   final _searchController = TextEditingController();
 
   @override
@@ -43,22 +25,13 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Référentiel SST"),
-          // actions: [
-          //   IconButton(
-          //     onPressed: () =>
-          //         Navigator.pushNamed(context, AddEnterpriseScreen.route),
-          //     tooltip: "Ajouter une entreprise",
-          //     icon: const Icon(Icons.add),
-          //   ),
-          // ],
-          //bottom: SearchBar(controller: _searchController),
         ),
         body: Column(
-          //mainAxisAlignment: MainAxisAlignment.center,
-          //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 35),
+            //Button for "Consulter les fiches"
             Center(
+                child: Container(
+              margin: const EdgeInsets.only(top: 35.0),
               child: InkWell(
                 onTap: () {
                   print("Clicked on sst cards list");
@@ -75,7 +48,6 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                           color: Colors.grey, spreadRadius: 1, blurRadius: 15)
                     ],
                   ),
-                  //color: Colors.blue,
                   width: 300,
                   height: 260,
                   child: const Padding(
@@ -94,38 +66,14 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                   ),
                 ),
               ),
-
-              //Test button
-              //Center(
-              // ElevatedButton(
-              //   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-              //   onPressed: () {
-              //     print('Hello');
-              //   },
-              //   child: const Text(
-              //     'Consulter les fiches de risques',
-              //     //textAlign: TextAlign.center,
-              //     // overflow: TextOverflow.visible,
-              //     //style: TextStyle(fontWeight: FontWeight.bold),
-              //   ),
-              // ),
-              //),
-              //Button connected to fiches de risques
-              //Center(
-              // ElevatedButton(
-              //   child: const Text('Bonjour!'),
-              //   onPressed: () {
-              //     print('Hello');
-              //   },
-              // )
-              //),
-            ),
-            SizedBox(height: 50),
+            )),
+            //Container for the search bar
             Center(
               child: Container(
+                  margin: const EdgeInsets.only(top: 50.0),
                   width: 300,
                   height: 260,
-                  padding: EdgeInsets.all(17.0),
+                  padding: const EdgeInsets.all(17.0),
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     color: Colors.blue,
@@ -144,13 +92,10 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                               color: Colors.white,
                               fontFamily: "Noto Sans")),
                       Padding(
-                          padding: EdgeInsets.only(top: 25.0),
+                          padding: const EdgeInsets.only(top: 25.0),
                           child: SearchBar(controller: _searchController))
                     ],
-                  )
-
-                  //child: SearchBar(controller: _searchController),
-                  ),
+                  )),
             )
           ],
         ));
