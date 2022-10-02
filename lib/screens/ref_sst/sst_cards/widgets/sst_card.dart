@@ -1,7 +1,13 @@
+//import 'dart:js_util';
+
 import 'package:flutter/material.dart';
 
 class SSTCard extends StatelessWidget {
-  const SSTCard({super.key});
+  //const SSTCard(int nmb, String title, {super.key});
+  SSTCard(this.nmb, this.title);
+  final int nmb;
+  final String title;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -14,15 +20,14 @@ class SSTCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Fiche XX", style: Theme.of(context).textTheme.titleLarge),
+              Text("Fiche $nmb", style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   children: [
-                    Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+                    Text(title,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        textAlign: TextAlign.left),
                   ],
                 ),
               ),
