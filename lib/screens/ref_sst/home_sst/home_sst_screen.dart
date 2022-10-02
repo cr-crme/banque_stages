@@ -122,16 +122,36 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
             ),
             SizedBox(height: 50),
             Center(
-                child: InkWell(
-              onTap: () {
-                print("hello");
-              },
-              child: Ink(
-                color: Colors.blue,
-                width: 300,
-                height: 260,
-              ),
-            ))
+              child: Container(
+                  width: 300,
+                  height: 260,
+                  padding: EdgeInsets.all(17.0),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: Colors.blue,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey, spreadRadius: 1, blurRadius: 15)
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      const Text("Analyse des risques par métier",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              color: Colors.white,
+                              fontFamily: "Noto Sans")),
+                      Padding(
+                          padding: EdgeInsets.only(top: 25.0),
+                          child: SearchBar(controller: _searchController))
+                    ],
+                  )
+
+                  //child: SearchBar(controller: _searchController),
+                  ),
+            )
           ],
         ));
   }
