@@ -1,6 +1,7 @@
 import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
 import 'package:flutter/material.dart';
 import 'widgets/search_bar.dart';
+import '/common/widgets/main_drawer.dart';
 
 class HomeSSTScreen extends StatefulWidget {
   const HomeSSTScreen({Key? key}) : super(key: key);
@@ -26,6 +27,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
         appBar: AppBar(
           title: const Text("Référentiel SST"),
         ),
+        drawer: const MainDrawer(),
         body: Column(
           children: [
             //Button for "Consulter les fiches"
