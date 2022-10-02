@@ -2,9 +2,10 @@
 
 import 'package:flutter/material.dart';
 
+//SST
 class SSTCard extends StatelessWidget {
-  //const SSTCard(int nmb, String title, {super.key});
-  SSTCard(this.nmb, this.title);
+  //params and variables
+  const SSTCard(this.nmb, this.title, {super.key});
   final int nmb;
   final String title;
 
@@ -13,18 +14,20 @@ class SSTCard extends StatelessWidget {
     return Card(
       elevation: 0.5,
       child: InkWell(
-        onTap: () =>
-            print("Clicked"), //() => onTap(enterprise), //ON TAP SST CARD
+        //onTap should redirect to the risk
+        onTap: () => print("Clicked"), //() => onTap(),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              //Card number
               Text("Fiche $nmb", style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   children: [
+                    //Card title
                     Text(title,
                         style: Theme.of(context).textTheme.titleMedium,
                         textAlign: TextAlign.left),
