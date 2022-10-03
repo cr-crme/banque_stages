@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class tile_job_risk extends StatelessWidget {
   const tile_job_risk({super.key});
-
+/**
+ * create the expansion tile widget
+ */
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
@@ -13,6 +15,9 @@ class tile_job_risk extends StatelessWidget {
   }
 }
 
+/**
+ * Create the texte inside de expansion list tiles 
+ */
 class dropdown_obect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
