@@ -88,7 +88,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                   onTap: () {
                     print("Clicked on jod list risks and skills");
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => job_list_screen(),
+                      builder: (_) => JobListScreen(),
                     ));
                   },
                   child: Column(

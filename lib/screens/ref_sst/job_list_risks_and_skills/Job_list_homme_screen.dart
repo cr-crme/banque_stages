@@ -1,17 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../common/widgets/main_drawer.dart';
 import 'widgets/tile_job_risk.dart';
 
-class job_list_screen extends StatefulWidget {
-  const job_list_screen({Key? key}) : super(key: key);
+class JobListScreen extends StatefulWidget {
+  const JobListScreen({Key? key}) : super(key: key);
 
   static const route = "/job_list_risks_skills";
 
   @override
-  State<job_list_screen> createState() => _Job_list_screenState();
+  State<JobListScreen> createState() => _Job_list_screenState();
 }
 
-class _Job_list_screenState extends State<job_list_screen> {
+class _Job_list_screenState extends State<JobListScreen> {
+  bool switch_value = true;
+
+  get onChanged => null;
+
   @override
   void initState() {
     super.initState();
@@ -23,12 +28,35 @@ class _Job_list_screenState extends State<job_list_screen> {
         appBar: AppBar(
           title: const Text('Nom métier'),
         ),
-        body: ListView.builder(
-          itemCount: 5,
-          padding: const EdgeInsets.all(16.0),
-          itemBuilder: (context, i) {
-            return tile_job_risk(); // call the expansion tile constuctor list
-          },
-        ));
+        drawer: const MainDrawer(),
+        body: Column(children: [
+          Text("Afficher l\'analyse du métier"),
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Par risque"),
+                Switch(
+                    value: switch_value,
+                    onChanged: (bool value) {
+                      // This is called when the user toggles the switch.
+                      setState(() {
+                        switch_value = value;
+                      });
+                    }),
+                Text("Par compétence")
+              ],
+            ),
+          ),
+          ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: 5,
+            padding: const EdgeInsets.all(16.0),
+            itemBuilder: (context, i) {
+              return tile_job_risk(); // call the expansion tile constuctor list
+            },
+          )
+        ]));
   }
 }
