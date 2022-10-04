@@ -1,4 +1,5 @@
 import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/Job_list_homme_screen.dart';
 import 'package:flutter/material.dart';
 import 'widgets/search_bar.dart';
 import '/common/widgets/main_drawer.dart';
@@ -71,19 +72,25 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
             )),
             //Container for the search bar
             Center(
-              child: Container(
-                  margin: const EdgeInsets.only(top: 50.0),
-                  width: 300,
-                  height: 260,
-                  padding: const EdgeInsets.all(17.0),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    color: Colors.blue,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey, spreadRadius: 1, blurRadius: 15)
-                    ],
-                  ),
+                child: Container(
+              margin: const EdgeInsets.only(top: 50.0),
+              width: 300,
+              height: 260,
+              padding: const EdgeInsets.all(17.0),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: Colors.blue,
+                boxShadow: [
+                  BoxShadow(color: Colors.grey, spreadRadius: 1, blurRadius: 15)
+                ],
+              ),
+              child: InkWell(
+                  onTap: () {
+                    print("Clicked on jod list risks and skills");
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => JobListScreen(),
+                    ));
+                  },
                   child: Column(
                     children: [
                       const Text("Analyse des risques par métier",
@@ -98,7 +105,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                           child: SearchBar(controller: _searchController))
                     ],
                   )),
-            )
+            )),
           ],
         ));
   }
