@@ -28,35 +28,41 @@ class _Job_list_screenState extends State<JobListScreen> {
         appBar: AppBar(
           title: const Text('Nom métier'),
         ),
-        drawer: const MainDrawer(),
-        body: Column(children: [
-          Text("Afficher l\'analyse du métier"),
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Par risque"),
-                Switch(
-                    value: switch_value,
-                    onChanged: (bool value) {
-                      // This is called when the user toggles the switch.
-                      setState(() {
-                        switch_value = value;
-                      });
-                    }),
-                Text("Par compétence")
-              ],
-            ),
-          ),
-          ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemCount: 5,
-            padding: const EdgeInsets.all(16.0),
-            itemBuilder: (context, i) {
-              return tile_job_risk(); // call the expansion tile constuctor list
-            },
-          )
-        ]));
+        body:
+          ListView(
+                  children: [
+                    Container(child: Text("Afficher l\'analyse du métier")),
+                    Container(child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Par risque"),
+                          Switch(
+                              value: switch_value,
+                              onChanged: (bool value) {
+                                // This is called when the user toggles the switch.
+                                setState(() {
+                                  switch_value = value;
+                                });
+                              }),
+                          Text("Par compétence")
+                        ],
+                      ),
+                    ),
+                    ),
+                      ListView.builder(
+                        physics: ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: 50,
+                      padding: const EdgeInsets.all(16.0),
+                      itemBuilder: (context, i) {
+                        return tile_job_risk();
+                        // call the expansion tile constuctor list
+                      },
+                    )
+                  ])
+
+
+        );
   }
 }
