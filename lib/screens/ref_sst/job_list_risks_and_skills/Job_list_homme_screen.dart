@@ -31,8 +31,8 @@ class _Job_list_screenState extends State<JobListScreen> {
         body:
           ListView(
                   children: [
-                    Container(child: Text("Afficher l\'analyse du métier")),
-                    Container(child: Center(
+                    Text("Afficher l\'analyse du métier"),
+                    Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -48,7 +48,6 @@ class _Job_list_screenState extends State<JobListScreen> {
                           Text("Par compétence")
                         ],
                       ),
-                    ),
                     ),
                       ListView.builder(
                         physics: ScrollPhysics(),
