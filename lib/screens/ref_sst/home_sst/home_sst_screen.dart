@@ -29,7 +29,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
           title: const Text("Référentiel SST"),
         ),
         drawer: const MainDrawer(),
-        body: Column(
+        body: ListView(
           children: [
             //Button for "Consulter les fiches"
             Center(

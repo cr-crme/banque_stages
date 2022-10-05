@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../common/widgets/main_drawer.dart';
 import 'widgets/tile_job_risk.dart';
 
 class JobListScreen extends StatefulWidget {
@@ -52,7 +51,7 @@ class _Job_list_screenState extends State<JobListScreen> {
                       ListView.builder(
                         physics: ScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: 50,
+                      itemCount: 5,
                       padding: const EdgeInsets.all(16.0),
                       itemBuilder: (context, i) {
                         return tile_job_risk();
