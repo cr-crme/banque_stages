@@ -32,7 +32,7 @@ class ShareWithPickerFormField extends FormField<String> {
 
   static Widget _builder(FormFieldState<String> state) {
     return Autocomplete<String>(
-      initialValue: TextEditingValue(text: state.value!),
+      initialValue: TextEditingValue(text: state.value ?? ""),
       optionsBuilder: (textEditingValue) {
         return shareWithSuggestions.where(
           (activity) => activity.contains(textEditingValue.text),
