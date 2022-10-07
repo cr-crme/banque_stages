@@ -28,10 +28,7 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
   enterprises.add(
     Enterprise(
       name: "Fausse Entreprise",
-      activityTypes: {
-        JobDataFileService.sectors[0].name,
-        JobDataFileService.sectors[3].name
-      },
+      activityTypes: {activityTypes[0], activityTypes[3]},
       recrutedBy: "John Doe",
       shareWith: "Tout le monde",
       jobs: jobs,
@@ -60,10 +57,7 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
   enterprises.add(
     Enterprise(
       name: "Test",
-      activityTypes: {
-        JobDataFileService.sectors[3].name,
-        JobDataFileService.sectors[8].name
-      },
+      activityTypes: {activityTypes[6], activityTypes[8]},
       recrutedBy: "Nom Rectruté Par",
       shareWith: "Personne",
       jobs: jobs,

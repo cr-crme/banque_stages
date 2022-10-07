@@ -135,6 +135,7 @@ class Enterprise extends ItemSerializable {
   final String neq;
 }
 
+// TODO: Replace with adequate data
 const List<String> activityTypes = [
   "Activity Type 1",
   "Activity Type 2",
