@@ -1,13 +1,13 @@
 import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
 
-class Student extends ItemSerializable {
-  Student({
+class Teacher extends ItemSerializable {
+  Teacher({
     super.id,
     this.name = "",
     this.email = "",
   });
 
-  Student.fromSerialized(map)
+  Teacher.fromSerialized(map)
       : name = map['n'],
         email = map['e'],
         super.fromSerialized(map);
@@ -21,12 +21,12 @@ class Student extends ItemSerializable {
     };
   }
 
-  Student copyWith({
+  Teacher copyWith({
     String? name,
     String? email,
     String? id,
   }) =>
-      Student(
+      Teacher(
         name: name ?? this.name,
         email: email ?? this.email,
         id: id ?? this.id,

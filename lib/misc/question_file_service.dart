@@ -34,11 +34,6 @@ class Question extends ItemSerializable {
         super.fromSerialized(map);
 
   @override
-  ItemSerializable deserializeItem(map) {
-    return Question.fromSerialized(map);
-  }
-
-  @override
   Map<String, dynamic> serializedMap() {
     throw "Question should not be serialized. Store its ID intead.";
   }

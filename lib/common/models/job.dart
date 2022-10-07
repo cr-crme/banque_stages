@@ -142,11 +142,6 @@ class Job extends ItemSerializable {
         comments = listFromSerialized(map['comments']),
         super.fromSerialized(map);
 
-  @override
-  ItemSerializable deserializeItem(map) {
-    return Job.fromSerialized(map);
-  }
-
   static List<String> listFromSerialized(List? list) {
     return (list ?? []).map((e) => e.toString()).toList();
   }

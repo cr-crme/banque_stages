@@ -107,11 +107,6 @@ class Enterprise extends ItemSerializable {
         neq = map['neq'],
         super.fromSerialized(map);
 
-  @override
-  ItemSerializable deserializeItem(map) {
-    return Enterprise.fromSerialized(map);
-  }
-
   final String photo;
 
   final String name;
