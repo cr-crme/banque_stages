@@ -7,9 +7,9 @@ import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({
-    Key? key,
+    super.key,
     required this.enterprise,
-  }) : super(key: key);
+  });
 
   final Enterprise enterprise;
 

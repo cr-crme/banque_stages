@@ -8,7 +8,7 @@ import 'steps/supervision_step.dart';
 import 'steps/tasks_step.dart';
 
 class PostInternshipEvaluationScreen extends StatefulWidget {
-  const PostInternshipEvaluationScreen({Key? key}) : super(key: key);
+  const PostInternshipEvaluationScreen({super.key});
 
   static const route = "/post-internship-evaluation";
 

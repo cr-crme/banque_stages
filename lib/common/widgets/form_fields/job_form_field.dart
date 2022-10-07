@@ -6,18 +6,18 @@ import '/common/models/job.dart';
 import '/misc/job_data_file_service.dart';
 
 class JobFormField extends FormField<Job> {
-  const JobFormField(
-      {Key? key,
-      required Job initialValue,
-      FormFieldSetter<Job>? onSaved,
-      AutovalidateMode? autovalidateMode})
-      : super(
-            key: key,
-            initialValue: initialValue,
-            onSaved: onSaved,
-            autovalidateMode: autovalidateMode,
-            validator: _validator,
-            builder: _builder);
+  const JobFormField({
+    super.key,
+    required Job initialValue,
+    FormFieldSetter<Job>? onSaved,
+    AutovalidateMode? autovalidateMode,
+  }) : super(
+          initialValue: initialValue,
+          onSaved: onSaved,
+          autovalidateMode: autovalidateMode,
+          validator: _validator,
+          builder: _builder,
+        );
 
   static const String _invalidActivitySector = "invalid_activitySector";
   static const String _invalidSpecialization = "invalid_specialization";

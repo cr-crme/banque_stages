@@ -11,9 +11,9 @@ import '/common/widgets/form_fields/share_with_picker_form_field.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({
-    Key? key,
+    super.key,
     required this.enterprise,
-  }) : super(key: key);
+  });
 
   final Enterprise enterprise;
 
@@ -143,7 +143,8 @@ class AboutPageState extends State<AboutPage> {
                             positionsOffered: job.positionsOffered,
                             positionsOccupied: job.positionsOccupied,
                           ),
-                          title: Text(job.specialization?.idWithName ?? "bad id"),
+                          title:
+                              Text(job.specialization?.idWithName ?? "bad id"),
                           trailing: Text(
                               "${job.positionsOffered - job.positionsOccupied} / ${job.positionsOffered}"),
                         ),

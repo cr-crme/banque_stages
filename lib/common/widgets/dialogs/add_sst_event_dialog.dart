@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AddSstEventDialog extends StatefulWidget {
-  const AddSstEventDialog({Key? key}) : super(key: key);
+  const AddSstEventDialog({super.key});
 
   @override
   State<AddSstEventDialog> createState() => _AddSstEventDialogState();

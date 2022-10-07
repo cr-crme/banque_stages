@@ -10,12 +10,11 @@ const List<String> shareWithSuggestions = [
 
 class ShareWithPickerFormField extends FormField<String> {
   const ShareWithPickerFormField({
-    Key? key,
+    super.key,
     String initialValue = "Tout le monde",
     void Function(String? shareWith)? onSaved,
     String? Function(String? shareWith)? validator,
   }) : super(
-          key: key,
           initialValue: initialValue,
           onSaved: onSaved,
           validator: validator ?? _validator,

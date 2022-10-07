@@ -5,10 +5,10 @@ import '/common/widgets/disponibility_circle.dart';
 
 class ListItem extends StatelessWidget {
   const ListItem({
-    Key? key,
+    super.key,
     required this.enterprise,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final Enterprise enterprise;
   final void Function(Enterprise enterprise) onTap;

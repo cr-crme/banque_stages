@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AddTextDialog extends StatefulWidget {
-  const AddTextDialog({Key? key, required this.title}) : super(key: key);
+  const AddTextDialog({
+    super.key,
+    required this.title,
+  });
 
   final String title;
 

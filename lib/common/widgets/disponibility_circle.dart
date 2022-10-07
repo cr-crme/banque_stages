@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class DisponibilityCircle extends StatelessWidget {
   const DisponibilityCircle({
-    Key? key,
+    super.key,
     required this.positionsOffered,
     required this.positionsOccupied,
-  }) : super(key: key);
+  });
 
   final int positionsOffered;
   final int positionsOccupied;

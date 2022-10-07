@@ -5,9 +5,9 @@ import '/common/models/job.dart';
 
 class PrerequisitesStep extends StatefulWidget {
   const PrerequisitesStep({
-    Key? key,
+    super.key,
     required this.job,
-  }) : super(key: key);
+  });
 
   final Job job;
 
@@ -170,10 +170,9 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
 
 class _AgeSpinBox extends FormField<int> {
   const _AgeSpinBox({
-    Key? key,
     super.initialValue,
     super.onSaved,
-  }) : super(key: key, builder: _build);
+  }) : super(builder: _build);
 
   static Widget _build(FormFieldState<int> state) {
     return SpinBox(

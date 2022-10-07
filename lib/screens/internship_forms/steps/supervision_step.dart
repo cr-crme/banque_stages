@@ -5,9 +5,9 @@ import '/common/models/job.dart';
 
 class SupervisionStep extends StatefulWidget {
   const SupervisionStep({
-    Key? key,
+    super.key,
     required this.job,
-  }) : super(key: key);
+  });
 
   final Job job;
 
@@ -69,11 +69,9 @@ class SupervisionStepState extends State<SupervisionStep> {
 
 class _RatingBar extends FormField<double> {
   const _RatingBar({
-    Key? key,
     required this.question,
     required void Function(double? rating) onSaved,
   }) : super(
-          key: key,
           onSaved: onSaved,
           builder: _builder,
         );

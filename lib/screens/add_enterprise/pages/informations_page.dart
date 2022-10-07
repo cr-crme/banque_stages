@@ -4,7 +4,7 @@ import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import '/common/widgets/form_fields/share_with_picker_form_field.dart';
 
 class InformationsPage extends StatefulWidget {
-  const InformationsPage({Key? key}) : super(key: key);
+  const InformationsPage({super.key});
 
   @override
   State<InformationsPage> createState() => InformationsPageState();

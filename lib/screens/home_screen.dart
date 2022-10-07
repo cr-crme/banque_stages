@@ -4,7 +4,7 @@ import '/common/widgets/main_drawer.dart';
 import '/screens/internship_forms/post_internship_evaluation_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   static const route = "/";
 

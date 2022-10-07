@@ -18,9 +18,9 @@ import 'jobs_expansion_panels/tasks_expansion_panel.dart';
 
 class JobsPage extends StatefulWidget {
   const JobsPage({
-    Key? key,
+    super.key,
     required this.enterprise,
-  }) : super(key: key);
+  });
 
   final Enterprise enterprise;
 

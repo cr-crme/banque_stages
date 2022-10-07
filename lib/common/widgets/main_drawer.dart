@@ -7,7 +7,7 @@ import '/screens/enterprises_list/enterprises_list_screen.dart';
 import '/screens/login_screen.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({Key? key}) : super(key: key);
+  const MainDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +74,7 @@ class _DrawerItem extends StatelessWidget {
     this.icon,
     this.route,
     this.onTap,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final String? route;
   final Icon? icon;

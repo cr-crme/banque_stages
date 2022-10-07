@@ -10,7 +10,7 @@ import 'widgets/list_item.dart';
 import 'widgets/search_bar.dart';
 
 class EnterprisesListScreen extends StatefulWidget {
-  const EnterprisesListScreen({Key? key}) : super(key: key);
+  const EnterprisesListScreen({super.key});
 
   static const route = "/enterprises-list";
 

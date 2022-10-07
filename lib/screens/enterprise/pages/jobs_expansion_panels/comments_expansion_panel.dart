@@ -22,7 +22,7 @@ class CommentsExpansionPanel extends ExpansionPanel {
 }
 
 class _SstBody extends StatelessWidget {
-  const _SstBody({Key? key, required this.job}) : super(key: key);
+  const _SstBody({required this.job});
 
   final Job job;
 

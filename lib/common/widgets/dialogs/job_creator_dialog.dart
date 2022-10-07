@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '/common/models/job.dart';
 
 class JobCreatorDialog extends StatefulWidget {
-  const JobCreatorDialog({Key? key}) : super(key: key);
+  const JobCreatorDialog({super.key});
 
   @override
   State<JobCreatorDialog> createState() => _JobCreatorDialogState();

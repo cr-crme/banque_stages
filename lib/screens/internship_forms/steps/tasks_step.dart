@@ -5,9 +5,9 @@ import '/common/widgets/form_fields/low_high_slider_form_field.dart';
 
 class TasksStep extends StatefulWidget {
   const TasksStep({
-    Key? key,
+    super.key,
     required this.job,
-  }) : super(key: key);
+  });
 
   final Job job;
 

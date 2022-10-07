@@ -5,12 +5,11 @@ import '/common/widgets/activity_type_cards.dart';
 
 class ActivityTypesPickerFormField extends FormField<Set<String>> {
   ActivityTypesPickerFormField({
-    Key? key,
+    super.key,
     Set<String>? initialValue,
     void Function(Set<String>? activityTypes)? onSaved,
     String? Function(Set<String>? activityTypes)? validator,
   }) : super(
-          key: key,
           initialValue: initialValue ?? {},
           onSaved: onSaved,
           validator: validator ?? _validator,

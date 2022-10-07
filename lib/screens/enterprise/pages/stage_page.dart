@@ -4,9 +4,9 @@ import '/common/models/enterprise.dart';
 
 class StagePage extends StatefulWidget {
   const StagePage({
-    Key? key,
+    super.key,
     required this.enterprise,
-  }) : super(key: key);
+  });
 
   final Enterprise enterprise;
 
