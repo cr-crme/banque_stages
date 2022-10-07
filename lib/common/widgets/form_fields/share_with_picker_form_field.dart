@@ -1,4 +1,4 @@
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 const List<String> shareWithSuggestions = [
@@ -31,24 +31,29 @@ class ShareWithPickerFormField extends FormField<String> {
   }
 
   static Widget _builder(FormFieldState<String> state) {
-    return AutoCompleteTextField<String>(
-      key: GlobalKey(),
-      controller: TextEditingController(text: state.value),
-      decoration: InputDecoration(
-        labelText: "* Partager l'entreprise avec",
-        errorText: state.errorText,
-      ),
-      textSubmitted: (item) => state.didChange(item),
-      itemSubmitted: (item) => state.didChange(item),
-      clearOnSubmit: false,
-      suggestions: shareWithSuggestions,
-      itemBuilder: (context, suggestion) => ListTile(title: Text(suggestion)),
-      itemSorter: (a, b) => a.compareTo(b),
-      minLength: 0,
-      itemFilter: (suggestion, query) =>
-          suggestion.toString().toLowerCase().startsWith(
-                query.toLowerCase(),
-              ),
+    return Autocomplete<String>(
+      initialValue: TextEditingValue(text: state.value!),
+      optionsBuilder: (textEditingValue) {
+        return shareWithSuggestions.where(
+          (activity) => activity.contains(textEditingValue.text),
+        );
+      },
+      onSelected: (item) => state.didChange(item),
+      fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
+        return TextField(
+          controller: controller,
+          focusNode: focusNode,
+          onSubmitted: (_) => onSubmitted(),
+          onChanged: (text) {
+            state.didChange(shareWithSuggestions
+                .firstWhereOrNull((suggestion) => suggestion == text));
+          },
+          decoration: InputDecoration(
+            labelText: "* Partager l'entreprise avec",
+            errorText: state.errorText,
+          ),
+        );
+      },
     );
   }
 }
