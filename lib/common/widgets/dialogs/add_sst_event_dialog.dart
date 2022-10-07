@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '/misc/form_service.dart';
+
 class AddSstEventDialog extends StatefulWidget {
   const AddSstEventDialog({super.key});
 
@@ -12,19 +14,12 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
 
   SstEventType? _eventType;
 
-  void _showInvalidFieldsSnakBar() {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Assurez vous que tous les champs soient valides")));
-  }
-
   void _onCancel() {
     Navigator.pop(context);
   }
 
   void _onConfirm() {
-    if (!_formKey.currentState!.validate()) {
-      _showInvalidFieldsSnakBar();
+    if (!FormService.validateForm(_formKey)) {
       return;
     }
 

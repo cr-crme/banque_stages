@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '/misc/form_service.dart';
+
 class AddTextDialog extends StatefulWidget {
   const AddTextDialog({
     super.key,
@@ -17,19 +19,12 @@ class _AddTextDialogState extends State<AddTextDialog> {
 
   String? _comment;
 
-  void _showInvalidFieldsSnakBar() {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Assurez vous que tous les champs soient valides")));
-  }
-
   void _onCancel() {
     Navigator.pop(context);
   }
 
   void _onConfirm() {
-    if (!_formKey.currentState!.validate()) {
-      _showInvalidFieldsSnakBar();
+    if (!FormService.validateForm(_formKey)) {
       return;
     }
 
@@ -45,11 +40,7 @@ class _AddTextDialogState extends State<AddTextDialog> {
         key: _formKey,
         child: TextFormField(
           onSaved: (text) => _comment = text,
-          validator: (text) {
-            if (text!.isEmpty) return "Veuillez écrire quelque chose.";
-
-            return null;
-          },
+          validator: FormService.textNotEmptyValidator,
           keyboardType: TextInputType.multiline,
           minLines: 4,
           maxLines: null,

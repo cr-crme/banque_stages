@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import '/common/widgets/form_fields/share_with_picker_form_field.dart';
+import '/misc/form_service.dart';
 
 class InformationsPage extends StatefulWidget {
   const InformationsPage({super.key});
@@ -38,24 +39,14 @@ class InformationsPageState extends State<InformationsPage> {
             ListTile(
               title: TextFormField(
                 decoration: const InputDecoration(labelText: "* Nom"),
-                validator: (text) {
-                  if (text!.isEmpty) {
-                    return "Le champ ne peut pas être vide";
-                  }
-                  return null;
-                },
+                validator: FormService.textNotEmptyValidator,
                 onSaved: (name) => this.name = name,
               ),
             ),
             ListTile(
               title: TextFormField(
                 decoration: const InputDecoration(labelText: "NEQ"),
-                validator: (text) {
-                  if (text!.isNotEmpty && !RegExp(r'^\d{10}$').hasMatch(text)) {
-                    return "Le NEQ est composé de 10 chiffres";
-                  }
-                  return null;
-                },
+                validator: FormService.neqValidator,
                 onSaved: (neq) => this.neq = neq,
                 keyboardType: TextInputType.number,
               ),
