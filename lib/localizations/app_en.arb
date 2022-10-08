@@ -1,0 +1,7 @@
+{
+    "@@locale": "en",
+    "appName": "Intership Repository",
+    "@appName": {
+        "description": "The name of the application."
+    },
+}

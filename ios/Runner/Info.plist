@@ -49,5 +49,6 @@
 	<string>L'accès aux photos est nécessaire pour ajouter une image.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>L'accès à la caméra est nécessaire pour ajouter une image.</string>
+	<!-- TODO: Add localization (https://docs.flutter.dev/development/accessibility-and-localization/internationalization#localizing-for-ios-updating-the-ios-app-bundle) -->
 </dict>
 </plist>

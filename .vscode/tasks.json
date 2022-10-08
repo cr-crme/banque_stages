@@ -2,11 +2,37 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Generate localization",
+            "command": "flutter",
+            "args": ["gen-l10n"],
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "\"([a-z]{2})\": (.*)",
+                    "file": 1,
+                    "message": 2
+                }
+            }
+        },
+        {
             "label": "Run Firebase Emulator",
             "command": "firebase",
-            "args": ["emulators:start"], // TODO: Import/export data
+            "args": ["emulators:start"],
             "type": "shell",
-            "options": { "cwd": "${workspaceFolder}" },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
             "isBackground": true,
             "problemMatcher": {
                 "pattern": {
@@ -32,9 +58,15 @@
                 "showReuseMessage": false,
                 "close": true
             },
-            "windows": { "command": "start" },
-            "linux": { "command": "xdg-open" },
-            "osx": { "command": "open" }
+            "windows": {
+                "command": "start"
+            },
+            "linux": {
+                "command": "xdg-open"
+            },
+            "osx": {
+                "command": "open"
+            }
         }
     ]
 }

@@ -7,6 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'common/providers/auth_provider.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
       ],
       child: MaterialApp(
+        onGenerateTitle: (context) => AppLocalizations.of(context)!.appName,
         title: 'Banque de Stages',
         theme: crcrmeMaterialTheme,
         initialRoute: HomeScreen.route,
@@ -63,6 +65,8 @@ class MyApp extends StatelessWidget {
           PostInternshipEvaluationScreen.route: (context) =>
               const PostInternshipEvaluationScreen(),
         },
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
   }
