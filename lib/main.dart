@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:crcrme_banque_stages/crcrme_material_theme/lib/crcrme_material_theme.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -51,8 +52,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
       ],
       child: MaterialApp(
-        onGenerateTitle: (context) => AppLocalizations.of(context)!.appName,
-        title: 'Banque de Stages',
+        onGenerateTitle: (context) {
+          FormService.setContext = context;
+          return AppLocalizations.of(context)!.appName;
+        },
         theme: crcrmeMaterialTheme,
         initialRoute: HomeScreen.route,
         home: const HomeScreen(),

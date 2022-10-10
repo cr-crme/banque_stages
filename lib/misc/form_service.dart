@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 abstract class FormService {
   static bool validateForm(GlobalKey<FormState> formKey) {
@@ -22,7 +23,7 @@ abstract class FormService {
 
   static String? textNotEmptyValidator(String? text) {
     if (text!.isEmpty) {
-      return "Le champ ne peut pas être vide";
+      return _localizations.emptyFieldError;
     }
     return null;
   }
@@ -30,44 +31,46 @@ abstract class FormService {
   static String? neqValidator(String? neq) {
     if (neq == null) return null;
     if (neq.isNotEmpty && !RegExp(r'^\d{10}$').hasMatch(neq)) {
-      return "Le NEQ est composé de 10 chiffres";
+      return _localizations.invalidNeqError;
     }
     return null;
   }
 
   static String? phoneValidator(String? phone) {
     if (phone!.isEmpty) {
-      return "Le champ ne peut pas être vide";
+      return _localizations.emptyPhoneError;
     } else if (!RegExp(
-            r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
+            r"^(:?\+\d{1,3})?\s?\(?\d{3}(?:[-.\)\s]|\)\s)?\d{3}[-.\s]?\d{4,6}(?:\s(?:poste)?\s\d{1,6})?$")
         .hasMatch(phone)) {
-      return "Le numéro entré n'est pas valide";
+      return _localizations.invalidPhoneError;
     }
     return null;
   }
 
   static String? emailValidator(String? email) {
     if (email == null || email.isEmpty) {
-      return "Please enter an email";
+      return _localizations.emptyEmailError;
     }
     if (!RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(email)) {
-      return "Please enter a valid email";
+      return _localizations.invalidEmailError;
     }
     return null;
   }
 
   static String? usernameValidator(String? username) {
     if (username == null || username.isEmpty) {
-      return "Please enter a username";
+      return _localizations.emptyUsernameError;
     }
     return null;
   }
 
   static String? passwordValidator(String? password) {
     if (password == null || password.isEmpty) {
-      return "Please enter a password";
+      return _localizations.emptyFieldError;
+    } else if (password.length < 8) {
+      return _localizations.invalidPasswordError;
     }
     return null;
   }
@@ -80,8 +83,12 @@ abstract class FormService {
       return null;
     }
     if (confirmPassword != password) {
-      return "Passwords don't match";
+      return _localizations.passwordMatchError;
     }
     return null;
   }
+
+  static late BuildContext _context;
+  static set setContext(BuildContext context) => _context = context;
+  static AppLocalizations get _localizations => AppLocalizations.of(_context)!;
 }
