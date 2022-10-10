@@ -39,8 +39,6 @@ dependencies:
     collection: ^1.16.0
 
 dev_dependencies:
-    flutter_test:
-        sdk: flutter
     flutter_lints: ^2.0.0
 
 flutter:
