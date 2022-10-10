@@ -1,1 +1,248 @@
-[{"id":"1","qp":"Quelles sont les t\u00e2ches que l'\u00e9l\u00e8ve devra r\u00e9aliser en stage?","qs":"Quelles sont les t\u00e2ches que tu dois faire?","t":"Texte"},{"id":"2","qp":"Est-ce que l\u2019\u00e9l\u00e8ve travaillera majoritairement\u00a0?","qs":"Est-ce que tu travailles majoritairement ?","t":"Vrai ou Faux","c":["Debout","Assis"],"sp":"Est-ce que l'\u00e9l\u00e8ve sera amen\u00e9 \u00e0 se d\u00e9placer ou il restera majoritairement \u00e0 son poste de travail? Est-ce qu\u2019il y a des endroits o\u00f9 l\u2019\u00e9l\u00e8ve peut s\u2019assoir?","ss":"Est-ce que tu te d\u00e9places ou tu restes majoritairement \u00e0 ton poste de travail? Est-ce qu\u2019il y a des endroits o\u00f9 tu peux s\u2019assoir \u00e0 proximit\u00e9 de ton poste ?"},{"id":"3","qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra porter des boites de marchandises, des produits ou du mat\u00e9riel?","qs":"Est-ce que tu dois porter des boites de marchandises, des produits ou du mat\u00e9riel?","t":"Vrai ou Faux","c":["Oui","Non"],"sp":"Est-ce que cela se produit souvent (par exemple plusieurs fois par heure, plusieurs fois par jour)? Est-ce que vous pouvez me montrer de quel type de boites ou de mat\u00e9riel il s\u2019agit?","ss":"Cela se produit combien de fois par jour? Est-ce que tu peux me montrer ce que tu dois porter?"},{"id":"4","qp":"Est-ce que l\u2019\u00e9l\u00e8ve sera amen\u00e9 \u00e0 porter les enfants?","qs":"Est-ce que tu dois porter les enfants?","t":"Vrai ou Faux","c":["Oui","Non"],"sp":"Est-ce que cela se produit souvent (par exemple plusieurs fois par heure, par jour)?","ss":"Cela se produit combien de fois par jour?"},{"id":"5","qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra d\u00e9placer des marchandises ou du mat\u00e9riel, par exemple avec\u00a0:","qs":"Est-ce que tu d\u00e9places des marchandises ou du mat\u00e9riel, par exemple avec :","t":"Choix de r\u00e9ponse","c":["Un diable ","Un transpalette","Un chariot","Une brouette"],"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais utilis\u00e9 ce type d\u2019\u00e9quipement auparavant. Est-ce que vous ou un coll\u00e8gue pourrait prendre quelques minutes pour lui expliquer comment s\u2019en servir (comment pousser, tirer, charger, d\u00e9charger, circuler, \u2026)?","ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire?"},{"id":"6","qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra travailler en hauteur et utiliser\u00a0:","qs":"Est-ce que tu utilises :","t":"Choix de r\u00e9ponse","c":["Un escabeau","Une \u00e9chelle"],"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais travaill\u00e9 avec ce genre d\u2019\u00e9quipement, est-ce que vous pourriez lui montrer comment s\u2019en servir?","ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire?"},{"id":"7","qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra utiliser un outil coupant, comme:","qs":"Est-ce que tu utilises un outil coupant, comme:","t":"Choix de r\u00e9ponse","c":["Un couteau","Un couteau \u00e0 lame r\u00e9tractable (Exacto)","Des ciseaux","Une scie"],"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais travaill\u00e9 avec ce genre d\u2019\u00e9quipement, est-ce que vous pourriez lui montrer comment s\u2019en servir?","ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire?"},{"id":"8","qp":"Est-ce que l'\u00e9l\u00e8ve devra utiliser des outils \u00e0 main \u00e9lectriques ou pneumatiques, comme :","qs":"Est-ce que tu utilises des outils \u00e9lectriques ou pneumatiques comme :","t":"Choix de r\u00e9ponse","c":["Une perceuse","Une polisseuse"],"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais travaill\u00e9 avec ce genre d\u2019\u00e9quipement, est-ce que vous pourriez lui montrer comment s\u2019en servir?","ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire? "},{"id":"9","qp":"Est-ce que mon \u00e9l\u00e8ve devra faire attention \u00e0 des choses particuli\u00e8res pendant l\u2019assemblage des pi\u00e8ces ou la soudure?","qs":"Quelles sont les choses auxquelles tu dois faire attention pendant l\u2019assemblage des pi\u00e8ces ou la soudure?","t":"Texte"},{"id":"10","qp":"Est-ce que l\u2019\u00e9l\u00e8ve utilisera ou travaillera \u00e0 proximit\u00e9 de produits chimiques comme :","qs":"Est-ce que tu utilises ou travailles \u00e0 proximit\u00e9 de produits chimiques comme :","t":"Choix de r\u00e9ponse","c":["Des a\u00e9rosols","Des produits de nettoyage","Des pesticides"],"sp":"Est-ce que vous devez suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?","ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?"},{"id":"11","qp":"Est-ce que l\u2019\u00e9l\u00e8ve utilisera ou travaillera \u00e0 proximit\u00e9 de produits chimiques comme :","qs":"Est-ce que tu utilises ou travailles \u00e0 proximit\u00e9 de produits chimiques comme :","t":"Choix de r\u00e9ponse","c":["Des a\u00e9rosols","Des produits de nettoyage","Des produits pour la teinture","Des produits d\u00e9colorants","Des shampoings"],"sp":"Est-ce que vous devez suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?","ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?"},{"id":"12","qp":"Est-ce que l\u2019\u00e9l\u00e8ve utilisera ou travaillera \u00e0 proximit\u00e9 de produits chimiques comme :","qs":"Est-ce que tu utilises ou travailles \u00e0 proximit\u00e9 de produits chimiques comme :","t":"Choix de r\u00e9ponse","c":["Des a\u00e9rosols","Des produits de nettoyage","Des solvants","Des vernis"],"sp":"Est-ce que vous devez suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?","ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?"},{"id":"13","qp":"Est-ce qu'il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre pour la manipulation de la farine? Des \u00e9quipements sp\u00e9cifiques \u00e0 utiliser?","qs":"Est-ce qu'il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre pour la manipulation de la farine? Des \u00e9quipements sp\u00e9cifiques \u00e0 utiliser?","t":"Texte"},{"id":"14","qp":"Est-ce qu\u2019il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre par rapport \u00e0 la poussi\u00e8re ? Est-ce qu\u2019il y a des \u00e9quipements sp\u00e9cifiques \u00e0 utiliser?","qs":"Est-ce qu\u2019il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre par rapport \u00e0 la poussi\u00e8re ? Est-ce qu\u2019il y a des \u00e9quipements sp\u00e9cifiques \u00e0 utiliser?","t":"Texte"},{"id":"15","qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra travailler dans un environnement o\u00f9 :","qs":"Est-ce qu\u2019\u00e0 ton poste de travail:","t":"Choix de r\u00e9ponse","c":["Il fait chaud (sup\u00e9rieur \u00e0 25\u00b0C)?","Il fait froid (inf\u00e9rieur \u00e0 10\u00b0C)?"],"sp":"Est-ce qu\u2019il y a des \u00e9quipements de protection pr\u00e9vus? Est-ce qu\u2019il y a des choses que mon \u00e9l\u00e8ve doit savoir par rapport \u00e0 \u00e7a? ","ss":"Est-ce que tu dois porter des v\u00eatements ou des \u00e9quipements sp\u00e9cifiques?"},{"id":"16","qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra travailler dans un environnement bruyant?","qs":"Est-ce qu'il y a du bruit \u00e0 ton poste de travail?","t":"Vrai ou Faux","c":["Oui","Non"],"sp":"Est-ce qu\u2019il y a des choses que mon \u00e9l\u00e8ve doit savoir par rapport \u00e0 \u00e7a (p.ex. une proc\u00e9dure \u00e0 connaitre, des \u00e9quipements \u00e0 porter\u2026)? ","ss":"Est-ce qu\u2019il y a des choses que tu dois savoir par rapport \u00e0 \u00e7a? (p. ex. une proc\u00e9dure \u00e0 connaitre, des \u00e9quipements \u00e0 porter?)"},{"id":"17","qp":"Est-ce que l'\u00e9l\u00e8ve sera amen\u00e9 \u00e0 ?","qs":"Est-ce que tu vas?","t":"Choix de r\u00e9ponse","c":["Conduire un tracteur?","Travailler dans un silo?"],"sp":"Est-ce que les employ\u00e9s doivent suivre une proc\u00e9dure particuli\u00e8re ou porter des \u00e9quipements sp\u00e9cifiques pour \u00e7a? ","ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re ou porter des \u00e9quipements sp\u00e9cifiques pour \u00e7a? "},{"id":"18","qp":"Est-ce que l'\u00e9l\u00e8ve sera amen\u00e9 \u00e0 ?","qs":"Est-ce que tu vas?","t":"Choix de r\u00e9ponse","c":["Soigner les animaux?","Nettoyer des box ou les enclos d\u2019animaux?","D\u00e9placer ou monter les animaux?","Porter les animaux?"],"sp":"Est-ce qu'il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre? Des \u00e9quipements sp\u00e9cifiques \u00e0 porter? Quelles sont les choses que mon \u00e9l\u00e8ve doit savoir pour que cela se passe bien avec les animaux et \u00e9viter les coups ou les morsures?","ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re ou porter des \u00e9quipements sp\u00e9cifiques pour \u00e7a? Qu\u2019est-ce qu\u2019il faut faire pour que cela se passe bien avec les animaux et qu'ils ne te fassent pas mal?"},{"id":"19","qp":"Est-ce que l\u2019\u00e9l\u00e8ve fera du service \u00e0 la client\u00e8le ?","qs":"Est-ce que tu fais du service \u00e0 la client\u00e8le ?","t":"Vrai ou Faux","c":["Oui","Non"],"sp":"Est-ce qu\u2019il y a d\u00e9j\u00e0 eu des clients m\u00e9contents ou qui se sont mal comport\u00e9s avec les employ\u00e9s? Comment je peux y pr\u00e9parer mon \u00e9l\u00e8ve?","ss":"Comment te sens-tu par rapport \u00e0 \u00e7a?"},{"id":"20","qp":"Est-ce qu'il y a des d\u00e9lais sp\u00e9cifiques ou un niveau de productivit\u00e9 que mon \u00e9l\u00e8ve devra respecter?","qs":"Est-ce que tu dois respecter des d\u00e9lais sp\u00e9cifiques pour faire ton travail? ","t":"Texte"},{"id":"21","qp":"Quelles sont les situations de travail qui pourraient \u00eatre dangereuses pour mon \u00e9l\u00e8ve? Comment faudrait-il l'y pr\u00e9parer?","qs":"Est-ce que tu as identifi\u00e9 des situations dangereuses pendant que tu fais tes t\u00e2ches?","t":"Texte"},{"id":"22","qp":"Est-ce qu\u2019il y a d\u00e9j\u00e0 eu des incidents ou des accidents du travail au poste que l\u2019\u00e9l\u00e8ve occupera en stage?","qs":"Est-ce qu\u2019il y a d\u00e9j\u00e0 eu des incidents ou des accidents du travail \u00e0 ton poste de travail?","t":"Vrai ou Faux","c":["Oui","Non"],"sp":"Pouvez-vous me raconter ce qu\u2019il s\u2019est pass\u00e9?","ss":"On va demander \u00e0 tes coll\u00e8gues s\u2019il y en a d\u00e9j\u00e0 eu et de nous raconter ce qu\u2019il s\u2019est pass\u00e9"},{"id":"23","qp":"\u00c0 quelle personne dans l\u2019entreprise, l\u2019\u00e9l\u00e8ve doit-il s'adresser en cas de blessure ou d'incident?","qs":"\u00c0 quelle personne dans l\u2019entreprise dois-tu s'adresser en cas de blessure ou d'incident?","t":"Texte"}]
+[
+{
+"id":"1",
+"qp":"Quelles sont les t\u00e2ches que l'\u00e9l\u00e8ve devra r\u00e9aliser en stage?",
+"qs":"Quelles sont les t\u00e2ches que tu dois faire?",
+"t":"Texte"
+},
+{
+"id":"2",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve travaillera majoritairement\u00a0?",
+"qs":"Est-ce que tu travailles majoritairement ?",
+"t":"Vrai ou Faux",
+"c":[
+"Debout",
+"Assis"
+],
+"sp":"Est-ce que l'\u00e9l\u00e8ve sera amen\u00e9 \u00e0 se d\u00e9placer ou il restera majoritairement \u00e0 son poste de travail? Est-ce qu\u2019il y a des endroits o\u00f9 l\u2019\u00e9l\u00e8ve peut s\u2019assoir?",
+"ss":"Est-ce que tu te d\u00e9places ou tu restes majoritairement \u00e0 ton poste de travail? Est-ce qu\u2019il y a des endroits o\u00f9 tu peux s\u2019assoir \u00e0 proximit\u00e9 de ton poste ?"
+},
+{
+"id":"3",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra porter des boites de marchandises, des produits ou du mat\u00e9riel?",
+"qs":"Est-ce que tu dois porter des boites de marchandises, des produits ou du mat\u00e9riel?",
+"t":"Vrai ou Faux",
+"c":[
+"Oui",
+"Non"
+],
+"sp":"Est-ce que cela se produit souvent (par exemple plusieurs fois par heure, plusieurs fois par jour)? Est-ce que vous pouvez me montrer de quel type de boites ou de mat\u00e9riel il s\u2019agit?",
+"ss":"Cela se produit combien de fois par jour? Est-ce que tu peux me montrer ce que tu dois porter?"
+},
+{
+"id":"4",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve sera amen\u00e9 \u00e0 porter les enfants?",
+"qs":"Est-ce que tu dois porter les enfants?",
+"t":"Vrai ou Faux",
+"c":[
+"Oui",
+"Non"
+],
+"sp":"Est-ce que cela se produit souvent (par exemple plusieurs fois par heure, par jour)?",
+"ss":"Cela se produit combien de fois par jour?"
+},
+{
+"id":"5",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra d\u00e9placer des marchandises ou du mat\u00e9riel, par exemple avec\u00a0:",
+"qs":"Est-ce que tu d\u00e9places des marchandises ou du mat\u00e9riel, par exemple avec :",
+"t":"Choix de r\u00e9ponse",
+"c":[
+"Un diable ",
+"Un transpalette",
+"Un chariot",
+"Une brouette"
+],
+"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais utilis\u00e9 ce type d\u2019\u00e9quipement auparavant. Est-ce que vous ou un coll\u00e8gue pourrait prendre quelques minutes pour lui expliquer comment s\u2019en servir (comment pousser, tirer, charger, d\u00e9charger, circuler, \u2026)?",
+"ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire?"
+},
+{
+"id":"6",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra travailler en hauteur et utiliser\u00a0:",
+"qs":"Est-ce que tu utilises :",
+"t":"Choix de r\u00e9ponse",
+"c":[
+"Un escabeau",
+"Une \u00e9chelle"
+],
+"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais travaill\u00e9 avec ce genre d\u2019\u00e9quipement, est-ce que vous pourriez lui montrer comment s\u2019en servir?",
+"ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire?"
+},
+{
+"id":"7",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra utiliser un outil coupant, comme:",
+"qs":"Est-ce que tu utilises un outil coupant, comme:",
+"t":"Choix de r\u00e9ponse",
+"c":[
+"Un couteau",
+"Un couteau \u00e0 lame r\u00e9tractable (Exacto)",
+"Des ciseaux",
+"Une scie"
+],
+"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais travaill\u00e9 avec ce genre d\u2019\u00e9quipement, est-ce que vous pourriez lui montrer comment s\u2019en servir?",
+"ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire?"
+},
+{
+"id":"8",
+"qp":"Est-ce que l'\u00e9l\u00e8ve devra utiliser des outils \u00e0 main \u00e9lectriques ou pneumatiques, comme :",
+"qs":"Est-ce que tu utilises des outils \u00e9lectriques ou pneumatiques comme :",
+"t":"Choix de r\u00e9ponse",
+"c":[
+"Une perceuse",
+"Une polisseuse"
+],
+"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais travaill\u00e9 avec ce genre d\u2019\u00e9quipement, est-ce que vous pourriez lui montrer comment s\u2019en servir?",
+"ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire? "
+},
+{
+"id":"9",
+"qp":"Est-ce que mon \u00e9l\u00e8ve devra faire attention \u00e0 des choses particuli\u00e8res pendant l\u2019assemblage des pi\u00e8ces ou la soudure?",
+"qs":"Quelles sont les choses auxquelles tu dois faire attention pendant l\u2019assemblage des pi\u00e8ces ou la soudure?",
+"t":"Texte"
+},
+{
+"id":"10",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve utilisera ou travaillera \u00e0 proximit\u00e9 de produits chimiques comme :",
+"qs":"Est-ce que tu utilises ou travailles \u00e0 proximit\u00e9 de produits chimiques comme :",
+"t":"Choix de r\u00e9ponse",
+"c":[
+"Des a\u00e9rosols",
+"Des produits de nettoyage",
+"Des pesticides"
+],
+"sp":"Est-ce que vous devez suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?",
+"ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?"
+},
+{
+"id":"11",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve utilisera ou travaillera \u00e0 proximit\u00e9 de produits chimiques comme :",
+"qs":"Est-ce que tu utilises ou travailles \u00e0 proximit\u00e9 de produits chimiques comme :",
+"t":"Choix de r\u00e9ponse",
+"c":[
+"Des a\u00e9rosols",
+"Des produits de nettoyage",
+"Des produits pour la teinture",
+"Des produits d\u00e9colorants",
+"Des shampoings"
+],
+"sp":"Est-ce que vous devez suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?",
+"ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?"
+},
+{
+"id":"12",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve utilisera ou travaillera \u00e0 proximit\u00e9 de produits chimiques comme :",
+"qs":"Est-ce que tu utilises ou travailles \u00e0 proximit\u00e9 de produits chimiques comme :",
+"t":"Choix de r\u00e9ponse",
+"c":[
+"Des a\u00e9rosols",
+"Des produits de nettoyage",
+"Des solvants",
+"Des vernis"
+],
+"sp":"Est-ce que vous devez suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?",
+"ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?"
+},
+{
+"id":"13",
+"qp":"Est-ce qu'il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre pour la manipulation de la farine? Des \u00e9quipements sp\u00e9cifiques \u00e0 utiliser?",
+"qs":"Est-ce qu'il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre pour la manipulation de la farine? Des \u00e9quipements sp\u00e9cifiques \u00e0 utiliser?",
+"t":"Texte"
+},
+{
+"id":"14",
+"qp":"Est-ce qu\u2019il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre par rapport \u00e0 la poussi\u00e8re ? Est-ce qu\u2019il y a des \u00e9quipements sp\u00e9cifiques \u00e0 utiliser?",
+"qs":"Est-ce qu\u2019il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre par rapport \u00e0 la poussi\u00e8re ? Est-ce qu\u2019il y a des \u00e9quipements sp\u00e9cifiques \u00e0 utiliser?",
+"t":"Texte"
+},
+{
+"id":"15",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra travailler dans un environnement o\u00f9 :",
+"qs":"Est-ce qu\u2019\u00e0 ton poste de travail:",
+"t":"Choix de r\u00e9ponse",
+"c":[
+"Il fait chaud (sup\u00e9rieur \u00e0 25\u00b0C)?",
+"Il fait froid (inf\u00e9rieur \u00e0 10\u00b0C)?"
+],
+"sp":"Est-ce qu\u2019il y a des \u00e9quipements de protection pr\u00e9vus? Est-ce qu\u2019il y a des choses que mon \u00e9l\u00e8ve doit savoir par rapport \u00e0 \u00e7a? ",
+"ss":"Est-ce que tu dois porter des v\u00eatements ou des \u00e9quipements sp\u00e9cifiques?"
+},
+{
+"id":"16",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve devra travailler dans un environnement bruyant?",
+"qs":"Est-ce qu'il y a du bruit \u00e0 ton poste de travail?",
+"t":"Vrai ou Faux",
+"c":[
+"Oui",
+"Non"
+],
+"sp":"Est-ce qu\u2019il y a des choses que mon \u00e9l\u00e8ve doit savoir par rapport \u00e0 \u00e7a (p.ex. une proc\u00e9dure \u00e0 connaitre, des \u00e9quipements \u00e0 porter\u2026)? ",
+"ss":"Est-ce qu\u2019il y a des choses que tu dois savoir par rapport \u00e0 \u00e7a? (p. ex. une proc\u00e9dure \u00e0 connaitre, des \u00e9quipements \u00e0 porter?)"
+},
+{
+"id":"17",
+"qp":"Est-ce que l'\u00e9l\u00e8ve sera amen\u00e9 \u00e0 ?",
+"qs":"Est-ce que tu vas?",
+"t":"Choix de r\u00e9ponse",
+"c":[
+"Conduire un tracteur?",
+"Travailler dans un silo?"
+],
+"sp":"Est-ce que les employ\u00e9s doivent suivre une proc\u00e9dure particuli\u00e8re ou porter des \u00e9quipements sp\u00e9cifiques pour \u00e7a? ",
+"ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re ou porter des \u00e9quipements sp\u00e9cifiques pour \u00e7a? "
+},
+{
+"id":"18",
+"qp":"Est-ce que l'\u00e9l\u00e8ve sera amen\u00e9 \u00e0 ?",
+"qs":"Est-ce que tu vas?",
+"t":"Choix de r\u00e9ponse",
+"c":[
+"Soigner les animaux?",
+"Nettoyer des box ou les enclos d\u2019animaux?",
+"D\u00e9placer ou monter les animaux?",
+"Porter les animaux?"
+],
+"sp":"Est-ce qu'il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre? Des \u00e9quipements sp\u00e9cifiques \u00e0 porter? Quelles sont les choses que mon \u00e9l\u00e8ve doit savoir pour que cela se passe bien avec les animaux et \u00e9viter les coups ou les morsures?",
+"ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re ou porter des \u00e9quipements sp\u00e9cifiques pour \u00e7a? Qu\u2019est-ce qu\u2019il faut faire pour que cela se passe bien avec les animaux et qu'ils ne te fassent pas mal?"
+},
+{
+"id":"19",
+"qp":"Est-ce que l\u2019\u00e9l\u00e8ve fera du service \u00e0 la client\u00e8le ?",
+"qs":"Est-ce que tu fais du service \u00e0 la client\u00e8le ?",
+"t":"Vrai ou Faux",
+"c":[
+"Oui",
+"Non"
+],
+"sp":"Est-ce qu\u2019il y a d\u00e9j\u00e0 eu des clients m\u00e9contents ou qui se sont mal comport\u00e9s avec les employ\u00e9s? Comment je peux y pr\u00e9parer mon \u00e9l\u00e8ve?",
+"ss":"Comment te sens-tu par rapport \u00e0 \u00e7a?"
+},
+{
+"id":"20",
+"qp":"Est-ce qu'il y a des d\u00e9lais sp\u00e9cifiques ou un niveau de productivit\u00e9 que mon \u00e9l\u00e8ve devra respecter?",
+"qs":"Est-ce que tu dois respecter des d\u00e9lais sp\u00e9cifiques pour faire ton travail? ",
+"t":"Texte"
+},
+{
+"id":"21",
+"qp":"Quelles sont les situations de travail qui pourraient \u00eatre dangereuses pour mon \u00e9l\u00e8ve? Comment faudrait-il l'y pr\u00e9parer?",
+"qs":"Est-ce que tu as identifi\u00e9 des situations dangereuses pendant que tu fais tes t\u00e2ches?",
+"t":"Texte"
+},
+{
+"id":"22",
+"qp":"Est-ce qu\u2019il y a d\u00e9j\u00e0 eu des incidents ou des accidents du travail au poste que l\u2019\u00e9l\u00e8ve occupera en stage?",
+"qs":"Est-ce qu\u2019il y a d\u00e9j\u00e0 eu des incidents ou des accidents du travail \u00e0 ton poste de travail?",
+"t":"Vrai ou Faux",
+"c":[
+"Oui",
+"Non"
+],
+"sp":"Pouvez-vous me raconter ce qu\u2019il s\u2019est pass\u00e9?",
+"ss":"On va demander \u00e0 tes coll\u00e8gues s\u2019il y en a d\u00e9j\u00e0 eu et de nous raconter ce qu\u2019il s\u2019est pass\u00e9"
+},
+{
+"id":"23",
+"qp":"\u00c0 quelle personne dans l\u2019entreprise, l\u2019\u00e9l\u00e8ve doit-il s'adresser en cas de blessure ou d'incident?",
+"qs":"\u00c0 quelle personne dans l\u2019entreprise dois-tu s'adresser en cas de blessure ou d'incident?",
+"t":"Texte"
+}
+]
