@@ -40,7 +40,7 @@ abstract class FormService {
     if (phone!.isEmpty) {
       return _localizations.emptyPhoneError;
     } else if (!RegExp(
-            r"^(:?\+\d{1,3})?\s?\(?\d{3}(?:[-.\)\s]|\)\s)?\d{3}[-.\s]?\d{4,6}(?:\s(?:poste)?\s\d{1,6})?$")
+            r"^(?:\+\d{1,3})?\s?\(?\d{3}(?:[-.\)\s]|\)\s)?\d{3}[-.\s]?\d{4,6}(?:\s(?:poste)?\s\d{1,6})?$")
         .hasMatch(phone)) {
       return _localizations.invalidPhoneError;
     }
