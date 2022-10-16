@@ -1,4 +1,3 @@
-
 /*
 Class for convert json to an usable object
  */
@@ -9,11 +8,10 @@ class Job {
   int _code;
   List<Skill> _skills_list;
 
-
   Job(this._name, this._code, this._skills_list);
 }
 
-class Skill{
+class Skill {
   String _name;
   int _code;
   List<String> _criteria;
@@ -23,7 +21,7 @@ class Skill{
   Skill(this._name, this._code, this._criteria, this._task, this._risks);
 }
 
-class Risk{
+class Risk {
   String _name;
   bool _isPresent;
 
