@@ -4,9 +4,15 @@
         {
             "label": "Run Firebase Emulator",
             "command": "firebase",
-            "args": ["emulators:start"], // TODO: Import/export data
+            "args": [
+                "emulators:start",
+                "--import",
+                "seed"
+            ], // TODO: Import/export data
             "type": "shell",
-            "options": { "cwd": "${workspaceFolder}" },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
             "isBackground": true,
             "problemMatcher": {
                 "pattern": {
@@ -19,11 +25,15 @@
                     "endsPattern": "All emulators ready! It is now safe to connect your app."
                 }
             },
-            "dependsOn": ["Open Firebase Emulator's Console"]
+            "dependsOn": [
+                "Open Firebase Emulator's Console"
+            ]
         },
         {
             "label": "Open Firebase Emulator's Console",
-            "args": ["http://localhost:4000"],
+            "args": [
+                "http://localhost:4000"
+            ],
             "type": "shell",
             "presentation": {
                 "echo": false,
@@ -32,9 +42,15 @@
                 "showReuseMessage": false,
                 "close": true
             },
-            "windows": { "command": "start" },
-            "linux": { "command": "xdg-open" },
-            "osx": { "command": "open" }
+            "windows": {
+                "command": "start"
+            },
+            "linux": {
+                "command": "xdg-open"
+            },
+            "osx": {
+                "command": "open"
+            }
         }
     ]
 }
