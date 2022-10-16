@@ -1,5 +1,5 @@
 import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/Job_list_homme_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'widgets/search_bar.dart';
