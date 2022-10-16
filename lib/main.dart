@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:crcrme_banque_stages/crcrme_material_theme/lib/crcrme_material_theme.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/Job_list_homme_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/Job_list_homme_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
