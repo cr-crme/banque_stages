@@ -4,26 +4,26 @@ import 'package:crcrme_banque_stages/screens/ref_sst/common/risk_sst.dart';
 
 class SkillSST {
   SkillSST(
-      {required this.skill_name,
-      required this.skill_code,
-      required this.skill_criterias,
-      required this.skill_tasks,
-      required this.skill_risks}); //There are sometimes no risks
+      {required this.skillName,
+      required this.skillCode,
+      required this.skillCriterias,
+      required this.skillTasks,
+      required this.skillRisks}); //There are sometimes no risks
 
-  final String skill_name;
-  final int skill_code;
-  final List<String> skill_criterias;
-  final List<String> skill_tasks;
-  final List<RiskSST> skill_risks;
+  final String skillName;
+  final int skillCode;
+  final List<String> skillCriterias;
+  final List<String> skillTasks;
+  final List<RiskSST> skillRisks;
 
-  get name => skill_name;
-  get code => skill_code;
-  get criterias => skill_criterias;
-  get tasks => skill_tasks;
-  get risks => skill_risks;
+  get name => skillName;
+  get code => skillCode;
+  get criterias => skillCriterias;
+  get tasks => skillTasks;
+  get risks => skillRisks;
 
   @override
   String toString() {
-    return '{Competence #$skill_code: $skill_name}';
+    return '{Competence #$skillCode: $skillName}';
   }
 }
