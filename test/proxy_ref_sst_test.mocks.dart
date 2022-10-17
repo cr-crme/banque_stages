@@ -3,8 +3,12 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:crcrme_banque_stages/screens/ref_sst/common/job_sst.dart'
+    as _i4;
 import 'package:crcrme_banque_stages/screens/ref_sst/common/proxy_ref_sst.dart'
     as _i2;
+import 'package:crcrme_banque_stages/screens/ref_sst/common/risk_sst.dart'
+    as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -25,4 +29,21 @@ class MockProxySST extends _i1.Mock implements _i2.ProxySST {
   MockProxySST() {
     _i1.throwOnMissingStub(this);
   }
+
+  @override
+  List<_i3.RiskSST> getRiskList() => (super.noSuchMethod(
+        Invocation.method(
+          #getRiskList,
+          [],
+        ),
+        returnValue: <_i3.RiskSST>[],
+      ) as List<_i3.RiskSST>);
+  @override
+  List<_i4.JobSST> getJobList() => (super.noSuchMethod(
+        Invocation.method(
+          #getJobList,
+          [],
+        ),
+        returnValue: <_i4.JobSST>[],
+      ) as List<_i4.JobSST>);
 }

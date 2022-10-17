@@ -27,7 +27,7 @@ import 'package:crcrme_banque_stages/screens/ref_sst/common/temporary_proxy_data
 * replaced with feteches from the database.
 */
 class ProxySST {
-  ProxySST(Function() getRiskList, Function() getJobList);
+ // ProxySST(Function() getRiskList, Function() getJobList);
 
   List<RiskSST> getRiskList() {
     //Importing and transforming json string into list of maps
