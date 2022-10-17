@@ -6,17 +6,17 @@ import 'common/skill_sst.dart';
 import 'common/proxy_ref_sst.dart';
 import 'sst_cards/widgets/sst_card.dart';
 
-class Singleton {
-  static final Singleton _singleton = Singleton._internal();
+class SSTCache {
+  static final SSTCache _sstCache = SSTCache._internal();
 
-  List<JobSST> jobs = ProxySST.jobList();
-  List<RiskSST> risks = ProxySST.riskList();
+  List<JobSST> jobs = ProxySST().getJobList();
+  List<RiskSST> risks = ProxySST().getRiskList();
 
-  factory Singleton() {
-    return _singleton;
+  factory SSTCache() {
+    return _sstCache;
   }
 
-  Singleton._internal();
+  SSTCache._internal();
 
   List<JobSST> getJobs() {
     return jobs;

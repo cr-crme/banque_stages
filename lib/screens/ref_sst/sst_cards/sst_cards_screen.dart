@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../sst_cache.dart';
 import 'widgets/sst_card.dart';
 import 'dart:convert';
 import '../common/risk_sst.dart';
@@ -31,12 +32,6 @@ class _SSTCardsScreenState extends State<SSTCardsScreen> {
         appBar: AppBar(
           title: const Text("Fiches de risques"),
         ),
-        body: ListView(
-          padding: const EdgeInsets.all(6),
-          children: [
-            //Generating risk widgets from risk objects list
-            for (RiskSST risk in risksList) SSTCard(risk.id, risk.title)
-          ],
-        ));
+        body: SSTCache().getListViewRisk());
   }
 }
