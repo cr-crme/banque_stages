@@ -31,20 +31,23 @@ void main() {
     group("Proxy", () {
 
       test('Test get list risks : retrun type', () {
+        when(proxy.getRiskList()).thenReturn(dummy_list_risk);
       expect(proxy.getRiskList(),isList);
       });
 
       test('Test get list risks : number object list', () {
-        expect(proxy.getRiskList().length, 4);
+        when(proxy.getRiskList()).thenReturn(dummy_list_risk);
+        expect(proxy.getRiskList().length, 1);
       });
 
       test('Test get list jobs : retrun type', () {
-      expect(proxy.getJobList(),isList);
+        when(proxy.getJobList()).thenReturn(dummy_list_job);
+        expect(proxy.getJobList(),isList);
       });
 
       test('Test get list jobs : number object list', () {
-
-        expect(proxy.getRiskList().length, 4);
+        when(proxy.getJobList()).thenReturn(dummy_list_job);
+        expect(proxy.getRiskList().length, 1);
       });
 
     });

@@ -51,4 +51,3 @@ flutter:
 
     assets:
         - assets/jobs-data.json
-        - assets/dummy_sst_risks.json
