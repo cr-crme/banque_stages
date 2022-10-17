@@ -36,4 +36,9 @@ class SSTCache {
       for (RiskSST risk in risks) SSTCard(risk.cardID, risk.title)
     ]);
   }
+
+  void refresh() {
+    jobs = ProxySST().getJobList();
+    risks = ProxySST().getRiskList();
+  }
 }
