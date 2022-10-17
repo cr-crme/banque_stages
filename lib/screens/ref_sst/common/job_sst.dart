@@ -14,7 +14,7 @@ class JobSST {
   final int jobCode;
   final String jobName;
   final List<SkillSST> jobSkills;
-  final List<Bool> jobQuestions;
+  final List<int> jobQuestions;
   final String? jobCategory;
 
   get name => jobName;
