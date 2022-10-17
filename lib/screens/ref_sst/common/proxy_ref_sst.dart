@@ -5,10 +5,12 @@
 import 'dart:convert';
 //import 'package:flutter/services.dart';
 //import 'dart:ffi';
-//import 'package:crcrme_banque_stages/screens/ref_sst/common/job_sst.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/job_sst.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/skill_sst.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/common/risk_sst.dart';
 import 'package:flutter/services.dart';
-//import 'package:crcrme_banque_stages/screens/ref_sst/common/skill_sst.dart';
+
+import 'job_sst.dart';
 
 void main() {
   //run flutter run -t lib/screens/ref_sst/common/proxy_ref_sst.dart to test
@@ -18,10 +20,7 @@ void main() {
     print(risk);
   }
   print("Testing proxy: jobs");
-  /*List<String> jobList = ProxySST.getJobList();
-  for (String str in jobList) {
-    print(str);
-  }*/
+  List<JobSST> jobList = ProxySST.getJobList();
 }
 
 class ProxySST {
@@ -32,20 +31,18 @@ class ProxySST {
     List<RiskSST> riskList = <RiskSST>[];
 
     fromJson(Map<String, dynamic> risk) {
-      //for (var risk in parsedRisks) {
       final int id = risk['fiche'] as int;
       final String shortname = risk['shortname'] as String;
       final String title = risk['name'] as String;
       final String desc = risk['description'] as String;
       final String image = risk['image'] as String;
 
-      //riskList.add(
       return RiskSST(
           cardID: id,
           riskShortname: shortname,
           riskTitle: title,
           riskDesc: desc,
-          riskPicture: image); //)
+          riskPicture: image);
     }
 
     for (var risk in parsedRisks) {
@@ -55,20 +52,72 @@ class ProxySST {
     return riskList;
   }
 
-  /*static List<String> getJobList() {
+  static List<JobSST> getJobList() {
     //JobSST
     //readJson('assets/jobs-data.json').toString();
+    List<RiskSST> riskList = getRiskList();
+
     Map<String, dynamic> parsedJobs = jsonDecode(jobsData);
 
-    List<String> list = <String>[];
+    print("Parsing JSON");
+    List<JobSST> jobList = <JobSST>[];
+    fromJson(Map<String, dynamic> categories) {
+      for (Map<String, dynamic> category in categories.values) {
+        String categoryName = category['name'] as String;
+        print(categoryName);
+        Map<String, dynamic> jobs = category['jobs'] as Map<String, dynamic>;
+        for (Map<String, dynamic> job in jobs.values) {
+          String jobName = job['name'] as String;
+          print(jobName);
+          String jobCode = job['code'] as String;
+          print(jobCode);
 
-    for (var category in parsedJobs)
+          Map<String, dynamic> skills = job['skills'] as Map<String, dynamic>;
+          List<SkillSST> skillList = <SkillSST>[];
+          for (Map<String, dynamic> skill in skills.values) {
+            String skillName = skill['name'] as String;
+            print(skillName);
+            String skillCode = skill['code'] as String;
+            print(skillCode);
+            List<String> skillCriterias = (skill['criteria'] as List)
+                .map((item) => item as String)
+                .toList();
+            List<String> skillTasks =
+                (skill['tasks'] as List).map((item) => item as String).toList();
+            Map<String, dynamic> skillRisks =
+                skill['risks'] as Map<String, dynamic>;
+            //print(skillRisks.values);
+            for (String risk in skillRisks.keys) {
+              //switch(risk){
+              //  case ""
+              //}
+              print(risk);
+            }
+            skillList.add(SkillSST(
+                skillName: skillName,
+                skillCode: int.parse(skillCode),
+                skillCriterias: skillCriterias,
+                skillTasks: skillTasks,
+                skillRisks: []));
+          }
+          jobList.add(JobSST(
+              jobCode: int.parse(jobCode),
+              jobName: jobName,
+              jobSkills: skillList,
+              jobQuestions: [], //Gerer les questions (tableau 2d)
+              jobCategory: categoryName));
+        }
+      }
 
-      /*List<RiskSST> riskList = getRiskList();
+      return jobList;
+    }
+    //or (var category in parsedJobs)
+
+    /*
     for (var node in jobsData) {}*/
-
-      return list;
-  }*/
+    fromJson(parsedJobs);
+    return fromJson(parsedJobs);
+  }
 }
 
 /*Future<String> readJson(path) async {
