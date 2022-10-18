@@ -30,7 +30,7 @@ void main() {
 
     group("Proxy", () {
 
-      test('Test get list risks : retrun type', () {
+      test('Test get list risks : return type', () {
         when(proxy.getRiskList()).thenReturn(dummy_list_risk);
       expect(proxy.getRiskList(),isList);
       });
@@ -40,7 +40,7 @@ void main() {
         expect(proxy.getRiskList().length, 1);
       });
 
-      test('Test get list jobs : retrun type', () {
+      test('Test get list jobs : return type', () {
         when(proxy.getJobList()).thenReturn(dummy_list_job);
         expect(proxy.getJobList(),isList);
       });
