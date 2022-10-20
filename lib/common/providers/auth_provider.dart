@@ -9,8 +9,10 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
-  Future<UserCredential> signInWithEmailAndPassword(
-      {required String email, required String password}) async {
+  Future<UserCredential> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
     return FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
   }

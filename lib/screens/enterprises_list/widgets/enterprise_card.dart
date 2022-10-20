@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '/common/models/enterprise.dart';
 import '/common/widgets/disponibility_circle.dart';
 
-class ListItem extends StatelessWidget {
-  const ListItem({
+class EnterpriseCard extends StatelessWidget {
+  const EnterpriseCard({
     super.key,
     required this.enterprise,
     required this.onTap,

@@ -7,7 +7,6 @@ class EnterprisesProvider extends FirebaseListProvided<Enterprise> {
 
   @override
   Enterprise deserializeItem(data) {
-    return Enterprise.fromSerialized(
-        (data as Map).map((key, value) => MapEntry(key.toString(), value)));
+    return Enterprise.fromSerialized(data);
   }
 }
