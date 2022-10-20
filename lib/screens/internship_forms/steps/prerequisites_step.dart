@@ -16,14 +16,14 @@ class PrerequisitesStep extends StatefulWidget {
 }
 
 class PrerequisitesStepState extends State<PrerequisitesStep> {
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   bool _uniformRequired = false;
 
-  int? _minimalAge;
-  String? _uniform;
+  int? minimalAge;
+  String? uniform;
 
-  final Map<String, bool> _requiredForJob = {
+  final Map<String, bool> requiredForJob = {
     "Passer une entrevue de recrutement en solo": false,
     "Avoir un NAS": false,
   };
@@ -32,18 +32,10 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
 
   String? _otherRequirementsText;
 
-  bool validate() {
-    return _formKey.currentState!.validate();
-  }
-
-  void save() {
-    _formKey.currentState!.save();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: formKey,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +46,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
             ),
             _AgeSpinBox(
               initialValue: widget.job.minimalAge,
-              onSaved: (newValue) => _minimalAge = newValue,
+              onSaved: (newValue) => minimalAge = newValue,
             ),
             const SizedBox(height: 16),
             Text(
@@ -95,7 +87,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(
-                      onSaved: (text) => _uniform = text,
+                      onSaved: (text) => uniform = text,
                       minLines: 2,
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
@@ -110,7 +102,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Column(
-              children: _requiredForJob.keys
+              children: requiredForJob.keys
                   .map(
                     (requirement) => CheckboxListTile(
                       visualDensity: VisualDensity.compact,
@@ -119,9 +111,9 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                         requirement,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      value: _requiredForJob[requirement],
+                      value: requiredForJob[requirement],
                       onChanged: (newValue) => setState(
-                          () => _requiredForJob[requirement] = newValue!),
+                          () => requiredForJob[requirement] = newValue!),
                     ),
                   )
                   .toList(),

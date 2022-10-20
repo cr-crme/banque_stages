@@ -16,49 +16,41 @@ class SupervisionStep extends StatefulWidget {
 }
 
 class SupervisionStepState extends State<SupervisionStep> {
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
-  double? _welcomingTSA;
-  double? _welcomingCommunication;
-  double? _welcomingMentalDeficiency;
-  double? _welcomingMentalHealthIssue;
-
-  bool validate() {
-    return _formKey.currentState!.validate();
-  }
-
-  void save() {
-    _formKey.currentState!.save();
-  }
+  double? welcomingTSA;
+  double? welcomingCommunication;
+  double? welcomingMentalDeficiency;
+  double? welcomingMentalHealthIssue;
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: formKey,
       child: SingleChildScrollView(
         child: Column(
           children: [
             _RatingBar(
               question: "* L'élève placé en stage était-il TSA ?",
-              onSaved: (newValue) => _welcomingTSA = newValue,
+              onSaved: (newValue) => welcomingTSA = newValue,
             ),
             const SizedBox(height: 8),
             _RatingBar(
               question:
                   "* L'élève placé en stage était-il dans une de classe communication ?",
-              onSaved: (newValue) => _welcomingCommunication = newValue,
+              onSaved: (newValue) => welcomingCommunication = newValue,
             ),
             const SizedBox(height: 8),
             _RatingBar(
               question:
                   "* L'élève placé en stage avait-il une déficience intellectuelle ?",
-              onSaved: (newValue) => _welcomingMentalDeficiency = newValue,
+              onSaved: (newValue) => welcomingMentalDeficiency = newValue,
             ),
             const SizedBox(height: 8),
             _RatingBar(
               question:
                   "* L'élève placé en stage avait-il un trouble de santé mentale ?",
-              onSaved: (newValue) => _welcomingMentalHealthIssue = newValue,
+              onSaved: (newValue) => welcomingMentalHealthIssue = newValue,
             ),
           ],
         ),
