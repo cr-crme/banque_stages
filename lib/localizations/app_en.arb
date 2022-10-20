@@ -4,6 +4,17 @@
     "@appName": {
         "description": "The name of the application."
     },
+    "studentsList_title": "My Students",
+    "student_currentGroup": "Group {group}",
+    "@student_currentGroup": {
+        "description": "Shows what group the student is in",
+        "placeholders": {
+            "group": {
+                "type": "String",
+                "example" : "4B"
+            }
+        }
+    },
     "emptyFieldError": "This field cannot be empty",
     "@emptyFieldError": {
         "description": "When the required field isn't filed."

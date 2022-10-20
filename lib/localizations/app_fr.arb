@@ -1,6 +1,8 @@
 {
     "@@locale": "fr",
     "appName": "Banque de stages",
+    "studentsList_title": "Mes élèves",
+    "student_currentGroup": "Groupe {group}",
     "emptyFieldError": "Le champ ne peut pas être vide",
     "emptyUsernameError": "Un nom d'utilisateur est requis",
     "emptyEmailError": "Une adresse courriel est requise",

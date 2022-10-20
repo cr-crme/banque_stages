@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
+import 'common/providers/students_provider.dart';
 import 'firebase_options.dart';
 import 'misc/job_data_file_service.dart';
 import 'misc/question_file_service.dart';
@@ -22,6 +23,8 @@ import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/student/student_screen.dart';
+import 'screens/students_list/students_list_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +53,19 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
+          create: (context) => StudentsProvider(),
+          update: (context, auth, previous) {
+            if (auth.currentUser == null) {
+              previous!.pathToAvailableDataIds = "void";
+            } else {
+              previous!.pathToAvailableDataIds =
+                  "/students-ids/${auth.currentUser!.uid}/";
+            }
+
+            return previous;
+          },
+        ),
       ],
       child: MaterialApp(
         onGenerateTitle: (context) {
@@ -65,6 +81,8 @@ class MyApp extends StatelessWidget {
               const EnterprisesListScreen(),
           AddEnterpriseScreen.route: (context) => const AddEnterpriseScreen(),
           EnterpriseScreen.route: (context) => const EnterpriseScreen(),
+          StudentsListScreen.route: (context) => const StudentsListScreen(),
+          StudentScreen.route: (context) => const StudentScreen(),
           PostInternshipEvaluationScreen.route: (context) =>
               const PostInternshipEvaluationScreen(),
         },
