@@ -17,13 +17,7 @@
                 "showReuseMessage": true,
                 "clear": true
             },
-            "problemMatcher": {
-                "pattern": {
-                    "regexp": "\"([a-z]{2})\": (.*)",
-                    "file": 1,
-                    "message": 2
-                }
-            }
+            "problemMatcher": []
         },
         {
             "label": "Run Firebase Emulator",
