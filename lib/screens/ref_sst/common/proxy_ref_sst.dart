@@ -1,11 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
-import 'package:crcrme_banque_stages/screens/ref_sst/common/job_sst.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/common/skill_sst.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/common/risk_sst.dart';
+
+import './job_sst.dart';
+import './skill_sst.dart';
+import './risk_sst.dart';
 
 //Remove after connection to DB
-import 'package:crcrme_banque_stages/screens/ref_sst/common/temporary_proxy_data.dart';
+import './temporary_proxy_data.dart';
 
 /*
 * The class ProxySST contains two statics methods
@@ -27,7 +28,7 @@ import 'package:crcrme_banque_stages/screens/ref_sst/common/temporary_proxy_data
 * replaced with feteches from the database.
 */
 class ProxySST {
- // ProxySST(Function() getRiskList, Function() getJobList);
+  // ProxySST(Function() getRiskList, Function() getJobList);
 
   List<RiskSST> getRiskList() {
     //Importing and transforming json string into list of maps
