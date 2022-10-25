@@ -5,20 +5,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/src/mock.dart';
+
 import 'package:crcrme_banque_stages/screens/ref_sst/common/proxy_ref_sst.dart';
 
-import 'proxy_ref_sst_test.mocks.dart';
+import 'jobProxy_test.mocks.dart';
 
-@GenerateMocks([ProxySST])
+@GenerateMocks([jobsProxy])
+
 void main() {
-  late MockProxySST proxy;
-  List<RiskSST> dummy_list_risk = <RiskSST>[];
+  late MockjobsProxy jobProxy;
+  Map<String,bool> dummy_list_risk = {};
   List<JobSST> dummy_list_job = <JobSST>[];
   List<SkillSST> dummy_list_skill = <SkillSST>[];
+
+
+
   setUpAll(() {
-    proxy = MockProxySST();
-    dummy_list_risk
-        .add(new RiskSST(id: 0, shortname: 'Test IDK', title: 'TITLE'));
+    jobProxy = MockjobsProxy();
+
+    dummy_list_risk['key'] = true;
     dummy_list_skill.add(new SkillSST(
         name: 'skill name',
         code: 0,
@@ -30,29 +35,22 @@ void main() {
         name: 'Job name',
         skills: dummy_list_skill,
         questions: List<int>.filled(5, 0)));
-    when(proxy.riskList()).thenReturn(dummy_list_risk);
-    when(proxy.jobList()).thenReturn(dummy_list_job);
+
+    when(jobProxy.getList()).thenReturn(dummy_list_job);
+
+
   });
 
-  group("Proxy", () {
+  group('jobProxy', ()
+  {
     test('Test get list risks : return type', () {
-      when(proxy.riskList()).thenReturn(dummy_list_risk);
-      expect(proxy.riskList(), isList);
+      when(jobProxy.getList()).thenReturn(dummy_list_job);
+      expect(jobProxy.getList(), isList);
     });
 
     test('Test get list risks : number object list', () {
-      when(proxy.riskList()).thenReturn(dummy_list_risk);
-      expect(proxy.riskList().length, 1);
-    });
-
-    test('Test get list jobs : return type', () {
-      when(proxy.jobList()).thenReturn(dummy_list_job);
-      expect(proxy.jobList(), isList);
-    });
-
-    test('Test get list jobs : number object list', () {
-      when(proxy.jobList()).thenReturn(dummy_list_job);
-      expect(proxy.riskList().length, 1);
+      when(jobProxy.getList()).thenReturn(dummy_list_job);
+      expect(jobProxy.getList().length, 1);
     });
   });
 }
