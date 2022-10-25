@@ -74,7 +74,8 @@ def saveJson(data: dict, path: str):
     '''Saves [json] as a file named [path].'''
     setMessage("Saving json...")
     with open(path, "w") as file:
-        file.write(json.dumps(cleanUpData(data), separators=(',', ':')))
+        file.write(json.dumps(cleanUpData(data),
+                   indent=0, separators=(',', ':')))
 
 
 def setMessage(message: str):
