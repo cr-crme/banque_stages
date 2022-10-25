@@ -15,7 +15,7 @@ class SSTCard extends StatelessWidget {
       elevation: 0.5,
       child: InkWell(
         //onTap should redirect to the risk
-        onTap: () => print("Clicked"), //() => onTap(),
+        onTap: () => debugPrint("Clicked"), //() => onTap(),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
