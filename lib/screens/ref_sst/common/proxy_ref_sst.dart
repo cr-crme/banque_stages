@@ -29,18 +29,19 @@ import './temporary_proxy_data.dart';
 * replaced with fetches from the database.
 */
 
-void main() {
-  debugPrint("Testing proxy: risks");
-  List<RiskSST> riskList = risksProxy().getList();
-  for (RiskSST risk in riskList) {
-    debugPrint(risk.toString());
-  }
-  print("Testing proxy: jobs");
-  List<JobSST> jobList = jobsProxy().getList();
-  for (JobSST job in jobList) {
-    print(job);
-  }
-}
+//REMOVE BEFORE SHIP, USED TO TEST
+// void main() {
+//   debugPrint("Testing proxy: risks");
+//   List<RiskSST> riskList = risksProxy().getList();
+//   for (RiskSST risk in riskList) {
+//     debugPrint(risk.toString());
+//   }
+//   debugPrint("Testing proxy: jobs");
+//   List<JobSST> jobList = jobsProxy().getList();
+//   for (JobSST job in jobList) {
+//     debugPrint(job.toString());
+//   }
+// }
 
 class risksProxy {
   risksProxy();
