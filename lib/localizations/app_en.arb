@@ -1,0 +1,54 @@
+{
+    "@@locale": "en",
+    "appName": "Intership Repository",
+    "@appName": {
+        "description": "The name of the application."
+    },
+    "studentsList_title": "My Students",
+    "student_currentGroup": "Group {group}",
+    "@student_currentGroup": {
+        "description": "Shows what group the student is in",
+        "placeholders": {
+            "group": {
+                "type": "String",
+                "example" : "4B"
+            }
+        }
+    },
+    "emptyFieldError": "This field cannot be empty",
+    "@emptyFieldError": {
+        "description": "When the required field isn't filed."
+    },
+    "emptyUsernameError": "A username is required",
+    "@emptyUsernameError": {
+        "description": "When the required username isn't filed."
+    },
+    "emptyEmailError": "An email address is required",
+    "@emptyEmailError": {
+        "description": "When the required email address isn't filed."
+    },
+    "emptyPhoneError": "A phone number is required",
+    "@emptyPhoneError": {
+        "description": "When the required phone number isn't filed."
+    },
+    "invalidNeqError": "The NEQ has to be a 10 digit number",
+    "@invalidNeqError": {
+        "description": "When the provided NEQ is invalid."
+    },
+    "invalidEmailError": "This email address is not valid",
+    "@invalidEmailError": {
+        "description": "When the email address is invalid."
+    },
+    "invalidPhoneError": "This phone number is not valid",
+    "@invalidPhoneError": {
+        "description": "When the phone number is invalid."
+    },
+    "invalidPasswordError": "This password does not meet the basic requirements",
+    "@invalidPasswordError": {
+        "description": "When the password is too weak."
+    },
+    "passwordMatchError": "The passwords don't match",
+    "@passwordMatchError": {
+        "description": "When the two passwords provided don't match."
+    }
+}
