@@ -46,7 +46,7 @@ import './temporary_proxy_data.dart';
 class risksProxy {
   risksProxy();
   //Importing and transforming json string into list of maps
-  var parsedRisks = jsonDecode(riskData); //['risks'] as List
+  Map<String, dynamic> parsedRisks = jsonDecode(riskData); //['risks'] as List
 
   //Transforming maps into list of objects
   fromJson(Map<String, dynamic> riskList) {
@@ -77,10 +77,10 @@ class jobsProxy {
 
   //Importing and transforming json string into map
   Map<String, dynamic> parsedJobs = jsonDecode(jobsData);
-  List<JobSST> jobList = <JobSST>[];
 
   //Reading categories
   fromJson(Map<String, dynamic> categories) {
+    List<JobSST> jobList = <JobSST>[];
     //For each category
     for (Map<String, dynamic> category in categories.values) {
       String categoryName = category['name'] as String; //Save category name
