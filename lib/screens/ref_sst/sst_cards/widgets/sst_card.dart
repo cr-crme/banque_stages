@@ -22,10 +22,12 @@ class SSTCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //Card number
-              Text("Fiche $nmb", style: Theme.of(context).textTheme.titleLarge),
+              Text("FICHE $nmb", style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(width: 16),
               Expanded(
-                child: Column(
+                child: Flex(
+                  //mainAxisAlignment: MainAxisAlignment.start,
+                  direction: Axis.vertical,
                   children: [
                     //Card title
                     Text(title,
