@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class ActivityTypeCards extends StatelessWidget {
   const ActivityTypeCards({
-    Key? key,
+    super.key,
     required this.activityTypes,
     this.onDeleted,
-  }) : super(key: key);
+  });
 
   final Set<String> activityTypes;
   final void Function(String activityType)? onDeleted;

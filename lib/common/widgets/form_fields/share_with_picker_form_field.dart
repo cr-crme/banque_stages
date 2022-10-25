@@ -10,12 +10,11 @@ const List<String> shareWithSuggestions = [
 
 class ShareWithPickerFormField extends FormField<String> {
   const ShareWithPickerFormField({
-    Key? key,
+    super.key,
     String initialValue = "Tout le monde",
     void Function(String? shareWith)? onSaved,
     String? Function(String? shareWith)? validator,
   }) : super(
-          key: key,
           initialValue: initialValue,
           onSaved: onSaved,
           validator: validator ?? _validator,
@@ -32,7 +31,7 @@ class ShareWithPickerFormField extends FormField<String> {
 
   static Widget _builder(FormFieldState<String> state) {
     return Autocomplete<String>(
-      initialValue: TextEditingValue(text: state.value!),
+      initialValue: TextEditingValue(text: state.value ?? ""),
       optionsBuilder: (textEditingValue) {
         return shareWithSuggestions.where(
           (activity) => activity.contains(textEditingValue.text),

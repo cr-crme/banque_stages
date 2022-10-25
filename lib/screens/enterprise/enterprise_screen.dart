@@ -10,7 +10,7 @@ import 'pages/jobs_page.dart';
 import 'pages/stage_page.dart';
 
 class EnterpriseScreen extends StatefulWidget {
-  const EnterpriseScreen({Key? key}) : super(key: key);
+  const EnterpriseScreen({super.key});
 
   static const String route = "/enterprise-details";
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AddJobButton extends StatelessWidget {
   const AddJobButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     this.onLongPress,
     this.onHover,
@@ -11,7 +11,7 @@ class AddJobButton extends StatelessWidget {
     this.focusNode,
     this.autofocus,
     this.clipBehavior,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;

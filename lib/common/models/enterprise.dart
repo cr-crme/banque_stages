@@ -4,6 +4,7 @@ import '/common/models/job_list.dart';
 
 class Enterprise extends ItemSerializable {
   Enterprise({
+    super.id,
     this.photo = "",
     required this.name,
     required this.activityTypes,
@@ -20,8 +21,7 @@ class Enterprise extends ItemSerializable {
     this.website = "",
     this.headquartersAddress = "",
     this.neq = "",
-    id,
-  }) : super(id: id);
+  });
 
   Enterprise copyWith({
     String? photo,
@@ -106,11 +106,6 @@ class Enterprise extends ItemSerializable {
         headquartersAddress = map['headquartersAddress'],
         neq = map['neq'],
         super.fromSerialized(map);
-
-  @override
-  ItemSerializable deserializeItem(map) {
-    return Enterprise.fromSerialized(map);
-  }
 
   final String photo;
 

@@ -11,9 +11,7 @@ class SstExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _SstBody(job: job),
           headerBuilder: (context, isExpanded) => ListTile(
-            title: const Text(
-              "Santé et Sécurité du travail (SST)",
-            ),
+            title: const Text("Santé et Sécurité du travail (SST)"),
             trailing: IconButton(
                 onPressed: () => addSstEvent(job),
                 icon: const Icon(Icons.add_box_outlined)),
@@ -22,7 +20,7 @@ class SstExpansionPanel extends ExpansionPanel {
 }
 
 class _SstBody extends StatelessWidget {
-  const _SstBody({Key? key, required this.job}) : super(key: key);
+  const _SstBody({required this.job});
 
   final Job job;
 

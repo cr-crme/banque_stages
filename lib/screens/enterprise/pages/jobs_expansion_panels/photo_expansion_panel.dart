@@ -22,7 +22,7 @@ class PhotoExpansionPanel extends ExpansionPanel {
 }
 
 class _PhotoBody extends StatelessWidget {
-  const _PhotoBody({Key? key, required this.job}) : super(key: key);
+  const _PhotoBody({required this.job});
 
   final Job job;
 

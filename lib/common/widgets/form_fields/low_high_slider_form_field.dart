@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 
 class LowHighSliderFormField extends FormField<double> {
   const LowHighSliderFormField({
-    Key? key,
+    super.key,
     double initialValue = 3,
     bool enabled = true,
     void Function(double? value)? onSaved,
   }) : super(
-          key: key,
           initialValue: initialValue,
           enabled: enabled,
           onSaved: onSaved,

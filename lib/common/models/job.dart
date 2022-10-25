@@ -4,6 +4,7 @@ import '/misc/job_data_file_service.dart';
 
 class Job extends ItemSerializable {
   Job({
+    super.id,
     this.activitySector,
     this.specialization,
     this.positionsOffered = 0,
@@ -25,7 +26,6 @@ class Job extends ItemSerializable {
     this.uniform = "",
     List<String>? requiredForJob,
     List<String>? comments,
-    id,
   })  : pictures = pictures ?? [],
         skillsRequired = skillsRequired ?? [],
         equipmentRequired = equipmentRequired ?? [],
@@ -33,8 +33,7 @@ class Job extends ItemSerializable {
         pastWounds = pastWounds ?? [],
         pastIncidents = pastIncidents ?? [],
         requiredForJob = requiredForJob ?? [],
-        comments = comments ?? [],
-        super(id: id);
+        comments = comments ?? [];
 
   Job copyWith({
     ActivitySector? activitySector,
@@ -142,11 +141,6 @@ class Job extends ItemSerializable {
         requiredForJob = listFromSerialized(map['requiredForJob']),
         comments = listFromSerialized(map['comments']),
         super.fromSerialized(map);
-
-  @override
-  ItemSerializable deserializeItem(map) {
-    return Job.fromSerialized(map);
-  }
 
   static List<String> listFromSerialized(List? list) {
     return (list ?? []).map((e) => e.toString()).toList();
