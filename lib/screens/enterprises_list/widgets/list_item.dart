@@ -66,7 +66,8 @@ class ListItem extends StatelessWidget {
                                             job.positionsOccupied),
                                     const SizedBox(width: 8),
                                     Text(
-                                      job.specialization.toString(),
+                                      job.specialization?.idWithName ??
+                                          "bad id",
                                     ),
                                   ],
                                 ),

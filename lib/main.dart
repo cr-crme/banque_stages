@@ -9,9 +9,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/providers/auth_provider.dart';
-import '/common/providers/enterprises_provider.dart';
+import 'common/providers/auth_provider.dart';
+import 'common/providers/enterprises_provider.dart';
 import 'firebase_options.dart';
+import 'misc/job_data_file_service.dart';
+import 'misc/question_file_service.dart';
 import 'screens/add_enterprise/add_enterprise_screen.dart';
 import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list/enterprises_list_screen.dart';
@@ -21,6 +23,8 @@ import 'screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await JobDataFileService.loadData();
+  await QuestionFileService.loadData();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Connect Firebase to local emulators

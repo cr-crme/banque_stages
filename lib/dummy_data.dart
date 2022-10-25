@@ -1,5 +1,7 @@
 //! Remove this file before production
 
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
@@ -10,16 +12,16 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
   JobList jobs = JobList();
   jobs.add(
     Job(
-      activitySector: jobActivitySectors[1],
-      specialization: jobSpecializations[3],
+      activitySector: JobDataFileService.sectors[1],
+      specialization: JobDataFileService.sectors[1].specializations[3],
       positionsOffered: 2,
       positionsOccupied: 1,
     ),
   );
   jobs.add(
     Job(
-      activitySector: jobActivitySectors[0],
-      specialization: jobSpecializations[2],
+      activitySector: JobDataFileService.sectors[0],
+      specialization: JobDataFileService.sectors[0].specializations[2],
     ),
   );
 
@@ -46,8 +48,8 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
   jobs = JobList();
   jobs.add(
     Job(
-      activitySector: jobActivitySectors[0],
-      specialization: jobSpecializations[0],
+      activitySector: JobDataFileService.sectors[0],
+      specialization: JobDataFileService.sectors[0].specializations[0],
       positionsOffered: 3,
       positionsOccupied: 3,
     ),
@@ -55,7 +57,7 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
   enterprises.add(
     Enterprise(
       name: "Test",
-      activityTypes: {activityTypes[2], activityTypes[5]},
+      activityTypes: {activityTypes[6], activityTypes[8]},
       recrutedBy: "Nom Rectruté Par",
       shareWith: "Personne",
       jobs: jobs,
