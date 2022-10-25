@@ -45,10 +45,9 @@ class JobsPageState extends State<JobsPage> {
     final provider = context.read<EnterprisesProvider>();
 
     final images = await ImagePicker().pickMultiImage();
-    if (images == null) return;
 
     for (XFile file in images) {
-      var url = await StorageService.uploadJobImage(file);
+      var url = await StorageService.uploadJobImage(file.path);
       job.pictures.add(url);
     }
     provider.replace(widget.enterprise);
