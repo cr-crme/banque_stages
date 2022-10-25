@@ -31,14 +31,19 @@ import './temporary_proxy_data.dart';
 
 void main() {
   debugPrint("Testing proxy: risks");
-  List<RiskSST> riskList = risksListProxy().getList();
+  List<RiskSST> riskList = risksProxy().getList();
   for (RiskSST risk in riskList) {
     debugPrint(risk.toString());
   }
+  print("Testing proxy: jobs");
+  List<JobSST> jobList = jobsProxy().getList();
+  for (JobSST job in jobList) {
+    print(job);
+  }
 }
 
-class risksListProxy {
-  risksListProxy();
+class risksProxy {
+  risksProxy();
   //Importing and transforming json string into list of maps
   var parsedRisks = jsonDecode(riskData); //['risks'] as List
 
@@ -65,9 +70,9 @@ class risksListProxy {
     return fromJson(parsedRisks);
   }
 }
-/*
-class jobsListProxy {
-  jobsListProxy();
+
+class jobsProxy {
+  jobsProxy();
 
   //Importing and transforming json string into map
   Map<String, dynamic> parsedJobs = jsonDecode(jobsData);
@@ -130,8 +135,7 @@ class jobsListProxy {
                 skillRisksList[risk.key.toString()] = risk.value;
               } catch (error) {
                 //Catch if risk card is not in database
-                debugPrint(
-                    "risk " + risk.key + " does not exist in risk data");
+                debugPrint("risk " + risk.key + " does not exist in risk data");
               }
             }
           }
@@ -155,5 +159,7 @@ class jobsListProxy {
     return jobList;
   }
 
-  return fromJson(parsedJobs);
-}*/
+  List<JobSST> getList() {
+    return fromJson(parsedJobs);
+  }
+}
