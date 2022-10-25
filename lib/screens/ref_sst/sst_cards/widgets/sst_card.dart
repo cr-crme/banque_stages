@@ -13,37 +13,18 @@ class SSTCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0.5,
-      child: InkWell(
-        //onTap should redirect to the risk
-        onTap: () => debugPrint("Clicked"), //() => onTap(),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //Card number
-              Text("FICHE $nmb", style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Flex(
-                  //mainAxisAlignment: MainAxisAlignment.start,
-                  direction: Axis.vertical,
-                  children: [
-                    //Card title
-                    Text(title,
-                        style: Theme.of(context).textTheme.titleMedium,
-                        textAlign: TextAlign.left),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              Icon(
-                Icons.chevron_right,
-                color: Theme.of(context).hintColor,
-              ),
-            ],
-          ),
+      child: ListTile(
+        title: Text(
+          'FICHE$nmb',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
+        subtitle: Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        isThreeLine: true,
+        //onTap should redirect to the risk
+        onTap: () => debugPrint("Clicked"),
       ),
     );
   }
