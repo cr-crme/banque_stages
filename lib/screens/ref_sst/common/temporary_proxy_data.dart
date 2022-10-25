@@ -3,36 +3,36 @@
 * Delete file once connection to BD functional
 */
 String riskData = """{
-    "risks":[
-        {
-            "fiche": 1,
+    
+        "01": {
+            "id": 1,
             "shortname": "chemical",
             "name": "Risques Chimiques",
             "description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
             "image" : "path/card1"
         },
-        {
-            "fiche": 2,
+        "02": {
+            "id": 2,
             "shortname": "biological",
             "name": "Risques Biologiques",
             "description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
             "image" : "path/card2"
         },
-        {
-            "fiche": 3,
+        "03": {
+            "id": 3,
             "shortname": "equipment",
             "name": "Risques liés aux machines et aux équipements",
             "description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
             "image" : "path/card3"
         },
-        {
-            "fiche": 4,
+        "04": {
+            "id": 4,
             "shortname":"fall",
             "name": "Risques de chute de hauteur et de plain-pied",
             "description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
             "image" : "path/card4"
         }
-    ]
+    
 }
 """;
 

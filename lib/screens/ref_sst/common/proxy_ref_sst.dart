@@ -28,126 +28,132 @@ import './temporary_proxy_data.dart';
 * The methods currently get their data from hardcoded strings, but this will be
 * replaced with fetches from the database.
 */
-class ProxySST {
-  // ProxySST(Function() getRiskList, Function() getJobList);
 
-  List<RiskSST> riskList() {
-    //Importing and transforming json string into list of maps
-    var parsedRisks = jsonDecode(riskData)['risks'] as List;
+void main() {
+  debugPrint("Testing proxy: risks");
+  List<RiskSST> riskList = risksListProxy().getList();
+  for (RiskSST risk in riskList) {
+    debugPrint(risk.toString());
+  }
+}
 
+class risksListProxy {
+  risksListProxy();
+  //Importing and transforming json string into list of maps
+  var parsedRisks = jsonDecode(riskData); //['risks'] as List
+
+  //Transforming maps into list of objects
+  fromJson(Map<String, dynamic> riskList) {
     List<RiskSST> risks = <RiskSST>[];
-
-    //Transforming each map into object
-    fromJson(Map<String, dynamic> risk) {
-      final int id = risk['fiche'] as int;
+    for (Map<String, dynamic> risk in riskList.values) {
+      final int id = risk['id'] as int;
       final String shortname = risk['shortname'] as String;
       final String title = risk['name'] as String;
       final String desc = risk['description'] as String;
       final String image = risk['image'] as String;
-
-      return RiskSST(
-          id: id, shortname: shortname, title: title, desc: desc, image: image);
+      risks.add(RiskSST(
+          id: id,
+          shortname: shortname,
+          title: title,
+          desc: desc,
+          image: image));
     }
-
-    //Generating list from objects
-    for (var risk in parsedRisks) {
-      risks.add(fromJson(risk));
-    }
-
     return risks;
   }
 
-  List<JobSST> jobList() {
-    //Import complete risk list
-    List<RiskSST> risks = riskList();
-
-    //Importing and transforming json string into map
-    Map<String, dynamic> parsedJobs = jsonDecode(jobsData);
-
-    List<JobSST> jobList = <JobSST>[];
-
-    //Reading categories
-    fromJson(Map<String, dynamic> categories) {
-      //For each category
-      for (Map<String, dynamic> category in categories.values) {
-        String categoryName = category['name'] as String; //Save category name
-
-        //Generate map of jobs
-        Map<String, dynamic> jobs = category['jobs'] as Map<String, dynamic>;
-        //For each job
-        for (Map<String, dynamic> job in jobs.values) {
-          String jobName = job['name'] as String; //Save job name
-          String jobCode = job['code'] as String; //Save job code
-
-          //Generate map of questions
-          Map<String, dynamic> questions =
-              job['questions'] as Map<String, dynamic>;
-
-          //Save questions as int list
-          List<int> jobQuestions = <int>[];
-          for (MapEntry<String, dynamic> question in questions.entries) {
-            //If question is true
-            if (question.value) {
-              jobQuestions.add(int.parse(question.key)); //Save question number
-            }
-          }
-
-          //Generate map of skills
-          Map<String, dynamic> skills = job['skills'] as Map<String, dynamic>;
-          List<SkillSST> skillList = <SkillSST>[];
-
-          //For each skill
-          for (Map<String, dynamic> skill in skills.values) {
-            String skillName = skill['name'] as String; //Save skill name
-            String skillCode = skill['code'] as String; //Save skill job
-
-            //Save criterias as string list
-            List<String> skillCriterias = (skill['criteria'] as List)
-                .map((item) => item as String)
-                .toList();
-            //Save tasks as string list
-            List<String> skillTasks =
-                (skill['tasks'] as List).map((item) => item as String).toList();
-
-            //Generate map of risks
-            Map<String, dynamic> skillRisks =
-                skill['risks'] as Map<String, dynamic>;
-            Map<String, bool> skillRisksList = {};
-
-            //For each risk
-            for (MapEntry<String, dynamic> risk in skillRisks.entries) {
-              //If the risk is true
-              if (risk.value) {
-                try {
-                  //Try adding the corresponding risk object from riskList
-                  skillRisksList[risk.key.toString()] = risk.value;
-                } catch (error) {
-                  //Catch if risk card is not in database
-                  debugPrint(
-                      "risk " + risk.key + " does not exist in risk data");
-                }
-              }
-            }
-            //Add new SkillSST in skill list from data
-            skillList.add(SkillSST(
-                name: skillName,
-                code: int.parse(skillCode),
-                criterias: skillCriterias,
-                tasks: skillTasks,
-                risks: skillRisksList));
-          }
-          //Add new JobSST in job list from data
-          jobList.add(JobSST(
-              code: int.parse(jobCode),
-              name: jobName,
-              skills: skillList,
-              questions: jobQuestions,
-              category: categoryName));
-        }
-      }
-      return jobList;
-    }
-
-    return fromJson(parsedJobs);
+  List<RiskSST> getList() {
+    return fromJson(parsedRisks);
   }
 }
+/*
+class jobsListProxy {
+  jobsListProxy();
+
+  //Importing and transforming json string into map
+  Map<String, dynamic> parsedJobs = jsonDecode(jobsData);
+  List<JobSST> jobList = <JobSST>[];
+
+  //Reading categories
+  fromJson(Map<String, dynamic> categories) {
+    //For each category
+    for (Map<String, dynamic> category in categories.values) {
+      String categoryName = category['name'] as String; //Save category name
+
+      //Generate map of jobs
+      Map<String, dynamic> jobs = category['jobs'] as Map<String, dynamic>;
+      //For each job
+      for (Map<String, dynamic> job in jobs.values) {
+        String jobName = job['name'] as String; //Save job name
+        String jobCode = job['code'] as String; //Save job code
+
+        //Generate map of questions
+        Map<String, dynamic> questions =
+            job['questions'] as Map<String, dynamic>;
+
+        //Save questions as int list
+        List<int> jobQuestions = <int>[];
+        for (MapEntry<String, dynamic> question in questions.entries) {
+          //If question is true
+          if (question.value) {
+            jobQuestions.add(int.parse(question.key)); //Save question number
+          }
+        }
+
+        //Generate map of skills
+        Map<String, dynamic> skills = job['skills'] as Map<String, dynamic>;
+        List<SkillSST> skillList = <SkillSST>[];
+
+        //For each skill
+        for (Map<String, dynamic> skill in skills.values) {
+          String skillName = skill['name'] as String; //Save skill name
+          String skillCode = skill['code'] as String; //Save skill job
+
+          //Save criterias as string list
+          List<String> skillCriterias = (skill['criteria'] as List)
+              .map((item) => item as String)
+              .toList();
+          //Save tasks as string list
+          List<String> skillTasks =
+              (skill['tasks'] as List).map((item) => item as String).toList();
+
+          //Generate map of risks
+          Map<String, dynamic> skillRisks =
+              skill['risks'] as Map<String, dynamic>;
+          Map<String, bool> skillRisksList = {};
+
+          //For each risk
+          for (MapEntry<String, dynamic> risk in skillRisks.entries) {
+            //If the risk is true
+            if (risk.value) {
+              try {
+                //Try adding the corresponding risk object from riskList
+                skillRisksList[risk.key.toString()] = risk.value;
+              } catch (error) {
+                //Catch if risk card is not in database
+                debugPrint(
+                    "risk " + risk.key + " does not exist in risk data");
+              }
+            }
+          }
+          //Add new SkillSST in skill list from data
+          skillList.add(SkillSST(
+              name: skillName,
+              code: int.parse(skillCode),
+              criterias: skillCriterias,
+              tasks: skillTasks,
+              risks: skillRisksList));
+        }
+        //Add new JobSST in job list from data
+        jobList.add(JobSST(
+            code: int.parse(jobCode),
+            name: jobName,
+            skills: skillList,
+            questions: jobQuestions,
+            category: categoryName));
+      }
+    }
+    return jobList;
+  }
+
+  return fromJson(parsedJobs);
+}*/
