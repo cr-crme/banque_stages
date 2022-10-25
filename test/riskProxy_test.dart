@@ -12,13 +12,21 @@ import 'riskProxy_test.mocks.dart';
 
 void main() {
 
+  List<RiskSST> createDummyData(){
+    List<RiskSST> list_dummy = <RiskSST>[];
+    for(int i =0;i < 10; i++){
+      list_dummy.add(new RiskSST(id: i, shortname: "num $i", title: "TITLE $i"));
+    }
+    return list_dummy;
+  }
+
   late MockrisksProxy riskProxy;
 
   List<RiskSST> dummy_list_risk = <RiskSST>[];
 
   setUpAll(() {
     riskProxy = MockrisksProxy();
-    dummy_list_risk.add(new RiskSST(id: 0, shortname: 'Test IDK', title: 'TITLE'));
+    dummy_list_risk = createDummyData();
 
     when(riskProxy.getList()).thenReturn(dummy_list_risk);
   });
@@ -34,7 +42,7 @@ void main() {
       when(riskProxy.getList()).thenReturn(dummy_list_risk);
       expect(riskProxy
           .getList()
-          .length, 1);
+          .length, 10);
     });
   });
 }
