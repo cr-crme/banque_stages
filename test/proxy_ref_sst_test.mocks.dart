@@ -31,7 +31,7 @@ class MockProxySST extends _i1.Mock implements _i2.ProxySST {
   }
 
   @override
-  List<_i3.RiskSST> getRiskList() => (super.noSuchMethod(
+  List<_i3.RiskSST> riskList() => (super.noSuchMethod(
         Invocation.method(
           #getRiskList,
           [],
@@ -39,7 +39,7 @@ class MockProxySST extends _i1.Mock implements _i2.ProxySST {
         returnValue: <_i3.RiskSST>[],
       ) as List<_i3.RiskSST>);
   @override
-  List<_i4.JobSST> getJobList() => (super.noSuchMethod(
+  List<_i4.JobSST> jobList() => (super.noSuchMethod(
         Invocation.method(
           #getJobList,
           [],

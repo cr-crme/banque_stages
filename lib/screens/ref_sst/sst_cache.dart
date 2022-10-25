@@ -9,8 +9,8 @@ import 'sst_cards/widgets/sst_card.dart';
 class SSTCache {
   static final SSTCache _sstCache = SSTCache._internal();
 
-  List<JobSST> jobs = ProxySST().getJobList();
-  List<RiskSST> risks = ProxySST().getRiskList();
+  List<JobSST> jobs = ProxySST().jobList();
+  List<RiskSST> risks = ProxySST().riskList();
 
   factory SSTCache() {
     return _sstCache;
@@ -28,17 +28,16 @@ class SSTCache {
 
   ListView getListViewJob() {
     return ListView(
-        children: [for (JobSST job in jobs) SSTCard(job.jobCode, job.jobName)]);
+        children: [for (JobSST job in jobs) SSTCard(job.code, job.name)]);
   }
 
   ListView getListViewRisk() {
-    return ListView(children: [
-      for (RiskSST risk in risks) SSTCard(risk.cardID, risk.title)
-    ]);
+    return ListView(
+        children: [for (RiskSST risk in risks) SSTCard(risk.id, risk.title)]);
   }
 
   void refresh() {
-    jobs = ProxySST().getJobList();
-    risks = ProxySST().getRiskList();
+    jobs = ProxySST().jobList();
+    risks = ProxySST().riskList();
   }
 }

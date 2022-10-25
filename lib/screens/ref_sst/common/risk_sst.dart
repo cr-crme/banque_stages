@@ -2,29 +2,23 @@
 
 //Risk class converts dummy json risk data into risk objects
 class RiskSST {
-  RiskSST(
-      {required this.cardID,
-      required this.riskShortname,
-      required this.riskTitle,
-      this.riskDesc,
-      this.riskPicture});
+  const RiskSST({
+    required this.id,
+    required this.shortname,
+    required this.title,
+    this.desc,
+    this.image, //There are sometimes no risks
+  });
 
-  final int cardID;
-  final String riskShortname;
-  final String riskTitle;
-  final String? riskDesc;
-  final String? riskPicture;
-
-  //getters
-  get id => cardID;
-  get shortname => riskShortname;
-  get title => riskTitle;
-  get desc => riskDesc;
-  get picture => riskPicture;
+  final int id;
+  final String shortname;
+  final String title;
+  final String? desc;
+  final String? image;
 
   //Tostring displays risk id and title
   @override
   String toString() {
-    return '{Fiche #$cardID: $riskTitle}';
+    return '{Fiche #$id: $title}';
   }
 }

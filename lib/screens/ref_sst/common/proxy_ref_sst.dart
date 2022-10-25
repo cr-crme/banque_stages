@@ -1,6 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+
 import './job_sst.dart';
 import './skill_sst.dart';
 import './risk_sst.dart';
@@ -30,11 +32,11 @@ import './temporary_proxy_data.dart';
 class ProxySST {
   // ProxySST(Function() getRiskList, Function() getJobList);
 
-  List<RiskSST> getRiskList() {
+  List<RiskSST> riskList() {
     //Importing and transforming json string into list of maps
     var parsedRisks = jsonDecode(riskData)['risks'] as List;
 
-    List<RiskSST> riskList = <RiskSST>[];
+    List<RiskSST> risks = <RiskSST>[];
 
     //Transforming each map into object
     fromJson(Map<String, dynamic> risk) {
@@ -45,24 +47,20 @@ class ProxySST {
       final String image = risk['image'] as String;
 
       return RiskSST(
-          cardID: id,
-          riskShortname: shortname,
-          riskTitle: title,
-          riskDesc: desc,
-          riskPicture: image);
+          id: id, shortname: shortname, title: title, desc: desc, image: image);
     }
 
     //Generating list from objects
     for (var risk in parsedRisks) {
-      riskList.add(fromJson(risk));
+      risks.add(fromJson(risk));
     }
 
-    return riskList;
+    return risks;
   }
 
-  List<JobSST> getJobList() {
+  List<JobSST> jobList() {
     //Import complete risk list
-    List<RiskSST> riskList = getRiskList();
+    List<RiskSST> risks = riskList();
 
     //Importing and transforming json string into map
     Map<String, dynamic> parsedJobs = jsonDecode(jobsData);
@@ -123,29 +121,30 @@ class ProxySST {
               if (risk.value) {
                 try {
                   //Try adding the corresponding risk object from riskList
-                  skillRisksList.add(riskList
+                  skillRisksList.add(risks
                       .firstWhere((element) => element.shortname == risk.key));
                 } catch (error) {
                   //Catch if risk card is not in database
-                  print("risk " + risk.key + " does not exist in risk data");
+                  debugPrint(
+                      "risk " + risk.key + " does not exist in risk data");
                 }
               }
             }
             //Add new SkillSST in skill list from data
             skillList.add(SkillSST(
-                skillName: skillName,
-                skillCode: int.parse(skillCode),
-                skillCriterias: skillCriterias,
-                skillTasks: skillTasks,
-                skillRisks: skillRisksList));
+                name: skillName,
+                code: int.parse(skillCode),
+                criterias: skillCriterias,
+                tasks: skillTasks,
+                risks: skillRisksList));
           }
           //Add new JobSST in job list from data
           jobList.add(JobSST(
-              jobCode: int.parse(jobCode),
-              jobName: jobName,
-              jobSkills: skillList,
-              jobQuestions: jobQuestions,
-              jobCategory: categoryName));
+              code: int.parse(jobCode),
+              name: jobName,
+              skills: skillList,
+              questions: jobQuestions,
+              category: categoryName));
         }
       }
       return jobList;
