@@ -15,7 +15,7 @@ class SkillSST {
   final int code;
   final List<String> criterias;
   final List<String> tasks;
-  final List<RiskSST> risks;
+  final Map<String, bool> risks;
 
   @override
   String toString() {

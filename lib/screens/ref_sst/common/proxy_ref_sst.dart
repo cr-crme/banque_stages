@@ -112,7 +112,7 @@ class ProxySST {
             //Generate map of risks
             Map<String, dynamic> skillRisks =
                 skill['risks'] as Map<String, dynamic>;
-            List<RiskSST> skillRisksList = <RiskSST>[];
+            Map<String, bool> skillRisksList = {};
 
             //For each risk
             for (MapEntry<String, dynamic> risk in skillRisks.entries) {
@@ -120,8 +120,7 @@ class ProxySST {
               if (risk.value) {
                 try {
                   //Try adding the corresponding risk object from riskList
-                  skillRisksList.add(risks
-                      .firstWhere((element) => element.shortname == risk.key));
+                  skillRisksList[risk.key.toString()] = risk.value;
                 } catch (error) {
                   //Catch if risk card is not in database
                   debugPrint(
