@@ -1,10 +1,11 @@
-import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/job.dart';
+import '/common/widgets/form_fields/job_form_field.dart';
+import '/misc/form_service.dart';
 
 class JobCreatorDialog extends StatefulWidget {
-  const JobCreatorDialog({Key? key}) : super(key: key);
+  const JobCreatorDialog({super.key});
 
   @override
   State<JobCreatorDialog> createState() => _JobCreatorDialogState();
@@ -20,6 +21,10 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
   }
 
   void _onConfirm() {
+    if (!FormService.validateForm(_formKey)) {
+      return;
+    }
+
     _formKey.currentState!.save();
 
     Navigator.pop(context, _job);

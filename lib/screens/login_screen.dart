@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/providers/auth_provider.dart';
+import '/misc/form_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   static const route = "/login";
 
@@ -22,7 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _errorText;
 
   void _signIn() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!FormService.validateForm(_formKey)) {
+      return;
+    }
 
     final navigator = Navigator.of(context);
     _formKey.currentState!.save();
@@ -77,29 +80,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     icon: Icon(Icons.mail),
                     labelText: "Courriel",
                   ),
-                  validator: (email) {
-                    if (email!.isEmpty) {
-                      return "Le champ ne peut pas être vide";
-                    } else if (!RegExp(
-                            r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$')
-                        .hasMatch(email)) {
-                      return "Le courriel entré n'est pas valide";
-                    }
-                    return null;
-                  },
+                  validator: FormService.emailValidator,
                   onSaved: (email) => _email = email!,
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   decoration: const InputDecoration(
                       icon: Icon(Icons.lock), labelText: "Mot de passe"),
-                  validator: (text) {
-                    if (text!.isEmpty) {
-                      return "Le champ ne peut pas être vide";
-                    }
-                    // TODO: Add minimal rules
-                    return null;
-                  },
+                  validator: FormService.passwordValidator,
                   onSaved: (function) => _password = function!,
                 ),
                 Visibility(

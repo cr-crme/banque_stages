@@ -4,12 +4,13 @@ import 'package:provider/provider.dart';
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/misc/form_service.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({
-    Key? key,
+    super.key,
     required this.enterprise,
-  }) : super(key: key);
+  });
 
   final Enterprise enterprise;
 
@@ -38,20 +39,13 @@ class ContactPageState extends State<ContactPage> {
   bool _editing = false;
   bool get editing => _editing;
 
-  void _showInvalidFieldsSnakBar() {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Assurez vous que tous les champs soient valides")));
-  }
-
   void toggleEdit() {
     if (!_editing) {
       setState(() => _editing = true);
       return;
     }
 
-    if (!_formKey.currentState!.validate()) {
-      _showInvalidFieldsSnakBar();
+    if (!FormService.validateForm(_formKey)) {
       return;
     }
 
@@ -108,74 +102,42 @@ class ContactPageState extends State<ContactPage> {
                 child: Column(
                   children: [
                     TextFormField(
-                      controller: TextEditingController(
-                          text: widget.enterprise.contactName),
+                      initialValue: widget.enterprise.contactName,
                       decoration: const InputDecoration(labelText: "* Nom"),
                       enabled: _editing,
-                      validator: (text) {
-                        if (text!.isEmpty) {
-                          return "Le champ ne peut pas être vide";
-                        }
-                        return null;
-                      },
+                      validator: FormService.textNotEmptyValidator,
                       onSaved: (name) => _contactName = name!,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      controller: TextEditingController(
-                          text: widget.enterprise.contactFunction),
+                      initialValue: widget.enterprise.contactFunction,
                       decoration:
                           const InputDecoration(labelText: "* Fonction"),
                       enabled: _editing,
-                      validator: (text) {
-                        if (text!.isEmpty) {
-                          return "Le champ ne peut pas être vide";
-                        }
-                        return null;
-                      },
+                      validator: FormService.textNotEmptyValidator,
                       onSaved: (function) => _contactFunction = function!,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      controller: TextEditingController(
-                          text: widget.enterprise.contactPhone),
+                      initialValue: widget.enterprise.contactPhone,
                       decoration: const InputDecoration(
                         icon: Icon(Icons.phone),
                         labelText: "* Téléphone",
                       ),
                       enabled: _editing,
-                      validator: (phone) {
-                        if (phone!.isEmpty) {
-                          return "Le champ ne peut pas être vide";
-                        } else if (!RegExp(
-                                r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
-                            .hasMatch(phone)) {
-                          return "Le numéro entré n'est pas valide";
-                        }
-                        return null;
-                      },
+                      validator: FormService.phoneValidator,
                       onSaved: (phone) => _contactPhone = phone!,
                       keyboardType: TextInputType.phone,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      controller: TextEditingController(
-                          text: widget.enterprise.contactEmail),
+                      initialValue: widget.enterprise.contactEmail,
                       decoration: const InputDecoration(
                         icon: Icon(Icons.mail),
                         labelText: "* Courriel",
                       ),
                       enabled: _editing,
-                      validator: (email) {
-                        if (email!.isEmpty) {
-                          return "Le champ ne peut pas être vide";
-                        } else if (!RegExp(
-                                r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$')
-                            .hasMatch(email)) {
-                          return "Le courriel entré n'est pas valide";
-                        }
-                        return null;
-                      },
+                      validator: FormService.emailValidator,
                       onSaved: (email) => _contactEmail = email!,
                       keyboardType: TextInputType.emailAddress,
                     ),
@@ -193,8 +155,7 @@ class ContactPageState extends State<ContactPage> {
                 child: Column(
                   children: [
                     TextFormField(
-                      controller: TextEditingController(
-                          text: widget.enterprise.address),
+                      initialValue: widget.enterprise.address,
                       decoration: const InputDecoration(labelText: "Adresse"),
                       enabled: _editing,
                       onSaved: (address) => _address = address,
@@ -202,8 +163,7 @@ class ContactPageState extends State<ContactPage> {
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      controller:
-                          TextEditingController(text: widget.enterprise.phone),
+                      initialValue: widget.enterprise.phone,
                       decoration: const InputDecoration(labelText: "Téléphone"),
                       enabled: _editing,
                       onSaved: (phone) => _phone = phone,
@@ -211,8 +171,7 @@ class ContactPageState extends State<ContactPage> {
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      controller:
-                          TextEditingController(text: widget.enterprise.fax),
+                      initialValue: widget.enterprise.fax,
                       decoration:
                           const InputDecoration(labelText: "Télécopieur"),
                       enabled: _editing,
@@ -221,8 +180,7 @@ class ContactPageState extends State<ContactPage> {
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      controller: TextEditingController(
-                          text: widget.enterprise.website),
+                      initialValue: widget.enterprise.website,
                       decoration: const InputDecoration(labelText: "Site web"),
                       enabled: _editing,
                       onSaved: (website) => _website = website,
@@ -243,8 +201,7 @@ class ContactPageState extends State<ContactPage> {
                   Visibility(
                     visible: !_addressesAreIdentical,
                     child: TextFormField(
-                      controller: TextEditingController(
-                          text: widget.enterprise.headquartersAddress),
+                      initialValue: widget.enterprise.headquartersAddress,
                       decoration: const InputDecoration(
                           labelText: "Adresse du siège social"),
                       enabled: _editing && !_addressesAreIdentical,
@@ -274,10 +231,10 @@ class ContactPageState extends State<ContactPage> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                    controller:
-                        TextEditingController(text: widget.enterprise.neq),
+                    initialValue: widget.enterprise.neq,
                     decoration: const InputDecoration(labelText: "NEQ"),
                     enabled: _editing,
+                    validator: FormService.neqValidator,
                     onSaved: (neq) => _neq = neq,
                     keyboardType: TextInputType.number,
                   ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '/misc/form_service.dart';
+
 class ContactPage extends StatefulWidget {
-  const ContactPage({Key? key}) : super(key: key);
+  const ContactPage({super.key});
 
   @override
   State<ContactPage> createState() => ContactPageState();
@@ -40,24 +42,14 @@ class ContactPageState extends State<ContactPage> {
             ListTile(
               title: TextFormField(
                 decoration: const InputDecoration(labelText: "* Nom"),
-                validator: (text) {
-                  if (text!.isEmpty) {
-                    return "Le champ ne peut pas être vide";
-                  }
-                  return null;
-                },
+                validator: FormService.textNotEmptyValidator,
                 onSaved: (name) => contactName = name!,
               ),
             ),
             ListTile(
               title: TextFormField(
                 decoration: const InputDecoration(labelText: "* Fonction"),
-                validator: (text) {
-                  if (text!.isEmpty) {
-                    return "Le champ ne peut pas être vide";
-                  }
-                  return null;
-                },
+                validator: FormService.textNotEmptyValidator,
                 onSaved: (function) => contactFunction = function!,
               ),
             ),
@@ -67,16 +59,7 @@ class ContactPageState extends State<ContactPage> {
                   icon: Icon(Icons.phone),
                   labelText: "* Téléphone",
                 ),
-                validator: (phone) {
-                  if (phone!.isEmpty) {
-                    return "Le champ ne peut pas être vide";
-                  } else if (!RegExp(
-                          r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
-                      .hasMatch(phone)) {
-                    return "Le numéro entré n'est pas valide";
-                  }
-                  return null;
-                },
+                validator: FormService.phoneValidator,
                 onSaved: (phone) => contactPhone = phone!,
                 keyboardType: TextInputType.phone,
               ),
@@ -87,16 +70,7 @@ class ContactPageState extends State<ContactPage> {
                   icon: Icon(Icons.mail),
                   labelText: "* Courriel",
                 ),
-                validator: (email) {
-                  if (email!.isEmpty) {
-                    return "Le champ ne peut pas être vide";
-                  } else if (!RegExp(
-                          r'^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$')
-                      .hasMatch(email)) {
-                    return "Le courriel entré n'est pas valide";
-                  }
-                  return null;
-                },
+                validator: FormService.emailValidator,
                 onSaved: (email) => contactEmail = email!,
                 keyboardType: TextInputType.emailAddress,
               ),
