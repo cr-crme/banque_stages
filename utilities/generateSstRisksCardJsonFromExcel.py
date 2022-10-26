@@ -1,3 +1,4 @@
+from csv import excel
 import json
 import re
 import threading
@@ -69,11 +70,19 @@ def start(excelPathSST: str):
         setMessage("Fichier Excel invalide")
         return
 
-    json = []
+    json = {}
     
-    json.append({
+    print(excelSST)
+    
+    for index in excelSST.index:
+        row = excelSST.loc[index]
+        json.append({
+            str(row["N° fiche"]):{
+                
+            }
+        })
 
-    })
+    
 
     saveJson(json, JSON_FILE_PATH)
     setMessage("Tout est fini!")
@@ -150,7 +159,7 @@ tk.Label(mainFrame, text="Entrez le chemin d'accès du classeur Excel contenant 
 frame = tk.Frame(mainFrame)
 frame.pack()
 
-excelPathSST = tk.StringVar(value="analyse_risques_metiers.xlsx")
+excelPathSST = tk.StringVar(value="D:/Users/2061694/Documents/GitHub/ressources/Contenu_fiches_SST.xlsx")
 entrySST = tk.Entry(frame, textvariable=excelPathSST)
 entrySST.focus()
 entrySST.pack(side="left")
