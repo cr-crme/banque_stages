@@ -12,7 +12,8 @@ class RisksCardsScreen extends StatefulWidget {
 }
 
 class _RisksCardsScreenState extends State<RisksCardsScreen> {
-  final String intro = "Allo";
+  final String intro =
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip";
 
   @override
   void initState() {
