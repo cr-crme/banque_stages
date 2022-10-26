@@ -48,11 +48,11 @@ class MockrisksProxy extends _i1.Mock implements _i2.risksProxy {
         [riskList],
       ));
   @override
-  List<_i3.RiskSST> getList() => (super.noSuchMethod(
+  List<_i3.CardSST> getList() => (super.noSuchMethod(
         Invocation.method(
           #getList,
           [],
         ),
-        returnValue: <_i3.RiskSST>[],
-      ) as List<_i3.RiskSST>);
+        returnValue: <_i3.CardSST>[],
+      ) as List<_i3.CardSST>);
 }

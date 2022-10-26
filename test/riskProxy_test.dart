@@ -9,20 +9,19 @@ import 'package:crcrme_banque_stages/screens/ref_sst/common/proxy_ref_sst.dart';
 import 'riskProxy_test.mocks.dart';
 
 @GenerateMocks([risksProxy])
-
 void main() {
-
-  List<RiskSST> createDummyData(){
-    List<RiskSST> list_dummy = <RiskSST>[];
-    for(int i =0;i < 10; i++){
-      list_dummy.add(new RiskSST(id: i, shortname: "num $i", title: "TITLE $i"));
+  List<CardSST> createDummyData() {
+    List<CardSST> list_dummy = <CardSST>[];
+    for (int i = 0; i < 10; i++) {
+      list_dummy
+          .add(new CardSST(id: i, shortname: "num $i", title: "TITLE $i"));
     }
     return list_dummy;
   }
 
   late MockrisksProxy riskProxy;
 
-  List<RiskSST> dummy_list_risk = <RiskSST>[];
+  List<CardSST> dummy_list_risk = <CardSST>[];
 
   setUpAll(() {
     riskProxy = MockrisksProxy();
@@ -31,8 +30,7 @@ void main() {
     when(riskProxy.getList()).thenReturn(dummy_list_risk);
   });
 
-  group('risksProxy', ()
-  {
+  group('risksProxy', () {
     test('Test get list risks : return type', () {
       when(riskProxy.getList()).thenReturn(dummy_list_risk);
       expect(riskProxy.getList(), isList);
@@ -40,9 +38,7 @@ void main() {
 
     test('Test get list risks : number object list', () {
       when(riskProxy.getList()).thenReturn(dummy_list_risk);
-      expect(riskProxy
-          .getList()
-          .length, 10);
+      expect(riskProxy.getList().length, 10);
     });
   });
 }

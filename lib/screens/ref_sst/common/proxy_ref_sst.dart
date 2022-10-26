@@ -46,14 +46,14 @@ class risksProxy {
 
   //Transforming maps into list of objects
   fromJson(Map<String, dynamic> riskList) {
-    List<RiskSST> risks = <RiskSST>[];
+    List<CardSST> risks = <CardSST>[];
     for (Map<String, dynamic> risk in riskList.values) {
       final int id = risk['id'] as int;
       final String shortname = risk['shortname'] as String;
       final String title = risk['name'] as String;
       final String desc = risk['description'] as String;
       final String image = risk['image'] as String;
-      risks.add(RiskSST(
+      risks.add(CardSST(
           id: id,
           shortname: shortname,
           title: title,
@@ -63,7 +63,7 @@ class risksProxy {
     return risks;
   }
 
-  List<RiskSST> getList() {
+  List<CardSST> getList() {
     return fromJson(parsedRisks);
   }
 }

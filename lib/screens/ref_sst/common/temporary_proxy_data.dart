@@ -2,37 +2,130 @@
 * Data used in proxy (will be replaced with fetches)
 * Delete file once connection to BD functional
 */
-String riskData = """{
-    
-        "01": {
-            "id": 1,
-            "shortname": "chemical",
-            "name": "Risques Chimiques",
-            "description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-            "image" : "path/card1"
+String riskData = """
+{
+    "01": {
+        "shortname": "chemical",
+        "name": "RISQUES CHIMIQUES",
+        "risks": {
+            "1": {
+                "title": "",
+                "intro": "L’élève travaille avec des produits chimiques dangereux qui peuvent être absorbés par voie respiratoire, cutanée ou orale.",
+                "situations": {
+                    "Dégraissage de pièces métalliques avec un produit chimique dont l’étiquette comporte un ou plusieurs symboles du SIMDUT" : [],
+                    "Désinfection d’un plan de travail avec un mélange de plusieurs produits chimiques": [],
+                    "Manipulation du produit chimique:": [
+                        "sans équipement de protection individuelle (p. ex. : gants, masque, lunettes ou visière)",
+                        "avec un équipement de protection inadéquat (p. ex. : gants trop grands ou lunettes rayées)"
+                    ],
+                    "Travail dans un local insuffisamment ventilé": []
+                    },
+                    "factors": {
+                    "Utilisation d’un produit chimique sans information sur les risques ou les précautions à prendre :" : [
+                        "Emballage de produit chimique sans étiquette",
+                        "Manque de formation sur son utilisation"
+                    ]
+                },
+                "symptoms":{
+                    "Irritations cutanées, brûlures" : [],
+                    "Maux de tête, nausées, vomissements" : [],
+                    "Intoxications chroniques pouvant toucher le système nerveux, le foie ou le système respiratoire" : []
+                },
+                "images" : [
+                    "path/image1"
+                ]
+            }
         },
-        "02": {
-            "id": 2,
-            "shortname": "biological",
-            "name": "Risques Biologiques",
-            "description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-            "image" : "path/card2"
-        },
-        "03": {
-            "id": 3,
-            "shortname": "equipment",
-            "name": "Risques liés aux machines et aux équipements",
-            "description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-            "image" : "path/card3"
-        },
-        "04": {
-            "id": 4,
-            "shortname":"fall",
-            "name": "Risques de chute de hauteur et de plain-pied",
-            "description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-            "image" : "path/card4"
+        "links": {
+            "1" : {
+                "source":"CNESST",
+                "title":"SIMDUT 2015 harmonisé au SGH — Les pictogrammes",
+                "link":"https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/affiche-simdut-2015-pictogrammes"
+            },
+            "2" : {
+                "source":"INRS",
+                "title":"Travailler avec des produits chimiques. Pensez prévention des risques !",
+                "link":"https://www.inrs.fr/media.html?refINRS=ED%206150"
+            }
         }
-    
+    },
+
+    "07": {
+        "shortname": "posture",
+        "name": "RISQUES LIÉS AUX POSTURES CONTRAIGNANTES",
+        "risks": {
+            "1": {
+                "title": "POSTURES EXTRÊMES",
+                "intro": "Pour réaliser une tâche, l’élève doit adopter une position dans laquelle une ou plusieurs de ses articulations forment des angles extrêmes et il doit maintenir cette position pendant une longue période.",
+                "situations": {
+                    "Posture penchée en avant :" : [
+                        "pour ramasser des marchandises au niveau du sol ou loin devant",
+                        "pour couper des légumes (p. ex. : sur un comptoir de cuisine trop bas)"
+                    ],
+                    "Torsion du haut du corps, sans bouger les pieds, pour prendre des objets situés derrière ou sur les côtés": [],
+                    "Travail de précision obligeant à garder la tête baissée plusieurs minutes lors de l’exécution de la tâche (p. ex. : pliage de chandails)": [],
+                    "Tête basculée vers l’arrière pour lire des informations situées en hauteur (p. ex. : étiquettes de prix sur des étagères)": [],
+                    "Bras levés au-dessus du niveau des épaules pour prendre des objets situés en hauteur": [],
+                    "Position accroupie ou avec un genou à terre pour habiller des enfants dans une garderie": [],
+                    "Manipulation de petits objets avec une prise en pince (p. ex. : insérer des composants électroniques sur la carte-mère d'un ordinateur)": [],
+                    "Saisie d’information sur un clavier d’ordinateur trop épais, les poignets en extension": [],
+                    "Torsion du poignet pour visser de la quincaillerie sur un meuble à l’aide d’un tournevis": []
+                },
+                "factors": {
+                    "Effort physique combiné à une posture contraignante (p. ex. : soulever une charge lourde en position penchée)": [],
+                    "Maintien d’une même posture pendant deux heures ou plus": [],
+                    "Posture répétée fréquemment": []
+                },
+                "symptoms":{
+                    "Inconfort, fatigue et douleur": [],
+                    "Troubles musculosquelettiques (TMS) pouvant affecter les différentes articulations": []
+                },
+                "images" : [
+                    "path/image11",
+                    "path/image12"
+                ]
+            },
+            "2": {
+                "title": "POSTURE STATIQUE",
+                "intro": "Toute position statique, c’est-à-dire maintenue de manière prolongée, peut être contraignante, même s’il s’agit d’une position naturelle du corps (p. ex. : station debout ou assise pendant toute la journée).",
+                "situations": {
+                    "Travail pendant plusieurs heures sur une machine (p. ex. : presse à découper des pièces métalliques, machine à coudre) avec maintien de la même position, sans possibilité d’alterner, car :" : [
+                        "les mains et les pieds servent à actionner des commandes ou à tenir",
+                        "les pièces à travailler dans la machine",
+                        "la tête doit être maintenue dans la même position pour assurer un contrôle visuel tout au long de la tâche"
+                    ],
+                    "Travail en position debout pendant plusieurs heures, sans possibilité de s’asseoir en dehors des pauses": [],
+                    "Travail en position assise toute la journée": []
+                },
+                "factors": {
+                    "Utilisation d’équipements de travail qui limitent les changements de position :": [
+                        "Espace de dégagement sous le plan de travail insuffisant pour bouger les jambes et les pieds",
+                        "Équipements non réglables en hauteur ou en profondeur"
+                    ]
+                },
+                "symptoms":{
+                    "Inconfort, fatigue et douleur": [],
+                    "Troubles musculosquelettiques (TMS) pouvant affecter les différentes articulations": []
+                },
+                "images" : [
+                    "path/image13",
+                    "path/image14"
+                ]
+            }
+        },
+        "links": {
+            "1" : {
+                "source":"CCHST",
+                "title":"Troubles musculosquelettiques liés au travail — Facteurs de risque",
+                "link":"https://www.cchst.ca/oshanswers/ergonomics/risk.html"
+            },
+            "2" : {
+                "source":"INSPQ",
+                "title":"Conditions de travail contribuant aux TMS",
+                "link":"https://www.inspq.qc.ca/sites/default/files/publications/1813_conditions_tms_faits_saillants.pdf"
+            }
+        }
+    }
 }
 """;
 

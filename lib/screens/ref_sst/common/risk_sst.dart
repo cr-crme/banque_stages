@@ -1,24 +1,53 @@
 // ignore_for_file: non_constant_identifier_names
 
 //Risk class converts dummy json risk data into risk objects
-class RiskSST {
-  const RiskSST({
+class CardSST {
+  const CardSST({
     required this.id,
     required this.shortname,
-    required this.title,
-    this.desc,
-    this.image, //There are sometimes no risks
+    required this.name,
+    required this.risks,
+    required this.links,
   });
 
   final int id;
   final String shortname;
-  final String title;
-  final String? desc;
-  final String? image;
+  final String name;
+  final List<RiskSST> risks;
+  final List<LinkSST> links;
 
   //Tostring displays risk id and title
   @override
   String toString() {
-    return '{Fiche #$id: $title}';
+    return '{Fiche #$id: $name}';
   }
+}
+
+class LinkSST {
+  const LinkSST({
+    required this.source,
+    required this.title,
+    required this.link,
+  });
+
+  final String source;
+  final String title;
+  final String link;
+}
+
+class RiskSST {
+  const RiskSST({
+    required this.id,
+    required this.title,
+    required this.situations,
+    required this.factors,
+    required this.symptoms,
+    required this.images,
+  });
+  final int id;
+  final String title;
+  final Map<String, List<String>> situations;
+  final Map<String, List<String>> factors;
+  final Map<String, List<String>> symptoms;
+  final List<String> images;
 }
