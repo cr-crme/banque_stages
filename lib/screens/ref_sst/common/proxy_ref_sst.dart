@@ -11,10 +11,7 @@ import 'card_sst.dart';
 //Remove after connection to DB
 import './temporary_proxy_data.dart';
 
-/*
-* This file's comments are currently being updated and might be lacking/no longer
-* accurate.
-* 
+/* 
 * The class cardsProxy() fetches risks data from the database and transforms them
 * into a list of cards objects. It returns with the list with the method getList().
 *
@@ -36,32 +33,38 @@ class cardsProxy {
 
   //Transforming maps into list of objects
   fromJson(Map<String, dynamic> cards) {
+    //Create a cards array, then for each card
     List<CardSST> cardsList = <CardSST>[];
     for (MapEntry<String, dynamic> card in cards.entries) {
-      final int cardID = int.parse(card.key);
+      //Save informations
+      final int cardID = int.parse(card.key); //Save key as the id
       final String cardShortname = card.value['shortname'] as String;
       final String cardName = card.value['name'] as String;
-      Map<String, dynamic> risks = card.value['risks'] as Map<String, dynamic>;
 
+      //Put risks in a map, then for each risk
+      Map<String, dynamic> risks = card.value['risks'] as Map<String, dynamic>;
       List<RiskSST> riskList = [];
       for (MapEntry<String, dynamic> risk in risks.entries) {
-        final int riskID = int.parse(risk.key);
+        final int riskID = int.parse(risk.key); //Save key as ID
         final String riskTitle = risk.value['title'] as String;
         final String riskIntro = risk.value['intro'] as String;
+        //Save list of images as list of strings
         final List<String> images = (risk.value['images'] as List)
             .map((item) => item as String)
             .toList();
-
+        //For each situation
         Map<String, List<String>> riskSituations = {};
         final Map<String, dynamic> situations =
             risk.value['situations'] as Map<String, dynamic>;
         for (MapEntry<String, dynamic> situation in situations.entries) {
+          //Save key as the line
           final String situationLine = situation.key;
+          //Save corresponding string list as the sublines (will often be emtpy)
           final List<String> situationSublines =
               (situation.value as List).map((item) => item as String).toList();
           riskSituations[situationLine] = situationSublines;
         }
-
+        //For each factor, do the same
         Map<String, List<String>> riskFactors = {};
         final Map<String, dynamic> factors =
             risk.value['factors'] as Map<String, dynamic>;
@@ -71,7 +74,7 @@ class cardsProxy {
               (factor.value as List).map((item) => item as String).toList();
           riskFactors[factorLine] = factorSublines;
         }
-
+        //For each symptom, do the same
         Map<String, List<String>> riskSymptoms = {};
         final Map<String, dynamic> symptoms =
             risk.value['symptoms'] as Map<String, dynamic>;
@@ -81,6 +84,7 @@ class cardsProxy {
               (symptom.value as List).map((item) => item as String).toList();
           riskSymptoms[symptomLine] = symptomSublines;
         }
+        //Put everything in a risk object and add to the list of risks
         riskList.add(RiskSST(
             id: riskID,
             title: riskTitle,
@@ -90,7 +94,7 @@ class cardsProxy {
             symptoms: riskSymptoms,
             images: images));
       }
-
+      //For each link
       List<LinkSST> cardLinks = [];
       final Map<String, dynamic> links =
           card.value['links'] as Map<String, dynamic>;
@@ -98,9 +102,11 @@ class cardsProxy {
         final String linkSource = link['source'] as String;
         final String linkTitle = link['title'] as String;
         final String linkURL = link['url'] as String;
+        //Save link infos into link object, add to link list
         cardLinks
             .add(LinkSST(source: linkSource, title: linkTitle, url: linkURL));
       }
+      //Save everything into a card object, add to list of cards
       cardsList.add(CardSST(
         id: cardID,
         shortname: cardShortname,

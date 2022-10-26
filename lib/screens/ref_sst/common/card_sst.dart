@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
-//Risk class converts dummy json risk data into risk objects
+//Card class contains the cards info and a list of more precise risks
 class CardSST {
   const CardSST({
     required this.id,
@@ -23,6 +23,7 @@ class CardSST {
   }
 }
 
+//Object to save link information
 class LinkSST {
   const LinkSST({
     required this.source,
@@ -35,6 +36,8 @@ class LinkSST {
   final String url;
 }
 
+//Class RiskSST keeps individual risk data, including each paragraph in a map
+//(for each line), with a string array (for sublines)
 class RiskSST {
   const RiskSST({
     required this.id,
