@@ -6,9 +6,15 @@ class Introduction extends StatelessWidget {
   //params and variables
   const Introduction(this.intro, {super.key});
   final String intro;
-
   @override
   Widget build(BuildContext context) {
-    return Text(intro);
+    return Column(children: [
+      Center(
+        child: Container(
+          margin: const EdgeInsets.only(top: 30, right: 25, left: 25),
+          child: Text(intro),
+        ),
+      )
+    ]);
   }
 }
