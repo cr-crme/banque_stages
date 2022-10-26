@@ -12,6 +12,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
+
 # Constants
 JSON_FILE_PATH = "assets/risks-data-test.json"
 
@@ -70,19 +71,24 @@ def start(excelPathSST: str):
         setMessage("Fichier Excel invalide")
         return
 
-    json = {}
-    
+    json = []
+
     print(excelSST)
-    
+
     for index in excelSST.index:
         row = excelSST.loc[index]
         json.append({
-            str(row["N° fiche"]):{
-                
+            str(row[0]): {
+                "name": str(row[1]),
+                "risks": {
+                    "1": {
+                        "title": str(row[2]),
+                        "intro": str(row[3]),
+                        "situations": str(row[4]).split("\n")[::1],
+                    }
+                }
             }
         })
-
-    
 
     saveJson(json, JSON_FILE_PATH)
     setMessage("Tout est fini!")
@@ -102,6 +108,8 @@ def getSSTDataFromExcel(excel: pd.DataFrame, sector, specialization, skill):
     return result
 
 # String processing
+
+
 def cleanUpText(text: str):
     '''Removes unwanted formating chars at the end of [text].'''
     text = re.match(r"[^\t\r\n]*", text).group(0)
@@ -159,7 +167,8 @@ tk.Label(mainFrame, text="Entrez le chemin d'accès du classeur Excel contenant 
 frame = tk.Frame(mainFrame)
 frame.pack()
 
-excelPathSST = tk.StringVar(value="D:/Users/2061694/Documents/GitHub/ressources/Contenu_fiches_SST.xlsx")
+excelPathSST = tk.StringVar(
+    value="D:/Users/2061694/Documents/GitHub/ressources/Contenu_fiches_SST.xlsx")
 entrySST = tk.Entry(frame, textvariable=excelPathSST)
 entrySST.focus()
 entrySST.pack(side="left")
