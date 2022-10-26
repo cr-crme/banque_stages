@@ -33,7 +33,7 @@ class SSTCache {
 
   ListView getListViewRisk() {
     return ListView(
-        children: [for (CardSST risk in risks) SSTCard(risk.id, risk.title)]);
+        children: [for (CardSST risk in risks) SSTCard(risk.id, risk.name)]);
   }
 
   void refresh() {
