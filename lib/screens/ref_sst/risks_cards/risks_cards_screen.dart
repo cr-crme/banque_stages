@@ -1,4 +1,5 @@
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/introduction.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/mainTitle.dart';
 import 'package:flutter/material.dart';
 
 class RisksCardsScreen extends StatefulWidget {
@@ -14,7 +15,8 @@ class RisksCardsScreen extends StatefulWidget {
 class _RisksCardsScreenState extends State<RisksCardsScreen> {
   final String intro =
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip";
-
+  final String mainTitle =
+      "Nom risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt";
   @override
   void initState() {
     super.initState();
@@ -27,7 +29,7 @@ class _RisksCardsScreenState extends State<RisksCardsScreen> {
           title: Text("Fiche ${widget.nmb}"),
         ),
         body: ListView(
-          children: [Introduction(intro)],
+          children: [MainTitle(mainTitle), Introduction(intro)],
         ));
   }
 }
