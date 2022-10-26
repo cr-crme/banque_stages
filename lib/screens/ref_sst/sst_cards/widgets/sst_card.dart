@@ -28,7 +28,7 @@ class SSTCard extends StatelessWidget {
             //onTap should redirect to the risk
             onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => const RisksCardsScreen(),
+                    builder: (_) => RisksCardsScreen(nmb),
                   ),
                 )));
   }

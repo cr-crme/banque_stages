@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           EnterpriseScreen.route: (context) => const EnterpriseScreen(),
           HomeSSTScreen.route: (context) => const HomeSSTScreen(),
           SSTCardsScreen.route: (context) => const SSTCardsScreen(),
-          RisksCardsScreen.route: (context) => const RisksCardsScreen(),
+          RisksCardsScreen.route: (context) => const RisksCardsScreen(0),
           JobListScreen.route: (context) => const JobListScreen(),
           PostInternshipEvaluationScreen.route: (context) =>
               const PostInternshipEvaluationScreen(),

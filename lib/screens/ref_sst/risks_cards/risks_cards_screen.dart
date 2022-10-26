@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RisksCardsScreen extends StatefulWidget {
-  const RisksCardsScreen({Key? key}) : super(key: key);
-
+  const RisksCardsScreen(this.nmb, {super.key});
+  final int nmb;
   static const route = "/risks-cards";
 
   @override
@@ -19,7 +19,7 @@ class _RisksCardsScreenState extends State<RisksCardsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Fiche XX"),
+          title: Text("Fiche ${widget.nmb}"),
         ),
         body: ListView());
   }
