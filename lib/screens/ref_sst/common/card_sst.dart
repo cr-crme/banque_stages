@@ -39,6 +39,7 @@ class RiskSST {
   const RiskSST({
     required this.id,
     required this.title,
+    required this.intro,
     required this.situations,
     required this.factors,
     required this.symptoms,
@@ -46,6 +47,7 @@ class RiskSST {
   });
   final int id;
   final String title;
+  final String intro;
   final Map<String, List<String>> situations;
   final Map<String, List<String>> factors;
   final Map<String, List<String>> symptoms;

@@ -84,6 +84,7 @@ class cardsProxy {
         riskList.add(RiskSST(
             id: riskID,
             title: riskTitle,
+            intro: riskIntro,
             situations: riskSituations,
             factors: riskFactors,
             symptoms: riskSymptoms,
