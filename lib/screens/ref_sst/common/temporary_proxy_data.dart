@@ -20,7 +20,7 @@ String riskData = """
                     ],
                     "Travail dans un local insuffisamment ventilé": []
                     },
-                    "factors": {
+                "factors": {
                     "Utilisation d’un produit chimique sans information sur les risques ou les précautions à prendre :" : [
                         "Emballage de produit chimique sans étiquette",
                         "Manque de formation sur son utilisation"
@@ -40,12 +40,12 @@ String riskData = """
             "1" : {
                 "source":"CNESST",
                 "title":"SIMDUT 2015 harmonisé au SGH — Les pictogrammes",
-                "link":"https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/affiche-simdut-2015-pictogrammes"
+                "url":"https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/affiche-simdut-2015-pictogrammes"
             },
             "2" : {
                 "source":"INRS",
                 "title":"Travailler avec des produits chimiques. Pensez prévention des risques !",
-                "link":"https://www.inrs.fr/media.html?refINRS=ED%206150"
+                "url":"https://www.inrs.fr/media.html?refINRS=ED%206150"
             }
         }
     },
@@ -117,12 +117,12 @@ String riskData = """
             "1" : {
                 "source":"CCHST",
                 "title":"Troubles musculosquelettiques liés au travail — Facteurs de risque",
-                "link":"https://www.cchst.ca/oshanswers/ergonomics/risk.html"
+                "url":"https://www.cchst.ca/oshanswers/ergonomics/risk.html"
             },
             "2" : {
                 "source":"INSPQ",
                 "title":"Conditions de travail contribuant aux TMS",
-                "link":"https://www.inspq.qc.ca/sites/default/files/publications/1813_conditions_tms_faits_saillants.pdf"
+                "url":"https://www.inspq.qc.ca/sites/default/files/publications/1813_conditions_tms_faits_saillants.pdf"
             }
         }
     }

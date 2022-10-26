@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:crcrme_banque_stages/screens/ref_sst/common/risk_sst.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
 
 class SkillSST {
   const SkillSST({

@@ -27,12 +27,12 @@ class LinkSST {
   const LinkSST({
     required this.source,
     required this.title,
-    required this.link,
+    required this.url,
   });
 
   final String source;
   final String title;
-  final String link;
+  final String url;
 }
 
 class RiskSST {

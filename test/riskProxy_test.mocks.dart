@@ -5,7 +5,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:crcrme_banque_stages/screens/ref_sst/common/proxy_ref_sst.dart'
     as _i2;
-import 'package:crcrme_banque_stages/screens/ref_sst/common/risk_sst.dart'
+import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -23,7 +23,7 @@ import 'package:mockito/mockito.dart' as _i1;
 /// A class which mocks [risksProxy].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockrisksProxy extends _i1.Mock implements _i2.risksProxy {
+class MockrisksProxy extends _i1.Mock implements _i2.cardsProxy {
   MockrisksProxy() {
     _i1.throwOnMissingStub(this);
   }

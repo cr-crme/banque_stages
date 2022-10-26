@@ -1,18 +1,22 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, prefer_interpolation_to_compose_strings
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
 import './job_sst.dart';
 import './skill_sst.dart';
-import './risk_sst.dart';
+import 'card_sst.dart';
 
 //Remove after connection to DB
 import './temporary_proxy_data.dart';
 
 /*
-* The class risksProxy() fetches risks data from the database and transforms them
-* into a list of risks objects, that it returns with the method getList().
+* This file's comments are currently being updated and might be lacking/no longer
+* accurate.
+* 
+* The class cardsProxy() fetches risks data from the database and transforms them
+* into a list of cards objects. It returns with the list with the method getList().
 *
 * The class jobsProxy() fetches the jobs data from the database. It creates and
 * fills JobSST objects from the data: name, name of the category, code, etc.
@@ -25,42 +29,86 @@ import './temporary_proxy_data.dart';
 * replaced with fetches from the database.
 */
 
-//REMOVE BEFORE SHIP, USED TO TEST
-// void main() {
-//   debugPrint("Testing proxy: risks");
-//   List<RiskSST> riskList = risksProxy().getList();
-//   for (RiskSST risk in riskList) {
-//     debugPrint(risk.toString());
-//   }
-//   debugPrint("Testing proxy: jobs");
-//   List<JobSST> jobList = jobsProxy().getList();
-//   for (JobSST job in jobList) {
-//     debugPrint(job.toString());
-//   }
-// }
-
-class risksProxy {
-  risksProxy();
+class cardsProxy {
+  cardsProxy();
   //Importing and transforming json string into list of maps
-  Map<String, dynamic> parsedRisks = jsonDecode(riskData); //['risks'] as List
+  Map<String, dynamic> parsedRisks = jsonDecode(riskData);
 
   //Transforming maps into list of objects
-  fromJson(Map<String, dynamic> riskList) {
-    List<CardSST> risks = <CardSST>[];
-    for (Map<String, dynamic> risk in riskList.values) {
-      final int id = risk['id'] as int;
-      final String shortname = risk['shortname'] as String;
-      final String title = risk['name'] as String;
-      final String desc = risk['description'] as String;
-      final String image = risk['image'] as String;
-      risks.add(CardSST(
-          id: id,
-          shortname: shortname,
-          title: title,
-          desc: desc,
-          image: image));
+  fromJson(Map<String, dynamic> cards) {
+    List<CardSST> cardsList = <CardSST>[];
+    for (MapEntry<String, dynamic> card in cards.entries) {
+      final int cardID = int.parse(card.key);
+      final String cardShortname = card.value['shortname'] as String;
+      final String cardName = card.value['name'] as String;
+      Map<String, dynamic> risks = card.value['risks'] as Map<String, dynamic>;
+
+      List<RiskSST> riskList = [];
+      for (MapEntry<String, dynamic> risk in risks.entries) {
+        final int riskID = int.parse(risk.key);
+        final String riskTitle = risk.value['title'] as String;
+        final String riskIntro = risk.value['intro'] as String;
+        final List<String> images = (risk.value['images'] as List)
+            .map((item) => item as String)
+            .toList();
+
+        Map<String, List<String>> riskSituations = {};
+        final Map<String, dynamic> situations =
+            risk.value['situations'] as Map<String, dynamic>;
+        for (MapEntry<String, dynamic> situation in situations.entries) {
+          final String situationLine = situation.key;
+          final List<String> situationSublines =
+              (situation.value as List).map((item) => item as String).toList();
+          riskSituations[situationLine] = situationSublines;
+        }
+
+        Map<String, List<String>> riskFactors = {};
+        final Map<String, dynamic> factors =
+            risk.value['factors'] as Map<String, dynamic>;
+        for (MapEntry<String, dynamic> factor in factors.entries) {
+          final String factorLine = factor.key;
+          final List<String> factorSublines =
+              (factor.value as List).map((item) => item as String).toList();
+          riskFactors[factorLine] = factorSublines;
+        }
+
+        Map<String, List<String>> riskSymptoms = {};
+        final Map<String, dynamic> symptoms =
+            risk.value['symptoms'] as Map<String, dynamic>;
+        for (MapEntry<String, dynamic> symptom in symptoms.entries) {
+          final String symptomLine = symptom.key;
+          final List<String> symptomSublines =
+              (symptom.value as List).map((item) => item as String).toList();
+          riskSymptoms[symptomLine] = symptomSublines;
+        }
+        riskList.add(RiskSST(
+            id: riskID,
+            title: riskTitle,
+            situations: riskSituations,
+            factors: riskFactors,
+            symptoms: riskSymptoms,
+            images: images));
+      }
+
+      List<LinkSST> cardLinks = [];
+      final Map<String, dynamic> links =
+          card.value['links'] as Map<String, dynamic>;
+      for (Map<String, dynamic> link in links.values) {
+        final String linkSource = link['source'] as String;
+        final String linkTitle = link['title'] as String;
+        final String linkURL = link['url'] as String;
+        cardLinks
+            .add(LinkSST(source: linkSource, title: linkTitle, url: linkURL));
+      }
+      cardsList.add(CardSST(
+        id: cardID,
+        shortname: cardShortname,
+        name: cardName,
+        risks: riskList,
+        links: cardLinks,
+      ));
     }
-    return risks;
+    return cardsList;
   }
 
   List<CardSST> getList() {

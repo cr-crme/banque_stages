@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/screens/ref_sst/common/risk_sst.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -8,7 +8,7 @@ import 'package:crcrme_banque_stages/screens/ref_sst/common/proxy_ref_sst.dart';
 
 import 'riskProxy_test.mocks.dart';
 
-@GenerateMocks([risksProxy])
+@GenerateMocks([cardsProxy])
 void main() {
   List<CardSST> createDummyData() {
     List<CardSST> list_dummy = <CardSST>[];

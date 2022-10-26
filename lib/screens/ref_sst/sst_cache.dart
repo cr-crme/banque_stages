@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'common/job_sst.dart';
-import 'common/risk_sst.dart';
+import 'common/card_sst.dart';
 import 'common/skill_sst.dart';
 import 'common/proxy_ref_sst.dart';
 import 'sst_cards/widgets/sst_card.dart';
@@ -10,7 +10,7 @@ class SSTCache {
   static final SSTCache _sstCache = SSTCache._internal();
 
   List<JobSST> jobs = jobsProxy().getList();
-  List<CardSST> risks = risksProxy().getList();
+  List<CardSST> risks = cardsProxy().getList();
 
   factory SSTCache() {
     return _sstCache;
@@ -38,6 +38,6 @@ class SSTCache {
 
   void refresh() {
     jobs = jobsProxy().getList();
-    risks = risksProxy().getList();
+    risks = cardsProxy().getList();
   }
 }
