@@ -18,11 +18,6 @@ class Paragraph extends StatelessWidget {
     }
     return Center(
       child: Container(
-        margin: const EdgeInsets.only(
-          top: 30,
-          right: 25,
-          left: 25,
-        ),
         child: Column(children: widgetList),
       ),
     );
@@ -38,9 +33,15 @@ class ConstructLineWithDot extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const Text("• "),
+        const Text(
+          "• ",
+          style: TextStyle(fontSize: 15),
+        ),
         Expanded(
-          child: Text(text),
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 15),
+          ),
         ),
       ],
     );
@@ -56,9 +57,15 @@ class ConstructSubPoint extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const Text("      ◦ "),
+        const Text(
+          "      ◦ ",
+          style: TextStyle(fontSize: 15),
+        ),
         Expanded(
-          child: Text(text),
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 15),
+          ),
         ),
       ],
     );
