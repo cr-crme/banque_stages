@@ -11,8 +11,11 @@ class Introduction extends StatelessWidget {
     return Column(children: [
       Center(
         child: Container(
-          margin: const EdgeInsets.only(top: 30, right: 25, left: 25),
-          child: Text(intro),
+          margin: const EdgeInsets.only(top: 0, right: 25, left: 25),
+          child: Text(
+            intro,
+            style: const TextStyle(fontSize: 15),
+          ),
         ),
       )
     ]);
