@@ -12,6 +12,7 @@ import 'jobProxy_test.mocks.dart';
 
 @GenerateMocks([jobsProxy])
 void main() {
+
   List<JobSST> createDummyData() {
     Map<String, bool> dummy_list_risk = {};
     List<SkillSST> dummy_list_skill = <SkillSST>[];
@@ -21,14 +22,14 @@ void main() {
       dummy_list_risk['$i'] = true;
     }
 
-    dummy_list_skill = List<SkillSST>.filled(
-        10,
-        new SkillSST(
-            name: 'skill name',
-            code: 0,
-            criterias: List<String>.filled(5, 'skill criteria'),
-            tasks: List<String>.filled(5, 'skill Tasks'),
-            risks: dummy_list_risk));
+    for (int i = 0; i < 10; i++) {
+      dummy_list_skill.add(new SkillSST(
+              name: 'skill $i',
+              code: i,
+              criterias: List<String>.filled(5, 'skill criteria'),
+              tasks: List<String>.filled(5, 'skill Task'),
+              risks: dummy_list_risk));
+    }
 
     for (int i = 0; i < 10; i++) {
       joblist_dummy.add(new JobSST(
@@ -58,6 +59,21 @@ void main() {
     test('Test get list risks : number object list', () {
       when(jobProxy.getList()).thenReturn(dummy_list_job);
       expect(jobProxy.getList().length, 10);
+    });
+
+    test('Test non-null values', (){
+      when(jobProxy.getList()).thenReturn(dummy_list_job);
+      String error = "";
+      if(dummy_list_job[0] == null){
+        error += "Code is null\n";
+      }if(dummy_list_job[1] == null){
+        error += "Name is null\n";
+      }if(dummy_list_job[2] == null){
+        error += "Skills is null\n";
+      }if(dummy_list_job[4] == null){
+        error += "Risk is null\n";
+      }
+      expect("", error);
     });
   });
 }
