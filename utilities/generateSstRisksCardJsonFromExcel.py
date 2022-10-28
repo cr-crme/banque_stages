@@ -61,27 +61,28 @@ def start(excelPathSST: str):
         setMessage("Fichier Excel invalide")
         return
 
-    json = []
+    json = {}
 
     for index in excelSST.index:
         row = excelSST.loc[index]
 
-        json.append({
+        json.update({
             str(row[0]): {
                 "shortname": RISKS_SHORTNAMES[int(row[0])],
                 "name": str(row[1]),
                 "risks": {
                     "1": {
-                        "title": str(str(row[2]) if str(row[2]) != "nan" else ""),
+                        "title": str(row[2]) if str(row[2]) != "nan" else "",
                         "intro": str(row[3]),
-                        "situations": createDictFromString(row[4]) if str(row[4]) != "nan" else None,
+                        # the DataFrame format return "NaN" if the cell is empty
+                        "situations": createDictFromString(row[4]) if str(row[4]) != "nan" else None, 
                         "factors": createDictFromString(row[5]) if str(row[5]) != "nan" else None,
                         "symptoms": createDictFromString(row[6]) if str(row[6]) != "nan" else None,
                         "images": ["path/image" + str(int(row[7])) if str(row[7]) != "nan" else None,
                                    "path/image" + str(int(row[8])) if str(row[8]) != "nan" else None]
                     },
                     "2": {
-                        "title": str(str(row[9]) if str(row[9]) != "nan" else ""),
+                        "title": str(row[9]) if str(row[9]) != "nan" else "",
                         "intro": str(row[10]),
                         "situations": createDictFromString(row[11]) if str(row[11]) != "nan" else None,
                         "factors": createDictFromString(row[12]) if str(row[12]) != "nan" else None,
@@ -182,7 +183,7 @@ root.resizable(False, False)
 mainFrame = tk.Frame(root)
 mainFrame.pack(padx=20, pady=20)
 
-
+# Excel table needs to respect a certain format
 tk.Label(mainFrame, text="Entrez le chemin d'accès du classeur Excel contenant les informations SST.").pack()
 
 frame = tk.Frame(mainFrame)

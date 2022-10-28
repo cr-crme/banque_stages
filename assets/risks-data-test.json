@@ -1,905 +1,906 @@
-[
-    {
-        "1": {
-            "shortname": "chemical",
-            "name": "RISQUES CHIMIQUES",
-            "risks": {
-                "1": {
-                    "title": "",
-                    "intro": "L\u2019\u00e9l\u00e8ve travaille avec des produits chimiques dangereux qui peuvent \u00eatre absorb\u00e9s par voie respiratoire, cutan\u00e9e ou orale.",
-                    "situations": {
-                        "D\u00e9graissage de pi\u00e8ces m\u00e9talliques avec un produit chimique dont l\u2019\u00e9tiquette comporte un ou plusieurs symboles du SIMDUT": [],
-                        "D\u00e9sinfection d\u2019un plan de travail avec un m\u00e9lange de plusieurs produits chimiques": [],
-                        "Manipulation du produit chimique:": [
-                            "sans \u00e9quipement de protection individuelle (p. ex. : gants, masque, lunettes ou visi\u00e8re)",
-                            "avec un \u00e9quipement de protection inad\u00e9quat (p. ex. : gants trop grands ou lunettes ray\u00e9es)"
-                        ],
-                        "Travail dans un local insuffisamment ventil\u00e9": []
-                    },
-                    "factors": {
-                        "Utilisation d\u2019un produit chimique sans information sur les risques ou les pr\u00e9cautions \u00e0 prendre :": [
-                            "Emballage de produit chimique sans \u00e9tiquette",
-                            "Manque de formation sur son utilisation"
-                        ]
-                    },
-                    "symptoms": {
-                        "Irritations cutan\u00e9es, br\u00fblures": [],
-                        "Maux de t\u00eate, naus\u00e9es, vomissements": [],
-                        "Intoxications chroniques pouvant toucher le syst\u00e8me nerveux, le foie ou le syst\u00e8me respiratoire": []
-                    },
-                    "images": [
-                        "path/image1"
-                    ]
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "CNESST",
-                    "title": "SIMDUT 2015 harmonis\u00e9 au SGH \u2014 Les pictogrammes",
-                    "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/affiche-simdut-2015-pictogrammes"
+{
+    "1": {
+        "shortname": "chemical",
+        "name": "RISQUES CHIMIQUES",
+        "risks": {
+            "1": {
+                "title": "",
+                "intro": "L\u2019\u00e9l\u00e8ve travaille avec des produits chimiques dangereux qui peuvent \u00eatre absorb\u00e9s par voie respiratoire, cutan\u00e9e ou orale.",
+                "situations": {
+                    "D\u00e9graissage de pi\u00e8ces m\u00e9talliques avec un produit chimique dont l\u2019\u00e9tiquette comporte un ou plusieurs symboles du SIMDUT": [],
+                    "D\u00e9sinfection d\u2019un plan de travail avec un m\u00e9lange de plusieurs produits chimiques": [],
+                    "Manipulation du produit chimique:": [
+                        "sans \u00e9quipement de protection individuelle (p. ex. : gants, masque, lunettes ou visi\u00e8re)",
+                        "avec un \u00e9quipement de protection inad\u00e9quat (p. ex. : gants trop grands ou lunettes ray\u00e9es)"
+                    ],
+                    "Travail dans un local insuffisamment ventil\u00e9": []
                 },
-                "2": {
-                    "source": "INRS",
-                    "title": "Travailler avec des produits chimiques. Pensez pr\u00e9vention des risques !",
-                    "url": "https://www.inrs.fr/media.html?refINRS=ED%206150"
-                }
+                "factors": {
+                    "Utilisation d\u2019un produit chimique sans information sur les risques ou les pr\u00e9cautions \u00e0 prendre :": [
+                        "Emballage de produit chimique sans \u00e9tiquette",
+                        "Manque de formation sur son utilisation"
+                    ]
+                },
+                "symptoms": {
+                    "Irritations cutan\u00e9es, br\u00fblures": [],
+                    "Maux de t\u00eate, naus\u00e9es, vomissements": [],
+                    "Intoxications chroniques pouvant toucher le syst\u00e8me nerveux, le foie ou le syst\u00e8me respiratoire": []
+                },
+                "images": [
+                    "path/image1"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "CNESST",
+                "title": "SIMDUT 2015 harmonis\u00e9 au SGH \u2014 Les pictogrammes",
+                "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/affiche-simdut-2015-pictogrammes"
+            },
+            "2": {
+                "source": "INRS",
+                "title": "Travailler avec des produits chimiques. Pensez pr\u00e9vention des risques !",
+                "url": "https://www.inrs.fr/media.html?refINRS=ED%206150"
             }
         }
     },
-    {
-        "2": {
-            "shortname": "biological",
-            "name": "RISQUES BIOLOGIQUES",
-            "risks": {
-                "1": {
-                    "title": "",
-                    "intro": "L\u2019\u00e9l\u00e8ve peut entrer en contact avec des agents biologiques pr\u00e9sents sur son lieu de stage (p. ex. : virus, bact\u00e9ries, champignons, etc.).",
-                    "situations": {
-                        "Travail au contact d\u2019enfants ou de personnes \u00e2g\u00e9es (p. ex. : mouchage d\u2019une personne malade ou changement de couches de b\u00e9b\u00e9s)": [],
-                        "Travail au contact d\u2019animaux (p. ex. : brossage des chevaux dans une \u00e9curie ou nettoyage de la liti\u00e8re de chats dans une animalerie)": [],
-                        "Manipulation de mati\u00e8res souill\u00e9es dans un centre de tri": [],
-                        "Manipulation de farines dans une boulangerie": [],
-                        "Exposition aux poussi\u00e8res de bois lors du travail en \u00e9b\u00e9nisterie": [],
-                        "Exposition aux piq\u00fbres de tiques lors de travaux en for\u00eat ": []
-                    },
-                    "factors": {
-                        "Aucun port d\u2019\u00e9quipement de protection individuelle (p. ex. : gants, masque)": [],
-                        "\u00c9quipement de protection indisponible ou inad\u00e9quat (p. ex. : gants trop grands ou lunettes ray\u00e9es)": [],
-                        "Travail dans un local insuffisamment ventil\u00e9": [],
-                        "Aucune formation sur les risques biologiques et les proc\u00e9dures de protection \u00e0 suivre": []
-                    },
-                    "symptoms": {
-                        "Allergies (p. ex. : allergies cutan\u00e9es, rhinites ou asthme)": [],
-                        "Infections cutan\u00e9es ou pulmonaires": [],
-                        "Maladie de Lyme": []
-                    },
-                    "images": [
-                        "path/image2",
-                        "path/image3"
-                    ]
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "CNESST",
-                    "title": "Prot\u00e9gez-vous contre les risques biologiques",
-                    "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/guide-gestion-risques-biologiques"
+    "2": {
+        "shortname": "biological",
+        "name": "RISQUES BIOLOGIQUES",
+        "risks": {
+            "1": {
+                "title": "",
+                "intro": "L\u2019\u00e9l\u00e8ve peut entrer en contact avec des agents biologiques pr\u00e9sents sur son lieu de stage (p. ex. : virus, bact\u00e9ries, champignons, etc.).",
+                "situations": {
+                    "Travail au contact d\u2019enfants ou de personnes \u00e2g\u00e9es (p. ex. : mouchage d\u2019une personne malade ou changement de couches de b\u00e9b\u00e9s)": [],
+                    "Travail au contact d\u2019animaux (p. ex. : brossage des chevaux dans une \u00e9curie ou nettoyage de la liti\u00e8re de chats dans une animalerie)": [],
+                    "Manipulation de mati\u00e8res souill\u00e9es dans un centre de tri": [],
+                    "Manipulation de farines dans une boulangerie": [],
+                    "Exposition aux poussi\u00e8res de bois lors du travail en \u00e9b\u00e9nisterie": [],
+                    "Exposition aux piq\u00fbres de tiques lors de travaux en for\u00eat ": []
                 },
-                "2": {
-                    "source": "INRS",
-                    "title": "Les risques biologiques en milieu professionnel",
-                    "url": "https://www.inrs.fr/media.html?refINRS=ED%206034"
-                }
+                "factors": {
+                    "Aucun port d\u2019\u00e9quipement de protection individuelle (p. ex. : gants, masque)": [],
+                    "\u00c9quipement de protection indisponible ou inad\u00e9quat (p. ex. : gants trop grands ou lunettes ray\u00e9es)": [],
+                    "Travail dans un local insuffisamment ventil\u00e9": [],
+                    "Aucune formation sur les risques biologiques et les proc\u00e9dures de protection \u00e0 suivre": []
+                },
+                "symptoms": {
+                    "Allergies (p. ex. : allergies cutan\u00e9es, rhinites ou asthme)": [],
+                    "Infections cutan\u00e9es ou pulmonaires": [],
+                    "Maladie de Lyme": []
+                },
+                "images": [
+                    "path/image2",
+                    "path/image3"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "CNESST",
+                "title": "Prot\u00e9gez-vous contre les risques biologiques",
+                "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/guide-gestion-risques-biologiques"
+            },
+            "2": {
+                "source": "INRS",
+                "title": "Les risques biologiques en milieu professionnel",
+                "url": "https://www.inrs.fr/media.html?refINRS=ED%206034"
             }
         }
     },
-    {
-        "3": {
-            "shortname": "equipment",
-            "name": "RISQUES LI\u00c9S AUX MACHINES ET AUX \u00c9QUIPEMENTS",
-            "risks": {
-                "1": {
-                    "title": "",
-                    "intro": "L\u2019\u00e9l\u00e8ve travaille avec une machine ou un outil, et une partie de son corps peut entrer en contact avec un \u00e9l\u00e9ment de la machine ou de l\u2019outil (p. ex. : \u00e9crasement, coupure, happement, choc).",
-                    "situations": {
-                        "Utilisation d\u2019un \u00e9quipement de forme dangereuse :": [
-                            "ouvrir des bo\u00eetes avec un couteau de pr\u00e9cision",
-                            "nettoyer diff\u00e9rents \u00e9l\u00e9ments d\u2019une trancheuse \u00e0 charcuterie"
-                        ],
-                        "Travail impliquant une machine dont les parties mobiles sont accessibles lorsqu\u2019elle fonctionne :": [
-                            "prendre des marchandises sur un convoyeur en mouvement",
-                            "maintenir une pi\u00e8ce \u00e0 proximit\u00e9 des \u00e9l\u00e9ments en mouvement de la machine (p. ex. : d\u00e9coupe de bois sur un banc de scie, pliage de pi\u00e8ces m\u00e9talliques)"
-                        ],
-                        "Intervention \u00e0 l\u2019int\u00e9rieur de la machine \u00e0 l\u2019arr\u00eat (p. ex. : pour retirer manuellement les cartons d\u2019un compacteur apr\u00e8s un bourrage)": []
-                    },
-                    "factors": {
-                        "Aucune formation sur les diff\u00e9rentes proc\u00e9dures \u00e0 suivre :": [
-                            "pour utiliser la machine en fonctionnement",
-                            "pour nettoyer ou entretenir la machine",
-                            "lors d\u2019une panne ou d\u2019un arr\u00eat de la machine"
-                        ],
-                        "Outils en mauvais \u00e9tat ou inad\u00e9quats": [],
-                        "Absence de gardes ou de barri\u00e8res immat\u00e9rielles emp\u00eachant l\u2019acc\u00e8s aux parties mobiles de la machine en fonctionnement (p. ex. : barri\u00e8res retir\u00e9es)": [],
-                        "Boutons d\u2019arr\u00eat d\u2019urgence peu accessibles ou dysfonctionnels": []
-                    },
-                    "symptoms": {
-                        "Coupures ou br\u00fblures": [],
-                        "Coincement ou \u00e9crasement des doigts ou des mains": [],
-                        "Blessures graves (amputation d\u2019un membre)": []
-                    },
-                    "images": [
-                        "path/image4",
-                        "path/image5"
-                    ]
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "MULTIPR\u00c9VENTION",
-                    "title": "",
-                    "url": "https://multiprevention.org/conseils-et-expertises/la-securite-des-machines/"
-                }
+    "3": {
+        "shortname": "equipment",
+        "name": "RISQUES LI\u00c9S AUX MACHINES ET AUX \u00c9QUIPEMENTS",
+        "risks": {
+            "1": {
+                "title": "",
+                "intro": "L\u2019\u00e9l\u00e8ve travaille avec une machine ou un outil, et une partie de son corps peut entrer en contact avec un \u00e9l\u00e9ment de la machine ou de l\u2019outil (p. ex. : \u00e9crasement, coupure, happement, choc).",
+                "situations": {
+                    "Utilisation d\u2019un \u00e9quipement de forme dangereuse :": [
+                        "ouvrir des bo\u00eetes avec un couteau de pr\u00e9cision",
+                        "nettoyer diff\u00e9rents \u00e9l\u00e9ments d\u2019une trancheuse \u00e0 charcuterie"
+                    ],
+                    "Travail impliquant une machine dont les parties mobiles sont accessibles lorsqu\u2019elle fonctionne :": [
+                        "prendre des marchandises sur un convoyeur en mouvement",
+                        "maintenir une pi\u00e8ce \u00e0 proximit\u00e9 des \u00e9l\u00e9ments en mouvement de la machine (p. ex. : d\u00e9coupe de bois sur un banc de scie, pliage de pi\u00e8ces m\u00e9talliques)"
+                    ],
+                    "Intervention \u00e0 l\u2019int\u00e9rieur de la machine \u00e0 l\u2019arr\u00eat (p. ex. : pour retirer manuellement les cartons d\u2019un compacteur apr\u00e8s un bourrage)": []
+                },
+                "factors": {
+                    "Aucune formation sur les diff\u00e9rentes proc\u00e9dures \u00e0 suivre :": [
+                        "pour utiliser la machine en fonctionnement",
+                        "pour nettoyer ou entretenir la machine",
+                        "lors d\u2019une panne ou d\u2019un arr\u00eat de la machine"
+                    ],
+                    "Outils en mauvais \u00e9tat ou inad\u00e9quats": [],
+                    "Absence de gardes ou de barri\u00e8res immat\u00e9rielles emp\u00eachant l\u2019acc\u00e8s aux parties mobiles de la machine en fonctionnement (p. ex. : barri\u00e8res retir\u00e9es)": [],
+                    "Boutons d\u2019arr\u00eat d\u2019urgence peu accessibles ou dysfonctionnels": []
+                },
+                "symptoms": {
+                    "Coupures ou br\u00fblures": [],
+                    "Coincement ou \u00e9crasement des doigts ou des mains": [],
+                    "Blessures graves (amputation d\u2019un membre)": []
+                },
+                "images": [
+                    "path/image4",
+                    "path/image5"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "MULTIPR\u00c9VENTION",
+                "title": "",
+                "url": "https://multiprevention.org/conseils-et-expertises/la-securite-des-machines/"
             }
         }
     },
-    {
-        "4": {
-            "shortname": "fall",
-            "name": "RISQUES DE CHUTES DE HAUTEUR ET DE PLAIN-PIED",
-            "risks": {
-                "1": {
-                    "title": "CHUTES DE HAUTEUR",
-                    "intro": "L\u2019\u00e9l\u00e8ve peut avoir un accident caus\u00e9 par une perte d\u2019\u00e9quilibre lors de travail en hauteur (p. ex. : sur un toit, dans une \u00e9chelle ou une nacelle).",
-                    "situations": {
-                        "Utilisation d\u2019\u00e9quipement pour acc\u00e9der \u00e0 des marchandises ou des mat\u00e9riaux situ\u00e9s en hauteur (p. ex. : \u00e9chelle, escabeau)": [],
-                        "Travail sur une terrasse de b\u00e2timent ou dans une nacelle": [],
-                        "Pr\u00e9sence d\u2019une fosse ou d\u2019une tranch\u00e9e \u00e0 proximit\u00e9 de la zone de travail de l\u2019\u00e9l\u00e8ve": []
-                    },
-                    "factors": {
-                        "Travail sur un escabeau ou une \u00e9chelle en ayant les bras charg\u00e9s (p. ex. : pour manipuler des marchandises)": [],
-                        "\u00c9quipement inadapt\u00e9 \u00e0 la t\u00e2che (p. ex. : hauteur insuffisante de l\u2019escabeau pour atteindre les marchandises)": [],
-                        "\u00c9quipement en mauvais \u00e9tat Absence de garde-corps ou garde-corps inappropri\u00e9 (p. ex. : corde au lieu d\u2019un garde-corps fixe)": [],
-                        "Absence d\u2019\u00e9quipement de protection individuelle (harnais)": []
-                    },
-                    "symptoms": {
-                        "Douleur, entorses ou fractures": []
-                    },
-                    "images": [
-                        "path/image6"
-                    ]
+    "4": {
+        "shortname": "fall",
+        "name": "RISQUES DE CHUTES DE HAUTEUR ET DE PLAIN-PIED",
+        "risks": {
+            "1": {
+                "title": "CHUTES DE HAUTEUR",
+                "intro": "L\u2019\u00e9l\u00e8ve peut avoir un accident caus\u00e9 par une perte d\u2019\u00e9quilibre lors de travail en hauteur (p. ex. : sur un toit, dans une \u00e9chelle ou une nacelle).",
+                "situations": {
+                    "Utilisation d\u2019\u00e9quipement pour acc\u00e9der \u00e0 des marchandises ou des mat\u00e9riaux situ\u00e9s en hauteur (p. ex. : \u00e9chelle, escabeau)": [],
+                    "Travail sur une terrasse de b\u00e2timent ou dans une nacelle": [],
+                    "Pr\u00e9sence d\u2019une fosse ou d\u2019une tranch\u00e9e \u00e0 proximit\u00e9 de la zone de travail de l\u2019\u00e9l\u00e8ve": []
                 },
-                "2": {
-                    "title": "CHUTES DE PLAIN-PIED",
-                    "intro": "L\u2019\u00e9l\u00e8ve peut avoir un accident apr\u00e8s avoir gliss\u00e9 sur le plancher ou tr\u00e9buch\u00e9 sur des obstacles au sol.",
-                    "situations": {
-                        "D\u00e9placements sur des planchers glissants (p. ex. : gras ou mouill\u00e9s), ab\u00eem\u00e9s, irr\u00e9guliers ou encombr\u00e9s": [],
-                        "D\u00e9placements dans des couloirs \u00e9troits ou mal \u00e9clair\u00e9s": [],
-                        "D\u00e9placements dans des escaliers": [],
-                        "\u00c0 l\u2019ext\u00e9rieur, d\u00e9placements sur un terrain :": [
-                            "avec un d\u00e9nivel\u00e9",
-                            "accident\u00e9",
-                            "verglac\u00e9"
-                        ]
-                    },
-                    "factors": {
-                        "D\u00e9placements \u00e0 effectuer les bras charg\u00e9s": [],
-                        "Chaussures inad\u00e9quates pour la t\u00e2che (p. ex. : absence de semelles antid\u00e9rapantes en cuisine)": []
-                    },
-                    "symptoms": {
-                        "Douleurs, entorses ou fractures": []
-                    },
-                    "images": [
-                        "path/image7"
-                    ]
-                }
+                "factors": {
+                    "Travail sur un escabeau ou une \u00e9chelle en ayant les bras charg\u00e9s (p. ex. : pour manipuler des marchandises)": [],
+                    "\u00c9quipement inadapt\u00e9 \u00e0 la t\u00e2che (p. ex. : hauteur insuffisante de l\u2019escabeau pour atteindre les marchandises)": [],
+                    "\u00c9quipement en mauvais \u00e9tat Absence de garde-corps ou garde-corps inappropri\u00e9 (p. ex. : corde au lieu d\u2019un garde-corps fixe)": [],
+                    "Absence d\u2019\u00e9quipement de protection individuelle (harnais)": []
+                },
+                "symptoms": {
+                    "Douleur, entorses ou fractures": []
+                },
+                "images": [
+                    "path/image6"
+                ]
             },
-            "links": {
-                "1": {
-                    "source": "ASSTSAS",
-                    "title": " Les chutes et les glissades au travail \u2014 \u00c7a tombe toujours mal !",
-                    "url": "http://asstsas.qc.ca/sites/default/files/publications/documents/Fiches/FT13_chutes_WEB.pdf"
+            "2": {
+                "title": "CHUTES DE PLAIN-PIED",
+                "intro": "L\u2019\u00e9l\u00e8ve peut avoir un accident apr\u00e8s avoir gliss\u00e9 sur le plancher ou tr\u00e9buch\u00e9 sur des obstacles au sol.",
+                "situations": {
+                    "D\u00e9placements sur des planchers glissants (p. ex. : gras ou mouill\u00e9s), ab\u00eem\u00e9s, irr\u00e9guliers ou encombr\u00e9s": [],
+                    "D\u00e9placements dans des couloirs \u00e9troits ou mal \u00e9clair\u00e9s": [],
+                    "D\u00e9placements dans des escaliers": [],
+                    "\u00c0 l\u2019ext\u00e9rieur, d\u00e9placements sur un terrain :": [
+                        "avec un d\u00e9nivel\u00e9",
+                        "accident\u00e9",
+                        "verglac\u00e9"
+                    ]
                 },
-                "2": {
-                    "source": "CCHST",
-                    "title": "Pr\u00e9vention des chutes par glissade ou tr\u00e9buchement",
-                    "url": "https://www.cchst.ca/images/products/infographics/download/slips_trips_falls.jpg"
-                }
+                "factors": {
+                    "D\u00e9placements \u00e0 effectuer les bras charg\u00e9s": [],
+                    "Chaussures inad\u00e9quates pour la t\u00e2che (p. ex. : absence de semelles antid\u00e9rapantes en cuisine)": []
+                },
+                "symptoms": {
+                    "Douleurs, entorses ou fractures": []
+                },
+                "images": [
+                    "path/image7"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "ASSTSAS",
+                "title": " Les chutes et les glissades au travail \u2014 \u00c7a tombe toujours mal !",
+                "url": "http://asstsas.qc.ca/sites/default/files/publications/documents/Fiches/FT13_chutes_WEB.pdf"
+            },
+            "2": {
+                "source": "CCHST",
+                "title": "Pr\u00e9vention des chutes par glissade ou tr\u00e9buchement",
+                "url": "https://www.cchst.ca/images/products/infographics/download/slips_trips_falls.jpg"
+            },
+            "3": {
+                "source": "INRS",
+                "title": "Risques li\u00e9s aux chutes de hauteur",
+                "url": "https://www.inrs.fr/risques/chutes-hauteur/ce-qu-il-faut-retenir.html"
+            },
+            "4": {
+                "source": "INRS",
+                "title": "Chutes de plain-pied",
+                "url": "https://www.inrs.fr/risques/chutes-de-plain-pied/ce-qu-il-faut-retenir.html"
             }
         }
     },
-    {
-        "5": {
-            "shortname": "objectFall",
-            "name": "RISQUES LI\u00c9S AUX CHUTES D\u2019OBJETS",
-            "risks": {
-                "1": {
-                    "title": "",
-                    "intro": "L\u2019\u00e9l\u00e8ve peut \u00eatre victime d\u2019un accident lorsque des objets ou des mat\u00e9riaux sont susceptibles de tomber ou de s\u2019effondrer.",
-                    "situations": {
-                        "Travail dans un entrep\u00f4t o\u00f9 des marchandises sont stock\u00e9es :": [
-                            "en hauteur (sur palettes, sur \u00e9tag\u00e8res)",
-                            "en vrac",
-                            "en pile de grande hauteur"
-                        ],
-                        "Manipulation de charges avec un engin de manutention (p. ex. : chariot, transpalette)": [],
-                        "Travail sous une machine": []
-                    },
-                    "factors": {
-                        "Mat\u00e9riel de stockage inadapt\u00e9 \u00e0 la charge": [],
-                        "Produits stock\u00e9s de fa\u00e7on instable (p. ex. : pile irr\u00e9guli\u00e8re, mauvaise r\u00e9partition de la charge sur une palette)": []
-                    },
-                    "symptoms": {
-                        "Heurts, \u00e9crasement des mains ou des pieds": [],
-                        "Fractures": []
-                    },
-                    "images": [
-                        "path/image8"
-                    ]
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "CNESST",
-                    "title": "Outil d'identification des risques ",
-                    "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/outil-didentification-risques"
-                }
+    "5": {
+        "shortname": "objectFall",
+        "name": "RISQUES LI\u00c9S AUX CHUTES D\u2019OBJETS",
+        "risks": {
+            "1": {
+                "title": "",
+                "intro": "L\u2019\u00e9l\u00e8ve peut \u00eatre victime d\u2019un accident lorsque des objets ou des mat\u00e9riaux sont susceptibles de tomber ou de s\u2019effondrer.",
+                "situations": {
+                    "Travail dans un entrep\u00f4t o\u00f9 des marchandises sont stock\u00e9es :": [
+                        "en hauteur (sur palettes, sur \u00e9tag\u00e8res)",
+                        "en vrac",
+                        "en pile de grande hauteur"
+                    ],
+                    "Manipulation de charges avec un engin de manutention (p. ex. : chariot, transpalette)": [],
+                    "Travail sous une machine": []
+                },
+                "factors": {
+                    "Mat\u00e9riel de stockage inadapt\u00e9 \u00e0 la charge": [],
+                    "Produits stock\u00e9s de fa\u00e7on instable (p. ex. : pile irr\u00e9guli\u00e8re, mauvaise r\u00e9partition de la charge sur une palette)": []
+                },
+                "symptoms": {
+                    "Heurts, \u00e9crasement des mains ou des pieds": [],
+                    "Fractures": []
+                },
+                "images": [
+                    "path/image8"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "CNESST",
+                "title": "Outil d'identification des risques ",
+                "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/outil-didentification-risques"
             }
         }
     },
-    {
-        "6": {
-            "shortname": "transit",
-            "name": "RISQUES LI\u00c9S AUX D\u00c9PLACEMENTS",
-            "risks": {
-                "1": {
-                    "title": "SUR LA ROUTE",
-                    "intro": "L\u2019\u00e9l\u00e8ve peut \u00eatre victime d\u2019un accident de la route en tant que conducteur ou passager d\u2019un v\u00e9hicule, mais aussi en tant que pi\u00e9ton.",
-                    "situations": {
-                        "Exposition \u00e0 des risques d\u2019accident de la route lors de :": [
-                            "D\u00e9placements en voiture pendant un quart de travail",
-                            "T\u00e2ches effectu\u00e9es directement sur la chauss\u00e9e (p. ex. : brigadier scolaire qui interrompt la circulation au milieu d\u2019une intersection)"
-                        ]
-                    },
-                    "factors": {
-                        "V\u00e9hicule en mauvais \u00e9tat ou mal entretenu (p. ex. : pneus sous-gonfl\u00e9s)": [],
-                        "Routes en mauvais \u00e9tat": [],
-                        "Mauvaises conditions climatiques (route glissante \u00e0 cause de la pluie ou du verglas, manque de visibilit\u00e9 en cas de neige ou de brouillard)": []
-                    },
-                    "symptoms": {
-                        "Traumatismes divers \u00e0 la suite d\u2019un accident de la route": []
-                    },
-                    "images": [
-                        "path/image9"
+    "6": {
+        "shortname": "transit",
+        "name": "RISQUES LI\u00c9S AUX D\u00c9PLACEMENTS",
+        "risks": {
+            "1": {
+                "title": "SUR LA ROUTE",
+                "intro": "L\u2019\u00e9l\u00e8ve peut \u00eatre victime d\u2019un accident de la route en tant que conducteur ou passager d\u2019un v\u00e9hicule, mais aussi en tant que pi\u00e9ton.",
+                "situations": {
+                    "Exposition \u00e0 des risques d\u2019accident de la route lors de :": [
+                        "D\u00e9placements en voiture pendant un quart de travail",
+                        "T\u00e2ches effectu\u00e9es directement sur la chauss\u00e9e (p. ex. : brigadier scolaire qui interrompt la circulation au milieu d\u2019une intersection)"
                     ]
                 },
-                "2": {
-                    "title": "CIRCULATION DE V\u00c9HICULES EN ENTREPRISE",
-                    "intro": "L\u2019\u00e9l\u00e8ve peut \u00eatre victime d\u2019une collision avec un v\u00e9hicule en tant que pi\u00e9ton ou en tant conducteur d\u2019un autre v\u00e9hicule \u00e0 l\u2019int\u00e9rieur de l\u2019entreprise.",
-                    "situations": {
-                        "Travail dans une entreprise o\u00f9 circulent des v\u00e9hicules ou des engins de manutention (p. ex. : camions de livraison, chariots \u00e9l\u00e9vateurs)": [],
-                        "Travail sur des chantiers \u00e0 proximit\u00e9 d\u2019engins et de v\u00e9hicules": []
-                    },
-                    "factors": {
-                        "Voies de circulation communes aux engins et aux pi\u00e9tons (p. ex. : all\u00e9e dans un entrep\u00f4t o\u00f9 l\u2019on circule \u00e0 pied et en chariot \u00e9l\u00e9vateur)": [],
-                        "Voies de circulation dangereuses dans l\u2019entreprise ou sur les chantiers : voies \u00e9troites, en pente, offrant une faible visibilit\u00e9": []
-                    },
-                    "symptoms": {
-                        "Traumatismes divers \u00e0 la suite d\u2019une collision avec un engin ou un v\u00e9hicule": []
-                    },
-                    "images": [
-                        "path/image10"
-                    ]
-                }
+                "factors": {
+                    "V\u00e9hicule en mauvais \u00e9tat ou mal entretenu (p. ex. : pneus sous-gonfl\u00e9s)": [],
+                    "Routes en mauvais \u00e9tat": [],
+                    "Mauvaises conditions climatiques (route glissante \u00e0 cause de la pluie ou du verglas, manque de visibilit\u00e9 en cas de neige ou de brouillard)": []
+                },
+                "symptoms": {
+                    "Traumatismes divers \u00e0 la suite d\u2019un accident de la route": []
+                },
+                "images": [
+                    "path/image9"
+                ]
             },
-            "links": {
-                "1": {
-                    "source": "INRS",
-                    "title": "Risques routiers",
-                    "url": "https://www.inrs.fr/risques/routiers/ce-qu-il-faut-retenir.html"
+            "2": {
+                "title": "CIRCULATION DE V\u00c9HICULES EN ENTREPRISE",
+                "intro": "L\u2019\u00e9l\u00e8ve peut \u00eatre victime d\u2019une collision avec un v\u00e9hicule en tant que pi\u00e9ton ou en tant conducteur d\u2019un autre v\u00e9hicule \u00e0 l\u2019int\u00e9rieur de l\u2019entreprise.",
+                "situations": {
+                    "Travail dans une entreprise o\u00f9 circulent des v\u00e9hicules ou des engins de manutention (p. ex. : camions de livraison, chariots \u00e9l\u00e9vateurs)": [],
+                    "Travail sur des chantiers \u00e0 proximit\u00e9 d\u2019engins et de v\u00e9hicules": []
                 },
-                "2": {
-                    "source": "IRSST",
-                    "title": "IRSST : Les accidents",
-                    "url": "https://statistiques.irsst.qc.ca/dossiers/54-les-accidents-routiers-au-travail.html"
-                }
+                "factors": {
+                    "Voies de circulation communes aux engins et aux pi\u00e9tons (p. ex. : all\u00e9e dans un entrep\u00f4t o\u00f9 l\u2019on circule \u00e0 pied et en chariot \u00e9l\u00e9vateur)": [],
+                    "Voies de circulation dangereuses dans l\u2019entreprise ou sur les chantiers : voies \u00e9troites, en pente, offrant une faible visibilit\u00e9": []
+                },
+                "symptoms": {
+                    "Traumatismes divers \u00e0 la suite d\u2019une collision avec un engin ou un v\u00e9hicule": []
+                },
+                "images": [
+                    "path/image10"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "INRS",
+                "title": "Risques routiers",
+                "url": "https://www.inrs.fr/risques/routiers/ce-qu-il-faut-retenir.html"
+            },
+            "2": {
+                "source": "IRSST",
+                "title": "IRSST : Les accidents",
+                "url": "https://statistiques.irsst.qc.ca/dossiers/54-les-accidents-routiers-au-travail.html"
+            },
+            "3": {
+                "source": "CNESST",
+                "title": "S\u00e9curit\u00e9 dans",
+                "url": "https://www.irsst.qc.ca/media/magazines/V26_02/40-42.pdf"
             }
         }
     },
-    {
-        "7": {
-            "shortname": "posture",
-            "name": "RISQUES LI\u00c9S AUX POSTURES CONTRAIGNANTES",
-            "risks": {
-                "1": {
-                    "title": "POSTURES EXTR\u00caMES",
-                    "intro": "Pour r\u00e9aliser une t\u00e2che, l\u2019\u00e9l\u00e8ve doit adopter une position dans laquelle une ou plusieurs de ses articulations forment des angles extr\u00eames et il doit maintenir cette position pendant une longue p\u00e9riode.",
-                    "situations": {
-                        "Posture pench\u00e9e en avant :": [
-                            "pour ramasser des marchandises au niveau du sol ou loin devant",
-                            "pour couper des l\u00e9gumes (p. ex. : sur un comptoir de cuisine trop bas)"
-                        ],
-                        "Torsion du haut du corps, sans bouger les pieds, pour prendre des objets situ\u00e9s derri\u00e8re ou sur les c\u00f4t\u00e9s": [],
-                        "Travail de pr\u00e9cision obligeant \u00e0 garder la t\u00eate baiss\u00e9e plusieurs minutes lors de l\u2019ex\u00e9cution de la t\u00e2che (p. ex. : pliage de chandails)": [],
-                        "T\u00eate bascul\u00e9e vers l\u2019arri\u00e8re pour lire des informations situ\u00e9es en hauteur (p. ex. : \u00e9tiquettes de prix sur des \u00e9tag\u00e8res)": [],
-                        "Bras lev\u00e9s au-dessus du niveau des \u00e9paules pour prendre des objets situ\u00e9s en hauteur": [],
-                        "Position accroupie ou avec un genou \u00e0 terre pour habiller des enfants dans une garderie": [],
-                        "Manipulation de petits objets avec une prise en pince (p. ex. : ins\u00e9rer des composants \u00e9lectroniques sur la carte-m\u00e8re d'un ordinateur)": [],
-                        "Saisie d\u2019information sur un clavier d\u2019ordinateur trop \u00e9pais, les poignets en extension ": [],
-                        "Torsion du poignet pour visser de la quincaillerie sur un meuble \u00e0 l\u2019aide d\u2019un tournevis": []
-                    },
-                    "factors": {
-                        "Effort physique combin\u00e9 \u00e0 une posture contraignante (p. ex. : soulever une charge lourde en position pench\u00e9e)": [],
-                        "Maintien d\u2019une m\u00eame posture pendant deux heures ou plus": [],
-                        "Posture r\u00e9p\u00e9t\u00e9e fr\u00e9quemment": []
-                    },
-                    "symptoms": {
-                        "Inconfort, fatigue et douleur": [],
-                        "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations": []
-                    },
-                    "images": [
-                        "path/image11",
-                        "path/image12"
-                    ]
+    "7": {
+        "shortname": "posture",
+        "name": "RISQUES LI\u00c9S AUX POSTURES CONTRAIGNANTES",
+        "risks": {
+            "1": {
+                "title": "POSTURES EXTR\u00caMES",
+                "intro": "Pour r\u00e9aliser une t\u00e2che, l\u2019\u00e9l\u00e8ve doit adopter une position dans laquelle une ou plusieurs de ses articulations forment des angles extr\u00eames et il doit maintenir cette position pendant une longue p\u00e9riode.",
+                "situations": {
+                    "Posture pench\u00e9e en avant :": [
+                        "pour ramasser des marchandises au niveau du sol ou loin devant",
+                        "pour couper des l\u00e9gumes (p. ex. : sur un comptoir de cuisine trop bas)"
+                    ],
+                    "Torsion du haut du corps, sans bouger les pieds, pour prendre des objets situ\u00e9s derri\u00e8re ou sur les c\u00f4t\u00e9s": [],
+                    "Travail de pr\u00e9cision obligeant \u00e0 garder la t\u00eate baiss\u00e9e plusieurs minutes lors de l\u2019ex\u00e9cution de la t\u00e2che (p. ex. : pliage de chandails)": [],
+                    "T\u00eate bascul\u00e9e vers l\u2019arri\u00e8re pour lire des informations situ\u00e9es en hauteur (p. ex. : \u00e9tiquettes de prix sur des \u00e9tag\u00e8res)": [],
+                    "Bras lev\u00e9s au-dessus du niveau des \u00e9paules pour prendre des objets situ\u00e9s en hauteur": [],
+                    "Position accroupie ou avec un genou \u00e0 terre pour habiller des enfants dans une garderie": [],
+                    "Manipulation de petits objets avec une prise en pince (p. ex. : ins\u00e9rer des composants \u00e9lectroniques sur la carte-m\u00e8re d'un ordinateur)": [],
+                    "Saisie d\u2019information sur un clavier d\u2019ordinateur trop \u00e9pais, les poignets en extension ": [],
+                    "Torsion du poignet pour visser de la quincaillerie sur un meuble \u00e0 l\u2019aide d\u2019un tournevis": []
                 },
-                "2": {
-                    "title": "POSTURE STATIQUE",
-                    "intro": "",
-                    "situations": {
-                        "Travail pendant plusieurs heures sur une machine (p. ex. : presse \u00e0 d\u00e9couper des pi\u00e8ces m\u00e9talliques, machine \u00e0 coudre) avec maintien de la m\u00eame position, sans possibilit\u00e9 d\u2019alterner, car :": [
-                            "les mains et les pieds servent \u00e0 actionner des commandes ou \u00e0 tenir",
-                            "les pi\u00e8ces \u00e0 travailler dans la machine",
-                            "la t\u00eate doit \u00eatre maintenue dans la m\u00eame position pour assurer",
-                            "un contr\u00f4le visuel tout au long de la t\u00e2che"
-                        ],
-                        "Travail en position debout pendant plusieurs heures, sans possibilit\u00e9 de s\u2019asseoir en dehors des pauses": [],
-                        "Travail en position assise toute la journ\u00e9e": []
-                    },
-                    "factors": {
-                        "Utilisation d\u2019\u00e9quipements de travail qui limitent les changements de position :": [
-                            "Espace de d\u00e9gagement sous le plan de travail insuffisant pour bouger les jambes et les pieds",
-                            "\u00c9quipements non r\u00e9glables en hauteur ou en profondeur"
-                        ]
-                    },
-                    "symptoms": {
-                        "Inconfort, fatigue et douleur": [],
-                        "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations": []
-                    },
-                    "images": [
-                        "path/image13",
-                        "path/image14"
-                    ]
-                }
+                "factors": {
+                    "Effort physique combin\u00e9 \u00e0 une posture contraignante (p. ex. : soulever une charge lourde en position pench\u00e9e)": [],
+                    "Maintien d\u2019une m\u00eame posture pendant deux heures ou plus": [],
+                    "Posture r\u00e9p\u00e9t\u00e9e fr\u00e9quemment": []
+                },
+                "symptoms": {
+                    "Inconfort, fatigue et douleur": [],
+                    "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations": []
+                },
+                "images": [
+                    "path/image11",
+                    "path/image12"
+                ]
             },
-            "links": {
-                "1": {
-                    "source": "CCHST",
-                    "title": "Troubles musculosquelettiques",
-                    "url": "https://www.cchst.ca/oshanswers/ergonomics/risk.html"
+            "2": {
+                "title": "POSTURE STATIQUE",
+                "intro": "",
+                "situations": {
+                    "Travail pendant plusieurs heures sur une machine (p. ex. : presse \u00e0 d\u00e9couper des pi\u00e8ces m\u00e9talliques, machine \u00e0 coudre) avec maintien de la m\u00eame position, sans possibilit\u00e9 d\u2019alterner, car :": [
+                        "les mains et les pieds servent \u00e0 actionner des commandes ou \u00e0 tenir",
+                        "les pi\u00e8ces \u00e0 travailler dans la machine",
+                        "la t\u00eate doit \u00eatre maintenue dans la m\u00eame position pour assurer",
+                        "un contr\u00f4le visuel tout au long de la t\u00e2che"
+                    ],
+                    "Travail en position debout pendant plusieurs heures, sans possibilit\u00e9 de s\u2019asseoir en dehors des pauses": [],
+                    "Travail en position assise toute la journ\u00e9e": []
                 },
-                "2": {
-                    "source": "INSPQ",
-                    "title": "Conditions de travail",
-                    "url": "https://www.inspq.qc.ca/sites/default/files/publications/1813_conditions_tms_faits_saillants.pdf"
-                }
+                "factors": {
+                    "Utilisation d\u2019\u00e9quipements de travail qui limitent les changements de position :": [
+                        "Espace de d\u00e9gagement sous le plan de travail insuffisant pour bouger les jambes et les pieds",
+                        "\u00c9quipements non r\u00e9glables en hauteur ou en profondeur"
+                    ]
+                },
+                "symptoms": {
+                    "Inconfort, fatigue et douleur": [],
+                    "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations": []
+                },
+                "images": [
+                    "path/image13",
+                    "path/image14"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "CCHST",
+                "title": "Troubles musculosquelettiques",
+                "url": "https://www.cchst.ca/oshanswers/ergonomics/risk.html"
+            },
+            "2": {
+                "source": "INSPQ",
+                "title": "Conditions de travail",
+                "url": "https://www.inspq.qc.ca/sites/default/files/publications/1813_conditions_tms_faits_saillants.pdf"
             }
         }
     },
-    {
-        "8": {
-            "shortname": "motion",
-            "name": "RISQUES LI\u00c9S AUX MOUVEMENTS R\u00c9P\u00c9TITIFS, PRESSIONS DE CONTACT ET CHOCS",
-            "risks": {
-                "1": {
-                    "title": "MOUVEMENTS R\u00c9P\u00c9TITIFS",
-                    "intro": "L\u2019\u00e9l\u00e8ve r\u00e9p\u00e8te les m\u00eames gestes \u00e0 une cadence contrainte pour r\u00e9aliser ses t\u00e2ches.",
-                    "situations": {
-                        "R\u00e9p\u00e9tition sans arr\u00eat des m\u00eames gestes": [],
-                        "Rythme de travail soumis \u00e0 la cadence d\u2019une machine ou \u00e0 l\u2019avancement d\u2019un convoyeur": [],
-                        "Cycles de travail tr\u00e8s courts (environ 30 secondes) et peu de possibilit\u00e9 de repos entre deux cycles": []
-                    },
-                    "factors": {
-                        "Mouvements ou postures contraignants": [],
-                        "Effort physique (p. ex. : prise de marchandises lourdes sur un convoyeur)": [],
-                        "Difficult\u00e9 \u00e0 suivre la cadence surtout au d\u00e9but d\u2019une nouvelle t\u00e2che ": []
-                    },
-                    "symptoms": {
-                        "Inconfort, fatigue et douleur": [],
-                        "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations": []
-                    },
-                    "images": [
-                        "path/image15"
-                    ]
+    "8": {
+        "shortname": "motion",
+        "name": "RISQUES LI\u00c9S AUX MOUVEMENTS R\u00c9P\u00c9TITIFS, PRESSIONS DE CONTACT ET CHOCS",
+        "risks": {
+            "1": {
+                "title": "MOUVEMENTS R\u00c9P\u00c9TITIFS",
+                "intro": "L\u2019\u00e9l\u00e8ve r\u00e9p\u00e8te les m\u00eames gestes \u00e0 une cadence contrainte pour r\u00e9aliser ses t\u00e2ches.",
+                "situations": {
+                    "R\u00e9p\u00e9tition sans arr\u00eat des m\u00eames gestes": [],
+                    "Rythme de travail soumis \u00e0 la cadence d\u2019une machine ou \u00e0 l\u2019avancement d\u2019un convoyeur": [],
+                    "Cycles de travail tr\u00e8s courts (environ 30 secondes) et peu de possibilit\u00e9 de repos entre deux cycles": []
                 },
-                "2": {
-                    "title": "PRESSIONS DE CONTACT ET CHOCS",
-                    "intro": "L\u2019\u00e9l\u00e8ve utilise des outils manuels aux bords durs ou coupants ou travaille en appuyant une partie de son corps sur une surface dure.",
-                    "situations": {
-                        "Utilisation d\u2019outils manuels aux bords durs et coupants (p. ex. : ciseau)": [],
-                        "Travail n\u00e9cessitant que les avant-bras ou les poignets soient appuy\u00e9s sur le bord du plan de travail": [],
-                        "Travail s\u2019effectuant agenouill\u00e9 par terre": [],
-                        "Utilisation de la main comme marteau pour frapper sur un objet": []
-                    },
-                    "factors": {
-                        "Maintien de la pression de contact sur une longue p\u00e9riode": [],
-                        "R\u00e9p\u00e9tition fr\u00e9quente des appuis ou des chocs": []
-                    },
-                    "symptoms": {
-                        "Inconfort, fatigue et douleur": [],
-                        "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations": []
-                    },
-                    "images": [
-                        "path/image16"
-                    ]
-                }
+                "factors": {
+                    "Mouvements ou postures contraignants": [],
+                    "Effort physique (p. ex. : prise de marchandises lourdes sur un convoyeur)": [],
+                    "Difficult\u00e9 \u00e0 suivre la cadence surtout au d\u00e9but d\u2019une nouvelle t\u00e2che ": []
+                },
+                "symptoms": {
+                    "Inconfort, fatigue et douleur": [],
+                    "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations": []
+                },
+                "images": [
+                    "path/image15"
+                ]
             },
-            "links": {
-                "1": {
-                    "source": "IRSST",
-                    "title": "Reconna\u00eetre le syndrome du marteau hypoth\u00e9narien",
-                    "url": "https://www.irsst.qc.ca/media/documents/PubIRSST/RF-950.pdf"
+            "2": {
+                "title": "PRESSIONS DE CONTACT ET CHOCS",
+                "intro": "L\u2019\u00e9l\u00e8ve utilise des outils manuels aux bords durs ou coupants ou travaille en appuyant une partie de son corps sur une surface dure.",
+                "situations": {
+                    "Utilisation d\u2019outils manuels aux bords durs et coupants (p. ex. : ciseau)": [],
+                    "Travail n\u00e9cessitant que les avant-bras ou les poignets soient appuy\u00e9s sur le bord du plan de travail": [],
+                    "Travail s\u2019effectuant agenouill\u00e9 par terre": [],
+                    "Utilisation de la main comme marteau pour frapper sur un objet": []
                 },
-                "2": {
-                    "source": "WorkSafe BC",
-                    "title": "Understanding the Risks of Musculoskeletal Injury (MSI): An Educational Guide for Workers on Sprains, Strains, and Other MSIs",
-                    "url": "https://www.worksafebc.com/en/resources/health-safety/books-guides/understanding-the-risks-of-musculoskeletal-injury-msi-an-educational-guide-for-workers-on-sprains-strains-and-other-msis"
-                }
+                "factors": {
+                    "Maintien de la pression de contact sur une longue p\u00e9riode": [],
+                    "R\u00e9p\u00e9tition fr\u00e9quente des appuis ou des chocs": []
+                },
+                "symptoms": {
+                    "Inconfort, fatigue et douleur": [],
+                    "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations": []
+                },
+                "images": [
+                    "path/image16"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "IRSST",
+                "title": "Reconna\u00eetre le syndrome du marteau hypoth\u00e9narien",
+                "url": "https://www.irsst.qc.ca/media/documents/PubIRSST/RF-950.pdf"
+            },
+            "2": {
+                "source": "WorkSafe BC",
+                "title": "Understanding the Risks of Musculoskeletal Injury (MSI): An Educational Guide for Workers on Sprains, Strains, and Other MSIs",
+                "url": "https://www.worksafebc.com/en/resources/health-safety/books-guides/understanding-the-risks-of-musculoskeletal-injury-msi-an-educational-guide-for-workers-on-sprains-strains-and-other-msis"
             }
         }
     },
-    {
-        "9": {
-            "shortname": "handling",
-            "name": "RISQUES LI\u00c9S \u00c0 LA MANUTENTION",
-            "risks": {
-                "1": {
-                    "title": "MANUTENTION MANUELLE",
-                    "intro": "L\u2019\u00e9l\u00e8ve transporte des charges : il les soul\u00e8ve, les porte, puis les d\u00e9pose. Ces op\u00e9rations peuvent n\u00e9cessiter de rester sur place ou de se d\u00e9placer. La charge peut \u00eatre aussi bien un objet qu\u2019une personne ou un animal.",
-                    "situations": {
-                        "Manutention de charges de plus de 15 kg": [],
-                        "Manutention de charges plusieurs heures par jour": [],
-                        "D\u00e9placement avec des charges sur une longue distance, sur un chemin en pente ou dans un escalier": [],
-                        "Port de la charge loin du corps (p. ex. : pelletage de neige les bras tendus)": [],
-                        "Prise ou d\u00e9p\u00f4t des charges au niveau du sol ou en hauteur (au-dessus du niveau des \u00e9paules)": []
-                    },
-                    "factors": {
-                        "Fr\u00e9quence des manutentions sup\u00e9rieure \u00e0 5 fois/min": [],
-                        "Charge de grandes dimensions": [],
-                        "Charge d\u00e9s\u00e9quilibr\u00e9e, instable ou difficile \u00e0 saisir (p. ex. : bords coupants ou glissants)": [],
-                        "Charge vivante non coop\u00e9rative (p. ex. : enfant qui se d\u00e9bat, chien agressif)": [],
-                        "Posture contraignante lors de la manutention (p. ex. : torsion du tronc lors du pelletage de la neige)": [],
-                        "Variation de la hauteur de prise et de d\u00e9p\u00f4t de la charge (p. ex. : soulever un b\u00e9b\u00e9 pour le mettre sur une table \u00e0 langer)": [],
-                        "Impossibilit\u00e9 d\u2019utiliser les deux mains pour la manutention": []
-                    },
-                    "symptoms": {
-                        "Inconfort, fatigue et douleur": [],
-                        "Blessures au dos": [],
-                        "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations, en particulier les \u00e9paules": []
-                    },
-                    "images": [
-                        "path/image17",
-                        "path/image18"
-                    ]
+    "9": {
+        "shortname": "handling",
+        "name": "RISQUES LI\u00c9S \u00c0 LA MANUTENTION",
+        "risks": {
+            "1": {
+                "title": "MANUTENTION MANUELLE",
+                "intro": "L\u2019\u00e9l\u00e8ve transporte des charges : il les soul\u00e8ve, les porte, puis les d\u00e9pose. Ces op\u00e9rations peuvent n\u00e9cessiter de rester sur place ou de se d\u00e9placer. La charge peut \u00eatre aussi bien un objet qu\u2019une personne ou un animal.",
+                "situations": {
+                    "Manutention de charges de plus de 15 kg": [],
+                    "Manutention de charges plusieurs heures par jour": [],
+                    "D\u00e9placement avec des charges sur une longue distance, sur un chemin en pente ou dans un escalier": [],
+                    "Port de la charge loin du corps (p. ex. : pelletage de neige les bras tendus)": [],
+                    "Prise ou d\u00e9p\u00f4t des charges au niveau du sol ou en hauteur (au-dessus du niveau des \u00e9paules)": []
                 },
-                "2": {
-                    "title": "MANUTENTION AVEC UN \u00c9QUIPEMENT NON MOTORIS\u00c9",
-                    "intro": "L\u2019\u00e9l\u00e8ve transporte des charges en tirant ou en poussant un \u00e9quipement tel qu\u2019un transpalette manuel, un diable ou un chariot.",
-                    "situations": {
-                        "Transport de marchandises :": [
-                            "de plus de 300 kg au moyen d\u2019un transpalette manuel",
-                            "de plus de 80 kg avec un diable ou un chariot"
-                        ],
-                        "N\u00e9cessit\u00e9 de faire des efforts pour tirer l\u2019\u00e9quipement :": [
-                            "utilisation des deux mains pour d\u00e9velopper assez de force pour le d\u00e9placement d\u00e9sir\u00e9",
-                            "utilisation de tout le poids du corps pour arriver \u00e0 d\u00e9placer la charge"
-                        ],
-                        "Mains situ\u00e9es au niveau des \u00e9paules ou en dessous de la taille pour exercer une pouss\u00e9e sur l\u2019\u00e9quipement": [],
-                        "Efforts n\u00e9cessaires pour lever la charge en actionnant le timon du transpalette": [],
-                        "Manutention de charges plusieurs heures par jour": []
-                    },
-                    "factors": {
-                        "Posture contraignante lors de la manutention de l\u2019\u00e9quipement (p. ex. : flexion du tronc pour pousser un chariot plein de cartons)": [],
-                        "\u00c9quipement inadapt\u00e9 \u00e0 la charge \u00e0 d\u00e9placer ou en mauvais \u00e9tat": [],
-                        "Charge instable ou mal fix\u00e9e": [],
-                        "Charge volumineuse qui r\u00e9duit la visibilit\u00e9": [],
-                        "D\u00e9placement de la charge sur un sol en mauvais \u00e9tat, avec un d\u00e9nivel\u00e9 ou des marches": [],
-                        "D\u00e9placement de la charge dans une zone \u00e9troite": []
-                    },
-                    "symptoms": {
-                        "Inconfort, fatigue et douleur": [],
-                        "Blessures au dos": [],
-                        "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations, en particulier les \u00e9paules": []
-                    },
-                    "images": [
-                        "path/image19",
-                        "path/image20"
-                    ]
-                }
+                "factors": {
+                    "Fr\u00e9quence des manutentions sup\u00e9rieure \u00e0 5 fois/min": [],
+                    "Charge de grandes dimensions": [],
+                    "Charge d\u00e9s\u00e9quilibr\u00e9e, instable ou difficile \u00e0 saisir (p. ex. : bords coupants ou glissants)": [],
+                    "Charge vivante non coop\u00e9rative (p. ex. : enfant qui se d\u00e9bat, chien agressif)": [],
+                    "Posture contraignante lors de la manutention (p. ex. : torsion du tronc lors du pelletage de la neige)": [],
+                    "Variation de la hauteur de prise et de d\u00e9p\u00f4t de la charge (p. ex. : soulever un b\u00e9b\u00e9 pour le mettre sur une table \u00e0 langer)": [],
+                    "Impossibilit\u00e9 d\u2019utiliser les deux mains pour la manutention": []
+                },
+                "symptoms": {
+                    "Inconfort, fatigue et douleur": [],
+                    "Blessures au dos": [],
+                    "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations, en particulier les \u00e9paules": []
+                },
+                "images": [
+                    "path/image17",
+                    "path/image18"
+                ]
             },
-            "links": {
-                "1": {
-                    "source": "ASSTSAS",
-                    "title": "Manutention",
-                    "url": "http://asstsas.qc.ca/publication/manutention-de-charges-a47"
+            "2": {
+                "title": "MANUTENTION AVEC UN \u00c9QUIPEMENT NON MOTORIS\u00c9",
+                "intro": "L\u2019\u00e9l\u00e8ve transporte des charges en tirant ou en poussant un \u00e9quipement tel qu\u2019un transpalette manuel, un diable ou un chariot.",
+                "situations": {
+                    "Transport de marchandises :": [
+                        "de plus de 300 kg au moyen d\u2019un transpalette manuel",
+                        "de plus de 80 kg avec un diable ou un chariot"
+                    ],
+                    "N\u00e9cessit\u00e9 de faire des efforts pour tirer l\u2019\u00e9quipement :": [
+                        "utilisation des deux mains pour d\u00e9velopper assez de force pour le d\u00e9placement d\u00e9sir\u00e9",
+                        "utilisation de tout le poids du corps pour arriver \u00e0 d\u00e9placer la charge"
+                    ],
+                    "Mains situ\u00e9es au niveau des \u00e9paules ou en dessous de la taille pour exercer une pouss\u00e9e sur l\u2019\u00e9quipement": [],
+                    "Efforts n\u00e9cessaires pour lever la charge en actionnant le timon du transpalette": [],
+                    "Manutention de charges plusieurs heures par jour": []
                 },
-                "2": {
-                    "source": "IRSST",
-                    "title": "Manutention",
-                    "url": "https://manutention.irsst.qc.ca/"
-                }
+                "factors": {
+                    "Posture contraignante lors de la manutention de l\u2019\u00e9quipement (p. ex. : flexion du tronc pour pousser un chariot plein de cartons)": [],
+                    "\u00c9quipement inadapt\u00e9 \u00e0 la charge \u00e0 d\u00e9placer ou en mauvais \u00e9tat": [],
+                    "Charge instable ou mal fix\u00e9e": [],
+                    "Charge volumineuse qui r\u00e9duit la visibilit\u00e9": [],
+                    "D\u00e9placement de la charge sur un sol en mauvais \u00e9tat, avec un d\u00e9nivel\u00e9 ou des marches": [],
+                    "D\u00e9placement de la charge dans une zone \u00e9troite": []
+                },
+                "symptoms": {
+                    "Inconfort, fatigue et douleur": [],
+                    "Blessures au dos": [],
+                    "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations, en particulier les \u00e9paules": []
+                },
+                "images": [
+                    "path/image19",
+                    "path/image20"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "ASSTSAS",
+                "title": "Manutention",
+                "url": "http://asstsas.qc.ca/publication/manutention-de-charges-a47"
+            },
+            "2": {
+                "source": "IRSST",
+                "title": "Manutention",
+                "url": "https://manutention.irsst.qc.ca/"
             }
         }
     },
-    {
-        "10": {
-            "shortname": "psychological",
-            "name": "RISQUES PSYCHOSOCIAUX ET DE VIOLENCE",
-            "risks": {
-                "1": {
-                    "title": "LI\u00c9S AUX RELATIONS AVEC LES COLL\u00c8GUES OU AVEC LA CLIENT\u00c8LE",
-                    "intro": "L\u2019\u00e9l\u00e8ve vit des situations au travail qui peuvent \u00eatre source de stress ou de violence. Celles-ci sont associ\u00e9es aux relations avec les coll\u00e8gues, la hi\u00e9rarchie ou la client\u00e8le.",
-                    "situations": {
-                        "Impossibilit\u00e9 de demander de l\u2019aide en cas de probl\u00e8me (p. ex. : coll\u00e8gues indisponibles, poste isol\u00e9)": [],
-                        "Intimidation, voire violence, de la part de coll\u00e8gues": [],
-                        "Discrimination en raison du sexe, de l\u2019\u00e2ge, des origines ou du statut de stagiaire non r\u00e9mun\u00e9r\u00e9 (p. ex. : commentaires sexistes ou racistes)": [],
-                        "Harc\u00e8lement sexuel": [],
-                        "Clients irrespectueux, voire agressifs": [],
-                        "Commerce expos\u00e9 aux vols": []
-                    },
-                    "factors": {
-                        "R\u00e9p\u00e9tition des situations \u00e0 risque": [],
-                        "Cumul de diff\u00e9rentes situations pour un m\u00eame \u00e9l\u00e8ve (p. ex. : servir des clients agressifs tout en \u00e9tant dans l\u2019impossibilit\u00e9 de demander de l\u2019aide)": []
-                    },
-                    "symptoms": {
-                        "Stress, anxi\u00e9t\u00e9, troubles du sommeil, fatigue": [],
-                        "Consommation d\u2019alcool ou de drogue": [],
-                        "Blessures \u00e0 la suite d\u2019une agression physique": [],
-                        "Troubles psychiques, probl\u00e8mes de sant\u00e9 mentale": []
-                    },
-                    "images": [
-                        "path/image21"
+    "10": {
+        "shortname": "psychological",
+        "name": "RISQUES PSYCHOSOCIAUX ET DE VIOLENCE",
+        "risks": {
+            "1": {
+                "title": "LI\u00c9S AUX RELATIONS AVEC LES COLL\u00c8GUES OU AVEC LA CLIENT\u00c8LE",
+                "intro": "L\u2019\u00e9l\u00e8ve vit des situations au travail qui peuvent \u00eatre source de stress ou de violence. Celles-ci sont associ\u00e9es aux relations avec les coll\u00e8gues, la hi\u00e9rarchie ou la client\u00e8le.",
+                "situations": {
+                    "Impossibilit\u00e9 de demander de l\u2019aide en cas de probl\u00e8me (p. ex. : coll\u00e8gues indisponibles, poste isol\u00e9)": [],
+                    "Intimidation, voire violence, de la part de coll\u00e8gues": [],
+                    "Discrimination en raison du sexe, de l\u2019\u00e2ge, des origines ou du statut de stagiaire non r\u00e9mun\u00e9r\u00e9 (p. ex. : commentaires sexistes ou racistes)": [],
+                    "Harc\u00e8lement sexuel": [],
+                    "Clients irrespectueux, voire agressifs": [],
+                    "Commerce expos\u00e9 aux vols": []
+                },
+                "factors": {
+                    "R\u00e9p\u00e9tition des situations \u00e0 risque": [],
+                    "Cumul de diff\u00e9rentes situations pour un m\u00eame \u00e9l\u00e8ve (p. ex. : servir des clients agressifs tout en \u00e9tant dans l\u2019impossibilit\u00e9 de demander de l\u2019aide)": []
+                },
+                "symptoms": {
+                    "Stress, anxi\u00e9t\u00e9, troubles du sommeil, fatigue": [],
+                    "Consommation d\u2019alcool ou de drogue": [],
+                    "Blessures \u00e0 la suite d\u2019une agression physique": [],
+                    "Troubles psychiques, probl\u00e8mes de sant\u00e9 mentale": []
+                },
+                "images": [
+                    "path/image21"
+                ]
+            },
+            "2": {
+                "title": "LI\u00c9S \u00c0 L'ORGANISATION DU TRAVAIL",
+                "intro": "L\u2019organisation du travail ou la nature des t\u00e2ches r\u00e9alis\u00e9es peuvent \u00eatre une source de stress pour l'\u00e9l\u00e8ve.",
+                "situations": {
+                    "Difficult\u00e9 \u00e0 r\u00e9aliser les t\u00e2ches demand\u00e9es dans le temps allou\u00e9 :": [
+                        "charge de travail trop importante, car m\u00eame en se d\u00e9p\u00eachant, il a toujours du retard",
+                        "manque de formation",
+                        "degr\u00e9 de complexit\u00e9 des t\u00e2ches trop \u00e9lev\u00e9"
+                    ],
+                    "Ennui en stage provoqu\u00e9 par une t\u00e2che peu stimulante ou une charge de travail insuffisante": [],
+                    "Affectation aux t\u00e2ches m\u00e9pris\u00e9es ou refus\u00e9es par les coll\u00e8gues": [],
+                    "Horaires de travail atypiques": []
+                },
+                "factors": {
+                    "R\u00e9p\u00e9tition des situations \u00e0 risque": []
+                },
+                "symptoms": {
+                    "Stress, anxi\u00e9t\u00e9, troubles du sommeil, fatigue": [],
+                    "Consommation d\u2019alcool ou de drogue": [],
+                    "Troubles psychiques, probl\u00e8mes": [],
+                    "de sant\u00e9 mentale": []
+                },
+                "images": []
+            }
+        },
+        "links": {
+            "1": {
+                "source": "CCHST",
+                "title": "Violence en milieu de travail",
+                "url": "https://www.cchst.ca/oshanswers/psychosocial/violence.html"
+            },
+            "2": {
+                "source": "INRS",
+                "title": "Risques psychosociaux",
+                "url": "https://www.inrs.fr/risques/psychosociaux/ce-qu-il-faut-retenir.html"
+            },
+            "3": {
+                "source": "INSPQ",
+                "title": "Risques psychosociaux du travail",
+                "url": "https://www.inspq.qc.ca/risques-psychosociaux-du-travail-et-promotion-de-la-sante-des-travailleurs/risques-psychosociaux-du-travail"
+            }
+        }
+    },
+    "11": {
+        "shortname": "noise",
+        "name": "RISQUES LI\u00c9S AU BRUIT",
+        "risks": {
+            "1": {
+                "title": "",
+                "intro": "L\u2019\u00e9l\u00e8ve travaille dans un environnement o\u00f9 les sons ambiants sont une source de nuisance et m\u00eame de danger au-del\u00e0 d\u2019un certain seuil de d\u00e9cibels.",
+                "situations": {
+                    "Travail pendant plusieurs heures sur une machine ou \u00e0 proximit\u00e9 d\u2019une machine qui fait du bruit :": [
+                        "en continu (p. ex. : compresseur)",
+                        "de mani\u00e8re intermittente, par impulsions ou par chocs (p. ex. : marteau-piqueur, scie)"
+                    ],
+                    "Communication avec les coll\u00e8gues possible, uniquement en criant ou en s\u2019approchant tr\u00e8s pr\u00e8s d\u2019eux": [],
+                    "Port d\u2019\u00e9quipement de protection auditive (casque, bouchons d\u2019oreille)": []
+                },
+                "factors": {
+                    "Absence d\u2019\u00e9quipement de protection auditive": [],
+                    "\u00c9quipement en mauvais \u00e9tat ou inadapt\u00e9": []
+                },
+                "symptoms": {
+                    "Fatigue auditive, stress": [],
+                    "Surdit\u00e9": []
+                },
+                "images": [
+                    "path/image22"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "CCHST",
+                "title": "Bruit en milieu de travail - Notions de base",
+                "url": "https://www.cchst.ca/oshanswers/phys_agents/noise_basic.html"
+            },
+            "2": {
+                "source": "INRS",
+                "title": "Moins fort sur le bruit",
+                "url": "https://www.inrs.fr/media.html?refINRS=ED%206020"
+            },
+            "3": {
+                "source": "INSPQ",
+                "title": "Surdit\u00e9 professionnelle - Briser le silence",
+                "url": "https://www.santeautravail.qc.ca/documents/13275/89722/2172622_doc-ICr98.pdf"
+            }
+        }
+    },
+    "12": {
+        "shortname": "temperature",
+        "name": "RISQUES LI\u00c9S \u00c0 L\u2019EXPOSITION AU FROID ET \u00c0 LA CHALEUR",
+        "risks": {
+            "1": {
+                "title": "TRAVAIL AU FROID",
+                "intro": "L\u2019\u00e9l\u00e8ve fait un travail manuel \u00e0 une temp\u00e9rature inf\u00e9rieure \u00e0 5 \u00b0C ou inf\u00e9rieure \u00e0 10 \u00b0C en cas de vent.",
+                "situations": {
+                    "Travail dans un local r\u00e9frig\u00e9r\u00e9": [],
+                    "T\u00e2ches \u00e0 l\u2019ext\u00e9rieur, notamment l\u2019hiver (p. ex. : d\u00e9neigement)": [],
+                    "Stage dans un local ouvert sur l\u2019ext\u00e9rieur et expos\u00e9 aux courants d\u2019air": [],
+                    "(p. ex. : garage)": []
+                },
+                "factors": {
+                    "V\u00eatements ou \u00e9quipements de travail non adapt\u00e9s au froid": [],
+                    "Vent et humidit\u00e9": []
+                },
+                "symptoms": {
+                    "Douleur, fatigue": [],
+                    "Refroidissement des extr\u00e9mit\u00e9s et perte de sensibilit\u00e9 (p. ex. : syndrome de Raynaud, c.-\u00e0-d. maladie des doigts blancs)": [],
+                    "Hypothermie, engelures": []
+                },
+                "images": [
+                    "path/image23"
+                ]
+            },
+            "2": {
+                "title": "TRAVAIL \u00c0 LA CHALEUR",
+                "intro": "L\u2019\u00e9l\u00e8ve fait un travail manuel \u00e0 une temp\u00e9rature sup\u00e9rieure \u00e0 25 \u00b0C.",
+                "situations": {
+                    "Travail en cuisine ou dans un atelier de soudure": [],
+                    "Travail \u00e0 proximit\u00e9 d\u2019une source de chaleur (p. ex. : four)": [],
+                    "T\u00e2ches effectu\u00e9es \u00e0 l\u2019ext\u00e9rieur pendant une journ\u00e9e de forte chaleur": []
+                },
+                "factors": {
+                    "Humidit\u00e9 combin\u00e9e \u00e0 la chaleur": [],
+                    "\u00c9quipements ou v\u00eatements de travail non adapt\u00e9s \u00e0 la chaleur": []
+                },
+                "symptoms": {
+                    "Fatigue, transpiration abondante, malaises": [],
+                    "D\u00e9shydratation, coup de chaleur": []
+                },
+                "images": [
+                    "path/image24"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "CNESST",
+                "title": "Travailler au froid : pr\u00e9venir et soigner les l\u00e9sions dues au froid",
+                "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/travailler-au-froid-gelures-hypothermie"
+            },
+            "2": {
+                "source": "CNESST",
+                "title": "Travailler \u00e0 la chaleur\u2026 Attention!",
+                "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/travailler-chaleur"
+            },
+            "3": {
+                "source": "INRS",
+                "title": "Travail au froid",
+                "url": "https://www.inrs.fr/risques/froid/ce-qu-il-faut-retenir.html"
+            },
+            "4": {
+                "source": "INRS",
+                "title": "Travail \u00e0 la chaleur",
+                "url": "https://www.inrs.fr/risques/chaleur/ce-qu-il-faut-retenir.html"
+            }
+        }
+    },
+    "13": {
+        "shortname": "vibration",
+        "name": "RISQUES LI\u00c9S AUX VIBRATIONS",
+        "risks": {
+            "1": {
+                "title": "VIBRATIONS TRANSMISES AU CORPS ENTIER",
+                "intro": "L\u2019\u00e9l\u00e8ve est expos\u00e9 aux vibrations transmises au corps entier lors de la conduite d\u2019engins de chantier, de transport ou de manutention (p. ex. : tracteur agricole, chariot \u00e9l\u00e9vateur, etc.).",
+                "situations": {
+                    "Conduite d\u2019un engin de fa\u00e7on r\u00e9guli\u00e8re ou pendant plusieurs heures par jour": [],
+                    "Sensation de chocs ou de secousses en conduisant": [],
+                    "Pr\u00e9sence dans un v\u00e9hicule lourd pendant plusieurs heures": []
+                },
+                "factors": {
+                    "Conduite sur terrain accident\u00e9 ou irr\u00e9gulier": [],
+                    "Posture inconfortable pendant la conduite": [],
+                    "Mauvais ajustement du si\u00e8ge": [],
+                    "Mauvais \u00e9tat du si\u00e8ge ou de l\u2019engin (pneus, suspension, etc.)": []
+                },
+                "symptoms": {
+                    "Douleur au dos": [],
+                    "Hernie discale et arthrose": []
+                },
+                "images": [
+                    "path/image25"
+                ]
+            },
+            "2": {
+                "title": "VIBRATIONS TRANSMISES AU SYST\u00c8ME MAIN-BRAS",
+                "intro": "L\u2019\u00e9l\u00e8ve est expos\u00e9 aux vibrations transmises au syst\u00e8me main-bras lors de l\u2019utilisation d\u2019outils vibrants (p. ex. : meuleuse, marteau-piqueur, compacteur \u00e0 plaque vibrante) ou percutants (p. ex. : perceuse, clef \u00e0 chocs, etc.).",
+                "situations": {
+                    "Utilisation quotidienne d\u2019un outil vibrant ou percutant": [],
+                    "Utilisation de l\u2019outil pendant une heure ou plus": [],
+                    "Maintien avec la main de la pi\u00e8ce sur laquelle s\u2019effectue la t\u00e2che": []
+                },
+                "factors": {
+                    "Pr\u00e9sence de froid et d\u2019humidit\u00e9": [],
+                    "N\u00e9cessit\u00e9 d\u2019exercer une force sur l\u2019outil": [],
+                    "Utilisation de l\u2019outil \u00e0 bout de bras": [],
+                    "Outil mal entretenu": []
+                },
+                "symptoms": {
+                    "Engourdissements, picotements dans les doigts et les mains": [],
+                    "Douleur, raideur, faiblesse dans les mains ou les bras": [],
+                    "Troubles circulatoires (p. ex. : syndrome de Raynaud, c.-\u00e0-d. maladie des doigts blancs)": []
+                },
+                "images": [
+                    "path/image26"
+                ]
+            }
+        },
+        "links": {
+            "1": {
+                "source": "INRS",
+                "title": "Vibrations",
+                "url": "https://www.inrs.fr/risques/vibrations/ce-qu-il-faut-retenir.html"
+            },
+            "2": {
+                "source": "RSPSAT",
+                "title": "Les risques d'exposition aux vibrations au corps entier",
+                "url": "https://www.santeautravail.qc.ca/documents/478605/6ff2e285-1807-45ba-a939-06fe5da74bbd"
+            }
+        }
+    },
+    "14": {
+        "shortname": "electric",
+        "name": "RISQUES \u00c9LECTRIQUES",
+        "risks": {
+            "1": {
+                "title": "",
+                "intro": "L\u2019\u00e9l\u00e8ve peut \u00eatre victime d\u2019un accident cons\u00e9cutif au contact avec un conducteur \u00e9lectrique.",
+                "situations": {
+                    "Utilisation d\u2019appareils \u00e9lectriques v\u00e9tustes ou en mauvais \u00e9tat (p. ex. : avec fils \u00e9lectriques d\u00e9nud\u00e9s)": [],
+                    "Travail dans un local o\u00f9 l\u2019installation \u00e9lectrique est d\u00e9fectueuse (p. ex. : prises murales en mauvais \u00e9tat)": [],
+                    "Raret\u00e9 des prises murales dans le local et utilisation de multiprises pour brancher tous les appareils \u00e9lectriques": [],
+                    "Travail \u00e0 proximit\u00e9 d\u2019une machine en maintenance": []
+                },
+                "symptoms": {
+                    "Br\u00fblures": [],
+                    "\u00c9lectrisation, voire \u00e9lectrocution": []
+                },
+                "images": []
+            }
+        },
+        "links": {
+            "1": {
+                "source": "INRS",
+                "title": "Risques \u00e9lectriques",
+                "url": "https://www.inrs.fr/risques/electriques/ce-qu-il-faut-retenir.html"
+            }
+        }
+    },
+    "15": {
+        "shortname": "anoxia",
+        "name": "RISQUES LI\u00c9S AU TRAVAIL EN ESPACE CLOS",
+        "risks": {
+            "1": {
+                "title": "",
+                "intro": "L\u2019\u00e9l\u00e8ve travaille dans un espace clos et risque l\u2019exposition \u00e0 une atmosph\u00e8re appauvrie en oxyg\u00e8ne, toxique, voire explosive.",
+                "situations": {
+                    "L'\u00e9l\u00e8ve effectue des t\u00e2ches :": [
+                        "dans une chambre froide (p. ex. dans une boucherie)",
+                        "\u00e0 l\u2019int\u00e9rieur d\u2019un silo (p. ex. man\u0153uvre agricole en production animale)",
+                        "dans une conduite ou un \u00e9gout (p. ex. man\u0153uvre aux r\u00e9seaux d\u2019aqueduc et d\u2019\u00e9gout)"
                     ]
                 },
-                "2": {
-                    "title": "LI\u00c9S \u00c0 L'ORGANISATION DU TRAVAIL",
-                    "intro": "L\u2019organisation du travail ou la nature des t\u00e2ches r\u00e9alis\u00e9es peuvent \u00eatre une source de stress pour l'\u00e9l\u00e8ve.",
-                    "situations": {
-                        "Difficult\u00e9 \u00e0 r\u00e9aliser les t\u00e2ches demand\u00e9es dans le temps allou\u00e9 :": [
-                            "charge de travail trop importante, car m\u00eame en se d\u00e9p\u00eachant, il a toujours du retard",
-                            "manque de formation",
-                            "degr\u00e9 de complexit\u00e9 des t\u00e2ches trop \u00e9lev\u00e9"
-                        ],
-                        "Ennui en stage provoqu\u00e9 par une t\u00e2che peu stimulante ou une charge de travail insuffisante": [],
-                        "Affectation aux t\u00e2ches m\u00e9pris\u00e9es ou refus\u00e9es par les coll\u00e8gues": [],
-                        "Horaires de travail atypiques": []
-                    },
-                    "factors": {
-                        "R\u00e9p\u00e9tition des situations \u00e0 risque": []
-                    },
-                    "symptoms": {
-                        "Stress, anxi\u00e9t\u00e9, troubles du sommeil, fatigue": [],
-                        "Consommation d\u2019alcool ou de drogue": [],
-                        "Troubles psychiques, probl\u00e8mes": [],
-                        "de sant\u00e9 mentale": []
-                    },
-                    "images": []
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "CCHST",
-                    "title": "Violence en milieu de travail",
-                    "url": "https://www.cchst.ca/oshanswers/psychosocial/violence.html"
+                "symptoms": {
+                    "Anoxie en raison du manque d\u2019oxyg\u00e8ne": [],
+                    "Intoxication \u00e0 la suite de l\u2019inhalation de substances toxiques": []
                 },
-                "2": {
-                    "source": "INRS",
-                    "title": "Risques psychosociaux",
-                    "url": "https://www.inrs.fr/risques/psychosociaux/ce-qu-il-faut-retenir.html"
-                }
+                "images": []
+            }
+        },
+        "links": {
+            "1": {
+                "source": "INRS",
+                "title": "Espaces confin\u00e9s",
+                "url": "https://www.inrs.fr/risques/espaces-confines/ce-qu-il-faut-retenir.html"
             }
         }
     },
-    {
-        "11": {
-            "shortname": "noise",
-            "name": "RISQUES LI\u00c9S AU BRUIT",
-            "risks": {
-                "1": {
-                    "title": "",
-                    "intro": "L\u2019\u00e9l\u00e8ve travaille dans un environnement o\u00f9 les sons ambiants sont une source de nuisance et m\u00eame de danger au-del\u00e0 d\u2019un certain seuil de d\u00e9cibels.",
-                    "situations": {
-                        "Travail pendant plusieurs heures sur une machine ou \u00e0 proximit\u00e9 d\u2019une machine qui fait du bruit :": [
-                            "en continu (p. ex. : compresseur)",
-                            "de mani\u00e8re intermittente, par impulsions ou par chocs (p. ex. : marteau-piqueur, scie)"
-                        ],
-                        "Communication avec les coll\u00e8gues possible, uniquement en criant ou en s\u2019approchant tr\u00e8s pr\u00e8s d\u2019eux": [],
-                        "Port d\u2019\u00e9quipement de protection auditive (casque, bouchons d\u2019oreille)": []
-                    },
-                    "factors": {
-                        "Absence d\u2019\u00e9quipement de protection auditive": [],
-                        "\u00c9quipement en mauvais \u00e9tat ou inadapt\u00e9": []
-                    },
-                    "symptoms": {
-                        "Fatigue auditive, stress": [],
-                        "Surdit\u00e9": []
-                    },
-                    "images": [
-                        "path/image22"
-                    ]
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "CCHST",
-                    "title": "Bruit en milieu de travail - Notions de base",
-                    "url": "https://www.cchst.ca/oshanswers/phys_agents/noise_basic.html"
-                },
-                "2": {
-                    "source": "INRS",
-                    "title": "Moins fort sur le bruit",
-                    "url": "https://www.inrs.fr/media.html?refINRS=ED%206020"
-                }
-            }
-        }
-    },
-    {
-        "12": {
-            "shortname": "temperature",
-            "name": "RISQUES LI\u00c9S \u00c0 L\u2019EXPOSITION AU FROID ET \u00c0 LA CHALEUR",
-            "risks": {
-                "1": {
-                    "title": "TRAVAIL AU FROID",
-                    "intro": "L\u2019\u00e9l\u00e8ve fait un travail manuel \u00e0 une temp\u00e9rature inf\u00e9rieure \u00e0 5 \u00b0C ou inf\u00e9rieure \u00e0 10 \u00b0C en cas de vent.",
-                    "situations": {
-                        "Travail dans un local r\u00e9frig\u00e9r\u00e9": [],
-                        "T\u00e2ches \u00e0 l\u2019ext\u00e9rieur, notamment l\u2019hiver (p. ex. : d\u00e9neigement)": [],
-                        "Stage dans un local ouvert sur l\u2019ext\u00e9rieur et expos\u00e9 aux courants d\u2019air": [],
-                        "(p. ex. : garage)": []
-                    },
-                    "factors": {
-                        "V\u00eatements ou \u00e9quipements de travail non adapt\u00e9s au froid": [],
-                        "Vent et humidit\u00e9": []
-                    },
-                    "symptoms": {
-                        "Douleur, fatigue": [],
-                        "Refroidissement des extr\u00e9mit\u00e9s et perte de sensibilit\u00e9 (p. ex. : syndrome de Raynaud, c.-\u00e0-d. maladie des doigts blancs)": [],
-                        "Hypothermie, engelures": []
-                    },
-                    "images": [
-                        "path/image23"
+    "16": {
+        "shortname": "fire",
+        "name": "RISQUES D'INCENDIE OU D'EXPLOSION",
+        "risks": {
+            "1": {
+                "title": "",
+                "intro": "L\u2019\u00e9l\u00e8ve travaille en pr\u00e9sence d'objets ou de mati\u00e8res combustibles qui pourraient s\u2019enflammer et \u00eatre \u00e0 l\u2019origine d\u2019un incendie, voire provoquer une explosion sous certaines conditions (p. ex. : combustibles sous forme de poussi\u00e8re en suspension dans un environnement confin\u00e9)",
+                "situations": {
+                    "L\u2019\u00e9l\u00e8ve travaille en pr\u00e9sence de mati\u00e8res combustibles comme:": [
+                        "des produits chimiques (p. ex. dans une usine de production de pi\u00e8ces m\u00e9talliques)",
+                        "de l'essence ou de l'huile (p. ex. dans un garage)",
+                        "du bois (p. ex. dans une \u00e9b\u00e9nisterie)"
                     ]
                 },
-                "2": {
-                    "title": "TRAVAIL \u00c0 LA CHALEUR",
-                    "intro": "L\u2019\u00e9l\u00e8ve fait un travail manuel \u00e0 une temp\u00e9rature sup\u00e9rieure \u00e0 25 \u00b0C.",
-                    "situations": {
-                        "Travail en cuisine ou dans un atelier de soudure": [],
-                        "Travail \u00e0 proximit\u00e9 d\u2019une source de chaleur (p. ex. : four)": [],
-                        "T\u00e2ches effectu\u00e9es \u00e0 l\u2019ext\u00e9rieur pendant une journ\u00e9e de forte chaleur": []
-                    },
-                    "factors": {
-                        "Humidit\u00e9 combin\u00e9e \u00e0 la chaleur": [],
-                        "\u00c9quipements ou v\u00eatements de travail non adapt\u00e9s \u00e0 la chaleur": []
-                    },
-                    "symptoms": {
-                        "Fatigue, transpiration abondante, malaises": [],
-                        "D\u00e9shydratation, coup de chaleur": []
-                    },
-                    "images": [
-                        "path/image24"
-                    ]
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "CNESST",
-                    "title": "Travailler au froid : pr\u00e9venir et soigner les l\u00e9sions dues au froid",
-                    "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/travailler-au-froid-gelures-hypothermie"
+                "symptoms": {
+                    "Br\u00fblures": [],
+                    "Intoxication \u00e0 la suite de l\u2019inhalation de substances toxiques": [],
+                    "Blessures graves": []
                 },
-                "2": {
-                    "source": "CNESST",
-                    "title": "Travailler \u00e0 la chaleur\u2026 Attention!",
-                    "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/travailler-chaleur"
-                }
+                "images": []
+            }
+        },
+        "links": {
+            "1": {
+                "source": "INRS",
+                "title": "Incendie et explosion",
+                "url": "https://www.inrs.fr/risques/incendie-explosion/introduction.html"
             }
         }
     },
-    {
-        "13": {
-            "shortname": "vibration",
-            "name": "RISQUES LI\u00c9S AUX VIBRATIONS",
-            "risks": {
-                "1": {
-                    "title": "VIBRATIONS TRANSMISES AU CORPS ENTIER",
-                    "intro": "L\u2019\u00e9l\u00e8ve est expos\u00e9 aux vibrations transmises au corps entier lors de la conduite d\u2019engins de chantier, de transport ou de manutention (p. ex. : tracteur agricole, chariot \u00e9l\u00e9vateur, etc.).",
-                    "situations": {
-                        "Conduite d\u2019un engin de fa\u00e7on r\u00e9guli\u00e8re ou pendant plusieurs heures par jour": [],
-                        "Sensation de chocs ou de secousses en conduisant": [],
-                        "Pr\u00e9sence dans un v\u00e9hicule lourd pendant plusieurs heures": []
-                    },
-                    "factors": {
-                        "Conduite sur terrain accident\u00e9 ou irr\u00e9gulier": [],
-                        "Posture inconfortable pendant la conduite": [],
-                        "Mauvais ajustement du si\u00e8ge": [],
-                        "Mauvais \u00e9tat du si\u00e8ge ou de l\u2019engin (pneus, suspension, etc.)": []
-                    },
-                    "symptoms": {
-                        "Douleur au dos": [],
-                        "Hernie discale et arthrose": []
-                    },
-                    "images": [
-                        "path/image25"
+    "17": {
+        "shortname": "nanomaterial",
+        "name": "RISQUES LI\u00c9S AUX NANOMAT\u00c9RIAUX",
+        "risks": {
+            "1": {
+                "title": "",
+                "intro": "L\u2019\u00e9l\u00e8ve travaille avec des mat\u00e9riaux, se retrouvant \u00e0 l\u2019\u00e9tat nanoparticulaire dans l\u2019air, et qui pourraient avoir des effets sur sa sant\u00e9.",
+                "situations": {
+                    "Travail dans un garage automobile :": [
+                        "maniement des pneumatiques v\u00e9tustes",
+                        "respiration des particules d\u2019\u00e9chappement",
+                        "utilisation de peintures, d\u2019anti-corrosion ou d\u2019anti-rayures"
+                    ],
+                    "Travail dans un centre de:": [
+                        "tri des d\u00e9chets",
+                        "r\u00e9cup\u00e9ration de mat\u00e9riel \u00e9lectronique (p. ex. ordinateurs, technologies sans fil, \u00e9crans plats...)"
+                    ],
+                    "Travail dans une scierie, au contact de poussi\u00e8res de bois \u00e0 l\u2019\u00e9tat nanoparticulaire": [],
+                    "L'\u00e9l\u00e8ve se trouve \u00e0 proximit\u00e9 d'un \u00e9quipement r\u00e9alisant une op\u00e9ration g\u00e9n\u00e9rant des particules ultrafines de mani\u00e8re incidentelle (p.ex. soudage, usinage, ...)": []
+                },
+                "symptoms": {
+                    "Les donn\u00e9es toxicologiques ou \u00e9cotoxicologiques sont parcellaires, et ne font pas encore l\u2019objet d\u2019un consensus scientifique. ": [],
+                    "Les sympt\u00f4mes et effets des nanoparticules sur la sant\u00e9 semblent essentiellement d\u00e9pendre de leurs param\u00e8tres physico-chimiques (composition chimique, taille, forme, structure, surface, solubilit\u00e9...). ": [],
+                    "Les effets les plus connus sont:": [
+                        "Respiratoires : r\u00e9actions inflammatoires, obstruction r\u00e9versible des voies a\u00e9riennes...",
+                        "Cardiovasculaires : affections isch\u00e9miques myocardiques"
                     ]
                 },
-                "2": {
-                    "title": "VIBRATIONS TRANSMISES AU SYST\u00c8ME MAIN-BRAS",
-                    "intro": "L\u2019\u00e9l\u00e8ve est expos\u00e9 aux vibrations transmises au syst\u00e8me main-bras lors de l\u2019utilisation d\u2019outils vibrants (p. ex. : meuleuse, marteau-piqueur, compacteur \u00e0 plaque vibrante) ou percutants (p. ex. : perceuse, clef \u00e0 chocs, etc.).",
-                    "situations": {
-                        "Utilisation quotidienne d\u2019un outil vibrant ou percutant": [],
-                        "Utilisation de l\u2019outil pendant une heure ou plus": [],
-                        "Maintien avec la main de la pi\u00e8ce sur laquelle s\u2019effectue la t\u00e2che": []
-                    },
-                    "factors": {
-                        "Pr\u00e9sence de froid et d\u2019humidit\u00e9": [],
-                        "N\u00e9cessit\u00e9 d\u2019exercer une force sur l\u2019outil": [],
-                        "Utilisation de l\u2019outil \u00e0 bout de bras": [],
-                        "Outil mal entretenu": []
-                    },
-                    "symptoms": {
-                        "Engourdissements, picotements dans les doigts et les mains": [],
-                        "Douleur, raideur, faiblesse dans les mains ou les bras": [],
-                        "Troubles circulatoires (p. ex. : syndrome de Raynaud, c.-\u00e0-d. maladie des doigts blancs)": []
-                    },
-                    "images": [
-                        "path/image26"
-                    ]
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "INRS",
-                    "title": "Vibrations",
-                    "url": "https://www.inrs.fr/risques/vibrations/ce-qu-il-faut-retenir.html"
-                },
-                "2": {
-                    "source": "RSPSAT",
-                    "title": "Les risques d'exposition aux vibrations au corps entier",
-                    "url": "https://www.santeautravail.qc.ca/documents/478605/6ff2e285-1807-45ba-a939-06fe5da74bbd"
-                }
+                "images": []
             }
-        }
-    },
-    {
-        "14": {
-            "shortname": "electric",
-            "name": "RISQUES \u00c9LECTRIQUES",
-            "risks": {
-                "1": {
-                    "title": "",
-                    "intro": "L\u2019\u00e9l\u00e8ve peut \u00eatre victime d\u2019un accident cons\u00e9cutif au contact avec un conducteur \u00e9lectrique.",
-                    "situations": {
-                        "Utilisation d\u2019appareils \u00e9lectriques v\u00e9tustes ou en mauvais \u00e9tat (p. ex. : avec fils \u00e9lectriques d\u00e9nud\u00e9s)": [],
-                        "Travail dans un local o\u00f9 l\u2019installation \u00e9lectrique est d\u00e9fectueuse (p. ex. : prises murales en mauvais \u00e9tat)": [],
-                        "Raret\u00e9 des prises murales dans le local et utilisation de multiprises pour brancher tous les appareils \u00e9lectriques": [],
-                        "Travail \u00e0 proximit\u00e9 d\u2019une machine en maintenance": []
-                    },
-                    "symptoms": {
-                        "Br\u00fblures": [],
-                        "\u00c9lectrisation, voire \u00e9lectrocution": []
-                    },
-                    "images": []
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "INRS",
-                    "title": "Risques \u00e9lectriques",
-                    "url": "https://www.inrs.fr/risques/electriques/ce-qu-il-faut-retenir.html"
-                }
-            }
-        }
-    },
-    {
-        "15": {
-            "shortname": "anoxia",
-            "name": "RISQUES LI\u00c9S AU TRAVAIL EN ESPACE CLOS",
-            "risks": {
-                "1": {
-                    "title": "",
-                    "intro": "L\u2019\u00e9l\u00e8ve travaille dans un espace clos et risque l\u2019exposition \u00e0 une atmosph\u00e8re appauvrie en oxyg\u00e8ne, toxique, voire explosive.",
-                    "situations": {
-                        "L'\u00e9l\u00e8ve effectue des t\u00e2ches :": [
-                            "dans une chambre froide (p. ex. dans une boucherie)",
-                            "\u00e0 l\u2019int\u00e9rieur d\u2019un silo (p. ex. man\u0153uvre agricole en production animale)",
-                            "dans une conduite ou un \u00e9gout (p. ex. man\u0153uvre aux r\u00e9seaux d\u2019aqueduc et d\u2019\u00e9gout)"
-                        ]
-                    },
-                    "symptoms": {
-                        "Anoxie en raison du manque d\u2019oxyg\u00e8ne": [],
-                        "Intoxication \u00e0 la suite de l\u2019inhalation de substances toxiques": []
-                    },
-                    "images": []
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "INRS",
-                    "title": "Espaces confin\u00e9s",
-                    "url": "https://www.inrs.fr/risques/espaces-confines/ce-qu-il-faut-retenir.html"
-                }
-            }
-        }
-    },
-    {
-        "16": {
-            "shortname": "fire",
-            "name": "RISQUES D'INCENDIE OU D'EXPLOSION",
-            "risks": {
-                "1": {
-                    "title": "",
-                    "intro": "L\u2019\u00e9l\u00e8ve travaille en pr\u00e9sence d'objets ou de mati\u00e8res combustibles qui pourraient s\u2019enflammer et \u00eatre \u00e0 l\u2019origine d\u2019un incendie, voire provoquer une explosion sous certaines conditions (p. ex. : combustibles sous forme de poussi\u00e8re en suspension dans un environnement confin\u00e9)",
-                    "situations": {
-                        "L\u2019\u00e9l\u00e8ve travaille en pr\u00e9sence de mati\u00e8res combustibles comme:": [
-                            "des produits chimiques (p. ex. dans une usine de production de pi\u00e8ces m\u00e9talliques)",
-                            "de l'essence ou de l'huile (p. ex. dans un garage)",
-                            "du bois (p. ex. dans une \u00e9b\u00e9nisterie)"
-                        ]
-                    },
-                    "symptoms": {
-                        "Br\u00fblures": [],
-                        "Intoxication \u00e0 la suite de l\u2019inhalation de substances toxiques": [],
-                        "Blessures graves": []
-                    },
-                    "images": []
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "INRS",
-                    "title": "Incendie et explosion",
-                    "url": "https://www.inrs.fr/risques/incendie-explosion/introduction.html"
-                }
-            }
-        }
-    },
-    {
-        "17": {
-            "shortname": "nanomaterial",
-            "name": "RISQUES LI\u00c9S AUX NANOMAT\u00c9RIAUX",
-            "risks": {
-                "1": {
-                    "title": "",
-                    "intro": "L\u2019\u00e9l\u00e8ve travaille avec des mat\u00e9riaux, se retrouvant \u00e0 l\u2019\u00e9tat nanoparticulaire dans l\u2019air, et qui pourraient avoir des effets sur sa sant\u00e9.",
-                    "situations": {
-                        "Travail dans un garage automobile :": [
-                            "maniement des pneumatiques v\u00e9tustes",
-                            "respiration des particules d\u2019\u00e9chappement",
-                            "utilisation de peintures, d\u2019anti-corrosion ou d\u2019anti-rayures"
-                        ],
-                        "Travail dans un centre de:": [
-                            "tri des d\u00e9chets",
-                            "r\u00e9cup\u00e9ration de mat\u00e9riel \u00e9lectronique (p. ex. ordinateurs, technologies sans fil, \u00e9crans plats...)"
-                        ],
-                        "Travail dans une scierie, au contact de poussi\u00e8res de bois \u00e0 l\u2019\u00e9tat nanoparticulaire": [],
-                        "L'\u00e9l\u00e8ve se trouve \u00e0 proximit\u00e9 d'un \u00e9quipement r\u00e9alisant une op\u00e9ration g\u00e9n\u00e9rant des particules ultrafines de mani\u00e8re incidentelle (p.ex. soudage, usinage, ...)": []
-                    },
-                    "symptoms": {
-                        "Les donn\u00e9es toxicologiques ou \u00e9cotoxicologiques sont parcellaires, et ne font pas encore l\u2019objet d\u2019un consensus scientifique. ": [],
-                        "Les sympt\u00f4mes et effets des nanoparticules sur la sant\u00e9 semblent essentiellement d\u00e9pendre de leurs param\u00e8tres physico-chimiques (composition chimique, taille, forme, structure, surface, solubilit\u00e9...). ": [],
-                        "Les effets les plus connus sont:": [
-                            "Respiratoires : r\u00e9actions inflammatoires, obstruction r\u00e9versible des voies a\u00e9riennes...",
-                            "Cardiovasculaires : affections isch\u00e9miques myocardiques"
-                        ]
-                    },
-                    "images": []
-                }
-            },
-            "links": {
-                "1": {
-                    "source": "INRS",
-                    "title": "Nanomat\u00e9riaux",
-                    "url": "https://www.inrs.fr/risques/nanomateriaux/ce-qu-il-faut-retenir.html"
-                }
+        },
+        "links": {
+            "1": {
+                "source": "INRS",
+                "title": "Nanomat\u00e9riaux",
+                "url": "https://www.inrs.fr/risques/nanomateriaux/ce-qu-il-faut-retenir.html"
             }
         }
     }
-]
+}
