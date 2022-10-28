@@ -790,6 +790,7 @@
                     "Raret\u00e9 des prises murales dans le local et utilisation de multiprises pour brancher tous les appareils \u00e9lectriques": [],
                     "Travail \u00e0 proximit\u00e9 d\u2019une machine en maintenance": []
                 },
+                "factors": {},
                 "symptoms": {
                     "Br\u00fblures": [],
                     "\u00c9lectrisation, voire \u00e9lectrocution": []
@@ -819,6 +820,7 @@
                         "dans une conduite ou un \u00e9gout (p. ex. man\u0153uvre aux r\u00e9seaux d\u2019aqueduc et d\u2019\u00e9gout)"
                     ]
                 },
+                "factors": {},
                 "symptoms": {
                     "Anoxie en raison du manque d\u2019oxyg\u00e8ne": [],
                     "Intoxication \u00e0 la suite de l\u2019inhalation de substances toxiques": []
@@ -848,6 +850,7 @@
                         "du bois (p. ex. dans une \u00e9b\u00e9nisterie)"
                     ]
                 },
+                "factors": {},
                 "symptoms": {
                     "Br\u00fblures": [],
                     "Intoxication \u00e0 la suite de l\u2019inhalation de substances toxiques": [],
@@ -884,6 +887,7 @@
                     "Travail dans une scierie, au contact de poussi\u00e8res de bois \u00e0 l\u2019\u00e9tat nanoparticulaire": [],
                     "L'\u00e9l\u00e8ve se trouve \u00e0 proximit\u00e9 d'un \u00e9quipement r\u00e9alisant une op\u00e9ration g\u00e9n\u00e9rant des particules ultrafines de mani\u00e8re incidentelle (p.ex. soudage, usinage, ...)": []
                 },
+                "factors": {},
                 "symptoms": {
                     "Les donn\u00e9es toxicologiques ou \u00e9cotoxicologiques sont parcellaires, et ne font pas encore l\u2019objet d\u2019un consensus scientifique. ": [],
                     "Les sympt\u00f4mes et effets des nanoparticules sur la sant\u00e9 semblent essentiellement d\u00e9pendre de leurs param\u00e8tres physico-chimiques (composition chimique, taille, forme, structure, surface, solubilit\u00e9...). ": [],

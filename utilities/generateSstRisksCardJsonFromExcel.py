@@ -75,18 +75,18 @@ def start(excelPathSST: str):
                         "title": str(row[2]) if str(row[2]) != "nan" else "",
                         "intro": str(row[3]),
                         # the DataFrame format return "NaN" if the cell is empty
-                        "situations": createDictFromString(row[4]) if str(row[4]) != "nan" else None, 
-                        "factors": createDictFromString(row[5]) if str(row[5]) != "nan" else None,
-                        "symptoms": createDictFromString(row[6]) if str(row[6]) != "nan" else None,
+                        "situations": createDictFromString(row[4]) if str(row[4]) != "nan" else {}, 
+                        "factors": createDictFromString(row[5]) if str(row[5]) != "nan" else {},
+                        "symptoms": createDictFromString(row[6]) if str(row[6]) != "nan" else {},
                         "images": ["path/image" + str(int(row[7])) if str(row[7]) != "nan" else None,
                                    "path/image" + str(int(row[8])) if str(row[8]) != "nan" else None]
                     },
                     "2": {
                         "title": str(row[9]) if str(row[9]) != "nan" else "",
                         "intro": str(row[10]),
-                        "situations": createDictFromString(row[11]) if str(row[11]) != "nan" else None,
-                        "factors": createDictFromString(row[12]) if str(row[12]) != "nan" else None,
-                        "symptoms": createDictFromString(row[13]) if str(row[13]) != "nan" else None,
+                        "situations": createDictFromString(row[11]) if str(row[11]) != "nan" else {},
+                        "factors": createDictFromString(row[12]) if str(row[12]) != "nan" else {},
+                        "symptoms": createDictFromString(row[13]) if str(row[13]) != "nan" else {},
                         "images": ["path/image" + str(int(row[14])) if str(row[14]) != "nan" else None,
                                    "path/image" + str(int(row[15])) if str(row[15]) != "nan" else None]
                     } if str(row[9]) != "nan" else None
