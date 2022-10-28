@@ -63,8 +63,6 @@ def start(excelPathSST: str):
 
     json = []
 
-    print(excelSST)
-
     for index in excelSST.index:
         row = excelSST.loc[index]
 
@@ -132,7 +130,6 @@ def createDictFromString(cell: pd.DataFrame):
             lastLine = line
     return riskTypeDict
 
-# Excel readers
 
 def cleanUpText(text: str):
     '''Removes unwanted formating chars at the end of [text].'''
