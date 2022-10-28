@@ -61,7 +61,7 @@ def start(excelPathSST: str):
         setMessage("Fichier Excel invalide")
         return
 
-    json = [{}]
+    json = []
 
     print(excelSST)
 
@@ -102,7 +102,17 @@ def start(excelPathSST: str):
                         "source": str(row[19]),
                         "title": str(row[20]),
                         "url": str(row[21])
-                    } if str(row[19]) != "nan" else None
+                    } if str(row[19]) != "nan" else None,
+                    "3": {
+                        "source": str(row[22]),
+                        "title": str(row[23]),
+                        "url": str(row[24])
+                    } if str(row[22]) != "nan" else None,
+                    "4": {
+                        "source": str(row[25]),
+                        "title": str(row[26]),
+                        "url": str(row[27])
+                    } if str(row[25]) != "nan" else None
                 }
             }
         })
