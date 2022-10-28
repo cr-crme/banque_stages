@@ -1,15 +1,11 @@
 // ignore_for_file: non_constant_identifier_names, prefer_interpolation_to_compose_strings
 import 'dart:convert';
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 
 import './job_sst.dart';
 import './skill_sst.dart';
 import 'card_sst.dart';
-
+import 'temporary_proxy_data.dart';
 //Remove after connection to DB
-import './temporary_proxy_data.dart';
 
 /* 
 * The class cardsProxy() fetches risks data from the database and transforms them
