@@ -11,7 +11,7 @@ import pandas as pd
 
 
 # Constants
-JSON_FILE_PATH = "assets/risks-data-test.json"
+JSON_FILE_PATH = "assets/risks-data.json"
 
 RISKS_SHORTNAMES = {
     1: "chemical",
@@ -190,7 +190,7 @@ frame = tk.Frame(mainFrame)
 frame.pack()
 
 excelPathSST = tk.StringVar(
-    value="C:/Users/2061694/Documents/GitHub/ressources/Contenu_fiches_SST.xlsx")
+    value="Contenu_fiches_SST.xlsx")
 entrySST = tk.Entry(frame, textvariable=excelPathSST)
 entrySST.focus()
 entrySST.pack(side="left")
