@@ -8,15 +8,14 @@ import 'package:mockito/src/mock.dart';
 
 import 'package:crcrme_banque_stages/screens/ref_sst/common/proxy_ref_sst.dart';
 
-import 'jobProxy_test.mocks.dart';
+import 'job_proxy_test.mocks.dart';
 
-@GenerateMocks([jobsProxy])
+@GenerateMocks([JobsProxy])
 void main() {
-
   List<JobSST> createDummyData() {
     Map<String, bool> dummy_list_risk = {};
     List<SkillSST> dummy_list_skill = <SkillSST>[];
-    List<JobSST> joblist_dummy = <JobSST>[];
+    List<JobSST> dummy_job_list = <JobSST>[];
 
     for (int i = 0; i < 10; i++) {
       dummy_list_risk['$i'] = true;
@@ -24,21 +23,21 @@ void main() {
 
     for (int i = 0; i < 10; i++) {
       dummy_list_skill.add(new SkillSST(
-              name: 'skill $i',
-              code: i,
-              criterias: List<String>.filled(5, 'skill criteria'),
-              tasks: List<String>.filled(5, 'skill Task'),
-              risks: dummy_list_risk));
+          name: 'skill $i',
+          code: i,
+          criterias: List<String>.filled(5, 'skill criteria'),
+          tasks: List<String>.filled(5, 'skill Task'),
+          risks: dummy_list_risk));
     }
 
     for (int i = 0; i < 10; i++) {
-      joblist_dummy.add(new JobSST(
+      dummy_job_list.add(new JobSST(
           code: i,
           name: 'Job name $i',
           skills: dummy_list_skill,
           questions: List<int>.filled(5, 0)));
     }
-    return joblist_dummy;
+    return dummy_job_list;
   }
 
   late MockjobsProxy jobProxy;
@@ -61,16 +60,19 @@ void main() {
       expect(jobProxy.getList().length, 10);
     });
 
-    test('Test non-null values', (){
+    test('Test non-null values', () {
       when(jobProxy.getList()).thenReturn(dummy_list_job);
       String error = "";
-      if(dummy_list_job[0] == null){
+      if (dummy_list_job[0] == null) {
         error += "Code is null\n";
-      }if(dummy_list_job[1] == null){
+      }
+      if (dummy_list_job[1] == null) {
         error += "Name is null\n";
-      }if(dummy_list_job[2] == null){
+      }
+      if (dummy_list_job[2] == null) {
         error += "Skills is null\n";
-      }if(dummy_list_job[4] == null){
+      }
+      if (dummy_list_job[4] == null) {
         error += "Risk is null\n";
       }
       expect("", error);

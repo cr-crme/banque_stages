@@ -9,8 +9,8 @@ import 'sst_cards/widgets/sst_card.dart';
 class SSTCache {
   static final SSTCache _sstCache = SSTCache._internal();
 
-  List<JobSST> jobs = jobsProxy().getList();
-  List<CardSST> risks = cardsProxy().getList();
+  List<JobSST> jobs = JobsProxy().getList();
+  List<CardSST> risks = CardsProxy().getList();
 
   factory SSTCache() {
     return _sstCache;
@@ -37,7 +37,7 @@ class SSTCache {
   }
 
   void refresh() {
-    jobs = jobsProxy().getList();
-    risks = cardsProxy().getList();
+    jobs = JobsProxy().getList();
+    risks = CardsProxy().getList();
   }
 }

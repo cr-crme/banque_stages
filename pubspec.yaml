@@ -51,4 +51,4 @@ flutter:
 
     assets:
         - assets/jobs-data.json
-        - assets/risk-data.json
+        - assets/risks-data.json

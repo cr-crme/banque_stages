@@ -20,10 +20,10 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-/// A class which mocks [risksProxy].
+/// A class which mocks [RisksProxy].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockrisksProxy extends _i1.Mock implements _i2.cardsProxy {
+class MockrisksProxy extends _i1.Mock implements _i2.CardsProxy {
   MockrisksProxy() {
     _i1.throwOnMissingStub(this);
   }

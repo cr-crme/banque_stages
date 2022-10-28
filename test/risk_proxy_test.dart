@@ -9,16 +9,14 @@ import 'package:mockito/src/mock.dart';
 
 import 'package:crcrme_banque_stages/screens/ref_sst/common/proxy_ref_sst.dart';
 
-import 'riskProxy_test.mocks.dart';
+import 'risk_proxy_test.mocks.dart';
 
-@GenerateMocks([cardsProxy])
+@GenerateMocks([CardsProxy])
 void main() {
+  Map<String, List<String>> filledMap(String name, int items) {
+    Map<String, List<String>> list_map = {};
 
-  Map<String,List<String>> filledMap(String name,int items) {
-
-    Map<String,List<String>> list_map = {};
-
-    for (int i = 0; i <items; i++) {
+    for (int i = 0; i < items; i++) {
       list_map["$name $i"] = List<String>.filled(3, "lorem ipsum");
     }
 
@@ -26,23 +24,35 @@ void main() {
   }
 
   List<CardSST> createDummyData() {
-
     List<CardSST> list_dummy = <CardSST>[];
     List<RiskSST> list_risk = <RiskSST>[];
     List<LinkSST> list_link = <LinkSST>[];
 
-    list_link = List<LinkSST>.filled(3, new LinkSST(source: "Source", title: "Title", url: "url"));
+    list_link = List<LinkSST>.filled(
+        3, new LinkSST(source: "Source", title: "Title", url: "url"));
 
-    Map<String,List<String>> list_situation = filledMap("Situation", 4);
-    Map<String,List<String>> list_factor = filledMap("Factor", 3);
-    Map<String,List<String>> list_symptoms = filledMap("Symptom", 4);
+    Map<String, List<String>> list_situation = filledMap("Situation", 4);
+    Map<String, List<String>> list_factor = filledMap("Factor", 3);
+    Map<String, List<String>> list_symptoms = filledMap("Symptom", 4);
 
     for (int i = 0; i < 10; i++) {
-      list_risk.add(new RiskSST(id: i, title: "title $i", intro: "intro $i", situations: list_situation, factors: list_factor , symptoms: list_symptoms, images: List<String>.filled(2, "images")));
+      list_risk.add(new RiskSST(
+          id: i,
+          title: "title $i",
+          intro: "intro $i",
+          situations: list_situation,
+          factors: list_factor,
+          symptoms: list_symptoms,
+          images: List<String>.filled(2, "images")));
     }
 
     for (int i = 0; i < 10; i++) {
-      list_dummy.add(new CardSST(id: i, shortname: "num $i", name: "TITLE $i",links: list_link,risks: list_risk ));
+      list_dummy.add(new CardSST(
+          id: i,
+          shortname: "num $i",
+          name: "TITLE $i",
+          links: list_link,
+          risks: list_risk));
     }
     return list_dummy;
   }
@@ -69,18 +79,22 @@ void main() {
       expect(riskProxy.getList().length, 10);
     });
 
-    test('Test non-null values', (){
+    test('Test non-null values', () {
       when(riskProxy.getList()).thenReturn(dummy_list_risk);
       String error = "";
-      if(dummy_list_risk[0] == null){
+      if (dummy_list_risk[0] == null) {
         error += "Id is null\n";
-      }if(dummy_list_risk[1] == null){
+      }
+      if (dummy_list_risk[1] == null) {
         error += "Shortname is null\n";
-      }if(dummy_list_risk[2] == null){
+      }
+      if (dummy_list_risk[2] == null) {
         error += "Name is null\n";
-      }if(dummy_list_risk[4] == null){
+      }
+      if (dummy_list_risk[4] == null) {
         error += "Links is null\n";
-      }if(dummy_list_risk[5] == null){
+      }
+      if (dummy_list_risk[5] == null) {
         error += "Risks is null\n";
       }
       expect("", error);
