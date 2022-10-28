@@ -6,42 +6,32 @@ import tkinter as tk
 from tkinter import filedialog as fd
 
 # Imports to install
-# > pip install pandas requests bs4 openpyxl
+# > pip install pandas openpyxl
 import pandas as pd
-import requests
-from bs4 import BeautifulSoup
-
 
 
 # Constants
 JSON_FILE_PATH = "assets/risks-data-test.json"
 
-EXCEL_SECTOR_HEADER = "N° secteur"
-EXCEL_SPECIALIZATION_HEADER = "N° métiers"
-EXCEL_SKILL_HEADER = "Numéro de compétences"
-
-# Data to change
-EXCEL_SST_DATA_HEADERS = {
-    # json : excel
-    "c": "1. Risques Chimiques",
-    "b": "2. Risques Biologiques",
-    "e": "3. Risques liés aux machines et aux équipements",
-    "f": "4. Risques de chutes de hauteur et de plain-pied",
-    "of": "5. Risques liés aux chutes d’objets",
-    "t": " 6. Risques liés aux déplacements",
-    "p": " 7. Risques liés aux postures contraignantes",
-    "mv": "8. Risques liés aux mouvements répétitifs, pressions de contact et chocs",
-    "h": "9. Risques liés à la manutention",
-    "psy": "10. Risques psychosociaux et de violence",
-    "n": "11. Risques liés au bruit",
-    "et": "12. Risques liés à l'Froid et chaleur",
-    "v": "13. Risques liés aux vibrations",
-    "el": "14.1 Risques électriques",
-    "a": "14.2 Risque anoxie et travail en espace clos",
-    "fi": "14.3 Risque ATEX,  incendie ou explosion",
-    "nm": "14.4 Risques nanomatériaux ",
+RISKS_SHORTNAMES = {
+    1: "chemical",
+    2: "biological",
+    3: "equipment",
+    4: "fall",
+    5: "objectFall",
+    6: "transit",
+    7: "posture",
+    8: "motion",
+    9: "handling",
+    10: "psychological",
+    11: "noise",
+    12: "temperature",
+    13: "vibration",
+    14: "electric",
+    15: "anoxia",
+    16: "fire",
+    17: "nanomaterial"
 }
-
 
 # Main functions
 def run():
@@ -71,21 +61,48 @@ def start(excelPathSST: str):
         setMessage("Fichier Excel invalide")
         return
 
-    json = []
+    json = [{}]
 
     print(excelSST)
 
     for index in excelSST.index:
         row = excelSST.loc[index]
+
         json.append({
             str(row[0]): {
+                "shortname": RISKS_SHORTNAMES[int(row[0])],
                 "name": str(row[1]),
                 "risks": {
                     "1": {
-                        "title": str(row[2]),
+                        "title": str(str(row[2]) if str(row[2]) != "nan" else ""),
                         "intro": str(row[3]),
-                        "situations": str(row[4]).split("\n")[::1],
-                    }
+                        "situations": createDictFromString(row[4]) if str(row[4]) != "nan" else None,
+                        "factors": createDictFromString(row[5]) if str(row[5]) != "nan" else None,
+                        "symptoms": createDictFromString(row[6]) if str(row[6]) != "nan" else None,
+                        "images": ["path/image" + str(int(row[7])) if str(row[7]) != "nan" else None,
+                                   "path/image" + str(int(row[8])) if str(row[8]) != "nan" else None]
+                    },
+                    "2": {
+                        "title": str(str(row[9]) if str(row[9]) != "nan" else ""),
+                        "intro": str(row[10]),
+                        "situations": createDictFromString(row[11]) if str(row[11]) != "nan" else None,
+                        "factors": createDictFromString(row[12]) if str(row[12]) != "nan" else None,
+                        "symptoms": createDictFromString(row[13]) if str(row[13]) != "nan" else None,
+                        "images": ["path/image" + str(int(row[14])) if str(row[14]) != "nan" else None,
+                                   "path/image" + str(int(row[15])) if str(row[15]) != "nan" else None]
+                    } if str(row[9]) != "nan" else None
+                },
+                "links": {
+                    "1": {
+                        "source": str(row[16]),
+                        "title": str(row[17]),
+                        "url": str(row[18])
+                    },
+                    "2": {
+                        "source": str(row[19]),
+                        "title": str(row[20]),
+                        "url": str(row[21])
+                    } if str(row[19]) != "nan" else None
                 }
             }
         })
@@ -94,21 +111,18 @@ def start(excelPathSST: str):
     setMessage("Tout est fini!")
 
 
+def createDictFromString(cell: pd.DataFrame):
+    riskTypeDict = {}
+    lastLine = ""
+    for line in str(cell).split("\n")[::1]:
+        if line[0] == "-":
+            riskTypeDict[lastLine] += [line[1:].strip()]
+        else:
+            riskTypeDict[line] = []
+            lastLine = line
+    return riskTypeDict
+
 # Excel readers
-def getSSTDataFromExcel(excel: pd.DataFrame, sector, specialization, skill):
-    '''Returns the corresponding data contained in the SST excel file'''
-    result = []
-    row = excel.loc[(excel[EXCEL_SECTOR_HEADER] == int(sector)) & (
-        excel[EXCEL_SPECIALIZATION_HEADER] == int(specialization)) & (excel[EXCEL_SKILL_HEADER] == int(skill))]
-
-    for name, excelHeader in EXCEL_SST_DATA_HEADERS.items():
-        if row[excelHeader].index.size > 0 and row[excelHeader].get(row[excelHeader].index[0], "") == "oui":
-            result.append(name)
-
-    return result
-
-# String processing
-
 
 def cleanUpText(text: str):
     '''Removes unwanted formating chars at the end of [text].'''
@@ -168,7 +182,7 @@ frame = tk.Frame(mainFrame)
 frame.pack()
 
 excelPathSST = tk.StringVar(
-    value="D:/Users/2061694/Documents/GitHub/ressources/Contenu_fiches_SST.xlsx")
+    value="C:/Users/2061694/Documents/GitHub/ressources/Contenu_fiches_SST.xlsx")
 entrySST = tk.Entry(frame, textvariable=excelPathSST)
 entrySST.focus()
 entrySST.pack(side="left")
