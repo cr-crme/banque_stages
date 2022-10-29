@@ -52,6 +52,7 @@ class _RisksCardsScreenState extends State<RisksCardsScreen> {
             MainTitle(mainTitle),
             SubTitle(index, subTitle),
             Introduction(intro),
+            Image.asset('assets/1.png'),
             SituationRisk(listText),
           ],
         ));
