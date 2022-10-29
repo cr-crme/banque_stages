@@ -1,13 +1,13 @@
+import 'package:flutter/material.dart';
+
 import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/introduction.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/link.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/mainTitle.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/subTitle.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/paragraph.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/situation_risk.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/factors.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/symptoms.dart';
-import 'package:flutter/material.dart';
 
 class RisksCardsScreen extends StatefulWidget {
   const RisksCardsScreen(this.nmb, {super.key});
@@ -20,6 +20,7 @@ class RisksCardsScreen extends StatefulWidget {
 }
 
 class _RisksCardsScreenState extends State<RisksCardsScreen> {
+  //To remove when cache and proxy work
   final String intro =
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip";
   final String mainTitle =
@@ -72,7 +73,12 @@ class _RisksCardsScreenState extends State<RisksCardsScreen> {
             MainTitle(mainTitle),
             SubTitle(index, subTitle),
             Introduction(intro),
-            Image.asset('assets/1.png'),
+            Image.asset('assets/1.png'), //Testing how the picture is display
+            Container(
+              margin: const EdgeInsets.only(left: 20),
+              child: const Text(
+                  "Illustration: Hervé Charbonneau"), //It will be with the picture
+            ),
             SituationRisk(listText),
             Factors(listText),
             Symptoms(listText),
