@@ -1,29 +1,24 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:crcrme_banque_stages/screens/ref_sst/common/risk_sst.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
 
 class SkillSST {
-  SkillSST(
-      {required this.skillName,
-      required this.skillCode,
-      required this.skillCriterias,
-      required this.skillTasks,
-      required this.skillRisks}); //There are sometimes no risks
+  const SkillSST({
+    required this.name,
+    required this.code,
+    required this.criterias,
+    required this.tasks,
+    required this.risks, //There are sometimes no risks
+  });
 
-  final String skillName;
-  final int skillCode;
-  final List<String> skillCriterias;
-  final List<String> skillTasks;
-  final List<RiskSST> skillRisks;
-
-  get name => skillName;
-  get code => skillCode;
-  get criterias => skillCriterias;
-  get tasks => skillTasks;
-  get risks => skillRisks;
+  final String name;
+  final int code;
+  final List<String> criterias;
+  final List<String> tasks;
+  final Map<String, bool> risks;
 
   @override
   String toString() {
-    return '{Competence #$skillCode: $skillName}';
+    return '{Competence #$code: $name}';
   }
 }

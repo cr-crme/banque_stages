@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'common/job_sst.dart';
-import 'common/risk_sst.dart';
+import 'common/card_sst.dart';
 import 'common/skill_sst.dart';
 import 'common/proxy_ref_sst.dart';
 import 'sst_cards/widgets/sst_card.dart';
@@ -9,8 +9,8 @@ import 'sst_cards/widgets/sst_card.dart';
 class SSTCache {
   static final SSTCache _sstCache = SSTCache._internal();
 
-  List<JobSST> jobs = ProxySST().getJobList();
-  List<RiskSST> risks = ProxySST().getRiskList();
+  List<JobSST> jobs = JobsProxy().getList();
+  List<CardSST> risks = CardsProxy().getList();
 
   factory SSTCache() {
     return _sstCache;
@@ -22,23 +22,22 @@ class SSTCache {
     return jobs;
   }
 
-  List<RiskSST> getRisks() {
+  List<CardSST> getRisks() {
     return risks;
   }
 
   ListView getListViewJob() {
     return ListView(
-        children: [for (JobSST job in jobs) SSTCard(job.jobCode, job.jobName)]);
+        children: [for (JobSST job in jobs) SSTCard(job.code, job.name)]);
   }
 
   ListView getListViewRisk() {
-    return ListView(children: [
-      for (RiskSST risk in risks) SSTCard(risk.cardID, risk.title)
-    ]);
+    return ListView(
+        children: [for (CardSST risk in risks) SSTCard(risk.id, risk.name)]);
   }
 
   void refresh() {
-    jobs = ProxySST().getJobList();
-    risks = ProxySST().getRiskList();
+    jobs = JobsProxy().getList();
+    risks = CardsProxy().getList();
   }
 }
