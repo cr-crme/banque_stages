@@ -5,6 +5,7 @@ import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/mainTit
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/subTitle.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/paragraph.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/situation_risk.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/factors.dart';
 import 'package:flutter/material.dart';
 
 class RisksCardsScreen extends StatefulWidget {
@@ -72,6 +73,7 @@ class _RisksCardsScreenState extends State<RisksCardsScreen> {
             Introduction(intro),
             Image.asset('assets/1.png'),
             SituationRisk(listText),
+            Factors(listText),
             Link(links)
           ],
         ));
