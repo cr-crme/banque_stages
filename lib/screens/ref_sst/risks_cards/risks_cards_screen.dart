@@ -1,4 +1,6 @@
+import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/introduction.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/link.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/mainTitle.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/subTitle.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/paragraph.dart';
@@ -36,6 +38,22 @@ class _RisksCardsScreenState extends State<RisksCardsScreen> {
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. UtD":
         []
   });
+
+  final List<LinkSST> links = [
+    const LinkSST(
+        source: "CNESST",
+        title: "Prot\u00e9gez-vous contre les risques biologiques",
+        url: "https://www.google.ca/"),
+    const LinkSST(
+        source: "CNESST",
+        title: "Prot\u00e9gez-vous contre les risques biologiques",
+        url: "https://www.google.ca/"),
+    const LinkSST(
+        source: "CNESST",
+        title: "Prot\u00e9gez-vous contre les risques biologiques",
+        url: "https://www.google.ca/")
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +72,7 @@ class _RisksCardsScreenState extends State<RisksCardsScreen> {
             Introduction(intro),
             Image.asset('assets/1.png'),
             SituationRisk(listText),
+            Link(links)
           ],
         ));
   }
