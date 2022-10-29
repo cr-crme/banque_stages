@@ -1,6 +1,3 @@
-import 'dart:collection';
-import 'package:flutter/services.dart';
-
 import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
@@ -20,9 +17,7 @@ class ListLinks extends StatelessWidget {
       ));
     }
     return Center(
-      child: Container(
-        child: Column(children: widgetList),
-      ),
+      child: Column(children: widgetList),
     );
   }
 }
@@ -39,42 +34,18 @@ class ConstructLineWithDot extends StatelessWidget {
       children: <Widget>[
         Text(
           link.source,
-          style: TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 15),
         ),
-        Expanded(
+        const Expanded(
           child: Text(
             " : ",
-            style: const TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15),
           ),
         ),
         Expanded(
-          child: Text(linkTitle),
           flex: 20,
+          child: Text(linkTitle),
         )
-      ],
-    );
-  }
-}
-
-class ConstructSubPoint extends StatelessWidget {
-  const ConstructSubPoint(this.text, {super.key});
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          "      ◦ ",
-          style: TextStyle(fontSize: 15),
-        ),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 15),
-          ),
-        ),
       ],
     );
   }
