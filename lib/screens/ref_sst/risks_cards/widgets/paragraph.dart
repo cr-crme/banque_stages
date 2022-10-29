@@ -8,24 +8,22 @@ class Paragraph extends StatelessWidget {
   Widget build(BuildContext context) {
     var widgetList = <Widget>[];
     for (MapEntry<String, dynamic> point in texts.entries) {
-      widgetList.add(ConstructLineWithDot(point.key));
+      widgetList.add(BuildLineWithDot(point.key));
       for (String subPoint in point.value) {
-        widgetList.add(ConstructSubPoint(subPoint));
+        widgetList.add(BuildSubPoint(subPoint));
       }
       widgetList.add(const SizedBox(
         height: 5.0,
       ));
     }
     return Center(
-      child: Container(
-        child: Column(children: widgetList),
-      ),
+      child: Column(children: widgetList),
     );
   }
 }
 
-class ConstructLineWithDot extends StatelessWidget {
-  const ConstructLineWithDot(this.text, {super.key});
+class BuildLineWithDot extends StatelessWidget {
+  const BuildLineWithDot(this.text, {super.key});
   final String text;
 
   @override
@@ -48,8 +46,8 @@ class ConstructLineWithDot extends StatelessWidget {
   }
 }
 
-class ConstructSubPoint extends StatelessWidget {
-  const ConstructSubPoint(this.text, {super.key});
+class BuildSubPoint extends StatelessWidget {
+  const BuildSubPoint(this.text, {super.key});
   final String text;
 
   @override
