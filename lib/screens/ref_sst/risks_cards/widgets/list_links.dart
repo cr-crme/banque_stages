@@ -9,12 +9,8 @@ class ListLinks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var widgetList = <Widget>[];
-    for (LinkSST entry in links) {
-      widgetList.add(ConstructLineWithDot(entry));
-
-      widgetList.add(const SizedBox(
-        height: 5.0,
-      ));
+    for (LinkSST link in links) {
+      widgetList.add(BuildALineOfALink(link));
     }
     return Center(
       child: Column(children: widgetList),
@@ -22,8 +18,8 @@ class ListLinks extends StatelessWidget {
   }
 }
 
-class ConstructLineWithDot extends StatelessWidget {
-  const ConstructLineWithDot(this.link, {super.key});
+class BuildALineOfALink extends StatelessWidget {
+  const BuildALineOfALink(this.link, {super.key});
   final LinkSST link;
 
   @override
