@@ -10,7 +10,6 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-
 # Constants
 JSON_FILE_PATH = "assets/jobs-data.json"
 
@@ -19,7 +18,7 @@ EXCEL_SPECIALIZATION_HEADER = "N° métiers"
 EXCEL_SKILL_HEADER = "Numéro de compétences"
 
 # Data to change
-EXCEL_SST_DATA_HEADERS = {
+EXCEL_SST_RISKS_HEADERS = {
     # json : excel
     "c": "1. Risques Chimiques",
     "b": "2. Risques Biologiques",
@@ -40,7 +39,7 @@ EXCEL_SST_DATA_HEADERS = {
     "nm": "14.4 Risques nanomatériaux ",
 }
 
-EXCEL_STAGE_DATA_HEADERS = {
+EXCEL_STAGE_QUESTIONS_HEADERS = {
     # json : excel
     "1": "Q1",
     "2": "Q2",
@@ -73,157 +72,226 @@ def run():
     '''Run the main script in a new thread'''
 
     def target():
-        entrySST["state"] = "disabled"
-        entryStage["state"] = "disabled"
-        fileButtonSST["state"] = "disabled"
-        fileButtonStage["state"] = "disabled"
-        startButton["state"] = "disabled"
-        start(excelPathSST.get(), excelPathStage.get())
-        entrySST["state"] = "normal"
-        entryStage["state"] = "normal"
-        fileButtonSST["state"] = "normal"
-        fileButtonStage["state"] = "normal"
-        startButton["state"] = "normal"
+        ui = [entrySSTRisks, entryStageQuestions, fileButtonSSTRisks,
+              fileButtonStageQuestions, startButton]
+        # Disable the UI
+        for element in ui:
+            element["state"] = "disabled"
+        # Run the script
+        start(excelPathSSTRisks.get(), excelPathStageQuestions.get())
+        # Enable the UI
+        for element in ui:
+            element["state"] = "normal"
 
     threading.Thread(target=target).start()
 
 
-def start(excelPathSST: str, excelPathStage: str):
+def start(excelPathSSTRisks: str, excelPathStageQuestions: str):
     '''Starts the main script'''
+    # Open excel
     try:
-        excelSST = pd.read_excel(excelPathSST)
+        print(excelPathSSTRisks)
+        excelSSTRisks = pd.read_excel(excelPathSSTRisks)
     except FileNotFoundError:
-        setMessage("Fichier SST invalide")
+        setMessage("Could not read the SST excel file.")
         return
 
     try:
-        excelStage = pd.read_excel(excelPathStage)
+        excelStageQuestions = pd.read_excel(excelPathStageQuestions)
     except FileNotFoundError:
-        setMessage("Fichier Stage invalide")
+        setMessage("Could not read the Stage excel file.")
         return
 
     json = []
-    sectors = getSectors()
-    for sector in sectors:
+    for (sectorID, sectorName) in fetchActivitySectors():
         specializations = []
-        for specializationsID in getSpecializationIDsOfSector(sector["urlId"], sector["id"]):
-            specialization = getSpecialization(specializationsID)
+        for specializationURL in fetchSpecializationURLsOfSector(sectorID):
+            specialization = fetchSpecialization(specializationURL)
             specializations.append(specialization)
+            if specialization is None:
+                continue
 
-            specialization["q"] = getStageDataFromExcel(
-                excelStage, sector["id"], specialization["id"])
+            try:
+                specialization["q"] = getStageQuestionsFromExcel(
+                    excelStageQuestions, sectorID, specialization["id"])
+            except KeyError as e:
+                setMessage(
+                    f"Stage Questions Excel Key Error : {e}. This usually means the selected excel file doesn't have valid headers.")
+                return
 
-            for skill in specialization["s"]:
-                skill["r"] = getSSTDataFromExcel(
-                    excelSST, sector["id"], specialization["id"], skill["id"])
+            try:
+                for skill in specialization["s"]:
+                    skill["r"] = getSSTRisksFromExcel(
+                        excelSSTRisks, sectorID, specialization["id"], skill["id"])
+            except KeyError as e:
+                setMessage(
+                    f"SST Risks Excel Key Error : {e}. This usually means the selected excel file doesn't have valid headers.")
+                return
 
         json.append({
-            "n": sector["name"],
-            "id": sector["id"],
+            "n": sectorName,
+            "id": sectorID,
             "s": specializations,
         })
 
     saveJson(json, JSON_FILE_PATH)
-    setMessage("Tout est fini!")
+    setMessage("All done !")
 
 
 # Excel readers
-def getSSTDataFromExcel(excel: pd.DataFrame, sector, specialization, skill):
-    '''Returns the corresponding data contained in the SST excel file'''
+def getSSTRisksFromExcel(excel: pd.DataFrame, sectorID: str, specializationID: str, skillID: str):
+    '''Returns the corresponding data contained in the SST Risks excel file'''
     result = []
-    row = excel.loc[(excel[EXCEL_SECTOR_HEADER] == int(sector)) & (
-        excel[EXCEL_SPECIALIZATION_HEADER] == int(specialization)) & (excel[EXCEL_SKILL_HEADER] == int(skill))]
+    # Get the rows with the corresponding ids
+    row = excel.loc[(excel[EXCEL_SECTOR_HEADER] == int(sectorID)) & (
+        excel[EXCEL_SPECIALIZATION_HEADER] == int(specializationID)) & (excel[EXCEL_SKILL_HEADER] == int(skillID))]
 
-    for name, excelHeader in EXCEL_SST_DATA_HEADERS.items():
-        if row[excelHeader].index.size > 0 and row[excelHeader].get(row[excelHeader].index[0], "") == "oui":
+    # Iterate on the columns
+    for name, excelHeader in EXCEL_SST_RISKS_HEADERS.items():
+        if row[excelHeader].index.size == 0:
+            # No data
+            setMessage(
+                f"Missing data ! This skill wasn't found in the excel SST Risks file. (sector: {sectorID}, specialization: {specializationID}, skill: {skillID})")
+            break
+        elif row[excelHeader].index.size > 1:
+            # Too much data
+            setMessage(
+                f"Too much data ! This skill was found more than once in the excel SST Risks file. (sector: {sectorID}, specialization: {specializationID}, skill: {skillID})")
+            break
+        elif row[excelHeader].get(row[excelHeader].index[0], None) == None:
+            # The cell is empty. This will probably never be true because of the first two if
+            setMessage(
+                f"Missing data ! This cell was empty in the excel SST Risks file. (sector: {sectorID}, specialization: {specializationID}, skill: {skillID}, risk: {excelHeader})")
+        elif row[excelHeader].get(row[excelHeader].index[0], "") == "Oui":
+            # Good data and data is "Oui"
             result.append(name)
 
     return result
 
 
-def getStageDataFromExcel(excel: pd.DataFrame, sector, specialization):
-    '''Returns the corresponding data contained in the stage excel file'''
+def getStageQuestionsFromExcel(excel: pd.DataFrame, sectorID: str, specializationID: str):
+    '''Returns the corresponding data contained in the stage Questions excel file'''
     result = []
-    row = excel.loc[(excel[EXCEL_SECTOR_HEADER] == int(sector))
-                    & (excel[EXCEL_SPECIALIZATION_HEADER] == int(specialization))]
+    # Get the rows with the corresponding ids
+    row = excel.loc[(excel[EXCEL_SECTOR_HEADER] == int(sectorID)) & (
+        excel[EXCEL_SPECIALIZATION_HEADER] == int(specializationID))]
 
-    for name, excelHeader in EXCEL_STAGE_DATA_HEADERS.items():
-        if row[excelHeader].index.size > 0 and row[excelHeader].get(row[excelHeader].index[0], "") == "Oui":
+    # Iterate on the columns
+    for name, excelHeader in EXCEL_STAGE_QUESTIONS_HEADERS.items():
+        if row[excelHeader].index.size == 0:
+            # No data
+            setMessage(
+                f"Missing data ! This specialization wasn't found in the excel Stage Questions file. (sector: {sectorID}, specialization: {specializationID})")
+            break
+        elif row[excelHeader].index.size > 1:
+            # Too much data
+            setMessage(
+                f"Too much data ! This specialization was found more than once in the excel Stage Questions file. (sector: {sectorID}, specialization: {specializationID})")
+            break
+        elif row[excelHeader].get(row[excelHeader].index[0], None) == None:
+            # The cell is empty. This will probably never be true because of the first two if
+            setMessage(
+                f"Missing data ! This cell was empty in the excel Stage Questions file. (sector: {sectorID}, specialization: {specializationID}, question: {excelHeader})")
+        elif row[excelHeader].get(row[excelHeader].index[0], "") == "Oui":
+            # Good data and data is "Oui"
             result.append(name)
 
     return result
 
 
 # Data fetching
-def getSectors():
-    '''Returns all the available sectors.'''
+def fetchActivitySectors():
+    '''Fetches and parses all the available activity sectors.'''
     result = []
     nameRegex = re.compile(r"^\d+ - (\D*)$")
-    setMessage("Fetching all sectors...")
 
+    setMessage("Fetching all sectors...")
     page = requests.get(
         "http://www1.education.gouv.qc.ca/sections/metiers/index.asp")
     soup = BeautifulSoup(page.content, "html.parser")
 
+    # For each checkbox in the page
     for input in soup.find_all("input", type="checkbox"):
-        result.append(
-            {
-                "urlId": input["id"],
-                "id": input["value"],
-                "name": nameRegex.match(input.find_next_sibling("label").text).group(1),
-            }
-        )
+        sectorID = input["value"]
+        name = nameRegex.match(input.find_next_sibling("label").text)
+
+        # Handle error
+        if name is None:
+            setMessage(
+                f"Missing data ! Could not find a name of Sector {sectorID}.")
+            continue
+
+        result.append((sectorID, name.group(1)))
 
     return result
 
 
-def getSpecializationIDsOfSector(id: str, value: str):
-    '''Returns all the specializations of a particular sector.'''
+def fetchSpecializationURLsOfSector(sectorId: str):
+    '''Returns all the specializations' URL of a particular sector.'''
     result = []
     hrefRegex = re.compile(r"^index\.asp\?.*id=(\d+)")
 
-    setMessage(f"Fetching all specializations of {id}...")
+    setMessage(f"Fetching all specializations of {sectorId}...")
     page = requests.get(
-        f"http://www1.education.gouv.qc.ca/sections/metiers/index.asp?page=recherche&action=search&navSeq=1&{id}={value}"
+        f"http://www1.education.gouv.qc.ca/sections/metiers/index.asp?page=recherche&action=search&navSeq=1&sector1={sectorId}"
     )
     soup = BeautifulSoup(page.content, "html.parser")
 
+    # Exctract the id of each specializations' link
     for specialization in soup.find_all("a", href=hrefRegex):
-        result.append(hrefRegex.match(specialization["href"]).group(1))
+        s = hrefRegex.match(specialization["href"])
+        if s is None:
+            continue
+        result.append(s.group(1))
 
     return result
 
 
-def getSpecialization(id: str):
+def fetchSpecialization(specializationURL: str):
     '''Returns a detailed specialization.'''
     titleRegex = re.compile(r"(\d+) - ([^\t\r\n]*)")
 
     page = requests.get(
-        f"http://www1.education.gouv.qc.ca/sections/metiers/index.asp?page=fiche&id={id}"
+        f"http://www1.education.gouv.qc.ca/sections/metiers/index.asp?page=fiche&id={specializationURL}"
     )
     soup = BeautifulSoup(page.content, "html.parser")
 
-    [specializationId, specializationName] = soup.find(
-        "h2").getText(";", True).split(";")
-    result = {"n": specializationName, "id": specializationId, "s": []}
+    # Find the name of the specialization
+    header = soup.find("h2")
+    if header is None:
+        setMessage(
+            f"Missing data ! Specialization header not found. (sector: {specializationURL})")
+        return None
+    headerText = header.getText(";", True).split(";")
 
+    result = {"n": headerText[1], "id": headerText[0], "s": []}
+
+    # Parse each skill
     for header in soup.find_all("thead"):
         titleSearch = titleRegex.search(header.find("th").text)
-        skillId = titleSearch.group(1)
+        if titleSearch is None:
+            setMessage(
+                f"Missing data ! The title of skill {header.find('th').text} (specialization: {specializationURL}) could not be found")
+            continue
+
+        skillID = titleSearch.group(1)
         skillName = titleSearch.group(2)
 
+        # Get the two list that are inside the table under the header
         lists = header.find_next_sibling("tbody").find_all("ul")
 
         criteria = []
+        # Criteria are situated on the first list
         for criterion in lists[0].find_all("li"):
             criteria.append(criterion.text)
 
         tasks = []
+        # Tasks are situated on the second list
         for task in lists[1].find_all("li"):
             tasks.append(task.text)
 
         result["s"].append(
-            {"n": skillName, "id": skillId, "c": criteria, "t": tasks})
+            {"id": skillID, "n": skillName, "c": criteria, "t": tasks})
 
     return result
 
@@ -231,13 +299,18 @@ def getSpecialization(id: str):
 # String processing
 def cleanUpText(text: str):
     '''Removes unwanted formating chars at the end of [text].'''
-    text = re.match(r"[^\t\r\n]*", text).group(0)
+    match = re.match(r"[^\t\r\n]*", text)
+    if match is None:
+        return ""
+
+    text = match.group(0)
     text = text.replace("\u009c", "oe")
     text = text.replace("\u0092", "'")
     return text
 
 
 def cleanUpData(data):
+    '''Removes unwanted data from [data]. Cleans up all strings, remove None values from list and dict.'''
     if isinstance(data, list):
         return [cleanUpData(x) for x in data if x is not None]
     elif isinstance(data, dict):
@@ -249,8 +322,8 @@ def cleanUpData(data):
 
 
 # Utils
-def saveJson(data: dict, path: str):
-    '''Saves [json] as a file named [path] formated with an indent of 4.'''
+def saveJson(data: list, path: str):
+    '''Saves [json] as a file named [path].'''
     setMessage("Saving json...")
     with open(path, "w") as file:
         file.write(json.dumps(cleanUpData(data),
@@ -258,11 +331,13 @@ def saveJson(data: dict, path: str):
 
 
 def setMessage(message: str):
+    '''Prints the provided message and shows it to the user'''
     print(message)
     currentMessage.set(message)
 
 
 def askExcelPath():
+    '''Asks the user for an excel file using the system's dialog'''
     file = fd.askopenfile(title="Choisir un classeur Excel", filetypes=(
         ("Classeurs Excel", "*.xlsx *.xls"), ("Tous les fichiers", "*.*")))
 
@@ -286,14 +361,14 @@ tk.Label(mainFrame, text="Entrez le chemin d'accès du classeur Excel contenant 
 frame = tk.Frame(mainFrame)
 frame.pack()
 
-excelPathSST = tk.StringVar(value="analyse_risques_metiers.xlsx")
-entrySST = tk.Entry(frame, textvariable=excelPathSST)
-entrySST.focus()
-entrySST.pack(side="left")
+excelPathSSTRisks = tk.StringVar(value="analyse_risques_metiers.xlsx")
+entrySSTRisks = tk.Entry(frame, textvariable=excelPathSSTRisks)
+entrySSTRisks.focus()
+entrySSTRisks.pack(side="left")
 
-fileButtonSST = tk.Button(frame, text="Parcourir",
-                          command=lambda: excelPathSST.set(askExcelPath()))
-fileButtonSST.pack(side="right")
+fileButtonSSTRisks = tk.Button(frame, text="Parcourir",
+                               command=lambda: excelPathSSTRisks.set(askExcelPath()))
+fileButtonSSTRisks.pack(side="right")
 
 
 tk.Label(mainFrame, text="Entrez le chemin d'accès du classeur Excel contenant").pack()
@@ -302,13 +377,13 @@ tk.Label(mainFrame, text="les questions à poser lors du formulaire de création
 frame = tk.Frame(mainFrame)
 frame.pack()
 
-excelPathStage = tk.StringVar(value="choix_questions.xlsx")
-entryStage = tk.Entry(frame, textvariable=excelPathStage)
-entryStage.pack(side="left")
+excelPathStageQuestions = tk.StringVar(value="choix_questions.xlsx")
+entryStageQuestions = tk.Entry(frame, textvariable=excelPathStageQuestions)
+entryStageQuestions.pack(side="left")
 
-fileButtonStage = tk.Button(frame, text="Parcourir",
-                            command=lambda: excelPathStage.set(askExcelPath()))
-fileButtonStage.pack(side="right")
+fileButtonStageQuestions = tk.Button(frame, text="Parcourir",
+                                     command=lambda: excelPathStageQuestions.set(askExcelPath()))
+fileButtonStageQuestions.pack(side="right")
 
 
 startButton = tk.Button(mainFrame, text="Générer", command=run)
