@@ -299,11 +299,7 @@ def fetchSpecialization(specializationURL: str):
 # String processing
 def cleanUpText(text: str):
     '''Removes unwanted formating chars at the end of [text].'''
-    match = re.match(r"[^\t\r\n]*", text)
-    if match is None:
-        return ""
-
-    text = match.group(0)
+    text = text.strip()
     text = text.replace("\u009c", "oe")
     text = text.replace("\u0092", "'")
     return text
