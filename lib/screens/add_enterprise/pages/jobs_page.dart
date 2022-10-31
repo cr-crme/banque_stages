@@ -6,7 +6,7 @@ import '/common/widgets/delete_button.dart';
 import '/common/widgets/form_fields/job_form_field.dart';
 
 class JobsPage extends StatefulWidget {
-  const JobsPage({Key? key}) : super(key: key);
+  const JobsPage({super.key});
 
   @override
   State<JobsPage> createState() => JobsPageState();

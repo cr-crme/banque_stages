@@ -1,4 +1,3 @@
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/enterprise.dart';
@@ -6,12 +5,11 @@ import '/common/widgets/activity_type_cards.dart';
 
 class ActivityTypesPickerFormField extends FormField<Set<String>> {
   ActivityTypesPickerFormField({
-    Key? key,
+    super.key,
     Set<String>? initialValue,
     void Function(Set<String>? activityTypes)? onSaved,
     String? Function(Set<String>? activityTypes)? validator,
   }) : super(
-          key: key,
           initialValue: initialValue ?? {},
           onSaved: onSaved,
           validator: validator ?? _validator,
@@ -25,29 +23,41 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
   }
 
   static Widget _builder(FormFieldState<Set<String>> state) {
-    final GlobalKey<AutoCompleteTextFieldState<String>> autoCompleteKey =
-        GlobalKey();
+    late TextEditingController textFieldController;
+    late FocusNode textFieldFocusNode;
 
     return Column(
       children: [
-        AutoCompleteTextField<String>(
-          decoration: InputDecoration(
-              labelText: "* Types d'activité", errorText: state.errorText),
-          key: autoCompleteKey,
-          itemSubmitted: (activityType) {
+        Autocomplete<String>(
+          optionsBuilder: (textEditingValue) {
+            return activityTypes.where(
+              (activity) =>
+                  activity.contains(textEditingValue.text) &&
+                  !state.value!.contains(activity),
+            );
+          },
+          onSelected: (activityType) {
             state.value!.add(activityType);
             state.didChange(state.value);
+            textFieldController.text = "";
+            textFieldFocusNode.unfocus();
           },
-          suggestions: activityTypes,
-          itemBuilder: (context, suggestion) =>
-              ListTile(title: Text(suggestion.toString())),
-          itemSorter: (a, b) => a.toString().compareTo(b.toString()),
-          itemFilter: (suggestion, query) =>
-              !state.value!.contains(suggestion) &&
-              suggestion
-                  .toString()
-                  .toLowerCase()
-                  .startsWith(query.toLowerCase()),
+          fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
+            textFieldController = controller;
+            textFieldFocusNode = focusNode;
+            return TextField(
+              controller: controller,
+              focusNode: focusNode,
+              onSubmitted: (_) {
+                onSubmitted();
+                controller.text = "";
+              },
+              decoration: InputDecoration(
+                labelText: "* Types d'activité",
+                errorText: state.errorText,
+              ),
+            );
+          },
         ),
         Visibility(
           visible: state.value!.isNotEmpty,

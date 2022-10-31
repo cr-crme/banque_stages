@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import '/common/models/enterprise.dart';
 import '/common/widgets/disponibility_circle.dart';
 
-class ListItem extends StatelessWidget {
-  const ListItem({
-    Key? key,
+class EnterpriseCard extends StatelessWidget {
+  const EnterpriseCard({
+    super.key,
     required this.enterprise,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final Enterprise enterprise;
   final void Function(Enterprise enterprise) onTap;
@@ -66,7 +66,8 @@ class ListItem extends StatelessWidget {
                                             job.positionsOccupied),
                                     const SizedBox(width: 8),
                                     Text(
-                                      job.specialization.toString(),
+                                      job.specialization?.idWithName ??
+                                          "bad id",
                                     ),
                                   ],
                                 ),

@@ -11,15 +11,13 @@ class SupervisionExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _SupervisionBody(job: job),
           headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text(
-              "Type d'encadrement des stagiaires",
-            ),
+            title: Text("Type d'encadrement des stagiaires"),
           ),
         );
 }
 
 class _SupervisionBody extends StatelessWidget {
-  const _SupervisionBody({Key? key, required this.job}) : super(key: key);
+  const _SupervisionBody({required this.job});
 
   final Job job;
 
@@ -57,10 +55,9 @@ class _SupervisionBody extends StatelessWidget {
 
 class _RatingBar extends StatelessWidget {
   const _RatingBar({
-    Key? key,
     required this.title,
     required this.rating,
-  }) : super(key: key);
+  });
 
   final String title;
   final double rating;

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class DeleteButton extends StatelessWidget {
   const DeleteButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     this.visualDensity,
     this.padding = const EdgeInsets.all(8.0),
     this.alignment = Alignment.center,
     this.focusNode,
     this.autofocus = false,
-  }) : super(key: key);
+  });
 
   final void Function()? onPressed;
   final VisualDensity? visualDensity;

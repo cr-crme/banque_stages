@@ -11,13 +11,12 @@ class TasksExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _TasksBody(job: job),
           headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text("Tâches et exigences envers les stagiaires"),
-          ),
+              title: Text("Tâches et exigences envers les stagiaires")),
         );
 }
 
 class _TasksBody extends StatelessWidget {
-  const _TasksBody({Key? key, required this.job}) : super(key: key);
+  const _TasksBody({required this.job});
 
   final Job job;
 

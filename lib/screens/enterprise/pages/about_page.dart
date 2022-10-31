@@ -8,12 +8,13 @@ import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/common/widgets/disponibility_circle.dart';
 import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import '/common/widgets/form_fields/share_with_picker_form_field.dart';
+import '/misc/form_service.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({
-    Key? key,
+    super.key,
     required this.enterprise,
-  }) : super(key: key);
+  });
 
   final Enterprise enterprise;
 
@@ -31,20 +32,13 @@ class AboutPageState extends State<AboutPage> {
   bool _editing = false;
   bool get editing => _editing;
 
-  void _showInvalidFieldsSnakBar() {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Assurez vous que tous les champs soient valides")));
-  }
-
   void toggleEdit() {
     if (!_editing) {
       setState(() => _editing = true);
       return;
     }
 
-    if (!_formKey.currentState!.validate()) {
-      _showInvalidFieldsSnakBar();
+    if (!FormService.validateForm(_formKey)) {
       return;
     }
 
@@ -143,7 +137,8 @@ class AboutPageState extends State<AboutPage> {
                             positionsOffered: job.positionsOffered,
                             positionsOccupied: job.positionsOccupied,
                           ),
-                          title: Text(job.specialization),
+                          title:
+                              Text(job.specialization?.idWithName ?? "bad id"),
                           trailing: Text(
                               "${job.positionsOffered - job.positionsOccupied} / ${job.positionsOffered}"),
                         ),

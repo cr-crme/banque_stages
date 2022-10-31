@@ -58,3 +58,5 @@ macos/Runner/GoogleService-Info.plist
 */flutter/generated_plugin_registrant.h
 */flutter/generated_plugins.cmake
 macos/Flutter/GeneratedPluginRegistrant.swift
+
+lib/localizations/untranslated-messages.txt

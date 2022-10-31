@@ -3,14 +3,14 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/widgets/search_bar.dart';
 import '/dummy_data.dart';
 import '/screens/add_enterprise/add_enterprise_screen.dart';
 import '/screens/enterprise/enterprise_screen.dart';
-import 'widgets/list_item.dart';
-import 'widgets/search_bar.dart';
+import 'widgets/enterprise_card.dart';
 
 class EnterprisesListScreen extends StatefulWidget {
-  const EnterprisesListScreen({Key? key}) : super(key: key);
+  const EnterprisesListScreen({super.key});
 
   static const route = "/enterprises-list";
 
@@ -40,9 +40,11 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
           .toLowerCase()
           .startsWith(_searchController.text.toLowerCase())) {
         return true;
-      } else if (enterprise.jobs.any((job) => job.specialization
-          .toLowerCase()
-          .startsWith(_searchController.text.toLowerCase()))) {
+      } else if (enterprise.jobs.any((job) =>
+          job.specialization?.name
+              .toLowerCase()
+              .startsWith(_searchController.text.toLowerCase()) ??
+          false)) {
         return true;
       } else if (enterprise.activityTypes.any((type) => type
           .toLowerCase()
@@ -87,7 +89,7 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
               child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: enterprises.length,
-                itemBuilder: (context, index) => ListItem(
+                itemBuilder: (context, index) => EnterpriseCard(
                   enterprise: enterprises.elementAt(index),
                   onTap: _openEnterpriseScreen,
                 ),

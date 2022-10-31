@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class SearchBar extends StatelessWidget with PreferredSizeWidget {
-  const SearchBar({Key? key, required this.controller}) : super(key: key);
+  const SearchBar({
+    super.key,
+    required this.controller,
+  });
 
   final TextEditingController controller;
 

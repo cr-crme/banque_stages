@@ -18,9 +18,9 @@ import 'jobs_expansion_panels/tasks_expansion_panel.dart';
 
 class JobsPage extends StatefulWidget {
   const JobsPage({
-    Key? key,
+    super.key,
     required this.enterprise,
-  }) : super(key: key);
+  });
 
   final Enterprise enterprise;
 
@@ -45,10 +45,9 @@ class JobsPageState extends State<JobsPage> {
     final provider = context.read<EnterprisesProvider>();
 
     final images = await ImagePicker().pickMultiImage();
-    if (images == null) return;
 
     for (XFile file in images) {
-      var url = await StorageService.uploadJobImage(file);
+      var url = await StorageService.uploadJobImage(file.path);
       job.pictures.add(url);
     }
     provider.replace(widget.enterprise);
@@ -134,7 +133,7 @@ class JobsPageState extends State<JobsPage> {
                 value: job.id,
                 headerBuilder: (context, isExpanded) => ListTile(
                       title: Text(
-                        job.specialization,
+                        job.specialization?.idWithName ?? "bad id",
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),

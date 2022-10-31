@@ -3,7 +3,8 @@ import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/list_seriali
 import '/common/models/job.dart';
 
 class JobList extends ListSerializable<Job> {
-  JobList() : super();
+  JobList();
+
   JobList.fromSerialized(Map<String, dynamic> map) : super.fromSerialized(map);
 
   @override

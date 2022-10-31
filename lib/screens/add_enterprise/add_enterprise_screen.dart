@@ -11,7 +11,7 @@ import 'pages/informations_page.dart';
 import 'pages/jobs_page.dart';
 
 class AddEnterpriseScreen extends StatefulWidget {
-  const AddEnterpriseScreen({Key? key}) : super(key: key);
+  const AddEnterpriseScreen({super.key});
 
   static const route = "/add-enterprise";
 
