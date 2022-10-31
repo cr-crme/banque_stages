@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:crcrme_banque_stages/crcrme_material_theme/lib/crcrme_material_theme.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/risks_cards_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
           EnterpriseScreen.route: (context) => const EnterpriseScreen(),
           HomeSSTScreen.route: (context) => const HomeSSTScreen(),
           SSTCardsScreen.route: (context) => const SSTCardsScreen(),
+          RisksCardsScreen.route: (context) => const RisksCardsScreen(0),
           JobListScreen.route: (context) => const JobListScreen(),
           PostInternshipEvaluationScreen.route: (context) =>
               const PostInternshipEvaluationScreen(),
