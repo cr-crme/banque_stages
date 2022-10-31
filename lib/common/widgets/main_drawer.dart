@@ -1,4 +1,5 @@
 import 'package:crcrme_banque_stages/screens/home_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +48,7 @@ class MainDrawer extends StatelessWidget {
                 const _DrawerItem(
                   titleText: "Référentiel SST",
                   icon: Icon(Icons.warning_rounded),
-                  route: EnterprisesListScreen.route,
+                  route: HomeSSTScreen.route,
                 ),
                 provider.currentUser == null
                     ? const _DrawerItem(
