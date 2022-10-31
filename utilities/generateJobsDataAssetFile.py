@@ -268,7 +268,10 @@ def fetchSpecialization(specializationURL: str):
 
     # Parse each skill
     for header in soup.find_all("thead"):
-        titleSearch = titleRegex.search(header.find("th").text)
+        headerSections = header.find_all("th")
+
+        # Extract id and name from the title
+        titleSearch = titleRegex.search(headerSections[0].text)
         if titleSearch is None:
             setMessage(
                 f"Missing data ! The title of skill {header.find('th').text} (specialization: {specializationURL}) could not be found")
@@ -276,6 +279,9 @@ def fetchSpecialization(specializationURL: str):
 
         skillID = titleSearch.group(1)
         skillName = titleSearch.group(2)
+
+        # Get the complexity
+        complexity = headerSections[2].text
 
         # Get the two list that are inside the table under the header
         lists = header.find_next_sibling("tbody").find_all("ul")
@@ -291,7 +297,7 @@ def fetchSpecialization(specializationURL: str):
             tasks.append(task.text)
 
         result["s"].append(
-            {"id": skillID, "n": skillName, "c": criteria, "t": tasks})
+            {"id": skillID, "n": skillName, "x": complexity, "c": criteria, "t": tasks})
 
     return result
 

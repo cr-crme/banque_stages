@@ -106,6 +106,7 @@ class Specialization extends ItemSerializable {
 class Skill extends ItemSerializable {
   Skill.fromSerialized(map)
       : name = map["n"],
+        complexity = map["x"],
         criteria = List.from(map["c"], growable: false),
         tasks = List.from(map["t"], growable: false),
         risks = Set.from(map["r"]),
@@ -116,9 +117,10 @@ class Skill extends ItemSerializable {
     throw "Skill should not be serialized. Store its ID intead.";
   }
 
-  String name;
+  final String name;
+  final String complexity;
 
-  List<String> criteria;
-  List<String> tasks;
-  Set<String> risks;
+  final List<String> criteria;
+  final List<String> tasks;
+  final Set<String> risks;
 }
