@@ -79,8 +79,8 @@ class MyApp extends StatelessWidget {
         theme: crcrmeMaterialTheme,
         initialRoute: HomeScreen.route,
         routes: {
-          HomeScreen.route: (context) => const HomeScreen(),
           LoginScreen.route: (context) => const LoginScreen(),
+          HomeScreen.route: (context) => const HomeScreen(),
           EnterprisesListScreen.route: (context) =>
               const EnterprisesListScreen(),
           AddEnterpriseScreen.route: (context) => const AddEnterpriseScreen(),
