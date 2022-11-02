@@ -49,6 +49,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 "Impossible de se connecter; ce compte à été désactivé.";
           });
           break;
+        default:
+          const snackBar = SnackBar(
+            content: Text('Erreur non reconnue lors de l\'activation'),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
       return;
     }
@@ -81,6 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     labelText: "Courriel",
                   ),
                   validator: FormService.emailValidator,
+                  keyboardType: TextInputType.emailAddress,
                   onSaved: (email) => _email = email!,
                 ),
                 const SizedBox(height: 8),
@@ -88,6 +95,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: const InputDecoration(
                       icon: Icon(Icons.lock), labelText: "Mot de passe"),
                   validator: FormService.passwordValidator,
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
                   onSaved: (function) => _password = function!,
                 ),
                 Visibility(
