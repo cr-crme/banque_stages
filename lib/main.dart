@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import './common/models/waypoints.dart';
 import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
 import 'common/providers/students_provider.dart';
@@ -29,6 +30,7 @@ import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
+import 'screens/visiting_students/student_routing_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +46,6 @@ void main() async {
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
     return true;
   }());
-
   runApp(const MyApp());
 }
 
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
+        ChangeNotifierProvider(create: (context) => Waypoints()),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
           create: (context) => StudentsProvider(),
           update: (context, auth, previous) {
@@ -93,6 +95,7 @@ class MyApp extends StatelessWidget {
           StudentScreen.route: (context) => const StudentScreen(),
           PostInternshipEvaluationScreen.route: (context) =>
               const PostInternshipEvaluationScreen(),
+          StudentRoutingScreen.route: (context) => const StudentRoutingScreen(),
         },
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
