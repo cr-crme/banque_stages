@@ -6,7 +6,7 @@ import 'package:routing_client_dart/routing_client_dart.dart';
 import '../../common/models/waypoints.dart';
 
 class StudentRoutingScreen extends StatefulWidget {
-  static const String route = 'polyline';
+  static const String route = '/visiting-students/routing-screen';
 
   const StudentRoutingScreen({Key? key}) : super(key: key);
 
@@ -16,6 +16,7 @@ class StudentRoutingScreen extends StatefulWidget {
 
 class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
   bool _shouldComeBack = true;
+  double? _routeDistance;
   Future<List<Polyline>> _route = Future<List<Polyline>>.value([]);
 
   @override
@@ -25,6 +26,7 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
   }
 
   Future<List<Polyline>> _getActivateRoute() async {
+    _routeDistance = null;
     final waypoints = Provider.of<Waypoints>(context, listen: false);
     if (waypoints.activeLength <= 1) return [];
 
@@ -38,6 +40,7 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
       steps: true,
       languageCode: "en",
     );
+    _routeDistance = road.distance;
 
     if (road.polyline == null) return [Polyline(points: [])];
     setState(() {});
@@ -69,9 +72,9 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
           point: waypoint.toLatLng(),
           anchorPos: AnchorPos.exactly(Anchor(3, -15)),
           builder: (context) => GestureDetector(
-                onTap: () => _clickOnWaypoint(i),
+                onTap: i == 0 ? null : () => _clickOnWaypoint(i),
                 child: Icon(
-                  Icons.location_history_outlined,
+                  i == 0 ? Icons.school : Icons.location_history_outlined,
                   color: waypoint.isActivated ? Colors.deepPurple : Colors.grey,
                   size: markerSize,
                 ),
@@ -82,15 +85,19 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final distance = _routeDistance == null
+        ? 'en cours de calcul...'
+        : '${_routeDistance!.toStringAsFixed(1)}km';
     return Scaffold(
-        appBar: AppBar(title: const Text('Choix de l\'itinéraire')),
-        body: Column(
+      appBar: AppBar(title: const Text('Choix de l\'itinéraire')),
+      body: Consumer<Waypoints>(
+        builder: (context, waypoints, child) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Revenir au point de départ"),
+                const Text('Revenir à l\'école'),
                 Checkbox(
                     value: _shouldComeBack,
                     onChanged: (val) {
@@ -100,6 +107,11 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
                     }),
               ],
             ),
+            Text(
+              waypoints.activeLength <= 1
+                  ? 'Aucun trajet sélectionné'
+                  : 'Distance de trajet prévue = $distance',
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8),
@@ -107,22 +119,20 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
                   future: _route,
                   builder: (context, route) {
                     if (route.hasData) {
-                      return Consumer<Waypoints>(
-                        builder: (context, waypoints, child) => FlutterMap(
-                          options: MapOptions(
-                              center: waypoints.meanLatLng, zoom: 13),
-                          nonRotatedChildren: const [_ZoomButtons()],
-                          children: [
-                            TileLayer(
-                              urlTemplate:
-                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                              userAgentPackageName:
-                                  'dev.fleaflet.flutter_map.example',
-                            ),
-                            PolylineLayer(polylines: route.data!),
-                            MarkerLayer(markers: _waypointsToMarkers()),
-                          ],
-                        ),
+                      return FlutterMap(
+                        options: MapOptions(
+                            center: waypoints[0].toLatLng(), zoom: 13),
+                        nonRotatedChildren: const [_ZoomButtons()],
+                        children: [
+                          TileLayer(
+                            urlTemplate:
+                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName:
+                                'dev.fleaflet.flutter_map.example',
+                          ),
+                          PolylineLayer(polylines: route.data!),
+                          MarkerLayer(markers: _waypointsToMarkers()),
+                        ],
                       );
                     }
                     return const Center(child: CircularProgressIndicator());
@@ -131,7 +141,9 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
               ),
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
 
