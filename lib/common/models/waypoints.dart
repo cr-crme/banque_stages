@@ -10,12 +10,15 @@ class Waypoint {
 
   static Future<Waypoint> fromCoordinates(latitude, longitude,
       {isActivated}) async {
-    final placemark =
-        (await placemarkFromCoordinates(latitude, longitude)).first;
-    final address =
-        "${placemark.street}, ${placemark.locality} ${placemark.postalCode}";
+    late Placemark placemark;
+    try {
+      placemark = (await placemarkFromCoordinates(latitude, longitude)).first;
+    } catch (e) {
+      placemark = Placemark();
+    }
+
     return Waypoint(latitude, longitude,
-        address: address, isActivated: isActivated);
+        address: placemark, isActivated: isActivated);
   }
 
   Waypoint copyWith({latitude, longitude, address, isActivated}) {
@@ -52,15 +55,14 @@ class Waypoint {
   final bool isActivated;
   final double latitude;
   final double longitude;
-  late final String address;
+  final Placemark address;
 
   @override
-  String toString() {
-    return address;
-  }
+  String toString() =>
+      "${address.street}\n${address.locality} ${address.postalCode}";
 }
 
-class Waypoints extends Iterable with Iterator, ChangeNotifier {
+class Waypoints extends Iterator<Waypoint> with ChangeNotifier {
   Waypoints() : waypoints = [];
 
   static Future<Waypoints> fromLatLng(List<LatLng> points) async {
@@ -90,6 +92,22 @@ class Waypoints extends Iterable with Iterator, ChangeNotifier {
     return out;
   }
 
+  static fromLatLngToLngLat(List<LatLng> toConvert) {
+    List<LngLat> out = [];
+    for (final point in toConvert) {
+      out.add(LngLat(lng: point.longitude, lat: point.latitude));
+    }
+    return out;
+  }
+
+  static fromLngLatToLatLng(List<LngLat> toConvert) {
+    List<LatLng> out = [];
+    for (final point in toConvert) {
+      out.add(LatLng(point.lat, point.lng));
+    }
+    return out;
+  }
+
   List<LngLat> toLngLat({bool activeOnly = false}) {
     List<LngLat> out = [];
     for (final waypoint in waypoints) {
@@ -100,6 +118,17 @@ class Waypoints extends Iterable with Iterator, ChangeNotifier {
     return out;
   }
 
+  LatLng get meanLatLng {
+    double lat = 0;
+    double long = 0;
+    for (final waypoint in waypoints) {
+      lat += waypoint.latitude;
+      long += waypoint.longitude;
+    }
+
+    return LatLng(lat / waypoints.length, long / waypoints.length);
+  }
+
   late final List<Waypoint> waypoints;
   void add(Waypoint point) {
     waypoints.add(point);
@@ -107,23 +136,36 @@ class Waypoints extends Iterable with Iterator, ChangeNotifier {
   }
 
   Waypoint operator [](int item) => waypoints[item];
-  void operator []=(int item, Waypoint val) => waypoints[item] = val;
+  void operator []=(int item, Waypoint val) {
+    waypoints[item] = val;
+    notifyListeners();
+  }
 
   // Iterator implementation
-  int currentIndex = 0;
-
-  @override
+  int _currentIndex = 0;
   int get length => waypoints.length;
+  int get activeLength {
+    int total = 0;
+    for (final point in waypoints) {
+      if (point.isActivated) total++;
+    }
+    return total;
+  }
 
-  @override
-  Waypoint get current => waypoints[currentIndex];
-
-  @override
-  bool moveNext() {
-    currentIndex++;
-    return currentIndex < waypoints.length;
+  bool get isEmpty => waypoints.isEmpty;
+  bool get hasActivated {
+    for (final point in waypoints) {
+      if (point.isActivated) return true;
+    }
+    return false;
   }
 
   @override
-  Iterator get iterator => this;
+  Waypoint get current => waypoints[_currentIndex];
+
+  @override
+  bool moveNext() {
+    _currentIndex++;
+    return _currentIndex < waypoints.length;
+  }
 }
