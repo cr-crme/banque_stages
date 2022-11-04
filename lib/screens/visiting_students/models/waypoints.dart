@@ -5,10 +5,10 @@ import 'package:routing_client_dart/routing_client_dart.dart';
 import 'package:geocoding/geocoding.dart';
 
 class Waypoint {
-  Waypoint(this.latitude, this.longitude,
+  Waypoint(this.title, this.latitude, this.longitude,
       {required this.address, this.isActivated = true});
 
-  static Future<Waypoint> fromCoordinates(latitude, longitude,
+  static Future<Waypoint> fromCoordinates(title, latitude, longitude,
       {isActivated}) async {
     late Placemark placemark;
     try {
@@ -17,7 +17,7 @@ class Waypoint {
       placemark = Placemark();
     }
 
-    return Waypoint(latitude, longitude,
+    return Waypoint(title, latitude, longitude,
         address: placemark, isActivated: isActivated);
   }
 
@@ -26,32 +26,35 @@ class Waypoint {
     latitude = latitude ?? this.latitude;
     longitude = longitude ?? this.longitude;
     address = address ?? this.address;
-    return Waypoint(latitude, longitude,
+    return Waypoint(title, latitude, longitude,
         address: address, isActivated: isActivated);
   }
 
-  static Future<Waypoint> fromAddress(String address,
+  static Future<Waypoint> fromAddress(title, String address,
       {isActivated = true}) async {
     final locations = await locationFromAddress(address);
     var first = locations.first;
-    return Waypoint.fromCoordinates(first.latitude, first.longitude,
+    return Waypoint.fromCoordinates(title, first.latitude, first.longitude,
         isActivated: isActivated);
   }
 
-  static Future<Waypoint> fromLatLng(LatLng point, {isActivated = true}) async {
-    return Waypoint.fromCoordinates(point.latitude, point.longitude,
+  static Future<Waypoint> fromLatLng(title, LatLng point,
+      {isActivated = true}) async {
+    return Waypoint.fromCoordinates(title, point.latitude, point.longitude,
         isActivated: isActivated);
   }
 
   LatLng toLatLng() => LatLng(latitude, longitude);
 
-  static Future<Waypoint> fromLngLat(LngLat point, {isActivated = true}) {
-    return Waypoint.fromCoordinates(point.lat, point.lng,
+  static Future<Waypoint> fromLngLat(title, LngLat point,
+      {isActivated = true}) {
+    return Waypoint.fromCoordinates(title, point.lat, point.lng,
         isActivated: isActivated);
   }
 
   LngLat toLngLat() => LngLat(lng: longitude, lat: latitude);
 
+  final String title;
   final bool isActivated;
   final double latitude;
   final double longitude;
@@ -68,7 +71,8 @@ class Waypoints extends Iterator<Waypoint> with ChangeNotifier {
   static Future<Waypoints> fromLatLng(List<LatLng> points) async {
     final out = Waypoints();
     for (final waypoint in points) {
-      out.waypoints.add(await Waypoint.fromLatLng(waypoint, isActivated: true));
+      out.waypoints
+          .add(await Waypoint.fromLatLng("", waypoint, isActivated: true));
     }
     return out;
   }
@@ -87,7 +91,8 @@ class Waypoints extends Iterator<Waypoint> with ChangeNotifier {
     final out = Waypoints();
 
     for (final waypoint in points) {
-      out.waypoints.add(await Waypoint.fromLngLat(waypoint, isActivated: true));
+      out.waypoints
+          .add(await Waypoint.fromLngLat("", waypoint, isActivated: true));
     }
     return out;
   }
@@ -141,6 +146,13 @@ class Waypoints extends Iterator<Waypoint> with ChangeNotifier {
     notifyListeners();
   }
 
+  void moveItem(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) newIndex--;
+    final item = waypoints.removeAt(oldIndex);
+    waypoints.insert(newIndex, item);
+    notifyListeners();
+  }
+
   // Iterator implementation
   int _currentIndex = 0;
   int get length => waypoints.length;
@@ -153,6 +165,7 @@ class Waypoints extends Iterator<Waypoint> with ChangeNotifier {
   }
 
   bool get isEmpty => waypoints.isEmpty;
+  bool get isNotEmpty => waypoints.isNotEmpty;
   bool get hasActivated {
     for (final point in waypoints) {
       if (point.isActivated) return true;

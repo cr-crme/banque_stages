@@ -3,27 +3,18 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
-import '../../common/models/waypoints.dart';
+import '../models/waypoints.dart';
 
-class StudentRoutingScreen extends StatefulWidget {
-  static const String route = '/visiting-students/routing-screen';
-
-  const StudentRoutingScreen({Key? key}) : super(key: key);
+class RoutingMap extends StatefulWidget {
+  const RoutingMap({Key? key}) : super(key: key);
 
   @override
-  State<StudentRoutingScreen> createState() => _StudentRoutingScreenState();
+  State<RoutingMap> createState() => _RoutingMapState();
 }
 
-class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
-  bool _shouldComeBack = true;
+class _RoutingMapState extends State<RoutingMap> {
   double? _routeDistance;
   Future<List<Polyline>> _route = Future<List<Polyline>>.value([]);
-
-  @override
-  void initState() {
-    super.initState();
-    _route = _getActivateRoute();
-  }
 
   Future<List<Polyline>> _getActivateRoute() async {
     _routeDistance = null;
@@ -32,7 +23,6 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
 
     final manager = OSRMManager();
     final route = waypoints.toLngLat(activeOnly: true);
-    if (_shouldComeBack) route.add(route[0]);
 
     final road = await manager.getRoad(
       waypoints: route,
@@ -57,6 +47,18 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
     final waypoints = Provider.of<Waypoints>(context, listen: false);
     waypoints[index] =
         waypoints[index].copyWith(isActivated: !waypoints[index].isActivated);
+    _route = _getActivateRoute();
+    setState(() {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _forceUpdateRoute();
+  }
+
+  void _forceUpdateRoute() {
+    Provider.of<Waypoints>(context);
     _route = _getActivateRoute();
     setState(() {});
   }
@@ -86,64 +88,48 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
   @override
   Widget build(BuildContext context) {
     final distance = _routeDistance == null
-        ? 'en cours de calcul...'
+        ? 'optimisation du trajet en cours...'
         : '${_routeDistance!.toStringAsFixed(1)}km';
-    return Scaffold(
-      appBar: AppBar(title: const Text('Choix de l\'itinéraire')),
-      body: Consumer<Waypoints>(
-        builder: (context, waypoints, child) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Revenir à l\'école'),
-                Checkbox(
-                    value: _shouldComeBack,
-                    onChanged: (val) {
-                      _shouldComeBack = val!;
-                      _route = _getActivateRoute();
-                      setState(() {});
-                    }),
-              ],
-            ),
-            Text(
-              waypoints.activeLength <= 1
-                  ? 'Aucun trajet sélectionné'
-                  : 'Distance de trajet prévue = $distance',
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: FutureBuilder<List<Polyline>>(
-                  future: _route,
-                  builder: (context, route) {
-                    if (route.hasData) {
-                      return FlutterMap(
-                        options: MapOptions(
-                            center: waypoints[0].toLatLng(), zoom: 13),
-                        nonRotatedChildren: const [_ZoomButtons()],
-                        children: [
-                          TileLayer(
-                            urlTemplate:
-                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            userAgentPackageName:
-                                'dev.fleaflet.flutter_map.example',
-                          ),
-                          PolylineLayer(polylines: route.data!),
-                          MarkerLayer(markers: _waypointsToMarkers()),
-                        ],
-                      );
-                    }
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                ),
+    return Consumer<Waypoints>(builder: (context, waypoints, child) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            waypoints.activeLength <= 1
+                ? 'Aucun trajet sélectionné'
+                : 'Distance de trajet prévue = $distance',
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: FutureBuilder<List<Polyline>>(
+                future: _route,
+                builder: (context, route) {
+                  if (route.hasData && waypoints.isNotEmpty) {
+                    return FlutterMap(
+                      options:
+                          MapOptions(center: waypoints[0].toLatLng(), zoom: 13),
+                      nonRotatedChildren: const [_ZoomButtons()],
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName:
+                              'dev.fleaflet.flutter_map.example',
+                        ),
+                        PolylineLayer(polylines: route.data!),
+                        MarkerLayer(markers: _waypointsToMarkers()),
+                      ],
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                },
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -153,7 +139,7 @@ class _ZoomButtons extends StatelessWidget {
   final double maxZoom = 19;
   final bool mini = true;
   final double padding = 10;
-  final Alignment alignment = Alignment.bottomRight;
+  final Alignment alignment = Alignment.topRight;
 
   final FitBoundsOptions options =
       const FitBoundsOptions(padding: EdgeInsets.all(12));
