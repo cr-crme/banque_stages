@@ -30,6 +30,7 @@ import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
+import 'screens/visiting_students/choose_students_screen.dart';
 import 'screens/visiting_students/student_routing_screen.dart';
 
 void main() async {
@@ -95,6 +96,7 @@ class MyApp extends StatelessWidget {
           StudentScreen.route: (context) => const StudentScreen(),
           PostInternshipEvaluationScreen.route: (context) =>
               const PostInternshipEvaluationScreen(),
+          ChooseStudentsScreen.route: (context) => const ChooseStudentsScreen(),
           StudentRoutingScreen.route: (context) => const StudentRoutingScreen(),
         },
         localizationsDelegates: AppLocalizations.localizationsDelegates,

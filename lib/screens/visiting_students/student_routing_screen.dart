@@ -42,7 +42,7 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
 
     return [
       Polyline(
-        points: Waypoints.fromLngLat(road.polyline!).toLatLng(),
+        points: (await Waypoints.fromLngLat(road.polyline!)).toLatLng(),
         strokeWidth: 4,
         color: Colors.red,
       )
@@ -83,42 +83,34 @@ class _StudentRoutingScreenState extends State<StudentRoutingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Polylines')),
+        appBar: AppBar(title: const Text('Choix de l\'itinéraire')),
         body: Padding(
           padding: const EdgeInsets.all(8),
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 8, bottom: 8),
-                child: Text('Polylines'),
-              ),
-              FutureBuilder<List<Polyline>>(
-                future: _route,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Expanded(
-                      child: FlutterMap(
-                        options: MapOptions(
-                            center: LatLng(52.517037, 13.388860), zoom: 14),
-                        nonRotatedChildren: const [_ZoomButtons()],
-                        children: [
-                          TileLayer(
-                            urlTemplate:
-                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            userAgentPackageName:
-                                'dev.fleaflet.flutter_map.example',
-                          ),
-                          PolylineLayer(polylines: snapshot.data!),
-                          MarkerLayer(markers: _waypointsToMarkers()),
-                        ],
+          child: FutureBuilder<List<Polyline>>(
+            future: _route,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Expanded(
+                  child: FlutterMap(
+                    options: MapOptions(
+                        center: LatLng(52.517037, 13.388860), zoom: 14),
+                    nonRotatedChildren: const [_ZoomButtons()],
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName:
+                            'dev.fleaflet.flutter_map.example',
                       ),
-                    );
-                  }
-                  return const Expanded(
-                      child: Center(child: CircularProgressIndicator()));
-                },
-              )
-            ],
+                      PolylineLayer(polylines: snapshot.data!),
+                      MarkerLayer(markers: _waypointsToMarkers()),
+                    ],
+                  ),
+                );
+              }
+              return const Expanded(
+                  child: Center(child: CircularProgressIndicator()));
+            },
           ),
         ));
   }
