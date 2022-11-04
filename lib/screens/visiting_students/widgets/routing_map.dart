@@ -74,12 +74,18 @@ class _RoutingMapState extends State<RoutingMap> {
           point: waypoint.toLatLng(),
           anchorPos: AnchorPos.exactly(Anchor(3, -15)),
           builder: (context) => GestureDetector(
-                onTap: i == 0 ? null : () => _clickOnWaypoint(i),
-                child: Icon(
-                  i == 0 ? Icons.school : Icons.location_history_outlined,
-                  color: waypoint.isActivated ? Colors.deepPurple : Colors.grey,
-                  size: markerSize,
-                ),
+                onTap: () => _clickOnWaypoint(i),
+                child: i == 0
+                    ? null
+                    : Icon(
+                        i == waypoints.length - 1
+                            ? Icons.school
+                            : Icons.location_history_outlined,
+                        color: waypoint.isActivated
+                            ? Colors.deepPurple
+                            : Colors.grey,
+                        size: markerSize,
+                      ),
               )));
     }
     return out;
@@ -88,7 +94,7 @@ class _RoutingMapState extends State<RoutingMap> {
   @override
   Widget build(BuildContext context) {
     final distance = _routeDistance == null
-        ? 'optimisation du trajet en cours...'
+        ? '\ncalcul du trajet en cours...'
         : '${_routeDistance!.toStringAsFixed(1)}km';
     return Consumer<Waypoints>(builder: (context, waypoints, child) {
       return Column(
@@ -98,7 +104,10 @@ class _RoutingMapState extends State<RoutingMap> {
             waypoints.activeLength <= 1
                 ? 'Aucun trajet sélectionné'
                 : 'Distance de trajet prévue = $distance',
+            style: const TextStyle(fontSize: 20),
+            textAlign: TextAlign.center,
           ),
+          const SizedBox(height: 8),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
@@ -108,7 +117,7 @@ class _RoutingMapState extends State<RoutingMap> {
                   if (route.hasData && waypoints.isNotEmpty) {
                     return FlutterMap(
                       options:
-                          MapOptions(center: waypoints[0].toLatLng(), zoom: 13),
+                          MapOptions(center: waypoints[0].toLatLng(), zoom: 14),
                       nonRotatedChildren: const [_ZoomButtons()],
                       children: [
                         TileLayer(

@@ -21,7 +21,13 @@ class Waypoint {
         address: placemark, isActivated: isActivated);
   }
 
-  Waypoint copyWith({latitude, longitude, address, isActivated}) {
+  static Waypoint copy(Waypoint other) {
+    return Waypoint(other.title, other.latitude, other.longitude,
+        address: other.address, isActivated: other.isActivated);
+  }
+
+  Waypoint copyWith({title, latitude, longitude, address, isActivated}) {
+    title = title ?? this.title;
     isActivated = isActivated ?? this.isActivated;
     latitude = latitude ?? this.latitude;
     longitude = longitude ?? this.longitude;
@@ -135,9 +141,14 @@ class Waypoints extends Iterator<Waypoint> with ChangeNotifier {
   }
 
   late final List<Waypoint> waypoints;
-  void add(Waypoint point) {
+  void add(Waypoint point, {bool notify = true}) {
     waypoints.add(point);
-    notifyListeners();
+    if (notify) notifyListeners();
+  }
+
+  void clear({bool notify = true}) {
+    waypoints.clear();
+    if (notify) notifyListeners();
   }
 
   Waypoint operator [](int item) => waypoints[item];

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/routing_map.dart';
 import 'models/waypoints.dart';
+import 'widgets/routing_map.dart';
+import 'widgets/waypoint_card.dart';
 
 class VisitStudentScreen extends StatefulWidget {
   const VisitStudentScreen({super.key});
 
-  static const String route = "/visiting-students/choose-students-screen";
+  static const String route = "/visiting-students-screen";
 
   @override
   State<VisitStudentScreen> createState() => _VisitStudentScreenState();
@@ -17,20 +18,30 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
   @override
   void initState() {
     super.initState();
-
-    final waypoints = Provider.of<Waypoints>(context, listen: false);
-    if (waypoints.isEmpty) addWaypoints();
+    _setWaypoints();
   }
 
-  void addWaypoints() async {
+  void _setWaypoints() async {
     final waypoints = Provider.of<Waypoints>(context, listen: false);
-    waypoints
-        .add(await Waypoint.fromAddress("École", "1400 Tillemont, Montréal"));
-    waypoints.add(await Waypoint.fromAddress("CRME", "CRME, Montréal",
-        isActivated: false));
-    waypoints.add(await Waypoint.fromAddress("Métro", "Métro Jarry, Montréal"));
-    waypoints
-        .add(await Waypoint.fromAddress("Café", "Café Oui mais non, Montréal"));
+    if (waypoints.isNotEmpty) return;
+
+    final school = await Waypoint.fromAddress(
+        "École (départ)", "1400 Tillemont, Montréal");
+
+    // TODO - This should be copied from the actual student data
+    waypoints.add(school, notify: false);
+    waypoints.add(
+        await Waypoint.fromAddress("CRME", "CRME, Montréal",
+            isActivated: false),
+        notify: false);
+    waypoints.add(await Waypoint.fromAddress("Métro", "Métro Jarry, Montréal"),
+        notify: false);
+    waypoints.add(
+        await Waypoint.fromAddress("Café", "Café Oui mais non, Montréal"),
+        notify: false);
+
+    // Add the school again so they can complete the loop if needed
+    waypoints.add(school.copyWith(title: 'École (retour)'), notify: true);
   }
 
   @override
@@ -45,9 +56,16 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  const SizedBox(height: 10),
+                  const Text("Endroits à visiter",
+                      style: TextStyle(fontSize: 20)),
+                  const SizedBox(height: 8),
                   if (waypoints.length > 0)
-                    _WaypointCard(
-                        name: waypoints[0].title, waypoint: waypoints[0]),
+                    WaypointCard(
+                      name: waypoints[0].title,
+                      waypoint: waypoints[0],
+                      canMove: false,
+                    ),
                   if (waypoints.length > 0)
                     ReorderableListView.builder(
                       onReorder: (oldIndex, newIndex) {
@@ -59,7 +77,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
                       itemBuilder: (context, index) {
                         int studentIndex = index + 1;
                         final way = waypoints[studentIndex];
-                        return _WaypointCard(
+                        return WaypointCard(
                             key: ValueKey(way.toString()),
                             name: way.title,
                             waypoint: way,
@@ -70,44 +88,13 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
                       },
                       itemCount: waypoints.length - 1,
                     ),
-                  const SizedBox(height: 8),
-                  SizedBox(height: 500, child: static!),
+                  const SizedBox(height: 25),
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.75,
+                      child: static!),
                 ],
               );
             }),
-      ),
-    );
-  }
-}
-
-class _WaypointCard extends StatelessWidget {
-  const _WaypointCard({
-    Key? key,
-    required this.name,
-    required this.waypoint,
-    this.onTap,
-  }) : super(key: key);
-
-  final String name;
-  final Waypoint waypoint;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        key: key,
-        contentPadding: const EdgeInsets.all(10),
-        onTap: onTap,
-        leading: const CircleAvatar(backgroundColor: Colors.amber),
-        title: Text(
-          name,
-          style: TextStyle(
-              color: waypoint.isActivated ? Colors.black : Colors.grey),
-        ),
-        subtitle: Text(waypoint.toString(),
-            style: TextStyle(
-                color: waypoint.isActivated ? Colors.blueGrey : Colors.grey)),
       ),
     );
   }
