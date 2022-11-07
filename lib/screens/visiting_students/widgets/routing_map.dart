@@ -24,14 +24,20 @@ class _RoutingMapState extends State<RoutingMap> {
     final manager = OSRMManager();
     final route = waypoints.toLngLat(activeOnly: true);
 
-    final road = await manager.getRoad(
+    final road = await manager.getTrip(
       waypoints: route,
-      geometrie: Geometries.geojson,
-      steps: true,
+      roundTrip: true,
+      geometry: Geometries.geojson,
+      steps: false,
       languageCode: "en",
     );
     _routeDistance = road.distance;
 
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("La trajectoire apparaitra lors de la mise à jour 0.3.2"),
+      ));
+    }
     if (road.polyline == null) return [Polyline(points: [])];
     setState(() {});
     return [
@@ -74,18 +80,12 @@ class _RoutingMapState extends State<RoutingMap> {
           point: waypoint.toLatLng(),
           anchorPos: AnchorPos.exactly(Anchor(3, -15)),
           builder: (context) => GestureDetector(
-                onTap: () => _clickOnWaypoint(i),
-                child: i == 0
-                    ? null
-                    : Icon(
-                        i == waypoints.length - 1
-                            ? Icons.school
-                            : Icons.location_history_outlined,
-                        color: waypoint.isActivated
-                            ? Colors.deepPurple
-                            : Colors.grey,
-                        size: markerSize,
-                      ),
+                onTap: i == 0 ? () {} : () => _clickOnWaypoint(i),
+                child: Icon(
+                  i == 0 ? Icons.school : Icons.location_history_outlined,
+                  color: waypoint.isActivated ? Colors.deepPurple : Colors.grey,
+                  size: markerSize,
+                ),
               )));
     }
     return out;

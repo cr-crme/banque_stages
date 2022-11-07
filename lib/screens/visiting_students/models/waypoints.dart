@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
@@ -38,7 +39,13 @@ class Waypoint {
 
   static Future<Waypoint> fromAddress(title, String address,
       {isActivated = true}) async {
-    final locations = await locationFromAddress(address);
+    late List<Location> locations;
+    try {
+      locations = await locationFromAddress(address);
+    } on PlatformException {
+      return Waypoint("", 0.0, 0.0, address: Placemark());
+    }
+
     var first = locations.first;
     return Waypoint.fromCoordinates(title, first.latitude, first.longitude,
         isActivated: isActivated);

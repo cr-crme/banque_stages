@@ -38,10 +38,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
         notify: false);
     waypoints.add(
         await Waypoint.fromAddress("Café", "Café Oui mais non, Montréal"),
-        notify: false);
-
-    // Add the school again so they can complete the loop if needed
-    waypoints.add(school.copyWith(title: 'École (retour)'), notify: true);
+        notify: true);
   }
 
   @override
@@ -57,7 +54,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 10),
-                  const Text("Endroits à visiter",
+                  const Text("Étudiants à visiter",
                       style: TextStyle(fontSize: 20)),
                   const SizedBox(height: 8),
                   if (waypoints.length > 0)
