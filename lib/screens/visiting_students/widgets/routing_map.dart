@@ -3,13 +3,17 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
-import '../models/students_with_address.dart';
 import '../models/lng_lat_utils.dart';
+import '../models/students_with_address.dart';
+import '../models/waypoints.dart';
 
 class RoutingMap extends StatefulWidget {
-  const RoutingMap({Key? key, this.distancesCallback}) : super(key: key);
+  const RoutingMap(
+      {Key? key, required this.clickOnWaypointCallback, this.distancesCallback})
+      : super(key: key);
 
-  final Function(List<double>)? distancesCallback;
+  final Function(int index) clickOnWaypointCallback;
+  final Function(List<RoadLeg>)? distancesCallback;
 
   @override
   State<RoutingMap> createState() => _RoutingMapState();
@@ -18,8 +22,7 @@ class RoutingMap extends StatefulWidget {
 class _RoutingMapState extends State<RoutingMap> {
   Future<List<Polyline>> _route = Future<List<Polyline>>.value([]);
 
-  Future<List<Polyline>> _getActivateRoute() async {
-    final students = Provider.of<StudentsWithAddress>(context, listen: false);
+  Future<List<Polyline>> _getActivatedRoute(students) async {
     if (students.activeLength <= 1) return [];
 
     final manager = OSRMManager();
@@ -29,6 +32,10 @@ class _RoutingMapState extends State<RoutingMap> {
       waypoints: route,
       geometrie: Geometries.geojson,
     );
+
+    if (widget.distancesCallback != null) {
+      widget.distancesCallback!(road.details.roadLegs);
+    }
 
     if (road.polyline == null) return [Polyline(points: [])];
     setState(() {});
@@ -41,46 +48,52 @@ class _RoutingMapState extends State<RoutingMap> {
     ];
   }
 
-  void _clickOnWaypoint(int index) {
+  List<Marker> _waypointsToMarkers() {
     final students = Provider.of<StudentsWithAddress>(context, listen: false);
-    students[index] =
-        students[index].copyWith(isActivated: !students[index].isActivated);
-    _route = _getActivateRoute();
-    setState(() {});
+    List<Marker> out = [];
+
+    const double markerSize = 40;
+    for (var i = 0; i < students.length; i++) {
+      final waypoint = students[i];
+      final color = waypoint.priority == Priority.low
+          ? Colors.green
+          : waypoint.priority == Priority.mid
+              ? Colors.orange
+              : waypoint.priority == Priority.high
+                  ? Colors.red
+                  : Colors.grey;
+
+      out.add(
+        Marker(
+          point: waypoint.toLatLng(),
+          anchorPos: AnchorPos.align(AnchorAlign.top),
+          height: markerSize + 5,
+          width: markerSize + 5,
+          builder: (context) => GestureDetector(
+            onTap: i == 0 ? () {} : () => widget.clickOnWaypointCallback(i),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withAlpha(75),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                i == 0 ? Icons.school : Icons.location_on_sharp,
+                color: waypoint.isActivated ? color : color.withAlpha(100),
+                size: markerSize,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return out;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _forceUpdateRoute();
-  }
-
-  void _forceUpdateRoute() {
-    Provider.of<StudentsWithAddress>(context);
-    _route = _getActivateRoute();
-    setState(() {});
-  }
-
-  List<Marker> _waypointsToMarkers() {
-    final students = Provider.of<StudentsWithAddress>(context, listen: false);
-    List<Marker> out = [];
-
-    const double markerSize = 50;
-    for (var i = 0; i < students.length; i++) {
-      final waypoint = students[i];
-      out.add(Marker(
-          point: waypoint.toLatLng(),
-          anchorPos: AnchorPos.exactly(Anchor(3, -15)),
-          builder: (context) => GestureDetector(
-                onTap: i == 0 ? () {} : () => _clickOnWaypoint(i),
-                child: Icon(
-                  i == 0 ? Icons.school : Icons.location_history_outlined,
-                  color: waypoint.isActivated ? Colors.deepPurple : Colors.grey,
-                  size: markerSize,
-                ),
-              )));
-    }
-    return out;
+    final students = Provider.of<StudentsWithAddress>(context);
+    _route = _getActivatedRoute(students);
   }
 
   @override

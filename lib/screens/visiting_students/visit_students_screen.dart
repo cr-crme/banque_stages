@@ -27,19 +27,29 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
     if (students.isNotEmpty) return;
 
     final school = await Waypoint.fromAddress(
-        "École (départ)", "1400 Tillemont, Montréal");
+        "École (départ)", "1400 Tillemont, Montréal",
+        priority: Priority.low);
 
     // TODO - This should be copied from the actual student data
     students.add(school, notify: false);
     students.add(
         await Waypoint.fromAddress("CRME", "CRME, Montréal",
-            isActivated: false),
-        notify: false);
-    students.add(await Waypoint.fromAddress("Métro", "Métro Jarry, Montréal"),
+            isActivated: false, priority: Priority.mid),
         notify: false);
     students.add(
-        await Waypoint.fromAddress("Café", "Café Oui mais non, Montréal"),
+        await Waypoint.fromAddress("Métro", "Métro Jarry, Montréal",
+            priority: Priority.high),
+        notify: false);
+    students.add(
+        await Waypoint.fromAddress("Café", "Café Oui mais non, Montréal",
+            priority: Priority.high),
         notify: true);
+  }
+
+  void clickOnWaypoint(int index) {
+    final students = Provider.of<StudentsWithAddress>(context, listen: false);
+    students[index] =
+        students[index].copyWith(isActivated: !students[index].isActivated);
   }
 
   @override
@@ -49,7 +59,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Consumer<StudentsWithAddress>(
-            child: const RoutingMap(),
+            child: RoutingMap(clickOnWaypointCallback: clickOnWaypoint),
             builder: (context, students, static) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
