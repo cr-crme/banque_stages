@@ -32,7 +32,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
 
     final school = await Waypoint.fromAddress(
         'École', '1400 Tillemont, Montréal',
-        priority: Priority.low);
+        priority: Priority.none);
 
     students.add(school, notify: false);
     students.add(
@@ -106,7 +106,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Étudiants à visiter', style: TextStyle(fontSize: 20)),
+        const Text('Initéraire', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 8),
         if (studentsToVisit.isNotEmpty)
           ReorderableListView.builder(

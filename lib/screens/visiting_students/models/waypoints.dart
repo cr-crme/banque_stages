@@ -6,6 +6,7 @@ import 'package:routing_client_dart/routing_client_dart.dart';
 import 'package:geocoding/geocoding.dart';
 
 enum Priority {
+  none,
   low,
   mid,
   high,

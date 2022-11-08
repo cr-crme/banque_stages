@@ -26,7 +26,7 @@ class WaypointCard extends StatelessWidget {
             ? Colors.orange
             : waypoint.priority == Priority.high
                 ? Colors.red
-                : Colors.grey;
+                : Colors.deepPurple;
     return Card(
       child: ListTile(
         key: key,

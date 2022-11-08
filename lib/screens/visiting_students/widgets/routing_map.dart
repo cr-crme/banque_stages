@@ -97,14 +97,14 @@ class _RoutingMapState extends State<RoutingMap> {
               ? Colors.orange
               : waypoint.priority == Priority.high
                   ? Colors.red
-                  : Colors.grey;
+                  : Colors.deepPurple;
 
       out.add(
         Marker(
           point: waypoint.toLatLng(),
           anchorPos: AnchorPos.align(AnchorAlign.top),
-          height: markerSize + 5,
-          width: markerSize + 5,
+          height: markerSize + 1,
+          width: markerSize + 1,
           builder: (context) => GestureDetector(
             onTap: () => widget.onClickWaypointCallback(i),
             child: Container(
