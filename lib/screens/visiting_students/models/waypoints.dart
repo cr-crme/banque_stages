@@ -1,11 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import '../../../crcrme_enhanced_containers/lib/item_serializable.dart';
 
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 import 'package:geocoding/geocoding.dart';
 
-class Waypoint {
+class Waypoint extends ItemSerializable {
   Waypoint(this.title, this.latitude, this.longitude,
       {required this.address, this.isActivated = true});
 
@@ -20,6 +20,28 @@ class Waypoint {
 
     return Waypoint(title, latitude, longitude,
         address: placemark, isActivated: isActivated);
+  }
+
+  @override
+  Map<String, dynamic> serializedMap() {
+    return {
+      'title': title,
+      'isActivate': isActivated,
+      'latitude': latitude,
+      'longitude': longitude,
+      'street': address.street,
+      'locality': address.locality,
+      'postalCode': address.postalCode,
+    };
+  }
+
+  static Waypoint deserialize(Map<String, dynamic> data) {
+    final address = Placemark(
+        street: data['street'],
+        locality: data['locality'],
+        postalCode: data['postalCode']);
+    return Waypoint(data['title'], data['latitude'], data['longitude'],
+        address: address);
   }
 
   static Waypoint copy(Waypoint other) {
@@ -43,7 +65,7 @@ class Waypoint {
     try {
       locations = await locationFromAddress(address);
     } on PlatformException {
-      return Waypoint("", 0.0, 0.0, address: Placemark());
+      return Waypoint('', 0.0, 0.0, address: Placemark());
     }
 
     var first = locations.first;
@@ -75,128 +97,5 @@ class Waypoint {
 
   @override
   String toString() =>
-      "${address.street}\n${address.locality} ${address.postalCode}";
-}
-
-class Waypoints extends Iterator<Waypoint> with ChangeNotifier {
-  Waypoints() : waypoints = [];
-
-  static Future<Waypoints> fromLatLng(List<LatLng> points) async {
-    final out = Waypoints();
-    for (final waypoint in points) {
-      out.waypoints
-          .add(await Waypoint.fromLatLng("", waypoint, isActivated: true));
-    }
-    return out;
-  }
-
-  List<LatLng> toLatLng({bool activeOnly = false}) {
-    List<LatLng> out = [];
-    for (final waypoint in waypoints) {
-      if (activeOnly && !waypoint.isActivated) continue;
-
-      out.add(LatLng(waypoint.latitude, waypoint.longitude));
-    }
-    return out;
-  }
-
-  static Future<Waypoints> fromLngLat(List<LngLat> points) async {
-    final out = Waypoints();
-
-    for (final waypoint in points) {
-      out.waypoints
-          .add(await Waypoint.fromLngLat("", waypoint, isActivated: true));
-    }
-    return out;
-  }
-
-  static fromLatLngToLngLat(List<LatLng> toConvert) {
-    List<LngLat> out = [];
-    for (final point in toConvert) {
-      out.add(LngLat(lng: point.longitude, lat: point.latitude));
-    }
-    return out;
-  }
-
-  static fromLngLatToLatLng(List<LngLat> toConvert) {
-    List<LatLng> out = [];
-    for (final point in toConvert) {
-      out.add(LatLng(point.lat, point.lng));
-    }
-    return out;
-  }
-
-  List<LngLat> toLngLat({bool activeOnly = false}) {
-    List<LngLat> out = [];
-    for (final waypoint in waypoints) {
-      if (activeOnly && !waypoint.isActivated) continue;
-
-      out.add(LngLat(lng: waypoint.longitude, lat: waypoint.latitude));
-    }
-    return out;
-  }
-
-  LatLng get meanLatLng {
-    double lat = 0;
-    double long = 0;
-    for (final waypoint in waypoints) {
-      lat += waypoint.latitude;
-      long += waypoint.longitude;
-    }
-
-    return LatLng(lat / waypoints.length, long / waypoints.length);
-  }
-
-  late final List<Waypoint> waypoints;
-  void add(Waypoint point, {bool notify = true}) {
-    waypoints.add(point);
-    if (notify) notifyListeners();
-  }
-
-  void clear({bool notify = true}) {
-    waypoints.clear();
-    if (notify) notifyListeners();
-  }
-
-  Waypoint operator [](int item) => waypoints[item];
-  void operator []=(int item, Waypoint val) {
-    waypoints[item] = val;
-    notifyListeners();
-  }
-
-  void moveItem(int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) newIndex--;
-    final item = waypoints.removeAt(oldIndex);
-    waypoints.insert(newIndex, item);
-    notifyListeners();
-  }
-
-  // Iterator implementation
-  int _currentIndex = 0;
-  int get length => waypoints.length;
-  int get activeLength {
-    int total = 0;
-    for (final point in waypoints) {
-      if (point.isActivated) total++;
-    }
-    return total;
-  }
-
-  bool get isEmpty => waypoints.isEmpty;
-  bool get isNotEmpty => waypoints.isNotEmpty;
-  bool get hasActivated {
-    for (final point in waypoints) {
-      if (point.isActivated) return true;
-    }
-    return false;
-  }
-
-  @override
-  Waypoint get current => waypoints[_currentIndex];
-
-  @override
-  bool moveNext() {
-    _currentIndex++;
-    return _currentIndex < waypoints.length;
-  }
+      '${address.street}\n${address.locality} ${address.postalCode}';
 }

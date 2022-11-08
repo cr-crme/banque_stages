@@ -3,46 +3,38 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
-import '../models/waypoints.dart';
+import '../models/students_with_address.dart';
+import '../models/lng_lat_utils.dart';
 
 class RoutingMap extends StatefulWidget {
-  const RoutingMap({Key? key}) : super(key: key);
+  const RoutingMap({Key? key, this.distancesCallback}) : super(key: key);
+
+  final Function(List<double>)? distancesCallback;
 
   @override
   State<RoutingMap> createState() => _RoutingMapState();
 }
 
 class _RoutingMapState extends State<RoutingMap> {
-  double? _routeDistance;
   Future<List<Polyline>> _route = Future<List<Polyline>>.value([]);
 
   Future<List<Polyline>> _getActivateRoute() async {
-    _routeDistance = null;
-    final waypoints = Provider.of<Waypoints>(context, listen: false);
-    if (waypoints.activeLength <= 1) return [];
+    final students = Provider.of<StudentsWithAddress>(context, listen: false);
+    if (students.activeLength <= 1) return [];
 
     final manager = OSRMManager();
-    final route = waypoints.toLngLat(activeOnly: true);
+    final route = students.toLngLat(activeOnly: true);
 
-    final road = await manager.getTrip(
+    final road = await manager.getRoad(
       waypoints: route,
-      roundTrip: true,
-      geometry: Geometries.geojson,
-      steps: false,
-      languageCode: "en",
+      geometrie: Geometries.geojson,
     );
-    _routeDistance = road.distance;
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("La trajectoire apparaitra lors de la mise à jour 0.3.2"),
-      ));
-    }
     if (road.polyline == null) return [Polyline(points: [])];
     setState(() {});
     return [
       Polyline(
-        points: Waypoints.fromLngLatToLatLng(road.polyline!),
+        points: LngLatUtils.fromLngLatToLatLng(road.polyline!),
         strokeWidth: 4,
         color: Colors.red,
       )
@@ -50,9 +42,9 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   void _clickOnWaypoint(int index) {
-    final waypoints = Provider.of<Waypoints>(context, listen: false);
-    waypoints[index] =
-        waypoints[index].copyWith(isActivated: !waypoints[index].isActivated);
+    final students = Provider.of<StudentsWithAddress>(context, listen: false);
+    students[index] =
+        students[index].copyWith(isActivated: !students[index].isActivated);
     _route = _getActivateRoute();
     setState(() {});
   }
@@ -64,18 +56,18 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   void _forceUpdateRoute() {
-    Provider.of<Waypoints>(context);
+    Provider.of<StudentsWithAddress>(context);
     _route = _getActivateRoute();
     setState(() {});
   }
 
   List<Marker> _waypointsToMarkers() {
-    final waypoints = Provider.of<Waypoints>(context, listen: false);
+    final students = Provider.of<StudentsWithAddress>(context, listen: false);
     List<Marker> out = [];
 
     const double markerSize = 50;
-    for (var i = 0; i < waypoints.length; i++) {
-      final waypoint = waypoints[i];
+    for (var i = 0; i < students.length; i++) {
+      final waypoint = students[i];
       out.add(Marker(
           point: waypoint.toLatLng(),
           anchorPos: AnchorPos.exactly(Anchor(3, -15)),
@@ -93,50 +85,30 @@ class _RoutingMapState extends State<RoutingMap> {
 
   @override
   Widget build(BuildContext context) {
-    final distance = _routeDistance == null
-        ? '\ncalcul du trajet en cours...'
-        : '${_routeDistance!.toStringAsFixed(1)}km';
-    return Consumer<Waypoints>(builder: (context, waypoints, child) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            waypoints.activeLength <= 1
-                ? 'Aucun trajet sélectionné'
-                : 'Distance de trajet prévue = $distance',
-            style: const TextStyle(fontSize: 20),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: FutureBuilder<List<Polyline>>(
-                future: _route,
-                builder: (context, route) {
-                  if (route.hasData && waypoints.isNotEmpty) {
-                    return FlutterMap(
-                      options:
-                          MapOptions(center: waypoints[0].toLatLng(), zoom: 14),
-                      nonRotatedChildren: const [_ZoomButtons()],
-                      children: [
-                        TileLayer(
-                          urlTemplate:
-                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          userAgentPackageName:
-                              'dev.fleaflet.flutter_map.example',
-                        ),
-                        PolylineLayer(polylines: route.data!),
-                        MarkerLayer(markers: _waypointsToMarkers()),
-                      ],
-                    );
-                  }
-                  return const Center(child: CircularProgressIndicator());
-                },
-              ),
-            ),
-          ),
-        ],
+    return Consumer<StudentsWithAddress>(builder: (context, students, child) {
+      return Padding(
+        padding: const EdgeInsets.all(8),
+        child: FutureBuilder<List<Polyline>>(
+          future: _route,
+          builder: (context, route) {
+            if (route.hasData && students.isNotEmpty) {
+              return FlutterMap(
+                options: MapOptions(center: students[0].toLatLng(), zoom: 14),
+                nonRotatedChildren: const [_ZoomButtons()],
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                  ),
+                  PolylineLayer(polylines: route.data!),
+                  MarkerLayer(markers: _waypointsToMarkers()),
+                ],
+              );
+            }
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
       );
     });
   }
@@ -147,8 +119,8 @@ class _ZoomButtons extends StatelessWidget {
   final double minZoom = 4;
   final double maxZoom = 19;
   final bool mini = true;
-  final double padding = 10;
-  final Alignment alignment = Alignment.topRight;
+  final double padding = 5;
+  final Alignment alignment = Alignment.bottomRight;
 
   final FitBoundsOptions options =
       const FitBoundsOptions(padding: EdgeInsets.all(12));
