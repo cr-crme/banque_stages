@@ -13,9 +13,7 @@ enum Priority {
 
 class Waypoint extends ItemSerializable {
   Waypoint(this.title, this.latitude, this.longitude,
-      {required this.address,
-      this.isActivated = true,
-      this.priority = Priority.low});
+      {required this.address, this.priority = Priority.low});
 
   static Future<Waypoint> fromCoordinates(title, latitude, longitude,
       {isActivated, priority}) async {
@@ -27,14 +25,13 @@ class Waypoint extends ItemSerializable {
     }
 
     return Waypoint(title, latitude, longitude,
-        address: placemark, isActivated: isActivated, priority: priority);
+        address: placemark, priority: priority);
   }
 
   @override
   Map<String, dynamic> serializedMap() {
     return {
       'title': title,
-      'isActivate': isActivated,
       'latitude': latitude,
       'longitude': longitude,
       'street': address.street,
@@ -55,25 +52,21 @@ class Waypoint extends ItemSerializable {
 
   static Waypoint copy(Waypoint other) {
     return Waypoint(other.title, other.latitude, other.longitude,
-        address: other.address,
-        isActivated: other.isActivated,
-        priority: other.priority);
+        address: other.address, priority: other.priority);
   }
 
   Waypoint copyWith(
       {title, latitude, longitude, address, isActivated, priority}) {
     title = title ?? this.title;
-    isActivated = isActivated ?? this.isActivated;
     latitude = latitude ?? this.latitude;
     longitude = longitude ?? this.longitude;
     address = address ?? this.address;
     priority = priority ?? this.priority;
     return Waypoint(title, latitude, longitude,
-        address: address, isActivated: isActivated, priority: priority);
+        address: address, priority: priority);
   }
 
-  static Future<Waypoint> fromAddress(title, String address,
-      {isActivated = true, priority}) async {
+  static Future<Waypoint> fromAddress(title, String address, {priority}) async {
     late List<Location> locations;
     try {
       locations = await locationFromAddress(address);
@@ -83,13 +76,12 @@ class Waypoint extends ItemSerializable {
 
     var first = locations.first;
     return Waypoint.fromCoordinates(title, first.latitude, first.longitude,
-        isActivated: isActivated, priority: priority);
+        priority: priority);
   }
 
-  static Future<Waypoint> fromLatLng(title, LatLng point,
-      {isActivated = true, priority}) async {
+  static Future<Waypoint> fromLatLng(title, LatLng point, {priority}) async {
     return Waypoint.fromCoordinates(title, point.latitude, point.longitude,
-        isActivated: isActivated, priority: priority);
+        priority: priority);
   }
 
   LatLng toLatLng() => LatLng(latitude, longitude);
@@ -97,13 +89,12 @@ class Waypoint extends ItemSerializable {
   static Future<Waypoint> fromLngLat(title, LngLat point,
       {isActivated = true, priority}) {
     return Waypoint.fromCoordinates(title, point.lat, point.lng,
-        isActivated: isActivated, priority: priority);
+        priority: priority);
   }
 
   LngLat toLngLat() => LngLat(lng: longitude, lat: latitude);
 
   final String title;
-  final bool isActivated;
   final double latitude;
   final double longitude;
   final Placemark address;

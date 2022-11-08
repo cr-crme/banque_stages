@@ -8,37 +8,61 @@ import '../models/students_with_address.dart';
 import '../models/waypoints.dart';
 
 class RoutingMap extends StatefulWidget {
-  const RoutingMap(
-      {Key? key, required this.clickOnWaypointCallback, this.distancesCallback})
-      : super(key: key);
+  const RoutingMap({
+    Key? key,
+    required this.onClickWaypointCallback,
+    this.onComputedDistancesCallback,
+  }) : super(key: key);
 
-  final Function(int index) clickOnWaypointCallback;
-  final Function(List<RoadLeg>)? distancesCallback;
+  final Function(int index) onClickWaypointCallback;
+  final Function(List<double>?)? onComputedDistancesCallback;
 
   @override
   State<RoutingMap> createState() => _RoutingMapState();
 }
 
 class _RoutingMapState extends State<RoutingMap> {
-  Future<List<Polyline>> _route = Future<List<Polyline>>.value([]);
+  Future<Road?> _road = Future<Road?>.value();
 
-  Future<List<Polyline>> _getActivatedRoute(students) async {
-    if (students.activeLength <= 1) return [];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    computeRoute();
+  }
+
+  void computeRoute() {
+    final students = Provider.of<SelectedStudentForItinerary>(context);
+    _road = _getActivatedRoute(students);
+    setState(() {});
+  }
+
+  Future<Road?> _getActivatedRoute(SelectedStudentForItinerary students) async {
+    if (students.isEmpty) return null;
 
     final manager = OSRMManager();
-    final route = students.toLngLat(activeOnly: true);
+    final route = students.toLngLat();
 
-    final road = await manager.getRoad(
-      waypoints: route,
-      geometrie: Geometries.geojson,
-    );
-
-    if (widget.distancesCallback != null) {
-      widget.distancesCallback!(road.details.roadLegs);
+    late final out;
+    try {
+      out = await manager.getRoad(
+        waypoints: route,
+        geometrie: Geometries.geojson,
+      );
+    } catch (e) {
+      out = Road(
+          distance: 0, duration: 0, instructions: [], polylineEncoded: null);
     }
 
-    if (road.polyline == null) return [Polyline(points: [])];
-    setState(() {});
+    if (widget.onComputedDistancesCallback != null) {
+      widget.onComputedDistancesCallback!(_roadToDistances(out));
+    }
+
+    return out;
+  }
+
+  List<Polyline> _roadToPolyline(Road? road) {
+    if (road == null || road.polyline == null) return [Polyline(points: [])];
+
     return [
       Polyline(
         points: LngLatUtils.fromLngLatToLatLng(road.polyline!),
@@ -46,6 +70,18 @@ class _RoutingMapState extends State<RoutingMap> {
         color: Colors.red,
       )
     ];
+  }
+
+  List<double> _roadToDistances(Road? road) {
+    List<double> distances = [];
+
+    if (road != null) {
+      for (final leg in road.details.roadLegs) {
+        distances.add(leg.distance);
+      }
+    }
+
+    return distances;
   }
 
   List<Marker> _waypointsToMarkers() {
@@ -70,7 +106,7 @@ class _RoutingMapState extends State<RoutingMap> {
           height: markerSize + 5,
           width: markerSize + 5,
           builder: (context) => GestureDetector(
-            onTap: i == 0 ? () {} : () => widget.clickOnWaypointCallback(i),
+            onTap: () => widget.onClickWaypointCallback(i),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white.withAlpha(75),
@@ -78,7 +114,7 @@ class _RoutingMapState extends State<RoutingMap> {
               ),
               child: Icon(
                 i == 0 ? Icons.school : Icons.location_on_sharp,
-                color: waypoint.isActivated ? color : color.withAlpha(100),
+                color: color,
                 size: markerSize,
               ),
             ),
@@ -90,37 +126,29 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final students = Provider.of<StudentsWithAddress>(context);
-    _route = _getActivatedRoute(students);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Consumer<StudentsWithAddress>(builder: (context, students, child) {
+      if (students.isEmpty) return const CircularProgressIndicator();
+
       return Padding(
         padding: const EdgeInsets.all(8),
-        child: FutureBuilder<List<Polyline>>(
-          future: _route,
-          builder: (context, route) {
-            if (route.hasData && students.isNotEmpty) {
-              return FlutterMap(
-                options: MapOptions(center: students[0].toLatLng(), zoom: 14),
-                nonRotatedChildren: const [_ZoomButtons()],
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-                  ),
-                  PolylineLayer(polylines: route.data!),
-                  MarkerLayer(markers: _waypointsToMarkers()),
-                ],
-              );
-            }
-            return const Center(child: CircularProgressIndicator());
-          },
+        child: FlutterMap(
+          options: MapOptions(center: students[0].toLatLng(), zoom: 14),
+          nonRotatedChildren: const [_ZoomButtons()],
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+            ),
+            FutureBuilder<Road?>(
+              future: _road,
+              builder: (context, road) {
+                if (!road.hasData || students.isEmpty) return Container();
+                return PolylineLayer(polylines: _roadToPolyline(road.data));
+              },
+            ),
+            MarkerLayer(markers: _waypointsToMarkers()),
+          ],
         ),
       );
     });

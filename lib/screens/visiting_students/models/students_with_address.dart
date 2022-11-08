@@ -6,21 +6,17 @@ import './waypoints.dart';
 
 class StudentsWithAddress extends ListProvided<Waypoint>
     with Iterator<Waypoint> {
-  List<LatLng> toLatLng({bool activeOnly = false}) {
+  List<LatLng> toLatLng() {
     List<LatLng> out = [];
     for (final address in this) {
-      if (activeOnly && !address.isActivated) continue;
-
       out.add(LatLng(address.latitude, address.longitude));
     }
     return out;
   }
 
-  List<LngLat> toLngLat({bool activeOnly = false}) {
+  List<LngLat> toLngLat() {
     List<LngLat> out = [];
     for (final address in this) {
-      if (activeOnly && !address.isActivated) continue;
-
       out.add(LngLat(lng: address.longitude, lat: address.latitude));
     }
     return out;
@@ -31,24 +27,8 @@ class StudentsWithAddress extends ListProvided<Waypoint>
     return Waypoint.deserialize(data);
   }
 
-  // LatLng get meanLatLng => LngLatUtils.meanLatLng(this);
-
-  bool get hasActivated {
-    for (final point in this) {
-      if (point.isActivated) return true;
-    }
-    return false;
-  }
-
   // Iterator implementation
   int _currentIndex = 0;
-  int get activeLength {
-    int total = 0;
-    for (final address in this) {
-      if (address.isActivated) total++;
-    }
-    return total;
-  }
 
   @override
   Waypoint get current => this[_currentIndex];
@@ -59,3 +39,5 @@ class StudentsWithAddress extends ListProvided<Waypoint>
     return _currentIndex < length;
   }
 }
+
+class SelectedStudentForItinerary extends StudentsWithAddress {}

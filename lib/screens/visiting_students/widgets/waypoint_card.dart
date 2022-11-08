@@ -8,31 +8,42 @@ class WaypointCard extends StatelessWidget {
     required this.name,
     required this.waypoint,
     this.onTap,
+    this.onDelete,
     this.canMove = true,
   }) : super(key: key);
 
   final String name;
   final Waypoint waypoint;
   final VoidCallback? onTap;
+  final VoidCallback? onDelete;
   final bool canMove;
 
   @override
   Widget build(BuildContext context) {
+    final color = waypoint.priority == Priority.low
+        ? Colors.green
+        : waypoint.priority == Priority.mid
+            ? Colors.orange
+            : waypoint.priority == Priority.high
+                ? Colors.red
+                : Colors.grey;
     return Card(
       child: ListTile(
         key: key,
         contentPadding: const EdgeInsets.all(10),
         onTap: onTap,
-        leading: const CircleAvatar(backgroundColor: Colors.amber),
+        leading: Icon(Icons.flag, color: color),
         tileColor: canMove ? Colors.white : Colors.grey[300],
         title: Text(
           name,
-          style: TextStyle(
-              color: waypoint.isActivated ? Colors.black : Colors.grey),
+          style: const TextStyle(color: Colors.black),
         ),
         subtitle: Text(waypoint.toString(),
-            style: TextStyle(
-                color: waypoint.isActivated ? Colors.blueGrey : Colors.grey)),
+            style: const TextStyle(color: Colors.blueGrey)),
+        trailing: IconButton(
+            icon: const Icon(Icons.delete),
+            color: Colors.red,
+            onPressed: onDelete),
       ),
     );
   }
