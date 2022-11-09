@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
 import '../models/lng_lat_utils.dart';
-import '../models/itinerary.dart';
 import '../models/all_itineraries.dart';
 import '../../../common/models/visiting_priority.dart';
 
@@ -43,8 +42,7 @@ class _RoutingMapState extends State<RoutingMap> {
     if (itineraries.isEmpty) return null;
 
     final manager = OSRMManager();
-    // TODO HERE!
-    final route = itineraries['day_one']!.toLngLat();
+    final route = itineraries[widget.currentDate]!.toLngLat();
 
     late Road out;
     try {
@@ -166,7 +164,13 @@ class _RoutingMapState extends State<RoutingMap> {
   @override
   Widget build(BuildContext context) {
     return Consumer<AllStudentsWaypoints>(builder: (context, waypoints, child) {
-      if (waypoints.isEmpty) return const CircularProgressIndicator();
+      if (waypoints.isEmpty) {
+        // The column is necessary otherwise the ProgressIndicator is huge
+        return Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [CircularProgressIndicator()]);
+      }
 
       return Padding(
         padding: const EdgeInsets.all(8),
