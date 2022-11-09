@@ -80,9 +80,8 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
         child: Column(
           children: [
             _map(),
-            const SizedBox(height: 10),
             _Distance(_distances),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             _studentsToVisitWidget(context),
           ],
         ),
@@ -106,7 +105,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Initéraire', style: TextStyle(fontSize: 20)),
+        const Text('Résumé de l\'itinéraire', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 8),
         if (studentsToVisit.isNotEmpty)
           ReorderableListView.builder(
@@ -154,8 +153,9 @@ class __DistanceState extends State<_Distance> {
         _isExpanded = !_isExpanded;
         setState(() {});
       },
-      child: Card(
-        elevation: 5,
+      behavior: HitTestBehavior.opaque, // Make the full box clickable
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

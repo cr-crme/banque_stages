@@ -42,7 +42,7 @@ class _RoutingMapState extends State<RoutingMap> {
     final manager = OSRMManager();
     final route = students.toLngLat();
 
-    late final out;
+    late Road out;
     try {
       out = await manager.getRoad(
         waypoints: route,
@@ -84,6 +84,13 @@ class _RoutingMapState extends State<RoutingMap> {
     return distances;
   }
 
+  void _toggleName(index) {
+    final students = Provider.of<StudentsWithAddress>(context, listen: false);
+    students[index] =
+        students[index].copyWith(showTitle: !students[index].showTitle);
+    setState(() {});
+  }
+
   List<Marker> _waypointsToMarkers() {
     final students = Provider.of<StudentsWithAddress>(context, listen: false);
     List<Marker> out = [];
@@ -99,25 +106,42 @@ class _RoutingMapState extends State<RoutingMap> {
                   ? Colors.red
                   : Colors.deepPurple;
 
+      double nameWidth = 160;
+      double nameHeight = 100;
       out.add(
         Marker(
           point: waypoint.toLatLng(),
-          anchorPos: AnchorPos.align(AnchorAlign.top),
-          height: markerSize + 1,
-          width: markerSize + 1,
-          builder: (context) => GestureDetector(
-            onTap: () => widget.onClickWaypointCallback(i),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withAlpha(75),
-                shape: BoxShape.circle,
+          anchorPos: AnchorPos.exactly(
+              Anchor(markerSize / 2 + nameWidth, nameHeight / 2)),
+          width: markerSize + nameWidth, //markerSize + 1,
+          height: markerSize + nameHeight, //markerSize + 1,
+          builder: (context) => Row(
+            children: [
+              GestureDetector(
+                onTap: () => widget.onClickWaypointCallback(i),
+                onLongPress: () => _toggleName(i),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withAlpha(75),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    i == 0 ? Icons.school : Icons.location_on_sharp,
+                    color: color,
+                    size: markerSize,
+                  ),
+                ),
               ),
-              child: Icon(
-                i == 0 ? Icons.school : Icons.location_on_sharp,
-                color: color,
-                size: markerSize,
-              ),
-            ),
+              if (waypoint.showTitle)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(125),
+                      shape: BoxShape.rectangle),
+                  child: Text(waypoint.title),
+                )
+            ],
           ),
         ),
       );
