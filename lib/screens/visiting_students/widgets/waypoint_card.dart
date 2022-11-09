@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/waypoints.dart';
+import '../../../common/models/visiting_priority.dart';
 
 class WaypointCard extends StatelessWidget {
   const WaypointCard({
@@ -18,21 +19,29 @@ class WaypointCard extends StatelessWidget {
   final VoidCallback? onDelete;
   final bool canMove;
 
+  MaterialColor _getWaypointColor(VisitingPriority priority) {
+    switch (priority) {
+      case (VisitingPriority.none):
+        return Colors.deepPurple;
+      case (VisitingPriority.low):
+        return Colors.green;
+      case (VisitingPriority.mid):
+        return Colors.orange;
+      case (VisitingPriority.high):
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final color = waypoint.priority == Priority.low
-        ? Colors.green
-        : waypoint.priority == Priority.mid
-            ? Colors.orange
-            : waypoint.priority == Priority.high
-                ? Colors.red
-                : Colors.deepPurple;
     return Card(
       child: ListTile(
         key: key,
         contentPadding: const EdgeInsets.all(10),
         onTap: onTap,
-        leading: Icon(Icons.flag, color: color),
+        leading: Icon(Icons.flag, color: _getWaypointColor(waypoint.priority)),
         tileColor: canMove ? Colors.white : Colors.grey[300],
         title: Text(
           name,

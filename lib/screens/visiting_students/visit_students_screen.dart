@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './models/students_with_address.dart';
+import 'models/itinerary.dart';
+import 'models/all_itineraries.dart';
 import './models/waypoints.dart';
 import './widgets/routing_map.dart';
 import './widgets/waypoint_card.dart';
+// import '../../../common/providers/students_provider.dart';
+import '../../../common/models/visiting_priority.dart';
 
 class VisitStudentScreen extends StatefulWidget {
   const VisitStudentScreen({super.key});
@@ -17,36 +20,55 @@ class VisitStudentScreen extends StatefulWidget {
 
 class _VisitStudentScreenState extends State<VisitStudentScreen> {
   List<double>? _distances;
+  final String _currentDate = 'day_one'; // TODO Use a datepicker
 
   @override
   void initState() {
     super.initState();
 
-    _fillAllStudentsForDebug();
+    _fillAllWaypoints();
+
+    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    itineraries.add(Itinerary(), key: _currentDate, notify: false);
   }
 
-  void _fillAllStudentsForDebug() async {
-    // TODO - This should be copied from the actual student data
-    final students = Provider.of<StudentsWithAddress>(context, listen: false);
-    if (students.isNotEmpty) return;
+  void _fillAllWaypoints() async {
+    final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
+    waypoints.clear(notify: false);
 
-    final school = await Waypoint.fromAddress(
-        'École', '1400 Tillemont, Montréal',
-        priority: Priority.none);
+    // Get the students from the registered students, but we copy them so
+    // we don't mess with them
+    // TODO - Comment the next lines and uncomment these after when the software is populated with students
 
-    students.add(school, notify: false);
-    students.add(
+    waypoints.add(
+        await Waypoint.fromAddress('École', '1400 Tillemont, Montréal',
+            priority: VisitingPriority.none),
+        notify: false);
+    waypoints.add(
         await Waypoint.fromAddress('CRME', 'CRME, Montréal',
-            priority: Priority.mid),
+            priority: VisitingPriority.mid),
         notify: false);
-    students.add(
+    waypoints.add(
         await Waypoint.fromAddress('Métro', 'Métro Jarry, Montréal',
-            priority: Priority.high),
+            priority: VisitingPriority.high),
         notify: false);
-    students.add(
+    waypoints.add(
         await Waypoint.fromAddress('Café', 'Café Oui mais non, Montréal',
-            priority: Priority.high),
+            priority: VisitingPriority.high),
         notify: true);
+
+    // final studentsProvided =
+    //     Provider.of<StudentsProvider>(context, listen: false);
+    // for (final s in studentsProvided) {
+    //   waypoints.add(
+    //       await Waypoint.fromAddress(
+    //         s.name,
+    //         s.address,
+    //         priority: VisitingPriority.low,
+    //         showTitle: true,
+    //       ),
+    //       notify: false);
+    // }
   }
 
   void setRouteDistances(List<double>? legs) {
@@ -54,20 +76,22 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
     setState(() {});
   }
 
-  void addStudent(int indexInProvider) {
-    final students = Provider.of<StudentsWithAddress>(context, listen: false);
-    final studentsToVisit =
-        Provider.of<SelectedStudentForItinerary>(context, listen: false);
+  void addStopToCurrentItinerary(int indexInWaypoints) {
+    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
+    final itinerary = itineraries[_currentDate]!;
 
-    studentsToVisit.add(students[indexInProvider].copyWith());
+    itinerary.add(waypoints[indexInWaypoints].copyWith());
+    itineraries.replace(itinerary, key: _currentDate, notify: true);
     setState(() {});
   }
 
-  void removeStudent(int indexInStudent) {
-    final studentsToVisit =
-        Provider.of<SelectedStudentForItinerary>(context, listen: false);
+  void removeStopToCurrentItinerary(int indexInItinerary) {
+    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    final itinerary = itineraries[_currentDate]!;
 
-    studentsToVisit.remove(indexInStudent);
+    itinerary.remove(indexInItinerary);
+    itineraries.replace(itinerary, key: _currentDate, notify: true);
     setState(() {});
   }
 
@@ -80,7 +104,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
         child: Column(
           children: [
             _map(),
-            _Distance(_distances),
+            _Distance(_distances, currentDate: _currentDate),
             const SizedBox(height: 20),
             _studentsToVisitWidget(context),
           ],
@@ -93,37 +117,39 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
     return SizedBox(
         height: MediaQuery.of(context).size.height * 0.5,
         child: RoutingMap(
-          onClickWaypointCallback: addStudent,
+          currentDate: _currentDate,
+          onClickWaypointCallback: addStopToCurrentItinerary,
           onComputedDistancesCallback: setRouteDistances,
         ));
   }
 
   Widget _studentsToVisitWidget(BuildContext context) {
-    final studentsToVisit =
-        Provider.of<SelectedStudentForItinerary>(context, listen: false);
+    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    final itinerary = itineraries[_currentDate];
+    if (itinerary == null) return Container();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         const Text('Résumé de l\'itinéraire', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 8),
-        if (studentsToVisit.isNotEmpty)
+        if (itinerary.isNotEmpty)
           ReorderableListView.builder(
             onReorder: (oldIndex, newIndex) {
-              studentsToVisit.move(oldIndex, newIndex);
+              itinerary.move(oldIndex, newIndex);
             },
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              final way = studentsToVisit[index];
+              final way = itinerary[index];
               return WaypointCard(
                 key: ValueKey(way.id),
                 name: way.title,
                 waypoint: way,
-                onDelete: () => removeStudent(index),
+                onDelete: () => removeStopToCurrentItinerary(index),
               );
             },
-            itemCount: studentsToVisit.length,
+            itemCount: itinerary.length,
           ),
       ],
     );
@@ -131,12 +157,11 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
 }
 
 class _Distance extends StatefulWidget {
-  const _Distance(
-    this.distances, {
-    super.key,
-  });
+  const _Distance(this.distances, {required this.currentDate});
 
   final List<double>? distances;
+  final String currentDate;
+
   @override
   State<_Distance> createState() => __DistanceState();
 }
@@ -185,16 +210,16 @@ class __DistanceState extends State<_Distance> {
   }
 
   List<Widget> _distancesToWidget(List<double?> distances) {
-    final studentsToVisit =
-        Provider.of<SelectedStudentForItinerary>(context, listen: false);
+    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    final itinerary = itineraries[widget.currentDate]!;
 
     List<Widget> out = [];
-    if (distances.length + 1 != studentsToVisit.length) return out;
+    if (distances.length + 1 != itinerary.length) return out;
 
     for (int i = 0; i < distances.length; i++) {
       final distance = distances[i];
-      final startingPoint = studentsToVisit[i];
-      final endingPoint = studentsToVisit[i + 1];
+      final startingPoint = itinerary[i];
+      final endingPoint = itinerary[i + 1];
 
       out.add(Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2.0),

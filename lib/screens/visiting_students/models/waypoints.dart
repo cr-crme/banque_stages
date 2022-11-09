@@ -1,16 +1,10 @@
 import 'package:flutter/services.dart';
 import '../../../crcrme_enhanced_containers/lib/item_serializable.dart';
-
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 import 'package:geocoding/geocoding.dart';
 
-enum Priority {
-  none,
-  low,
-  mid,
-  high,
-}
+import '../../../common/models/visiting_priority.dart';
 
 class Waypoint extends ItemSerializable {
   Waypoint(
@@ -18,7 +12,7 @@ class Waypoint extends ItemSerializable {
     this.latitude,
     this.longitude, {
     required this.address,
-    this.priority = Priority.low,
+    this.priority = VisitingPriority.notApplicable,
     this.showTitle = true,
   });
 
@@ -26,7 +20,7 @@ class Waypoint extends ItemSerializable {
     String title,
     double latitude,
     double longitude, {
-    priority = Priority.low,
+    priority = VisitingPriority.notApplicable,
     showTitle = true,
   }) async {
     late Placemark placemark;
@@ -70,7 +64,7 @@ class Waypoint extends ItemSerializable {
       data['latitude'],
       data['longitude'],
       address: address,
-      priority: data['priority'] as Priority,
+      priority: data['priority'] as VisitingPriority,
     );
   }
 
@@ -90,29 +84,23 @@ class Waypoint extends ItemSerializable {
     double? latitude,
     double? longitude,
     Placemark? address,
-    Priority? priority,
+    VisitingPriority? priority,
     bool? showTitle,
   }) {
-    title = title ?? this.title;
-    latitude = latitude ?? this.latitude;
-    longitude = longitude ?? this.longitude;
-    address = address ?? this.address;
-    priority = priority ?? this.priority;
-    showTitle = showTitle ?? this.showTitle;
     return Waypoint(
-      title,
-      latitude,
-      longitude,
-      address: address,
-      priority: priority,
-      showTitle: showTitle,
+      title ?? this.title,
+      latitude ?? this.latitude,
+      longitude ?? this.longitude,
+      address: address ?? this.address,
+      priority: priority ?? this.priority,
+      showTitle: showTitle ?? this.showTitle,
     );
   }
 
   static Future<Waypoint> fromAddress(
     String title,
     String address, {
-    priority = Priority.low,
+    priority = VisitingPriority.notApplicable,
     showTitle = true,
   }) async {
     late List<Location> locations;
@@ -132,8 +120,12 @@ class Waypoint extends ItemSerializable {
     );
   }
 
-  static Future<Waypoint> fromLatLng(String title, LatLng point,
-      {priority = Priority.low, showTitle = true}) async {
+  static Future<Waypoint> fromLatLng(
+    String title,
+    LatLng point, {
+    priority = VisitingPriority.notApplicable,
+    showTitle = true,
+  }) async {
     return Waypoint.fromCoordinates(
       title,
       point.latitude,
@@ -148,7 +140,7 @@ class Waypoint extends ItemSerializable {
   static Future<Waypoint> fromLngLat(
     String title,
     LngLat point, {
-    priority = Priority.low,
+    priority = VisitingPriority.notApplicable,
     showTitle = true,
   }) {
     return Waypoint.fromCoordinates(
@@ -166,7 +158,7 @@ class Waypoint extends ItemSerializable {
   final double latitude;
   final double longitude;
   final Placemark address;
-  final Priority priority;
+  final VisitingPriority priority;
   final bool showTitle;
 
   @override

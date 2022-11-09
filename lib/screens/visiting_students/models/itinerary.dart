@@ -1,11 +1,10 @@
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
-import '../../../crcrme_enhanced_containers/lib/list_provided.dart';
+import '../../../crcrme_enhanced_containers/lib/list_serializable.dart';
 
 import './waypoints.dart';
 
-class StudentsWithAddress extends ListProvided<Waypoint>
-    with Iterator<Waypoint> {
+class Itinerary extends ListSerializable<Waypoint> with Iterator<Waypoint> {
   List<LatLng> toLatLng() {
     List<LatLng> out = [];
     for (final address in this) {
@@ -39,5 +38,3 @@ class StudentsWithAddress extends ListProvided<Waypoint>
     return _currentIndex < length;
   }
 }
-
-class SelectedStudentForItinerary extends StudentsWithAddress {}

@@ -4,18 +4,21 @@ import 'package:provider/provider.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
 import '../models/lng_lat_utils.dart';
-import '../models/students_with_address.dart';
-import '../models/waypoints.dart';
+import '../models/itinerary.dart';
+import '../models/all_itineraries.dart';
+import '../../../common/models/visiting_priority.dart';
 
 class RoutingMap extends StatefulWidget {
   const RoutingMap({
     Key? key,
-    required this.onClickWaypointCallback,
+    required this.currentDate,
+    this.onClickWaypointCallback,
     this.onComputedDistancesCallback,
   }) : super(key: key);
 
-  final Function(int index) onClickWaypointCallback;
+  final Function(int index)? onClickWaypointCallback;
   final Function(List<double>?)? onComputedDistancesCallback;
+  final String currentDate;
 
   @override
   State<RoutingMap> createState() => _RoutingMapState();
@@ -31,16 +34,17 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   void computeRoute() {
-    final students = Provider.of<SelectedStudentForItinerary>(context);
-    _road = _getActivatedRoute(students);
+    final itineraries = Provider.of<AllItineraries>(context);
+    _road = _getActivatedRoute(itineraries);
     setState(() {});
   }
 
-  Future<Road?> _getActivatedRoute(SelectedStudentForItinerary students) async {
-    if (students.isEmpty) return null;
+  Future<Road?> _getActivatedRoute(AllItineraries itineraries) async {
+    if (itineraries.isEmpty) return null;
 
     final manager = OSRMManager();
-    final route = students.toLngLat();
+    // TODO HERE!
+    final route = itineraries['day_one']!.toLngLat();
 
     late Road out;
     try {
@@ -85,26 +89,34 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   void _toggleName(index) {
-    final students = Provider.of<StudentsWithAddress>(context, listen: false);
-    students[index] =
-        students[index].copyWith(showTitle: !students[index].showTitle);
+    final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
+    waypoints[index] =
+        waypoints[index].copyWith(showTitle: !waypoints[index].showTitle);
     setState(() {});
   }
 
+  MaterialColor _getWaypointColor(VisitingPriority priority) {
+    switch (priority) {
+      case (VisitingPriority.none):
+        return Colors.deepPurple;
+      case (VisitingPriority.low):
+        return Colors.green;
+      case (VisitingPriority.mid):
+        return Colors.orange;
+      case (VisitingPriority.high):
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
   List<Marker> _waypointsToMarkers() {
-    final students = Provider.of<StudentsWithAddress>(context, listen: false);
+    final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
     List<Marker> out = [];
 
     const double markerSize = 40;
-    for (var i = 0; i < students.length; i++) {
-      final waypoint = students[i];
-      final color = waypoint.priority == Priority.low
-          ? Colors.green
-          : waypoint.priority == Priority.mid
-              ? Colors.orange
-              : waypoint.priority == Priority.high
-                  ? Colors.red
-                  : Colors.deepPurple;
+    for (var i = 0; i < waypoints.length; i++) {
+      final waypoint = waypoints[i];
 
       double nameWidth = 160;
       double nameHeight = 100;
@@ -118,7 +130,9 @@ class _RoutingMapState extends State<RoutingMap> {
           builder: (context) => Row(
             children: [
               GestureDetector(
-                onTap: () => widget.onClickWaypointCallback(i),
+                onTap: widget.onClickWaypointCallback == null
+                    ? null
+                    : () => widget.onClickWaypointCallback!(i),
                 onLongPress: () => _toggleName(i),
                 child: Container(
                   decoration: BoxDecoration(
@@ -127,7 +141,7 @@ class _RoutingMapState extends State<RoutingMap> {
                   ),
                   child: Icon(
                     i == 0 ? Icons.school : Icons.location_on_sharp,
-                    color: color,
+                    color: _getWaypointColor(waypoint.priority),
                     size: markerSize,
                   ),
                 ),
@@ -151,13 +165,13 @@ class _RoutingMapState extends State<RoutingMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<StudentsWithAddress>(builder: (context, students, child) {
-      if (students.isEmpty) return const CircularProgressIndicator();
+    return Consumer<AllStudentsWaypoints>(builder: (context, waypoints, child) {
+      if (waypoints.isEmpty) return const CircularProgressIndicator();
 
       return Padding(
         padding: const EdgeInsets.all(8),
         child: FlutterMap(
-          options: MapOptions(center: students[0].toLatLng(), zoom: 14),
+          options: MapOptions(center: waypoints[0].toLatLng(), zoom: 14),
           nonRotatedChildren: const [_ZoomButtons()],
           children: [
             TileLayer(
@@ -167,7 +181,7 @@ class _RoutingMapState extends State<RoutingMap> {
             FutureBuilder<Road?>(
               future: _road,
               builder: (context, road) {
-                if (!road.hasData || students.isEmpty) return Container();
+                if (!road.hasData || waypoints.isEmpty) return Container();
                 return PolylineLayer(polylines: _roadToPolyline(road.data));
               },
             ),
