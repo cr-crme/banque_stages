@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'models/itinerary.dart';
@@ -20,16 +21,24 @@ class VisitStudentScreen extends StatefulWidget {
 
 class _VisitStudentScreenState extends State<VisitStudentScreen> {
   List<double>? _distances;
-  final String _currentDate = 'day_one'; // TODO Use a datepicker
+
+  final _dateFormat = DateFormat("dd_MM_yyyy");
+  DateTime _currentDate = DateTime.now();
+  String get _currentDateAsString => _dateFormat.format(_currentDate);
 
   @override
   void initState() {
     super.initState();
 
     _fillAllWaypoints();
+    _initializeItinariesForCurrentDate();
+  }
 
+  void _initializeItinariesForCurrentDate() {
     final itineraries = Provider.of<AllItineraries>(context, listen: false);
-    itineraries.add(Itinerary(), key: _currentDate, notify: false);
+    if (!itineraries.containsKey(_currentDateAsString)) {
+      itineraries.add(Itinerary(), key: _currentDateAsString, notify: false);
+    }
   }
 
   void _fillAllWaypoints() async {
@@ -79,19 +88,19 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
   void addStopToCurrentItinerary(int indexInWaypoints) {
     final itineraries = Provider.of<AllItineraries>(context, listen: false);
     final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
-    final itinerary = itineraries[_currentDate]!;
+    final itinerary = itineraries[_currentDateAsString]!;
 
     itinerary.add(waypoints[indexInWaypoints].copyWith());
-    itineraries.replace(itinerary, key: _currentDate, notify: true);
+    itineraries.replace(itinerary, key: _currentDateAsString, notify: true);
     setState(() {});
   }
 
   void removeStopToCurrentItinerary(int indexInItinerary) {
     final itineraries = Provider.of<AllItineraries>(context, listen: false);
-    final itinerary = itineraries[_currentDate]!;
+    final itinerary = itineraries[_currentDateAsString]!;
 
     itinerary.remove(indexInItinerary);
-    itineraries.replace(itinerary, key: _currentDate, notify: true);
+    itineraries.replace(itinerary, key: _currentDateAsString, notify: true);
     setState(() {});
   }
 
@@ -103,8 +112,9 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
         physics: const ScrollPhysics(),
         child: Column(
           children: [
+            _showDate(),
             _map(),
-            _Distance(_distances, currentDate: _currentDate),
+            _Distance(_distances, currentDate: _currentDateAsString),
             const SizedBox(height: 20),
             _studentsToVisitWidget(context),
           ],
@@ -113,12 +123,68 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
     );
   }
 
+  Widget _showDate() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Text(
+            'Itinéraire du\n${DateFormat('d MMMM yyyy', 'fr_CA').format(_currentDate)}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: _showDatePicker,
+                child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[600], shape: BoxShape.circle),
+                    child: const Padding(
+                      padding: EdgeInsets.all(6.0),
+                      child: Icon(
+                        Icons.calendar_month,
+                        size: 30,
+                      ),
+                    )),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showDatePicker() async {
+    final newDate = await showDialog(
+        context: context,
+        builder: (context) {
+          return DatePickerDialog(
+              initialDate: _currentDate,
+              firstDate: DateTime.now(),
+              lastDate: DateTime.now().add(const Duration(days: 31)));
+        });
+
+    if (newDate == null || !mounted) return;
+
+    _currentDate = newDate;
+    _initializeItinariesForCurrentDate();
+    // Force update of all widgets
+
+    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    final itinerary = itineraries[_currentDateAsString];
+    debugPrint(_currentDateAsString);
+    itineraries.replace(itinerary!, key: _currentDateAsString);
+    setState(() {});
+  }
+
   Widget _map() {
     return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.5,
         child: RoutingMap(
-          currentDate: _currentDate,
+          currentDate: _currentDateAsString,
           onClickWaypointCallback: addStopToCurrentItinerary,
           onComputedDistancesCallback: setRouteDistances,
         ));
@@ -126,7 +192,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
 
   Widget _studentsToVisitWidget(BuildContext context) {
     final itineraries = Provider.of<AllItineraries>(context, listen: false);
-    final itinerary = itineraries[_currentDate];
+    final itinerary = itineraries[_currentDateAsString];
     if (itinerary == null) return Container();
 
     return Column(
