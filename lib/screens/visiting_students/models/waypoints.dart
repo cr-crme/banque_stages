@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import '../../../crcrme_enhanced_containers/lib/item_serializable.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 import 'package:geocoding/geocoding.dart';

@@ -1,5 +1,4 @@
-import '../../../crcrme_enhanced_containers/lib/map_provided.dart';
-import '../../../crcrme_enhanced_containers/lib/list_provided.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 
 import 'itinerary.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.dart';

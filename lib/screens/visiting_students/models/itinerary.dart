@@ -1,6 +1,6 @@
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
-import '../../../crcrme_enhanced_containers/lib/list_serializable.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 
 import './waypoints.dart';
 
