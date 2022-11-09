@@ -44,10 +44,13 @@ dependencies:
     routing_client_dart: ^0.3.1
     geocoding: ^2.0.5
     enhanced_containers:
+    crcrme_material_theme:
 
 dependency_overrides:
     enhanced_containers:
         path: ./external/enhanced_containers 
+    crcrme_material_theme:
+        path: ./external/crcrme_material_theme
 
 dev_dependencies:
     flutter_test:

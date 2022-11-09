@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:crcrme_banque_stages/crcrme_material_theme/lib/crcrme_material_theme.dart';
+import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';

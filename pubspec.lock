@@ -155,6 +155,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.1"
+  crcrme_material_theme:
+    dependency: "direct main"
+    description:
+      path: "external/crcrme_material_theme"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   cross_file:
     dependency: transitive
     description:
