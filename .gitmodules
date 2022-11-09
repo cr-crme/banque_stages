@@ -1,3 +1,6 @@
 [submodule "external/enhanced_containers"]
 	path = external/enhanced_containers
 	url = https://github.com/cr-crme/enhanced_containers
+[submodule "external/crcrme_material_theme"]
+	path = external/crcrme_material_theme
+	url = https://github.com/cr-crme/crcrme_material_theme
