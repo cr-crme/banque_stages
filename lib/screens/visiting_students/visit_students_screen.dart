@@ -54,15 +54,15 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
             priority: VisitingPriority.none),
         notify: false);
     waypoints.add(
-        await Waypoint.fromAddress('CRME', 'CRME, Montréal',
+        await Waypoint.fromAddress('Charles', 'CRME, Montréal',
             priority: VisitingPriority.mid),
         notify: false);
     waypoints.add(
-        await Waypoint.fromAddress('Métro', 'Métro Jarry, Montréal',
+        await Waypoint.fromAddress('Réjeanne', 'Métro Jarry, Montréal',
             priority: VisitingPriority.high),
         notify: false);
     waypoints.add(
-        await Waypoint.fromAddress('Café', 'Café Oui mais non, Montréal',
+        await Waypoint.fromAddress('Camille', 'Café Oui mais non, Montréal',
             priority: VisitingPriority.high),
         notify: true);
 
@@ -170,12 +170,10 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
 
     _currentDate = newDate;
     _initializeItinariesForCurrentDate();
-    // Force update of all widgets
 
+    // Force update of all widgets
     final itineraries = Provider.of<AllItineraries>(context, listen: false);
-    final itinerary = itineraries[_currentDateAsString];
-    debugPrint(_currentDateAsString);
-    itineraries.replace(itinerary!, key: _currentDateAsString);
+    itineraries.forceNotify();
     setState(() {});
   }
 
@@ -204,6 +202,8 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
           ReorderableListView.builder(
             onReorder: (oldIndex, newIndex) {
               itinerary.move(oldIndex, newIndex);
+              itineraries.forceNotify();
+              setState(() {});
             },
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -269,14 +269,14 @@ class __DistanceState extends State<_Distance> {
                   ),
                 ],
               ),
-            if (_isExpanded) ..._distancesToWidget(widget.distances!)
+            if (_isExpanded) ..._distancesTo(widget.distances!)
           ],
         ),
       ),
     );
   }
 
-  List<Widget> _distancesToWidget(List<double?> distances) {
+  List<Widget> _distancesTo(List<double?> distances) {
     final itineraries = Provider.of<AllItineraries>(context, listen: false);
     final itinerary = itineraries[widget.currentDate]!;
 
