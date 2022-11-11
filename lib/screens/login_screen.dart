@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,14 +21,11 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _email;
   String? _password;
 
-  String? _errorText;
-
   void _signIn() async {
     if (!FormService.validateForm(_formKey)) {
       return;
     }
 
-    final navigator = Navigator.of(context);
     _formKey.currentState!.save();
 
     try {
@@ -35,25 +33,28 @@ class _LoginScreenState extends State<LoginScreen> {
           .read<AuthProvider>()
           .signInWithEmailAndPassword(email: _email!, password: _password!);
     } on FirebaseAuthException catch (e) {
+      late final String errorMessage;
       switch (e.code) {
         case "invalid-email":
         case "user-not-found":
         case "wrong-password":
-          setState(() {
-            _errorText = "Identifiants invalides. Veuillez réssayer.";
-          });
+          errorMessage = "Identifiants invalides. Veuillez réssayer.";
           break;
         case "user-disabled":
-          setState(() {
-            _errorText =
-                "Impossible de se connecter; ce compte à été désactivé.";
-          });
+          errorMessage =
+              "Impossible de se connecter; ce compte à été désactivé.";
           break;
+        default:
+          errorMessage = 'Erreur non reconnue lors de l\'activation';
       }
-      return;
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(errorMessage),
+      ));
+      //return;
     }
 
-    navigator.pop();
+    if (mounted) Navigator.of(context).popAndPushNamed(HomeScreen.route);
   }
 
   @override
@@ -81,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     labelText: "Courriel",
                   ),
                   validator: FormService.emailValidator,
+                  keyboardType: TextInputType.emailAddress,
                   onSaved: (email) => _email = email!,
                 ),
                 const SizedBox(height: 8),
@@ -88,20 +90,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: const InputDecoration(
                       icon: Icon(Icons.lock), labelText: "Mot de passe"),
                   validator: FormService.passwordValidator,
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
                   onSaved: (function) => _password = function!,
-                ),
-                Visibility(
-                  visible: _errorText != null,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: ListTile(
-                      leading: const Icon(Icons.error),
-                      iconColor: Theme.of(context).errorColor,
-                      title: Text(
-                        _errorText ?? "",
-                      ),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
