@@ -21,7 +21,7 @@ import 'temporary_proxy_data.dart';
 * The methods currently get their data from hardcoded strings, but this will be
 * replaced with fetches from the database.
 */
-
+/*
 class CardsProxy {
   CardsProxy();
   //Importing and transforming json string into list of maps
@@ -206,3 +206,4 @@ class JobsProxy {
     return fromJson(parsedJobs);
   }
 }
+*/

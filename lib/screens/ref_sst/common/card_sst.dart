@@ -1,26 +1,60 @@
-// ignore_for_file: non_constant_identifier_names
+import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
+import '/misc/job_data_file_service.dart';
 
-//Card class contains the cards info and a list of more precise risks
-class CardSST {
-  const CardSST({
-    required this.id,
-    required this.shortname,
-    required this.name,
-    required this.risks,
-    required this.links,
-  });
+class CardSST extends ItemSerializable {
+  CardSST({
+    super.id,
+    this.shortname = "",
+    this.name = "",
+    risks,
+    links,
+  })  : risks = risks ?? [],
+        links = links ?? [];
 
-  final int id;
-  final String shortname;
-  final String name;
-  final List<RiskSST> risks;
-  final List<LinkSST> links;
+  CardSST copyWith({
+    String? id,
+    String? shortname,
+    String? name,
+    List<RiskSST>? risks,
+    List<LinkSST>? links,
+  }) {
+    return CardSST(
+        id: id ?? this.id,
+        shortname: shortname ?? this.shortname,
+        name: name ?? this.name,
+        risks: risks ?? this.risks,
+        links: links ?? this.links);
+  }
 
-  //Tostring displays risk id and title
+  @override
+  Map<String, dynamic> serializedMap() {
+    throw ("CardSST should never generate a map, it is read only");
+    return {};
+  }
+
   @override
   String toString() {
     return '{Fiche #$id: $name}';
   }
+
+  CardSST.fromSerialized(map)
+      : id = 5,
+        comments = listFromSerialized(map['comments']),
+        super.fromSerialized(map);
+
+  static List<String> listFromSerialized(List? list) {
+    return (list ?? []).map((e) => e.toString()).toList();
+  }
+
+  static double doubleFromSerialized(num? number, {double defaultValue = 0}) {
+    if (number is int) return number.toDouble();
+    return (number ?? defaultValue) as double;
+  }
+
+  final String shortname;
+  final String name;
+  final List<RiskSST> risks;
+  final List<LinkSST> links;
 }
 
 //Object to save link information
