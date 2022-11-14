@@ -1,4 +1,3 @@
-import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/widgets/list_tile_job_risk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'widgets/tile_job_risk.dart';
@@ -14,6 +13,7 @@ class JobListScreen extends StatefulWidget {
 
 class _Job_list_screenState extends State<JobListScreen> {
   bool switch_value = true;
+  bool switchRisk = true;
   Color colorTile = Colors.blue;
   Color textColor = Colors.blue;
   Color textColor2 = Colors.white;
@@ -35,6 +35,7 @@ class _Job_list_screenState extends State<JobListScreen> {
     textColor2 = Colors.blue;
     colorTile = Colors.white;
     colorTile2 = Colors.blue;
+    switchRisk = false;
     setState(() {});
   }
 
@@ -45,6 +46,7 @@ class _Job_list_screenState extends State<JobListScreen> {
     textColor2 = Colors.white;
     colorTile = Colors.blue;
     colorTile2 = Colors.white;
+    switchRisk = true;
     setState(() {});
   }
 
@@ -111,7 +113,25 @@ class _Job_list_screenState extends State<JobListScreen> {
               ],
             ),
           ),
-          ListTileJobRisk()
+          ListView.separated(
+            physics: ScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: 5,
+            padding: const EdgeInsets.all(16.0),
+            itemBuilder: (context, i) {
+              return tile_job_risk(switchRisk);
+              // call the expansion tile constuctor list
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return Divider(
+                color: Colors.grey,
+                height: 16,
+
+                //indent: 0.0,
+                //endIndent: 0.0,
+              );
+            },
+          )
         ]));
   }
 }
