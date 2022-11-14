@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'CustomSearchDelegate.dart';
 
 class SearchBar extends StatelessWidget with PreferredSizeWidget {
   const SearchBar({Key? key, required this.controller}) : super(key: key);
@@ -22,7 +23,14 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
           ),
           trailing: IconButton(
             icon: const Icon(Icons.clear),
-            onPressed: () => controller.text = "",
+            onPressed: () {
+              // method to show the search bar
+              showSearch(
+                  context: context,
+                  // delegate to customize the search bar
+                  delegate: CustomSearchDelegate()
+              );
+            },
           ),
         ),
       ),
