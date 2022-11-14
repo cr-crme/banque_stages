@@ -4,51 +4,54 @@
     "@appName": {
         "description": "The name of the application."
     },
+
     "studentsList_title": "My Students",
+
     "student_currentGroup": "Group {group}",
     "@student_currentGroup": {
         "description": "Shows what group the student is in",
         "placeholders": {
             "group": {
                 "type": "String",
-                "example" : "4B"
+                "example": "4B"
             }
         }
     },
-    "emptyFieldError": "This field cannot be empty",
-    "@emptyFieldError": {
+
+    "error_emptyField": "This field cannot be empty",
+    "@error_emptyField": {
         "description": "When the required field isn't filed."
     },
-    "emptyUsernameError": "A username is required",
-    "@emptyUsernameError": {
+    "error_emptyUsername": "A username is required",
+    "@error_emptyUsername": {
         "description": "When the required username isn't filed."
     },
-    "emptyEmailError": "An email address is required",
-    "@emptyEmailError": {
+    "error_emptyEmail": "An email address is required",
+    "@error_emptyEmail": {
         "description": "When the required email address isn't filed."
     },
-    "emptyPhoneError": "A phone number is required",
-    "@emptyPhoneError": {
+    "error_emptyPhone": "A phone number is required",
+    "@error_emptyPhone": {
         "description": "When the required phone number isn't filed."
     },
-    "invalidNeqError": "The NEQ has to be a 10 digit number",
-    "@invalidNeqError": {
+    "error_invalidNeq": "The NEQ has to be a 10 digit number",
+    "@error_invalidNeq": {
         "description": "When the provided NEQ is invalid."
     },
-    "invalidEmailError": "This email address is not valid",
-    "@invalidEmailError": {
+    "error_invalidEmail": "This email address is not valid",
+    "@error_invalidEmail": {
         "description": "When the email address is invalid."
     },
-    "invalidPhoneError": "This phone number is not valid",
-    "@invalidPhoneError": {
+    "error_invalidPhone": "This phone number is not valid",
+    "@error_invalidPhone": {
         "description": "When the phone number is invalid."
     },
-    "invalidPasswordError": "This password does not meet the basic requirements",
-    "@invalidPasswordError": {
+    "error_invalidPassword": "This password does not meet the basic requirements",
+    "@error_invalidPassword": {
         "description": "When the password is too weak."
     },
-    "passwordMatchError": "The passwords don't match",
-    "@passwordMatchError": {
+    "error_passwordMatch": "The passwords don't match",
+    "@error_passwordMatch": {
         "description": "When the two passwords provided don't match."
     }
 }
