@@ -32,9 +32,18 @@ class tile_job_risk extends StatelessWidget {
           textColor: Colors.black,
           collapsedTextColor: Colors.black,
           title: riskTitle(),
+          trailing: Container(
+          height:20,
+          width: 20,
+          decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(100))
+          ),
+              //more than 50% of width makes circle,
           children: [
             for (int i = 0; i < 5; i++) dropdown_obect(switchRisk),
           ]),
+
     );
   }
 }
