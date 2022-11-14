@@ -5,6 +5,7 @@ class Student extends ItemSerializable {
     super.id,
     this.name = "",
     DateTime? dateBirth,
+    this.photo = "",
     this.phone = "",
     this.email = "",
     this.address = "",
@@ -19,6 +20,7 @@ class Student extends ItemSerializable {
   Student.fromSerialized(map)
       : name = map['n'],
         dateBirth = DateTime.parse(map['d']),
+        photo = map['i'],
         phone = map['p'],
         email = map['e'],
         address = map['a'],
@@ -35,6 +37,7 @@ class Student extends ItemSerializable {
     return {
       'n': name,
       'd': dateBirth.toString(),
+      'i': photo,
       'p': phone,
       'e': email,
       'a': address,
@@ -61,6 +64,7 @@ class Student extends ItemSerializable {
 
   final String name;
   final DateTime dateBirth;
+  final String photo;
 
   final String phone;
   final String email;

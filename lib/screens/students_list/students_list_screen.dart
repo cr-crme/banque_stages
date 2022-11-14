@@ -1,10 +1,11 @@
-import 'package:crcrme_banque_stages/common/models/student.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/student.dart';
+import '/common/providers/students_provider.dart';
+import '/common/widgets/search_bar.dart';
+import '/dummy_data.dart';
 import '/screens/student/student_screen.dart';
 import 'widgets/student_card.dart';
 
@@ -70,6 +71,15 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
             ),
             selector: (context, students) =>
                 _filterSelectedStudents(students.toList()),
+          ),
+          //! Remove this in production
+          Consumer<StudentsProvider>(
+            builder: (context, students, child) => Visibility(
+              visible: students.isEmpty,
+              child: ElevatedButton(
+                  onPressed: () => addDummyStudents(students),
+                  child: const Text("Add dummy students")),
+            ),
           ),
         ],
       ),
