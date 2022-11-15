@@ -17,10 +17,11 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
             icon: const Icon(Icons.search),
             onPressed: () {
               // method to show the search bar
-              showSearch(
+              showSearch<String>(
                   context: context,
+                  query: controller.text,
                   // delegate to customize the search bar
-                  delegate: CustomSearchDelegate()
+                  delegate: CustomSearchDelegate(controller.text)
               );
             },
           ),
@@ -29,6 +30,7 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
             decoration: const InputDecoration(
               hintText: "Rechercher",
               border: InputBorder.none,
+
             ),
           ),
           trailing: IconButton(

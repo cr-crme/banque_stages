@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'widgets/tile_job_risk.dart';
 
 class JobListScreen extends StatefulWidget {
-  const JobListScreen({Key? key}) : super(key: key);
+  const JobListScreen(String result, {Key? key}) : super(key: key);
 
   static const route = "/job_list_risks_skills";
 

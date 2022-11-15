@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-class CustomSearchDelegate extends SearchDelegate {
+import '../../job_list_risks_and_skills/job_list_screen.dart';
+
+class CustomSearchDelegate extends SearchDelegate<String> {
 // Demo list to show querying
 
   List<String> searchTerms = [
@@ -13,6 +15,8 @@ class CustomSearchDelegate extends SearchDelegate {
     "Pineapples",
     "Strawberries"
   ];
+
+  CustomSearchDelegate(String text);
 
 // first overwrite to
 // clear the search text
@@ -33,7 +37,7 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget? buildLeading(BuildContext context) {
     return IconButton(
       onPressed: () {
-        close(context, null);
+        close(context, query);
       },
       icon: Icon(Icons.arrow_back),
     );
@@ -54,6 +58,7 @@ class CustomSearchDelegate extends SearchDelegate {
         var result = matchQuery[index];
         return ListTile(
           title: Text(result),
+          onTap: () => query= result,
         );
       },
     );
@@ -75,8 +80,21 @@ class CustomSearchDelegate extends SearchDelegate {
         var result = matchQuery[index];
         return ListTile(
           title: Text(result),
+          onTap: (){
+
+            query= result;
+            close(context, query);
+          },
+
         );
       },
     );
+  }
+
+  @override
+  void close(BuildContext context, String result) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => JobListScreen(result),
+    ));
   }
 }
