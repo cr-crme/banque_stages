@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
 // Demo list to show querying
+
   List<String> searchTerms = [
     "Apple",
     "Banana",

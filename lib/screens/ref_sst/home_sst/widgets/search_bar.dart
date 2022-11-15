@@ -13,7 +13,17 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
       child: Card(
         elevation: 0,
         child: ListTile(
-          leading: const Icon(Icons.search),
+          leading: IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              // method to show the search bar
+              showSearch(
+                  context: context,
+                  // delegate to customize the search bar
+                  delegate: CustomSearchDelegate()
+              );
+            },
+          ),
           title: TextField(
             controller: controller,
             decoration: const InputDecoration(
@@ -23,14 +33,7 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
           ),
           trailing: IconButton(
             icon: const Icon(Icons.clear),
-            onPressed: () {
-              // method to show the search bar
-              showSearch(
-                  context: context,
-                  // delegate to customize the search bar
-                  delegate: CustomSearchDelegate()
-              );
-            },
+             onPressed: () => controller.text = "",
           ),
         ),
       ),
