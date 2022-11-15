@@ -39,7 +39,7 @@ class Risk extends ItemSerializable {
   }
 
   Risk.fromSerialized(map)
-      : number = "",
+      : number = map[""],
         comments = listFromSerialized(map['comments']),
         super.fromSerialized(map);
 
@@ -72,7 +72,7 @@ class RiskLink {
   final String url;
 }
 
-//Class RiskSST keeps individual risk data, including each paragraph in a map
+//Class SubRisk keeps individual risk data, including each paragraph in a map
 //(for each line), with a string array (for sublines)
 class SubRisk {
   const SubRisk({
@@ -84,6 +84,7 @@ class SubRisk {
     required this.symptoms,
     required this.images,
   });
+
   final int id;
   final String title;
   final String intro;

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'common/job_sst.dart';
-import 'common/card_sst.dart';
+import 'common/risk.dart';
 import 'common/skill_sst.dart';
 import 'common/proxy_ref_sst.dart';
 import 'sst_cards/widgets/sst_card.dart';

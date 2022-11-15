@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/introduction.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/link.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/main_title.dart';

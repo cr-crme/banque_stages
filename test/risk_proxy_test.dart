@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';

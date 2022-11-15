@@ -14,7 +14,5 @@ class RisksProvider extends ListProvided<Risk> {
   /// of calling that constructor.
   ///
   @override
-  Risk deserializeItem(data) {
-    return Risk.fromSerialized(data);
-  }
+  Risk deserializeItem(data) => Risk.fromSerialized(data);
 }

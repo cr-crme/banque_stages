@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import './job_sst.dart';
 import './skill_sst.dart';
-import 'card_sst.dart';
+import 'risk.dart';
 import 'temporary_proxy_data.dart';
 //Remove after connection to DB
 
