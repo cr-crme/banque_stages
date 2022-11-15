@@ -5,7 +5,7 @@ import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/list_li
 class Link extends StatelessWidget {
   //params and variables
   const Link(this.links, {super.key});
-  final List<LinkSST> links;
+  final List<RiskLink> links;
   @override
   Widget build(BuildContext context) {
     return Column(children: [

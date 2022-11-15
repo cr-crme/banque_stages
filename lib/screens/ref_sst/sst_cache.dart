@@ -10,7 +10,7 @@ class SSTCache {
   static final SSTCache _sstCache = SSTCache._internal();
 
   List<JobSST> jobs = JobsProxy().getList();
-  List<CardSST> risks = CardsProxy().getList();
+  List<Risk> risks = CardsProxy().getList();
 
   factory SSTCache() {
     return _sstCache;
@@ -22,7 +22,7 @@ class SSTCache {
     return jobs;
   }
 
-  List<CardSST> getRisks() {
+  List<Risk> getRisks() {
     return risks;
   }
 
@@ -33,7 +33,7 @@ class SSTCache {
 
   ListView getListViewRisk() {
     return ListView(
-        children: [for (CardSST risk in risks) SSTCard(risk.id, risk.name)]);
+        children: [for (Risk risk in risks) SSTCard(risk.id, risk.name)]);
   }
 
   void refresh() {

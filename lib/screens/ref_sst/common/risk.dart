@@ -1,9 +1,10 @@
 import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
 import '/misc/job_data_file_service.dart';
 
-class CardSST extends ItemSerializable {
-  CardSST({
+class Risk extends ItemSerializable {
+  Risk({
     super.id,
+    this.number = 0,
     this.shortname = "",
     this.name = "",
     risks,
@@ -11,14 +12,14 @@ class CardSST extends ItemSerializable {
   })  : risks = risks ?? [],
         links = links ?? [];
 
-  CardSST copyWith({
+  Risk copyWith({
     String? id,
     String? shortname,
     String? name,
-    List<RiskSST>? risks,
-    List<LinkSST>? links,
+    List<SubRisk>? risks,
+    List<RiskLink>? links,
   }) {
-    return CardSST(
+    return Risk(
         id: id ?? this.id,
         shortname: shortname ?? this.shortname,
         name: name ?? this.name,
@@ -28,7 +29,7 @@ class CardSST extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() {
-    throw ("CardSST should never generate a map, it is read only");
+    throw ("Risk should never generate a map, it is read only");
     return {};
   }
 
@@ -37,8 +38,8 @@ class CardSST extends ItemSerializable {
     return '{Fiche #$id: $name}';
   }
 
-  CardSST.fromSerialized(map)
-      : id = 5,
+  Risk.fromSerialized(map)
+      : number = "",
         comments = listFromSerialized(map['comments']),
         super.fromSerialized(map);
 
@@ -51,15 +52,16 @@ class CardSST extends ItemSerializable {
     return (number ?? defaultValue) as double;
   }
 
+  final int number;
   final String shortname;
   final String name;
-  final List<RiskSST> risks;
-  final List<LinkSST> links;
+  final List<SubRisk> risks;
+  final List<RiskLink> links;
 }
 
 //Object to save link information
-class LinkSST {
-  const LinkSST({
+class RiskLink {
+  const RiskLink({
     required this.source,
     required this.title,
     required this.url,
@@ -72,8 +74,8 @@ class LinkSST {
 
 //Class RiskSST keeps individual risk data, including each paragraph in a map
 //(for each line), with a string array (for sublines)
-class RiskSST {
-  const RiskSST({
+class SubRisk {
+  const SubRisk({
     required this.id,
     required this.title,
     required this.intro,

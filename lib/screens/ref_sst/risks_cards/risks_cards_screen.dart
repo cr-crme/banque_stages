@@ -42,16 +42,16 @@ class _RisksCardsScreenState extends State<RisksCardsScreen> {
         []
   });
 
-  final List<LinkSST> links = [
-    const LinkSST(
+  final List<RiskLink> links = [
+    const RiskLink(
         source: "CNESST",
         title: "Prot\u00e9gez-vous contre les risques biologiques",
         url: "https://www.google.ca/"),
-    const LinkSST(
+    const RiskLink(
         source: "CNESST",
         title: "Prot\u00e9gez-vous contre les risques biologiques",
         url: "https://www.google.ca/"),
-    const LinkSST(
+    const RiskLink(
         source: "CNESST",
         title: "Prot\u00e9gez-vous contre les risques biologiques",
         url: "https://www.google.ca/")
