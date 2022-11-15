@@ -90,9 +90,6 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
               child: InkWell(
                   onTap: () {
                     print("Clicked on jod list risks and skills");
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => JobListScreen(),
-                    ));
                   },
                   child: Column(
                     children: [

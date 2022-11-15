@@ -81,9 +81,8 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         return ListTile(
           title: Text(result),
           onTap: (){
-
             query= result;
-            close(context, query);
+            Goto(context, query);
           },
 
         );
@@ -91,10 +90,10 @@ class CustomSearchDelegate extends SearchDelegate<String> {
     );
   }
 
-  @override
-  void close(BuildContext context, String result) {
+  Goto(BuildContext context, String result){
+
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => JobListScreen(result),
+      builder: (_) => JobListScreen(result: result),
     ));
   }
 }
