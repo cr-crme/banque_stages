@@ -34,45 +34,6 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
         drawer: const MainDrawer(),
         body: ListView(
           children: [
-            //Button for "Consulter les fiches"
-            Center(
-                child: Container(
-              margin: const EdgeInsets.only(top: 35.0),
-              child: InkWell(
-                onTap: () {
-                  print("Clicked on sst cards list");
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => SSTCardsScreen(),
-                  ));
-                },
-                child: Ink(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    color: Colors.blue,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey, spreadRadius: 1, blurRadius: 15)
-                    ],
-                  ),
-                  width: 300,
-                  height: 260,
-                  child: const Padding(
-                    padding: EdgeInsets.all(45.0),
-                    child: Center(
-                      child: Text(
-                        "Consulter les fiches de risques",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                            color: Colors.white,
-                            fontFamily: "Noto Sans"),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            )),
             //Container for the search bar
             Center(
                 child: Container(
@@ -117,6 +78,44 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                     ],
                   )),
             )),
+            Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 35.0),
+                  child: InkWell(
+                    onTap: () {
+                      print("Clicked on sst cards list");
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => SSTCardsScreen(),
+                      ));
+                    },
+                    child: Ink(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Colors.blue,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey, spreadRadius: 1, blurRadius: 15)
+                        ],
+                      ),
+                      width: 300,
+                      height: 260,
+                      child: const Padding(
+                        padding: EdgeInsets.all(45.0),
+                        child: Center(
+                          child: Text(
+                            "Consulter les fiches de risques",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25,
+                                color: Colors.white,
+                                fontFamily: "Noto Sans"),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )),
           ],
         ));
   }
