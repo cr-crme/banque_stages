@@ -104,7 +104,7 @@ class CardsProxy {
       }
       //Save everything into a card object, add to list of cards
       cardsList.add(Risk(
-        id: cardID,
+        //id: cardID,
         shortname: cardShortname,
         name: cardName,
         risks: riskList,

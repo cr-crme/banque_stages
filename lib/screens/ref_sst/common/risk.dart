@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
+import 'package:enhanced_containers/item_serializable.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/link.dart';
 import '/misc/job_data_file_service.dart';
 

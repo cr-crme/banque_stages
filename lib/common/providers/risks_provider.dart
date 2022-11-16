@@ -1,6 +1,6 @@
 import 'package:crcrme_banque_stages/screens/ref_sst/common/Risk.dart';
 
-import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/list_provided.dart';
+import 'package:enhanced_containers/list_provided.dart';
 
 class RisksProvider extends ListProvided<Risk> {
   /// This examples shows how ot implement a [ListProvided] of some [ItemSerializable].
