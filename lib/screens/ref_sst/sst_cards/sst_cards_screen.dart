@@ -3,10 +3,9 @@
 
 import 'package:flutter/material.dart';
 
-import '../sst_cache.dart';
 import 'widgets/sst_card.dart';
 import 'dart:convert';
-import '../common/card_sst.dart';
+import '../common/risk.dart';
 
 class SSTCardsScreen extends StatefulWidget {
   const SSTCardsScreen({Key? key}) : super(key: key);
@@ -32,6 +31,6 @@ class _SSTCardsScreenState extends State<SSTCardsScreen> {
         appBar: AppBar(
           title: const Text("Fiches de risques"),
         ),
-        body: SSTCache().getListViewRisk());
+        body: ErrorWidget.withDetails());
   }
 }
