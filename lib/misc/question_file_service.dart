@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/services.dart';
 
 abstract class QuestionFileService {
