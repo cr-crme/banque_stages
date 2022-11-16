@@ -1,4 +1,5 @@
 import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/link.dart';
 import '/misc/job_data_file_service.dart';
 
 class Risk extends ItemSerializable {
@@ -40,16 +41,20 @@ class Risk extends ItemSerializable {
 
   Risk.fromSerialized(map)
       : number = map[""],
-        comments = listFromSerialized(map['comments']),
+        shortname = map[""],
+        name = map[""],
+        risks = SubRiskslistFromSerialized(map[""]),
+        links = LinkslistFromSerialized(map[""]),
         super.fromSerialized(map);
 
-  static List<String> listFromSerialized(List? list) {
-    return (list ?? []).map((e) => e.toString()).toList();
+  static List<SubRisk> SubRiskslistFromSerialized(List? list) {
+    return <SubRisk>[];
+    //(list ?? []).map((e) => e.toString()).toList();
   }
 
-  static double doubleFromSerialized(num? number, {double defaultValue = 0}) {
-    if (number is int) return number.toDouble();
-    return (number ?? defaultValue) as double;
+  static List<RiskLink> LinkslistFromSerialized(List? list) {
+    return <RiskLink>[];
+    //(list ?? []).map((e) => e.toString()).toList();
   }
 
   final int number;
