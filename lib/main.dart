@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:crcrme_banque_stages/crcrme_material_theme/lib/crcrme_material_theme.dart';
+import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
@@ -29,6 +29,8 @@ import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
+import 'screens/visiting_students/visit_students_screen.dart';
+import 'screens/visiting_students/models/all_itineraries.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +46,6 @@ void main() async {
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
     return true;
   }());
-
   runApp(const MyApp());
 }
 
@@ -57,6 +58,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
+        ChangeNotifierProvider(create: (context) => AllStudentsWaypoints()),
+        ChangeNotifierProvider(create: (context) => AllItineraries()),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
           create: (context) => StudentsProvider(),
           update: (context, auth, previous) {
@@ -93,6 +96,7 @@ class MyApp extends StatelessWidget {
           StudentScreen.route: (context) => const StudentScreen(),
           PostInternshipEvaluationScreen.route: (context) =>
               const PostInternshipEvaluationScreen(),
+          VisitStudentScreen.route: (context) => const VisitStudentScreen(),
         },
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
