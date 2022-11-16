@@ -1,5 +1,8 @@
+import 'package:crcrme_banque_stages/common/providers/risks_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
+import 'package:enhanced_containers/database_list_provided.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,23 +22,18 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
   final _searchController = TextEditingController();
   final _ref = FirebaseDatabase.instance.ref();
 
+
   @override
   void initState() {
     super.initState();
     _searchController.addListener(() => setState(() {}));
     _activateListeners();
+
   }
+
 
   @override
   Widget build(BuildContext context) {
-    final data = Provider.of<>(context, listen: true);
-    if (data.isEmpty) {
-      return FutureBuilder<String>(builder: (ctx, snapshot) {
-        if (snapshot.hasData) data = snapshot.data!;
-
-        return const CircularProgressIndicator();
-      });
-    } else {
       return Scaffold(
           appBar: AppBar(
             title: const Text("Référentiel SST"),
@@ -128,7 +126,6 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
               )),
             ],
           ));
-    }
   }
 
   void _activateListeners() {
