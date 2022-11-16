@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/list_serializable.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 
 import '/common/models/job.dart';
 
