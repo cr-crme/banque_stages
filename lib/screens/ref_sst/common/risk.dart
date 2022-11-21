@@ -1,6 +1,6 @@
 import 'package:enhanced_containers/item_serializable.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/link.dart';
-import '/misc/job_data_file_service.dart';
+import './risk_data_file_service.dart';
 
 class Risk extends ItemSerializable {
   Risk({
@@ -40,22 +40,20 @@ class Risk extends ItemSerializable {
   }
 
   Risk.fromSerialized(map)
-      : number = map[""],
-        shortname = map[""],
-        name = map[""],
-        risks = SubRiskslistFromSerialized(map[""]),
-        links = LinkslistFromSerialized(map[""]),
+      : number = 1,
+        shortname = map["shortname"],
+        name = map["name"],
+        risks = <SubRisk>[], //SubRiskslistFromSerialized(map[""]),
+        links = <RiskLink>[], //LinkslistFromSerialized(map[""]),
         super.fromSerialized(map);
 
-  static List<SubRisk> SubRiskslistFromSerialized(List? list) {
-    return <SubRisk>[];
-    //(list ?? []).map((e) => e.toString()).toList();
-  }
+  // static List<SubRisk> SubRiskslistFromSerialized(List? list) {
+  //   (list ?? []).map((e) => e.toString()).toList();
+  // }
 
-  static List<RiskLink> LinkslistFromSerialized(List? list) {
-    return <RiskLink>[];
-    //(list ?? []).map((e) => e.toString()).toList();
-  }
+  // static List<RiskLink> LinkslistFromSerialized(List? list) {
+  //   (list ?? []).map((e) => e.toString()).toList();
+  // }
 
   final int number;
   final String shortname;
