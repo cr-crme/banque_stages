@@ -25,13 +25,6 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   final _contactKey = GlobalKey<ContactPageState>();
   int _currentStep = 0;
 
-  Future<bool> _onWillPop() async {
-    ScaffoldMessenger.of(context).clearSnackBars();
-
-    return await showDialog(
-        context: context, builder: (context) => const ConfirmPopDialog());
-  }
-
   void _showInvalidFieldsSnakBar() {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -109,7 +102,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: () => ConfirmPopDialog.show(context),
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Nouvelle entreprise"),

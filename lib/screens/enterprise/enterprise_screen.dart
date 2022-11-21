@@ -93,9 +93,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
               if (!_editing || !_tabController.indexIsChanging) return;
 
               _tabController.index = _tabController.previousIndex;
-              if (await showDialog(
-                  context: context,
-                  builder: (context) => const ConfirmPopDialog())) {
+              if (await ConfirmPopDialog.show(context)) {
                 _tabController.animateTo(index);
               }
             },

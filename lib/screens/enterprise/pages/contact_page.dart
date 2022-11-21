@@ -73,19 +73,10 @@ class ContactPageState extends State<ContactPage> {
     });
   }
 
-  Future<bool> _onWillPop() async {
-    if (!_editing) return true;
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-
-    return await showDialog(
-        context: context, builder: (context) => const ConfirmPopDialog());
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: () => ConfirmPopDialog.show(context, editing: editing),
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
