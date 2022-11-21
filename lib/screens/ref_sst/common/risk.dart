@@ -40,20 +40,14 @@ class Risk extends ItemSerializable {
   }
 
   Risk.fromSerialized(map)
-      : number = 1,
+      : number = map["number"],
         shortname = map["shortname"],
         name = map["name"],
-        risks = <SubRisk>[], //SubRiskslistFromSerialized(map[""]),
-        links = <RiskLink>[], //LinkslistFromSerialized(map[""]),
+        risks = RiskDataFileService.getSubRisks(
+            map["subrisks"] as Map<String, dynamic>),
+        links =
+            RiskDataFileService.getLinks(map["links"] as Map<String, dynamic>),
         super.fromSerialized(map);
-
-  // static List<SubRisk> SubRiskslistFromSerialized(List? list) {
-  //   (list ?? []).map((e) => e.toString()).toList();
-  // }
-
-  // static List<RiskLink> LinkslistFromSerialized(List? list) {
-  //   (list ?? []).map((e) => e.toString()).toList();
-  // }
 
   final int number;
   final String shortname;
