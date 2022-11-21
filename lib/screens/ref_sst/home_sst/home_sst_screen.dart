@@ -33,7 +33,8 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
   }
 
   Future<String> fetchRisks() async {
-    return await Future<String>.value(_ref.child("01").onValue.toString());
+    DatabaseEvent event = await _ref.once();
+    return event.snapshot.value.toString();
   }
 
   bool test = true;
@@ -47,8 +48,11 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
       body = FutureBuilder<String>(
           future: fetchRisks(),
           builder: (ctx, snapshot) {
+            //print("prout");
             if (snapshot.hasData) {
               //data.deserialize(snapshot.data!);
+              var datatest = snapshot.data!;
+              print("SNAPSHOT : " + datatest);
               test = false;
             }
             return const Center(child: CircularProgressIndicator());
@@ -72,7 +76,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
             ),
             child: InkWell(
                 onTap: () {
-                  print("Clicked on jod list risks and skills");
+                  print("Clicked on job list risks and skills");
                 },
                 child: Column(
                   children: [
