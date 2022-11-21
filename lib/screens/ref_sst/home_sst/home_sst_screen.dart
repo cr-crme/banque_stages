@@ -44,19 +44,14 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
     var data = Provider.of<RisksProvider>(context, listen: true);
     if (test) {
       //data.isEmpty
-      return FutureBuilder<String>(
+      body = FutureBuilder<String>(
           future: fetchRisks(),
           builder: (ctx, snapshot) {
             if (snapshot.hasData) {
               //data.deserialize(snapshot.data!);
               test = false;
             }
-            return Scaffold(
-                appBar: AppBar(
-                  title: const Text("Référentiel SST"),
-                ),
-                drawer: const MainDrawer(),
-                body: body);
+            return const Center(child: CircularProgressIndicator());
           });
     } else {
       body = ListView(
