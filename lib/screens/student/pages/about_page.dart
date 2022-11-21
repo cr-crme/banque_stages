@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/student.dart';
@@ -21,6 +22,7 @@ class AboutPage extends StatefulWidget {
 
 class AboutPageState extends State<AboutPage> {
   final _formKey = GlobalKey<FormState>();
+  final _dateFormat = DateFormat.yMd();
 
   String? _phone;
   String? _email;
@@ -107,7 +109,7 @@ class AboutPageState extends State<AboutPage> {
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Text(
-                                widget.student.dateBirth.toString(),
+                                _dateFormat.format(widget.student.dateBirth),
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                             ],
