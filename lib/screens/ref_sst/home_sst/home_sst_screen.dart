@@ -30,29 +30,27 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
     super.initState();
     _searchController.addListener(() => setState(() {}));
     _activateListeners();
-
-    final data = Provider.of<RisksProvider>(context, listen: false);
-    if (data.isEmpty) json = fetchRisks();
   }
 
   Future<String> fetchRisks() async {
-    await Future<String>.value(_ref.child("01").onValue.toString());
-    return Future<String>.value(_ref.child("01").onValue.toString());
+    return await Future<String>.value(_ref.child("01").onValue.toString());
   }
 
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<RisksProvider>(context, listen: true);
     if (!data.hasData) {
-      return FutureBuilder<String>(builder: (ctx, snapshot) {
-        if (snapshot.hasData) data.deserialize(snapshot.data!);
-        return Scaffold(
-            appBar: AppBar(
-              title: const Text("Référentiel SST"),
-            ),
-            drawer: const MainDrawer(),
-            body: Center(child: const CircularProgressIndicator()));
-      });
+      return FutureBuilder<String>(
+          future: fetchRisks(),
+          builder: (ctx, snapshot) {
+            if (snapshot.hasData) data.deserialize(snapshot.data!);
+            return Scaffold(
+                appBar: AppBar(
+                  title: const Text("Référentiel SST"),
+                ),
+                drawer: const MainDrawer(),
+                body: Center(child: const CircularProgressIndicator()));
+          });
     } else {
       return Scaffold(
           appBar: AppBar(
