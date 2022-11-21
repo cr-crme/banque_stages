@@ -21,13 +21,9 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
   }
 
   void _onConfirm() {
-    if (!FormService.validateForm(_formKey)) {
-      return;
+    if (FormService.validateForm(_formKey, save: true)) {
+      Navigator.pop(context, _job);
     }
-
-    _formKey.currentState!.save();
-
-    Navigator.pop(context, _job);
   }
 
   @override

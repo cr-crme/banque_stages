@@ -38,11 +38,9 @@ class AboutPageState extends State<AboutPage> {
       return;
     }
 
-    if (!FormService.validateForm(_formKey)) {
+    if (!FormService.validateForm(_formKey, save: true)) {
       return;
     }
-
-    _formKey.currentState!.save();
 
     context.read<EnterprisesProvider>().replace(
           widget.enterprise.copyWith(
