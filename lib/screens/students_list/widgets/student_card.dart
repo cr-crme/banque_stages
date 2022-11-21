@@ -36,7 +36,7 @@ class StudentCard extends StatelessWidget {
                         Text(student.program),
                         Text(
                           AppLocalizations.of(context)!
-                              .student_currentGroup(student.group),
+                              .student_group_current(student.group),
                         ),
                       ],
                     ),

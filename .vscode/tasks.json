@@ -22,11 +22,7 @@
         {
             "label": "Run Firebase Emulator",
             "command": "firebase",
-            "args": [
-                "emulators:start",
-                "--import",
-                "seed"
-            ],
+            "args": ["emulators:start", "--import", "firebase-export"],
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -43,15 +39,11 @@
                     "endsPattern": "All emulators ready! It is now safe to connect your app."
                 }
             },
-            "dependsOn": [
-                "Open Firebase Emulator's Console"
-            ]
+            "dependsOn": ["Open Firebase Emulator's Console"]
         },
         {
             "label": "Open Firebase Emulator's Console",
-            "args": [
-                "http://localhost:4000"
-            ],
+            "args": ["http://localhost:4000"],
             "type": "shell",
             "presentation": {
                 "echo": false,
@@ -68,7 +60,8 @@
             },
             "osx": {
                 "command": "open"
-            }
+            },
+            "problemMatcher": []
         }
     ]
 }
