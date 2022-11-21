@@ -1,0 +1,15 @@
+{
+  "version": "11.9.0",
+  "database": {
+    "version": "4.8.0",
+    "path": "database_export"
+  },
+  "auth": {
+    "version": "11.9.0",
+    "path": "auth_export"
+  },
+  "storage": {
+    "version": "11.9.0",
+    "path": "storage_export"
+  }
+}

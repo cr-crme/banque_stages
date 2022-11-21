@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/crcrme_enhanced_containers/lib/item_serializable.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 
 class Student extends ItemSerializable {
   Student({
@@ -53,12 +53,30 @@ class Student extends ItemSerializable {
 
   Student copyWith({
     String? name,
+    DateTime? dateBirth,
+    String? phone,
     String? email,
+    String? address,
+    String? program,
+    String? group,
+    String? contactName,
+    String? contactRole,
+    String? contactPhone,
+    String? contactEmail,
     String? id,
   }) =>
       Student(
         name: name ?? this.name,
+        dateBirth: dateBirth ?? this.dateBirth,
+        phone: phone ?? this.phone,
         email: email ?? this.email,
+        address: address ?? this.address,
+        program: program ?? this.program,
+        group: group ?? this.group,
+        contactName: contactName ?? this.contactName,
+        contactRole: contactRole ?? this.contactRole,
+        contactPhone: contactPhone ?? this.contactPhone,
+        contactEmail: contactEmail ?? this.contactEmail,
         id: id ?? this.id,
       );
 

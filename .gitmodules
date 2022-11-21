@@ -1,7 +1,6 @@
-[submodule "lib/crcrme_material_theme"]
-	path = lib/crcrme_material_theme
-	url = https://github.com/Guibi1/crcrme_material_theme.git
-
-[submodule "lib/crcrme_enhanced_containers"]
-	path = lib/crcrme_enhanced_containers
-	url = https://github.com/Guibi1/crcrme_enhanced_containers
+[submodule "external/enhanced_containers"]
+	path = external/enhanced_containers
+	url = https://github.com/cr-crme/enhanced_containers
+[submodule "external/crcrme_material_theme"]
+	path = external/crcrme_material_theme
+	url = https://github.com/cr-crme/crcrme_material_theme

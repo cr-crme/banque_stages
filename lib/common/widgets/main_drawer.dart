@@ -1,4 +1,5 @@
 import 'package:crcrme_banque_stages/screens/home_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,6 +7,7 @@ import '/common/providers/auth_provider.dart';
 import '/screens/enterprises_list/enterprises_list_screen.dart';
 import '/screens/login_screen.dart';
 import '/screens/students_list/students_list_screen.dart';
+import '../../screens/visiting_students/visit_students_screen.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -30,6 +32,11 @@ class MainDrawer extends StatelessWidget {
                   route: StudentsListScreen.route,
                 ),
                 const _DrawerItem(
+                  titleText: "Itinéraire de visite",
+                  icon: Icon(Icons.route_outlined),
+                  route: VisitStudentScreen.route,
+                ),
+                const _DrawerItem(
                   titleText: "Toutes les entreprises",
                   icon: Icon(Icons.business_center_rounded),
                   route: EnterprisesListScreen.route,
@@ -47,7 +54,7 @@ class MainDrawer extends StatelessWidget {
                 const _DrawerItem(
                   titleText: "Référentiel SST",
                   icon: Icon(Icons.warning_rounded),
-                  route: EnterprisesListScreen.route,
+                  route: HomeSSTScreen.route,
                 ),
                 provider.currentUser == null
                     ? const _DrawerItem(
