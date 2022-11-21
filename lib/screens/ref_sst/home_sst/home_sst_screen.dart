@@ -40,8 +40,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget body = Center(child: CircularProgressIndicator());
-    ;
+    Widget body = const Center(child: CircularProgressIndicator());
     var data = Provider.of<RisksProvider>(context, listen: true);
     if (test) {
       //data.isEmpty
@@ -52,6 +51,12 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
               //data.deserialize(snapshot.data!);
               test = false;
             }
+            return Scaffold(
+                appBar: AppBar(
+                  title: const Text("Référentiel SST"),
+                ),
+                drawer: const MainDrawer(),
+                body: body);
           });
     } else {
       body = ListView(
