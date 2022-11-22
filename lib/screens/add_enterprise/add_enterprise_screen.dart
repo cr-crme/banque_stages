@@ -13,8 +13,6 @@ import 'pages/jobs_page.dart';
 class AddEnterpriseScreen extends StatefulWidget {
   const AddEnterpriseScreen({super.key});
 
-  static const route = "/add-enterprise";
-
   @override
   State<AddEnterpriseScreen> createState() => _AddEnterpriseScreenState();
 }

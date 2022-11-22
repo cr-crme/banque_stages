@@ -1,15 +1,13 @@
-import 'package:crcrme_banque_stages/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/providers/auth_provider.dart';
 import '/misc/form_service.dart';
+import '/navigation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
-  static const route = "/login";
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -49,10 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(errorMessage),
       ));
-      //return;
     }
 
-    if (mounted) Navigator.of(context).popAndPushNamed(HomeScreen.route);
+    if (mounted) {
+      Navigation.openNamedRoute(Routes.home);
+    }
   }
 
   @override

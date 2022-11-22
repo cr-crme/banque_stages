@@ -8,9 +8,9 @@ import '/screens/student/pages/skills_page.dart';
 import 'pages/about_page.dart';
 
 class StudentScreen extends StatefulWidget {
-  const StudentScreen({super.key});
+  const StudentScreen({super.key, required this.id});
 
-  static const route = "/student-details";
+  final String id;
 
   @override
   State<StudentScreen> createState() => _StudentScreenState();
@@ -18,8 +18,6 @@ class StudentScreen extends StatefulWidget {
 
 class _StudentScreenState extends State<StudentScreen>
     with SingleTickerProviderStateMixin {
-  late final _studentId = ModalRoute.of(context)!.settings.arguments as String;
-
   late final _tabController = TabController(length: 3, vsync: this);
 
   late IconButton _actionButton;
@@ -91,7 +89,7 @@ class _StudentScreenState extends State<StudentScreen>
           ],
         ),
       ),
-      selector: (context, students) => students[_studentId],
+      selector: (context, students) => students[widget.id],
     );
   }
 }

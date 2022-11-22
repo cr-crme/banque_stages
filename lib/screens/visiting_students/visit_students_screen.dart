@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'models/itinerary.dart';
+import '/common/models/visiting_priority.dart';
 import 'models/all_itineraries.dart';
-import './models/waypoints.dart';
-import './widgets/routing_map.dart';
-import './widgets/waypoint_card.dart';
-// import '../../../common/providers/students_provider.dart';
-import '../../../common/models/visiting_priority.dart';
+import 'models/itinerary.dart';
+import 'models/waypoints.dart';
+import 'widgets/routing_map.dart';
+import 'widgets/waypoint_card.dart';
 
 class VisitStudentScreen extends StatefulWidget {
   const VisitStudentScreen({super.key});
-
-  static const String route = '/visiting-students-screen';
 
   @override
   State<VisitStudentScreen> createState() => _VisitStudentScreenState();

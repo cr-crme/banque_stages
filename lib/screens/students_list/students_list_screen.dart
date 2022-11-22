@@ -6,13 +6,11 @@ import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/search_bar.dart';
 import '/dummy_data.dart';
-import '/screens/student/student_screen.dart';
+import '/navigation.dart';
 import 'widgets/student_card.dart';
 
 class StudentsListScreen extends StatefulWidget {
   const StudentsListScreen({super.key});
-
-  static const route = "/students-list";
 
   @override
   State<StudentsListScreen> createState() => _StudentsListScreenState();
@@ -21,10 +19,6 @@ class StudentsListScreen extends StatefulWidget {
 class _StudentsListScreenState extends State<StudentsListScreen> {
   final _searchController = TextEditingController();
   bool _showSearchBar = false;
-
-  void _openStudentScreen(Student student) {
-    Navigator.of(context).pushNamed(StudentScreen.route, arguments: student.id);
-  }
 
   List<Student> _filterSelectedStudents(List<Student> students) {
     return students.where((student) {
@@ -65,7 +59,9 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
                 itemCount: student.length,
                 itemBuilder: (context, index) => StudentCard(
                   student: student.elementAt(index),
-                  onTap: _openStudentScreen,
+                  onTap: (student) => Navigation.openNamedRoute(
+                    Routes.student(student.id),
+                  ),
                 ),
               ),
             ),

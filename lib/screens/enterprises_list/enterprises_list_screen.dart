@@ -5,14 +5,12 @@ import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/search_bar.dart';
 import '/dummy_data.dart';
+import '/navigation.dart';
 import '/screens/add_enterprise/add_enterprise_screen.dart';
-import '/screens/enterprise/enterprise_screen.dart';
 import 'widgets/enterprise_card.dart';
 
 class EnterprisesListScreen extends StatefulWidget {
   const EnterprisesListScreen({super.key});
-
-  static const route = "/enterprises-list";
 
   @override
   State<EnterprisesListScreen> createState() => _EnterprisesListScreenState();
@@ -22,14 +20,6 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
   bool _hideNotAvailable = false;
 
   final _searchController = TextEditingController();
-
-  void _openEnterpriseScreen(Enterprise enterprise) {
-    Navigator.pushNamed(
-      context,
-      EnterpriseScreen.route,
-      arguments: enterprise.id,
-    );
-  }
 
   List<Enterprise> _filterSelectedEnterprises(List<Enterprise> enterprises) {
     return enterprises.where((enterprise) {
@@ -75,8 +65,11 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
         title: const Text("Entreprises"),
         actions: [
           IconButton(
-            onPressed: () =>
-                Navigator.pushNamed(context, AddEnterpriseScreen.route),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const AddEnterpriseScreen(),
+              ),
+            ),
             tooltip: "Ajouter une entreprise",
             icon: const Icon(Icons.add),
           ),
@@ -97,7 +90,9 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
                 itemCount: enterprises.length,
                 itemBuilder: (context, index) => EnterpriseCard(
                   enterprise: enterprises.elementAt(index),
-                  onTap: _openEnterpriseScreen,
+                  onTap: (enterprise) => Navigation.openNamedRoute(
+                    Routes.enterprise(enterprise.id),
+                  ),
                 ),
               ),
             ),
