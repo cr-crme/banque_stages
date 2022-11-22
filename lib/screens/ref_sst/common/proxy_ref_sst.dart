@@ -22,7 +22,7 @@ import 'temporary_proxy_data.dart';
 * replaced with fetches from the database.
 */
 
-class CardsProxy {
+/* class CardsProxy {
   CardsProxy();
   //Importing and transforming json string into list of maps
   Map<String, dynamic> parsedRisks = jsonDecode(riskData);
@@ -107,7 +107,7 @@ class CardsProxy {
         //id: cardID,
         shortname: cardShortname,
         name: cardName,
-        risks: riskList,
+        subrisks: riskList,
         links: cardLinks,
       ));
     }
@@ -118,7 +118,7 @@ class CardsProxy {
     return fromJson(parsedRisks);
   }
 }
-
+ */
 /*
 class JobsProxy {
   JobsProxy();
