@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -23,20 +23,20 @@ void main() {
     return list_map;
   }
 
-  List<CardSST> createDummyData() {
-    List<CardSST> list_dummy = <CardSST>[];
-    List<RiskSST> list_risk = <RiskSST>[];
-    List<LinkSST> list_link = <LinkSST>[];
+  List<Risk> createDummyData() {
+    List<Risk> list_dummy = <Risk>[];
+    List<SubRisk> list_risk = <SubRisk>[];
+    List<RiskLink> list_link = <RiskLink>[];
 
-    list_link = List<LinkSST>.filled(
-        3, new LinkSST(source: "Source", title: "Title", url: "url"));
+    list_link = List<RiskLink>.filled(
+        3, new RiskLink(source: "Source", title: "Title", url: "url"));
 
     Map<String, List<String>> list_situation = filledMap("Situation", 4);
     Map<String, List<String>> list_factor = filledMap("Factor", 3);
     Map<String, List<String>> list_symptoms = filledMap("Symptom", 4);
 
     for (int i = 0; i < 10; i++) {
-      list_risk.add(new RiskSST(
+      list_risk.add(new SubRisk(
           id: i,
           title: "title $i",
           intro: "intro $i",
@@ -47,7 +47,7 @@ void main() {
     }
 
     for (int i = 0; i < 10; i++) {
-      list_dummy.add(new CardSST(
+      list_dummy.add(new Risk(
           id: i,
           shortname: "num $i",
           name: "TITLE $i",
@@ -59,7 +59,7 @@ void main() {
 
   late MockrisksProxy riskProxy;
 
-  List<CardSST> dummy_list_risk = <CardSST>[];
+  List<Risk> dummy_list_risk = <Risk>[];
 
   setUpAll(() {
     riskProxy = MockrisksProxy();

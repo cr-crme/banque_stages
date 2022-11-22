@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import './job_sst.dart';
 import './skill_sst.dart';
-import 'card_sst.dart';
+import 'risk.dart';
 import 'temporary_proxy_data.dart';
 //Remove after connection to DB
 
@@ -30,7 +30,7 @@ class CardsProxy {
   //Transforming maps into list of objects
   fromJson(Map<String, dynamic> cards) {
     //Create a cards array, then for each card
-    List<CardSST> cardsList = <CardSST>[];
+    List<Risk> cardsList = <Risk>[];
     for (MapEntry<String, dynamic> card in cards.entries) {
       //Save informations
       final int cardID = int.parse(card.key); //Save key as the id
@@ -39,7 +39,7 @@ class CardsProxy {
 
       //Put risks in a map, then for each risk
       Map<String, dynamic> risks = card.value['risks'] as Map<String, dynamic>;
-      List<RiskSST> riskList = [];
+      List<SubRisk> riskList = [];
       for (MapEntry<String, dynamic> risk in risks.entries) {
         final int riskID = int.parse(risk.key); //Save key as ID
         final String riskTitle = risk.value['title'] as String;
@@ -81,7 +81,7 @@ class CardsProxy {
           riskSymptoms[symptomLine] = symptomSublines;
         }
         //Put everything in a risk object and add to the list of risks
-        riskList.add(RiskSST(
+        riskList.add(SubRisk(
             id: riskID,
             title: riskTitle,
             intro: riskIntro,
@@ -91,7 +91,7 @@ class CardsProxy {
             images: images));
       }
       //For each link
-      List<LinkSST> cardLinks = [];
+      List<RiskLink> cardLinks = [];
       final Map<String, dynamic> links =
           card.value['links'] as Map<String, dynamic>;
       for (Map<String, dynamic> link in links.values) {
@@ -100,11 +100,11 @@ class CardsProxy {
         final String linkURL = link['url'] as String;
         //Save link infos into link object, add to link list
         cardLinks
-            .add(LinkSST(source: linkSource, title: linkTitle, url: linkURL));
+            .add(RiskLink(source: linkSource, title: linkTitle, url: linkURL));
       }
       //Save everything into a card object, add to list of cards
-      cardsList.add(CardSST(
-        id: cardID,
+      cardsList.add(Risk(
+        //id: cardID,
         shortname: cardShortname,
         name: cardName,
         risks: riskList,
@@ -114,11 +114,12 @@ class CardsProxy {
     return cardsList;
   }
 
-  List<CardSST> getList() {
+  List<Risk> getList() {
     return fromJson(parsedRisks);
   }
 }
 
+/*
 class JobsProxy {
   JobsProxy();
 
@@ -206,3 +207,4 @@ class JobsProxy {
     return fromJson(parsedJobs);
   }
 }
+*/
