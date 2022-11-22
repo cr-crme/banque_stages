@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'widgets/tile_job_risk.dart';
 
 class JobListScreen extends StatefulWidget {
-  const JobListScreen({Key? key}) : super(key: key);
+  final String result;
+  const JobListScreen({super.key, required this.result});
 
   static const route = "/job_list_risks_skills";
-
   @override
   State<JobListScreen> createState() => _Job_list_screenState();
 }
@@ -25,7 +25,8 @@ class _Job_list_screenState extends State<JobListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Nom métier'),
+          title: Text(widget.result
+          ),
         ),
         body: ListView(children: [
           Text("Afficher l\'analyse du métier"),
