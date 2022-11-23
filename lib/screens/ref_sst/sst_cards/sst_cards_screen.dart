@@ -36,8 +36,6 @@ class _SSTCardsScreenState extends State<SSTCardsScreen> {
         appBar: AppBar(
           title: const Text("Fiches de risques"),
         ),
-        body: Text(Provider.of<RisksProvider>(context, listen: true)
-            .first
-            .toString()));
+        body: ErrorWidget.withDetails());
   }
 }

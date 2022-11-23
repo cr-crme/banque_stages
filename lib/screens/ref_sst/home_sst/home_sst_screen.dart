@@ -24,9 +24,6 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
   void initState() {
     super.initState();
     _searchController.addListener(() => setState(() {}));
-
-    var data = Provider.of<RisksProvider>(context, listen: true);
-    data.deserializeItem({"number": 69});
   }
 
   Future<String> fetchRisks() async {
