@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 
 class ListLinks extends StatelessWidget {
   //params and variables
   const ListLinks(this.links, {super.key});
-  final List<LinkSST> links;
+  final List<RiskLink> links;
   @override
   Widget build(BuildContext context) {
     var widgetList = <Widget>[];
-    for (LinkSST link in links) {
+    for (RiskLink link in links) {
       widgetList.add(BuildALineOfALink(link));
     }
     return Center(
@@ -20,7 +20,7 @@ class ListLinks extends StatelessWidget {
 
 class BuildALineOfALink extends StatelessWidget {
   const BuildALineOfALink(this.link, {super.key});
-  final LinkSST link;
+  final RiskLink link;
 
   @override
   Widget build(BuildContext context) {

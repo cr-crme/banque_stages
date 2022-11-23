@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'auto_complete.dart';
 
 class SearchBar extends StatelessWidget with PreferredSizeWidget {
   const SearchBar({Key? key, required this.controller}) : super(key: key);
@@ -11,20 +12,7 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Card(
         elevation: 0,
-        child: ListTile(
-          leading: const Icon(Icons.search),
-          title: TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-              hintText: "Rechercher",
-              border: InputBorder.none,
-            ),
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () => controller.text = "",
-          ),
-        ),
+        child: AutocompleteBasicExample(),
       ),
     );
   }
