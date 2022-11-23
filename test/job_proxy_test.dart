@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/screens/ref_sst/common/job_sst.dart';
+/* import 'package:crcrme_banque_stages/screens/ref_sst/common/job_sst.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/common/skill_sst.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -79,3 +79,4 @@ void main() {
     });
   });
 }
+ */
