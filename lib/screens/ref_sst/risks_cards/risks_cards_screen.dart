@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'package:crcrme_banque_stages/screens/ref_sst/common/card_sst.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/introduction.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/link.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/main_title.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/sub_title.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/situation_risk.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/factors.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/symptoms.dart';
+import '/screens/ref_sst/common/card_sst.dart';
+import '/screens/ref_sst/risks_cards/widgets/factors.dart';
+import '/screens/ref_sst/risks_cards/widgets/introduction.dart';
+import '/screens/ref_sst/risks_cards/widgets/link.dart';
+import '/screens/ref_sst/risks_cards/widgets/main_title.dart';
+import '/screens/ref_sst/risks_cards/widgets/situation_risk.dart';
+import '/screens/ref_sst/risks_cards/widgets/sub_title.dart';
+import '/screens/ref_sst/risks_cards/widgets/symptoms.dart';
 
 class RisksCardsScreen extends StatefulWidget {
   const RisksCardsScreen(this.nmb, {super.key});
   final int nmb;
-
-  static const route = "/risks-cards";
 
   @override
   State<RisksCardsScreen> createState() => _RisksCardsScreenState();

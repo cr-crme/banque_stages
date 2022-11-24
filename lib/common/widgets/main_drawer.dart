@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/common/providers/auth_provider.dart';
-import '/navigation.dart';
+import '/router.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -19,43 +20,43 @@ class MainDrawer extends StatelessWidget {
                 const _DrawerItem(
                   titleText: "Accueil",
                   icon: Icon(Icons.home_rounded),
-                  route: Routes.home,
+                  route: Screens.home,
                 ),
                 const _DrawerItem(
                   titleText: "Mes élèves",
                   icon: Icon(Icons.school_rounded),
-                  route: Routes.studentsList,
+                  route: Screens.studentsList,
                 ),
                 const _DrawerItem(
                   titleText: "Itinéraire de visite",
                   icon: Icon(Icons.route_outlined),
-                  route: Routes.visitStudents,
+                  route: Screens.visitStudents,
                 ),
                 const _DrawerItem(
                   titleText: "Toutes les entreprises",
                   icon: Icon(Icons.business_center_rounded),
-                  route: Routes.enterprisesList,
+                  route: Screens.enterprisesList,
                 ),
                 const _DrawerItem(
                   titleText: "Documents",
                   icon: Icon(Icons.document_scanner_rounded),
-                  route: Routes.enterprisesList,
+                  route: Screens.enterprisesList,
                 ),
                 const _DrawerItem(
                   titleText: "Tableau des supervisions",
                   icon: Icon(Icons.table_chart_rounded),
-                  route: Routes.enterprisesList,
+                  route: Screens.enterprisesList,
                 ),
                 const _DrawerItem(
                   titleText: "Référentiel SST",
                   icon: Icon(Icons.warning_rounded),
-                  route: Routes.homeSST,
+                  route: Screens.homeSST,
                 ),
                 provider.currentUser == null
                     ? const _DrawerItem(
                         titleText: "Se connecter",
                         icon: Icon(Icons.login),
-                        route: Routes.login,
+                        route: Screens.login,
                       )
                     : _DrawerItem(
                         titleText: "Se déconnecter",
@@ -93,8 +94,10 @@ class _DrawerItem extends StatelessWidget {
       child: ListTile(
         onTap: onTap ??
             () {
-              Navigator.of(context).pop();
-              Navigation.openNamedRoute(route!);
+              // if (GoRouter.of(context).canPop()) {
+              //   GoRouter.of(context).pop();
+              // }
+              GoRouter.of(context).goNamed(route!);
             },
         leading: icon,
         title: Text(

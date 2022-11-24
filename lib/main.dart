@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
@@ -17,7 +18,7 @@ import 'firebase_options.dart';
 import 'misc/form_service.dart';
 import 'misc/job_data_file_service.dart';
 import 'misc/question_file_service.dart';
-import 'navigation.dart';
+import 'router.dart';
 import 'screens/visiting_students/models/all_itineraries.dart';
 
 void main() async {
@@ -34,6 +35,8 @@ void main() async {
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
     return true;
   }());
+
+  setPathUrlStrategy();
   runApp(const BanqueStagesApp());
 }
 
@@ -67,8 +70,7 @@ class BanqueStagesApp extends StatelessWidget {
           return AppLocalizations.of(context)!.appName;
         },
         theme: crcrmeMaterialTheme,
-        routerDelegate: router,
-        routeInformationParser: routerInformationParser,
+        routerConfig: router,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/search_bar.dart';
 import '/dummy_data.dart';
-import '/navigation.dart';
+import '/router.dart';
 import 'widgets/student_card.dart';
 
 class StudentsListScreen extends StatefulWidget {
@@ -59,8 +60,9 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
                 itemCount: student.length,
                 itemBuilder: (context, index) => StudentCard(
                   student: student.elementAt(index),
-                  onTap: (student) => Navigation.openNamedRoute(
-                    Routes.student(student.id),
+                  onTap: (student) => GoRouter.of(context).goNamed(
+                    Screens.student,
+                    params: Screens.withId(student),
                   ),
                 ),
               ),

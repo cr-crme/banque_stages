@@ -45,6 +45,8 @@ dependencies:
     geocoding: ^2.0.5
     enhanced_containers:
     crcrme_material_theme:
+    go_router: ^5.2.0
+    url_strategy: ^0.2.0
 
 dependency_overrides:
     enhanced_containers:

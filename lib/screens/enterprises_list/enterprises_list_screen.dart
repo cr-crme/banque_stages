@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/search_bar.dart';
 import '/dummy_data.dart';
-import '/navigation.dart';
-import '/screens/add_enterprise/add_enterprise_screen.dart';
+import '/router.dart';
 import 'widgets/enterprise_card.dart';
 
 class EnterprisesListScreen extends StatefulWidget {
@@ -65,11 +65,8 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
         title: const Text("Entreprises"),
         actions: [
           IconButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const AddEnterpriseScreen(),
-              ),
-            ),
+            onPressed: () =>
+                GoRouter.of(context).goNamed(Screens.addEnterprise),
             tooltip: "Ajouter une entreprise",
             icon: const Icon(Icons.add),
           ),
@@ -90,8 +87,9 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
                 itemCount: enterprises.length,
                 itemBuilder: (context, index) => EnterpriseCard(
                   enterprise: enterprises.elementAt(index),
-                  onTap: (enterprise) => Navigation.openNamedRoute(
-                    Routes.enterprise(enterprise.id),
+                  onTap: (enterprise) => GoRouter.of(context).goNamed(
+                    Screens.enterprise,
+                    params: Screens.withId(enterprise),
                   ),
                 ),
               ),

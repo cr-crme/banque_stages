@@ -1,9 +1,9 @@
-import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '/common/widgets/main_drawer.dart';
-import '/navigation.dart';
+import '/router.dart';
 import 'widgets/search_bar.dart';
 
 class HomeSSTScreen extends StatefulWidget {
@@ -40,9 +40,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
               child: InkWell(
                 onTap: () {
                   print("Clicked on sst cards list");
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => SSTCardsScreen(),
-                  ));
+                  GoRouter.of(context).goNamed(Screens.cardsSST);
                 },
                 child: Ink(
                   decoration: const BoxDecoration(
@@ -89,7 +87,10 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
               child: InkWell(
                   onTap: () {
                     print("Clicked on jod list risks and skills");
-                    Navigation.openNamedRoute(Routes.jobSST("8123"));
+                    GoRouter.of(context).goNamed(
+                      Screens.jobSST,
+                      params: Screens.withId("8123"),
+                    );
                   },
                   child: Column(
                     children: [
