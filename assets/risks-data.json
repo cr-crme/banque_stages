@@ -71,5 +71,97 @@
                 ]
             }
         ]
+    },
+    {
+        "number": "2",
+        "shortname": "biological",
+        "name": "RISQUES BIOLOGIQUES",
+        "links": [
+            {
+                "source": "CNESST",
+                "title": "Prot\u00e9gez-vous contre les risques biologiques",
+                "url": "https://www.cnesst.gouv.qc.ca/fr/organisation/documentation/formulaires-publications/guide-gestion-risques-biologiques"
+            },
+            {
+
+                "source": "INRS",
+                "title": "Les risques biologiques en milieu professionnel",
+                "url": "https://www.inrs.fr/media.html?refINRS=ED%206034"
+            }
+        ],
+        "subrisks": [
+            {
+                "number": "0",
+                "title": "",
+                "intro": "L\u2019\u00e9l\u00e8ve peut entrer en contact avec des agents biologiques pr\u00e9sents sur son lieu de stage (p. ex. : virus, bact\u00e9ries, champignons, etc.).",
+                "situations": [
+                    {
+                        "line":"Travail au contact d\u2019enfants ou de personnes \u00e2g\u00e9es (p. ex. : mouchage d\u2019une personne malade ou changement de couches de b\u00e9b\u00e9s)",
+                        "sublines":[""]
+                    },
+                    {
+                        "line":"Travail au contact d\u2019animaux (p. ex. : brossage des chevaux dans une \u00e9curie ou nettoyage de la liti\u00e8re de chats dans une animalerie)",
+                        "sublines":[""]
+                    
+                    },
+                    {
+                        "line":"Manipulation de mati\u00e8res souill\u00e9es dans un centre de tri",
+                        "sublines":[""]
+                    
+                    },
+                    {
+                        "line":"Manipulation de farines dans une boulangerie",
+                        "sublines":[""]
+                    
+                    },
+                    {
+                        "line":"Exposition aux poussi\u00e8res de bois lors du travail en \u00e9b\u00e9nisterie",
+                        "sublines":[""]
+                    
+                    },
+                    {
+                        "line":"Exposition aux piq\u00fbres de tiques lors de travaux en for\u00eat",
+                        "sublines":[""]
+                    
+                    }
+                ],
+                "factors": [
+                    {
+                        "line":"Aucun port d\u2019\u00e9quipement de protection individuelle (p. ex. : gants, masque)",
+                        "sublines":[""]
+                    },
+                    {
+                        "line":"\u00c9quipement de protection indisponible ou inad\u00e9quat (p. ex. : gants trop grands ou lunettes ray\u00e9es)",
+                        "sublines":[""]
+                    },
+                    {
+                        "line":"Travail dans un local insuffisamment ventil\u00e9",
+                        "sublines":[""]
+                    },
+                    {
+                        "line":"Aucune formation sur les risques biologiques et les proc\u00e9dures de protection \u00e0 suivre",
+                        "sublines":[""]
+                    }
+                ],
+                "symptoms": [
+                    {
+                        "line":"Allergies (p. ex. : allergies cutan\u00e9es, rhinites ou asthme)",
+                        "sublines": [""]
+                    },
+                    {
+                        "line":"Infections cutan\u00e9es ou pulmonaires",
+                        "sublines": [""]
+                    },
+                    {
+                        "line":"Maladie de Lyme",
+                        "sublines": [""]
+                    }
+                ],
+                "images": [
+                    "path/image2",
+                    "path/image3"
+                ]
+            }
+        ]
     }
 ]
