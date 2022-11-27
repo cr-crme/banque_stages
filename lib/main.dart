@@ -14,6 +14,7 @@ import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
 import 'common/providers/internships_provider.dart';
 import 'common/providers/students_provider.dart';
+import 'common/providers/teachers_provider.dart';
 import 'firebase_options.dart';
 import 'misc/form_service.dart';
 import 'misc/job_data_file_service.dart';
@@ -62,6 +63,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => InternshipsProvider()),
         ChangeNotifierProvider(create: (context) => AllStudentsWaypoints()),
         ChangeNotifierProvider(create: (context) => AllItineraries()),
+        ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
+          create: (context) => TeachersProvider(),
+          update: (context, auth, previous) {
+            previous!.currentTeacherId = auth.currentUser!.uid;
+            return previous;
+          },
+        ),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
           create: (context) => StudentsProvider(),
           update: (context, auth, previous) {

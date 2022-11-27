@@ -7,6 +7,7 @@ class Internship extends ItemSerializable {
     required this.teacherId,
     required this.enterpriseId,
     required this.jobId,
+    required this.type,
     this.name = "",
     this.phone = "",
     this.email = "",
@@ -17,6 +18,7 @@ class Internship extends ItemSerializable {
       : teacherId = map['teacher'],
         enterpriseId = map['enterprise'],
         jobId = map['job'],
+        type = map['type'],
         name = map['name'],
         phone = map['phone'],
         email = map['email'],
@@ -32,6 +34,7 @@ class Internship extends ItemSerializable {
       'teacher': teacherId,
       'enterprise': enterpriseId,
       'job': jobId,
+      'type': type,
       'name': name,
       'phone': phone,
       'email': email,
@@ -45,6 +48,7 @@ class Internship extends ItemSerializable {
     String? teacherId,
     String? enterpriseId,
     String? jobId,
+    String? type,
     String? name,
     String? phone,
     String? email,
@@ -55,6 +59,7 @@ class Internship extends ItemSerializable {
         teacherId: teacherId ?? this.teacherId,
         enterpriseId: enterpriseId ?? this.enterpriseId,
         jobId: jobId ?? this.jobId,
+        type: type ?? this.type,
         name: name ?? this.name,
         phone: phone ?? this.phone,
         email: email ?? this.email,
@@ -62,9 +67,13 @@ class Internship extends ItemSerializable {
         id: id ?? this.id,
       );
 
+  String get title => "Année ${date.start.year}-${date.end.year}. $type";
+
   final String teacherId;
   final String enterpriseId;
   final String jobId;
+
+  final String type;
 
   final String name;
   final String phone;

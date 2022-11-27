@@ -41,6 +41,8 @@
     "student_program": "Program",
     "student_linkWithStudent": "Link with student",
 
+    "internship_teacherName": "Supervising teacher",
+
     "error_emptyField": "This field cannot be empty",
     "@error_emptyField": {
         "description": "When the required field isn't filed."
