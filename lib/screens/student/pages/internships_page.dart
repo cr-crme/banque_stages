@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '/common/models/student.dart';
 
-class InternshipPage extends StatefulWidget {
-  const InternshipPage({
+class InternshipsPage extends StatefulWidget {
+  const InternshipsPage({
     super.key,
     required this.student,
   });
@@ -11,10 +11,10 @@ class InternshipPage extends StatefulWidget {
   final Student student;
 
   @override
-  State<InternshipPage> createState() => InternshipPageState();
+  State<InternshipsPage> createState() => InternshipsPageState();
 }
 
-class InternshipPageState extends State<InternshipPage> {
+class InternshipsPageState extends State<InternshipsPage> {
   @override
   Widget build(BuildContext context) {
     return Container();
