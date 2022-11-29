@@ -31,35 +31,35 @@ class EnterpriseCard extends StatelessWidget {
           enterprise.name,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        subtitle: Visibility(
-          visible: enterprise.address.isNotEmpty ||
-              enterprise.headquartersAddress.isNotEmpty,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 8),
-              Text(
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            Visibility(
+              visible: enterprise.address.isNotEmpty ||
+                  enterprise.headquartersAddress.isNotEmpty,
+              child: Text(
                 enterprise.address.isEmpty
                     ? enterprise.headquartersAddress
                     : enterprise.address,
               ),
-              ...enterprise.jobs
-                  .map((job) => Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Row(children: [
-                        DisponibilityCircle(
-                            positionsOffered: job.positionsOffered,
-                            positionsOccupied: job.positionsOccupied),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            job.specialization?.idWithName ?? "bad id",
-                          ),
+            ),
+            ...enterprise.jobs
+                .map((job) => Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(children: [
+                      DisponibilityCircle(
+                          positionsOffered: job.positionsOffered,
+                          positionsOccupied: job.positionsOccupied),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          job.specialization?.idWithName ?? "bad id",
                         ),
-                      ])))
-                  .toList()
-            ],
-          ),
+                      ),
+                    ])))
+                .toList()
+          ],
         ),
         trailing: Icon(
           Icons.chevron_right,
