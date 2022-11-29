@@ -37,7 +37,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
   Widget build(BuildContext context) {
     Widget body = const Center(child: CircularProgressIndicator());
     var data = Provider.of<RisksProvider>(context, listen: true);
-    if (test) {
+   /* if (test) {
       //data.isEmpty
       body = FutureBuilder<String>(
           future: fetchRisks(),
@@ -50,15 +50,15 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
             }
             return const Center(child: CircularProgressIndicator());
           });
-    } else {
+    } else {*/
       body = ListView(
         children: [
           //Container for the search bar
           Center(
               child: Container(
             margin: const EdgeInsets.only(top: 50.0),
-            width: 300,
-            height: 260,
+            width: 350,
+            height: 280,
             padding: const EdgeInsets.all(17.0),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -112,8 +112,8 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                         color: Colors.grey, spreadRadius: 1, blurRadius: 15)
                   ],
                 ),
-                width: 300,
-                height: 260,
+                width: 350,
+                height: 280,
                 child: const Padding(
                   padding: EdgeInsets.all(45.0),
                   child: Center(
@@ -133,7 +133,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
           )),
         ],
       );
-    }
+    //}
     // To refresh the scaffold body after the data fetch
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
     return Scaffold(

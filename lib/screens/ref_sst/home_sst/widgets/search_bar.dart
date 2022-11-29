@@ -8,11 +8,11 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Card(
         elevation: 0,
-        child: AutocompleteBasicExample(),
+        child: AutocompleteSearch(),
       ),
     );
   }
