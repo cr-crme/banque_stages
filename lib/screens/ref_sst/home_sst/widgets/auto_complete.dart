@@ -45,7 +45,7 @@ class AutocompleteSearch extends StatelessWidget {
               height: 200,
               child:
               ListView.builder(
-
+                scrollDirection: Axis.vertical,
                   padding: EdgeInsets.all(10.0),
                   itemCount: options.length,
                   itemBuilder: (BuildContext, int index) {

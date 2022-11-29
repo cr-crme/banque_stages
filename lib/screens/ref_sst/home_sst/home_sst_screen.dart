@@ -69,8 +69,8 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
             ),
             child: InkWell(
                 child: Column(
-              children: [
-                const Text("Analyse des risques par métier",
+              children: const [
+                Text("Analyse des risques par métier",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -78,9 +78,9 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                         color: Colors.white,
                         fontFamily: "Noto Sans")),
                 Padding(
-                    padding: const EdgeInsets.only(top: 25.0),
-                    child: SearchBar(controller: _searchController)),
-                const Padding(
+                    padding: EdgeInsets.only(top: 25.0),
+                    child: SearchBar()),
+                Padding(
                   padding: EdgeInsets.only(top: 30.0),
                   child: Text(
                     "L'analyse des risques à la SST a été faite pour les 45 métiers les plus populaires du répertoires du Ministère de l'éducation.",
@@ -113,7 +113,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                   ],
                 ),
                 width: 350,
-                height: 280,
+                height: 250,
                 child: const Padding(
                   padding: EdgeInsets.all(45.0),
                   child: Center(

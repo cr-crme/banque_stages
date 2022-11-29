@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'auto_complete.dart';
 
 class SearchBar extends StatelessWidget with PreferredSizeWidget {
-  const SearchBar({Key? key, required this.controller}) : super(key: key);
+  const SearchBar({Key? key}) : super(key: key);
 
-  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
