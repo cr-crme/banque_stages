@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/widgets/main_drawer.dart';
 import '/common/widgets/search_bar.dart';
 import '/dummy_data.dart';
 import '/router.dart';
@@ -73,6 +74,7 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
         ],
         bottom: SearchBar(controller: _searchController),
       ),
+      drawer: const MainDrawer(),
       body: Column(
         children: [
           SwitchListTile(

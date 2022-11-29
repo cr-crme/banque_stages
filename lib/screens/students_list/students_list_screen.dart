@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
+import '/common/widgets/main_drawer.dart';
 import '/common/widgets/search_bar.dart';
 import '/dummy_data.dart';
 import '/router.dart';
@@ -51,6 +52,7 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
         bottom:
             _showSearchBar ? SearchBar(controller: _searchController) : null,
       ),
+      drawer: const MainDrawer(),
       body: Column(
         children: [
           Selector<StudentsProvider, List<Student>>(
