@@ -121,7 +121,7 @@ class JobFormField extends FormField<Job> {
             SizedBox(
               width: 112,
               child: SpinBox(
-                value: 1,
+                value: state.value!.positionsOffered.toDouble(),
                 min: 1,
                 max: 10,
                 spacing: 0,

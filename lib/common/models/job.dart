@@ -7,7 +7,7 @@ class Job extends ItemSerializable {
     super.id,
     this.activitySector,
     this.specialization,
-    this.positionsOffered = 0,
+    this.positionsOffered = 1,
     this.positionsOccupied = 0,
     List<String>? pictures,
     this.taskVariety = -1.0,
