@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '/common/models/enterprise.dart';
 
-class StagePage extends StatefulWidget {
-  const StagePage({
+class InternshipsPage extends StatefulWidget {
+  const InternshipsPage({
     super.key,
     required this.enterprise,
   });
@@ -11,10 +11,10 @@ class StagePage extends StatefulWidget {
   final Enterprise enterprise;
 
   @override
-  State<StagePage> createState() => StagePageState();
+  State<InternshipsPage> createState() => InternshipsPageState();
 }
 
-class StagePageState extends State<StagePage> {
+class InternshipsPageState extends State<InternshipsPage> {
   void addStage() {}
 
   @override

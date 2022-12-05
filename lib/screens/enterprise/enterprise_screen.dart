@@ -7,7 +7,7 @@ import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'pages/about_page.dart';
 import 'pages/contact_page.dart';
 import 'pages/jobs_page.dart';
-import 'pages/stage_page.dart';
+import 'pages/internships_page.dart';
 
 class EnterpriseScreen extends StatefulWidget {
   const EnterpriseScreen({super.key});
@@ -31,7 +31,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
   final _aboutPageKey = GlobalKey<AboutPageState>();
   final _contactPageKey = GlobalKey<ContactPageState>();
   final _jobsPageKey = GlobalKey<JobsPageState>();
-  final _stagePageKey = GlobalKey<StagePageState>();
+  final _stagePageKey = GlobalKey<InternshipsPageState>();
 
   bool get _editing =>
       (_aboutPageKey.currentState?.editing ?? false) ||
@@ -113,7 +113,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
             AboutPage(key: _aboutPageKey, enterprise: enterprise),
             ContactPage(key: _contactPageKey, enterprise: enterprise),
             JobsPage(key: _jobsPageKey, enterprise: enterprise),
-            StagePage(key: _stagePageKey, enterprise: enterprise),
+            InternshipsPage(key: _stagePageKey, enterprise: enterprise),
           ],
         ),
       ),
