@@ -22,35 +22,55 @@ void main() async {
       expect(JobDataFileService.fromId(""), null);
     });
 
-    group("Filter Activity Sectors", () {
+    group("Filter Data with Activity Sectors", () {
       test("Works with valid String and int.", () async {
         final sector = JobDataFileService.sectors.first;
 
         expect(
-          JobDataFileService.filterActivitySectors(sector.id),
+          JobDataFileService.filterData(
+            query: sector.id,
+            data: JobDataFileService.sectors,
+          ),
           contains(sector),
         );
         expect(
-          JobDataFileService.filterActivitySectors(sector.name),
+          JobDataFileService.filterData(
+            query: sector.name,
+            data: JobDataFileService.sectors,
+          ),
           contains(sector),
         );
         expect(
-          JobDataFileService.filterActivitySectors(sector.idWithName),
+          JobDataFileService.filterData(
+            query: sector.idWithName,
+            data: JobDataFileService.sectors,
+          ),
           contains(sector),
         );
         expect(
-          JobDataFileService.filterActivitySectors(sector.name.substring(2, 5)),
+          JobDataFileService.filterData(
+            query: sector.name.substring(2, 5),
+            data: JobDataFileService.sectors,
+          ),
           contains(sector),
         );
       });
 
       test("Works with invalid int and empty String.", () async {
         expect(
-          JobDataFileService.filterActivitySectors(""),
+          JobDataFileService.filterData(
+            query: "",
+            data: JobDataFileService.sectors,
+          ),
           JobDataFileService.sectors,
         );
         expect(
-            JobDataFileService.filterActivitySectors("99999999999"), isEmpty);
+          JobDataFileService.filterData(
+            query: "99999999999",
+            data: JobDataFileService.sectors,
+          ),
+          isEmpty,
+        );
       });
     });
   });
@@ -73,29 +93,29 @@ void main() async {
       expect(sector.fromId(""), null);
     });
 
-    group("Filter Specializations", () {
-      final sector = JobDataFileService.sectors.first;
-      final specialization = sector.specializations.first;
+    group("Filter Data with Specializations", () {
+      final specializations = JobDataFileService.sectors.first.specializations;
+      final specialization = specializations.first;
 
       test("Works with valid String and int.", () async {
         expect(
-          JobDataFileService.filterSpecializations(
-            specialization.id,
-            sector,
+          JobDataFileService.filterData(
+            query: specialization.id,
+            data: specializations,
           ),
           contains(specialization),
         );
         expect(
-          JobDataFileService.filterSpecializations(
-            specialization.name,
-            sector,
+          JobDataFileService.filterData(
+            query: specialization.name,
+            data: specializations,
           ),
           contains(specialization),
         );
         expect(
-          JobDataFileService.filterSpecializations(
-            specialization.idWithName,
-            sector,
+          JobDataFileService.filterData(
+            query: specialization.idWithName,
+            data: specializations,
           ),
           contains(specialization),
         );
@@ -103,11 +123,17 @@ void main() async {
 
       test("Works with invalid int and empty String.", () async {
         expect(
-          JobDataFileService.filterSpecializations("", sector),
-          sector.specializations,
+          JobDataFileService.filterData(
+            query: "",
+            data: specializations,
+          ),
+          specializations,
         );
         expect(
-          JobDataFileService.filterSpecializations("99999999999", sector),
+          JobDataFileService.filterData(
+            query: "99999999999",
+            data: specializations,
+          ),
           isEmpty,
         );
       });

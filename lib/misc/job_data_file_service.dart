@@ -19,31 +19,18 @@ abstract class JobDataFileService {
     return _sectors.firstWhereOrNull((sector) => sector.id == id);
   }
 
-  static Iterable<ActivitySector> filterActivitySectors(String query) {
+  static Iterable<T> filterData<T extends JobData>({
+    required String query,
+    required List<T> data,
+  }) {
     int? number = int.tryParse(query);
     if (number != null) {
-      return JobDataFileService.sectors.where(
-        (sector) => sector.id.contains(number.toString()),
+      return data.where(
+        (i) => i.id.contains(number.toString()),
       );
     }
-    return JobDataFileService.sectors.where(
-      (s) => s.idWithName.toLowerCase().contains(query.toLowerCase()),
-    );
-  }
-
-  static Iterable<Specialization> filterSpecializations(
-    String query,
-    ActivitySector? activitySector,
-  ) {
-    if (activitySector == null) return [];
-    int? number = int.tryParse(query);
-    if (number != null) {
-      return activitySector.specializations.where(
-        (s) => s.id.contains(number.toString()),
-      );
-    }
-    return activitySector.specializations.where(
-      (s) => s.idWithName.toLowerCase().contains(query.toLowerCase()),
+    return data.where(
+      (i) => i.idWithName.toLowerCase().contains(query.toLowerCase()),
     );
   }
 
@@ -52,7 +39,15 @@ abstract class JobDataFileService {
   static List<ActivitySector> _sectors = [];
 }
 
-class ActivitySector extends ItemSerializable {
+abstract class JobData extends ItemSerializable {
+  JobData.fromSerialized(map) : super.fromSerialized(map);
+
+  String get idWithName => "${int.tryParse(id)} - $name";
+
+  abstract final String name;
+}
+
+class ActivitySector extends JobData {
   ActivitySector.fromSerialized(map)
       : name = map["n"],
         specializations = List.from(
@@ -70,13 +65,13 @@ class ActivitySector extends ItemSerializable {
     return specializations.firstWhereOrNull((job) => job.id == id);
   }
 
-  String get idWithName => "${int.tryParse(id)} - $name";
-
+  @override
   final String name;
+
   final List<Specialization> specializations;
 }
 
-class Specialization extends ItemSerializable {
+class Specialization extends JobData {
   Specialization.fromSerialized(map)
       : name = map["n"],
         skills = List.from(
@@ -95,15 +90,14 @@ class Specialization extends ItemSerializable {
     return skills.firstWhere((skill) => skill.id == id);
   }
 
-  String get idWithName => "${int.tryParse(id)} - $name";
-
+  @override
   final String name;
 
   final List<Skill> skills;
   final Set<String> questions;
 }
 
-class Skill extends ItemSerializable {
+class Skill extends JobData {
   Skill.fromSerialized(map)
       : name = map["n"],
         complexity = map["x"],
@@ -117,9 +111,10 @@ class Skill extends ItemSerializable {
     throw "Skill should not be serialized. Store its ID intead.";
   }
 
+  @override
   final String name;
-  final String complexity;
 
+  final String complexity;
   final List<String> criteria;
   final List<String> tasks;
   final Set<String> risks;
