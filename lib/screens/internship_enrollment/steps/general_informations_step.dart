@@ -47,41 +47,30 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ListTile(
-              title: Text("Entreprise"),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: TextField(
+            ListTile(
+              title: TextField(
+                decoration: const InputDecoration(labelText: "* Entreprise"),
                 controller: TextEditingController(text: widget.enterprise.name),
                 enabled: false,
               ),
             ),
-            const ListTile(
-              title: Text("Élève"),
-            ),
-            Consumer<StudentsProvider>(
-              builder: (context, students, _) => Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: StudentPickerFormField(
+            ListTile(
+              title: Consumer<StudentsProvider>(
+                builder: (context, students, _) => StudentPickerFormField(
                   students: students.toList(),
                   onSaved: (s) => setState(() => student = s),
                 ),
               ),
             ),
             const SizedBox(height: 8),
-            const ListTile(
-              title: Text("Métier principal"),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: JobFormField(
+            ListTile(
+              title: JobFormField(
                 initialValue: Job(),
                 sectors:
                     availableJobs.map((job) => job.activitySector!).toList(),
                 specializations:
                     availableJobs.map((job) => job.specialization!).toList(),
+                askNumberPositionsOffered: false,
               ),
             ),
             const SizedBox(height: 8),
@@ -100,6 +89,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                   child: JobFormField(
                     initialValue: secondJob!,
                     onSaved: (job) => setState(() => secondJob = job),
+                    askNumberPositionsOffered: false,
                   ),
                 ),
               ],

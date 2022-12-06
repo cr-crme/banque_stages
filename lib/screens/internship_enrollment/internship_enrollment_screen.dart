@@ -68,7 +68,7 @@ class _InternshipEnrollmentScreenState
           steps: [
             Step(
               isActive: _currentStep == 0,
-              title: const Text("Informations générales"),
+              title: const Text("Général"),
               content: GeneralInformationsStep(
                 key: _tasksKey,
                 enterprise: enterprise,
@@ -76,14 +76,14 @@ class _InternshipEnrollmentScreenState
             ),
             Step(
               isActive: _currentStep == 1,
-              title: const Text("Horaire de stage"),
+              title: const Text("Horaire"),
               content: ScheduleStep(
                 key: _supervisionKey,
               ),
             ),
             Step(
               isActive: _currentStep == 2,
-              title: const Text("Exigences de l'entreprise"),
+              title: const Text("Exigences"),
               content: RequirementsStep(
                 key: _prerequisitesKey,
               ),

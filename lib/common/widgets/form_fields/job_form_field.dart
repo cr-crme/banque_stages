@@ -12,12 +12,14 @@ class JobFormField extends StatelessWidget {
     this.onSaved,
     this.sectors,
     this.specializations,
+    this.askNumberPositionsOffered = true,
   });
 
   final Job initialValue;
   final FormFieldSetter<Job>? onSaved;
   final List<ActivitySector>? sectors;
   final List<Specialization>? specializations;
+  final bool askNumberPositionsOffered;
 
   static const String _invalidActivitySector = "invalid_activitySector";
   static const String _invalidSpecialization = "invalid_specialization";
@@ -124,32 +126,33 @@ class JobFormField extends StatelessWidget {
                     },
                   ),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "Postes disponibles",
-                        style: Theme.of(state.context).textTheme.titleMedium,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 112,
-                      child: SpinBox(
-                        value: state.value!.positionsOffered.toDouble(),
-                        min: 1,
-                        max: 10,
-                        spacing: 0,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                        ),
-                        onChanged: (double value) => state.didChange(
-                          state.value!
-                              .copyWith(positionsOffered: value.toInt()),
+                if (askNumberPositionsOffered)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Postes disponibles",
+                          style: Theme.of(state.context).textTheme.titleMedium,
                         ),
                       ),
-                    ),
-                  ],
-                )
+                      SizedBox(
+                        width: 112,
+                        child: SpinBox(
+                          value: state.value!.positionsOffered.toDouble(),
+                          min: 1,
+                          max: 10,
+                          spacing: 0,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                          ),
+                          onChanged: (double value) => state.didChange(
+                            state.value!
+                                .copyWith(positionsOffered: value.toInt()),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ));
   }
