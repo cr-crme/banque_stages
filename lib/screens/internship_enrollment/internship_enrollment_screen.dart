@@ -19,7 +19,7 @@ class InternshipEnrollmentScreen extends StatefulWidget {
 class _InternshipEnrollmentScreenState
     extends State<InternshipEnrollmentScreen> {
   late final _enterpriseId =
-      ModalRoute.of(context)!.settings.arguments as String? ?? "";
+      ModalRoute.of(context)!.settings.arguments as String;
 
   final _tasksKey = GlobalKey<GeneralInformationsStepState>();
   final _supervisionKey = GlobalKey<ScheduleStepState>();

@@ -7,8 +7,9 @@ import '/common/models/student.dart';
 import '/common/models/teacher.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/add_job_button.dart';
-import '/common/widgets/form_fields/job_form_field.dart';
+import '/common/widgets/form_fields/job_form_field_list_tile.dart';
 import '/common/widgets/form_fields/student_picker_form_field.dart';
+import '/misc/form_service.dart';
 
 class GeneralInformationsStep extends StatefulWidget {
   const GeneralInformationsStep({
@@ -31,6 +32,10 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 
   Job primaryJob = Job();
   Job? secondJob;
+
+  String? _supervisorName;
+  String? _supervisorPhone;
+  String? _supervisorEmail;
 
   @override
   Widget build(BuildContext context) {
@@ -62,19 +67,24 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            ListTile(
-              title: JobFormField(
-                initialValue: Job(),
-                sectors:
-                    availableJobs.map((job) => job.activitySector!).toList(),
-                specializations:
-                    availableJobs.map((job) => job.specialization!).toList(),
-                askNumberPositionsOffered: false,
-              ),
+            const SizedBox(height: 16),
+            Text(
+              "Métier",
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 8),
+            if (student?.program == "FPT")
+              const ListTile(
+                title: Text("Métier principal"),
+              ),
+            JobFormFieldListTile(
+              initialValue: Job(),
+              sectors: availableJobs.map((job) => job.activitySector!).toList(),
+              specializations:
+                  availableJobs.map((job) => job.specialization!).toList(),
+              askNumberPositionsOffered: false,
+            ),
             if (student?.program == "FPT") ...[
+              const SizedBox(height: 8),
               if (secondJob == null)
                 AddJobButton(
                   onPressed: () => setState(() => secondJob = Job()),
@@ -83,17 +93,50 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                 const ListTile(
                   title: Text("Métier secondaire"),
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: JobFormField(
-                    initialValue: secondJob!,
-                    onSaved: (job) => setState(() => secondJob = job),
-                    askNumberPositionsOffered: false,
-                  ),
+                JobFormFieldListTile(
+                  initialValue: secondJob!,
+                  onSaved: (job) => setState(() => secondJob = job),
+                  askNumberPositionsOffered: false,
                 ),
               ],
             ],
+            const SizedBox(height: 16),
+            Text(
+              "Superviseur en milieu de travail",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            ListTile(
+              title: TextFormField(
+                initialValue: widget.enterprise.contactName,
+                decoration: const InputDecoration(labelText: "* Nom"),
+                validator: FormService.textNotEmptyValidator,
+                onSaved: (name) => _supervisorName = name!,
+              ),
+            ),
+            ListTile(
+              title: TextFormField(
+                initialValue: widget.enterprise.contactPhone,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.phone),
+                  labelText: "* Téléphone",
+                ),
+                validator: FormService.phoneValidator,
+                onSaved: (phone) => _supervisorPhone = phone!,
+                keyboardType: TextInputType.phone,
+              ),
+            ),
+            ListTile(
+              title: TextFormField(
+                initialValue: widget.enterprise.contactEmail,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.mail),
+                  labelText: "* Courriel",
+                ),
+                validator: FormService.emailValidator,
+                onSaved: (email) => _supervisorEmail = email!,
+                keyboardType: TextInputType.emailAddress,
+              ),
+            ),
           ],
         ),
       ),
