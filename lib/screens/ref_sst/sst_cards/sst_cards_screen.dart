@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 //import 'dart:js_util';
 
+import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:flutter/material.dart';
 import 'widgets/sst_card.dart';
 
@@ -28,6 +29,9 @@ class _SSTCardsScreenState extends State<SSTCardsScreen> {
         appBar: AppBar(
           title: const Text("Fiches de risques"),
         ),
-        body: ListView(children: [SSTCard(1, "Test")]));
+        body: ListView(children: [
+          SSTCard(RiskDataFileService.risks[0].number,
+              RiskDataFileService.risks[0].shortname)
+        ]));
   }
 }
