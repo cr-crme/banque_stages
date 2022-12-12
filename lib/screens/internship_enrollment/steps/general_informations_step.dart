@@ -107,7 +107,6 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
             ),
             ListTile(
               title: TextFormField(
-                initialValue: widget.enterprise.contactName,
                 decoration: const InputDecoration(labelText: "* Nom"),
                 validator: FormService.textNotEmptyValidator,
                 onSaved: (name) => _supervisorName = name!,
@@ -115,7 +114,6 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
             ),
             ListTile(
               title: TextFormField(
-                initialValue: widget.enterprise.contactPhone,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.phone),
                   labelText: "* Téléphone",
@@ -127,7 +125,6 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
             ),
             ListTile(
               title: TextFormField(
-                initialValue: widget.enterprise.contactEmail,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.mail),
                   labelText: "* Courriel",
