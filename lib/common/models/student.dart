@@ -32,7 +32,7 @@ class Student extends ItemSerializable {
         contactLink = map['cl'],
         contactPhone = map['cp'],
         contactEmail = map['ce'],
-        internships = map['internships'],
+        internships = map['internships'] as List<String>? ?? [],
         super.fromSerialized(map);
 
   @override
