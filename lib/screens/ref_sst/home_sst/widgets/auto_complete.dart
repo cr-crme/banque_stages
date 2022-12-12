@@ -40,7 +40,8 @@ class AutocompleteSearch extends StatelessWidget {
           return Align(
             alignment: Alignment.topLeft,
             child : Material(
-            child: SizedBox(
+            child: Container(
+
               width: 275,
               height: 200,
               child:
