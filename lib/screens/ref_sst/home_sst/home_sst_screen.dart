@@ -36,8 +36,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
   @override
   Widget build(BuildContext context) {
     Widget body = const Center(child: CircularProgressIndicator());
-    var data = Provider.of<RisksProvider>(context, listen: true);
-   /* if (test) {
+    if (test) {
       //data.isEmpty
       body = FutureBuilder<String>(
           future: fetchRisks(),
@@ -50,7 +49,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
             }
             return const Center(child: CircularProgressIndicator());
           });
-    } else {*/
+    } else {
       body = ListView(
         children: [
           //Container for the search bar
