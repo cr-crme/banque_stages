@@ -36,6 +36,14 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
   @override
   Widget build(BuildContext context) {
     Widget body = const Center(child: CircularProgressIndicator());
+        final data = Provider.of<RisksProvider>(context, listen: false);
+    Risk risk = Risk(
+        id: "id",
+        number: 0,
+        shortname: "shortname",
+        name: "name",
+        subrisks: null,
+        links: null);
     if (test) {
       //data.isEmpty
       body = FutureBuilder<String>(
