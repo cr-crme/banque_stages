@@ -56,6 +56,12 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
     }).toList();
   }
 
+  List<Enterprise> _sortEnterprisesByName(List<Enterprise> enterprises) {
+    final res = List<Enterprise>.from(enterprises);
+    res.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    return res.toList();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -95,8 +101,9 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
                 ),
               ),
             ),
-            selector: (context, enterprises) =>
-                _filterSelectedEnterprises(enterprises.toList()),
+            selector: (context, enterprises) => _sortEnterprisesByName(
+              _filterSelectedEnterprises(enterprises.toList()),
+            ),
           ),
           //! Remove this in production
           Consumer<EnterprisesProvider>(

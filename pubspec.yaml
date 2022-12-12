@@ -48,7 +48,7 @@ dependencies:
 
 dependency_overrides:
     enhanced_containers:
-        path: ./external/enhanced_containers 
+        path: ./external/enhanced_containers
     crcrme_material_theme:
         path: ./external/crcrme_material_theme
 
