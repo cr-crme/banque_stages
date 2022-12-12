@@ -38,7 +38,7 @@ class Risk extends ItemSerializable {
   }
 
   Risk.fromSerialized(map)
-      : number = map["number"],
+      : number = int.parse(map["number"]),
         shortname = map["shortname"],
         name = map["name"],
         links = getLinks(map["links"] as Map<String, dynamic>),

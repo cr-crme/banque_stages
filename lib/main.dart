@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:crcrme_banque_stages/common/providers/risks_provider.dart';
+import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
@@ -36,6 +36,7 @@ import 'screens/visiting_students/models/all_itineraries.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await JobDataFileService.loadData();
+  await RiskDataFileService.loadData();
   await QuestionFileService.loadData();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -61,7 +62,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
         ChangeNotifierProvider(create: (context) => AllStudentsWaypoints()),
         ChangeNotifierProvider(create: (context) => AllItineraries()),
-        ChangeNotifierProvider(create: (context) => RisksProvider()),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
           create: (context) => StudentsProvider(),
           update: (context, auth, previous) {
