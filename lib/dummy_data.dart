@@ -83,9 +83,25 @@ void addDummyStudents(StudentsProvider students) {
       name: "Jonathan D",
       dateBirth: DateTime.now(),
       email: "",
-      program: "TSA",
+      program: "FMS",
       group: "3",
       contactName: "Sarah White",
+      contactLink: "Père",
+      contactPhone: "514 321 9876 poste 234",
+      contactEmail: "white.sarah@fausse.ca",
+      address: "1 rue Vide, Québec, QC A4A 4A4",
+      phone: "514 321 9876",
+    ),
+  );
+
+  students.add(
+    Student(
+      name: "FPT student",
+      dateBirth: DateTime.now(),
+      email: "",
+      program: "FPT",
+      group: "0005",
+      contactName: "Joe",
       contactLink: "Père",
       contactPhone: "514 321 9876 poste 234",
       contactEmail: "white.sarah@fausse.ca",
