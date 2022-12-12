@@ -2,12 +2,7 @@
 //import 'dart:js_util';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../../common/providers/risks_provider.dart';
 import 'widgets/sst_card.dart';
-import 'dart:convert';
-import '../common/risk.dart';
 
 class SSTCardsScreen extends StatefulWidget {
   const SSTCardsScreen({Key? key}) : super(key: key);
@@ -20,14 +15,11 @@ class SSTCardsScreen extends StatefulWidget {
 
 class _SSTCardsScreenState extends State<SSTCardsScreen> {
   final _searchController = TextEditingController();
-  var data;
 
   @override
   void initState() {
     super.initState();
     _searchController.addListener(() => setState(() {}));
-
-    var data = Provider.of<RisksProvider>(context, listen: true);
   }
 
   @override
@@ -36,6 +28,6 @@ class _SSTCardsScreenState extends State<SSTCardsScreen> {
         appBar: AppBar(
           title: const Text("Fiches de risques"),
         ),
-        body: ErrorWidget.withDetails());
+        body: ListView(children: [SSTCard(1, "Test")]));
   }
 }
