@@ -3,6 +3,7 @@
 
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:flutter/material.dart';
+import '../common/Risk.dart';
 import 'widgets/sst_card.dart';
 
 class SSTCardsScreen extends StatefulWidget {
@@ -30,8 +31,8 @@ class _SSTCardsScreenState extends State<SSTCardsScreen> {
           title: const Text("Fiches de risques"),
         ),
         body: ListView(children: [
-          SSTCard(RiskDataFileService.risks[0].number,
-              RiskDataFileService.risks[0].shortname)
+          for (Risk risk in RiskDataFileService.risks)
+            SSTCard(risk.number, risk.shortname)
         ]));
   }
 }

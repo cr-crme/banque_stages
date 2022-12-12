@@ -61,8 +61,6 @@ class Risk extends ItemSerializable {
   static List<SubRisk> getSubRisks(List<dynamic> risks) {
     List<SubRisk> subRisksList = [];
 
-    //final List<Map<String, dynamic>> subrisks =List.from((map['subrisks']) as List);
-
     for (Map<String, dynamic> subrisk in risks) {
       final int subriskID = int.parse(subrisk["number"]);
       final String subriskTitle = subrisk["title"];
