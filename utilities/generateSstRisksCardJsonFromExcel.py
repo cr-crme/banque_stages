@@ -83,7 +83,7 @@ def start(excelPathSST: str):
                         "situations": createDictFromString(row[4]) if str(row[4]) != "nan" else [],
                         "factors": createDictFromString(row[5]) if str(row[5]) != "nan" else [],
                         "symptoms": createDictFromString(row[6]) if str(row[6]) != "nan" else [],
-                        "images": [IMAGE_FILES_PATH + str(int(row[7])) + IMAGE_FILE_FORMAT if str(row[7]) != "nan" else "",
+                        "images": [IMAGE_FILES_PATH + str(int(row[7])) + IMAGE_FILE_FORMAT if str(row[7]) != "nan" else None,
                                    IMAGE_FILES_PATH + str(int(row[8])) + IMAGE_FILE_FORMAT if str(row[8]) != "nan" else None]
                     },
                     {
@@ -93,7 +93,7 @@ def start(excelPathSST: str):
                         "situations": createDictFromString(row[11]) if str(row[11]) != "nan" else [],
                         "factors": createDictFromString(row[12]) if str(row[12]) != "nan" else [],
                         "symptoms": createDictFromString(row[13]) if str(row[13]) != "nan" else [],
-                        "images": [IMAGE_FILES_PATH + str(int(row[14])) + IMAGE_FILE_FORMAT if str(row[14]) != "nan" else "",
+                        "images": [IMAGE_FILES_PATH + str(int(row[14])) + IMAGE_FILE_FORMAT if str(row[14]) != "nan" else None,
                                    IMAGE_FILES_PATH + str(int(row[15])) + IMAGE_FILE_FORMAT if str(row[15]) != "nan" else None]
                     } if str(row[9]) != "nan" else None
                     ],
