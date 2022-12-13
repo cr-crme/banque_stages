@@ -13,6 +13,7 @@ import pandas as pd
 # Constants
 JSON_FILE_NAME = "/risks-data.json"
 IMAGE_FILE_FORMAT = ".png"
+IMAGE_FILES_PATH = "assets/images-sst/"
 
 RISKS_SHORTNAMES = {
     1: "chemical",
@@ -82,8 +83,8 @@ def start(excelPathSST: str):
                         "situations": createDictFromString(row[4]) if str(row[4]) != "nan" else [],
                         "factors": createDictFromString(row[5]) if str(row[5]) != "nan" else [],
                         "symptoms": createDictFromString(row[6]) if str(row[6]) != "nan" else [],
-                        "images": ["assets/images/" + str(int(row[7])) + IMAGE_FILE_FORMAT if str(row[7]) != "nan" else "",
-                                   "assets/images/" + str(int(row[8])) + IMAGE_FILE_FORMAT if str(row[8]) != "nan" else None]
+                        "images": [IMAGE_FILES_PATH + str(int(row[7])) + IMAGE_FILE_FORMAT if str(row[7]) != "nan" else "",
+                                   IMAGE_FILES_PATH + str(int(row[8])) + IMAGE_FILE_FORMAT if str(row[8]) != "nan" else None]
                     },
                     {
                         "number": "2",
@@ -92,8 +93,8 @@ def start(excelPathSST: str):
                         "situations": createDictFromString(row[11]) if str(row[11]) != "nan" else [],
                         "factors": createDictFromString(row[12]) if str(row[12]) != "nan" else [],
                         "symptoms": createDictFromString(row[13]) if str(row[13]) != "nan" else [],
-                        "images": ["assets/images/" + str(int(row[14])) + IMAGE_FILE_FORMAT if str(row[14]) != "nan" else "",
-                                   "assets/images/" + str(int(row[15])) + IMAGE_FILE_FORMAT if str(row[15]) != "nan" else None]
+                        "images": [IMAGE_FILES_PATH + str(int(row[14])) + IMAGE_FILE_FORMAT if str(row[14]) != "nan" else "",
+                                   IMAGE_FILES_PATH + str(int(row[15])) + IMAGE_FILE_FORMAT if str(row[15]) != "nan" else None]
                     } if str(row[9]) != "nan" else None
                     ],
             "links": [
