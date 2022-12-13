@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/paragraph.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/widgets/paragraph.dart';
 
 class Symptoms extends StatelessWidget {
   //params and variables

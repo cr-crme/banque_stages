@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../common/Risk.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/sub_title.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/situation_risk.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/factors.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/symptoms.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/introduction.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/widgets/situation_risk.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/widgets/factors.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/widgets/symptoms.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/widgets/introduction.dart';
 
 class SubRiskBuilding extends StatelessWidget {
   //params and variables

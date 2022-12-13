@@ -1,5 +1,4 @@
-import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'widgets/search_bar.dart';
 import '/common/widgets/main_drawer.dart';

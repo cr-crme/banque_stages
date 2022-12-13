@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/risks_cards_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/risk_card_screen.dart';
 
 import '../../common/Risk.dart';
 
