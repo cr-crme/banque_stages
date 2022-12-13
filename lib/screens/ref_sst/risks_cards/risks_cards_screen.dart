@@ -38,9 +38,9 @@ class _RisksCardsScreenState extends State<RisksCardsScreen> {
         ),
         body: ListView(
           children: [
-            MainTitle(RiskDataFileService.risks[0].name),
+            MainTitle(risk!.name),
             SubRiskBuilding(risk!.subrisks),
-            Link(RiskDataFileService.risks[0].links)
+            Link(risk!.links)
           ],
         ));
   }
