@@ -10,7 +10,7 @@ class Link extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       Container(
-        margin: const EdgeInsets.only(top: 30, right: 25, left: 10),
+        margin: const EdgeInsets.only(top: 30, right: 25, left: 10, bottom: 10),
         child: ListTile(
           tileColor: Colors.grey[300],
           textColor: Colors.black,
@@ -24,6 +24,7 @@ class Link extends StatelessWidget {
             ),
           ),
           subtitle: ListLinks(links),
+          isThreeLine: true,
         ),
       )
     ]);

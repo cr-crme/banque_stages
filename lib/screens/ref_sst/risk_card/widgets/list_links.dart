@@ -37,10 +37,13 @@ class BuildALineOfALink extends StatelessWidget {
           flex: 20,
           child: InkWell(
             onTap: () => _launchUrl(link.url),
-            child: Text(
-              " $linkTitle",
-              style: const TextStyle(
-                  color: Colors.blue, decoration: TextDecoration.underline),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                " $linkTitle",
+                style: const TextStyle(
+                    color: Colors.blue, decoration: TextDecoration.underline),
+              ),
             ),
           ),
         )
