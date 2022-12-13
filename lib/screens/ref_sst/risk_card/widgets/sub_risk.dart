@@ -21,15 +21,26 @@ class SubRiskBuilding extends StatelessWidget {
       subRiskWidgets.add(Column(
         children: [
           if (subRisks.length > 1) SubTitle(subRisk.id, subRisk.title),
-
           Introduction(subRisk.intro),
-          //Image.asset('assets/1.png'), //Testing how the picture is display
-          Container(
-            margin: const EdgeInsets.only(left: 20),
-            child: const Text(
-                "Illustration: Hervé Charbonneau"), //It will be with the picture
-          ),
+          if (subRisk.images.length > 0)
+            Column(children: [
+              Image.asset(subRisk.images[0]),
+              Container(
+                margin: const EdgeInsets.only(left: 20),
+                child: const Text(
+                    "Illustration: Hervé Charbonneau"), //It will be with the picture
+              )
+            ]),
           SituationRisk(subRisk.situations),
+          if (subRisk.images.length > 1)
+            Column(children: [
+              Image.asset(subRisk.images[1]),
+              Container(
+                margin: const EdgeInsets.only(left: 20),
+                child: const Text(
+                    "Illustration: Hervé Charbonneau"), //It will be with the picture
+              )
+            ]),
           Factors(subRisk.factors),
           Symptoms(subRisk.symptoms)
         ],
