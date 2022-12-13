@@ -31,8 +31,7 @@ class _SSTCardsScreenState extends State<SSTCardsScreen> {
           title: const Text("Fiches de risques"),
         ),
         body: ListView(children: [
-          for (Risk risk in RiskDataFileService.risks)
-            SSTCard(risk.number, risk.shortname)
+          for (Risk risk in RiskDataFileService.risks) SSTCard(risk)
         ]));
   }
 }

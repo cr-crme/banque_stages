@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/risks_cards_screen.dart';
 
+import '../../common/Risk.dart';
+
 //SST
 class SSTCard extends StatelessWidget {
   //params and variables
-  const SSTCard(this.nmb, this.title, {super.key});
-  final int nmb;
-  final String title;
+  const SSTCard(this.risk, {super.key});
+  final Risk risk;
 
   @override
   Widget build(BuildContext context) {
@@ -17,18 +18,18 @@ class SSTCard extends StatelessWidget {
         elevation: 0.5,
         child: ListTile(
             title: Text(
-              'FICHE$nmb',
+              'FICHE ${risk.number}',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             subtitle: Text(
-              title,
+              risk.name,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             isThreeLine: true,
             //onTap should redirect to the risk
             onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => RisksCardsScreen(nmb),
+                    builder: (_) => RisksCardsScreen(0),
                   ),
                 )));
   }
