@@ -31,7 +31,7 @@ class SubRiskBuilding extends StatelessWidget {
                     "Illustration: Hervé Charbonneau"), //It will be with the picture
               )
             ]),
-          SituationRisk(subRisk.situations),
+          if (subRisk.situations.isNotEmpty) SituationRisk(subRisk.situations),
           if (subRisk.images.length > 1)
             Column(children: [
               Image.asset(subRisk.images[1]),
@@ -41,8 +41,8 @@ class SubRiskBuilding extends StatelessWidget {
                     "Illustration: Hervé Charbonneau"), //It will be with the picture
               )
             ]),
-          Factors(subRisk.factors),
-          Symptoms(subRisk.symptoms)
+          if (subRisk.factors.isNotEmpty) Factors(subRisk.factors),
+          if (subRisk.symptoms.isNotEmpty) Symptoms(subRisk.symptoms)
         ],
       ));
     }
