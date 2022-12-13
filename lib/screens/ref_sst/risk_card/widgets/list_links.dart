@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/screens/ref_sst/common/Risk.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ListLinks extends StatelessWidget {
   //params and variables
@@ -32,17 +33,25 @@ class BuildALineOfALink extends StatelessWidget {
           link.source,
           style: const TextStyle(fontSize: 15),
         ),
-        const Expanded(
-          child: Text(
-            " : ",
-            style: TextStyle(fontSize: 15),
-          ),
-        ),
         Expanded(
           flex: 20,
-          child: Text(linkTitle),
+          child: InkWell(
+            onTap: () => _launchUrl(link.url),
+            child: Text(
+              linkTitle,
+              style: TextStyle(
+                  color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+          ),
         )
       ],
     );
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $url';
+    }
   }
 }
