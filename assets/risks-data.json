@@ -11,28 +11,28 @@
                 "situations": [
                     {
                         "line": "D\u00e9graissage de pi\u00e8ces m\u00e9talliques avec un produit chimique dont l\u2019\u00e9tiquette comporte un ou plusieurs symboles du SIMDUT",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "D\u00e9sinfection d\u2019un plan de travail avec un m\u00e9lange de plusieurs produits chimiques",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Manipulation du produit chimique:",
-                        "subline": [
+                        "sublines": [
                             "sans \u00e9quipement de protection individuelle (p. ex. : gants, masque, lunettes ou visi\u00e8re)",
                             "avec un \u00e9quipement de protection inad\u00e9quat (p. ex. : gants trop grands ou lunettes ray\u00e9es)"
                         ]
                     },
                     {
                         "line": "Travail dans un local insuffisamment ventil\u00e9",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Utilisation d\u2019un produit chimique sans information sur les risques ou les pr\u00e9cautions \u00e0 prendre :",
-                        "subline": [
+                        "sublines": [
                             "Emballage de produit chimique sans \u00e9tiquette",
                             "Manque de formation sur son utilisation"
                         ]
@@ -41,15 +41,15 @@
                 "symptoms": [
                     {
                         "line": "Irritations cutan\u00e9es, br\u00fblures",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Maux de t\u00eate, naus\u00e9es, vomissements",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Intoxications chroniques pouvant toucher le syst\u00e8me nerveux, le foie ou le syst\u00e8me respiratoire",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -82,59 +82,59 @@
                 "situations": [
                     {
                         "line": "Travail au contact d\u2019enfants ou de personnes \u00e2g\u00e9es (p. ex. : mouchage d\u2019une personne malade ou changement de couches de b\u00e9b\u00e9s)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail au contact d\u2019animaux (p. ex. : brossage des chevaux dans une \u00e9curie ou nettoyage de la liti\u00e8re de chats dans une animalerie)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Manipulation de mati\u00e8res souill\u00e9es dans un centre de tri",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Manipulation de farines dans une boulangerie",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Exposition aux poussi\u00e8res de bois lors du travail en \u00e9b\u00e9nisterie",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Exposition aux piq\u00fbres de tiques lors de travaux en for\u00eat ",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Aucun port d\u2019\u00e9quipement de protection individuelle (p. ex. : gants, masque)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "\u00c9quipement de protection indisponible ou inad\u00e9quat (p. ex. : gants trop grands ou lunettes ray\u00e9es)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail dans un local insuffisamment ventil\u00e9",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Aucune formation sur les risques biologiques et les proc\u00e9dures de protection \u00e0 suivre",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Allergies (p. ex. : allergies cutan\u00e9es, rhinites ou asthme)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Infections cutan\u00e9es ou pulmonaires",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Maladie de Lyme",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -168,27 +168,27 @@
                 "situations": [
                     {
                         "line": "Utilisation d\u2019un \u00e9quipement de forme dangereuse :",
-                        "subline": [
+                        "sublines": [
                             "ouvrir des bo\u00eetes avec un couteau de pr\u00e9cision",
                             "nettoyer diff\u00e9rents \u00e9l\u00e9ments d\u2019une trancheuse \u00e0 charcuterie"
                         ]
                     },
                     {
                         "line": "Travail impliquant une machine dont les parties mobiles sont accessibles lorsqu\u2019elle fonctionne :",
-                        "subline": [
+                        "sublines": [
                             "prendre des marchandises sur un convoyeur en mouvement",
                             "maintenir une pi\u00e8ce \u00e0 proximit\u00e9 des \u00e9l\u00e9ments en mouvement de la machine (p. ex. : d\u00e9coupe de bois sur un banc de scie, pliage de pi\u00e8ces m\u00e9talliques)"
                         ]
                     },
                     {
                         "line": "Intervention \u00e0 l\u2019int\u00e9rieur de la machine \u00e0 l\u2019arr\u00eat (p. ex. : pour retirer manuellement les cartons d\u2019un compacteur apr\u00e8s un bourrage)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Aucune formation sur les diff\u00e9rentes proc\u00e9dures \u00e0 suivre :",
-                        "subline": [
+                        "sublines": [
                             "pour utiliser la machine en fonctionnement",
                             "pour nettoyer ou entretenir la machine",
                             "lors d\u2019une panne ou d\u2019un arr\u00eat de la machine"
@@ -196,29 +196,29 @@
                     },
                     {
                         "line": "Outils en mauvais \u00e9tat ou inad\u00e9quats",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Absence de gardes ou de barri\u00e8res immat\u00e9rielles emp\u00eachant l\u2019acc\u00e8s aux parties mobiles de la machine en fonctionnement (p. ex. : barri\u00e8res retir\u00e9es)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Boutons d\u2019arr\u00eat d\u2019urgence peu accessibles ou dysfonctionnels",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Coupures ou br\u00fblures",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Coincement ou \u00e9crasement des doigts ou des mains",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Blessures graves (amputation d\u2019un membre)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -247,39 +247,39 @@
                 "situations": [
                     {
                         "line": "Utilisation d\u2019\u00e9quipement pour acc\u00e9der \u00e0 des marchandises ou des mat\u00e9riaux situ\u00e9s en hauteur (p. ex. : \u00e9chelle, escabeau)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail sur une terrasse de b\u00e2timent ou dans une nacelle",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Pr\u00e9sence d\u2019une fosse ou d\u2019une tranch\u00e9e \u00e0 proximit\u00e9 de la zone de travail de l\u2019\u00e9l\u00e8ve",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Travail sur un escabeau ou une \u00e9chelle en ayant les bras charg\u00e9s (p. ex. : pour manipuler des marchandises)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "\u00c9quipement inadapt\u00e9 \u00e0 la t\u00e2che (p. ex. : hauteur insuffisante de l\u2019escabeau pour atteindre les marchandises)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "\u00c9quipement en mauvais \u00e9tat Absence de garde-corps ou garde-corps inappropri\u00e9 (p. ex. : corde au lieu d\u2019un garde-corps fixe)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Absence d\u2019\u00e9quipement de protection individuelle (harnais)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Douleur, entorses ou fractures",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -293,19 +293,19 @@
                 "situations": [
                     {
                         "line": "D\u00e9placements sur des planchers glissants (p. ex. : gras ou mouill\u00e9s), ab\u00eem\u00e9s, irr\u00e9guliers ou encombr\u00e9s",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "D\u00e9placements dans des couloirs \u00e9troits ou mal \u00e9clair\u00e9s",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "D\u00e9placements dans des escaliers",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "\u00c0 l\u2019ext\u00e9rieur, d\u00e9placements sur un terrain :",
-                        "subline": [
+                        "sublines": [
                             "avec un d\u00e9nivel\u00e9",
                             "accident\u00e9",
                             "verglac\u00e9"
@@ -315,17 +315,17 @@
                 "factors": [
                     {
                         "line": "D\u00e9placements \u00e0 effectuer les bras charg\u00e9s",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Chaussures inad\u00e9quates pour la t\u00e2che (p. ex. : absence de semelles antid\u00e9rapantes en cuisine)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Douleurs, entorses ou fractures",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -368,7 +368,7 @@
                 "situations": [
                     {
                         "line": "Travail dans un entrep\u00f4t o\u00f9 des marchandises sont stock\u00e9es :",
-                        "subline": [
+                        "sublines": [
                             "en hauteur (sur palettes, sur \u00e9tag\u00e8res)",
                             "en vrac",
                             "en pile de grande hauteur"
@@ -376,31 +376,31 @@
                     },
                     {
                         "line": "Manipulation de charges avec un engin de manutention (p. ex. : chariot, transpalette)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail sous une machine",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Mat\u00e9riel de stockage inadapt\u00e9 \u00e0 la charge",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Produits stock\u00e9s de fa\u00e7on instable (p. ex. : pile irr\u00e9guli\u00e8re, mauvaise r\u00e9partition de la charge sur une palette)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Heurts, \u00e9crasement des mains ou des pieds",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Fractures",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -428,7 +428,7 @@
                 "situations": [
                     {
                         "line": "Exposition \u00e0 des risques d\u2019accident de la route lors de :",
-                        "subline": [
+                        "sublines": [
                             "D\u00e9placements en voiture pendant un quart de travail",
                             "T\u00e2ches effectu\u00e9es directement sur la chauss\u00e9e (p. ex. : brigadier scolaire qui interrompt la circulation au milieu d\u2019une intersection)"
                         ]
@@ -437,21 +437,21 @@
                 "factors": [
                     {
                         "line": "V\u00e9hicule en mauvais \u00e9tat ou mal entretenu (p. ex. : pneus sous-gonfl\u00e9s)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Routes en mauvais \u00e9tat",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Mauvaises conditions climatiques (route glissante \u00e0 cause de la pluie ou du verglas, manque de visibilit\u00e9 en cas de neige ou de brouillard)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Traumatismes divers \u00e0 la suite d\u2019un accident de la route",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -465,27 +465,27 @@
                 "situations": [
                     {
                         "line": "Travail dans une entreprise o\u00f9 circulent des v\u00e9hicules ou des engins de manutention (p. ex. : camions de livraison, chariots \u00e9l\u00e9vateurs)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail sur des chantiers \u00e0 proximit\u00e9 d\u2019engins et de v\u00e9hicules",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Voies de circulation communes aux engins et aux pi\u00e9tons (p. ex. : all\u00e9e dans un entrep\u00f4t o\u00f9 l\u2019on circule \u00e0 pied et en chariot \u00e9l\u00e9vateur)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Voies de circulation dangereuses dans l\u2019entreprise ou sur les chantiers : voies \u00e9troites, en pente, offrant une faible visibilit\u00e9",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Traumatismes divers \u00e0 la suite d\u2019une collision avec un engin ou un v\u00e9hicule",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -523,66 +523,66 @@
                 "situations": [
                     {
                         "line": "Posture pench\u00e9e en avant :",
-                        "subline": [
+                        "sublines": [
                             "pour ramasser des marchandises au niveau du sol ou loin devant",
                             "pour couper des l\u00e9gumes (p. ex. : sur un comptoir de cuisine trop bas)"
                         ]
                     },
                     {
                         "line": "Torsion du haut du corps, sans bouger les pieds, pour prendre des objets situ\u00e9s derri\u00e8re ou sur les c\u00f4t\u00e9s",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail de pr\u00e9cision obligeant \u00e0 garder la t\u00eate baiss\u00e9e plusieurs minutes lors de l\u2019ex\u00e9cution de la t\u00e2che (p. ex. : pliage de chandails)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "T\u00eate bascul\u00e9e vers l\u2019arri\u00e8re pour lire des informations situ\u00e9es en hauteur (p. ex. : \u00e9tiquettes de prix sur des \u00e9tag\u00e8res)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Bras lev\u00e9s au-dessus du niveau des \u00e9paules pour prendre des objets situ\u00e9s en hauteur",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Position accroupie ou avec un genou \u00e0 terre pour habiller des enfants dans une garderie",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Manipulation de petits objets avec une prise en pince (p. ex. : ins\u00e9rer des composants \u00e9lectroniques sur la carte-m\u00e8re d'un ordinateur)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Saisie d\u2019information sur un clavier d\u2019ordinateur trop \u00e9pais, les poignets en extension ",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Torsion du poignet pour visser de la quincaillerie sur un meuble \u00e0 l\u2019aide d\u2019un tournevis",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Effort physique combin\u00e9 \u00e0 une posture contraignante (p. ex. : soulever une charge lourde en position pench\u00e9e)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Maintien d\u2019une m\u00eame posture pendant deux heures ou plus",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Posture r\u00e9p\u00e9t\u00e9e fr\u00e9quemment",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Inconfort, fatigue et douleur",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -597,7 +597,7 @@
                 "situations": [
                     {
                         "line": "Travail pendant plusieurs heures sur une machine (p. ex. : presse \u00e0 d\u00e9couper des pi\u00e8ces m\u00e9talliques, machine \u00e0 coudre) avec maintien de la m\u00eame position, sans possibilit\u00e9 d\u2019alterner, car :",
-                        "subline": [
+                        "sublines": [
                             "les mains et les pieds servent \u00e0 actionner des commandes ou \u00e0 tenir",
                             "les pi\u00e8ces \u00e0 travailler dans la machine",
                             "la t\u00eate doit \u00eatre maintenue dans la m\u00eame position pour assurer",
@@ -606,17 +606,17 @@
                     },
                     {
                         "line": "Travail en position debout pendant plusieurs heures, sans possibilit\u00e9 de s\u2019asseoir en dehors des pauses",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail en position assise toute la journ\u00e9e",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Utilisation d\u2019\u00e9quipements de travail qui limitent les changements de position :",
-                        "subline": [
+                        "sublines": [
                             "Espace de d\u00e9gagement sous le plan de travail insuffisant pour bouger les jambes et les pieds",
                             "\u00c9quipements non r\u00e9glables en hauteur ou en profondeur"
                         ]
@@ -625,11 +625,11 @@
                 "symptoms": [
                     {
                         "line": "Inconfort, fatigue et douleur",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -663,39 +663,39 @@
                 "situations": [
                     {
                         "line": "R\u00e9p\u00e9tition sans arr\u00eat des m\u00eames gestes",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Rythme de travail soumis \u00e0 la cadence d\u2019une machine ou \u00e0 l\u2019avancement d\u2019un convoyeur",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Cycles de travail tr\u00e8s courts (environ 30 secondes) et peu de possibilit\u00e9 de repos entre deux cycles",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Mouvements ou postures contraignants",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Effort physique (p. ex. : prise de marchandises lourdes sur un convoyeur)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Difficult\u00e9 \u00e0 suivre la cadence surtout au d\u00e9but d\u2019une nouvelle t\u00e2che ",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Inconfort, fatigue et douleur",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -709,39 +709,39 @@
                 "situations": [
                     {
                         "line": "Utilisation d\u2019outils manuels aux bords durs et coupants (p. ex. : ciseau)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail n\u00e9cessitant que les avant-bras ou les poignets soient appuy\u00e9s sur le bord du plan de travail",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail s\u2019effectuant agenouill\u00e9 par terre",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Utilisation de la main comme marteau pour frapper sur un objet",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Maintien de la pression de contact sur une longue p\u00e9riode",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "R\u00e9p\u00e9tition fr\u00e9quente des appuis ou des chocs",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Inconfort, fatigue et douleur",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -774,67 +774,67 @@
                 "situations": [
                     {
                         "line": "Manutention de charges de plus de 15 kg",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Manutention de charges plusieurs heures par jour",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "D\u00e9placement avec des charges sur une longue distance, sur un chemin en pente ou dans un escalier",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Port de la charge loin du corps (p. ex. : pelletage de neige les bras tendus)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Prise ou d\u00e9p\u00f4t des charges au niveau du sol ou en hauteur (au-dessus du niveau des \u00e9paules)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Fr\u00e9quence des manutentions sup\u00e9rieure \u00e0 5 fois/min",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Charge de grandes dimensions",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Charge d\u00e9s\u00e9quilibr\u00e9e, instable ou difficile \u00e0 saisir (p. ex. : bords coupants ou glissants)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Charge vivante non coop\u00e9rative (p. ex. : enfant qui se d\u00e9bat, chien agressif)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Posture contraignante lors de la manutention (p. ex. : torsion du tronc lors du pelletage de la neige)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Variation de la hauteur de prise et de d\u00e9p\u00f4t de la charge (p. ex. : soulever un b\u00e9b\u00e9 pour le mettre sur une table \u00e0 langer)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Impossibilit\u00e9 d\u2019utiliser les deux mains pour la manutention",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Inconfort, fatigue et douleur",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Blessures au dos",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations, en particulier les \u00e9paules",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -849,69 +849,69 @@
                 "situations": [
                     {
                         "line": "Transport de marchandises :",
-                        "subline": [
+                        "sublines": [
                             "de plus de 300 kg au moyen d\u2019un transpalette manuel",
                             "de plus de 80 kg avec un diable ou un chariot"
                         ]
                     },
                     {
                         "line": "N\u00e9cessit\u00e9 de faire des efforts pour tirer l\u2019\u00e9quipement :",
-                        "subline": [
+                        "sublines": [
                             "utilisation des deux mains pour d\u00e9velopper assez de force pour le d\u00e9placement d\u00e9sir\u00e9",
                             "utilisation de tout le poids du corps pour arriver \u00e0 d\u00e9placer la charge"
                         ]
                     },
                     {
                         "line": "Mains situ\u00e9es au niveau des \u00e9paules ou en dessous de la taille pour exercer une pouss\u00e9e sur l\u2019\u00e9quipement",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Efforts n\u00e9cessaires pour lever la charge en actionnant le timon du transpalette",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Manutention de charges plusieurs heures par jour",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Posture contraignante lors de la manutention de l\u2019\u00e9quipement (p. ex. : flexion du tronc pour pousser un chariot plein de cartons)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "\u00c9quipement inadapt\u00e9 \u00e0 la charge \u00e0 d\u00e9placer ou en mauvais \u00e9tat",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Charge instable ou mal fix\u00e9e",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Charge volumineuse qui r\u00e9duit la visibilit\u00e9",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "D\u00e9placement de la charge sur un sol en mauvais \u00e9tat, avec un d\u00e9nivel\u00e9 ou des marches",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "D\u00e9placement de la charge dans une zone \u00e9troite",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Inconfort, fatigue et douleur",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Blessures au dos",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Troubles musculosquelettiques (TMS) pouvant affecter les diff\u00e9rentes articulations, en particulier les \u00e9paules",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -945,55 +945,55 @@
                 "situations": [
                     {
                         "line": "Impossibilit\u00e9 de demander de l\u2019aide en cas de probl\u00e8me (p. ex. : coll\u00e8gues indisponibles, poste isol\u00e9)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Intimidation, voire violence, de la part de coll\u00e8gues",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Discrimination en raison du sexe, de l\u2019\u00e2ge, des origines ou du statut de stagiaire non r\u00e9mun\u00e9r\u00e9 (p. ex. : commentaires sexistes ou racistes)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Harc\u00e8lement sexuel",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Clients irrespectueux, voire agressifs",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Commerce expos\u00e9 aux vols",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "R\u00e9p\u00e9tition des situations \u00e0 risque",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Cumul de diff\u00e9rentes situations pour un m\u00eame \u00e9l\u00e8ve (p. ex. : servir des clients agressifs tout en \u00e9tant dans l\u2019impossibilit\u00e9 de demander de l\u2019aide)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Stress, anxi\u00e9t\u00e9, troubles du sommeil, fatigue",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Consommation d\u2019alcool ou de drogue",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Blessures \u00e0 la suite d\u2019une agression physique",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Troubles psychiques, probl\u00e8mes de sant\u00e9 mentale",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -1007,7 +1007,7 @@
                 "situations": [
                     {
                         "line": "Difficult\u00e9 \u00e0 r\u00e9aliser les t\u00e2ches demand\u00e9es dans le temps allou\u00e9 :",
-                        "subline": [
+                        "sublines": [
                             "charge de travail trop importante, car m\u00eame en se d\u00e9p\u00eachant, il a toujours du retard",
                             "manque de formation",
                             "degr\u00e9 de complexit\u00e9 des t\u00e2ches trop \u00e9lev\u00e9"
@@ -1015,39 +1015,39 @@
                     },
                     {
                         "line": "Ennui en stage provoqu\u00e9 par une t\u00e2che peu stimulante ou une charge de travail insuffisante",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Affectation aux t\u00e2ches m\u00e9pris\u00e9es ou refus\u00e9es par les coll\u00e8gues",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Horaires de travail atypiques",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "R\u00e9p\u00e9tition des situations \u00e0 risque",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Stress, anxi\u00e9t\u00e9, troubles du sommeil, fatigue",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Consommation d\u2019alcool ou de drogue",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Troubles psychiques, probl\u00e8mes",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "de sant\u00e9 mentale",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -1085,38 +1085,38 @@
                 "situations": [
                     {
                         "line": "Travail pendant plusieurs heures sur une machine ou \u00e0 proximit\u00e9 d\u2019une machine qui fait du bruit :",
-                        "subline": [
+                        "sublines": [
                             "en continu (p. ex. : compresseur)",
                             "de mani\u00e8re intermittente, par impulsions ou par chocs (p. ex. : marteau-piqueur, scie)"
                         ]
                     },
                     {
                         "line": "Communication avec les coll\u00e8gues possible, uniquement en criant ou en s\u2019approchant tr\u00e8s pr\u00e8s d\u2019eux",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Port d\u2019\u00e9quipement de protection auditive (casque, bouchons d\u2019oreille)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Absence d\u2019\u00e9quipement de protection auditive",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "\u00c9quipement en mauvais \u00e9tat ou inadapt\u00e9",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Fatigue auditive, stress",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Surdit\u00e9",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -1154,43 +1154,43 @@
                 "situations": [
                     {
                         "line": "Travail dans un local r\u00e9frig\u00e9r\u00e9",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "T\u00e2ches \u00e0 l\u2019ext\u00e9rieur, notamment l\u2019hiver (p. ex. : d\u00e9neigement)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Stage dans un local ouvert sur l\u2019ext\u00e9rieur et expos\u00e9 aux courants d\u2019air",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "(p. ex. : garage)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "V\u00eatements ou \u00e9quipements de travail non adapt\u00e9s au froid",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Vent et humidit\u00e9",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Douleur, fatigue",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Refroidissement des extr\u00e9mit\u00e9s et perte de sensibilit\u00e9 (p. ex. : syndrome de Raynaud, c.-\u00e0-d. maladie des doigts blancs)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Hypothermie, engelures",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -1204,35 +1204,35 @@
                 "situations": [
                     {
                         "line": "Travail en cuisine ou dans un atelier de soudure",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail \u00e0 proximit\u00e9 d\u2019une source de chaleur (p. ex. : four)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "T\u00e2ches effectu\u00e9es \u00e0 l\u2019ext\u00e9rieur pendant une journ\u00e9e de forte chaleur",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Humidit\u00e9 combin\u00e9e \u00e0 la chaleur",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "\u00c9quipements ou v\u00eatements de travail non adapt\u00e9s \u00e0 la chaleur",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Fatigue, transpiration abondante, malaises",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "D\u00e9shydratation, coup de chaleur",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -1275,43 +1275,43 @@
                 "situations": [
                     {
                         "line": "Conduite d\u2019un engin de fa\u00e7on r\u00e9guli\u00e8re ou pendant plusieurs heures par jour",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Sensation de chocs ou de secousses en conduisant",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Pr\u00e9sence dans un v\u00e9hicule lourd pendant plusieurs heures",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Conduite sur terrain accident\u00e9 ou irr\u00e9gulier",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Posture inconfortable pendant la conduite",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Mauvais ajustement du si\u00e8ge",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Mauvais \u00e9tat du si\u00e8ge ou de l\u2019engin (pneus, suspension, etc.)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Douleur au dos",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Hernie discale et arthrose",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -1325,47 +1325,47 @@
                 "situations": [
                     {
                         "line": "Utilisation quotidienne d\u2019un outil vibrant ou percutant",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Utilisation de l\u2019outil pendant une heure ou plus",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Maintien avec la main de la pi\u00e8ce sur laquelle s\u2019effectue la t\u00e2che",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [
                     {
                         "line": "Pr\u00e9sence de froid et d\u2019humidit\u00e9",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "N\u00e9cessit\u00e9 d\u2019exercer une force sur l\u2019outil",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Utilisation de l\u2019outil \u00e0 bout de bras",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Outil mal entretenu",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "symptoms": [
                     {
                         "line": "Engourdissements, picotements dans les doigts et les mains",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Douleur, raideur, faiblesse dans les mains ou les bras",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Troubles circulatoires (p. ex. : syndrome de Raynaud, c.-\u00e0-d. maladie des doigts blancs)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -1398,30 +1398,30 @@
                 "situations": [
                     {
                         "line": "Utilisation d\u2019appareils \u00e9lectriques v\u00e9tustes ou en mauvais \u00e9tat (p. ex. : avec fils \u00e9lectriques d\u00e9nud\u00e9s)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail dans un local o\u00f9 l\u2019installation \u00e9lectrique est d\u00e9fectueuse (p. ex. : prises murales en mauvais \u00e9tat)",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Raret\u00e9 des prises murales dans le local et utilisation de multiprises pour brancher tous les appareils \u00e9lectriques",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Travail \u00e0 proximit\u00e9 d\u2019une machine en maintenance",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [],
                 "symptoms": [
                     {
                         "line": "Br\u00fblures",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "\u00c9lectrisation, voire \u00e9lectrocution",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -1449,7 +1449,7 @@
                 "situations": [
                     {
                         "line": "L'\u00e9l\u00e8ve effectue des t\u00e2ches :",
-                        "subline": [
+                        "sublines": [
                             "dans une chambre froide (p. ex. dans une boucherie)",
                             "\u00e0 l\u2019int\u00e9rieur d\u2019un silo (p. ex. man\u0153uvre agricole en production animale)",
                             "dans une conduite ou un \u00e9gout (p. ex. man\u0153uvre aux r\u00e9seaux d\u2019aqueduc et d\u2019\u00e9gout)"
@@ -1460,11 +1460,11 @@
                 "symptoms": [
                     {
                         "line": "Anoxie en raison du manque d\u2019oxyg\u00e8ne",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Intoxication \u00e0 la suite de l\u2019inhalation de substances toxiques",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -1492,7 +1492,7 @@
                 "situations": [
                     {
                         "line": "L\u2019\u00e9l\u00e8ve travaille en pr\u00e9sence de mati\u00e8res combustibles comme:",
-                        "subline": [
+                        "sublines": [
                             "des produits chimiques (p. ex. dans une usine de production de pi\u00e8ces m\u00e9talliques)",
                             "de l'essence ou de l'huile (p. ex. dans un garage)",
                             "du bois (p. ex. dans une \u00e9b\u00e9nisterie)"
@@ -1503,15 +1503,15 @@
                 "symptoms": [
                     {
                         "line": "Br\u00fblures",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Intoxication \u00e0 la suite de l\u2019inhalation de substances toxiques",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Blessures graves",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "images": [
@@ -1539,7 +1539,7 @@
                 "situations": [
                     {
                         "line": "Travail dans un garage automobile :",
-                        "subline": [
+                        "sublines": [
                             "maniement des pneumatiques v\u00e9tustes",
                             "respiration des particules d\u2019\u00e9chappement",
                             "utilisation de peintures, d\u2019anti-corrosion ou d\u2019anti-rayures"
@@ -1547,33 +1547,33 @@
                     },
                     {
                         "line": "Travail dans un centre de:",
-                        "subline": [
+                        "sublines": [
                             "tri des d\u00e9chets",
                             "r\u00e9cup\u00e9ration de mat\u00e9riel \u00e9lectronique (p. ex. ordinateurs, technologies sans fil, \u00e9crans plats...)"
                         ]
                     },
                     {
                         "line": "Travail dans une scierie, au contact de poussi\u00e8res de bois \u00e0 l\u2019\u00e9tat nanoparticulaire",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "L'\u00e9l\u00e8ve se trouve \u00e0 proximit\u00e9 d'un \u00e9quipement r\u00e9alisant une op\u00e9ration g\u00e9n\u00e9rant des particules ultrafines de mani\u00e8re incidentelle (p.ex. soudage, usinage, ...)",
-                        "subline": []
+                        "sublines": []
                     }
                 ],
                 "factors": [],
                 "symptoms": [
                     {
                         "line": "Les donn\u00e9es toxicologiques ou \u00e9cotoxicologiques sont parcellaires, et ne font pas encore l\u2019objet d\u2019un consensus scientifique. ",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Les sympt\u00f4mes et effets des nanoparticules sur la sant\u00e9 semblent essentiellement d\u00e9pendre de leurs param\u00e8tres physico-chimiques (composition chimique, taille, forme, structure, surface, solubilit\u00e9...). ",
-                        "subline": []
+                        "sublines": []
                     },
                     {
                         "line": "Les effets les plus connus sont:",
-                        "subline": [
+                        "sublines": [
                             "Respiratoires : r\u00e9actions inflammatoires, obstruction r\u00e9versible des voies a\u00e9riennes...",
                             "Cardiovasculaires : affections isch\u00e9miques myocardiques"
                         ]

@@ -129,10 +129,10 @@ def createDictFromString(cell: pd.DataFrame):
     index = -1
     for line in str(cell).split("\n")[::1]:
         if line[0] == "-":
-            riskTypeDict[index]["subline"].append(line[1:].strip())
+            riskTypeDict[index]["sublines"].append(line[1:].strip())
         else:
             riskTypeDict.append({"line": line,
-                                  "subline": [], })
+                                  "sublines": [], })
             index += 1
 
     return riskTypeDict
