@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection/collection.dart';
 
 import 'package:crcrme_banque_stages/screens/ref_sst/common/Risk.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +19,7 @@ abstract class RiskDataFileService {
     return "test";
   }
 
-  static Risk fromId(String id) {
-    return _risks.firstWhere((risk) => risk.id == id);
+  static Risk? fromId(String id) {
+    return _risks.firstWhereOrNull((risk) => risk.id == id);
   }
 }
