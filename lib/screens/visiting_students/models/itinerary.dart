@@ -1,10 +1,13 @@
-import 'package:latlong2/latlong.dart';
-import 'package:routing_client_dart/routing_client_dart.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:nanoid/nanoid.dart';
+import 'package:routing_client_dart/routing_client_dart.dart';
 
-import './waypoints.dart';
+import 'waypoints.dart';
 
-class Itinerary extends ListSerializable<Waypoint> with Iterator<Waypoint> {
+class Itinerary extends ListSerializable<Waypoint>
+    with Iterator<Waypoint>
+    implements ItemSerializable {
   List<LatLng> toLatLng() {
     List<LatLng> out = [];
     for (final address in this) {
@@ -36,5 +39,17 @@ class Itinerary extends ListSerializable<Waypoint> with Iterator<Waypoint> {
   bool moveNext() {
     _currentIndex++;
     return _currentIndex < length;
+  }
+
+  @override
+  final String id = nanoid();
+
+  @override
+  Map<String, dynamic> serializedMap() {
+    final map = <String, dynamic>{};
+    for (final waypoint in this) {
+      map[waypoint.id] = waypoint.serialize();
+    }
+    return map;
   }
 }

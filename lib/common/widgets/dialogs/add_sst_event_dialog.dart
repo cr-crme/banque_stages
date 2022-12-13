@@ -19,12 +19,9 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
   }
 
   void _onConfirm() {
-    if (!FormService.validateForm(_formKey)) {
-      return;
+    if (FormService.validateForm(_formKey, save: true)) {
+      Navigator.pop(context, _eventType);
     }
-
-    _formKey.currentState!.save();
-    Navigator.pop(context, _eventType);
   }
 
   @override

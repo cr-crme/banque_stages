@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 abstract class FormService {
-  static bool validateForm(GlobalKey<FormState> formKey) {
+  static bool validateForm(GlobalKey<FormState> formKey, {bool save = false}) {
     if (formKey.currentContext == null || formKey.currentState == null) {
       return false;
     }
@@ -16,6 +16,10 @@ abstract class FormService {
         ),
       );
       return false;
+    }
+
+    if (save) {
+      formKey.currentState!.save();
     }
 
     return true;

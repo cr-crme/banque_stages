@@ -22,11 +22,9 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _password;
 
   void _signIn() async {
-    if (!FormService.validateForm(_formKey)) {
+    if (!FormService.validateForm(_formKey, save: true)) {
       return;
     }
-
-    _formKey.currentState!.save();
 
     try {
       await context

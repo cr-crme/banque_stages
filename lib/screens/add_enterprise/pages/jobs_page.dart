@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/widgets/delete_button.dart';
-import '/common/widgets/form_fields/job_form_field.dart';
+import '/common/widgets/form_fields/job_form_field_list_tile.dart';
 
 class JobsPage extends StatefulWidget {
   const JobsPage({super.key});
@@ -63,12 +63,9 @@ class JobsPageState extends State<JobsPage> {
                 onPressed: () => _removeMetier(index),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: JobFormField(
-                initialValue: jobs[index],
-                onSaved: (Job? job) => setState(() => jobs[index] = job!),
-              ),
+            JobFormFieldListTile(
+              initialValue: jobs[index],
+              onSaved: (Job? job) => setState(() => jobs[index] = job!),
             ),
             const SizedBox(
               height: 20,

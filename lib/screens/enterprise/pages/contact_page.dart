@@ -45,11 +45,9 @@ class ContactPageState extends State<ContactPage> {
       return;
     }
 
-    if (!FormService.validateForm(_formKey)) {
+    if (!FormService.validateForm(_formKey, save: true)) {
       return;
     }
-
-    _formKey.currentState!.save();
 
     context.read<EnterprisesProvider>().replace(
           widget.enterprise.copyWith(
@@ -73,19 +71,10 @@ class ContactPageState extends State<ContactPage> {
     });
   }
 
-  Future<bool> _onWillPop() async {
-    if (!_editing) return true;
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-
-    return await showDialog(
-        context: context, builder: (context) => const ConfirmPopDialog());
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: () => ConfirmPopDialog.show(context, editing: editing),
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
