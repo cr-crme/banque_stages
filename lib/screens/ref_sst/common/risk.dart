@@ -1,4 +1,5 @@
 import 'package:enhanced_containers/item_serializable.dart';
+import 'package:flutter/foundation.dart';
 
 class Risk extends ItemSerializable {
   Risk({
@@ -98,15 +99,14 @@ class Risk extends ItemSerializable {
   static Map<String, List<String>> readParagraph(
       String key, Map<String, dynamic> map) {
     Map<String, List<String>> paragraphMap = {};
-    final List<Map<String, dynamic>> pargraph = List.from((map[key]) as List);
+    final List<dynamic> pargraph = List.from((map[key]) as List<dynamic>);
 
     for (Map<String, dynamic> point in pargraph) {
       final String line = point["line"];
-      List<String> sublines = List.from((point['sublines']) as List);
+      debugPrint(line);
 
-      if (sublines[0].isEmpty) {
-        sublines = [];
-      }
+      List<String> sublines = List.from((point['sublines']) as List<dynamic>);
+
       paragraphMap[line] = sublines;
     }
 
