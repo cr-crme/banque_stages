@@ -8,10 +8,10 @@ class SkillsPage extends StatefulWidget {
   final Student student;
 
   @override
-  State<SkillsPage> createState() => _SkillsPageState();
+  State<SkillsPage> createState() => SkillsPageState();
 }
 
-class _SkillsPageState extends State<SkillsPage> {
+class SkillsPageState extends State<SkillsPage> {
   @override
   Widget build(BuildContext context) {
     return Container();

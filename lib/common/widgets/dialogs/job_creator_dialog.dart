@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '/common/models/job.dart';
-import '/common/widgets/form_fields/job_form_field.dart';
+import '/common/widgets/form_fields/job_form_field_list_tile.dart';
 import '/misc/form_service.dart';
 
 class JobCreatorDialog extends StatefulWidget {
@@ -21,13 +21,9 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
   }
 
   void _onConfirm() {
-    if (!FormService.validateForm(_formKey)) {
-      return;
+    if (FormService.validateForm(_formKey, save: true)) {
+      Navigator.pop(context, _job);
     }
-
-    _formKey.currentState!.save();
-
-    Navigator.pop(context, _job);
   }
 
   @override
@@ -36,7 +32,7 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
       title: const Text("Ajouter un nouveau métier"),
       content: Form(
         key: _formKey,
-        child: JobFormField(
+        child: JobFormFieldListTile(
           initialValue: Job(),
           onSaved: (Job? job) => setState(() {
             _job = job;

@@ -12,10 +12,12 @@ class Student extends ItemSerializable {
     this.program = "",
     this.group = "",
     this.contactName = "",
-    this.contactRole = "",
+    this.contactLink = "",
     this.contactPhone = "",
     this.contactEmail = "",
-  }) : dateBirth = dateBirth ?? DateTime(0);
+    List<String>? internships,
+  })  : dateBirth = dateBirth ?? DateTime(0),
+        internships = internships ?? [];
 
   Student.fromSerialized(map)
       : name = map['n'],
@@ -27,9 +29,10 @@ class Student extends ItemSerializable {
         program = map['pr'],
         group = map['gr'],
         contactName = map['cn'],
-        contactRole = map['cr'],
+        contactLink = map['cl'],
         contactPhone = map['cp'],
         contactEmail = map['ce'],
+        internships = map['internships'] as List<String>? ?? [],
         super.fromSerialized(map);
 
   @override
@@ -44,9 +47,10 @@ class Student extends ItemSerializable {
       'pr': program,
       'gr': group,
       'cn': contactName,
-      'cr': contactRole,
+      'cl': contactLink,
       'cp': contactPhone,
       'ce': contactEmail,
+      'internships': internships,
       'id': id,
     };
   }
@@ -60,9 +64,10 @@ class Student extends ItemSerializable {
     String? program,
     String? group,
     String? contactName,
-    String? contactRole,
+    String? contactLink,
     String? contactPhone,
     String? contactEmail,
+    List<String>? internships,
     String? id,
   }) =>
       Student(
@@ -74,9 +79,10 @@ class Student extends ItemSerializable {
         program: program ?? this.program,
         group: group ?? this.group,
         contactName: contactName ?? this.contactName,
-        contactRole: contactRole ?? this.contactRole,
+        contactLink: contactLink ?? this.contactLink,
         contactPhone: contactPhone ?? this.contactPhone,
         contactEmail: contactEmail ?? this.contactEmail,
+        internships: internships ?? this.internships,
         id: id ?? this.id,
       );
 
@@ -92,7 +98,9 @@ class Student extends ItemSerializable {
   final String group;
 
   final String contactName;
-  final String contactRole;
+  final String contactLink;
   final String contactPhone;
   final String contactEmail;
+
+  final List<String> internships;
 }
