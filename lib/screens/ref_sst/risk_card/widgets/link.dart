@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/widgets/list_links.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/Risk.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/widgets/list_links.dart';
 
 class Link extends StatelessWidget {
   //params and variables
@@ -10,7 +10,7 @@ class Link extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       Container(
-        margin: const EdgeInsets.only(top: 30, right: 25, left: 10),
+        margin: const EdgeInsets.only(top: 30, right: 25, left: 10, bottom: 10),
         child: ListTile(
           tileColor: Colors.grey[300],
           textColor: Colors.black,
@@ -24,6 +24,7 @@ class Link extends StatelessWidget {
             ),
           ),
           subtitle: ListLinks(links),
+          isThreeLine: true,
         ),
       )
     ]);

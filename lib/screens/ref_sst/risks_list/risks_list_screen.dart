@@ -1,13 +1,10 @@
 // ignore_for_file: non_constant_identifier_names
 //import 'dart:js_util';
 
+import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../../common/providers/risks_provider.dart';
-import 'widgets/sst_card.dart';
-import 'dart:convert';
-import '../common/risk.dart';
+import '../common/Risk.dart';
+import 'widgets/clickable_risk_tile.dart';
 
 class SSTCardsScreen extends StatefulWidget {
   const SSTCardsScreen({Key? key}) : super(key: key);
@@ -20,14 +17,11 @@ class SSTCardsScreen extends StatefulWidget {
 
 class _SSTCardsScreenState extends State<SSTCardsScreen> {
   final _searchController = TextEditingController();
-  var data;
 
   @override
   void initState() {
     super.initState();
     _searchController.addListener(() => setState(() {}));
-
-    var data = Provider.of<RisksProvider>(context, listen: true);
   }
 
   @override
@@ -36,6 +30,8 @@ class _SSTCardsScreenState extends State<SSTCardsScreen> {
         appBar: AppBar(
           title: const Text("Fiches de risques"),
         ),
-        body: ErrorWidget.withDetails());
+        body: ListView(children: [
+          for (Risk risk in RiskDataFileService.risks) SSTCard(risk)
+        ]));
   }
 }

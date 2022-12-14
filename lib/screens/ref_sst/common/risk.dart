@@ -38,16 +38,16 @@ class Risk extends ItemSerializable {
   }
 
   Risk.fromSerialized(map)
-      : number = map["number"],
+      : number = int.parse(map["number"]),
         shortname = map["shortname"],
         name = map["name"],
-        subrisks = getSubRisks(map["subrisks"] as Map<String, dynamic>),
-        links = getLinks(map["links"] as Map<String, dynamic>),
+        links = getLinks(map["links"] as List<dynamic>),
+        subrisks = getSubRisks(map["subrisks"] as List<dynamic>),
         super.fromSerialized(map);
 
-  static List<RiskLink> getLinks(Map<String, dynamic> map) {
+  static List<RiskLink> getLinks(List<dynamic> links) {
     List<RiskLink> cardLinks = [];
-    for (Map<String, dynamic> link in map.values) {
+    for (Map<String, dynamic> link in links) {
       final String linkSource = link['source'] as String;
       final String linkTitle = link['title'] as String;
       final String linkURL = link['url'] as String;
@@ -58,56 +58,32 @@ class Risk extends ItemSerializable {
     return cardLinks;
   }
 
-  static List<SubRisk> getSubRisks(Map<String, dynamic> map) {
+  static List<SubRisk> getSubRisks(List<dynamic> risks) {
     List<SubRisk> subRisksList = [];
-    for (MapEntry<String, dynamic> subRisk in map.entries) {
-      final int riskID = int.parse(subRisk.key); //Save key as ID
-      final String riskTitle = subRisk.value['title'] as String;
-      final String riskIntro = subRisk.value['intro'] as String;
-      //Save list of images as list of strings
-      final List<String> images = (subRisk.value['images'] as List)
-          .map((item) => item as String)
-          .toList();
-      //For each situation
-      Map<String, List<String>> riskSituations = {};
-      final Map<String, dynamic> situations =
-          subRisk.value['situations'] as Map<String, dynamic>;
-      for (MapEntry<String, dynamic> situation in situations.entries) {
-        //Save key as the line
-        final String situationLine = situation.key;
-        //Save corresponding string list as the sublines (will often be emtpy)
-        final List<String> situationSublines =
-            (situation.value as List).map((item) => item as String).toList();
-        riskSituations[situationLine] = situationSublines;
-      }
-      //For each factor, do the same
-      Map<String, List<String>> riskFactors = {};
-      final Map<String, dynamic> factors =
-          subRisk.value['factors'] as Map<String, dynamic>;
-      for (MapEntry<String, dynamic> factor in factors.entries) {
-        final String factorLine = factor.key;
-        final List<String> factorSublines =
-            (factor.value as List).map((item) => item as String).toList();
-        riskFactors[factorLine] = factorSublines;
-      }
-      //For each symptom, do the same
-      Map<String, List<String>> riskSymptoms = {};
-      final Map<String, dynamic> symptoms =
-          subRisk.value['symptoms'] as Map<String, dynamic>;
-      for (MapEntry<String, dynamic> symptom in symptoms.entries) {
-        final String symptomLine = symptom.key;
-        final List<String> symptomSublines =
-            (symptom.value as List).map((item) => item as String).toList();
-        riskSymptoms[symptomLine] = symptomSublines;
-      }
-      //Put everything in a risk object and add to the list of risks
+
+    for (Map<String, dynamic> subrisk in risks) {
+      final int subriskID = int.parse(subrisk["number"]);
+      final String subriskTitle = subrisk["title"];
+      final String subriskIntro = subrisk["intro"];
+
+      Map<String, List<String>> subriskSituations =
+          readParagraph("situations", subrisk);
+
+      Map<String, List<String>> subriskFactors =
+          readParagraph("factors", subrisk);
+
+      Map<String, List<String>> subriskSymptoms =
+          readParagraph("symptoms", subrisk);
+
+      final List<String> images = List.from((subrisk['images']) as List);
+
       subRisksList.add(SubRisk(
-          id: riskID,
-          title: riskTitle,
-          intro: riskIntro,
-          situations: riskSituations,
-          factors: riskFactors,
-          symptoms: riskSymptoms,
+          id: subriskID,
+          title: subriskTitle,
+          intro: subriskIntro,
+          situations: subriskSituations,
+          factors: subriskFactors,
+          symptoms: subriskSymptoms,
           images: images));
     }
     return subRisksList;
@@ -118,6 +94,22 @@ class Risk extends ItemSerializable {
   final String name;
   final List<SubRisk> subrisks;
   final List<RiskLink> links;
+
+  static Map<String, List<String>> readParagraph(
+      String key, Map<String, dynamic> map) {
+    Map<String, List<String>> paragraphMap = {};
+    final List<dynamic> pargraph = List.from((map[key]) as List<dynamic>);
+
+    for (Map<String, dynamic> point in pargraph) {
+      final String line = point["line"];
+
+      List<String> sublines = List.from((point['sublines']) as List<dynamic>);
+
+      paragraphMap[line] = sublines;
+    }
+
+    return paragraphMap;
+  }
 }
 
 //Object to save link information

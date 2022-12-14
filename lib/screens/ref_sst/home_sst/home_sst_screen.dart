@@ -1,9 +1,5 @@
-import 'package:crcrme_banque_stages/common/providers/risks_provider.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'widgets/search_bar.dart';
 import '/common/widgets/main_drawer.dart';
 
@@ -18,7 +14,6 @@ class HomeSSTScreen extends StatefulWidget {
 
 class _HomeSSTScreenState extends State<HomeSSTScreen> {
   final _searchController = TextEditingController();
-  final _ref = FirebaseDatabase.instance.ref();
 
   @override
   void initState() {
@@ -26,31 +21,15 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
     _searchController.addListener(() => setState(() {}));
   }
 
-  Future<String> fetchRisks() async {
-    DatabaseEvent event = await _ref.once();
-    return event.snapshot.value.toString();
-  }
+  //Future<void> fetchRisks() async {
+  //  await RiskDataFileService.loadData();
+  //}
 
   bool test = true;
 
   @override
   Widget build(BuildContext context) {
-    Widget body = const Center(child: CircularProgressIndicator());
-    var data = Provider.of<RisksProvider>(context, listen: true);
-    /* if (test) {
-      //data.isEmpty
-      body = FutureBuilder<String>(
-          future: fetchRisks(),
-          builder: (ctx, snapshot) {
-            if (snapshot.hasData) {
-              //data.deserialize(snapshot.data!);
-              var datatest = snapshot.data!;
-              print("SNAPSHOT : " + datatest);
-              test = false;
-            }
-            return const Center(child: CircularProgressIndicator());
-          });
-    } else {*/
+    Widget body;
     body = ListView(
       children: [
         //Container for the search bar
@@ -139,14 +118,5 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
         ),
         drawer: const MainDrawer(),
         body: body);
-  }
-
-  void _activateListeners() {
-    _ref.child("01").onValue.listen((event) {
-      final String name = event.snapshot.value.toString();
-      setState(() {
-        print(name);
-      });
-    });
   }
 }

@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:crcrme_banque_stages/common/providers/risks_provider.dart';
+import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_cards/risks_cards_screen.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/risk_card_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -36,6 +36,7 @@ import 'screens/visiting_students/models/all_itineraries.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await JobDataFileService.loadData();
+  await RiskDataFileService.loadData();
   await QuestionFileService.loadData();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -61,7 +62,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
         ChangeNotifierProvider(create: (context) => AllStudentsWaypoints()),
         ChangeNotifierProvider(create: (context) => AllItineraries()),
-        ChangeNotifierProvider(create: (context) => RisksProvider()),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
           create: (context) => StudentsProvider(),
           update: (context, auth, previous) {
@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
           EnterpriseScreen.route: (context) => const EnterpriseScreen(),
           HomeSSTScreen.route: (context) => const HomeSSTScreen(),
           SSTCardsScreen.route: (context) => const SSTCardsScreen(),
-          RisksCardsScreen.route: (context) => const RisksCardsScreen(0),
+          RisksCardsScreen.route: (context) => RisksCardsScreen(),
           JobListScreen.route: (context) => const JobListScreen(result: ""),
           StudentsListScreen.route: (context) => const StudentsListScreen(),
           StudentScreen.route: (context) => const StudentScreen(),

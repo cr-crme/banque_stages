@@ -33,7 +33,7 @@ class BuildLineWithDot extends StatelessWidget {
       children: <Widget>[
         const Text(
           "• ",
-          style: TextStyle(fontSize: 15),
+          style: TextStyle(fontSize: 15, color: Colors.red),
         ),
         Expanded(
           child: Text(

@@ -11,7 +11,9 @@ import pandas as pd
 
 
 # Constants
-JSON_FILE_PATH = "assets/risks-data.json"
+JSON_FILE_NAME = "/risks-data.json"
+IMAGE_FILE_FORMAT = ".png"
+IMAGE_FILES_PATH = "assets/images-sst/"
 
 RISKS_SHORTNAMES = {
     1: "chemical",
@@ -63,79 +65,77 @@ def start(excelPathSST: str):
         setMessage("Fichier Excel invalide")
         return
 
-    json = {}
+    json = []
 
     for index in excelSST.index:
         row = excelSST.loc[index]
 
-        json.update({
-            str(row[0]): {
-                "shortname": RISKS_SHORTNAMES[int(row[0])],
-                "name": str(row[1]),
-                "risks": {
-                    "1": {
+        json.append({
+            "number": str(row[0]),
+            "shortname": RISKS_SHORTNAMES[int(row[0])],
+            "name": str(row[1]),
+            "subrisks": [
+                    {
+                        "number": "1" if str(row[9]) != "nan" else "0",
                         "title": str(row[2]) if str(row[2]) != "nan" else "",
                         "intro": str(row[3]),
                         # the DataFrame format return "NaN" if the cell is empty
-                        "situations": createDictFromString(row[4]) if str(row[4]) != "nan" else "",
-                        "factors": createDictFromString(row[5]) if str(row[5]) != "nan" else "",
-                        "symptoms": createDictFromString(row[6]) if str(row[6]) != "nan" else "",
-                        "images": ["path/image" + str(int(row[7])) if str(row[7]) != "nan" else "",
-                                   "path/image" + str(int(row[8])) if str(row[8]) != "nan" else None]
+                        "situations": createDictFromString(row[4]) if str(row[4]) != "nan" else [],
+                        "factors": createDictFromString(row[5]) if str(row[5]) != "nan" else [],
+                        "symptoms": createDictFromString(row[6]) if str(row[6]) != "nan" else [],
+                        "images": [IMAGE_FILES_PATH + str(int(row[7])) + IMAGE_FILE_FORMAT if str(row[7]) != "nan" else None,
+                                   IMAGE_FILES_PATH + str(int(row[8])) + IMAGE_FILE_FORMAT if str(row[8]) != "nan" else None]
                     },
-                    "2": {
+                    {
+                        "number": "2",
                         "title": str(row[9]) if str(row[9]) != "nan" else "",
                         "intro": str(row[10]),
-                        "situations": createDictFromString(row[11]) if str(row[11]) != "nan" else "",
-                        "factors": createDictFromString(row[12]) if str(row[12]) != "nan" else "",
-                        "symptoms": createDictFromString(row[13]) if str(row[13]) != "nan" else "",
-                        "images": ["path/image" + str(int(row[14])) if str(row[14]) != "nan" else "",
-                                   "path/image" + str(int(row[15])) if str(row[15]) != "nan" else None]
+                        "situations": createDictFromString(row[11]) if str(row[11]) != "nan" else [],
+                        "factors": createDictFromString(row[12]) if str(row[12]) != "nan" else [],
+                        "symptoms": createDictFromString(row[13]) if str(row[13]) != "nan" else [],
+                        "images": [IMAGE_FILES_PATH + str(int(row[14])) + IMAGE_FILE_FORMAT if str(row[14]) != "nan" else None,
+                                   IMAGE_FILES_PATH + str(int(row[15])) + IMAGE_FILE_FORMAT if str(row[15]) != "nan" else None]
                     } if str(row[9]) != "nan" else None
+                    ],
+            "links": [
+                {
+                    "source": str(row[16]),
+                    "title": str(row[17]),
+                    "url": str(row[18])
                 },
-                "links": {
-                    "1": {
-                        "source": str(row[16]),
-                        "title": str(row[17]),
-                        "url": str(row[18])
-                    },
-                    "2": {
-                        "source": str(row[19]),
-                        "title": str(row[20]),
-                        "url": str(row[21])
-                    } if str(row[19]) != "nan" else None,
-                    "3": {
-                        "source": str(row[22]),
-                        "title": str(row[23]),
-                        "url": str(row[24])
-                    } if str(row[22]) != "nan" else None,
-                    "4": {
-                        "source": str(row[25]),
-                        "title": str(row[26]),
-                        "url": str(row[27])
-                    } if str(row[25]) != "nan" else None
-                }
-            }
-        })
+                {
+                    "source": str(row[19]),
+                    "title": str(row[20]),
+                    "url": str(row[21])
+                } if str(row[19]) != "nan" else None,
+                {
+                    "source": str(row[22]),
+                    "title": str(row[23]),
+                    "url": str(row[24])
+                } if str(row[22]) != "nan" else None,
+                {
+                    "source": str(row[25]),
+                    "title": str(row[26]),
+                    "url": str(row[27])
+                } if str(row[25]) != "nan" else None
+            ]
+        }
+        )
 
-    saveJson(json, JSON_FILE_PATH)
+    saveJson(json, jsonPath.get() + JSON_FILE_NAME)
     setMessage("Tout est fini!")
 
 
 def createDictFromString(cell: pd.DataFrame):
-    riskTypeDict = {}
-    lastLine = ""
+    riskTypeDict = []
+    index = -1
     for line in str(cell).split("\n")[::1]:
         if line[0] == "-":
-            riskTypeDict[lastLine] += [line[1:].strip()]
+            riskTypeDict[index]["sublines"].append(line[1:].strip())
         else:
-            riskTypeDict[line] = []
-            lastLine = line
-
-    # Needed for the firabse to accept items that contains empty values
-    for k, v in riskTypeDict.items():
-        if v == []:
-            riskTypeDict[k] = [""]
+            riskTypeDict.append({"line": line,
+                                  "sublines": [], })
+            index += 1
 
     return riskTypeDict
 
@@ -182,6 +182,13 @@ def askExcelPath():
     else:
         return ""
 
+def askPath():
+    path = fd.askdirectory(title="Choisir un chemin d'accès")
+
+    if (path is not None):
+        return path
+    else:
+        return ""
 
 # Tkinter initialisation
 root = tk.Tk()
@@ -212,12 +219,12 @@ tk.Label(mainFrame, text="Entrez le chemin d'accès où stocker les données de 
 frame = tk.Frame(mainFrame)
 frame.pack()
 
-jsonPath = tk.StringVar(value=JSON_FILE_PATH)
+jsonPath = tk.StringVar(value="assets")
 entryStage = tk.Entry(frame, textvariable=jsonPath)
 entryStage.pack(side="left")
 
 fileButtonStage = tk.Button(frame, text="Parcourir",
-                            command=lambda: jsonPath.set(askExcelPath()))
+                            command=lambda: jsonPath.set(askPath()))
 fileButtonStage.pack(side="right")
 
 
@@ -231,3 +238,4 @@ messageLabel.pack(side="bottom")
 
 if __name__ == "__main__":
     root.mainloop()
+
