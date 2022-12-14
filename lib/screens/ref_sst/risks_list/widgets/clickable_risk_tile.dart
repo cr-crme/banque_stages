@@ -27,10 +27,10 @@ class SSTCard extends StatelessWidget {
             ),
             isThreeLine: true,
             //onTap should redirect to the risk
-            onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => RisksCardsScreen(risk.id),
-                  ),
+            onTap: () => Navigator.pushNamed(
+                  context,
+                  RisksCardsScreen.route,
+                  arguments: risk.id,
                 )));
   }
 }
