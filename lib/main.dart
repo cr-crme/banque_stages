@@ -18,7 +18,9 @@ import 'package:provider/provider.dart';
 
 import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
+import 'common/providers/internships_provider.dart';
 import 'common/providers/students_provider.dart';
+import 'common/providers/teachers_provider.dart';
 import 'firebase_options.dart';
 import 'misc/job_data_file_service.dart';
 import 'misc/question_file_service.dart';
@@ -30,8 +32,8 @@ import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
-import 'screens/visiting_students/visit_students_screen.dart';
 import 'screens/visiting_students/models/all_itineraries.dart';
+import 'screens/visiting_students/visit_students_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,8 +62,16 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
+        ChangeNotifierProvider(create: (context) => InternshipsProvider()),
         ChangeNotifierProvider(create: (context) => AllStudentsWaypoints()),
         ChangeNotifierProvider(create: (context) => AllItineraries()),
+        ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
+          create: (context) => TeachersProvider(),
+          update: (context, auth, previous) {
+            previous!.currentTeacherId = auth.currentUser!.uid;
+            return previous;
+          },
+        ),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
           create: (context) => StudentsProvider(),
           update: (context, auth, previous) {
@@ -92,7 +102,7 @@ class MyApp extends StatelessWidget {
           EnterpriseScreen.route: (context) => const EnterpriseScreen(),
           HomeSSTScreen.route: (context) => const HomeSSTScreen(),
           SSTCardsScreen.route: (context) => const SSTCardsScreen(),
-          RisksCardsScreen.route: (context) => RisksCardsScreen(),
+          RisksCardsScreen.route: (context) => const RisksCardsScreen(),
           JobListScreen.route: (context) => const JobListScreen(result: ""),
           StudentsListScreen.route: (context) => const StudentsListScreen(),
           StudentScreen.route: (context) => const StudentScreen(),
