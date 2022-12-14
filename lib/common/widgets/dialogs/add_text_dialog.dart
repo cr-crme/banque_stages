@@ -24,12 +24,9 @@ class _AddTextDialogState extends State<AddTextDialog> {
   }
 
   void _onConfirm() {
-    if (!FormService.validateForm(_formKey)) {
-      return;
+    if (FormService.validateForm(_formKey, save: true)) {
+      Navigator.pop(context, _comment);
     }
-
-    _formKey.currentState!.save();
-    Navigator.pop(context, _comment);
   }
 
   @override

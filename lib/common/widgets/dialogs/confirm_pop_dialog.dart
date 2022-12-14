@@ -22,4 +22,13 @@ class ConfirmPopDialog extends StatelessWidget {
           ],
         ));
   }
+
+  static Future<bool> show(BuildContext context, {bool? editing}) async {
+    if (editing != null && !editing) return true;
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    return await showDialog(
+        context: context, builder: (context) => const ConfirmPopDialog());
+  }
 }

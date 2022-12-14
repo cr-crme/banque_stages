@@ -162,7 +162,7 @@ def getSSTRisksFromExcel(excel: pd.DataFrame, sectorID: str, specializationID: s
             # The cell is empty. This will probably never be true because of the first two if
             setMessage(
                 f"Missing data ! This cell was empty in the excel SST Risks file. (sector: {sectorID}, specialization: {specializationID}, skill: {skillID}, risk: {excelHeader})")
-        elif row[excelHeader].get(row[excelHeader].index[0], "") == "Oui":
+        elif row[excelHeader].get(row[excelHeader].index[0], "").strip().lower() == "oui":
             # Good data and data is "Oui"
             result.append(name)
 
@@ -192,7 +192,7 @@ def getStageQuestionsFromExcel(excel: pd.DataFrame, sectorID: str, specializatio
             # The cell is empty. This will probably never be true because of the first two if
             setMessage(
                 f"Missing data ! This cell was empty in the excel Stage Questions file. (sector: {sectorID}, specialization: {specializationID}, question: {excelHeader})")
-        elif row[excelHeader].get(row[excelHeader].index[0], "") == "Oui":
+        elif row[excelHeader].get(row[excelHeader].index[0], "").strip().lower() == "oui":
             # Good data and data is "Oui"
             result.append(name)
 

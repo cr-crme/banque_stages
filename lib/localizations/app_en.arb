@@ -1,12 +1,21 @@
 {
     "@@locale": "en",
+
     "appName": "Intership Repository",
     "@appName": {
         "description": "The name of the application."
     },
     "generalInformations": "General Informations",
+    "emergencyContact": "Emergency Contact",
+    "contactInformations": "Contact Informations",
+    "name": "Name",
+    "phoneNumber": "Phone number",
+    "email": "Email",
+    "address": "Address",
     "dateBirth": "Date of birth",
+    
     "studentsList_title": "My Students",
+    
     "student_name": "Student name",
     "student_group_current": "Group {group}",
     "@student_group_current": {
@@ -19,8 +28,8 @@
         }
     },
     "student_group": "Group",
-    "sudent_program_current": "Program {program}",
-    "@sudent_program_current": {
+    "student_program_current": "Program {program}",
+    "@student_program_current": {
         "description": "Shows what program the student is in",
         "placeholders": {
             "group": {
@@ -30,6 +39,10 @@
         }
     },
     "student_program": "Program",
+    "student_linkWithStudent": "Link with student",
+
+    "internship_teacherName": "Supervising teacher",
+
     "error_emptyField": "This field cannot be empty",
     "@error_emptyField": {
         "description": "When the required field isn't filed."
