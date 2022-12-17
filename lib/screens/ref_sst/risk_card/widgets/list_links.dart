@@ -13,9 +13,7 @@ class ListLinks extends StatelessWidget {
     for (RiskLink link in links) {
       widgetList.add(BuildALineOfALink(link));
     }
-    return Center(
-      child: Column(children: widgetList),
-    );
+    return Column(children: widgetList);
   }
 }
 
@@ -26,27 +24,26 @@ class BuildALineOfALink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String linkTitle = link.title;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          link.source,
-          style: const TextStyle(fontSize: 15),
-        ),
-        Expanded(
-          flex: 20,
-          child: InkWell(
+    return Table(
+      columnWidths: const {
+        0: FractionColumnWidth(.2),
+        1: FractionColumnWidth(.8),
+      },
+      children: [
+        TableRow(children: [
+          Text(link.source),
+          InkWell(
             onTap: () => _launchUrl(link.url),
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: 20),
               child: Text(
-                " $linkTitle",
+                linkTitle,
                 style: const TextStyle(
                     color: Colors.blue, decoration: TextDecoration.underline),
               ),
             ),
-          ),
-        )
+          )
+        ])
       ],
     );
   }
