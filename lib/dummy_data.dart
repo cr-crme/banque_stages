@@ -47,6 +47,26 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
     ),
   );
 
+  enterprises.add(
+    Enterprise(
+      name: "Fausse Entreprise",
+      activityTypes: {activityTypes[0], activityTypes[3]},
+      recrutedBy: "John Doe",
+      shareWith: "Tout le monde",
+      jobs: jobs,
+      contactName: "Bob",
+      contactFunction: "Secrétaire",
+      contactPhone: "514 321 9876 poste 234",
+      contactEmail: "white.sarah@fausse.ca",
+      address: "1 rue Canada, Québec, QC A4A 4A4",
+      phone: "514 321 9876",
+      fax: "514 321 9870",
+      website: "fausse.ca",
+      headquartersAddress: "1 rue Vide, Québec, QC A4A 4A4",
+      neq: "2395375015",
+    ),
+  );
+
   jobs = JobList();
   jobs.add(
     Job(
