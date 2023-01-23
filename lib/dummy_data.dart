@@ -289,49 +289,161 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
 void addDummyStudents(StudentsProvider students) {
   students.add(
     Student(
-      name: "Jonathan D",
+      name: "Cedric Masson",
       dateBirth: DateTime.now(),
-      email: "",
+      email: "c.masson@email.com",
+      program: "FPT2",
+      group: "550",
+      contactName: "Paul Masson",
+      contactLink: "Père",
+      contactPhone: "514 321 9876",
+      contactEmail: "p.masson@email.com",
+      address: "7248 Rue D'Iberville, Montréal, QC H2E 2Y6",
+      phone: "514 321 8888",
+    ),
+  );
+
+  students.add(
+    Student(
+      name: "Thomas Caron",
+      dateBirth: DateTime.now(),
+      email: "t.caron@email.com",
+      program: "FPT3",
+      group: "885",
+      contactName: "Joe Caron",
+      contactLink: "Père",
+      contactPhone: "514 321 9876",
+      contactEmail: "j.caron@email.com",
+      address: "6622 16e Avenue, Montréal, QC H1X 2T2",
+      phone: "514 222 3344",
+    ),
+  );
+
+  students.add(
+    Student(
+      name: "Mikael Boucher",
+      dateBirth: DateTime.now(),
+      email: "m.boucher@email.com",
+      program: "FPT3",
+      group: "885",
+      contactName: "Nicole Lefranc",
+      contactLink: "Mère",
+      contactPhone: "514 321 9876",
+      contactEmail: "n.lefranc@email.com",
+      address: "6723 25e Ave, Montréal, QC H1T 3M1",
+      phone: "514 333 4455",
+    ),
+  );
+
+  students.add(
+    Student(
+      name: "Kevin Leblanc",
+      dateBirth: DateTime.now(),
+      email: "k.leblanc@email.com",
+      program: "FPT2",
+      group: "550",
+      contactName: "Martine Gagnon",
+      contactLink: "Mère",
+      contactPhone: "514 321 9876",
+      contactEmail: "m.gagnon@email.com",
+      address: "6655 33e Avenue, Montréal, QC H1T 3B9",
+      phone: "514 999 8877",
+    ),
+  );
+
+  students.add(
+    Student(
+      name: "Simon Gingras",
+      dateBirth: DateTime.now(),
+      email: "s.gingras@email.com",
       program: "FMS",
-      group: "3",
-      contactName: "Sarah White",
+      group: "789",
+      contactName: "Raoul Gingras",
       contactLink: "Père",
-      contactPhone: "514 321 9876 poste 234",
-      contactEmail: "white.sarah@fausse.ca",
-      address: "1 rue Vide, Québec, QC A4A 4A4",
-      phone: "514 321 9876",
+      contactPhone: "514 321 9876",
+      contactEmail: "r.gingras@email.com",
+      address: "4517 Rue d'Assise, Saint-Léonard, QC H1R 1W2",
+      phone: "514 888 7766",
     ),
   );
 
   students.add(
     Student(
-      name: "FPT student",
+      name: "Diego Vargas",
       dateBirth: DateTime.now(),
-      email: "",
-      program: "FPT",
-      group: "0005",
-      contactName: "Joe",
-      contactLink: "Père",
-      contactPhone: "514 321 9876 poste 234",
-      contactEmail: "white.sarah@fausse.ca",
-      address: "1 rue Vide, Québec, QC A4A 4A4",
-      phone: "514 321 9876",
+      email: "d.vargas@email.com",
+      program: "FMS",
+      group: "789",
+      contactName: "Laura Vargas",
+      contactLink: "Mère",
+      contactPhone: "514 321 9876",
+      contactEmail: "l.vargas@email.com",
+      address: "8204 Rue de Blois, Saint-Léonard, QC H1R 2X1",
+      phone: "514 444 5566",
     ),
   );
 
   students.add(
     Student(
-      name: "Nom élève",
-      email: "email@eleve.com",
-      program: "Program",
-      group: "Group",
+      name: "Geneviève Tremblay",
       dateBirth: DateTime.now(),
-      contactName: "Nom Contact",
-      contactLink: "Role Contact",
-      contactPhone: "123 123 1234",
-      contactEmail: "email@contact.ca",
-      address: "Adresse de l'entreprise",
-      phone: "456 456 4567",
+      email: "g.tremblay@email.com",
+      program: "FPT3",
+      group: "885",
+      contactName: "Vincent Tremblay",
+      contactLink: "Père",
+      contactPhone: "514 321 9876",
+      contactEmail: "v.tremblay@email.com",
+      address: "8358 Rue Jean-Nicolet, Saint-Léonard, QC H1R 2R2",
+      phone: "514 555 9988",
+    ),
+  );
+
+  students.add(
+    Student(
+      name: "Vincent Picard",
+      dateBirth: DateTime.now(),
+      email: "v.picard@email.com",
+      program: "FMS",
+      group: "789",
+      contactName: "Jean-François Picard",
+      contactLink: "Père",
+      contactPhone: "514 321 9876",
+      contactEmail: "jp.picard@email.com",
+      address: "8382 Rue du Laus, Saint-Léonard, QC H1R 2P4",
+      phone: "514 778 8899",
+    ),
+  );
+
+  students.add(
+    Student(
+      name: "Vanessa Monette",
+      dateBirth: DateTime.now(),
+      email: "v.monette@email.com",
+      program: "FMS",
+      group: "789",
+      contactName: "Stéphane Monette",
+      contactLink: "Père",
+      contactPhone: "514 321 9876",
+      contactEmail: "s.monette@email.com",
+      address: "6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5",
+      phone: "514 321 6655",
+    ),
+  );
+
+  students.add(
+    Student(
+      name: "Mélissa Poulain",
+      dateBirth: DateTime.now(),
+      email: "m.poulain@email.com",
+      program: "FMS",
+      group: "789",
+      contactName: "Mathieu Poulain",
+      contactLink: "Père",
+      contactPhone: "514 321 9876",
+      contactEmail: "m.poulain@email.com",
+      address: "6585 Rue Lemay, Montréal, QC H1T 2L8",
+      phone: "514 567 9999",
     ),
   );
 }
