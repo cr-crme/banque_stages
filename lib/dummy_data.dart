@@ -14,56 +14,36 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
   JobList jobs = JobList();
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[1],
-      specialization: JobDataFileService.sectors[1].specializations[3],
-      positionsOffered: 2,
+      activitySector: JobDataFileService.sectors[2],
+      specialization: JobDataFileService.sectors[2].specializations[9],
+      positionsOffered: 1,
       positionsOccupied: 1,
     ),
   );
   jobs.add(
     Job(
       activitySector: JobDataFileService.sectors[0],
-      specialization: JobDataFileService.sectors[0].specializations[2],
+      specialization: JobDataFileService.sectors[0].specializations[7],
     ),
   );
 
   enterprises.add(
     Enterprise(
-      name: "Fausse Entreprise",
-      activityTypes: {activityTypes[0], activityTypes[3]},
-      recrutedBy: "John Doe",
+      name: "Metro Gagnon",
+      activityTypes: {activityTypes[2], activityTypes[5], activityTypes[10]},
+      recrutedBy: "Louise Talbot",
       shareWith: "Tout le monde",
       jobs: jobs,
-      contactName: "Sarah White",
-      contactFunction: "Secrétaire",
-      contactPhone: "514 321 9876 poste 234",
-      contactEmail: "white.sarah@fausse.ca",
-      address: "1 rue Vide, Québec, QC A4A 4A4",
-      phone: "514 321 9876",
-      fax: "514 321 9870",
+      contactName: "Marc Arcand",
+      contactFunction: "Directeur",
+      contactPhone: "514 999 6655",
+      contactEmail: "m.arcand@email.com",
+      address: "1853 Chem. Rockland, Mont-Royal, QC H3P 2Y7",
+      phone: "514 999 6655",
+      fax: "514 999 6600",
       website: "fausse.ca",
-      headquartersAddress: "1 rue Vide, Québec, QC A4A 4A4",
-      neq: "2395375015",
-    ),
-  );
-
-  enterprises.add(
-    Enterprise(
-      name: "Fausse Entreprise",
-      activityTypes: {activityTypes[0], activityTypes[3]},
-      recrutedBy: "John Doe",
-      shareWith: "Tout le monde",
-      jobs: jobs,
-      contactName: "Bob",
-      contactFunction: "Secrétaire",
-      contactPhone: "514 321 9876 poste 234",
-      contactEmail: "white.sarah@fausse.ca",
-      address: "1 rue Canada, Québec, QC A4A 4A4",
-      phone: "514 321 9876",
-      fax: "514 321 9870",
-      website: "fausse.ca",
-      headquartersAddress: "1 rue Vide, Québec, QC A4A 4A4",
-      neq: "2395375015",
+      headquartersAddress: "1853 Chem. Rockland, Mont-Royal, QC H3P 2Y7",
+      neq: "4567900954",
     ),
   );
 
@@ -71,28 +51,237 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
   jobs.add(
     Job(
       activitySector: JobDataFileService.sectors[0],
-      specialization: JobDataFileService.sectors[0].specializations[0],
+      specialization: JobDataFileService.sectors[0].specializations[7],
       positionsOffered: 3,
       positionsOccupied: 3,
     ),
   );
   enterprises.add(
     Enterprise(
-      name: "Test",
-      activityTypes: {activityTypes[6], activityTypes[8]},
-      recrutedBy: "Nom Rectruté Par",
+      name: "Jean Coutu",
+      activityTypes: {activityTypes[20], activityTypes[5]},
+      recrutedBy: "Judith Larivée",
       shareWith: "Personne",
       jobs: jobs,
-      contactName: "Nom Contact",
-      contactFunction: "Fonction",
-      contactPhone: "123 123 1234",
-      contactEmail: "email@test.ca",
-      address: "Adresse de l'entreprise",
-      phone: "456 456 4567",
-      fax: "789 789 7890",
+      contactName: "Caroline Mercier",
+      contactFunction: "Assistante-gérante",
+      contactPhone: "514 123 4567 poste 123",
+      contactEmail: "c.mercier@email.com",
+      address: "4885 Henri-Bourassa Blvd Ouest, Montréal, QC H3L 1P3",
+      phone: "514 123 4567",
+      fax: "514 123 4560",
       website: "example.com",
-      headquartersAddress: "Adresse du HQ",
-      neq: "1234567890",
+      headquartersAddress:
+          "4885 Henri-Bourassa Blvd Ouest, Montréal, QC H3L 1P3",
+      neq: "1234567891",
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      activitySector: JobDataFileService.sectors[9],
+      specialization: JobDataFileService.sectors[9].specializations[3],
+      positionsOffered: 1,
+      positionsOccupied: 1,
+    ),
+  );
+  enterprises.add(
+    Enterprise(
+      name: "Auto Care",
+      activityTypes: {activityTypes[12], activityTypes[18]},
+      recrutedBy: "François Duchemin",
+      shareWith: "Tout le monde",
+      jobs: jobs,
+      contactName: "Denis Rondeau",
+      contactFunction: "Propriétaire",
+      contactPhone: "438 987 6543",
+      contactEmail: "d.rondeau@email.com",
+      address: "8490 Rue Saint-Dominique, Montréal, QC H2P 2L5",
+      phone: "438 987 6543",
+      fax: "",
+      website: "",
+      headquartersAddress: "8490 Rue Saint-Dominique, Montréal, QC H2P 2L5",
+      neq: "5679011975",
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      activitySector: JobDataFileService.sectors[9],
+      specialization: JobDataFileService.sectors[9].specializations[3],
+      positionsOffered: 2,
+      positionsOccupied: 1,
+    ),
+  );
+  enterprises.add(
+    Enterprise(
+      name: "Auto Repair",
+      activityTypes: {activityTypes[12], activityTypes[18]},
+      recrutedBy: "Charlène Cantin",
+      shareWith: "Tout le monde",
+      jobs: jobs,
+      contactName: "Claudio Brodeur",
+      contactFunction: "Propriétaire",
+      contactPhone: "514 235 6789",
+      contactEmail: "c.brodeur@email.com",
+      address: "10142 Boul. Saint-Laurent, Montréal, QC H3L 2N7",
+      phone: "514 235 6789",
+      fax: "514 321 9870",
+      website: "fausse.ca",
+      headquartersAddress: "10142 Boul. Saint-Laurent, Montréal, QC H3L 2N7",
+      neq: "2345678912",
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      activitySector: JobDataFileService.sectors[2],
+      specialization: JobDataFileService.sectors[2].specializations[9],
+      positionsOffered: 2,
+      positionsOccupied: 1,
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      name: "Boucherie Marien",
+      activityTypes: {activityTypes[2], activityTypes[5]},
+      recrutedBy: "Stéphane Tremblay",
+      shareWith: "Tout le monde",
+      jobs: jobs,
+      contactName: "Brigitte Samson",
+      contactFunction: "Gérante",
+      contactPhone: "438 888 2222",
+      contactEmail: "b.samson@email.com",
+      address: "8921 Rue Lajeunesse, Montréal, QC H2M 1S1",
+      phone: "514 321 9876",
+      fax: "514 321 9870",
+      website: "fausse.ca",
+      headquartersAddress: "8921 Rue Lajeunesse, Montréal, QC H2M 1S1",
+      neq: "1234567080",
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      activitySector: JobDataFileService.sectors[2],
+      specialization: JobDataFileService.sectors[2].specializations[7],
+      positionsOffered: 1,
+      positionsOccupied: 1,
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      name: "IGA",
+      activityTypes: {activityTypes[10], activityTypes[29]},
+      recrutedBy: "Christian Perez",
+      shareWith: "Tout le monde",
+      jobs: jobs,
+      contactName: "Gabrielle Fortin",
+      contactFunction: "Gérante",
+      contactPhone: "514 111 2222",
+      contactEmail: "g.fortin@email.com",
+      address: "1415 Rue Jarry E, Montréal, QC H2E 1A7",
+      phone: "514 111 2222",
+      fax: "514 111 2200",
+      website: "fausse.ca",
+      headquartersAddress: "7885 Rue Lajeunesse, Montréal, QC H2M 1S1",
+      neq: "1234560522",
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      activitySector: JobDataFileService.sectors[0],
+      specialization: JobDataFileService.sectors[0].specializations[7],
+      positionsOffered: 2,
+      positionsOccupied: 1,
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      name: "Pharmaprix",
+      activityTypes: {activityTypes[20], activityTypes[5]},
+      recrutedBy: "Louise Talbot",
+      shareWith: "Tout le monde",
+      jobs: jobs,
+      contactName: "Jessica Marcotte",
+      contactFunction: "Pharmacienne",
+      contactPhone: "514 111 2222",
+      contactEmail: "g.fortin@email.com",
+      address: "3611 Rue Jarry E, Montréal, QC H1Z 2G1",
+      phone: "514 654 5444",
+      fax: "514 654 5445",
+      website: "fausse.ca",
+      headquartersAddress: "3611 Rue Jarry E, Montréal, QC H1Z 2G1",
+      neq: "3456789933",
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      activitySector: JobDataFileService.sectors[2],
+      specialization: JobDataFileService.sectors[2].specializations[14],
+      positionsOffered: 1,
+      positionsOccupied: 1,
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      name: "Subway",
+      activityTypes: {activityTypes[24], activityTypes[27]},
+      recrutedBy: "Patricia Filion",
+      shareWith: "Tout le monde",
+      jobs: jobs,
+      contactName: "Carlos Rodriguez",
+      contactFunction: "Gérant",
+      contactPhone: "514 555 3333",
+      contactEmail: "c.rodriguez@email.com",
+      address: "775 Rue Chabanel O, Montréal, QC H4N 3J7",
+      phone: "514 555 7891",
+      fax: "",
+      website: "fausse.ca",
+      headquartersAddress: "",
+      neq: "6790122996",
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      activitySector: JobDataFileService.sectors[0],
+      specialization: JobDataFileService.sectors[0].specializations[7],
+      positionsOffered: 3,
+      positionsOccupied: 2,
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      name: "Walmart",
+      activityTypes: {activityTypes[5], activityTypes[15], activityTypes[29]},
+      recrutedBy: "Caroline Mercier",
+      shareWith: "Tout le monde",
+      jobs: jobs,
+      contactName: "France Boissonneau",
+      contactFunction: "Directrice des Ressources Humaines",
+      contactPhone: "514 879 8654 poste 1112",
+      contactEmail: "f.boissonneau@email.com",
+      address: "10345 Ave Christophe-Colomb, Montreal, QC H2C 2V1",
+      phone: "514 879 8654",
+      fax: "514 879 8000",
+      website: "fausse.ca",
+      headquartersAddress: "10345 Ave Christophe-Colomb, Montreal, QC H2C 2V1",
+      neq: "9012345038",
     ),
   );
 }
