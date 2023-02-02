@@ -42,7 +42,8 @@ void main() async {
 
   // Connect Firebase to local emulators
   assert(() {
-    FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
+    //! I got a weird error when using the emulator: (Ignoring header X-Firebase-Locale because its value was null.)
+    // FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
     FirebaseDatabase.instance.useDatabaseEmulator(
         !kIsWeb && Platform.isAndroid ? "10.0.2.2" : "localhost", 9000);
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
@@ -90,7 +91,7 @@ class MyApp extends StatelessWidget {
           return AppLocalizations.of(context)!.appName;
         },
         theme: crcrmeMaterialTheme,
-        initialRoute: HomeScreen.route,
+        initialRoute: LoginScreen.route,
         routes: {
           LoginScreen.route: (context) => const LoginScreen(),
           HomeScreen.route: (context) => const HomeScreen(),
