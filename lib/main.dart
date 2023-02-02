@@ -67,7 +67,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
           create: (context) => TeachersProvider(),
           update: (context, auth, previous) {
-            previous!.currentTeacherId = auth.currentUser!.uid;
+            previous!.initializeFetchingData();
+            previous.currentTeacherId = auth.currentUser!.uid;
             return previous;
           },
         ),
@@ -75,7 +76,7 @@ class MyApp extends StatelessWidget {
           create: (context) => StudentsProvider(),
           update: (context, auth, previous) {
             if (auth.currentUser == null) {
-              previous!.pathToAvailableDataIds = "void";
+              previous!.pathToAvailableDataIds = "";
             } else {
               previous!.pathToAvailableDataIds =
                   "/students-ids/${auth.currentUser!.uid}/";

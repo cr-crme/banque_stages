@@ -7,7 +7,7 @@ import '/common/providers/auth_provider.dart';
 import '/screens/enterprises_list/enterprises_list_screen.dart';
 import '/screens/login_screen.dart';
 import '/screens/students_list/students_list_screen.dart';
-import '../../screens/visiting_students/visit_students_screen.dart';
+import '/screens/visiting_students/visit_students_screen.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
