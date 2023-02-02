@@ -48,8 +48,7 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
         return true;
       } else if (enterprise.activityTypes.any((type) =>
           type.toLowerCase().contains(_searchController.text.toLowerCase()))) {
-        //! Set this return to TRUE to enable the search in the activity types
-        return false;
+        return true;
       }
       return false;
     }).toList();

@@ -130,7 +130,6 @@ class Enterprise extends ItemSerializable {
   final String neq;
 }
 
-// TODO: Replace with adequate data
 const List<String> activityTypes = [
   "Animalerie",
   "Barbier",
