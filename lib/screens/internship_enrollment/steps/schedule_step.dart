@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '/common/models/job.dart';
 
@@ -15,10 +14,39 @@ class ScheduleStep extends StatefulWidget {
 class ScheduleStepState extends State<ScheduleStep> {
   final formKey = GlobalKey<FormState>();
 
-  double? welcomingTSA;
-  double? welcomingCommunication;
-  double? welcomingMentalDeficiency;
-  double? welcomingMentalHealthIssue;
+  DateTimeRange dateRange = DateTimeRange(
+    start: DateTime.now(),
+    end: DateTime.now().add(const Duration(days: 90)),
+  );
+
+  List<TimeStamp> days = [
+    TimeStamp("Lundi"),
+    TimeStamp("Mardi"),
+    TimeStamp("Mercredi"),
+    TimeStamp("Jeudi"),
+    TimeStamp("Vendredi"),
+  ];
+
+  void askDateRange() async {
+    final range = await showDateRangePicker(
+        context: context, firstDate: DateTime(2022), lastDate: DateTime(2024));
+
+    if (range != null) {
+      setState(() {
+        dateRange = range;
+      });
+    }
+  }
+
+  Future<TimeOfDay> askTime(TimeOfDay currentTime) async {
+    final time =
+        await showTimePicker(context: context, initialTime: currentTime);
+
+    if (time == null) {
+      return currentTime;
+    }
+    return time;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,28 +54,82 @@ class ScheduleStepState extends State<ScheduleStep> {
       key: formKey,
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _RatingBar(
-              question: "* L'élève placé en stage était-il TSA ?",
-              onSaved: (newValue) => welcomingTSA = newValue,
+            Text(
+              "Dates",
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 8),
-            _RatingBar(
-              question:
-                  "* L'élève placé en stage était-il dans une de classe communication ?",
-              onSaved: (newValue) => welcomingCommunication = newValue,
+            ListTile(
+              title: TextField(
+                decoration: const InputDecoration(
+                    labelText: "* Date de début du stage"),
+                controller: TextEditingController(
+                    text: dateRange.start.toIso8601String()),
+                enabled: false,
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.calendar_month_outlined),
+                onPressed: askDateRange,
+              ),
             ),
-            const SizedBox(height: 8),
-            _RatingBar(
-              question:
-                  "* L'élève placé en stage avait-il une déficience intellectuelle ?",
-              onSaved: (newValue) => welcomingMentalDeficiency = newValue,
+            ListTile(
+              title: TextField(
+                decoration:
+                    const InputDecoration(labelText: "* Date de fin du stage"),
+                controller: TextEditingController(
+                    text: dateRange.end.toIso8601String()),
+                enabled: false,
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.calendar_month_outlined),
+                onPressed: askDateRange,
+              ),
             ),
-            const SizedBox(height: 8),
-            _RatingBar(
-              question:
-                  "* L'élève placé en stage avait-il un trouble de santé mentale ?",
-              onSaved: (newValue) => welcomingMentalHealthIssue = newValue,
+            const ListTile(
+              title: TextField(
+                decoration:
+                    InputDecoration(labelText: "* Nombre d'heures de stage"),
+                keyboardType: TextInputType.number,
+              ),
+            ),
+            Text(
+              "Horaire",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            ...days.map(
+              (day) => ListTile(
+                leading: Checkbox(
+                    value: day.selected,
+                    onChanged: (value) =>
+                        setState(() => day.selected = value ?? false)),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(day.name),
+                    Row(
+                      children: [
+                        Text(day.start.format(context)),
+                        IconButton(
+                          icon: const Icon(Icons.access_time),
+                          onPressed: () async {
+                            final t = await askTime(day.start);
+                            setState(() => day.start = t);
+                          },
+                        ),
+                        Text(day.end.format(context)),
+                        IconButton(
+                          icon: const Icon(Icons.access_time),
+                          onPressed: () async {
+                            final t = await askTime(day.end);
+                            setState(() => day.end = t);
+                          },
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -56,67 +138,11 @@ class ScheduleStepState extends State<ScheduleStep> {
   }
 }
 
-class _RatingBar extends FormField<double> {
-  const _RatingBar({
-    required this.question,
-    required void Function(double? rating) onSaved,
-  }) : super(
-          onSaved: onSaved,
-          builder: _builder,
-        );
+class TimeStamp {
+  TimeStamp(String weekday) : name = weekday;
 
-  final String question;
-
-  static Widget _builder(FormFieldState<double> state) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          (state.widget as _RatingBar).question,
-          style: Theme.of(state.context).textTheme.bodyLarge,
-        ),
-        Row(
-          children: [
-            Radio(
-              value: true,
-              groupValue: state.value != null,
-              onChanged: (_) => state.didChange(0),
-            ),
-            const Text("Oui"),
-            const SizedBox(width: 32),
-            Radio(
-              value: false,
-              groupValue: state.value != null,
-              onChanged: (_) => state.didChange(null),
-            ),
-            const Text("Non"),
-          ],
-        ),
-        Visibility(
-          visible: state.value != null,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: RatingBar(
-              initialRating: state.value ?? 0,
-              ratingWidget: RatingWidget(
-                full: Icon(
-                  Icons.star,
-                  color: Theme.of(state.context).colorScheme.secondary,
-                ),
-                half: Icon(
-                  Icons.star_half,
-                  color: Theme.of(state.context).colorScheme.secondary,
-                ),
-                empty: Icon(
-                  Icons.star_border,
-                  color: Theme.of(state.context).colorScheme.secondary,
-                ),
-              ),
-              onRatingUpdate: (double value) => state.didChange(value),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  String name;
+  bool selected = true;
+  TimeOfDay start = const TimeOfDay(hour: 9, minute: 0);
+  TimeOfDay end = const TimeOfDay(hour: 15, minute: 0);
 }

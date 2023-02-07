@@ -56,7 +56,7 @@ class _InternshipEnrollmentScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Évaluation post-stage"),
+        title: const Text("Inscrire un stagiaire"),
       ),
       body: Selector<EnterprisesProvider, Enterprise>(
         builder: (context, enterprise, _) => Stepper(
