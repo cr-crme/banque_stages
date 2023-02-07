@@ -48,7 +48,7 @@ class _PrerequisitesBody extends StatelessWidget {
                   : Text(job.uniform),
             ),
             Text(
-              "L'élève doit :",
+              "L'entreprise a demandé :",
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
