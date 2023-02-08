@@ -82,7 +82,7 @@ class ContactPageState extends State<ContactPage> {
             children: [
               ListTile(
                 title: Text(
-                  "Contact en entreprise",
+                  "Entreprise représentée par",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),

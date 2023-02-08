@@ -21,8 +21,9 @@ class RequirementsStepState extends State<RequirementsStep> {
   String? uniform;
 
   final Map<String, bool> requiredForJob = {
-    "Passer une entrevue de recrutement en solo": false,
-    "Avoir un NAS": false,
+    "Une entrevue de recrutement de l'élève en solo": false,
+    "Une vérification d'empêchement pour les élèves majeurs (vérification des antécédents judiciaires)":
+        false,
   };
 
   bool _otherRequirements = false;
@@ -91,7 +92,7 @@ class RequirementsStepState extends State<RequirementsStep> {
             ),
             const SizedBox(height: 8),
             Text(
-              "Est-ce que l’élève devra porter un des équipements de protection individuelle suivants ?",
+              "L'entreprise a demandé : ",
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Column(
@@ -133,7 +134,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Précisez l'équipement supplémentaire requis : ",
+                      "Précisez : ",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(
