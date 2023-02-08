@@ -31,13 +31,14 @@ class SupervisionStepState extends State<SupervisionStep> {
         child: Column(
           children: [
             _RatingBar(
-              question: "* L'élève placé en stage était-il TSA ?",
+              question:
+                  "* L'élève placé en stage avait-il un trouble du spectre de l'autisme TSA ?",
               onSaved: (newValue) => welcomingTSA = newValue,
             ),
             const SizedBox(height: 8),
             _RatingBar(
               question:
-                  "* L'élève placé en stage était-il dans une de classe communication ?",
+                  "* L'élève placé en stage avait-il un trouble du langage?",
               onSaved: (newValue) => welcomingCommunication = newValue,
             ),
             const SizedBox(height: 8),
