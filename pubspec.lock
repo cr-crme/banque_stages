@@ -431,7 +431,8 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      url: "https://pub.dartlang.org"
+      sha256: b96c2527b7f488b54d076e662bdb65192890571aba32e1f740faff474bddd70c
+      url: "https://pub.dev"
     source: hosted
     version: "5.2.0"
   graphs:
@@ -843,7 +844,8 @@ packages:
     dependency: "direct main"
     description:
       name: url_strategy
-      url: "https://pub.dartlang.org"
+      sha256: "42b68b42a9864c4d710401add17ad06e28f1c1d5500c93b98c431f6b0ea4ab87"
+      url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
   vector_math:

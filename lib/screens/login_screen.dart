@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     if (context.watch<AuthProvider>().currentUser != null) {
-      Future.microtask(() => GoRouter.of(context).go(Screens.home));
+      Future.microtask(() => GoRouter.of(context).goNamed(Screens.home));
     }
 
     return WillPopScope(
