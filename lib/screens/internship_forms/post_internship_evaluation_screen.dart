@@ -9,9 +9,11 @@ import 'steps/supervision_step.dart';
 import 'steps/tasks_step.dart';
 
 class PostInternshipEvaluationScreen extends StatefulWidget {
-  const PostInternshipEvaluationScreen({super.key});
+  const PostInternshipEvaluationScreen(
+      {super.key, required this.enterpriseId, required this.jobId});
 
-  static const route = "/post-internship-evaluation";
+  final String enterpriseId;
+  final String jobId;
 
   @override
   State<PostInternshipEvaluationScreen> createState() =>
@@ -20,11 +22,6 @@ class PostInternshipEvaluationScreen extends StatefulWidget {
 
 class _PostInternshipEvaluationScreenState
     extends State<PostInternshipEvaluationScreen> {
-  late final _enterpriseId = ((ModalRoute.of(context)!.settings.arguments ?? {})
-      as Map)["enterpriseId"] as String?;
-  late final _jobId = ((ModalRoute.of(context)!.settings.arguments ?? {})
-      as Map)["jobId"] as String?;
-
   final _tasksKey = GlobalKey<TasksStepState>();
   final _supervisionKey = GlobalKey<SupervisionStepState>();
   final _prerequisitesKey = GlobalKey<PrerequisitesStepState>();
@@ -54,8 +51,8 @@ class _PostInternshipEvaluationScreenState
     final enterprises = context.read<EnterprisesProvider>();
 
     enterprises.replaceJob(
-      _enterpriseId,
-      enterprises[_enterpriseId].jobs[_jobId].copyWith(
+      widget.enterpriseId,
+      enterprises[widget.enterpriseId].jobs[widget.jobId].copyWith(
             taskVariety: _tasksKey.currentState!.taskVariety,
             autonomyExpected: _tasksKey.currentState!.autonomyExpected,
             efficiencyWanted: _tasksKey.currentState!.efficiencyWanted,
@@ -125,7 +122,7 @@ class _PostInternshipEvaluationScreenState
           controlsBuilder: _controlBuilder,
         ),
         selector: (context, enterprises) =>
-            enterprises[_enterpriseId].jobs[_jobId],
+            enterprises[widget.enterpriseId].jobs[widget.jobId],
       ),
     );
   }

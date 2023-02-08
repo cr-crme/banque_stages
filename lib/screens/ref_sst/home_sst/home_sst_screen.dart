@@ -1,14 +1,13 @@
-import 'package:crcrme_banque_stages/screens/ref_sst/sst_cards/sst_cards_screen.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'widgets/search_bar.dart';
+import 'package:go_router/go_router.dart';
+
 import '/common/widgets/main_drawer.dart';
+import '/router.dart';
+import 'widgets/search_bar.dart';
 
 class HomeSSTScreen extends StatefulWidget {
   const HomeSSTScreen({Key? key}) : super(key: key);
-
-  static const route = "/home-sst";
 
   @override
   State<HomeSSTScreen> createState() => _HomeSSTScreenState();
@@ -41,9 +40,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
               child: InkWell(
                 onTap: () {
                   print("Clicked on sst cards list");
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => SSTCardsScreen(),
-                  ));
+                  GoRouter.of(context).goNamed(Screens.cardsSST);
                 },
                 child: Ink(
                   decoration: const BoxDecoration(
@@ -90,9 +87,10 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
               child: InkWell(
                   onTap: () {
                     print("Clicked on jod list risks and skills");
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => JobListScreen(),
-                    ));
+                    GoRouter.of(context).goNamed(
+                      Screens.jobSST,
+                      params: Screens.withId("8123"),
+                    );
                   },
                   child: Column(
                     children: [

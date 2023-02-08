@@ -10,9 +10,9 @@ import 'pages/jobs_page.dart';
 import 'pages/internships_page.dart';
 
 class EnterpriseScreen extends StatefulWidget {
-  const EnterpriseScreen({super.key});
+  const EnterpriseScreen({super.key, required this.id});
 
-  static const String route = "/enterprise-details";
+  final String id;
 
   @override
   State<EnterpriseScreen> createState() => _EnterpriseScreenState();
@@ -20,9 +20,6 @@ class EnterpriseScreen extends StatefulWidget {
 
 class _EnterpriseScreenState extends State<EnterpriseScreen>
     with SingleTickerProviderStateMixin {
-  late final _enterpriseId =
-      ModalRoute.of(context)!.settings.arguments as String;
-
   late final _tabController =
       TabController(initialIndex: 0, length: 4, vsync: this);
 
@@ -117,7 +114,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
           ],
         ),
       ),
-      selector: (context, enterprises) => enterprises[_enterpriseId],
+      selector: (context, enterprises) => enterprises[widget.id],
     );
   }
 }

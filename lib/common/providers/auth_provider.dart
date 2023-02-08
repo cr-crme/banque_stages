@@ -21,6 +21,10 @@ class AuthProvider extends ChangeNotifier {
     return FirebaseAuth.instance.signOut();
   }
 
+  bool isSignedIn() {
+    return currentUser != null;
+  }
+
   User? _currentUser;
   User? get currentUser => _currentUser;
 }

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
+import '/common/widgets/main_drawer.dart';
 import '/common/widgets/search_bar.dart';
 import '/dummy_data.dart';
-import '/screens/student/student_screen.dart';
+import '/router.dart';
 import 'widgets/student_card.dart';
 
 class StudentsListScreen extends StatefulWidget {
   const StudentsListScreen({super.key});
-
-  static const route = "/students-list";
 
   @override
   State<StudentsListScreen> createState() => _StudentsListScreenState();
@@ -21,10 +21,6 @@ class StudentsListScreen extends StatefulWidget {
 class _StudentsListScreenState extends State<StudentsListScreen> {
   final _searchController = TextEditingController();
   bool _showSearchBar = false;
-
-  void _openStudentScreen(Student student) {
-    Navigator.of(context).pushNamed(StudentScreen.route, arguments: student.id);
-  }
 
   List<Student> _filterSelectedStudents(List<Student> students) {
     return students.where((student) {
@@ -56,6 +52,7 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
         bottom:
             _showSearchBar ? SearchBar(controller: _searchController) : null,
       ),
+      drawer: const MainDrawer(),
       body: Column(
         children: [
           Selector<StudentsProvider, List<Student>>(
@@ -65,7 +62,10 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
                 itemCount: student.length,
                 itemBuilder: (context, index) => StudentCard(
                   student: student.elementAt(index),
-                  onTap: _openStudentScreen,
+                  onTap: (student) => GoRouter.of(context).goNamed(
+                    Screens.student,
+                    params: Screens.withId(student),
+                  ),
                 ),
               ),
             ),

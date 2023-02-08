@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
@@ -19,20 +20,8 @@ import 'firebase_options.dart';
 import 'misc/form_service.dart';
 import 'misc/job_data_file_service.dart';
 import 'misc/question_file_service.dart';
-import 'screens/add_enterprise/add_enterprise_screen.dart';
-import 'screens/enterprise/enterprise_screen.dart';
-import 'screens/enterprises_list/enterprises_list_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/internship_forms/post_internship_evaluation_screen.dart';
-import 'screens/login_screen.dart';
-import 'screens/ref_sst/home_sst/home_sst_screen.dart';
-import 'screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
-import 'screens/ref_sst/risks_cards/risks_cards_screen.dart';
-import 'screens/ref_sst/sst_cards/sst_cards_screen.dart';
-import 'screens/student/student_screen.dart';
-import 'screens/students_list/students_list_screen.dart';
+import 'router.dart';
 import 'screens/visiting_students/models/all_itineraries.dart';
-import 'screens/visiting_students/visit_students_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,11 +38,13 @@ void main() async {
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
     return true;
   }());
-  runApp(const MyApp());
+
+  setPathUrlStrategy();
+  runApp(const BanqueStagesApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BanqueStagesApp extends StatelessWidget {
+  const BanqueStagesApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -81,35 +72,17 @@ class MyApp extends StatelessWidget {
               previous!.pathToAvailableDataIds =
                   "/students-ids/${auth.currentUser!.uid}/";
             }
-
             return previous;
           },
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         onGenerateTitle: (context) {
           FormService.setContext = context;
           return AppLocalizations.of(context)!.appName;
         },
         theme: crcrmeMaterialTheme,
-        initialRoute: LoginScreen.route,
-        routes: {
-          LoginScreen.route: (context) => const LoginScreen(),
-          HomeScreen.route: (context) => const HomeScreen(),
-          EnterprisesListScreen.route: (context) =>
-              const EnterprisesListScreen(),
-          AddEnterpriseScreen.route: (context) => const AddEnterpriseScreen(),
-          EnterpriseScreen.route: (context) => const EnterpriseScreen(),
-          HomeSSTScreen.route: (context) => const HomeSSTScreen(),
-          SSTCardsScreen.route: (context) => const SSTCardsScreen(),
-          RisksCardsScreen.route: (context) => const RisksCardsScreen(0),
-          JobListScreen.route: (context) => const JobListScreen(),
-          StudentsListScreen.route: (context) => const StudentsListScreen(),
-          StudentScreen.route: (context) => const StudentScreen(),
-          PostInternshipEvaluationScreen.route: (context) =>
-              const PostInternshipEvaluationScreen(),
-          VisitStudentScreen.route: (context) => const VisitStudentScreen(),
-        },
+        routerConfig: router,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/widgets/main_drawer.dart';
 import '/common/widgets/search_bar.dart';
 import '/dummy_data.dart';
-import '/screens/add_enterprise/add_enterprise_screen.dart';
-import '/screens/enterprise/enterprise_screen.dart';
+import '/router.dart';
 import 'widgets/enterprise_card.dart';
 
 class EnterprisesListScreen extends StatefulWidget {
   const EnterprisesListScreen({super.key});
-
-  static const route = "/enterprises-list";
 
   @override
   State<EnterprisesListScreen> createState() => _EnterprisesListScreenState();
@@ -22,14 +21,6 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
   bool _hideNotAvailable = false;
 
   final _searchController = TextEditingController();
-
-  void _openEnterpriseScreen(Enterprise enterprise) {
-    Navigator.pushNamed(
-      context,
-      EnterpriseScreen.route,
-      arguments: enterprise.id,
-    );
-  }
 
   List<Enterprise> _filterSelectedEnterprises(List<Enterprise> enterprises) {
     return enterprises.where((enterprise) {
@@ -74,13 +65,14 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
         actions: [
           IconButton(
             onPressed: () =>
-                Navigator.pushNamed(context, AddEnterpriseScreen.route),
+                GoRouter.of(context).goNamed(Screens.addEnterprise),
             tooltip: "Ajouter une entreprise",
             icon: const Icon(Icons.add),
           ),
         ],
         bottom: SearchBar(controller: _searchController),
       ),
+      drawer: const MainDrawer(),
       body: Column(
         children: [
           SwitchListTile(
@@ -95,7 +87,10 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
                 itemCount: enterprises.length,
                 itemBuilder: (context, index) => EnterpriseCard(
                   enterprise: enterprises.elementAt(index),
-                  onTap: _openEnterpriseScreen,
+                  onTap: (enterprise) => GoRouter.of(context).goNamed(
+                    Screens.enterprise,
+                    params: Screens.withId(enterprise),
+                  ),
                 ),
               ),
             ),

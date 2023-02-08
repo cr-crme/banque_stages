@@ -1,16 +1,15 @@
-import 'package:crcrme_banque_stages/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '/common/providers/auth_provider.dart';
 import '/misc/form_service.dart';
+import '/router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
-  static const route = "/login";
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -56,8 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     if (context.watch<AuthProvider>().currentUser != null) {
-      Future.microtask(
-          () => Navigator.of(context).popAndPushNamed(HomeScreen.route));
+      Future.microtask(() => GoRouter.of(context).go(Screens.home));
     }
 
     return WillPopScope(
