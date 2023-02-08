@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthProvider() {
+    _currentUser = FirebaseAuth.instance.currentUser;
     FirebaseAuth.instance.userChanges().listen((user) {
       _currentUser = user;
       notifyListeners();
