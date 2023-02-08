@@ -7,6 +7,7 @@ import 'screens/add_enterprise/add_enterprise_screen.dart';
 import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
@@ -28,6 +29,8 @@ abstract class Screens {
   static const studentsList = "students-list";
   static const student = "student";
   static const addStudent = "add-student";
+
+  static const internshipEnrollement = "add-internship";
 
   static const homeSST = "home-sst";
   static const jobSST = "job-sst";
@@ -76,6 +79,14 @@ final GoRouter router = GoRouter(
           name: Screens.enterprise,
           builder: (context, state) =>
               EnterpriseScreen(id: state.params["id"]!),
+          routes: [
+            GoRoute(
+              path: "internship",
+              name: Screens.internshipEnrollement,
+              builder: (context, state) =>
+                  InternshipEnrollmentScreen(enterpriseId: state.params["id"]!),
+            ),
+          ],
         ),
       ],
     ),

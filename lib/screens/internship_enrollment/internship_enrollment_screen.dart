@@ -9,7 +9,9 @@ import 'steps/requirements_step.dart';
 import 'steps/schedule_step.dart';
 
 class InternshipEnrollmentScreen extends StatefulWidget {
-  const InternshipEnrollmentScreen({super.key});
+  const InternshipEnrollmentScreen({super.key, required this.enterpriseId});
+
+  final String enterpriseId;
 
   @override
   State<InternshipEnrollmentScreen> createState() =>
@@ -18,9 +20,6 @@ class InternshipEnrollmentScreen extends StatefulWidget {
 
 class _InternshipEnrollmentScreenState
     extends State<InternshipEnrollmentScreen> {
-  late final _enterpriseId =
-      ModalRoute.of(context)!.settings.arguments as String;
-
   final _tasksKey = GlobalKey<GeneralInformationsStepState>();
   final _supervisionKey = GlobalKey<ScheduleStepState>();
   final _prerequisitesKey = GlobalKey<RequirementsStepState>();
@@ -91,7 +90,7 @@ class _InternshipEnrollmentScreenState
           ],
           controlsBuilder: _controlBuilder,
         ),
-        selector: (context, enterprises) => enterprises[_enterpriseId],
+        selector: (context, enterprises) => enterprises[widget.enterpriseId],
       ),
     );
   }
