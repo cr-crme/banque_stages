@@ -11,9 +11,7 @@ class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (context.watch<AuthProvider>().currentUser == null) {
-      Future.microtask(() {
-        GoRouter.of(context).goNamed(Screens.login);
-      });
+      Future.microtask(() => GoRouter.of(context).goNamed(Screens.login));
     }
 
     return Consumer<AuthProvider>(
