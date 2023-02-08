@@ -4,7 +4,9 @@ import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 
 class EnterprisesProvider extends FirebaseListProvided<Enterprise> {
-  EnterprisesProvider() : super(pathToData: "enterprises");
+  EnterprisesProvider() : super(pathToData: "enterprises") {
+    initializeFetchingData();
+  }
 
   @override
   Enterprise deserializeItem(data) {

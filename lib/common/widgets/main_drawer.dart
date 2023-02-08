@@ -10,6 +10,12 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context.watch<AuthProvider>().currentUser == null) {
+      Future.microtask(() {
+        GoRouter.of(context).goNamed(Screens.login);
+      });
+    }
+
     return Consumer<AuthProvider>(
       builder: (context, provider, _) => Drawer(
         child: Scaffold(
@@ -52,17 +58,11 @@ class MainDrawer extends StatelessWidget {
                   icon: Icon(Icons.warning_rounded),
                   route: Screens.homeSST,
                 ),
-                provider.currentUser == null
-                    ? const _DrawerItem(
-                        titleText: "Se connecter",
-                        icon: Icon(Icons.login),
-                        route: Screens.login,
-                      )
-                    : _DrawerItem(
-                        titleText: "Se déconnecter",
-                        icon: const Icon(Icons.logout),
-                        onTap: () => provider.signOut(),
-                      ),
+                _DrawerItem(
+                  titleText: "Se déconnecter",
+                  icon: const Icon(Icons.logout),
+                  onTap: () => provider.signOut(),
+                ),
               ],
             ),
           ),

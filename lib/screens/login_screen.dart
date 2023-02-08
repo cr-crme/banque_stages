@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '/common/providers/auth_provider.dart';
@@ -42,64 +43,68 @@ class _LoginScreenState extends State<LoginScreen> {
               "Impossible de se connecter; ce compte à été désactivé.";
           break;
         default:
-          errorMessage = 'Erreur non reconnue lors de l\'activation';
+          errorMessage = 'Erreur non reconnue lors de la connexion';
       }
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(errorMessage),
       ));
     }
-
-    if (mounted) {
-      GoRouter.of(context).go(Screens.home);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Connexion"),
-      ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Column(
-              children: [
-                Text(
-                  "Connectez-vous à votre compte avant de poursuivre.",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.mail),
-                    labelText: "Courriel",
+    if (context.watch<AuthProvider>().currentUser != null) {
+      Future.microtask(() => GoRouter.of(context).go(Screens.home));
+    }
+
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.appName),
+          automaticallyImplyLeading: false,
+        ),
+        body: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Column(
+                children: [
+                  Text(
+                    "Connectez-vous à votre compte avant de poursuivre.",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  validator: FormService.emailValidator,
-                  keyboardType: TextInputType.emailAddress,
-                  onSaved: (email) => _email = email!,
-                ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  decoration: const InputDecoration(
-                      icon: Icon(Icons.lock), labelText: "Mot de passe"),
-                  validator: FormService.passwordValidator,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  onSaved: (function) => _password = function!,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _signIn,
-                  child: const Text("Se connecter"),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.mail),
+                      labelText: "Courriel",
+                    ),
+                    validator: FormService.emailValidator,
+                    keyboardType: TextInputType.emailAddress,
+                    onSaved: (email) => _email = email!,
+                  ),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                        icon: Icon(Icons.lock), labelText: "Mot de passe"),
+                    validator: FormService.passwordValidator,
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    onSaved: (function) => _password = function!,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _signIn,
+                    child: const Text("Se connecter"),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

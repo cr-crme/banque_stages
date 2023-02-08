@@ -15,7 +15,9 @@ class Student extends ItemSerializable {
     this.contactLink = "",
     this.contactPhone = "",
     this.contactEmail = "",
-  }) : dateBirth = dateBirth ?? DateTime(0);
+    List<String>? internships,
+  })  : dateBirth = dateBirth ?? DateTime(0),
+        internships = internships ?? [];
 
   Student.fromSerialized(map)
       : name = map['n'],
@@ -30,6 +32,7 @@ class Student extends ItemSerializable {
         contactLink = map['cl'],
         contactPhone = map['cp'],
         contactEmail = map['ce'],
+        internships = map['internships'] as List<String>? ?? [],
         super.fromSerialized(map);
 
   @override
@@ -47,6 +50,7 @@ class Student extends ItemSerializable {
       'cl': contactLink,
       'cp': contactPhone,
       'ce': contactEmail,
+      'internships': internships,
       'id': id,
     };
   }
@@ -63,6 +67,7 @@ class Student extends ItemSerializable {
     String? contactLink,
     String? contactPhone,
     String? contactEmail,
+    List<String>? internships,
     String? id,
   }) =>
       Student(
@@ -77,6 +82,7 @@ class Student extends ItemSerializable {
         contactLink: contactLink ?? this.contactLink,
         contactPhone: contactPhone ?? this.contactPhone,
         contactEmail: contactEmail ?? this.contactEmail,
+        internships: internships ?? this.internships,
         id: id ?? this.id,
       );
 
@@ -95,4 +101,6 @@ class Student extends ItemSerializable {
   final String contactLink;
   final String contactPhone;
   final String contactEmail;
+
+  final List<String> internships;
 }

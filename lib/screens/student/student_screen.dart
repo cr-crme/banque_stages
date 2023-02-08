@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
-import '/screens/student/pages/internship_page.dart';
+import 'pages/internships_page.dart';
 import '/screens/student/pages/skills_page.dart';
 import 'pages/about_page.dart';
 
@@ -23,7 +23,7 @@ class _StudentScreenState extends State<StudentScreen>
   late IconButton _actionButton;
 
   final _aboutPageKey = GlobalKey<AboutPageState>();
-  final _internshipPageKey = GlobalKey<InternshipPageState>();
+  final _internshipPageKey = GlobalKey<InternshipsPageState>();
   final _skillsPageKey = GlobalKey<SkillsPageState>();
 
   void _updateActionButton() {
@@ -84,7 +84,7 @@ class _StudentScreenState extends State<StudentScreen>
           controller: _tabController,
           children: [
             AboutPage(key: _aboutPageKey, student: student),
-            InternshipPage(key: _internshipPageKey, student: student),
+            InternshipsPage(key: _internshipPageKey, student: student),
             SkillsPage(key: _skillsPageKey, student: student),
           ],
         ),

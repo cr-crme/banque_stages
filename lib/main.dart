@@ -13,7 +13,9 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
+import 'common/providers/internships_provider.dart';
 import 'common/providers/students_provider.dart';
+import 'common/providers/teachers_provider.dart';
 import 'firebase_options.dart';
 import 'misc/form_service.dart';
 import 'misc/job_data_file_service.dart';
@@ -29,7 +31,8 @@ void main() async {
 
   // Connect Firebase to local emulators
   assert(() {
-    FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
+    //! I got a weird error when using the emulator: (Ignoring header X-Firebase-Locale because its value was null.)
+    // FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
     FirebaseDatabase.instance.useDatabaseEmulator(
         !kIsWeb && Platform.isAndroid ? "10.0.2.2" : "localhost", 9000);
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
@@ -49,13 +52,22 @@ class BanqueStagesApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
+        ChangeNotifierProvider(create: (context) => InternshipsProvider()),
         ChangeNotifierProvider(create: (context) => AllStudentsWaypoints()),
         ChangeNotifierProvider(create: (context) => AllItineraries()),
+        ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
+          create: (context) => TeachersProvider(),
+          update: (context, auth, previous) {
+            previous!.initializeFetchingData();
+            previous.currentTeacherId = auth.currentUser!.uid;
+            return previous;
+          },
+        ),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
           create: (context) => StudentsProvider(),
           update: (context, auth, previous) {
             if (auth.currentUser == null) {
-              previous!.pathToAvailableDataIds = "void";
+              previous!.pathToAvailableDataIds = "";
             } else {
               previous!.pathToAvailableDataIds =
                   "/students-ids/${auth.currentUser!.uid}/";

@@ -1,6 +1,5 @@
 {
     "@@locale": "fr",
-
     "appName": "Banque de stages",
     "generalInformations": "Informations générales",
     "emergencyContact": "Personne à prévenir en cas d'urgence",
@@ -10,16 +9,14 @@
     "email": "Email",
     "address": "Adresse",
     "dateBirth": "Date de naissance",
-
     "studentsList_title": "Mes élèves",
-
     "student_name": "Nom de l'élève",
     "student_group_current": "Groupe {group}",
     "student_group": "Groupe",
     "student_program_current": "Programme {program}",
     "student_program": "Programme",
     "student_linkWithStudent": "Lien avec l'élève",
-
+    "internship_teacherName": "Enseignant superviseur de stage",
     "error_emptyField": "Le champ ne peut pas être vide",
     "error_emptyUsername": "Un nom d'utilisateur est requis",
     "error_emptyEmail": "Une adresse courriel est requise",

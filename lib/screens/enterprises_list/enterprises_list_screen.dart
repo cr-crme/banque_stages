@@ -29,19 +29,17 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
               .any((job) => job.positionsOccupied < job.positionsOffered)) {
       } else if (enterprise.name
           .toLowerCase()
-          .startsWith(_searchController.text.toLowerCase())) {
+          .contains(_searchController.text.toLowerCase())) {
         return true;
       } else if (enterprise.jobs.any((job) =>
           job.specialization?.name
               .toLowerCase()
-              .startsWith(_searchController.text.toLowerCase()) ??
+              .contains(_searchController.text.toLowerCase()) ??
           false)) {
         return true;
-      } else if (enterprise.activityTypes.any((type) => type
-          .toLowerCase()
-          .startsWith(_searchController.text.toLowerCase()))) {
-        //! Set this return to TRUE to enable the search in the activity types
-        return false;
+      } else if (enterprise.activityTypes.any((type) =>
+          type.toLowerCase().contains(_searchController.text.toLowerCase()))) {
+        return true;
       }
       return false;
     }).toList();
