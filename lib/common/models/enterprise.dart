@@ -11,6 +11,7 @@ class Enterprise extends ItemSerializable {
     this.recrutedBy = "",
     required this.shareWith,
     required this.jobs,
+    List<String>? internshipIds,
     required this.contactName,
     this.contactFunction = "",
     required this.contactPhone,
@@ -21,7 +22,7 @@ class Enterprise extends ItemSerializable {
     this.website = "",
     this.headquartersAddress = "",
     this.neq = "",
-  });
+  }) : internshipIds = internshipIds ?? [];
 
   Enterprise copyWith({
     String? photo,
@@ -30,6 +31,7 @@ class Enterprise extends ItemSerializable {
     String? recrutedBy,
     String? shareWith,
     JobList? jobs,
+    List<String>? internshipIds,
     String? contactName,
     String? contactFunction,
     String? contactPhone,
@@ -49,6 +51,7 @@ class Enterprise extends ItemSerializable {
       recrutedBy: recrutedBy ?? this.recrutedBy,
       shareWith: shareWith ?? this.shareWith,
       jobs: jobs ?? this.jobs,
+      internshipIds: internshipIds ?? this.internshipIds,
       contactName: contactName ?? this.contactName,
       contactFunction: contactFunction ?? this.contactFunction,
       contactPhone: contactPhone ?? this.contactPhone,
@@ -72,6 +75,7 @@ class Enterprise extends ItemSerializable {
       "recrutedBy": recrutedBy,
       "shareWith": shareWith,
       "jobs": jobs.serialize(),
+      "internships": internshipIds,
       "contactName": contactName,
       "contactFunction": contactFunction,
       "contactPhone": contactPhone,
@@ -95,6 +99,9 @@ class Enterprise extends ItemSerializable {
         shareWith = map['shareWith'],
         jobs = JobList.fromSerialized((map['jobs'] as Map)
             .map((key, value) => MapEntry(key.toString(), value))),
+        internshipIds = (map['internships'] as List? ?? [])
+            .map((e) => e.toString())
+            .toList(),
         contactName = map['contactName'],
         contactFunction = map['contactFunction'],
         contactPhone = map['contactPhone'],
@@ -115,6 +122,7 @@ class Enterprise extends ItemSerializable {
   final String shareWith;
 
   final JobList jobs;
+  final List<String> internshipIds;
 
   final String contactName;
   final String contactFunction;

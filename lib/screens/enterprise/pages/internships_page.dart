@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
+import '/common/models/internship.dart';
+import '/common/providers/internships_provider.dart';
 import '/router.dart';
 
 class InternshipsPage extends StatefulWidget {
@@ -36,6 +39,18 @@ class InternshipsPageState extends State<InternshipsPage> {
             ),
           ),
           const Divider(),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: widget.enterprise.internshipIds.length,
+            itemBuilder: (context, index) =>
+                Selector<InternshipsProvider, Internship>(
+              builder: (context, internship, _) => ListTile(
+                title: Text(internship.id),
+              ),
+              selector: (context, internships) =>
+                  internships[widget.enterprise.internshipIds[index]],
+            ),
+          ),
         ],
       ),
     );

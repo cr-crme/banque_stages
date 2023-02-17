@@ -1,3 +1,5 @@
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +9,7 @@ import '/misc/form_service.dart';
 import 'steps/general_informations_step.dart';
 import 'steps/requirements_step.dart';
 import 'steps/schedule_step.dart';
+import '/common/models/internship.dart';
 
 class InternshipEnrollmentScreen extends StatefulWidget {
   const InternshipEnrollmentScreen({super.key, required this.enterpriseId});
@@ -20,16 +23,16 @@ class InternshipEnrollmentScreen extends StatefulWidget {
 
 class _InternshipEnrollmentScreenState
     extends State<InternshipEnrollmentScreen> {
-  final _tasksKey = GlobalKey<GeneralInformationsStepState>();
-  final _supervisionKey = GlobalKey<ScheduleStepState>();
-  final _prerequisitesKey = GlobalKey<RequirementsStepState>();
+  final _generalInfoKey = GlobalKey<GeneralInformationsStepState>();
+  final _scheduleKey = GlobalKey<ScheduleStepState>();
+  final _requirementsKey = GlobalKey<RequirementsStepState>();
   int _currentStep = 0;
 
   void _nextStep() {
     final formKeys = [
-      _tasksKey.currentState!.formKey,
-      _supervisionKey.currentState!.formKey,
-      _prerequisitesKey.currentState!.formKey
+      _generalInfoKey.currentState!.formKey,
+      _scheduleKey.currentState!.formKey,
+      _requirementsKey.currentState!.formKey
     ];
 
     FormService.validateForm(formKeys[_currentStep]);
@@ -42,11 +45,32 @@ class _InternshipEnrollmentScreenState
   }
 
   void _submit() {
-    _tasksKey.currentState!.formKey.currentState!.save();
-    _supervisionKey.currentState!.formKey.currentState!.save();
-    _prerequisitesKey.currentState!.formKey.currentState!.save();
+    _generalInfoKey.currentState!.formKey.currentState!.save();
+    _scheduleKey.currentState!.formKey.currentState!.save();
+    _requirementsKey.currentState!.formKey.currentState!.save();
+
+    final internship = Internship(
+      teacherId: context.read<TeachersProvider>().currentTeacherId,
+      studentId: _generalInfoKey.currentState!.student!.id,
+      enterpriseId: widget.enterpriseId,
+      jobId: _generalInfoKey.currentState!.primaryJob.id,
+      type: "SPA",
+      supervisorEmail: _generalInfoKey.currentState!.supervisorEmail ?? "",
+      supervisorName: _generalInfoKey.currentState!.supervisorName ?? "",
+      supervisorPhone: _generalInfoKey.currentState!.supervisorPhone ?? "",
+      date: _scheduleKey.currentState!.dateRange,
+    );
+    context.read<InternshipsProvider>().add(internship);
 
     final enterprises = context.read<EnterprisesProvider>();
+    enterprises.replace(
+      enterprises[widget.enterpriseId].copyWith(
+        internshipIds: [
+          ...enterprises[widget.enterpriseId].internshipIds,
+          internship.id,
+        ],
+      ),
+    );
 
     Navigator.pop(context);
   }
@@ -69,7 +93,7 @@ class _InternshipEnrollmentScreenState
               isActive: _currentStep == 0,
               title: const Text("Général"),
               content: GeneralInformationsStep(
-                key: _tasksKey,
+                key: _generalInfoKey,
                 enterprise: enterprise,
               ),
             ),
@@ -77,14 +101,14 @@ class _InternshipEnrollmentScreenState
               isActive: _currentStep == 1,
               title: const Text("Horaire"),
               content: ScheduleStep(
-                key: _supervisionKey,
+                key: _scheduleKey,
               ),
             ),
             Step(
               isActive: _currentStep == 2,
               title: const Text("Exigences"),
               content: RequirementsStep(
-                key: _prerequisitesKey,
+                key: _requirementsKey,
               ),
             ),
           ],
