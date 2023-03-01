@@ -9,9 +9,9 @@ class Internship extends ItemSerializable {
     required this.enterpriseId,
     required this.jobId,
     required this.type,
-    this.supervisorName = "",
-    this.supervisorPhone = "",
-    this.supervisorEmail = "",
+    required this.supervisorName,
+    required this.supervisorPhone,
+    required this.supervisorEmail,
     required this.date,
   });
 
