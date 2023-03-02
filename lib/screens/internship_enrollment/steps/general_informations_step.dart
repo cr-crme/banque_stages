@@ -102,7 +102,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
             ],
             const SizedBox(height: 16),
             Text(
-              "Superviseur en milieu de travail",
+              "Superviseur en milieu de travail (tuteur en entreprise)",
               style: Theme.of(context).textTheme.titleLarge,
             ),
             ListTile(

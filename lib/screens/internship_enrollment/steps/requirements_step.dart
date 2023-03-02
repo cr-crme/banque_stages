@@ -133,7 +133,7 @@ class RequirementsStepState extends State<RequirementsStep> {
             ),
             const SizedBox(height: 16),
             Text(
-              "Est-ce qu'un uniforme était exigé ?",
+              "Est-ce qu'un uniforme est exigé ?",
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Row(
