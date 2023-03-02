@@ -25,6 +25,8 @@ class TasksStepState extends State<TasksStep> {
   final Map<String, bool> skillsRequired = {
     "Communiquer à l’écrit": false,
     "Communiquer en anglais": false,
+    "Conduire un chariot (ex. cariste)": false,
+    "Interagir avec des clients": false,
     "Manipuler de l’argent": false,
   };
 
