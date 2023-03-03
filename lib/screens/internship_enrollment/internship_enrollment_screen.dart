@@ -58,6 +58,8 @@ class _InternshipEnrollmentScreenState
       supervisorEmail: _generalInfoKey.currentState!.supervisorEmail ?? "",
       supervisorName: _generalInfoKey.currentState!.supervisorName ?? "",
       supervisorPhone: _generalInfoKey.currentState!.supervisorPhone ?? "",
+      protection: _requirementsKey.currentState!.protection,
+      uniform: _requirementsKey.currentState!.uniform,
       date: _scheduleKey.currentState!.dateRange,
     );
     context.read<InternshipsProvider>().add(internship);

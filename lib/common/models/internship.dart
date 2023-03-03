@@ -13,6 +13,8 @@ class Internship extends ItemSerializable {
     required this.supervisorPhone,
     required this.supervisorEmail,
     required this.date,
+    required this.protection,
+    required this.uniform,
   });
 
   Internship.fromSerialized(map)
@@ -28,6 +30,8 @@ class Internship extends ItemSerializable {
           start: DateTime.parse(map['start']),
           end: DateTime.parse(map['end']),
         ),
+        protection = map['protection'],
+        uniform = map['uniform'],
         super.fromSerialized(map);
 
   @override
@@ -43,6 +47,8 @@ class Internship extends ItemSerializable {
       'email': supervisorEmail,
       'start': date.start.toString(),
       'end': date.end.toString(),
+      'protection': protection,
+      'uniform': uniform,
       'id': id,
     };
   }
@@ -57,6 +63,8 @@ class Internship extends ItemSerializable {
     String? supervisorPhone,
     String? supervisorEmail,
     DateTimeRange? date,
+    List<String>? protection,
+    String? uniform,
     String? id,
   }) =>
       Internship(
@@ -69,6 +77,8 @@ class Internship extends ItemSerializable {
         supervisorPhone: supervisorPhone ?? this.supervisorPhone,
         supervisorEmail: supervisorEmail ?? this.supervisorEmail,
         date: date ?? this.date,
+        protection: protection ?? this.protection,
+        uniform: uniform ?? this.uniform,
         id: id ?? this.id,
       );
 
@@ -86,4 +96,7 @@ class Internship extends ItemSerializable {
   final String supervisorEmail;
 
   final DateTimeRange date;
+
+  final List<String> protection;
+  final String uniform;
 }
