@@ -1,3 +1,6 @@
+import 'package:crcrme_banque_stages/common/models/teacher.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +42,45 @@ class InternshipsPageState extends State<InternshipsPage> {
             ),
           ),
           const Divider(),
+          Selector<InternshipsProvider, Iterable<Internship>>(
+            builder: (context, internships, _) => ExpansionPanelList(
+              children: [
+                ...internships.map(
+                  (internship) => ExpansionPanel(
+                    headerBuilder: (context, isExpanded) => ListTile(
+                      leading: Text(
+                          "${internship.date.start.year}-${internship.date.end.year}"),
+                      title: Text(widget.enterprise.jobs[internship.jobId]
+                          .specialization!.idWithName),
+                    ),
+                    body: Column(
+                      children: [
+                        ListTile(
+                          leading: Text(internship.type),
+                          title: Selector<TeachersProvider, String>(
+                            builder: (context, name, _) => Text(name),
+                            selector: (context, teachers) =>
+                                teachers[internship.teacherId].name,
+                          ),
+                        ),
+                        Selector<StudentsProvider, String>(
+                          builder: (context, name, _) => Text(name),
+                          selector: (context, students) =>
+                              students[internship.studentId].name,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            selector: (context, internships) => internships.where(
+              (internship) =>
+                  widget.enterprise.internshipIds.contains(internship.id) &&
+                  internship.date.start.isBefore(DateTime.now()) &&
+                  internship.date.end.isAfter(DateTime.now()),
+            ),
+          ),
           ListView.builder(
             shrinkWrap: true,
             itemCount: widget.enterprise.internshipIds.length,
