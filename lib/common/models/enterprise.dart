@@ -94,14 +94,12 @@ class Enterprise extends ItemSerializable {
       : photo = map['photo'],
         name = map['name'],
         activityTypes =
-            (map['activityTypes'] as List).map((e) => e.toString()).toSet(),
+            ItemSerializable.setFromSerialized(map['activityTypes']),
         recrutedBy = map['recrutedBy'],
         shareWith = map['shareWith'],
-        jobs = JobList.fromSerialized((map['jobs'] as Map)
-            .map((key, value) => MapEntry(key.toString(), value))),
-        internshipIds = (map['internships'] as List? ?? [])
-            .map((e) => e.toString())
-            .toList(),
+        jobs = JobList.fromSerialized(
+            ItemSerializable.mapFromSerialized(map['jobs'])),
+        internshipIds = ItemSerializable.listFromSerialized(map['internships']),
         contactName = map['contactName'],
         contactFunction = map['contactFunction'],
         contactPhone = map['contactPhone'],

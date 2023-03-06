@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '/common/models/job.dart';
+import 'package:intl/intl.dart';
 
 class ScheduleStep extends StatefulWidget {
   const ScheduleStep({
@@ -29,7 +28,11 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   void askDateRange() async {
     final range = await showDateRangePicker(
-        context: context, firstDate: DateTime(2022), lastDate: DateTime(2024));
+      context: context,
+      initialDateRange: dateRange,
+      firstDate: DateTime(DateTime.now().year),
+      lastDate: DateTime(DateTime.now().year + 2),
+    );
 
     if (range != null) {
       setState(() {
@@ -65,7 +68,7 @@ class ScheduleStepState extends State<ScheduleStep> {
                 decoration: const InputDecoration(
                     labelText: "* Date de début du stage"),
                 controller: TextEditingController(
-                    text: dateRange.start.toIso8601String()),
+                    text: DateFormat.yMMMEd().format(dateRange.start)),
                 enabled: false,
               ),
               trailing: IconButton(
@@ -78,7 +81,7 @@ class ScheduleStepState extends State<ScheduleStep> {
                 decoration:
                     const InputDecoration(labelText: "* Date de fin du stage"),
                 controller: TextEditingController(
-                    text: dateRange.end.toIso8601String()),
+                    text: DateFormat.yMMMEd().format(dateRange.end)),
                 enabled: false,
               ),
               trailing: IconButton(

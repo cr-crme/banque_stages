@@ -120,36 +120,35 @@ class Job extends ItemSerializable {
             ?.fromId(map['specialization']),
         positionsOffered = map['positionsOffered'],
         positionsOccupied = map['positionsOccupied'],
-        pictures = listFromSerialized(map['pictures']),
-        taskVariety = doubleFromSerialized(map['taskVariety']),
-        skillsRequired = listFromSerialized(map['skillsRequired']),
-        autonomyExpected = doubleFromSerialized(map['autonomyExpected']),
-        efficiencyWanted = doubleFromSerialized(map['efficiencyWanted']),
-        welcomingTSA = doubleFromSerialized(map['welcomingTSA']),
-        welcomingCommunication =
-            doubleFromSerialized(map['welcomingCommunication']),
-        welcomingMentalDeficiency =
-            doubleFromSerialized(map['welcomingMentalDeficiency']),
-        welcomingMentalHealthIssue =
-            doubleFromSerialized(map['welcomingMentalHealthIssue']),
-        equipmentRequired = listFromSerialized(map['equipmentRequired']),
-        dangerousSituations = listFromSerialized(map['dangerousSituations']),
-        pastWounds = listFromSerialized(map['pastWounds']),
-        pastIncidents = listFromSerialized(map['pastIncidents']),
+        pictures = ItemSerializable.listFromSerialized(map['pictures']),
+        taskVariety = ItemSerializable.doubleFromSerialized(map['taskVariety']),
+        skillsRequired =
+            ItemSerializable.listFromSerialized(map['skillsRequired']),
+        autonomyExpected =
+            ItemSerializable.doubleFromSerialized(map['autonomyExpected']),
+        efficiencyWanted =
+            ItemSerializable.doubleFromSerialized(map['efficiencyWanted']),
+        welcomingTSA =
+            ItemSerializable.doubleFromSerialized(map['welcomingTSA']),
+        welcomingCommunication = ItemSerializable.doubleFromSerialized(
+            map['welcomingCommunication']),
+        welcomingMentalDeficiency = ItemSerializable.doubleFromSerialized(
+            map['welcomingMentalDeficiency']),
+        welcomingMentalHealthIssue = ItemSerializable.doubleFromSerialized(
+            map['welcomingMentalHealthIssue']),
+        equipmentRequired =
+            ItemSerializable.listFromSerialized(map['equipmentRequired']),
+        dangerousSituations =
+            ItemSerializable.listFromSerialized(map['dangerousSituations']),
+        pastWounds = ItemSerializable.listFromSerialized(map['pastWounds']),
+        pastIncidents =
+            ItemSerializable.listFromSerialized(map['pastIncidents']),
         minimalAge = map['minimalAge'],
         uniform = map['uniform'],
-        requiredForJob = listFromSerialized(map['requiredForJob']),
-        comments = listFromSerialized(map['comments']),
+        requiredForJob =
+            ItemSerializable.listFromSerialized(map['requiredForJob']),
+        comments = ItemSerializable.listFromSerialized(map['comments']),
         super.fromSerialized(map);
-
-  static List<String> listFromSerialized(List? list) {
-    return (list ?? []).map((e) => e.toString()).toList();
-  }
-
-  static double doubleFromSerialized(num? number, {double defaultValue = 0}) {
-    if (number is int) return number.toDouble();
-    return (number ?? defaultValue) as double;
-  }
 
   // Details
   final ActivitySector? activitySector;

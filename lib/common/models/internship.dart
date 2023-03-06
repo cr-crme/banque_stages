@@ -30,7 +30,7 @@ class Internship extends ItemSerializable {
           start: DateTime.parse(map['start']),
           end: DateTime.parse(map['end']),
         ),
-        protection = map['protection'],
+        protection = ItemSerializable.listFromSerialized(map['protection']),
         uniform = map['uniform'],
         super.fromSerialized(map);
 
