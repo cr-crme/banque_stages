@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinbox/flutter_spinbox.dart';
-
-import '/common/models/job.dart';
 
 class RequirementsStep extends StatefulWidget {
   const RequirementsStep({
@@ -195,24 +192,6 @@ class RequirementsStepState extends State<RequirementsStep> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _AgeSpinBox extends FormField<int> {
-  const _AgeSpinBox({
-    super.initialValue,
-    super.onSaved,
-  }) : super(builder: _build);
-
-  static Widget _build(FormFieldState<int> state) {
-    return SpinBox(
-      value: 0,
-      min: 0,
-      max: 30,
-      spacing: 0,
-      decoration: const InputDecoration(border: UnderlineInputBorder()),
-      onChanged: (double value) => state.didChange(value.toInt()),
     );
   }
 }

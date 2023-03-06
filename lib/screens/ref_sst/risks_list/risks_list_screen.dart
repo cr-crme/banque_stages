@@ -1,6 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-//import 'dart:js_util';
-
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:flutter/material.dart';
 import '../common/Risk.dart';

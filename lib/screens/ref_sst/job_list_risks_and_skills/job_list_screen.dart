@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-
 import 'widgets/tile_job_risk.dart';
 
 class JobListScreen extends StatefulWidget {
-  final String result;
-  const JobListScreen({super.key, required this.result});
+  final String id;
+  const JobListScreen({super.key, required this.id});
 
-  static const route = "/job_list_risks_skills";
   @override
   State<JobListScreen> createState() => _JobListScreenState();
 }
 
 class _JobListScreenState extends State<JobListScreen> {
-  bool switch_value = true;
+  bool switchValue = true;
   bool switchRisk = true;
   Color colorTile = Colors.blue;
   Color textColor = Colors.blue;
@@ -54,8 +52,7 @@ class _JobListScreenState extends State<JobListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.result
-          ),
+          title: Text(widget.id),
         ),
         body: ListView(children: [
           Center(
@@ -70,9 +67,9 @@ class _JobListScreenState extends State<JobListScreen> {
                     child: ListTile(
                       textColor: textColor,
                       iconColor: textColor,
-                      title: Text('Affichage par risque'),
+                      title: const Text('Affichage par risque'),
                       subtitle: null,
-                      trailing: Icon(Icons.warning),
+                      trailing: const Icon(Icons.warning),
                       tileColor: colorTile2,
                       onTap: (testButton2),
                       horizontalTitleGap: 16,
@@ -89,8 +86,8 @@ class _JobListScreenState extends State<JobListScreen> {
                       textColor: textColor2,
                       iconColor: textColor2,
                       onTap: (testButton),
-                      title: Text('Affichage par compétence'),
-                      trailing: Icon(Icons.school),
+                      title: const Text('Affichage par compétence'),
+                      trailing: const Icon(Icons.school),
                       tileColor: colorTile,
                     ),
                   ),
@@ -115,21 +112,18 @@ class _JobListScreenState extends State<JobListScreen> {
             ),
           ),
           ListView.separated(
-            physics: ScrollPhysics(),
+            physics: const ScrollPhysics(),
             shrinkWrap: true,
             itemCount: 5,
             padding: const EdgeInsets.all(16.0),
             itemBuilder: (context, i) {
-              return tile_job_risk(switchRisk);
+              return TileJobRisk(switchRisk);
               // call the expansion tile constuctor list
             },
             separatorBuilder: (BuildContext context, int index) {
-              return Divider(
+              return const Divider(
                 color: Colors.grey,
                 height: 16,
-
-                //indent: 0.0,
-                //endIndent: 0.0,
               );
             },
           )

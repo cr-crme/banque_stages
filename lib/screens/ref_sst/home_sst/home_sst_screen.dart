@@ -1,13 +1,12 @@
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
-import '/common/widgets/main_drawer.dart';
-import '/router.dart';
 import 'widgets/search_bar.dart';
+import '/common/widgets/main_drawer.dart';
 
 class HomeSSTScreen extends StatefulWidget {
   const HomeSSTScreen({Key? key}) : super(key: key);
+
+  static const route = "/home-sst";
 
   @override
   State<HomeSSTScreen> createState() => _HomeSSTScreenState();
@@ -78,7 +77,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
           child: InkWell(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => SSTCardsScreen(),
+                builder: (_) => const SSTCardsScreen(),
               ));
             },
             child: Ink(

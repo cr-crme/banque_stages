@@ -1,6 +1,3 @@
-import 'package:crcrme_banque_stages/common/models/teacher.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +5,8 @@ import 'package:provider/provider.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
 import '/common/providers/internships_provider.dart';
+import '/common/providers/students_provider.dart';
+import '/common/providers/teachers_provider.dart';
 import '/router.dart';
 
 class InternshipsPage extends StatefulWidget {

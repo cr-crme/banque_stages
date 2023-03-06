@@ -4,12 +4,11 @@ import 'auto_complete.dart';
 class SearchBar extends StatelessWidget with PreferredSizeWidget {
   const SearchBar({Key? key}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Card(
+      child: const Card(
         elevation: 0,
         child: AutocompleteSearch(),
       ),

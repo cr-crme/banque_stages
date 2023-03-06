@@ -2,17 +2,18 @@ import 'package:enhanced_containers/item_serializable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '/common/providers/auth_provider.dart';
+import 'common/providers/auth_provider.dart';
 import 'screens/add_enterprise/add_enterprise_screen.dart';
 import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
+import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
-import 'screens/ref_sst/risks_cards/risks_cards_screen.dart';
-import 'screens/ref_sst/sst_cards/sst_cards_screen.dart';
+import 'screens/ref_sst/risk_card/risk_card_screen.dart';
+import 'screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
 import 'screens/visiting_students/visit_students_screen.dart';
@@ -31,6 +32,7 @@ abstract class Screens {
   static const addStudent = "add-student";
 
   static const internshipEnrollement = "add-internship";
+  static const postInternshipEvaluationScreen = "post-internship-evaluation";
 
   static const homeSST = "home-sst";
   static const jobSST = "job-sst";
@@ -108,6 +110,14 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const VisitStudentScreen(),
     ),
     GoRoute(
+      path: "/post-internship-evaluation",
+      name: Screens.postInternshipEvaluationScreen,
+      builder: (context, state) => PostInternshipEvaluationScreen(
+        enterpriseId: state.params["enterpriseId"]!,
+        jobId: state.params["jobId"]!,
+      ),
+    ),
+    GoRoute(
       path: "/sst",
       name: Screens.homeSST,
       builder: (context, state) => const HomeSSTScreen(),
@@ -121,7 +131,7 @@ final GoRouter router = GoRouter(
           path: "risks/:id",
           name: Screens.risksCardsSST,
           builder: (context, state) =>
-              RisksCardsScreen(int.parse(state.params["id"]!)),
+              RisksCardsScreen(id: state.params["id"]!),
           redirect: (context, state) {
             if (int.tryParse(state.params["id"] ?? "") == null) {
               return Screens.homeSST;

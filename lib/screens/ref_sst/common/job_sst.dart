@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:crcrme_banque_stages/screens/ref_sst/common/skill_sst.dart';
 
 class JobSST {

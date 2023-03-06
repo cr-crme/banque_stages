@@ -7,13 +7,11 @@ class MainTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Container(
-        margin: const EdgeInsets.only(top: 30, right: 25, left: 25, bottom: 25),
-        child: Text(
-          mainTitle,
-          style: Theme.of(context).textTheme.titleLarge,
-          textAlign: TextAlign.left,
-        ),
+      margin: const EdgeInsets.only(top: 30, right: 25, left: 25, bottom: 25),
+      child: Text(
+        mainTitle,
+        style: Theme.of(context).textTheme.titleLarge,
+        textAlign: TextAlign.left,
       ),
     );
   }

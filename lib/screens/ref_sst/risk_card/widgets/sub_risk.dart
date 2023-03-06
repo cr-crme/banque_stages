@@ -22,7 +22,7 @@ class SubRiskBuilding extends StatelessWidget {
         children: [
           if (subRisks.length > 1) SubTitle(subRisk.id, subRisk.title),
           Introduction(subRisk.intro),
-          if (subRisk.images.length > 0)
+          if (subRisk.images.isNotEmpty)
             Column(children: [
               Image.asset(subRisk.images[0]),
               Container(

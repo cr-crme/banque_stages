@@ -28,8 +28,7 @@ class Risk extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() {
-    throw ("Risk should never generate a map, it is read only");
-    return {};
+    throw "Risk should never generate a map, it is read only";
   }
 
   @override

@@ -9,15 +9,14 @@ import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/widgets/main_titl
 import 'widgets/sub_risk.dart';
 
 class RisksCardsScreen extends StatelessWidget {
-  static const route = "/risks-cards";
+  const RisksCardsScreen({super.key, required this.id});
 
-  const RisksCardsScreen({super.key});
+  final String id;
 
   @override
   Widget build(BuildContext context) {
     //late final _riskID = ModalRoute.of(context)!.settings.arguments as String;
-    Risk? risk = RiskDataFileService.fromId(
-        ModalRoute.of(context)!.settings.arguments as String);
+    Risk? risk = RiskDataFileService.fromId(id);
     return Scaffold(
         appBar: AppBar(
           title: Text("Fiche ${risk!.number}"),

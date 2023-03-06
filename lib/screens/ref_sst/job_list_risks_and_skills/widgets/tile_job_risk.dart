@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
 
-class tile_job_risk extends StatelessWidget {
-  const tile_job_risk(this.switchRisk, {super.key});
+class TileJobRisk extends StatelessWidget {
+  const TileJobRisk(this.switchRisk, {super.key});
   final bool switchRisk;
 
   bool get getSwitchRisk {
     return switchRisk;
   }
 
-/**
- * create the expansion tile widget
- */
-
   Widget riskTitle() {
     if (switchRisk) {
-      return Text(
+      return const Text(
         "Nom risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
         style: TextStyle(fontSize: 17),
       );
-    } else
-      return Text(
+    } else {
+      return const Text(
           "Nom compétence - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
           style: TextStyle(fontSize: 17));
+    }
   }
 
   @override
@@ -36,17 +33,11 @@ class tile_job_risk extends StatelessWidget {
             elevation: 10,
             borderRadius: BorderRadius.circular(100),
             child: Container(
-                child: Center(
-                  child: Text(
-                    "00",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
                 height: 30,
                 width: 30,
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.white, width: 2),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         spreadRadius: 1,
                         blurRadius: 5,
@@ -54,33 +45,37 @@ class tile_job_risk extends StatelessWidget {
                       )
                     ],
                     color: Colors.red,
-                    borderRadius: BorderRadius.circular(100))),
+                    borderRadius: BorderRadius.circular(100)),
+                child: const Center(
+                  child: Text(
+                    "00",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )),
           ),
           //more than 50% of width makes circle,
           children: [
-            for (int i = 0; i < 5; i++) dropdown_obect(switchRisk),
+            for (int i = 0; i < 5; i++) _DropdownObect(switchRisk),
           ]),
     );
   }
 }
 
-/**
- * Create the texte inside de expansion list tiles 
- */
-class dropdown_obect extends StatelessWidget {
-  dropdown_obect(this.switchRisk);
+class _DropdownObect extends StatelessWidget {
+  const _DropdownObect(this.switchRisk);
   final bool switchRisk;
 
   Widget dropdownRisk() {
     if (switchRisk) {
-      return Text(
+      return const Text(
         "Compétence - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
         style: TextStyle(color: Color.fromARGB(255, 113, 111, 111)),
       );
-    } else
-      return Text(
+    } else {
+      return const Text(
           "Risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
           style: TextStyle(color: Color.fromARGB(255, 113, 111, 111)));
+    }
   }
 
   @override

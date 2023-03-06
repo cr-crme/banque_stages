@@ -1,8 +1,7 @@
 //import 'dart:js_util';
 
+import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/risk_card_screen.dart';
 
 import '../../common/Risk.dart';
 
@@ -29,7 +28,7 @@ class SSTCard extends StatelessWidget {
             //onTap should redirect to the risk
             onTap: () => Navigator.pushNamed(
                   context,
-                  RisksCardsScreen.route,
+                  Screens.risksCardsSST,
                   arguments: risk.id,
                 )));
   }
