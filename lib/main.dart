@@ -100,24 +100,24 @@ class BanqueStagesApp extends StatelessWidget {
         },
         theme: crcrmeMaterialTheme,
         routerConfig: router,
-        initialRoute: HomeScreen.route,
-        routes: {
-          LoginScreen.route: (context) => const LoginScreen(),
-          HomeScreen.route: (context) => const HomeScreen(),
-          EnterprisesListScreen.route: (context) =>
-              const EnterprisesListScreen(),
-          AddEnterpriseScreen.route: (context) => const AddEnterpriseScreen(),
-          EnterpriseScreen.route: (context) => const EnterpriseScreen(),
-          HomeSSTScreen.route: (context) => const HomeSSTScreen(),
-          SSTCardsScreen.route: (context) => const SSTCardsScreen(),
-          RisksCardsScreen.route: (context) => const RisksCardsScreen(),
-          JobListScreen.route: (context) => const JobListScreen(result: ""),
-          StudentsListScreen.route: (context) => const StudentsListScreen(),
-          StudentScreen.route: (context) => const StudentScreen(),
-          PostInternshipEvaluationScreen.route: (context) =>
-              const PostInternshipEvaluationScreen(),
-          VisitStudentScreen.route: (context) => const VisitStudentScreen(),
-        },
+        // initialRoute: HomeScreen.route,
+        // routes: {
+        //   LoginScreen.route: (context) => const LoginScreen(),
+        //   HomeScreen.route: (context) => const HomeScreen(),
+        //   EnterprisesListScreen.route: (context) =>
+        //       const EnterprisesListScreen(),
+        //   AddEnterpriseScreen.route: (context) => const AddEnterpriseScreen(),
+        //   EnterpriseScreen.route: (context) => const EnterpriseScreen(),
+        //   HomeSSTScreen.route: (context) => const HomeSSTScreen(),
+        //   SSTCardsScreen.route: (context) => const SSTCardsScreen(),
+        //   RisksCardsScreen.route: (context) => const RisksCardsScreen(),
+        //   JobListScreen.route: (context) => const JobListScreen(result: ""),
+        //   StudentsListScreen.route: (context) => const StudentsListScreen(),
+        //   StudentScreen.route: (context) => const StudentScreen(),
+        //   PostInternshipEvaluationScreen.route: (context) =>
+        //       const PostInternshipEvaluationScreen(),
+        //   VisitStudentScreen.route: (context) => const VisitStudentScreen(),
+        // }, // TODO merge
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
       ),
