@@ -11,6 +11,7 @@ class Enterprise extends ItemSerializable {
     this.recrutedBy = "",
     required this.shareWith,
     required this.jobs,
+    List<String>? internshipIds,
     required this.contactName,
     this.contactFunction = "",
     required this.contactPhone,
@@ -21,7 +22,7 @@ class Enterprise extends ItemSerializable {
     this.website = "",
     this.headquartersAddress = "",
     this.neq = "",
-  });
+  }) : internshipIds = internshipIds ?? [];
 
   Enterprise copyWith({
     String? photo,
@@ -30,6 +31,7 @@ class Enterprise extends ItemSerializable {
     String? recrutedBy,
     String? shareWith,
     JobList? jobs,
+    List<String>? internshipIds,
     String? contactName,
     String? contactFunction,
     String? contactPhone,
@@ -49,6 +51,7 @@ class Enterprise extends ItemSerializable {
       recrutedBy: recrutedBy ?? this.recrutedBy,
       shareWith: shareWith ?? this.shareWith,
       jobs: jobs ?? this.jobs,
+      internshipIds: internshipIds ?? this.internshipIds,
       contactName: contactName ?? this.contactName,
       contactFunction: contactFunction ?? this.contactFunction,
       contactPhone: contactPhone ?? this.contactPhone,
@@ -72,6 +75,7 @@ class Enterprise extends ItemSerializable {
       "recrutedBy": recrutedBy,
       "shareWith": shareWith,
       "jobs": jobs.serialize(),
+      "internships": internshipIds,
       "contactName": contactName,
       "contactFunction": contactFunction,
       "contactPhone": contactPhone,
@@ -90,11 +94,12 @@ class Enterprise extends ItemSerializable {
       : photo = map['photo'],
         name = map['name'],
         activityTypes =
-            (map['activityTypes'] as List).map((e) => e.toString()).toSet(),
+            ItemSerializable.setFromSerialized(map['activityTypes']),
         recrutedBy = map['recrutedBy'],
         shareWith = map['shareWith'],
-        jobs = JobList.fromSerialized((map['jobs'] as Map)
-            .map((key, value) => MapEntry(key.toString(), value))),
+        jobs = JobList.fromSerialized(
+            ItemSerializable.mapFromSerialized(map['jobs'])),
+        internshipIds = ItemSerializable.listFromSerialized(map['internships']),
         contactName = map['contactName'],
         contactFunction = map['contactFunction'],
         contactPhone = map['contactPhone'],
@@ -115,6 +120,7 @@ class Enterprise extends ItemSerializable {
   final String shareWith;
 
   final JobList jobs;
+  final List<String> internshipIds;
 
   final String contactName;
   final String contactFunction;
@@ -130,15 +136,36 @@ class Enterprise extends ItemSerializable {
   final String neq;
 }
 
-// TODO: Replace with adequate data
 const List<String> activityTypes = [
-  "Activity Type 1",
-  "Activity Type 2",
-  "Activity Type 3",
-  "Activity Type 4",
-  "Activity Type 5",
-  "Test",
-  "A Test",
-  "B Test",
-  "C Test"
+  "Animalerie",
+  "Barbier",
+  "Boucherie",
+  "Boulangerie",
+  "Coiffeur",
+  "Commerce",
+  "CPE",
+  "Cuisine",
+  "Dépanneur",
+  "Ébénisterie",
+  "Épicerie",
+  "Fleuriste",
+  "Garage",
+  "Garderie",
+  "Industriel",
+  "Magasin",
+  "Magasin de vêtements",
+  "Magasin entrepôt",
+  "Mécanique",
+  "Mensuiserie",
+  "Pharmacie",
+  "Préparation de commandes",
+  "Quincaillerie",
+  "Restaurant",
+  "Restauration rapide",
+  "Salon de coiffure",
+  "Salon de toilettage",
+  "Sandwicherie",
+  "Station-service",
+  "Supermarché",
+  "Usine"
 ];

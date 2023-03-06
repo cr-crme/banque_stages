@@ -25,6 +25,8 @@ class TasksStepState extends State<TasksStep> {
   final Map<String, bool> skillsRequired = {
     "Communiquer à l’écrit": false,
     "Communiquer en anglais": false,
+    "Conduire un chariot (ex. cariste)": false,
+    "Interagir avec des clients": false,
     "Manipuler de l’argent": false,
   };
 
@@ -40,7 +42,7 @@ class TasksStepState extends State<TasksStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "* Évaluez la variété des tâches assignées au ou à la stagiaire :",
+              "* Quel était le degré de variété des tâches assignées au ou à la stagiaire ?",
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(

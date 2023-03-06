@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthProvider() {
+    _currentUser = FirebaseAuth.instance.currentUser;
     FirebaseAuth.instance.userChanges().listen((user) {
       _currentUser = user;
       notifyListeners();
@@ -19,6 +20,10 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> signOut() {
     return FirebaseAuth.instance.signOut();
+  }
+
+  bool isSignedIn() {
+    return currentUser != null;
   }
 
   User? _currentUser;

@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'widgets/tile_job_risk.dart';
 
 class JobListScreen extends StatefulWidget {
@@ -8,10 +8,10 @@ class JobListScreen extends StatefulWidget {
 
   static const route = "/job_list_risks_skills";
   @override
-  State<JobListScreen> createState() => _Job_list_screenState();
+  State<JobListScreen> createState() => _JobListScreenState();
 }
 
-class _Job_list_screenState extends State<JobListScreen> {
+class _JobListScreenState extends State<JobListScreen> {
   bool switch_value = true;
   bool switchRisk = true;
   Color colorTile = Colors.blue;

@@ -6,7 +6,7 @@ class StudentsProvider extends FirebaseListProvided<Student> {
   StudentsProvider()
       : super(
           pathToData: "students",
-          pathToAvailableDataIds: "void",
+          pathToAvailableDataIds: "",
         );
 
   @override

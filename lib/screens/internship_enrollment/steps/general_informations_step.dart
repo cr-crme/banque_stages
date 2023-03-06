@@ -33,9 +33,9 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   Job primaryJob = Job();
   Job? secondJob;
 
-  String? _supervisorName;
-  String? _supervisorPhone;
-  String? _supervisorEmail;
+  String? supervisorName;
+  String? supervisorPhone;
+  String? supervisorEmail;
 
   @override
   Widget build(BuildContext context) {
@@ -102,14 +102,14 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
             ],
             const SizedBox(height: 16),
             Text(
-              "Superviseur en milieu de travail",
+              "Superviseur en milieu de travail (tuteur en entreprise)",
               style: Theme.of(context).textTheme.titleLarge,
             ),
             ListTile(
               title: TextFormField(
                 decoration: const InputDecoration(labelText: "* Nom"),
                 validator: FormService.textNotEmptyValidator,
-                onSaved: (name) => _supervisorName = name!,
+                onSaved: (name) => supervisorName = name!,
               ),
             ),
             ListTile(
@@ -119,7 +119,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                   labelText: "* Téléphone",
                 ),
                 validator: FormService.phoneValidator,
-                onSaved: (phone) => _supervisorPhone = phone!,
+                onSaved: (phone) => supervisorPhone = phone!,
                 keyboardType: TextInputType.phone,
               ),
             ),
@@ -130,7 +130,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                   labelText: "* Courriel",
                 ),
                 validator: FormService.emailValidator,
-                onSaved: (email) => _supervisorEmail = email!,
+                onSaved: (email) => supervisorEmail = email!,
                 keyboardType: TextInputType.emailAddress,
               ),
             ),

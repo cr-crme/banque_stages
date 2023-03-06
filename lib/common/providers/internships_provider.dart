@@ -3,7 +3,9 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import '/common/models/internship.dart';
 
 class InternshipsProvider extends FirebaseListProvided<Internship> {
-  InternshipsProvider() : super(pathToData: "internships");
+  InternshipsProvider() : super(pathToData: "internships") {
+    initializeFetchingData();
+  }
 
   @override
   Internship deserializeItem(data) {

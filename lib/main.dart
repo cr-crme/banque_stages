@@ -15,6 +15,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
@@ -33,6 +34,7 @@ import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
+import 'router.dart';
 import 'screens/visiting_students/models/all_itineraries.dart';
 import 'screens/visiting_students/visit_students_screen.dart';
 import 'screens/visiting_students/visit_students_screen.dart';
@@ -46,17 +48,20 @@ void main() async {
 
   // Connect Firebase to local emulators
   assert(() {
-    FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
+    //! I got a weird error when using the emulator: (Ignoring header X-Firebase-Locale because its value was null.)
+    // FirebaseAuth.instance.useAuthEmulator("localhost", 9099);
     FirebaseDatabase.instance.useDatabaseEmulator(
         !kIsWeb && Platform.isAndroid ? "10.0.2.2" : "localhost", 9000);
     FirebaseStorage.instance.useStorageEmulator("localhost", 9199);
     return true;
   }());
-  runApp(const MyApp());
+
+  setPathUrlStrategy();
+  runApp(const BanqueStagesApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BanqueStagesApp extends StatelessWidget {
+  const BanqueStagesApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +75,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
           create: (context) => TeachersProvider(),
           update: (context, auth, previous) {
-            previous!.currentTeacherId = auth.currentUser!.uid;
+            previous!.initializeFetchingData();
+            previous.currentTeacherId = auth.currentUser!.uid;
             return previous;
           },
         ),
@@ -78,22 +84,22 @@ class MyApp extends StatelessWidget {
           create: (context) => StudentsProvider(),
           update: (context, auth, previous) {
             if (auth.currentUser == null) {
-              previous!.pathToAvailableDataIds = "void";
+              previous!.pathToAvailableDataIds = "";
             } else {
               previous!.pathToAvailableDataIds =
                   "/students-ids/${auth.currentUser!.uid}/";
             }
-
             return previous;
           },
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         onGenerateTitle: (context) {
           FormService.setContext = context;
           return AppLocalizations.of(context)!.appName;
         },
         theme: crcrmeMaterialTheme,
+        routerConfig: router,
         initialRoute: HomeScreen.route,
         routes: {
           LoginScreen.route: (context) => const LoginScreen(),

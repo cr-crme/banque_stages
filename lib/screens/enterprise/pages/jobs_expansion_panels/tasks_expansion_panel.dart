@@ -41,14 +41,14 @@ class _TasksBody extends StatelessWidget {
               ),
             ),
             Text(
-              "Compétences obligatoires",
+              "Habiletés obligatoires",
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
                 children: job.skillsRequired.isEmpty
-                    ? [const Text("Aucune compétence requise")]
+                    ? [const Text("Aucune habileté requise")]
                     : job.skillsRequired
                         .map((skills) => Text("- $skills"))
                         .toList(),
