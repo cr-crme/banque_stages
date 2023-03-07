@@ -69,10 +69,10 @@ class AutocompleteSearch extends StatelessWidget {
     bool valueInList = false;
 
     for (String val in options) {
-      log("in list val : $val");
+      log('in list val : $val');
 
       if (job == val) {
-        log("value trouver");
+        log('value trouver');
         valueInList = true;
       }
       log(job);
@@ -101,7 +101,7 @@ class AutocompleteSearch extends StatelessWidget {
   static List<String> filledList() {
     List<String> list = [];
     for (int i = 0; i < 50; i++) {
-      list.add("job $i");
+      list.add('job $i');
     }
     return list;
   }

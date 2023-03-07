@@ -98,7 +98,7 @@ class _JobListScreenState extends State<JobListScreen> {
                 //   decoration: BoxDecoration(color: Colors.blue),
                 // )
 
-                // Text("Par risque"),
+                // Text('Par risque'),
                 // Switch(
                 //     value: switch_value,
                 //     onChanged: (bool value) {
@@ -107,7 +107,7 @@ class _JobListScreenState extends State<JobListScreen> {
                 //         switch_value = value;
                 //       });
                 //     }),
-                // Text("Par compétence")
+                // Text('Par compétence')
               ],
             ),
           ),

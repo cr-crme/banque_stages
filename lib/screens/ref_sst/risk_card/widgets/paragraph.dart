@@ -32,7 +32,7 @@ class BuildLineWithDot extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         const Text(
-          "• ",
+          '• ',
           style: TextStyle(fontSize: 15, color: Colors.red),
         ),
         Expanded(
@@ -56,7 +56,7 @@ class BuildSubPoint extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         const Text(
-          "      ◦ ",
+          '      ◦ ',
           style: TextStyle(fontSize: 15),
         ),
         Expanded(

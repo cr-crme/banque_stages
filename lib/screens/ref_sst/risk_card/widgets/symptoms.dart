@@ -16,7 +16,7 @@ class Symptoms extends StatelessWidget {
           title: const Padding(
             padding: EdgeInsets.only(bottom: 5),
             child: Text(
-              "SYMPTÔMES ET EFFETS SUR LA SANTÉ LES PLUS FRÉQUENTS",
+              'SYMPTÔMES ET EFFETS SUR LA SANTÉ LES PLUS FRÉQUENTS',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color.fromARGB(255, 190, 77, 81)),

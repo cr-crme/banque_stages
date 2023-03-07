@@ -28,7 +28,7 @@ class SubRiskBuilding extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(left: 20),
                 child: const Text(
-                    "Illustration: Hervé Charbonneau"), //It will be with the picture
+                    'Illustration: Hervé Charbonneau'), //It will be with the picture
               )
             ]),
           if (subRisk.situations.isNotEmpty) SituationRisk(subRisk.situations),
@@ -38,7 +38,7 @@ class SubRiskBuilding extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(left: 20),
                 child: const Text(
-                    "Illustration: Hervé Charbonneau"), //It will be with the picture
+                    'Illustration: Hervé Charbonneau'), //It will be with the picture
               )
             ]),
           if (subRisk.factors.isNotEmpty) Factors(subRisk.factors),

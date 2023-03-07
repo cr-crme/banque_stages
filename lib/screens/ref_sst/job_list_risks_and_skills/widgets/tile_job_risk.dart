@@ -11,12 +11,12 @@ class TileJobRisk extends StatelessWidget {
   Widget riskTitle() {
     if (switchRisk) {
       return const Text(
-        "Nom risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
+        'Nom risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do',
         style: TextStyle(fontSize: 17),
       );
     } else {
       return const Text(
-          "Nom compétence - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
+          'Nom compétence - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do',
           style: TextStyle(fontSize: 17));
     }
   }
@@ -48,7 +48,7 @@ class TileJobRisk extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100)),
                 child: const Center(
                   child: Text(
-                    "00",
+                    '00',
                     style: TextStyle(color: Colors.white),
                   ),
                 )),
@@ -68,12 +68,12 @@ class _DropdownObect extends StatelessWidget {
   Widget dropdownRisk() {
     if (switchRisk) {
       return const Text(
-        "Compétence - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+        'Compétence - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
         style: TextStyle(color: Color.fromARGB(255, 113, 111, 111)),
       );
     } else {
       return const Text(
-          "Risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+          'Risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
           style: TextStyle(color: Color.fromARGB(255, 113, 111, 111)));
     }
   }

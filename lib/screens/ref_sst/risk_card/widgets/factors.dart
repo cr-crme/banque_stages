@@ -16,7 +16,7 @@ class Factors extends StatelessWidget {
           title: const Padding(
             padding: EdgeInsets.only(bottom: 5),
             child: Text(
-              "PRINCIPAUX FACTEURS AGGRAVANTS",
+              'PRINCIPAUX FACTEURS AGGRAVANTS',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color.fromARGB(255, 190, 77, 81)),

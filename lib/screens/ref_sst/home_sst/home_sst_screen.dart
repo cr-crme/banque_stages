@@ -7,7 +7,7 @@ import 'widgets/search_bar.dart';
 class HomeSSTScreen extends StatefulWidget {
   const HomeSSTScreen({Key? key}) : super(key: key);
 
-  static const route = "/home-sst";
+  static const route = '/home-sst';
 
   @override
   State<HomeSSTScreen> createState() => _HomeSSTScreenState();
@@ -50,18 +50,18 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
           child: InkWell(
               child: Column(
             children: const [
-              Text("Analyse des risques par métier",
+              Text('Analyse des risques par métier',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 25,
                       color: Colors.white,
-                      fontFamily: "Noto Sans")),
+                      fontFamily: 'Noto Sans')),
               Padding(padding: EdgeInsets.only(top: 25.0), child: SearchBar()),
               Padding(
                 padding: EdgeInsets.only(top: 30.0),
                 child: Text(
-                  "L'analyse des risques à la SST a été faite pour les 45 métiers les plus populaires du répertoires du Ministère de l'éducation.",
+                  'L\'analyse des risques à la SST a été faite pour les 45 métiers les plus populaires du répertoires du Ministère de l\'éducation.',
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                       fontSize: 11,
@@ -95,13 +95,13 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                 padding: EdgeInsets.all(45.0),
                 child: Center(
                   child: Text(
-                    "Consulter les fiches de risques",
+                    'Consulter les fiches de risques',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
                         color: Colors.white,
-                        fontFamily: "Noto Sans"),
+                        fontFamily: 'Noto Sans'),
                   ),
                 ),
               ),
@@ -115,7 +115,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Référentiel SST"),
+          title: const Text('Référentiel SST'),
         ),
         drawer: const MainDrawer(),
         body: body);

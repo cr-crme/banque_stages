@@ -4,8 +4,8 @@ class Risk extends ItemSerializable {
   Risk({
     super.id,
     this.number = 0,
-    this.shortname = "",
-    this.name = "",
+    this.shortname = '',
+    this.name = '',
     subrisks,
     links,
   })  : subrisks = subrisks ?? [],
@@ -28,7 +28,7 @@ class Risk extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() {
-    throw "Risk should never generate a map, it is read only";
+    throw 'Risk should never generate a map, it is read only';
   }
 
   @override
@@ -37,11 +37,11 @@ class Risk extends ItemSerializable {
   }
 
   Risk.fromSerialized(map)
-      : number = int.parse(map["number"]),
-        shortname = map["shortname"],
-        name = map["name"],
-        links = getLinks(map["links"] as List<dynamic>),
-        subrisks = getSubRisks(map["subrisks"] as List<dynamic>),
+      : number = int.parse(map['number']),
+        shortname = map['shortname'],
+        name = map['name'],
+        links = getLinks(map['links'] as List<dynamic>),
+        subrisks = getSubRisks(map['subrisks'] as List<dynamic>),
         super.fromSerialized(map);
 
   static List<RiskLink> getLinks(List<dynamic> links) {
@@ -61,18 +61,18 @@ class Risk extends ItemSerializable {
     List<SubRisk> subRisksList = [];
 
     for (Map<String, dynamic> subrisk in risks) {
-      final int subriskID = int.parse(subrisk["number"]);
-      final String subriskTitle = subrisk["title"];
-      final String subriskIntro = subrisk["intro"];
+      final int subriskID = int.parse(subrisk['number']);
+      final String subriskTitle = subrisk['title'];
+      final String subriskIntro = subrisk['intro'];
 
       Map<String, List<String>> subriskSituations =
-          readParagraph("situations", subrisk);
+          readParagraph('situations', subrisk);
 
       Map<String, List<String>> subriskFactors =
-          readParagraph("factors", subrisk);
+          readParagraph('factors', subrisk);
 
       Map<String, List<String>> subriskSymptoms =
-          readParagraph("symptoms", subrisk);
+          readParagraph('symptoms', subrisk);
 
       final List<String> images = List.from((subrisk['images']) as List);
 
@@ -100,7 +100,7 @@ class Risk extends ItemSerializable {
     final List<dynamic> pargraph = List.from((map[key]) as List<dynamic>);
 
     for (Map<String, dynamic> point in pargraph) {
-      final String line = point["line"];
+      final String line = point['line'];
 
       List<String> sublines = List.from((point['sublines']) as List<dynamic>);
 

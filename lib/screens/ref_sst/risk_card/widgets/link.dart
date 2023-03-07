@@ -18,7 +18,7 @@ class Link extends StatelessWidget {
           title: const Padding(
             padding: EdgeInsets.only(bottom: 5, top: 15),
             child: Text(
-              "POUR ALLER PLUS LOIN",
+              'POUR ALLER PLUS LOIN',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color.fromARGB(255, 0, 0, 0)),
