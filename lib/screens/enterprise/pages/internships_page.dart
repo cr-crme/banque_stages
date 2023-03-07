@@ -36,7 +36,7 @@ class InternshipsPageState extends State<InternshipsPage> {
         children: [
           ListTile(
             title: Text(
-              "Historique des stages",
+              'Historique des stages',
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
@@ -48,7 +48,7 @@ class InternshipsPageState extends State<InternshipsPage> {
                   (internship) => ExpansionPanel(
                     headerBuilder: (context, isExpanded) => ListTile(
                       leading: Text(
-                          "${internship.date.start.year}-${internship.date.end.year}"),
+                          '${internship.date.start.year}-${internship.date.end.year}'),
                       title: Text(widget.enterprise.jobs[internship.jobId]
                           .specialization!.idWithName),
                     ),

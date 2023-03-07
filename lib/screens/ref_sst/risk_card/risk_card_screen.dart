@@ -16,7 +16,7 @@ class RisksCardsScreen extends StatelessWidget {
     Risk? risk = RiskDataFileService.fromId(id);
     return Scaffold(
         appBar: AppBar(
-          title: Text("Fiche ${risk!.number}"),
+          title: Text('Fiche ${risk!.number}'),
         ),
         body: ListView(
           children: [

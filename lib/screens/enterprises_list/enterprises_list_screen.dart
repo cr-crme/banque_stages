@@ -61,12 +61,12 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Entreprises"),
+        title: const Text('Entreprises'),
         actions: [
           IconButton(
             onPressed: () =>
                 GoRouter.of(context).goNamed(Screens.addEnterprise),
-            tooltip: "Ajouter une entreprise",
+            tooltip: 'Ajouter une entreprise',
             icon: const Icon(Icons.add),
           ),
         ],
@@ -76,7 +76,7 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
       body: Column(
         children: [
           SwitchListTile(
-            title: const Text("Cacher les stages indisponibles"),
+            title: const Text('Cacher les stages indisponibles'),
             value: _hideNotAvailable,
             onChanged: (value) => setState(() => _hideNotAvailable = value),
           ),
@@ -104,7 +104,7 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
               visible: enterprises.isEmpty,
               child: ElevatedButton(
                   onPressed: () => addDummyEnterprises(enterprises),
-                  child: const Text("Add dummy enterprises")),
+                  child: const Text('Add dummy enterprises')),
             ),
           ),
         ],
