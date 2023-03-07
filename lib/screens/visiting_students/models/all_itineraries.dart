@@ -1,7 +1,7 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
+import '/screens/visiting_students/models/waypoints.dart';
 import 'itinerary.dart';
-import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.dart';
 
 class AllItineraries extends MapProvided<Itinerary> {
   @override

@@ -1,6 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
-import './waypoints.dart';
+
+import 'waypoints.dart';
 
 class LngLatUtils {
   static fromLatLngToLngLat(List<LatLng> toConvert) {

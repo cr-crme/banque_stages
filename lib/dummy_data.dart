@@ -1,13 +1,12 @@
 //! Remove this file before production
 
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
-
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/models/student.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/students_provider.dart';
+import '/misc/job_data_file_service.dart';
 
 void addDummyEnterprises(EnterprisesProvider enterprises) {
   // TODO: Add missing fields in the dummy jobs

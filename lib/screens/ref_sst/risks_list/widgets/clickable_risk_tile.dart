@@ -1,9 +1,9 @@
 //import 'dart:js_util';
 
-import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/Risk.dart';
+import '/router.dart';
+import '../../common/risk.dart';
 
 //SST
 class SSTCard extends StatelessWidget {

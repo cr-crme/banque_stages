@@ -1,6 +1,7 @@
-import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:flutter/material.dart';
-import '../common/Risk.dart';
+
+import '/misc/risk_data_file_service.dart';
+import '../common/risk.dart';
 import 'widgets/clickable_risk_tile.dart';
 
 class SSTCardsScreen extends StatefulWidget {

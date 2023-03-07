@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/common/Risk.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/widgets/list_links.dart';
+
+import '/screens/ref_sst/common/risk.dart';
+import '/screens/ref_sst/risk_card/widgets/list_links.dart';
 
 class Link extends StatelessWidget {
   //params and variables

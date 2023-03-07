@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/screens/ref_sst/common/skill_sst.dart';
+import '/screens/ref_sst/common/skill_sst.dart';
 
 class JobSST {
   const JobSST({

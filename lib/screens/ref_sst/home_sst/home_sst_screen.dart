@@ -1,7 +1,8 @@
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'package:flutter/material.dart';
-import 'widgets/search_bar.dart';
+
 import '/common/widgets/main_drawer.dart';
+import '/screens/ref_sst/risks_list/risks_list_screen.dart';
+import 'widgets/search_bar.dart';
 
 class HomeSSTScreen extends StatefulWidget {
   const HomeSSTScreen({Key? key}) : super(key: key);
