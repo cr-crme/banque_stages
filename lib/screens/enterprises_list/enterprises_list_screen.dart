@@ -76,7 +76,7 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
       body: Column(
         children: [
           SwitchListTile(
-            title: const Text('Cacher les stages indisponibles'),
+            title: const Text('Afficher que les stages disponibles'),
             value: _hideNotAvailable,
             onChanged: (value) => setState(() => _hideNotAvailable = value),
           ),
