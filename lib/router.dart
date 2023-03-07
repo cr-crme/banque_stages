@@ -19,31 +19,31 @@ import 'screens/students_list/students_list_screen.dart';
 import 'screens/visiting_students/visit_students_screen.dart';
 
 abstract class Screens {
-  static const home = "home";
-  static const login = "login";
-  static const visitStudents = "visit-students";
+  static const home = 'home';
+  static const login = 'login';
+  static const visitStudents = 'visit-students';
 
-  static const enterprisesList = "enterprises-list";
-  static const enterprise = "enterprise";
-  static const addEnterprise = "add-enterprise";
+  static const enterprisesList = 'enterprises-list';
+  static const enterprise = 'enterprise';
+  static const addEnterprise = 'add-enterprise';
 
-  static const studentsList = "students-list";
-  static const student = "student";
-  static const addStudent = "add-student";
+  static const studentsList = 'students-list';
+  static const student = 'student';
+  static const addStudent = 'add-student';
 
-  static const internshipEnrollement = "add-internship";
-  static const postInternshipEvaluationScreen = "post-internship-evaluation";
+  static const internshipEnrollement = 'add-internship';
+  static const postInternshipEvaluationScreen = 'post-internship-evaluation';
 
-  static const homeSST = "home-sst";
-  static const jobSST = "job-sst";
-  static const risksCardsSST = "risks-cards-sst";
-  static const cardsSST = "cards-sst";
+  static const homeSST = 'home-sst';
+  static const jobSST = 'job-sst';
+  static const risksCardsSST = 'risks';
+  static const cardsSST = 'cards-sst';
 
   static Map<String, String> withId(id) {
     if (id is String) {
-      return {"id": id};
+      return {'id': id};
     } else if (id is ItemSerializable) {
-      return {"id": id.id};
+      return {'id': id.id};
     }
 
     throw TypeError();
@@ -52,88 +52,88 @@ abstract class Screens {
 
 final GoRouter router = GoRouter(
   redirect: (context, state) =>
-      context.read<AuthProvider>().isSignedIn() ? null : "/login",
+      context.read<AuthProvider>().isSignedIn() ? null : '/login',
   routes: [
     GoRoute(
-      path: "/",
+      path: '/',
       name: Screens.home,
       builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
-      path: "/login",
+      path: '/login',
       name: Screens.login,
       builder: (context, state) => const LoginScreen(),
       redirect: (context, state) =>
-          context.read<AuthProvider>().isSignedIn() ? "/" : null,
+          context.read<AuthProvider>().isSignedIn() ? '/' : null,
     ),
     GoRoute(
-      path: "/enterprises",
+      path: '/enterprises',
       name: Screens.enterprisesList,
       builder: (context, state) => const EnterprisesListScreen(),
       routes: [
         GoRoute(
-          path: "add",
+          path: 'add',
           name: Screens.addEnterprise,
           builder: (context, state) => const AddEnterpriseScreen(),
         ),
         GoRoute(
-          path: ":id",
+          path: ':id',
           name: Screens.enterprise,
           builder: (context, state) =>
-              EnterpriseScreen(id: state.params["id"]!),
+              EnterpriseScreen(id: state.params['id']!),
           routes: [
             GoRoute(
-              path: "internship",
+              path: 'internship',
               name: Screens.internshipEnrollement,
               builder: (context, state) =>
-                  InternshipEnrollmentScreen(enterpriseId: state.params["id"]!),
+                  InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
             ),
           ],
         ),
       ],
     ),
     GoRoute(
-      path: "/students",
+      path: '/students',
       name: Screens.studentsList,
       builder: (context, state) => const StudentsListScreen(),
       routes: [
         GoRoute(
-          path: ":id",
+          path: ':id',
           name: Screens.student,
-          builder: (context, state) => StudentScreen(id: state.params["id"]!),
+          builder: (context, state) => StudentScreen(id: state.params['id']!),
         ),
       ],
     ),
     GoRoute(
-      path: "/visit-students",
+      path: '/visit-students',
       name: Screens.visitStudents,
       builder: (context, state) => const VisitStudentScreen(),
     ),
     GoRoute(
-      path: "/post-internship-evaluation",
+      path: '/post-internship-evaluation',
       name: Screens.postInternshipEvaluationScreen,
       builder: (context, state) => PostInternshipEvaluationScreen(
-        enterpriseId: state.params["enterpriseId"]!,
-        jobId: state.params["jobId"]!,
+        enterpriseId: state.params['enterpriseId']!,
+        jobId: state.params['jobId']!,
       ),
     ),
     GoRoute(
-      path: "/sst",
+      path: '/sst',
       name: Screens.homeSST,
       builder: (context, state) => const HomeSSTScreen(),
       routes: [
         GoRoute(
-          path: "jobs/:id",
+          path: 'jobs/:id',
           name: Screens.jobSST,
-          builder: (context, state) => JobListScreen(id: state.params["id"]!),
+          builder: (context, state) => JobListScreen(id: state.params['id']!),
         ),
         GoRoute(
-          path: "risks/:id",
+          path: 'risks/:id',
           name: Screens.risksCardsSST,
           builder: (context, state) =>
-              RisksCardsScreen(id: state.params["id"]!),
+              RisksCardsScreen(id: state.params['id']!),
           redirect: (context, state) {
-            if (int.tryParse(state.params["id"] ?? "") == null) {
+            if (state.params['id'] == null) {
               return Screens.homeSST;
             }
             return null;
@@ -141,7 +141,7 @@ final GoRouter router = GoRouter(
         ),
         GoRoute(
           name: Screens.cardsSST,
-          path: "cards",
+          path: 'cards',
           builder: (context, state) => const SSTCardsScreen(),
         ),
       ],

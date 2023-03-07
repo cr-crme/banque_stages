@@ -13,7 +13,6 @@ class RisksCardsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //late final _riskID = ModalRoute.of(context)!.settings.arguments as String;
     Risk? risk = RiskDataFileService.fromId(id);
     return Scaffold(
         appBar: AppBar(
