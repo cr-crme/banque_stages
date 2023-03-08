@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class TileJobRisk extends StatelessWidget {
-  const TileJobRisk({super.key});
+  const TileJobRisk({super.key, required this.riskIds});
+
+  final List<String> riskIds;
 
   @override
   Widget build(BuildContext context) {

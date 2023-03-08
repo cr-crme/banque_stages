@@ -1,6 +1,6 @@
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 
+import '/misc/job_data_file_service.dart';
 import '../../job_list_risks_and_skills/job_list_screen.dart';
 
 class AutocompleteSearch extends StatelessWidget {
@@ -10,20 +10,19 @@ class AutocompleteSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final options = filledList(context);
+    final options = JobDataFileService.specializations;
 
     return ListTile(
       title: Autocomplete<String>(
         optionsBuilder: (value) {
-          if (value.text == '') {
-            textEditingValue = value;
-            return const Iterable<String>.empty();
-          }
-          return options.where((String option) {
-            textEditingValue = value;
-
-            return option.toString().contains(value.text.toLowerCase());
-          });
+          if (value.text == '') return const Iterable<String>.empty();
+          return options
+              .map<String?>((e) =>
+                  e.name.toLowerCase().contains(value.text.toLowerCase())
+                      ? e.name
+                      : null)
+              .where((e) => e != null)
+              .cast<String>();
         },
         onSelected: (choice) => goTo(context, choice, options),
         optionsViewBuilder: (context, onSelected, options) {
@@ -60,12 +59,9 @@ class AutocompleteSearch extends StatelessWidget {
     );
   }
 
-  goTo(BuildContext context, String choice, List<String> options) {
-    if (options.contains(choice)) {
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => JobListScreen(id: choice),
-      ));
-    } else {
+  goTo(BuildContext context, String choice, List<Specialization> options) {
+    final index = options.indexWhere((e) => e.name == choice);
+    if (index < 0) {
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -79,23 +75,11 @@ class AutocompleteSearch extends StatelessWidget {
           ],
         ),
       );
+      return;
     }
-  }
 
-  List<String> filledList(BuildContext context) {
-    List<Specialization> out = [];
-    for (final sector in JobDataFileService.sectors) {
-      for (final specialization in sector.specializations) {
-        // If there is no risk, it does not mean this specialization
-        // is risk-free, it means it was not evaluated
-        var hasRisks = false;
-        for (final skill in specialization.skills) {
-          if (hasRisks) break;
-          hasRisks = skill.risks.isNotEmpty;
-        }
-        if (hasRisks) out.add(specialization);
-      }
-    }
-    return out.map<String>((e) => e.name).toList();
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => JobListScreen(id: options[index].id),
+    ));
   }
 }

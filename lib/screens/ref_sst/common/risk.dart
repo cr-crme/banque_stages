@@ -5,6 +5,7 @@ class Risk extends ItemSerializable {
     super.id,
     this.number = 0,
     this.shortname = '',
+    this.abbrv = '',
     this.name = '',
     subrisks,
     links,
@@ -14,6 +15,7 @@ class Risk extends ItemSerializable {
   Risk copyWith({
     String? id,
     String? shortname,
+    String? abbrv,
     String? name,
     List<SubRisk>? subrisks,
     List<RiskLink>? links,
@@ -21,6 +23,7 @@ class Risk extends ItemSerializable {
     return Risk(
         id: id ?? this.id,
         shortname: shortname ?? this.shortname,
+        abbrv: abbrv ?? this.abbrv,
         name: name ?? this.name,
         subrisks: subrisks ?? this.subrisks,
         links: links ?? this.links);
@@ -39,6 +42,7 @@ class Risk extends ItemSerializable {
   Risk.fromSerialized(map)
       : number = int.parse(map['number']),
         shortname = map['shortname'],
+        abbrv = map['abbrv'],
         name = map['name'],
         links = getLinks(map['links'] as List<dynamic>),
         subrisks = getSubRisks(map['subrisks'] as List<dynamic>),
@@ -90,6 +94,7 @@ class Risk extends ItemSerializable {
 
   final int number;
   final String shortname;
+  final String abbrv;
   final String name;
   final List<SubRisk> subrisks;
   final List<RiskLink> links;

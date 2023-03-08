@@ -36,6 +36,23 @@ abstract class JobDataFileService {
 
   static List<ActivitySector> get sectors => _sectors;
 
+  static List<Specialization> get specializations {
+    List<Specialization> out = [];
+    for (final sector in JobDataFileService.sectors) {
+      for (final specialization in sector.specializations) {
+        // If there is no risk, it does not mean this specialization
+        // is risk-free, it means it was not evaluated
+        var hasRisks = false;
+        for (final skill in specialization.skills) {
+          hasRisks = skill.risks.isNotEmpty;
+          if (hasRisks) break;
+        }
+        if (hasRisks) out.add(specialization);
+      }
+    }
+    return out;
+  }
+
   static List<ActivitySector> _sectors = [];
 }
 

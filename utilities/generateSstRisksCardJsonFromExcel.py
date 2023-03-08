@@ -16,24 +16,25 @@ IMAGE_FILE_FORMAT = ".png"
 IMAGE_FILES_PATH = "assets/images-sst/"
 
 RISKS_SHORTNAMES = {
-    1: "chemical",
-    2: "biological",
-    3: "equipment",
-    4: "fall",
-    5: "objectFall",
-    6: "transit",
-    7: "posture",
-    8: "motion",
-    9: "handling",
-    10: "psychological",
-    11: "noise",
-    12: "temperature",
-    13: "vibration",
-    14: "electric",
-    15: "anoxia",
-    16: "fire",
-    17: "nanomaterial"
+    1: ["chemical", "c"],
+    2: ["biological", "b"],
+    3: ["equipment", "e"],
+    4: ["fall", "f"],
+    5: ["objectFall","of"],
+    6: ["transit", "t"],
+    7: ["posture", "p"],
+    8: ["motion", "mv"],
+    9: ["handling", "h"],
+    10: ["psychological", "psy"],
+    11: ["noise", "n"],
+    12: ["temperature", "et"],
+    13: ["vibration", "v"],
+    14: ["electric", "el"],
+    15: ["anoxia", "a"],
+    16: ["fire", "fi"],
+    17: ["nanomaterial", "nm"],
 }
+
 
 # Main functions
 
@@ -72,7 +73,8 @@ def start(excelPathSST: str):
 
         json.append({
             "number": str(row[0]),
-            "shortname": RISKS_SHORTNAMES[int(row[0])],
+            "shortname": RISKS_SHORTNAMES[int(row[0])][0],
+            "abbrv": RISKS_SHORTNAMES[int(row[0])][1],
             "name": str(row[1]),
             "subrisks": [
                     {
