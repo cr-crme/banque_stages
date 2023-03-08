@@ -51,33 +51,11 @@ class AutocompleteSearch extends StatelessWidget {
           );
         },
       ),
-      trailing: IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {
-            goTo(context, textEditingValue.text, options);
-          }),
     );
   }
 
   goTo(BuildContext context, String choice, List<Specialization> options) {
     final index = options.indexWhere((e) => e.name == choice);
-    if (index < 0) {
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Erreur'),
-          content: const Text('Le métier saisie n\'est pas disponible'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-      return;
-    }
-
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => JobListScreen(id: options[index].id),
     ));

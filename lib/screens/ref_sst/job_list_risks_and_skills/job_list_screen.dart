@@ -1,7 +1,9 @@
-import '/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
+
+import '/misc/job_data_file_service.dart';
+import '/misc/risk_data_file_service.dart';
+import '/screens/ref_sst/common/risk.dart';
 import 'widgets/tile_job_risk.dart';
-import 'widgets/tile_job_skill.dart';
 
 class JobListScreen extends StatelessWidget {
   final String id;
@@ -24,12 +26,33 @@ class JobListScreen extends StatelessWidget {
     return out;
   }
 
-  List<String> _extractAllRisks(Specialization job) {
+  List<Risk> _extractAllRisks(Specialization job) {
     final out = <String>[];
     for (final skill in job.skills) {
       for (final risk in skill.risks) {
         if (!out.contains(risk)) out.add(risk);
       }
+    }
+    return out.map<Risk>((e) => RiskDataFileService.fromAbbrv(e)!).toList();
+  }
+
+  List<Risk> _risksSkillHas(Skill skill, List<Risk> allRisks) {
+    final out = <Risk>[];
+    for (final risk in skill.risks) {
+      final skillRisk = RiskDataFileService.fromAbbrv(risk);
+      if (out.contains(skillRisk) || skillRisk == null) continue;
+      out.add(skillRisk);
+    }
+    return out;
+  }
+
+  List<Skill> _skillsThatHasThisRisk(Risk risk, List<Skill> skills) {
+    final out = <Skill>[];
+    for (final skill in skills) {
+      if (skill.risks.toList().indexWhere((e) => e == risk.abbrv) < 0) {
+        continue;
+      }
+      out.add(skill);
     }
     return out;
   }
@@ -38,7 +61,26 @@ class JobListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final job =
         JobDataFileService.specializations.firstWhere((e) => e.id == id);
-    final riskIds = _extractAllRisks(job);
+
+    final risks = _extractAllRisks(job);
+    final skillsAssociatedToRisks = <Risk, List<String>>{};
+    for (final risk in risks) {
+      skillsAssociatedToRisks[risk] = _skillsThatHasThisRisk(risk, job.skills)
+          .map<String>((e) => e.name)
+          .toList();
+    }
+    risks.sort((a, b) =>
+        skillsAssociatedToRisks[b]!.length -
+        skillsAssociatedToRisks[a]!.length);
+
+    final skills = job.skills.map((e) => e).toList();
+    final risksAssociatedToSkill = <Skill, List<String>>{};
+    for (final skill in skills) {
+      risksAssociatedToSkill[skill] =
+          _risksSkillHas(skill, risks).map<String>((e) => e.name).toList();
+    }
+    skills.sort((a, b) =>
+        risksAssociatedToSkill[b]!.length - risksAssociatedToSkill[a]!.length);
 
     return DefaultTabController(
       length: 2,
@@ -51,7 +93,11 @@ class JobListScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Text('Risques', style: TextStyle(fontSize: 16)),
+                    Text(
+                      'Par\nrisques',
+                      style: TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
                     SizedBox(width: 10),
                     Icon(Icons.warning),
                   ],
@@ -62,7 +108,11 @@ class JobListScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Text('Compétences', style: TextStyle(fontSize: 16)),
+                    Text(
+                      'Par\ncompétences',
+                      style: TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
                     SizedBox(width: 10),
                     Icon(Icons.school),
                   ],
@@ -74,9 +124,12 @@ class JobListScreen extends StatelessWidget {
             ListView.separated(
               physics: const ScrollPhysics(),
               shrinkWrap: true,
-              itemCount: riskIds.length,
+              itemCount: risks.length,
               padding: const EdgeInsets.all(16.0),
-              itemBuilder: (context, i) => TileJobRisk(riskIds: riskIds),
+              itemBuilder: (context, i) => TileJobRisk(
+                title: risks[i].name,
+                elements: skillsAssociatedToRisks[risks[i]]!,
+              ),
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(
                   color: Colors.grey,
@@ -89,7 +142,10 @@ class JobListScreen extends StatelessWidget {
               shrinkWrap: true,
               itemCount: job.skills.length,
               padding: const EdgeInsets.all(16.0),
-              itemBuilder: (context, i) => const TileJobSkill(),
+              itemBuilder: (context, i) => TileJobRisk(
+                title: skills[i].name,
+                elements: risksAssociatedToSkill[skills[i]]!,
+              ),
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(
                   color: Colors.grey,

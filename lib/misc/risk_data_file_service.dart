@@ -23,4 +23,8 @@ abstract class RiskDataFileService {
   static Risk? fromId(String id) {
     return _risks.firstWhereOrNull((risk) => risk.id == id);
   }
+
+  static Risk? fromAbbrv(String abbrv) {
+    return _risks.firstWhereOrNull((risk) => risk.abbrv == abbrv);
+  }
 }

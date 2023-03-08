@@ -61,7 +61,8 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
               Padding(
                 padding: EdgeInsets.only(top: 30.0),
                 child: Text(
-                  'L\'analyse des risques à la SST a été faite pour les 45 métiers les plus populaires du répertoires du Ministère de l\'éducation.',
+                  'Seuls les 45 métiers du répertoire du Ministère de l\'éducation '
+                  'qui ont été analysés apparaissent dans la liste.',
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                       fontSize: 11,

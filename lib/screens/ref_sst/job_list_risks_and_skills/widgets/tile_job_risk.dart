@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class TileJobRisk extends StatelessWidget {
-  const TileJobRisk({super.key, required this.riskIds});
+  const TileJobRisk({super.key, required this.title, required this.elements});
 
-  final List<String> riskIds;
+  final String title;
+  final List<String> elements;
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +13,9 @@ class TileJobRisk extends StatelessWidget {
       child: ExpansionTile(
           textColor: Colors.black,
           collapsedTextColor: Colors.black,
-          title: const Text(
-            'Nom risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do',
-            style: TextStyle(fontSize: 17),
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 17),
           ),
           trailing: Material(
             elevation: 10,
@@ -33,24 +34,22 @@ class TileJobRisk extends StatelessWidget {
                     ],
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(100)),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    '00',
-                    style: TextStyle(color: Colors.white),
+                    elements.length.toString(),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 )),
           ),
           //more than 50% of width makes circle,
-          children: [
-            for (int i = 0; i < 5; i++)
-              const ListTile(
-                title: Text(
-                    'Risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-                    style:
-                        TextStyle(color: Color.fromARGB(255, 113, 111, 111))),
-                minVerticalPadding: 20,
-              ),
-          ]),
+          children: elements
+              .map<Widget>((e) => ListTile(
+                    title: Text(e,
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 113, 111, 111))),
+                    minVerticalPadding: 20,
+                  ))
+              .toList()),
     );
   }
 }
