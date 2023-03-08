@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets/tile_job_risk.dart';
+import 'widgets/tile_job_skill.dart';
 
 class JobListScreen extends StatefulWidget {
   final String id;
@@ -26,107 +27,66 @@ class _JobListScreenState extends State<JobListScreen> {
     super.initState();
   }
 
-  void testButton() {
-    elevationTile1 = 0;
-    elevationTile2 = 5;
-    textColor = Colors.white;
-    textColor2 = Colors.blue;
-    colorTile = Colors.white;
-    colorTile2 = Colors.blue;
-    switchRisk = false;
-    setState(() {});
-  }
-
-  void testButton2() {
-    elevationTile1 = 5;
-    elevationTile2 = 0;
-    textColor = Colors.blue;
-    textColor2 = Colors.white;
-    colorTile = Colors.blue;
-    colorTile2 = Colors.white;
-    switchRisk = true;
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.id),
-        ),
-        body: ListView(children: [
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 192.273,
-                  height: 50,
-                  child: Material(
-                    elevation: elevationTile1,
-                    child: ListTile(
-                      textColor: textColor,
-                      iconColor: textColor,
-                      title: const Text('Affichage par risque'),
-                      subtitle: null,
-                      trailing: const Icon(Icons.warning),
-                      tileColor: colorTile2,
-                      onTap: (testButton2),
-                      horizontalTitleGap: 16,
-                    ),
-                  ),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.id),
+            bottom: TabBar(tabs: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text('Risques', style: TextStyle(fontSize: 16)),
+                    SizedBox(width: 10),
+                    Icon(Icons.warning),
+                  ],
                 ),
-                SizedBox(
-                  //192
-                  width: 200,
-                  height: 50,
-                  child: Material(
-                    elevation: elevationTile2,
-                    child: ListTile(
-                      textColor: textColor2,
-                      iconColor: textColor2,
-                      onTap: (testButton),
-                      title: const Text('Affichage par compétence'),
-                      trailing: const Icon(Icons.school),
-                      tileColor: colorTile,
-                    ),
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text('Compétences', style: TextStyle(fontSize: 16)),
+                    SizedBox(width: 10),
+                    Icon(Icons.school),
+                  ],
                 ),
-                // Container(
-                //   width: 100,
-                //   height: 50,
-                //   decoration: BoxDecoration(color: Colors.blue),
-                // )
-
-                // Text('Par risque'),
-                // Switch(
-                //     value: switch_value,
-                //     onChanged: (bool value) {
-                //       // This is called when the user toggles the switch.
-                //       setState(() {
-                //         switch_value = value;
-                //       });
-                //     }),
-                // Text('Par compétence')
-              ],
-            ),
+              ),
+            ]),
           ),
-          ListView.separated(
-            physics: const ScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 5,
-            padding: const EdgeInsets.all(16.0),
-            itemBuilder: (context, i) {
-              return TileJobRisk(switchRisk);
-              // call the expansion tile constuctor list
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const Divider(
-                color: Colors.grey,
-                height: 16,
-              );
-            },
-          )
-        ]));
+          body: TabBarView(children: [
+            ListView.separated(
+              physics: const ScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: 5,
+              padding: const EdgeInsets.all(16.0),
+              itemBuilder: (context, i) => const TileJobRisk(),
+              separatorBuilder: (BuildContext context, int index) {
+                return const Divider(
+                  color: Colors.grey,
+                  height: 16,
+                );
+              },
+            ),
+            ListView.separated(
+              physics: const ScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: 5,
+              padding: const EdgeInsets.all(16.0),
+              itemBuilder: (context, i) => const TileJobSkill(),
+              separatorBuilder: (BuildContext context, int index) {
+                return const Divider(
+                  color: Colors.grey,
+                  height: 16,
+                );
+              },
+            )
+          ])),
+    );
   }
 }

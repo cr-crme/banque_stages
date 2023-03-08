@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../job_list_risks_and_skills/job_list_screen.dart';
@@ -7,13 +6,12 @@ import '../../job_list_risks_and_skills/job_list_screen.dart';
 class AutocompleteSearch extends StatelessWidget {
   const AutocompleteSearch({super.key});
 
-  static List<String> options = filledList();
-
   static TextEditingValue textEditingValue = const TextEditingValue();
 
   @override
   Widget build(BuildContext context) {
-    //TextEditingValue textEditingValue = TextEditingValue();
+    final options = filledList(context);
+
     return ListTile(
       title: Autocomplete<String>(
         optionsBuilder: (value) {
@@ -27,10 +25,7 @@ class AutocompleteSearch extends StatelessWidget {
             return option.toString().contains(value.text.toLowerCase());
           });
         },
-        onSelected: (String option) {
-          debugPrint('You just selected $option');
-          goTo(context, option);
-        },
+        onSelected: (choice) => goTo(context, choice, options),
         optionsViewBuilder: (context, onSelected, options) {
           return Align(
             alignment: Alignment.topLeft,
@@ -60,26 +55,15 @@ class AutocompleteSearch extends StatelessWidget {
       trailing: IconButton(
           icon: const Icon(Icons.search),
           onPressed: () {
-            goTo(context, textEditingValue.text);
+            goTo(context, textEditingValue.text, options);
           }),
     );
   }
 
-  goTo(BuildContext context, String job) {
-    bool valueInList = false;
-
-    for (String val in options) {
-      log('in list val : $val');
-
-      if (job == val) {
-        log('value trouver');
-        valueInList = true;
-      }
-      log(job);
-    }
-    if (valueInList) {
+  goTo(BuildContext context, String choice, List<String> options) {
+    if (options.contains(choice)) {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => JobListScreen(id: job),
+        builder: (_) => JobListScreen(id: choice),
       ));
     } else {
       showDialog<String>(
@@ -98,11 +82,20 @@ class AutocompleteSearch extends StatelessWidget {
     }
   }
 
-  static List<String> filledList() {
-    List<String> list = [];
-    for (int i = 0; i < 50; i++) {
-      list.add('job $i');
+  List<String> filledList(BuildContext context) {
+    List<Specialization> out = [];
+    for (final sector in JobDataFileService.sectors) {
+      for (final specialization in sector.specializations) {
+        // If there is no risk, it does not mean this specialization
+        // is risk-free, it means it was not evaluated
+        var hasRisks = false;
+        for (final skill in specialization.skills) {
+          if (hasRisks) break;
+          hasRisks = skill.risks.isNotEmpty;
+        }
+        if (hasRisks) out.add(specialization);
+      }
     }
-    return list;
+    return out.map<String>((e) => e.name).toList();
   }
 }

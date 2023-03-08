@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class TileJobRisk extends StatelessWidget {
-  const TileJobRisk({super.key});
+class TileJobSkill extends StatelessWidget {
+  const TileJobSkill({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +11,8 @@ class TileJobRisk extends StatelessWidget {
           textColor: Colors.black,
           collapsedTextColor: Colors.black,
           title: const Text(
-            'Nom risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do',
-            style: TextStyle(fontSize: 17),
-          ),
+              'Nom compétence - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do',
+              style: TextStyle(fontSize: 17)),
           trailing: Material(
             elevation: 10,
             borderRadius: BorderRadius.circular(100),
@@ -38,12 +37,11 @@ class TileJobRisk extends StatelessWidget {
                   ),
                 )),
           ),
-          //more than 50% of width makes circle,
           children: [
             for (int i = 0; i < 5; i++)
               const ListTile(
                 title: Text(
-                    'Risque - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+                    'Compétence - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
                     style:
                         TextStyle(color: Color.fromARGB(255, 113, 111, 111))),
                 minVerticalPadding: 20,

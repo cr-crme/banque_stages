@@ -9,7 +9,7 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: const Card(
-        elevation: 0,
+        elevation: 20,
         child: AutocompleteSearch(),
       ),
     );

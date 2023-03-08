@@ -33,7 +33,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
     Widget body;
     body = ListView(
       children: [
-        //Container for the search bar
+        // Container for the search bar
         Center(
             child: Container(
           margin: const EdgeInsets.only(top: 50.0),
