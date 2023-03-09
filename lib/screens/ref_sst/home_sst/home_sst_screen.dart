@@ -61,11 +61,11 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
               Padding(
                 padding: EdgeInsets.only(top: 30.0),
                 child: Text(
-                  'Seuls les 45 métiers du répertoire du Ministère de l\'éducation '
-                  'qui ont été analysés apparaissent dans la liste.',
-                  textAlign: TextAlign.justify,
+                  'Seuls les 45 métiers du répertoire du Ministère de l\'éducation, '
+                  'qui ont été analysés, apparaissent dans la liste.',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: Colors.white,
                       fontStyle: FontStyle.italic),
                 ),

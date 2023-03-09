@@ -94,7 +94,7 @@ class JobListScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     Text(
-                      'Par\nrisques',
+                      'Affichage par\nrisque',
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
@@ -109,7 +109,7 @@ class JobListScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     Text(
-                      'Par\ncompétences',
+                      'Affichage par\ncompétence',
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
