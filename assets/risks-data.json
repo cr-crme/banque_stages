@@ -3,7 +3,7 @@
     "number":"1",
     "shortname":"chemical",
     "abbrv":"c",
-    "name":"RISQUES CHIMIQUES",
+    "name":"Risques chimiques",
     "subrisks":[
     {
     "number":"0",
@@ -75,7 +75,7 @@
     "number":"2",
     "shortname":"biological",
     "abbrv":"b",
-    "name":"RISQUES BIOLOGIQUES",
+    "name":"Risques biologiques",
     "subrisks":[
     {
     "number":"0",
@@ -162,7 +162,7 @@
     "number":"3",
     "shortname":"equipment",
     "abbrv":"e",
-    "name":"RISQUES LI\u00c9S AUX MACHINES ET AUX \u00c9QUIPEMENTS",
+    "name":"Risques li\u00e9s aux machines et aux \u00e9quipements",
     "subrisks":[
     {
     "number":"0",
@@ -242,11 +242,11 @@
     "number":"4",
     "shortname":"fall",
     "abbrv":"f",
-    "name":"RISQUES DE CHUTES DE HAUTEUR ET DE PLAIN-PIED",
+    "name":"Risques de chute de hauteur et de plain-pied",
     "subrisks":[
     {
     "number":"1",
-    "title":"CHUTES DE HAUTEUR",
+    "title":"Chutes de hauteur",
     "intro":"L\u2019\u00e9l\u00e8ve peut avoir un accident caus\u00e9 par une perte d\u2019\u00e9quilibre lors de travail en hauteur (p. ex. : sur un toit, dans une \u00e9chelle ou une nacelle).",
     "situations":[
     {
@@ -292,7 +292,7 @@
     },
     {
     "number":"2",
-    "title":"CHUTES DE PLAIN-PIED",
+    "title":"Chutes de plain-pied",
     "intro":"L\u2019\u00e9l\u00e8ve peut avoir un accident apr\u00e8s avoir gliss\u00e9 sur le plancher ou tr\u00e9buch\u00e9 sur des obstacles au sol.",
     "situations":[
     {
@@ -364,7 +364,7 @@
     "number":"5",
     "shortname":"objectFall",
     "abbrv":"of",
-    "name":"RISQUES LI\u00c9S AUX CHUTES D\u2019OBJETS",
+    "name":"Risques li\u00e9s aux chutes d'objets",
     "subrisks":[
     {
     "number":"0",
@@ -425,11 +425,11 @@
     "number":"6",
     "shortname":"transit",
     "abbrv":"t",
-    "name":"RISQUES LI\u00c9S AUX D\u00c9PLACEMENTS",
+    "name":"Risques li\u00e9s aux d\u00e9placements",
     "subrisks":[
     {
     "number":"1",
-    "title":"SUR LA ROUTE",
+    "title":"Sur la route",
     "intro":"L\u2019\u00e9l\u00e8ve peut \u00eatre victime d\u2019un accident de la route en tant que conducteur ou passager d\u2019un v\u00e9hicule, mais aussi en tant que pi\u00e9ton.",
     "situations":[
     {
@@ -466,7 +466,7 @@
     },
     {
     "number":"2",
-    "title":"CIRCULATION DE V\u00c9HICULES EN ENTREPRISE",
+    "title":"Circulation de v\u00e9hicules en entreprise",
     "intro":"L\u2019\u00e9l\u00e8ve peut \u00eatre victime d\u2019une collision avec un v\u00e9hicule en tant que pi\u00e9ton ou en tant conducteur d\u2019un autre v\u00e9hicule \u00e0 l\u2019int\u00e9rieur de l\u2019entreprise.",
     "situations":[
     {
@@ -521,11 +521,11 @@
     "number":"7",
     "shortname":"posture",
     "abbrv":"p",
-    "name":"RISQUES LI\u00c9S AUX POSTURES CONTRAIGNANTES",
+    "name":"Risques li\u00e9s aux postures contraignantes",
     "subrisks":[
     {
     "number":"1",
-    "title":"POSTURES EXTR\u00caMES",
+    "title":"Postures extr\u00eames",
     "intro":"Pour r\u00e9aliser une t\u00e2che, l\u2019\u00e9l\u00e8ve doit adopter une position dans laquelle une ou plusieurs de ses articulations forment des angles extr\u00eames et il doit maintenir cette position pendant une longue p\u00e9riode.",
     "situations":[
     {
@@ -599,7 +599,7 @@
     },
     {
     "number":"2",
-    "title":"POSTURE STATIQUE",
+    "title":"Posture statique",
     "intro":"",
     "situations":[
     {
@@ -662,11 +662,11 @@
     "number":"8",
     "shortname":"motion",
     "abbrv":"mv",
-    "name":"RISQUES LI\u00c9S AUX MOUVEMENTS R\u00c9P\u00c9TITIFS, PRESSIONS DE CONTACT ET CHOCS",
+    "name":"Risques li\u00e9s aux mouvements r\u00e9p\u00e9titifs, pressions de contact et chocs",
     "subrisks":[
     {
     "number":"1",
-    "title":"MOUVEMENTS R\u00c9P\u00c9TITIFS",
+    "title":"Mouvements r\u00e9p\u00e9titifs",
     "intro":"L\u2019\u00e9l\u00e8ve r\u00e9p\u00e8te les m\u00eames gestes \u00e0 une cadence contrainte pour r\u00e9aliser ses t\u00e2ches.",
     "situations":[
     {
@@ -712,7 +712,7 @@
     },
     {
     "number":"2",
-    "title":"PRESSIONS DE CONTACT ET CHOCS",
+    "title":"Pressions de contacts et chocs",
     "intro":"L\u2019\u00e9l\u00e8ve utilise des outils manuels aux bords durs ou coupants ou travaille en appuyant une partie de son corps sur une surface dure.",
     "situations":[
     {
@@ -774,11 +774,11 @@
     "number":"9",
     "shortname":"handling",
     "abbrv":"h",
-    "name":"RISQUES LI\u00c9S \u00c0 LA MANUTENTION",
+    "name":"Risques li\u00e9s \u00e0 la manutention",
     "subrisks":[
     {
     "number":"1",
-    "title":"MANUTENTION MANUELLE",
+    "title":"Manutention manuelle",
     "intro":"L\u2019\u00e9l\u00e8ve transporte des charges : il les soul\u00e8ve, les porte, puis les d\u00e9pose. Ces op\u00e9rations peuvent n\u00e9cessiter de rester sur place ou de se d\u00e9placer. La charge peut \u00eatre aussi bien un objet qu\u2019une personne ou un animal.",
     "situations":[
     {
@@ -853,7 +853,7 @@
     },
     {
     "number":"2",
-    "title":"MANUTENTION AVEC UN \u00c9QUIPEMENT NON MOTORIS\u00c9",
+    "title":"Manutention avec un \u00e9quipement non motoris\u00e9",
     "intro":"L\u2019\u00e9l\u00e8ve transporte des charges en tirant ou en poussant un \u00e9quipement tel qu\u2019un transpalette manuel, un diable ou un chariot.",
     "situations":[
     {
@@ -946,11 +946,11 @@
     "number":"10",
     "shortname":"psychological",
     "abbrv":"psy",
-    "name":"RISQUES PSYCHOSOCIAUX ET DE VIOLENCE",
+    "name":"Risques psychosociaux et de violence",
     "subrisks":[
     {
     "number":"1",
-    "title":"LI\u00c9S AUX RELATIONS AVEC LES COLL\u00c8GUES OU AVEC LA CLIENT\u00c8LE",
+    "title":"Li\u00e9s aux relations avec les coll\u00e8gues ou avec la client\u00e8le ",
     "intro":"L\u2019\u00e9l\u00e8ve vit des situations au travail qui peuvent \u00eatre source de stress ou de violence. Celles-ci sont associ\u00e9es aux relations avec les coll\u00e8gues, la hi\u00e9rarchie ou la client\u00e8le.",
     "situations":[
     {
@@ -1012,7 +1012,7 @@
     },
     {
     "number":"2",
-    "title":"LI\u00c9S \u00c0 L'ORGANISATION DU TRAVAIL",
+    "title":"Li\u00e9s \u00e0 l'organisation du travail",
     "intro":"L\u2019organisation du travail ou la nature des t\u00e2ches r\u00e9alis\u00e9es peuvent \u00eatre une source de stress pour l'\u00e9l\u00e8ve.",
     "situations":[
     {
@@ -1085,7 +1085,7 @@
     "number":"11",
     "shortname":"noise",
     "abbrv":"n",
-    "name":"RISQUES LI\u00c9S AU BRUIT",
+    "name":"Risques li\u00e9s au bruit",
     "subrisks":[
     {
     "number":"0",
@@ -1155,11 +1155,11 @@
     "number":"12",
     "shortname":"temperature",
     "abbrv":"et",
-    "name":"RISQUES LI\u00c9S \u00c0 L\u2019EXPOSITION AU FROID ET \u00c0 LA CHALEUR",
+    "name":"Risques li\u00e9s \u00e0 l'exposition au froid et \u00e0 la chaleur",
     "subrisks":[
     {
     "number":"1",
-    "title":"TRAVAIL AU FROID",
+    "title":"Travail au froid",
     "intro":"L\u2019\u00e9l\u00e8ve fait un travail manuel \u00e0 une temp\u00e9rature inf\u00e9rieure \u00e0 5 \u00b0C ou inf\u00e9rieure \u00e0 10 \u00b0C en cas de vent.",
     "situations":[
     {
@@ -1209,7 +1209,7 @@
     },
     {
     "number":"2",
-    "title":"TRAVAIL \u00c0 LA CHALEUR",
+    "title":"Travail \u00e0 la chaleur",
     "intro":"L\u2019\u00e9l\u00e8ve fait un travail manuel \u00e0 une temp\u00e9rature sup\u00e9rieure \u00e0 25 \u00b0C.",
     "situations":[
     {
@@ -1277,11 +1277,11 @@
     "number":"13",
     "shortname":"vibration",
     "abbrv":"v",
-    "name":"RISQUES LI\u00c9S AUX VIBRATIONS",
+    "name":"Risques li\u00e9s aux vibrations",
     "subrisks":[
     {
     "number":"1",
-    "title":"VIBRATIONS TRANSMISES AU CORPS ENTIER",
+    "title":"Vibrations transmises au corps entier",
     "intro":"L\u2019\u00e9l\u00e8ve est expos\u00e9 aux vibrations transmises au corps entier lors de la conduite d\u2019engins de chantier, de transport ou de manutention (p. ex. : tracteur agricole, chariot \u00e9l\u00e9vateur, etc.).",
     "situations":[
     {
@@ -1331,7 +1331,7 @@
     },
     {
     "number":"2",
-    "title":"VIBRATIONS TRANSMISES AU SYST\u00c8ME MAIN-BRAS",
+    "title":"Vibrations transmises au syst\u00e8me main-bras",
     "intro":"L\u2019\u00e9l\u00e8ve est expos\u00e9 aux vibrations transmises au syst\u00e8me main-bras lors de l\u2019utilisation d\u2019outils vibrants (p. ex. : meuleuse, marteau-piqueur, compacteur \u00e0 plaque vibrante) ou percutants (p. ex. : perceuse, clef \u00e0 chocs, etc.).",
     "situations":[
     {
@@ -1401,7 +1401,7 @@
     "number":"14",
     "shortname":"electric",
     "abbrv":"el",
-    "name":"RISQUES \u00c9LECTRIQUES",
+    "name":"Risques \u00e9lectriques",
     "subrisks":[
     {
     "number":"0",
@@ -1451,7 +1451,7 @@
     "number":"15",
     "shortname":"anoxia",
     "abbrv":"a",
-    "name":"RISQUES LI\u00c9S AU TRAVAIL EN ESPACE CLOS",
+    "name":"Risques li\u00e9s au travail en espace clos",
     "subrisks":[
     {
     "number":"0",
@@ -1493,7 +1493,7 @@
     "number":"16",
     "shortname":"fire",
     "abbrv":"fi",
-    "name":"RISQUES D'INCENDIE OU D'EXPLOSION",
+    "name":"Risques d'incendie ou d'explosion",
     "subrisks":[
     {
     "number":"0",
@@ -1539,7 +1539,7 @@
     "number":"17",
     "shortname":"nanomaterial",
     "abbrv":"nm",
-    "name":"RISQUES LI\u00c9S AUX NANOMAT\u00c9RIAUX",
+    "name":"Risques li\u00e9s aux nanomat\u00e9riaux",
     "subrisks":[
     {
     "number":"0",
@@ -1599,4 +1599,4 @@
     }
     ]
     }
-    ]
+]

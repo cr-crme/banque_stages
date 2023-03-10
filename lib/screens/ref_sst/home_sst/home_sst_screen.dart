@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '/common/widgets/main_drawer.dart';
 import '/screens/ref_sst/risks_list/risks_list_screen.dart';
-import 'widgets/search_bar.dart';
+import 'widgets/sst_search_bar.dart';
 
 class HomeSSTScreen extends StatefulWidget {
   const HomeSSTScreen({Key? key}) : super(key: key);
@@ -57,7 +57,8 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
                       fontSize: 25,
                       color: Colors.white,
                       fontFamily: 'Noto Sans')),
-              Padding(padding: EdgeInsets.only(top: 25.0), child: SearchBar()),
+              Padding(
+                  padding: EdgeInsets.only(top: 25.0), child: SstSearchBar()),
               Padding(
                 padding: EdgeInsets.only(top: 30.0),
                 child: Text(
