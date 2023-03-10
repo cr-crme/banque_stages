@@ -16,7 +16,7 @@ class SituationRisk extends StatelessWidget {
           title: const Padding(
             padding: EdgeInsets.only(bottom: 5),
             child: Text(
-              'EXEMPLES DE SITUATION À RISQUE',
+              'Exemples de situation à risque',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color.fromARGB(255, 190, 77, 81)),

@@ -21,8 +21,19 @@ class SstSearchBar extends StatelessWidget {
   }
 }
 
-class _AutoCompleteSstSearchBar extends StatelessWidget {
+class _AutoCompleteSstSearchBar extends StatefulWidget {
   const _AutoCompleteSstSearchBar();
+
+  @override
+  State<_AutoCompleteSstSearchBar> createState() =>
+      _AutoCompleteSstSearchBarState();
+}
+
+class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
+  final _textController = TextEditingController();
+  final _focusNode = FocusNode();
+
+  void _clearText() => _textController.text = '';
 
   Widget _fieldViewBuilder(
       BuildContext context,
@@ -30,10 +41,11 @@ class _AutoCompleteSstSearchBar extends StatelessWidget {
       FocusNode focusNode,
       VoidCallback onFieldSubmitted) {
     return TextFormField(
-      decoration: const InputDecoration(
-        icon: Icon(Icons.search),
-        labelText: 'Chercher un métier',
-      ),
+      decoration: InputDecoration(
+          icon: const Icon(Icons.search),
+          labelText: 'Rechercher un métier',
+          suffixIcon:
+              IconButton(onPressed: _clearText, icon: const Icon(Icons.clear))),
       controller: textEditingController,
       focusNode: focusNode,
       onFieldSubmitted: (String value) {
@@ -45,10 +57,13 @@ class _AutoCompleteSstSearchBar extends StatelessWidget {
   Iterable<String> _optionsBuilder(value, List<Specialization> options) {
     if (value.text == '') return const Iterable<String>.empty();
     return options
-        .map<String?>((e) =>
-            e.name.toLowerCase().contains(value.text.toLowerCase())
-                ? e.name
-                : null)
+        .map<String?>((e) => e.name
+                    .toLowerCase()
+                    .contains(value.text.toLowerCase()) ||
+                e.id.contains(value.text) ||
+                e.idWithName.toLowerCase().contains(value.text.toLowerCase())
+            ? e.idWithName
+            : null)
         .where((e) => e != null)
         .cast<String>();
   }
@@ -92,6 +107,8 @@ class _AutoCompleteSstSearchBar extends StatelessWidget {
         .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
     return RawAutocomplete<String>(
+      textEditingController: _textController,
+      focusNode: _focusNode,
       fieldViewBuilder: _fieldViewBuilder,
       optionsBuilder: (value) => _optionsBuilder(value, options),
       onSelected: (choice) => goTo(context, choice, options),
@@ -101,7 +118,9 @@ class _AutoCompleteSstSearchBar extends StatelessWidget {
   }
 
   goTo(BuildContext context, String choice, List<Specialization> options) {
-    final index = options.indexWhere((e) => e.name == choice);
+    final index = options.indexWhere((e) => e.idWithName == choice);
+
+    _clearText();
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => JobListScreen(id: options[index].id),
     ));

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '/misc/job_data_file_service.dart';
@@ -86,7 +87,10 @@ class JobListScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
           appBar: AppBar(
-            title: Text(job.name),
+            title: Padding(
+              padding: const EdgeInsets.only(top: 5.0, bottom: 5),
+              child: AutoSizeText(job.idWithName, maxLines: 2),
+            ),
             bottom: TabBar(tabs: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -129,6 +133,9 @@ class JobListScreen extends StatelessWidget {
               itemBuilder: (context, i) => TileJobRisk(
                 title: risks[i].name,
                 elements: skillsAssociatedToRisks[risks[i]]!,
+                nbMaximumElements: job.skills.length,
+                tooltipMessage:
+                    'Nombre de compétences pour lesquelles le risque est potentiellement présent',
               ),
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(
@@ -145,6 +152,9 @@ class JobListScreen extends StatelessWidget {
               itemBuilder: (context, i) => TileJobRisk(
                 title: skills[i].name,
                 elements: risksAssociatedToSkill[skills[i]]!,
+                nbMaximumElements: 10, // Show in red if at least 5 is present
+                tooltipMessage:
+                    'Nombre de risques potentiellement présents pour cette compétence',
               ),
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(
