@@ -56,12 +56,12 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
       body: Column(
         children: [
           Selector<StudentsProvider, List<Student>>(
-            builder: (context, student, child) => Expanded(
+            builder: (context, students, child) => Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: student.length,
+                itemCount: students.length,
                 itemBuilder: (context, index) => StudentCard(
-                  student: student.elementAt(index),
+                  student: students.elementAt(index),
                   onTap: (student) => GoRouter.of(context).goNamed(
                     Screens.student,
                     params: Screens.withId(student),

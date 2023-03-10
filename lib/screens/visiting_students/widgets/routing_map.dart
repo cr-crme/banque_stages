@@ -93,21 +93,6 @@ class _RoutingMapState extends State<RoutingMap> {
     setState(() {});
   }
 
-  MaterialColor _getWaypointColor(VisitingPriority priority) {
-    switch (priority) {
-      case (VisitingPriority.none):
-        return Colors.deepPurple;
-      case (VisitingPriority.low):
-        return Colors.green;
-      case (VisitingPriority.mid):
-        return Colors.orange;
-      case (VisitingPriority.high):
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
-
   List<Marker> _waypointsToMarkers() {
     final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
     List<Marker> out = [];
@@ -139,7 +124,7 @@ class _RoutingMapState extends State<RoutingMap> {
                   ),
                   child: Icon(
                     i == 0 ? Icons.school : Icons.location_on_sharp,
-                    color: _getWaypointColor(waypoint.priority),
+                    color: waypoint.priority.color,
                     size: markerSize,
                   ),
                 ),

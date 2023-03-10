@@ -19,20 +19,7 @@ class WaypointCard extends StatelessWidget {
   final VoidCallback? onDelete;
   final bool canMove;
 
-  MaterialColor _getWaypointColor(VisitingPriority priority) {
-    switch (priority) {
-      case (VisitingPriority.none):
-        return Colors.deepPurple;
-      case (VisitingPriority.low):
-        return Colors.green;
-      case (VisitingPriority.mid):
-        return Colors.orange;
-      case (VisitingPriority.high):
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +28,7 @@ class WaypointCard extends StatelessWidget {
         key: key,
         contentPadding: const EdgeInsets.all(10),
         onTap: onTap,
-        leading: Icon(Icons.flag, color: _getWaypointColor(waypoint.priority)),
+        leading: Icon(Icons.flag, color: waypoint.priority.color),
         tileColor: canMove ? Colors.white : Colors.grey[300],
         title: Text(
           name,

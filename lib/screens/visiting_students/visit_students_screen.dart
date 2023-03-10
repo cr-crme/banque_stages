@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import '/common/models/visiting_priority.dart';
 import '/common/widgets/main_drawer.dart';
@@ -33,14 +32,14 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
   }
 
   void _initializeItinariesForCurrentDate() {
-    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    final itineraries = AllItineraries.of(context, listen: false);
     if (!itineraries.containsKey(_currentDateAsString)) {
       itineraries.add(Itinerary(), key: _currentDateAsString, notify: false);
     }
   }
 
   void _fillAllWaypoints() async {
-    final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
+    final waypoints = AllStudentsWaypoints.of(context, listen: false);
     waypoints.clear(notify: false);
 
     // Get the students from the registered students, but we copy them so
@@ -65,7 +64,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
         notify: true);
 
     // final studentsProvided =
-    //     Provider.of<StudentsProvider>(context, listen: false);
+    //     StudentsProvider.of(context, listen: false);
     // for (final s in studentsProvided) {
     //   waypoints.add(
     //       await Waypoint.fromAddress(
@@ -84,8 +83,8 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
   }
 
   void addStopToCurrentItinerary(int indexInWaypoints) {
-    final itineraries = Provider.of<AllItineraries>(context, listen: false);
-    final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
+    final itineraries = AllItineraries.of(context, listen: false);
+    final waypoints = AllStudentsWaypoints.of(context, listen: false);
     final itinerary = itineraries[_currentDateAsString]!;
 
     itinerary.add(waypoints[indexInWaypoints].copyWith());
@@ -94,7 +93,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
   }
 
   void removeStopToCurrentItinerary(int indexInItinerary) {
-    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    final itineraries = AllItineraries.of(context, listen: false);
     final itinerary = itineraries[_currentDateAsString]!;
 
     itinerary.remove(indexInItinerary);
@@ -171,7 +170,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
     _initializeItinariesForCurrentDate();
 
     // Force update of all widgets
-    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    final itineraries = AllItineraries.of(context, listen: false);
     itineraries.forceNotify();
     setState(() {});
   }
@@ -188,7 +187,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
   }
 
   Widget _studentsToVisitWidget(BuildContext context) {
-    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    final itineraries = AllItineraries.of(context, listen: false);
     final itinerary = itineraries[_currentDateAsString];
     if (itinerary == null) return Container();
 
@@ -276,7 +275,7 @@ class __DistanceState extends State<_Distance> {
   }
 
   List<Widget> _distancesTo(List<double?> distances) {
-    final itineraries = Provider.of<AllItineraries>(context, listen: false);
+    final itineraries = AllItineraries.of(context, listen: false);
     final itinerary = itineraries[widget.currentDate]!;
 
     List<Widget> out = [];
