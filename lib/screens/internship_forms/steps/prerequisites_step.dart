@@ -24,8 +24,8 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
   String? uniform;
 
   final Map<String, bool> requiredForJob = {
-    "Une entrevue de recrutement de l'élève en solo": false,
-    "Une vérification d'empêchement pour les élèves majeurs (vérification des antécédents judiciaires)":
+    'Une entrevue de recrutement de l\'élève en solo': false,
+    'Une vérification d\'empêchement pour les élèves majeurs (vérification des antécédents judiciaires)':
         false,
   };
 
@@ -42,7 +42,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Âge minimum requis pour le stage :",
+              'Âge minimum requis pour le stage :',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             _AgeSpinBox(
@@ -51,7 +51,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
             ),
             const SizedBox(height: 16),
             Text(
-              "Est-ce qu'un uniforme était exigé ?",
+              'Est-ce qu\'un uniforme était exigé ?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Row(
@@ -62,7 +62,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                   onChanged: (bool? newValue) =>
                       setState(() => _uniformRequired = newValue!),
                 ),
-                const Text("Oui"),
+                const Text('Oui'),
                 const SizedBox(width: 32),
                 Radio(
                   value: false,
@@ -70,7 +70,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                   onChanged: (bool? newValue) =>
                       setState(() => _uniformRequired = newValue!),
                 ),
-                const Text("Non"),
+                const Text('Non'),
               ],
             ),
             Visibility(
@@ -84,7 +84,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Précisez le type d'uniforme : ",
+                      'Précisez le type d\'uniforme : ',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(
@@ -99,7 +99,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
             ),
             const SizedBox(height: 8),
             Text(
-              "L'entreprise a demandé : ",
+              'L\'entreprise a demandé : ',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Column(
@@ -123,7 +123,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
               visualDensity: VisualDensity.compact,
               dense: true,
               title: Text(
-                "Autre",
+                'Autre',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               value: _otherRequirements,
@@ -141,7 +141,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Précisez : ",
+                      'Précisez : ',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(

@@ -5,19 +5,19 @@ import '/screens/ref_sst/risk_card/widgets/introduction.dart';
 import '/screens/ref_sst/risk_card/widgets/situation_risk.dart';
 import '/screens/ref_sst/risk_card/widgets/sub_title.dart';
 import '/screens/ref_sst/risk_card/widgets/symptoms.dart';
-import '../../common/risk.dart';
+import '../../common/risk.dart' as common_risk;
 
-class SubRiskBuilding extends StatelessWidget {
+class SubRisk extends StatelessWidget {
   //params and variables
-  const SubRiskBuilding(this.subRisks, {super.key});
-  final List<SubRisk> subRisks;
+  const SubRisk(this.subRisks, {super.key});
+  final List<common_risk.SubRisk> subRisks;
 
   @override
   Widget build(BuildContext context) {
     final subRiskWidgets = <Widget>[];
 
     for (int i = 0; i < subRisks.length; i++) {
-      SubRisk subRisk = subRisks[i];
+      common_risk.SubRisk subRisk = subRisks[i];
       subRiskWidgets.add(Column(
         children: [
           if (subRisks.length > 1) SubTitle(subRisk.id, subRisk.title),

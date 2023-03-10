@@ -33,9 +33,9 @@ abstract class Screens {
   static const internshipEnrollement = 'add-internship';
   static const postInternshipEvaluationScreen = 'post-internship-evaluation';
 
-  static const homeSST = 'home-sst';
-  static const jobSST = 'job-sst';
-  static const cardsSST = 'cards-sst';
+  static const homeSst = 'home-sst';
+  static const jobSst = 'job-sst';
+  static const cardsSst = 'cards-sst';
 
   static Map<String, String> withId(id) {
     if (id is String) {
@@ -117,18 +117,18 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/sst',
-      name: Screens.homeSST,
-      builder: (context, state) => const HomeSSTScreen(),
+      name: Screens.homeSst,
+      builder: (context, state) => const HomeSstScreen(),
       routes: [
         GoRoute(
           path: 'jobs/:id',
-          name: Screens.jobSST,
+          name: Screens.jobSst,
           builder: (context, state) => JobListScreen(id: state.params['id']!),
         ),
         GoRoute(
-          name: Screens.cardsSST,
+          name: Screens.cardsSst,
           path: 'cards',
-          builder: (context, state) => const SSTCardsScreen(),
+          builder: (context, state) => const SstCardsScreen(),
         ),
       ],
     ),

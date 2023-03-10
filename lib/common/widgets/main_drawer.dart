@@ -17,47 +17,47 @@ class MainDrawer extends StatelessWidget {
     return Consumer<AuthProvider>(
       builder: (context, provider, _) => Drawer(
         child: Scaffold(
-          appBar: AppBar(title: const Text("Banque de Stages")),
+          appBar: AppBar(title: const Text('Banque de Stages')),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 const _DrawerItem(
-                  titleText: "Accueil",
+                  titleText: 'Accueil',
                   icon: Icon(Icons.home_rounded),
                   route: Screens.home,
                 ),
                 const _DrawerItem(
-                  titleText: "Mes élèves",
+                  titleText: 'Mes élèves',
                   icon: Icon(Icons.school_rounded),
                   route: Screens.studentsList,
                 ),
                 const _DrawerItem(
-                  titleText: "Itinéraire de visite",
+                  titleText: 'Itinéraire de visite',
                   icon: Icon(Icons.route_outlined),
                   route: Screens.visitStudents,
                 ),
                 const _DrawerItem(
-                  titleText: "Toutes les entreprises",
+                  titleText: 'Toutes les entreprises',
                   icon: Icon(Icons.business_center_rounded),
                   route: Screens.enterprisesList,
                 ),
                 const _DrawerItem(
-                  titleText: "Documents",
+                  titleText: 'Documents',
                   icon: Icon(Icons.document_scanner_rounded),
                   route: Screens.enterprisesList,
                 ),
                 const _DrawerItem(
-                  titleText: "Tableau des supervisions",
+                  titleText: 'Tableau des supervisions',
                   icon: Icon(Icons.table_chart_rounded),
                   route: Screens.enterprisesList,
                 ),
                 const _DrawerItem(
-                  titleText: "Référentiel SST",
+                  titleText: 'Référentiel SST',
                   icon: Icon(Icons.warning_rounded),
-                  route: Screens.homeSST,
+                  route: Screens.homeSst,
                 ),
                 _DrawerItem(
-                  titleText: "Se déconnecter",
+                  titleText: 'Se déconnecter',
                   icon: const Icon(Icons.logout),
                   onTap: () => provider.signOut(),
                 ),
@@ -78,7 +78,7 @@ class _DrawerItem extends StatelessWidget {
     this.onTap,
   }) : assert(
           (route != null || onTap != null) && (route == null || onTap == null),
-          "One parameter has to be null while the other one is not.",
+          'One parameter has to be null while the other one is not.',
         );
 
   final String? route;

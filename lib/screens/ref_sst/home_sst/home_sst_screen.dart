@@ -4,16 +4,16 @@ import '/common/widgets/main_drawer.dart';
 import '/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'widgets/sst_search_bar.dart';
 
-class HomeSSTScreen extends StatefulWidget {
-  const HomeSSTScreen({Key? key}) : super(key: key);
+class HomeSstScreen extends StatefulWidget {
+  const HomeSstScreen({Key? key}) : super(key: key);
 
   static const route = '/home-sst';
 
   @override
-  State<HomeSSTScreen> createState() => _HomeSSTScreenState();
+  State<HomeSstScreen> createState() => _HomeSstScreenState();
 }
 
-class _HomeSSTScreenState extends State<HomeSSTScreen> {
+class _HomeSstScreenState extends State<HomeSstScreen> {
   final _searchController = TextEditingController();
 
   @override
@@ -80,7 +80,7 @@ class _HomeSSTScreenState extends State<HomeSSTScreen> {
           child: InkWell(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const SSTCardsScreen(),
+                builder: (_) => const SstCardsScreen(),
               ));
             },
             child: Ink(

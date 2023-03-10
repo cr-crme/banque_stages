@@ -23,11 +23,11 @@ class TasksStepState extends State<TasksStep> {
   double? efficiencyWanted;
 
   final Map<String, bool> skillsRequired = {
-    "Communiquer à l’écrit": false,
-    "Communiquer en anglais": false,
-    "Conduire un chariot (ex. cariste)": false,
-    "Interagir avec des clients": false,
-    "Manipuler de l’argent": false,
+    'Communiquer à l’écrit': false,
+    'Communiquer en anglais': false,
+    'Conduire un chariot (ex. cariste)': false,
+    'Interagir avec des clients': false,
+    'Manipuler de l’argent': false,
   };
 
   bool _otherSkills = false;
@@ -42,7 +42,7 @@ class TasksStepState extends State<TasksStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "* Quel était le degré de variété des tâches assignées au ou à la stagiaire ?",
+              '* Quel était le degré de variété des tâches assignées au ou à la stagiaire ?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
@@ -53,7 +53,7 @@ class TasksStepState extends State<TasksStep> {
             ),
             const SizedBox(height: 8),
             Text(
-              "* Quelles étaient les attentes de l’entreprise envers le ou la stagiaire ?",
+              '* Quelles étaient les attentes de l’entreprise envers le ou la stagiaire ?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Column(
@@ -77,7 +77,7 @@ class TasksStepState extends State<TasksStep> {
               visualDensity: VisualDensity.compact,
               dense: true,
               title: Text(
-                "Autre",
+                'Autre',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               value: _otherSkills,
@@ -94,7 +94,7 @@ class TasksStepState extends State<TasksStep> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Précisez les autres attentes : ",
+                      'Précisez les autres attentes : ',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(
@@ -109,7 +109,7 @@ class TasksStepState extends State<TasksStep> {
             ),
             const SizedBox(height: 8),
             Text(
-              "* Quel était le niveau d’autonomie souhaité ?",
+              '* Quel était le niveau d’autonomie souhaité ?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
@@ -120,7 +120,7 @@ class TasksStepState extends State<TasksStep> {
             ),
             const SizedBox(height: 8),
             Text(
-              "* Quel était le niveau de rendement attendu ?",
+              '* Quel était le niveau de rendement attendu ?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(

@@ -4,16 +4,16 @@ import '/misc/risk_data_file_service.dart';
 import '/screens/ref_sst/risk_card/risk_card_screen.dart';
 import 'widgets/clickable_risk_tile.dart';
 
-class SSTCardsScreen extends StatefulWidget {
-  const SSTCardsScreen({Key? key}) : super(key: key);
+class SstCardsScreen extends StatefulWidget {
+  const SstCardsScreen({Key? key}) : super(key: key);
 
   static const route = '/sst-cards';
 
   @override
-  State<SSTCardsScreen> createState() => _SSTCardsScreenState();
+  State<SstCardsScreen> createState() => _SstCardsScreenState();
 }
 
-class _SSTCardsScreenState extends State<SSTCardsScreen>
+class _SstCardsScreenState extends State<SstCardsScreen>
     with SingleTickerProviderStateMixin {
   late final _tabController = TabController(
       vsync: this,

@@ -11,7 +11,7 @@ class SstExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _SstBody(job: job),
           headerBuilder: (context, isExpanded) => ListTile(
-            title: const Text("Santé et Sécurité du travail (SST)"),
+            title: const Text('Santé et Sécurité du travail (SST)'),
             trailing: IconButton(
                 onPressed: () => addSstEvent(job),
                 icon: const Icon(Icons.add_box_outlined)),
@@ -34,59 +34,59 @@ class _SstBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Équipements de protection individuelle requis",
+              'Équipements de protection individuelle requis',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
                 children: job.equipmentRequired.isEmpty
-                    ? [const Text("Aucun équipement de protection requis")]
+                    ? [const Text('Aucun équipement de protection requis')]
                     : job.equipmentRequired
-                        .map((equipment) => Text("- $equipment"))
+                        .map((equipment) => Text('- $equipment'))
                         .toList(),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              "Situations dangereuses identifiées",
+              'Situations dangereuses identifiées',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
                 children: job.dangerousSituations.isEmpty
-                    ? [const Text("Aucune situation dangereuse signalée")]
+                    ? [const Text('Aucune situation dangereuse signalée')]
                     : job.dangerousSituations
-                        .map((situation) => Text("- $situation"))
+                        .map((situation) => Text('- $situation'))
                         .toList(),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              "Blessures d’élèves lors de stages précédents",
+              'Blessures d’élèves lors de stages précédents',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
                 children: job.pastWounds.isEmpty
-                    ? [const Text("Aucune blessure signalée")]
-                    : job.pastWounds.map((wound) => Text("- $wound")).toList(),
+                    ? [const Text('Aucune blessure signalée')]
+                    : job.pastWounds.map((wound) => Text('- $wound')).toList(),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              "Incidents lors de stages précédents (p. ex. agression verbale, harcèlement)?",
+              'Incidents lors de stages précédents (p. ex. agression verbale, harcèlement)?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
                 children: job.pastIncidents.isEmpty
-                    ? [const Text("Aucun incident de ce type signalé")]
+                    ? [const Text('Aucun incident de ce type signalé')]
                     : job.pastIncidents
-                        .map((incident) => Text("- $incident"))
+                        .map((incident) => Text('- $incident'))
                         .toList(),
               ),
             ),

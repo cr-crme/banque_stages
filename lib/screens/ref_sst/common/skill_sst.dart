@@ -1,5 +1,5 @@
-class SkillSST {
-  const SkillSST({
+class SkillSst {
+  const SkillSst({
     required this.name,
     required this.code,
     required this.criterias,
@@ -15,6 +15,6 @@ class SkillSST {
 
   @override
   String toString() {
-    return '{Competence #$code: $name}';
+    return '{Skill #$code: $name}';
   }
 }
