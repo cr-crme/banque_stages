@@ -49,7 +49,7 @@ class MainDrawer extends StatelessWidget {
                 const _DrawerItem(
                   titleText: 'Tableau des supervisions',
                   icon: Icon(Icons.table_chart_rounded),
-                  route: Screens.enterprisesList,
+                  route: Screens.supervisionChart,
                 ),
                 const _DrawerItem(
                   titleText: 'Référentiel SST',

@@ -15,6 +15,7 @@ import 'screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
 import 'screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
+import 'screens/supervision_chart/supervision_chart_screen.dart';
 import 'screens/visiting_students/visit_students_screen.dart';
 
 abstract class Screens {
@@ -25,6 +26,8 @@ abstract class Screens {
   static const enterprisesList = 'enterprises-list';
   static const enterprise = 'enterprise';
   static const addEnterprise = 'add-enterprise';
+
+  static const supervisionChart = 'supervision';
 
   static const studentsList = 'students-list';
   static const student = 'student';
@@ -89,6 +92,11 @@ final GoRouter router = GoRouter(
           ],
         ),
       ],
+    ),
+    GoRoute(
+      path: '/supervision',
+      name: Screens.supervisionChart,
+      builder: (context, state) => const SupervisionChart(),
     ),
     GoRoute(
       path: '/students',
