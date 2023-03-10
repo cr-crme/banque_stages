@@ -1,16 +1,13 @@
-//import 'dart:js_util';
-
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-import '/router.dart';
 import '../../common/risk.dart';
 
 //SST
-class SSTCard extends StatelessWidget {
+class ClickableRiskTile extends StatelessWidget {
   //params and variables
-  const SSTCard(this.risk, {super.key});
+  const ClickableRiskTile(this.risk, {super.key, required this.onTap});
   final Risk risk;
+  final Function(Risk) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +23,7 @@ class SSTCard extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           isThreeLine: true,
-          //onTap should redirect to the risk
-          onTap: () => GoRouter.of(context)
-              .goNamed(Screens.risksCardsSST, params: {'id': risk.id}),
+          onTap: () => onTap(risk),
         ));
   }
 }

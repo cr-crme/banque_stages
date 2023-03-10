@@ -12,7 +12,6 @@ import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
-import 'screens/ref_sst/risk_card/risk_card_screen.dart';
 import 'screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
@@ -36,7 +35,6 @@ abstract class Screens {
 
   static const homeSST = 'home-sst';
   static const jobSST = 'job-sst';
-  static const risksCardsSST = 'risks';
   static const cardsSST = 'cards-sst';
 
   static Map<String, String> withId(id) {
@@ -126,18 +124,6 @@ final GoRouter router = GoRouter(
           path: 'jobs/:id',
           name: Screens.jobSST,
           builder: (context, state) => JobListScreen(id: state.params['id']!),
-        ),
-        GoRoute(
-          path: 'risks/:id',
-          name: Screens.risksCardsSST,
-          builder: (context, state) =>
-              RisksCardsScreen(id: state.params['id']!),
-          redirect: (context, state) {
-            if (state.params['id'] == null) {
-              return Screens.homeSST;
-            }
-            return null;
-          },
         ),
         GoRoute(
           name: Screens.cardsSST,

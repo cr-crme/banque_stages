@@ -13,17 +13,13 @@ class RisksCardsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Risk? risk = RiskDataFileService.fromId(id);
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Fiche ${risk!.number}'),
-        ),
-        body: ListView(
-          children: [
-            MainTitle(risk.name),
-            SubRiskBuilding(risk.subrisks),
-            Link(risk.links)
-          ],
-        ));
+    Risk risk = RiskDataFileService.fromId(id)!;
+    return ListView(
+      children: [
+        MainTitle(risk.name),
+        SubRiskBuilding(risk.subrisks),
+        Link(risk.links)
+      ],
+    );
   }
 }
