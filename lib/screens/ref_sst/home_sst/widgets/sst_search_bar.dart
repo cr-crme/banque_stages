@@ -10,13 +10,12 @@ class SstSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Card(
-        elevation: 20,
-        child: ListTile(
-          title: _AutoCompleteSstSearchBar(),
-        ),
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8), color: Colors.white),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+      child: const ListTile(
+        title: _AutoCompleteSstSearchBar(),
       ),
     );
   }
@@ -25,49 +24,79 @@ class SstSearchBar extends StatelessWidget {
 class _AutoCompleteSstSearchBar extends StatelessWidget {
   const _AutoCompleteSstSearchBar();
 
+  Widget _fieldViewBuilder(
+      BuildContext context,
+      TextEditingController textEditingController,
+      FocusNode focusNode,
+      VoidCallback onFieldSubmitted) {
+    return TextFormField(
+      decoration: const InputDecoration(
+        icon: Icon(Icons.search),
+        labelText: 'Chercher un métier',
+      ),
+      controller: textEditingController,
+      focusNode: focusNode,
+      onFieldSubmitted: (String value) {
+        onFieldSubmitted();
+      },
+    );
+  }
+
+  Iterable<String> _optionsBuilder(value, List<Specialization> options) {
+    if (value.text == '') return const Iterable<String>.empty();
+    return options
+        .map<String?>((e) =>
+            e.name.toLowerCase().contains(value.text.toLowerCase())
+                ? e.name
+                : null)
+        .where((e) => e != null)
+        .cast<String>();
+  }
+
+  Align _optionsViewBuilder(
+      Iterable<String> options, AutocompleteOnSelected<String> onSelected) {
+    final scrollController = ScrollController();
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Material(
+        child: SizedBox(
+          width: 275,
+          height: 200,
+          child: Scrollbar(
+            thumbVisibility: true,
+            controller: scrollController,
+            child: ListView.builder(
+                controller: scrollController,
+                scrollDirection: Axis.vertical,
+                itemCount: options.length,
+                itemBuilder: (BuildContext ctx, int index) {
+                  final String option = options.elementAt(index);
+
+                  return GestureDetector(
+                    onTap: () => onSelected(option),
+                    child: ListTile(
+                      title: Text(option),
+                    ),
+                  );
+                }),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final options = JobDataFileService.specializations;
     options
         .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
-    return Autocomplete<String>(
-      optionsBuilder: (value) {
-        if (value.text == '') return const Iterable<String>.empty();
-        return options
-            .map<String?>((e) =>
-                e.name.toLowerCase().contains(value.text.toLowerCase())
-                    ? e.name
-                    : null)
-            .where((e) => e != null)
-            .cast<String>();
-      },
+    return RawAutocomplete<String>(
+      fieldViewBuilder: _fieldViewBuilder,
+      optionsBuilder: (value) => _optionsBuilder(value, options),
       onSelected: (choice) => goTo(context, choice, options),
-      optionsViewBuilder: (context, onSelected, options) {
-        return Align(
-          alignment: Alignment.topLeft,
-          child: Material(
-            child: SizedBox(
-              width: 275,
-              height: 200,
-              child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  padding: const EdgeInsets.all(10.0),
-                  itemCount: options.length,
-                  itemBuilder: (BuildContext ctx, int index) {
-                    final String option = options.elementAt(index);
-
-                    return GestureDetector(
-                      onTap: () => onSelected(option),
-                      child: ListTile(
-                        title: Text(option),
-                      ),
-                    );
-                  }),
-            ),
-          ),
-        );
-      },
+      optionsViewBuilder: (context, onSelected, options) =>
+          _optionsViewBuilder(options, onSelected),
     );
   }
 
