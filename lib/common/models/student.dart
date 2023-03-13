@@ -1,4 +1,9 @@
+import 'dart:math';
+
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:flutter/material.dart';
+
+import '/common/models/visiting_priority.dart';
 
 class Student extends ItemSerializable {
   Student({
@@ -16,8 +21,16 @@ class Student extends ItemSerializable {
     this.contactPhone = '',
     this.contactEmail = '',
     List<String>? internships,
+    VisitingPriority? visitingPriority,
+    Widget? avatar,
   })  : dateBirth = dateBirth ?? DateTime(0),
-        internships = internships ?? [];
+        internships = internships ?? [],
+        visitingPriority =
+            visitingPriority ?? VisitingPriority.values[Random().nextInt(3)],
+        avatar = avatar ??
+            CircleAvatar(
+              backgroundColor: Color(Random().nextInt(0xFFFFFF)).withAlpha(255),
+            );
 
   Student.fromSerialized(map)
       : name = map['n'],
@@ -33,6 +46,8 @@ class Student extends ItemSerializable {
         contactPhone = map['cp'],
         contactEmail = map['ce'],
         internships = map['internships'] as List<String>? ?? [],
+        visitingPriority = VisitingPriority.values[map['priority']],
+        avatar = CircleAvatar(backgroundColor: Color(map['avatar'] as int)),
         super.fromSerialized(map);
 
   @override
@@ -51,7 +66,9 @@ class Student extends ItemSerializable {
       'cp': contactPhone,
       'ce': contactEmail,
       'internships': internships,
+      'priority': visitingPriority.index,
       'id': id,
+      'avatar': (avatar as CircleAvatar).backgroundColor!.value,
     };
   }
 
@@ -68,9 +85,12 @@ class Student extends ItemSerializable {
     String? contactPhone,
     String? contactEmail,
     List<String>? internships,
+    VisitingPriority? visitingPriority,
+    Widget? avatar,
     String? id,
   }) =>
       Student(
+        id: id ?? this.id,
         name: name ?? this.name,
         dateBirth: dateBirth ?? this.dateBirth,
         phone: phone ?? this.phone,
@@ -83,7 +103,8 @@ class Student extends ItemSerializable {
         contactPhone: contactPhone ?? this.contactPhone,
         contactEmail: contactEmail ?? this.contactEmail,
         internships: internships ?? this.internships,
-        id: id ?? this.id,
+        visitingPriority: visitingPriority ?? this.visitingPriority,
+        avatar: avatar ?? this.avatar,
       );
 
   final String name;
@@ -103,4 +124,7 @@ class Student extends ItemSerializable {
   final String contactEmail;
 
   final List<String> internships;
+  final VisitingPriority visitingPriority;
+
+  final Widget avatar;
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 enum VisitingPriority {
-  none,
   low,
   mid,
   high,
@@ -11,8 +10,6 @@ enum VisitingPriority {
 extension VisitingPriorityStyled on VisitingPriority {
   MaterialColor get color {
     switch (this) {
-      case (VisitingPriority.none):
-        return Colors.deepPurple;
       case (VisitingPriority.low):
         return Colors.green;
       case (VisitingPriority.mid):
@@ -26,5 +23,9 @@ extension VisitingPriorityStyled on VisitingPriority {
 
   static IconData get icon {
     return Icons.flag;
+  }
+
+  VisitingPriority next() {
+    return VisitingPriority.values[(index + 1) % 3];
   }
 }

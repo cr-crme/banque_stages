@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import '/common/models/student.dart';
@@ -23,10 +21,16 @@ class _SupervisionChartState extends State<SupervisionChart> {
     VisitingPriority.mid: true,
     VisitingPriority.low: true,
   };
-  final _rngSeed = Random().nextInt(100);
 
   void _toggleSearchBar() {
+    _isFlagFilterExpanded = false;
     _isSearchBarExpanded = !_isSearchBarExpanded;
+    setState(() {});
+  }
+
+  void _toggleFlagFilter() {
+    _isSearchBarExpanded = false;
+    _isFlagFilterExpanded = !_isFlagFilterExpanded;
     setState(() {});
   }
 
@@ -75,39 +79,31 @@ class _SupervisionChartState extends State<SupervisionChart> {
     );
   }
 
-  void _toggleFlagFilter() {
-    _isFlagFilterExpanded = !_isFlagFilterExpanded;
+  List<Student> _filterByName(List<Student> students) {
+    return students
+        .map<Student?>((e) => e.name
+                .toLowerCase()
+                .contains(_searchTextController.text.toLowerCase())
+            ? e
+            : null)
+        .where((e) => e != null)
+        .toList()
+        .cast<Student>();
+  }
+
+  List<Student> _filterByFlag(List<Student> students) {
+    return students
+        .map<Student?>(
+            (e) => _visibilityFilters[e.visitingPriority]! ? e : null)
+        .where((e) => e != null)
+        .toList()
+        .cast<Student>();
+  }
+
+  void _updatePriority(Student student, VisitingPriority newPriority) {
+    StudentsProvider.of(context, listen: false)
+        .replacePriority(student, newPriority);
     setState(() {});
-  }
-
-  Map<Student, VisitingPriority> _fetchStudents() {
-    // TODO: Get the acutal students and priorities of the current teacher
-    final rng = Random(_rngSeed);
-    return Map.fromIterables(
-        StudentsProvider.of(context),
-        StudentsProvider.of(context).map<VisitingPriority>(
-            (e) => VisitingPriority.values[rng.nextInt(3) + 1]));
-  }
-
-  void _filterByName(Map<Student, VisitingPriority> students) {
-    for (var i = students.length - 1; i >= 0; i--) {
-      final student = students.keys.toList()[i];
-      if (!student.name
-          .toLowerCase()
-          .contains(_searchTextController.text.toLowerCase())) {
-        students.remove(student);
-      }
-    }
-  }
-
-  void _filterByFlag(Map<Student, VisitingPriority> students) {
-    for (var i = students.length - 1; i >= 0; i--) {
-      final student = students.keys.toList()[i];
-      final priority = students[student]!;
-      if (!_visibilityFilters[priority]!) {
-        students.remove(student);
-      }
-    }
   }
 
   @override
@@ -115,7 +111,11 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final screenSize = MediaQuery.of(context).size;
     final iconSize = screenSize.width / 16;
 
-    final students = _fetchStudents();
+    final students =
+        StudentsProvider.of(context).toList(); // Make a copy before filtering
+    students.sort(
+      (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+    );
     _filterByName(students);
     _filterByFlag(students);
 
@@ -154,19 +154,13 @@ class _SupervisionChartState extends State<SupervisionChart> {
               itemCount: students.length,
               //physics: const NeverScrollableScrollPhysics(),
               itemBuilder: ((ctx, i) {
-                final student = students.keys.toList()[i];
-                final priority = students[student]!;
-                final internship = student.internships.isNotEmpty
-                    ? student.internships.last
-                    : null;
+                final student = students[i];
 
                 return _StudentTile(
                   key: Key(student.id),
-                  name: student.name,
-                  job: internship ?? 'Aucun stage', // TODO verify that
-                  business: internship ?? 'Aucun stage', // TODO verify that
-                  priority: priority,
-                  avatar: const CircleAvatar(),
+                  student: student,
+                  onUpdatePriority: () => _updatePriority(
+                      student, students[i].visitingPriority.next()),
                 );
               }),
             ),
@@ -211,32 +205,34 @@ class _TabIcon extends StatelessWidget {
 class _StudentTile extends StatelessWidget {
   const _StudentTile({
     super.key,
-    required this.name,
-    required this.business,
-    required this.avatar,
-    required this.job,
-    required this.priority,
+    required this.student,
+    required this.onUpdatePriority,
   });
 
-  final String name;
-  final String business;
-  final Widget avatar;
-  final String job;
-  final VisitingPriority priority;
+  final Student student;
+  final Function() onUpdatePriority;
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Verify these next two variables
+    final intership = student.internships.isNotEmpty
+        ? student.internships.last
+        : 'Aucun stage';
+    final business = student.internships.isNotEmpty
+        ? student.internships.last
+        : 'Aucun stage';
+
     return Card(
       elevation: 10,
       child: ListTile(
         leading: SizedBox(
           height: double.infinity, // This centers the avatar
-          child: avatar,
+          child: student.avatar,
         ),
-        title: Text(name),
+        title: Text(student.name),
         isThreeLine: true,
         subtitle: Text(
-          '$business\n$job',
+          '$business\n$intership',
           maxLines: 2,
           style: const TextStyle(color: Colors.black87),
         ),
@@ -255,11 +251,11 @@ class _StudentTile extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           child: IconButton(
-            onPressed: () {},
+            onPressed: onUpdatePriority,
             alignment: Alignment.center,
             icon: Icon(
               VisitingPriorityStyled.icon,
-              color: priority.color,
+              color: student.visitingPriority.color,
               size: 30,
             ),
           ),

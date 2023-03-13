@@ -48,7 +48,7 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
 
     waypoints.add(
         await Waypoint.fromAddress('École', '1400 Tillemont, Montréal',
-            priority: VisitingPriority.none),
+            priority: VisitingPriority.notApplicable),
         notify: false);
     waypoints.add(
         await Waypoint.fromAddress('Charles', 'CRME, Montréal',
