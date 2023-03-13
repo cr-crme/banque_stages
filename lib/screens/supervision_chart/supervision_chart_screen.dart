@@ -31,7 +31,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     List<Student> students = studentsTp
         .map<Student?>((e) => _searchTextController.text == ''
             ? e
-          : e.name
+            : e.name
                     .toLowerCase()
                     .contains(_searchTextController.text.toLowerCase())
                 ? e
@@ -52,7 +52,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
                       screenSize: screenSize,
                       iconSize: iconSize,
                       onTap: () {},
-                      icon: Icons.person_search_sharp),
+                      icon: Icons.transfer_within_a_station),
                   _TabIcon(
                       screenSize: screenSize,
                       iconSize: iconSize,
@@ -77,7 +77,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
                       prefixIcon: const Icon(Icons.search),
                       labelText: 'Rechercher un métier',
                       suffixIcon: IconButton(
-                          onPressed: () => _searchTextController.text = '',
+                          onPressed: () =>
+                              setState(() => _searchTextController.text = ''),
                           icon: const Icon(Icons.clear)),
                       border:
                           const OutlineInputBorder(borderSide: BorderSide())),
@@ -88,6 +89,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
             ListView.builder(
               shrinkWrap: true,
               itemCount: students.length,
+              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: ((ctx, i) {
                 final internship = students[i].internships.isNotEmpty
                     ? students[i].internships.last
