@@ -23,6 +23,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     VisitingPriority.mid: true,
     VisitingPriority.low: true,
   };
+  final _rngSeed = Random().nextInt(100);
 
   void _toggleSearchBar() {
     _isSearchBarExpanded = !_isSearchBarExpanded;
@@ -50,22 +51,26 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
   Widget _flagFilterBuilder() {
     final flags = _visibilityFilters.keys.map<Widget>((priority) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Checkbox(
-              value: _visibilityFilters[priority],
-              onChanged: (value) =>
-                  setState(() => _visibilityFilters[priority] = value!)),
-          IconButton(
-              onPressed: () {},
-              icon: Icon(VisitingPriorityStyled.icon),
-              color: priority.color),
-        ],
+      return InkWell(
+        onTap: () => setState(() =>
+            _visibilityFilters[priority] = !_visibilityFilters[priority]!),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Checkbox(
+                value: _visibilityFilters[priority],
+                onChanged: (value) =>
+                    setState(() => _visibilityFilters[priority] = value!)),
+            Padding(
+              padding: const EdgeInsets.only(right: 25),
+              child: Icon(VisitingPriorityStyled.icon, color: priority.color),
+            )
+          ],
+        ),
       );
     }).toList();
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: flags,
     );
   }
@@ -76,8 +81,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   Map<Student, VisitingPriority> _fetchStudents() {
-    final rng = Random(42);
     // TODO: Get the acutal students and priorities of the current teacher
+    final rng = Random(_rngSeed);
     return Map.fromIterables(
         StudentsProvider.of(context),
         StudentsProvider.of(context).map<VisitingPriority>(
