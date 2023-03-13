@@ -24,7 +24,7 @@ extension VisitingPriorityStyled on VisitingPriority {
     }
   }
 
-  IconData get icon {
+  static IconData get icon {
     return Icons.flag;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '/misc/risk_data_file_service.dart';
@@ -51,7 +52,12 @@ class _SstCardsScreenState extends State<SstCardsScreen>
   }
 
   Widget _appBarBuilder(int index) {
-    return Text('Fiches de risques${index == 0 ? '' : ' - FICHE $index'}');
+    return AutoSizeText(
+      index == 0
+          ? 'Fiches de risques'
+          : 'FICHE $index - ${RiskDataFileService.risks[index - 1].name}',
+      maxLines: 2,
+    );
   }
 
   @override
