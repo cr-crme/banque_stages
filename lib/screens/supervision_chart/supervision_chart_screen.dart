@@ -1,7 +1,9 @@
+import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/student.dart';
 import '/common/models/visiting_priority.dart';
+import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/main_drawer.dart';
 
@@ -92,17 +94,27 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   List<Student> _filterByFlag(List<Student> students) {
+    final allInterships = InternshipsProvider.of(context, listen: true);
+
     return students
-        .map<Student?>(
-            (e) => _visibilityFilters[e.visitingPriority]! ? e : null)
+        .map<Student?>((e) {
+          final interships = allInterships.byStudent(e);
+          if (interships.isEmpty) return null;
+          return _visibilityFilters[interships.last.visitingPriority]!
+              ? e
+              : null;
+        })
         .where((e) => e != null)
         .toList()
         .cast<Student>();
   }
 
-  void _updatePriority(Student student, VisitingPriority newPriority) {
-    StudentsProvider.of(context, listen: false)
-        .replacePriority(student, newPriority);
+  void _updatePriority(Student student) {
+    final interships = InternshipsProvider.of(context, listen: false);
+    if (interships.byStudent(student).isEmpty) return;
+    interships.replacePriority(
+        student, interships.last.visitingPriority.next());
+
     setState(() {});
   }
 
@@ -111,13 +123,15 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final screenSize = MediaQuery.of(context).size;
     final iconSize = screenSize.width / 16;
 
-    final students =
-        StudentsProvider.of(context).toList(); // Make a copy before filtering
+    // Make a copy before filtering
+    var students = StudentsProvider.of(context).toList();
+    final allInternships = InternshipsProvider.of(context);
+
     students.sort(
       (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
     );
-    _filterByName(students);
-    _filterByFlag(students);
+    students = _filterByName(students);
+    students = _filterByFlag(students);
 
     return Scaffold(
       appBar: AppBar(
@@ -159,8 +173,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
                 return _StudentTile(
                   key: Key(student.id),
                   student: student,
-                  onUpdatePriority: () => _updatePriority(
-                      student, students[i].visitingPriority.next()),
+                  internships: allInternships.byStudent(student),
+                  onUpdatePriority: () => _updatePriority(student),
                 );
               }),
             ),
@@ -206,21 +220,20 @@ class _StudentTile extends StatelessWidget {
   const _StudentTile({
     super.key,
     required this.student,
+    required this.internships,
     required this.onUpdatePriority,
   });
 
   final Student student;
+  final List<Internship> internships;
   final Function() onUpdatePriority;
 
   @override
   Widget build(BuildContext context) {
     // TODO: Verify these next two variables
-    final intership = student.internships.isNotEmpty
-        ? student.internships.last
-        : 'Aucun stage';
-    final business = student.internships.isNotEmpty
-        ? student.internships.last
-        : 'Aucun stage';
+    final internship =
+        internships.isNotEmpty ? internships.last : 'Aucun stage';
+    final business = internships.isNotEmpty ? internships.last : 'Aucun stage';
 
     return Card(
       elevation: 10,
@@ -232,7 +245,7 @@ class _StudentTile extends StatelessWidget {
         title: Text(student.name),
         isThreeLine: true,
         subtitle: Text(
-          '$business\n$intership',
+          '$business\n$internship',
           maxLines: 2,
           style: const TextStyle(color: Colors.black87),
         ),
@@ -255,7 +268,9 @@ class _StudentTile extends StatelessWidget {
             alignment: Alignment.center,
             icon: Icon(
               VisitingPriorityStyled.icon,
-              color: student.visitingPriority.color,
+              color: internships.isNotEmpty
+                  ? internships.last.visitingPriority.color
+                  : Colors.white,
               size: 30,
             ),
           ),

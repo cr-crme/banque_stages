@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -73,11 +74,11 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
                 _filterSelectedStudents(students.toList()),
           ),
           //! Remove this in production
-          Consumer<StudentsProvider>(
-            builder: (context, students, child) => Visibility(
+          Consumer2<StudentsProvider, InternshipsProvider>(
+            builder: (context, students, interships, child) => Visibility(
               visible: students.isEmpty,
               child: ElevatedButton(
-                  onPressed: () => addDummyStudents(students),
+                  onPressed: () => addDummyStudents(students, interships),
                   child: const Text("Add dummy students")),
             ),
           ),

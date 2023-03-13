@@ -23,8 +23,11 @@ class InternshipsPage extends StatefulWidget {
 class InternshipsPageState extends State<InternshipsPage> {
   @override
   Widget build(BuildContext context) {
+    final allInternships = InternshipsProvider.of(context);
+    final internships = allInternships.byStudent(widget.student);
+
     return ListView.builder(
-      itemCount: widget.student.internships.length,
+      itemCount: internships.length,
       itemBuilder: (context, index) =>
           Selector<InternshipsProvider, Internship>(
         builder: (context, internship, _) => ExpansionPanelList(
@@ -52,8 +55,7 @@ class InternshipsPageState extends State<InternshipsPage> {
             ),
           ],
         ),
-        selector: (context, internships) =>
-            internships[widget.student.internships[index]],
+        selector: (context, internships) => internships[index],
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
+import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
@@ -61,6 +62,7 @@ class _InternshipEnrollmentScreenState
       protection: _requirementsKey.currentState!.protection,
       uniform: _requirementsKey.currentState!.uniform,
       date: _scheduleKey.currentState!.dateRange,
+      visitingPriority: VisitingPriority.low,
     );
     context.read<InternshipsProvider>().add(internship);
 

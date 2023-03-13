@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
-import '/common/models/visiting_priority.dart';
-
 class Student extends ItemSerializable {
   Student({
     super.id,
@@ -20,13 +18,8 @@ class Student extends ItemSerializable {
     this.contactLink = '',
     this.contactPhone = '',
     this.contactEmail = '',
-    List<String>? internships,
-    VisitingPriority? visitingPriority,
     Widget? avatar,
   })  : dateBirth = dateBirth ?? DateTime(0),
-        internships = internships ?? [],
-        visitingPriority =
-            visitingPriority ?? VisitingPriority.values[Random().nextInt(3)],
         avatar = avatar ??
             CircleAvatar(
               backgroundColor: Color(Random().nextInt(0xFFFFFF)).withAlpha(255),
@@ -45,8 +38,6 @@ class Student extends ItemSerializable {
         contactLink = map['cl'],
         contactPhone = map['cp'],
         contactEmail = map['ce'],
-        internships = map['internships'] as List<String>? ?? [],
-        visitingPriority = VisitingPriority.values[map['priority']],
         avatar = CircleAvatar(backgroundColor: Color(map['avatar'] as int)),
         super.fromSerialized(map);
 
@@ -65,8 +56,6 @@ class Student extends ItemSerializable {
       'cl': contactLink,
       'cp': contactPhone,
       'ce': contactEmail,
-      'internships': internships,
-      'priority': visitingPriority.index,
       'id': id,
       'avatar': (avatar as CircleAvatar).backgroundColor!.value,
     };
@@ -84,8 +73,6 @@ class Student extends ItemSerializable {
     String? contactLink,
     String? contactPhone,
     String? contactEmail,
-    List<String>? internships,
-    VisitingPriority? visitingPriority,
     Widget? avatar,
     String? id,
   }) =>
@@ -102,8 +89,6 @@ class Student extends ItemSerializable {
         contactLink: contactLink ?? this.contactLink,
         contactPhone: contactPhone ?? this.contactPhone,
         contactEmail: contactEmail ?? this.contactEmail,
-        internships: internships ?? this.internships,
-        visitingPriority: visitingPriority ?? this.visitingPriority,
         avatar: avatar ?? this.avatar,
       );
 
@@ -122,9 +107,6 @@ class Student extends ItemSerializable {
   final String contactLink;
   final String contactPhone;
   final String contactEmail;
-
-  final List<String> internships;
-  final VisitingPriority visitingPriority;
 
   final Widget avatar;
 }

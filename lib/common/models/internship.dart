@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
+
+import '/common/models/visiting_priority.dart';
 
 class Internship extends ItemSerializable {
   Internship({
@@ -9,6 +13,7 @@ class Internship extends ItemSerializable {
     required this.enterpriseId,
     required this.jobId,
     required this.type,
+    required this.visitingPriority,
     required this.supervisorName,
     required this.supervisorPhone,
     required this.supervisorEmail,
@@ -23,6 +28,7 @@ class Internship extends ItemSerializable {
         enterpriseId = map['enterprise'],
         jobId = map['job'],
         type = map['type'],
+        visitingPriority = VisitingPriority.values[map['priority']],
         supervisorName = map['name'],
         supervisorPhone = map['phone'],
         supervisorEmail = map['email'],
@@ -42,6 +48,7 @@ class Internship extends ItemSerializable {
       'enterprise': enterpriseId,
       'job': jobId,
       'type': type,
+      'priority': visitingPriority.index,
       'name': supervisorName,
       'phone': supervisorPhone,
       'email': supervisorEmail,
@@ -59,6 +66,7 @@ class Internship extends ItemSerializable {
     String? enterpriseId,
     String? jobId,
     String? type,
+    VisitingPriority? visitingPriority,
     String? supervisorName,
     String? supervisorPhone,
     String? supervisorEmail,
@@ -73,6 +81,7 @@ class Internship extends ItemSerializable {
         enterpriseId: enterpriseId ?? this.enterpriseId,
         jobId: jobId ?? this.jobId,
         type: type ?? this.type,
+        visitingPriority: visitingPriority ?? this.visitingPriority,
         supervisorName: supervisorName ?? this.supervisorName,
         supervisorPhone: supervisorPhone ?? this.supervisorPhone,
         supervisorEmail: supervisorEmail ?? this.supervisorEmail,
@@ -90,6 +99,8 @@ class Internship extends ItemSerializable {
   final String jobId;
 
   final String type;
+
+  final VisitingPriority visitingPriority;
 
   final String supervisorName;
   final String supervisorPhone;

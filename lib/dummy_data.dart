@@ -1,10 +1,17 @@
 //! Remove this file before production
 
+import 'dart:math';
+
+import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:flutter/material.dart';
+
 import '/common/models/enterprise.dart';
+import '/common/models/internship.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/models/student.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/misc/job_data_file_service.dart';
 
@@ -285,38 +292,71 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
   );
 }
 
-void addDummyStudents(StudentsProvider students) {
-  students.add(
-    Student(
-      name: "Cedric Masson",
-      dateBirth: DateTime.now(),
-      email: "c.masson@email.com",
-      program: "FPT2",
-      group: "550",
-      contactName: "Paul Masson",
-      contactLink: "Père",
-      contactPhone: "514 321 9876",
-      contactEmail: "p.masson@email.com",
-      address: "7248 Rue D'Iberville, Montréal, QC H2E 2Y6",
-      phone: "514 321 8888",
-    ),
-  );
+void addDummyStudents(
+    StudentsProvider students, InternshipsProvider internships) {
+  final rng = Random();
 
-  students.add(
-    Student(
-      name: "Thomas Caron",
-      dateBirth: DateTime.now(),
-      email: "t.caron@email.com",
-      program: "FPT3",
-      group: "885",
-      contactName: "Joe Caron",
-      contactLink: "Père",
-      contactPhone: "514 321 9876",
-      contactEmail: "j.caron@email.com",
-      address: "6622 16e Avenue, Montréal, QC H1X 2T2",
-      phone: "514 222 3344",
-    ),
+  var student = Student(
+    name: "Cedric Masson",
+    dateBirth: DateTime.now(),
+    email: "c.masson@email.com",
+    program: "FPT2",
+    group: "550",
+    contactName: "Paul Masson",
+    contactLink: "Père",
+    contactPhone: "514 321 9876",
+    contactEmail: "p.masson@email.com",
+    address: "7248 Rue D'Iberville, Montréal, QC H2E 2Y6",
+    phone: "514 321 8888",
   );
+  students.add(student);
+  internships.add(Internship(
+    teacherId: '-1',
+    studentId: student.id,
+    enterpriseId: '-1',
+    jobId: '-1',
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisorName: '-1',
+    supervisorPhone: '-1',
+    supervisorEmail: '-1',
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
+
+  student = Student(
+    name: "Thomas Caron",
+    dateBirth: DateTime.now(),
+    email: "t.caron@email.com",
+    program: "FPT3",
+    group: "885",
+    contactName: "Joe Caron",
+    contactLink: "Père",
+    contactPhone: "514 321 9876",
+    contactEmail: "j.caron@email.com",
+    address: "6622 16e Avenue, Montréal, QC H1X 2T2",
+    phone: "514 222 3344",
+  );
+  students.add(student);
+  internships.add(Internship(
+    teacherId: '-1',
+    studentId: student.id,
+    enterpriseId: '-1',
+    jobId: '-1',
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisorName: '-1',
+    supervisorPhone: '-1',
+    supervisorEmail: '-1',
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
 
   students.add(
     Student(
