@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/internship.dart';
-import '/common/models/student.dart';
 import '/common/models/visiting_priority.dart';
 
 class InternshipsProvider extends FirebaseListProvided<Internship> {
@@ -15,15 +14,15 @@ class InternshipsProvider extends FirebaseListProvided<Internship> {
       Provider.of<InternshipsProvider>(context, listen: listen);
 
   void replacePriority(
-    Student student,
+    String studentId,
     VisitingPriority priority,
   ) {
-    // It makes senst to only prioretize the last intership
-    replace(byStudent(student).last.copyWith(visitingPriority: priority));
+    // It makes sense to only prioretize the last intership
+    replace(byStudent(studentId).last.copyWith(visitingPriority: priority));
   }
 
-  List<Internship> byStudent(Student student) {
-    return where((intership) => intership.studentId == student.id).toList();
+  List<Internship> byStudent(String studentId) {
+    return where((intership) => intership.studentId == studentId).toList();
   }
 
   @override

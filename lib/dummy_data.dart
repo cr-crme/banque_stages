@@ -292,8 +292,9 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
   );
 }
 
-void addDummyStudents(
-    StudentsProvider students, InternshipsProvider internships) {
+void addDummyStudents(StudentsProvider students,
+    InternshipsProvider internships, EnterprisesProvider enterprises) {
+  if (enterprises.isEmpty) addDummyEnterprises(enterprises);
   final rng = Random();
 
   var student = Student(
@@ -313,8 +314,8 @@ void addDummyStudents(
   internships.add(Internship(
     teacherId: '-1',
     studentId: student.id,
-    enterpriseId: '-1',
-    jobId: '-1',
+    enterpriseId: enterprises[0].id,
+    jobId: enterprises[0].jobs[0].specialization!.id,
     type: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisorName: '-1',
@@ -344,8 +345,8 @@ void addDummyStudents(
   internships.add(Internship(
     teacherId: '-1',
     studentId: student.id,
-    enterpriseId: '-1',
-    jobId: '-1',
+    enterpriseId: enterprises[0].id,
+    jobId: enterprises[0].jobs[1].specialization!.id,
     type: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisorName: '-1',
@@ -358,69 +359,129 @@ void addDummyStudents(
     uniform: '-1',
   ));
 
-  students.add(
-    Student(
-      name: "Mikael Boucher",
-      dateBirth: DateTime.now(),
-      email: "m.boucher@email.com",
-      program: "FPT3",
-      group: "885",
-      contactName: "Nicole Lefranc",
-      contactLink: "Mère",
-      contactPhone: "514 321 9876",
-      contactEmail: "n.lefranc@email.com",
-      address: "6723 25e Ave, Montréal, QC H1T 3M1",
-      phone: "514 333 4455",
-    ),
+  student = Student(
+    name: "Mikael Boucher",
+    dateBirth: DateTime.now(),
+    email: "m.boucher@email.com",
+    program: "FPT3",
+    group: "885",
+    contactName: "Nicole Lefranc",
+    contactLink: "Mère",
+    contactPhone: "514 321 9876",
+    contactEmail: "n.lefranc@email.com",
+    address: "6723 25e Ave, Montréal, QC H1T 3M1",
+    phone: "514 333 4455",
   );
+  students.add(student);
+  internships.add(Internship(
+    teacherId: '-1',
+    studentId: student.id,
+    enterpriseId: enterprises[1].id,
+    jobId: enterprises[1].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisorName: '-1',
+    supervisorPhone: '-1',
+    supervisorEmail: '-1',
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
 
-  students.add(
-    Student(
-      name: "Kevin Leblanc",
-      dateBirth: DateTime.now(),
-      email: "k.leblanc@email.com",
-      program: "FPT2",
-      group: "550",
-      contactName: "Martine Gagnon",
-      contactLink: "Mère",
-      contactPhone: "514 321 9876",
-      contactEmail: "m.gagnon@email.com",
-      address: "6655 33e Avenue, Montréal, QC H1T 3B9",
-      phone: "514 999 8877",
-    ),
+  student = Student(
+    name: "Kevin Leblanc",
+    dateBirth: DateTime.now(),
+    email: "k.leblanc@email.com",
+    program: "FPT2",
+    group: "550",
+    contactName: "Martine Gagnon",
+    contactLink: "Mère",
+    contactPhone: "514 321 9876",
+    contactEmail: "m.gagnon@email.com",
+    address: "6655 33e Avenue, Montréal, QC H1T 3B9",
+    phone: "514 999 8877",
   );
+  students.add(student);
+  internships.add(Internship(
+    teacherId: '-1',
+    studentId: student.id,
+    enterpriseId: enterprises[2].id,
+    jobId: enterprises[2].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisorName: '-1',
+    supervisorPhone: '-1',
+    supervisorEmail: '-1',
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
 
-  students.add(
-    Student(
-      name: "Simon Gingras",
-      dateBirth: DateTime.now(),
-      email: "s.gingras@email.com",
-      program: "FMS",
-      group: "789",
-      contactName: "Raoul Gingras",
-      contactLink: "Père",
-      contactPhone: "514 321 9876",
-      contactEmail: "r.gingras@email.com",
-      address: "4517 Rue d'Assise, Saint-Léonard, QC H1R 1W2",
-      phone: "514 888 7766",
-    ),
+  student = Student(
+    name: "Simon Gingras",
+    dateBirth: DateTime.now(),
+    email: "s.gingras@email.com",
+    program: "FMS",
+    group: "789",
+    contactName: "Raoul Gingras",
+    contactLink: "Père",
+    contactPhone: "514 321 9876",
+    contactEmail: "r.gingras@email.com",
+    address: "4517 Rue d'Assise, Saint-Léonard, QC H1R 1W2",
+    phone: "514 888 7766",
   );
+  students.add(student);
+  internships.add(Internship(
+    teacherId: '-1',
+    studentId: student.id,
+    enterpriseId: enterprises[3].id,
+    jobId: enterprises[3].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisorName: '-1',
+    supervisorPhone: '-1',
+    supervisorEmail: '-1',
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
 
-  students.add(
-    Student(
-      name: "Diego Vargas",
-      dateBirth: DateTime.now(),
-      email: "d.vargas@email.com",
-      program: "FMS",
-      group: "789",
-      contactName: "Laura Vargas",
-      contactLink: "Mère",
-      contactPhone: "514 321 9876",
-      contactEmail: "l.vargas@email.com",
-      address: "8204 Rue de Blois, Saint-Léonard, QC H1R 2X1",
-      phone: "514 444 5566",
-    ),
+  student = Student(
+    name: "Diego Vargas",
+    dateBirth: DateTime.now(),
+    email: "d.vargas@email.com",
+    program: "FMS",
+    group: "789",
+    contactName: "Laura Vargas",
+    contactLink: "Mère",
+    contactPhone: "514 321 9876",
+    contactEmail: "l.vargas@email.com",
+    address: "8204 Rue de Blois, Saint-Léonard, QC H1R 2X1",
+    phone: "514 444 5566",
   );
+  students.add(student);
+  internships.add(Internship(
+    teacherId: '-1',
+    studentId: student.id,
+    enterpriseId: enterprises[4].id,
+    jobId: enterprises[4].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisorName: '-1',
+    supervisorPhone: '-1',
+    supervisorEmail: '-1',
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
 
   students.add(
     Student(
@@ -454,21 +515,36 @@ void addDummyStudents(
     ),
   );
 
-  students.add(
-    Student(
-      name: "Vanessa Monette",
-      dateBirth: DateTime.now(),
-      email: "v.monette@email.com",
-      program: "FMS",
-      group: "789",
-      contactName: "Stéphane Monette",
-      contactLink: "Père",
-      contactPhone: "514 321 9876",
-      contactEmail: "s.monette@email.com",
-      address: "6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5",
-      phone: "514 321 6655",
-    ),
+  student = Student(
+    name: "Vanessa Monette",
+    dateBirth: DateTime.now(),
+    email: "v.monette@email.com",
+    program: "FMS",
+    group: "789",
+    contactName: "Stéphane Monette",
+    contactLink: "Père",
+    contactPhone: "514 321 9876",
+    contactEmail: "s.monette@email.com",
+    address: "6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5",
+    phone: "514 321 6655",
   );
+  students.add(student);
+  internships.add(Internship(
+    teacherId: '-1',
+    studentId: student.id,
+    enterpriseId: enterprises[4].id,
+    jobId: enterprises[4].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisorName: '-1',
+    supervisorPhone: '-1',
+    supervisorEmail: '-1',
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
 
   students.add(
     Student(

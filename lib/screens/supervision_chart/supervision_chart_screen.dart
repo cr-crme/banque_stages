@@ -1,11 +1,13 @@
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:flutter/material.dart';
 
+import '/common/models/internship.dart';
 import '/common/models/student.dart';
 import '/common/models/visiting_priority.dart';
+import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/main_drawer.dart';
+import '/misc/job_data_file_service.dart';
 
 class SupervisionChart extends StatefulWidget {
   const SupervisionChart({super.key});
@@ -22,6 +24,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     VisitingPriority.high: true,
     VisitingPriority.mid: true,
     VisitingPriority.low: true,
+    VisitingPriority.notApplicable: false,
   };
 
   void _toggleSearchBar() {
@@ -98,8 +101,12 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
     return students
         .map<Student?>((e) {
-          final interships = allInterships.byStudent(e);
-          if (interships.isEmpty) return null;
+          final interships = allInterships.byStudent(e.id);
+          if (interships.isEmpty) {
+            return _visibilityFilters[VisitingPriority.notApplicable]!
+                ? e
+                : null;
+          }
           return _visibilityFilters[interships.last.visitingPriority]!
               ? e
               : null;
@@ -109,11 +116,13 @@ class _SupervisionChartState extends State<SupervisionChart> {
         .cast<Student>();
   }
 
-  void _updatePriority(Student student) {
+  void _updatePriority(String studentId) {
+    debugPrint(studentId);
     final interships = InternshipsProvider.of(context, listen: false);
-    if (interships.byStudent(student).isEmpty) return;
+    final studentInternships = interships.byStudent(studentId);
+    if (studentInternships.isEmpty) return;
     interships.replacePriority(
-        student, interships.last.visitingPriority.next());
+        studentId, studentInternships.last.visitingPriority.next());
 
     setState(() {});
   }
@@ -124,7 +133,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final iconSize = screenSize.width / 16;
 
     // Make a copy before filtering
-    var students = StudentsProvider.of(context).toList();
+    var students = StudentsProvider.of(context).map((e) => e).toList();
     final allInternships = InternshipsProvider.of(context);
 
     students.sort(
@@ -173,8 +182,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
                 return _StudentTile(
                   key: Key(student.id),
                   student: student,
-                  internships: allInternships.byStudent(student),
-                  onUpdatePriority: () => _updatePriority(student),
+                  internships: allInternships.byStudent(student.id),
+                  onUpdatePriority: () => _updatePriority(student.id),
                 );
               }),
             ),
@@ -230,10 +239,14 @@ class _StudentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Verify these next two variables
-    final internship =
-        internships.isNotEmpty ? internships.last : 'Aucun stage';
-    final business = internships.isNotEmpty ? internships.last : 'Aucun stage';
+    final enterprise = internships.isNotEmpty
+        ? EnterprisesProvider.of(context, listen: false)
+            .fromId(internships.last.enterpriseId)
+            .name
+        : 'Aucun stage';
+    final job = internships.isNotEmpty
+        ? JobDataFileService.specializationById(internships.last.jobId)!.name
+        : '';
 
     return Card(
       elevation: 10,
@@ -245,36 +258,36 @@ class _StudentTile extends StatelessWidget {
         title: Text(student.name),
         isThreeLine: true,
         subtitle: Text(
-          '$business\n$internship',
+          '$enterprise\n$job',
           maxLines: 2,
           style: const TextStyle(color: Colors.black87),
         ),
-        trailing: Ink(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 5.0,
-                spreadRadius: 0.0,
-                offset: Offset(2.0, 2.0),
-              )
-            ],
-            border: Border.all(color: Colors.lightBlue, width: 3),
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            onPressed: onUpdatePriority,
-            alignment: Alignment.center,
-            icon: Icon(
-              VisitingPriorityStyled.icon,
-              color: internships.isNotEmpty
-                  ? internships.last.visitingPriority.color
-                  : Colors.white,
-              size: 30,
-            ),
-          ),
-        ),
+        trailing: internships.isEmpty
+            ? null
+            : Ink(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 5.0,
+                      spreadRadius: 0.0,
+                      offset: Offset(2.0, 2.0),
+                    )
+                  ],
+                  border: Border.all(color: Colors.lightBlue, width: 3),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: onUpdatePriority,
+                  alignment: Alignment.center,
+                  icon: Icon(
+                    VisitingPriorityStyled.icon,
+                    color: internships.last.visitingPriority.color,
+                    size: 30,
+                  ),
+                ),
+              ),
       ),
     );
   }

@@ -53,6 +53,15 @@ abstract class JobDataFileService {
     return out;
   }
 
+  static Specialization? specializationById(String id) {
+    for (final sector in JobDataFileService.sectors) {
+      for (final specialization in sector.specializations) {
+        if (specialization.id == id) return specialization;
+      }
+    }
+    return null;
+  }
+
   static List<ActivitySector> _sectors = [];
 }
 
