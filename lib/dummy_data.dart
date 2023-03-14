@@ -292,9 +292,14 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
   );
 }
 
-void addDummyStudents(StudentsProvider students,
-    InternshipsProvider internships, EnterprisesProvider enterprises) {
-  if (enterprises.isEmpty) addDummyEnterprises(enterprises);
+Future<void> addDummyStudents(StudentsProvider students,
+    InternshipsProvider internships, EnterprisesProvider enterprises) async {
+  if (enterprises.isEmpty) {
+    addDummyEnterprises(enterprises);
+    while (enterprises.isEmpty) {
+      await Future.delayed(const Duration(seconds: 1));
+    }
+  }
   final rng = Random();
 
   var student = Student(

@@ -80,8 +80,10 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
                 Visibility(
               visible: students.isEmpty,
               child: ElevatedButton(
-                  onPressed: () => setState(() =>
-                      addDummyStudents(students, interships, enterprises)),
+                  onPressed: () async {
+                    await addDummyStudents(students, interships, enterprises);
+                    setState(() {});
+                  },
                   child: const Text("Add dummy students")),
             ),
           ),
