@@ -6,6 +6,7 @@ import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
+import '/common/providers/teachers_provider.dart';
 import '/common/widgets/main_drawer.dart';
 import '/misc/job_data_file_service.dart';
 
@@ -26,6 +27,22 @@ class _SupervisionChartState extends State<SupervisionChart> {
     VisitingPriority.low: true,
     VisitingPriority.notApplicable: false,
   };
+
+  List<Student> _getSupervisedStudents() {
+    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final allInternships = InternshipsProvider.of(context, listen: false);
+    final allStudents = StudentsProvider.of(context).map((e) => e).toList();
+
+    return allStudents
+        .map<Student?>((e) {
+          final internships = allInternships.byStudent(e.id);
+          if (internships.isEmpty) return null;
+          return internships.last.teacherSupervisingId == myId ? e : null;
+        })
+        .where((e) => e != null)
+        .toList()
+        .cast<Student>();
+  }
 
   void _toggleSearchBar() {
     _isFlagFilterExpanded = false;
@@ -133,7 +150,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final iconSize = screenSize.width / 16;
 
     // Make a copy before filtering
-    var students = StudentsProvider.of(context).map((e) => e).toList();
+    var students = _getSupervisedStudents();
     final allInternships = InternshipsProvider.of(context);
 
     students.sort(
