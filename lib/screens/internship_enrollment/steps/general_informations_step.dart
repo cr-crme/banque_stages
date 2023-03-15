@@ -33,7 +33,8 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   Job primaryJob = Job();
   Job? secondJob;
 
-  String? supervisorName;
+  String? supervisorFirstName;
+  String? supervisorLastName;
   String? supervisorPhone;
   String? supervisorEmail;
 
@@ -54,7 +55,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
           children: [
             ListTile(
               title: TextField(
-                decoration: const InputDecoration(labelText: "* Entreprise"),
+                decoration: const InputDecoration(labelText: '* Entreprise'),
                 controller: TextEditingController(text: widget.enterprise.name),
                 enabled: false,
               ),
@@ -69,12 +70,12 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
             ),
             const SizedBox(height: 16),
             Text(
-              "Métier",
+              'Métier',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            if (student?.program == "FPT")
+            if (student?.program == 'FPT')
               const ListTile(
-                title: Text("Métier principal"),
+                title: Text('Métier principal'),
               ),
             JobFormFieldListTile(
               initialValue: Job(),
@@ -83,7 +84,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                   availableJobs.map((job) => job.specialization!).toList(),
               askNumberPositionsOffered: false,
             ),
-            if (student?.program == "FPT") ...[
+            if (student?.program == 'FPT') ...[
               const SizedBox(height: 8),
               if (secondJob == null)
                 AddJobButton(
@@ -91,7 +92,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                 )
               else ...[
                 const ListTile(
-                  title: Text("Métier secondaire"),
+                  title: Text('Métier secondaire'),
                 ),
                 JobFormFieldListTile(
                   initialValue: secondJob!,
@@ -102,21 +103,29 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
             ],
             const SizedBox(height: 16),
             Text(
-              "Superviseur en milieu de travail \n(Responsable dans le milieu de stage)",
+              'Superviseur en milieu de travail \n(Responsable dans le milieu de stage)',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             ListTile(
               title: TextFormField(
-                decoration: const InputDecoration(labelText: "* Nom"),
+                decoration: const InputDecoration(labelText: '* Prénom'),
                 validator: FormService.textNotEmptyValidator,
-                onSaved: (name) => supervisorName = name!,
+                onSaved: (name) => supervisorFirstName = name!,
+              ),
+            ),
+            ListTile(
+              title: TextFormField(
+                decoration:
+                    const InputDecoration(labelText: '* Nom de famille'),
+                validator: FormService.textNotEmptyValidator,
+                onSaved: (name) => supervisorLastName = name!,
               ),
             ),
             ListTile(
               title: TextFormField(
                 decoration: const InputDecoration(
                   icon: Icon(Icons.phone),
-                  labelText: "* Téléphone",
+                  labelText: '* Téléphone',
                 ),
                 validator: FormService.phoneValidator,
                 onSaved: (phone) => supervisorPhone = phone!,
@@ -127,7 +136,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
               title: TextFormField(
                 decoration: const InputDecoration(
                   icon: Icon(Icons.mail),
-                  labelText: "* Courriel",
+                  labelText: '* Courriel',
                 ),
                 validator: FormService.emailValidator,
                 onSaved: (email) => supervisorEmail = email!,

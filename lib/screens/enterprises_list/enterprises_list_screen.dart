@@ -6,7 +6,6 @@ import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/main_drawer.dart';
 import '/common/widgets/search_bar.dart';
-import '/dummy_data.dart';
 import '/router.dart';
 import 'widgets/enterprise_card.dart';
 
@@ -96,15 +95,6 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen> {
             ),
             selector: (context, enterprises) => _sortEnterprisesByName(
               _filterSelectedEnterprises(enterprises.toList()),
-            ),
-          ),
-          //! Remove this in production
-          Consumer<EnterprisesProvider>(
-            builder: (context, enterprises, child) => Visibility(
-              visible: enterprises.isEmpty,
-              child: ElevatedButton(
-                  onPressed: () => addDummyEnterprises(enterprises),
-                  child: const Text('Add dummy enterprises')),
             ),
           ),
         ],

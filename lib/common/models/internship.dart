@@ -1,111 +1,104 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
+import '/common/models/person.dart';
 import '/common/models/visiting_priority.dart';
 
 class Internship extends ItemSerializable {
+  final String studentId;
+  final String teacherInChargeId;
+  final String teacherSupervisingId;
+
+  final String enterpriseId;
+  final String jobId;
+  final String type;
+  final Person supervisor;
+  final DateTimeRange date;
+
+  final List<String> protection;
+  final String uniform;
+
+  final VisitingPriority visitingPriority;
+
   Internship({
     super.id,
-    required this.teacherId,
     required this.studentId,
+    required this.teacherInChargeId,
+    String? teacherSupervisingId,
     required this.enterpriseId,
     required this.jobId,
     required this.type,
-    required this.visitingPriority,
-    required this.supervisorName,
-    required this.supervisorPhone,
-    required this.supervisorEmail,
+    required this.supervisor,
     required this.date,
     required this.protection,
     required this.uniform,
-  });
+    required this.visitingPriority,
+  }) : teacherSupervisingId = teacherSupervisingId ?? teacherInChargeId;
 
   Internship.fromSerialized(map)
-      : teacherId = map['teacher'],
-        studentId = map['student'],
+      : studentId = map['student'],
+        teacherInChargeId = map['teacherInCharge'],
+        teacherSupervisingId = map['teacherSupervising'],
         enterpriseId = map['enterprise'],
         jobId = map['job'],
         type = map['type'],
-        visitingPriority = VisitingPriority.values[map['priority']],
-        supervisorName = map['name'],
-        supervisorPhone = map['phone'],
-        supervisorEmail = map['email'],
+        supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
           start: DateTime.parse(map['start']),
           end: DateTime.parse(map['end']),
         ),
         protection = ItemSerializable.listFromSerialized(map['protection']),
         uniform = map['uniform'],
+        visitingPriority = VisitingPriority.values[map['priority']],
         super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      'teacher': teacherId,
+      'id': id,
       'student': studentId,
+      'teacherInCharge': teacherInChargeId,
+      'teacherSupervising': teacherSupervisingId,
       'enterprise': enterpriseId,
       'job': jobId,
       'type': type,
-      'priority': visitingPriority.index,
-      'name': supervisorName,
-      'phone': supervisorPhone,
-      'email': supervisorEmail,
+      'name': supervisor.serializedMap(),
       'start': date.start.toString(),
       'end': date.end.toString(),
       'protection': protection,
       'uniform': uniform,
-      'id': id,
+      'priority': visitingPriority.index,
     };
   }
 
   Internship copyWith({
-    String? teacherId,
+    String? id,
     String? studentId,
+    String? teacherInChargeId,
+    String? teacherSupervisingId,
     String? enterpriseId,
     String? jobId,
     String? type,
-    VisitingPriority? visitingPriority,
-    String? supervisorName,
-    String? supervisorPhone,
-    String? supervisorEmail,
+    Person? supervisor,
     DateTimeRange? date,
     List<String>? protection,
     String? uniform,
-    String? id,
+    VisitingPriority? visitingPriority,
   }) =>
       Internship(
-        teacherId: teacherId ?? this.teacherId,
+        id: id ?? this.id,
         studentId: studentId ?? this.studentId,
+        teacherInChargeId: teacherInChargeId ?? this.teacherInChargeId,
+        teacherSupervisingId: teacherSupervisingId ?? this.teacherSupervisingId,
         enterpriseId: enterpriseId ?? this.enterpriseId,
         jobId: jobId ?? this.jobId,
         type: type ?? this.type,
-        visitingPriority: visitingPriority ?? this.visitingPriority,
-        supervisorName: supervisorName ?? this.supervisorName,
-        supervisorPhone: supervisorPhone ?? this.supervisorPhone,
-        supervisorEmail: supervisorEmail ?? this.supervisorEmail,
+        supervisor: supervisor ?? this.supervisor,
         date: date ?? this.date,
         protection: protection ?? this.protection,
         uniform: uniform ?? this.uniform,
-        id: id ?? this.id,
+        visitingPriority: visitingPriority ?? this.visitingPriority,
       );
 
   String get title => "Année ${date.start.year}-${date.end.year}. $type";
-
-  final String studentId;
-  final String teacherId;
-  final String enterpriseId;
-  final String jobId;
-
-  final String type;
-
-  final VisitingPriority visitingPriority;
-
-  final String supervisorName;
-  final String supervisorPhone;
-  final String supervisorEmail;
-
-  final DateTimeRange date;
-
-  final List<String> protection;
-  final String uniform;
 }

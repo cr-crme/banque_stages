@@ -3,9 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'common/providers/auth_provider.dart';
+import 'dummy_data.dart';
+import 'main.dart';
 import 'screens/add_enterprise/add_enterprise_screen.dart';
 import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list/enterprises_list_screen.dart';
+import 'screens/generate_debug_data_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'screens/internship_forms/post_internship_evaluation_screen.dart';
@@ -20,6 +23,7 @@ import 'screens/visiting_students/visit_students_screen.dart';
 
 abstract class Screens {
   static const home = 'home';
+  static const populateWithDebugData = 'populate-with-debug-data';
   static const login = 'login';
   static const visitStudents = 'visit-students';
 
@@ -51,14 +55,25 @@ abstract class Screens {
   }
 }
 
-final GoRouter router = GoRouter(
-  redirect: (context, state) =>
-      context.read<AuthProvider>().isSignedIn() ? null : '/login',
+final router = GoRouter(
+  redirect: (context, state) {
+    if (context.read<AuthProvider>().isSignedIn()) {
+      return populateWithDebugData && !hasDummyData(context)
+          ? '/debug-data'
+          : null;
+    }
+    return '/login';
+  },
   routes: [
     GoRoute(
       path: '/',
       name: Screens.home,
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/debug-data',
+      name: Screens.populateWithDebugData,
+      builder: (context, state) => const GenerateDebugDataScreen(),
     ),
     GoRoute(
       path: '/login',

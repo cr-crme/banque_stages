@@ -54,7 +54,10 @@ class AboutPageState extends State<AboutPage> {
             email: _email,
             address: _address,
             contact: Person(
-                firstName: _contactFirstName!, lastName: _contactLastName!),
+                firstName: _contactFirstName!,
+                lastName: _contactLastName!,
+                phone: _contactPhone,
+                email: _contactEmail),
             contactLink: _contactLink,
           ),
         );

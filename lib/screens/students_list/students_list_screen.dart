@@ -4,12 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/student.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/main_drawer.dart';
 import '/common/widgets/search_bar.dart';
-import '/dummy_data.dart';
 import '/router.dart';
 import 'widgets/student_card.dart';
 
@@ -23,7 +20,6 @@ class StudentsListScreen extends StatefulWidget {
 class _StudentsListScreenState extends State<StudentsListScreen> {
   final _searchController = TextEditingController();
   bool _showSearchBar = false;
-  bool _showCreateButton = true;
 
   List<Student> _filterSelectedStudents(List<Student> students) {
     return students.where((student) {
@@ -39,11 +35,6 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
   void initState() {
     super.initState();
     _searchController.addListener(() => setState(() {}));
-  }
-
-  Future<void> _addDummyStudent(students, interships, enterprises) async {
-    await addDummyStudents(students, interships, enterprises);
-    setState(() {});
   }
 
   @override
@@ -79,21 +70,6 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
             ),
             selector: (context, students) =>
                 _filterSelectedStudents(students.toList()),
-          ),
-          //! Remove this in production
-          Consumer3<StudentsProvider, InternshipsProvider, EnterprisesProvider>(
-            builder: (context, students, interships, enterprises, child) =>
-                Visibility(
-              visible: _showCreateButton,
-              child: ElevatedButton(
-                  onPressed: () async {
-                    setState(() {
-                      _showCreateButton = false;
-                    });
-                    _addDummyStudent(students, interships, enterprises);
-                  },
-                  child: const Text("Add dummy students")),
-            ),
           ),
         ],
       ),

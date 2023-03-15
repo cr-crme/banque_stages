@@ -45,9 +45,9 @@ class InternshipsPageState extends State<InternshipsPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Selector<TeachersProvider, Teacher>(
-                      builder: (context, teacher, _) => Text(teacher.name),
+                      builder: (context, teacher, _) => Text(teacher.fullName),
                       selector: (context, teachers) =>
-                          teachers[internship.teacherId],
+                          teachers[internship.teacherInChargeId],
                     ),
                   )
                 ],

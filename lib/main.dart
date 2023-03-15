@@ -23,6 +23,8 @@ import 'misc/risk_data_file_service.dart';
 import 'router.dart';
 import 'screens/visiting_students/models/all_itineraries.dart';
 
+bool populateWithDebugData = true;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await JobDataFileService.loadData();

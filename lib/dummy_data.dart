@@ -2,6 +2,8 @@
 
 import 'dart:math';
 
+import 'package:crcrme_banque_stages/common/models/teacher.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/enterprise.dart';
@@ -14,10 +16,58 @@ import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
+import '/common/providers/teachers_provider.dart';
 import '/misc/job_data_file_service.dart';
 
-void addDummyEnterprises(EnterprisesProvider enterprises) {
-  // TODO: Add missing fields in the dummy jobs
+bool hasDummyData(context) {
+  final teachers = TeachersProvider.of(context, listen: false);
+  final enterprises = EnterprisesProvider.of(context, listen: false);
+  final internships = InternshipsProvider.of(context, listen: false);
+  final students = StudentsProvider.of(context, listen: false);
+
+  return teachers.isNotEmpty ||
+      enterprises.isNotEmpty ||
+      internships.isNotEmpty ||
+      students.isNotEmpty;
+}
+
+Future<void> addAllDummyData(BuildContext context) async {
+  final teachers = TeachersProvider.of(context, listen: false);
+  final enterprises = EnterprisesProvider.of(context, listen: false);
+  final internships = InternshipsProvider.of(context, listen: false);
+  final students = StudentsProvider.of(context, listen: false);
+
+  if (teachers.isEmpty) await addDummyTeachers(teachers);
+  if (enterprises.isEmpty) await addDummyEnterprises(enterprises);
+  if (students.isEmpty) await addDummyStudents(students);
+  if (internships.isEmpty) {
+    await addDummyInterships(internships, students, enterprises, teachers);
+  }
+}
+
+Future<void> addDummyTeachers(TeachersProvider teachers) async {
+  teachers.add(Teacher(
+      firstName: 'Roméo',
+      lastName: 'Montaigu',
+      email: 'romeo.montaigu@shakespeare.qc'));
+  teachers.add(Teacher(
+      id: teachers.currentTeacherId,
+      firstName: 'Juliette',
+      lastName: 'Capulet',
+      email: 'juliette.capulet@shakespeare.qc'));
+  teachers.add(Teacher(
+      firstName: 'Tybalt',
+      lastName: 'Capulet',
+      email: 'tybalt.capulet@shakespeare.qc'));
+  teachers.add(Teacher(
+      firstName: 'Benvolio',
+      lastName: 'Montaigu',
+      email: 'benvolio.montaigu@shakespeare.qc'));
+
+  await _waitForDatabaseUpdate(teachers, 4);
+}
+
+Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
   JobList jobs = JobList();
   jobs.add(
     Job(
@@ -291,19 +341,12 @@ void addDummyEnterprises(EnterprisesProvider enterprises) {
       neq: '9012345038',
     ),
   );
+
+  await _waitForDatabaseUpdate(enterprises, 9);
 }
 
-Future<void> addDummyStudents(StudentsProvider students,
-    InternshipsProvider internships, EnterprisesProvider enterprises) async {
-  if (enterprises.isEmpty) {
-    addDummyEnterprises(enterprises);
-    while (enterprises.isEmpty) {
-      await Future.delayed(const Duration(seconds: 1));
-    }
-  }
-  final rng = Random();
-
-  var student = Student(
+Future<void> addDummyStudents(StudentsProvider students) async {
+  students.add(Student(
     firstName: 'Cedric',
     lastName: 'Masson',
     dateBirth: DateTime.now(),
@@ -318,26 +361,9 @@ Future<void> addDummyStudents(StudentsProvider students,
         phone: '514 321 9876',
         email: 'p.masson@email.com'),
     contactLink: 'Père',
-  );
-  students.add(student);
-  internships.add(Internship(
-    teacherId: '-1',
-    studentId: student.id,
-    enterpriseId: enterprises[0].id,
-    jobId: enterprises[0].jobs[0].specialization!.id,
-    type: '-1',
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisorName: '-1',
-    supervisorPhone: '-1',
-    supervisorEmail: '-1',
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    protection: [],
-    uniform: '-1',
   ));
 
-  student = Student(
+  students.add(Student(
     firstName: 'Thomas',
     lastName: 'Caron',
     dateBirth: DateTime.now(),
@@ -352,26 +378,9 @@ Future<void> addDummyStudents(StudentsProvider students,
     contactLink: 'Père',
     address: '6622 16e Avenue, Montréal, QC H1X 2T2',
     phone: '514 222 3344',
-  );
-  students.add(student);
-  internships.add(Internship(
-    teacherId: '-1',
-    studentId: student.id,
-    enterpriseId: enterprises[0].id,
-    jobId: enterprises[0].jobs[0].specialization!.id,
-    type: '-1',
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisorName: '-1',
-    supervisorPhone: '-1',
-    supervisorEmail: '-1',
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    protection: [],
-    uniform: '-1',
   ));
 
-  student = Student(
+  students.add(Student(
     firstName: 'Mikael',
     lastName: 'Boucher',
     dateBirth: DateTime.now(),
@@ -386,26 +395,9 @@ Future<void> addDummyStudents(StudentsProvider students,
     contactLink: 'Mère',
     address: '6723 25e Ave, Montréal, QC H1T 3M1',
     phone: '514 333 4455',
-  );
-  students.add(student);
-  internships.add(Internship(
-    teacherId: '-1',
-    studentId: student.id,
-    enterpriseId: enterprises[1].id,
-    jobId: enterprises[1].jobs[0].specialization!.id,
-    type: '-1',
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisorName: '-1',
-    supervisorPhone: '-1',
-    supervisorEmail: '-1',
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    protection: [],
-    uniform: '-1',
   ));
 
-  student = Student(
+  students.add(Student(
     firstName: 'Kevin',
     lastName: 'Leblanc',
     dateBirth: DateTime.now(),
@@ -420,26 +412,9 @@ Future<void> addDummyStudents(StudentsProvider students,
     contactLink: 'Mère',
     address: '6655 33e Avenue, Montréal, QC H1T 3B9',
     phone: '514 999 8877',
-  );
-  students.add(student);
-  internships.add(Internship(
-    teacherId: '-1',
-    studentId: student.id,
-    enterpriseId: enterprises[2].id,
-    jobId: enterprises[2].jobs[0].specialization!.id,
-    type: '-1',
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisorName: '-1',
-    supervisorPhone: '-1',
-    supervisorEmail: '-1',
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    protection: [],
-    uniform: '-1',
   ));
 
-  student = Student(
+  students.add(Student(
     firstName: 'Simon',
     lastName: 'Gingras',
     dateBirth: DateTime.now(),
@@ -454,26 +429,9 @@ Future<void> addDummyStudents(StudentsProvider students,
     contactLink: 'Père',
     address: '4517 Rue d\'Assise, Saint-Léonard, QC H1R 1W2',
     phone: '514 888 7766',
-  );
-  students.add(student);
-  internships.add(Internship(
-    teacherId: '-1',
-    studentId: student.id,
-    enterpriseId: enterprises[3].id,
-    jobId: enterprises[3].jobs[0].specialization!.id,
-    type: '-1',
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisorName: '-1',
-    supervisorPhone: '-1',
-    supervisorEmail: '-1',
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    protection: [],
-    uniform: '-1',
   ));
 
-  student = Student(
+  students.add(Student(
     firstName: 'Diego',
     lastName: 'Vargas',
     dateBirth: DateTime.now(),
@@ -488,23 +446,6 @@ Future<void> addDummyStudents(StudentsProvider students,
     contactLink: 'Mère',
     address: '8204 Rue de Blois, Saint-Léonard, QC H1R 2X1',
     phone: '514 444 5566',
-  );
-  students.add(student);
-  internships.add(Internship(
-    teacherId: '-1',
-    studentId: student.id,
-    enterpriseId: enterprises[4].id,
-    jobId: enterprises[4].jobs[0].specialization!.id,
-    type: '-1',
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisorName: '-1',
-    supervisorPhone: '-1',
-    supervisorEmail: '-1',
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    protection: [],
-    uniform: '-1',
   ));
 
   students.add(
@@ -545,7 +486,7 @@ Future<void> addDummyStudents(StudentsProvider students,
     ),
   );
 
-  student = Student(
+  students.add(Student(
     firstName: 'Vanessa',
     lastName: 'Monette',
     dateBirth: DateTime.now(),
@@ -560,23 +501,6 @@ Future<void> addDummyStudents(StudentsProvider students,
     contactLink: 'Père',
     address: '6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5',
     phone: '514 321 6655',
-  );
-  students.add(student);
-  internships.add(Internship(
-    teacherId: '-1',
-    studentId: student.id,
-    enterpriseId: enterprises[4].id,
-    jobId: enterprises[4].jobs[0].specialization!.id,
-    type: '-1',
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisorName: '-1',
-    supervisorPhone: '-1',
-    supervisorEmail: '-1',
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    protection: [],
-    uniform: '-1',
   ));
 
   students.add(
@@ -597,4 +521,131 @@ Future<void> addDummyStudents(StudentsProvider students,
       phone: '514 567 9999',
     ),
   );
+  await _waitForDatabaseUpdate(students, 10);
+}
+
+Future<void> addDummyInterships(
+  InternshipsProvider internships,
+  StudentsProvider students,
+  EnterprisesProvider enterprises,
+  TeachersProvider teachers,
+) async {
+  final rng = Random(); // Generate random priorities
+
+  internships.add(Internship(
+    teacherInChargeId: teachers[0].id,
+    studentId: students[0].id,
+    enterpriseId: enterprises[0].id,
+    jobId: enterprises[0].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
+
+  internships.add(Internship(
+    teacherInChargeId: teachers[1].id,
+    studentId: students[1].id,
+    enterpriseId: enterprises[0].id,
+    jobId: enterprises[0].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
+
+  internships.add(Internship(
+    teacherInChargeId: teachers[1].id,
+    studentId: students[2].id,
+    enterpriseId: enterprises[1].id,
+    jobId: enterprises[1].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
+
+  internships.add(Internship(
+    teacherInChargeId: teachers[0].id,
+    teacherSupervisingId: teachers[1].id,
+    studentId: students[3].id,
+    enterpriseId: enterprises[2].id,
+    jobId: enterprises[2].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
+
+  internships.add(Internship(
+    teacherInChargeId: teachers[1].id,
+    teacherSupervisingId: teachers[0].id,
+    studentId: students[4].id,
+    enterpriseId: enterprises[3].id,
+    jobId: enterprises[3].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
+
+  internships.add(Internship(
+    teacherInChargeId: teachers[1].id,
+    studentId: students[5].id,
+    enterpriseId: enterprises[4].id,
+    jobId: enterprises[4].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
+
+  internships.add(Internship(
+    teacherInChargeId: teachers[1].id,
+    studentId: students[8].id,
+    enterpriseId: enterprises[4].id,
+    jobId: enterprises[4].jobs[0].specialization!.id,
+    type: '-1',
+    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: DateTimeRange(
+        start: DateTime.now(),
+        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    protection: [],
+    uniform: '-1',
+  ));
+
+  await _waitForDatabaseUpdate(internships, 7);
+}
+
+Future<void> _waitForDatabaseUpdate(
+    FirebaseListProvided list, int expectedLength) async {
+// Wait for the database to add all the students
+  while (list.length < expectedLength) {
+    await Future.delayed(const Duration(milliseconds: 250));
+  }
 }
