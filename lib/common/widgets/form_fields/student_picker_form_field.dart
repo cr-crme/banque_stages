@@ -29,11 +29,12 @@ class StudentPickerFormField extends StatelessWidget {
       builder: (state) => Column(
         children: [
           Autocomplete<Student>(
-            displayStringForOption: (student) => student.name,
-            initialValue: TextEditingValue(text: initialValue?.name ?? ""),
+            displayStringForOption: (student) => student.fullName,
+            initialValue: TextEditingValue(text: initialValue?.fullName ?? ""),
             optionsBuilder: (input) {
               return students.where(
-                (s) => s.name.toLowerCase().contains(input.text.toLowerCase()),
+                (s) =>
+                    s.fullName.toLowerCase().contains(input.text.toLowerCase()),
               );
             },
             onSelected: (student) => state.didChange(student),

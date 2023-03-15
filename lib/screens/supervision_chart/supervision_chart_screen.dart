@@ -86,7 +86,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
   List<Student> _filterByName(List<Student> students) {
     return students
-        .map<Student?>((e) => e.name
+        .map<Student?>((e) => e.fullName
                 .toLowerCase()
                 .contains(_searchTextController.text.toLowerCase())
             ? e
@@ -137,7 +137,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final allInternships = InternshipsProvider.of(context);
 
     students.sort(
-      (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+      (a, b) => a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase()),
     );
     students = _filterByName(students);
     students = _filterByFlag(students);
@@ -255,7 +255,7 @@ class _StudentTile extends StatelessWidget {
           height: double.infinity, // This centers the avatar
           child: student.avatar,
         ),
-        title: Text(student.name),
+        title: Text(student.fullName),
         isThreeLine: true,
         subtitle: Text(
           '$enterprise\n$job',

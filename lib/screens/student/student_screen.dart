@@ -69,7 +69,7 @@ class _StudentScreenState extends State<StudentScreen>
     return Selector<StudentsProvider, Student>(
       builder: (context, student, _) => Scaffold(
         appBar: AppBar(
-          title: Text(student.name),
+          title: Text(student.fullName),
           actions: [_actionButton],
           bottom: TabBar(
             controller: _tabController,

@@ -28,7 +28,7 @@ class StudentCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      student.name,
+                      student.fullName,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     Row(

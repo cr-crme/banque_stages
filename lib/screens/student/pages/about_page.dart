@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/person.dart';
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
@@ -28,7 +29,8 @@ class AboutPageState extends State<AboutPage> {
   String? _email;
   String? _address;
 
-  String? _contactName;
+  String? _contactFirstName;
+  String? _contactLastName;
   String? _contactLink;
   String? _contactPhone;
   String? _contactEmail;
@@ -51,10 +53,9 @@ class AboutPageState extends State<AboutPage> {
             phone: _phone,
             email: _email,
             address: _address,
-            contactName: _contactName,
+            contact: Person(
+                firstName: _contactFirstName!, lastName: _contactLastName!),
             contactLink: _contactLink,
-            contactPhone: _contactPhone,
-            contactEmail: _contactEmail,
           ),
         );
 
@@ -100,7 +101,7 @@ class AboutPageState extends State<AboutPage> {
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Text(
-                                widget.student.name,
+                                widget.student.fullName,
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               const SizedBox(height: 8),
@@ -109,7 +110,7 @@ class AboutPageState extends State<AboutPage> {
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Text(
-                                _dateFormat.format(widget.student.dateBirth),
+                                _dateFormat.format(widget.student.dateBirth!),
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                             ],
@@ -162,12 +163,21 @@ class AboutPageState extends State<AboutPage> {
                   children: [
                     TextFormField(
                       controller: TextEditingController(
-                          text: widget.student.contactName),
+                          text: widget.student.contact.firstName),
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.name,
+                        labelText: AppLocalizations.of(context)!.firstName,
                       ),
                       enabled: _editing,
-                      onSaved: (name) => _contactName = name,
+                      onSaved: (name) => _contactFirstName = name,
+                    ),
+                    TextFormField(
+                      controller: TextEditingController(
+                          text: widget.student.contact.lastName),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.lastName,
+                      ),
+                      enabled: _editing,
+                      onSaved: (name) => _contactLastName = name,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
@@ -183,7 +193,7 @@ class AboutPageState extends State<AboutPage> {
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: TextEditingController(
-                          text: widget.student.contactPhone),
+                          text: widget.student.contact.phone),
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.phoneNumber,
                       ),
@@ -193,7 +203,7 @@ class AboutPageState extends State<AboutPage> {
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: TextEditingController(
-                          text: widget.student.contactEmail),
+                          text: widget.student.contact.email),
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.email,
                       ),

@@ -65,7 +65,7 @@ class InternshipsPageState extends State<InternshipsPage> {
                         Selector<StudentsProvider, String>(
                           builder: (context, name, _) => Text(name),
                           selector: (context, students) =>
-                              students[internship.studentId].name,
+                              students[internship.studentId].fullName,
                         ),
                       ],
                     ),

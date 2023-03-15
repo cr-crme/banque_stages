@@ -23,10 +23,11 @@ class StudentsListScreen extends StatefulWidget {
 class _StudentsListScreenState extends State<StudentsListScreen> {
   final _searchController = TextEditingController();
   bool _showSearchBar = false;
+  bool _showCreateButton = true;
 
   List<Student> _filterSelectedStudents(List<Student> students) {
     return students.where((student) {
-      if (student.name.contains(_searchController.text)) {
+      if (student.fullName.contains(_searchController.text)) {
         return true;
       }
 
@@ -38,6 +39,11 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
   void initState() {
     super.initState();
     _searchController.addListener(() => setState(() {}));
+  }
+
+  Future<void> _addDummyStudent(students, interships, enterprises) async {
+    await addDummyStudents(students, interships, enterprises);
+    setState(() {});
   }
 
   @override
@@ -78,11 +84,13 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
           Consumer3<StudentsProvider, InternshipsProvider, EnterprisesProvider>(
             builder: (context, students, interships, enterprises, child) =>
                 Visibility(
-              visible: students.isEmpty,
+              visible: _showCreateButton,
               child: ElevatedButton(
                   onPressed: () async {
-                    await addDummyStudents(students, interships, enterprises);
-                    setState(() {});
+                    setState(() {
+                      _showCreateButton = false;
+                    });
+                    _addDummyStudent(students, interships, enterprises);
                   },
                   child: const Text("Add dummy students")),
             ),

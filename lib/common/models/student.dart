@@ -1,112 +1,87 @@
 import 'dart:math';
 
-import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
-class Student extends ItemSerializable {
+import '/common/models/person.dart';
+
+class Student extends Person {
   Student({
     super.id,
-    this.name = '',
-    DateTime? dateBirth,
-    this.photo = '',
-    this.phone = '',
-    this.email = '',
-    this.address = '',
-    this.program = '',
-    this.group = '',
-    this.contactName = '',
-    this.contactLink = '',
-    this.contactPhone = '',
-    this.contactEmail = '',
-    Widget? avatar,
-  })  : dateBirth = dateBirth ?? DateTime(0),
-        avatar = avatar ??
-            CircleAvatar(
-              backgroundColor: Color(Random().nextInt(0xFFFFFF)).withAlpha(255),
-            );
+    required super.firstName,
+    super.middleName,
+    required super.lastName,
+    required super.dateBirth,
+    super.phone,
+    required super.email,
+    required super.address,
+    String? photo,
+    required this.program,
+    required this.group,
+    required this.contact,
+    required this.contactLink,
+  }) : photo = photo ?? Random().nextInt(0xFFFFFF).toString() {
+    avatar = CircleAvatar(
+        backgroundColor: Color(int.parse(this.photo)).withAlpha(255));
+  }
 
   Student.fromSerialized(map)
-      : name = map['n'],
-        dateBirth = DateTime.parse(map['d']),
-        photo = map['i'],
-        phone = map['p'],
-        email = map['e'],
-        address = map['a'],
-        program = map['pr'],
-        group = map['gr'],
-        contactName = map['cn'],
-        contactLink = map['cl'],
-        contactPhone = map['cp'],
-        contactEmail = map['ce'],
-        avatar = CircleAvatar(backgroundColor: Color(map['avatar'] as int)),
+      : photo = map['photo'],
+        avatar = CircleAvatar(
+            backgroundColor: Color(int.parse(map['photo'])).withAlpha(255)),
+        program = map['program'],
+        group = map['group'],
+        contact = Person.fromSerialized(map['contact']),
+        contactLink = map['contactLink'],
         super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {
-    return {
-      'n': name,
-      'd': dateBirth.toString(),
-      'i': photo,
-      'p': phone,
-      'e': email,
-      'a': address,
-      'pr': program,
-      'gr': group,
-      'cn': contactName,
-      'cl': contactLink,
-      'cp': contactPhone,
-      'ce': contactEmail,
-      'id': id,
-      'avatar': (avatar as CircleAvatar).backgroundColor!.value,
-    };
+    return super.serializedMap()
+      ..addAll({
+        'photo': photo,
+        'program': program,
+        'group': group,
+        'contact': contact.serializedMap(),
+        'contactLink': contactLink,
+      });
   }
 
+  @override
   Student copyWith({
-    String? name,
+    String? firstName,
+    String? middleName,
+    String? lastName,
     DateTime? dateBirth,
     String? phone,
     String? email,
     String? address,
     String? program,
     String? group,
-    String? contactName,
+    Person? contact,
     String? contactLink,
-    String? contactPhone,
-    String? contactEmail,
-    Widget? avatar,
     String? id,
   }) =>
       Student(
         id: id ?? this.id,
-        name: name ?? this.name,
+        firstName: firstName ?? this.firstName,
+        middleName: middleName ?? this.middleName,
+        lastName: lastName ?? this.lastName,
         dateBirth: dateBirth ?? this.dateBirth,
         phone: phone ?? this.phone,
         email: email ?? this.email,
         address: address ?? this.address,
         program: program ?? this.program,
         group: group ?? this.group,
-        contactName: contactName ?? this.contactName,
+        contact: contact ?? this.contact,
         contactLink: contactLink ?? this.contactLink,
-        contactPhone: contactPhone ?? this.contactPhone,
-        contactEmail: contactEmail ?? this.contactEmail,
-        avatar: avatar ?? this.avatar,
       );
 
-  final String name;
-  final DateTime dateBirth;
   final String photo;
-
-  final String phone;
-  final String email;
-  final String address;
+  late final Widget avatar;
 
   final String program;
   final String group;
 
-  final String contactName;
+  final Person contact;
   final String contactLink;
-  final String contactPhone;
-  final String contactEmail;
-
-  final Widget avatar;
 }
