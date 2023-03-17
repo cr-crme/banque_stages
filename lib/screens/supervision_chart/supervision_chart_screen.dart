@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '/common/models/internship.dart';
 import '/common/models/student.dart';
@@ -9,6 +10,7 @@ import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/common/widgets/main_drawer.dart';
 import '/misc/job_data_file_service.dart';
+import '/router.dart';
 import 'widgets/transfer_dialog.dart';
 
 class SupervisionChart extends StatefulWidget {
@@ -155,7 +157,6 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   void _updatePriority(String studentId) {
-    debugPrint(studentId);
     final interships = InternshipsProvider.of(context, listen: false);
     final studentInternships = interships.byStudentId(studentId);
     if (studentInternships.isEmpty) return;
@@ -334,6 +335,9 @@ class _StudentTile extends StatelessWidget {
     return Card(
       elevation: 10,
       child: ListTile(
+        onTap: () => GoRouter.of(context).goNamed(
+            Screens.supervisionStudentDetails,
+            params: {'studentId': student.id}),
         leading: SizedBox(
           height: double.infinity, // This centers the avatar
           child: student.avatar,

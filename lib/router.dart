@@ -19,6 +19,7 @@ import 'screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
 import 'screens/supervision_chart/supervision_chart_screen.dart';
+import 'screens/supervision_chart/supervision_student_details.dart';
 import 'screens/visiting_students/visit_students_screen.dart';
 
 abstract class Screens {
@@ -32,6 +33,7 @@ abstract class Screens {
   static const addEnterprise = 'add-enterprise';
 
   static const supervisionChart = 'supervision';
+  static const supervisionStudentDetails = 'supervision-student-details';
 
   static const studentsList = 'students-list';
   static const student = 'student';
@@ -112,6 +114,14 @@ final router = GoRouter(
       path: '/supervision',
       name: Screens.supervisionChart,
       builder: (context, state) => const SupervisionChart(),
+      routes: [
+        GoRoute(
+          path: 'student-details/:studentId',
+          name: Screens.supervisionStudentDetails,
+          builder: (context, state) => SupervisionStudentDetailsScreen(
+              studentId: state.params['studentId']!),
+        ),
+      ],
     ),
     GoRoute(
       path: '/students',
