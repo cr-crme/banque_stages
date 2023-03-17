@@ -23,9 +23,9 @@ class _SupervisionChartState extends State<SupervisionChart> {
   final _searchTextController = TextEditingController();
   bool _isFlagFilterExpanded = false;
   final _visibilityFilters = {
-    VisitingPriority.high: true,
-    VisitingPriority.mid: true,
     VisitingPriority.low: true,
+    VisitingPriority.mid: true,
+    VisitingPriority.high: true,
     VisitingPriority.notApplicable: false,
   };
 
@@ -110,7 +110,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
                     setState(() => _visibilityFilters[priority] = value!)),
             Padding(
               padding: const EdgeInsets.only(right: 25),
-              child: Icon(VisitingPriorityStyled.icon, color: priority.color),
+              child: Icon(priority.icon, color: priority.color),
             )
           ],
         ),
@@ -365,7 +365,7 @@ class _StudentTile extends StatelessWidget {
                   onPressed: onUpdatePriority,
                   alignment: Alignment.center,
                   icon: Icon(
-                    VisitingPriorityStyled.icon,
+                    internships.last.visitingPriority.icon,
                     color: internships.last.visitingPriority.color,
                     size: 30,
                   ),

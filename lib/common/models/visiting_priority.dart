@@ -21,8 +21,17 @@ extension VisitingPriorityStyled on VisitingPriority {
     }
   }
 
-  static IconData get icon {
-    return Icons.flag;
+  IconData get icon {
+    switch (this) {
+      case (VisitingPriority.low):
+        return Icons.looks_one;
+      case (VisitingPriority.mid):
+        return Icons.looks_two;
+      case (VisitingPriority.high):
+        return Icons.looks_3;
+      default:
+        return Icons.cancel;
+    }
   }
 
   VisitingPriority next() {
