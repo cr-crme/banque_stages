@@ -104,3 +104,27 @@ class _TransferDialogState extends State<TransferDialog> {
     );
   }
 }
+
+class AcceptTransferDialog extends StatelessWidget {
+  const AcceptTransferDialog({super.key, required this.student});
+
+  final Student student;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Transfère d\'étudiant\u00b7e'),
+      content:
+          Text('La supervision de ${student.fullName} vous a été transférée.\n'
+              'Acceptez-vous?'),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Non')),
+        TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Oui')),
+      ],
+    );
+  }
+}

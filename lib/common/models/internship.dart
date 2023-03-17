@@ -7,6 +7,8 @@ import '/common/models/visiting_priority.dart';
 class Internship extends ItemSerializable {
   final String studentId;
   final String teacherId;
+  final String previousTeacherId; // Keep track of teacherId while transfering
+  final bool isTransfering;
 
   final String enterpriseId;
   final String jobId;
@@ -23,6 +25,8 @@ class Internship extends ItemSerializable {
     super.id,
     required this.studentId,
     required this.teacherId,
+    String? previousTeacherId,
+    this.isTransfering = false,
     required this.enterpriseId,
     required this.jobId,
     required this.type,
@@ -31,11 +35,13 @@ class Internship extends ItemSerializable {
     required this.protection,
     required this.uniform,
     required this.visitingPriority,
-  });
+  }) : previousTeacherId = previousTeacherId ?? teacherId;
 
   Internship.fromSerialized(map)
       : studentId = map['student'],
         teacherId = map['teacherId'],
+        previousTeacherId = map['previousTeacherId'],
+        isTransfering = map['isTransfering'],
         enterpriseId = map['enterprise'],
         jobId = map['job'],
         type = map['type'],
@@ -55,6 +61,8 @@ class Internship extends ItemSerializable {
       'id': id,
       'student': studentId,
       'teacherId': teacherId,
+      'previousTeacherId': previousTeacherId,
+      'isTransfering': isTransfering,
       'enterprise': enterpriseId,
       'job': jobId,
       'type': type,
@@ -71,6 +79,8 @@ class Internship extends ItemSerializable {
     String? id,
     String? studentId,
     String? teacherId,
+    String? previousTeacherId,
+    bool? isTransfering,
     String? enterpriseId,
     String? jobId,
     String? type,
@@ -84,6 +94,8 @@ class Internship extends ItemSerializable {
         id: id ?? this.id,
         studentId: studentId ?? this.studentId,
         teacherId: teacherId ?? this.teacherId,
+        previousTeacherId: previousTeacherId ?? this.previousTeacherId,
+        isTransfering: isTransfering ?? this.isTransfering,
         enterpriseId: enterpriseId ?? this.enterpriseId,
         jobId: jobId ?? this.jobId,
         type: type ?? this.type,

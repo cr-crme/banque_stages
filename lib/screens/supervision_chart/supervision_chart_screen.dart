@@ -183,10 +183,28 @@ class _SupervisionChartState extends State<SupervisionChart> {
     );
 
     if (answer == null) return;
+    internships.transferStudent(studentId: answer[0], newTeacherId: answer[1]);
+  }
 
-    final internship = internships.byStudentId(answer[0]);
-    if (internship.isEmpty) return;
-    internships.replace(internship.last.copyWith(teacherId: answer[1]));
+  void _showTransferedStudent(InternshipsProvider internships) async {
+    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final students = StudentsProvider.of(context, listen: false);
+
+    for (final internship in internships) {
+      if (internship.isTransfering && internship.teacherId == myId) {
+        final student = students.fromId(internship.studentId);
+        final acceptTransfer = await showDialog<bool>(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) =>
+                AcceptTransferDialog(student: student));
+        if (acceptTransfer!) {
+          internships.acceptTransfer(studentId: internship.studentId);
+        } else {
+          internships.refuseTransfer(studentId: internship.studentId);
+        }
+      }
+    }
   }
 
   @override
@@ -196,13 +214,17 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
     // Make a copy before filtering
     var students = _getSupervisedStudents();
-    final allInternships = InternshipsProvider.of(context);
+    final allInternships = InternshipsProvider.of(context, listen: true);
 
     students.sort(
       (a, b) => a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase()),
     );
     students = _filterByName(students);
     students = _filterByFlag(students);
+
+    // Check if a student was transfered to the teacher, if so, show a dialog
+    // box to accept or refuse
+    Future.microtask(() => _showTransferedStudent(allInternships));
 
     return Scaffold(
       appBar: AppBar(
