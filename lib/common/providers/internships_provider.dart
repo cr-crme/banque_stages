@@ -18,10 +18,10 @@ class InternshipsProvider extends FirebaseListProvided<Internship> {
     VisitingPriority priority,
   ) {
     // It makes sense to only prioretize the last intership
-    replace(byStudent(studentId).last.copyWith(visitingPriority: priority));
+    replace(byStudentId(studentId).last.copyWith(visitingPriority: priority));
   }
 
-  List<Internship> byStudent(String studentId) {
+  List<Internship> byStudentId(String studentId) {
     return where((intership) => intership.studentId == studentId).toList();
   }
 

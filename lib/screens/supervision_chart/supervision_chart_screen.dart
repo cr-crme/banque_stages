@@ -29,6 +29,10 @@ class _SupervisionChartState extends State<SupervisionChart> {
     VisitingPriority.notApplicable: false,
   };
 
+  ///
+  /// Get all the students who the current teacher is assigned to, meaning
+  /// they supervise this student for their internship
+  ///
   List<Student> _getSupervisedStudents() {
     final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
     final allInternships = InternshipsProvider.of(context, listen: false);
@@ -36,10 +40,26 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
     return allStudents
         .map<Student?>((student) {
-          final internships = allInternships.byStudent(student.id);
+          final internships = allInternships.byStudentId(student.id);
           if (internships.isEmpty) return student;
           return internships.last.teacherId == myId ? student : null;
         })
+        .where((e) => e != null)
+        .toList()
+        .cast<Student>();
+  }
+
+  ///
+  /// Get all the who the current teacher is in charge. Meaning they are
+  /// responsible in a more general way
+  ///
+  List<Student> _getInChargeStudents() {
+    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final allStudents =
+        StudentsProvider.of(context, listen: false).map((e) => e).toList();
+
+    return allStudents
+        .map<Student?>((student) => student.teacherId == myId ? student : null)
         .where((e) => e != null)
         .toList()
         .cast<Student>();
@@ -119,7 +139,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
     return students
         .map<Student?>((e) {
-          final interships = allInterships.byStudent(e.id);
+          final interships = allInterships.byStudentId(e.id);
           if (interships.isEmpty) {
             return _visibilityFilters[VisitingPriority.notApplicable]!
                 ? e
@@ -137,7 +157,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
   void _updatePriority(String studentId) {
     debugPrint(studentId);
     final interships = InternshipsProvider.of(context, listen: false);
-    final studentInternships = interships.byStudent(studentId);
+    final studentInternships = interships.byStudentId(studentId);
     if (studentInternships.isEmpty) return;
     interships.replacePriority(
         studentId, studentInternships.last.visitingPriority.next());
@@ -146,11 +166,12 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   void _transferStudent() async {
-    final allStudents =
-        StudentsProvider.of(context, listen: false).map((e) => e).toList();
+    final internships = InternshipsProvider.of(context, listen: false);
+    final students = _getInChargeStudents();
     final teachers =
         TeachersProvider.of(context, listen: false).map((e) => e).toList();
-    allStudents.sort(
+
+    students.sort(
         (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
     teachers.sort(
         (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
@@ -158,12 +179,14 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final answer = await showDialog<List<String>>(
       context: context,
       builder: (BuildContext context) =>
-          TransferDialog(students: allStudents, teachers: teachers),
+          TransferDialog(students: students, teachers: teachers),
     );
 
     if (answer == null) return;
-    final studentId = answer[0];
-    final teacherId = answer[1];
+
+    final internship = internships.byStudentId(answer[0]);
+    if (internship.isEmpty) return;
+    internships.replace(internship.last.copyWith(teacherId: answer[1]));
   }
 
   @override
@@ -220,7 +243,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
                 return _StudentTile(
                   key: Key(student.id),
                   student: student,
-                  internships: allInternships.byStudent(student.id),
+                  internships: allInternships.byStudentId(student.id),
                   onUpdatePriority: () => _updatePriority(student.id),
                 );
               }),
