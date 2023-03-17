@@ -47,7 +47,7 @@ class InternshipsPageState extends State<InternshipsPage> {
                     child: Selector<TeachersProvider, Teacher>(
                       builder: (context, teacher, _) => Text(teacher.fullName),
                       selector: (context, teachers) =>
-                          teachers[internship.teacherInChargeId],
+                          teachers[internship.teacherId],
                     ),
                   )
                 ],

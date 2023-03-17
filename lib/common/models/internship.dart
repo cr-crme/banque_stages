@@ -6,8 +6,7 @@ import '/common/models/visiting_priority.dart';
 
 class Internship extends ItemSerializable {
   final String studentId;
-  final String teacherInChargeId;
-  final String teacherSupervisingId;
+  final String teacherId;
 
   final String enterpriseId;
   final String jobId;
@@ -23,8 +22,7 @@ class Internship extends ItemSerializable {
   Internship({
     super.id,
     required this.studentId,
-    required this.teacherInChargeId,
-    String? teacherSupervisingId,
+    required this.teacherId,
     required this.enterpriseId,
     required this.jobId,
     required this.type,
@@ -33,12 +31,11 @@ class Internship extends ItemSerializable {
     required this.protection,
     required this.uniform,
     required this.visitingPriority,
-  }) : teacherSupervisingId = teacherSupervisingId ?? teacherInChargeId;
+  });
 
   Internship.fromSerialized(map)
       : studentId = map['student'],
-        teacherInChargeId = map['teacherInCharge'],
-        teacherSupervisingId = map['teacherSupervising'],
+        teacherId = map['teacherId'],
         enterpriseId = map['enterprise'],
         jobId = map['job'],
         type = map['type'],
@@ -57,8 +54,7 @@ class Internship extends ItemSerializable {
     return {
       'id': id,
       'student': studentId,
-      'teacherInCharge': teacherInChargeId,
-      'teacherSupervising': teacherSupervisingId,
+      'teacherId': teacherId,
       'enterprise': enterpriseId,
       'job': jobId,
       'type': type,
@@ -74,8 +70,7 @@ class Internship extends ItemSerializable {
   Internship copyWith({
     String? id,
     String? studentId,
-    String? teacherInChargeId,
-    String? teacherSupervisingId,
+    String? teacherId,
     String? enterpriseId,
     String? jobId,
     String? type,
@@ -88,8 +83,7 @@ class Internship extends ItemSerializable {
       Internship(
         id: id ?? this.id,
         studentId: studentId ?? this.studentId,
-        teacherInChargeId: teacherInChargeId ?? this.teacherInChargeId,
-        teacherSupervisingId: teacherSupervisingId ?? this.teacherSupervisingId,
+        teacherId: teacherId ?? this.teacherId,
         enterpriseId: enterpriseId ?? this.enterpriseId,
         jobId: jobId ?? this.jobId,
         type: type ?? this.type,

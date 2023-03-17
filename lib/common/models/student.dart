@@ -5,6 +5,16 @@ import 'package:flutter/material.dart';
 import '/common/models/person.dart';
 
 class Student extends Person {
+  final String photo;
+  late final Widget avatar;
+
+  final String teacherId;
+  final String program;
+  final String group;
+
+  final Person contact;
+  final String contactLink;
+
   Student({
     super.id,
     required super.firstName,
@@ -15,6 +25,7 @@ class Student extends Person {
     required super.email,
     required super.address,
     String? photo,
+    required this.teacherId,
     required this.program,
     required this.group,
     required this.contact,
@@ -28,6 +39,7 @@ class Student extends Person {
       : photo = map['photo'],
         avatar = CircleAvatar(
             backgroundColor: Color(int.parse(map['photo'])).withAlpha(255)),
+        teacherId = map['teacherId'],
         program = map['program'],
         group = map['group'],
         contact = Person.fromSerialized(map['contact']),
@@ -39,6 +51,7 @@ class Student extends Person {
     return super.serializedMap()
       ..addAll({
         'photo': photo,
+        'teacherId': teacherId,
         'program': program,
         'group': group,
         'contact': contact.serializedMap(),
@@ -55,6 +68,7 @@ class Student extends Person {
     String? phone,
     String? email,
     String? address,
+    String? teacherId,
     String? program,
     String? group,
     Person? contact,
@@ -70,18 +84,10 @@ class Student extends Person {
         phone: phone ?? this.phone,
         email: email ?? this.email,
         address: address ?? this.address,
+        teacherId: teacherId ?? this.teacherId,
         program: program ?? this.program,
         group: group ?? this.group,
         contact: contact ?? this.contact,
         contactLink: contactLink ?? this.contactLink,
       );
-
-  final String photo;
-  late final Widget avatar;
-
-  final String program;
-  final String group;
-
-  final Person contact;
-  final String contactLink;
 }

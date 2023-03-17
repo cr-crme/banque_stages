@@ -52,8 +52,8 @@ class _InternshipEnrollmentScreenState
     _requirementsKey.currentState!.formKey.currentState!.save();
 
     final internship = Internship(
-      teacherInChargeId: context.read<TeachersProvider>().currentTeacherId,
       studentId: _generalInfoKey.currentState!.student!.id,
+      teacherId: context.read<TeachersProvider>().currentTeacherId,
       enterpriseId: widget.enterpriseId,
       jobId: _generalInfoKey.currentState!.primaryJob.id,
       type: 'SPA',

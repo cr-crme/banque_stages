@@ -9,6 +9,7 @@ import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/common/widgets/main_drawer.dart';
 import '/misc/job_data_file_service.dart';
+import 'widgets/transfer_dialog.dart';
 
 class SupervisionChart extends StatefulWidget {
   const SupervisionChart({super.key});
@@ -34,10 +35,10 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final allStudents = StudentsProvider.of(context).map((e) => e).toList();
 
     return allStudents
-        .map<Student?>((e) {
-          final internships = allInternships.byStudent(e.id);
-          if (internships.isEmpty) return null;
-          return internships.last.teacherSupervisingId == myId ? e : null;
+        .map<Student?>((student) {
+          final internships = allInternships.byStudent(student.id);
+          if (internships.isEmpty) return student;
+          return internships.last.teacherId == myId ? student : null;
         })
         .where((e) => e != null)
         .toList()
@@ -144,6 +145,27 @@ class _SupervisionChartState extends State<SupervisionChart> {
     setState(() {});
   }
 
+  void _transferStudent() async {
+    final allStudents =
+        StudentsProvider.of(context, listen: false).map((e) => e).toList();
+    final teachers =
+        TeachersProvider.of(context, listen: false).map((e) => e).toList();
+    allStudents.sort(
+        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
+    teachers.sort(
+        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
+
+    final answer = await showDialog<List<String>>(
+      context: context,
+      builder: (BuildContext context) =>
+          TransferDialog(students: allStudents, teachers: teachers),
+    );
+
+    if (answer == null) return;
+    final studentId = answer[0];
+    final teacherId = answer[1];
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -170,7 +192,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
                   _TabIcon(
                       screenSize: screenSize,
                       iconSize: iconSize,
-                      onTap: () {},
+                      onTap: _transferStudent,
                       icon: Icons.transfer_within_a_station),
                   _TabIcon(
                       screenSize: screenSize,
@@ -192,7 +214,6 @@ class _SupervisionChartState extends State<SupervisionChart> {
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: students.length,
-              //physics: const NeverScrollableScrollPhysics(),
               itemBuilder: ((ctx, i) {
                 final student = students[i];
 
