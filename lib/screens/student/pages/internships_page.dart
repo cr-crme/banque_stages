@@ -34,7 +34,8 @@ class InternshipsPageState extends State<InternshipsPage> {
           children: [
             ExpansionPanel(
               headerBuilder: (context, isExpanded) => ListTile(
-                title: Text(internship.title),
+                title: Text(
+                    'Année ${internship.date.start.year}-${internship.date.end.year}. ${internship.type}'),
               ),
               body: Column(
                 children: [

@@ -19,11 +19,11 @@ class ScheduleStepState extends State<ScheduleStep> {
   );
 
   List<TimeStamp> days = [
-    TimeStamp("Lundi"),
-    TimeStamp("Mardi"),
-    TimeStamp("Mercredi"),
-    TimeStamp("Jeudi"),
-    TimeStamp("Vendredi"),
+    TimeStamp('Lundi'),
+    TimeStamp('Mardi'),
+    TimeStamp('Mercredi'),
+    TimeStamp('Jeudi'),
+    TimeStamp('Vendredi'),
   ];
 
   void askDateRange() async {
@@ -60,13 +60,13 @@ class ScheduleStepState extends State<ScheduleStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Dates",
+              'Dates',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             ListTile(
               title: TextField(
                 decoration: const InputDecoration(
-                    labelText: "* Date de début du stage"),
+                    labelText: '* Date de début du stage'),
                 controller: TextEditingController(
                     text: DateFormat.yMMMEd().format(dateRange.start)),
                 enabled: false,
@@ -79,7 +79,7 @@ class ScheduleStepState extends State<ScheduleStep> {
             ListTile(
               title: TextField(
                 decoration:
-                    const InputDecoration(labelText: "* Date de fin du stage"),
+                    const InputDecoration(labelText: '* Date de fin du stage'),
                 controller: TextEditingController(
                     text: DateFormat.yMMMEd().format(dateRange.end)),
                 enabled: false,
@@ -92,12 +92,12 @@ class ScheduleStepState extends State<ScheduleStep> {
             const ListTile(
               title: TextField(
                 decoration:
-                    InputDecoration(labelText: "* Nombre d'heures de stage"),
+                    InputDecoration(labelText: '* Nombre d\'heures de stage'),
                 keyboardType: TextInputType.number,
               ),
             ),
             Text(
-              "Horaire",
+              'Horaire',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             ...days.map(

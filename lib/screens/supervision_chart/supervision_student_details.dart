@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../misc/job_data_file_service.dart';
+import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
+import '/common/models/schedule.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
+import '../../misc/job_data_file_service.dart';
 
 class SupervisionStudentDetailsScreen extends StatelessWidget {
   const SupervisionStudentDetailsScreen({super.key, required this.studentId});
@@ -46,10 +48,11 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
           children: [
             _VisitingPriority(studentId: studentId),
             _Specialization(internship: internship),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: _PersonalNotes(internship: internship),
-            ),
+            _PersonalNotes(internship: internship),
+            _Contact(enterprise: enterprise, internship: internship),
+            _Schedule(internship: internship),
+            _EnterpriseRequirements(enterprise: enterprise),
+            _MoreInfoButton(studentId: studentId),
           ],
         ),
       ),
@@ -140,7 +143,7 @@ class _Specialization extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Niveau de priorité pour les visites',
+              'Métier',
               style: Theme.of(context).textTheme.headline6,
             ),
             Padding(
@@ -182,7 +185,7 @@ class _PersonalNotesState extends State<_PersonalNotes> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(top: 16, left: 8.0, right: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -218,5 +221,173 @@ class _PersonalNotesState extends State<_PersonalNotes> {
             ),
           ],
         ));
+  }
+}
+
+class _Contact extends StatelessWidget {
+  const _Contact({required this.enterprise, required this.internship});
+
+  final Enterprise? enterprise;
+  final Internship? internship;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.only(top: 16.0, left: 8.0, right: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Contact',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 25.0, top: 8.0),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.home,
+                    color: Colors.black,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                        'Adresse complète :\n${enterprise?.address ?? 'Aucun stage'}'),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 25.0, top: 8.0),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.phone,
+                    color: Colors.black,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text('Superviseur du stage :\n'
+                        '${internship?.supervisor.phone ?? 'Aucun téléphone enregistré'}'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
+}
+
+class _Schedule extends StatelessWidget {
+  const _Schedule({required this.internship});
+
+  final Internship? internship;
+
+  Widget _scheduleBuilder(BuildContext context, List<Schedule> schedule) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 25),
+      child: Table(
+        columnWidths: {
+          0: FixedColumnWidth(MediaQuery.of(context).size.width / 5),
+          1: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
+          2: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
+        },
+        children: schedule
+            .map<TableRow>((e) => TableRow(
+                  children: [
+                    Text(e.dayOfWeek.name),
+                    Text(
+                        textAlign: TextAlign.end,
+                        '${e.start.hour}h${e.start.minute.toString().padLeft(2, '0')}'),
+                    Text(
+                        textAlign: TextAlign.end,
+                        '${e.end.hour}h${e.end.minute.toString().padLeft(2, '0')}'),
+                  ],
+                ))
+            .toList(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.only(top: 16.0, left: 8.0, right: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Horaire de stage',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 25.0, top: 8.0),
+              child: internship != null
+                  ? _scheduleBuilder(context, internship!.schedule)
+                  : const Text('Aucun stage'),
+            ),
+          ],
+        ));
+  }
+}
+
+class _EnterpriseRequirements extends StatelessWidget {
+  const _EnterpriseRequirements({required this.enterprise});
+
+  final Enterprise? enterprise;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.only(top: 16.0, left: 8.0, right: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Exigences de l\'entreprise',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 25.0, top: 8.0),
+              child: Text('EPI requis :',
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 25.0),
+              child: Text(
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 25.0, top: 8.0),
+              child: Text('Uniforme requis :',
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 25.0),
+              child: Text(
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
+              ),
+            ),
+          ],
+        ));
+  }
+}
+
+class _MoreInfoButton extends StatelessWidget {
+  const _MoreInfoButton({required this.studentId});
+
+  final String studentId;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 50.0, bottom: 40),
+      child: Center(
+        child: ElevatedButton(
+            onPressed: () {},
+            child: const Text('Plus de détails sur le stage')),
+      ),
+    );
   }
 }

@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
@@ -569,6 +570,33 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    schedule: [
+      Schedule(
+        dayOfWeek: Day.monday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.tuesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.wednesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.thursday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.friday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+    ],
     protection: [],
     uniform: '-1',
   ));
@@ -584,6 +612,33 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    schedule: [
+      Schedule(
+        dayOfWeek: Day.monday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.tuesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.wednesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.thursday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.friday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+    ],
     protection: [],
     uniform: '-1',
   ));
@@ -599,6 +654,28 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    schedule: [
+      Schedule(
+        dayOfWeek: Day.monday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.tuesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.wednesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.thursday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+    ],
     protection: [],
     uniform: '-1',
   ));
@@ -614,6 +691,23 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    schedule: [
+      Schedule(
+        dayOfWeek: Day.monday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.tuesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.wednesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+    ],
     protection: [],
     uniform: '-1',
   ));
@@ -629,6 +723,23 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    schedule: [
+      Schedule(
+        dayOfWeek: Day.monday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.wednesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.friday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+    ],
     protection: [],
     uniform: '-1',
   ));
@@ -644,6 +755,33 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    schedule: [
+      Schedule(
+        dayOfWeek: Day.monday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.tuesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.wednesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.thursday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.friday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+    ],
     protection: [],
     uniform: '-1',
   ));
@@ -659,6 +797,33 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    schedule: [
+      Schedule(
+        dayOfWeek: Day.monday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.tuesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.wednesday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.thursday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+      Schedule(
+        dayOfWeek: Day.friday,
+        start: const TimeOfDay(hour: 9, minute: 00),
+        end: const TimeOfDay(hour: 17, minute: 00),
+      ),
+    ],
     protection: [],
     uniform: '-1',
   ));

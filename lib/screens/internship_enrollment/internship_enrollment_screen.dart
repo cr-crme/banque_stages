@@ -65,6 +65,7 @@ class _InternshipEnrollmentScreenState
       protection: _requirementsKey.currentState!.protection,
       uniform: _requirementsKey.currentState!.uniform,
       date: _scheduleKey.currentState!.dateRange,
+      schedule: [], // TODO: Fill that
       visitingPriority: VisitingPriority.low,
     );
     context.read<InternshipsProvider>().add(internship);

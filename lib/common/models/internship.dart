@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '/common/models/person.dart';
 import '/common/models/visiting_priority.dart';
+import 'schedule.dart';
 
 class Internship extends ItemSerializable {
   final String studentId;
@@ -15,6 +16,7 @@ class Internship extends ItemSerializable {
   final String type;
   final Person supervisor;
   final DateTimeRange date;
+  final List<Schedule> schedule;
 
   final List<String> protection;
   final String uniform;
@@ -33,6 +35,7 @@ class Internship extends ItemSerializable {
     required this.type,
     required this.supervisor,
     required this.date,
+    required this.schedule,
     required this.protection,
     required this.uniform,
     required this.visitingPriority,
@@ -49,9 +52,11 @@ class Internship extends ItemSerializable {
         type = map['type'],
         supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
-          start: DateTime.parse(map['start']),
-          end: DateTime.parse(map['end']),
-        ),
+            start: DateTime.parse(map['date'][0]),
+            end: DateTime.parse(map['date'][1])),
+        schedule = (map['schedule'] as List)
+            .map<Schedule>((e) => Schedule.fromSerialized(e))
+            .toList(),
         protection = ItemSerializable.listFromSerialized(map['protection']),
         uniform = map['uniform'],
         visitingPriority = VisitingPriority.values[map['priority']],
@@ -70,8 +75,8 @@ class Internship extends ItemSerializable {
       'job': jobId,
       'type': type,
       'name': supervisor.serializedMap(),
-      'start': date.start.toString(),
-      'end': date.end.toString(),
+      'date': [date.start.toString(), date.end.toString()],
+      'schedule': schedule.map<Map>((e) => e.serializedMap()).toList(),
       'protection': protection,
       'uniform': uniform,
       'priority': visitingPriority.index,
@@ -90,6 +95,7 @@ class Internship extends ItemSerializable {
     String? type,
     Person? supervisor,
     DateTimeRange? date,
+    List<Schedule>? schedule,
     List<String>? protection,
     String? uniform,
     VisitingPriority? visitingPriority,
@@ -106,11 +112,10 @@ class Internship extends ItemSerializable {
         type: type ?? this.type,
         supervisor: supervisor ?? this.supervisor,
         date: date ?? this.date,
+        schedule: schedule ?? this.schedule,
         protection: protection ?? this.protection,
         uniform: uniform ?? this.uniform,
         visitingPriority: visitingPriority ?? this.visitingPriority,
         teacherNotes: teacherNotes ?? this.teacherNotes,
       );
-
-  String get title => "Année ${date.start.year}-${date.end.year}. $type";
 }
