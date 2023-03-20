@@ -8,9 +8,10 @@ import '/screens/student/pages/skills_page.dart';
 import 'pages/about_page.dart';
 
 class StudentScreen extends StatefulWidget {
-  const StudentScreen({super.key, required this.id});
+  const StudentScreen({super.key, required this.id, this.initialPage = 0});
 
   final String id;
+  final int initialPage;
 
   @override
   State<StudentScreen> createState() => _StudentScreenState();
@@ -18,7 +19,8 @@ class StudentScreen extends StatefulWidget {
 
 class _StudentScreenState extends State<StudentScreen>
     with SingleTickerProviderStateMixin {
-  late final _tabController = TabController(length: 3, vsync: this);
+  late final _tabController = TabController(length: 3, vsync: this)
+    ..index = widget.initialPage;
 
   late IconButton _actionButton;
 

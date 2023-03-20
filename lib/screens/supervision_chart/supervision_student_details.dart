@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
@@ -7,6 +8,7 @@ import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
+import '/router.dart';
 import '../../misc/job_data_file_service.dart';
 
 class SupervisionStudentDetailsScreen extends StatelessWidget {
@@ -385,7 +387,8 @@ class _MoreInfoButton extends StatelessWidget {
       padding: const EdgeInsets.only(top: 50.0, bottom: 40),
       child: Center(
         child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () => GoRouter.of(context).pushNamed(Screens.student,
+                params: {'id': studentId, 'initialPage': '1'}),
             child: const Text('Plus de détails sur le stage')),
       ),
     );

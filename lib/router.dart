@@ -129,9 +129,13 @@ final router = GoRouter(
       builder: (context, state) => const StudentsListScreen(),
       routes: [
         GoRoute(
-          path: ':id',
+          path: ':id/:initialPage',
           name: Screens.student,
-          builder: (context, state) => StudentScreen(id: state.params['id']!),
+          builder: (context, state) => StudentScreen(
+              id: state.params['id']!,
+              initialPage: state.params.containsKey('initialPage')
+                  ? int.parse(state.params['initialPage']!)
+                  : 0),
         ),
       ],
     ),
