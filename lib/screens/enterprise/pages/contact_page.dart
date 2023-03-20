@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
@@ -55,12 +56,12 @@ class ContactPageState extends State<ContactPage> {
             contactFunction: _contactFunction,
             contactPhone: _contactPhone,
             contactEmail: _contactEmail,
-            address: _address,
+            address: Address(), // _address, // TODO: Fill that
             phone: _phone,
             fax: _fax,
             website: _website,
-            headquartersAddress:
-                _addressesAreIdentical ? _address : _headquartersAddress,
+            headquartersAddress: Address(), // TODO: Fill that
+            //_addressesAreIdentical ? _address : _headquartersAddress,
             neq: _neq,
           ),
         );
@@ -144,7 +145,7 @@ class ContactPageState extends State<ContactPage> {
                 child: Column(
                   children: [
                     TextFormField(
-                      initialValue: widget.enterprise.address,
+                      initialValue: widget.enterprise.address.toString(),
                       decoration: const InputDecoration(labelText: "Adresse"),
                       enabled: _editing,
                       onSaved: (address) => _address = address,
@@ -190,7 +191,8 @@ class ContactPageState extends State<ContactPage> {
                   Visibility(
                     visible: !_addressesAreIdentical,
                     child: TextFormField(
-                      initialValue: widget.enterprise.headquartersAddress,
+                      initialValue:
+                          widget.enterprise.headquartersAddress.toString(),
                       decoration: const InputDecoration(
                           labelText: "Adresse du siège social"),
                       enabled: _editing && !_addressesAreIdentical,

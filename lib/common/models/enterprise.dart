@@ -1,27 +1,28 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
+import '/common/models/address.dart';
 import '/common/models/job_list.dart';
 
 class Enterprise extends ItemSerializable {
   Enterprise({
     super.id,
-    this.photo = "",
+    this.photo = '',
     required this.name,
     required this.activityTypes,
-    this.recrutedBy = "",
+    this.recrutedBy = '',
     required this.shareWith,
     required this.jobs,
     List<String>? internshipIds,
     required this.contactName,
-    this.contactFunction = "",
+    this.contactFunction = '',
     required this.contactPhone,
-    this.contactEmail = "",
-    this.address = "",
-    this.phone = "",
-    this.fax = "",
-    this.website = "",
-    this.headquartersAddress = "",
-    this.neq = "",
+    this.contactEmail = '',
+    this.address,
+    this.phone = '',
+    this.fax = '',
+    this.website = '',
+    this.headquartersAddress,
+    this.neq = '',
   }) : internshipIds = internshipIds ?? [];
 
   Enterprise copyWith({
@@ -36,11 +37,11 @@ class Enterprise extends ItemSerializable {
     String? contactFunction,
     String? contactPhone,
     String? contactEmail,
-    String? address,
+    Address? address,
     String? phone,
     String? fax,
     String? website,
-    String? headquartersAddress,
+    Address? headquartersAddress,
     String? neq,
     String? id,
   }) {
@@ -69,23 +70,23 @@ class Enterprise extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      "photo": photo,
-      "name": name,
-      "activityTypes": activityTypes.toList(),
-      "recrutedBy": recrutedBy,
-      "shareWith": shareWith,
-      "jobs": jobs.serialize(),
-      "internships": internshipIds,
-      "contactName": contactName,
-      "contactFunction": contactFunction,
-      "contactPhone": contactPhone,
-      "contactEmail": contactEmail,
-      "address": address,
-      "phone": phone,
-      "fax": fax,
-      "website": website,
-      "headquartersAddress": headquartersAddress,
-      "neq": neq,
+      'photo': photo,
+      'name': name,
+      'activityTypes': activityTypes.toList(),
+      'recrutedBy': recrutedBy,
+      'shareWith': shareWith,
+      'jobs': jobs.serialize(),
+      'internships': internshipIds,
+      'contactName': contactName,
+      'contactFunction': contactFunction,
+      'contactPhone': contactPhone,
+      'contactEmail': contactEmail,
+      'address': address?.serializedMap(),
+      'phone': phone,
+      'fax': fax,
+      'website': website,
+      'headquartersAddress': headquartersAddress?.serializedMap(),
+      'neq': neq,
     };
   }
 
@@ -104,11 +105,12 @@ class Enterprise extends ItemSerializable {
         contactFunction = map['contactFunction'],
         contactPhone = map['contactPhone'],
         contactEmail = map['contactEmail'],
-        address = map['address'],
+        address = Address.fromSerialized(map['address']),
         phone = map['phone'],
         fax = map['fax'],
         website = map['website'],
-        headquartersAddress = map['headquartersAddress'],
+        headquartersAddress =
+            Address.fromSerialized(map['headquartersAddress']),
         neq = map['neq'],
         super.fromSerialized(map);
 
@@ -127,45 +129,45 @@ class Enterprise extends ItemSerializable {
   final String contactPhone;
   final String contactEmail;
 
-  final String address;
+  final Address? address;
   final String phone;
   final String fax;
   final String website;
 
-  final String headquartersAddress;
+  final Address? headquartersAddress;
   final String neq;
 }
 
 const List<String> activityTypes = [
-  "Animalerie",
-  "Barbier",
-  "Boucherie",
-  "Boulangerie",
-  "Coiffeur",
-  "Commerce",
-  "CPE",
-  "Cuisine",
-  "Dépanneur",
-  "Ébénisterie",
-  "Épicerie",
-  "Fleuriste",
-  "Garage",
-  "Garderie",
-  "Industriel",
-  "Magasin",
-  "Magasin de vêtements",
-  "Magasin entrepôt",
-  "Mécanique",
-  "Mensuiserie",
-  "Pharmacie",
-  "Préparation de commandes",
-  "Quincaillerie",
-  "Restaurant",
-  "Restauration rapide",
-  "Salon de coiffure",
-  "Salon de toilettage",
-  "Sandwicherie",
-  "Station-service",
-  "Supermarché",
-  "Usine"
+  'Animalerie',
+  'Barbier',
+  'Boucherie',
+  'Boulangerie',
+  'Coiffeur',
+  'Commerce',
+  'CPE',
+  'Cuisine',
+  'Dépanneur',
+  'Ébénisterie',
+  'Épicerie',
+  'Fleuriste',
+  'Garage',
+  'Garderie',
+  'Industriel',
+  'Magasin',
+  'Magasin de vêtements',
+  'Magasin entrepôt',
+  'Mécanique',
+  'Mensuiserie',
+  'Pharmacie',
+  'Préparation de commandes',
+  'Quincaillerie',
+  'Restaurant',
+  'Restauration rapide',
+  'Salon de coiffure',
+  'Salon de toilettage',
+  'Sandwicherie',
+  'Station-service',
+  'Supermarché',
+  'Usine'
 ];

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
 import '/common/providers/auth_provider.dart';
 import '/common/providers/enterprises_provider.dart';
@@ -89,8 +90,9 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       contactFunction: _contactKey.currentState!.contactFunction!,
       contactPhone: _contactKey.currentState!.contactPhone!,
       contactEmail: _contactKey.currentState!.contactEmail!,
-      address: _contactKey.currentState!.address!,
-      headquartersAddress: _contactKey.currentState!.address!,
+      // TODO Fill that
+      address: Address(), //_contactKey.currentState!.address!,
+      headquartersAddress: Address(), //_contactKey.currentState!.address!,
     );
 
     enterprises.add(enterprise);

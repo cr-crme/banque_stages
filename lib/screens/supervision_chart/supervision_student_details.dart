@@ -245,19 +245,27 @@ class _Contact extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 25.0, top: 8.0),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.home,
-                    color: Colors.black,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                        'Adresse complète :\n${enterprise?.address ?? 'Aucun stage'}'),
-                  ),
-                ],
-              ),
+              child: enterprise == null
+                  ? const Text('Aucun stage')
+                  : Row(
+                      children: [
+                        const Icon(
+                          Icons.home,
+                          color: Colors.black,
+                        ),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(enterprise!.address == null
+                                ? 'Aucune adresse'
+                                : 'Adresse complète :\n'
+                                    '${enterprise!.address!.civicNumber} ${enterprise!.address!.street}\n'
+                                    '${enterprise!.address!.city}\n'
+                                    '${enterprise!.address!.postalCode}'),
+                          ),
+                        ),
+                      ],
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 25.0, top: 8.0),

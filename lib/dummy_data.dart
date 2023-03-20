@@ -2,17 +2,18 @@
 
 import 'dart:math';
 
-import 'package:crcrme_banque_stages/common/models/schedule.dart';
-import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
+import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/models/person.dart';
+import '/common/models/schedule.dart';
 import '/common/models/student.dart';
+import '/common/models/teacher.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
@@ -96,11 +97,19 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
       contactFunction: 'Directeur',
       contactPhone: '514 999 6655',
       contactEmail: 'm.arcand@email.com',
-      address: '1853 Chem. Rockland, Mont-Royal, QC H3P 2Y7',
+      address: Address(
+          civicNumber: 1853,
+          street: 'Chem. Rockland',
+          city: 'Mont-Royal',
+          postalCode: 'H3P 2Y7'),
       phone: '514 999 6655',
       fax: '514 999 6600',
       website: 'fausse.ca',
-      headquartersAddress: '1853 Chem. Rockland, Mont-Royal, QC H3P 2Y7',
+      headquartersAddress: Address(
+          civicNumber: 1853,
+          street: 'Chem. Rockland',
+          city: 'Mont-Royal',
+          postalCode: 'H3P 2Y7'),
       neq: '4567900954',
     ),
   );
@@ -125,12 +134,19 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
       contactFunction: 'Assistante-gérante',
       contactPhone: '514 123 4567 poste 123',
       contactEmail: 'c.mercier@email.com',
-      address: '4885 Henri-Bourassa Blvd Ouest, Montréal, QC H3L 1P3',
+      address: Address(
+          civicNumber: 4885,
+          street: 'Henri-Bourassa Blvd Ouest',
+          city: 'Montréal',
+          postalCode: 'H3L 1P3'),
       phone: '514 123 4567',
       fax: '514 123 4560',
       website: 'example.com',
-      headquartersAddress:
-          '4885 Henri-Bourassa Blvd Ouest, Montréal, QC H3L 1P3',
+      headquartersAddress: Address(
+          civicNumber: 4885,
+          street: 'Henri-Bourassa Blvd Ouest',
+          city: 'Montréal',
+          postalCode: 'H3L 1P3'),
       neq: '1234567891',
     ),
   );
@@ -155,11 +171,19 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
       contactFunction: 'Propriétaire',
       contactPhone: '438 987 6543',
       contactEmail: 'd.rondeau@email.com',
-      address: '8490 Rue Saint-Dominique, Montréal, QC H2P 2L5',
+      address: Address(
+          civicNumber: 8490,
+          street: 'Rue Saint-Dominique',
+          city: 'Montréal',
+          postalCode: 'H2P 2L5'),
       phone: '438 987 6543',
       fax: '',
       website: '',
-      headquartersAddress: '8490 Rue Saint-Dominique, Montréal, QC H2P 2L5',
+      headquartersAddress: Address(
+          civicNumber: 8490,
+          street: 'Rue Saint-Dominique',
+          city: 'Montréal',
+          postalCode: 'H2P 2L5'),
       neq: '5679011975',
     ),
   );
@@ -184,11 +208,19 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
       contactFunction: 'Propriétaire',
       contactPhone: '514 235 6789',
       contactEmail: 'c.brodeur@email.com',
-      address: '10142 Boul. Saint-Laurent, Montréal, QC H3L 2N7',
+      address: Address(
+          civicNumber: 10142,
+          street: 'Boul. Saint-Laurent',
+          city: 'Montréal',
+          postalCode: 'H3L 2N7'),
       phone: '514 235 6789',
       fax: '514 321 9870',
       website: 'fausse.ca',
-      headquartersAddress: '10142 Boul. Saint-Laurent, Montréal, QC H3L 2N7',
+      headquartersAddress: Address(
+          civicNumber: 10142,
+          street: 'Boul. Saint-Laurent',
+          city: 'Montréal',
+          postalCode: 'H3L 2N7'),
       neq: '2345678912',
     ),
   );
@@ -214,11 +246,19 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
       contactFunction: 'Gérante',
       contactPhone: '438 888 2222',
       contactEmail: 'b.samson@email.com',
-      address: '8921 Rue Lajeunesse, Montréal, QC H2M 1S1',
+      address: Address(
+          civicNumber: 8921,
+          street: 'Rue Lajeunesse',
+          city: 'Montréal',
+          postalCode: 'H2M 1S1'),
       phone: '514 321 9876',
       fax: '514 321 9870',
       website: 'fausse.ca',
-      headquartersAddress: '8921 Rue Lajeunesse, Montréal, QC H2M 1S1',
+      headquartersAddress: Address(
+          civicNumber: 8921,
+          street: 'Rue Lajeunesse',
+          city: 'Montréal',
+          postalCode: 'H2M 1S1'),
       neq: '1234567080',
     ),
   );
@@ -244,11 +284,19 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
       contactFunction: 'Gérante',
       contactPhone: '514 111 2222',
       contactEmail: 'g.fortin@email.com',
-      address: '1415 Rue Jarry E, Montréal, QC H2E 1A7',
+      address: Address(
+          civicNumber: 1415,
+          street: 'Rue Jarry E',
+          city: 'Montréal',
+          postalCode: 'H2E 1A7'),
       phone: '514 111 2222',
       fax: '514 111 2200',
       website: 'fausse.ca',
-      headquartersAddress: '7885 Rue Lajeunesse, Montréal, QC H2M 1S1',
+      headquartersAddress: Address(
+          civicNumber: 7885,
+          street: 'Rue Lajeunesse',
+          city: 'Montréal',
+          postalCode: 'H2M 1S1'),
       neq: '1234560522',
     ),
   );
@@ -274,11 +322,19 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
       contactFunction: 'Pharmacienne',
       contactPhone: '514 111 2222',
       contactEmail: 'g.fortin@email.com',
-      address: '3611 Rue Jarry E, Montréal, QC H1Z 2G1',
+      address: Address(
+          civicNumber: 3611,
+          street: 'Rue Jarry E',
+          city: 'Montréal',
+          postalCode: 'H1Z 2G1'),
       phone: '514 654 5444',
       fax: '514 654 5445',
       website: 'fausse.ca',
-      headquartersAddress: '3611 Rue Jarry E, Montréal, QC H1Z 2G1',
+      headquartersAddress: Address(
+          civicNumber: 3611,
+          street: 'Rue Jarry E',
+          city: 'Montréal',
+          postalCode: 'H1Z 2G1'),
       neq: '3456789933',
     ),
   );
@@ -304,11 +360,15 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
       contactFunction: 'Gérant',
       contactPhone: '514 555 3333',
       contactEmail: 'c.rodriguez@email.com',
-      address: '775 Rue Chabanel O, Montréal, QC H4N 3J7',
+      address: Address(
+          civicNumber: 775,
+          street: 'Rue Chabanel O',
+          city: 'Montréal',
+          postalCode: 'H4N 3J7'),
       phone: '514 555 7891',
       fax: '',
       website: 'fausse.ca',
-      headquartersAddress: '',
+      headquartersAddress: null,
       neq: '6790122996',
     ),
   );
@@ -334,11 +394,19 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
       contactFunction: 'Directrice des Ressources Humaines',
       contactPhone: '514 879 8654 poste 1112',
       contactEmail: 'f.boissonneau@email.com',
-      address: '10345 Ave Christophe-Colomb, Montreal, QC H2C 2V1',
+      address: Address(
+          civicNumber: 10345,
+          street: 'Ave Christophe-Colomb',
+          city: 'Montréal',
+          postalCode: 'H2C 2V1'),
       phone: '514 879 8654',
       fax: '514 879 8000',
       website: 'fausse.ca',
-      headquartersAddress: '10345 Ave Christophe-Colomb, Montreal, QC H2C 2V1',
+      headquartersAddress: Address(
+          civicNumber: 10345,
+          street: 'Ave Christophe-Colomb',
+          city: 'Montréal',
+          postalCode: 'H2C 2V1'),
       neq: '9012345038',
     ),
   );

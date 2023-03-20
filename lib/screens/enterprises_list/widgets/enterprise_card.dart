@@ -36,12 +36,12 @@ class EnterpriseCard extends StatelessWidget {
           children: [
             const SizedBox(height: 8),
             Visibility(
-              visible: enterprise.address.isNotEmpty ||
-                  enterprise.headquartersAddress.isNotEmpty,
+              visible: enterprise.address != null ||
+                  enterprise.headquartersAddress != null,
               child: Text(
-                enterprise.address.isEmpty
-                    ? enterprise.headquartersAddress
-                    : enterprise.address,
+                enterprise.headquartersAddress != null
+                    ? enterprise.headquartersAddress.toString()
+                    : enterprise.address.toString(),
               ),
             ),
             ...enterprise.jobs
