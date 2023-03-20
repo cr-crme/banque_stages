@@ -20,6 +20,7 @@ class Internship extends ItemSerializable {
   final String uniform;
 
   final VisitingPriority visitingPriority;
+  final String teacherNotes;
 
   Internship({
     super.id,
@@ -35,6 +36,7 @@ class Internship extends ItemSerializable {
     required this.protection,
     required this.uniform,
     required this.visitingPriority,
+    this.teacherNotes = '',
   }) : previousTeacherId = previousTeacherId ?? teacherId;
 
   Internship.fromSerialized(map)
@@ -53,6 +55,7 @@ class Internship extends ItemSerializable {
         protection = ItemSerializable.listFromSerialized(map['protection']),
         uniform = map['uniform'],
         visitingPriority = VisitingPriority.values[map['priority']],
+        teacherNotes = map['teacherNotes'],
         super.fromSerialized(map);
 
   @override
@@ -72,6 +75,7 @@ class Internship extends ItemSerializable {
       'protection': protection,
       'uniform': uniform,
       'priority': visitingPriority.index,
+      'teacherNotes': teacherNotes,
     };
   }
 
@@ -89,6 +93,7 @@ class Internship extends ItemSerializable {
     List<String>? protection,
     String? uniform,
     VisitingPriority? visitingPriority,
+    String? teacherNotes,
   }) =>
       Internship(
         id: id ?? this.id,
@@ -104,6 +109,7 @@ class Internship extends ItemSerializable {
         protection: protection ?? this.protection,
         uniform: uniform ?? this.uniform,
         visitingPriority: visitingPriority ?? this.visitingPriority,
+        teacherNotes: teacherNotes ?? this.teacherNotes,
       );
 
   String get title => "Année ${date.start.year}-${date.end.year}. $type";
