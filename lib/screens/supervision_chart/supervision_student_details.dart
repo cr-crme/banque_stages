@@ -48,12 +48,21 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _VisitingPriority(studentId: studentId),
-            _Specialization(internship: internship),
-            _PersonalNotes(internship: internship),
-            _Contact(enterprise: enterprise, internship: internship),
-            _Schedule(internship: internship),
-            _EnterpriseRequirements(enterprise: enterprise),
+            if (internship == null)
+              const Padding(
+                padding: EdgeInsets.only(top: 10.0),
+                child: Center(
+                    child:
+                        Text('Aucun stage pour cet\u00b7te étudiant\u00b7e')),
+              ),
+            if (internship != null) _VisitingPriority(studentId: studentId),
+            if (internship != null) _Specialization(internship: internship),
+            if (internship != null) _PersonalNotes(internship: internship),
+            if (internship != null)
+              _Contact(enterprise: enterprise!, internship: internship),
+            if (internship != null) _Schedule(internship: internship),
+            if (internship != null)
+              _EnterpriseRequirements(enterprise: enterprise),
             _MoreInfoButton(studentId: studentId),
           ],
         ),
@@ -89,9 +98,10 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
 
   @override
   Widget build(BuildContext context) {
-    final internship = InternshipsProvider.of(context, listen: false)
-        .byStudentId(widget.studentId)
-        .last;
+    final internships = InternshipsProvider.of(context, listen: false)
+        .byStudentId(widget.studentId);
+    if (internships.isEmpty) return Container();
+    final internship = internships.last;
     final flags = _visibilityFilters.map<Widget>((priority) {
       return InkWell(
         onTap: () => _updatePriority(priority),
@@ -160,7 +170,7 @@ class _Specialization extends StatelessWidget {
 class _PersonalNotes extends StatefulWidget {
   const _PersonalNotes({required this.internship});
 
-  final Internship? internship;
+  final Internship internship;
 
   @override
   State<_PersonalNotes> createState() => _PersonalNotesState();
@@ -169,12 +179,12 @@ class _PersonalNotes extends StatefulWidget {
 class _PersonalNotesState extends State<_PersonalNotes> {
   late final _focusNode = FocusNode()..addListener(_sendComments);
   late final _textController = TextEditingController()
-    ..text = widget.internship!.teacherNotes;
+    ..text = widget.internship.teacherNotes;
 
   void _sendComments() {
     final interships = InternshipsProvider.of(context, listen: false);
     interships.replace(
-        widget.internship!.copyWith(teacherNotes: _textController.text));
+        widget.internship.copyWith(teacherNotes: _textController.text));
   }
 
   @override
@@ -229,8 +239,8 @@ class _PersonalNotesState extends State<_PersonalNotes> {
 class _Contact extends StatelessWidget {
   const _Contact({required this.enterprise, required this.internship});
 
-  final Enterprise? enterprise;
-  final Internship? internship;
+  final Enterprise enterprise;
+  final Internship internship;
 
   @override
   Widget build(BuildContext context) {
@@ -245,27 +255,25 @@ class _Contact extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 25.0, top: 8.0),
-              child: enterprise == null
-                  ? const Text('Aucun stage')
-                  : Row(
-                      children: [
-                        const Icon(
-                          Icons.home,
-                          color: Colors.black,
-                        ),
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(enterprise!.address == null
-                                ? 'Aucune adresse'
-                                : 'Adresse complète :\n'
-                                    '${enterprise!.address!.civicNumber} ${enterprise!.address!.street}\n'
-                                    '${enterprise!.address!.city}\n'
-                                    '${enterprise!.address!.postalCode}'),
-                          ),
-                        ),
-                      ],
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.home,
+                    color: Colors.black,
+                  ),
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(enterprise.address == null
+                          ? 'Aucune adresse'
+                          : 'Adresse complète :\n'
+                              '${enterprise.address!.civicNumber} ${enterprise.address!.street}\n'
+                              '${enterprise.address!.city}\n'
+                              '${enterprise.address!.postalCode}'),
                     ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 25.0, top: 8.0),
@@ -278,7 +286,7 @@ class _Contact extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text('Superviseur du stage :\n'
-                        '${internship?.supervisor.phone ?? 'Aucun téléphone enregistré'}'),
+                        '${internship.supervisor.phone ?? 'Aucun téléphone enregistré'}'),
                   ),
                 ],
               ),
