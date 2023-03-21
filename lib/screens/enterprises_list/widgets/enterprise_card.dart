@@ -42,6 +42,7 @@ class EnterpriseCard extends StatelessWidget {
                 enterprise.headquartersAddress != null
                     ? enterprise.headquartersAddress.toString()
                     : enterprise.address.toString(),
+                style: TextStyle(color: Colors.grey[800]),
               ),
             ),
             ...enterprise.jobs
@@ -60,10 +61,6 @@ class EnterpriseCard extends StatelessWidget {
                     ])))
                 .toList()
           ],
-        ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: Theme.of(context).hintColor,
         ),
       ),
     );
