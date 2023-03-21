@@ -86,13 +86,10 @@ class AboutPageState extends State<AboutPage> {
                   children: [
                     Row(
                       children: [
-                        Container(
+                        SizedBox(
                           width: 140,
                           height: 105,
-                          color: Theme.of(context).disabledColor,
-                          child: widget.student.photo.isNotEmpty
-                              ? Image.network(widget.student.photo)
-                              : null,
+                          child: widget.student.avatar,
                         ),
                         const SizedBox(width: 16),
                         Expanded(
