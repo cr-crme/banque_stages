@@ -160,6 +160,48 @@ class AboutPageState extends State<AboutPage> {
               ),
               ListTile(
                 title: Text(
+                  AppLocalizations.of(context)!.contactInformations,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller:
+                          TextEditingController(text: widget.student.phone),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.phoneNumber,
+                      ),
+                      enabled: editing,
+                      onSaved: (phone) => _phone = phone,
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller:
+                          TextEditingController(text: widget.student.email),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.email,
+                      ),
+                      enabled: editing,
+                      onSaved: (email) => _email = email,
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: TextEditingController(
+                          text: widget.student.address.toString()),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.address,
+                      ),
+                      enabled: editing,
+                      onSaved: (address) => _address = address,
+                    ),
+                  ],
+                ),
+              ),
+              ListTile(
+                title: Text(
                   AppLocalizations.of(context)!.emergencyContact,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
@@ -216,48 +258,6 @@ class AboutPageState extends State<AboutPage> {
                       ),
                       enabled: editing,
                       onSaved: (email) => _contactEmail = email,
-                    ),
-                  ],
-                ),
-              ),
-              ListTile(
-                title: Text(
-                  AppLocalizations.of(context)!.contactInformations,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller:
-                          TextEditingController(text: widget.student.phone),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.phoneNumber,
-                      ),
-                      enabled: editing,
-                      onSaved: (phone) => _phone = phone,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller:
-                          TextEditingController(text: widget.student.email),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.email,
-                      ),
-                      enabled: editing,
-                      onSaved: (email) => _email = email,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: TextEditingController(
-                          text: widget.student.address.toString()),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.address,
-                      ),
-                      enabled: editing,
-                      onSaved: (address) => _address = address,
                     ),
                   ],
                 ),
