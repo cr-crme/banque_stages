@@ -9,57 +9,78 @@ import '/common/widgets/search_bar.dart';
 import '/router.dart';
 import 'widgets/enterprise_card.dart';
 
-class EnterprisesListScreen extends StatelessWidget {
+class EnterprisesListScreen extends StatefulWidget {
   const EnterprisesListScreen({super.key});
 
   @override
+  State<EnterprisesListScreen> createState() => _EnterprisesListScreenState();
+}
+
+class _EnterprisesListScreenState extends State<EnterprisesListScreen>
+    with SingleTickerProviderStateMixin {
+  bool _withSearchBar = false;
+  late final _tabController =
+      TabController(initialIndex: 0, length: 2, vsync: this)
+        ..addListener(() => setState(() {}));
+
+  void _search() => setState(() => _withSearchBar = !_withSearchBar);
+
+  @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Entreprises'),
-          actions: [
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Entreprises'),
+        actions: [
+          if (_tabController.index == 0)
             IconButton(
-              onPressed: () =>
-                  GoRouter.of(context).goNamed(Screens.addEnterprise),
-              tooltip: 'Ajouter une entreprise',
-              icon: const Icon(Icons.add),
+              onPressed: _search,
+              icon: const Icon(Icons.search),
             ),
-          ],
-          bottom: TabBar(
-            tabs: [
-              Tab(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                    Icon(Icons.list),
-                    SizedBox(width: 8),
-                    Text('Vue liste')
-                  ])),
-              Tab(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                    Icon(Icons.map),
-                    SizedBox(width: 8),
-                    Text('Vue carte')
-                  ])),
-            ],
+          IconButton(
+            onPressed: () =>
+                GoRouter.of(context).goNamed(Screens.addEnterprise),
+            tooltip: 'Ajouter une entreprise',
+            icon: const Icon(Icons.add),
           ),
+        ],
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                  Icon(Icons.list),
+                  SizedBox(width: 8),
+                  Text('Vue liste')
+                ])),
+            Tab(
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                  Icon(Icons.map),
+                  SizedBox(width: 8),
+                  Text('Vue carte')
+                ])),
+          ],
         ),
-        drawer: const MainDrawer(),
-        body: const TabBarView(children: [
-          _EnterprisesByList(),
-          _EnterprisesByList(),
-        ]),
+      ),
+      drawer: const MainDrawer(),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _EnterprisesByList(withSearchBar: _withSearchBar),
+          _EnterprisesByList(withSearchBar: _withSearchBar),
+        ],
       ),
     );
   }
 }
 
 class _EnterprisesByList extends StatefulWidget {
-  const _EnterprisesByList();
+  const _EnterprisesByList({required this.withSearchBar});
+
+  final bool withSearchBar;
 
   @override
   State<_EnterprisesByList> createState() => _EnterprisesByListState();
@@ -103,7 +124,7 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SearchBar(controller: _searchController),
+        if (widget.withSearchBar) SearchBar(controller: _searchController),
         SwitchListTile(
           title: const Text('Afficher que les stages disponibles'),
           value: _hideNotAvailable,
