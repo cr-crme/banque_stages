@@ -35,12 +35,10 @@ class JobsPageState extends State<JobsPage> {
   }
 
   bool validate() {
+    _formKey.currentState!.save();
     return _formKey.currentState!.validate();
   }
 
-  void save() {
-    _formKey.currentState!.save();
-  }
 
   @override
   Widget build(BuildContext context) {

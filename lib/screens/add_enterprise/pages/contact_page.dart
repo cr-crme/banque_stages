@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:flutter/material.dart';
 
 import '/misc/form_service.dart';
@@ -19,12 +20,21 @@ class ContactPageState extends State<ContactPage> {
 
   String? address;
 
-  bool validate() {
-    return _formKey.currentState!.validate();
-  }
-
-  void save() {
+  ///
+  /// Validate if all the fields are correct
+  ///
+  Future<String?> validate() async {
     _formKey.currentState!.save();
+    
+    if (!_formKey.currentState!.validate()) {
+      return 'Assurez vous que tous les champs soient emplis';
+    }
+    try {
+      await Address.fromAddress(address!);
+    } catch (e) {
+      return 'L\'adresse n\'a pu être trouvée';
+    }
+    return null;
   }
 
   @override
@@ -37,18 +47,18 @@ class ContactPageState extends State<ContactPage> {
             const ListTile(
               visualDensity:
                   VisualDensity(vertical: VisualDensity.minimumDensity),
-              title: Text(" Entreprise représentée par"),
+              title: Text(' Entreprise représentée par'),
             ),
             ListTile(
               title: TextFormField(
-                decoration: const InputDecoration(labelText: "* Nom"),
+                decoration: const InputDecoration(labelText: '* Nom'),
                 validator: FormService.textNotEmptyValidator,
                 onSaved: (name) => contactName = name!,
               ),
             ),
             ListTile(
               title: TextFormField(
-                decoration: const InputDecoration(labelText: "* Fonction"),
+                decoration: const InputDecoration(labelText: '* Fonction'),
                 validator: FormService.textNotEmptyValidator,
                 onSaved: (function) => contactFunction = function!,
               ),
@@ -57,7 +67,7 @@ class ContactPageState extends State<ContactPage> {
               title: TextFormField(
                 decoration: const InputDecoration(
                   icon: Icon(Icons.phone),
-                  labelText: "* Téléphone",
+                  labelText: '* Téléphone',
                 ),
                 validator: FormService.phoneValidator,
                 onSaved: (phone) => contactPhone = phone!,
@@ -68,7 +78,7 @@ class ContactPageState extends State<ContactPage> {
               title: TextFormField(
                 decoration: const InputDecoration(
                   icon: Icon(Icons.mail),
-                  labelText: "* Courriel",
+                  labelText: '* Courriel',
                 ),
                 validator: FormService.emailValidator,
                 onSaved: (email) => contactEmail = email!,
@@ -81,13 +91,13 @@ class ContactPageState extends State<ContactPage> {
             const ListTile(
               visualDensity:
                   VisualDensity(vertical: VisualDensity.minimumDensity),
-              title: Text("Adresse de l'établissement"),
+              title: Text('* Adresse de l\'établissement'),
             ),
-            // TODO: Implement Google Maps (?) autocomplete
             ListTile(
               title: TextFormField(
-                decoration: const InputDecoration(labelText: "Adresse"),
+                decoration: const InputDecoration(labelText: 'Adresse'),
                 onSaved: (address) => this.address = address!,
+                validator: (value) => FormService.textNotEmptyValidator(value),
                 keyboardType: TextInputType.streetAddress,
               ),
             ),

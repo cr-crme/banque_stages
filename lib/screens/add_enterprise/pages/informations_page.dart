@@ -22,11 +22,8 @@ class InformationsPageState extends State<InformationsPage> {
   String? shareWith;
 
   bool validate() {
-    return _formKey.currentState!.validate();
-  }
-
-  void save() {
     _formKey.currentState!.save();
+    return _formKey.currentState!.validate();
   }
 
   @override

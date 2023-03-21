@@ -138,7 +138,7 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/itinerary/:students',
+      path: '/itinerary',
       name: Screens.itinerary,
       builder: (context, state) => const ItineraryScreen(),
     ),

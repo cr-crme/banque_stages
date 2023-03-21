@@ -25,10 +25,10 @@ class Address extends ItemSerializable {
     if (placemark.isEmpty) return null;
 
     return Address(
-      civicNumber: int.tryParse(placemark.last.name!),
-      street: placemark.last.street,
-      city: placemark.last.locality,
-      postalCode: placemark.last.postalCode,
+      civicNumber: int.tryParse(placemark.first.subThoroughfare!),
+      street: placemark.first.thoroughfare,
+      city: placemark.first.locality,
+      postalCode: placemark.first.postalCode,
     );
   }
 
