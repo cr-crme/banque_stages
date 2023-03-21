@@ -629,7 +629,8 @@ Future<void> addDummyInterships(
 
   internships.add(Internship(
     studentId: students[0].id,
-    teacherId: teachers[0].id,
+    teacherId: teachers.currentTeacherId,
+    isTransfering: true,
     enterpriseId: enterprises[0].id,
     jobId: enterprises[0].jobs[0].specialization!.id,
     type: '-1',
