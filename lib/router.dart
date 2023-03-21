@@ -133,14 +133,12 @@ final router = GoRouter(
           name: Screens.student,
           builder: (context, state) => StudentScreen(
               id: state.params['id']!,
-              initialPage: state.params.containsKey('initialPage')
-                  ? int.parse(state.params['initialPage']!)
-                  : 0),
+              initialPage: int.parse(state.params['initialPage']!)),
         ),
       ],
     ),
     GoRoute(
-      path: '/itinerary',
+      path: '/itinerary/:students',
       name: Screens.itinerary,
       builder: (context, state) => const ItineraryScreen(),
     ),

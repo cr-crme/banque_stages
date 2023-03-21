@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '/common/models/visiting_priority.dart';
+import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
-import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
-import '/common/widgets/main_drawer.dart';
 import 'models/all_itineraries.dart';
 import 'models/itinerary.dart';
 import 'models/waypoints.dart';
@@ -43,9 +42,11 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   void _fillAllWaypoints() async {
     final teacher = TeachersProvider.of(context, listen: false).currentTeacher;
-    final students = StudentsProvider.of(context, listen: false);
+    final enterprises = EnterprisesProvider.of(context, listen: false);
     final waypoints = AllStudentsWaypoints.of(context, listen: false);
     final interships = InternshipsProvider.of(context, listen: false);
+    final students =
+        InternshipsProvider.mySupervisedStudents(context, listen: false);
     waypoints.clear(notify: false);
 
     // Add the school as the first waypoint
@@ -56,15 +57,15 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
     // Get the students from the registered students, but we copy them so
     // we don't mess with them
-    for (final s in students) {
-      final studentInterships = interships.byStudentId(s.id);
+    for (final student in students) {
+      final studentInterships = interships.byStudentId(student.id);
       if (studentInterships.isEmpty) continue;
       final intership = studentInterships.last;
 
       waypoints.add(
         await Waypoint.fromAddress(
-          s.fullName,
-          s.address.toString(),
+          student.fullName,
+          enterprises.fromId(intership.enterpriseId).address.toString(),
           priority: intership.visitingPriority,
         ),
         notify: false, // Only notify at the end

@@ -32,26 +32,6 @@ class _SupervisionChartState extends State<SupervisionChart> {
   };
 
   ///
-  /// Get all the students who the current teacher is assigned to, meaning
-  /// they supervise this student for their internship
-  ///
-  List<Student> _getSupervisedStudents() {
-    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
-    final allInternships = InternshipsProvider.of(context, listen: false);
-    final allStudents = StudentsProvider.of(context).map((e) => e).toList();
-
-    return allStudents
-        .map<Student?>((student) {
-          final internships = allInternships.byStudentId(student.id);
-          if (internships.isEmpty) return student;
-          return internships.last.teacherId == myId ? student : null;
-        })
-        .where((e) => e != null)
-        .toList()
-        .cast<Student>();
-  }
-
-  ///
   /// Get all the who the current teacher is in charge. Meaning they are
   /// responsible in a more general way
   ///
@@ -218,7 +198,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final iconSize = screenSize.width / 16;
 
     // Make a copy before filtering
-    var students = _getSupervisedStudents();
+    var students =
+        InternshipsProvider.mySupervisedStudents(context, listen: false);
     final allInternships = InternshipsProvider.of(context, listen: true);
 
     students.sort(
