@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
+import '/common/models/address.dart';
 import '/common/models/person.dart';
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
@@ -38,7 +38,7 @@ class AboutPageState extends State<AboutPage> {
   bool _editing = false;
   bool get editing => _editing;
 
-  void toggleEdit() {
+  void toggleEdit() async {
     if (!_editing) {
       setState(() => _editing = true);
       return;
@@ -48,19 +48,19 @@ class AboutPageState extends State<AboutPage> {
       return;
     }
 
-    context.read<StudentsProvider>().replace(
-          widget.student.copyWith(
-            phone: _phone,
-            email: _email,
-            address: _address,
-            contact: Person(
-                firstName: _contactFirstName!,
-                lastName: _contactLastName!,
-                phone: _contactPhone,
-                email: _contactEmail),
-            contactLink: _contactLink,
-          ),
-        );
+    StudentsProvider.of(context).replace(
+      widget.student.copyWith(
+        phone: _phone,
+        email: _email,
+        address: await Address.fromAddress(_address!),
+        contact: Person(
+            firstName: _contactFirstName!,
+            lastName: _contactLastName!,
+            phone: _contactPhone,
+            email: _contactEmail),
+        contactLink: _contactLink,
+      ),
+    );
 
     setState(() => _editing = false);
   }
@@ -244,8 +244,8 @@ class AboutPageState extends State<AboutPage> {
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      controller:
-                          TextEditingController(text: widget.student.address),
+                      controller: TextEditingController(
+                          text: widget.student.address.toString()),
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.address,
                       ),

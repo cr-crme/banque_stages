@@ -1,3 +1,4 @@
+import '/common/models/address.dart';
 import '/common/models/person.dart';
 
 class Teacher extends Person {
@@ -6,10 +7,10 @@ class Teacher extends Person {
     required super.firstName,
     super.middleName,
     required super.lastName,
+    required super.address,
     super.dateBirth,
     super.phone,
     required super.email,
-    super.address,
   });
 
   Teacher.fromSerialized(map) : super.fromSerialized(map);
@@ -28,7 +29,7 @@ class Teacher extends Person {
     DateTime? dateBirth,
     String? email,
     String? phone,
-    String? address,
+    Address? address,
   }) =>
       Teacher(
         id: id ?? this.id,

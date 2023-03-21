@@ -1,5 +1,7 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
+import '/common/models/address.dart';
+
 class Person extends ItemSerializable {
   final String firstName;
   final String? middleName;
@@ -8,7 +10,7 @@ class Person extends ItemSerializable {
 
   final String? phone;
   final String? email;
-  final String? address;
+  final Address? address;
 
   String get fullName => '$firstName $lastName';
 
@@ -30,7 +32,7 @@ class Person extends ItemSerializable {
         dateBirth = DateTime.parse(map['birthDate']),
         phone = map['phone'],
         email = map['email'],
-        address = map['address'],
+        address = Address.fromSerialized(map['address']),
         super.fromSerialized(map);
 
   @override
@@ -43,7 +45,7 @@ class Person extends ItemSerializable {
       'birthDate': dateBirth.toString(),
       'phone': phone,
       'email': email,
-      'address': address,
+      'address': address?.serializedMap(),
     };
   }
 
@@ -55,7 +57,7 @@ class Person extends ItemSerializable {
     DateTime? dateBirth,
     String? phone,
     String? email,
-    String? address,
+    Address? address,
   }) =>
       Person(
         id: id ?? this.id,

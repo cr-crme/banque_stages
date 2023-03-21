@@ -1,4 +1,5 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:geocoding/geocoding.dart';
 
 class Address extends ItemSerializable {
   Address({
@@ -14,6 +15,22 @@ class Address extends ItemSerializable {
   final String? appartment;
   final String? city;
   final String? postalCode;
+
+  static Future<Address?> fromAddress(String address) async {
+    final location = await locationFromAddress(address);
+    if (location.isEmpty) return null;
+
+    final placemark = await placemarkFromCoordinates(
+        location.last.latitude, location.last.longitude);
+    if (placemark.isEmpty) return null;
+
+    return Address(
+      civicNumber: int.tryParse(placemark.last.name!),
+      street: placemark.last.street,
+      city: placemark.last.locality,
+      postalCode: placemark.last.postalCode,
+    );
+  }
 
   @override
   Map<String, dynamic> serializedMap() => {

@@ -51,19 +51,23 @@ Future<void> addDummyTeachers(TeachersProvider teachers) async {
   teachers.add(Teacher(
       firstName: 'Roméo',
       lastName: 'Montaigu',
+      address: await Address.fromAddress('École Marie-Victorin, Montréal'),
       email: 'romeo.montaigu@shakespeare.qc'));
   teachers.add(Teacher(
       id: teachers.currentTeacherId,
       firstName: 'Juliette',
       lastName: 'Capulet',
+      address: await Address.fromAddress('École Marie-Victorin, Montréal'),
       email: 'juliette.capulet@shakespeare.qc'));
   teachers.add(Teacher(
       firstName: 'Tybalt',
       lastName: 'Capulet',
+      address: await Address.fromAddress('École Marie-Victorin, Montréal'),
       email: 'tybalt.capulet@shakespeare.qc'));
   teachers.add(Teacher(
       firstName: 'Benvolio',
       lastName: 'Montaigu',
+      address: await Address.fromAddress('École Marie-Victorin, Montréal'),
       email: 'benvolio.montaigu@shakespeare.qc'));
 
   await _waitForDatabaseUpdate(teachers, 4);
@@ -425,7 +429,8 @@ Future<void> addDummyStudents(
       teacherId: teachers[0].id,
       program: 'FPT2',
       group: '550',
-      address: '7248 Rue D\'Iberville, Montréal, QC H2E 2Y6',
+      address: await Address.fromAddress(
+          '7248 Rue D\'Iberville, Montréal, QC H2E 2Y6'),
       phone: '514 321 8888',
       contact: Person(
           firstName: 'Paul',
@@ -451,7 +456,8 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 'j.caron@email.com'),
       contactLink: 'Père',
-      address: '6622 16e Avenue, Montréal, QC H1X 2T2',
+      address:
+          await Address.fromAddress('6622 16e Avenue, Montréal, QC H1X 2T2'),
       phone: '514 222 3344',
     ),
   );
@@ -471,7 +477,7 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 'n.lefranc@email.com'),
       contactLink: 'Mère',
-      address: '6723 25e Ave, Montréal, QC H1T 3M1',
+      address: await Address.fromAddress('6723 25e Ave, Montréal, QC H1T 3M1'),
       phone: '514 333 4455',
     ),
   );
@@ -491,7 +497,8 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 'm.gagnon@email.com'),
       contactLink: 'Mère',
-      address: '6655 33e Avenue, Montréal, QC H1T 3B9',
+      address:
+          await Address.fromAddress('6655 33e Avenue, Montréal, QC H1T 3B9'),
       phone: '514 999 8877',
     ),
   );
@@ -511,7 +518,8 @@ Future<void> addDummyStudents(
           email: 'r.gingras@email.com',
           phone: '514 321 9876'),
       contactLink: 'Père',
-      address: '4517 Rue d\'Assise, Saint-Léonard, QC H1R 1W2',
+      address: await Address.fromAddress(
+          '4517 Rue d\'Assise, Saint-Léonard, QC H1R 1W2'),
       phone: '514 888 7766',
     ),
   );
@@ -531,7 +539,8 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 'l.vargas@email.com'),
       contactLink: 'Mère',
-      address: '8204 Rue de Blois, Saint-Léonard, QC H1R 2X1',
+      address: await Address.fromAddress(
+          '8204 Rue de Blois, Saint-Léonard, QC H1R 2X1'),
       phone: '514 444 5566',
     ),
   );
@@ -551,7 +560,7 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 'v.tremblay@email.com'),
       contactLink: 'Père',
-      address: '8358 Rue Jean-Nicolet, Saint-Léonard, QC H1R 2R2',
+      address: await Address.fromAddress('8358 Rue Jean-Nicolet, Saint-Léonard, QC H1R 2R2'),
       phone: '514 555 9988',
     ),
   );
@@ -571,7 +580,7 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 'jp.picard@email.com'),
       contactLink: 'Père',
-      address: '8382 Rue du Laus, Saint-Léonard, QC H1R 2P4',
+      address: await Address.fromAddress('8382 Rue du Laus, Saint-Léonard, QC H1R 2P4'),
       phone: '514 778 8899',
     ),
   );
@@ -591,7 +600,7 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 's.monette@email.com'),
       contactLink: 'Père',
-      address: '6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5',
+      address: await Address.fromAddress('6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5'),
       phone: '514 321 6655',
     ),
   );
@@ -611,7 +620,7 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 'm.poulain@email.com'),
       contactLink: 'Père',
-      address: '6585 Rue Lemay, Montréal, QC H1T 2L8',
+      address: await Address.fromAddress('6585 Rue Lemay, Montréal, QC H1T 2L8'),
       phone: '514 567 9999',
     ),
   );

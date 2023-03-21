@@ -208,6 +208,10 @@ class _SupervisionChartState extends State<SupervisionChart> {
     }
   }
 
+  void _goToItinerary() {
+    GoRouter.of(context).pushNamed(Screens.itinerary);
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -230,6 +234,9 @@ class _SupervisionChartState extends State<SupervisionChart> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Élèves à superviser'),
+        actions: [
+          IconButton(onPressed: _goToItinerary, icon: const Icon(Icons.route))
+        ],
         bottom: PreferredSize(
             preferredSize: Size(screenSize.width, iconSize * 1.5),
             child: Row(

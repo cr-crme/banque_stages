@@ -22,6 +22,11 @@ class AllStudentsWaypoints extends ListProvided<Waypoint> {
       Provider.of<AllStudentsWaypoints>(context, listen: listen);
 
   @override
+  void notifyListeners() {
+    super.notifyListeners();
+  }
+
+  @override
   Waypoint deserializeItem(data) {
     return Waypoint.deserialize(data);
   }

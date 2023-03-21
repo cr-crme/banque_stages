@@ -5,7 +5,7 @@ import 'package:routing_client_dart/routing_client_dart.dart';
 
 import '../models/lng_lat_utils.dart';
 import '../models/all_itineraries.dart';
-import '../../../common/models/visiting_priority.dart';
+import '/common/models/visiting_priority.dart';
 
 class RoutingMap extends StatefulWidget {
   const RoutingMap({

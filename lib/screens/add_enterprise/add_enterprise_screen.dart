@@ -58,7 +58,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     }
   }
 
-  void _submit() {
+  void _submit() async {
     if (!_informationsKey.currentState!.validate()) {
       _showInvalidFieldsSnakBar();
       setState(() => _currentStep = 0);
@@ -90,13 +90,13 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       contactFunction: _contactKey.currentState!.contactFunction!,
       contactPhone: _contactKey.currentState!.contactPhone!,
       contactEmail: _contactKey.currentState!.contactEmail!,
-      // TODO Fill that
-      address: Address(), //_contactKey.currentState!.address!,
-      headquartersAddress: Address(), //_contactKey.currentState!.address!,
+      address: await Address.fromAddress(_contactKey.currentState!.address!),
+      headquartersAddress:
+          await Address.fromAddress(_contactKey.currentState!.address!),
     );
 
     enterprises.add(enterprise);
-    Navigator.pop(context);
+    if (mounted) Navigator.pop(context);
   }
 
   @override

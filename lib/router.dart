@@ -20,13 +20,13 @@ import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
 import 'screens/supervision_chart/supervision_chart_screen.dart';
 import 'screens/supervision_chart/supervision_student_details.dart';
-import 'screens/visiting_students/visit_students_screen.dart';
+import 'screens/visiting_students/itinerary_screen.dart';
 
 abstract class Screens {
   static const home = 'home';
   static const populateWithDebugData = 'populate-with-debug-data';
   static const login = 'login';
-  static const visitStudents = 'visit-students';
+  static const itinerary = 'itinerary';
 
   static const enterprisesList = 'enterprises-list';
   static const enterprise = 'enterprise';
@@ -140,9 +140,9 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/visit-students',
-      name: Screens.visitStudents,
-      builder: (context, state) => const VisitStudentScreen(),
+      path: '/itinerary',
+      name: Screens.itinerary,
+      builder: (context, state) => const ItineraryScreen(),
     ),
     GoRoute(
       path: '/post-internship-evaluation',

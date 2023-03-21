@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
@@ -40,7 +39,7 @@ class ContactPageState extends State<ContactPage> {
   bool _editing = false;
   bool get editing => _editing;
 
-  void toggleEdit() {
+  void toggleEdit() async {
     if (!_editing) {
       setState(() => _editing = true);
       return;
@@ -50,21 +49,21 @@ class ContactPageState extends State<ContactPage> {
       return;
     }
 
-    context.read<EnterprisesProvider>().replace(
-          widget.enterprise.copyWith(
-            contactName: _contactName,
-            contactFunction: _contactFunction,
-            contactPhone: _contactPhone,
-            contactEmail: _contactEmail,
-            address: Address(), // _address, // TODO: Fill that
-            phone: _phone,
-            fax: _fax,
-            website: _website,
-            headquartersAddress: Address(), // TODO: Fill that
-            //_addressesAreIdentical ? _address : _headquartersAddress,
-            neq: _neq,
-          ),
-        );
+    EnterprisesProvider.of(context).replace(
+      widget.enterprise.copyWith(
+        contactName: _contactName,
+        contactFunction: _contactFunction,
+        contactPhone: _contactPhone,
+        contactEmail: _contactEmail,
+        address: await Address.fromAddress(_address!),
+        phone: _phone,
+        fax: _fax,
+        website: _website,
+        headquartersAddress: await Address.fromAddress(
+            _addressesAreIdentical ? _address! : _headquartersAddress!),
+        neq: _neq,
+      ),
+    );
 
     setState(() {
       _editing = false;

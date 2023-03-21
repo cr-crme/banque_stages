@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '/common/models/address.dart';
 import '/common/models/person.dart';
 
 class Student extends Person {
@@ -67,7 +68,7 @@ class Student extends Person {
     DateTime? dateBirth,
     String? phone,
     String? email,
-    String? address,
+    Address? address,
     String? teacherId,
     String? program,
     String? group,
