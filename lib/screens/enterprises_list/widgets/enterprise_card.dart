@@ -56,6 +56,7 @@ class EnterpriseCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           job.specialization?.idWithName ?? "bad id",
+                          style: TextStyle(color: Colors.grey[800]),
                         ),
                       ),
                     ])))

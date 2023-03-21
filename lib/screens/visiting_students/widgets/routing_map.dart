@@ -161,7 +161,7 @@ class _RoutingMapState extends State<RoutingMap> {
         padding: const EdgeInsets.all(8),
         child: FlutterMap(
           options: MapOptions(center: waypoints[0].toLatLng(), zoom: 14),
-          nonRotatedChildren: const [_ZoomButtons()],
+          nonRotatedChildren: const [ZoomButtons()],
           children: [
             TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -182,8 +182,8 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 }
 
-class _ZoomButtons extends StatelessWidget {
-  const _ZoomButtons();
+class ZoomButtons extends StatelessWidget {
+  const ZoomButtons({super.key});
   final double minZoom = 4;
   final double maxZoom = 19;
   final bool mini = true;
