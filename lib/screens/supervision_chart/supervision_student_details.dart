@@ -8,13 +8,33 @@ import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
+import '/common/providers/teachers_provider.dart';
 import '/router.dart';
+import '/screens/supervision_chart/widgets/transfer_dialog.dart';
 import '../../misc/job_data_file_service.dart';
 
 class SupervisionStudentDetailsScreen extends StatelessWidget {
   const SupervisionStudentDetailsScreen({super.key, required this.studentId});
 
   final String studentId;
+
+  void _transferStudent(BuildContext context) async {
+    final internships = InternshipsProvider.of(context, listen: false);
+    final teachers =
+        TeachersProvider.of(context, listen: false).map((e) => e).toList();
+    teachers.sort(
+        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
+    final student = StudentsProvider.of(context, listen: false)[studentId];
+
+    final answer = await showDialog<List<String>>(
+      context: context,
+      builder: (BuildContext context) =>
+          TransferDialog(students: [student], teachers: teachers),
+    );
+
+    if (answer == null) return;
+    internships.transferStudent(studentId: answer[0], newTeacherId: answer[1]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +63,11 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
             ],
           ),
         ]),
+        actions: [
+          IconButton(
+              onPressed: () => _transferStudent(context),
+              icon: const Icon(Icons.transfer_within_a_station)),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

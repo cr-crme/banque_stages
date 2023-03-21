@@ -43,11 +43,13 @@ class _TransferDialogState extends State<TransferDialog> {
           DropdownButton<String>(
             value: _choiceStudent,
             icon: const Icon(Icons.expand_more),
-            onChanged: (String? newValue) {
-              _choiceStudent = newValue!;
-              _choiceTeacher = _getCurrentSupervisorId();
-              setState(() {});
-            },
+            onChanged: widget.students.length == 1
+                ? null
+                : (String? newValue) {
+                    _choiceStudent = newValue!;
+                    _choiceTeacher = _getCurrentSupervisorId();
+                    setState(() {});
+                  },
             items: widget.students
                 .map<DropdownMenuItem<String>>(
                     (student) => DropdownMenuItem<String>(
