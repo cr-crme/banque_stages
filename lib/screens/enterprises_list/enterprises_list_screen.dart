@@ -99,21 +99,40 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
 
   List<Enterprise> _filterSelectedEnterprises(List<Enterprise> enterprises) {
     return enterprises.where((enterprise) {
+      // Remove if should not be shown by filter availability filter
       if (_hideNotAvailable &&
           !enterprise.jobs
               .any((job) => job.positionsOccupied < job.positionsOffered)) {
-      } else if (enterprise.name
+        return false;
+      }
+
+      // Perform the searchbar filter
+      if (enterprise.name
           .toLowerCase()
           .contains(_searchController.text.toLowerCase())) {
         return true;
-      } else if (enterprise.jobs.any((job) =>
-          job.specialization?.name
-              .toLowerCase()
-              .contains(_searchController.text.toLowerCase()) ??
-          false)) {
+      }
+      if (enterprise.jobs.any((job) {
+        final hasSpecialization = job.specialization?.name
+                .toLowerCase()
+                .contains(_searchController.text.toLowerCase()) ??
+            false;
+        final hasSector = job.activitySector?.name
+                .toLowerCase()
+                .contains(_searchController.text.toLowerCase()) ??
+            false;
+        return hasSpecialization || hasSector;
+      })) {
         return true;
-      } else if (enterprise.activityTypes.any((type) =>
+      }
+      if (enterprise.activityTypes.any((type) =>
           type.toLowerCase().contains(_searchController.text.toLowerCase()))) {
+        return true;
+      }
+      if (enterprise.address
+          .toString()
+          .toLowerCase()
+          .contains(_searchController.text.toLowerCase())) {
         return true;
       }
       return false;
