@@ -35,34 +35,41 @@ class AboutPageState extends State<AboutPage> {
   String? _contactPhone;
   String? _contactEmail;
 
-  bool _editing = false;
-  bool get editing => _editing;
+  bool editing = false;
 
-  void toggleEdit() async {
-    if (!_editing) {
-      setState(() => _editing = true);
+  Future<void> toggleEdit() async {
+    if (!editing) {
+      setState(() => editing = true);
       return;
     }
 
     if (!FormService.validateForm(_formKey, save: true)) {
       return;
     }
+    late Address address;
+    try {
+      address = (await Address.fromAddress(_address!))!;
+    } catch (e) {
+      return;
+    }
 
-    StudentsProvider.of(context).replace(
-      widget.student.copyWith(
-        phone: _phone,
-        email: _email,
-        address: await Address.fromAddress(_address!),
-        contact: Person(
-            firstName: _contactFirstName!,
-            lastName: _contactLastName!,
-            phone: _contactPhone,
-            email: _contactEmail),
-        contactLink: _contactLink,
-      ),
-    );
-
-    setState(() => _editing = false);
+    editing = false;
+    if (mounted) {
+      StudentsProvider.of(context, listen: false).replace(
+        widget.student.copyWith(
+          phone: _phone,
+          email: _email,
+          address: address,
+          contact: Person(
+              firstName: _contactFirstName!,
+              lastName: _contactLastName!,
+              phone: _contactPhone,
+              email: _contactEmail),
+          contactLink: _contactLink,
+        ),
+      );
+    }
+    setState(() {});
   }
 
   @override
@@ -167,7 +174,7 @@ class AboutPageState extends State<AboutPage> {
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.firstName,
                       ),
-                      enabled: _editing,
+                      enabled: editing,
                       onSaved: (name) => _contactFirstName = name,
                     ),
                     TextFormField(
@@ -176,7 +183,7 @@ class AboutPageState extends State<AboutPage> {
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.lastName,
                       ),
-                      enabled: _editing,
+                      enabled: editing,
                       onSaved: (name) => _contactLastName = name,
                     ),
                     const SizedBox(height: 8),
@@ -187,7 +194,7 @@ class AboutPageState extends State<AboutPage> {
                         labelText: AppLocalizations.of(context)!
                             .student_linkWithStudent,
                       ),
-                      enabled: _editing,
+                      enabled: editing,
                       onSaved: (link) => _contactLink = link,
                     ),
                     const SizedBox(height: 8),
@@ -197,7 +204,7 @@ class AboutPageState extends State<AboutPage> {
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.phoneNumber,
                       ),
-                      enabled: _editing,
+                      enabled: editing,
                       onSaved: (phone) => _contactPhone = phone,
                     ),
                     const SizedBox(height: 8),
@@ -207,7 +214,7 @@ class AboutPageState extends State<AboutPage> {
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.email,
                       ),
-                      enabled: _editing,
+                      enabled: editing,
                       onSaved: (email) => _contactEmail = email,
                     ),
                   ],
@@ -229,7 +236,7 @@ class AboutPageState extends State<AboutPage> {
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.phoneNumber,
                       ),
-                      enabled: _editing,
+                      enabled: editing,
                       onSaved: (phone) => _phone = phone,
                     ),
                     const SizedBox(height: 8),
@@ -239,7 +246,7 @@ class AboutPageState extends State<AboutPage> {
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.email,
                       ),
-                      enabled: _editing,
+                      enabled: editing,
                       onSaved: (email) => _email = email,
                     ),
                     const SizedBox(height: 8),
@@ -249,7 +256,7 @@ class AboutPageState extends State<AboutPage> {
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.address,
                       ),
-                      enabled: _editing,
+                      enabled: editing,
                       onSaved: (address) => _address = address,
                     ),
                   ],

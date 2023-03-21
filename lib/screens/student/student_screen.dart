@@ -28,7 +28,7 @@ class _StudentScreenState extends State<StudentScreen>
   final _internshipPageKey = GlobalKey<InternshipsPageState>();
   final _skillsPageKey = GlobalKey<SkillsPageState>();
 
-  void _updateActionButton() {
+  Future<void> _updateActionButton() async {
     late Icon icon;
 
     if (_tabController.index == 0) {
@@ -41,22 +41,21 @@ class _StudentScreenState extends State<StudentScreen>
       icon = const Icon(Icons.add);
     }
 
-    setState(() {
-      _actionButton = IconButton(
-        icon: icon,
-        onPressed: () {
-          if (_tabController.index == 0) {
-            _aboutPageKey.currentState?.toggleEdit();
-          } else if (_tabController.index == 1) {
-            // _internshipPageKey.currentState?.toggleEdit();
-          } else if (_tabController.index == 2) {
-            // _skillsPageKey.currentState?.addJob();
-          }
+    _actionButton = IconButton(
+      icon: icon,
+      onPressed: () async {
+        if (_tabController.index == 0) {
+          await _aboutPageKey.currentState?.toggleEdit();
+        } else if (_tabController.index == 1) {
+          // _internshipPageKey.currentState?.toggleEdit();
+        } else if (_tabController.index == 2) {
+          // _skillsPageKey.currentState?.addJob();
+        }
 
-          _updateActionButton();
-        },
-      );
-    });
+        await _updateActionButton();
+      },
+    );
+    setState(() {});
   }
 
   @override
