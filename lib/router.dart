@@ -9,7 +9,6 @@ import 'screens/add_enterprise/add_enterprise_screen.dart';
 import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/generate_debug_data_screen.dart';
-import 'screens/home_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
@@ -23,7 +22,6 @@ import 'screens/supervision_chart/supervision_student_details.dart';
 import 'screens/visiting_students/itinerary_screen.dart';
 
 abstract class Screens {
-  static const home = 'home';
   static const populateWithDebugData = 'populate-with-debug-data';
   static const login = 'login';
   static const itinerary = 'itinerary';
@@ -32,6 +30,7 @@ abstract class Screens {
   static const enterprise = 'enterprise';
   static const addEnterprise = 'add-enterprise';
 
+  static const home = supervisionChart;
   static const supervisionChart = 'supervision';
   static const supervisionStudentDetails = 'supervision-student-details';
 
@@ -69,8 +68,16 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      name: Screens.home,
-      builder: (context, state) => const HomeScreen(),
+      name: Screens.supervisionChart,
+      builder: (context, state) => const SupervisionChart(),
+      routes: [
+        GoRoute(
+          path: 'student-details/:studentId',
+          name: Screens.supervisionStudentDetails,
+          builder: (context, state) => SupervisionStudentDetailsScreen(
+              studentId: state.params['studentId']!),
+        ),
+      ],
     ),
     GoRoute(
       path: '/debug-data',
@@ -107,19 +114,6 @@ final router = GoRouter(
                   InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
             ),
           ],
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/supervision',
-      name: Screens.supervisionChart,
-      builder: (context, state) => const SupervisionChart(),
-      routes: [
-        GoRoute(
-          path: 'student-details/:studentId',
-          name: Screens.supervisionStudentDetails,
-          builder: (context, state) => SupervisionStudentDetailsScreen(
-              studentId: state.params['studentId']!),
         ),
       ],
     ),

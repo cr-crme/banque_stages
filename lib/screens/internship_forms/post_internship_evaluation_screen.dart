@@ -84,7 +84,7 @@ class _PostInternshipEvaluationScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Évaluation post-stage"),
+        title: const Text('Évaluation post-stage'),
       ),
       body: Selector<EnterprisesProvider, Job>(
         builder: (context, job, _) => Stepper(
@@ -96,7 +96,7 @@ class _PostInternshipEvaluationScreenState
           steps: [
             Step(
               isActive: _currentStep == 0,
-              title: const Text("Tâches"),
+              title: const Text('Tâches'),
               content: TasksStep(
                 key: _tasksKey,
                 job: job,
@@ -104,7 +104,7 @@ class _PostInternshipEvaluationScreenState
             ),
             Step(
               isActive: _currentStep == 1,
-              title: const Text("Encadrement"),
+              title: const Text('Encadrement'),
               content: SupervisionStep(
                 key: _supervisionKey,
                 job: job,
@@ -112,7 +112,7 @@ class _PostInternshipEvaluationScreenState
             ),
             Step(
               isActive: _currentStep == 2,
-              title: const Text("Pré-requis"),
+              title: const Text('Pré-requis'),
               content: PrerequisitesStep(
                 key: _prerequisitesKey,
                 job: job,
@@ -134,15 +134,15 @@ class _PostInternshipEvaluationScreenState
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           OutlinedButton(
-              onPressed: details.onStepCancel, child: const Text("Annuler")),
+              onPressed: details.onStepCancel, child: const Text('Annuler')),
           const SizedBox(
             width: 20,
           ),
           TextButton(
             onPressed: details.onStepContinue,
             child: _currentStep == 2
-                ? const Text("Confirmer")
-                : const Text("Suivant"),
+                ? const Text('Confirmer')
+                : const Text('Suivant'),
           )
         ],
       ),

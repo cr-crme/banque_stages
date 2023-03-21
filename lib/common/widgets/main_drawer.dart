@@ -22,19 +22,14 @@ class MainDrawer extends StatelessWidget {
             child: Column(
               children: [
                 const _DrawerItem(
-                  titleText: 'Accueil',
-                  icon: Icon(Icons.home_rounded),
-                  route: Screens.home,
+                  titleText: 'Tableau des supervisions',
+                  icon: Icon(Icons.table_chart_rounded),
+                  route: Screens.supervisionChart,
                 ),
                 const _DrawerItem(
                   titleText: 'Mes élèves',
                   icon: Icon(Icons.school_rounded),
                   route: Screens.studentsList,
-                ),
-                const _DrawerItem(
-                  titleText: 'Tableau des supervisions',
-                  icon: Icon(Icons.table_chart_rounded),
-                  route: Screens.supervisionChart,
                 ),
                 const _DrawerItem(
                   titleText: 'Toutes les entreprises',
