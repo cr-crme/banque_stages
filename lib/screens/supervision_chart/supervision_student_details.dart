@@ -107,9 +107,9 @@ class _VisitingPriority extends StatefulWidget {
 
 class _VisitingPriorityState extends State<_VisitingPriority> {
   final _visibilityFilters = [
-    VisitingPriority.low,
+    VisitingPriority.high,
     VisitingPriority.mid,
-    VisitingPriority.high
+    VisitingPriority.low
   ];
 
   void _updatePriority(VisitingPriority newPriority) {

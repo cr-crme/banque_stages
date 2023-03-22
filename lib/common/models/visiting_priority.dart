@@ -24,17 +24,17 @@ extension VisitingPriorityStyled on VisitingPriority {
   IconData get icon {
     switch (this) {
       case (VisitingPriority.low):
-        return Icons.looks_one;
+        return Icons.looks_3;
       case (VisitingPriority.mid):
         return Icons.looks_two;
       case (VisitingPriority.high):
-        return Icons.looks_3;
+        return Icons.looks_one;
       default:
         return Icons.cancel;
     }
   }
 
   VisitingPriority next() {
-    return VisitingPriority.values[(index + 1) % 3];
+    return VisitingPriority.values[(index - 1) % 3];
   }
 }

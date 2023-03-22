@@ -25,9 +25,9 @@ class _SupervisionChartState extends State<SupervisionChart> {
   final _searchTextController = TextEditingController();
   bool _isFlagFilterExpanded = false;
   final _visibilityFilters = {
-    VisitingPriority.low: true,
-    VisitingPriority.mid: true,
     VisitingPriority.high: true,
+    VisitingPriority.mid: true,
+    VisitingPriority.low: true,
     VisitingPriority.notApplicable: false,
   };
 
@@ -66,7 +66,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
       child: TextFormField(
         decoration: InputDecoration(
             prefixIcon: const Icon(Icons.search),
-            labelText: 'Rechercher un métier',
+            labelText: 'Rechercher un élève',
             suffixIcon: IconButton(
                 onPressed: () =>
                     setState(() => _searchTextController.text = ''),
@@ -203,7 +203,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final allInternships = InternshipsProvider.of(context, listen: true);
 
     students.sort(
-      (a, b) => a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase()),
+      (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
     );
     students = _filterByName(students);
     students = _filterByFlag(students);

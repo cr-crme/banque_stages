@@ -34,12 +34,12 @@ class _TransferDialogState extends State<TransferDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Transférer un\u00b7e étudiant\u00b7e'),
+      title: const Text('Transférer un élève'),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Étudiant\u00b7e'),
+          const Text('Élève'),
           DropdownButton<String>(
             value: _choiceStudent,
             icon: const Icon(Icons.expand_more),
@@ -68,7 +68,7 @@ class _TransferDialogState extends State<TransferDialog> {
               margin: const EdgeInsets.only(top: 8),
               padding: const EdgeInsets.all(8),
               child: const Text(
-                'Aucun stage pour cet.te étudiant.e',
+                'Aucun stage pour cet élève',
                 style: TextStyle(color: Colors.grey),
               ),
             ),
@@ -89,7 +89,7 @@ class _TransferDialogState extends State<TransferDialog> {
         ],
       ),
       actions: [
-        TextButton(
+        OutlinedButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Annuler')),
         TextButton(
@@ -115,12 +115,12 @@ class AcceptTransferDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Transfère d\'étudiant\u00b7e'),
+      title: const Text('Transfère d\'élève'),
       content:
           Text('La supervision de ${student.fullName} vous a été transférée.\n'
               'Acceptez-vous?'),
       actions: [
-        TextButton(
+        OutlinedButton(
             onPressed: () => Navigator.pop(context, false),
             child: const Text('Non')),
         TextButton(
