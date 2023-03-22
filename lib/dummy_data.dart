@@ -1,5 +1,3 @@
-//! Remove this file before production
-
 import 'dart:math';
 
 import 'package:enhanced_containers/enhanced_containers.dart';
@@ -12,11 +10,13 @@ import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/models/person.dart';
 import '/common/models/schedule.dart';
+import '/common/models/school.dart';
 import '/common/models/student.dart';
 import '/common/models/teacher.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
+import '/common/providers/schools_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/misc/job_data_file_service.dart';
@@ -34,46 +34,59 @@ bool hasDummyData(context) {
 }
 
 Future<void> addAllDummyData(BuildContext context) async {
+  final schools = SchoolsProvider.of(context, listen: false);
   final teachers = TeachersProvider.of(context, listen: false);
   final enterprises = EnterprisesProvider.of(context, listen: false);
   final internships = InternshipsProvider.of(context, listen: false);
   final students = StudentsProvider.of(context, listen: false);
 
-  if (teachers.isEmpty) await addDummyTeachers(teachers);
-  if (enterprises.isEmpty) await addDummyEnterprises(enterprises);
+  if (schools.isEmpty) await addDummySchools(schools);
+  if (teachers.isEmpty) await addDummyTeachers(teachers, schools);
+  if (enterprises.isEmpty) await addDummyEnterprises(enterprises, teachers);
   if (students.isEmpty) await addDummyStudents(students, teachers);
   if (internships.isEmpty) {
     await addDummyInterships(internships, students, enterprises, teachers);
   }
 }
 
-Future<void> addDummyTeachers(TeachersProvider teachers) async {
+Future<void> addDummySchools(SchoolsProvider schools) async {
+  schools.add(School(
+    name: 'My lovely school Marie-Vic',
+    address: (await Address.fromAddress('École Marie-Victorin, Montréal'))!,
+  ));
+
+  await _waitForDatabaseUpdate(schools, 1);
+}
+
+Future<void> addDummyTeachers(
+    TeachersProvider teachers, SchoolsProvider schools) async {
   teachers.add(Teacher(
       firstName: 'Roméo',
       lastName: 'Montaigu',
-      address: await Address.fromAddress('École Marie-Victorin, Montréal'),
+      schoolId: schools[0].id,
       email: 'romeo.montaigu@shakespeare.qc'));
   teachers.add(Teacher(
       id: teachers.currentTeacherId,
       firstName: 'Juliette',
       lastName: 'Capulet',
-      address: await Address.fromAddress('École Marie-Victorin, Montréal'),
+      schoolId: schools[0].id,
       email: 'juliette.capulet@shakespeare.qc'));
   teachers.add(Teacher(
       firstName: 'Tybalt',
       lastName: 'Capulet',
-      address: await Address.fromAddress('École Marie-Victorin, Montréal'),
+      schoolId: schools[0].id,
       email: 'tybalt.capulet@shakespeare.qc'));
   teachers.add(Teacher(
       firstName: 'Benvolio',
       lastName: 'Montaigu',
-      address: await Address.fromAddress('École Marie-Victorin, Montréal'),
+      schoolId: schools[0].id,
       email: 'benvolio.montaigu@shakespeare.qc'));
 
   await _waitForDatabaseUpdate(teachers, 4);
 }
 
-Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
+Future<void> addDummyEnterprises(
+    EnterprisesProvider enterprises, TeachersProvider teachers) async {
   JobList jobs = JobList();
   jobs.add(
     Job(
@@ -94,7 +107,7 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
     Enterprise(
       name: 'Metro Gagnon',
       activityTypes: {activityTypes[2], activityTypes[5], activityTypes[10]},
-      recrutedBy: 'Louise Talbot',
+      recrutedBy: teachers[0].id,
       shareWith: 'Tout le monde',
       jobs: jobs,
       contactName: 'Marc Arcand',
@@ -131,7 +144,7 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
     Enterprise(
       name: 'Jean Coutu',
       activityTypes: {activityTypes[20], activityTypes[5]},
-      recrutedBy: 'Judith Larivée',
+      recrutedBy: teachers[1].id,
       shareWith: 'Personne',
       jobs: jobs,
       contactName: 'Caroline Mercier',
@@ -168,7 +181,7 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
     Enterprise(
       name: 'Auto Care',
       activityTypes: {activityTypes[12], activityTypes[18]},
-      recrutedBy: 'François Duchemin',
+      recrutedBy: teachers[0].id,
       shareWith: 'Tout le monde',
       jobs: jobs,
       contactName: 'Denis Rondeau',
@@ -205,7 +218,7 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
     Enterprise(
       name: 'Auto Repair',
       activityTypes: {activityTypes[12], activityTypes[18]},
-      recrutedBy: 'Charlène Cantin',
+      recrutedBy: teachers[2].id,
       shareWith: 'Tout le monde',
       jobs: jobs,
       contactName: 'Claudio Brodeur',
@@ -243,7 +256,7 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
     Enterprise(
       name: 'Boucherie Marien',
       activityTypes: {activityTypes[2], activityTypes[5]},
-      recrutedBy: 'Stéphane Tremblay',
+      recrutedBy: teachers[0].id,
       shareWith: 'Tout le monde',
       jobs: jobs,
       contactName: 'Brigitte Samson',
@@ -281,7 +294,7 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
     Enterprise(
       name: 'IGA',
       activityTypes: {activityTypes[10], activityTypes[29]},
-      recrutedBy: 'Christian Perez',
+      recrutedBy: teachers[0].id,
       shareWith: 'Tout le monde',
       jobs: jobs,
       contactName: 'Gabrielle Fortin',
@@ -319,7 +332,7 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
     Enterprise(
       name: 'Pharmaprix',
       activityTypes: {activityTypes[20], activityTypes[5]},
-      recrutedBy: 'Louise Talbot',
+      recrutedBy: teachers[3].id,
       shareWith: 'Tout le monde',
       jobs: jobs,
       contactName: 'Jessica Marcotte',
@@ -357,7 +370,7 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
     Enterprise(
       name: 'Subway',
       activityTypes: {activityTypes[24], activityTypes[27]},
-      recrutedBy: 'Patricia Filion',
+      recrutedBy: teachers[3].id,
       shareWith: 'Tout le monde',
       jobs: jobs,
       contactName: 'Carlos Rodriguez',
@@ -391,7 +404,7 @@ Future<void> addDummyEnterprises(EnterprisesProvider enterprises) async {
     Enterprise(
       name: 'Walmart',
       activityTypes: {activityTypes[5], activityTypes[15], activityTypes[29]},
-      recrutedBy: 'Caroline Mercier',
+      recrutedBy: teachers[0].id,
       shareWith: 'Tout le monde',
       jobs: jobs,
       contactName: 'France Boissonneau',
@@ -560,7 +573,8 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 'v.tremblay@email.com'),
       contactLink: 'Père',
-      address: await Address.fromAddress('8358 Rue Jean-Nicolet, Saint-Léonard, QC H1R 2R2'),
+      address: await Address.fromAddress(
+          '8358 Rue Jean-Nicolet, Saint-Léonard, QC H1R 2R2'),
       phone: '514 555 9988',
     ),
   );
@@ -580,7 +594,8 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 'jp.picard@email.com'),
       contactLink: 'Père',
-      address: await Address.fromAddress('8382 Rue du Laus, Saint-Léonard, QC H1R 2P4'),
+      address: await Address.fromAddress(
+          '8382 Rue du Laus, Saint-Léonard, QC H1R 2P4'),
       phone: '514 778 8899',
     ),
   );
@@ -600,7 +615,8 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 's.monette@email.com'),
       contactLink: 'Père',
-      address: await Address.fromAddress('6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5'),
+      address: await Address.fromAddress(
+          '6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5'),
       phone: '514 321 6655',
     ),
   );
@@ -620,7 +636,8 @@ Future<void> addDummyStudents(
           phone: '514 321 9876',
           email: 'm.poulain@email.com'),
       contactLink: 'Père',
-      address: await Address.fromAddress('6585 Rue Lemay, Montréal, QC H1T 2L8'),
+      address:
+          await Address.fromAddress('6585 Rue Lemay, Montréal, QC H1T 2L8'),
       phone: '514 567 9999',
     ),
   );

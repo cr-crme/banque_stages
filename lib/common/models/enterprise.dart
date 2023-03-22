@@ -6,7 +6,7 @@ import '/common/models/job_list.dart';
 class Enterprise extends ItemSerializable {
   Enterprise({
     super.id,
-    this.photo = '',
+    this.photoUrl,
     required this.name,
     required this.activityTypes,
     this.recrutedBy = '',
@@ -26,7 +26,7 @@ class Enterprise extends ItemSerializable {
   }) : internshipIds = internshipIds ?? [];
 
   Enterprise copyWith({
-    String? photo,
+    String? photoUrl,
     String? name,
     Set<String>? activityTypes,
     String? recrutedBy,
@@ -46,7 +46,7 @@ class Enterprise extends ItemSerializable {
     String? id,
   }) {
     return Enterprise(
-      photo: photo ?? this.photo,
+      photoUrl: photoUrl ?? this.photoUrl,
       name: name ?? this.name,
       activityTypes: activityTypes ?? this.activityTypes,
       recrutedBy: recrutedBy ?? this.recrutedBy,
@@ -70,7 +70,7 @@ class Enterprise extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      'photo': photo,
+      'photoUrl': photoUrl,
       'name': name,
       'activityTypes': activityTypes.toList(),
       'recrutedBy': recrutedBy,
@@ -92,7 +92,7 @@ class Enterprise extends ItemSerializable {
 
   @override
   Enterprise.fromSerialized(map)
-      : photo = map['photo'],
+      : photoUrl = map['photoUrl'],
         name = map['name'],
         activityTypes =
             ItemSerializable.setFromSerialized(map['activityTypes']),
@@ -114,7 +114,7 @@ class Enterprise extends ItemSerializable {
         neq = map['neq'],
         super.fromSerialized(map);
 
-  final String photo;
+  final String? photoUrl;
 
   final String name;
   final Set<String> activityTypes;

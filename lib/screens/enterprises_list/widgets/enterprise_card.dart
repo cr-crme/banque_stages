@@ -23,8 +23,8 @@ class EnterpriseCard extends StatelessWidget {
           width: 80,
           height: 60,
           color: Theme.of(context).disabledColor,
-          child: enterprise.photo.isNotEmpty
-              ? Image.network(enterprise.photo)
+          child: enterprise.photoUrl != null
+              ? Image.network(enterprise.photoUrl!)
               : null,
         ),
         title: Text(

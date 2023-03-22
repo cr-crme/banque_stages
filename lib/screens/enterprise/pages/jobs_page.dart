@@ -62,6 +62,7 @@ class JobsPageState extends State<JobsPage> {
     );
     if (eventType == null) return;
 
+    if (!mounted) return;
     final description = await showDialog(
       context: context,
       builder: (context) => AddTextDialog(

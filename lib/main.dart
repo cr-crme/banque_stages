@@ -10,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
+import '/common/providers/schools_provider.dart';
 import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
 import 'common/providers/internships_provider.dart';
@@ -54,6 +55,7 @@ class BanqueStagesApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => SchoolsProvider()),
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
         ChangeNotifierProvider(create: (context) => InternshipsProvider()),
         ChangeNotifierProvider(create: (context) => AllStudentsWaypoints()),

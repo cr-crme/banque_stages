@@ -25,7 +25,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
 
   late IconButton _actionButton;
 
-  final _aboutPageKey = GlobalKey<AboutPageState>();
+  final _aboutPageKey = GlobalKey<EnterpriseAboutPageState>();
   final _contactPageKey = GlobalKey<ContactPageState>();
   final _jobsPageKey = GlobalKey<JobsPageState>();
   final _stagePageKey = GlobalKey<InternshipsPageState>();
@@ -90,7 +90,8 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
               if (!_editing || !_tabController.indexIsChanging) return;
 
               _tabController.index = _tabController.previousIndex;
-              if (await ConfirmPopDialog.show(context)) {
+              final shouldShow = await ConfirmPopDialog.show(context);
+              if (shouldShow) {
                 _tabController.animateTo(index);
               }
             },
@@ -107,7 +108,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
           controller: _tabController,
           physics: _editing ? const NeverScrollableScrollPhysics() : null,
           children: [
-            AboutPage(key: _aboutPageKey, enterprise: enterprise),
+            EnterpriseAboutPage(key: _aboutPageKey, enterprise: enterprise),
             ContactPage(key: _contactPageKey, enterprise: enterprise),
             JobsPage(key: _jobsPageKey, enterprise: enterprise),
             InternshipsPage(key: _stagePageKey, enterprise: enterprise),

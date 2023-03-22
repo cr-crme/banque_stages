@@ -151,7 +151,7 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
         children: [
           Text(
             'Niveau de priorité pour les visites',
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -181,7 +181,7 @@ class _Specialization extends StatelessWidget {
           children: [
             Text(
               'Métier',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 25.0, top: 8.0),
@@ -228,7 +228,7 @@ class _PersonalNotesState extends State<_PersonalNotes> {
           children: [
             Text(
               'Particularités du stage à connaitre',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const Padding(
               padding: EdgeInsets.only(top: 4.0),
@@ -276,7 +276,7 @@ class _Contact extends StatelessWidget {
           children: [
             Text(
               'Contact',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 25.0, top: 8.0),
@@ -361,7 +361,7 @@ class _Schedule extends StatelessWidget {
           children: [
             Text(
               'Horaire de stage',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 25.0, top: 8.0),
@@ -388,7 +388,7 @@ class _EnterpriseRequirements extends StatelessWidget {
           children: [
             Text(
               'Exigences de l\'entreprise',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const Padding(
               padding: EdgeInsets.only(left: 25.0, top: 8.0),
