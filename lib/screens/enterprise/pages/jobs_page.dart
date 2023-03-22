@@ -67,8 +67,8 @@ class JobsPageState extends State<JobsPage> {
       context: context,
       builder: (context) => AddTextDialog(
         title: eventType == 2
-            ? "Décrivez la situation dangereuse identifiée :"
-            : "Racontez ce qu'il s'est passé :",
+            ? 'Décrivez la situation dangereuse identifiée :'
+            : 'Racontez ce qu\'il s\'est passé :',
       ),
     );
     if (description == null) return;
@@ -94,7 +94,7 @@ class JobsPageState extends State<JobsPage> {
     final newComment = await showDialog(
       context: context,
       builder: (context) => const AddTextDialog(
-        title: "Ajouter un commentaire",
+        title: 'Ajouter un commentaire',
       ),
     );
 
@@ -134,7 +134,7 @@ class JobsPageState extends State<JobsPage> {
                 value: job.id,
                 headerBuilder: (context, isExpanded) => ListTile(
                       title: Text(
-                        job.specialization?.idWithName ?? "bad id",
+                        job.specialization?.idWithName ?? 'bad id',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
