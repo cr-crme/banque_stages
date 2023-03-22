@@ -13,6 +13,7 @@ import '/common/widgets/disponibility_circle.dart';
 import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import '/common/widgets/form_fields/share_with_picker_form_field.dart';
 import '/misc/form_service.dart';
+import 'widgets/sub_title.dart';
 
 class EnterpriseAboutPage extends StatefulWidget {
   const EnterpriseAboutPage({
@@ -102,7 +103,7 @@ class _GeneralInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const _Title('Informations générales'),
+        const SubTitle('Informations générales'),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Row(
@@ -152,7 +153,7 @@ class _AvailablePlace extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const _Title('Places de stage disponibles'),
+        const SubTitle('Places de stage disponibles'),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
@@ -191,7 +192,7 @@ class _ActivityType extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const _Title('Types d\'activités'),
+        const SubTitle('Types d\'activités'),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -239,7 +240,7 @@ class _RecrutedBy extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const _Title('Entreprise recrutée par :'),
+        const SubTitle('Entreprise recrutée par :'),
         GestureDetector(
           onTap: teacher.email == null ? null : () => _sendEmail(teacher),
           child: Padding(
@@ -313,19 +314,6 @@ class _SharingLevel extends StatelessWidget {
           ),
         )
       ],
-    );
-  }
-}
-
-class _Title extends StatelessWidget {
-  const _Title(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(text, style: Theme.of(context).textTheme.titleLarge),
     );
   }
 }
