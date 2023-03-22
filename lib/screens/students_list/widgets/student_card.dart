@@ -31,14 +31,9 @@ class StudentCard extends StatelessWidget {
                       student.fullName,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    Row(
-                      children: [
-                        Text(student.program),
-                        Text(
-                          AppLocalizations.of(context)!
-                              .student_group_current(student.group),
-                        ),
-                      ],
+                    Text(
+                      AppLocalizations.of(context)!
+                          .student_group_current(student.group),
                     ),
                   ],
                 ),
