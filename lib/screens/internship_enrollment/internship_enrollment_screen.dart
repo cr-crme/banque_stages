@@ -5,6 +5,7 @@ import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
 import '/common/models/person.dart';
 import '/common/models/visiting_priority.dart';
+import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
@@ -47,16 +48,25 @@ class _InternshipEnrollmentScreenState
   }
 
   void _submit() {
+    // TODO: Proper validation
     _generalInfoKey.currentState!.formKey.currentState!.save();
     _scheduleKey.currentState!.formKey.currentState!.save();
     _requirementsKey.currentState!.formKey.currentState!.save();
+
+    final enterprises = context.read<EnterprisesProvider>();
 
     final internship = Internship(
       studentId: _generalInfoKey.currentState!.student!.id,
       teacherId: context.read<TeachersProvider>().currentTeacherId,
       enterpriseId: widget.enterpriseId,
-      jobId: _generalInfoKey.currentState!.primaryJob.id,
-      type: 'SPA',
+      jobId: _getAvailableJobs()
+          .firstWhere((job) =>
+              job.activitySector ==
+                  _generalInfoKey.currentState!.primaryJob!.activitySector &&
+              job.specialization ==
+                  _generalInfoKey.currentState!.primaryJob!.specialization)
+          .id,
+      program: _generalInfoKey.currentState!.student!.program,
       supervisor: Person(
           firstName: _generalInfoKey.currentState!.supervisorFirstName!,
           lastName: _generalInfoKey.currentState!.supervisorLastName!,
@@ -70,7 +80,6 @@ class _InternshipEnrollmentScreenState
     );
     context.read<InternshipsProvider>().add(internship);
 
-    final enterprises = context.read<EnterprisesProvider>();
     enterprises.replace(
       enterprises[widget.enterpriseId].copyWith(
         internshipIds: [
@@ -81,6 +90,15 @@ class _InternshipEnrollmentScreenState
     );
 
     Navigator.pop(context);
+  }
+
+  Iterable<Job> _getAvailableJobs() {
+    return context.read<EnterprisesProvider>()[widget.enterpriseId].jobs.where(
+          (job) =>
+              job.positionsOffered - job.positionsOccupied > 0 &&
+              job.activitySector != null &&
+              job.specialization != null,
+        );
   }
 
   @override
@@ -103,6 +121,7 @@ class _InternshipEnrollmentScreenState
               content: GeneralInformationsStep(
                 key: _generalInfoKey,
                 enterprise: enterprise,
+                availableJobs: _getAvailableJobs(),
               ),
             ),
             Step(

@@ -659,7 +659,7 @@ Future<void> addDummyInterships(
     isTransfering: true,
     enterpriseId: enterprises[0].id,
     jobId: enterprises[0].jobs[0].specialization!.id,
-    type: '-1',
+    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -701,7 +701,7 @@ Future<void> addDummyInterships(
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises[0].id,
     jobId: enterprises[0].jobs[0].specialization!.id,
-    type: '-1',
+    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -743,7 +743,7 @@ Future<void> addDummyInterships(
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises[1].id,
     jobId: enterprises[1].jobs[0].specialization!.id,
-    type: '-1',
+    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -780,7 +780,7 @@ Future<void> addDummyInterships(
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises[2].id,
     jobId: enterprises[2].jobs[0].specialization!.id,
-    type: '-1',
+    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -812,7 +812,7 @@ Future<void> addDummyInterships(
     teacherId: teachers[0].id,
     enterpriseId: enterprises[3].id,
     jobId: enterprises[3].jobs[0].specialization!.id,
-    type: '-1',
+    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -844,7 +844,7 @@ Future<void> addDummyInterships(
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises[4].id,
     jobId: enterprises[4].jobs[0].specialization!.id,
-    type: '-1',
+    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -886,7 +886,7 @@ Future<void> addDummyInterships(
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises[4].id,
     jobId: enterprises[4].jobs[0].specialization!.id,
-    type: '-1',
+    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(

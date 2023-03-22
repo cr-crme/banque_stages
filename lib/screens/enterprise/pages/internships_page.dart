@@ -22,11 +22,22 @@ class InternshipsPage extends StatefulWidget {
 }
 
 class InternshipsPageState extends State<InternshipsPage> {
+  final _expanded = <String, bool>{};
+
   void addStage() {
     GoRouter.of(context).goNamed(
       Screens.internshipEnrollement,
       params: Screens.withId(widget.enterprise.id),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    for (final i in widget.enterprise.internshipIds) {
+      _expanded[i] = false;
+    }
   }
 
   @override
@@ -41,11 +52,15 @@ class InternshipsPageState extends State<InternshipsPage> {
             ),
           ),
           const Divider(),
-          Selector<InternshipsProvider, Iterable<Internship>>(
+          Selector<InternshipsProvider, List<Internship>>(
             builder: (context, internships, _) => ExpansionPanelList(
+              expansionCallback: (panelIndex, isExpanded) => setState(
+                  () => _expanded[internships[panelIndex].id] = !isExpanded),
               children: [
                 ...internships.map(
                   (internship) => ExpansionPanel(
+                    canTapOnHeader: true,
+                    isExpanded: _expanded[internship.id] ?? false,
                     headerBuilder: (context, isExpanded) => ListTile(
                       leading: Text(
                           '${internship.date.start.year}-${internship.date.end.year}'),
@@ -55,7 +70,7 @@ class InternshipsPageState extends State<InternshipsPage> {
                     body: Column(
                       children: [
                         ListTile(
-                          leading: Text(internship.type),
+                          leading: Text(internship.program),
                           title: Selector<TeachersProvider, String>(
                             builder: (context, name, _) => Text(name),
                             selector: (context, teachers) =>
@@ -73,24 +88,14 @@ class InternshipsPageState extends State<InternshipsPage> {
                 ),
               ],
             ),
-            selector: (context, internships) => internships.where(
-              (internship) =>
-                  widget.enterprise.internshipIds.contains(internship.id) &&
-                  internship.date.start.isBefore(DateTime.now()) &&
-                  internship.date.end.isAfter(DateTime.now()),
-            ),
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: widget.enterprise.internshipIds.length,
-            itemBuilder: (context, index) =>
-                Selector<InternshipsProvider, Internship>(
-              builder: (context, internship, _) => ListTile(
-                title: Text(internship.id),
-              ),
-              selector: (context, internships) =>
-                  internships[widget.enterprise.internshipIds[index]],
-            ),
+            selector: (context, internships) => internships
+                .where(
+                  (internship) =>
+                      widget.enterprise.internshipIds.contains(internship.id) &&
+                      internship.date.start.isBefore(DateTime.now()) &&
+                      internship.date.end.isAfter(DateTime.now()),
+                )
+                .toList(),
           ),
         ],
       ),

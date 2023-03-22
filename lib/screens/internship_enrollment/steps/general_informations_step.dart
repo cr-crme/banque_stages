@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/models/student.dart';
-import '/common/models/teacher.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/add_job_button.dart';
 import '/common/widgets/form_fields/job_form_field_list_tile.dart';
@@ -15,9 +14,11 @@ class GeneralInformationsStep extends StatefulWidget {
   const GeneralInformationsStep({
     super.key,
     required this.enterprise,
+    required this.availableJobs,
   });
 
   final Enterprise enterprise;
+  final Iterable<Job> availableJobs;
 
   @override
   State<GeneralInformationsStep> createState() =>
@@ -28,9 +29,8 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   final formKey = GlobalKey<FormState>();
 
   Student? student;
-  Teacher? teacher;
 
-  Job primaryJob = Job();
+  Job? primaryJob;
   Job? secondJob;
 
   String? supervisorFirstName;
@@ -40,13 +40,6 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 
   @override
   Widget build(BuildContext context) {
-    Iterable<Job> availableJobs = widget.enterprise.jobs.where(
-      (job) =>
-          job.positionsOffered - job.positionsOccupied > 0 &&
-          job.activitySector != null &&
-          job.specialization != null,
-    );
-
     return Form(
       key: formKey,
       child: SingleChildScrollView(
@@ -79,10 +72,14 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
               ),
             JobFormFieldListTile(
               initialValue: Job(),
-              sectors: availableJobs.map((job) => job.activitySector!).toList(),
-              specializations:
-                  availableJobs.map((job) => job.specialization!).toList(),
+              sectors: widget.availableJobs
+                  .map((job) => job.activitySector!)
+                  .toList(),
+              specializations: widget.availableJobs
+                  .map((job) => job.specialization!)
+                  .toList(),
               askNumberPositionsOffered: false,
+              onSaved: (job) => setState(() => primaryJob = job),
             ),
             if (student?.program == 'FPT') ...[
               const SizedBox(height: 8),

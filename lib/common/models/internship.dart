@@ -13,7 +13,7 @@ class Internship extends ItemSerializable {
 
   final String enterpriseId;
   final String jobId;
-  final String type;
+  final String program;
   final Person supervisor;
   final DateTimeRange date;
   final List<Schedule> schedule;
@@ -32,7 +32,7 @@ class Internship extends ItemSerializable {
     this.isTransfering = false,
     required this.enterpriseId,
     required this.jobId,
-    required this.type,
+    required this.program,
     required this.supervisor,
     required this.date,
     required this.schedule,
@@ -49,7 +49,7 @@ class Internship extends ItemSerializable {
         isTransfering = map['isTransfering'],
         enterpriseId = map['enterprise'],
         jobId = map['job'],
-        type = map['type'],
+        program = map['program'],
         supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
             start: DateTime.parse(map['date'][0]),
@@ -73,7 +73,7 @@ class Internship extends ItemSerializable {
       'isTransfering': isTransfering,
       'enterprise': enterpriseId,
       'job': jobId,
-      'type': type,
+      'program': program,
       'name': supervisor.serializedMap(),
       'date': [date.start.toString(), date.end.toString()],
       'schedule': schedule.map<Map>((e) => e.serializedMap()).toList(),
@@ -92,7 +92,7 @@ class Internship extends ItemSerializable {
     bool? isTransfering,
     String? enterpriseId,
     String? jobId,
-    String? type,
+    String? program,
     Person? supervisor,
     DateTimeRange? date,
     List<Schedule>? schedule,
@@ -109,7 +109,7 @@ class Internship extends ItemSerializable {
         isTransfering: isTransfering ?? this.isTransfering,
         enterpriseId: enterpriseId ?? this.enterpriseId,
         jobId: jobId ?? this.jobId,
-        type: type ?? this.type,
+        program: program ?? this.program,
         supervisor: supervisor ?? this.supervisor,
         date: date ?? this.date,
         schedule: schedule ?? this.schedule,
