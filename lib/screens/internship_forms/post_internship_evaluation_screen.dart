@@ -69,8 +69,7 @@ class _PostInternshipEvaluationScreenState
                 _supervisionKey.currentState!.welcomingMentalHealthIssue,
             minimalAge: _prerequisitesKey.currentState!.minimalAge,
             uniform: _prerequisitesKey.currentState!.uniform,
-            requiredForJob: _prerequisitesKey
-                .currentState!.requiredForJob.entries
+            requirements: _prerequisitesKey.currentState!.requiredForJob.entries
                 .where((e) => e.value)
                 .map((e) => e.key)
                 .toList(),

@@ -93,7 +93,6 @@ Future<void> addDummyEnterprises(
       activitySector: JobDataFileService.sectors[2],
       specialization: JobDataFileService.sectors[2].specializations[9],
       positionsOffered: 1,
-      positionsOccupied: 1,
     ),
   );
   jobs.add(
@@ -137,7 +136,6 @@ Future<void> addDummyEnterprises(
       activitySector: JobDataFileService.sectors[0],
       specialization: JobDataFileService.sectors[0].specializations[7],
       positionsOffered: 3,
-      positionsOccupied: 3,
     ),
   );
   enterprises.add(
@@ -174,7 +172,6 @@ Future<void> addDummyEnterprises(
       activitySector: JobDataFileService.sectors[9],
       specialization: JobDataFileService.sectors[9].specializations[3],
       positionsOffered: 1,
-      positionsOccupied: 1,
     ),
   );
   enterprises.add(
@@ -211,7 +208,6 @@ Future<void> addDummyEnterprises(
       activitySector: JobDataFileService.sectors[9],
       specialization: JobDataFileService.sectors[9].specializations[3],
       positionsOffered: 2,
-      positionsOccupied: 1,
     ),
   );
   enterprises.add(
@@ -248,7 +244,6 @@ Future<void> addDummyEnterprises(
       activitySector: JobDataFileService.sectors[2],
       specialization: JobDataFileService.sectors[2].specializations[9],
       positionsOffered: 2,
-      positionsOccupied: 1,
     ),
   );
 
@@ -286,7 +281,6 @@ Future<void> addDummyEnterprises(
       activitySector: JobDataFileService.sectors[2],
       specialization: JobDataFileService.sectors[2].specializations[7],
       positionsOffered: 1,
-      positionsOccupied: 1,
     ),
   );
 
@@ -324,7 +318,6 @@ Future<void> addDummyEnterprises(
       activitySector: JobDataFileService.sectors[0],
       specialization: JobDataFileService.sectors[0].specializations[7],
       positionsOffered: 2,
-      positionsOccupied: 1,
     ),
   );
 
@@ -362,7 +355,6 @@ Future<void> addDummyEnterprises(
       activitySector: JobDataFileService.sectors[2],
       specialization: JobDataFileService.sectors[2].specializations[14],
       positionsOffered: 1,
-      positionsOccupied: 1,
     ),
   );
 
@@ -396,7 +388,6 @@ Future<void> addDummyEnterprises(
       activitySector: JobDataFileService.sectors[0],
       specialization: JobDataFileService.sectors[0].specializations[7],
       positionsOffered: 3,
-      positionsOccupied: 2,
     ),
   );
 
@@ -658,7 +649,8 @@ Future<void> addDummyInterships(
     teacherId: teachers.currentTeacherId,
     isTransfering: true,
     enterpriseId: enterprises[0].id,
-    jobId: enterprises[0].jobs[0].specialization!.id,
+    jobId: enterprises[0].jobs[0].id,
+    extraJobsId: [],
     program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
@@ -700,7 +692,8 @@ Future<void> addDummyInterships(
     studentId: students[1].id,
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises[0].id,
-    jobId: enterprises[0].jobs[0].specialization!.id,
+    jobId: enterprises[0].jobs[0].id,
+    extraJobsId: [],
     program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
@@ -742,7 +735,8 @@ Future<void> addDummyInterships(
     studentId: students[2].id,
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises[1].id,
-    jobId: enterprises[1].jobs[0].specialization!.id,
+    jobId: enterprises[1].jobs[0].id,
+    extraJobsId: [],
     program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
@@ -779,7 +773,8 @@ Future<void> addDummyInterships(
     studentId: students[3].id,
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises[2].id,
-    jobId: enterprises[2].jobs[0].specialization!.id,
+    jobId: enterprises[2].jobs[0].id,
+    extraJobsId: [],
     program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
@@ -811,7 +806,8 @@ Future<void> addDummyInterships(
     studentId: students[4].id,
     teacherId: teachers[0].id,
     enterpriseId: enterprises[3].id,
-    jobId: enterprises[3].jobs[0].specialization!.id,
+    jobId: enterprises[3].jobs[0].id,
+    extraJobsId: [],
     program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
@@ -843,7 +839,8 @@ Future<void> addDummyInterships(
     studentId: students[5].id,
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises[4].id,
-    jobId: enterprises[4].jobs[0].specialization!.id,
+    jobId: enterprises[4].jobs[0].id,
+    extraJobsId: [],
     program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
@@ -885,7 +882,8 @@ Future<void> addDummyInterships(
     studentId: students[8].id,
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises[4].id,
-    jobId: enterprises[4].jobs[0].specialization!.id,
+    jobId: enterprises[4].jobs[0].id,
+    extraJobsId: [],
     program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),

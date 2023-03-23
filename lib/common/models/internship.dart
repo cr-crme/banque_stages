@@ -12,7 +12,9 @@ class Internship extends ItemSerializable {
   final bool isTransfering;
 
   final String enterpriseId;
-  final String jobId;
+  final String jobId; // Main job attached to the enterprise
+  final List<String>
+      extraJobsId; // Jobs that are not attached to the enterprise
   final String program;
   final Person supervisor;
   final DateTimeRange date;
@@ -32,6 +34,7 @@ class Internship extends ItemSerializable {
     this.isTransfering = false,
     required this.enterpriseId,
     required this.jobId,
+    required this.extraJobsId,
     required this.program,
     required this.supervisor,
     required this.date,
@@ -49,6 +52,7 @@ class Internship extends ItemSerializable {
         isTransfering = map['isTransfering'],
         enterpriseId = map['enterprise'],
         jobId = map['job'],
+        extraJobsId = map['extraJobsId'],
         program = map['program'],
         supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
@@ -73,6 +77,7 @@ class Internship extends ItemSerializable {
       'isTransfering': isTransfering,
       'enterprise': enterpriseId,
       'job': jobId,
+      'extraJobsId': extraJobsId,
       'program': program,
       'name': supervisor.serializedMap(),
       'date': [date.start.toString(), date.end.toString()],
@@ -92,6 +97,7 @@ class Internship extends ItemSerializable {
     bool? isTransfering,
     String? enterpriseId,
     String? jobId,
+    List<String>? extraJobsId,
     String? program,
     Person? supervisor,
     DateTimeRange? date,
@@ -109,6 +115,7 @@ class Internship extends ItemSerializable {
         isTransfering: isTransfering ?? this.isTransfering,
         enterpriseId: enterpriseId ?? this.enterpriseId,
         jobId: jobId ?? this.jobId,
+        extraJobsId: extraJobsId ?? this.extraJobsId,
         program: program ?? this.program,
         supervisor: supervisor ?? this.supervisor,
         date: date ?? this.date,

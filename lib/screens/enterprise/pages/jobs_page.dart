@@ -48,7 +48,7 @@ class JobsPageState extends State<JobsPage> {
 
     for (XFile file in images) {
       var url = await StorageService.uploadJobImage(file.path);
-      job.pictures.add(url);
+      job.photosUrl.add(url);
     }
     provider.replace(widget.enterprise);
   }

@@ -31,22 +31,6 @@ class _SupervisionChartState extends State<SupervisionChart> {
     VisitingPriority.notApplicable: false,
   };
 
-  ///
-  /// Get all the who the current teacher is in charge. Meaning they are
-  /// responsible in a more general way
-  ///
-  List<Student> _getInChargeStudents() {
-    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
-    final allStudents =
-        StudentsProvider.of(context, listen: false).map((e) => e).toList();
-
-    return allStudents
-        .map<Student?>((student) => student.teacherId == myId ? student : null)
-        .where((e) => e != null)
-        .toList()
-        .cast<Student>();
-  }
-
   void _toggleSearchBar() {
     _isFlagFilterExpanded = false;
     _isSearchBarExpanded = !_isSearchBarExpanded;
@@ -148,7 +132,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
   void _transferStudent() async {
     final internships = InternshipsProvider.of(context, listen: false);
-    final students = _getInChargeStudents();
+    final students =
+        TeachersProvider.getInChargeStudents(context, listen: false);
     final teachers =
         TeachersProvider.of(context, listen: false).map((e) => e).toList();
 
@@ -199,7 +184,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
     // Make a copy before filtering
     var students =
-        InternshipsProvider.mySupervisedStudents(context, listen: false);
+        TeachersProvider.getSupervizedStudents(context, listen: false);
     final allInternships = InternshipsProvider.of(context, listen: true);
 
     students.sort(
@@ -317,7 +302,7 @@ class _StudentTile extends StatelessWidget {
             .name
         : 'Aucun stage';
     final job = internships.isNotEmpty
-        ? JobDataFileService.specializationById(internships.last.jobId)!.name
+        ? JobDataFileService.specializationFromId(internships.last.jobId)!.name
         : '';
 
     return Card(

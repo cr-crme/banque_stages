@@ -34,9 +34,9 @@ class _PhotoBody extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: job.pictures.isEmpty
+          children: job.photosUrl.isEmpty
               ? [const Text("Aucune image disponible")]
-              : job.pictures
+              : job.photosUrl
                   .map(
                     // TODO: Make images clicables and deletables
                     (url) => Card(

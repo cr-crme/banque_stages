@@ -46,7 +46,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     final waypoints = AllStudentsWaypoints.of(context, listen: false);
     final interships = InternshipsProvider.of(context, listen: false);
     final students =
-        InternshipsProvider.mySupervisedStudents(context, listen: false);
+        TeachersProvider.getSupervizedStudents(context, listen: false);
     waypoints.clear(notify: false);
 
     // Add the school as the first waypoint

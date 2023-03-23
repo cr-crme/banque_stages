@@ -66,6 +66,7 @@ class _InternshipEnrollmentScreenState
               job.specialization ==
                   _generalInfoKey.currentState!.primaryJob!.specialization)
           .id,
+      extraJobsId: [],
       program: _generalInfoKey.currentState!.student!.program,
       supervisor: Person(
           firstName: _generalInfoKey.currentState!.supervisorFirstName!,
@@ -78,17 +79,7 @@ class _InternshipEnrollmentScreenState
       schedule: [], // TODO: Fill that
       visitingPriority: VisitingPriority.low,
     );
-    context.read<InternshipsProvider>().add(internship);
-
-    enterprises.replace(
-      enterprises[widget.enterpriseId].copyWith(
-        internshipIds: [
-          ...enterprises[widget.enterpriseId].internshipIds,
-          internship.id,
-        ],
-      ),
-    );
-
+    InternshipsProvider.of(context, listen: false).add(internship);
     Navigator.pop(context);
   }
 

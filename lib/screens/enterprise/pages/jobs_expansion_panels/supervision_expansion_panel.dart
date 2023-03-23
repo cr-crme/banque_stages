@@ -33,7 +33,7 @@ class _SupervisionBody extends StatelessWidget {
             _RatingBar(
               title:
                   "Accueil de stagiaires avec un trouble du spectre de l'autisme (TSA)",
-              rating: job.welcomingTSA,
+              rating: job.welcomingTsa,
             ),
             _RatingBar(
               title: "Accueil de stagiaires avec un trouble du langage",

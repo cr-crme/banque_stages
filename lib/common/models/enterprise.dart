@@ -1,9 +1,39 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
 import '/common/models/address.dart';
+import '/common/models/internship.dart';
 import '/common/models/job_list.dart';
+import '/common/providers/internships_provider.dart';
 
 class Enterprise extends ItemSerializable {
+  final String? photoUrl;
+
+  final String name;
+  final Set<String> activityTypes;
+  final String recrutedBy;
+  final String shareWith;
+
+  final JobList jobs;
+
+  final String contactName;
+  final String contactFunction;
+  final String contactPhone;
+  final String contactEmail;
+
+  final Address? address;
+  final String phone;
+  final String fax;
+  final String website;
+
+  final Address? headquartersAddress;
+  final String neq;
+
+  List<Internship> internships(context, {listen = true}) =>
+      InternshipsProvider.of(context, listen: listen)
+          .mapRemoveNull<Internship>(
+              (Internship e) => e.enterpriseId == id ? e : null)
+          .toList();
+
   Enterprise({
     super.id,
     this.photoUrl,
@@ -12,7 +42,6 @@ class Enterprise extends ItemSerializable {
     this.recrutedBy = '',
     required this.shareWith,
     required this.jobs,
-    List<String>? internshipIds,
     required this.contactName,
     this.contactFunction = '',
     required this.contactPhone,
@@ -23,7 +52,7 @@ class Enterprise extends ItemSerializable {
     this.website = '',
     this.headquartersAddress,
     this.neq = '',
-  }) : internshipIds = internshipIds ?? [];
+  });
 
   Enterprise copyWith({
     String? photoUrl,
@@ -32,7 +61,6 @@ class Enterprise extends ItemSerializable {
     String? recrutedBy,
     String? shareWith,
     JobList? jobs,
-    List<String>? internshipIds,
     String? contactName,
     String? contactFunction,
     String? contactPhone,
@@ -52,7 +80,6 @@ class Enterprise extends ItemSerializable {
       recrutedBy: recrutedBy ?? this.recrutedBy,
       shareWith: shareWith ?? this.shareWith,
       jobs: jobs ?? this.jobs,
-      internshipIds: internshipIds ?? this.internshipIds,
       contactName: contactName ?? this.contactName,
       contactFunction: contactFunction ?? this.contactFunction,
       contactPhone: contactPhone ?? this.contactPhone,
@@ -76,7 +103,6 @@ class Enterprise extends ItemSerializable {
       'recrutedBy': recrutedBy,
       'shareWith': shareWith,
       'jobs': jobs.serialize(),
-      'internships': internshipIds,
       'contactName': contactName,
       'contactFunction': contactFunction,
       'contactPhone': contactPhone,
@@ -100,7 +126,6 @@ class Enterprise extends ItemSerializable {
         shareWith = map['shareWith'],
         jobs = JobList.fromSerialized(
             ItemSerializable.mapFromSerialized(map['jobs'])),
-        internshipIds = ItemSerializable.listFromSerialized(map['internships']),
         contactName = map['contactName'],
         contactFunction = map['contactFunction'],
         contactPhone = map['contactPhone'],
@@ -113,29 +138,6 @@ class Enterprise extends ItemSerializable {
             Address.fromSerialized(map['headquartersAddress']),
         neq = map['neq'],
         super.fromSerialized(map);
-
-  final String? photoUrl;
-
-  final String name;
-  final Set<String> activityTypes;
-  final String recrutedBy;
-  final String shareWith;
-
-  final JobList jobs;
-  final List<String> internshipIds;
-
-  final String contactName;
-  final String contactFunction;
-  final String contactPhone;
-  final String contactEmail;
-
-  final Address? address;
-  final String phone;
-  final String fax;
-  final String website;
-
-  final Address? headquartersAddress;
-  final String neq;
 }
 
 const List<String> activityTypes = [

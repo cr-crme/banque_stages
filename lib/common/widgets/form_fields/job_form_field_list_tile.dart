@@ -46,10 +46,8 @@ class JobFormFieldListTile extends StatelessWidget {
         children: [
           Autocomplete<ActivitySector>(
             displayStringForOption: (s) => s.idWithName,
-            optionsBuilder: (textEditingValue) => JobDataFileService.filterData(
-              query: textEditingValue.text,
-              data: sectors ?? JobDataFileService.sectors,
-            ),
+            optionsBuilder: (textEditingValue) =>
+                JobDataFileService.sectors.whereId(id: textEditingValue.text),
             onSelected: (sector) => state.didChange(
               state.value!.copyWith(activitySector: sector),
             ),

@@ -54,9 +54,9 @@ class _PrerequisitesBody extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
-                children: job.requiredForJob.isEmpty
+                children: job.requirements.isEmpty
                     ? [const Text("Il n'y a aucun pré-requis pour ce métier")]
-                    : job.requiredForJob
+                    : job.requirements
                         .map((requirement) => Text("- $requirement"))
                         .toList(),
               ),
