@@ -90,15 +90,14 @@ Future<void> addDummyEnterprises(
   JobList jobs = JobList();
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[2],
-      specialization: JobDataFileService.sectors[2].specializations[9],
+      specialization: ActivitySectorsService.sectors[2].specializations[9],
       positionsOffered: 1,
     ),
   );
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[0],
-      specialization: JobDataFileService.sectors[0].specializations[7],
+      specialization: ActivitySectorsService.sectors[0].specializations[7],
+      positionsOffered: 2,
     ),
   );
 
@@ -133,8 +132,7 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[0],
-      specialization: JobDataFileService.sectors[0].specializations[7],
+      specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 3,
     ),
   );
@@ -169,8 +167,7 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[9],
-      specialization: JobDataFileService.sectors[9].specializations[3],
+      specialization: ActivitySectorsService.sectors[9].specializations[3],
       positionsOffered: 1,
     ),
   );
@@ -205,8 +202,7 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[9],
-      specialization: JobDataFileService.sectors[9].specializations[3],
+      specialization: ActivitySectorsService.sectors[9].specializations[3],
       positionsOffered: 2,
     ),
   );
@@ -241,8 +237,7 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[2],
-      specialization: JobDataFileService.sectors[2].specializations[9],
+      specialization: ActivitySectorsService.sectors[2].specializations[9],
       positionsOffered: 2,
     ),
   );
@@ -278,8 +273,7 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[2],
-      specialization: JobDataFileService.sectors[2].specializations[7],
+      specialization: ActivitySectorsService.sectors[2].specializations[7],
       positionsOffered: 1,
     ),
   );
@@ -315,8 +309,7 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[0],
-      specialization: JobDataFileService.sectors[0].specializations[7],
+      specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 2,
     ),
   );
@@ -352,8 +345,7 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[2],
-      specialization: JobDataFileService.sectors[2].specializations[14],
+      specialization: ActivitySectorsService.sectors[2].specializations[14],
       positionsOffered: 1,
     ),
   );
@@ -385,8 +377,7 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      activitySector: JobDataFileService.sectors[0],
-      specialization: JobDataFileService.sectors[0].specializations[7],
+      specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 3,
     ),
   );

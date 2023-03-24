@@ -299,11 +299,10 @@ class _StudentTile extends StatelessWidget {
     final enterprise = internships.isNotEmpty
         ? EnterprisesProvider.of(context, listen: false)
             .fromId(internships.last.enterpriseId)
-            .name
-        : 'Aucun stage';
-    final job = internships.isNotEmpty
-        ? JobDataFileService.specializationFromId(internships.last.jobId)!.name
-        : '';
+        : null;
+    final specialization = internships.isNotEmpty
+        ? enterprise?.jobs.fromId(internships.last.jobId).specialization
+        : null;
 
     return Card(
       elevation: 10,
@@ -318,7 +317,7 @@ class _StudentTile extends StatelessWidget {
         title: Text(student.fullName),
         isThreeLine: true,
         subtitle: Text(
-          '$enterprise\n$job',
+          '$enterprise\n${specialization?.name}',
           maxLines: 2,
           style: const TextStyle(color: Colors.black87),
         ),

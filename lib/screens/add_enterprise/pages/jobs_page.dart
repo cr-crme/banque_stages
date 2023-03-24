@@ -14,14 +14,14 @@ class JobsPage extends StatefulWidget {
 
 class JobsPageState extends State<JobsPage> {
   JobsPageState() {
-    jobs.add(Job());
+    // jobs.add(Job());
   }
 
   final _formKey = GlobalKey<FormState>();
   final JobList jobs = JobList();
 
-  void addMetier() {
-    setState(() => jobs.add(Job()));
+  void addMetier() { // TODO Rename
+    // setState(() => jobs.add(Job()));
   }
 
   void _removeMetier(int index) {
@@ -62,7 +62,7 @@ class JobsPageState extends State<JobsPage> {
               ),
             ),
             JobFormFieldListTile(
-              initialValue: jobs[index],
+              //initialValue: jobs[index],
               onSaved: (Job? job) => setState(() => jobs[index] = job!),
             ),
             const SizedBox(

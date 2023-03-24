@@ -53,18 +53,14 @@ class _InternshipEnrollmentScreenState
     _scheduleKey.currentState!.formKey.currentState!.save();
     _requirementsKey.currentState!.formKey.currentState!.save();
 
-    final enterprises = context.read<EnterprisesProvider>();
-
     final internship = Internship(
       studentId: _generalInfoKey.currentState!.student!.id,
       teacherId: context.read<TeachersProvider>().currentTeacherId,
       enterpriseId: widget.enterpriseId,
       jobId: _getAvailableJobs()
           .firstWhere((job) =>
-              job.activitySector ==
-                  _generalInfoKey.currentState!.primaryJob!.activitySector &&
               job.specialization ==
-                  _generalInfoKey.currentState!.primaryJob!.specialization)
+              _generalInfoKey.currentState!.primaryJob!.specialization)
           .id,
       extraJobsId: [],
       program: _generalInfoKey.currentState!.student!.program,
@@ -85,10 +81,7 @@ class _InternshipEnrollmentScreenState
 
   Iterable<Job> _getAvailableJobs() {
     return context.read<EnterprisesProvider>()[widget.enterpriseId].jobs.where(
-          (job) =>
-              job.positionsOffered - job.positionsOccupied > 0 &&
-              job.activitySector != null &&
-              job.specialization != null,
+          (job) => job.positionsOffered - job.positionsOccupied > 0,
         );
   }
 

@@ -28,7 +28,7 @@ bool populateWithDebugData = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await JobDataFileService.loadData();
+  await ActivitySectorsService.initializeActivitySectorSingleton();
   await RiskDataFileService.loadData();
   await QuestionFileService.loadData();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

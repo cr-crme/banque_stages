@@ -124,8 +124,7 @@ class Enterprise extends ItemSerializable {
             ItemSerializable.setFromSerialized(map['activityTypes']),
         recrutedBy = map['recrutedBy'],
         shareWith = map['shareWith'],
-        jobs = JobList.fromSerialized(
-            ItemSerializable.mapFromSerialized(map['jobs'])),
+        jobs = JobList.fromSerialized(map['jobs']),
         contactName = map['contactName'],
         contactFunction = map['contactFunction'],
         contactPhone = map['contactPhone'],

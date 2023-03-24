@@ -13,7 +13,7 @@ import 'screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/ref_sst/home_sst/home_sst_screen.dart';
-import 'screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
+import 'screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
 import 'screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
@@ -152,7 +152,8 @@ final router = GoRouter(
         GoRoute(
           path: 'jobs/:id',
           name: Screens.jobSst,
-          builder: (context, state) => JobListScreen(id: state.params['id']!),
+          builder: (context, state) =>
+              SpecializationListScreen(id: state.params['id']!),
         ),
         GoRoute(
           name: Screens.cardsSst,

@@ -134,7 +134,7 @@ class JobsPageState extends State<JobsPage> {
                 value: job.id,
                 headerBuilder: (context, isExpanded) => ListTile(
                       title: Text(
-                        job.specialization?.idWithName ?? 'bad id',
+                        job.specialization.idWithName,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),

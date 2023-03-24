@@ -67,9 +67,9 @@ class InternshipsPageState extends State<InternshipsPage> {
                       leading: Text(
                           '${internship.date.start.year}-${internship.date.end.year}'),
                       title: Text(widget.enterprise.jobs[internship.jobId]
-                          .specialization!.idWithName),
+                          .specialization.idWithName),
                     ),
-                    body: Container(),
+                    body: Container(), // TODO reintroduce
                     // Column(
                     //   children: [
                     //     ListTile(

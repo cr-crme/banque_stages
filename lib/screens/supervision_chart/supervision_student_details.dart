@@ -171,7 +171,7 @@ class _Specialization extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final specialization = internship != null
-        ? JobDataFileService.specializationFromId(internship!.jobId)!
+        ? ActivitySectorsService.specialization(internship!.jobId)
         : null;
 
     return Padding(

@@ -77,7 +77,7 @@ class Job extends ItemSerializable {
     List<String>? skillsRequired,
     double? autonomyExpected,
     double? efficiencyWanted,
-    double? welcomingTSA,
+    double? welcomingTsa,
     double? welcomingCommunication,
     double? welcomingMentalDeficiency,
     double? welcomingMentalHealthIssue,
@@ -99,7 +99,7 @@ class Job extends ItemSerializable {
         skillsRequired: skillsRequired ?? this.skillsRequired,
         autonomyExpected: autonomyExpected ?? this.autonomyExpected,
         efficiencyWanted: efficiencyWanted ?? this.efficiencyWanted,
-        welcomingTsa: welcomingTSA ?? this.welcomingTsa,
+        welcomingTsa: welcomingTsa ?? this.welcomingTsa,
         welcomingCommunication:
             welcomingCommunication ?? this.welcomingCommunication,
         welcomingMentalDeficiency:
@@ -143,8 +143,8 @@ class Job extends ItemSerializable {
   }
 
   Job.fromSerialized(map)
-      : specialization = JobDataFileService.sectorFromId(map['activitySector'])
-            .fromId(map['specialization']),
+      : specialization =
+            ActivitySectorsService.specialization(map['specialization']),
         positionsOffered = map['positionsOffered'],
         photosUrl = ItemSerializable.listFromSerialized(map['photosUrl']),
         taskVariety = ItemSerializable.doubleFromSerialized(map['taskVariety']),

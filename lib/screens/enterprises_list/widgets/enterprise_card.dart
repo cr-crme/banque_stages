@@ -55,7 +55,7 @@ class EnterpriseCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
-                          job.specialization?.idWithName ?? "bad id",
+                          job.specialization.idWithName,
                           style: TextStyle(color: Colors.grey[800]),
                         ),
                       ),

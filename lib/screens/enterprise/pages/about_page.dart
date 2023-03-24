@@ -165,7 +165,7 @@ class _AvailablePlace extends StatelessWidget {
                       positionsOffered: job.positionsOffered,
                       positionsOccupied: job.positionsOccupied,
                     ),
-                    title: Text(job.specialization?.idWithName ?? 'bad id'),
+                    title: Text(job.specialization.idWithName),
                     trailing: Text(
                         '${job.positionsOffered - job.positionsOccupied} / ${job.positionsOffered}'),
                   ),

@@ -13,8 +13,7 @@ class Internship extends ItemSerializable {
 
   final String enterpriseId;
   final String jobId; // Main job attached to the enterprise
-  final List<String>
-      extraJobsId; // Jobs that are not attached to the enterprise
+  final List<String> extraJobsId; // Any extra jobs added to the internship
   final String program;
   final Person supervisor;
   final DateTimeRange date;
@@ -51,8 +50,8 @@ class Internship extends ItemSerializable {
         previousTeacherId = map['previousTeacherId'],
         isTransfering = map['isTransfering'],
         enterpriseId = map['enterprise'],
-        jobId = map['job'],
-        extraJobsId = map['extraJobsId'],
+        jobId = map['jobId'],
+        extraJobsId = map['extraJobsId'] ?? [],
         program = map['program'],
         supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
@@ -76,7 +75,7 @@ class Internship extends ItemSerializable {
       'previousTeacherId': previousTeacherId,
       'isTransfering': isTransfering,
       'enterprise': enterpriseId,
-      'job': jobId,
+      'jobId': jobId,
       'extraJobsId': extraJobsId,
       'program': program,
       'name': supervisor.serializedMap(),

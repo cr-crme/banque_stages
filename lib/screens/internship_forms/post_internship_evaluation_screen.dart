@@ -60,7 +60,7 @@ class _PostInternshipEvaluationScreenState
                 .where((e) => e.value)
                 .map((e) => e.key)
                 .toList(),
-            welcomingTSA: _supervisionKey.currentState!.welcomingTSA,
+            welcomingTsa: _supervisionKey.currentState!.welcomingTSA,
             welcomingCommunication:
                 _supervisionKey.currentState!.welcomingCommunication,
             welcomingMentalDeficiency:

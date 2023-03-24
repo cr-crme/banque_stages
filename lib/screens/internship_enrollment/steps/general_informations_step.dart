@@ -71,12 +71,12 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                 title: Text('Métier principal'),
               ),
             JobFormFieldListTile(
-              initialValue: Job(),
-              sectors: widget.availableJobs
-                  .map((job) => job.activitySector!)
-                  .toList(),
+              // TODO reintroduce this
+              // sectors: widget.availableJobs
+              //     .map((job) => job.activitySector!)
+              //     .toList(),
               specializations: widget.availableJobs
-                  .map((job) => job.specialization!)
+                  .map((job) => job.specialization)
                   .toList(),
               askNumberPositionsOffered: false,
               onSaved: (job) => setState(() => primaryJob = job),
@@ -85,7 +85,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
               const SizedBox(height: 8),
               if (secondJob == null)
                 AddJobButton(
-                  onPressed: () => setState(() => secondJob = Job()),
+                  onPressed: () => setState(() => secondJob = null),
                 )
               else ...[
                 const ListTile(

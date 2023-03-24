@@ -116,14 +116,12 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
         return true;
       }
       if (enterprise.jobs.any((job) {
-        final hasSpecialization = job.specialization?.name
-                .toLowerCase()
-                .contains(_searchController.text.toLowerCase()) ??
-            false;
-        final hasSector = job.activitySector?.name
-                .toLowerCase()
-                .contains(_searchController.text.toLowerCase()) ??
-            false;
+        final hasSpecialization = job.specialization.name
+            .toLowerCase()
+            .contains(_searchController.text.toLowerCase());
+        final hasSector = job.specialization.sector.name
+            .toLowerCase()
+            .contains(_searchController.text.toLowerCase());
         return hasSpecialization || hasSector;
       })) {
         return true;
