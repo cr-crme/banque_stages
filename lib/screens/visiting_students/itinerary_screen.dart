@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
+import '/common/providers/schools_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import 'models/all_itineraries.dart';
 import 'models/itinerary.dart';
@@ -42,6 +43,8 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   void _fillAllWaypoints() async {
     final teacher = TeachersProvider.of(context, listen: false).currentTeacher;
+    final school =
+        SchoolsProvider.of(context, listen: false).fromId(teacher.schoolId);
     final enterprises = EnterprisesProvider.of(context, listen: false);
     final waypoints = AllStudentsWaypoints.of(context, listen: false);
     final interships = InternshipsProvider.of(context, listen: false);
@@ -51,7 +54,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
     // Add the school as the first waypoint
     waypoints.add(
-        await Waypoint.fromAddress('École', teacher.address.toString(),
+        await Waypoint.fromAddress('École', school.address.toString(),
             priority: VisitingPriority.notApplicable),
         notify: false);
 
