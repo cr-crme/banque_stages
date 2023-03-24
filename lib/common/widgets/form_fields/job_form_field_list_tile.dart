@@ -1,11 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 
 import '/common/models/job.dart';
 import '/misc/job_data_file_service.dart';
 
-class JobFormFieldListTile extends StatelessWidget {
+class JobFormFieldListTile extends StatefulWidget {
   const JobFormFieldListTile({
     super.key,
     this.initialValue,
@@ -21,126 +22,124 @@ class JobFormFieldListTile extends StatelessWidget {
   final List<Specialization>? specializations;
   final bool askNumberPositionsOffered;
 
-  static const String _invalidActivitySector = "invalid_activitySector";
-  static const String _invalidSpecialization = "invalid_specialization";
+  @override
+  State<JobFormFieldListTile> createState() => _JobFormFieldListTileState();
+}
 
-  static String? _validator(Job? job) {
-    // if (activitySector == null) {
-    //   return _invalidActivitySector;
-    // } else if (job!.specialization == null ||
-    //     !job.activitySector!.specializations.contains(job.specialization)) {
-    //   return _invalidSpecialization;
-    // }
+class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
+  ActivitySector? _activitySector;
+  Specialization? _specialization;
+  int _positionOffered = 0;
+  static const String _invalidActivitySector = 'invalid_activitySector';
+  static const String _invalidSpecialization = 'invalid_specialization';
 
-    // return null;
+  String? _validator() {
+    if (_activitySector == null) {
+      return _invalidActivitySector;
+    }
+    if (_specialization == null) {
+      return _invalidSpecialization;
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(); // TODO: To redo
-    // FormField<Job>(
-    //   onSaved: onSaved,
-    //   validator: _validator,
-    //   builder: (state) => Column(
-    //     crossAxisAlignment: CrossAxisAlignment.stretch,
-    //     children: [
-    //       Autocomplete<ActivitySector>(
-    //         displayStringForOption: (s) => s.idWithName,
-    //         optionsBuilder: (textEditingValue) => ActivitySectorsService.sectors
-    //             .whereId(id: textEditingValue.text),
-    //         onSelected: (sector) => state.didChange(
-    //           state.value!.copyWith(activitySector: sector),
-    //         ),
-    //         fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
-    //           return ListTile(
-    //             title: TextField(
-    //               controller: controller,
-    //               focusNode: focusNode,
-    //               onSubmitted: (_) => onSubmitted(),
-    //               onChanged: (value) => state.didChange(
-    //                 // We don't use copyWith because it doesn't work with null values (when we want to reset the specialization)
-    //                 Job(
-    //                   activitySector: ActivitySectorsService.sectors
-    //                       .firstWhereOrNull((s) => s.idWithName == value),
-    //                   positionsOffered: state.value!.positionsOffered,
-    //                 ),
-    //               ),
-    //               decoration: InputDecoration(
-    //                 labelText: "* Secteur d'activités",
-    //                 errorText: state.errorText == _invalidActivitySector
-    //                     ? "Entrez une valeur valide"
-    //                     : null,
-    //               ),
-    //             ),
-    //           );
-    //         },
-    //       ),
-    //       Autocomplete<Specialization>(
-    //         displayStringForOption: (s) => s.idWithName,
-    //         optionsBuilder: (textEditingValue) =>
-    //             ActivitySectorsService.sectors.fromId() filterData(
-    //           query: textEditingValue.text,
-    //           data: state.value!.activitySector?.specializations
-    //                   .where((s) => specializations?.contains(s) ?? true)
-    //                   .toList() ??
-    //               [],
-    //         ),
-    //         onSelected: (specialization) => state.didChange(
-    //           state.value!.copyWith(specialization: specialization),
-    //         ),
-    //         fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
-    //           return ListTile(
-    //             title: TextField(
-    //               enabled: state.value!.activitySector != null,
-    //               controller: controller,
-    //               focusNode: focusNode,
-    //               onSubmitted: (_) => onSubmitted(),
-    //               onChanged: (value) => state.didChange(
-    //                 Job(
-    //                   activitySector: state.value!.activitySector,
-    //                   specialization: state
-    //                       .value!.activitySector?.specializations
-    //                       .firstWhereOrNull((s) => s.idWithName == value),
-    //                 ),
-    //               ),
-    //               decoration: InputDecoration(
-    //                 labelText: "* Métier semi-spécialisé",
-    //                 errorText: state.errorText == _invalidSpecialization
-    //                     ? "Entrez une valeur valide"
-    //                     : null,
-    //               ),
-    //             ),
-    //           );
-    //         },
-    //       ),
-    //       if (askNumberPositionsOffered)
-    //         Row(
-    //           children: [
-    //             Expanded(
-    //               child: Text(
-    //                 "Postes disponibles",
-    //                 style: Theme.of(state.context).textTheme.titleMedium,
-    //               ),
-    //             ),
-    //             SizedBox(
-    //               width: 112,
-    //               child: SpinBox(
-    //                 value: state.value!.positionsOffered.toDouble(),
-    //                 min: 1,
-    //                 max: 10,
-    //                 spacing: 0,
-    //                 decoration: const InputDecoration(
-    //                   border: UnderlineInputBorder(),
-    //                 ),
-    //                 onChanged: (double value) => state.didChange(
-    //                   state.value!.copyWith(positionsOffered: value.toInt()),
-    //                 ),
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //     ],
-    //   ),
-    // );
+    return FormField<Job>(
+      onSaved: (_) => widget.onSaved != null
+          ? widget.onSaved!(Job(
+              specialization: _specialization!,
+              positionsOffered: _positionOffered))
+          : null,
+      validator: (_) => _validator(),
+      builder: (state) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Autocomplete<ActivitySector>(
+            displayStringForOption: (s) => s.idWithName,
+            optionsBuilder: (textEditingValue) => ActivitySectorsService.sectors
+                .whereId(id: textEditingValue.text),
+            onSelected: (sector) => setState(() {
+              _activitySector = sector;
+              _specialization = null;
+            }),
+            fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
+              return ListTile(
+                title: TextField(
+                  controller: controller,
+                  focusNode: focusNode,
+                  onSubmitted: (_) => onSubmitted(),
+                  onChanged: (_) => setState(() {
+                    _activitySector = null;
+                    _specialization = null;
+                  }),
+                  decoration: InputDecoration(
+                    labelText: '* Secteur d\'activités',
+                    errorText: state.errorText == _invalidActivitySector
+                        ? 'Entrez une valeur valide'
+                        : null,
+                  ),
+                ),
+              );
+            },
+          ),
+          Autocomplete<Specialization>(
+            displayStringForOption: (s) => s.idWithName,
+            optionsBuilder: (textEditingValue) => _activitySector != null
+                ? _activitySector!.specializations
+                    .where((s) => s.idWithName.contains(textEditingValue.text))
+                    .toList()
+                : [],
+            onSelected: (specilization) =>
+                setState(() => _specialization = specilization),
+            fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
+              if (_specialization == null) {
+                controller.text = '';
+              }
+              return ListTile(
+                title: TextField(
+                  enabled: _activitySector != null,
+                  controller: controller,
+                  focusNode: focusNode,
+                  onSubmitted: (_) => onSubmitted(),
+                  onChanged: (_) => setState(() => _specialization = null),
+                  decoration: InputDecoration(
+                    labelText: '* Métier semi-spécialisé',
+                    errorText: state.errorText == _invalidSpecialization
+                        ? 'Entrez une valeur valide'
+                        : null,
+                  ),
+                ),
+              );
+            },
+          ),
+          if (widget.askNumberPositionsOffered)
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Postes disponibles',
+                    style: Theme.of(state.context).textTheme.titleMedium,
+                  ),
+                ),
+                SizedBox(
+                  width: 112,
+                  child: SpinBox(
+                    value: state.value?.positionsOffered.toDouble() ?? 0,
+                    min: 1,
+                    max: 10,
+                    spacing: 0,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                    ),
+                    onChanged: (double value) =>
+                        _positionOffered = value.toInt(),
+                  ),
+                ),
+              ],
+            ),
+        ],
+      ),
+    );
   }
 }
