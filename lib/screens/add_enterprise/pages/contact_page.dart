@@ -25,7 +25,7 @@ class ContactPageState extends State<ContactPage> {
   ///
   Future<String?> validate() async {
     _formKey.currentState!.save();
-    
+
     if (!_formKey.currentState!.validate()) {
       return 'Assurez vous que tous les champs soient emplis';
     }
@@ -98,6 +98,7 @@ class ContactPageState extends State<ContactPage> {
                 decoration: const InputDecoration(labelText: 'Adresse'),
                 onSaved: (address) => this.address = address!,
                 validator: (value) => FormService.textNotEmptyValidator(value),
+                maxLines: null,
                 keyboardType: TextInputType.streetAddress,
               ),
             ),

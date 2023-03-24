@@ -75,9 +75,8 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
             if (internship == null)
               const Padding(
                 padding: EdgeInsets.only(top: 10.0),
-                child: Center(
-                    child:
-                        Text('Aucun stage pour cet\u00b7te étudiant\u00b7e')),
+                child:
+                    Center(child: Text('Aucun stage pour cet\u00b7te élève')),
               ),
             if (internship != null) _VisitingPriority(studentId: studentId),
             if (internship != null) _Specialization(internship: internship),

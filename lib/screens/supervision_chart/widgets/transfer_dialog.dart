@@ -34,7 +34,7 @@ class _TransferDialogState extends State<TransferDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Transférer un élève'),
+      title: const Text('Transférer l\'élève'),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -115,7 +115,7 @@ class AcceptTransferDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Transfère d\'élève'),
+      title: const Text('Transfert d\'élève'),
       content:
           Text('La supervision de ${student.fullName} vous a été transférée.\n'
               'Acceptez-vous?'),

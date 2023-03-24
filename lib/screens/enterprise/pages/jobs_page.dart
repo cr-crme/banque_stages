@@ -127,7 +127,6 @@ class JobsPageState extends State<JobsPage> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: ExpansionPanelList.radio(
-        initialOpenPanelValue: widget.enterprise.jobs.first.id,
         children: widget.enterprise.jobs
             .map((job) => ExpansionPanelRadio(
                 canTapOnHeader: true,

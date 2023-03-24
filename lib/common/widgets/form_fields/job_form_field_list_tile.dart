@@ -55,7 +55,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
 
   List<Specialization> get _availableSpecialization {
     if (widget.specializations == null) {
-      _activitySector!.specializations;
+      return _activitySector!.specializations.toList();
     }
 
     return widget.specializations!;

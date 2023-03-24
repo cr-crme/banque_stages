@@ -215,6 +215,7 @@ class _EnterpriseInfo extends StatelessWidget {
                 decoration: const InputDecoration(labelText: '* Adresse'),
                 enabled: editMode,
                 onSaved: onSavedAddress,
+                maxLines: null,
                 keyboardType: TextInputType.streetAddress,
               ),
               const SizedBox(height: 8),
