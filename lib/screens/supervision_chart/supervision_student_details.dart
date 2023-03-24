@@ -11,7 +11,6 @@ import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/router.dart';
 import '/screens/supervision_chart/widgets/transfer_dialog.dart';
-import '../../misc/job_data_file_service.dart';
 
 class SupervisionStudentDetailsScreen extends StatelessWidget {
   const SupervisionStudentDetailsScreen({super.key, required this.studentId});
@@ -170,9 +169,13 @@ class _Specialization extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final specialization = internship != null
-        ? ActivitySectorsService.specialization(internship!.jobId)
-        : null;
+    final specialization = internship == null
+        ? null
+        : EnterprisesProvider.of(context, listen: false)
+            .fromId(internship!.enterpriseId)
+            .jobs
+            .fromId(internship!.jobId)
+            .specialization;
 
     return Padding(
         padding: const EdgeInsets.all(8.0),

@@ -11,14 +11,9 @@ import '/common/widgets/form_fields/student_picker_form_field.dart';
 import '/misc/form_service.dart';
 
 class GeneralInformationsStep extends StatefulWidget {
-  const GeneralInformationsStep({
-    super.key,
-    required this.enterprise,
-    required this.availableJobs,
-  });
+  const GeneralInformationsStep({super.key, required this.enterprise});
 
   final Enterprise enterprise;
-  final Iterable<Job> availableJobs;
 
   @override
   State<GeneralInformationsStep> createState() =>
@@ -71,11 +66,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                 title: Text('Métier principal'),
               ),
             JobFormFieldListTile(
-              // TODO reintroduce this
-              // sectors: widget.availableJobs
-              //     .map((job) => job.activitySector!)
-              //     .toList(),
-              specializations: widget.availableJobs
+              specializations: widget.enterprise.availableJobs
                   .map((job) => job.specialization)
                   .toList(),
               askNumberPositionsOffered: false,

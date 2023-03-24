@@ -38,7 +38,7 @@ class _PhotoBody extends StatelessWidget {
               ? [const Text("Aucune image disponible")]
               : job.photosUrl
                   .map(
-                    // TODO: Make images clicables and deletables
+                    // TODO: Make images clickables and deletables
                     (url) => Card(
                       child: Image.network(
                         url,

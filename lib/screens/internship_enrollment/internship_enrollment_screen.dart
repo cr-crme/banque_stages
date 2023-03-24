@@ -5,7 +5,6 @@ import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
 import '/common/models/person.dart';
 import '/common/models/visiting_priority.dart';
-import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
@@ -52,12 +51,14 @@ class _InternshipEnrollmentScreenState
     _generalInfoKey.currentState!.formKey.currentState!.save();
     _scheduleKey.currentState!.formKey.currentState!.save();
     _requirementsKey.currentState!.formKey.currentState!.save();
+    final enterprise = EnterprisesProvider.of(context, listen: false)
+        .fromId(widget.enterpriseId);
 
     final internship = Internship(
       studentId: _generalInfoKey.currentState!.student!.id,
-      teacherId: context.read<TeachersProvider>().currentTeacherId,
+      teacherId: TeachersProvider.of(context, listen: false).currentTeacherId,
       enterpriseId: widget.enterpriseId,
-      jobId: _getAvailableJobs()
+      jobId: enterprise.availableJobs
           .firstWhere((job) =>
               job.specialization ==
               _generalInfoKey.currentState!.primaryJob!.specialization)
@@ -78,12 +79,6 @@ class _InternshipEnrollmentScreenState
     Navigator.pop(context);
   }
 
-  Iterable<Job> _getAvailableJobs() {
-    return context.read<EnterprisesProvider>()[widget.enterpriseId].jobs.where(
-          (job) => job.positionsOffered - job.positionsOccupied > 0,
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,10 +97,7 @@ class _InternshipEnrollmentScreenState
               isActive: _currentStep == 0,
               title: const Text('Général'),
               content: GeneralInformationsStep(
-                key: _generalInfoKey,
-                enterprise: enterprise,
-                availableJobs: _getAvailableJobs(),
-              ),
+                  key: _generalInfoKey, enterprise: enterprise),
             ),
             Step(
               isActive: _currentStep == 1,

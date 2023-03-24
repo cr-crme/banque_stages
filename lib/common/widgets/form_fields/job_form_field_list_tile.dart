@@ -41,6 +41,26 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
     return null;
   }
 
+  List<ActivitySector> get _availableSectors {
+    if (widget.specializations == null) {
+      return ActivitySectorsService.sectors.toList();
+    }
+
+    final List<ActivitySector> out = [];
+    for (final specialization in widget.specializations!) {
+      out.add(specialization.sector);
+    }
+    return out;
+  }
+
+  List<Specialization> get _availableSpecialization {
+    if (widget.specializations == null) {
+      _activitySector!.specializations;
+    }
+
+    return widget.specializations!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FormField<Job>(
@@ -57,8 +77,8 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
         children: [
           Autocomplete<ActivitySector>(
             displayStringForOption: (s) => s.idWithName,
-            optionsBuilder: (textEditingValue) => ActivitySectorsService.sectors
-                .whereId(id: textEditingValue.text),
+            optionsBuilder: (textEditingValue) => _availableSectors.where(
+                (sector) => sector.idWithName.contains(textEditingValue.text)),
             onSelected: (sector) => setState(() {
               _activitySector = sector;
               _specialization = null;
@@ -86,7 +106,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
           Autocomplete<Specialization>(
             displayStringForOption: (s) => s.idWithName,
             optionsBuilder: (textEditingValue) => _activitySector != null
-                ? _activitySector!.specializations
+                ? _availableSpecialization
                     .where((s) => s.idWithName.contains(textEditingValue.text))
                     .toList()
                 : [],

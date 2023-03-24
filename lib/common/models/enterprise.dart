@@ -2,6 +2,7 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 
 import '/common/models/address.dart';
 import '/common/models/internship.dart';
+import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/providers/internships_provider.dart';
 
@@ -33,6 +34,11 @@ class Enterprise extends ItemSerializable {
           .mapRemoveNull<Internship>(
               (Internship e) => e.enterpriseId == id ? e : null)
           .toList();
+
+  Iterable<Job> get availableJobs {
+    return jobs
+        .where((job) => job.positionsOffered - job.positionsOccupied > 0);
+  }
 
   Enterprise({
     super.id,
