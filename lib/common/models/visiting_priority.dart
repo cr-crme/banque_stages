@@ -5,6 +5,7 @@ enum VisitingPriority {
   mid,
   high,
   notApplicable,
+  school,
 }
 
 extension VisitingPriorityStyled on VisitingPriority {
@@ -16,6 +17,8 @@ extension VisitingPriorityStyled on VisitingPriority {
         return Colors.orange;
       case (VisitingPriority.high):
         return Colors.red;
+      case (VisitingPriority.school):
+        return Colors.purple;
       default:
         return Colors.grey;
     }
@@ -29,6 +32,8 @@ extension VisitingPriorityStyled on VisitingPriority {
         return Icons.looks_two;
       case (VisitingPriority.high):
         return Icons.looks_one;
+      case (VisitingPriority.school):
+        return Icons.school;
       default:
         return Icons.cancel;
     }

@@ -123,7 +123,7 @@ class _RoutingMapState extends State<RoutingMap> {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    i == 0 ? Icons.school : Icons.location_on_sharp,
+                    waypoint.priority.icon,
                     color: waypoint.priority.color,
                     size: markerSize,
                   ),

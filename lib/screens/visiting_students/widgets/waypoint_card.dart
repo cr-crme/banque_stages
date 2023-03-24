@@ -19,8 +19,6 @@ class WaypointCard extends StatelessWidget {
   final VoidCallback? onDelete;
   final bool canMove;
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -28,7 +26,7 @@ class WaypointCard extends StatelessWidget {
         key: key,
         contentPadding: const EdgeInsets.all(10),
         onTap: onTap,
-        leading: Icon(Icons.flag, color: waypoint.priority.color),
+        leading: Icon(waypoint.priority.icon, color: waypoint.priority.color),
         tileColor: canMove ? Colors.white : Colors.grey[300],
         title: Text(
           name,

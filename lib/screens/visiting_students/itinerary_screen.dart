@@ -55,7 +55,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     // Add the school as the first waypoint
     waypoints.add(
         await Waypoint.fromAddress('École', school.address.toString(),
-            priority: VisitingPriority.notApplicable),
+            priority: VisitingPriority.school),
         notify: false);
 
     // Get the students from the registered students, but we copy them so
