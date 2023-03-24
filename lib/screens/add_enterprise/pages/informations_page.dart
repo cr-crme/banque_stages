@@ -35,14 +35,14 @@ class InformationsPageState extends State<InformationsPage> {
           children: [
             ListTile(
               title: TextFormField(
-                decoration: const InputDecoration(labelText: "* Nom"),
+                decoration: const InputDecoration(labelText: '* Nom'),
                 validator: FormService.textNotEmptyValidator,
                 onSaved: (name) => this.name = name,
               ),
             ),
             ListTile(
               title: TextFormField(
-                decoration: const InputDecoration(labelText: "NEQ"),
+                decoration: const InputDecoration(labelText: '* NEQ'),
                 validator: FormService.neqValidator,
                 onSaved: (neq) => this.neq = neq,
                 keyboardType: TextInputType.number,

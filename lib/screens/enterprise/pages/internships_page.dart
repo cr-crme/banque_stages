@@ -34,9 +34,11 @@ class InternshipsPageState extends State<InternshipsPage> {
   void initState() {
     super.initState();
 
+    bool isFirst = true;
     for (final internship
         in widget.enterprise.internships(context, listen: false)) {
-      _expanded[internship.id] = false;
+      _expanded[internship.id] = isFirst;
+      isFirst = false;
     }
   }
 
@@ -106,8 +108,25 @@ class InternshipsPageState extends State<InternshipsPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                            'Stagiaire : ${student.fullName} (${student.program.title})'),
+                        Row(
+                          children: [
+                            const Text('Stagiaire : '),
+                            GestureDetector(
+                              onTap: () => GoRouter.of(context)
+                                  .pushNamed(Screens.student, params: {
+                                'id': student.id,
+                                'initialPage': '1'
+                              }),
+                              child: Text(
+                                student.fullName,
+                                style: const TextStyle(
+                                    color: Colors.blue,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                            Text(' (${student.program.title})'),
+                          ],
+                        ),
                         const SizedBox(height: 8),
                         Text(
                             'Professeur\u00b7e en charge : ${teacher.fullName}'),

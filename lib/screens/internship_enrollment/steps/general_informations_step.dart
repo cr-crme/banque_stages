@@ -66,7 +66,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
               'Métier',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            if (student?.program == 'FPT')
+            if (student?.program == Program.fpt)
               const ListTile(
                 title: Text('Métier principal'),
               ),
@@ -81,16 +81,14 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
               askNumberPositionsOffered: false,
               onSaved: (job) => setState(() => primaryJob = job),
             ),
-            if (student?.program == 'FPT') ...[
+            if (student?.program == Program.fpt) ...[
               const SizedBox(height: 8),
               if (secondJob == null)
                 AddJobButton(
                   onPressed: () => setState(() => secondJob = null),
                 )
               else ...[
-                const ListTile(
-                  title: Text('Métier secondaire'),
-                ),
+                const ListTile(title: Text('Métier secondaire')),
                 JobFormFieldListTile(
                   initialValue: secondJob!,
                   onSaved: (job) => setState(() => secondJob = job),

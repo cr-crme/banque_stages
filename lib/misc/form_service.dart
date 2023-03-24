@@ -12,7 +12,7 @@ abstract class FormService {
     if (!formKey.currentState!.validate()) {
       ScaffoldMessenger.of(formKey.currentContext!).showSnackBar(
         const SnackBar(
-          content: Text("Assurez vous que tous les champs soient valides"),
+          content: Text('Assurez vous que tous les champs soient valides'),
         ),
       );
       return false;
@@ -33,7 +33,7 @@ abstract class FormService {
   }
 
   static String? neqValidator(String? neq) {
-    if (neq == null) return null;
+    if (neq == null || neq == '') return 'Un NEQ doit être spécifié';
     if (neq.isNotEmpty && !RegExp(r'^\d{10}$').hasMatch(neq)) {
       return _localizations.error_invalidNeq;
     }
@@ -44,7 +44,7 @@ abstract class FormService {
     if (phone!.isEmpty) {
       return _localizations.error_emptyPhone;
     } else if (!RegExp(
-            r"^(?:\+\d{1,3})?\s?\(?\d{3}(?:[-.\)\s]|\)\s)?\d{3}[-.\s]?\d{4,6}(?:\s(?:poste)?\s\d{1,6})?$")
+            r'^(?:\+\d{1,3})?\s?\(?\d{3}(?:[-.\)\s]|\)\s)?\d{3}[-.\s]?\d{4,6}(?:\s(?:poste)?\s\d{1,6})?$')
         .hasMatch(phone)) {
       return _localizations.error_invalidPhone;
     }
@@ -55,9 +55,7 @@ abstract class FormService {
     if (email == null || email.isEmpty) {
       return _localizations.error_emptyEmail;
     }
-    if (!RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+$")
-        .hasMatch(email)) {
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
       return _localizations.error_invalidEmail;
     }
     return null;

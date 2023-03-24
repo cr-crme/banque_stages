@@ -39,7 +39,7 @@ class Enterprise extends ItemSerializable {
     this.photoUrl,
     required this.name,
     required this.activityTypes,
-    this.recrutedBy = '',
+    required this.recrutedBy,
     required this.shareWith,
     required this.jobs,
     required this.contactName,

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
-import '/common/providers/auth_provider.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/add_job_button.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/providers/teachers_provider.dart';
 import 'pages/contact_page.dart';
 import 'pages/informations_page.dart';
 import 'pages/jobs_page.dart';
@@ -56,6 +55,18 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     ScaffoldMessenger.of(context).clearSnackBars();
 
     if (_currentStep == 2) {
+      if (!_informationsKey.currentState!.validate()) {
+        setState(() {
+          _currentStep = 0;
+        });
+        return;
+      }
+
+      if (!_jobsKey.currentState!.validate()) {
+        setState(() {
+          _currentStep = 1;
+        });
+      }
       _submit();
     } else {
       setState(() => _currentStep += 1);
@@ -63,14 +74,14 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   }
 
   void _submit() async {
-    EnterprisesProvider enterprises = context.read<EnterprisesProvider>();
-    AuthProvider auth = context.read<AuthProvider>();
+    final teachers = TeachersProvider.of(context, listen: false);
+    final enterprises = EnterprisesProvider.of(context, listen: false);
 
     Enterprise enterprise = Enterprise(
       name: _informationsKey.currentState!.name!,
       neq: _informationsKey.currentState!.neq!,
       activityTypes: _informationsKey.currentState!.activityTypes,
-      recrutedBy: auth.currentUser?.displayName ?? '?',
+      recrutedBy: teachers.currentTeacherId,
       shareWith: _informationsKey.currentState!.shareWith!,
       jobs: _jobsKey.currentState!.jobs,
       contactName: _contactKey.currentState!.contactName!,
@@ -132,7 +143,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
           Visibility(
             visible: _currentStep == 1,
             child: AddJobButton(
-                onPressed: () => _jobsKey.currentState!.addMetier()),
+                onPressed: () => _jobsKey.currentState!.addJobToForm()),
           ),
           const Expanded(child: SizedBox()),
           OutlinedButton(
