@@ -136,7 +136,7 @@ class AboutPageState extends State<AboutPage> {
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             Text(
-                              widget.student.program,
+                              widget.student.program.name,
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ],

@@ -5,12 +5,28 @@ import 'package:flutter/material.dart';
 import '/common/models/address.dart';
 import '/common/models/person.dart';
 
+enum Program {
+  fpt,
+  fms,
+}
+
+extension ProgramNamed on Program {
+  String get title {
+    switch (this) {
+      case Program.fpt:
+        return 'FPT';
+      case Program.fms:
+        return 'FMS';
+    }
+  }
+}
+
 class Student extends Person {
   final String photo;
   late final Widget avatar;
 
   final String teacherId;
-  final String program;
+  final Program program;
   final String group;
 
   final Person contact;
@@ -41,7 +57,7 @@ class Student extends Person {
         avatar = CircleAvatar(
             backgroundColor: Color(int.parse(map['photo'])).withAlpha(255)),
         teacherId = map['teacherId'],
-        program = map['program'],
+        program = Program.values[map['program']],
         group = map['group'],
         contact = Person.fromSerialized(map['contact']),
         contactLink = map['contactLink'],
@@ -53,7 +69,7 @@ class Student extends Person {
       ..addAll({
         'photo': photo,
         'teacherId': teacherId,
-        'program': program,
+        'program': program.index,
         'group': group,
         'contact': contact.serializedMap(),
         'contactLink': contactLink,
@@ -70,7 +86,7 @@ class Student extends Person {
     String? email,
     Address? address,
     String? teacherId,
-    String? program,
+    Program? program,
     String? group,
     Person? contact,
     String? contactLink,

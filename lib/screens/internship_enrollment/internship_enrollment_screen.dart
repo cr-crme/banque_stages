@@ -63,7 +63,6 @@ class _InternshipEnrollmentScreenState
               _generalInfoKey.currentState!.primaryJob!.specialization)
           .id,
       extraJobsId: [],
-      program: _generalInfoKey.currentState!.student!.program,
       supervisor: Person(
           firstName: _generalInfoKey.currentState!.supervisorFirstName!,
           lastName: _generalInfoKey.currentState!.supervisorLastName!,

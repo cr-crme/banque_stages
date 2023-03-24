@@ -422,7 +422,7 @@ Future<void> addDummyStudents(
       dateBirth: DateTime.now(),
       email: 'c.masson@email.com',
       teacherId: teachers[0].id,
-      program: 'FPT2',
+      program: Program.fpt,
       group: '550',
       address: await Address.fromAddress(
           '7248 Rue D\'Iberville, Montréal, QC H2E 2Y6'),
@@ -443,7 +443,7 @@ Future<void> addDummyStudents(
       dateBirth: DateTime.now(),
       email: 't.caron@email.com',
       teacherId: teachers.currentTeacherId,
-      program: 'FPT3',
+      program: Program.fpt,
       group: '885',
       contact: Person(
           firstName: 'Joe',
@@ -464,7 +464,7 @@ Future<void> addDummyStudents(
       dateBirth: DateTime.now(),
       email: 'm.boucher@email.com',
       teacherId: teachers.currentTeacherId,
-      program: 'FPT3',
+      program: Program.fpt,
       group: '885',
       contact: Person(
           firstName: 'Nicole',
@@ -484,7 +484,7 @@ Future<void> addDummyStudents(
       dateBirth: DateTime.now(),
       email: 'k.leblanc@email.com',
       teacherId: teachers.currentTeacherId,
-      program: 'FPT2',
+      program: Program.fpt,
       group: '550',
       contact: Person(
           firstName: 'Martine',
@@ -505,7 +505,7 @@ Future<void> addDummyStudents(
       dateBirth: DateTime.now(),
       email: 's.gingras@email.com',
       teacherId: teachers[0].id,
-      program: 'FMS',
+      program: Program.fms,
       group: '789',
       contact: Person(
           firstName: 'Raoul',
@@ -526,7 +526,7 @@ Future<void> addDummyStudents(
       dateBirth: DateTime.now(),
       email: 'd.vargas@email.com',
       teacherId: teachers.currentTeacherId,
-      program: 'FMS',
+      program: Program.fpt,
       group: '789',
       contact: Person(
           firstName: 'Laura',
@@ -547,7 +547,7 @@ Future<void> addDummyStudents(
       dateBirth: DateTime.now(),
       email: 'g.tremblay@email.com',
       teacherId: teachers.currentTeacherId,
-      program: 'FPT3',
+      program: Program.fpt,
       group: '885',
       contact: Person(
           firstName: 'Vincent',
@@ -568,7 +568,7 @@ Future<void> addDummyStudents(
       dateBirth: DateTime.now(),
       email: 'v.picard@email.com',
       teacherId: teachers.currentTeacherId,
-      program: 'FMS',
+      program: Program.fms,
       group: '789',
       contact: Person(
           firstName: 'Jean-François',
@@ -589,7 +589,7 @@ Future<void> addDummyStudents(
       dateBirth: DateTime.now(),
       email: 'v.monette@email.com',
       teacherId: teachers.currentTeacherId,
-      program: 'FMS',
+      program: Program.fms,
       group: '789',
       contact: Person(
           firstName: 'Stéphane',
@@ -610,7 +610,7 @@ Future<void> addDummyStudents(
       dateBirth: DateTime.now(),
       email: 'm.poulain@email.com',
       teacherId: teachers.currentTeacherId,
-      program: 'FMS',
+      program: Program.fms,
       group: '789',
       contact: Person(
           firstName: 'Mathieu',
@@ -642,7 +642,6 @@ Future<void> addDummyInterships(
     enterpriseId: enterprises[0].id,
     jobId: enterprises[0].jobs[0].id,
     extraJobsId: [],
-    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -685,7 +684,6 @@ Future<void> addDummyInterships(
     enterpriseId: enterprises[0].id,
     jobId: enterprises[0].jobs[0].id,
     extraJobsId: [],
-    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -728,7 +726,6 @@ Future<void> addDummyInterships(
     enterpriseId: enterprises[1].id,
     jobId: enterprises[1].jobs[0].id,
     extraJobsId: [],
-    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -766,7 +763,6 @@ Future<void> addDummyInterships(
     enterpriseId: enterprises[2].id,
     jobId: enterprises[2].jobs[0].id,
     extraJobsId: [],
-    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -799,7 +795,6 @@ Future<void> addDummyInterships(
     enterpriseId: enterprises[3].id,
     jobId: enterprises[3].jobs[0].id,
     extraJobsId: [],
-    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -832,7 +827,6 @@ Future<void> addDummyInterships(
     enterpriseId: enterprises[4].id,
     jobId: enterprises[4].jobs[0].id,
     extraJobsId: [],
-    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
@@ -875,7 +869,6 @@ Future<void> addDummyInterships(
     enterpriseId: enterprises[4].id,
     jobId: enterprises[4].jobs[0].id,
     extraJobsId: [],
-    program: '-1',
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: DateTimeRange(
