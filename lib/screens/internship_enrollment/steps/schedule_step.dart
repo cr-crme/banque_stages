@@ -59,34 +59,40 @@ class ScheduleStepState extends State<ScheduleStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Dates',
-              style: Theme.of(context).textTheme.titleLarge,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Dates',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.calendar_month_outlined,
+                    color: Colors.blue,
+                  ),
+                  onPressed: askDateRange,
+                )
+              ],
             ),
             ListTile(
               title: TextField(
                 decoration: const InputDecoration(
-                    labelText: '* Date de début du stage'),
+                    labelText: '* Date de début du stage',
+                    border: InputBorder.none),
                 controller: TextEditingController(
                     text: DateFormat.yMMMEd().format(dateRange.start)),
                 enabled: false,
               ),
-              trailing: IconButton(
-                icon: const Icon(Icons.calendar_month_outlined),
-                onPressed: askDateRange,
-              ),
             ),
             ListTile(
               title: TextField(
-                decoration:
-                    const InputDecoration(labelText: '* Date de fin du stage'),
+                decoration: const InputDecoration(
+                    labelText: '* Date de fin du stage',
+                    border: InputBorder.none),
                 controller: TextEditingController(
                     text: DateFormat.yMMMEd().format(dateRange.end)),
                 enabled: false,
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.calendar_month_outlined),
-                onPressed: askDateRange,
               ),
             ),
             const ListTile(
