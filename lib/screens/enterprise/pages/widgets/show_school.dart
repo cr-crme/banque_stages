@@ -3,6 +3,8 @@ import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
+import '/screens/visiting_students/widgets/zoom_button.dart';
+
 class ShowSchoolAddress extends StatelessWidget {
   const ShowSchoolAddress(this.address, {super.key});
 
@@ -22,6 +24,7 @@ class ShowSchoolAddress extends StatelessWidget {
           final waypoint = snapshot.data!;
           return FlutterMap(
             options: MapOptions(center: waypoint.toLatLng(), zoom: 16),
+            nonRotatedChildren: const [ZoomButtons()],
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -34,7 +37,7 @@ class ShowSchoolAddress extends StatelessWidget {
                           Icons.school,
                           size: 45,
                           color: Colors.purple,
-                        ))
+                        )),
               ]),
             ],
           );

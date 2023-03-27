@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '/common/models/address.dart';
 import '/misc/form_service.dart';
 import '/screens/enterprise/pages/widgets/show_school.dart';
-import '/screens/visiting_students/models/waypoints.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -49,7 +48,7 @@ class ContactPageState extends State<ContactPage> {
                   const SizedBox(height: 10),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 1 / 2,
-                    width: MediaQuery.of(context).size.width * 1 / 2,
+                    width: MediaQuery.of(context).size.width * 2 / 3,
                     child: ShowSchoolAddress(addressTp),
                   )
                 ]),

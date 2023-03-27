@@ -103,38 +103,20 @@ class _GeneralInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SubTitle('Informations générales'),
+        const SubTitle('Nom de l\'entreprise'),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Row(
             children: [
-              Container(
-                width: 140,
-                height: 105,
-                color: Theme.of(context).disabledColor,
-                child: enterprise.photoUrl != null
-                    ? Image.network(enterprise.photoUrl!)
-                    : null,
-              ),
-              const SizedBox(width: 16),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      'Nom de l\'entreprise',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    if (editMode)
-                      TextFormField(
+                child: editMode
+                    ? TextFormField(
                         controller:
                             TextEditingController(text: enterprise.name),
                         enabled: editMode,
                         onSaved: onSaved,
-                      ),
-                    if (!editMode) Text(enterprise.name),
-                  ],
-                ),
+                      )
+                    : Text(enterprise.name),
               ),
             ],
           ),

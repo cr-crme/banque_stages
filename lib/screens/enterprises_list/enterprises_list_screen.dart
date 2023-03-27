@@ -9,7 +9,7 @@ import '/common/widgets/main_drawer.dart';
 import '/common/widgets/search_bar.dart';
 import '/router.dart';
 import '/screens/visiting_students/models/waypoints.dart';
-import '/screens/visiting_students/widgets/routing_map.dart';
+import '/screens/visiting_students/widgets/zoom_button.dart';
 import 'widgets/enterprise_card.dart';
 
 class EnterprisesListScreen extends StatefulWidget {

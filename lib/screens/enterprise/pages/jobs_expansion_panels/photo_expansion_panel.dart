@@ -40,10 +40,7 @@ class _PhotoBody extends StatelessWidget {
                   .map(
                     // TODO: Make images clickables and deletables
                     (url) => Card(
-                      child: Image.network(
-                        url,
-                        height: 250,
-                      ),
+                      child: Image.network(url, height: 250),
                     ),
                   )
                   .toList(),

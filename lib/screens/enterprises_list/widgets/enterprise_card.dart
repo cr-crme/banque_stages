@@ -19,17 +19,12 @@ class EnterpriseCard extends StatelessWidget {
       elevation: 0.5,
       child: ListTile(
         onTap: () => onTap(enterprise),
-        leading: Container(
-          width: 80,
-          height: 60,
-          color: Theme.of(context).disabledColor,
-          child: enterprise.photoUrl != null
-              ? Image.network(enterprise.photoUrl!)
-              : null,
-        ),
         title: Text(
           enterprise.name,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium!
+              .copyWith(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -206,7 +206,7 @@ class _EnterpriseInfo extends StatelessWidget {
               content: SingleChildScrollView(
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 1 / 2,
-                  width: MediaQuery.of(context).size.width * 1 / 2,
+                  width: MediaQuery.of(context).size.width * 2 / 3,
                   child: ShowSchoolAddress(enterprise.address!),
                 ),
               ),
