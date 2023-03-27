@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 
 import '/common/models/address.dart';
 import '/misc/form_service.dart';
+import '/screens/enterprise/pages/widgets/show_school.dart';
 import '/screens/visiting_students/models/waypoints.dart';
 
 class ContactPage extends StatefulWidget {
@@ -31,11 +31,9 @@ class ContactPageState extends State<ContactPage> {
     if (!_formKey.currentState!.validate()) {
       return 'Assurez vous que tous les champs soient emplis';
     }
-    late final String addressTp;
-    late final Waypoint waypoint;
+    late final Address addressTp;
     try {
-      addressTp = (await Address.fromAddress(address!))!.toString();
-      waypoint = await Waypoint.fromAddress('', addressTp);
+      addressTp = (await Address.fromAddress(address!))!;
     } catch (e) {
       return 'L\'adresse n\'a pu être trouvée';
     }
@@ -52,27 +50,7 @@ class ContactPageState extends State<ContactPage> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 1 / 2,
                     width: MediaQuery.of(context).size.width * 1 / 2,
-                    child: FlutterMap(
-                      options:
-                          MapOptions(center: waypoint.toLatLng(), zoom: 16),
-                      children: [
-                        TileLayer(
-                          urlTemplate:
-                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          userAgentPackageName:
-                              'dev.fleaflet.flutter_map.example',
-                        ),
-                        MarkerLayer(markers: [
-                          Marker(
-                              point: waypoint.toLatLng(),
-                              builder: (BuildContext context) => const Icon(
-                                    Icons.location_on_sharp,
-                                    size: 45,
-                                    color: Colors.green,
-                                  ))
-                        ]),
-                      ],
-                    ),
+                    child: ShowSchoolAddress(addressTp),
                   )
                 ]),
               ),
@@ -85,9 +63,11 @@ class ContactPageState extends State<ContactPage> {
                     child: const Text('Confirmer'))
               ],
             ));
-    if (!confirmAddress) return 'Essayer une nouvelle adresse';
+    if (confirmAddress == null || !confirmAddress) {
+      return 'Essayer une nouvelle adresse';
+    }
 
-    address = addressTp;
+    address = addressTp.toString();
     return null;
   }
 

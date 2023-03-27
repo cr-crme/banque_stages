@@ -50,25 +50,23 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
     } else if (_tabController.index == 3) {
       icon = const Icon(Icons.add);
     }
+    _actionButton = IconButton(
+      icon: icon,
+      onPressed: () {
+        if (_tabController.index == 0) {
+          _aboutPageKey.currentState?.toggleEdit();
+        } else if (_tabController.index == 1) {
+          _contactPageKey.currentState?.toggleEdit();
+        } else if (_tabController.index == 2) {
+          _jobsPageKey.currentState?.addJob();
+        } else if (_tabController.index == 3) {
+          _stagePageKey.currentState?.addStage();
+        }
 
-    setState(() {
-      _actionButton = IconButton(
-        icon: icon,
-        onPressed: () {
-          if (_tabController.index == 0) {
-            _aboutPageKey.currentState?.toggleEdit();
-          } else if (_tabController.index == 1) {
-            _contactPageKey.currentState?.toggleEdit();
-          } else if (_tabController.index == 2) {
-            _jobsPageKey.currentState?.addJob();
-          } else if (_tabController.index == 3) {
-            _stagePageKey.currentState?.addStage();
-          }
-
-          _updateActionButton();
-        },
-      );
-    });
+        _updateActionButton();
+      },
+    );
+    setState(() {});
   }
 
   @override

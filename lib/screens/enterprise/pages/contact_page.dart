@@ -5,6 +5,7 @@ import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/misc/form_service.dart';
+import 'widgets/show_school.dart';
 import 'widgets/sub_title.dart';
 
 class ContactPage extends StatefulWidget {
@@ -41,10 +42,7 @@ class ContactPageState extends State<ContactPage> {
   bool get editing => _editing;
 
   void toggleEdit() async {
-    if (!_editing) {
-      setState(() => _editing = true);
-      return;
-    }
+    _editing = !_editing;
 
     if (!FormService.validateForm(_formKey, save: true)) {
       return;
@@ -66,7 +64,6 @@ class ContactPageState extends State<ContactPage> {
       ),
     );
 
-    _editing = false;
     setState(() {});
   }
 
@@ -201,6 +198,21 @@ class _EnterpriseInfo extends StatelessWidget {
   final Function(String?) onSavedWebsite;
   final Function(String?) onSavedPhone;
 
+  void _showAddress(context) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text('Adresse de l\'école'),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 1 / 2,
+                  width: MediaQuery.of(context).size.width * 1 / 2,
+                  child: ShowSchoolAddress(enterprise.address!),
+                ),
+              ),
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -210,13 +222,24 @@ class _EnterpriseInfo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              TextFormField(
-                initialValue: enterprise.address.toString(),
-                decoration: const InputDecoration(labelText: '* Adresse'),
-                enabled: editMode,
-                onSaved: onSavedAddress,
-                maxLines: null,
-                keyboardType: TextInputType.streetAddress,
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  TextFormField(
+                    initialValue: enterprise.address.toString(),
+                    decoration: const InputDecoration(
+                        labelText: '* Adresse',
+                        suffixIcon: Icon(Icons.map, color: Colors.purple)),
+                    enabled: editMode,
+                    onSaved: onSavedAddress,
+                    maxLines: null,
+                    keyboardType: TextInputType.streetAddress,
+                  ),
+                  IconButton(
+                    onPressed: () => _showAddress(context),
+                    icon: const Icon(Icons.map, color: Colors.purple),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               TextFormField(
