@@ -62,7 +62,9 @@ class _InternshipEnrollmentScreenState
               job.specialization ==
               _generalInfoKey.currentState!.primaryJob!.specialization)
           .id,
-      extraJobsId: [],
+      extraSpecializationId: _generalInfoKey.currentState!.extraSpecializations
+          .map<String>((e) => e!.id)
+          .toList(),
       supervisor: Person(
           firstName: _generalInfoKey.currentState!.supervisorFirstName!,
           lastName: _generalInfoKey.currentState!.supervisorLastName!,
@@ -74,6 +76,7 @@ class _InternshipEnrollmentScreenState
       schedule: [], // TODO: Fill that
       visitingPriority: VisitingPriority.low,
     );
+
     InternshipsProvider.of(context, listen: false).add(internship);
     Navigator.pop(context);
   }

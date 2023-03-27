@@ -13,7 +13,8 @@ class Internship extends ItemSerializable {
 
   final String enterpriseId;
   final String jobId; // Main job attached to the enterprise
-  final List<String> extraJobsId; // Any extra jobs added to the internship
+  final List<String>
+      extraSpecializationId; // Any extra jobs added to the internship
   final Person supervisor;
   final DateTimeRange date;
   final List<Schedule> schedule;
@@ -32,7 +33,7 @@ class Internship extends ItemSerializable {
     this.isTransfering = false,
     required this.enterpriseId,
     required this.jobId,
-    required this.extraJobsId,
+    required this.extraSpecializationId,
     required this.supervisor,
     required this.date,
     required this.schedule,
@@ -49,7 +50,7 @@ class Internship extends ItemSerializable {
         isTransfering = map['isTransfering'],
         enterpriseId = map['enterprise'],
         jobId = map['jobId'],
-        extraJobsId = map['extraJobsId'] ?? [],
+        extraSpecializationId = map['extraSpecializationId'] ?? [],
         supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
             start: DateTime.parse(map['date'][0]),
@@ -73,7 +74,7 @@ class Internship extends ItemSerializable {
       'isTransfering': isTransfering,
       'enterprise': enterpriseId,
       'jobId': jobId,
-      'extraJobsId': extraJobsId,
+      'extraSpecializationId': extraSpecializationId,
       'name': supervisor.serializedMap(),
       'date': [date.start.toString(), date.end.toString()],
       'schedule': schedule.map<Map>((e) => e.serializedMap()).toList(),
@@ -92,7 +93,7 @@ class Internship extends ItemSerializable {
     bool? isTransfering,
     String? enterpriseId,
     String? jobId,
-    List<String>? extraJobsId,
+    List<String>? extraSpecializationId,
     String? program,
     Person? supervisor,
     DateTimeRange? date,
@@ -110,7 +111,8 @@ class Internship extends ItemSerializable {
         isTransfering: isTransfering ?? this.isTransfering,
         enterpriseId: enterpriseId ?? this.enterpriseId,
         jobId: jobId ?? this.jobId,
-        extraJobsId: extraJobsId ?? this.extraJobsId,
+        extraSpecializationId:
+            extraSpecializationId ?? this.extraSpecializationId,
         supervisor: supervisor ?? this.supervisor,
         date: date ?? this.date,
         schedule: schedule ?? this.schedule,

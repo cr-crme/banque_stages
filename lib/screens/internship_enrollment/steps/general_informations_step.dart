@@ -27,7 +27,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   Student? student;
 
   Job? primaryJob;
-  final List<Job?> extraJobs = [];
+  final List<Specialization?> extraSpecializations = [];
 
   String? supervisorFirstName;
   String? supervisorLastName;
@@ -51,11 +51,14 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
               onSaved: (job) => setState(() => primaryJob = job),
             ),
             if (student != null && student!.program == Program.fpt)
-              _ExtraJobs(
-                extraJobs: extraJobs,
-                onAddJob: () => setState(() => extraJobs.add(null)),
-                onSetJob: (job, i) => setState(() => extraJobs[i] = job),
-                onDeleteJob: (i) => setState(() => extraJobs.removeAt(i)),
+              _ExtraSpecialization(
+                extraSpecializations: extraSpecializations,
+                onAddSpecialization: () =>
+                    setState(() => extraSpecializations.add(null)),
+                onSetSpecialization: (specialization, i) =>
+                    setState(() => extraSpecializations[i] = specialization),
+                onDeleteSpecialization: (i) =>
+                    setState(() => extraSpecializations.removeAt(i)),
               ),
             _SupervisonInformation(
               onSavedFirstName: (name) => supervisorFirstName = name!,
@@ -145,18 +148,18 @@ class _MainJob extends StatelessWidget {
   }
 }
 
-class _ExtraJobs extends StatelessWidget {
-  const _ExtraJobs({
-    required this.extraJobs,
-    required this.onAddJob,
-    required this.onSetJob,
-    required this.onDeleteJob,
+class _ExtraSpecialization extends StatelessWidget {
+  const _ExtraSpecialization({
+    required this.extraSpecializations,
+    required this.onAddSpecialization,
+    required this.onSetSpecialization,
+    required this.onDeleteSpecialization,
   });
 
-  final List<Job?> extraJobs;
-  final Function() onAddJob;
-  final Function(Job, int) onSetJob;
-  final Function(int) onDeleteJob;
+  final List<Specialization?> extraSpecializations;
+  final Function() onAddSpecialization;
+  final Function(Specialization, int) onSetSpecialization;
+  final Function(int) onDeleteSpecialization;
 
   Widget _extraJobTileBuilder(int index) {
     return Column(
@@ -171,13 +174,13 @@ class _ExtraJobs extends StatelessWidget {
               child: Text('Métier supplémentaire ${index + 1}'),
             ),
             IconButton(
-              onPressed: () => onDeleteJob(index),
+              onPressed: () => onDeleteSpecialization(index),
               icon: const Icon(Icons.delete, color: Colors.red),
             )
           ],
         ),
         JobFormFieldListTile(
-          onSaved: (job) => onSetJob(job!, index),
+          onSaved: (job) => onSetSpecialization(job!.specialization, index),
           askNumberPositionsOffered: false,
         ),
       ],
@@ -196,15 +199,15 @@ class _ExtraJobs extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        if (extraJobs.isNotEmpty)
-          ...extraJobs
+        if (extraSpecializations.isNotEmpty)
+          ...extraSpecializations
               .asMap()
               .keys
               .map<Widget>((i) => _extraJobTileBuilder(i))
               .toList(),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
-          child: AddJobButton(onPressed: onAddJob),
+          child: AddJobButton(onPressed: onAddSpecialization),
         ),
       ],
     );
