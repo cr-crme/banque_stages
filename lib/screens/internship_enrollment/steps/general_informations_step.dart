@@ -66,7 +66,8 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                 title: Text('Métier principal'),
               ),
             JobFormFieldListTile(
-              specializations: widget.enterprise.availableJobs
+              specializations: widget.enterprise
+                  .availableJobs(context)
                   .map((job) => job.specialization)
                   .toList(),
               askNumberPositionsOffered: false,

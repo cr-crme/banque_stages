@@ -104,8 +104,8 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
     return enterprises.where((enterprise) {
       // Remove if should not be shown by filter availability filter
       if (_hideNotAvailable &&
-          !enterprise.jobs
-              .any((job) => job.positionsOccupied < job.positionsOffered)) {
+          !enterprise.jobs.any(
+              (job) => job.positionsOccupied(context) < job.positionsOffered)) {
         return false;
       }
 

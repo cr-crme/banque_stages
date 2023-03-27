@@ -33,9 +33,9 @@ class Enterprise extends ItemSerializable {
               (Internship e) => e.enterpriseId == id ? e : null)
           .toList();
 
-  Iterable<Job> get availableJobs {
-    return jobs
-        .where((job) => job.positionsOffered - job.positionsOccupied > 0);
+  Iterable<Job> availableJobs(context) {
+    return jobs.where(
+        (job) => job.positionsOffered - job.positionsOccupied(context) > 0);
   }
 
   Enterprise({

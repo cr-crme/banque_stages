@@ -46,7 +46,7 @@ class EnterpriseCard extends StatelessWidget {
                     child: Row(children: [
                       DisponibilityCircle(
                           positionsOffered: job.positionsOffered,
-                          positionsOccupied: job.positionsOccupied),
+                          positionsOccupied: job.positionsOccupied(context)),
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(

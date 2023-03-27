@@ -58,7 +58,8 @@ class _InternshipEnrollmentScreenState
       studentId: _generalInfoKey.currentState!.student!.id,
       teacherId: TeachersProvider.of(context, listen: false).currentTeacherId,
       enterpriseId: widget.enterpriseId,
-      jobId: enterprise.availableJobs
+      jobId: enterprise
+          .availableJobs(context)
           .firstWhere((job) =>
               job.specialization ==
               _generalInfoKey.currentState!.primaryJob!.specialization)

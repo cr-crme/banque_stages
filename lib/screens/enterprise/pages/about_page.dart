@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '/common/models/enterprise.dart';
+import '/common/models/job.dart';
+import '/common/models/job_list.dart';
 import '/common/models/teacher.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/schools_provider.dart';
@@ -71,7 +73,10 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
                   enterprise: widget.enterprise,
                   editMode: _editing,
                   onSaved: (name) => _name = name),
-              _AvailablePlace(enterprise: widget.enterprise),
+              _AvailablePlace(
+                enterprise: widget.enterprise,
+                editMode: _editing,
+              ),
               _ActivityType(
                   enterprise: widget.enterprise,
                   editMode: _editing,
@@ -127,9 +132,23 @@ class _GeneralInformation extends StatelessWidget {
 }
 
 class _AvailablePlace extends StatelessWidget {
-  const _AvailablePlace({required this.enterprise});
+  const _AvailablePlace({
+    required this.enterprise,
+    required this.editMode,
+  });
 
   final Enterprise enterprise;
+  final bool editMode;
+
+  void _modifyNumberOfAvailableJobs(context, Job job, {required int change}) {
+    final jobs = JobList();
+    for (final jobTp in enterprise.jobs) {
+      jobs.add(jobTp.id == job.id
+          ? jobTp.copyWith(positionsOffered: jobTp.positionsOffered + change)
+          : job);
+    }
+    EnterprisesProvider.of(context).replace(enterprise.copyWith(jobs: jobs));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,11 +164,34 @@ class _AvailablePlace extends StatelessWidget {
                     visualDensity: VisualDensity.compact,
                     leading: DisponibilityCircle(
                       positionsOffered: job.positionsOffered,
-                      positionsOccupied: job.positionsOccupied,
+                      positionsOccupied: job.positionsOccupied(context),
                     ),
                     title: Text(job.specialization.idWithName),
-                    trailing: Text(
-                        '${job.positionsOffered - job.positionsOccupied} / ${job.positionsOffered}'),
+                    trailing: editMode
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed:
+                                      job.positionsRemaining(context) == 0
+                                          ? null
+                                          : () => _modifyNumberOfAvailableJobs(
+                                              context, job, change: -1),
+                                  icon: Icon(Icons.remove,
+                                      color:
+                                          job.positionsRemaining(context) == 0
+                                              ? Colors.grey
+                                              : Colors.black)),
+                              Text(job.positionsOffered.toString()),
+                              IconButton(
+                                  onPressed: () => _modifyNumberOfAvailableJobs(
+                                      context, job, change: 1),
+                                  icon: const Icon(Icons.add,
+                                      color: Colors.black)),
+                            ],
+                          )
+                        : Text(
+                            '${job.positionsRemaining(context)} / ${job.positionsOffered}'),
                   ),
                 )
                 .toList(),

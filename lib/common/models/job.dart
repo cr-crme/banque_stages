@@ -1,13 +1,18 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
+import '/common/providers/internships_provider.dart';
 import '/misc/job_data_file_service.dart';
 
 class Job extends ItemSerializable {
 // Details
   final Specialization specialization;
   final int positionsOffered;
-  int get positionsOccupied =>
-      0; //(BuildContext context) => InternshipsProvider.of(context, listen: false).map<int>((e, sum) =>);
+  int positionsOccupied(context) =>
+      InternshipsProvider.of(context, listen: false)
+          .where((e) => e.jobId == id)
+          .length;
+  int positionsRemaining(context) =>
+      positionsOffered - positionsOccupied(context);
 
   // Photos
   final List<String> photosUrl;
