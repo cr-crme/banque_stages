@@ -37,17 +37,15 @@ class _InternshipEnrollmentScreenState
       _requirementsKey.currentState!.formKey
     ];
 
-    FormService.validateForm(formKeys[_currentStep]);
+    final isValid = FormService.validateForm(formKeys[_currentStep]);
+    if (!isValid) return;
 
-    if (_currentStep == 2) {
-      _submit();
-    } else {
+    if (_currentStep != 2) {
       setState(() => _currentStep += 1);
+      return;
     }
-  }
 
-  void _submit() {
-    // TODO: Proper validation
+    // Submit
     _generalInfoKey.currentState!.formKey.currentState!.save();
     _scheduleKey.currentState!.formKey.currentState!.save();
     _requirementsKey.currentState!.formKey.currentState!.save();

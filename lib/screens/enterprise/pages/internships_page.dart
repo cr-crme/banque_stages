@@ -23,7 +23,20 @@ class InternshipsPage extends StatefulWidget {
 class InternshipsPageState extends State<InternshipsPage> {
   final _expanded = <String, bool>{};
 
-  void addStage() {
+  void addStage() async {
+    if (widget.enterprise.jobs.fold<int>(
+            0, (previousValue, e) => e.positionsRemaining(context)) ==
+        0) {
+      await showDialog(
+          context: context,
+          builder: (ctx) => const AlertDialog(
+                title: Text('Plus de stage disponible'),
+                content: Text(
+                    'Il n\'y a plus de stage disponible dans cette entreprise'),
+              ));
+      return;
+    }
+
     GoRouter.of(context).goNamed(
       Screens.internshipEnrollement,
       params: Screens.withId(widget.enterprise.id),

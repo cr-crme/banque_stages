@@ -9,15 +9,14 @@ class JobFormFieldListTile extends StatefulWidget {
     super.key,
     this.initialValue,
     this.onSaved,
-    this.sectors,
     this.specializations,
     this.askNumberPositionsOffered = true,
   });
 
   final Job? initialValue;
   final FormFieldSetter<Job>? onSaved;
-  final List<ActivitySector>? sectors;
-  final List<Specialization>? specializations;
+  final Map<Specialization, int>?
+      specializations; // Specialization and number of position for each
   final bool askNumberPositionsOffered;
 
   @override
@@ -47,7 +46,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
     }
 
     final List<ActivitySector> out = [];
-    for (final specialization in widget.specializations!) {
+    for (final specialization in widget.specializations!.keys) {
       out.add(specialization.sector);
     }
     return out;
@@ -58,7 +57,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
       return _activitySector!.specializations.toList();
     }
 
-    return widget.specializations!;
+    return widget.specializations!.keys.toList();
   }
 
   @override
@@ -76,35 +75,40 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Autocomplete<ActivitySector>(
-            displayStringForOption: (s) => s.idWithName,
+            displayStringForOption: (sector) => sector.idWithName,
             optionsBuilder: (textEditingValue) => _availableSectors.where(
                 (sector) => sector.idWithName.contains(textEditingValue.text)),
             onSelected: (sector) => setState(() {
               _activitySector = sector;
               _specialization = null;
             }),
-            fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
-              return ListTile(
-                title: TextField(
-                  controller: controller,
-                  focusNode: focusNode,
-                  onSubmitted: (_) => onSubmitted(),
-                  onChanged: (_) => setState(() {
-                    _activitySector = null;
-                    _specialization = null;
-                  }),
-                  decoration: InputDecoration(
-                    labelText: '* Secteur d\'activités',
-                    errorText: state.errorText == _invalidActivitySector
-                        ? 'Entrez une valeur valide'
-                        : null,
-                  ),
+            fieldViewBuilder: (_, controller, focusNode, onSubmitted) =>
+                ListTile(
+              title: TextField(
+                controller: controller,
+                focusNode: focusNode,
+                onSubmitted: (_) => onSubmitted(),
+                onChanged: (_) => setState(() {
+                  _activitySector = null;
+                  _specialization = null;
+                }),
+                decoration: InputDecoration(
+                  labelText: '* Secteur d\'activités',
+                  errorText: state.errorText == _invalidActivitySector
+                      ? 'Entrez une valeur valide'
+                      : null,
                 ),
-              );
-            },
+              ),
+            ),
           ),
           Autocomplete<Specialization>(
-            displayStringForOption: (s) => s.idWithName,
+            displayStringForOption: (specialization) {
+              final available = widget.specializations == null
+                  ? null
+                  : widget.specializations![specialization];
+              return '${specialization.idWithName}'
+                  '${available == null ? '' : '\n($available stage${available > 1 ? 's' : ''} disponible${available > 1 ? 's' : ''})'}';
+            },
             optionsBuilder: (textEditingValue) => _activitySector != null
                 ? _availableSpecialization
                     .where((s) => s.idWithName.contains(textEditingValue.text))
