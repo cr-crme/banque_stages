@@ -1,7 +1,9 @@
-import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 
+import '/common/models/address.dart';
 import '/misc/form_service.dart';
+import '/screens/visiting_students/models/waypoints.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -29,11 +31,63 @@ class ContactPageState extends State<ContactPage> {
     if (!_formKey.currentState!.validate()) {
       return 'Assurez vous que tous les champs soient emplis';
     }
+    late final String addressTp;
+    late final Waypoint waypoint;
     try {
-      await Address.fromAddress(address!);
+      addressTp = (await Address.fromAddress(address!))!.toString();
+      waypoint = await Waypoint.fromAddress('', addressTp);
     } catch (e) {
       return 'L\'adresse n\'a pu être trouvée';
     }
+    if (!mounted) return 'Erreur inconnue';
+
+    final confirmAddress = await showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text('Confimer l\'adresse'),
+              content: SingleChildScrollView(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Text('L\'adresse trouvée est :\n$addressTp'),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 1 / 2,
+                    width: MediaQuery.of(context).size.width * 1 / 2,
+                    child: FlutterMap(
+                      options:
+                          MapOptions(center: waypoint.toLatLng(), zoom: 16),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName:
+                              'dev.fleaflet.flutter_map.example',
+                        ),
+                        MarkerLayer(markers: [
+                          Marker(
+                              point: waypoint.toLatLng(),
+                              builder: (BuildContext context) => const Icon(
+                                    Icons.location_on_sharp,
+                                    size: 45,
+                                    color: Colors.green,
+                                  ))
+                        ]),
+                      ],
+                    ),
+                  )
+                ]),
+              ),
+              actions: [
+                OutlinedButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('Annuler')),
+                TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text('Confirmer'))
+              ],
+            ));
+    if (!confirmAddress) return 'Essayer une nouvelle adresse';
+
+    address = addressTp;
     return null;
   }
 

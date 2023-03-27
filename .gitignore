@@ -61,3 +61,5 @@ macos/firebase_app_id_file.json
 macos/Flutter/GeneratedPluginRegistrant.swift
 
 lib/localizations/untranslated-messages.txt
+
+macos/Flutter/ephemeral/
