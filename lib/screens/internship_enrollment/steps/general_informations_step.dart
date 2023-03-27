@@ -44,18 +44,19 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
           children: [
             _GeneralInformations(
               enterprise: widget.enterprise,
-              onSavedStudent: (s) => setState(() => student = s),
+              onSelectStudent: (s) => setState(() => student = s),
             ),
             _MainJob(
               enterprise: widget.enterprise,
               onSaved: (job) => setState(() => primaryJob = job),
             ),
-            _ExtraJobs(
-              extraJobs: extraJobs,
-              onAddJob: () => setState(() => extraJobs.add(null)),
-              onSetJob: (job, i) => setState(() => extraJobs[i] = job),
-              onDeleteJob: (i) => setState(() => extraJobs.removeAt(i)),
-            ),
+            if (student != null && student!.program == Program.fpt)
+              _ExtraJobs(
+                extraJobs: extraJobs,
+                onAddJob: () => setState(() => extraJobs.add(null)),
+                onSetJob: (job, i) => setState(() => extraJobs[i] = job),
+                onDeleteJob: (i) => setState(() => extraJobs.removeAt(i)),
+              ),
             _SupervisonInformation(
               onSavedFirstName: (name) => supervisorFirstName = name!,
               onSavedLastName: (name) => supervisorLastName = name!,
@@ -72,11 +73,11 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 class _GeneralInformations extends StatelessWidget {
   const _GeneralInformations({
     required this.enterprise,
-    required this.onSavedStudent,
+    required this.onSelectStudent,
   });
 
   final Enterprise enterprise;
-  final Function(Student?) onSavedStudent;
+  final Function(Student?) onSelectStudent;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +99,8 @@ class _GeneralInformations extends StatelessWidget {
           title: Consumer<StudentsProvider>(
             builder: (context, students, _) => StudentPickerFormField(
               students: students.toList(),
-              onSaved: onSavedStudent,
+              onSaved: onSelectStudent,
+              onSelect: onSelectStudent,
             ),
           ),
         )

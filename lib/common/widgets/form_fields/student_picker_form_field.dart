@@ -8,6 +8,7 @@ class StudentPickerFormField extends StatelessWidget {
     required this.students,
     this.initialValue,
     this.onSaved,
+    this.onSelect,
     this.validator,
   });
 
@@ -15,6 +16,7 @@ class StudentPickerFormField extends StatelessWidget {
   final List<Student> students;
   final void Function(Student? student)? onSaved;
   final String? Function(Student? student)? validator;
+  final void Function(Student?)? onSelect;
 
   static String? _validator(Student? student) {
     return student == null ? "Ce champ est obligatoire" : null;
@@ -37,7 +39,10 @@ class StudentPickerFormField extends StatelessWidget {
                     s.fullName.toLowerCase().contains(input.text.toLowerCase()),
               );
             },
-            onSelected: (student) => state.didChange(student),
+            onSelected: (student) {
+              state.didChange(student);
+              onSelect == null ? null : onSelect!(student);
+            },
             fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
               return TextField(
                 controller: controller,
