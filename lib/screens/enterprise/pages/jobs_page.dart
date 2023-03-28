@@ -107,7 +107,7 @@ class JobsPageState extends State<JobsPage> {
     setState(() {
       for (Job job in widget.enterprise.jobs) {
         _expandedSections.putIfAbsent(
-            job.id, () => [true, false, false, false, false, false]);
+            job.id, () => [false, false, false, false, false, false]);
       }
     });
   }
@@ -127,6 +127,7 @@ class JobsPageState extends State<JobsPage> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: ExpansionPanelList.radio(
+        initialOpenPanelValue: widget.enterprise.jobs.first.id,
         children: widget.enterprise.jobs
             .map((job) => ExpansionPanelRadio(
                 canTapOnHeader: true,
