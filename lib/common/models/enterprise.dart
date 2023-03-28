@@ -25,7 +25,7 @@ class Enterprise extends ItemSerializable {
   final String website;
 
   final Address? headquartersAddress;
-  final String neq;
+  final String? neq;
 
   List<Internship> internships(context, {listen = true}) =>
       InternshipsProvider.of(context, listen: listen)

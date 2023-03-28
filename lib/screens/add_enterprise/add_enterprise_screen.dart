@@ -79,7 +79,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
 
     Enterprise enterprise = Enterprise(
       name: _informationsKey.currentState!.name!,
-      neq: _informationsKey.currentState!.neq!,
+      neq: _informationsKey.currentState?.neq!,
       activityTypes: _informationsKey.currentState!.activityTypes,
       recrutedBy: teachers.currentTeacherId,
       shareWith: _informationsKey.currentState!.shareWith!,

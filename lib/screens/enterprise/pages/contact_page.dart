@@ -319,7 +319,7 @@ class _TaxesInfo extends StatelessWidget {
               initialValue: enterprise.neq,
               decoration: const InputDecoration(labelText: 'NEQ'),
               enabled: editMode,
-              validator: FormService.neqValidator,
+              validator: null,
               onSaved: onSavedNeq,
               keyboardType: TextInputType.number,
             ),

@@ -42,8 +42,8 @@ class InformationsPageState extends State<InformationsPage> {
             ),
             ListTile(
               title: TextFormField(
-                decoration: const InputDecoration(labelText: '* NEQ'),
-                validator: FormService.neqValidator,
+                decoration: const InputDecoration(labelText: 'NEQ'),
+                validator: null,
                 onSaved: (neq) => this.neq = neq,
                 keyboardType: TextInputType.number,
               ),
