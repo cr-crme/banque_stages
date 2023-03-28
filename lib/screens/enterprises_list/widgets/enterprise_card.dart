@@ -16,7 +16,7 @@ class EnterpriseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0.5,
+      elevation: 10,
       child: ListTile(
         onTap: () => onTap(enterprise),
         title: Text(

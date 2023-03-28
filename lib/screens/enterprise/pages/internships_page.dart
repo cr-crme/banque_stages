@@ -126,7 +126,6 @@ class InternshipsPageState extends State<InternshipsPage> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
-          const Divider(),
           ExpansionPanelList(
             expansionCallback: (panelIndex, isExpanded) => setState(
                 () => _expanded[internships[panelIndex].id] = !isExpanded),
