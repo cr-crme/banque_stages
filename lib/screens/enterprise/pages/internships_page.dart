@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
+import '/common/models/schedule.dart';
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
@@ -21,6 +22,7 @@ class InternshipsPage extends StatefulWidget {
 }
 
 class InternshipsPageState extends State<InternshipsPage> {
+  var nbExpanded = 0;
   final _expanded = <String, bool>{};
 
   void addStage() async {
@@ -43,15 +45,12 @@ class InternshipsPageState extends State<InternshipsPage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    bool isFirst = true;
-    for (final internship
-        in widget.enterprise.internships(context, listen: false)) {
-      _expanded[internship.id] = isFirst;
-      isFirst = false;
+  void _prepareExpanded(internships) {
+    if (internships.length == 0 || _expanded.length != nbExpanded) {
+      for (final internship in internships) {
+        _expanded[internship.id] = false;
+      }
+      nbExpanded = _expanded.length;
     }
   }
 
@@ -83,9 +82,40 @@ class InternshipsPageState extends State<InternshipsPage> {
     );
   }
 
+  Widget _scheduleBuild(Internship internship) {
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      columnWidths: const {
+        0: FlexColumnWidth(2),
+        1: FlexColumnWidth(1),
+        2: FlexColumnWidth(2),
+        3: FlexColumnWidth(2),
+      },
+      children: [
+        ...internship.schedule.asMap().keys.map(
+              (i) => TableRow(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Text(
+                      internship.schedule[i].dayOfWeek.name,
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                  Container(),
+                  Text(internship.schedule[i].start.format(context)),
+                  Text(internship.schedule[i].end.format(context)),
+                ],
+              ),
+            ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final internships = widget.enterprise.internships(context, listen: false);
+    final internships = widget.enterprise.internships(context, listen: true);
+    _prepareExpanded(internships);
 
     return SingleChildScrollView(
       child: Column(
@@ -111,7 +141,7 @@ class InternshipsPageState extends State<InternshipsPage> {
 
                 return ExpansionPanel(
                   canTapOnHeader: true,
-                  isExpanded: _expanded[internship.id]!,
+                  isExpanded: _expanded[internship.id] ?? false,
                   headerBuilder: (context, isExpanded) => ListTile(
                     leading: Text(internship.date.start.year.toString()),
                     title: Text(specialization.idWithName),
@@ -140,12 +170,23 @@ class InternshipsPageState extends State<InternshipsPage> {
                             Text(' (${student.program.title})'),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                            'Professeur\u00b7e en charge : ${teacher.fullName}'),
-                        const SizedBox(height: 10),
-                        _dateBuild(internship),
-                        const SizedBox(height: 15),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                              'Professeur\u00b7e en charge : ${teacher.fullName}'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: _dateBuild(internship),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Text('Horaire'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0, bottom: 15),
+                          child: _scheduleBuild(internship),
+                        )
                       ],
                     ),
                   ),

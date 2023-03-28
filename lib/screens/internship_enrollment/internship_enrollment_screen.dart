@@ -73,7 +73,7 @@ class _InternshipEnrollmentScreenState
       protection: _requirementsKey.currentState!.protection,
       uniform: _requirementsKey.currentState!.uniform,
       date: _scheduleKey.currentState!.dateRange,
-      schedule: [], // TODO: Fill that
+      schedule: _scheduleKey.currentState!.schedule,
       visitingPriority: VisitingPriority.low,
     );
 
