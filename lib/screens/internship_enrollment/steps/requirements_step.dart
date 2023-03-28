@@ -14,12 +14,12 @@ class RequirementsStepState extends State<RequirementsStep> {
 
   bool _protectionRequired = false;
   final Map<String, bool> _protection = {
-    "Chaussures de sécurité": false,
-    "Lunettes de sécurité": false,
-    "Protections auditives": false,
-    "Masque": false,
-    "Casque": false,
-    "Gants": false,
+    'Chaussures de sécurité': false,
+    'Lunettes de sécurité': false,
+    'Protections auditives': false,
+    'Masque': false,
+    'Casque': false,
+    'Gants': false,
   };
 
   bool _otherProtections = false;
@@ -34,14 +34,14 @@ class RequirementsStepState extends State<RequirementsStep> {
           if (_protectionRequired &&
               _otherProtectionsText != null &&
               _otherProtectionsText!.isNotEmpty)
-            _otherProtectionsText ?? ""
+            _otherProtectionsText ?? ''
         ]
       : [];
 
   bool _uniformRequired = false;
   String? _uniform;
 
-  String get uniform => _uniformRequired ? _uniform ?? "" : "";
+  String get uniform => _uniformRequired ? _uniform ?? '' : '';
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +51,15 @@ class RequirementsStepState extends State<RequirementsStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Text(
+                'EPI et Tenue de travail',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
             Text(
-              "*Est-ce que l’élève devra porter des équipements de protection individuelle?",
+              '*Est-ce que l’élève devra porter des équipements de protection individuelle?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Row(
@@ -63,7 +70,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                   onChanged: (bool? newValue) =>
                       setState(() => _protectionRequired = newValue!),
                 ),
-                const Text("Oui"),
+                const Text('Oui'),
                 const SizedBox(width: 32),
                 Radio(
                   value: false,
@@ -71,7 +78,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                   onChanged: (bool? newValue) =>
                       setState(() => _protectionRequired = newValue!),
                 ),
-                const Text("Non"),
+                const Text('Non'),
               ],
             ),
             Visibility(
@@ -86,7 +93,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                   children: [
                     const SizedBox(height: 8),
                     Text(
-                      "Lesquels ?",
+                      'Lesquels ?',
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     ..._protection.keys.map(
@@ -106,7 +113,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                       visualDensity: VisualDensity.compact,
                       dense: true,
                       title: Text(
-                        "Autre",
+                        'Autre',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       value: _otherProtections,
@@ -124,7 +131,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Précisez l'équipement supplémentaire requis : ",
+                              'Précisez l\'équipement supplémentaire requis : ',
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             TextFormField(
@@ -143,7 +150,7 @@ class RequirementsStepState extends State<RequirementsStep> {
             ),
             const SizedBox(height: 16),
             Text(
-              "Est-ce qu'un uniforme est exigé ?",
+              'Est-ce qu\'un uniforme est exigé ?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Row(
@@ -154,7 +161,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                   onChanged: (bool? newValue) =>
                       setState(() => _uniformRequired = newValue!),
                 ),
-                const Text("Oui"),
+                const Text('Oui'),
                 const SizedBox(width: 32),
                 Radio(
                   value: false,
@@ -162,7 +169,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                   onChanged: (bool? newValue) =>
                       setState(() => _uniformRequired = newValue!),
                 ),
-                const Text("Non"),
+                const Text('Non'),
               ],
             ),
             Visibility(
@@ -176,7 +183,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Précisez le type d'uniforme : ",
+                      'Précisez le type d\'uniforme : ',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(

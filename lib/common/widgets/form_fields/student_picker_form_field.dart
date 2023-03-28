@@ -50,6 +50,7 @@ class StudentPickerFormField extends StatelessWidget {
                 onSubmitted: (_) => onSubmitted(),
                 decoration: InputDecoration(
                   labelText: "* Élève",
+                  hintText: 'Saisir le nom de l\'élève',
                   errorText: state.errorText,
                 ),
               );

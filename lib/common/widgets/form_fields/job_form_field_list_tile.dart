@@ -97,6 +97,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                     errorText: state.errorText == _invalidActivitySector
                         ? 'Entrez une valeur valide'
                         : null,
+                    hintText: 'Saisir nom ou n° de secteur',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
                       onPressed: () => controller.text = '',
@@ -135,6 +136,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                       errorText: state.errorText == _invalidSpecialization
                           ? 'Entrez une valeur valide'
                           : null,
+                      hintText: 'Saisir nom ou n° de métier',
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () => controller.text = '',
