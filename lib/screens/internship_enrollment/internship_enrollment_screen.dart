@@ -9,6 +9,7 @@ import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/misc/form_service.dart';
+import 'steps/generate_document_dialog.dart';
 import 'steps/general_informations_step.dart';
 import 'steps/requirements_step.dart';
 import 'steps/schedule_step.dart';
@@ -78,6 +79,15 @@ class _InternshipEnrollmentScreenState
     );
 
     InternshipsProvider.of(context, listen: false).add(internship);
+    _showGeneratePdf();
+  }
+
+  void _showGeneratePdf() async {
+    // await showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   builder: (context) => const GenerateDocumentsAlert(),
+    // );
     Navigator.pop(context);
   }
 
