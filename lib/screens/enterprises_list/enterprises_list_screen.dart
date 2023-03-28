@@ -12,6 +12,11 @@ import '/screens/visiting_students/models/waypoints.dart';
 import '/screens/visiting_students/widgets/zoom_button.dart';
 import 'widgets/enterprise_card.dart';
 
+class EnterpriseController {
+  EnterpriseController();
+  List<Enterprise> selectedEnterprises = [];
+}
+
 class EnterprisesListScreen extends StatefulWidget {
   const EnterprisesListScreen({super.key});
 
@@ -22,6 +27,8 @@ class EnterprisesListScreen extends StatefulWidget {
 class _EnterprisesListScreenState extends State<EnterprisesListScreen>
     with SingleTickerProviderStateMixin {
   bool _withSearchBar = false;
+  final _enterpriseController = EnterpriseController();
+
   late final _tabController =
       TabController(initialIndex: 0, length: 2, vsync: this)
         ..addListener(() => setState(() {}));
@@ -72,8 +79,11 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          _EnterprisesByList(withSearchBar: _withSearchBar),
-          const _EnterprisesByMap(),
+          _EnterprisesByList(
+            withSearchBar: _withSearchBar,
+            enterpriseController: _enterpriseController,
+          ),
+          _EnterprisesByMap(enterpriseController: _enterpriseController),
         ],
       ),
     );
@@ -81,9 +91,13 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
 }
 
 class _EnterprisesByList extends StatefulWidget {
-  const _EnterprisesByList({required this.withSearchBar});
+  const _EnterprisesByList({
+    required this.withSearchBar,
+    required this.enterpriseController,
+  });
 
   final bool withSearchBar;
+  final EnterpriseController enterpriseController;
 
   @override
   State<_EnterprisesByList> createState() => _EnterprisesByListState();
@@ -164,9 +178,12 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
               ),
             ),
           ),
-          selector: (context, enterprises) => _sortEnterprisesByName(
-            _filterSelectedEnterprises(enterprises.toList()),
-          ),
+          selector: (context, enterprises) {
+            widget.enterpriseController.selectedEnterprises =
+                _filterSelectedEnterprises(enterprises.toList());
+            return _sortEnterprisesByName(
+                widget.enterpriseController.selectedEnterprises);
+          },
         ),
       ],
     );
@@ -174,7 +191,9 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
 }
 
 class _EnterprisesByMap extends StatelessWidget {
-  const _EnterprisesByMap();
+  const _EnterprisesByMap({required this.enterpriseController});
+
+  final EnterpriseController enterpriseController;
 
   List<Marker> _latlngToMarkers(Map<Enterprise, Waypoint> enterprises) {
     List<Marker> out = [];
@@ -230,7 +249,7 @@ class _EnterprisesByMap extends StatelessWidget {
 
   Future<Map<Enterprise, Waypoint>> _fetchEnterprisesCoordinates(
       BuildContext context) async {
-    final enterprises = EnterprisesProvider.of(context, listen: false);
+    final enterprises = enterpriseController.selectedEnterprises;
     final Map<Enterprise, Waypoint> out = {};
     for (final enterprise in enterprises) {
       out[enterprise] = await Waypoint.fromAddress(
@@ -247,8 +266,11 @@ class _EnterprisesByMap extends StatelessWidget {
           future: _fetchEnterprisesCoordinates(context),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
+              return SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
               );
             }
 

@@ -194,6 +194,7 @@ class AboutPageState extends State<AboutPage> {
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.address,
                       ),
+                      maxLines: null,
                       enabled: editing,
                       onSaved: (address) => _address = address,
                     ),

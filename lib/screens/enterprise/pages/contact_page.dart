@@ -141,6 +141,7 @@ class _ContactInfo extends StatelessWidget {
                 decoration: const InputDecoration(labelText: '* Nom'),
                 enabled: editMode,
                 validator: FormService.textNotEmptyValidator,
+                maxLines: null,
                 onSaved: onSavedName,
               ),
               const SizedBox(height: 8),
@@ -202,7 +203,7 @@ class _EnterpriseInfo extends StatelessWidget {
     await showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: const Text('Adresse de l\'école'),
+              title: const Text('Adresse de l\'établissement'),
               content: SingleChildScrollView(
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 1 / 2,
@@ -308,6 +309,7 @@ class _TaxesInfo extends StatelessWidget {
                 initialValue: enterprise.headquartersAddress.toString(),
                 decoration:
                     const InputDecoration(labelText: 'Adresse du siège social'),
+                maxLines: null,
                 enabled: editMode,
                 onSaved: (value) => onSavedAddress(value),
                 keyboardType: TextInputType.streetAddress,
