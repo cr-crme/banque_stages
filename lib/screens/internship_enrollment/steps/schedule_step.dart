@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '/common/models/schedule.dart';
+
 class ScheduleStep extends StatefulWidget {
   const ScheduleStep({
     super.key,
@@ -18,32 +20,51 @@ class ScheduleStepState extends State<ScheduleStep> {
     end: DateTime.now().add(const Duration(days: 90)),
   );
 
-  List<TimeStamp> days = [
-    TimeStamp('Lundi'),
-    TimeStamp('Mardi'),
-    TimeStamp('Mercredi'),
-    TimeStamp('Jeudi'),
-    TimeStamp('Vendredi'),
+  List<Schedule> schedule = [
+    Schedule(
+        dayOfWeek: Day.monday,
+        start: const TimeOfDay(hour: 9, minute: 0),
+        end: const TimeOfDay(hour: 9, minute: 0)),
+    Schedule(
+        dayOfWeek: Day.tuesday,
+        start: const TimeOfDay(hour: 9, minute: 0),
+        end: const TimeOfDay(hour: 9, minute: 0)),
+    Schedule(
+        dayOfWeek: Day.wednesday,
+        start: const TimeOfDay(hour: 9, minute: 0),
+        end: const TimeOfDay(hour: 9, minute: 0)),
+    Schedule(
+        dayOfWeek: Day.thursday,
+        start: const TimeOfDay(hour: 9, minute: 0),
+        end: const TimeOfDay(hour: 9, minute: 0)),
+    Schedule(
+        dayOfWeek: Day.friday,
+        start: const TimeOfDay(hour: 9, minute: 0),
+        end: const TimeOfDay(hour: 9, minute: 0)),
   ];
 
-  void askDateRange() async {
+  void _promptDateRange() async {
     final range = await showDateRangePicker(
       context: context,
       initialDateRange: dateRange,
       firstDate: DateTime(DateTime.now().year),
       lastDate: DateTime(DateTime.now().year + 2),
     );
+    if (range == null) return;
 
-    if (range != null) {
-      setState(() {
-        dateRange = range;
-      });
-    }
+    dateRange = range;
+    setState(() {});
   }
 
-  Future<TimeOfDay> askTime(TimeOfDay currentTime) async {
-    final time =
-        await showTimePicker(context: context, initialTime: currentTime);
+  Future<TimeOfDay> _promptTime(TimeOfDay currentTime) async {
+    final time = await showTimePicker(
+      context: context,
+      initialTime: currentTime,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child ?? Container(),
+      ),
+    );
 
     if (time == null) {
       return currentTime;
@@ -59,86 +80,16 @@ class ScheduleStepState extends State<ScheduleStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Dates',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.calendar_month_outlined,
-                    color: Colors.blue,
-                  ),
-                  onPressed: askDateRange,
-                )
-              ],
-            ),
-            ListTile(
-              title: TextField(
-                decoration: const InputDecoration(
-                    labelText: '* Date de début du stage',
-                    border: InputBorder.none),
-                controller: TextEditingController(
-                    text: DateFormat.yMMMEd().format(dateRange.start)),
-                enabled: false,
-              ),
-            ),
-            ListTile(
-              title: TextField(
-                decoration: const InputDecoration(
-                    labelText: '* Date de fin du stage',
-                    border: InputBorder.none),
-                controller: TextEditingController(
-                    text: DateFormat.yMMMEd().format(dateRange.end)),
-                enabled: false,
-              ),
-            ),
-            const ListTile(
-              title: TextField(
-                decoration:
-                    InputDecoration(labelText: '* Nombre d\'heures de stage'),
-                keyboardType: TextInputType.number,
-              ),
-            ),
-            Text(
-              'Horaire',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            ...days.map(
-              (day) => ListTile(
-                leading: Checkbox(
-                    value: day.selected,
-                    onChanged: (value) =>
-                        setState(() => day.selected = value ?? false)),
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(day.name),
-                    Row(
-                      children: [
-                        Text(day.start.format(context)),
-                        IconButton(
-                          icon: const Icon(Icons.access_time),
-                          onPressed: () async {
-                            final t = await askTime(day.start);
-                            setState(() => day.start = t);
-                          },
-                        ),
-                        Text(day.end.format(context)),
-                        IconButton(
-                          icon: const Icon(Icons.access_time),
-                          onPressed: () async {
-                            final t = await askTime(day.end);
-                            setState(() => day.end = t);
-                          },
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
+            _DateRange(dateRange: dateRange, promptDateRange: _promptDateRange),
+            const _Hours(),
+            _Schedule(
+              schedule: schedule,
+              onChangedTime: (i) async {
+                final start = await _promptTime(schedule[i].start);
+                final end = await _promptTime(schedule[i].end);
+                setState(() =>
+                    schedule[i] = schedule[i].copyWith(start: start, end: end));
+              },
             ),
           ],
         ),
@@ -147,11 +98,133 @@ class ScheduleStepState extends State<ScheduleStep> {
   }
 }
 
-class TimeStamp {
-  TimeStamp(String weekday) : name = weekday;
+class _DateRange extends StatelessWidget {
+  const _DateRange({
+    required this.dateRange,
+    required this.promptDateRange,
+  });
 
-  String name;
-  bool selected = true;
-  TimeOfDay start = const TimeOfDay(hour: 9, minute: 0);
-  TimeOfDay end = const TimeOfDay(hour: 15, minute: 0);
+  final DateTimeRange dateRange;
+  final Function() promptDateRange;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          'Dates',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 3 / 4,
+              child: Column(
+                children: [
+                  ListTile(
+                    title: TextField(
+                      decoration: const InputDecoration(
+                          labelText: '* Date de début du stage',
+                          border: InputBorder.none),
+                      controller: TextEditingController(
+                          text: DateFormat.yMMMEd().format(dateRange.start)),
+                      enabled: false,
+                    ),
+                  ),
+                  ListTile(
+                    title: TextField(
+                      decoration: const InputDecoration(
+                          labelText: '* Date de fin du stage',
+                          border: InputBorder.none),
+                      controller: TextEditingController(
+                          text: DateFormat.yMMMEd().format(dateRange.end)),
+                      enabled: false,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.calendar_month_outlined,
+                color: Colors.blue,
+              ),
+              onPressed: promptDateRange,
+            )
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _Hours extends StatelessWidget {
+  const _Hours();
+
+  @override
+  Widget build(BuildContext context) {
+    return const ListTile(
+      title: TextField(
+        decoration: InputDecoration(labelText: '* Nombre d\'heures de stage'),
+        keyboardType: TextInputType.number,
+      ),
+    );
+  }
+}
+
+class _Schedule extends StatelessWidget {
+  const _Schedule({required this.schedule, required this.onChangedTime});
+
+  final List<Schedule> schedule;
+  final Function(int) onChangedTime;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Text(
+          'Horaire',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+      ),
+      Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        columnWidths: const {
+          0: FlexColumnWidth(2),
+          1: FlexColumnWidth(1),
+          2: FlexColumnWidth(2),
+          3: FlexColumnWidth(2),
+          4: FlexColumnWidth(1),
+          5: FlexColumnWidth(1),
+        },
+        children: schedule
+            .asMap()
+            .keys
+            .map(
+              (i) => TableRow(
+                children: [
+                  Text(
+                    schedule[i].dayOfWeek.name,
+                    textAlign: TextAlign.right,
+                  ),
+                  Flexible(child: Container()),
+                  Text(schedule[i].start.format(context)),
+                  Text(schedule[i].end.format(context)),
+                  GestureDetector(
+                    onTap: () => onChangedTime(i),
+                    child: const Icon(Icons.access_time, color: Colors.black),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: const Icon(Icons.delete, color: Colors.red),
+                  ),
+                ],
+              ),
+            )
+            .toList(),
+      )
+    ]);
+  }
 }
