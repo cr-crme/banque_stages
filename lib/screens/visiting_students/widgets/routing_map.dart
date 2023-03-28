@@ -105,12 +105,20 @@ class _RoutingMapState extends State<RoutingMap> {
 
       double nameWidth = 160;
       double nameHeight = 100;
+      final previous = out.fold<int>(0, (prev, e) {
+        final newLatLng = waypoint.toLatLng();
+        return prev +
+            (e.point.latitude == newLatLng.latitude &&
+                    e.point.longitude == newLatLng.longitude
+                ? 1
+                : 0);
+      });
       out.add(
         Marker(
           point: waypoint.toLatLng(),
-          anchorPos: AnchorPos.exactly(
-              Anchor(markerSize / 2 + nameWidth, nameHeight / 2)),
-          width: markerSize + nameWidth, 
+          anchorPos: AnchorPos.exactly(Anchor(markerSize / 2 + nameWidth,
+              nameHeight / 2 + previous * nameHeight / 5)),
+          width: markerSize + nameWidth,
           height: markerSize + nameHeight,
           builder: (context) => Row(
             children: [
