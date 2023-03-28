@@ -93,11 +93,14 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                   _specialization = null;
                 }),
                 decoration: InputDecoration(
-                  labelText: '* Secteur d\'activités',
-                  errorText: state.errorText == _invalidActivitySector
-                      ? 'Entrez une valeur valide'
-                      : null,
-                ),
+                    labelText: '* Secteur d\'activités',
+                    errorText: state.errorText == _invalidActivitySector
+                        ? 'Entrez une valeur valide'
+                        : null,
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () => controller.text = '',
+                    )),
               ),
             ),
           ),
@@ -128,11 +131,14 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                   onSubmitted: (_) => onSubmitted(),
                   onChanged: (_) => setState(() => _specialization = null),
                   decoration: InputDecoration(
-                    labelText: '* Métier semi-spécialisé',
-                    errorText: state.errorText == _invalidSpecialization
-                        ? 'Entrez une valeur valide'
-                        : null,
-                  ),
+                      labelText: '* Métier semi-spécialisé',
+                      errorText: state.errorText == _invalidSpecialization
+                          ? 'Entrez une valeur valide'
+                          : null,
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () => controller.text = '',
+                      )),
                 ),
               );
             },
