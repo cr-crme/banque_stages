@@ -16,10 +16,28 @@ class DisponibilityCircle extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
+        Container(
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(25)),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black, offset: Offset(2, 2), blurRadius: 4)
+              ]),
+          child: const Icon(
+            Icons.circle,
+            color: Colors.black,
+            size: 30,
+          ),
+        ),
+        const Icon(
+          Icons.circle,
+          color: Colors.black,
+          size: 38,
+        ),
         Icon(
           Icons.circle,
           color: remainning > 0 ? Colors.green[900] : Colors.red[900],
-          size: 35,
+          size: 30,
         ),
         Text(
           remainning.toString(),

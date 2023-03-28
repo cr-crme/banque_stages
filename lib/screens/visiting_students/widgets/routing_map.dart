@@ -110,8 +110,8 @@ class _RoutingMapState extends State<RoutingMap> {
           point: waypoint.toLatLng(),
           anchorPos: AnchorPos.exactly(
               Anchor(markerSize / 2 + nameWidth, nameHeight / 2)),
-          width: markerSize + nameWidth, //markerSize + 1,
-          height: markerSize + nameHeight, //markerSize + 1,
+          width: markerSize + nameWidth, 
+          height: markerSize + nameHeight,
           builder: (context) => Row(
             children: [
               GestureDetector(
