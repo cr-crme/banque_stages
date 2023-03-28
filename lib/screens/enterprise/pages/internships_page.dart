@@ -45,7 +45,7 @@ class InternshipsPageState extends State<InternshipsPage> {
     );
   }
 
-  void _prepareExpanded(internships) {
+  void _prepareExpander(internships) {
     if (internships.length == 0 || _expanded.length != nbExpanded) {
       for (final internship in internships) {
         _expanded[internship.id] = false;
@@ -115,7 +115,7 @@ class InternshipsPageState extends State<InternshipsPage> {
   @override
   Widget build(BuildContext context) {
     final internships = widget.enterprise.internships(context, listen: true);
-    _prepareExpanded(internships);
+    _prepareExpander(internships);
 
     return SingleChildScrollView(
       child: Column(

@@ -98,9 +98,10 @@ class _RoutingMapState extends State<RoutingMap> {
     final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
     List<Marker> out = [];
 
-    const double markerSize = 40;
     for (var i = 0; i < waypoints.length; i++) {
       final waypoint = waypoints[i];
+      final markerSize =
+          waypoint.priority == VisitingPriority.high ? 40.0 : 30.0;
 
       double nameWidth = 160;
       double nameHeight = 100;

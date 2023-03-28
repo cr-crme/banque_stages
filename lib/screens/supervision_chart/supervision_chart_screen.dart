@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -315,8 +316,8 @@ class _StudentTile extends StatelessWidget {
         ),
         title: Text(student.fullName),
         isThreeLine: true,
-        subtitle: Text(
-          '$enterprise\n${specialization?.name}',
+        subtitle: AutoSizeText(
+          '${enterprise?.name ?? 'Aucun stage'}\n${specialization?.name ?? ''}',
           maxLines: 2,
           style: const TextStyle(color: Colors.black87),
         ),

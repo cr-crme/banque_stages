@@ -106,28 +106,28 @@ class _GeneralInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SubTitle('Nom de l\'entreprise'),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Row(
+    return editMode
+        ? Column(
             children: [
-              Expanded(
-                child: editMode
-                    ? TextFormField(
+              const SubTitle('Nom de l\'entreprise'),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
                         controller:
                             TextEditingController(text: enterprise.name),
                         enabled: editMode,
                         onSaved: onSaved,
-                      )
-                    : Text(enterprise.name),
-              ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
             ],
-          ),
-        )
-      ],
-    );
+          )
+        : Container();
   }
 }
 

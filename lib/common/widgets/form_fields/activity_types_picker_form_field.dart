@@ -32,7 +32,9 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
           optionsBuilder: (textEditingValue) {
             return activityTypes.where(
               (activity) =>
-                  activity.contains(textEditingValue.text) &&
+                  activity
+                      .toLowerCase()
+                      .contains(textEditingValue.text.toLowerCase()) &&
                   !state.value!.contains(activity),
             );
           },

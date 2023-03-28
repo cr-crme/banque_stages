@@ -67,7 +67,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
       waypoints.add(
         await Waypoint.fromAddress(
-          student.fullName,
+          '${student.firstName} ${student.lastName[0]}.',
           enterprises.fromId(intership.enterpriseId).address.toString(),
           priority: intership.visitingPriority,
         ),
