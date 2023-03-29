@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
@@ -9,32 +12,184 @@ class GenerateDocumentsAlert extends StatefulWidget {
   State<GenerateDocumentsAlert> createState() => _GenerateDocumentsAlertState();
 }
 
+class _PdfRadioTile {
+  _PdfRadioTile({
+    required this.title,
+    required this.isChecked,
+    this.canChangeCheck = true,
+    required this.pdfGenerationCallback,
+  });
+
+  String title;
+  bool isChecked;
+  bool canChangeCheck;
+  Future<Uint8List> Function(PdfPageFormat) pdfGenerationCallback;
+}
+
 class _GenerateDocumentsAlertState extends State<GenerateDocumentsAlert> {
-  final _intershipContract = true;
-  bool _intershipCard = false;
-  bool _cnesstForm = false;
-  bool _studentIdentificationForm = false;
-  bool _photosForm = false;
-  bool _taxeCreditForm = false;
-  bool _insuranceProof = false;
+  late final List<_PdfRadioTile> _pdfsRadio = [
+    _PdfRadioTile(
+      title: 'Contrat de stage',
+      isChecked: true,
+      canChangeCheck: false,
+      pdfGenerationCallback: _generateIntershipContractPdf,
+    ),
+    _PdfRadioTile(
+      title: 'Demande de carte de stage au Club paritaire de l\'automobile',
+      isChecked: false,
+      pdfGenerationCallback: _generateInternshipCardPdf,
+    ),
+    _PdfRadioTile(
+      title: 'Fiche CNESST',
+      isChecked: false,
+      pdfGenerationCallback: _generateCnesstPdf,
+    ),
+    _PdfRadioTile(
+      title: 'Fiche d\'identification du stagiaire',
+      isChecked: false,
+      pdfGenerationCallback: _generateStudentIdentificationPdf,
+    ),
+    _PdfRadioTile(
+      title: 'Formulaire d\'autorisation de prise de photos',
+      isChecked: false,
+      pdfGenerationCallback: _generatePhotoAutorisationPdf,
+    ),
+    _PdfRadioTile(
+      title: 'Formulaire pour le crédit d\'impôts',
+      isChecked: false,
+      pdfGenerationCallback: _generateTaxeCreditFormPdf,
+    ),
+    _PdfRadioTile(
+      title: 'Prevue de couverture d\'assurances',
+      isChecked: false,
+      pdfGenerationCallback: _generateInsurancePdf,
+    ),
+  ];
 
-  void _generatePdfs() async {
-    final pdf = pw.Document();
+  Future<Uint8List> _generateIntershipContractPdf(format) async {
+    final document = pw.Document();
 
-    pdf.addPage(
+    document.addPage(
       pw.Page(
-        build: (pw.Context context) => pw.Center(
-          child: pw.Text('Hello World!'),
-        ),
+        build: (pw.Context context) =>
+            pw.Center(child: pw.Text('Contrat de stage')),
       ),
     );
 
-    showDialog(
+    return document.save();
+  }
+
+  Future<Uint8List> _generateInternshipCardPdf(format) async {
+    final document = pw.Document();
+
+    document.addPage(
+      pw.Page(
+        build: (pw.Context context) =>
+            pw.Center(child: pw.Text('Carte étudiante')),
+      ),
+    );
+
+    return document.save();
+  }
+
+  Future<Uint8List> _generateCnesstPdf(format) async {
+    final document = pw.Document();
+
+    document.addPage(
+      pw.Page(
+        build: (pw.Context context) => pw.Center(child: pw.Text('CNESST')),
+      ),
+    );
+
+    return document.save();
+  }
+
+  Future<Uint8List> _generateStudentIdentificationPdf(format) async {
+    final document = pw.Document();
+
+    document.addPage(
+      pw.Page(
+        build: (pw.Context context) =>
+            pw.Center(child: pw.Text('Identification du stagiaire')),
+      ),
+    );
+
+    return document.save();
+  }
+
+  Future<Uint8List> _generatePhotoAutorisationPdf(format) async {
+    final document = pw.Document();
+
+    document.addPage(
+      pw.Page(
+        build: (pw.Context context) =>
+            pw.Center(child: pw.Text('Autorisation de prise de photos')),
+      ),
+    );
+
+    return document.save();
+  }
+
+  Future<Uint8List> _generateTaxeCreditFormPdf(format) async {
+    final document = pw.Document();
+
+    document.addPage(
+      pw.Page(
+        build: (pw.Context context) =>
+            pw.Center(child: pw.Text('Crédit d\'impôts')),
+      ),
+    );
+
+    return document.save();
+  }
+
+  Future<Uint8List> _generateInsurancePdf(format) async {
+    final document = pw.Document();
+
+    document.addPage(
+      pw.Page(
+        build: (pw.Context context) =>
+            pw.Center(child: pw.Text('Contrat d\'assurances')),
+      ),
+    );
+
+    return document.save();
+  }
+
+  void _generateAllPdfs() async {
+    for (final currentPdf in _pdfsRadio) {
+      if (!currentPdf.isChecked) continue;
+
+      await showDialog(
+        barrierDismissible: false,
         context: context,
-        builder: (context) => PdfPreview(
-              maxPageWidth: 200,
-              build: (format) => pdf.save(),
-            ));
+        builder: (context) => AlertDialog(
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 3 / 4,
+                child: PdfPreview(
+                  allowPrinting: true,
+                  allowSharing: true,
+                  canChangeOrientation: false,
+                  canChangePageFormat: false,
+                  canDebug: false,
+                  build: currentPdf.pdfGenerationCallback,
+                ),
+              ),
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Prochain'))
+            ],
+          ),
+        ),
+      );
+    }
+    if (!mounted) return;
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -48,43 +203,23 @@ class _GenerateDocumentsAlertState extends State<GenerateDocumentsAlert> {
             const Text(
                 'L\'élève a bien été inscrit comme stagiaire. Sélectionner '
                 'les documents à générer pour ce stage'),
-            CheckboxListTile(
-                value: _intershipContract,
-                enabled: false,
-                onChanged: null,
-                title: const Text('Contrat de stage')),
-            CheckboxListTile(
-                value: _intershipCard,
-                onChanged: (value) => setState(() => _intershipCard = value!),
-                title: const Text(
-                    'Demande de carte de stage au Club paritaire de l’automobile')),
-            CheckboxListTile(
-                value: _cnesstForm,
-                onChanged: (value) => setState(() => _cnesstForm = value!),
-                title: const Text('Fiche CNESST')),
-            CheckboxListTile(
-                value: _studentIdentificationForm,
-                onChanged: (value) =>
-                    setState(() => _studentIdentificationForm = value!),
-                title: const Text('Fiche d\'identification du stagiaire')),
-            CheckboxListTile(
-                value: _photosForm,
-                onChanged: (value) => setState(() => _photosForm = value!),
-                title: const Text(
-                    'Formulaire d\'autorisation de prise de photos')),
-            CheckboxListTile(
-                value: _taxeCreditForm,
-                onChanged: (value) => setState(() => _taxeCreditForm = value!),
-                title: const Text('Formulaire pour le crédit d\'impôts')),
-            CheckboxListTile(
-                value: _insuranceProof,
-                onChanged: (value) => setState(() => _insuranceProof = value!),
-                title: const Text('Prevue de couverture d\'assurances')),
+            ..._pdfsRadio
+                .map(
+                  (e) => CheckboxListTile(
+                    value: e.isChecked,
+                    enabled: e.canChangeCheck,
+                    onChanged: e.canChangeCheck
+                        ? (value) => setState(() => e.isChecked = value!)
+                        : null,
+                    title: Text(e.title),
+                  ),
+                )
+                .toList(),
           ],
         ),
       ),
       actions: [
-        TextButton(onPressed: _generatePdfs, child: const Text('Confirmer'))
+        TextButton(onPressed: _generateAllPdfs, child: const Text('Confirmer'))
       ],
     );
   }

@@ -83,11 +83,12 @@ class _InternshipEnrollmentScreenState
   }
 
   void _showGeneratePdf() async {
-    // await showDialog(
-    //   context: context,
-    //   barrierDismissible: false,
-    //   builder: (context) => const GenerateDocumentsAlert(),
-    // );
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const GenerateDocumentsAlert(),
+    );
+    if (!mounted) return;
     Navigator.pop(context);
   }
 
