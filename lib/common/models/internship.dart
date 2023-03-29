@@ -17,7 +17,10 @@ class Internship extends ItemSerializable {
       extraSpecializationId; // Any extra jobs added to the internship
   final Person supervisor;
   final DateTimeRange date;
-  final List<Schedule> schedule;
+
+  // The inner list is a semester schedule.
+  // The outer list is if there are multiple schedules during a semester
+  final List<List<Schedule>> schedule;
 
   final List<String> protection;
   final String uniform;
@@ -56,7 +59,9 @@ class Internship extends ItemSerializable {
             start: DateTime.parse(map['date'][0]),
             end: DateTime.parse(map['date'][1])),
         schedule = (map['schedule'] as List)
-            .map<Schedule>((e) => Schedule.fromSerialized(e))
+            .map<List<Schedule>>((e2) => (e2 as List)
+                .map<Schedule>((e) => Schedule.fromSerialized(e))
+                .toList())
             .toList(),
         protection = ItemSerializable.listFromSerialized(map['protection']),
         uniform = map['uniform'],
@@ -77,7 +82,10 @@ class Internship extends ItemSerializable {
       'extraSpecializationId': extraSpecializationId,
       'name': supervisor.serializedMap(),
       'date': [date.start.toString(), date.end.toString()],
-      'schedule': schedule.map<Map>((e) => e.serializedMap()).toList(),
+      'schedule': schedule
+          .map<List<Map>>(
+              (e) => e.map<Map>((e2) => e2.serializedMap()).toList())
+          .toList(),
       'protection': protection,
       'uniform': uniform,
       'priority': visitingPriority.index,
@@ -97,7 +105,7 @@ class Internship extends ItemSerializable {
     String? program,
     Person? supervisor,
     DateTimeRange? date,
-    List<Schedule>? schedule,
+    List<List<Schedule>>? schedule,
     List<String>? protection,
     String? uniform,
     VisitingPriority? visitingPriority,

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/common/models/person.dart';
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
-import 'pages/internships_page.dart';
 import '/screens/student/pages/skills_page.dart';
 import 'pages/about_page.dart';
+import 'pages/internships_page.dart';
 
 class StudentScreen extends StatefulWidget {
   const StudentScreen({super.key, required this.id, this.initialPage = 0});
@@ -90,7 +91,21 @@ class _StudentScreenState extends State<StudentScreen>
           ],
         ),
       ),
-      selector: (context, students) => students[widget.id],
+      selector: (context, students) => students.isNotEmpty
+          ? students[widget.id]
+          : Student(
+              id: '-1',
+              firstName: 'NoName',
+              lastName: 'NoMore',
+              dateBirth: DateTime.now(),
+              address: null,
+              contact: Person(firstName: 'NoMore', lastName: 'NoName'),
+              contactLink: '',
+              email: '',
+              group: '',
+              program: Program.fms,
+              teacherId: '-1',
+            ),
     );
   }
 }

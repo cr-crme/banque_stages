@@ -368,7 +368,10 @@ class _Schedule extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 25.0, top: 8.0),
               child: internship != null
-                  ? _scheduleBuilder(context, internship!.schedule)
+                  ? _scheduleBuilder(
+                      context,
+                      internship!.schedule[
+                          0]) // TODO: Fix when there is more than 1 schedule
                   : const Text('Aucun stage'),
             ),
           ],

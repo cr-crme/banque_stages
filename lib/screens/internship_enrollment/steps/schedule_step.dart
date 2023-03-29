@@ -22,14 +22,18 @@ class ScheduleStepState extends State<ScheduleStep> {
   );
 
   final TimeOfDay defaultStart = const TimeOfDay(hour: 9, minute: 0);
-  final TimeOfDay defaultEnd = const TimeOfDay(hour: 17, minute: 0);
-  late List<Schedule> schedule = [
-    Schedule(dayOfWeek: Day.monday, start: defaultStart, end: defaultEnd),
-    Schedule(dayOfWeek: Day.tuesday, start: defaultStart, end: defaultEnd),
-    Schedule(dayOfWeek: Day.wednesday, start: defaultStart, end: defaultEnd),
-    Schedule(dayOfWeek: Day.thursday, start: defaultStart, end: defaultEnd),
-    Schedule(dayOfWeek: Day.friday, start: defaultStart, end: defaultEnd),
-  ];
+  final TimeOfDay defaultEnd = const TimeOfDay(hour: 15, minute: 0);
+  late List<List<Schedule>> schedule = [_fillNewScheduleList()];
+
+  List<Schedule> _fillNewScheduleList() {
+    return [
+      Schedule(dayOfWeek: Day.monday, start: defaultStart, end: defaultEnd),
+      Schedule(dayOfWeek: Day.tuesday, start: defaultStart, end: defaultEnd),
+      Schedule(dayOfWeek: Day.wednesday, start: defaultStart, end: defaultEnd),
+      Schedule(dayOfWeek: Day.thursday, start: defaultStart, end: defaultEnd),
+      Schedule(dayOfWeek: Day.friday, start: defaultStart, end: defaultEnd),
+    ];
+  }
 
   void _promptDateRange() async {
     final range = await showDateRangePicker(
@@ -44,7 +48,12 @@ class ScheduleStepState extends State<ScheduleStep> {
     setState(() {});
   }
 
-  void _onAddTime() async {
+  void _onPeriodRemove(int scheduleIndex) async {
+    schedule.removeAt(scheduleIndex);
+    setState(() {});
+  }
+
+  void _onAddTime(int scheduleIndex) async {
     final day = await _promptDay();
     if (day == null) return;
     final start = await _promptTime(defaultStart);
@@ -52,17 +61,24 @@ class ScheduleStepState extends State<ScheduleStep> {
     final end = await _promptTime(defaultEnd);
     if (end == null) return;
 
-    schedule.add(Schedule(dayOfWeek: day, start: start, end: end));
+    schedule[scheduleIndex]
+        .add(Schedule(dayOfWeek: day, start: start, end: end));
     setState(() {});
   }
 
-  void _onUpdateTime(int i) async {
-    final start = await _promptTime(schedule[i].start);
+  void _onUpdateTime(int scheduleIndex, int i) async {
+    final start = await _promptTime(schedule[scheduleIndex][i].start);
     if (start == null) return;
-    final end = await _promptTime(schedule[i].end);
+    final end = await _promptTime(schedule[scheduleIndex][i].end);
     if (end == null) return;
 
-    schedule[i] = schedule[i].copyWith(start: start, end: end);
+    schedule[scheduleIndex][i] =
+        schedule[scheduleIndex][i].copyWith(start: start, end: end);
+    setState(() {});
+  }
+
+  void _onRemovedTime(int scheduleIndex, int index) async {
+    schedule[scheduleIndex].removeAt(index);
     setState(() {});
   }
 
@@ -112,15 +128,42 @@ class ScheduleStepState extends State<ScheduleStep> {
           children: [
             _DateRange(dateRange: dateRange, promptDateRange: _promptDateRange),
             const _Hours(),
-            _Schedule(
-              schedule: schedule,
-              onAddTime: _onAddTime,
-              onChangedTime: _onUpdateTime,
-              onDeleteTime: (index) => setState(() => schedule.removeAt(index)),
-            ),
+            _buildSchedule(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSchedule() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+          child: Text(
+            'Horaire',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        ...schedule
+            .asMap()
+            .keys
+            .map<Widget>((i) => _Schedule(
+                  periodName: schedule.length > 1 ? 'Période ${i + 1}' : null,
+                  schedule: schedule[i],
+                  onPeriodRemove:
+                      schedule.length > 1 ? () => _onPeriodRemove(i) : null,
+                  onAddTime: () => _onAddTime(i),
+                  onChangedTime: (index) => _onUpdateTime(i, index),
+                  onDeleteTime: (index) => _onRemovedTime(i, index),
+                ))
+            .toList(),
+        TextButton(
+          onPressed: () => setState(() => schedule.add(_fillNewScheduleList())),
+          child: const Text('Ajouter une période'),
+        ),
+      ],
     );
   }
 }
@@ -204,13 +247,17 @@ class _Hours extends StatelessWidget {
 
 class _Schedule extends StatelessWidget {
   const _Schedule({
+    required this.periodName,
     required this.schedule,
+    required this.onPeriodRemove,
     required this.onAddTime,
     required this.onChangedTime,
     required this.onDeleteTime,
   });
 
+  final String? periodName;
   final List<Schedule> schedule;
+  final Function()? onPeriodRemove;
   final Function() onAddTime;
   final Function(int) onChangedTime;
   final Function(int) onDeleteTime;
@@ -218,12 +265,29 @@ class _Schedule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Padding(
-        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-        child: Text(
-          'Horaire',
-          style: Theme.of(context).textTheme.titleLarge,
+      if (periodName != null)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 10.0),
+              child: Text(
+                periodName!,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            IconButton(
+              onPressed: onPeriodRemove,
+              icon: const Icon(Icons.delete, color: Colors.red),
+            )
+          ],
         ),
+      const Padding(
+        padding: EdgeInsets.only(left: 10.0),
+        child: Text('* Sélectionner les jours et les horaires de stage'),
       ),
       Table(
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,

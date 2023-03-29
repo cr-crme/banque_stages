@@ -3,10 +3,11 @@ import 'package:go_router/go_router.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
-import '/common/models/schedule.dart';
 import '/common/models/student.dart';
+import '/common/models/teacher.dart';
 import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
+import '/misc/job_data_file_service.dart';
 import '/router.dart';
 
 class InternshipsPage extends StatefulWidget {
@@ -82,36 +83,6 @@ class InternshipsPageState extends State<InternshipsPage> {
     );
   }
 
-  Widget _scheduleBuild(Internship internship) {
-    return Table(
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      columnWidths: const {
-        0: FlexColumnWidth(2),
-        1: FlexColumnWidth(1),
-        2: FlexColumnWidth(2),
-        3: FlexColumnWidth(2),
-      },
-      children: [
-        ...internship.schedule.asMap().keys.map(
-              (i) => TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(
-                      internship.schedule[i].dayOfWeek.name,
-                      textAlign: TextAlign.right,
-                    ),
-                  ),
-                  Container(),
-                  Text(internship.schedule[i].start.format(context)),
-                  Text(internship.schedule[i].end.format(context)),
-                ],
-              ),
-            ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final internships = widget.enterprise.internships(context, listen: true);
@@ -131,12 +102,22 @@ class InternshipsPageState extends State<InternshipsPage> {
                 () => _expanded[internships[panelIndex].id] = !isExpanded),
             children: internships.map(
               (internship) {
-                final specialization =
-                    widget.enterprise.jobs[internship.jobId].specialization;
-                final teacher =
-                    TeachersProvider.of(context).fromId(internship.teacherId);
-                final student =
-                    StudentsProvider.of(context).fromId(internship.studentId);
+                late Specialization specialization;
+                late Teacher teacher;
+                late Student student;
+
+                try {
+                  specialization =
+                      widget.enterprise.jobs[internship.jobId].specialization;
+                  teacher =
+                      TeachersProvider.of(context).fromId(internship.teacherId);
+                  student =
+                      StudentsProvider.of(context).fromId(internship.studentId);
+                } catch (e) {
+                  return ExpansionPanel(
+                      headerBuilder: ((context, isExpanded) => Container()),
+                      body: Container());
+                }
 
                 return ExpansionPanel(
                   canTapOnHeader: true,
@@ -175,17 +156,9 @@ class InternshipsPageState extends State<InternshipsPage> {
                               'Professeur\u00b7e en charge : ${teacher.fullName}'),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
+                          padding: const EdgeInsets.only(top: 10.0, bottom: 15),
                           child: _dateBuild(internship),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: Text('Horaire'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0, bottom: 15),
-                          child: _scheduleBuild(internship),
-                        )
                       ],
                     ),
                   ),
