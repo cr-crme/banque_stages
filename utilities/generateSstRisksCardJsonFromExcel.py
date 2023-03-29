@@ -76,50 +76,51 @@ def start(excelPathSST: str):
             "shortname": RISKS_SHORTNAMES[int(row[0])][0],
             "abbrv": RISKS_SHORTNAMES[int(row[0])][1],
             "name": str(row[1]),
+            "nameHeader": str(row[2]),
             "subrisks": [
                     {
-                        "number": "1" if str(row[9]) != "nan" else "0",
-                        "title": str(row[2]) if str(row[2]) != "nan" else "",
-                        "intro": str(row[3]),
+                        "number": "1" if str(row[10]) != "nan" else "0",
+                        "title": str(row[3]) if str(row[3]) != "nan" else "",
+                        "intro": str(row[4]),
                         # the DataFrame format return "NaN" if the cell is empty
-                        "situations": createDictFromString(row[4]) if str(row[4]) != "nan" else [],
-                        "factors": createDictFromString(row[5]) if str(row[5]) != "nan" else [],
-                        "symptoms": createDictFromString(row[6]) if str(row[6]) != "nan" else [],
-                        "images": [IMAGE_FILES_PATH + str(int(row[7])) + IMAGE_FILE_FORMAT if str(row[7]) != "nan" else None,
-                                   IMAGE_FILES_PATH + str(int(row[8])) + IMAGE_FILE_FORMAT if str(row[8]) != "nan" else None]
+                        "situations": createDictFromString(row[5]) if str(row[5]) != "nan" else [],
+                        "factors": createDictFromString(row[6]) if str(row[6]) != "nan" else [],
+                        "symptoms": createDictFromString(row[7]) if str(row[7]) != "nan" else [],
+                        "images": [IMAGE_FILES_PATH + str(int(row[8])) + IMAGE_FILE_FORMAT if str(row[8]) != "nan" else None,
+                                   IMAGE_FILES_PATH + str(int(row[9])) + IMAGE_FILE_FORMAT if str(row[9]) != "nan" else None]
                     },
                     {
                         "number": "2",
-                        "title": str(row[9]) if str(row[9]) != "nan" else "",
-                        "intro": str(row[10]),
-                        "situations": createDictFromString(row[11]) if str(row[11]) != "nan" else [],
-                        "factors": createDictFromString(row[12]) if str(row[12]) != "nan" else [],
-                        "symptoms": createDictFromString(row[13]) if str(row[13]) != "nan" else [],
-                        "images": [IMAGE_FILES_PATH + str(int(row[14])) + IMAGE_FILE_FORMAT if str(row[14]) != "nan" else None,
-                                   IMAGE_FILES_PATH + str(int(row[15])) + IMAGE_FILE_FORMAT if str(row[15]) != "nan" else None]
-                    } if str(row[9]) != "nan" else None
+                        "title": str(row[10]) if str(row[10]) != "nan" else "",
+                        "intro": str(row[11]),
+                        "situations": createDictFromString(row[12]) if str(row[12]) != "nan" else [],
+                        "factors": createDictFromString(row[13]) if str(row[13]) != "nan" else [],
+                        "symptoms": createDictFromString(row[14]) if str(row[14]) != "nan" else [],
+                        "images": [IMAGE_FILES_PATH + str(int(row[15])) + IMAGE_FILE_FORMAT if str(row[15]) != "nan" else None,
+                                   IMAGE_FILES_PATH + str(int(row[16])) + IMAGE_FILE_FORMAT if str(row[16]) != "nan" else None]
+                    } if str(row[10]) != "nan" else None
                     ],
             "links": [
                 {
-                    "source": str(row[16]),
-                    "title": str(row[17]),
-                    "url": str(row[18])
+                    "source": str(row[17]),
+                    "title": str(row[18]),
+                    "url": str(row[19])
                 },
                 {
-                    "source": str(row[19]),
-                    "title": str(row[20]),
-                    "url": str(row[21])
-                } if str(row[19]) != "nan" else None,
+                    "source": str(row[20]),
+                    "title": str(row[21]),
+                    "url": str(row[22])
+                } if str(row[20]) != "nan" else None,
                 {
-                    "source": str(row[22]),
-                    "title": str(row[23]),
-                    "url": str(row[24])
-                } if str(row[22]) != "nan" else None,
+                    "source": str(row[23]),
+                    "title": str(row[24]),
+                    "url": str(row[25])
+                } if str(row[23]) != "nan" else None,
                 {
-                    "source": str(row[25]),
-                    "title": str(row[26]),
-                    "url": str(row[27])
-                } if str(row[25]) != "nan" else None
+                    "source": str(row[26]),
+                    "title": str(row[27]),
+                    "url": str(row[28])
+                } if str(row[26]) != "nan" else None
             ]
         }
         )

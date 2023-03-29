@@ -28,9 +28,8 @@ class SubRisk extends StatelessWidget {
               children: [
                 Image.asset(subRisk.images[0]),
                 Container(
-                  margin: const EdgeInsets.only(top: 5, left: 20),
-                  child: const Text(
-                      'Illustration: Hervé Charbonneau'), //It will be with the picture
+                  margin: const EdgeInsets.only(top: 5, right: 40),
+                  child: const Text('Illustration: Hervé Charbonneau'),
                 ),
               ],
             ),
@@ -41,9 +40,8 @@ class SubRisk extends StatelessWidget {
               children: [
                 Image.asset(subRisk.images[1]),
                 Container(
-                  margin: const EdgeInsets.only(top: 5, left: 20),
-                  child: const Text(
-                      'Illustration: Hervé Charbonneau'), //It will be with the picture
+                  margin: const EdgeInsets.only(top: 5, right: 40),
+                  child: const Text('Illustration: Hervé Charbonneau'),
                 ),
               ],
             ),

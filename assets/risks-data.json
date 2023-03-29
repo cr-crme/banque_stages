@@ -4,6 +4,7 @@
     "shortname":"chemical",
     "abbrv":"c",
     "name":"Risques chimiques",
+    "nameHeader":"Chimiques",
     "subrisks":[
     {
     "number":"0",
@@ -76,6 +77,7 @@
     "shortname":"biological",
     "abbrv":"b",
     "name":"Risques biologiques",
+    "nameHeader":"Biologiques",
     "subrisks":[
     {
     "number":"0",
@@ -163,6 +165,7 @@
     "shortname":"equipment",
     "abbrv":"e",
     "name":"Risques li\u00e9s aux machines et aux \u00e9quipements",
+    "nameHeader":"Machines et \u00e9quipements",
     "subrisks":[
     {
     "number":"0",
@@ -242,7 +245,8 @@
     "number":"4",
     "shortname":"fall",
     "abbrv":"f",
-    "name":"Risques de chute de hauteur et de plain-pied",
+    "name":"Risques de chutes de hauteur et de plain-pied",
+    "nameHeader":"Chutes de hauteur et de plain-pied",
     "subrisks":[
     {
     "number":"1",
@@ -365,6 +369,7 @@
     "shortname":"objectFall",
     "abbrv":"of",
     "name":"Risques li\u00e9s aux chutes d'objets",
+    "nameHeader":"Chutes d'objets",
     "subrisks":[
     {
     "number":"0",
@@ -426,6 +431,7 @@
     "shortname":"transit",
     "abbrv":"t",
     "name":"Risques li\u00e9s aux d\u00e9placements",
+    "nameHeader":"D\u00e9placements",
     "subrisks":[
     {
     "number":"1",
@@ -522,6 +528,7 @@
     "shortname":"posture",
     "abbrv":"p",
     "name":"Risques li\u00e9s aux postures contraignantes",
+    "nameHeader":"Postures contraignantes",
     "subrisks":[
     {
     "number":"1",
@@ -663,6 +670,7 @@
     "shortname":"motion",
     "abbrv":"mv",
     "name":"Risques li\u00e9s aux mouvements r\u00e9p\u00e9titifs, pressions de contact et chocs",
+    "nameHeader":"Mouvements r\u00e9p\u00e9titifs, pressions de contact et chocs",
     "subrisks":[
     {
     "number":"1",
@@ -775,6 +783,7 @@
     "shortname":"handling",
     "abbrv":"h",
     "name":"Risques li\u00e9s \u00e0 la manutention",
+    "nameHeader":"Manutention",
     "subrisks":[
     {
     "number":"1",
@@ -947,6 +956,7 @@
     "shortname":"psychological",
     "abbrv":"psy",
     "name":"Risques psychosociaux et de violence",
+    "nameHeader":"Psychosociaux et violence",
     "subrisks":[
     {
     "number":"1",
@@ -1086,6 +1096,7 @@
     "shortname":"noise",
     "abbrv":"n",
     "name":"Risques li\u00e9s au bruit",
+    "nameHeader":"Bruit",
     "subrisks":[
     {
     "number":"0",
@@ -1156,6 +1167,7 @@
     "shortname":"temperature",
     "abbrv":"et",
     "name":"Risques li\u00e9s \u00e0 l'exposition au froid et \u00e0 la chaleur",
+    "nameHeader":"Exposition au froid et \u00e0 la chaleur",
     "subrisks":[
     {
     "number":"1",
@@ -1278,6 +1290,7 @@
     "shortname":"vibration",
     "abbrv":"v",
     "name":"Risques li\u00e9s aux vibrations",
+    "nameHeader":"Vibrations",
     "subrisks":[
     {
     "number":"1",
@@ -1402,6 +1415,7 @@
     "shortname":"electric",
     "abbrv":"el",
     "name":"Risques \u00e9lectriques",
+    "nameHeader":"\u00c9lectriques",
     "subrisks":[
     {
     "number":"0",
@@ -1452,6 +1466,7 @@
     "shortname":"anoxia",
     "abbrv":"a",
     "name":"Risques li\u00e9s au travail en espace clos",
+    "nameHeader":"Travail en espace clos",
     "subrisks":[
     {
     "number":"0",
@@ -1494,6 +1509,7 @@
     "shortname":"fire",
     "abbrv":"fi",
     "name":"Risques d'incendie ou d'explosion",
+    "nameHeader":"Incendie ou explosion",
     "subrisks":[
     {
     "number":"0",
@@ -1540,6 +1556,7 @@
     "shortname":"nanomaterial",
     "abbrv":"nm",
     "name":"Risques li\u00e9s aux nanomat\u00e9riaux",
+    "nameHeader":"Nanomat\u00e9riaux",
     "subrisks":[
     {
     "number":"0",

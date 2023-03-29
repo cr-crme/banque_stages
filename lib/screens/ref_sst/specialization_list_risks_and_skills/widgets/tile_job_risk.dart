@@ -29,6 +29,8 @@ class TileJobRisk extends StatelessWidget {
             elevation: 10,
             borderRadius: BorderRadius.circular(100),
             child: Tooltip(
+              margin: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 1 / 3, right: 10),
               message: tooltipMessage,
               child: Container(
                   height: 30,

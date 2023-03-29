@@ -55,7 +55,7 @@ class _SstCardsScreenState extends State<SstCardsScreen>
     return AutoSizeText(
       index == 0
           ? 'Fiches de risques'
-          : 'FICHE $index - ${RiskDataFileService.risks[index - 1].name}',
+          : '$index. ${RiskDataFileService.risks[index - 1].nameHeader}',
       maxLines: 2,
     );
   }
