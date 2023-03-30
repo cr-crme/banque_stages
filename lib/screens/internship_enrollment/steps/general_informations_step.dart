@@ -235,7 +235,7 @@ class _SupervisonInformation extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 16.0),
           child: Text(
-            'Superviseur en milieu de travail \n(tuteur en entreprise)',
+            'Superviseur en milieu de travail \n(responsable du stagiaire)',
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),

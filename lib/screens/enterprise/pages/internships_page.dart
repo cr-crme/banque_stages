@@ -153,7 +153,7 @@ class InternshipsPageState extends State<InternshipsPage> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
-                              'Professeur\u00b7e en charge : ${teacher.fullName}'),
+                              'Enseignant\u00b7e superviseur\u00b7e : ${teacher.fullName}'),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 10.0, bottom: 15),
