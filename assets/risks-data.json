@@ -246,7 +246,7 @@
     "shortname":"fall",
     "abbrv":"f",
     "name":"Risques de chutes de hauteur et de plain-pied",
-    "nameHeader":"Chutes de hauteur et de plain-pied",
+    "nameHeader":"Chutes de hauteur et \nde plain-pied",
     "subrisks":[
     {
     "number":"1",
@@ -1167,7 +1167,7 @@
     "shortname":"temperature",
     "abbrv":"et",
     "name":"Risques li\u00e9s \u00e0 l'exposition au froid et \u00e0 la chaleur",
-    "nameHeader":"Exposition au froid et \u00e0 la chaleur",
+    "nameHeader":"Exposition au froid et \n\u00e0 la chaleur",
     "subrisks":[
     {
     "number":"1",

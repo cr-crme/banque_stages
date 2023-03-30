@@ -111,7 +111,7 @@ class _PostInternshipEvaluationScreenState
             ),
             Step(
               isActive: _currentStep == 2,
-              title: const Text('Pré-requis'),
+              title: const Text('Prérequis'),
               content: PrerequisitesStep(
                 key: _prerequisitesKey,
                 job: job,
