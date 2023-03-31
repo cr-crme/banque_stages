@@ -5,9 +5,7 @@ import '/common/models/schedule.dart';
 import '/misc/form_service.dart';
 
 class ScheduleStep extends StatefulWidget {
-  const ScheduleStep({
-    super.key,
-  });
+  const ScheduleStep({super.key});
 
   @override
   State<ScheduleStep> createState() => ScheduleStepState();
@@ -122,15 +120,13 @@ class ScheduleStepState extends State<ScheduleStep> {
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _DateRange(dateRange: dateRange, promptDateRange: _promptDateRange),
-            const _Hours(),
-            _buildSchedule(),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _DateRange(dateRange: dateRange, promptDateRange: _promptDateRange),
+          const _Hours(),
+          _buildSchedule(),
+        ],
       ),
     );
   }

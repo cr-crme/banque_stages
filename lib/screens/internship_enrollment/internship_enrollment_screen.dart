@@ -42,7 +42,8 @@ class _InternshipEnrollmentScreenState
     if (!isValid) return;
 
     if (_currentStep != 2) {
-      setState(() => _currentStep += 1);
+      _currentStep += 1;
+      setState(() {});
       return;
     }
 
@@ -115,16 +116,12 @@ class _InternshipEnrollmentScreenState
             Step(
               isActive: _currentStep == 1,
               title: const Text('Horaire'),
-              content: ScheduleStep(
-                key: _scheduleKey,
-              ),
+              content: ScheduleStep(key: _scheduleKey),
             ),
             Step(
               isActive: _currentStep == 2,
               title: const Text('Exigences'),
-              content: RequirementsStep(
-                key: _requirementsKey,
-              ),
+              content: RequirementsStep(key: _requirementsKey),
             ),
           ],
           controlsBuilder: _controlBuilder,
