@@ -100,8 +100,7 @@ class _RoutingMapState extends State<RoutingMap> {
 
     for (var i = 0; i < waypoints.length; i++) {
       final waypoint = waypoints[i];
-      final markerSize =
-          waypoint.priority == VisitingPriority.high ? 40.0 : 30.0;
+      const markerSize = 30.0;
 
       double nameWidth = 160;
       double nameHeight = 100;
@@ -170,7 +169,7 @@ class _RoutingMapState extends State<RoutingMap> {
       return Padding(
         padding: const EdgeInsets.all(8),
         child: FlutterMap(
-          options: MapOptions(center: waypoints[0].toLatLng(), zoom: 14),
+          options: MapOptions(center: waypoints[0].toLatLng(), zoom: 12),
           nonRotatedChildren: const [ZoomButtons()],
           children: [
             TileLayer(

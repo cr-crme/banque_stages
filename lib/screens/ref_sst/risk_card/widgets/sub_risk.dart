@@ -21,6 +21,7 @@ class SubRisk extends StatelessWidget {
       subRiskWidgets.add(Column(
         children: [
           if (subRisks.length > 1) SubTitle(subRisk.id, subRisk.title),
+          if (subRisks.length <= 1) const SizedBox(height: 12),
           Introduction(subRisk.intro),
           if (subRisk.images.isNotEmpty)
             Column(

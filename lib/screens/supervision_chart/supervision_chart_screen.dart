@@ -316,10 +316,19 @@ class _StudentTile extends StatelessWidget {
         ),
         title: Text(student.fullName),
         isThreeLine: true,
-        subtitle: AutoSizeText(
-          '${enterprise?.name ?? 'Aucun stage'}\n${specialization?.name ?? ''}',
-          maxLines: 2,
-          style: const TextStyle(color: Colors.black87),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              enterprise?.name ?? 'Aucun stage',
+              style: const TextStyle(color: Colors.black87),
+            ),
+            AutoSizeText(
+              specialization?.name ?? '',
+              maxLines: 2,
+              style: const TextStyle(color: Colors.black87),
+            ),
+          ],
         ),
         trailing: internships.isEmpty
             ? null

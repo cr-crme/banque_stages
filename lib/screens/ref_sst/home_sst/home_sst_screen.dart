@@ -22,10 +22,6 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
     _searchController.addListener(() => setState(() {}));
   }
 
-  //Future<void> fetchRisks() async {
-  //  await RiskDataFileService.loadData();
-  //}
-
   bool test = true;
 
   @override

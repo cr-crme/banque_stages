@@ -143,7 +143,7 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
       );
     }).toList();
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(18.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -177,7 +177,7 @@ class _Specialization extends StatelessWidget {
             .specialization;
 
     return Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -224,7 +224,7 @@ class _PersonalNotesState extends State<_PersonalNotes> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(top: 16, left: 8.0, right: 8.0),
+        padding: const EdgeInsets.only(top: 16, left: 18.0, right: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -272,7 +272,7 @@ class _Contact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(top: 16.0, left: 8.0, right: 8.0),
+        padding: const EdgeInsets.only(top: 16.0, left: 18.0, right: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -293,8 +293,7 @@ class _Contact extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Text(enterprise.address == null
                           ? 'Aucune adresse'
-                          : 'Adresse complète :\n'
-                              '${enterprise.address!.civicNumber} ${enterprise.address!.street}\n'
+                          : '${enterprise.address!.civicNumber} ${enterprise.address!.street}\n'
                               '${enterprise.address!.city}\n'
                               '${enterprise.address!.postalCode}'),
                     ),
@@ -312,7 +311,7 @@ class _Contact extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: Text('Superviseur du stage :\n'
+                    child: Text('${internship.supervisor.fullName}\n'
                         '${internship.supervisor.phone ?? 'Aucun téléphone enregistré'}'),
                   ),
                 ],
@@ -329,35 +328,32 @@ class _Schedule extends StatelessWidget {
   final Internship? internship;
 
   Widget _scheduleBuilder(BuildContext context, List<Schedule> schedule) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 25),
-      child: Table(
-        columnWidths: {
-          0: FixedColumnWidth(MediaQuery.of(context).size.width / 5),
-          1: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
-          2: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
-        },
-        children: schedule
-            .map<TableRow>((e) => TableRow(
-                  children: [
-                    Text(e.dayOfWeek.name),
-                    Text(
-                        textAlign: TextAlign.end,
-                        '${e.start.hour}h${e.start.minute.toString().padLeft(2, '0')}'),
-                    Text(
-                        textAlign: TextAlign.end,
-                        '${e.end.hour}h${e.end.minute.toString().padLeft(2, '0')}'),
-                  ],
-                ))
-            .toList(),
-      ),
+    return Table(
+      columnWidths: {
+        0: FixedColumnWidth(MediaQuery.of(context).size.width / 3),
+        1: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
+        2: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
+      },
+      children: schedule
+          .map<TableRow>((e) => TableRow(
+                children: [
+                  Text(e.dayOfWeek.name),
+                  Text(
+                      textAlign: TextAlign.end,
+                      '${e.start.hour}h${e.start.minute.toString().padLeft(2, '0')}'),
+                  Text(
+                      textAlign: TextAlign.end,
+                      '${e.end.hour}h${e.end.minute.toString().padLeft(2, '0')}'),
+                ],
+              ))
+          .toList(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(top: 16.0, left: 8.0, right: 8.0),
+        padding: const EdgeInsets.only(top: 16.0, left: 18.0, right: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -387,7 +383,7 @@ class _EnterpriseRequirements extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(top: 16.0, left: 8.0, right: 8.0),
+        padding: const EdgeInsets.only(top: 16.0, left: 18.0, right: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
