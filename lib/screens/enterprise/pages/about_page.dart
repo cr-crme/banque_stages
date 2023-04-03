@@ -14,8 +14,8 @@ import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/common/widgets/disponibility_circle.dart';
 import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import '/common/widgets/form_fields/share_with_picker_form_field.dart';
+import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
-import 'widgets/sub_title.dart';
 
 class EnterpriseAboutPage extends StatefulWidget {
   const EnterpriseAboutPage({
@@ -68,6 +68,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _GeneralInformation(
                   enterprise: widget.enterprise,
@@ -108,6 +109,7 @@ class _GeneralInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return editMode
         ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SubTitle('Nom de l\'entreprise'),
               Padding(
@@ -153,10 +155,11 @@ class _AvailablePlace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Places de stage disponibles'),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.only(left: 8),
           child: Column(
             children: enterprise.jobs
                 .map(
@@ -215,10 +218,10 @@ class _ActivityType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Types d\'activités'),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+        Center(
           child: Column(
             children: [
               Visibility(
@@ -228,9 +231,12 @@ class _ActivityType extends StatelessWidget {
               ),
               Visibility(
                 visible: editMode,
-                child: ActivityTypesPickerFormField(
-                  initialValue: enterprise.activityTypes,
-                  onSaved: onSaved,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: ActivityTypesPickerFormField(
+                    initialValue: enterprise.activityTypes,
+                    onSaved: onSaved,
+                  ),
                 ),
               ),
             ],
@@ -260,11 +266,14 @@ class _RecrutedBy extends StatelessWidget {
     final teachers = TeachersProvider.of(context);
 
     final teacher = teachers.fromId(enterprise.recrutedBy);
+    final schoolName = schools.hasId(teacher.schoolId)
+        ? schools.fromId(teacher.schoolId).name
+        : '';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Entreprise recrutée par :'),
+        const SubTitle('Entreprise recrutée par'),
         GestureDetector(
           onTap: teacher.email == null ? null : () => _sendEmail(teacher),
           child: Padding(
@@ -282,7 +291,7 @@ class _RecrutedBy extends StatelessWidget {
                 ),
                 Flexible(
                   child: Text(
-                    ' - ${schools.fromId(teacher.schoolId).name}',
+                    ' - $schoolName',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
@@ -308,13 +317,9 @@ class _SharingLevel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ListTile(
-          title: Text(
-            'Partage de l\'entreprise',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
+        const SubTitle('Partage de l\'entreprise'),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(

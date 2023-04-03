@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -132,12 +133,8 @@ class JobsPageState extends State<JobsPage> {
             .map((job) => ExpansionPanelRadio(
                 canTapOnHeader: true,
                 value: job.id,
-                headerBuilder: (context, isExpanded) => ListTile(
-                      title: Text(
-                        job.specialization.idWithName,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
+                headerBuilder: (context, isExpanded) =>
+                    SubTitle(job.specialization.idWithName, top: 12),
                 body: Column(
                   children: [
                     ExpansionPanelList(

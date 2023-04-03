@@ -8,6 +8,7 @@ import '/common/providers/students_provider.dart';
 import '/common/widgets/add_job_button.dart';
 import '/common/widgets/form_fields/job_form_field_list_tile.dart';
 import '/common/widgets/form_fields/student_picker_form_field.dart';
+import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
 import '/misc/job_data_file_service.dart';
 
@@ -36,36 +37,38 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _GeneralInformations(
-            enterprise: widget.enterprise,
-            onSelectStudent: (s) => setState(() => student = s),
-          ),
-          _MainJob(
-            enterprise: widget.enterprise,
-            onSaved: (job) => setState(() => primaryJob = job),
-          ),
-          if (student != null && student!.program == Program.fpt)
-            _ExtraSpecialization(
-              extraSpecializations: extraSpecializations,
-              onAddSpecialization: () =>
-                  setState(() => extraSpecializations.add(null)),
-              onSetSpecialization: (specialization, i) =>
-                  setState(() => extraSpecializations[i] = specialization),
-              onDeleteSpecialization: (i) =>
-                  setState(() => extraSpecializations.removeAt(i)),
+    return SingleChildScrollView(
+      child: Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _GeneralInformations(
+              enterprise: widget.enterprise,
+              onSelectStudent: (s) => setState(() => student = s),
             ),
-          _SupervisonInformation(
-            onSavedFirstName: (name) => supervisorFirstName = name!,
-            onSavedLastName: (name) => supervisorLastName = name!,
-            onSavedPhone: (phone) => supervisorPhone = phone!,
-            onSavedEmail: (email) => supervisorEmail = email!,
-          ),
-        ],
+            _MainJob(
+              enterprise: widget.enterprise,
+              onSaved: (job) => setState(() => primaryJob = job),
+            ),
+            if (student != null && student!.program == Program.fpt)
+              _ExtraSpecialization(
+                extraSpecializations: extraSpecializations,
+                onAddSpecialization: () =>
+                    setState(() => extraSpecializations.add(null)),
+                onSetSpecialization: (specialization, i) =>
+                    setState(() => extraSpecializations[i] = specialization),
+                onDeleteSpecialization: (i) =>
+                    setState(() => extraSpecializations.removeAt(i)),
+              ),
+            _SupervisonInformation(
+              onSavedFirstName: (name) => supervisorFirstName = name!,
+              onSavedLastName: (name) => supervisorLastName = name!,
+              onSavedPhone: (phone) => supervisorPhone = phone!,
+              onSavedEmail: (email) => supervisorEmail = email!,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -85,10 +88,7 @@ class _GeneralInformations extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Informations générales',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        const SubTitle('Informations générales', left: 0, top: 0),
         ListTile(
           title: TextField(
             decoration: const InputDecoration(labelText: '* Entreprise'),
@@ -129,13 +129,7 @@ class _MainJob extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 16.0),
-          child: Text(
-            'Métier principal',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
+        const SubTitle('Métier principal', left: 0),
         JobFormFieldListTile(
           specializations: _generateSpecializationAndAvailability(context),
           askNumberPositionsOffered: false,
@@ -204,7 +198,7 @@ class _ExtraSpecialization extends StatelessWidget {
               .map<Widget>((i) => _extraJobTileBuilder(i))
               .toList(),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: 8.0, left: 12),
           child: AddJobButton(onPressed: onAddSpecialization),
         ),
       ],
@@ -230,13 +224,9 @@ class _SupervisonInformation extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 16.0),
-          child: Text(
+        const SubTitle(
             'Superviseur en milieu de travail \n(responsable du stagiaire)',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
+            left: 0),
         ListTile(
           title: TextFormField(
             decoration: const InputDecoration(labelText: '* Prénom'),

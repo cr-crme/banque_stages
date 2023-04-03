@@ -7,6 +7,7 @@ import '/common/models/student.dart';
 import '/common/models/teacher.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
+import '/common/widgets/sub_title.dart';
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
@@ -34,8 +35,9 @@ class InternshipsPageState extends State<InternshipsPage> {
           children: [
             ExpansionPanel(
               headerBuilder: (context, isExpanded) => ListTile(
-                title: Text(
-                    'Année ${internship.date.start.year}-${internship.date.end.year}'),
+                title: SubTitle(
+                    'Année ${internship.date.start.year}-${internship.date.end.year}',
+                    top: 12),
               ),
               body: Column(
                 children: [

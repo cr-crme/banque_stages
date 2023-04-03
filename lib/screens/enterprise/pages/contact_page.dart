@@ -4,9 +4,9 @@ import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
 import 'widgets/show_school.dart';
-import 'widgets/sub_title.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({
@@ -130,6 +130,7 @@ class _ContactInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Entreprise représentée par'),
         Padding(
@@ -217,6 +218,7 @@ class _EnterpriseInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Informations de l\'établissement'),
         Padding(
@@ -286,6 +288,7 @@ class _TaxesInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Informations pour le crédit d\'impôt'),
         Padding(

@@ -91,21 +91,22 @@ class _StudentScreenState extends State<StudentScreen>
           ],
         ),
       ),
-      selector: (context, students) => students.isNotEmpty
-          ? students[widget.id]
-          : Student(
-              id: '-1',
-              firstName: 'NoName',
-              lastName: 'NoMore',
-              dateBirth: DateTime.now(),
-              address: null,
-              contact: Person(firstName: 'NoMore', lastName: 'NoName'),
-              contactLink: '',
-              email: '',
-              group: '',
-              program: Program.fms,
-              teacherId: '-1',
-            ),
+      selector: (context, students) =>
+          students.isNotEmpty && students.hasId(widget.id)
+              ? students[widget.id]
+              : Student(
+                  id: '-1',
+                  firstName: 'NoName',
+                  lastName: 'NoMore',
+                  dateBirth: DateTime.now(),
+                  address: null,
+                  contact: Person(firstName: 'NoMore', lastName: 'NoName'),
+                  contactLink: '',
+                  email: '',
+                  group: '',
+                  program: Program.fms,
+                  teacherId: '-1',
+                ),
     );
   }
 }

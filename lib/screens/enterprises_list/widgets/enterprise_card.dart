@@ -34,9 +34,9 @@ class EnterpriseCard extends StatelessWidget {
               visible: enterprise.address != null ||
                   enterprise.headquartersAddress != null,
               child: Text(
-                enterprise.headquartersAddress != null
-                    ? enterprise.headquartersAddress.toString()
-                    : enterprise.address.toString(),
+                enterprise.address != null
+                    ? enterprise.address.toString()
+                    : enterprise.headquartersAddress.toString(),
                 style: TextStyle(color: Colors.grey[800]),
               ),
             ),

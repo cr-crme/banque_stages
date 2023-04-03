@@ -95,8 +95,6 @@ class _InternshipEnrollmentScreenState
 
   @override
   Widget build(BuildContext context) {
-    const headerHeight = 250;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inscrire un stagiaire'),
@@ -104,7 +102,6 @@ class _InternshipEnrollmentScreenState
       body: Selector<EnterprisesProvider, Enterprise>(
         builder: (context, enterprise, _) => Stepper(
           type: StepperType.horizontal,
-          physics: const NeverScrollableScrollPhysics(),
           currentStep: _currentStep,
           onStepContinue: _nextStep,
           onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
@@ -113,29 +110,18 @@ class _InternshipEnrollmentScreenState
             Step(
               isActive: _currentStep == 0,
               title: const Text('Général'),
-              content: SizedBox(
-                height: MediaQuery.of(context).size.height - headerHeight,
-                child: SingleChildScrollView(
-                  child: GeneralInformationsStep(
-                      key: _generalInfoKey, enterprise: enterprise),
-                ),
-              ),
+              content: GeneralInformationsStep(
+                  key: _generalInfoKey, enterprise: enterprise),
             ),
             Step(
               isActive: _currentStep == 1,
               title: const Text('Horaire'),
-              content: SizedBox(
-                  height: MediaQuery.of(context).size.height - headerHeight,
-                  child: SingleChildScrollView(
-                      child: ScheduleStep(key: _scheduleKey))),
+              content: ScheduleStep(key: _scheduleKey),
             ),
             Step(
               isActive: _currentStep == 2,
               title: const Text('Exigences'),
-              content: SizedBox(
-                  height: MediaQuery.of(context).size.height - headerHeight,
-                  child: SingleChildScrollView(
-                      child: RequirementsStep(key: _requirementsKey))),
+              content: RequirementsStep(key: _requirementsKey),
             ),
           ],
           controlsBuilder: _controlBuilder,

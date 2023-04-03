@@ -4,11 +4,13 @@ import 'package:go_router/go_router.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
 import '/common/models/schedule.dart';
+import '/common/models/student.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
+import '/common/widgets/sub_title.dart';
 import '/router.dart';
 import '/screens/supervision_chart/widgets/transfer_dialog.dart';
 
@@ -37,7 +39,12 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final student = StudentsProvider.of(context).fromId(studentId);
+    late Student student;
+    try {
+      student = StudentsProvider.of(context).fromId(studentId);
+    } catch (e) {
+      return Container();
+    }
     final internships = InternshipsProvider.of(context).byStudentId(studentId);
     final internship = internships.isNotEmpty ? internships.last : null;
 
@@ -142,21 +149,15 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
         ),
       );
     }).toList();
-    return Padding(
-      padding: const EdgeInsets.all(18.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Niveau de priorité pour les visites',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: flags,
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Niveau de priorité pour les visites'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: flags,
+        ),
+      ],
     );
   }
 }
@@ -176,21 +177,16 @@ class _Specialization extends StatelessWidget {
             .fromId(internship!.jobId)
             .specialization;
 
-    return Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Métier',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 25.0, top: 8.0),
-              child: Text(specialization?.idWithName ?? 'Aucun stage'),
-            ),
-          ],
-        ));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Métier'),
+        Padding(
+          padding: const EdgeInsets.only(left: 25.0, top: 8.0),
+          child: Text(specialization?.idWithName ?? 'Aucun stage'),
+        ),
+      ],
+    );
   }
 }
 
@@ -223,43 +219,34 @@ class _PersonalNotesState extends State<_PersonalNotes> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 16, left: 18.0, right: 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Particularités du stage à connaitre',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 4.0),
-              child: Text(
-                  '(ex. entrer par la porte 5 réservée au personnel, ...)'),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 4 / 5,
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.grey)),
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                    ),
-                    keyboardType: TextInputType.multiline,
-                    minLines: 4,
-                    maxLines: null,
-                    focusNode: _focusNode,
-                    controller: _textController,
-                  ),
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Particularités du stage à connaitre'),
+        const Padding(
+          padding: EdgeInsets.only(left: 32.0, bottom: 8),
+          child: Text('(ex. entrer par la porte 5 réservée au personnel, ...)'),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 32.0),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 5 / 6,
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+            child: TextField(
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
               ),
+              keyboardType: TextInputType.multiline,
+              minLines: 4,
+              maxLines: null,
+              focusNode: _focusNode,
+              controller: _textController,
             ),
-          ],
-        ));
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -271,54 +258,49 @@ class _Contact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 16.0, left: 18.0, right: 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Contact',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 25.0, top: 8.0),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.home,
-                    color: Colors.black,
-                  ),
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text(enterprise.address == null
-                          ? 'Aucune adresse'
-                          : '${enterprise.address!.civicNumber} ${enterprise.address!.street}\n'
-                              '${enterprise.address!.city}\n'
-                              '${enterprise.address!.postalCode}'),
-                    ),
-                  ),
-                ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Contact'),
+        Padding(
+          padding: const EdgeInsets.only(left: 32.0, top: 8.0),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.home,
+                color: Colors.black,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 25.0, top: 8.0),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.phone,
-                    color: Colors.black,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text('${internship.supervisor.fullName}\n'
-                        '${internship.supervisor.phone ?? 'Aucun téléphone enregistré'}'),
-                  ),
-                ],
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(enterprise.address == null
+                      ? 'Aucune adresse'
+                      : '${enterprise.address!.civicNumber} ${enterprise.address!.street}\n'
+                          '${enterprise.address!.city}\n'
+                          '${enterprise.address!.postalCode}'),
+                ),
               ),
-            ),
-          ],
-        ));
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 32.0, top: 8.0),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.phone,
+                color: Colors.black,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text('${internship.supervisor.fullName}\n'
+                    '${internship.supervisor.phone ?? 'Aucun téléphone enregistré'}'),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -352,26 +334,21 @@ class _Schedule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 16.0, left: 18.0, right: 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Horaire de stage',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 25.0, top: 8.0),
-              child: internship != null
-                  ? _scheduleBuilder(
-                      context,
-                      internship!.schedule[
-                          0]) // TODO: Fix when there is more than 1 schedule
-                  : const Text('Aucun stage'),
-            ),
-          ],
-        ));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Horaire de stage'),
+        Padding(
+          padding: const EdgeInsets.only(left: 32),
+          child: internship != null
+              ? _scheduleBuilder(
+                  context,
+                  internship!.schedule[
+                      0]) // TODO: Fix when there is more than 1 schedule
+              : const Text('Aucun stage'),
+        ),
+      ],
+    );
   }
 }
 
@@ -382,39 +359,34 @@ class _EnterpriseRequirements extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 16.0, left: 18.0, right: 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Exigences de l\'entreprise',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 25.0, top: 8.0),
-              child: Text('EPI requis :',
-                  style: TextStyle(fontWeight: FontWeight.w500)),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 25.0),
-              child: Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 25.0, top: 8.0),
-              child: Text('Uniforme requis :',
-                  style: TextStyle(fontWeight: FontWeight.w500)),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 25.0),
-              child: Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
-              ),
-            ),
-          ],
-        ));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        SubTitle('Exigences de l\'entreprise'),
+        Padding(
+          padding: EdgeInsets.only(left: 32.0),
+          child: Text('EPI requis :',
+              style: TextStyle(fontWeight: FontWeight.w500)),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 32.0),
+          child: Text(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 32.0, top: 8.0),
+          child: Text('Uniforme requis :',
+              style: TextStyle(fontWeight: FontWeight.w500)),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 32.0),
+          child: Text(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
+          ),
+        ),
+      ],
+    );
   }
 }
 

@@ -7,6 +7,7 @@ import '/common/models/student.dart';
 import '/common/models/teacher.dart';
 import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
+import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 import '/router.dart';
 
@@ -90,13 +91,9 @@ class InternshipsPageState extends State<InternshipsPage> {
 
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            title: Text(
-              'Historique des stages',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
+          const SubTitle('Historique des stages'),
           ExpansionPanelList(
             expansionCallback: (panelIndex, isExpanded) => setState(
                 () => _expanded[internships[panelIndex].id] = !isExpanded),

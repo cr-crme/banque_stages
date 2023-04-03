@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '/common/models/schedule.dart';
+import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
 
 class ScheduleStep extends StatefulWidget {
@@ -118,15 +119,17 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _DateRange(dateRange: dateRange, promptDateRange: _promptDateRange),
-          const _Hours(),
-          _buildSchedule(),
-        ],
+    return SingleChildScrollView(
+      child: Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _DateRange(dateRange: dateRange, promptDateRange: _promptDateRange),
+            const _Hours(),
+            _buildSchedule(),
+          ],
+        ),
       ),
     );
   }
@@ -135,13 +138,7 @@ class ScheduleStepState extends State<ScheduleStep> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-          child: Text(
-            'Horaire',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
+        const SubTitle('Horaire', left: 0),
         ...schedule
             .asMap()
             .keys
@@ -176,11 +173,9 @@ class _DateRange extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Dates',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        const SubTitle('Dates', top: 0, left: 0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '/common/widgets/sub_title.dart';
+
 class RequirementsStep extends StatefulWidget {
   const RequirementsStep({super.key});
 
@@ -48,13 +50,7 @@ class RequirementsStepState extends State<RequirementsStep> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text(
-              'EPI et Tenue de travail',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
+          const SubTitle('EPI et Tenue de travail', top: 0, left: 0),
           Text(
             '*Est-ce que l’élève devra porter des équipements de protection individuelle?',
             style: Theme.of(context).textTheme.bodyLarge,
