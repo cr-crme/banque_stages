@@ -46,12 +46,12 @@ class ScheduleStepState extends State<ScheduleStep> {
     setState(() {});
   }
 
-  void _onPeriodRemove(int scheduleIndex) async {
+  void _onRemovedPeriod(int scheduleIndex) async {
     schedule.removeAt(scheduleIndex);
     setState(() {});
   }
 
-  void _onAddTime(int scheduleIndex) async {
+  void _onAddedTime(int scheduleIndex) async {
     final day = await _promptDay();
     if (day == null) return;
     final start = await _promptTime(defaultStart);
@@ -64,7 +64,7 @@ class ScheduleStepState extends State<ScheduleStep> {
     setState(() {});
   }
 
-  void _onUpdateTime(int scheduleIndex, int i) async {
+  void _onUpdatedTime(int scheduleIndex, int i) async {
     final start = await _promptTime(schedule[scheduleIndex][i].start);
     if (start == null) return;
     final end = await _promptTime(schedule[scheduleIndex][i].end);
@@ -149,9 +149,9 @@ class ScheduleStepState extends State<ScheduleStep> {
                   periodName: schedule.length > 1 ? 'Période ${i + 1}' : null,
                   schedule: schedule[i],
                   onPeriodRemove:
-                      schedule.length > 1 ? () => _onPeriodRemove(i) : null,
-                  onAddTime: () => _onAddTime(i),
-                  onChangedTime: (index) => _onUpdateTime(i, index),
+                      schedule.length > 1 ? () => _onRemovedPeriod(i) : null,
+                  onAddTime: () => _onAddedTime(i),
+                  onChangedTime: (index) => _onUpdatedTime(i, index),
                   onDeleteTime: (index) => _onRemovedTime(i, index),
                 ))
             .toList(),
