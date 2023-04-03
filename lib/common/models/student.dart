@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '/common/models/address.dart';
 import '/common/models/person.dart';
+import '/common/models/phone_number.dart';
 
 enum Program {
   fpt,
@@ -82,7 +83,7 @@ class Student extends Person {
     String? middleName,
     String? lastName,
     DateTime? dateBirth,
-    String? phone,
+    PhoneNumber? phone,
     String? email,
     Address? address,
     String? teacherId,

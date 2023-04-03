@@ -4,13 +4,14 @@ import 'package:provider/provider.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
 import '/common/models/person.dart';
+import '/common/models/phone_number.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/misc/form_service.dart';
-import 'steps/generate_document_dialog.dart';
 import 'steps/general_informations_step.dart';
+import 'steps/generate_document_dialog.dart';
 import 'steps/requirements_step.dart';
 import 'steps/schedule_step.dart';
 
@@ -71,7 +72,8 @@ class _InternshipEnrollmentScreenState
           firstName: _generalInfoKey.currentState!.supervisorFirstName!,
           lastName: _generalInfoKey.currentState!.supervisorLastName!,
           email: _generalInfoKey.currentState!.supervisorEmail ?? '',
-          phone: _generalInfoKey.currentState!.supervisorPhone ?? ''),
+          phone: PhoneNumber.fromString(
+              _generalInfoKey.currentState!.supervisorPhone)),
       protection: _requirementsKey.currentState!.protection,
       uniform: _requirementsKey.currentState!.uniform,
       date: _scheduleKey.currentState!.dateRange,

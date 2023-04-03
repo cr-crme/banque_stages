@@ -1,5 +1,6 @@
 import '/common/models/address.dart';
 import '/common/models/person.dart';
+import '/common/models/phone_number.dart';
 
 class Teacher extends Person {
   final String schoolId;
@@ -36,7 +37,7 @@ class Teacher extends Person {
           DateTime? dateBirth,
           String? schoolId,
           String? email,
-          String? phone,
+          PhoneNumber? phone,
           Address? address}) =>
       Teacher(
         id: id ?? this.id,

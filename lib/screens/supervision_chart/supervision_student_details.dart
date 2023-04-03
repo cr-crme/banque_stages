@@ -294,7 +294,7 @@ class _Contact extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text('${internship.supervisor.fullName}\n'
-                    '${internship.supervisor.phone ?? 'Aucun téléphone enregistré'}'),
+                    '${internship.supervisor.phone.toString() == '' ? 'Aucun téléphone enregistré' : internship.supervisor.phone}'),
               ),
             ],
           ),

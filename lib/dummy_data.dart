@@ -9,6 +9,7 @@ import '/common/models/internship.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/models/person.dart';
+import '/common/models/phone_number.dart';
 import '/common/models/schedule.dart';
 import '/common/models/school.dart';
 import '/common/models/student.dart';
@@ -110,15 +111,15 @@ Future<void> addDummyEnterprises(
       jobs: jobs,
       contactName: 'Marc Arcand',
       contactFunction: 'Directeur',
-      contactPhone: '514 999 6655',
+      contactPhone: PhoneNumber.fromString('514 999 6655'),
       contactEmail: 'm.arcand@email.com',
       address: Address(
           civicNumber: 1853,
           street: 'Chem. Rockland',
           city: 'Mont-Royal',
           postalCode: 'H3P 2Y7'),
-      phone: '514 999 6655',
-      fax: '514 999 6600',
+      phone: PhoneNumber.fromString('514 999 6655'),
+      fax: PhoneNumber.fromString('514 999 6600'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 1853,
@@ -145,15 +146,15 @@ Future<void> addDummyEnterprises(
       jobs: jobs,
       contactName: 'Caroline Mercier',
       contactFunction: 'Assistante-gérante',
-      contactPhone: '514 123 4567 poste 123',
+      contactPhone: PhoneNumber.fromString('514 123 4567 poste 123'),
       contactEmail: 'c.mercier@email.com',
       address: Address(
           civicNumber: 4885,
           street: 'Henri-Bourassa Blvd Ouest',
           city: 'Montréal',
           postalCode: 'H3L 1P3'),
-      phone: '514 123 4567',
-      fax: '514 123 4560',
+      phone: PhoneNumber.fromString('514 123 4567'),
+      fax: PhoneNumber.fromString('514 123 4560'),
       website: 'example.com',
       headquartersAddress: Address(
           civicNumber: 4885,
@@ -180,15 +181,14 @@ Future<void> addDummyEnterprises(
       jobs: jobs,
       contactName: 'Denis Rondeau',
       contactFunction: 'Propriétaire',
-      contactPhone: '438 987 6543',
+      contactPhone: PhoneNumber.fromString('438 987 6543'),
       contactEmail: 'd.rondeau@email.com',
       address: Address(
           civicNumber: 8490,
           street: 'Rue Saint-Dominique',
           city: 'Montréal',
           postalCode: 'H2P 2L5'),
-      phone: '438 987 6543',
-      fax: '',
+      phone: PhoneNumber.fromString('438 987 6543'),
       website: '',
       headquartersAddress: Address(
           civicNumber: 8490,
@@ -215,15 +215,15 @@ Future<void> addDummyEnterprises(
       jobs: jobs,
       contactName: 'Claudio Brodeur',
       contactFunction: 'Propriétaire',
-      contactPhone: '514 235 6789',
+      contactPhone: PhoneNumber.fromString('514 235 6789'),
       contactEmail: 'c.brodeur@email.com',
       address: Address(
           civicNumber: 10142,
           street: 'Boul. Saint-Laurent',
           city: 'Montréal',
           postalCode: 'H3L 2N7'),
-      phone: '514 235 6789',
-      fax: '514 321 9870',
+      phone: PhoneNumber.fromString('514 235 6789'),
+      fax: PhoneNumber.fromString('514 321 9870'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 10142,
@@ -251,15 +251,15 @@ Future<void> addDummyEnterprises(
       jobs: jobs,
       contactName: 'Brigitte Samson',
       contactFunction: 'Gérante',
-      contactPhone: '438 888 2222',
+      contactPhone: PhoneNumber.fromString('438 888 2222'),
       contactEmail: 'b.samson@email.com',
       address: Address(
           civicNumber: 8921,
           street: 'Rue Lajeunesse',
           city: 'Montréal',
           postalCode: 'H2M 1S1'),
-      phone: '514 321 9876',
-      fax: '514 321 9870',
+      phone: PhoneNumber.fromString('514 321 9876'),
+      fax: PhoneNumber.fromString('514 321 9870'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 8921,
@@ -287,15 +287,15 @@ Future<void> addDummyEnterprises(
       jobs: jobs,
       contactName: 'Gabrielle Fortin',
       contactFunction: 'Gérante',
-      contactPhone: '514 111 2222',
+      contactPhone: PhoneNumber.fromString('514 111 2222'),
       contactEmail: 'g.fortin@email.com',
       address: Address(
           civicNumber: 1415,
           street: 'Rue Jarry E',
           city: 'Montréal',
           postalCode: 'H2E 1A7'),
-      phone: '514 111 2222',
-      fax: '514 111 2200',
+      phone: PhoneNumber.fromString('514 111 2222'),
+      fax: PhoneNumber.fromString('514 111 2200'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 7885,
@@ -323,15 +323,15 @@ Future<void> addDummyEnterprises(
       jobs: jobs,
       contactName: 'Jessica Marcotte',
       contactFunction: 'Pharmacienne',
-      contactPhone: '514 111 2222',
+      contactPhone: PhoneNumber.fromString('514 111 2222'),
       contactEmail: 'g.fortin@email.com',
       address: Address(
           civicNumber: 3611,
           street: 'Rue Jarry E',
           city: 'Montréal',
           postalCode: 'H1Z 2G1'),
-      phone: '514 654 5444',
-      fax: '514 654 5445',
+      phone: PhoneNumber.fromString('514 654 5444'),
+      fax: PhoneNumber.fromString('514 654 5445'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 3611,
@@ -359,15 +359,14 @@ Future<void> addDummyEnterprises(
       jobs: jobs,
       contactName: 'Carlos Rodriguez',
       contactFunction: 'Gérant',
-      contactPhone: '514 555 3333',
+      contactPhone: PhoneNumber.fromString('514 555 3333'),
       contactEmail: 'c.rodriguez@email.com',
       address: Address(
           civicNumber: 775,
           street: 'Rue Chabanel O',
           city: 'Montréal',
           postalCode: 'H4N 3J7'),
-      phone: '514 555 7891',
-      fax: '',
+      phone: PhoneNumber.fromString('514 555 7891'),
       website: 'fausse.ca',
       headquartersAddress: null,
       neq: '6790122996',
@@ -391,15 +390,15 @@ Future<void> addDummyEnterprises(
       jobs: jobs,
       contactName: 'France Boissonneau',
       contactFunction: 'Directrice des Ressources Humaines',
-      contactPhone: '514 879 8654 poste 1112',
+      contactPhone: PhoneNumber.fromString('514 879 8654 poste 1112'),
       contactEmail: 'f.boissonneau@email.com',
       address: Address(
           civicNumber: 10345,
           street: 'Ave Christophe-Colomb',
           city: 'Montréal',
           postalCode: 'H2C 2V1'),
-      phone: '514 879 8654',
-      fax: '514 879 8000',
+      phone: PhoneNumber.fromString('514 879 8654'),
+      fax: PhoneNumber.fromString('514 879 8000'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 10345,
@@ -426,11 +425,11 @@ Future<void> addDummyStudents(
       group: '550',
       address: await Address.fromAddress(
           '7248 Rue D\'Iberville, Montréal, QC H2E 2Y6'),
-      phone: '514 321 8888',
+      phone: PhoneNumber.fromString('514 321 8888'),
       contact: Person(
           firstName: 'Paul',
           lastName: 'Masson',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'p.masson@email.com'),
       contactLink: 'Père',
     ),
@@ -448,12 +447,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Joe',
           lastName: 'Caron',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'j.caron@email.com'),
       contactLink: 'Père',
       address:
           await Address.fromAddress('6622 16e Avenue, Montréal, QC H1X 2T2'),
-      phone: '514 222 3344',
+      phone: PhoneNumber.fromString('514 222 3344'),
     ),
   );
 
@@ -469,11 +468,11 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Nicole',
           lastName: 'Lefranc',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'n.lefranc@email.com'),
       contactLink: 'Mère',
       address: await Address.fromAddress('6723 25e Ave, Montréal, QC H1T 3M1'),
-      phone: '514 333 4455',
+      phone: PhoneNumber.fromString('514 333 4455'),
     ),
   );
 
@@ -489,12 +488,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Martine',
           lastName: 'Gagnon',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'm.gagnon@email.com'),
       contactLink: 'Mère',
       address:
           await Address.fromAddress('6655 33e Avenue, Montréal, QC H1T 3B9'),
-      phone: '514 999 8877',
+      phone: PhoneNumber.fromString('514 999 8877'),
     ),
   );
 
@@ -511,11 +510,11 @@ Future<void> addDummyStudents(
           firstName: 'Raoul',
           lastName: 'Gingras',
           email: 'r.gingras@email.com',
-          phone: '514 321 9876'),
+          phone: PhoneNumber.fromString('514 321 9876')),
       contactLink: 'Père',
       address: await Address.fromAddress(
           '4517 Rue d\'Assise, Saint-Léonard, QC H1R 1W2'),
-      phone: '514 888 7766',
+      phone: PhoneNumber.fromString('514 888 7766'),
     ),
   );
 
@@ -531,12 +530,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Laura',
           lastName: 'Vargas',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'l.vargas@email.com'),
       contactLink: 'Mère',
       address: await Address.fromAddress(
           '8204 Rue de Blois, Saint-Léonard, QC H1R 2X1'),
-      phone: '514 444 5566',
+      phone: PhoneNumber.fromString('514 444 5566'),
     ),
   );
 
@@ -552,12 +551,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Vincent',
           lastName: 'Tremblay',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'v.tremblay@email.com'),
       contactLink: 'Père',
       address: await Address.fromAddress(
           '8358 Rue Jean-Nicolet, Saint-Léonard, QC H1R 2R2'),
-      phone: '514 555 9988',
+      phone: PhoneNumber.fromString('514 555 9988'),
     ),
   );
 
@@ -573,12 +572,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Jean-François',
           lastName: 'Picard',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'jp.picard@email.com'),
       contactLink: 'Père',
       address: await Address.fromAddress(
           '8382 Rue du Laus, Saint-Léonard, QC H1R 2P4'),
-      phone: '514 778 8899',
+      phone: PhoneNumber.fromString('514 778 8899'),
     ),
   );
 
@@ -594,12 +593,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Stéphane',
           lastName: 'Monette',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 's.monette@email.com'),
       contactLink: 'Père',
       address: await Address.fromAddress(
           '6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5'),
-      phone: '514 321 6655',
+      phone: PhoneNumber.fromString('514 321 6655'),
     ),
   );
 
@@ -615,12 +614,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Mathieu',
           lastName: 'Poulain',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'm.poulain@email.com'),
       contactLink: 'Père',
       address:
           await Address.fromAddress('6585 Rue Lemay, Montréal, QC H1T 2L8'),
-      phone: '514 567 9999',
+      phone: PhoneNumber.fromString('514 567 9999'),
     ),
   );
 

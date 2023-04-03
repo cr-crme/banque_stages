@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '/common/models/phone_number.dart';
+
 abstract class FormService {
   static bool validateForm(GlobalKey<FormState> formKey, {bool save = false}) {
     if (formKey.currentContext == null || formKey.currentState == null) {
@@ -43,9 +45,7 @@ abstract class FormService {
   static String? phoneValidator(String? phone) {
     if (phone!.isEmpty) {
       return _localizations.error_emptyPhone;
-    } else if (!RegExp(
-            r'^(?:\+\d{1,3})?\s?\(?\d{3}(?:[-.\)\s]|\)\s)?\d{3}[-.\s]?\d{4,6}(?:\s(?:poste)?\s\d{1,6})?$')
-        .hasMatch(phone)) {
+    } else if (!PhoneNumber.isValid(phone)) {
       return _localizations.error_invalidPhone;
     }
     return null;

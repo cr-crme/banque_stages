@@ -4,6 +4,7 @@ import '/common/models/address.dart';
 import '/common/models/internship.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
+import '/common/models/phone_number.dart';
 import '/common/providers/internships_provider.dart';
 
 class Enterprise extends ItemSerializable {
@@ -16,12 +17,12 @@ class Enterprise extends ItemSerializable {
 
   final String contactName;
   final String contactFunction;
-  final String contactPhone;
+  final PhoneNumber contactPhone;
   final String contactEmail;
 
   final Address? address;
-  final String phone;
-  final String fax;
+  final PhoneNumber phone;
+  final PhoneNumber fax;
   final String website;
 
   final Address? headquartersAddress;
@@ -50,8 +51,8 @@ class Enterprise extends ItemSerializable {
     required this.contactPhone,
     this.contactEmail = '',
     this.address,
-    this.phone = '',
-    this.fax = '',
+    this.phone = const PhoneNumber(),
+    this.fax = const PhoneNumber(),
     this.website = '',
     this.headquartersAddress,
     this.neq = '',
@@ -65,11 +66,11 @@ class Enterprise extends ItemSerializable {
     JobList? jobs,
     String? contactName,
     String? contactFunction,
-    String? contactPhone,
+    PhoneNumber? contactPhone,
     String? contactEmail,
     Address? address,
-    String? phone,
-    String? fax,
+    PhoneNumber? phone,
+    PhoneNumber? fax,
     String? website,
     Address? headquartersAddress,
     String? neq,
@@ -105,11 +106,11 @@ class Enterprise extends ItemSerializable {
       'jobs': jobs.serialize(),
       'contactName': contactName,
       'contactFunction': contactFunction,
-      'contactPhone': contactPhone,
+      'contactPhone': contactPhone.toString(),
       'contactEmail': contactEmail,
       'address': address?.serializedMap(),
-      'phone': phone,
-      'fax': fax,
+      'phone': phone.toString(),
+      'fax': fax.toString(),
       'website': website,
       'headquartersAddress': headquartersAddress?.serializedMap(),
       'neq': neq,
@@ -126,11 +127,11 @@ class Enterprise extends ItemSerializable {
         jobs = JobList.fromSerialized(map['jobs']),
         contactName = map['contactName'],
         contactFunction = map['contactFunction'],
-        contactPhone = map['contactPhone'],
+        contactPhone = PhoneNumber.fromString(map['contactPhone']),
         contactEmail = map['contactEmail'],
         address = Address.fromSerialized(map['address']),
-        phone = map['phone'],
-        fax = map['fax'],
+        phone = PhoneNumber.fromString(map['phone']),
+        fax = PhoneNumber.fromString(map['fax']),
         website = map['website'],
         headquartersAddress =
             Address.fromSerialized(map['headquartersAddress']),

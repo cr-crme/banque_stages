@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '/common/models/address.dart';
 import '/common/models/person.dart';
+import '/common/models/phone_number.dart';
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
@@ -58,13 +59,14 @@ class AboutPageState extends State<AboutPage> {
     if (mounted) {
       StudentsProvider.of(context, listen: false).replace(
         widget.student.copyWith(
-          phone: _phone,
+          phone: PhoneNumber.fromString(_phone), // TODO check if validated
           email: _email,
           address: address,
           contact: Person(
               firstName: _contactFirstName!,
               lastName: _contactLastName!,
-              phone: _contactPhone,
+              phone: PhoneNumber.fromString(
+                  _contactPhone), // TODO check if validated
               email: _contactEmail),
           contactLink: _contactLink,
         ),
@@ -190,7 +192,7 @@ class _GeneralInformation extends StatelessWidget {
   }
 }
 
-class _ContactInformation extends StatelessWidget {
+class _ContactInformation extends StatefulWidget {
   const _ContactInformation({
     required this.student,
     required this.isEditing,
@@ -204,6 +206,14 @@ class _ContactInformation extends StatelessWidget {
   final Function(String?) onSavedPhone;
   final Function(String?) onSavedEmail;
   final Function(String?) onSavedAddress;
+
+  @override
+  State<_ContactInformation> createState() => _ContactInformationState();
+}
+
+class _ContactInformationState extends State<_ContactInformation> {
+  late final _phoneController =
+      TextEditingController(text: widget.student.phone.toString());
 
   @override
   Widget build(BuildContext context) {
@@ -221,32 +231,39 @@ class _ContactInformation extends StatelessWidget {
           child: Column(
             children: [
               TextFormField(
-                controller: TextEditingController(text: student.phone),
+                controller: _phoneController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.phoneNumber,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedPhone,
+                validator: (value) =>
+                    value == '' ? null : FormService.phoneValidator(value),
+                enabled: widget.isEditing,
+                onSaved: (value) {
+                  widget.onSavedPhone(value);
+                  _phoneController.text =
+                      PhoneNumber.fromString(value).toString();
+                  setState(() {});
+                },
               ),
               const SizedBox(height: 8),
               TextFormField(
-                controller: TextEditingController(text: student.email),
+                controller: TextEditingController(text: widget.student.email),
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.email,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedEmail,
+                enabled: widget.isEditing,
+                onSaved: widget.onSavedEmail,
               ),
               const SizedBox(height: 8),
               TextFormField(
-                controller:
-                    TextEditingController(text: student.address.toString()),
+                controller: TextEditingController(
+                    text: widget.student.address.toString()),
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.address,
                 ),
                 maxLines: null,
-                enabled: isEditing,
-                onSaved: onSavedAddress,
+                enabled: widget.isEditing,
+                onSaved: widget.onSavedAddress,
               ),
             ],
           ),
@@ -256,7 +273,7 @@ class _ContactInformation extends StatelessWidget {
   }
 }
 
-class _EmergencyContact extends StatelessWidget {
+class _EmergencyContact extends StatefulWidget {
   const _EmergencyContact({
     required this.student,
     required this.isEditing,
@@ -276,6 +293,14 @@ class _EmergencyContact extends StatelessWidget {
   final Function(String?) onSavedEmail;
 
   @override
+  State<_EmergencyContact> createState() => _EmergencyContactState();
+}
+
+class _EmergencyContactState extends State<_EmergencyContact> {
+  late final _phoneController =
+      TextEditingController(text: widget.student.contact.phone.toString());
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -290,50 +315,58 @@ class _EmergencyContact extends StatelessWidget {
           child: Column(
             children: [
               TextFormField(
-                controller:
-                    TextEditingController(text: student.contact.firstName),
+                controller: TextEditingController(
+                    text: widget.student.contact.firstName),
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.firstName,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedFirstName,
+                enabled: widget.isEditing,
+                onSaved: widget.onSavedFirstName,
               ),
               TextFormField(
-                controller:
-                    TextEditingController(text: student.contact.lastName),
+                controller: TextEditingController(
+                    text: widget.student.contact.lastName),
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.lastName,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedLastName,
+                enabled: widget.isEditing,
+                onSaved: widget.onSavedLastName,
               ),
               const SizedBox(height: 8),
               TextFormField(
-                controller: TextEditingController(text: student.contactLink),
+                controller:
+                    TextEditingController(text: widget.student.contactLink),
                 decoration: InputDecoration(
                   labelText:
                       AppLocalizations.of(context)!.student_linkWithStudent,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedLink,
+                enabled: widget.isEditing,
+                onSaved: widget.onSavedLink,
               ),
               const SizedBox(height: 8),
               TextFormField(
-                controller: TextEditingController(text: student.contact.phone),
+                controller: _phoneController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.phoneNumber,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedPhone,
+                validator: FormService.phoneValidator,
+                enabled: widget.isEditing,
+                onSaved: (value) {
+                  widget.onSavedPhone(value);
+                  _phoneController.text =
+                      PhoneNumber.fromString(value).toString();
+                  setState(() {});
+                },
               ),
               const SizedBox(height: 8),
               TextFormField(
-                controller: TextEditingController(text: student.contact.email),
+                controller:
+                    TextEditingController(text: widget.student.contact.email),
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.email,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedEmail,
+                enabled: widget.isEditing,
+                onSaved: widget.onSavedEmail,
               ),
             ],
           ),

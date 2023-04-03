@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
+import '/common/models/phone_number.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/providers/teachers_provider.dart';
 import '/common/widgets/add_job_button.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
-import '/common/providers/teachers_provider.dart';
 import 'pages/contact_page.dart';
 import 'pages/informations_page.dart';
 import 'pages/jobs_page.dart';
@@ -86,7 +87,8 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       jobs: _jobsKey.currentState!.jobs,
       contactName: _contactKey.currentState!.contactName!,
       contactFunction: _contactKey.currentState!.contactFunction!,
-      contactPhone: _contactKey.currentState!.contactPhone!,
+      contactPhone:
+          PhoneNumber.fromString(_contactKey.currentState!.contactPhone!),
       contactEmail: _contactKey.currentState!.contactEmail!,
       address: await Address.fromAddress(_contactKey.currentState!.address!),
       headquartersAddress:
