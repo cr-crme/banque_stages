@@ -5,6 +5,7 @@ import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
 import '/common/models/student.dart';
 import '/common/models/teacher.dart';
+import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/common/widgets/sub_title.dart';
@@ -159,6 +160,31 @@ class _InternshipListState extends State<_InternshipList> {
     );
   }
 
+  void _finalizeInternship(Internship internship) async {
+    final result = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Terminer stage'),
+              content: const Text(
+                  'Êtes-vous sûr de vouloir terminer ce stage? Cette action est irrévocable.'),
+              actions: [
+                OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text('Non')),
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text('Oui')),
+              ],
+            ));
+    if (!mounted || result == null || !result) return;
+
+    final internships = InternshipsProvider.of(context, listen: false);
+    internships.replace(internship.copyWith(
+        date:
+            DateTimeRange(start: internship.date.start, end: DateTime.now())));
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     _prepareExpander(widget.internships);
@@ -227,6 +253,17 @@ class _InternshipListState extends State<_InternshipList> {
                         padding: const EdgeInsets.only(top: 10.0, bottom: 15),
                         child: _dateBuild(internship),
                       ),
+                      if (internship.isActive)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: TextButton(
+                                onPressed: () =>
+                                    _finalizeInternship(internship),
+                                child: const Text('Terminer le stage')),
+                          ),
+                        ),
                     ],
                   ),
                 ),
