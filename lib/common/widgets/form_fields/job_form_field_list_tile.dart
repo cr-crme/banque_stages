@@ -29,6 +29,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
   int _positionOffered = 0;
   static const String _invalidActivitySector = 'invalid_activitySector';
   static const String _invalidSpecialization = 'invalid_specialization';
+  static const String _invalidNumber = 'invalid_number';
 
   String? _validator() {
     if (_activitySector == null) {
@@ -36,6 +37,9 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
     }
     if (_specialization == null) {
       return _invalidSpecialization;
+    }
+    if (_positionOffered == 0) {
+      return _invalidNumber;
     }
     return null;
   }
@@ -63,7 +67,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
   @override
   Widget build(BuildContext context) {
     return FormField<Job>(
-      onSaved: _specialization == null
+      onSaved: _specialization == null || _positionOffered == 0
           ? null
           : (_) => widget.onSaved != null
               ? widget.onSaved!(Job(
@@ -164,6 +168,8 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
                     ),
+                    validator: (value) =>
+                        int.parse(value!) == 0 ? 'Indiquer un nombre' : null,
                     onChanged: (double value) =>
                         _positionOffered = value.toInt(),
                   ),

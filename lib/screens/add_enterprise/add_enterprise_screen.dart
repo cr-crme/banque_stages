@@ -134,6 +134,13 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     );
   }
 
+  void _onPressedCancel(ControlsDetails details) async {
+    final answer = await ConfirmPopDialog.show(context);
+    if (!answer) return;
+
+    details.onStepCancel!();
+  }
+
   Widget _controlBuilder(BuildContext context, ControlsDetails details) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -147,7 +154,8 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
           ),
           const Expanded(child: SizedBox()),
           OutlinedButton(
-              onPressed: details.onStepCancel, child: const Text('Annuler')),
+              onPressed: () => _onPressedCancel(details),
+              child: const Text('Annuler')),
           const SizedBox(
             width: 20,
           ),

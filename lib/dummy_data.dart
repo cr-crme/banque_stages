@@ -647,6 +647,7 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    isClosed: false,
     schedule: [
       [
         Schedule(
@@ -691,6 +692,7 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    isClosed: false,
     schedule: [
       [
         Schedule(
@@ -735,6 +737,7 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    isClosed: true,
     schedule: [
       [
         Schedule(
@@ -774,6 +777,7 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    isClosed: true,
     schedule: [
       [
         Schedule(
@@ -808,6 +812,7 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    isClosed: false,
     schedule: [
       [
         Schedule(
@@ -842,6 +847,7 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    isClosed: false,
     schedule: [
       [
         Schedule(
@@ -886,6 +892,7 @@ Future<void> addDummyInterships(
     date: DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    isClosed: false,
     schedule: [
       [
         Schedule(

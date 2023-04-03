@@ -77,6 +77,7 @@ class _InternshipEnrollmentScreenState
       date: _scheduleKey.currentState!.dateRange,
       schedule: _scheduleKey.currentState!.schedule,
       visitingPriority: VisitingPriority.low,
+      isClosed: false,
     );
 
     InternshipsProvider.of(context, listen: false).add(internship);

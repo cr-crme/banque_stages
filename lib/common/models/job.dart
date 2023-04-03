@@ -9,7 +9,7 @@ class Job extends ItemSerializable {
   final int positionsOffered;
   int positionsOccupied(context) =>
       InternshipsProvider.of(context, listen: false)
-          .where((e) => e.jobId == id)
+          .where((e) => e.jobId == id && e.isActive)
           .length;
   int positionsRemaining(context) =>
       positionsOffered - positionsOccupied(context);

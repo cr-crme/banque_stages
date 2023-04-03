@@ -28,6 +28,11 @@ class Internship extends ItemSerializable {
   final VisitingPriority visitingPriority;
   final String teacherNotes;
 
+  final bool isClosed; // Finished and evaluation is done
+  bool get isEvaluationPending =>
+      !isClosed && DateTime.now().compareTo(date.end) >= 0;
+  bool get isActive => !isClosed && DateTime.now().compareTo(date.end) < 0;
+
   Internship({
     super.id,
     required this.studentId,
@@ -44,6 +49,7 @@ class Internship extends ItemSerializable {
     required this.uniform,
     required this.visitingPriority,
     this.teacherNotes = '',
+    required this.isClosed,
   }) : previousTeacherId = previousTeacherId ?? teacherId;
 
   Internship.fromSerialized(map)
@@ -67,6 +73,7 @@ class Internship extends ItemSerializable {
         uniform = map['uniform'],
         visitingPriority = VisitingPriority.values[map['priority']],
         teacherNotes = map['teacherNotes'],
+        isClosed = map['isClosed'],
         super.fromSerialized(map);
 
   @override
@@ -90,6 +97,7 @@ class Internship extends ItemSerializable {
       'uniform': uniform,
       'priority': visitingPriority.index,
       'teacherNotes': teacherNotes,
+      'isClosed': isClosed,
     };
   }
 
@@ -110,6 +118,7 @@ class Internship extends ItemSerializable {
     String? uniform,
     VisitingPriority? visitingPriority,
     String? teacherNotes,
+    bool? isClosed,
   }) =>
       Internship(
         id: id ?? this.id,
@@ -128,5 +137,6 @@ class Internship extends ItemSerializable {
         uniform: uniform ?? this.uniform,
         visitingPriority: visitingPriority ?? this.visitingPriority,
         teacherNotes: teacherNotes ?? this.teacherNotes,
+        isClosed: isClosed ?? this.isClosed,
       );
 }

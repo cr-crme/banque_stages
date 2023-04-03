@@ -89,6 +89,7 @@ class ContactPageState extends State<ContactPage> {
                 editMode: _editing,
                 onSavedAddress: (address) => _address = address!,
                 onSavedPhone: (phone) => _phone = phone!,
+                onSavedFax: (fax) => _fax = fax!,
                 onSavedWebsite: (website) => _website = website!,
               ),
               _TaxesInfo(
@@ -191,6 +192,7 @@ class _EnterpriseInfo extends StatelessWidget {
     required this.editMode,
     required this.onSavedAddress,
     required this.onSavedPhone,
+    required this.onSavedFax,
     required this.onSavedWebsite,
   });
 
@@ -199,6 +201,7 @@ class _EnterpriseInfo extends StatelessWidget {
   final Function(String?) onSavedAddress;
   final Function(String?) onSavedWebsite;
   final Function(String?) onSavedPhone;
+  final Function(String?) onSavedFax;
 
   void _showAddress(context) async {
     await showDialog(
@@ -249,7 +252,16 @@ class _EnterpriseInfo extends StatelessWidget {
                 initialValue: enterprise.phone,
                 decoration: const InputDecoration(labelText: 'Téléphone'),
                 enabled: editMode,
+                validator: FormService.phoneValidator,
                 onSaved: onSavedPhone,
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: enterprise.fax,
+                decoration: const InputDecoration(labelText: 'Télécopieur'),
+                enabled: editMode,
+                onSaved: onSavedFax,
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 8),
