@@ -55,9 +55,10 @@ class ScheduleStepState extends State<ScheduleStep> {
   void _onAddedTime(int scheduleIndex) async {
     final day = await _promptDay();
     if (day == null) return;
-    final start = await _promptTime(defaultStart);
+    final start =
+        await _promptTime(title: 'Heure de début', initial: defaultStart);
     if (start == null) return;
-    final end = await _promptTime(defaultEnd);
+    final end = await _promptTime(title: 'Heure de fin', initial: defaultEnd);
     if (end == null) return;
 
     schedule[scheduleIndex]
@@ -66,9 +67,11 @@ class ScheduleStepState extends State<ScheduleStep> {
   }
 
   void _onUpdatedTime(int scheduleIndex, int i) async {
-    final start = await _promptTime(schedule[scheduleIndex][i].start);
+    final start = await _promptTime(
+        title: 'Heure de début', initial: schedule[scheduleIndex][i].start);
     if (start == null) return;
-    final end = await _promptTime(schedule[scheduleIndex][i].end);
+    final end = await _promptTime(
+        title: 'Heure de fin', initial: schedule[scheduleIndex][i].end);
     if (end == null) return;
 
     schedule[scheduleIndex][i] =
@@ -105,10 +108,12 @@ class ScheduleStepState extends State<ScheduleStep> {
     return choice;
   }
 
-  Future<TimeOfDay?> _promptTime(TimeOfDay currentTime) async {
+  Future<TimeOfDay?> _promptTime(
+      {required TimeOfDay initial, String? title}) async {
     final time = await showTimePicker(
+      helpText: title,
       context: context,
-      initialTime: currentTime,
+      initialTime: initial,
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
         child: child ?? Container(),

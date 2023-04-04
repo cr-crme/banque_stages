@@ -81,7 +81,7 @@ class ContactPageState extends State<ContactPage> {
             const ListTile(
               visualDensity:
                   VisualDensity(vertical: VisualDensity.minimumDensity),
-              title: Text(' Entreprise représentée par'),
+              title: Text('Entreprise représentée par'),
             ),
             ListTile(
               title: TextFormField(
