@@ -36,7 +36,7 @@ class ContactPageState extends State<ContactPage> {
 
   late bool _useSameAddress = widget.enterprise.address.toString() ==
       widget.enterprise.headquartersAddress.toString();
-  String? _headquartersAddress;
+  final _headquartersAddressController = AddressController();
   String? _neq;
 
   bool _editing = false;
@@ -49,6 +49,7 @@ class ContactPageState extends State<ContactPage> {
       return;
     }
 
+    // Validate address
     final status = await _addressController.requestValidation();
     if (!mounted) return;
     if (status != null) {
@@ -57,6 +58,18 @@ class ContactPageState extends State<ContactPage> {
       return;
     }
 
+    if (!_useSameAddress) {
+      // Validate headquarter address
+      final status = await _headquartersAddressController.requestValidation();
+      if (!mounted) return;
+      if (status != null) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(status)));
+        return;
+      }
+    }
+
+    if (!mounted) return;
     if (!FormService.validateForm(_formKey, save: true)) return;
 
     _editing = !_editing;
@@ -73,9 +86,9 @@ class ContactPageState extends State<ContactPage> {
         phone: _phone == null ? null : PhoneNumber.fromString(_phone),
         fax: _fax == null ? null : PhoneNumber.fromString(_fax),
         website: _website,
-        // TODO Here
-        // headquartersAddress: await Address.fromAddress(
-        //     _useSameAddress ? _address! : _headquartersAddress!),
+        headquartersAddress: _useSameAddress
+            ? _addressController.address
+            : _headquartersAddressController.address,
         neq: _neq,
       ),
     );
@@ -115,9 +128,7 @@ class ContactPageState extends State<ContactPage> {
                 onChangedUseSame: (newValue) => setState(() {
                   _useSameAddress = newValue!;
                 }),
-                onSavedAddress: (_) {}, // TODO Here
-                // (address) => _headquartersAddress =
-                //     !_useSameAddress && address != null ? address : _address,
+                addressController: _headquartersAddressController,
                 onSavedNeq: (neq) => _neq = neq,
               ),
             ],
@@ -268,7 +279,7 @@ class _TaxesInfo extends StatelessWidget {
     required this.editMode,
     required this.useSameAddress,
     required this.onChangedUseSame,
-    required this.onSavedAddress,
+    required this.addressController,
     required this.onSavedNeq,
   });
 
@@ -276,7 +287,7 @@ class _TaxesInfo extends StatelessWidget {
   final bool editMode;
   final bool useSameAddress;
   final Function(bool?) onChangedUseSame;
-  final Function(String?) onSavedAddress;
+  final AddressController addressController;
   final Function(String?) onSavedNeq;
 
   @override
@@ -302,14 +313,14 @@ class _TaxesInfo extends StatelessWidget {
                 )
               ]),
             if (!editMode || !useSameAddress)
-              TextFormField(
-                initialValue: enterprise.headquartersAddress.toString(),
-                decoration:
-                    const InputDecoration(labelText: 'Adresse du siège social'),
-                maxLines: null,
+              AddressListTile(
+                initialValue: useSameAddress
+                    ? enterprise.address
+                    : enterprise.headquartersAddress,
+                title: 'Adresse du siège social',
+                addressController: addressController,
+                isMandatory: false,
                 enabled: editMode,
-                onSaved: (value) => onSavedAddress(value),
-                keyboardType: TextInputType.streetAddress,
               ),
             const SizedBox(height: 8),
             TextFormField(
