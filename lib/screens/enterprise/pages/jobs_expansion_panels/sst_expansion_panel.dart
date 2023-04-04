@@ -34,14 +34,30 @@ class _SstBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Équipements de protection individuelle requis',
+              'Historique d’accidents et incidents au poste de travail (ex. blessure d’élève même mineure, agression verbale ou harcèlement subis par l’élève)',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: Column(children: [
+                ...job.pastIncidents.isEmpty
+                    ? [const Text('Aucun incident signalé')]
+                    : job.pastIncidents.map((incident) => Text('- $incident')),
+                ...job.pastWounds.isEmpty
+                    ? [const Text('Aucune blessure signalée')]
+                    : job.pastWounds.map((wound) => Text('- $wound')),
+              ]),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Personne de l’entreprise à qui s’adresser en cas de blessure ou d’incident?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
                 children: job.equipmentRequired.isEmpty
-                    ? [const Text('Aucun équipement de protection requis')]
+                    ? [const Text('contact')]
                     : job.equipmentRequired
                         .map((equipment) => Text('- $equipment'))
                         .toList(),
@@ -49,7 +65,7 @@ class _SstBody extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Situations dangereuses identifiées',
+              'Situations dangereuses identifiées au poste de travail',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
@@ -64,29 +80,16 @@ class _SstBody extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Blessures d’élèves lors de stages précédents',
+              'Équipements de protection individuelle requis',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
-                children: job.pastWounds.isEmpty
-                    ? [const Text('Aucune blessure signalée')]
-                    : job.pastWounds.map((wound) => Text('- $wound')).toList(),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Incidents lors de stages précédents (p. ex. agression verbale, harcèlement)?',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: Column(
-                children: job.pastIncidents.isEmpty
-                    ? [const Text('Aucun incident de ce type signalé')]
-                    : job.pastIncidents
-                        .map((incident) => Text('- $incident'))
+                children: job.equipmentRequired.isEmpty
+                    ? [const Text('Aucun équipement de protection requis')]
+                    : job.equipmentRequired
+                        .map((equipment) => Text('- $equipment'))
                         .toList(),
               ),
             ),
