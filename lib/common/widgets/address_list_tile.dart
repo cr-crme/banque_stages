@@ -167,7 +167,8 @@ class _AddressListTileState extends State<AddressListTile> {
             decoration: InputDecoration(
               labelText:
                   '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
-              //suffixIcon: const Icon(Icons.map, color: Colors.purple),
+              // Add an invisible icon so the text wraps
+              suffixIcon: const Icon(Icons.map, color: Colors.white),
             ),
             enabled: widget.enabled,
             maxLines: null,

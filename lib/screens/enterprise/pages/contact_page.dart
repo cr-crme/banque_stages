@@ -69,7 +69,7 @@ class ContactPageState extends State<ContactPage> {
             ? null
             : PhoneNumber.fromString(_contactPhone),
         contactEmail: _contactEmail,
-        //address: await Address.fromAddress(_address!),
+        address: _addressController.address,
         phone: _phone == null ? null : PhoneNumber.fromString(_phone),
         fax: _fax == null ? null : PhoneNumber.fromString(_fax),
         website: _website,
@@ -173,6 +173,7 @@ class _ContactInfo extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               PhoneListTile(
+                initialValue: enterprise.contactPhone,
                 onSaved: onSavedPhone,
                 isMandatory: true,
                 enabled: editMode,
@@ -233,10 +234,14 @@ class _EnterpriseInfo extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               PhoneListTile(
-                  onSaved: onSavedPhone, isMandatory: false, enabled: editMode),
+                  initialValue: enterprise.phone,
+                  onSaved: onSavedPhone,
+                  isMandatory: false,
+                  enabled: editMode),
               const SizedBox(height: 8),
               PhoneListTile(
                   title: 'Télécopieur',
+                  initialValue: enterprise.fax,
                   icon: Icons.fax,
                   onSaved: onSavedFax,
                   isMandatory: false,

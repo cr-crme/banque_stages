@@ -7,6 +7,7 @@ class PhoneListTile extends StatefulWidget {
   const PhoneListTile({
     super.key,
     this.title = 'Téléphone',
+    this.initialValue,
     this.icon = Icons.phone,
     required this.onSaved,
     required this.isMandatory,
@@ -14,6 +15,7 @@ class PhoneListTile extends StatefulWidget {
   });
 
   final String title;
+  final PhoneNumber? initialValue;
   final IconData icon;
   final Function(String?) onSaved;
   final bool isMandatory;
@@ -25,6 +27,14 @@ class PhoneListTile extends StatefulWidget {
 
 class _PhoneListTileState extends State<PhoneListTile> {
   final _phoneController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialValue != null) {
+      _phoneController.text = widget.initialValue.toString();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
