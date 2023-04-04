@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '/common/models/address.dart';
+import '/common/widgets/phone_list_tile.dart';
 import '/misc/form_service.dart';
 import '/screens/enterprise/pages/widgets/show_school.dart';
 
@@ -96,16 +97,10 @@ class ContactPageState extends State<ContactPage> {
                 onSaved: (function) => contactFunction = function!,
               ),
             ),
-            ListTile(
-              title: TextFormField(
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.phone),
-                  labelText: '* Téléphone',
-                ),
-                validator: FormService.phoneValidator,
-                onSaved: (phone) => contactPhone = phone!,
-                keyboardType: TextInputType.phone,
-              ),
+            PhoneListTile(
+              onSaved: (phone) => contactPhone = phone!,
+              isMandatory: true,
+              enabled: true,
             ),
             ListTile(
               title: TextFormField(

@@ -8,6 +8,7 @@ import '/common/providers/students_provider.dart';
 import '/common/widgets/add_job_button.dart';
 import '/common/widgets/form_fields/job_form_field_list_tile.dart';
 import '/common/widgets/form_fields/student_picker_form_field.dart';
+import '/common/widgets/phone_list_tile.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
 import '/misc/job_data_file_service.dart';
@@ -242,16 +243,10 @@ class _SupervisonInformation extends StatelessWidget {
             onSaved: onSavedLastName,
           ),
         ),
-        ListTile(
-          title: TextFormField(
-            decoration: const InputDecoration(
-              icon: Icon(Icons.phone),
-              labelText: '* Téléphone',
-            ),
-            validator: FormService.phoneValidator,
-            onSaved: onSavedPhone,
-            keyboardType: TextInputType.phone,
-          ),
+        PhoneListTile(
+          onSaved: onSavedPhone,
+          isMandatory: true,
+          enabled: true,
         ),
         ListTile(
           title: TextFormField(

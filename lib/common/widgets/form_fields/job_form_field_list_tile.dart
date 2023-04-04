@@ -38,7 +38,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
     if (_specialization == null) {
       return _invalidSpecialization;
     }
-    if (_positionOffered == 0) {
+    if (widget.askNumberPositionsOffered && _positionOffered == 0) {
       return _invalidNumber;
     }
     return null;

@@ -5,6 +5,7 @@ import '/common/models/enterprise.dart';
 import '/common/models/phone_number.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/phone_list_tile.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
 import 'widgets/show_school.dart';
@@ -113,7 +114,7 @@ class ContactPageState extends State<ContactPage> {
   }
 }
 
-class _ContactInfo extends StatefulWidget {
+class _ContactInfo extends StatelessWidget {
   const _ContactInfo({
     required this.enterprise,
     required this.editMode,
@@ -131,14 +132,6 @@ class _ContactInfo extends StatefulWidget {
   final Function(String?) onSavedEmail;
 
   @override
-  State<_ContactInfo> createState() => _ContactInfoState();
-}
-
-class _ContactInfoState extends State<_ContactInfo> {
-  late final _phoneController =
-      TextEditingController(text: widget.enterprise.contactPhone.toString());
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,48 +142,37 @@ class _ContactInfoState extends State<_ContactInfo> {
           child: Column(
             children: [
               TextFormField(
-                initialValue: widget.enterprise.contactName,
+                initialValue: enterprise.contactName,
                 decoration: const InputDecoration(labelText: '* Nom'),
-                enabled: widget.editMode,
+                enabled: editMode,
                 validator: FormService.textNotEmptyValidator,
                 maxLines: null,
-                onSaved: widget.onSavedName,
+                onSaved: onSavedName,
               ),
               const SizedBox(height: 8),
               TextFormField(
-                initialValue: widget.enterprise.contactFunction,
+                initialValue: enterprise.contactFunction,
                 decoration: const InputDecoration(labelText: '* Fonction'),
-                enabled: widget.editMode,
+                enabled: editMode,
                 validator: FormService.textNotEmptyValidator,
-                onSaved: widget.onSavedJob,
+                onSaved: onSavedJob,
+              ),
+              const SizedBox(height: 8),
+              PhoneListTile(
+                onSaved: onSavedPhone,
+                isMandatory: true,
+                enabled: editMode,
               ),
               const SizedBox(height: 8),
               TextFormField(
-                controller: _phoneController,
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.phone),
-                  labelText: '* Téléphone',
-                ),
-                enabled: widget.editMode,
-                validator: FormService.phoneValidator,
-                onSaved: (value) {
-                  widget.onSavedPhone(value);
-                  _phoneController.text =
-                      PhoneNumber.fromString(value).toString();
-                  setState(() {});
-                },
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                initialValue: widget.enterprise.contactEmail,
+                initialValue: enterprise.contactEmail,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.mail),
                   labelText: '* Courriel',
                 ),
-                enabled: widget.editMode,
+                enabled: editMode,
                 validator: FormService.emailValidator,
-                onSaved: widget.onSavedEmail,
+                onSaved: onSavedEmail,
                 keyboardType: TextInputType.emailAddress,
               ),
             ],
@@ -201,7 +183,7 @@ class _ContactInfoState extends State<_ContactInfo> {
   }
 }
 
-class _EnterpriseInfo extends StatefulWidget {
+class _EnterpriseInfo extends StatelessWidget {
   const _EnterpriseInfo({
     required this.enterprise,
     required this.editMode,
@@ -218,16 +200,6 @@ class _EnterpriseInfo extends StatefulWidget {
   final Function(String?) onSavedPhone;
   final Function(String?) onSavedFax;
 
-  @override
-  State<_EnterpriseInfo> createState() => _EnterpriseInfoState();
-}
-
-class _EnterpriseInfoState extends State<_EnterpriseInfo> {
-  late final _phoneController =
-      TextEditingController(text: widget.enterprise.phone.toString());
-  late final _faxController =
-      TextEditingController(text: widget.enterprise.fax.toString());
-
   void _showAddress(context) async {
     await showDialog(
         context: context,
@@ -237,7 +209,7 @@ class _EnterpriseInfoState extends State<_EnterpriseInfo> {
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 1 / 2,
                   width: MediaQuery.of(context).size.width * 2 / 3,
-                  child: ShowSchoolAddress(widget.enterprise.address!),
+                  child: ShowSchoolAddress(enterprise.address!),
                 ),
               ),
             ));
@@ -257,12 +229,12 @@ class _EnterpriseInfoState extends State<_EnterpriseInfo> {
                 alignment: Alignment.centerRight,
                 children: [
                   TextFormField(
-                    initialValue: widget.enterprise.address.toString(),
+                    initialValue: enterprise.address.toString(),
                     decoration: const InputDecoration(
                         labelText: '* Adresse',
                         suffixIcon: Icon(Icons.map, color: Colors.purple)),
-                    enabled: widget.editMode,
-                    onSaved: widget.onSavedAddress,
+                    enabled: editMode,
+                    onSaved: onSavedAddress,
                     maxLines: null,
                     keyboardType: TextInputType.streetAddress,
                   ),
@@ -273,41 +245,21 @@ class _EnterpriseInfoState extends State<_EnterpriseInfo> {
                 ],
               ),
               const SizedBox(height: 8),
-              TextFormField(
-                controller: _phoneController,
-                decoration: const InputDecoration(labelText: 'Téléphone'),
-                enabled: widget.editMode,
-                validator: (value) =>
-                    value == '' ? null : FormService.phoneValidator(value),
-                onSaved: (value) {
-                  widget.onSavedPhone(value);
-                  _phoneController.text =
-                      PhoneNumber.fromString(value).toString();
-                  setState(() {});
-                },
-                keyboardType: TextInputType.phone,
-              ),
+              PhoneListTile(
+                  onSaved: onSavedPhone, isMandatory: false, enabled: editMode),
+              const SizedBox(height: 8),
+              PhoneListTile(
+                  title: 'Télécopieur',
+                  icon: Icons.fax,
+                  onSaved: onSavedFax,
+                  isMandatory: false,
+                  enabled: editMode),
               const SizedBox(height: 8),
               TextFormField(
-                controller: _faxController,
-                decoration: const InputDecoration(labelText: 'Télécopieur'),
-                enabled: widget.editMode,
-                validator: (value) =>
-                    value == '' ? null : FormService.phoneValidator(value),
-                onSaved: (value) {
-                  widget.onSavedFax(value);
-                  _faxController.text =
-                      PhoneNumber.fromString(value).toString();
-                  setState(() {});
-                },
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                initialValue: widget.enterprise.website,
+                initialValue: enterprise.website,
                 decoration: const InputDecoration(labelText: 'Site web'),
-                enabled: widget.editMode,
-                onSaved: widget.onSavedWebsite,
+                enabled: editMode,
+                onSaved: onSavedWebsite,
                 keyboardType: TextInputType.url,
               ),
             ],
