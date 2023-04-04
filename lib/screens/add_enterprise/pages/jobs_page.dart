@@ -21,6 +21,8 @@ class JobsPageState extends State<JobsPage> {
   bool validate() {
     jobs.clear();
     _formKey.currentState!.save();
+    if (jobs.isEmpty) return false;
+
     return _formKey.currentState!.validate();
   }
 

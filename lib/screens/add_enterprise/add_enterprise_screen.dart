@@ -68,6 +68,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
         setState(() {
           _currentStep = 1;
         });
+        return;
       }
       _submit();
     } else {
