@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/phone_number.dart';
 import '/common/providers/enterprises_provider.dart';

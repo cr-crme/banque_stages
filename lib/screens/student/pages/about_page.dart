@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
-import '/common/models/address.dart';
 import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
+import '/common/widgets/address_list_tile.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
-import '/common/widgets/sub_title.dart';
 import '/common/widgets/phone_list_tile.dart';
+import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
 
 class AboutPage extends StatefulWidget {
@@ -30,7 +30,7 @@ class AboutPageState extends State<AboutPage> {
 
   String? _phone;
   String? _email;
-  String? _address;
+  final _addressController = AddressController();
 
   String? _contactFirstName;
   String? _contactLastName;
@@ -45,14 +45,15 @@ class AboutPageState extends State<AboutPage> {
       setState(() => editing = true);
       return;
     }
-
-    if (!FormService.validateForm(_formKey, save: true)) {
+    final status = await _addressController.requestValidation();
+    if (!mounted) return;
+    if (status != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(status)));
       return;
     }
-    late Address address;
-    try {
-      address = (await Address.fromAddress(_address!))!;
-    } catch (e) {
+
+    if (!FormService.validateForm(_formKey, save: true)) {
       return;
     }
 
@@ -60,14 +61,13 @@ class AboutPageState extends State<AboutPage> {
     if (mounted) {
       StudentsProvider.of(context, listen: false).replace(
         widget.student.copyWith(
-          phone: PhoneNumber.fromString(_phone), // TODO check if validated
+          phone: PhoneNumber.fromString(_phone),
           email: _email,
-          address: address,
+          address: _addressController.address,
           contact: Person(
               firstName: _contactFirstName!,
               lastName: _contactLastName!,
-              phone: PhoneNumber.fromString(
-                  _contactPhone), // TODO check if validated
+              phone: PhoneNumber.fromString(_contactPhone),
               email: _contactEmail),
           contactLink: _contactLink,
         ),
@@ -93,7 +93,7 @@ class AboutPageState extends State<AboutPage> {
                 isEditing: editing,
                 onSavedPhone: (phone) => _phone = phone,
                 onSavedEmail: (email) => _email = email,
-                onSavedAddress: (address) => _address = address,
+                addressController: _addressController,
               ),
               _EmergencyContact(
                 student: widget.student,
@@ -199,14 +199,14 @@ class _ContactInformation extends StatelessWidget {
     required this.isEditing,
     required this.onSavedPhone,
     required this.onSavedEmail,
-    required this.onSavedAddress,
+    required this.addressController,
   });
 
   final Student student;
   final bool isEditing;
   final Function(String?) onSavedPhone;
   final Function(String?) onSavedEmail;
-  final Function(String?) onSavedAddress;
+  final AddressController addressController;
 
   @override
   Widget build(BuildContext context) {
@@ -238,15 +238,11 @@ class _ContactInformation extends StatelessWidget {
                 onSaved: onSavedEmail,
               ),
               const SizedBox(height: 8),
-              TextFormField(
-                controller:
-                    TextEditingController(text: student.address.toString()),
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.address,
-                ),
-                maxLines: null,
+              AddressListTile(
+                initialValue: student.address,
+                addressController: addressController,
+                isMandatory: false,
                 enabled: isEditing,
-                onSaved: onSavedAddress,
               ),
             ],
           ),
