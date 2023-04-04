@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '/common/widgets/address_list_tile.dart';
 import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import '/common/widgets/form_fields/share_with_picker_form_field.dart';
 import '/misc/form_service.dart';
@@ -15,15 +16,24 @@ class InformationsPageState extends State<InformationsPage> {
   final _formKey = GlobalKey<FormState>();
 
   String? name;
+  final _addressController = AddressController();
   String? neq;
 
   Set<String> activityTypes = {};
 
   String? shareWith;
 
-  bool validate() {
+  Future<String?> validate() async {
+    if (!_formKey.currentState!.validate()) {
+      return 'Assurez vous que tous les champs soient emplis';
+    }
+
+    final message = await _addressController.requestionValidation();
+    if (message != null) return message;
+
     _formKey.currentState!.save();
-    return _formKey.currentState!.validate();
+
+    return null;
   }
 
   @override
@@ -39,6 +49,11 @@ class InformationsPageState extends State<InformationsPage> {
                 validator: FormService.textNotEmptyValidator,
                 onSaved: (name) => this.name = name,
               ),
+            ),
+            AddressListTile(
+              isMandatory: true,
+              enabled: true,
+              addressController: _addressController,
             ),
             ListTile(
               title: TextFormField(

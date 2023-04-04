@@ -36,7 +36,8 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     String? message;
     switch (_currentStep) {
       case 0:
-        valid = _informationsKey.currentState!.validate();
+        message = await _informationsKey.currentState!.validate();
+        valid = message == null;
         break;
       case 1:
         valid = _jobsKey.currentState!.validate();
@@ -56,7 +57,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     ScaffoldMessenger.of(context).clearSnackBars();
 
     if (_currentStep == 2) {
-      if (!_informationsKey.currentState!.validate()) {
+      if ((await _informationsKey.currentState!.validate()) != null) {
         setState(() {
           _currentStep = 0;
         });
