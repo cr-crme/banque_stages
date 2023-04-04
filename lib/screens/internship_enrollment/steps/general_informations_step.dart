@@ -65,8 +65,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
             _SupervisonInformation(
               onSavedFirstName: (name) => supervisorFirstName = name!,
               onSavedLastName: (name) => supervisorLastName = name!,
-              onSavedPhone: (phone) =>
-                  supervisorPhone = phone!, // TODO if validated
+              onSavedPhone: (phone) => supervisorPhone = phone!,
               onSavedEmail: (email) => supervisorEmail = email!,
             ),
           ],

@@ -67,7 +67,8 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
   @override
   Widget build(BuildContext context) {
     return FormField<Job>(
-      onSaved: _specialization == null || _positionOffered == 0
+      onSaved: _specialization == null ||
+              (widget.askNumberPositionsOffered && _positionOffered == 0)
           ? null
           : (_) => widget.onSaved != null
               ? widget.onSaved!(Job(
