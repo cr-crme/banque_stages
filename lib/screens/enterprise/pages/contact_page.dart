@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/phone_number.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/widgets/address_list_tile.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/common/widgets/phone_list_tile.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
-import 'widgets/show_school.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({
@@ -30,7 +29,7 @@ class ContactPageState extends State<ContactPage> {
   String? _contactPhone;
   String? _contactEmail;
 
-  String? _address;
+  final _addressController = AddressController();
   String? _phone;
   String? _fax;
   String? _website;
@@ -43,10 +42,23 @@ class ContactPageState extends State<ContactPage> {
   bool _editing = false;
   bool get editing => _editing;
 
-  void toggleEdit() async {
-    if (!FormService.validateForm(_formKey, save: true)) {
+  Future<void> toggleEdit() async {
+    if (!_editing) {
+      _editing = !_editing;
+      setState(() {});
       return;
     }
+
+    final status = await _addressController.requestValidation();
+    if (!mounted) return;
+    if (status != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(status)));
+      return;
+    }
+
+    if (!FormService.validateForm(_formKey, save: true)) return;
+
     _editing = !_editing;
 
     EnterprisesProvider.of(context).replace(
@@ -57,12 +69,13 @@ class ContactPageState extends State<ContactPage> {
             ? null
             : PhoneNumber.fromString(_contactPhone),
         contactEmail: _contactEmail,
-        address: await Address.fromAddress(_address!),
+        //address: await Address.fromAddress(_address!),
         phone: _phone == null ? null : PhoneNumber.fromString(_phone),
         fax: _fax == null ? null : PhoneNumber.fromString(_fax),
         website: _website,
-        headquartersAddress: await Address.fromAddress(
-            _useSameAddress ? _address! : _headquartersAddress!),
+        // TODO Here
+        // headquartersAddress: await Address.fromAddress(
+        //     _useSameAddress ? _address! : _headquartersAddress!),
         neq: _neq,
       ),
     );
@@ -90,7 +103,7 @@ class ContactPageState extends State<ContactPage> {
               _EnterpriseInfo(
                 enterprise: widget.enterprise,
                 editMode: _editing,
-                onSavedAddress: (address) => _address = address!,
+                addressController: _addressController,
                 onSavedPhone: (phone) => _phone = phone,
                 onSavedFax: (fax) => _fax = fax,
                 onSavedWebsite: (website) => _website = website!,
@@ -102,8 +115,9 @@ class ContactPageState extends State<ContactPage> {
                 onChangedUseSame: (newValue) => setState(() {
                   _useSameAddress = newValue!;
                 }),
-                onSavedAddress: (address) => _headquartersAddress =
-                    !_useSameAddress && address != null ? address : _address,
+                onSavedAddress: (_) {}, // TODO Here
+                // (address) => _headquartersAddress =
+                //     !_useSameAddress && address != null ? address : _address,
                 onSavedNeq: (neq) => _neq = neq,
               ),
             ],
@@ -187,7 +201,7 @@ class _EnterpriseInfo extends StatelessWidget {
   const _EnterpriseInfo({
     required this.enterprise,
     required this.editMode,
-    required this.onSavedAddress,
+    required this.addressController,
     required this.onSavedPhone,
     required this.onSavedFax,
     required this.onSavedWebsite,
@@ -195,25 +209,10 @@ class _EnterpriseInfo extends StatelessWidget {
 
   final Enterprise enterprise;
   final bool editMode;
-  final Function(String?) onSavedAddress;
+  final AddressController addressController;
   final Function(String?) onSavedWebsite;
   final Function(String?) onSavedPhone;
   final Function(String?) onSavedFax;
-
-  void _showAddress(context) async {
-    await showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text('Adresse de l\'établissement'),
-              content: SingleChildScrollView(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 1 / 2,
-                  width: MediaQuery.of(context).size.width * 2 / 3,
-                  child: ShowSchoolAddress(enterprise.address!),
-                ),
-              ),
-            ));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,24 +224,12 @@ class _EnterpriseInfo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              Stack(
-                alignment: Alignment.centerRight,
-                children: [
-                  TextFormField(
-                    initialValue: enterprise.address.toString(),
-                    decoration: const InputDecoration(
-                        labelText: '* Adresse',
-                        suffixIcon: Icon(Icons.map, color: Colors.purple)),
-                    enabled: editMode,
-                    onSaved: onSavedAddress,
-                    maxLines: null,
-                    keyboardType: TextInputType.streetAddress,
-                  ),
-                  IconButton(
-                    onPressed: () => _showAddress(context),
-                    icon: const Icon(Icons.map, color: Colors.purple),
-                  ),
-                ],
+              AddressListTile(
+                title: 'Adresse de l\'établissement',
+                addressController: addressController,
+                isMandatory: true,
+                enabled: editMode,
+                initialValue: enterprise.address,
               ),
               const SizedBox(height: 8),
               PhoneListTile(

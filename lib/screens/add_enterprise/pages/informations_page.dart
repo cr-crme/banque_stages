@@ -24,7 +24,7 @@ class InformationsPageState extends State<InformationsPage> {
   String? shareWith;
 
   Future<String?> validate() async {
-    await addressController.requestionValidation();
+    await addressController.requestValidation();
 
     if (!_formKey.currentState!.validate()) {
       return 'Assurez vous que tous les champs soient emplis';
@@ -50,6 +50,7 @@ class InformationsPageState extends State<InformationsPage> {
               ),
             ),
             AddressListTile(
+              title: 'Adresse de l\'établissement',
               isMandatory: true,
               enabled: true,
               addressController: addressController,

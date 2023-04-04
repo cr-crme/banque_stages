@@ -52,15 +52,15 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
     }
     _actionButton = IconButton(
       icon: icon,
-      onPressed: () {
+      onPressed: () async {
         if (_tabController.index == 0) {
           _aboutPageKey.currentState?.toggleEdit();
         } else if (_tabController.index == 1) {
-          _contactPageKey.currentState?.toggleEdit();
+          await _contactPageKey.currentState?.toggleEdit();
         } else if (_tabController.index == 2) {
-          _jobsPageKey.currentState?.addJob();
+          await _jobsPageKey.currentState?.addJob();
         } else if (_tabController.index == 3) {
-          _stagePageKey.currentState?.addStage();
+          await _stagePageKey.currentState?.addStage();
         }
 
         _updateActionButton();

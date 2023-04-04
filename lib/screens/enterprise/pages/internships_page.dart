@@ -25,7 +25,7 @@ class InternshipsPage extends StatefulWidget {
 }
 
 class InternshipsPageState extends State<InternshipsPage> {
-  void addStage() async {
+  Future<void> addStage() async {
     if (widget.enterprise.jobs.fold<int>(
             0, (previousValue, e) => e.positionsRemaining(context)) ==
         0) {

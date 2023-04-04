@@ -9,7 +9,7 @@ class AddressController {
 
   // Interface to expose to the user
   Address? get address => _address();
-  Future<String?> requestionValidation() async {
+  Future<String?> requestValidation() async {
     return _validationFunction();
   }
 }
@@ -17,13 +17,17 @@ class AddressController {
 class AddressListTile extends StatefulWidget {
   const AddressListTile({
     super.key,
+    this.title,
+    this.initialValue,
     required this.isMandatory,
     required this.enabled,
     this.addressController,
   });
 
+  final String? title;
   final bool enabled;
   final bool isMandatory;
+  final Address? initialValue;
   final AddressController? addressController;
 
   @override
@@ -37,14 +41,20 @@ class _AddressListTileState extends State<AddressListTile> {
   @override
   void initState() {
     super.initState();
+
     if (widget.addressController != null) {
       widget.addressController!._validationFunction = validate;
-      widget.addressController!._address = address;
+      widget.addressController!._address = getAddress;
+    }
+
+    if (widget.initialValue != null) {
+      _address = widget.initialValue;
+      _textController.text = _address.toString();
     }
   }
 
   Address? _address;
-  Address? address() => _address;
+  Address? getAddress() => _address;
 
   Future<String?> validate() async {
     if (_textController.text == '') {
@@ -116,6 +126,23 @@ class _AddressListTileState extends State<AddressListTile> {
     return null;
   }
 
+  void _showAddress(context) async {
+    if (_address == null) return;
+
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(widget.title ?? 'Adresse'),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 1 / 2,
+                  width: MediaQuery.of(context).size.width * 2 / 3,
+                  child: ShowSchoolAddress(_address!),
+                ),
+              ),
+            ));
+  }
+
   bool _isValid() {
     if (_textController.text == '') {
       return !widget.isMandatory;
@@ -132,16 +159,27 @@ class _AddressListTileState extends State<AddressListTile> {
           validate();
         }
       },
-      child: ListTile(
-        title: TextFormField(
-          controller: _textController,
-          decoration:
-              const InputDecoration(labelText: '* Adresse de l\'établissement'),
-          maxLines: null,
-          onSaved: (newAddress) => validate(),
-          validator: (_) => _isValid() ? null : 'Entrer une adresse valide',
-          keyboardType: TextInputType.streetAddress,
-        ),
+      child: Stack(
+        alignment: Alignment.centerRight,
+        children: [
+          TextFormField(
+            controller: _textController,
+            decoration: InputDecoration(
+              labelText:
+                  '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
+              //suffixIcon: const Icon(Icons.map, color: Colors.purple),
+            ),
+            enabled: widget.enabled,
+            maxLines: null,
+            onSaved: (newAddress) => validate(),
+            validator: (_) => _isValid() ? null : 'Entrer une adresse valide',
+            keyboardType: TextInputType.streetAddress,
+          ),
+          IconButton(
+            onPressed: () => _showAddress(context),
+            icon: const Icon(Icons.map, color: Colors.purple),
+          )
+        ],
       ),
     );
   }
