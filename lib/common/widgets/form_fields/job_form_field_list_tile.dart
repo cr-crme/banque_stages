@@ -67,14 +67,16 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
   @override
   Widget build(BuildContext context) {
     return FormField<Job>(
-      onSaved: _specialization == null ||
-              (widget.askNumberPositionsOffered && _positionOffered == 0)
-          ? null
-          : (_) => widget.onSaved != null
-              ? widget.onSaved!(Job(
-                  specialization: _specialization!,
-                  positionsOffered: _positionOffered))
-              : null,
+      onSaved: (_) {
+        if (widget.onSaved == null ||
+            _specialization == null ||
+            (widget.askNumberPositionsOffered && _positionOffered == 0)) {
+          return;
+        }
+        widget.onSaved!(Job(
+            specialization: _specialization!,
+            positionsOffered: _positionOffered));
+      },
       validator: (_) => _validator(),
       builder: (state) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
