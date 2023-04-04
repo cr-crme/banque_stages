@@ -16,7 +16,7 @@ class InformationsPageState extends State<InformationsPage> {
   final _formKey = GlobalKey<FormState>();
 
   String? name;
-  final _addressController = AddressController();
+  final addressController = AddressController();
   String? neq;
 
   Set<String> activityTypes = {};
@@ -24,12 +24,11 @@ class InformationsPageState extends State<InformationsPage> {
   String? shareWith;
 
   Future<String?> validate() async {
+    await addressController.requestionValidation();
+
     if (!_formKey.currentState!.validate()) {
       return 'Assurez vous que tous les champs soient emplis';
     }
-
-    final message = await _addressController.requestionValidation();
-    if (message != null) return message;
 
     _formKey.currentState!.save();
 
@@ -53,7 +52,7 @@ class InformationsPageState extends State<InformationsPage> {
             AddressListTile(
               isMandatory: true,
               enabled: true,
-              addressController: _addressController,
+              addressController: addressController,
             ),
             ListTile(
               title: TextFormField(

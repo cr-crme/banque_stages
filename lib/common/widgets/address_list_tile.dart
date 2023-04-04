@@ -5,6 +5,10 @@ import '/screens/enterprise/pages/widgets/show_school.dart';
 
 class AddressController {
   late Future<String?> Function() _validationFunction;
+  late Address? Function() _address;
+
+  // Interface to expose to the user
+  Address? get address => _address();
   Future<String?> requestionValidation() async {
     return _validationFunction();
   }
@@ -35,10 +39,12 @@ class _AddressListTileState extends State<AddressListTile> {
     super.initState();
     if (widget.addressController != null) {
       widget.addressController!._validationFunction = validate;
+      widget.addressController!._address = address;
     }
   }
 
-  Address? address;
+  Address? _address;
+  Address? address() => _address;
 
   Future<String?> validate() async {
     if (_textController.text == '') {
@@ -54,15 +60,15 @@ class _AddressListTileState extends State<AddressListTile> {
     try {
       newAddress = (await Address.fromAddress(_textController.text))!;
     } catch (e) {
-      address = null;
+      _address = null;
       isValidating = false;
       return 'L\'adresse n\'a pu être trouvée';
     }
 
-    if (newAddress.toString() == address.toString()) {
+    if (newAddress.toString() == _address.toString()) {
       // Don't don anything if the address did not change
-      address = newAddress;
-      _textController.text = address.toString();
+      _address = newAddress;
+      _textController.text = _address.toString();
       isValidating = false;
       setState(() {});
       return null;
@@ -98,13 +104,13 @@ class _AddressListTileState extends State<AddressListTile> {
               ],
             ));
     if (confirmAddress == null || !confirmAddress) {
-      address = null;
+      _address = null;
       isValidating = false;
       return 'Essayer une nouvelle adresse';
     }
 
-    address = newAddress;
-    _textController.text = address.toString();
+    _address = newAddress;
+    _textController.text = _address.toString();
     isValidating = false;
     setState(() {});
     return null;
@@ -115,7 +121,7 @@ class _AddressListTileState extends State<AddressListTile> {
       return !widget.isMandatory;
     }
 
-    return address != null;
+    return _address != null;
   }
 
   @override
