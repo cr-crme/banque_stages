@@ -25,7 +25,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
 
   late IconButton _actionButton;
 
-  final _aboutPageKey = GlobalKey<AboutPageState>();
+  final _aboutPageKey = GlobalKey<EnterpriseAboutPageState>();
   final _contactPageKey = GlobalKey<ContactPageState>();
   final _jobsPageKey = GlobalKey<JobsPageState>();
   final _stagePageKey = GlobalKey<InternshipsPageState>();
@@ -50,25 +50,23 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
     } else if (_tabController.index == 3) {
       icon = const Icon(Icons.add);
     }
+    _actionButton = IconButton(
+      icon: icon,
+      onPressed: () {
+        if (_tabController.index == 0) {
+          _aboutPageKey.currentState?.toggleEdit();
+        } else if (_tabController.index == 1) {
+          _contactPageKey.currentState?.toggleEdit();
+        } else if (_tabController.index == 2) {
+          _jobsPageKey.currentState?.addJob();
+        } else if (_tabController.index == 3) {
+          _stagePageKey.currentState?.addStage();
+        }
 
-    setState(() {
-      _actionButton = IconButton(
-        icon: icon,
-        onPressed: () {
-          if (_tabController.index == 0) {
-            _aboutPageKey.currentState?.toggleEdit();
-          } else if (_tabController.index == 1) {
-            _contactPageKey.currentState?.toggleEdit();
-          } else if (_tabController.index == 2) {
-            _jobsPageKey.currentState?.addJob();
-          } else if (_tabController.index == 3) {
-            _stagePageKey.currentState?.addStage();
-          }
-
-          _updateActionButton();
-        },
-      );
-    });
+        _updateActionButton();
+      },
+    );
+    setState(() {});
   }
 
   @override
@@ -90,16 +88,17 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
               if (!_editing || !_tabController.indexIsChanging) return;
 
               _tabController.index = _tabController.previousIndex;
-              if (await ConfirmPopDialog.show(context)) {
+              final shouldShow = await ConfirmPopDialog.show(context);
+              if (shouldShow) {
                 _tabController.animateTo(index);
               }
             },
             controller: _tabController,
             tabs: const [
-              Tab(icon: Icon(Icons.info_outlined), text: "À propos"),
-              Tab(icon: Icon(Icons.person), text: "Contact"),
-              Tab(icon: Icon(Icons.handyman), text: "Métiers"),
-              Tab(icon: Icon(Icons.assignment), text: "Stages"),
+              Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
+              Tab(icon: Icon(Icons.contact_phone), text: 'Contact'),
+              Tab(icon: Icon(Icons.location_city_rounded), text: 'Métiers'),
+              Tab(icon: Icon(Icons.assignment), text: 'Stages'),
             ],
           ),
         ),
@@ -107,7 +106,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
           controller: _tabController,
           physics: _editing ? const NeverScrollableScrollPhysics() : null,
           children: [
-            AboutPage(key: _aboutPageKey, enterprise: enterprise),
+            EnterpriseAboutPage(key: _aboutPageKey, enterprise: enterprise),
             ContactPage(key: _contactPageKey, enterprise: enterprise),
             JobsPage(key: _jobsPageKey, enterprise: enterprise),
             InternshipsPage(key: _stagePageKey, enterprise: enterprise),

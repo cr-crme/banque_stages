@@ -10,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
+import '/common/providers/schools_provider.dart';
 import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
 import 'common/providers/internships_provider.dart';
@@ -23,9 +24,11 @@ import 'misc/risk_data_file_service.dart';
 import 'router.dart';
 import 'screens/visiting_students/models/all_itineraries.dart';
 
+bool populateWithDebugData = true;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await JobDataFileService.loadData();
+  await ActivitySectorsService.initializeActivitySectorSingleton();
   await RiskDataFileService.loadData();
   await QuestionFileService.loadData();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -52,6 +55,7 @@ class BanqueStagesApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => SchoolsProvider()),
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
         ChangeNotifierProvider(create: (context) => InternshipsProvider()),
         ChangeNotifierProvider(create: (context) => AllStudentsWaypoints()),

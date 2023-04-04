@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '/misc/job_data_file_service.dart';
-import '../../job_list_risks_and_skills/job_list_screen.dart';
+import '../../specialization_list_risks_and_skills/specialization_list_screen.dart';
 
 class SstSearchBar extends StatelessWidget {
   const SstSearchBar({super.key});
@@ -100,9 +100,26 @@ class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
     );
   }
 
+  List<Specialization> _evaluatedSpecializations() {
+    List<Specialization> out = [];
+    for (final sector in ActivitySectorsService.sectors) {
+      for (final specialization in sector.specializations) {
+        // If there is no risk, it does not mean this specialization
+        // is risk-free, it means it was not evaluated
+        var hasRisks = false;
+        for (final skill in specialization.skills) {
+          hasRisks = skill.risks.isNotEmpty;
+          if (hasRisks) break;
+        }
+        if (hasRisks) out.add(specialization);
+      }
+    }
+    return out;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final options = JobDataFileService.specializations;
+    final options = _evaluatedSpecializations();
     options
         .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
@@ -122,7 +139,7 @@ class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
 
     _clearText();
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => JobListScreen(id: options[index].id),
+      builder: (_) => SpecializationListScreen(id: options[index].id),
     ));
   }
 }

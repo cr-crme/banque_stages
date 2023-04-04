@@ -16,32 +16,28 @@ class EnterpriseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0.5,
+      elevation: 10,
       child: ListTile(
         onTap: () => onTap(enterprise),
-        leading: Container(
-          width: 80,
-          height: 60,
-          color: Theme.of(context).disabledColor,
-          child: enterprise.photo.isNotEmpty
-              ? Image.network(enterprise.photo)
-              : null,
-        ),
         title: Text(
           enterprise.name,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium!
+              .copyWith(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8),
             Visibility(
-              visible: enterprise.address.isNotEmpty ||
-                  enterprise.headquartersAddress.isNotEmpty,
+              visible: enterprise.address != null ||
+                  enterprise.headquartersAddress != null,
               child: Text(
-                enterprise.address.isEmpty
-                    ? enterprise.headquartersAddress
-                    : enterprise.address,
+                enterprise.address != null
+                    ? enterprise.address.toString()
+                    : enterprise.headquartersAddress.toString(),
+                style: TextStyle(color: Colors.grey[800]),
               ),
             ),
             ...enterprise.jobs
@@ -50,20 +46,17 @@ class EnterpriseCard extends StatelessWidget {
                     child: Row(children: [
                       DisponibilityCircle(
                           positionsOffered: job.positionsOffered,
-                          positionsOccupied: job.positionsOccupied),
+                          positionsOccupied: job.positionsOccupied(context)),
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
-                          job.specialization?.idWithName ?? "bad id",
+                          job.specialization.idWithName,
+                          style: TextStyle(color: Colors.grey[800]),
                         ),
                       ),
                     ])))
                 .toList()
           ],
-        ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: Theme.of(context).hintColor,
         ),
       ),
     );

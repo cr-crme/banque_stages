@@ -1,138 +1,148 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/services.dart';
 
-abstract class JobDataFileService {
-  static Future<void> loadData() async {
-    final file = await rootBundle.loadString("assets/jobs-data.json");
+abstract class ActivitySectorsService {
+  static Future<void> initializeActivitySectorSingleton() async {
+    final file = await rootBundle.loadString('assets/jobs-data.json');
     final json = jsonDecode(file) as List;
 
-    _sectors = List.from(
-      json.map((e) => ActivitySector.fromSerialized(e)),
-      growable: false,
-    );
+    sectors = ActivitySectorList.fromSerialized(json);
   }
 
-  static ActivitySector? fromId(String id) {
-    return _sectors.firstWhereOrNull((sector) => sector.id == id);
-  }
+  static late ActivitySectorList sectors; // Holder of the singleton
 
-  static Iterable<T> filterData<T extends JobData>({
-    required String query,
-    required List<T> data,
-  }) {
-    int? number = int.tryParse(query);
-    if (number != null) {
-      return data.where(
-        (i) => i.id.contains(number.toString()),
-      );
-    }
-    return data.where(
-      (i) => i.idWithName.toLowerCase().contains(query.toLowerCase()),
-    );
-  }
-
-  static List<ActivitySector> get sectors => _sectors;
-
-  static List<Specialization> get specializations {
-    List<Specialization> out = [];
-    for (final sector in JobDataFileService.sectors) {
+  static Specialization specialization(String id) {
+    for (final sector in sectors) {
       for (final specialization in sector.specializations) {
-        // If there is no risk, it does not mean this specialization
-        // is risk-free, it means it was not evaluated
-        var hasRisks = false;
-        for (final skill in specialization.skills) {
-          hasRisks = skill.risks.isNotEmpty;
-          if (hasRisks) break;
-        }
-        if (hasRisks) out.add(specialization);
+        if (specialization.id == id) return specialization;
       }
+    }
+    throw 'Specialization not found';
+  }
+}
+
+class ActivitySector extends NamedItemSerializable {
+  ActivitySector.fromSerialized(map)
+      : specializations = SpecializationList.fromSerialized(map['s']),
+        super.fromSerialized(map);
+
+  @override
+  Map<String, dynamic> serializedMap() =>
+      super.serializedMap()..addAll({'s': specializations.serialize()});
+
+  final SpecializationList specializations;
+}
+
+class ActivitySectorList extends _NamedItemSerializableList<ActivitySector> {
+  ActivitySectorList._();
+
+  factory ActivitySectorList.fromSerialized(map) {
+    final out = ActivitySectorList._();
+    for (final activity in map) {
+      out.add(ActivitySector.fromSerialized(activity));
     }
     return out;
   }
 
-  static List<ActivitySector> _sectors = [];
-}
-
-abstract class JobData extends ItemSerializable {
-  JobData.fromSerialized(map) : super.fromSerialized(map);
-
-  String get idWithName => "${int.tryParse(id)} - $name";
-
-  abstract final String name;
-}
-
-class ActivitySector extends JobData {
-  ActivitySector.fromSerialized(map)
-      : name = map["n"],
-        specializations = List.from(
-          map["s"].map((e) => Specialization.fromSerialized(e)),
-          growable: false,
-        ),
-        super.fromSerialized(map);
-
   @override
-  Map<String, dynamic> serializedMap() {
-    throw "Activity Sector should not be serialized. Store its ID intead.";
+  ActivitySector deserializeItem(data) => ActivitySector.fromSerialized(map);
+}
+
+class Specialization extends NamedItemSerializable {
+  ActivitySector? _sector;
+  ActivitySector get sector {
+    _sector ??= _findSector(id);
+    return _sector!;
   }
 
-  Specialization? fromId(String id) {
-    return specializations.firstWhereOrNull((job) => job.id == id);
-  }
-
-  @override
-  final String name;
-
-  final List<Specialization> specializations;
-}
-
-class Specialization extends JobData {
   Specialization.fromSerialized(map)
-      : name = map["n"],
-        skills = List.from(
-          map["s"].map((e) => Skill.fromSerialized(e)),
-          growable: false,
-        ),
-        questions = Set.from(map["q"]),
+      : skills = SkillList.fromSerialized(map['s']),
+        questions = List.from(map['q']),
         super.fromSerialized(map);
 
   @override
-  Map<String, dynamic> serializedMap() {
-    throw "Job should not be serialized. Store its ID intead.";
+  Map<String, dynamic> serializedMap() =>
+      super.serializedMap()..addAll({'s': skills.serialize(), 'q': questions});
+
+  static ActivitySector _findSector(String id) {
+    for (final sector in ActivitySectorsService.sectors) {
+      for (final specialization in sector.specializations) {
+        if (specialization.id == id) return sector;
+      }
+    }
+    throw 'Sector could not be found for current specialization';
   }
 
-  Skill fromId(String id) {
-    return skills.firstWhere((skill) => skill.id == id);
-  }
-
-  @override
-  final String name;
-
-  final List<Skill> skills;
-  final Set<String> questions;
+  final SkillList skills;
+  final List<String> questions;
 }
 
-class Skill extends JobData {
-  Skill.fromSerialized(map)
-      : name = map["n"],
-        complexity = map["x"],
-        criteria = List.from(map["c"], growable: false),
-        tasks = List.from(map["t"], growable: false),
-        risks = Set.from(map["r"]),
-        super.fromSerialized(map);
+class SpecializationList extends _NamedItemSerializableList<Specialization> {
+  SpecializationList._();
 
-  @override
-  Map<String, dynamic> serializedMap() {
-    throw "Skill should not be serialized. Store its ID intead.";
+  factory SpecializationList.fromSerialized(map) {
+    final out = SpecializationList._();
+    for (final specialization in map) {
+      out.add(Specialization.fromSerialized(specialization));
+    }
+    return out;
   }
 
   @override
-  final String name;
+  Specialization deserializeItem(data) => Specialization.fromSerialized(map);
+}
+
+class Skill extends NamedItemSerializable {
+  Skill.fromSerialized(map)
+      : complexity = map['x'],
+        criteria = List.from(map['c'], growable: false),
+        tasks = List.from(map['t'], growable: false),
+        risks = List.from(map['r'], growable: false),
+        super.fromSerialized(map);
+
+  @override
+  Map<String, dynamic> serializedMap() => super.serializedMap()
+    ..addAll({'x': complexity, 'c': criteria, 't': tasks, 'r': risks});
 
   final String complexity;
   final List<String> criteria;
   final List<String> tasks;
-  final Set<String> risks;
+  final List<String> risks;
+}
+
+class SkillList extends _NamedItemSerializableList<Skill> {
+  SkillList._();
+
+  factory SkillList.fromSerialized(map) {
+    final out = SkillList._();
+    for (final skill in map) {
+      out.add(Skill.fromSerialized(skill));
+    }
+    return out;
+  }
+
+  @override
+  Skill deserializeItem(data) => Skill.fromSerialized(map);
+}
+
+abstract class NamedItemSerializable extends ItemSerializable {
+  final String name;
+
+  NamedItemSerializable.fromSerialized(map)
+      : name = map['n'],
+        super.fromSerialized(map);
+
+  @override
+  Map<String, dynamic> serializedMap() => {'id': id, 'n': name};
+
+  String get idWithName => '${int.tryParse(id)} - $name';
+}
+
+abstract class _NamedItemSerializableList<T extends NamedItemSerializable>
+    extends ListSerializable<T> {
+  Iterable<T> whereId({required String id}) => where(
+        (e) => e.idWithName.contains(id),
+      );
 }

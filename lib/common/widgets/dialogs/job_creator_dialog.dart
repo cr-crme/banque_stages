@@ -28,27 +28,25 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text("Ajouter un nouveau métier"),
-      content: Form(
-        key: _formKey,
-        child: JobFormFieldListTile(
-          initialValue: Job(),
-          onSaved: (Job? job) => setState(() {
-            _job = job;
-          }),
+    return SingleChildScrollView(
+      child: AlertDialog(
+        title: const Text('Ajouter un nouveau métier'),
+        content: Form(
+          key: _formKey,
+          child: JobFormFieldListTile(
+              onSaved: (Job? job) => setState(() => _job = job)),
         ),
+        actions: [
+          OutlinedButton(
+            onPressed: _onCancel,
+            child: const Text('Annuler'),
+          ),
+          TextButton(
+            onPressed: _onConfirm,
+            child: const Text('Confirmer'),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: _onCancel,
-          child: const Text("Annuler"),
-        ),
-        ElevatedButton(
-          onPressed: _onConfirm,
-          child: const Text("Confirmer"),
-        ),
-      ],
     );
   }
 }

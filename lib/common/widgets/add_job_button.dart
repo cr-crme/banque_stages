@@ -35,6 +35,6 @@ class AddJobButton extends StatelessWidget {
         autofocus: autofocus,
         clipBehavior: clipBehavior,
         icon: const Icon(Icons.location_city_rounded),
-        label: const Text("Ajouter"));
+        label: const Text('Ajouter'));
   }
 }

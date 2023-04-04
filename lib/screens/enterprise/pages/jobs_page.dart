@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +49,7 @@ class JobsPageState extends State<JobsPage> {
 
     for (XFile file in images) {
       var url = await StorageService.uploadJobImage(file.path);
-      job.pictures.add(url);
+      job.photosUrl.add(url);
     }
     provider.replace(widget.enterprise);
   }
@@ -62,12 +63,13 @@ class JobsPageState extends State<JobsPage> {
     );
     if (eventType == null) return;
 
+    if (!mounted) return;
     final description = await showDialog(
       context: context,
       builder: (context) => AddTextDialog(
         title: eventType == 2
-            ? "Décrivez la situation dangereuse identifiée :"
-            : "Racontez ce qu'il s'est passé :",
+            ? 'Décrivez la situation dangereuse identifiée :'
+            : 'Racontez ce qu\'il s\'est passé :',
       ),
     );
     if (description == null) return;
@@ -93,7 +95,7 @@ class JobsPageState extends State<JobsPage> {
     final newComment = await showDialog(
       context: context,
       builder: (context) => const AddTextDialog(
-        title: "Ajouter un commentaire",
+        title: 'Ajouter un commentaire',
       ),
     );
 
@@ -106,7 +108,7 @@ class JobsPageState extends State<JobsPage> {
     setState(() {
       for (Job job in widget.enterprise.jobs) {
         _expandedSections.putIfAbsent(
-            job.id, () => [true, false, false, false, false, false]);
+            job.id, () => [false, false, false, false, false, false]);
       }
     });
   }
@@ -131,12 +133,8 @@ class JobsPageState extends State<JobsPage> {
             .map((job) => ExpansionPanelRadio(
                 canTapOnHeader: true,
                 value: job.id,
-                headerBuilder: (context, isExpanded) => ListTile(
-                      title: Text(
-                        job.specialization?.idWithName ?? "bad id",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
+                headerBuilder: (context, isExpanded) =>
+                    SubTitle(job.specialization.idWithName, top: 12),
                 body: Column(
                   children: [
                     ExpansionPanelList(

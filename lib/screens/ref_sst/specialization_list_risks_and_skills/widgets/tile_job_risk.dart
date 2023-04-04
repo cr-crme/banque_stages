@@ -10,7 +10,7 @@ class TileJobRisk extends StatelessWidget {
   });
 
   final String title;
-  final List<String> elements;
+  final List<dynamic> elements;
   final int nbMaximumElements;
   final String tooltipMessage;
 
@@ -29,6 +29,8 @@ class TileJobRisk extends StatelessWidget {
             elevation: 10,
             borderRadius: BorderRadius.circular(100),
             child: Tooltip(
+              margin: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 1 / 3, right: 10),
               message: tooltipMessage,
               child: Container(
                   height: 30,
@@ -57,7 +59,7 @@ class TileJobRisk extends StatelessWidget {
           //more than 50% of width makes circle,
           children: elements
               .map<Widget>((e) => ListTile(
-                    title: Text(e,
+                    title: Text(e.name,
                         style: const TextStyle(
                             color: Color.fromARGB(255, 113, 111, 111))),
                     minVerticalPadding: 20,

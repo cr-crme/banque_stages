@@ -1,9 +1,17 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '/common/models/internship.dart';
 import '/common/models/student.dart';
 import '/common/models/visiting_priority.dart';
+import '/common/providers/enterprises_provider.dart';
+import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
+import '/common/providers/teachers_provider.dart';
 import '/common/widgets/main_drawer.dart';
+import '/router.dart';
+import 'widgets/transfer_dialog.dart';
 
 class SupervisionChart extends StatefulWidget {
   const SupervisionChart({super.key});
@@ -15,10 +23,158 @@ class SupervisionChart extends StatefulWidget {
 class _SupervisionChartState extends State<SupervisionChart> {
   bool _isSearchBarExpanded = false;
   final _searchTextController = TextEditingController();
+  bool _isFlagFilterExpanded = false;
+  final _visibilityFilters = {
+    VisitingPriority.high: true,
+    VisitingPriority.mid: true,
+    VisitingPriority.low: true,
+    VisitingPriority.notApplicable: false,
+  };
 
   void _toggleSearchBar() {
+    _isFlagFilterExpanded = false;
     _isSearchBarExpanded = !_isSearchBarExpanded;
     setState(() {});
+  }
+
+  void _toggleFlagFilter() {
+    _isSearchBarExpanded = false;
+    _isFlagFilterExpanded = !_isFlagFilterExpanded;
+    setState(() {});
+  }
+
+  Widget _searchBarBuilder() {
+    return Container(
+      margin: const EdgeInsets.all(8),
+      padding: const EdgeInsets.only(left: 15, right: 15),
+      child: TextFormField(
+        decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.search),
+            labelText: 'Rechercher un élève',
+            suffixIcon: IconButton(
+                onPressed: () =>
+                    setState(() => _searchTextController.text = ''),
+                icon: const Icon(Icons.clear)),
+            border: const OutlineInputBorder(borderSide: BorderSide())),
+        controller: _searchTextController,
+        onChanged: (value) => setState(() {}),
+      ),
+    );
+  }
+
+  Widget _flagFilterBuilder() {
+    final flags = _visibilityFilters.keys.map<Widget>((priority) {
+      return InkWell(
+        onTap: () => setState(() =>
+            _visibilityFilters[priority] = !_visibilityFilters[priority]!),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Checkbox(
+                value: _visibilityFilters[priority],
+                onChanged: (value) =>
+                    setState(() => _visibilityFilters[priority] = value!)),
+            Padding(
+              padding: const EdgeInsets.only(right: 25),
+              child: Icon(priority.icon, color: priority.color),
+            )
+          ],
+        ),
+      );
+    }).toList();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: flags,
+    );
+  }
+
+  List<Student> _filterByName(List<Student> students) {
+    return students
+        .map<Student?>((e) => e.fullName
+                .toLowerCase()
+                .contains(_searchTextController.text.toLowerCase())
+            ? e
+            : null)
+        .where((e) => e != null)
+        .toList()
+        .cast<Student>();
+  }
+
+  List<Student> _filterByFlag(List<Student> students) {
+    final allInterships = InternshipsProvider.of(context, listen: true);
+
+    return students
+        .map<Student?>((e) {
+          final interships = allInterships.byStudentId(e.id);
+          if (interships.isEmpty) {
+            return _visibilityFilters[VisitingPriority.notApplicable]!
+                ? e
+                : null;
+          }
+          return _visibilityFilters[interships.last.visitingPriority]!
+              ? e
+              : null;
+        })
+        .where((e) => e != null)
+        .toList()
+        .cast<Student>();
+  }
+
+  void _updatePriority(String studentId) {
+    final interships = InternshipsProvider.of(context, listen: false);
+    final studentInternships = interships.byStudentId(studentId);
+    if (studentInternships.isEmpty) return;
+    interships.replacePriority(
+        studentId, studentInternships.last.visitingPriority.next());
+
+    setState(() {});
+  }
+
+  void _transferStudent() async {
+    final internships = InternshipsProvider.of(context, listen: false);
+    final students =
+        TeachersProvider.getInChargeStudents(context, listen: false);
+    final teachers =
+        TeachersProvider.of(context, listen: false).map((e) => e).toList();
+
+    students.sort(
+        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
+    teachers.sort(
+        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
+
+    final answer = await showDialog<List<String>>(
+      context: context,
+      builder: (BuildContext context) =>
+          TransferDialog(students: students, teachers: teachers),
+    );
+
+    if (answer == null) return;
+    internships.transferStudent(studentId: answer[0], newTeacherId: answer[1]);
+  }
+
+  void _showTransferedStudent(InternshipsProvider internships) async {
+    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final students = StudentsProvider.of(context, listen: false);
+
+    for (final internship in internships) {
+      if (internship.isTransfering && internship.teacherId == myId) {
+        final student = students.fromId(internship.studentId);
+        final acceptTransfer = await showDialog<bool>(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) =>
+                AcceptTransferDialog(student: student));
+        if (acceptTransfer!) {
+          internships.acceptTransfer(studentId: internship.studentId);
+        } else {
+          internships.refuseTransfer(studentId: internship.studentId);
+        }
+      }
+    }
+  }
+
+  void _goToItinerary() {
+    GoRouter.of(context).pushNamed(Screens.itinerary);
   }
 
   @override
@@ -26,23 +182,27 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final screenSize = MediaQuery.of(context).size;
     final iconSize = screenSize.width / 16;
 
-    // TODO: Get student of the current teacher
-    final studentsTp = StudentsProvider.of(context);
-    List<Student> students = studentsTp
-        .map<Student?>((e) => _searchTextController.text == ''
-            ? e
-            : e.name
-                    .toLowerCase()
-                    .contains(_searchTextController.text.toLowerCase())
-                ? e
-                : null)
-        .where((e) => e != null)
-        .toList()
-        .cast<Student>();
+    // Make a copy before filtering
+    var students =
+        TeachersProvider.getSupervizedStudents(context, listen: false);
+    final allInternships = InternshipsProvider.of(context, listen: true);
+
+    students.sort(
+      (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
+    );
+    students = _filterByName(students);
+    students = _filterByFlag(students);
+
+    // Check if a student was transfered to the teacher, if so, show a dialog
+    // box to accept or refuse
+    Future.microtask(() => _showTransferedStudent(allInternships));
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Élèves à superviser'),
+        actions: [
+          IconButton(onPressed: _goToItinerary, icon: const Icon(Icons.route))
+        ],
         bottom: PreferredSize(
             preferredSize: Size(screenSize.width, iconSize * 1.5),
             child: Row(
@@ -51,7 +211,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
                   _TabIcon(
                       screenSize: screenSize,
                       iconSize: iconSize,
-                      onTap: () {},
+                      onTap: _transferStudent,
                       icon: Icons.transfer_within_a_station),
                   _TabIcon(
                       screenSize: screenSize,
@@ -61,51 +221,31 @@ class _SupervisionChartState extends State<SupervisionChart> {
                   _TabIcon(
                       screenSize: screenSize,
                       iconSize: iconSize,
-                      onTap: () {},
+                      onTap: _toggleFlagFilter,
                       icon: Icons.filter_alt_sharp),
                 ])),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            if (_isSearchBarExpanded)
-              Container(
-                margin: const EdgeInsets.all(8),
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.search),
-                      labelText: 'Rechercher un métier',
-                      suffixIcon: IconButton(
-                          onPressed: () =>
-                              setState(() => _searchTextController.text = ''),
-                          icon: const Icon(Icons.clear)),
-                      border:
-                          const OutlineInputBorder(borderSide: BorderSide())),
-                  controller: _searchTextController,
-                  onChanged: (value) => setState(() {}),
-                ),
-              ),
-            ListView.builder(
+      body: Column(
+        children: [
+          if (_isSearchBarExpanded) _searchBarBuilder(),
+          if (_isFlagFilterExpanded) _flagFilterBuilder(),
+          Expanded(
+            child: ListView.builder(
               shrinkWrap: true,
               itemCount: students.length,
-              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: ((ctx, i) {
-                final internship = students[i].internships.isNotEmpty
-                    ? students[i].internships.last
-                    : null;
+                final student = students[i];
+
                 return _StudentTile(
-                  key: Key(students[i].id),
-                  name: students[i].name,
-                  job: internship ?? 'Aucun stage', // TODO verify that
-                  business: internship ?? 'Aucun stage', // TODO verify that
-                  priority: VisitingPriority.low,
-                  avatar: const CircleAvatar(),
+                  key: Key(student.id),
+                  student: student,
+                  internships: allInternships.byStudentId(student.id),
+                  onUpdatePriority: () => _updatePriority(student.id),
                 );
               }),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       drawer: const MainDrawer(),
     );
@@ -145,59 +285,77 @@ class _TabIcon extends StatelessWidget {
 class _StudentTile extends StatelessWidget {
   const _StudentTile({
     super.key,
-    required this.name,
-    required this.business,
-    required this.avatar,
-    required this.job,
-    required this.priority,
+    required this.student,
+    required this.internships,
+    required this.onUpdatePriority,
   });
 
-  final String name;
-  final String business;
-  final Widget avatar;
-  final String job;
-  final VisitingPriority priority;
+  final Student student;
+  final List<Internship> internships;
+  final Function() onUpdatePriority;
 
   @override
   Widget build(BuildContext context) {
+    final enterprise = internships.isNotEmpty
+        ? EnterprisesProvider.of(context, listen: false)
+            .fromId(internships.last.enterpriseId)
+        : null;
+    final specialization = internships.isNotEmpty
+        ? enterprise?.jobs.fromId(internships.last.jobId).specialization
+        : null;
+
     return Card(
       elevation: 10,
       child: ListTile(
+        onTap: () => GoRouter.of(context).goNamed(
+            Screens.supervisionStudentDetails,
+            params: {'studentId': student.id}),
         leading: SizedBox(
           height: double.infinity, // This centers the avatar
-          child: avatar,
+          child: student.avatar,
         ),
-        title: Text(name),
+        title: Text(student.fullName),
         isThreeLine: true,
-        subtitle: Text(
-          '$business\n$job',
-          maxLines: 2,
-          style: const TextStyle(color: Colors.black87),
-        ),
-        trailing: Ink(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 5.0,
-                spreadRadius: 0.0,
-                offset: Offset(2.0, 2.0),
-              )
-            ],
-            border: Border.all(color: Colors.lightBlue, width: 3),
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            onPressed: () {},
-            alignment: Alignment.center,
-            icon: Icon(
-              priority.icon,
-              color: priority.color,
-              size: 30,
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              enterprise?.name ?? 'Aucun stage',
+              style: const TextStyle(color: Colors.black87),
             ),
-          ),
+            AutoSizeText(
+              specialization?.name ?? '',
+              maxLines: 2,
+              style: const TextStyle(color: Colors.black87),
+            ),
+          ],
         ),
+        trailing: internships.isEmpty
+            ? null
+            : Ink(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 5.0,
+                      spreadRadius: 0.0,
+                      offset: Offset(2.0, 2.0),
+                    )
+                  ],
+                  border: Border.all(color: Colors.lightBlue, width: 3),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: onUpdatePriority,
+                  alignment: Alignment.center,
+                  icon: Icon(
+                    internships.last.visitingPriority.icon,
+                    color: internships.last.visitingPriority.color,
+                    size: 30,
+                  ),
+                ),
+              ),
       ),
     );
   }

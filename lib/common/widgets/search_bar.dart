@@ -19,13 +19,13 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
           title: TextField(
             controller: controller,
             decoration: const InputDecoration(
-              hintText: "Rechercher",
+              hintText: 'Rechercher',
               border: InputBorder.none,
             ),
           ),
           trailing: IconButton(
             icon: const Icon(Icons.clear),
-            onPressed: () => controller.text = "",
+            onPressed: () => controller.text = '',
           ),
         ),
       ),

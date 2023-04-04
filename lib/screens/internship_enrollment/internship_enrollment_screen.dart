@@ -3,10 +3,13 @@ import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
+import '/common/models/person.dart';
+import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/misc/form_service.dart';
+import 'steps/generate_document_dialog.dart';
 import 'steps/general_informations_step.dart';
 import 'steps/requirements_step.dart';
 import 'steps/schedule_step.dart';
@@ -35,45 +38,59 @@ class _InternshipEnrollmentScreenState
       _requirementsKey.currentState!.formKey
     ];
 
-    FormService.validateForm(formKeys[_currentStep]);
+    final isValid = FormService.validateForm(formKeys[_currentStep]);
+    if (!isValid) return;
 
-    if (_currentStep == 2) {
-      _submit();
-    } else {
-      setState(() => _currentStep += 1);
+    if (_currentStep != 2) {
+      _currentStep += 1;
+      setState(() {});
+      return;
     }
-  }
 
-  void _submit() {
+    // Submit
     _generalInfoKey.currentState!.formKey.currentState!.save();
     _scheduleKey.currentState!.formKey.currentState!.save();
     _requirementsKey.currentState!.formKey.currentState!.save();
+    final enterprise = EnterprisesProvider.of(context, listen: false)
+        .fromId(widget.enterpriseId);
 
     final internship = Internship(
-      teacherId: context.read<TeachersProvider>().currentTeacherId,
       studentId: _generalInfoKey.currentState!.student!.id,
+      teacherId: TeachersProvider.of(context, listen: false).currentTeacherId,
       enterpriseId: widget.enterpriseId,
-      jobId: _generalInfoKey.currentState!.primaryJob.id,
-      type: "SPA",
-      supervisorEmail: _generalInfoKey.currentState!.supervisorEmail ?? "",
-      supervisorName: _generalInfoKey.currentState!.supervisorName ?? "",
-      supervisorPhone: _generalInfoKey.currentState!.supervisorPhone ?? "",
+      jobId: enterprise
+          .availableJobs(context)
+          .firstWhere((job) =>
+              job.specialization ==
+              _generalInfoKey.currentState!.primaryJob!.specialization)
+          .id,
+      extraSpecializationId: _generalInfoKey.currentState!.extraSpecializations
+          .map<String>((e) => e!.id)
+          .toList(),
+      supervisor: Person(
+          firstName: _generalInfoKey.currentState!.supervisorFirstName!,
+          lastName: _generalInfoKey.currentState!.supervisorLastName!,
+          email: _generalInfoKey.currentState!.supervisorEmail ?? '',
+          phone: _generalInfoKey.currentState!.supervisorPhone ?? ''),
       protection: _requirementsKey.currentState!.protection,
       uniform: _requirementsKey.currentState!.uniform,
       date: _scheduleKey.currentState!.dateRange,
-    );
-    context.read<InternshipsProvider>().add(internship);
-
-    final enterprises = context.read<EnterprisesProvider>();
-    enterprises.replace(
-      enterprises[widget.enterpriseId].copyWith(
-        internshipIds: [
-          ...enterprises[widget.enterpriseId].internshipIds,
-          internship.id,
-        ],
-      ),
+      schedule: _scheduleKey.currentState!.schedule,
+      visitingPriority: VisitingPriority.low,
+      isClosed: false,
     );
 
+    InternshipsProvider.of(context, listen: false).add(internship);
+    _showGeneratePdf();
+  }
+
+  void _showGeneratePdf() async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const GenerateDocumentsAlert(),
+    );
+    if (!mounted) return;
     Navigator.pop(context);
   }
 
@@ -81,7 +98,7 @@ class _InternshipEnrollmentScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Inscrire un stagiaire"),
+        title: const Text('Inscrire un stagiaire'),
       ),
       body: Selector<EnterprisesProvider, Enterprise>(
         builder: (context, enterprise, _) => Stepper(
@@ -93,25 +110,19 @@ class _InternshipEnrollmentScreenState
           steps: [
             Step(
               isActive: _currentStep == 0,
-              title: const Text("Général"),
+              title: const Text('Général'),
               content: GeneralInformationsStep(
-                key: _generalInfoKey,
-                enterprise: enterprise,
-              ),
+                  key: _generalInfoKey, enterprise: enterprise),
             ),
             Step(
               isActive: _currentStep == 1,
-              title: const Text("Horaire"),
-              content: ScheduleStep(
-                key: _scheduleKey,
-              ),
+              title: const Text('Horaire'),
+              content: ScheduleStep(key: _scheduleKey),
             ),
             Step(
               isActive: _currentStep == 2,
-              title: const Text("Exigences"),
-              content: RequirementsStep(
-                key: _requirementsKey,
-              ),
+              title: const Text('Exigences'),
+              content: RequirementsStep(key: _requirementsKey),
             ),
           ],
           controlsBuilder: _controlBuilder,
@@ -128,15 +139,15 @@ class _InternshipEnrollmentScreenState
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           OutlinedButton(
-              onPressed: details.onStepCancel, child: const Text("Annuler")),
+              onPressed: details.onStepCancel, child: const Text('Annuler')),
           const SizedBox(
             width: 20,
           ),
           TextButton(
             onPressed: details.onStepContinue,
             child: _currentStep == 2
-                ? const Text("Confirmer")
-                : const Text("Suivant"),
+                ? const Text('Confirmer')
+                : const Text('Suivant'),
           )
         ],
       ),

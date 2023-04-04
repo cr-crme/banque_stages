@@ -7,6 +7,7 @@ class Risk extends ItemSerializable {
     this.shortname = '',
     this.abbrv = '',
     this.name = '',
+    this.nameHeader = '',
     subrisks,
     links,
   })  : subrisks = subrisks ?? [],
@@ -17,6 +18,7 @@ class Risk extends ItemSerializable {
     String? shortname,
     String? abbrv,
     String? name,
+    String? nameHeader,
     List<SubRisk>? subrisks,
     List<RiskLink>? links,
   }) {
@@ -25,6 +27,7 @@ class Risk extends ItemSerializable {
         shortname: shortname ?? this.shortname,
         abbrv: abbrv ?? this.abbrv,
         name: name ?? this.name,
+        nameHeader: nameHeader ?? this.nameHeader,
         subrisks: subrisks ?? this.subrisks,
         links: links ?? this.links);
   }
@@ -34,16 +37,12 @@ class Risk extends ItemSerializable {
     throw 'Risk should never generate a map, it is read only';
   }
 
-  @override
-  String toString() {
-    return '{Fiche #$number: $name}';
-  }
-
   Risk.fromSerialized(map)
       : number = int.parse(map['number']),
         shortname = map['shortname'],
         abbrv = map['abbrv'],
         name = map['name'],
+        nameHeader = map['nameHeader'],
         links = getLinks(map['links'] as List<dynamic>),
         subrisks = getSubRisks(map['subrisks'] as List<dynamic>),
         super.fromSerialized(map);
@@ -96,6 +95,7 @@ class Risk extends ItemSerializable {
   final String shortname;
   final String abbrv;
   final String name;
+  final String nameHeader;
   final List<SubRisk> subrisks;
   final List<RiskLink> links;
 

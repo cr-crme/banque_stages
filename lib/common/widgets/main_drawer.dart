@@ -22,19 +22,14 @@ class MainDrawer extends StatelessWidget {
             child: Column(
               children: [
                 const _DrawerItem(
-                  titleText: 'Accueil',
-                  icon: Icon(Icons.home_rounded),
-                  route: Screens.home,
+                  titleText: 'Tableau des supervisions',
+                  icon: Icon(Icons.table_chart_rounded),
+                  route: Screens.supervisionChart,
                 ),
                 const _DrawerItem(
                   titleText: 'Mes élèves',
                   icon: Icon(Icons.school_rounded),
                   route: Screens.studentsList,
-                ),
-                const _DrawerItem(
-                  titleText: 'Itinéraire de visite',
-                  icon: Icon(Icons.route_outlined),
-                  route: Screens.visitStudents,
                 ),
                 const _DrawerItem(
                   titleText: 'Toutes les entreprises',
@@ -45,11 +40,6 @@ class MainDrawer extends StatelessWidget {
                   titleText: 'Documents',
                   icon: Icon(Icons.document_scanner_rounded),
                   route: Screens.enterprisesList,
-                ),
-                const _DrawerItem(
-                  titleText: 'Tableau des supervisions',
-                  icon: Icon(Icons.table_chart_rounded),
-                  route: Screens.supervisionChart,
                 ),
                 const _DrawerItem(
                   titleText: 'Référentiel SST',
@@ -90,13 +80,7 @@ class _DrawerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        onTap: onTap ??
-            () {
-              // if (GoRouter.of(context).canPop()) {
-              //   GoRouter.of(context).pop();
-              // }
-              GoRouter.of(context).goNamed(route!);
-            },
+        onTap: onTap ?? () => GoRouter.of(context).goNamed(route!),
         leading: icon,
         title: Text(
           titleText,

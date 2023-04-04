@@ -17,7 +17,7 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
         );
 
   static String? _validator(Set<String>? activityTypes) {
-    if (activityTypes!.isEmpty) return "Il faut au moins un type d'activité";
+    if (activityTypes!.isEmpty) return 'Il faut au moins un type d\'activité';
 
     return null;
   }
@@ -32,14 +32,16 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
           optionsBuilder: (textEditingValue) {
             return activityTypes.where(
               (activity) =>
-                  activity.contains(textEditingValue.text) &&
+                  activity
+                      .toLowerCase()
+                      .contains(textEditingValue.text.toLowerCase()) &&
                   !state.value!.contains(activity),
             );
           },
           onSelected: (activityType) {
             state.value!.add(activityType);
             state.didChange(state.value);
-            textFieldController.text = "";
+            textFieldController.text = '';
             textFieldFocusNode.unfocus();
           },
           fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
@@ -50,12 +52,15 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
               focusNode: focusNode,
               onSubmitted: (_) {
                 onSubmitted();
-                controller.text = "";
+                controller.text = '';
               },
               decoration: InputDecoration(
-                labelText: "* Types d'activité",
-                errorText: state.errorText,
-              ),
+                  labelText: '* Types d\'activité',
+                  errorText: state.errorText,
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () => controller.text = '',
+                  )),
             );
           },
         ),

@@ -16,40 +16,17 @@ class StudentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0.5,
-      child: InkWell(
+      elevation: 10,
+      child: ListTile(
         onTap: () => onTap(student),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      student.name,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Row(
-                      children: [
-                        Text(student.program),
-                        Text(
-                          AppLocalizations.of(context)!
-                              .student_group_current(student.group),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              Icon(
-                Icons.chevron_right,
-                color: Theme.of(context).hintColor,
-              ),
-            ],
-          ),
+        leading: SizedBox(
+          height: double.infinity, // This centers the avatar
+          child: student.avatar,
+        ),
+        title: Text(student.fullName),
+        subtitle: Text(
+          AppLocalizations.of(context)!.student_group_current(student.group),
+          style: const TextStyle(color: Colors.black87),
         ),
       ),
     );

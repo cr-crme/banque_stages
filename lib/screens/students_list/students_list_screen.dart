@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +8,6 @@ import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/main_drawer.dart';
 import '/common/widgets/search_bar.dart';
-import '/dummy_data.dart';
 import '/router.dart';
 import 'widgets/student_card.dart';
 
@@ -24,12 +24,12 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
 
   List<Student> _filterSelectedStudents(List<Student> students) {
     return students.where((student) {
-      if (student.name.contains(_searchController.text)) {
+      if (student.fullName.contains(_searchController.text)) {
         return true;
       }
 
       return false;
-    }).toList();
+    }).sorted((a, b) => a.lastName.compareTo(b.lastName));
   }
 
   @override
@@ -64,22 +64,14 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
                   student: students.elementAt(index),
                   onTap: (student) => GoRouter.of(context).goNamed(
                     Screens.student,
-                    params: Screens.withId(student),
+                    params: Screens.withId(student)
+                      ..addAll({'initialPage': '0'}),
                   ),
                 ),
               ),
             ),
             selector: (context, students) =>
                 _filterSelectedStudents(students.toList()),
-          ),
-          //! Remove this in production
-          Consumer<StudentsProvider>(
-            builder: (context, students, child) => Visibility(
-              visible: students.isEmpty,
-              child: ElevatedButton(
-                  onPressed: () => addDummyStudents(students),
-                  child: const Text("Add dummy students")),
-            ),
           ),
         ],
       ),

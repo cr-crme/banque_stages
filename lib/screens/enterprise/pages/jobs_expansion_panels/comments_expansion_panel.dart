@@ -14,9 +14,24 @@ class CommentsExpansionPanel extends ExpansionPanel {
             title: const Text(
               "Autres commentaires",
             ),
-            trailing: IconButton(
+            trailing: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey[400]!,
+                    blurRadius: 8.0,
+                    offset: const Offset(2, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
                 onPressed: () => addComment(job),
-                icon: const Icon(Icons.add_comment_outlined)),
+                icon: const Icon(Icons.add_comment_outlined),
+                color: Colors.blue,
+              ),
+            ),
           ),
         );
 }

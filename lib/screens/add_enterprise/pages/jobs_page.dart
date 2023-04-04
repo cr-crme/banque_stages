@@ -13,33 +13,47 @@ class JobsPage extends StatefulWidget {
 }
 
 class JobsPageState extends State<JobsPage> {
-  JobsPageState() {
-    jobs.add(Job());
-  }
-
   final _formKey = GlobalKey<FormState>();
+  final Map<int, Widget> _jobsForm = {};
+  int _formsKey = 0;
   final JobList jobs = JobList();
 
-  void addMetier() {
-    setState(() => jobs.add(Job()));
-  }
-
-  void _removeMetier(int index) {
-    setState(() {
-      jobs.remove(index);
-
-      if (jobs.isEmpty) {
-        addMetier();
-      }
-    });
-  }
-
   bool validate() {
+    jobs.clear();
+    _formKey.currentState!.save();
     return _formKey.currentState!.validate();
   }
 
-  void save() {
-    _formKey.currentState!.save();
+  Widget _buildNewJobsForm(int index) {
+    final key = _jobsForm.keys.toList()[index];
+    return Column(
+      key: Key(key.toString()),
+      children: [
+        ListTile(
+          visualDensity:
+              const VisualDensity(vertical: VisualDensity.minimumDensity),
+          title: Text(
+            'Métier ${index + 1}',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          trailing: DeleteButton(
+            onPressed: () => setState(() => _jobsForm.remove(key)),
+          ),
+        ),
+        _jobsForm[key]!,
+        const SizedBox(
+          height: 20,
+        ),
+      ],
+    );
+  }
+
+  void addJobToForm() {
+    _jobsForm[_formsKey] = JobFormFieldListTile(
+      onSaved: (Job? job) => setState(() => jobs.add(job!)),
+    );
+    _formsKey++;
+    setState(() {});
   }
 
   @override
@@ -48,30 +62,10 @@ class JobsPageState extends State<JobsPage> {
       key: _formKey,
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: jobs.length,
+        itemCount: _jobsForm.length,
         physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (BuildContext context, int index) => Column(
-          children: [
-            ListTile(
-              visualDensity:
-                  const VisualDensity(vertical: VisualDensity.minimumDensity),
-              title: Text(
-                "Métier ${index + 1}",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              trailing: DeleteButton(
-                onPressed: () => _removeMetier(index),
-              ),
-            ),
-            JobFormFieldListTile(
-              initialValue: jobs[index],
-              onSaved: (Job? job) => setState(() => jobs[index] = job!),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-          ],
-        ),
+        itemBuilder: (BuildContext context, int index) =>
+            _buildNewJobsForm(index),
       ),
     );
   }

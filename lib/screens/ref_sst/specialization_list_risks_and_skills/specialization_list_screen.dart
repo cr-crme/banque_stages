@@ -6,13 +6,13 @@ import '/misc/risk_data_file_service.dart';
 import '/screens/ref_sst/common/risk.dart';
 import 'widgets/tile_job_risk.dart';
 
-class JobListScreen extends StatelessWidget {
+class SpecializationListScreen extends StatelessWidget {
   final String id;
-  const JobListScreen({super.key, required this.id});
+  const SpecializationListScreen({super.key, required this.id});
 
   List<Specialization> filledList(BuildContext context) {
     List<Specialization> out = [];
-    for (final sector in JobDataFileService.sectors) {
+    for (final sector in ActivitySectorsService.sectors) {
       for (final specialization in sector.specializations) {
         // If there is no risk, it does not mean this specialization
         // is risk-free, it means it was not evaluated
@@ -27,9 +27,9 @@ class JobListScreen extends StatelessWidget {
     return out;
   }
 
-  List<Risk> _extractAllRisks(Specialization job) {
+  List<Risk> _extractAllRisks(Specialization specialization) {
     final out = <String>[];
-    for (final skill in job.skills) {
+    for (final skill in specialization.skills) {
       for (final risk in skill.risks) {
         if (!out.contains(risk)) out.add(risk);
       }
@@ -60,25 +60,22 @@ class JobListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final job =
-        JobDataFileService.specializations.firstWhere((e) => e.id == id);
+    final specialization = ActivitySectorsService.specialization(id);
 
-    final risks = _extractAllRisks(job);
-    final skillsAssociatedToRisks = <Risk, List<String>>{};
+    final risks = _extractAllRisks(specialization);
+    final skillsAssociatedToRisks = <Risk, List<Skill>>{};
     for (final risk in risks) {
-      skillsAssociatedToRisks[risk] = _skillsThatHasThisRisk(risk, job.skills)
-          .map<String>((e) => e.name)
-          .toList();
+      skillsAssociatedToRisks[risk] =
+          _skillsThatHasThisRisk(risk, specialization.skills.toList());
     }
     risks.sort((a, b) =>
         skillsAssociatedToRisks[b]!.length -
         skillsAssociatedToRisks[a]!.length);
 
-    final skills = job.skills.map((e) => e).toList();
-    final risksAssociatedToSkill = <Skill, List<String>>{};
+    final skills = specialization.skills.map((e) => e).toList();
+    final risksAssociatedToSkill = <Skill, List<Risk>>{};
     for (final skill in skills) {
-      risksAssociatedToSkill[skill] =
-          _risksSkillHas(skill, risks).map<String>((e) => e.name).toList();
+      risksAssociatedToSkill[skill] = _risksSkillHas(skill, risks).toList();
     }
     skills.sort((a, b) =>
         risksAssociatedToSkill[b]!.length - risksAssociatedToSkill[a]!.length);
@@ -89,7 +86,7 @@ class JobListScreen extends StatelessWidget {
           appBar: AppBar(
             title: Padding(
               padding: const EdgeInsets.only(top: 5.0, bottom: 5),
-              child: AutoSizeText(job.idWithName, maxLines: 2),
+              child: AutoSizeText(specialization.idWithName, maxLines: 2),
             ),
             bottom: TabBar(tabs: [
               Padding(
@@ -118,7 +115,7 @@ class JobListScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(width: 10),
-                    Icon(Icons.school),
+                    Icon(Icons.card_membership),
                   ],
                 ),
               ),
@@ -133,7 +130,7 @@ class JobListScreen extends StatelessWidget {
               itemBuilder: (context, i) => TileJobRisk(
                 title: risks[i].name,
                 elements: skillsAssociatedToRisks[risks[i]]!,
-                nbMaximumElements: job.skills.length,
+                nbMaximumElements: specialization.skills.length,
                 tooltipMessage:
                     'Nombre de compétences pour lesquelles le risque est potentiellement présent',
               ),
@@ -147,7 +144,7 @@ class JobListScreen extends StatelessWidget {
             ListView.separated(
               physics: const ScrollPhysics(),
               shrinkWrap: true,
-              itemCount: job.skills.length,
+              itemCount: specialization.skills.length,
               padding: const EdgeInsets.all(16.0),
               itemBuilder: (context, i) => TileJobRisk(
                 title: skills[i].name,

@@ -46,11 +46,11 @@ class _AddTextDialogState extends State<AddTextDialog> {
       actions: [
         TextButton(
           onPressed: _onCancel,
-          child: const Text("Annuler"),
+          child: const Text('Annuler'),
         ),
         ElevatedButton(
           onPressed: _onConfirm,
-          child: const Text("Ajouter"),
+          child: const Text('Ajouter'),
         ),
       ],
     );

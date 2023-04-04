@@ -10,7 +10,7 @@ class PrerequisitesExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _PrerequisitesBody(job: job),
           headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text("Pré-requis pour le recrutement"),
+            title: Text("Prérequis pour le recrutement"),
           ),
         );
 }
@@ -54,9 +54,9 @@ class _PrerequisitesBody extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
-                children: job.requiredForJob.isEmpty
-                    ? [const Text("Il n'y a aucun pré-requis pour ce métier")]
-                    : job.requiredForJob
+                children: job.requirements.isEmpty
+                    ? [const Text("Il n'y a aucun prérequis pour ce métier")]
+                    : job.requirements
                         .map((requirement) => Text("- $requirement"))
                         .toList(),
               ),

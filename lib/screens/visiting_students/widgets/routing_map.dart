@@ -3,9 +3,10 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
-import '../models/lng_lat_utils.dart';
+import '/common/models/visiting_priority.dart';
+import '/screens/visiting_students/widgets/zoom_button.dart';
 import '../models/all_itineraries.dart';
-import '../../../common/models/visiting_priority.dart';
+import '../models/lng_lat_utils.dart';
 
 class RoutingMap extends StatefulWidget {
   const RoutingMap({
@@ -48,7 +49,7 @@ class _RoutingMapState extends State<RoutingMap> {
     try {
       out = await manager.getRoad(
         waypoints: route,
-        geometries: Geometries.geojson,
+        geometrie: Geometries.geojson,
       );
     } catch (e) {
       out = Road(
@@ -97,19 +98,27 @@ class _RoutingMapState extends State<RoutingMap> {
     final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
     List<Marker> out = [];
 
-    const double markerSize = 40;
     for (var i = 0; i < waypoints.length; i++) {
       final waypoint = waypoints[i];
+      const markerSize = 30.0;
 
       double nameWidth = 160;
       double nameHeight = 100;
+      final previous = out.fold<int>(0, (prev, e) {
+        final newLatLng = waypoint.toLatLng();
+        return prev +
+            (e.point.latitude == newLatLng.latitude &&
+                    e.point.longitude == newLatLng.longitude
+                ? 1
+                : 0);
+      });
       out.add(
         Marker(
           point: waypoint.toLatLng(),
-          anchorPos: AnchorPos.exactly(
-              Anchor(markerSize / 2 + nameWidth, nameHeight / 2)),
-          width: markerSize + nameWidth, //markerSize + 1,
-          height: markerSize + nameHeight, //markerSize + 1,
+          anchorPos: AnchorPos.exactly(Anchor(markerSize / 2 + nameWidth,
+              nameHeight / 2 + previous * nameHeight / 5)),
+          width: markerSize + nameWidth,
+          height: markerSize + nameHeight,
           builder: (context) => Row(
             children: [
               GestureDetector(
@@ -123,7 +132,7 @@ class _RoutingMapState extends State<RoutingMap> {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    i == 0 ? Icons.school : Icons.location_on_sharp,
+                    waypoint.priority.icon,
                     color: waypoint.priority.color,
                     size: markerSize,
                   ),
@@ -160,8 +169,8 @@ class _RoutingMapState extends State<RoutingMap> {
       return Padding(
         padding: const EdgeInsets.all(8),
         child: FlutterMap(
-          options: MapOptions(center: waypoints[0].toLatLng(), zoom: 14),
-          nonRotatedChildren: const [_ZoomButtons()],
+          options: MapOptions(center: waypoints[0].toLatLng(), zoom: 12),
+          nonRotatedChildren: const [ZoomButtons()],
           children: [
             TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -179,69 +188,5 @@ class _RoutingMapState extends State<RoutingMap> {
         ),
       );
     });
-  }
-}
-
-class _ZoomButtons extends StatelessWidget {
-  const _ZoomButtons();
-  final double minZoom = 4;
-  final double maxZoom = 19;
-  final bool mini = true;
-  final double padding = 5;
-  final Alignment alignment = Alignment.bottomRight;
-
-  final FitBoundsOptions options =
-      const FitBoundsOptions(padding: EdgeInsets.all(12));
-
-  @override
-  Widget build(BuildContext context) {
-    final map = FlutterMapState.maybeOf(context)!;
-    return Align(
-      alignment: alignment,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Padding(
-            padding:
-                EdgeInsets.only(left: padding, top: padding, right: padding),
-            child: FloatingActionButton(
-              heroTag: 'zoomInButton',
-              mini: mini,
-              backgroundColor: Theme.of(context).primaryColor,
-              onPressed: () {
-                final bounds = map.bounds;
-                final centerZoom = map.getBoundsCenterZoom(bounds, options);
-                var zoom = centerZoom.zoom + 1;
-                if (zoom > maxZoom) {
-                  zoom = maxZoom;
-                }
-                map.move(centerZoom.center, zoom,
-                    source: MapEventSource.custom);
-              },
-              child: Icon(Icons.zoom_in, color: IconTheme.of(context).color),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(padding),
-            child: FloatingActionButton(
-              heroTag: 'zoomOutButton',
-              mini: mini,
-              backgroundColor: Theme.of(context).primaryColor,
-              onPressed: () {
-                final bounds = map.bounds;
-                final centerZoom = map.getBoundsCenterZoom(bounds, options);
-                var zoom = centerZoom.zoom - 1;
-                if (zoom < minZoom) {
-                  zoom = minZoom;
-                }
-                map.move(centerZoom.center, zoom,
-                    source: MapEventSource.custom);
-              },
-              child: Icon(Icons.zoom_out, color: IconTheme.of(context).color),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

@@ -1,37 +1,51 @@
-import 'package:enhanced_containers/enhanced_containers.dart';
+import '/common/models/address.dart';
+import '/common/models/person.dart';
 
-class Teacher extends ItemSerializable {
+class Teacher extends Person {
+  final String schoolId;
+
   Teacher({
     super.id,
-    this.name = "",
-    this.email = "",
+    required super.firstName,
+    super.middleName,
+    required super.lastName,
+    required this.schoolId,
+    super.dateBirth,
+    super.phone,
+    required super.email,
   });
 
   Teacher.fromSerialized(map)
-      : name = map['n'],
-        email = map['e'],
+      : schoolId = map['schoolId'],
         super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {
-    return {
-      'n': name,
-      'e': email,
-      'id': id,
-    };
+    return super.serializedMap()
+      ..addAll({
+        'schoolId': schoolId,
+      });
   }
 
-  Teacher copyWith({
-    String? name,
-    String? email,
-    String? id,
-  }) =>
+  @override
+  Teacher copyWith(
+          {String? id,
+          String? firstName,
+          String? middleName,
+          String? lastName,
+          DateTime? dateBirth,
+          String? schoolId,
+          String? email,
+          String? phone,
+          Address? address}) =>
       Teacher(
-        name: name ?? this.name,
-        email: email ?? this.email,
         id: id ?? this.id,
+        firstName: firstName ?? this.firstName,
+        middleName: middleName ?? this.middleName,
+        lastName: lastName ?? this.lastName,
+        dateBirth: dateBirth ?? this.dateBirth,
+        schoolId: schoolId ?? this.schoolId,
+        phone: phone ?? this.phone,
+        email: email ?? this.email,
       );
-
-  final String name;
-  final String email;
 }

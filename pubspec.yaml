@@ -49,6 +49,8 @@ dependencies:
     url_strategy: ^0.2.0
     url_launcher: ^6.1.7
     auto_size_text: ^3.0.0
+    pdf: ^3.10.1
+    printing: ^5.10.3
 
 dependency_overrides:
     enhanced_containers:

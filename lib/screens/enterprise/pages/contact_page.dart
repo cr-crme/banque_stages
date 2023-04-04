@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
+import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
+import 'widgets/show_school.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({
@@ -31,44 +33,38 @@ class ContactPageState extends State<ContactPage> {
   String? _fax;
   String? _website;
 
+  late bool _useSameAddress = widget.enterprise.address.toString() ==
+      widget.enterprise.headquartersAddress.toString();
   String? _headquartersAddress;
-  late bool _addressesAreIdentical =
-      widget.enterprise.address == widget.enterprise.headquartersAddress;
   String? _neq;
 
   bool _editing = false;
   bool get editing => _editing;
 
-  void toggleEdit() {
-    if (!_editing) {
-      setState(() => _editing = true);
-      return;
-    }
+  void toggleEdit() async {
+    _editing = !_editing;
 
     if (!FormService.validateForm(_formKey, save: true)) {
       return;
     }
 
-    context.read<EnterprisesProvider>().replace(
-          widget.enterprise.copyWith(
-            contactName: _contactName,
-            contactFunction: _contactFunction,
-            contactPhone: _contactPhone,
-            contactEmail: _contactEmail,
-            address: _address,
-            phone: _phone,
-            fax: _fax,
-            website: _website,
-            headquartersAddress:
-                _addressesAreIdentical ? _address : _headquartersAddress,
-            neq: _neq,
-          ),
-        );
+    EnterprisesProvider.of(context).replace(
+      widget.enterprise.copyWith(
+        contactName: _contactName,
+        contactFunction: _contactFunction,
+        contactPhone: _contactPhone,
+        contactEmail: _contactEmail,
+        address: await Address.fromAddress(_address!),
+        phone: _phone,
+        fax: _fax,
+        website: _website,
+        headquartersAddress: await Address.fromAddress(
+            _useSameAddress ? _address! : _headquartersAddress!),
+        neq: _neq,
+      ),
+    );
 
-    setState(() {
-      _editing = false;
-      _addressesAreIdentical = _address == _headquartersAddress;
-    });
+    setState(() {});
   }
 
   @override
@@ -80,160 +76,271 @@ class ContactPageState extends State<ContactPage> {
           key: _formKey,
           child: Column(
             children: [
-              ListTile(
-                title: Text(
-                  "Entreprise représentée par",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+              _ContactInfo(
+                enterprise: widget.enterprise,
+                editMode: _editing,
+                onSavedName: (name) => _contactName = name!,
+                onSavedJob: (function) => _contactFunction = function!,
+                onSavedPhone: (phone) => _contactPhone = phone!,
+                onSavedEmail: (email) => _contactEmail = email!,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      initialValue: widget.enterprise.contactName,
-                      decoration: const InputDecoration(labelText: "* Nom"),
-                      enabled: _editing,
-                      validator: FormService.textNotEmptyValidator,
-                      onSaved: (name) => _contactName = name!,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      initialValue: widget.enterprise.contactFunction,
-                      decoration:
-                          const InputDecoration(labelText: "* Fonction"),
-                      enabled: _editing,
-                      validator: FormService.textNotEmptyValidator,
-                      onSaved: (function) => _contactFunction = function!,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      initialValue: widget.enterprise.contactPhone,
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.phone),
-                        labelText: "* Téléphone",
-                      ),
-                      enabled: _editing,
-                      validator: FormService.phoneValidator,
-                      onSaved: (phone) => _contactPhone = phone!,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      initialValue: widget.enterprise.contactEmail,
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.mail),
-                        labelText: "* Courriel",
-                      ),
-                      enabled: _editing,
-                      validator: FormService.emailValidator,
-                      onSaved: (email) => _contactEmail = email!,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                  ],
-                ),
+              _EnterpriseInfo(
+                enterprise: widget.enterprise,
+                editMode: _editing,
+                onSavedAddress: (address) => _address = address!,
+                onSavedPhone: (phone) => _phone = phone!,
+                onSavedFax: (fax) => _fax = fax!,
+                onSavedWebsite: (website) => _website = website!,
               ),
-              ListTile(
-                title: Text(
-                  "Informations de l'établissement",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      initialValue: widget.enterprise.address,
-                      decoration: const InputDecoration(labelText: "Adresse"),
-                      enabled: _editing,
-                      onSaved: (address) => _address = address,
-                      keyboardType: TextInputType.streetAddress,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      initialValue: widget.enterprise.phone,
-                      decoration: const InputDecoration(labelText: "Téléphone"),
-                      enabled: _editing,
-                      onSaved: (phone) => _phone = phone,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      initialValue: widget.enterprise.fax,
-                      decoration:
-                          const InputDecoration(labelText: "Télécopieur"),
-                      enabled: _editing,
-                      onSaved: (fax) => _fax = fax,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      initialValue: widget.enterprise.website,
-                      decoration: const InputDecoration(labelText: "Site web"),
-                      enabled: _editing,
-                      onSaved: (website) => _website = website,
-                      keyboardType: TextInputType.url,
-                    ),
-                  ],
-                ),
-              ),
-              ListTile(
-                title: Text(
-                  "Informations pour le crédit d'impôt",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(children: [
-                  Visibility(
-                    visible: !_addressesAreIdentical,
-                    child: TextFormField(
-                      initialValue: widget.enterprise.headquartersAddress,
-                      decoration: const InputDecoration(
-                          labelText: "Adresse du siège social"),
-                      enabled: _editing && !_addressesAreIdentical,
-                      onSaved: (address) => _headquartersAddress = address,
-                      keyboardType: TextInputType.streetAddress,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 59,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            "Adresse du siège social identique à l'adresse de l'établissement",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Switch(
-                          value: _addressesAreIdentical,
-                          onChanged: (newValue) => setState(() {
-                            if (_editing) _addressesAreIdentical = newValue;
-                          }),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    initialValue: widget.enterprise.neq,
-                    decoration: const InputDecoration(labelText: "NEQ"),
-                    enabled: _editing,
-                    validator: FormService.neqValidator,
-                    onSaved: (neq) => _neq = neq,
-                    keyboardType: TextInputType.number,
-                  ),
-                  const SizedBox(height: 8),
-                ]),
+              _TaxesInfo(
+                enterprise: widget.enterprise,
+                editMode: _editing,
+                useSameAddress: _useSameAddress,
+                onChangedUseSame: (newValue) => setState(() {
+                  _useSameAddress = newValue!;
+                }),
+                onSavedAddress: (address) => _headquartersAddress =
+                    !_useSameAddress && address != null ? address : _address,
+                onSavedNeq: (neq) => _neq = neq,
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ContactInfo extends StatelessWidget {
+  const _ContactInfo({
+    required this.enterprise,
+    required this.editMode,
+    required this.onSavedName,
+    required this.onSavedJob,
+    required this.onSavedPhone,
+    required this.onSavedEmail,
+  });
+
+  final Enterprise enterprise;
+  final bool editMode;
+  final Function(String?) onSavedName;
+  final Function(String?) onSavedJob;
+  final Function(String?) onSavedPhone;
+  final Function(String?) onSavedEmail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Entreprise représentée par'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              TextFormField(
+                initialValue: enterprise.contactName,
+                decoration: const InputDecoration(labelText: '* Nom'),
+                enabled: editMode,
+                validator: FormService.textNotEmptyValidator,
+                maxLines: null,
+                onSaved: onSavedName,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: enterprise.contactFunction,
+                decoration: const InputDecoration(labelText: '* Fonction'),
+                enabled: editMode,
+                validator: FormService.textNotEmptyValidator,
+                onSaved: onSavedJob,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: enterprise.contactPhone,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.phone),
+                  labelText: '* Téléphone',
+                ),
+                enabled: editMode,
+                validator: FormService.phoneValidator,
+                onSaved: onSavedPhone,
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: enterprise.contactEmail,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.mail),
+                  labelText: '* Courriel',
+                ),
+                enabled: editMode,
+                validator: FormService.emailValidator,
+                onSaved: onSavedEmail,
+                keyboardType: TextInputType.emailAddress,
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class _EnterpriseInfo extends StatelessWidget {
+  const _EnterpriseInfo({
+    required this.enterprise,
+    required this.editMode,
+    required this.onSavedAddress,
+    required this.onSavedPhone,
+    required this.onSavedFax,
+    required this.onSavedWebsite,
+  });
+
+  final Enterprise enterprise;
+  final bool editMode;
+  final Function(String?) onSavedAddress;
+  final Function(String?) onSavedWebsite;
+  final Function(String?) onSavedPhone;
+  final Function(String?) onSavedFax;
+
+  void _showAddress(context) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text('Adresse de l\'établissement'),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 1 / 2,
+                  width: MediaQuery.of(context).size.width * 2 / 3,
+                  child: ShowSchoolAddress(enterprise.address!),
+                ),
+              ),
+            ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Informations de l\'établissement'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  TextFormField(
+                    initialValue: enterprise.address.toString(),
+                    decoration: const InputDecoration(
+                        labelText: '* Adresse',
+                        suffixIcon: Icon(Icons.map, color: Colors.purple)),
+                    enabled: editMode,
+                    onSaved: onSavedAddress,
+                    maxLines: null,
+                    keyboardType: TextInputType.streetAddress,
+                  ),
+                  IconButton(
+                    onPressed: () => _showAddress(context),
+                    icon: const Icon(Icons.map, color: Colors.purple),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: enterprise.phone,
+                decoration: const InputDecoration(labelText: 'Téléphone'),
+                enabled: editMode,
+                validator: FormService.phoneValidator,
+                onSaved: onSavedPhone,
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: enterprise.fax,
+                decoration: const InputDecoration(labelText: 'Télécopieur'),
+                enabled: editMode,
+                onSaved: onSavedFax,
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: enterprise.website,
+                decoration: const InputDecoration(labelText: 'Site web'),
+                enabled: editMode,
+                onSaved: onSavedWebsite,
+                keyboardType: TextInputType.url,
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class _TaxesInfo extends StatelessWidget {
+  const _TaxesInfo({
+    required this.enterprise,
+    required this.editMode,
+    required this.useSameAddress,
+    required this.onChangedUseSame,
+    required this.onSavedAddress,
+    required this.onSavedNeq,
+  });
+
+  final Enterprise enterprise;
+  final bool editMode;
+  final bool useSameAddress;
+  final Function(bool?) onChangedUseSame;
+  final Function(String?) onSavedAddress;
+  final Function(String?) onSavedNeq;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Informations pour le crédit d\'impôt'),
+        Padding(
+          padding: const EdgeInsets.only(left: 30.0, right: 10),
+          child: Column(children: [
+            if (editMode)
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Flexible(
+                  child: Text(
+                    'Adresse du siège social identique à l\'adresse de l\'établissement',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                Switch(
+                  value: useSameAddress,
+                  onChanged: onChangedUseSame,
+                )
+              ]),
+            if (!editMode || !useSameAddress)
+              TextFormField(
+                initialValue: enterprise.headquartersAddress.toString(),
+                decoration:
+                    const InputDecoration(labelText: 'Adresse du siège social'),
+                maxLines: null,
+                enabled: editMode,
+                onSaved: (value) => onSavedAddress(value),
+                keyboardType: TextInputType.streetAddress,
+              ),
+            const SizedBox(height: 8),
+            TextFormField(
+              initialValue: enterprise.neq,
+              decoration: const InputDecoration(labelText: 'NEQ'),
+              enabled: editMode,
+              validator: null,
+              onSaved: onSavedNeq,
+              keyboardType: TextInputType.number,
+            ),
+          ]),
+        ),
+      ],
     );
   }
 }

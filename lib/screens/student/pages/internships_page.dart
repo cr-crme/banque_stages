@@ -7,6 +7,7 @@ import '/common/models/student.dart';
 import '/common/models/teacher.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
+import '/common/widgets/sub_title.dart';
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
@@ -23,15 +24,20 @@ class InternshipsPage extends StatefulWidget {
 class InternshipsPageState extends State<InternshipsPage> {
   @override
   Widget build(BuildContext context) {
+    final allInternships = InternshipsProvider.of(context);
+    final internships = allInternships.byStudentId(widget.student.id);
+
     return ListView.builder(
-      itemCount: widget.student.internships.length,
+      itemCount: internships.length,
       itemBuilder: (context, index) =>
           Selector<InternshipsProvider, Internship>(
         builder: (context, internship, _) => ExpansionPanelList(
           children: [
             ExpansionPanel(
               headerBuilder: (context, isExpanded) => ListTile(
-                title: Text(internship.title),
+                title: SubTitle(
+                    'Année ${internship.date.start.year}-${internship.date.end.year}',
+                    top: 12),
               ),
               body: Column(
                 children: [
@@ -42,7 +48,7 @@ class InternshipsPageState extends State<InternshipsPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Selector<TeachersProvider, Teacher>(
-                      builder: (context, teacher, _) => Text(teacher.name),
+                      builder: (context, teacher, _) => Text(teacher.fullName),
                       selector: (context, teachers) =>
                           teachers[internship.teacherId],
                     ),
@@ -52,8 +58,7 @@ class InternshipsPageState extends State<InternshipsPage> {
             ),
           ],
         ),
-        selector: (context, internships) =>
-            internships[widget.student.internships[index]],
+        selector: (context, internships) => internships[index],
       ),
     );
   }

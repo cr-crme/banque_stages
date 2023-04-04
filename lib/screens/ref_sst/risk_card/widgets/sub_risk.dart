@@ -21,6 +21,7 @@ class SubRisk extends StatelessWidget {
       subRiskWidgets.add(Column(
         children: [
           if (subRisks.length > 1) SubTitle(subRisk.id, subRisk.title),
+          if (subRisks.length <= 1) const SizedBox(height: 12),
           Introduction(subRisk.intro),
           if (subRisk.images.isNotEmpty)
             Column(
@@ -28,9 +29,8 @@ class SubRisk extends StatelessWidget {
               children: [
                 Image.asset(subRisk.images[0]),
                 Container(
-                  margin: const EdgeInsets.only(top: 5, left: 20),
-                  child: const Text(
-                      'Illustration: Hervé Charbonneau'), //It will be with the picture
+                  margin: const EdgeInsets.only(top: 5, right: 40),
+                  child: const Text('Illustration: Hervé Charbonneau'),
                 ),
               ],
             ),
@@ -41,9 +41,8 @@ class SubRisk extends StatelessWidget {
               children: [
                 Image.asset(subRisk.images[1]),
                 Container(
-                  margin: const EdgeInsets.only(top: 5, left: 20),
-                  child: const Text(
-                      'Illustration: Hervé Charbonneau'), //It will be with the picture
+                  margin: const EdgeInsets.only(top: 5, right: 40),
+                  child: const Text('Illustration: Hervé Charbonneau'),
                 ),
               ],
             ),

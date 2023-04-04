@@ -3,31 +3,36 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'common/providers/auth_provider.dart';
+import 'dummy_data.dart';
+import 'main.dart';
 import 'screens/add_enterprise/add_enterprise_screen.dart';
 import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list/enterprises_list_screen.dart';
-import 'screens/home_screen.dart';
+import 'screens/generate_debug_data_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'screens/internship_forms/post_internship_evaluation_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/ref_sst/home_sst/home_sst_screen.dart';
-import 'screens/ref_sst/job_list_risks_and_skills/job_list_screen.dart';
+import 'screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
 import 'screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
 import 'screens/supervision_chart/supervision_chart_screen.dart';
-import 'screens/visiting_students/visit_students_screen.dart';
+import 'screens/supervision_chart/supervision_student_details.dart';
+import 'screens/visiting_students/itinerary_screen.dart';
 
 abstract class Screens {
-  static const home = 'home';
+  static const populateWithDebugData = 'populate-with-debug-data';
   static const login = 'login';
-  static const visitStudents = 'visit-students';
+  static const itinerary = 'itinerary';
 
   static const enterprisesList = 'enterprises-list';
   static const enterprise = 'enterprise';
   static const addEnterprise = 'add-enterprise';
 
+  static const home = supervisionChart;
   static const supervisionChart = 'supervision';
+  static const supervisionStudentDetails = 'supervision-student-details';
 
   static const studentsList = 'students-list';
   static const student = 'student';
@@ -51,14 +56,33 @@ abstract class Screens {
   }
 }
 
-final GoRouter router = GoRouter(
-  redirect: (context, state) =>
-      context.read<AuthProvider>().isSignedIn() ? null : '/login',
+final router = GoRouter(
+  redirect: (context, state) {
+    if (context.read<AuthProvider>().isSignedIn()) {
+      return populateWithDebugData && !hasDummyData(context)
+          ? '/debug-data'
+          : null;
+    }
+    return '/login';
+  },
   routes: [
     GoRoute(
       path: '/',
-      name: Screens.home,
-      builder: (context, state) => const HomeScreen(),
+      name: Screens.supervisionChart,
+      builder: (context, state) => const SupervisionChart(),
+      routes: [
+        GoRoute(
+          path: 'student-details/:studentId',
+          name: Screens.supervisionStudentDetails,
+          builder: (context, state) => SupervisionStudentDetailsScreen(
+              studentId: state.params['studentId']!),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/debug-data',
+      name: Screens.populateWithDebugData,
+      builder: (context, state) => const GenerateDebugDataScreen(),
     ),
     GoRoute(
       path: '/login',
@@ -94,26 +118,23 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/supervision',
-      name: Screens.supervisionChart,
-      builder: (context, state) => const SupervisionChart(),
-    ),
-    GoRoute(
       path: '/students',
       name: Screens.studentsList,
       builder: (context, state) => const StudentsListScreen(),
       routes: [
         GoRoute(
-          path: ':id',
+          path: ':id/:initialPage',
           name: Screens.student,
-          builder: (context, state) => StudentScreen(id: state.params['id']!),
+          builder: (context, state) => StudentScreen(
+              id: state.params['id']!,
+              initialPage: int.parse(state.params['initialPage']!)),
         ),
       ],
     ),
     GoRoute(
-      path: '/visit-students',
-      name: Screens.visitStudents,
-      builder: (context, state) => const VisitStudentScreen(),
+      path: '/itinerary',
+      name: Screens.itinerary,
+      builder: (context, state) => const ItineraryScreen(),
     ),
     GoRoute(
       path: '/post-internship-evaluation',
@@ -131,7 +152,8 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: 'jobs/:id',
           name: Screens.jobSst,
-          builder: (context, state) => JobListScreen(id: state.params['id']!),
+          builder: (context, state) =>
+              SpecializationListScreen(id: state.params['id']!),
         ),
         GoRoute(
           name: Screens.cardsSst,

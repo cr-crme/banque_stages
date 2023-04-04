@@ -22,11 +22,8 @@ class InformationsPageState extends State<InformationsPage> {
   String? shareWith;
 
   bool validate() {
-    return _formKey.currentState!.validate();
-  }
-
-  void save() {
     _formKey.currentState!.save();
+    return _formKey.currentState!.validate();
   }
 
   @override
@@ -38,15 +35,15 @@ class InformationsPageState extends State<InformationsPage> {
           children: [
             ListTile(
               title: TextFormField(
-                decoration: const InputDecoration(labelText: "* Nom"),
+                decoration: const InputDecoration(labelText: '* Nom'),
                 validator: FormService.textNotEmptyValidator,
                 onSaved: (name) => this.name = name,
               ),
             ),
             ListTile(
               title: TextFormField(
-                decoration: const InputDecoration(labelText: "NEQ"),
-                validator: FormService.neqValidator,
+                decoration: const InputDecoration(labelText: 'NEQ'),
+                validator: null,
                 onSaved: (neq) => this.neq = neq,
                 keyboardType: TextInputType.number,
               ),

@@ -1,102 +1,142 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
+import '/common/models/person.dart';
+import '/common/models/visiting_priority.dart';
+import 'schedule.dart';
+
 class Internship extends ItemSerializable {
+  final String studentId;
+  final String teacherId;
+  final String previousTeacherId; // Keep track of teacherId while transfering
+  final bool isTransfering;
+
+  final String enterpriseId;
+  final String jobId; // Main job attached to the enterprise
+  final List<String>
+      extraSpecializationId; // Any extra jobs added to the internship
+  final Person supervisor;
+  final DateTimeRange date;
+
+  // The inner list is a semester schedule.
+  // The outer list is if there are multiple schedules during a semester
+  final List<List<Schedule>> schedule;
+
+  final List<String> protection;
+  final String uniform;
+
+  final VisitingPriority visitingPriority;
+  final String teacherNotes;
+
+  final bool isClosed; // Finished and evaluation is done
+  bool get isEvaluationPending =>
+      !isClosed && DateTime.now().compareTo(date.end) >= 0;
+  bool get isActive => !isClosed && DateTime.now().compareTo(date.end) < 0;
+
   Internship({
     super.id,
-    required this.teacherId,
     required this.studentId,
+    required this.teacherId,
+    String? previousTeacherId,
+    this.isTransfering = false,
     required this.enterpriseId,
     required this.jobId,
-    required this.type,
-    required this.supervisorName,
-    required this.supervisorPhone,
-    required this.supervisorEmail,
+    required this.extraSpecializationId,
+    required this.supervisor,
     required this.date,
+    required this.schedule,
     required this.protection,
     required this.uniform,
-  });
+    required this.visitingPriority,
+    this.teacherNotes = '',
+    required this.isClosed,
+  }) : previousTeacherId = previousTeacherId ?? teacherId;
 
   Internship.fromSerialized(map)
-      : teacherId = map['teacher'],
-        studentId = map['student'],
+      : studentId = map['student'],
+        teacherId = map['teacherId'],
+        previousTeacherId = map['previousTeacherId'],
+        isTransfering = map['isTransfering'],
         enterpriseId = map['enterprise'],
-        jobId = map['job'],
-        type = map['type'],
-        supervisorName = map['name'],
-        supervisorPhone = map['phone'],
-        supervisorEmail = map['email'],
+        jobId = map['jobId'],
+        extraSpecializationId = map['extraSpecializationId'] ?? [],
+        supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
-          start: DateTime.parse(map['start']),
-          end: DateTime.parse(map['end']),
-        ),
+            start: DateTime.parse(map['date'][0]),
+            end: DateTime.parse(map['date'][1])),
+        schedule = (map['schedule'] as List)
+            .map<List<Schedule>>((e2) => (e2 as List)
+                .map<Schedule>((e) => Schedule.fromSerialized(e))
+                .toList())
+            .toList(),
         protection = ItemSerializable.listFromSerialized(map['protection']),
         uniform = map['uniform'],
+        visitingPriority = VisitingPriority.values[map['priority']],
+        teacherNotes = map['teacherNotes'],
+        isClosed = map['isClosed'],
         super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      'teacher': teacherId,
+      'id': id,
       'student': studentId,
+      'teacherId': teacherId,
+      'previousTeacherId': previousTeacherId,
+      'isTransfering': isTransfering,
       'enterprise': enterpriseId,
-      'job': jobId,
-      'type': type,
-      'name': supervisorName,
-      'phone': supervisorPhone,
-      'email': supervisorEmail,
-      'start': date.start.toString(),
-      'end': date.end.toString(),
+      'jobId': jobId,
+      'extraSpecializationId': extraSpecializationId,
+      'name': supervisor.serializedMap(),
+      'date': [date.start.toString(), date.end.toString()],
+      'schedule': schedule
+          .map<List<Map>>(
+              (e) => e.map<Map>((e2) => e2.serializedMap()).toList())
+          .toList(),
       'protection': protection,
       'uniform': uniform,
-      'id': id,
+      'priority': visitingPriority.index,
+      'teacherNotes': teacherNotes,
+      'isClosed': isClosed,
     };
   }
 
   Internship copyWith({
-    String? teacherId,
+    String? id,
     String? studentId,
+    String? teacherId,
+    String? previousTeacherId,
+    bool? isTransfering,
     String? enterpriseId,
     String? jobId,
-    String? type,
-    String? supervisorName,
-    String? supervisorPhone,
-    String? supervisorEmail,
+    List<String>? extraSpecializationId,
+    String? program,
+    Person? supervisor,
     DateTimeRange? date,
+    List<List<Schedule>>? schedule,
     List<String>? protection,
     String? uniform,
-    String? id,
+    VisitingPriority? visitingPriority,
+    String? teacherNotes,
+    bool? isClosed,
   }) =>
       Internship(
-        teacherId: teacherId ?? this.teacherId,
+        id: id ?? this.id,
         studentId: studentId ?? this.studentId,
+        teacherId: teacherId ?? this.teacherId,
+        previousTeacherId: previousTeacherId ?? this.previousTeacherId,
+        isTransfering: isTransfering ?? this.isTransfering,
         enterpriseId: enterpriseId ?? this.enterpriseId,
         jobId: jobId ?? this.jobId,
-        type: type ?? this.type,
-        supervisorName: supervisorName ?? this.supervisorName,
-        supervisorPhone: supervisorPhone ?? this.supervisorPhone,
-        supervisorEmail: supervisorEmail ?? this.supervisorEmail,
+        extraSpecializationId:
+            extraSpecializationId ?? this.extraSpecializationId,
+        supervisor: supervisor ?? this.supervisor,
         date: date ?? this.date,
+        schedule: schedule ?? this.schedule,
         protection: protection ?? this.protection,
         uniform: uniform ?? this.uniform,
-        id: id ?? this.id,
+        visitingPriority: visitingPriority ?? this.visitingPriority,
+        teacherNotes: teacherNotes ?? this.teacherNotes,
+        isClosed: isClosed ?? this.isClosed,
       );
-
-  String get title => "Année ${date.start.year}-${date.end.year}. $type";
-
-  final String studentId;
-  final String teacherId;
-  final String enterpriseId;
-  final String jobId;
-
-  final String type;
-
-  final String supervisorName;
-  final String supervisorPhone;
-  final String supervisorEmail;
-
-  final DateTimeRange date;
-
-  final List<String> protection;
-  final String uniform;
 }

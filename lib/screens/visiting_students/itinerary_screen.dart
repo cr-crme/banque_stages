@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '/common/models/visiting_priority.dart';
-import '/common/widgets/main_drawer.dart';
+import '/common/providers/enterprises_provider.dart';
+import '/common/providers/internships_provider.dart';
+import '/common/providers/schools_provider.dart';
+import '/common/providers/teachers_provider.dart';
 import 'models/all_itineraries.dart';
 import 'models/itinerary.dart';
 import 'models/waypoints.dart';
 import 'widgets/routing_map.dart';
 import 'widgets/waypoint_card.dart';
 
-class VisitStudentScreen extends StatefulWidget {
-  const VisitStudentScreen({super.key});
+class ItineraryScreen extends StatefulWidget {
+  const ItineraryScreen({super.key});
 
   @override
-  State<VisitStudentScreen> createState() => _VisitStudentScreenState();
+  State<ItineraryScreen> createState() => _ItineraryScreenState();
 }
 
-class _VisitStudentScreenState extends State<VisitStudentScreen> {
+class _ItineraryScreenState extends State<ItineraryScreen> {
   List<double>? _distances;
 
   final _dateFormat = DateFormat("dd_MM_yyyy");
@@ -39,42 +42,39 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
   }
 
   void _fillAllWaypoints() async {
+    final teacher = TeachersProvider.of(context, listen: false).currentTeacher;
+    final school =
+        SchoolsProvider.of(context, listen: false).fromId(teacher.schoolId);
+    final enterprises = EnterprisesProvider.of(context, listen: false);
     final waypoints = AllStudentsWaypoints.of(context, listen: false);
+    final interships = InternshipsProvider.of(context, listen: false);
+    final students =
+        TeachersProvider.getSupervizedStudents(context, listen: false);
     waypoints.clear(notify: false);
+
+    // Add the school as the first waypoint
+    waypoints.add(
+        await Waypoint.fromAddress('École', school.address.toString(),
+            priority: VisitingPriority.school),
+        notify: false);
 
     // Get the students from the registered students, but we copy them so
     // we don't mess with them
-    // TODO - Comment the next lines and uncomment these after when the software is populated with students
+    for (final student in students) {
+      final studentInterships = interships.byStudentId(student.id);
+      if (studentInterships.isEmpty) continue;
+      final intership = studentInterships.last;
 
-    waypoints.add(
-        await Waypoint.fromAddress('École', '1400 Tillemont, Montréal',
-            priority: VisitingPriority.none),
-        notify: false);
-    waypoints.add(
-        await Waypoint.fromAddress('Charles', 'CRME, Montréal',
-            priority: VisitingPriority.mid),
-        notify: false);
-    waypoints.add(
-        await Waypoint.fromAddress('Réjeanne', 'Métro Jarry, Montréal',
-            priority: VisitingPriority.high),
-        notify: false);
-    waypoints.add(
-        await Waypoint.fromAddress('Camille', 'Café Oui mais non, Montréal',
-            priority: VisitingPriority.high),
-        notify: true);
-
-    // final studentsProvided =
-    //     StudentsProvider.of(context, listen: false);
-    // for (final s in studentsProvided) {
-    //   waypoints.add(
-    //       await Waypoint.fromAddress(
-    //         s.name,
-    //         s.address,
-    //         priority: VisitingPriority.low,
-    //         showTitle: true,
-    //       ),
-    //       notify: false);
-    // }
+      waypoints.add(
+        await Waypoint.fromAddress(
+          '${student.firstName} ${student.lastName[0]}.',
+          enterprises.fromId(intership.enterpriseId).address.toString(),
+          priority: intership.visitingPriority,
+        ),
+        notify: false, // Only notify at the end
+      );
+    }
+    waypoints.notifyListeners();
   }
 
   void setRouteDistances(List<double>? legs) {
@@ -105,7 +105,6 @@ class _VisitStudentScreenState extends State<VisitStudentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Choix de l\'itinéraire')),
-      drawer: const MainDrawer(),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Column(

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
+import '/common/models/address.dart';
+import '/common/models/person.dart';
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
 
 class AboutPage extends StatefulWidget {
@@ -28,37 +30,47 @@ class AboutPageState extends State<AboutPage> {
   String? _email;
   String? _address;
 
-  String? _contactName;
+  String? _contactFirstName;
+  String? _contactLastName;
   String? _contactLink;
   String? _contactPhone;
   String? _contactEmail;
 
-  bool _editing = false;
-  bool get editing => _editing;
+  bool editing = false;
 
-  void toggleEdit() {
-    if (!_editing) {
-      setState(() => _editing = true);
+  Future<void> toggleEdit() async {
+    if (!editing) {
+      setState(() => editing = true);
       return;
     }
 
     if (!FormService.validateForm(_formKey, save: true)) {
       return;
     }
+    late Address address;
+    try {
+      address = (await Address.fromAddress(_address!))!;
+    } catch (e) {
+      return;
+    }
 
-    context.read<StudentsProvider>().replace(
-          widget.student.copyWith(
-            phone: _phone,
-            email: _email,
-            address: _address,
-            contactName: _contactName,
-            contactLink: _contactLink,
-            contactPhone: _contactPhone,
-            contactEmail: _contactEmail,
-          ),
-        );
-
-    setState(() => _editing = false);
+    editing = false;
+    if (mounted) {
+      StudentsProvider.of(context, listen: false).replace(
+        widget.student.copyWith(
+          phone: _phone,
+          email: _email,
+          address: address,
+          contact: Person(
+              firstName: _contactFirstName!,
+              lastName: _contactLastName!,
+              phone: _contactPhone,
+              email: _contactEmail),
+          contactLink: _contactLink,
+        ),
+      );
+    }
+    setState(() {});
   }
 
   @override
@@ -69,187 +81,264 @@ class AboutPageState extends State<AboutPage> {
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ListTile(
-                title: Text(
-                  AppLocalizations.of(context)!.generalInformations,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+              _GeneralInformation(
+                  student: widget.student, dateFormat: _dateFormat),
+              _ContactInformation(
+                student: widget.student,
+                isEditing: editing,
+                onSavedPhone: (phone) => _phone = phone,
+                onSavedEmail: (email) => _email = email,
+                onSavedAddress: (address) => _address = address,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 140,
-                          height: 105,
-                          color: Theme.of(context).disabledColor,
-                          child: widget.student.photo.isNotEmpty
-                              ? Image.network(widget.student.photo)
-                              : null,
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.student_name,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              Text(
-                                widget.student.name,
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                AppLocalizations.of(context)!.dateBirth,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              Text(
-                                _dateFormat.format(widget.student.dateBirth),
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.student_program,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            Text(
-                              widget.student.program,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.student_group,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            Text(
-                              widget.student.group,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              _EmergencyContact(
+                student: widget.student,
+                isEditing: editing,
+                onSavedFirstName: (name) => _contactFirstName = name,
+                onSavedLastName: (name) => _contactLastName = name,
+                onSavedLink: (link) => _contactLink = link,
+                onSavedPhone: (phone) => _contactPhone = phone,
+                onSavedEmail: (email) => _contactEmail = email,
               ),
-              ListTile(
-                title: Text(
-                  AppLocalizations.of(context)!.emergencyContact,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: TextEditingController(
-                          text: widget.student.contactName),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.name,
-                      ),
-                      enabled: _editing,
-                      onSaved: (name) => _contactName = name,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: TextEditingController(
-                          text: widget.student.contactLink),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!
-                            .student_linkWithStudent,
-                      ),
-                      enabled: _editing,
-                      onSaved: (link) => _contactLink = link,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: TextEditingController(
-                          text: widget.student.contactPhone),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.phoneNumber,
-                      ),
-                      enabled: _editing,
-                      onSaved: (phone) => _contactPhone = phone,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: TextEditingController(
-                          text: widget.student.contactEmail),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.email,
-                      ),
-                      enabled: _editing,
-                      onSaved: (email) => _contactEmail = email,
-                    ),
-                  ],
-                ),
-              ),
-              ListTile(
-                title: Text(
-                  AppLocalizations.of(context)!.contactInformations,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller:
-                          TextEditingController(text: widget.student.phone),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.phoneNumber,
-                      ),
-                      enabled: _editing,
-                      onSaved: (phone) => _phone = phone,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller:
-                          TextEditingController(text: widget.student.email),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.email,
-                      ),
-                      enabled: _editing,
-                      onSaved: (email) => _email = email,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller:
-                          TextEditingController(text: widget.student.address),
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.address,
-                      ),
-                      enabled: _editing,
-                      onSaved: (address) => _address = address,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _GeneralInformation extends StatelessWidget {
+  const _GeneralInformation({required this.student, required this.dateFormat});
+
+  final Student student;
+  final DateFormat dateFormat;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SubTitle(AppLocalizations.of(context)!.generalInformations, top: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 140,
+              height: 105,
+              child: student.avatar,
+            ),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.student_name,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  student.fullName,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.dateBirth,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  dateFormat.format(student.dateBirth!),
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.student_program,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  student.program.name,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+            const SizedBox(width: 100),
+            Column(
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.student_group,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  student.group,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class _ContactInformation extends StatelessWidget {
+  const _ContactInformation({
+    required this.student,
+    required this.isEditing,
+    required this.onSavedPhone,
+    required this.onSavedEmail,
+    required this.onSavedAddress,
+  });
+
+  final Student student;
+  final bool isEditing;
+  final Function(String?) onSavedPhone;
+  final Function(String?) onSavedEmail;
+  final Function(String?) onSavedAddress;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          title: Text(
+            AppLocalizations.of(context)!.contactInformations,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              TextFormField(
+                controller: TextEditingController(text: student.phone),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.phoneNumber,
+                ),
+                enabled: isEditing,
+                onSaved: onSavedPhone,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: TextEditingController(text: student.email),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.email,
+                ),
+                enabled: isEditing,
+                onSaved: onSavedEmail,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller:
+                    TextEditingController(text: student.address.toString()),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.address,
+                ),
+                maxLines: null,
+                enabled: isEditing,
+                onSaved: onSavedAddress,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EmergencyContact extends StatelessWidget {
+  const _EmergencyContact({
+    required this.student,
+    required this.isEditing,
+    required this.onSavedFirstName,
+    required this.onSavedLastName,
+    required this.onSavedLink,
+    required this.onSavedPhone,
+    required this.onSavedEmail,
+  });
+
+  final Student student;
+  final bool isEditing;
+  final Function(String?) onSavedFirstName;
+  final Function(String?) onSavedLastName;
+  final Function(String?) onSavedLink;
+  final Function(String?) onSavedPhone;
+  final Function(String?) onSavedEmail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            AppLocalizations.of(context)!.emergencyContact,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              TextFormField(
+                controller:
+                    TextEditingController(text: student.contact.firstName),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.firstName,
+                ),
+                enabled: isEditing,
+                onSaved: onSavedFirstName,
+              ),
+              TextFormField(
+                controller:
+                    TextEditingController(text: student.contact.lastName),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.lastName,
+                ),
+                enabled: isEditing,
+                onSaved: onSavedLastName,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: TextEditingController(text: student.contactLink),
+                decoration: InputDecoration(
+                  labelText:
+                      AppLocalizations.of(context)!.student_linkWithStudent,
+                ),
+                enabled: isEditing,
+                onSaved: onSavedLink,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: TextEditingController(text: student.contact.phone),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.phoneNumber,
+                ),
+                enabled: isEditing,
+                onSaved: onSavedPhone,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: TextEditingController(text: student.contact.email),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.email,
+                ),
+                enabled: isEditing,
+                onSaved: onSavedEmail,
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 }

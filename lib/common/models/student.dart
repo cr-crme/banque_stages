@@ -1,106 +1,110 @@
-import 'package:enhanced_containers/enhanced_containers.dart';
+import 'dart:math';
 
-class Student extends ItemSerializable {
+import 'package:flutter/material.dart';
+
+import '/common/models/address.dart';
+import '/common/models/person.dart';
+
+enum Program {
+  fpt,
+  fms,
+}
+
+extension ProgramNamed on Program {
+  String get title {
+    switch (this) {
+      case Program.fpt:
+        return 'FPT';
+      case Program.fms:
+        return 'FMS';
+    }
+  }
+}
+
+class Student extends Person {
+  final String photo;
+  late final Widget avatar;
+
+  final String teacherId;
+  final Program program;
+  final String group;
+
+  final Person contact;
+  final String contactLink;
+
   Student({
     super.id,
-    this.name = '',
-    DateTime? dateBirth,
-    this.photo = '',
-    this.phone = '',
-    this.email = '',
-    this.address = '',
-    this.program = '',
-    this.group = '',
-    this.contactName = '',
-    this.contactLink = '',
-    this.contactPhone = '',
-    this.contactEmail = '',
-    List<String>? internships,
-  })  : dateBirth = dateBirth ?? DateTime(0),
-        internships = internships ?? [];
+    required super.firstName,
+    super.middleName,
+    required super.lastName,
+    required super.dateBirth,
+    super.phone,
+    required super.email,
+    required super.address,
+    String? photo,
+    required this.teacherId,
+    required this.program,
+    required this.group,
+    required this.contact,
+    required this.contactLink,
+  }) : photo = photo ?? Random().nextInt(0xFFFFFF).toString() {
+    avatar = CircleAvatar(
+        backgroundColor: Color(int.parse(this.photo)).withAlpha(255));
+  }
 
   Student.fromSerialized(map)
-      : name = map['n'],
-        dateBirth = DateTime.parse(map['d']),
-        photo = map['i'],
-        phone = map['p'],
-        email = map['e'],
-        address = map['a'],
-        program = map['pr'],
-        group = map['gr'],
-        contactName = map['cn'],
-        contactLink = map['cl'],
-        contactPhone = map['cp'],
-        contactEmail = map['ce'],
-        internships = map['internships'] as List<String>? ?? [],
+      : photo = map['photo'],
+        avatar = CircleAvatar(
+            backgroundColor: Color(int.parse(map['photo'])).withAlpha(255)),
+        teacherId = map['teacherId'],
+        program = Program.values[map['program']],
+        group = map['group'],
+        contact = Person.fromSerialized(map['contact']),
+        contactLink = map['contactLink'],
         super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {
-    return {
-      'n': name,
-      'd': dateBirth.toString(),
-      'i': photo,
-      'p': phone,
-      'e': email,
-      'a': address,
-      'pr': program,
-      'gr': group,
-      'cn': contactName,
-      'cl': contactLink,
-      'cp': contactPhone,
-      'ce': contactEmail,
-      'internships': internships,
-      'id': id,
-    };
+    return super.serializedMap()
+      ..addAll({
+        'photo': photo,
+        'teacherId': teacherId,
+        'program': program.index,
+        'group': group,
+        'contact': contact.serializedMap(),
+        'contactLink': contactLink,
+      });
   }
 
+  @override
   Student copyWith({
-    String? name,
+    String? firstName,
+    String? middleName,
+    String? lastName,
     DateTime? dateBirth,
     String? phone,
     String? email,
-    String? address,
-    String? program,
+    Address? address,
+    String? teacherId,
+    Program? program,
     String? group,
-    String? contactName,
+    Person? contact,
     String? contactLink,
-    String? contactPhone,
-    String? contactEmail,
-    List<String>? internships,
     String? id,
   }) =>
       Student(
-        name: name ?? this.name,
+        id: id ?? this.id,
+        firstName: firstName ?? this.firstName,
+        middleName: middleName ?? this.middleName,
+        lastName: lastName ?? this.lastName,
         dateBirth: dateBirth ?? this.dateBirth,
         phone: phone ?? this.phone,
         email: email ?? this.email,
         address: address ?? this.address,
+        teacherId: teacherId ?? this.teacherId,
         program: program ?? this.program,
         group: group ?? this.group,
-        contactName: contactName ?? this.contactName,
+        contact: contact ?? this.contact,
         contactLink: contactLink ?? this.contactLink,
-        contactPhone: contactPhone ?? this.contactPhone,
-        contactEmail: contactEmail ?? this.contactEmail,
-        internships: internships ?? this.internships,
-        id: id ?? this.id,
       );
-
-  final String name;
-  final DateTime dateBirth;
-  final String photo;
-
-  final String phone;
-  final String email;
-  final String address;
-
-  final String program;
-  final String group;
-
-  final String contactName;
-  final String contactLink;
-  final String contactPhone;
-  final String contactEmail;
-
-  final List<String> internships;
 }
