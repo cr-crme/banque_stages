@@ -128,7 +128,10 @@ class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
       focusNode: _focusNode,
       fieldViewBuilder: _fieldViewBuilder,
       optionsBuilder: (value) => _optionsBuilder(value, options),
-      onSelected: (choice) => goTo(context, choice, options),
+      onSelected: (choice) {
+        _focusNode.unfocus();
+        goTo(context, choice, options);
+      },
       optionsViewBuilder: (context, onSelected, options) =>
           _optionsViewBuilder(options, onSelected),
     );
