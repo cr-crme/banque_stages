@@ -20,7 +20,7 @@ class Internship extends ItemSerializable {
 
   // The inner list is a semester schedule.
   // The outer list is if there are multiple schedules during a semester
-  final List<List<Schedule>> schedule;
+  final List<WeeklySchedule> weeklySchedules;
 
   final List<String> protection;
   final String uniform;
@@ -44,7 +44,7 @@ class Internship extends ItemSerializable {
     required this.extraSpecializationId,
     required this.supervisor,
     required this.date,
-    required this.schedule,
+    required this.weeklySchedules,
     required this.protection,
     required this.uniform,
     required this.visitingPriority,
@@ -64,10 +64,8 @@ class Internship extends ItemSerializable {
         date = DateTimeRange(
             start: DateTime.parse(map['date'][0]),
             end: DateTime.parse(map['date'][1])),
-        schedule = (map['schedule'] as List)
-            .map<List<Schedule>>((e2) => (e2 as List)
-                .map<Schedule>((e) => Schedule.fromSerialized(e))
-                .toList())
+        weeklySchedules = (map['schedule'] as List)
+            .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
         protection = ItemSerializable.listFromSerialized(map['protection']),
         uniform = map['uniform'],
@@ -89,10 +87,7 @@ class Internship extends ItemSerializable {
       'extraSpecializationId': extraSpecializationId,
       'name': supervisor.serializedMap(),
       'date': [date.start.toString(), date.end.toString()],
-      'schedule': schedule
-          .map<List<Map>>(
-              (e) => e.map<Map>((e2) => e2.serializedMap()).toList())
-          .toList(),
+      'schedule': weeklySchedules.map((e) => e.serializedMap()).toList(),
       'protection': protection,
       'uniform': uniform,
       'priority': visitingPriority.index,
@@ -113,7 +108,7 @@ class Internship extends ItemSerializable {
     String? program,
     Person? supervisor,
     DateTimeRange? date,
-    List<List<Schedule>>? schedule,
+    List<WeeklySchedule>? weeklySchedules,
     List<String>? protection,
     String? uniform,
     VisitingPriority? visitingPriority,
@@ -132,7 +127,7 @@ class Internship extends ItemSerializable {
             extraSpecializationId ?? this.extraSpecializationId,
         supervisor: supervisor ?? this.supervisor,
         date: date ?? this.date,
-        schedule: schedule ?? this.schedule,
+        weeklySchedules: weeklySchedules ?? this.weeklySchedules,
         protection: protection ?? this.protection,
         uniform: uniform ?? this.uniform,
         visitingPriority: visitingPriority ?? this.visitingPriority,

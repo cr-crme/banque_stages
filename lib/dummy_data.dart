@@ -634,6 +634,9 @@ Future<void> addDummyInterships(
 ) async {
   final rng = Random(); // Generate random priorities
 
+  var period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
     studentId: students[0].id,
     teacherId: teachers.currentTeacherId,
@@ -643,43 +646,47 @@ Future<void> addDummyInterships(
     extraSpecializationId: [],
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    date: period,
     isClosed: false,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.thursday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.friday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.friday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
     ],
     protection: [],
     uniform: '-1',
   ));
 
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
     studentId: students[1].id,
     teacherId: teachers.currentTeacherId,
@@ -688,43 +695,47 @@ Future<void> addDummyInterships(
     extraSpecializationId: [],
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    date: period,
     isClosed: false,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.thursday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.friday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.friday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
     ],
     protection: [],
     uniform: '-1',
   ));
 
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
     studentId: students[2].id,
     teacherId: teachers.currentTeacherId,
@@ -733,38 +744,42 @@ Future<void> addDummyInterships(
     extraSpecializationId: [],
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    date: period,
     isClosed: true,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.thursday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
     ],
     protection: [],
     uniform: '-1',
   ));
 
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
     studentId: students[3].id,
     teacherId: teachers.currentTeacherId,
@@ -773,33 +788,37 @@ Future<void> addDummyInterships(
     extraSpecializationId: [],
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    date: period,
     isClosed: true,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
     ],
     protection: [],
     uniform: '-1',
   ));
 
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
     studentId: students[4].id,
     teacherId: teachers[0].id,
@@ -808,33 +827,37 @@ Future<void> addDummyInterships(
     extraSpecializationId: [],
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    date: period,
     isClosed: false,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.friday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.friday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
     ],
     protection: [],
     uniform: '-1',
   ));
 
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
     studentId: students[5].id,
     teacherId: teachers.currentTeacherId,
@@ -843,43 +866,47 @@ Future<void> addDummyInterships(
     extraSpecializationId: [],
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    date: period,
     isClosed: false,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.thursday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.friday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.friday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
     ],
     protection: [],
     uniform: '-1',
   ));
 
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
     studentId: students[8].id,
     teacherId: teachers.currentTeacherId,
@@ -888,38 +915,39 @@ Future<void> addDummyInterships(
     extraSpecializationId: [],
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
+    date: period,
     isClosed: false,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.thursday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.friday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.friday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
     ],
     protection: [],
     uniform: '-1',

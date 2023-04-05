@@ -22,16 +22,21 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   final TimeOfDay defaultStart = const TimeOfDay(hour: 9, minute: 0);
   final TimeOfDay defaultEnd = const TimeOfDay(hour: 15, minute: 0);
-  late List<List<Schedule>> schedule = [_fillNewScheduleList()];
+  late List<WeeklySchedule> weeklySchedules = [_fillNewScheduleList()];
 
-  List<Schedule> _fillNewScheduleList() {
-    return [
-      Schedule(dayOfWeek: Day.monday, start: defaultStart, end: defaultEnd),
-      Schedule(dayOfWeek: Day.tuesday, start: defaultStart, end: defaultEnd),
-      Schedule(dayOfWeek: Day.wednesday, start: defaultStart, end: defaultEnd),
-      Schedule(dayOfWeek: Day.thursday, start: defaultStart, end: defaultEnd),
-      Schedule(dayOfWeek: Day.friday, start: defaultStart, end: defaultEnd),
-    ];
+  WeeklySchedule _fillNewScheduleList() {
+    return WeeklySchedule(schedule: [
+      DailySchedule(
+          dayOfWeek: Day.monday, start: defaultStart, end: defaultEnd),
+      DailySchedule(
+          dayOfWeek: Day.tuesday, start: defaultStart, end: defaultEnd),
+      DailySchedule(
+          dayOfWeek: Day.wednesday, start: defaultStart, end: defaultEnd),
+      DailySchedule(
+          dayOfWeek: Day.thursday, start: defaultStart, end: defaultEnd),
+      DailySchedule(
+          dayOfWeek: Day.friday, start: defaultStart, end: defaultEnd),
+    ], period: dateRange);
   }
 
   void _promptDateRange() async {
@@ -47,12 +52,12 @@ class ScheduleStepState extends State<ScheduleStep> {
     setState(() {});
   }
 
-  void _onRemovedPeriod(int scheduleIndex) async {
-    schedule.removeAt(scheduleIndex);
+  void _onRemovedWeeklySchedule(int weeklyIndex) async {
+    weeklySchedules.removeAt(weeklyIndex);
     setState(() {});
   }
 
-  void _onAddedTime(int scheduleIndex) async {
+  void _onAddedTime(int weeklyIndex) async {
     final day = await _promptDay();
     if (day == null) return;
     final start =
@@ -61,26 +66,45 @@ class ScheduleStepState extends State<ScheduleStep> {
     final end = await _promptTime(title: 'Heure de fin', initial: defaultEnd);
     if (end == null) return;
 
-    schedule[scheduleIndex]
-        .add(Schedule(dayOfWeek: day, start: start, end: end));
+    weeklySchedules[weeklyIndex]
+        .schedule
+        .add(DailySchedule(dayOfWeek: day, start: start, end: end));
     setState(() {});
   }
 
-  void _onUpdatedTime(int scheduleIndex, int i) async {
+  void _onUpdatedTime(int weeklyIndex, int i) async {
     final start = await _promptTime(
-        title: 'Heure de début', initial: schedule[scheduleIndex][i].start);
+        title: 'Heure de début',
+        initial: weeklySchedules[weeklyIndex].schedule[i].start);
     if (start == null) return;
     final end = await _promptTime(
-        title: 'Heure de fin', initial: schedule[scheduleIndex][i].end);
+        title: 'Heure de fin',
+        initial: weeklySchedules[weeklyIndex].schedule[i].end);
     if (end == null) return;
 
-    schedule[scheduleIndex][i] =
-        schedule[scheduleIndex][i].copyWith(start: start, end: end);
+    weeklySchedules[weeklyIndex].schedule[i] = weeklySchedules[weeklyIndex]
+        .schedule[i]
+        .copyWith(start: start, end: end);
     setState(() {});
   }
 
-  void _onRemovedTime(int scheduleIndex, int index) async {
-    schedule[scheduleIndex].removeAt(index);
+  void _onRemovedTime(int weeklyIndex, int index) async {
+    weeklySchedules[weeklyIndex].schedule.removeAt(index);
+    setState(() {});
+  }
+
+  void _onPromptChangeWeeks(int weeklyIndex) async {
+    final range = await showDateRangePicker(
+      context: context,
+      initialDateRange: weeklySchedules[weeklyIndex].period,
+      firstDate: DateTime(weeklySchedules[weeklyIndex].period.start.year - 1),
+      lastDate: DateTime(weeklySchedules[weeklyIndex].period.start.year + 2),
+    );
+    if (range == null) return;
+
+    weeklySchedules[weeklyIndex] =
+        weeklySchedules[weeklyIndex].copyWith(period: range);
+
     setState(() {});
   }
 
@@ -144,21 +168,25 @@ class ScheduleStepState extends State<ScheduleStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Horaire', left: 0),
-        ...schedule
+        ...weeklySchedules
             .asMap()
             .keys
             .map<Widget>((i) => _Schedule(
-                  periodName: schedule.length > 1 ? 'Période ${i + 1}' : null,
-                  schedule: schedule[i],
-                  onPeriodRemove:
-                      schedule.length > 1 ? () => _onRemovedPeriod(i) : null,
+                  periodName:
+                      weeklySchedules.length > 1 ? 'Période ${i + 1}' : null,
+                  weeklySchedule: weeklySchedules[i],
+                  onPeriodRemove: weeklySchedules.length > 1
+                      ? () => _onRemovedWeeklySchedule(i)
+                      : null,
                   onAddTime: () => _onAddedTime(i),
                   onChangedTime: (index) => _onUpdatedTime(i, index),
                   onDeleteTime: (index) => _onRemovedTime(i, index),
+                  promptChangeWeeks: () => _onPromptChangeWeeks(i),
                 ))
             .toList(),
         TextButton(
-          onPressed: () => setState(() => schedule.add(_fillNewScheduleList())),
+          onPressed: () =>
+              setState(() => weeklySchedules.add(_fillNewScheduleList())),
           child: const Text('Ajouter une période'),
         ),
       ],
@@ -242,21 +270,22 @@ class _Hours extends StatelessWidget {
 }
 
 class _Schedule extends StatelessWidget {
-  const _Schedule({
-    required this.periodName,
-    required this.schedule,
-    required this.onPeriodRemove,
-    required this.onAddTime,
-    required this.onChangedTime,
-    required this.onDeleteTime,
-  });
+  const _Schedule(
+      {required this.periodName,
+      required this.weeklySchedule,
+      required this.onPeriodRemove,
+      required this.onAddTime,
+      required this.onChangedTime,
+      required this.onDeleteTime,
+      required this.promptChangeWeeks});
 
   final String? periodName;
-  final List<Schedule> schedule;
+  final WeeklySchedule weeklySchedule;
   final Function()? onPeriodRemove;
   final Function() onAddTime;
   final Function(int) onChangedTime;
   final Function(int) onDeleteTime;
+  final Function() promptChangeWeeks;
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +295,7 @@ class _Schedule extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 10.0),
+              padding: const EdgeInsets.only(top: 8.0, bottom: 4.0, left: 10.0),
               child: Text(
                 periodName!,
                 style: Theme.of(context)
@@ -280,6 +309,36 @@ class _Schedule extends StatelessWidget {
               icon: const Icon(Icons.delete, color: Colors.red),
             )
           ],
+        ),
+      if (periodName != null)
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 10.0),
+          child: Stack(
+            alignment: Alignment.centerRight,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(children: [
+                    const Text('* Date de début'),
+                    Text(
+                        DateFormat.yMMMEd().format(weeklySchedule.period.start))
+                  ]),
+                  Column(children: [
+                    const Text('* Date de fin'),
+                    Text(DateFormat.yMMMEd().format(weeklySchedule.period.end))
+                  ]),
+                ],
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.calendar_month_outlined,
+                  color: Colors.blue,
+                ),
+                onPressed: promptChangeWeeks,
+              )
+            ],
+          ),
         ),
       const Padding(
         padding: EdgeInsets.only(left: 10.0),
@@ -296,19 +355,19 @@ class _Schedule extends StatelessWidget {
           5: FlexColumnWidth(1),
         },
         children: [
-          ...schedule.asMap().keys.map(
+          ...weeklySchedule.schedule.asMap().keys.map(
                 (i) => TableRow(
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
-                        schedule[i].dayOfWeek.name,
+                        weeklySchedule.schedule[i].dayOfWeek.name,
                         textAlign: TextAlign.right,
                       ),
                     ),
                     Container(),
-                    Text(schedule[i].start.format(context)),
-                    Text(schedule[i].end.format(context)),
+                    Text(weeklySchedule.schedule[i].start.format(context)),
+                    Text(weeklySchedule.schedule[i].end.format(context)),
                     GestureDetector(
                       onTap: () => onChangedTime(i),
                       child: const Icon(Icons.access_time, color: Colors.black),

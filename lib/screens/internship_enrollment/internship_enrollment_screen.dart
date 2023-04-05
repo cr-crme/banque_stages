@@ -79,7 +79,7 @@ class _InternshipEnrollmentScreenState
       protection: _requirementsKey.currentState!.protection,
       uniform: _requirementsKey.currentState!.uniform,
       date: _scheduleKey.currentState!.dateRange,
-      schedule: _scheduleKey.currentState!.schedule,
+      weeklySchedules: _scheduleKey.currentState!.weeklySchedules,
       visitingPriority: VisitingPriority.low,
       isClosed: false,
     );

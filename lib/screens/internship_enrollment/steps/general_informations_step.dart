@@ -225,9 +225,8 @@ class _SupervisonInformation extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle(
-            'Superviseur en milieu de travail \n(responsable du stagiaire)',
-            left: 0),
+        const SubTitle('Superviseur en milieu de travail', left: 0),
+        const Text('(Responsable du stagiaire)'),
         ListTile(
           title: TextFormField(
             decoration: const InputDecoration(labelText: '* Prénom'),

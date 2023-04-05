@@ -309,27 +309,46 @@ class _Schedule extends StatelessWidget {
 
   final Internship? internship;
 
-  Widget _scheduleBuilder(BuildContext context, List<Schedule> schedule) {
-    return Table(
-      columnWidths: {
-        0: FixedColumnWidth(MediaQuery.of(context).size.width / 3),
-        1: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
-        2: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
-      },
-      children: schedule
-          .map<TableRow>((e) => TableRow(
-                children: [
-                  Text(e.dayOfWeek.name),
-                  Text(
-                      textAlign: TextAlign.end,
-                      '${e.start.hour}h${e.start.minute.toString().padLeft(2, '0')}'),
-                  Text(
-                      textAlign: TextAlign.end,
-                      '${e.end.hour}h${e.end.minute.toString().padLeft(2, '0')}'),
-                ],
-              ))
-          .toList(),
-    );
+  Widget _scheduleBuilder(
+      BuildContext context, List<WeeklySchedule> schedules) {
+    return Column(
+        children: schedules.asMap().keys.map((index) {
+      final weeklySchedule = schedules[index];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (schedules.length > 1)
+            Text(
+              'Période ${index + 1}',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          Padding(
+            padding:
+                EdgeInsets.only(bottom: index != schedules.length - 1 ? 8 : 0),
+            child: Table(
+              columnWidths: {
+                0: FixedColumnWidth(MediaQuery.of(context).size.width / 3),
+                1: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
+                2: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
+              },
+              children: weeklySchedule.schedule
+                  .map<TableRow>((e) => TableRow(
+                        children: [
+                          Text(e.dayOfWeek.name),
+                          Text(
+                              textAlign: TextAlign.end,
+                              '${e.start.hour}h${e.start.minute.toString().padLeft(2, '0')}'),
+                          Text(
+                              textAlign: TextAlign.end,
+                              '${e.end.hour}h${e.end.minute.toString().padLeft(2, '0')}'),
+                        ],
+                      ))
+                  .toList(),
+            ),
+          ),
+        ],
+      );
+    }).toList());
   }
 
   @override
@@ -341,10 +360,7 @@ class _Schedule extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 32),
           child: internship != null
-              ? _scheduleBuilder(
-                  context,
-                  internship!.schedule[
-                      0]) // TODO: Fix when there is more than 1 schedule
+              ? _scheduleBuilder(context, internship!.weeklySchedules)
               : const Text('Aucun stage'),
         ),
       ],

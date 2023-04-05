@@ -24,8 +24,8 @@ extension DayAsString on Day {
   }
 }
 
-class Schedule extends ItemSerializable {
-  Schedule({
+class DailySchedule extends ItemSerializable {
+  DailySchedule({
     required this.dayOfWeek,
     required this.start,
     required this.end,
@@ -35,7 +35,7 @@ class Schedule extends ItemSerializable {
   final TimeOfDay start;
   final TimeOfDay end;
 
-  Schedule.fromSerialized(map)
+  DailySchedule.fromSerialized(map)
       : dayOfWeek = Day.values[map['day']],
         start = TimeOfDay(hour: map['start'][0], minute: map['start'][1]),
         end = TimeOfDay(hour: map['end'][0], minute: map['end'][1]);
@@ -49,11 +49,48 @@ class Schedule extends ItemSerializable {
     };
   }
 
-  Schedule copyWith({Day? dayOfWeek, TimeOfDay? start, TimeOfDay? end}) {
-    return Schedule(
+  DailySchedule copyWith({Day? dayOfWeek, TimeOfDay? start, TimeOfDay? end}) {
+    return DailySchedule(
       dayOfWeek: dayOfWeek ?? this.dayOfWeek,
       start: start ?? this.start,
       end: end ?? this.end,
+    );
+  }
+}
+
+class WeeklySchedule extends ItemSerializable {
+  WeeklySchedule({
+    required this.schedule,
+    required this.period,
+  });
+
+  final List<DailySchedule> schedule;
+  final DateTimeRange period;
+
+  WeeklySchedule.fromSerialized(map)
+      : schedule = (map['days'] as List)
+            .map((e) => DailySchedule.fromSerialized(e))
+            .toList(),
+        period = DateTimeRange(
+            start: DateTime.fromMillisecondsSinceEpoch(map['start']),
+            end: DateTime.fromMillisecondsSinceEpoch(map['end']));
+
+  @override
+  Map<String, dynamic> serializedMap() {
+    return {
+      'days': schedule.map((e) => e.serialize()).toList(),
+      'start': period.start.millisecondsSinceEpoch,
+      'end': period.end.millisecondsSinceEpoch,
+    };
+  }
+
+  WeeklySchedule copyWith({
+    List<DailySchedule>? schedule,
+    DateTimeRange? period,
+  }) {
+    return WeeklySchedule(
+      schedule: schedule ?? this.schedule,
+      period: period ?? this.period,
     );
   }
 }
