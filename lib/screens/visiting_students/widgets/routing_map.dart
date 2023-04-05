@@ -49,7 +49,7 @@ class _RoutingMapState extends State<RoutingMap> {
     try {
       out = await manager.getRoad(
         waypoints: route,
-        geometrie: Geometries.geojson,
+        geometries: Geometries.geojson,
       );
     } catch (e) {
       out = Road(
