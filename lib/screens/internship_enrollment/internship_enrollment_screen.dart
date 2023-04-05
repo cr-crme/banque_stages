@@ -98,12 +98,19 @@ class _InternshipEnrollmentScreenState
     details.onStepCancel!();
   }
 
+  void _onPressBack() async {
+    final answer = await ConfirmPopDialog.show(context);
+    if (!answer || !mounted) return;
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inscrire un stagiaire'),
-        leading: Container(),
+        leading: IconButton(
+            onPressed: _onPressBack, icon: const Icon(Icons.arrow_back)),
       ),
       body: Selector<EnterprisesProvider, Enterprise>(
         builder: (context, enterprise, _) => Stepper(

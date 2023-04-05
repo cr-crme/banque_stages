@@ -86,6 +86,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
             optionsBuilder: (textEditingValue) => _availableSectors.where(
                 (sector) => sector.idWithName.contains(textEditingValue.text)),
             onSelected: (sector) => setState(() {
+              FocusManager.instance.primaryFocus?.unfocus();
               _activitySector = sector;
               _specialization = null;
             }),
@@ -125,8 +126,11 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                     .where((s) => s.idWithName.contains(textEditingValue.text))
                     .toList()
                 : [],
-            onSelected: (specilization) =>
-                setState(() => _specialization = specilization),
+            onSelected: (specilization) {
+              FocusManager.instance.primaryFocus?.unfocus();
+              _specialization = specilization;
+              setState(() {});
+            },
             fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
               if (_specialization == null) {
                 controller.text = '';

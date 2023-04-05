@@ -40,6 +40,7 @@ class StudentPickerFormField extends StatelessWidget {
               );
             },
             onSelected: (student) {
+              FocusManager.instance.primaryFocus?.unfocus();
               state.didChange(student);
               onSelect == null ? null : onSelect!(student);
             },

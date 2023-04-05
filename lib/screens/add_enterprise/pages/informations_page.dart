@@ -49,11 +49,13 @@ class InformationsPageState extends State<InformationsPage> {
                 onSaved: (name) => this.name = name,
               ),
             ),
-            AddressListTile(
-              title: 'Adresse de l\'établissement',
-              isMandatory: true,
-              enabled: true,
-              addressController: addressController,
+            ListTile(
+              title: AddressListTile(
+                title: 'Adresse de l\'établissement',
+                isMandatory: true,
+                enabled: true,
+                addressController: addressController,
+              ),
             ),
             ListTile(
               title: TextFormField(
