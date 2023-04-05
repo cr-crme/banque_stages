@@ -11,7 +11,7 @@ class SupervisionExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _SupervisionBody(job: job),
           headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text("Type d'encadrement des stagiaires"),
+            title: Text('Type d\'encadrement des stagiaires'),
           ),
         );
 }
@@ -32,19 +32,19 @@ class _SupervisionBody extends StatelessWidget {
           children: [
             _RatingBar(
               title:
-                  "Accueil de stagiaires avec un trouble du spectre de l'autisme (TSA)",
+                  'Accueil de stagiaires avec un trouble du spectre de l\'autisme (TSA)',
               rating: job.welcomingTsa,
             ),
             _RatingBar(
-              title: "Accueil de stagiaires avec un trouble du langage",
+              title: 'Accueil de stagiaires avec un trouble du langage',
               rating: job.welcomingCommunication,
             ),
             _RatingBar(
-              title: "Accueil de stagiaires avec une déficience intellectuelle",
+              title: 'Accueil de stagiaires avec une déficience intellectuelle',
               rating: job.welcomingMentalDeficiency,
             ),
             _RatingBar(
-              title: "Accueil de stagiaires avec un trouble de santé mentale",
+              title: 'Accueil de stagiaires avec un trouble de santé mentale',
               rating: job.welcomingMentalHealthIssue,
             ),
           ],
@@ -82,7 +82,7 @@ class _RatingBar extends StatelessWidget {
                 // If value is invalid
                 const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Text("Aucune valeur pour l'instant."),
+                    child: Text('Aucune valeur pour l\'instant.'),
                   )
                 :
                 // If value is valid

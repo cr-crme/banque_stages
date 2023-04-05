@@ -32,25 +32,25 @@ class SupervisionStepState extends State<SupervisionStep> {
           children: [
             _RatingBar(
               question:
-                  "* Est-ce que le ou la stagiaire avait un trouble du spectre de l'autisme (TSA) ?",
+                  '* Est-ce que le ou la stagiaire avait un trouble du spectre de l\'autisme (TSA) ?',
               onSaved: (newValue) => welcomingTSA = newValue,
             ),
             const SizedBox(height: 8),
             _RatingBar(
               question:
-                  "* Est-ce que le ou la stagiaire avait un trouble du langage?",
+                  '* Est-ce que le ou la stagiaire avait un trouble du langage?',
               onSaved: (newValue) => welcomingCommunication = newValue,
             ),
             const SizedBox(height: 8),
             _RatingBar(
               question:
-                  "* Est-ce que le ou la stagiaire avait une déficience intellectuelle ?",
+                  '* Est-ce que le ou la stagiaire avait une déficience intellectuelle ?',
               onSaved: (newValue) => welcomingMentalDeficiency = newValue,
             ),
             const SizedBox(height: 8),
             _RatingBar(
               question:
-                  "* Est-ce que le ou la stagiaire avait un trouble de santé mentale ?",
+                  '* Est-ce que le ou la stagiaire avait un trouble de santé mentale ?',
               onSaved: (newValue) => welcomingMentalHealthIssue = newValue,
             ),
           ],
@@ -86,14 +86,14 @@ class _RatingBar extends FormField<double> {
               groupValue: state.value != null,
               onChanged: (_) => state.didChange(0),
             ),
-            const Text("Oui"),
+            const Text('Oui'),
             const SizedBox(width: 32),
             Radio(
               value: false,
               groupValue: state.value != null,
               onChanged: (_) => state.didChange(null),
             ),
-            const Text("Non"),
+            const Text('Non'),
           ],
         ),
         Visibility(

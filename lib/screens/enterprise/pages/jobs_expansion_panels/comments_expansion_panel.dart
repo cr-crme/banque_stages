@@ -12,7 +12,7 @@ class CommentsExpansionPanel extends ExpansionPanel {
           body: _SstBody(job: job),
           headerBuilder: (context, isExpanded) => ListTile(
             title: const Text(
-              "Autres commentaires",
+              'Autres commentaires',
             ),
             trailing: Container(
               decoration: BoxDecoration(
@@ -50,7 +50,7 @@ class _SstBody extends StatelessWidget {
         child: Column(
           children: job.comments.isEmpty
               ? [
-                  const Text("Il n'y a présentement aucun commentaire"),
+                  const Text('Il n\'y a présentement aucun commentaire'),
                   const SizedBox(height: 16)
                 ]
               : job.comments

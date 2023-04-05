@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 abstract class QuestionFileService {
   static Future<void> loadData() async {
-    final file = await rootBundle.loadString("assets/questions.json");
+    final file = await rootBundle.loadString('assets/questions.json');
     final json = jsonDecode(file) as List;
 
     _questions = List.from(
@@ -25,17 +25,17 @@ abstract class QuestionFileService {
 
 class Question extends ItemSerializable {
   Question.fromSerialized(map)
-      : questionProfessor = map["qp"],
-        questionStudent = map["qs"],
-        type = Type.fromSerialized(map["t"]),
-        choices = Set.from(map["c"] ?? []),
-        textQuestionProfessor = map["sp"],
-        textQuestionStudent = map["ss"],
+      : questionProfessor = map['qp'],
+        questionStudent = map['qs'],
+        type = Type.fromSerialized(map['t']),
+        choices = Set.from(map['c'] ?? []),
+        textQuestionProfessor = map['sp'],
+        textQuestionStudent = map['ss'],
         super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {
-    throw "Question should not be serialized. Store its ID intead.";
+    throw 'Question should not be serialized. Store its ID intead.';
   }
 
   String getQuestion(bool isProfessor) {
@@ -69,9 +69,9 @@ enum Type {
 
   static Type fromSerialized(data) {
     switch (data) {
-      case "Texte":
+      case 'Texte':
         return Type.text;
-      case "Choix de réponse":
+      case 'Choix de réponse':
         return Type.checkbox;
       default:
         return Type.radio;

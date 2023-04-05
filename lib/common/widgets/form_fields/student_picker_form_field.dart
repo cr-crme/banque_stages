@@ -19,7 +19,7 @@ class StudentPickerFormField extends StatelessWidget {
   final void Function(Student?)? onSelect;
 
   static String? _validator(Student? student) {
-    return student == null ? "Ce champ est obligatoire" : null;
+    return student == null ? 'Ce champ est obligatoire' : null;
   }
 
   @override
@@ -32,7 +32,7 @@ class StudentPickerFormField extends StatelessWidget {
         children: [
           Autocomplete<Student>(
             displayStringForOption: (student) => student.fullName,
-            initialValue: TextEditingValue(text: initialValue?.fullName ?? ""),
+            initialValue: TextEditingValue(text: initialValue?.fullName ?? ''),
             optionsBuilder: (input) {
               return students.where(
                 (s) =>
@@ -50,7 +50,7 @@ class StudentPickerFormField extends StatelessWidget {
                 focusNode: focusNode,
                 onSubmitted: (_) => onSubmitted(),
                 decoration: InputDecoration(
-                  labelText: "* Élève",
+                  labelText: '* Élève',
                   hintText: 'Saisir le nom de l\'élève',
                   errorText: state.errorText,
                 ),

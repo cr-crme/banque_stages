@@ -10,7 +10,7 @@ class PrerequisitesExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _PrerequisitesBody(job: job),
           headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text("Prérequis pour le recrutement"),
+            title: Text('Prérequis pour le recrutement'),
           ),
         );
 }
@@ -30,34 +30,34 @@ class _PrerequisitesBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Âge minimum",
+              'Âge minimum',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: Text("${job.minimalAge} ans"),
+              child: Text('${job.minimalAge} ans'),
             ),
             Text(
-              "Uniforme en vigueur",
+              'Uniforme en vigueur',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: job.uniform.isEmpty
-                  ? const Text("Aucun uniforme requis")
+                  ? const Text('Aucun uniforme requis')
                   : Text(job.uniform),
             ),
             Text(
-              "L'entreprise a demandé :",
+              'L\'entreprise a demandé :',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
                 children: job.requirements.isEmpty
-                    ? [const Text("Il n'y a aucun prérequis pour ce métier")]
+                    ? [const Text('Il n\'y a aucun prérequis pour ce métier')]
                     : job.requirements
-                        .map((requirement) => Text("- $requirement"))
+                        .map((requirement) => Text('- $requirement'))
                         .toList(),
               ),
             ),

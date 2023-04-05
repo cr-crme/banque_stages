@@ -6,7 +6,7 @@ import '/common/models/internship.dart';
 import '/common/models/visiting_priority.dart';
 
 class InternshipsProvider extends FirebaseListProvided<Internship> {
-  InternshipsProvider() : super(pathToData: "internships") {
+  InternshipsProvider() : super(pathToData: 'internships') {
     initializeFetchingData();
   }
 

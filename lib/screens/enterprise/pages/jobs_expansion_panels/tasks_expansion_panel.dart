@@ -11,7 +11,7 @@ class TasksExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _TasksBody(job: job),
           headerBuilder: (context, isExpanded) => const ListTile(
-              title: Text("Tâches et exigences envers les stagiaires")),
+              title: Text('Tâches et exigences envers les stagiaires')),
         );
 }
 
@@ -30,7 +30,7 @@ class _TasksBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Variété des tâches",
+              'Variété des tâches',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
@@ -41,21 +41,21 @@ class _TasksBody extends StatelessWidget {
               ),
             ),
             Text(
-              "Habiletés obligatoires",
+              'Habiletés obligatoires',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: Column(
                 children: job.skillsRequired.isEmpty
-                    ? [const Text("Aucune habileté requise")]
+                    ? [const Text('Aucune habileté requise')]
                     : job.skillsRequired
-                        .map((skills) => Text("- $skills"))
+                        .map((skills) => Text('- $skills'))
                         .toList(),
               ),
             ),
             Text(
-              "Niveau d’autonomie souhaité",
+              'Niveau d’autonomie souhaité',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
@@ -66,7 +66,7 @@ class _TasksBody extends StatelessWidget {
               ),
             ),
             Text(
-              "Rendement attendu",
+              'Rendement attendu',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
