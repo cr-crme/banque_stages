@@ -51,12 +51,7 @@ class _StudentScreenState extends State<StudentScreen>
             onPressed: () async {
               if (_tabController.index == 0) {
                 await _aboutPageKey.currentState?.toggleEdit();
-              } else if (_tabController.index == 1) {
-                // _internshipPageKey.currentState?.toggleEdit(); // TODO reinstate
-              } else if (_tabController.index == 2) {
-                // _skillsPageKey.currentState?.addJob(); // TODO reinstate
               }
-
               await _updateActionButton();
             },
           );
