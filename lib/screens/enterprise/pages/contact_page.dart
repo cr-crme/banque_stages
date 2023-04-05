@@ -131,6 +131,7 @@ class ContactPageState extends State<ContactPage> {
                 addressController: _headquartersAddressController,
                 onSavedNeq: (neq) => _neq = neq,
               ),
+              const SizedBox(height: 12),
             ],
           ),
         ),
@@ -168,7 +169,10 @@ class _ContactInfo extends StatelessWidget {
             children: [
               TextFormField(
                 initialValue: enterprise.contactName,
-                decoration: const InputDecoration(labelText: '* Nom'),
+                decoration: const InputDecoration(
+                  labelText: '* Nom',
+                  disabledBorder: InputBorder.none,
+                ),
                 enabled: editMode,
                 validator: FormService.textNotEmptyValidator,
                 maxLines: null,
@@ -177,7 +181,10 @@ class _ContactInfo extends StatelessWidget {
               const SizedBox(height: 8),
               TextFormField(
                 initialValue: enterprise.contactFunction,
-                decoration: const InputDecoration(labelText: '* Fonction'),
+                decoration: const InputDecoration(
+                  labelText: '* Fonction',
+                  disabledBorder: InputBorder.none,
+                ),
                 enabled: editMode,
                 validator: FormService.textNotEmptyValidator,
                 onSaved: onSavedJob,
@@ -195,6 +202,7 @@ class _ContactInfo extends StatelessWidget {
                 decoration: const InputDecoration(
                   icon: Icon(Icons.mail),
                   labelText: '* Courriel',
+                  disabledBorder: InputBorder.none,
                 ),
                 enabled: editMode,
                 validator: FormService.emailValidator,
@@ -260,7 +268,10 @@ class _EnterpriseInfo extends StatelessWidget {
               const SizedBox(height: 8),
               TextFormField(
                 initialValue: enterprise.website,
-                decoration: const InputDecoration(labelText: 'Site web'),
+                decoration: const InputDecoration(
+                  labelText: 'Site web',
+                  disabledBorder: InputBorder.none,
+                ),
                 enabled: editMode,
                 onSaved: onSavedWebsite,
                 keyboardType: TextInputType.url,
@@ -325,7 +336,10 @@ class _TaxesInfo extends StatelessWidget {
             const SizedBox(height: 8),
             TextFormField(
               initialValue: enterprise.neq,
-              decoration: const InputDecoration(labelText: 'NEQ'),
+              decoration: const InputDecoration(
+                labelText: 'NEQ',
+                disabledBorder: InputBorder.none,
+              ),
               enabled: editMode,
               validator: null,
               onSaved: onSavedNeq,

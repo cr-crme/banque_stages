@@ -23,39 +23,43 @@ class _StudentScreenState extends State<StudentScreen>
   late final _tabController = TabController(length: 3, vsync: this)
     ..index = widget.initialPage;
 
-  late IconButton _actionButton;
+  late IconButton? _actionButton;
 
   final _aboutPageKey = GlobalKey<AboutPageState>();
   final _internshipPageKey = GlobalKey<InternshipsPageState>();
   final _skillsPageKey = GlobalKey<SkillsPageState>();
 
   Future<void> _updateActionButton() async {
-    late Icon icon;
+    late Icon? icon;
 
     if (_tabController.index == 0) {
-      icon = _aboutPageKey.currentState?.editing ?? false
-          ? const Icon(Icons.save)
-          : const Icon(Icons.edit);
+      icon = null;
+      // This was disabled for security reasons
+      // icon = _aboutPageKey.currentState?.editing ?? false
+      //     ? const Icon(Icons.save)
+      //     : const Icon(Icons.edit);
     } else if (_tabController.index == 1) {
       icon = const Icon(Icons.add);
     } else if (_tabController.index == 2) {
       icon = const Icon(Icons.add);
     }
 
-    _actionButton = IconButton(
-      icon: icon,
-      onPressed: () async {
-        if (_tabController.index == 0) {
-          await _aboutPageKey.currentState?.toggleEdit();
-        } else if (_tabController.index == 1) {
-          // _internshipPageKey.currentState?.toggleEdit(); // TODO reinstate
-        } else if (_tabController.index == 2) {
-          // _skillsPageKey.currentState?.addJob(); // TODO reinstate
-        }
+    _actionButton = icon == null
+        ? null
+        : IconButton(
+            icon: icon,
+            onPressed: () async {
+              if (_tabController.index == 0) {
+                await _aboutPageKey.currentState?.toggleEdit();
+              } else if (_tabController.index == 1) {
+                // _internshipPageKey.currentState?.toggleEdit(); // TODO reinstate
+              } else if (_tabController.index == 2) {
+                // _skillsPageKey.currentState?.addJob(); // TODO reinstate
+              }
 
-        await _updateActionButton();
-      },
-    );
+              await _updateActionButton();
+            },
+          );
     setState(() {});
   }
 
@@ -72,7 +76,7 @@ class _StudentScreenState extends State<StudentScreen>
       builder: (context, student, _) => Scaffold(
         appBar: AppBar(
           title: Text(student.fullName),
-          actions: [_actionButton],
+          actions: _actionButton == null ? null : [_actionButton!],
           bottom: TabBar(
             controller: _tabController,
             tabs: const [

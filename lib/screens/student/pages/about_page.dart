@@ -221,8 +221,8 @@ class _ContactInformation extends StatelessWidget {
               TextFormField(
                 controller: TextEditingController(text: student.email),
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.email,
-                ),
+                    labelText: AppLocalizations.of(context)!.email,
+                    disabledBorder: InputBorder.none),
                 enabled: isEditing,
                 onSaved: onSavedEmail,
               ),
@@ -279,6 +279,7 @@ class _EmergencyContact extends StatelessWidget {
                     TextEditingController(text: student.contact.firstName),
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.firstName,
+                  disabledBorder: InputBorder.none,
                 ),
                 enabled: isEditing,
                 onSaved: onSavedFirstName,
@@ -288,6 +289,7 @@ class _EmergencyContact extends StatelessWidget {
                     TextEditingController(text: student.contact.lastName),
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.lastName,
+                  disabledBorder: InputBorder.none,
                 ),
                 enabled: isEditing,
                 onSaved: onSavedLastName,
@@ -298,6 +300,7 @@ class _EmergencyContact extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText:
                       AppLocalizations.of(context)!.student_linkWithStudent,
+                  disabledBorder: InputBorder.none,
                 ),
                 enabled: isEditing,
                 onSaved: onSavedLink,
@@ -313,10 +316,12 @@ class _EmergencyContact extends StatelessWidget {
                 controller: TextEditingController(text: student.contact.email),
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.email,
+                  disabledBorder: InputBorder.none,
                 ),
                 enabled: isEditing,
                 onSaved: onSavedEmail,
               ),
+              const SizedBox(height: 12),
             ],
           ),
         )

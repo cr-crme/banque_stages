@@ -55,6 +55,7 @@ class _PhoneListTileState extends State<PhoneListTile> {
           decoration: InputDecoration(
             icon: Icon(widget.icon),
             labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
+            disabledBorder: InputBorder.none,
           ),
           validator: (value) {
             if (!widget.enabled) return null;

@@ -165,11 +165,11 @@ class _AddressListTileState extends State<AddressListTile> {
           TextFormField(
             controller: _textController,
             decoration: InputDecoration(
-              labelText:
-                  '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
-              // Add an invisible icon so the text wraps
-              suffixIcon: const Icon(Icons.map, color: Colors.white),
-            ),
+                labelText:
+                    '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
+                // Add an invisible icon so the text wraps
+                suffixIcon: const Icon(Icons.map, color: Colors.white),
+                disabledBorder: InputBorder.none),
             enabled: widget.enabled,
             maxLines: null,
             onSaved: (newAddress) => validate(),
