@@ -48,9 +48,9 @@ class _StudentScreenState extends State<StudentScreen>
         if (_tabController.index == 0) {
           await _aboutPageKey.currentState?.toggleEdit();
         } else if (_tabController.index == 1) {
-          // _internshipPageKey.currentState?.toggleEdit();
+          // _internshipPageKey.currentState?.toggleEdit(); // TODO reinstate
         } else if (_tabController.index == 2) {
-          // _skillsPageKey.currentState?.addJob();
+          // _skillsPageKey.currentState?.addJob(); // TODO reinstate
         }
 
         await _updateActionButton();
@@ -78,7 +78,7 @@ class _StudentScreenState extends State<StudentScreen>
             tabs: const [
               Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
               Tab(icon: Icon(Icons.assignment), text: 'Stages'),
-              Tab(icon: Icon(Icons.person), text: 'Plan de\nformation'),
+              Tab(icon: Icon(Icons.school), text: 'Plan de\nformation'),
             ],
           ),
         ),

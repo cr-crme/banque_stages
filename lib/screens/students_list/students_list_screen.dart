@@ -24,7 +24,8 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
 
   List<Student> _filterSelectedStudents(List<Student> students) {
     return students.where((student) {
-      if (student.fullName.contains(_searchController.text)) {
+      if (student.fullName.contains(_searchController.text) ||
+          student.group.contains(_searchController.text)) {
         return true;
       }
 

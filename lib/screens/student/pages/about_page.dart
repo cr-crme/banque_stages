@@ -120,31 +120,51 @@ class _GeneralInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SubTitle(AppLocalizations.of(context)!.generalInformations, top: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 140,
-              height: 105,
-              child: student.avatar,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SubTitle(AppLocalizations.of(context)!.generalInformations, top: 12),
+          Padding(
+            padding: const EdgeInsets.only(left: 32.0, right: 40),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(width: 105, height: 105, child: student.avatar),
+                Column(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.student_program,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Text(
+                      student.program.title,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.student_group,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Text(
+                      student.group,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+              ],
             ),
-            const SizedBox(width: 16),
-            Column(
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.only(left: 32.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  AppLocalizations.of(context)!.student_name,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                Text(
-                  student.fullName,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
                 Text(
                   AppLocalizations.of(context)!.dateBirth,
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -155,40 +175,9 @@ class _GeneralInformation extends StatelessWidget {
                 ),
               ],
             ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Column(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.student_program,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                Text(
-                  student.program.name,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ],
-            ),
-            const SizedBox(width: 100),
-            Column(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.student_group,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                Text(
-                  student.group,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ],
-            ),
-          ],
-        )
-      ],
+          ),
+        ],
+      ),
     );
   }
 }
