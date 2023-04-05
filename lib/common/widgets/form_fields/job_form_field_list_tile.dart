@@ -84,7 +84,9 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
           Autocomplete<ActivitySector>(
             displayStringForOption: (sector) => sector.idWithName,
             optionsBuilder: (textEditingValue) => _availableSectors.where(
-                (sector) => sector.idWithName.contains(textEditingValue.text)),
+                (sector) => sector.idWithName
+                    .toLowerCase()
+                    .contains(textEditingValue.text.toLowerCase())),
             onSelected: (sector) => setState(() {
               FocusManager.instance.primaryFocus?.unfocus();
               _activitySector = sector;
@@ -123,7 +125,9 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
             },
             optionsBuilder: (textEditingValue) => _activitySector != null
                 ? _availableSpecialization
-                    .where((s) => s.idWithName.contains(textEditingValue.text))
+                    .where((s) => s.idWithName
+                        .toLowerCase()
+                        .contains(textEditingValue.text.toLowerCase()))
                     .toList()
                 : [],
             onSelected: (specilization) {
@@ -141,7 +145,6 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                   controller: controller,
                   focusNode: focusNode,
                   onSubmitted: (_) => onSubmitted(),
-                  onChanged: (_) => setState(() => _specialization = null),
                   decoration: InputDecoration(
                       labelText: '* Métier semi-spécialisé',
                       errorText: state.errorText == _invalidSpecialization
