@@ -6,23 +6,27 @@ import '/common/models/visiting_priority.dart';
 import 'schedule.dart';
 
 class Internship extends ItemSerializable {
+  // Elements fixed across versions of the same stage
   final String studentId;
   final String teacherId;
-  final String previousTeacherId; // Keep track of teacherId while transfering
-  final bool isTransfering;
 
   final String enterpriseId;
   final String jobId; // Main job attached to the enterprise
   final List<String>
       extraSpecializationId; // Any extra jobs added to the internship
+  final int length;
+
+  // Elements that can be modified (which increase the version number, but
+  // do not require a completely new internship contract)
   final Person supervisor;
   final DateTimeRange date;
-
-  final int length;
   final List<WeeklySchedule> weeklySchedules;
-
-  final List<String> protection;
+  final List<String> protections;
   final String uniform;
+
+  // Elements that are parts of the inner working of the internship
+  final String previousTeacherId; // Keep track of teacherId while transfering
+  final bool isTransfering;
 
   final VisitingPriority visitingPriority;
   final String teacherNotes;
@@ -45,7 +49,7 @@ class Internship extends ItemSerializable {
     required this.date,
     required this.length,
     required this.weeklySchedules,
-    required this.protection,
+    required this.protections,
     required this.uniform,
     required this.visitingPriority,
     this.teacherNotes = '',
@@ -72,7 +76,7 @@ class Internship extends ItemSerializable {
         weeklySchedules = (map['schedule'] as List)
             .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
-        protection = ItemSerializable.listFromSerialized(map['protection']),
+        protections = ItemSerializable.listFromSerialized(map['protections']),
         uniform = map['uniform'],
         visitingPriority = VisitingPriority.values[map['priority']],
         teacherNotes = map['teacherNotes'],
@@ -94,7 +98,7 @@ class Internship extends ItemSerializable {
       'date': [date.start.toString(), date.end.toString()],
       'length': length,
       'schedule': weeklySchedules.map((e) => e.serializedMap()).toList(),
-      'protection': protection,
+      'protections': protections,
       'uniform': uniform,
       'priority': visitingPriority.index,
       'teacherNotes': teacherNotes,
@@ -116,7 +120,7 @@ class Internship extends ItemSerializable {
     DateTimeRange? date,
     int? length,
     List<WeeklySchedule>? weeklySchedules,
-    List<String>? protection,
+    List<String>? protections,
     String? uniform,
     VisitingPriority? visitingPriority,
     String? teacherNotes,
@@ -136,7 +140,7 @@ class Internship extends ItemSerializable {
         date: date ?? this.date,
         length: length ?? this.length,
         weeklySchedules: weeklySchedules ?? this.weeklySchedules,
-        protection: protection ?? this.protection,
+        protections: protections ?? this.protections,
         uniform: uniform ?? this.uniform,
         visitingPriority: visitingPriority ?? this.visitingPriority,
         teacherNotes: teacherNotes ?? this.teacherNotes,

@@ -37,45 +37,37 @@ class ContactPageState extends State<ContactPage> {
       key: _formKey,
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ListTile(
-              visualDensity:
-                  VisualDensity(vertical: VisualDensity.minimumDensity),
-              title: Text('Entreprise représentée par'),
+            Text(
+              'Entreprise représentée par',
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-            ListTile(
-              title: TextFormField(
-                decoration: const InputDecoration(labelText: '* Nom'),
-                validator: FormService.textNotEmptyValidator,
-                onSaved: (name) => contactName = name!,
-              ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: '* Nom'),
+              validator: FormService.textNotEmptyValidator,
+              onSaved: (name) => contactName = name!,
             ),
-            ListTile(
-              title: TextFormField(
-                decoration: const InputDecoration(labelText: '* Fonction'),
-                validator: FormService.textNotEmptyValidator,
-                onSaved: (function) => contactFunction = function!,
-              ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: '* Fonction'),
+              validator: FormService.textNotEmptyValidator,
+              onSaved: (function) => contactFunction = function!,
             ),
             PhoneListTile(
               onSaved: (phone) => contactPhone = phone!,
               isMandatory: true,
               enabled: true,
             ),
-            ListTile(
-              title: TextFormField(
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.mail),
-                  labelText: '* Courriel',
-                ),
-                validator: FormService.emailValidator,
-                onSaved: (email) => contactEmail = email!,
-                keyboardType: TextInputType.emailAddress,
+            TextFormField(
+              decoration: const InputDecoration(
+                icon: Icon(Icons.mail),
+                labelText: '* Courriel',
               ),
+              validator: FormService.emailValidator,
+              onSaved: (email) => contactEmail = email!,
+              keyboardType: TextInputType.emailAddress,
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),

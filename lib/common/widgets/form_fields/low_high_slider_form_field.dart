@@ -18,10 +18,7 @@ class LowHighSliderFormField extends FormField<double> {
 
   static Widget _builder(FormFieldState<double> state) {
     if (state.value! < min || state.value! > max) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 12),
-        child: Text('Aucune donnée pour l\'instant.'),
-      );
+      return const Text('Aucune donnée pour l\'instant.');
     }
 
     return SizedBox(

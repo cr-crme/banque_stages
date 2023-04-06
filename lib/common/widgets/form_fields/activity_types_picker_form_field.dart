@@ -27,6 +27,7 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
     late FocusNode textFieldFocusNode;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Autocomplete<String>(
           optionsBuilder: (textEditingValue) {

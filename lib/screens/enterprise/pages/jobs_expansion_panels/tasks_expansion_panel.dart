@@ -25,57 +25,49 @@ class _TasksBody extends StatelessWidget {
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: const EdgeInsets.only(left: 24, right: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Variété des tâches',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: LowHighSliderFormField(
-                initialValue: job.taskVariety,
-                enabled: false,
-              ),
+            LowHighSliderFormField(
+              initialValue: job.taskVariety,
+              enabled: false,
             ),
-            Text(
+            const SizedBox(height: 12),
+            const Text(
               'Habiletés obligatoires',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: Column(
-                children: job.skillsRequired.isEmpty
-                    ? [const Text('Aucune habileté requise')]
-                    : job.skillsRequired
-                        .map((skills) => Text('- $skills'))
-                        .toList(),
-              ),
+            Column(
+              children: job.skillsRequired.isEmpty
+                  ? [const Text('Aucune habileté requise')]
+                  : job.skillsRequired
+                      .map((skills) => Text('- $skills'))
+                      .toList(),
             ),
-            Text(
+            const SizedBox(height: 12),
+            const Text(
               'Niveau d’autonomie souhaité',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: LowHighSliderFormField(
-                initialValue: job.autonomyExpected,
-                enabled: false,
-              ),
+            LowHighSliderFormField(
+              initialValue: job.autonomyExpected,
+              enabled: false,
             ),
+            const SizedBox(height: 12),
             Text(
               'Rendement attendu',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: LowHighSliderFormField(
-                initialValue: job.efficiencyWanted,
-                enabled: false,
-              ),
+            LowHighSliderFormField(
+              initialValue: job.efficiencyWanted,
+              enabled: false,
             ),
+            const SizedBox(height: 12),
           ],
         ),
       ),

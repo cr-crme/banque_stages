@@ -115,7 +115,7 @@ class ScheduleStepState extends State<ScheduleStep> {
       builder: (context) => AlertDialog(
           title: const Text('Sélectionner la journée'),
           content: Padding(
-            padding: const EdgeInsets.only(left: 16.0),
+            padding: const EdgeInsets.only(left: 12.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,6 +188,9 @@ class ScheduleStepState extends State<ScheduleStep> {
         TextButton(
           onPressed: () =>
               setState(() => weeklySchedules.add(_fillNewScheduleList())),
+          style: Theme.of(context).textButtonTheme.style!.copyWith(
+              backgroundColor:
+                  Theme.of(context).elevatedButtonTheme.style!.backgroundColor),
           child: const Text('Ajouter une période'),
         ),
       ],
@@ -213,12 +216,13 @@ class _DateRange extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 3 / 4,
-              child: Column(
-                children: [
-                  ListTile(
-                    title: TextField(
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 2 / 3,
+                child: Column(
+                  children: [
+                    TextField(
                       decoration: const InputDecoration(
                           labelText: '* Date de début du stage',
                           border: InputBorder.none),
@@ -226,9 +230,7 @@ class _DateRange extends StatelessWidget {
                           text: DateFormat.yMMMEd().format(dateRange.start)),
                       enabled: false,
                     ),
-                  ),
-                  ListTile(
-                    title: TextField(
+                    TextField(
                       decoration: const InputDecoration(
                           labelText: '* Date de fin du stage',
                           border: InputBorder.none),
@@ -236,8 +238,8 @@ class _DateRange extends StatelessWidget {
                           text: DateFormat.yMMMEd().format(dateRange.end)),
                       enabled: false,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             IconButton(
@@ -261,8 +263,9 @@ class _Hours extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: TextFormField(
+    return Padding(
+      padding: const EdgeInsets.only(left: 12.0),
+      child: TextFormField(
         decoration:
             const InputDecoration(labelText: '* Nombre d\'heures de stage'),
         validator: FormService.textNotEmptyValidator,
@@ -344,57 +347,63 @@ class _Schedule extends StatelessWidget {
             ],
           ),
         ),
-      const Padding(
-        padding: EdgeInsets.only(left: 10.0),
-        child: Text('* Sélectionner les jours et les horaires de stage'),
-      ),
-      Table(
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        columnWidths: const {
-          0: FlexColumnWidth(2),
-          1: FlexColumnWidth(1),
-          2: FlexColumnWidth(2),
-          3: FlexColumnWidth(2),
-          4: FlexColumnWidth(1),
-          5: FlexColumnWidth(1),
-        },
-        children: [
-          ...weeklySchedule.schedule.asMap().keys.map(
-                (i) => TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        weeklySchedule.schedule[i].dayOfWeek.name,
-                        textAlign: TextAlign.right,
+      Padding(
+        padding: const EdgeInsets.only(left: 12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('* Sélectionner les jours et les horaires de stage'),
+            Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              columnWidths: const {
+                0: FlexColumnWidth(2),
+                1: FlexColumnWidth(1),
+                2: FlexColumnWidth(2),
+                3: FlexColumnWidth(2),
+                4: FlexColumnWidth(1),
+                5: FlexColumnWidth(1),
+              },
+              children: [
+                ...weeklySchedule.schedule.asMap().keys.map(
+                      (i) => TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              weeklySchedule.schedule[i].dayOfWeek.name,
+                            ),
+                          ),
+                          Container(),
+                          Text(
+                              weeklySchedule.schedule[i].start.format(context)),
+                          Text(weeklySchedule.schedule[i].end.format(context)),
+                          GestureDetector(
+                            onTap: () => onChangedTime(i),
+                            child: const Icon(Icons.access_time,
+                                color: Colors.black),
+                          ),
+                          GestureDetector(
+                            onTap: () => onDeleteTime(i),
+                            child: const Icon(Icons.delete, color: Colors.red),
+                          ),
+                        ],
                       ),
                     ),
-                    Container(),
-                    Text(weeklySchedule.schedule[i].start.format(context)),
-                    Text(weeklySchedule.schedule[i].end.format(context)),
-                    GestureDetector(
-                      onTap: () => onChangedTime(i),
-                      child: const Icon(Icons.access_time, color: Colors.black),
-                    ),
-                    GestureDetector(
-                      onTap: () => onDeleteTime(i),
-                      child: const Icon(Icons.delete, color: Colors.red),
-                    ),
-                  ],
-                ),
-              ),
-          TableRow(children: [
-            Container(),
-            Container(),
-            Container(),
-            Container(),
-            GestureDetector(
-              onTap: onAddTime,
-              child: const Icon(Icons.add, color: Colors.black),
+                TableRow(children: [
+                  Container(),
+                  Container(),
+                  Container(),
+                  Container(),
+                  GestureDetector(
+                    onTap: onAddTime,
+                    child: const Icon(Icons.add, color: Colors.black),
+                  ),
+                  Container(),
+                ]),
+              ],
             ),
-            Container(),
-          ]),
-        ],
+          ],
+        ),
       ),
     ]);
   }

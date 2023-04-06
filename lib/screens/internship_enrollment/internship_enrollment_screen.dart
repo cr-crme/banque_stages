@@ -76,7 +76,7 @@ class _InternshipEnrollmentScreenState
           email: _generalInfoKey.currentState!.supervisorEmail ?? '',
           phone: PhoneNumber.fromString(
               _generalInfoKey.currentState!.supervisorPhone)),
-      protection: _requirementsKey.currentState!.protection,
+      protections: _requirementsKey.currentState!.protections,
       uniform: _requirementsKey.currentState!.uniform,
       date: _scheduleKey.currentState!.dateRange,
       length: _scheduleKey.currentState!.intershipLength,

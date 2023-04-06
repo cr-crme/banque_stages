@@ -147,27 +147,41 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   Widget _controlBuilder(BuildContext context, ControlsDetails details) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Visibility(
             visible: _currentStep == 1,
-            child: AddJobButton(
-                onPressed: () => _jobsKey.currentState!.addJobToForm()),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: AddJobButton(
+                onPressed: () => _jobsKey.currentState!.addJobToForm(),
+                style: Theme.of(context).textButtonTheme.style!.copyWith(
+                    backgroundColor: Theme.of(context)
+                        .elevatedButtonTheme
+                        .style!
+                        .backgroundColor),
+              ),
+            ),
           ),
-          const Expanded(child: SizedBox()),
-          OutlinedButton(
-              onPressed: () => _onPressedCancel(details),
-              child: const Text('Annuler')),
-          const SizedBox(
-            width: 20,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Expanded(child: SizedBox()),
+              OutlinedButton(
+                  onPressed: () => _onPressedCancel(details),
+                  child: const Text('Annuler')),
+              const SizedBox(
+                width: 20,
+              ),
+              TextButton(
+                onPressed: details.onStepContinue,
+                child: _currentStep == 2
+                    ? const Text('Ajouter')
+                    : const Text('Suivant'),
+              )
+            ],
           ),
-          TextButton(
-            onPressed: details.onStepContinue,
-            child: _currentStep == 2
-                ? const Text('Ajouter')
-                : const Text('Suivant'),
-          )
         ],
       ),
     );

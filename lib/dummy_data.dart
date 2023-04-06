@@ -687,8 +687,12 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protection: [],
-    uniform: '-1',
+    protections: [
+      'Chaussures de sécurité',
+      'Lunettes de sécurités',
+      'Masque',
+    ],
+    uniform: 'Il faut s\'habiller de façon à ce que tous soient identiques',
   ));
 
   period = DateTimeRange(
@@ -737,8 +741,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protection: [],
-    uniform: '-1',
+    protections: [],
+    uniform: '',
   ));
 
   period = DateTimeRange(
@@ -782,8 +786,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protection: [],
-    uniform: '-1',
+    protections: [],
+    uniform: '',
   ));
 
   period = DateTimeRange(
@@ -822,8 +826,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protection: [],
-    uniform: '-1',
+    protections: [],
+    uniform: '',
   ));
 
   period = DateTimeRange(
@@ -862,8 +866,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protection: [],
-    uniform: '-1',
+    protections: [],
+    uniform: '',
   ));
 
   period = DateTimeRange(
@@ -912,8 +916,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protection: [],
-    uniform: '-1',
+    protections: [],
+    uniform: '',
   ));
 
   period = DateTimeRange(
@@ -962,8 +966,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protection: [],
-    uniform: '-1',
+    protections: [],
+    uniform: '',
   ));
 
   await _waitForDatabaseUpdate(internships, 7);

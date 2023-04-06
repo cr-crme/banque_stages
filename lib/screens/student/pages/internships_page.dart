@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '/common/models/internship.dart';
 import '/common/models/person.dart';
+import '/common/models/schedule.dart';
 import '/common/models/student.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
@@ -88,14 +89,17 @@ class _InternshipBody extends StatelessWidget {
   const _InternshipBody({required this.internship});
 
   final Internship internship;
+  static const TextStyle _titleStyle = TextStyle(fontWeight: FontWeight.bold);
+  static const _interline = 12.0;
+  static const _leftTab = 12.0;
 
   Widget _buildTextSection({required String title, required String text}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(title, style: _titleStyle),
         Padding(
-          padding: const EdgeInsets.only(top: 2, left: 12.0, bottom: 12.0),
+          padding: const EdgeInsets.only(top: 2, bottom: _interline),
           child: Text(text),
         )
       ],
@@ -108,20 +112,20 @@ class _InternshipBody extends StatelessWidget {
     required enterprises,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.only(bottom: _interline),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(title, style: _titleStyle),
           Padding(
-            padding: const EdgeInsets.only(top: 2, left: 12.0),
+            padding: const EdgeInsets.only(top: 2),
             child: Text(enterprises[internship.enterpriseId]
                 .jobs[internship.jobId]
                 .specialization
                 .idWithName),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 2, left: 12.0),
+            padding: const EdgeInsets.only(top: 2),
             child: Text(enterprises[internship.enterpriseId]
                 .jobs[internship.jobId]
                 .specialization
@@ -133,13 +137,13 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
-  Widget _buildPersonInfo({required String title, required Person person}) {
+  Widget _buildPersonInfo({required Person person}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const Text('Adresse de l\'entreprise', style: _titleStyle),
         Padding(
-          padding: const EdgeInsets.only(top: 2, left: 12.0, bottom: 12.0),
+          padding: const EdgeInsets.only(top: 2, bottom: _interline),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -150,7 +154,7 @@ class _InternshipBody extends StatelessWidget {
               Text(person.phone.toString()),
               const SizedBox(height: 8),
               const Text('Courriel'),
-              if (person.email != null) Text(person.email!),
+              Text(person.email ?? 'Aucun'),
               const SizedBox(height: 8),
             ],
           ),
@@ -159,17 +163,13 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
-  Widget _buildDates(BuildContext context) {
+  Widget _buildDates() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Date du stage',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('Date du stage', style: _titleStyle),
         Padding(
-          padding: EdgeInsets.only(
-              left: 12.0,
-              right: MediaQuery.of(context).size.width / 4,
-              bottom: 12.0),
+          padding: const EdgeInsets.only(bottom: _interline),
           child: Table(
             children: [
               const TableRow(children: [
@@ -187,17 +187,13 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
-  Widget _buildTime(BuildContext context) {
+  Widget _buildTime() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Nombre d\'heures de stage',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('Nombre d\'heures de stage', style: _titleStyle),
         Padding(
-          padding: EdgeInsets.only(
-              left: 12.0,
-              right: MediaQuery.of(context).size.width / 4,
-              bottom: 12.0),
+          padding: const EdgeInsets.only(bottom: _interline),
           child: Table(
             children: [
               TableRow(children: [
@@ -212,6 +208,66 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
+  Widget _buildSchedule(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Nombre d\'heures de stage', style: _titleStyle),
+        Padding(
+          padding: const EdgeInsets.only(bottom: _interline),
+          child: Table(
+            children: internship.weeklySchedules[0].schedule.map(
+              // TODO Manage when there is more schedules
+              (schedule) {
+                return TableRow(
+                  children: [
+                    Text(schedule.dayOfWeek.name),
+                    Text(schedule.start.format(context)),
+                    Text(schedule.end.format(context)),
+                  ],
+                );
+              },
+            ).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProtection() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('EPI requis', style: _titleStyle),
+          if (internship.protections.isEmpty) Text('Aucune'),
+          if (internship.protections.isNotEmpty)
+            ...internship.protections.map((e) => Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('\u2022 '),
+                    Flexible(child: Text(e)),
+                  ],
+                )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUniform() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Uniforme requis', style: _titleStyle),
+          Text(internship.uniform == '' ? 'Aucun' : internship.uniform),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final teachers = TeachersProvider.of(context);
@@ -223,24 +279,30 @@ class _InternshipBody extends StatelessWidget {
         _buildTextSection(
             title: 'Enseignant.e superviseur.e de stage',
             text: teachers[internship.teacherId].fullName),
-        _buildJob('Métier principal',
-            specializationId: internship.jobId, enterprises: enterprises),
+        _buildJob(
+            'Métier${internship.extraSpecializationId.isNotEmpty ? ' principal' : ''}',
+            specializationId: internship.jobId,
+            enterprises: enterprises),
         if (internship.extraSpecializationId.isNotEmpty)
-          ...internship.extraSpecializationId.map(
-            (id) => _buildJob('Métier secondaire',
-                specializationId: internship.extraSpecializationId[0],
-                enterprises: enterprises),
-          ),
+          ...internship.extraSpecializationId.asMap().keys.map(
+                (indexExtra) => _buildJob(
+                    'Métier secondaire${internship.extraSpecializationId.length > 1 ? ' (${indexExtra + 1})' : ''}',
+                    specializationId:
+                        internship.extraSpecializationId[indexExtra],
+                    enterprises: enterprises),
+              ),
         _buildTextSection(
             title: 'Entreprise',
             text: enterprises[internship.enterpriseId].name),
         _buildTextSection(
             title: 'Adresse de l\'entreprise',
             text: enterprises[internship.enterpriseId].address.toString()),
-        _buildPersonInfo(
-            title: 'Adresse de l\'entreprise', person: internship.supervisor),
-        _buildDates(context),
-        _buildTime(context),
+        _buildPersonInfo(person: internship.supervisor),
+        _buildDates(),
+        _buildTime(),
+        _buildSchedule(context),
+        _buildProtection(),
+        _buildUniform(),
       ],
     );
   }

@@ -49,26 +49,24 @@ class _PhoneListTileState extends State<PhoneListTile> {
           }
         }
       },
-      child: ListTile(
-        title: TextFormField(
-          controller: _phoneController,
-          decoration: InputDecoration(
-            icon: Icon(widget.icon),
-            labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
-            disabledBorder: InputBorder.none,
-          ),
-          validator: (value) {
-            if (!widget.enabled) return null;
-
-            if (!widget.isMandatory && (value == '' || value == null)) {
-              return null;
-            }
-            return FormService.phoneValidator(value);
-          },
-          enabled: widget.enabled,
-          onSaved: widget.onSaved,
-          keyboardType: TextInputType.phone,
+      child: TextFormField(
+        controller: _phoneController,
+        decoration: InputDecoration(
+          icon: Icon(widget.icon),
+          labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
+          disabledBorder: InputBorder.none,
         ),
+        validator: (value) {
+          if (!widget.enabled) return null;
+
+          if (!widget.isMandatory && (value == '' || value == null)) {
+            return null;
+          }
+          return FormService.phoneValidator(value);
+        },
+        enabled: widget.enabled,
+        onSaved: widget.onSaved,
+        keyboardType: TextInputType.phone,
       ),
     );
   }

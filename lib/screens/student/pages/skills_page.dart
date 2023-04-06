@@ -120,7 +120,7 @@ class _LeveledSkillTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
+          padding: const EdgeInsets.only(bottom: 4.0),
           child: Text(
             title,
             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -128,16 +128,14 @@ class _LeveledSkillTile extends StatelessWidget {
         ),
         ...jobs.keys
             .map((specialization) => Padding(
-                padding:
-                    const EdgeInsets.only(left: 12.0, bottom: 8.0, right: 12.0),
+                padding: const EdgeInsets.only(bottom: 12.0, right: 12.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(specialization.idWithName),
                     ...jobs[specialization]!.map(
                       (skill) => Padding(
-                          padding:
-                              const EdgeInsets.only(left: 12.0, right: 12.0),
+                          padding: const EdgeInsets.only(right: 12.0),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

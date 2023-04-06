@@ -78,23 +78,24 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
             positionsOffered: _positionOffered));
       },
       validator: (_) => _validator(),
-      builder: (state) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Autocomplete<ActivitySector>(
-            displayStringForOption: (sector) => sector.idWithName,
-            optionsBuilder: (textEditingValue) => _availableSectors.where(
-                (sector) => sector.idWithName
-                    .toLowerCase()
-                    .contains(textEditingValue.text.toLowerCase())),
-            onSelected: (sector) => setState(() {
-              FocusManager.instance.primaryFocus?.unfocus();
-              _activitySector = sector;
-              _specialization = null;
-            }),
-            fieldViewBuilder: (_, controller, focusNode, onSubmitted) =>
-                ListTile(
-              title: TextField(
+      builder: (state) => Padding(
+        padding: const EdgeInsets.only(left: 12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Autocomplete<ActivitySector>(
+              displayStringForOption: (sector) => sector.idWithName,
+              optionsBuilder: (textEditingValue) => _availableSectors.where(
+                  (sector) => sector.idWithName
+                      .toLowerCase()
+                      .contains(textEditingValue.text.toLowerCase())),
+              onSelected: (sector) => setState(() {
+                FocusManager.instance.primaryFocus?.unfocus();
+                _activitySector = sector;
+                _specialization = null;
+              }),
+              fieldViewBuilder: (_, controller, focusNode, onSubmitted) =>
+                  TextField(
                 controller: controller,
                 focusNode: focusNode,
                 onSubmitted: (_) => onSubmitted(),
@@ -114,33 +115,31 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                     )),
               ),
             ),
-          ),
-          Autocomplete<Specialization>(
-            displayStringForOption: (specialization) {
-              final available = widget.specializations == null
-                  ? null
-                  : widget.specializations![specialization];
-              return '${specialization.idWithName}'
-                  '${available == null ? '' : '\n($available stage${available > 1 ? 's' : ''} disponible${available > 1 ? 's' : ''})'}';
-            },
-            optionsBuilder: (textEditingValue) => _activitySector != null
-                ? _availableSpecialization
-                    .where((s) => s.idWithName
-                        .toLowerCase()
-                        .contains(textEditingValue.text.toLowerCase()))
-                    .toList()
-                : [],
-            onSelected: (specilization) {
-              FocusManager.instance.primaryFocus?.unfocus();
-              _specialization = specilization;
-              setState(() {});
-            },
-            fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
-              if (_specialization == null) {
-                controller.text = '';
-              }
-              return ListTile(
-                title: TextField(
+            Autocomplete<Specialization>(
+              displayStringForOption: (specialization) {
+                final available = widget.specializations == null
+                    ? null
+                    : widget.specializations![specialization];
+                return '${specialization.idWithName}'
+                    '${available == null ? '' : '\n($available stage${available > 1 ? 's' : ''} disponible${available > 1 ? 's' : ''})'}';
+              },
+              optionsBuilder: (textEditingValue) => _activitySector != null
+                  ? _availableSpecialization
+                      .where((s) => s.idWithName
+                          .toLowerCase()
+                          .contains(textEditingValue.text.toLowerCase()))
+                      .toList()
+                  : [],
+              onSelected: (specilization) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                _specialization = specilization;
+                setState(() {});
+              },
+              fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
+                if (_specialization == null) {
+                  controller.text = '';
+                }
+                return TextField(
                   enabled: _activitySector != null,
                   controller: controller,
                   focusNode: focusNode,
@@ -155,38 +154,38 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                         icon: const Icon(Icons.clear),
                         onPressed: () => controller.text = '',
                       )),
-                ),
-              );
-            },
-          ),
-          if (widget.askNumberPositionsOffered)
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Places de stages disponibles',
-                    style: Theme.of(state.context).textTheme.titleMedium,
-                  ),
-                ),
-                SizedBox(
-                  width: 112,
-                  child: SpinBox(
-                    value: state.value?.positionsOffered.toDouble() ?? 0,
-                    min: 1,
-                    max: 10,
-                    spacing: 0,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                    ),
-                    validator: (value) =>
-                        int.parse(value!) == 0 ? 'Indiquer un nombre' : null,
-                    onChanged: (double value) =>
-                        _positionOffered = value.toInt(),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
-        ],
+            if (widget.askNumberPositionsOffered)
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Places de stages disponibles',
+                      style: Theme.of(state.context).textTheme.titleMedium,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 112,
+                    child: SpinBox(
+                      value: state.value?.positionsOffered.toDouble() ?? 0,
+                      min: 1,
+                      max: 10,
+                      spacing: 0,
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                      ),
+                      validator: (value) =>
+                          int.parse(value!) == 0 ? 'Indiquer un nombre' : null,
+                      onChanged: (double value) =>
+                          _positionOffered = value.toInt(),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }

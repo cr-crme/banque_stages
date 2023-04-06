@@ -12,8 +12,8 @@ class ActivityTypeCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      direction: Axis.horizontal,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: activityTypes
           .map(
             (activityType) => Padding(

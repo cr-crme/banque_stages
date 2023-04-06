@@ -90,22 +90,26 @@ class _GeneralInformations extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Informations générales', left: 0, top: 0),
-        ListTile(
-          title: TextField(
-            decoration: const InputDecoration(labelText: '* Entreprise'),
-            controller: TextEditingController(text: enterprise.name),
-            enabled: false,
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                decoration: const InputDecoration(labelText: '* Entreprise'),
+                controller: TextEditingController(text: enterprise.name),
+                enabled: false,
+              ),
+              Consumer<StudentsProvider>(
+                builder: (context, students, _) => StudentPickerFormField(
+                  students: students.toList(),
+                  onSaved: onSelectStudent,
+                  onSelect: onSelectStudent,
+                ),
+              ),
+            ],
           ),
         ),
-        ListTile(
-          title: Consumer<StudentsProvider>(
-            builder: (context, students, _) => StudentPickerFormField(
-              students: students.toList(),
-              onSaved: onSelectStudent,
-              onSelect: onSelectStudent,
-            ),
-          ),
-        )
       ],
     );
   }
@@ -154,7 +158,7 @@ class _ExtraSpecialization extends StatelessWidget {
   final Function(Specialization, int) onSetSpecialization;
   final Function(int) onDeleteSpecialization;
 
-  Widget _extraJobTileBuilder(int index) {
+  Widget _extraJobTileBuilder(context, int index) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -163,8 +167,11 @@ class _ExtraSpecialization extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text('Métier supplémentaire ${index + 1}'),
+              padding: const EdgeInsets.only(left: 12),
+              child: Text(
+                'Métier supplémentaire ${index + 1}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
             IconButton(
               onPressed: () => onDeleteSpecialization(index),
@@ -196,11 +203,18 @@ class _ExtraSpecialization extends StatelessWidget {
           ...extraSpecializations
               .asMap()
               .keys
-              .map<Widget>((i) => _extraJobTileBuilder(i))
+              .map<Widget>((i) => _extraJobTileBuilder(context, i))
               .toList(),
         Padding(
           padding: const EdgeInsets.only(top: 8.0, left: 12),
-          child: AddJobButton(onPressed: onAddSpecialization),
+          child: AddJobButton(
+            onPressed: onAddSpecialization,
+            style: Theme.of(context).textButtonTheme.style!.copyWith(
+                backgroundColor: Theme.of(context)
+                    .elevatedButtonTheme
+                    .style!
+                    .backgroundColor),
+          ),
         ),
       ],
     );
@@ -227,34 +241,37 @@ class _SupervisonInformation extends StatelessWidget {
       children: [
         const SubTitle('Superviseur en milieu de travail', left: 0),
         const Text('(Responsable du stagiaire)'),
-        ListTile(
-          title: TextFormField(
-            decoration: const InputDecoration(labelText: '* Prénom'),
-            validator: FormService.textNotEmptyValidator,
-            onSaved: onSavedFirstName,
-          ),
-        ),
-        ListTile(
-          title: TextFormField(
-            decoration: const InputDecoration(labelText: '* Nom de famille'),
-            validator: FormService.textNotEmptyValidator,
-            onSaved: onSavedLastName,
-          ),
-        ),
-        PhoneListTile(
-          onSaved: onSavedPhone,
-          isMandatory: true,
-          enabled: true,
-        ),
-        ListTile(
-          title: TextFormField(
-            decoration: const InputDecoration(
-              icon: Icon(Icons.mail),
-              labelText: '* Courriel',
-            ),
-            validator: FormService.emailValidator,
-            onSaved: onSavedEmail,
-            keyboardType: TextInputType.emailAddress,
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(labelText: '* Prénom'),
+                validator: FormService.textNotEmptyValidator,
+                onSaved: onSavedFirstName,
+              ),
+              TextFormField(
+                decoration:
+                    const InputDecoration(labelText: '* Nom de famille'),
+                validator: FormService.textNotEmptyValidator,
+                onSaved: onSavedLastName,
+              ),
+              PhoneListTile(
+                onSaved: onSavedPhone,
+                isMandatory: true,
+                enabled: true,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.mail),
+                  labelText: '* Courriel',
+                ),
+                validator: FormService.emailValidator,
+                onSaved: onSavedEmail,
+                keyboardType: TextInputType.emailAddress,
+              ),
+            ],
           ),
         ),
       ],

@@ -218,12 +218,24 @@ class _InternshipListState extends State<_InternshipList> {
               return ExpansionPanel(
                 canTapOnHeader: true,
                 isExpanded: _expanded[internship.id] ?? false,
-                headerBuilder: (context, isExpanded) => ListTile(
-                  leading: Text(internship.date.start.year.toString()),
-                  title: Text(specialization.idWithName),
+                headerBuilder: (context, isExpanded) => Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        internship.date.start.year.toString(),
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      const SizedBox(width: 24),
+                      Text(
+                        specialization.idWithName,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ],
+                  ),
                 ),
                 body: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

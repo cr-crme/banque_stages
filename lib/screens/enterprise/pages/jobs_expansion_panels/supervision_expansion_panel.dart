@@ -26,7 +26,7 @@ class _SupervisionBody extends StatelessWidget {
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: const EdgeInsets.only(left: 24.0, right: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -65,37 +65,28 @@ class _RatingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: rating < 0 || rating > 5
-                ?
-                // If value is invalid
-                const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Text('Aucune valeur pour l\'instant.'),
-                  )
-                :
-                // If value is valid
-                RatingBarIndicator(
-                    rating: rating,
-                    itemBuilder: (context, index) => Icon(
-                      Icons.star,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        rating < 0 || rating > 5
+            ?
+            // If value is invalid
+            const Text('Aucune valeur pour l\'instant.')
+            :
+            // If value is valid
+            RatingBarIndicator(
+                rating: rating,
+                itemBuilder: (context, index) => Icon(
+                  Icons.star,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+        const SizedBox(height: 12),
+      ],
     );
   }
 }
