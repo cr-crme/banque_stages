@@ -654,7 +654,8 @@ Future<void> addDummyInterships(
         phone: PhoneNumber.fromString('514-555-1234')),
     date: period,
     isClosed: false,
-    length: 135,
+    expectedLength: 135,
+    achievedLength: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -708,7 +709,8 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: false,
-    length: 135,
+    expectedLength: 135,
+    achievedLength: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -758,7 +760,8 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: true,
-    length: 135,
+    expectedLength: 135,
+    achievedLength: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -803,7 +806,8 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: true,
-    length: 135,
+    expectedLength: 135,
+    achievedLength: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -843,7 +847,8 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: false,
-    length: 135,
+    expectedLength: 135,
+    achievedLength: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -883,7 +888,8 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: false,
-    length: 135,
+    expectedLength: 135,
+    achievedLength: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -933,7 +939,8 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: false,
-    length: 135,
+    expectedLength: 135,
+    achievedLength: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [

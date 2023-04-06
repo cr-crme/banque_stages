@@ -197,9 +197,8 @@ class _InternshipBody extends StatelessWidget {
           child: Table(
             children: [
               TableRow(children: [
-                Text('Total prévu : ${internship.length}h'),
-                const Text(
-                    'Total fait : XXXh'), // TODO when internship finalization is done
+                Text('Total prévu : ${internship.expectedLength}h'),
+                Text('Total fait : ${internship.achievedLength}h'),
               ]),
             ],
           ),
@@ -241,7 +240,7 @@ class _InternshipBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('EPI requis', style: _titleStyle),
-          if (internship.protections.isEmpty) Text('Aucune'),
+          if (internship.protections.isEmpty) const Text('Aucune'),
           if (internship.protections.isNotEmpty)
             ...internship.protections.map((e) => Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
