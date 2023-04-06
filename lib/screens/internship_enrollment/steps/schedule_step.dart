@@ -20,6 +20,7 @@ class ScheduleStepState extends State<ScheduleStep> {
     end: DateTime.now().add(const Duration(days: 90)),
   );
 
+  int intershipLength = 0;
   final TimeOfDay defaultStart = const TimeOfDay(hour: 9, minute: 0);
   final TimeOfDay defaultEnd = const TimeOfDay(hour: 15, minute: 0);
   late List<WeeklySchedule> weeklySchedules = [_fillNewScheduleList()];
@@ -155,7 +156,7 @@ class ScheduleStepState extends State<ScheduleStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _DateRange(dateRange: dateRange, promptDateRange: _promptDateRange),
-            const _Hours(),
+            _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
             _buildSchedule(),
           ],
         ),
@@ -254,7 +255,9 @@ class _DateRange extends StatelessWidget {
 }
 
 class _Hours extends StatelessWidget {
-  const _Hours();
+  const _Hours({required this.onSaved});
+
+  final void Function(String?) onSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -264,6 +267,7 @@ class _Hours extends StatelessWidget {
             const InputDecoration(labelText: '* Nombre d\'heures de stage'),
         validator: FormService.textNotEmptyValidator,
         keyboardType: TextInputType.number,
+        onSaved: onSaved,
       ),
     );
   }

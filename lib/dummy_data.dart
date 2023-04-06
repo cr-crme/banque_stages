@@ -643,11 +643,18 @@ Future<void> addDummyInterships(
     isTransfering: true,
     enterpriseId: enterprises[0].id,
     jobId: enterprises[0].jobs[0].id,
-    extraSpecializationId: [],
+    extraSpecializationId: [
+      enterprises[0].jobs[0].id,
+      enterprises[0].jobs[0].id,
+    ],
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    supervisor: Person(
+        firstName: 'Nobody',
+        lastName: 'Forever',
+        phone: PhoneNumber.fromString('514-555-1234')),
     date: period,
     isClosed: false,
+    length: 135,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -697,6 +704,7 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: false,
+    length: 135,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -746,6 +754,7 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: true,
+    length: 135,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -790,6 +799,7 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: true,
+    length: 135,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -829,6 +839,7 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: false,
+    length: 135,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -868,6 +879,7 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: false,
+    length: 135,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -917,6 +929,7 @@ Future<void> addDummyInterships(
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     isClosed: false,
+    length: 135,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
