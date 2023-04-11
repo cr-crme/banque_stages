@@ -445,13 +445,13 @@ Future<void> addDummyStudents(
       program: Program.fpt,
       group: '885',
       contact: Person(
-          firstName: 'Joe',
-          lastName: 'Caron',
+          firstName: 'Jean-Pierre',
+          lastName: 'Caron Mathieu',
           phone: PhoneNumber.fromString('514 321 9876'),
           email: 'j.caron@email.com'),
       contactLink: 'Père',
-      address:
-          await Address.fromAddress('6622 16e Avenue, Montréal, QC H1X 2T2'),
+      address: await Address.fromAddress(
+          '202 Boulevard Saint-Joseph Est, Montréal, QC H1X 2T2'),
       phone: PhoneNumber.fromString('514 222 3344'),
     ),
   );

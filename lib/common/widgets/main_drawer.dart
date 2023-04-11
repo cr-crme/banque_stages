@@ -33,7 +33,7 @@ class MainDrawer extends StatelessWidget {
                 ),
                 const _DrawerItem(
                   titleText: 'Toutes les entreprises',
-                  icon: Icon(Icons.business_center_rounded),
+                  icon: Icon(Icons.location_city_rounded),
                   route: Screens.enterprisesList,
                 ),
                 const _DrawerItem(

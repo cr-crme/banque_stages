@@ -77,7 +77,7 @@ class _StudentScreenState extends State<StudentScreen>
             tabs: const [
               Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
               Tab(icon: Icon(Icons.assignment), text: 'Stages'),
-              Tab(icon: Icon(Icons.school), text: 'Plan de\nformation'),
+              Tab(icon: Icon(Icons.card_membership), text: 'Plan formation'),
             ],
           ),
         ),

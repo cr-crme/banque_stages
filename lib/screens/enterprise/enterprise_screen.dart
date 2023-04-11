@@ -119,7 +119,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
             tabs: const [
               Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
               Tab(icon: Icon(Icons.contact_phone), text: 'Contact'),
-              Tab(icon: Icon(Icons.location_city_rounded), text: 'Métiers'),
+              Tab(icon: Icon(Icons.business_center_rounded), text: 'Métiers'),
               Tab(icon: Icon(Icons.assignment), text: 'Stages'),
             ],
           ),
