@@ -42,7 +42,11 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   void _promptDateRange() async {
     final range = await showDateRangePicker(
+      helpText: 'Sélectionner les dates',
+      cancelText: 'Annuler',
+      confirmText: 'Confirmer',
       context: context,
+      initialEntryMode: DatePickerEntryMode.input,
       initialDateRange: dateRange,
       firstDate: DateTime(DateTime.now().year),
       lastDate: DateTime(DateTime.now().year + 2),
@@ -96,7 +100,11 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   void _onPromptChangeWeeks(int weeklyIndex) async {
     final range = await showDateRangePicker(
+      helpText: 'Sélectionner les dates',
+      cancelText: 'Annuler',
+      confirmText: 'Confirmer',
       context: context,
+      initialEntryMode: DatePickerEntryMode.input,
       initialDateRange: weeklySchedules[weeklyIndex].period,
       firstDate: DateTime(weeklySchedules[weeklyIndex].period.start.year - 1),
       lastDate: DateTime(weeklySchedules[weeklyIndex].period.start.year + 2),
@@ -136,6 +144,8 @@ class ScheduleStepState extends State<ScheduleStep> {
   Future<TimeOfDay?> _promptTime(
       {required TimeOfDay initial, String? title}) async {
     final time = await showTimePicker(
+      cancelText: 'Annuler',
+      confirmText: 'Confirmer',
       helpText: title,
       context: context,
       initialTime: initial,
