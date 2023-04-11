@@ -195,7 +195,8 @@ class _EnterprisesByMap extends StatelessWidget {
 
   final EnterpriseController enterpriseController;
 
-  List<Marker> _latlngToMarkers(Map<Enterprise, Waypoint> enterprises) {
+  List<Marker> _latlngToMarkers(
+      context, Map<Enterprise, Waypoint> enterprises) {
     List<Marker> out = [];
 
     const double markerSize = 40;
@@ -203,14 +204,17 @@ class _EnterprisesByMap extends StatelessWidget {
       double nameWidth = 160;
       double nameHeight = 100;
       final waypoint = enterprises[enterprise]!;
+      final color = enterprise.availableJobs(context).isNotEmpty
+          ? Colors.green
+          : Colors.red;
 
       out.add(
         Marker(
           point: waypoint.toLatLng(),
           anchorPos: AnchorPos.exactly(
               Anchor(markerSize / 2 + nameWidth, nameHeight / 2)),
-          width: markerSize + nameWidth, //markerSize + 1,
-          height: markerSize + nameHeight, //markerSize + 1,
+          width: markerSize + nameWidth,
+          height: markerSize + nameHeight,
           builder: (context) => Row(
             children: [
               GestureDetector(
@@ -223,10 +227,10 @@ class _EnterprisesByMap extends StatelessWidget {
                     color: Colors.white.withAlpha(75),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.location_on_sharp,
                     size: markerSize,
-                    color: Colors.green,
+                    color: color,
                   ),
                 ),
               ),
@@ -235,8 +239,7 @@ class _EnterprisesByMap extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                   decoration: BoxDecoration(
-                      color: Colors.green.withAlpha(125),
-                      shape: BoxShape.rectangle),
+                      color: color.withAlpha(125), shape: BoxShape.rectangle),
                   child: Text(waypoint.title),
                 )
             ],
@@ -288,7 +291,7 @@ class _EnterprisesByMap extends StatelessWidget {
                         'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'dev.fleaflet.flutter_map.example',
                   ),
-                  MarkerLayer(markers: _latlngToMarkers(locations)),
+                  MarkerLayer(markers: _latlngToMarkers(context, locations)),
                 ],
               ),
             );

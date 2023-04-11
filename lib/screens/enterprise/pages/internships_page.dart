@@ -16,34 +16,19 @@ class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
     super.key,
     required this.enterprise,
+    required this.onAddIntershipRequest,
   });
 
   final Enterprise enterprise;
+  final Function(Enterprise) onAddIntershipRequest;
 
   @override
   State<InternshipsPage> createState() => InternshipsPageState();
 }
 
 class InternshipsPageState extends State<InternshipsPage> {
-  Future<void> addStage() async {
-    if (widget.enterprise.jobs.fold<int>(
-            0, (previousValue, e) => e.positionsRemaining(context)) ==
-        0) {
-      await showDialog(
-          context: context,
-          builder: (ctx) => const AlertDialog(
-                title: Text('Plus de stage disponible'),
-                content: Text(
-                    'Il n\'y a plus de stage disponible dans cette entreprise'),
-              ));
-      return;
-    }
-
-    GoRouter.of(context).goNamed(
-      Screens.internshipEnrollement,
-      params: Screens.withId(widget.enterprise.id),
-    );
-  }
+  Future<void> addStage() async =>
+      widget.onAddIntershipRequest(widget.enterprise);
 
   List<Internship> _getActiveInternships(List<Internship> internships) {
     final List<Internship> current = [];

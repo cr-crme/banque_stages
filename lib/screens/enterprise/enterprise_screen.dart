@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/router.dart';
 import 'pages/about_page.dart';
 import 'pages/contact_page.dart';
-import 'pages/jobs_page.dart';
 import 'pages/internships_page.dart';
+import 'pages/jobs_page.dart';
 
 class EnterpriseScreen extends StatefulWidget {
   const EnterpriseScreen({super.key, required this.id});
@@ -69,6 +71,26 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
     setState(() {});
   }
 
+  Future<void> addInternship(Enterprise enterprise) async {
+    if (enterprise.jobs.fold<int>(
+            0, (previousValue, e) => e.positionsRemaining(context)) ==
+        0) {
+      await showDialog(
+          context: context,
+          builder: (ctx) => const AlertDialog(
+                title: Text('Plus de stage disponible'),
+                content: Text(
+                    'Il n\'y a plus de stage disponible dans cette entreprise'),
+              ));
+      return;
+    }
+
+    GoRouter.of(context).goNamed(
+      Screens.internshipEnrollement,
+      params: Screens.withId(enterprise.id),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -106,10 +128,18 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
           controller: _tabController,
           physics: _editing ? const NeverScrollableScrollPhysics() : null,
           children: [
-            EnterpriseAboutPage(key: _aboutPageKey, enterprise: enterprise),
+            EnterpriseAboutPage(
+              key: _aboutPageKey,
+              enterprise: enterprise,
+              onAddInternshipRequest: addInternship,
+            ),
             ContactPage(key: _contactPageKey, enterprise: enterprise),
             JobsPage(key: _jobsPageKey, enterprise: enterprise),
-            InternshipsPage(key: _stagePageKey, enterprise: enterprise),
+            InternshipsPage(
+              key: _stagePageKey,
+              enterprise: enterprise,
+              onAddIntershipRequest: addInternship,
+            ),
           ],
         ),
       ),

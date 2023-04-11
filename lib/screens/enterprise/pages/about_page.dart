@@ -21,9 +21,11 @@ class EnterpriseAboutPage extends StatefulWidget {
   const EnterpriseAboutPage({
     super.key,
     required this.enterprise,
+    required this.onAddInternshipRequest,
   });
 
   final Enterprise enterprise;
+  final Function(Enterprise) onAddInternshipRequest;
 
   @override
   State<EnterpriseAboutPage> createState() => EnterpriseAboutPageState();
@@ -87,6 +89,11 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
                   enterprise: widget.enterprise,
                   editingMode: _editing,
                   onSaved: (shareWith) => _shareWith = shareWith),
+              _AddInternshipButton(
+                editingMode: _editing,
+                onPressed: () async =>
+                    await widget.onAddInternshipRequest(widget.enterprise),
+              )
             ],
           ),
         ),
@@ -339,6 +346,30 @@ class _SharingLevel extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class _AddInternshipButton extends StatelessWidget {
+  const _AddInternshipButton({
+    required this.editingMode,
+    required this.onPressed,
+  });
+
+  final bool editingMode;
+  final Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: editingMode
+            ? Container()
+            : ElevatedButton(
+                onPressed: onPressed,
+                child: const Text('Inscrire un stagiaire')),
+      ),
     );
   }
 }
