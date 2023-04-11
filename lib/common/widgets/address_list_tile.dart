@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '/common/models/address.dart';
-import '/screens/enterprise/pages/widgets/show_school.dart';
+import '/screens/enterprise/pages/widgets/show_address_dialog.dart';
 
 class AddressController {
   late Future<String?> Function() _validationFunction;
@@ -100,7 +100,7 @@ class _AddressListTileState extends State<AddressListTile> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 1 / 2,
                     width: MediaQuery.of(context).size.width * 2 / 3,
-                    child: ShowSchoolAddress(newAddress),
+                    child: ShowAddressDialog(newAddress),
                   )
                 ]),
               ),
@@ -137,7 +137,7 @@ class _AddressListTileState extends State<AddressListTile> {
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 1 / 2,
                   width: MediaQuery.of(context).size.width * 2 / 3,
-                  child: ShowSchoolAddress(_address!),
+                  child: ShowAddressDialog(_address!),
                 ),
               ),
             ));
@@ -177,8 +177,9 @@ class _AddressListTileState extends State<AddressListTile> {
             keyboardType: TextInputType.streetAddress,
           ),
           IconButton(
-            onPressed: () => _showAddress(context),
-            icon: const Icon(Icons.map, color: Colors.purple),
+            onPressed: _address != null ? () => _showAddress(context) : null,
+            icon: Icon(Icons.map,
+                color: _address != null ? Colors.purple : Colors.grey),
           )
         ],
       ),

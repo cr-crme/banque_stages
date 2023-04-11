@@ -1,12 +1,12 @@
-import 'package:crcrme_banque_stages/common/models/address.dart';
-import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
+import '/common/models/address.dart';
+import '/screens/visiting_students/models/waypoints.dart';
 import '/screens/visiting_students/widgets/zoom_button.dart';
 
-class ShowSchoolAddress extends StatelessWidget {
-  const ShowSchoolAddress(this.address, {super.key});
+class ShowAddressDialog extends StatelessWidget {
+  const ShowAddressDialog(this.address, {super.key});
 
   final Address address;
 
@@ -34,7 +34,7 @@ class ShowSchoolAddress extends StatelessWidget {
                 Marker(
                     point: waypoint.toLatLng(),
                     builder: (BuildContext context) => const Icon(
-                          Icons.school,
+                          Icons.location_on_sharp,
                           size: 45,
                           color: Colors.purple,
                         )),
