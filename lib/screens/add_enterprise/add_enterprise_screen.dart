@@ -30,6 +30,13 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
             message ?? 'Assurez vous que tous les champs soient valides')));
   }
 
+  void _previousStep() {
+    if (_currentStep == 0) return;
+
+    _currentStep -= 1;
+    setState(() {});
+  }
+
   void _nextStep() async {
     bool valid = false;
     String? message;
@@ -168,9 +175,9 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               const Expanded(child: SizedBox()),
-              OutlinedButton(
-                  onPressed: () => _onPressedCancel(details),
-                  child: const Text('Annuler')),
+              if (_currentStep != 0)
+                OutlinedButton(
+                    onPressed: _previousStep, child: const Text('Précédent')),
               const SizedBox(
                 width: 20,
               ),

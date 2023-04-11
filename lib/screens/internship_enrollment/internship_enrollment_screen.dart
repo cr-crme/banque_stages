@@ -34,6 +34,12 @@ class _InternshipEnrollmentScreenState
   final _requirementsKey = GlobalKey<RequirementsStepState>();
   int _currentStep = 0;
 
+  void _previousStep() {
+    if (_currentStep == 0) return;
+    _currentStep -= 1;
+    setState(() {});
+  }
+
   void _nextStep() {
     final formKeys = [
       _generalInfoKey.currentState!.formKey,
@@ -152,9 +158,9 @@ class _InternshipEnrollmentScreenState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          OutlinedButton(
-              onPressed: () => _onPressedCancel(details),
-              child: const Text('Annuler')),
+          if (_currentStep != 0)
+            OutlinedButton(
+                onPressed: _previousStep, child: const Text('Précédent')),
           const SizedBox(
             width: 20,
           ),

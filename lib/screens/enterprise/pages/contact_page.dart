@@ -323,16 +323,15 @@ class _TaxesInfo extends StatelessWidget {
                   onChanged: onChangedUseSame,
                 )
               ]),
-            if (!editMode || !useSameAddress)
-              AddressListTile(
-                initialValue: useSameAddress
-                    ? enterprise.address
-                    : enterprise.headquartersAddress,
-                title: 'Adresse du siège social',
-                addressController: addressController,
-                isMandatory: false,
-                enabled: editMode,
-              ),
+            AddressListTile(
+              initialValue: useSameAddress
+                  ? enterprise.address
+                  : enterprise.headquartersAddress,
+              title: 'Adresse du siège social',
+              addressController: addressController,
+              isMandatory: false,
+              enabled: editMode && !useSameAddress,
+            ),
             const SizedBox(height: 8),
             TextFormField(
               initialValue: enterprise.neq,
