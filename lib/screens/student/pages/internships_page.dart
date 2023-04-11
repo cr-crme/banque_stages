@@ -9,6 +9,7 @@ import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/common/widgets/sub_title.dart';
+import '/screens/internship_enrollment/steps/schedule_step.dart';
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
@@ -58,25 +59,11 @@ class InternshipsPageState extends State<InternshipsPage> {
                   bottom: 0,
                 ),
               ),
-              body: Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 24.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Text('Détails du stage',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(color: Colors.black)),
-                        ),
-                        _InternshipBody(internship: internship),
-                      ]),
-                ),
-              ),
+              body: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _InternshipDetails(internship: internship),
+                  ]),
             ),
           ],
         );
@@ -85,19 +72,113 @@ class InternshipsPageState extends State<InternshipsPage> {
   }
 }
 
-class _InternshipBody extends StatelessWidget {
-  const _InternshipBody({required this.internship});
+class _InternshipDetails extends StatefulWidget {
+  const _InternshipDetails({required this.internship});
 
   final Internship internship;
+
+  @override
+  State<_InternshipDetails> createState() => _InternshipDetailsState();
+}
+
+class _InternshipDetailsState extends State<_InternshipDetails> {
+  bool _isExpanded = true;
+  bool _editMode = true;
+
+  void _onToggleSaveEdit() {
+    _editMode = !_editMode;
+    setState(() {});
+  }
+
+  void _promptDateRange() async {
+    final range = await showDateRangePicker(
+      helpText: 'Sélectionner les dates',
+      cancelText: 'Annuler',
+      confirmText: 'Confirmer',
+      context: context,
+      initialEntryMode: DatePickerEntryMode.input,
+      initialDateRange: widget.internship.date,
+      firstDate: DateTime(DateTime.now().year),
+      lastDate: DateTime(DateTime.now().year + 2),
+    );
+    if (range == null) return;
+
+    // TODO : manage all changes
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, right: 24),
+      child: ExpansionPanelList(
+        elevation: 0,
+        expansionCallback: (index, isExpanded) =>
+            setState(() => _isExpanded = !_isExpanded),
+        children: [
+          ExpansionPanel(
+            isExpanded: _isExpanded,
+            canTapOnHeader: true,
+            headerBuilder: (context, isExpanded) => Text('Détails du stage',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(color: Colors.black)),
+            body: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                _InternshipBody(
+                  internship: widget.internship,
+                  editMode: _editMode,
+                  onRequestChangedDates: _promptDateRange,
+                ),
+                IconButton(
+                    onPressed: _onToggleSaveEdit,
+                    icon: Icon(
+                      _editMode ? Icons.save : Icons.edit,
+                      color: Colors.black,
+                    )),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _InternshipBody extends StatelessWidget {
+  const _InternshipBody({
+    required this.internship,
+    required this.editMode,
+    required this.onRequestChangedDates,
+  });
+
+  final Internship internship;
+  final bool editMode;
+
+  final Function() onRequestChangedDates;
+
   static const TextStyle _titleStyle = TextStyle(fontWeight: FontWeight.bold);
   static const _interline = 12.0;
-  static const _leftTab = 12.0;
 
   Widget _buildTextSection({required String title, required String text}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: _titleStyle),
+        Padding(
+          padding: const EdgeInsets.only(top: 2, bottom: _interline),
+          child: Text(text),
+        )
+      ],
+    );
+  }
+
+  Widget _buildTeacher({required String text}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Enseignant.e superviseur.e de stage', style: _titleStyle),
         Padding(
           padding: const EdgeInsets.only(top: 2, bottom: _interline),
           child: Text(text),
@@ -141,20 +222,26 @@ class _InternshipBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Adresse de l\'entreprise', style: _titleStyle),
+        const Text('Superviseur en milieu de stage', style: _titleStyle),
         Padding(
           padding: const EdgeInsets.only(top: 2, bottom: _interline),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Nom'),
-              Text(person.fullName),
+              editMode
+                  ? TextFormField(initialValue: person.fullName)
+                  : Text(person.fullName),
               const SizedBox(height: 8),
               const Text('Numéro de téléphone'),
-              Text(person.phone.toString()),
+              editMode
+                  ? TextFormField(initialValue: person.phone.toString())
+                  : Text(person.phone.toString()),
               const SizedBox(height: 8),
               const Text('Courriel'),
-              Text(person.email ?? 'Aucun'),
+              editMode
+                  ? TextFormField(initialValue: person.email ?? '')
+                  : Text(person.email ?? 'Aucun'),
               const SizedBox(height: 8),
             ],
           ),
@@ -164,25 +251,38 @@ class _InternshipBody extends StatelessWidget {
   }
 
   Widget _buildDates() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
+      alignment: Alignment.centerRight,
       children: [
-        const Text('Date du stage', style: _titleStyle),
-        Padding(
-          padding: const EdgeInsets.only(bottom: _interline),
-          child: Table(
-            children: [
-              const TableRow(children: [
-                Text('Date de début :'),
-                Text('Date de fin :'),
-              ]),
-              TableRow(children: [
-                Text(DateFormat.yMMMEd().format(internship.date.start)),
-                Text(DateFormat.yMMMEd().format(internship.date.end)),
-              ]),
-            ],
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Date du stage', style: _titleStyle),
+            Padding(
+              padding: const EdgeInsets.only(bottom: _interline),
+              child: Table(
+                children: [
+                  const TableRow(children: [
+                    Text('Date de début :'),
+                    Text('Date de fin :'),
+                  ]),
+                  TableRow(children: [
+                    Text(DateFormat.yMMMEd().format(internship.date.start)),
+                    Text(DateFormat.yMMMEd().format(internship.date.end)),
+                  ]),
+                ],
+              ),
+            ),
+          ],
         ),
+        if (editMode)
+          IconButton(
+            icon: const Icon(
+              Icons.calendar_month_outlined,
+              color: Colors.blue,
+            ),
+            onPressed: onRequestChangedDates,
+          )
       ],
     );
   }
@@ -198,7 +298,21 @@ class _InternshipBody extends StatelessWidget {
             children: [
               TableRow(children: [
                 Text('Total prévu : ${internship.expectedLength}h'),
-                Text('Total fait : ${internship.achievedLength}h'),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Total fait : '),
+                    editMode
+                        ? SizedBox(
+                            width: 10,
+                            child: TextFormField(
+                                initialValue:
+                                    internship.achievedLength.toString()),
+                          )
+                        : Text(internship.achievedLength.toString()),
+                    const Text('h'),
+                  ],
+                ),
               ]),
             ],
           ),
@@ -275,9 +389,7 @@ class _InternshipBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTextSection(
-            title: 'Enseignant.e superviseur.e de stage',
-            text: teachers[internship.teacherId].fullName),
+        _buildTeacher(text: teachers[internship.teacherId].fullName),
         _buildJob(
             'Métier${internship.extraSpecializationId.isNotEmpty ? ' principal' : ''}',
             specializationId: internship.jobId,
@@ -297,6 +409,7 @@ class _InternshipBody extends StatelessWidget {
             title: 'Adresse de l\'entreprise',
             text: enterprises[internship.enterpriseId].address.toString()),
         _buildPersonInfo(person: internship.supervisor),
+        ScheduleStep(),
         _buildDates(),
         _buildTime(),
         _buildSchedule(context),

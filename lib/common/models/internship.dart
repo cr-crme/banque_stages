@@ -7,12 +7,14 @@ import 'schedule.dart';
 
 class _MutableElements extends ItemSerializable {
   _MutableElements({
+    required this.versionDate,
     required this.supervisor,
     required this.date,
     required this.weeklySchedules,
     required this.protections,
     required this.uniform,
   });
+  final DateTime versionDate;
   final Person supervisor;
   final DateTimeRange date;
   final List<WeeklySchedule> weeklySchedules;
@@ -20,7 +22,8 @@ class _MutableElements extends ItemSerializable {
   final String uniform;
 
   _MutableElements.fromSerialized(map)
-      : supervisor = Person.fromSerialized(map['name']),
+      : versionDate = DateTime.fromMillisecondsSinceEpoch(map['versionDate']),
+        supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
             start: DateTime.parse(map['date'][0]),
             end: DateTime.parse(map['date'][1])),
@@ -33,6 +36,7 @@ class _MutableElements extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() => {
+        'versionDate': versionDate.millisecondsSinceEpoch,
         'name': supervisor.serializedMap(),
         'date': [date.start.toString(), date.end.toString()],
         'schedule': weeklySchedules.map((e) => e.serializedMap()).toList(),
@@ -55,6 +59,7 @@ class Internship extends ItemSerializable {
   // Elements that can be modified (which increase the version number, but
   // do not require a completely new internship contract)
   final List<_MutableElements> _mutables;
+  DateTime get versionDate => _mutables.last.versionDate;
   Person get supervisor => _mutables.last.supervisor;
   DateTimeRange get date => _mutables.last.date;
   List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
@@ -113,6 +118,7 @@ class Internship extends ItemSerializable {
   })  : previousTeacherId = previousTeacherId ?? teacherId,
         _mutables = [
           _MutableElements(
+              versionDate: DateTime.now(),
               supervisor: supervisor,
               date: date,
               weeklySchedules: weeklySchedules,
@@ -170,6 +176,7 @@ class Internship extends ItemSerializable {
     required String uniform,
   }) {
     _mutables.add(_MutableElements(
+        versionDate: DateTime.now(),
         supervisor: supervisor,
         date: date,
         weeklySchedules: weeklySchedules,
@@ -187,6 +194,7 @@ class Internship extends ItemSerializable {
     String? jobId,
     List<String>? extraSpecializationId,
     String? program,
+    DateTime? versionDate,
     Person? supervisor,
     DateTimeRange? date,
     List<WeeklySchedule>? weeklySchedules,
@@ -198,12 +206,13 @@ class Internship extends ItemSerializable {
     String? teacherNotes,
     bool? isClosed,
   }) {
-    if (supervisor != null ||
+    if (versionDate != null ||
+        supervisor != null ||
         date != null ||
         weeklySchedules != null ||
         protections != null ||
         uniform != null) {
-      throw '[supervisor], [date], [weeklySchedules], [protections] or [uniform] '
+      throw '[versionDate], [supervisor], [date], [weeklySchedules], [protections] or [uniform] '
           'should not be changed via [copyWith], but using [addVersion]';
     }
     return Internship._(
