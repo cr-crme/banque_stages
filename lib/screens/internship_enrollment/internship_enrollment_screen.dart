@@ -33,6 +33,11 @@ class _InternshipEnrollmentScreenState
   final _scheduleKey = GlobalKey<ScheduleStepState>();
   final _requirementsKey = GlobalKey<RequirementsStepState>();
   int _currentStep = 0;
+  final List<StepState> _stepStatus = [
+    StepState.indexed,
+    StepState.indexed,
+    StepState.indexed
+  ];
 
   void _previousStep() {
     if (_currentStep == 0) return;
@@ -47,8 +52,25 @@ class _InternshipEnrollmentScreenState
       _requirementsKey.currentState!.formKey
     ];
 
-    final isValid = FormService.validateForm(formKeys[_currentStep]);
-    if (!isValid) return;
+    bool isAllValid = true;
+    if (_currentStep >= 0) {
+      final isValid = FormService.validateForm(formKeys[0]);
+      isAllValid = isAllValid && isValid;
+      _stepStatus[0] = isValid ? StepState.complete : StepState.error;
+    }
+    if (_currentStep >= 1) {
+      final isValid = FormService.validateForm(formKeys[1]);
+      isAllValid = isAllValid && isValid;
+      _stepStatus[1] = isValid ? StepState.complete : StepState.error;
+    }
+    if (_currentStep >= 2) {
+      final isValid = FormService.validateForm(formKeys[2]);
+      isAllValid = isAllValid && isValid;
+      _stepStatus[2] = isValid ? StepState.complete : StepState.error;
+    }
+    setState(() {});
+
+    if (!isAllValid) return;
 
     if (_currentStep != 2) {
       _currentStep += 1;
@@ -99,13 +121,6 @@ class _InternshipEnrollmentScreenState
         params: {'id': internship.studentId, 'initialPage': '1'});
   }
 
-  void _onPressedCancel(ControlsDetails details) async {
-    final answer = await ConfirmPopDialog.show(context);
-    if (!answer) return;
-
-    details.onStepCancel!();
-  }
-
   void _onPressBack() async {
     final answer = await ConfirmPopDialog.show(context);
     if (!answer || !mounted) return;
@@ -129,17 +144,20 @@ class _InternshipEnrollmentScreenState
           onStepCancel: () => Navigator.pop(context),
           steps: [
             Step(
+              state: _stepStatus[0],
               isActive: _currentStep == 0,
               title: const Text('Général'),
               content: GeneralInformationsStep(
                   key: _generalInfoKey, enterprise: enterprise),
             ),
             Step(
+              state: _stepStatus[1],
               isActive: _currentStep == 1,
               title: const Text('Horaire'),
               content: ScheduleStep(key: _scheduleKey),
             ),
             Step(
+              state: _stepStatus[2],
               isActive: _currentStep == 2,
               title: const Text('Exigences'),
               content: RequirementsStep(key: _requirementsKey),
