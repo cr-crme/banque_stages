@@ -15,6 +15,7 @@ class _InternshipController {
       : supervisor = internship.supervisor.copyWith(),
         _date = DateTimeRange(
             start: internship.date.start, end: internship.date.end),
+        _achievedLength = internship.achievedLength,
         weeklySchedules =
             internship.weeklySchedules.map((week) => week.copyWith()).toList(),
         protections = internship.protections.map((e) => e).toList(),
@@ -29,11 +30,20 @@ class _InternshipController {
   bool get hasChanged => scheduleController.hasChanged || _hasChanged;
 
   Person supervisor;
+
   DateTimeRange _date;
   DateTimeRange get date => _date;
   set date(DateTimeRange newDate) {
     _date = newDate;
     _hasChanged = true;
+  }
+
+  bool achievedLengthChanged = false;
+  int _achievedLength;
+  int get achievedLength => _achievedLength;
+  set achievedLength(int newLength) {
+    _achievedLength = newLength;
+    achievedLengthChanged = true;
   }
 
   List<WeeklySchedule> weeklySchedules;
@@ -61,6 +71,10 @@ class _InternshipDetailsState extends State<InternshipDetails> {
     if (_editMode) {
       _internshipController = _InternshipController(widget.internship);
     } else {
+      if (_internshipController.achievedLengthChanged) {
+        InternshipsProvider.of(context, listen: false).replace(widget.internship
+            .copyWith(achievedLength: _internshipController._achievedLength));
+      }
       if (_internshipController.hasChanged) {
         widget.internship.addVersion(
             supervisor: widget.internship.supervisor,
@@ -219,7 +233,7 @@ class _InternshipBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Nom'),
+              const Text('Nom'), // TODO: Fixed the changes
               editMode
                   ? TextFormField(initialValue: person.fullName)
                   : Text(person.fullName),
@@ -248,7 +262,8 @@ class _InternshipBody extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Date du stage', style: _titleStyle),
+            const Text('Date du stage',
+                style: _titleStyle), // TODO: Fixed the changes
             Padding(
               padding: const EdgeInsets.only(bottom: _interline),
               child: Table(
@@ -299,11 +314,15 @@ class _InternshipBody extends StatelessWidget {
                         ? SizedBox(
                             width: 45,
                             child: TextFormField(
-                                textAlign: TextAlign.right,
-                                initialValue:
-                                    internship.achievedLength.toString()),
+                              textAlign: TextAlign.right,
+                              initialValue: internshipController.achievedLength
+                                  .toString(),
+                              onChanged: (newValue) =>
+                                  internshipController.achievedLength =
+                                      newValue == '' ? 0 : int.parse(newValue),
+                            ),
                           )
-                        : Text(internship.achievedLength.toString()),
+                        : Text(internshipController.achievedLength.toString()),
                     const Text('h'),
                   ],
                 ),
