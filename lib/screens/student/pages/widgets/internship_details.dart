@@ -10,21 +10,29 @@ import '/common/providers/teachers_provider.dart';
 import '/screens/internship_enrollment/steps/requirements_step.dart';
 import '/screens/internship_enrollment/steps/schedule_step.dart';
 
-class _MutableInternshipElements {
-  _MutableInternshipElements(Internship internship)
+class _InternshipController {
+  _InternshipController(Internship internship)
       : supervisor = internship.supervisor.copyWith(),
         date = DateTimeRange(
             start: internship.date.start, end: internship.date.end),
         weeklySchedules =
             internship.weeklySchedules.map((week) => week.copyWith()).toList(),
         protections = internship.protections.map((e) => e).toList(),
-        uniform = internship.uniform;
+        uniform = internship.uniform,
+        scheduleController = WeeklyScheduleController(
+          weeklySchedules:
+              internship.weeklySchedules.map((e) => e.deepCopy()).toList(),
+          dateRange: internship.date,
+        );
+
+  bool get hasChanged => scheduleController.hasChanged;
 
   Person supervisor;
   DateTimeRange date;
   List<WeeklySchedule> weeklySchedules;
   List<String> protections;
   String uniform;
+  WeeklyScheduleController scheduleController;
 }
 
 class InternshipDetails extends StatefulWidget {
@@ -39,25 +47,19 @@ class InternshipDetails extends StatefulWidget {
 class _InternshipDetailsState extends State<InternshipDetails> {
   bool _isExpanded = true;
   bool _editMode = false;
-  late _MutableInternshipElements? _currentInternshipModification;
-  late final scheduleController = WeeklyScheduleController(
-    weeklySchedules:
-        widget.internship.weeklySchedules.map((e) => e.deepCopy()).toList(),
-    dateRange: widget.internship.date,
-  );
+  late var _internshipController = _InternshipController(widget.internship);
 
   void _onToggleSaveEdit() {
     _editMode = !_editMode;
     if (_editMode) {
-      _currentInternshipModification =
-          _MutableInternshipElements(widget.internship);
-      scheduleController.resetHasChanged();
+      _internshipController = _InternshipController(widget.internship);
     } else {
-      if (scheduleController.hasChanged) {
+      if (_internshipController.hasChanged) {
         widget.internship.addVersion(
             supervisor: widget.internship.supervisor,
             date: widget.internship.date,
-            weeklySchedules: scheduleController.weeklySchedules,
+            weeklySchedules:
+                _internshipController.scheduleController.weeklySchedules,
             protections: widget.internship.protections,
             uniform: widget.internship.uniform);
 
@@ -81,7 +83,7 @@ class _InternshipDetailsState extends State<InternshipDetails> {
     );
     if (range == null) return;
 
-    _currentInternshipModification!.date = range;
+    _internshipController.date = range;
     setState(() {});
   }
 
@@ -109,7 +111,7 @@ class _InternshipDetailsState extends State<InternshipDetails> {
                   internship: widget.internship,
                   editMode: _editMode,
                   onRequestChangedDates: _promptDateRange,
-                  scheduleController: scheduleController,
+                  scheduleController: _internshipController.scheduleController,
                 ),
                 IconButton(
                     onPressed: _onToggleSaveEdit,

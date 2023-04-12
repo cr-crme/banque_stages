@@ -8,25 +8,25 @@ import '/misc/form_service.dart';
 class WeeklyScheduleController {
   final List<WeeklySchedule> weeklySchedules;
   DateTimeRange dateRange;
-  bool hasChanged = false;
-  void resetHasChanged() => hasChanged = false;
+  bool _hasChanged = false;
+  bool get hasChanged => _hasChanged;
 
   WeeklyScheduleController(
       {required this.weeklySchedules, required this.dateRange});
 
   void updateDateRange(DateTimeRange newRange) {
     dateRange = newRange;
-    hasChanged = true;
+    _hasChanged = true;
   }
 
   void removedWeeklySchedule(int weeklyIndex) {
     weeklySchedules.removeAt(weeklyIndex);
-    hasChanged = true;
+    _hasChanged = true;
   }
 
   void addToDailySchedule(int weeklyIndex, DailySchedule newDay) {
     weeklySchedules[weeklyIndex].schedule.add(newDay);
-    hasChanged = true;
+    _hasChanged = true;
   }
 
   void updateDailyScheduleTime(
@@ -35,18 +35,18 @@ class WeeklyScheduleController {
         weeklySchedules[weeklyIndex]
             .schedule[dailyIndex]
             .copyWith(start: start, end: end);
-    hasChanged = true;
+    _hasChanged = true;
   }
 
   void removedDailyScheduleTime(int weeklyIndex, int dailyIndex) {
     weeklySchedules[weeklyIndex].schedule.removeAt(dailyIndex);
-    hasChanged = true;
+    _hasChanged = true;
   }
 
   void updateDailyScheduleRange(int weeklyIndex, DateTimeRange newRange) {
     weeklySchedules[weeklyIndex] =
         weeklySchedules[weeklyIndex].copyWith(period: newRange);
-    hasChanged = true;
+    _hasChanged = true;
   }
 }
 
