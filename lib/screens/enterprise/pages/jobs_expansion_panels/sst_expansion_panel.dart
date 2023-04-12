@@ -68,7 +68,7 @@ class _SstBody extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             const Text(
-              'Personne de l’entreprise à qui s’adresser en cas de blessure ou d’incident?',
+              'Personne de l\'entreprise à qui s\'adresser en cas de blessure ou d\'incident?',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Column(

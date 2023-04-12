@@ -5,6 +5,15 @@ import '/common/widgets/sub_title.dart';
 class RequirementsStep extends StatefulWidget {
   const RequirementsStep({super.key});
 
+  static const protectionsList = [
+    'Chaussures de sécurité',
+    'Lunettes de sécurité',
+    'Protections auditives',
+    'Masque',
+    'Casque',
+    'Gants',
+  ];
+
   @override
   State<RequirementsStep> createState() => RequirementsStepState();
 }
@@ -13,14 +22,8 @@ class RequirementsStepState extends State<RequirementsStep> {
   final formKey = GlobalKey<FormState>();
 
   bool _protectionsRequired = false;
-  final Map<String, bool> _protection = {
-    'Chaussures de sécurité': false,
-    'Lunettes de sécurité': false,
-    'Protections auditives': false,
-    'Masque': false,
-    'Casque': false,
-    'Gants': false,
-  };
+  final Map<String, bool> _protection =
+      Map.fromIterable(RequirementsStep.protectionsList, value: (e) => false);
 
   bool _otherProtections = false;
   String? _otherProtectionsText;
@@ -57,28 +60,33 @@ class RequirementsStepState extends State<RequirementsStep> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '*Est-ce que l’élève devra porter des équipements de protection individuelle?',
+                  '*Est-ce que l\'élève devra porter des équipements de protection individuelle?',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 12.0),
                   child: Row(
                     children: [
-                      Radio(
-                        value: true,
-                        groupValue: _protectionsRequired,
-                        onChanged: (bool? newValue) =>
-                            setState(() => _protectionsRequired = newValue!),
+                      SizedBox(
+                        width: 125,
+                        child: RadioListTile(
+                          value: true,
+                          groupValue: _protectionsRequired,
+                          onChanged: (bool? newValue) =>
+                              setState(() => _protectionsRequired = newValue!),
+                          title: const Text('Oui'),
+                        ),
                       ),
-                      const Text('Oui'),
-                      const SizedBox(width: 32),
-                      Radio(
-                        value: false,
-                        groupValue: _protectionsRequired,
-                        onChanged: (bool? newValue) =>
-                            setState(() => _protectionsRequired = newValue!),
+                      SizedBox(
+                        width: 125,
+                        child: RadioListTile(
+                          value: false,
+                          groupValue: _protectionsRequired,
+                          onChanged: (bool? newValue) =>
+                              setState(() => _protectionsRequired = newValue!),
+                          title: const Text('Non'),
+                        ),
                       ),
-                      const Text('Non'),
                     ],
                   ),
                 ),

@@ -51,7 +51,7 @@ class _TasksBody extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             const Text(
-              'Niveau d’autonomie souhaité',
+              'Niveau d\'autonomie souhaité',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             LowHighSliderFormField(

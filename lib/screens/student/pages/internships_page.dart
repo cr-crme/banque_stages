@@ -10,6 +10,7 @@ import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/common/widgets/sub_title.dart';
 import '/screens/internship_enrollment/steps/schedule_step.dart';
+import '/screens/internship_enrollment/steps/requirements_step.dart';
 
 class _MutableInternshipElements {
   _MutableInternshipElements(Internship internship)
@@ -418,8 +419,9 @@ class _InternshipBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('EPI requis', style: _titleStyle),
-          if (internship.protections.isEmpty) const Text('Aucun'),
-          if (internship.protections.isNotEmpty)
+          if (editMode) _ProtectionRequiredChoser(internship: internship),
+          if (!editMode && internship.protections.isEmpty) const Text('Aucun'),
+          if (!editMode && internship.protections.isNotEmpty)
             ...internship.protections.map((e) => Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -439,7 +441,10 @@ class _InternshipBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Uniforme requis', style: _titleStyle),
-          Text(internship.uniform == '' ? 'Aucun' : internship.uniform),
+          if (editMode) _UniformRequiredChoser(internship: internship),
+          if (!editMode && internship.uniform.isEmpty) const Text('Aucun'),
+          if (!editMode && internship.uniform.isNotEmpty)
+            Text(internship.uniform),
         ],
       ),
     );
@@ -478,6 +483,200 @@ class _InternshipBody extends StatelessWidget {
         _buildSchedule(),
         _buildProtection(),
         _buildUniform(),
+      ],
+    );
+  }
+}
+
+class _ProtectionRequiredChoser extends StatefulWidget {
+  const _ProtectionRequiredChoser({required this.internship});
+
+  final Internship internship;
+
+  @override
+  State<_ProtectionRequiredChoser> createState() =>
+      _ProtectionRequiredChoserState();
+}
+
+class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
+  late bool _needProtections = widget.internship.protections.isNotEmpty;
+  late final Map<String, bool> _protections = Map.fromIterable(
+      RequirementsStep.protectionsList,
+      value: (e) => widget.internship.protections.contains(e) ? true : false);
+  bool _otherProtections = false;
+  String? otherProtection;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 125,
+                child: RadioListTile(
+                  value: true,
+                  groupValue: _needProtections,
+                  onChanged: (bool? newValue) =>
+                      setState(() => _needProtections = newValue!),
+                  title: const Text('Oui'),
+                ),
+              ),
+              SizedBox(
+                width: 125,
+                child: RadioListTile(
+                  value: false,
+                  groupValue: _needProtections,
+                  onChanged: (bool? newValue) =>
+                      setState(() => _needProtections = newValue!),
+                  title: const Text('Non'),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 3 / 4,
+          child: Visibility(
+            visible: _needProtections,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Lesquels ?',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                ..._protections.keys.map(
+                  (requirement) => CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    visualDensity: VisualDensity.compact,
+                    dense: true,
+                    title: Text(
+                      requirement,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    value: _protections[requirement],
+                    onChanged: (newValue) =>
+                        setState(() => _protections[requirement] = newValue!),
+                  ),
+                ),
+                CheckboxListTile(
+                  visualDensity: VisualDensity.compact,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  dense: true,
+                  title: Text(
+                    'Autre',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  value: _otherProtections,
+                  onChanged: (newValue) =>
+                      setState(() => _otherProtections = newValue!),
+                ),
+                Visibility(
+                  visible: _otherProtections,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Précisez l\'équipement supplémentaire requis : ',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        TextFormField(
+                          onSaved: (text) => otherProtection = text,
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class _UniformRequiredChoser extends StatefulWidget {
+  const _UniformRequiredChoser({required this.internship});
+
+  final Internship internship;
+
+  @override
+  State<_UniformRequiredChoser> createState() => _UniformRequiredChoserState();
+}
+
+class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
+  late bool _needUniform = widget.internship.uniform.isNotEmpty;
+  String? uniform;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 125,
+                child: RadioListTile(
+                  value: true,
+                  groupValue: _needUniform,
+                  onChanged: (bool? newValue) =>
+                      setState(() => _needUniform = newValue!),
+                  title: const Text('Oui'),
+                ),
+              ),
+              SizedBox(
+                width: 125,
+                child: RadioListTile(
+                  value: false,
+                  groupValue: _needUniform,
+                  onChanged: (bool? newValue) =>
+                      setState(() => _needUniform = newValue!),
+                  title: const Text('Non'),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 3 / 4,
+          child: Visibility(
+            visible: _needUniform,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Précisez l\'équipement supplémentaire requis : ',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  TextFormField(
+                    initialValue: widget.internship.uniform,
+                    onSaved: (text) => uniform = text,
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
       ],
     );
   }

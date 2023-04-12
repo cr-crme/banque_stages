@@ -23,11 +23,11 @@ class TasksStepState extends State<TasksStep> {
   double? efficiencyWanted;
 
   final Map<String, bool> skillsRequired = {
-    'Communiquer à l’écrit': false,
+    'Communiquer à l\'écrit': false,
     'Communiquer en anglais': false,
     'Conduire un chariot (ex. cariste)': false,
     'Interagir avec des clients': false,
-    'Manipuler de l’argent': false,
+    'Manipuler de l\'argent': false,
   };
 
   bool _otherSkills = false;
@@ -53,7 +53,7 @@ class TasksStepState extends State<TasksStep> {
             ),
             const SizedBox(height: 8),
             Text(
-              '* Quelles étaient les attentes de l’entreprise envers le ou la stagiaire ?',
+              '* Quelles étaient les attentes de l\'entreprise envers le ou la stagiaire ?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Column(
@@ -109,7 +109,7 @@ class TasksStepState extends State<TasksStep> {
             ),
             const SizedBox(height: 8),
             Text(
-              '* Quel était le niveau d’autonomie souhaité ?',
+              '* Quel était le niveau d\'autonomie souhaité ?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
