@@ -13,7 +13,7 @@ import '/screens/internship_enrollment/steps/schedule_step.dart';
 class _InternshipController {
   _InternshipController(Internship internship)
       : supervisor = internship.supervisor.copyWith(),
-        date = DateTimeRange(
+        _date = DateTimeRange(
             start: internship.date.start, end: internship.date.end),
         weeklySchedules =
             internship.weeklySchedules.map((week) => week.copyWith()).toList(),
@@ -25,10 +25,17 @@ class _InternshipController {
           dateRange: internship.date,
         );
 
-  bool get hasChanged => scheduleController.hasChanged;
+  bool _hasChanged = false;
+  bool get hasChanged => scheduleController.hasChanged || _hasChanged;
 
   Person supervisor;
-  DateTimeRange date;
+  DateTimeRange _date;
+  DateTimeRange get date => _date;
+  set date(DateTimeRange newDate) {
+    _date = newDate;
+    _hasChanged = true;
+  }
+
   List<WeeklySchedule> weeklySchedules;
   List<String> protections;
   String uniform;
@@ -57,7 +64,7 @@ class _InternshipDetailsState extends State<InternshipDetails> {
       if (_internshipController.hasChanged) {
         widget.internship.addVersion(
             supervisor: widget.internship.supervisor,
-            date: widget.internship.date,
+            date: _internshipController.date,
             weeklySchedules:
                 _internshipController.scheduleController.weeklySchedules,
             protections: widget.internship.protections,
@@ -111,7 +118,7 @@ class _InternshipDetailsState extends State<InternshipDetails> {
                   internship: widget.internship,
                   editMode: _editMode,
                   onRequestChangedDates: _promptDateRange,
-                  scheduleController: _internshipController.scheduleController,
+                  internshipController: _internshipController,
                 ),
                 IconButton(
                     onPressed: _onToggleSaveEdit,
@@ -133,14 +140,14 @@ class _InternshipBody extends StatelessWidget {
     required this.internship,
     required this.editMode,
     required this.onRequestChangedDates,
-    required this.scheduleController,
+    required this.internshipController,
   });
 
   final Internship internship;
   final bool editMode;
 
   final Function() onRequestChangedDates;
-  final WeeklyScheduleController scheduleController;
+  final _InternshipController internshipController;
 
   static const TextStyle _titleStyle = TextStyle(fontWeight: FontWeight.bold);
   static const _interline = 12.0;
@@ -251,8 +258,10 @@ class _InternshipBody extends StatelessWidget {
                     Text('Date de fin :'),
                   ]),
                   TableRow(children: [
-                    Text(DateFormat.yMMMEd().format(internship.date.start)),
-                    Text(DateFormat.yMMMEd().format(internship.date.end)),
+                    Text(DateFormat.yMMMEd()
+                        .format(internshipController.date.start)),
+                    Text(DateFormat.yMMMEd()
+                        .format(internshipController.date.end)),
                   ]),
                 ],
               ),
@@ -316,7 +325,7 @@ class _InternshipBody extends StatelessWidget {
           ScheduleSelector(
             withTitle: false,
             editMode: editMode,
-            scheduleController: scheduleController,
+            scheduleController: internshipController.scheduleController,
           )
         ],
       ),
