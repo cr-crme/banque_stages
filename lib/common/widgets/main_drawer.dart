@@ -32,7 +32,7 @@ class MainDrawer extends StatelessWidget {
                   route: Screens.studentsList,
                 ),
                 const _DrawerItem(
-                  titleText: 'Toutes les entreprises',
+                  titleText: 'Entreprises',
                   icon: Icon(Icons.location_city_rounded),
                   route: Screens.enterprisesList,
                 ),

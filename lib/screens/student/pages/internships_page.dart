@@ -418,7 +418,7 @@ class _InternshipBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('EPI requis', style: _titleStyle),
-          if (internship.protections.isEmpty) const Text('Aucune'),
+          if (internship.protections.isEmpty) const Text('Aucun'),
           if (internship.protections.isNotEmpty)
             ...internship.protections.map((e) => Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
