@@ -8,33 +8,46 @@ import '/misc/form_service.dart';
 class WeeklyScheduleController {
   final List<WeeklySchedule> weeklySchedules;
   DateTimeRange dateRange;
+  bool hasChanged = false;
+  void resetHasChanged() => hasChanged = false;
 
   WeeklyScheduleController(
       {required this.weeklySchedules, required this.dateRange});
 
   void updateDateRange(DateTimeRange newRange) {
     dateRange = newRange;
+    hasChanged = true;
   }
 
-  void removedWeeklySchedule(int weeklyIndex) =>
-      weeklySchedules.removeAt(weeklyIndex);
+  void removedWeeklySchedule(int weeklyIndex) {
+    weeklySchedules.removeAt(weeklyIndex);
+    hasChanged = true;
+  }
 
-  void addToDailySchedule(int weeklyIndex, DailySchedule newDay) =>
-      weeklySchedules[weeklyIndex].schedule.add(newDay);
+  void addToDailySchedule(int weeklyIndex, DailySchedule newDay) {
+    weeklySchedules[weeklyIndex].schedule.add(newDay);
+    hasChanged = true;
+  }
 
   void updateDailyScheduleTime(
-          int weeklyIndex, int dailyIndex, TimeOfDay start, TimeOfDay end) =>
-      weeklySchedules[weeklyIndex].schedule[dailyIndex] =
-          weeklySchedules[weeklyIndex]
-              .schedule[dailyIndex]
-              .copyWith(start: start, end: end);
+      int weeklyIndex, int dailyIndex, TimeOfDay start, TimeOfDay end) {
+    weeklySchedules[weeklyIndex].schedule[dailyIndex] =
+        weeklySchedules[weeklyIndex]
+            .schedule[dailyIndex]
+            .copyWith(start: start, end: end);
+    hasChanged = true;
+  }
 
-  void removedDailyScheduleTime(int weeklyIndex, int dailyIndex) =>
-      weeklySchedules[weeklyIndex].schedule.removeAt(dailyIndex);
+  void removedDailyScheduleTime(int weeklyIndex, int dailyIndex) {
+    weeklySchedules[weeklyIndex].schedule.removeAt(dailyIndex);
+    hasChanged = true;
+  }
 
-  void updateDailyScheduleRange(int weeklyIndex, DateTimeRange newRange) =>
-      weeklySchedules[weeklyIndex] =
-          weeklySchedules[weeklyIndex].copyWith(period: newRange);
+  void updateDailyScheduleRange(int weeklyIndex, DateTimeRange newRange) {
+    weeklySchedules[weeklyIndex] =
+        weeklySchedules[weeklyIndex].copyWith(period: newRange);
+    hasChanged = true;
+  }
 }
 
 const TimeOfDay _defaultStart = TimeOfDay(hour: 9, minute: 0);

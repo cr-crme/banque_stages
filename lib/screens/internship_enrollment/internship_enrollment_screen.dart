@@ -95,7 +95,7 @@ class _InternshipEnrollmentScreenState
               job.specialization ==
               _generalInfoKey.currentState!.primaryJob!.specialization)
           .id,
-      extraSpecializationId: _generalInfoKey.currentState!.extraSpecializations
+      extraSpecializationsId: _generalInfoKey.currentState!.extraSpecializations
           .map<String>((e) => e!.id)
           .toList(),
       supervisor: Person(
