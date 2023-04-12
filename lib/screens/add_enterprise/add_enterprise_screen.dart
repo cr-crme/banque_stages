@@ -106,8 +106,6 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
           PhoneNumber.fromString(_contactKey.currentState!.contactPhone!),
       contactEmail: _contactKey.currentState!.contactEmail!,
       address: _informationsKey.currentState!.addressController.address!,
-      headquartersAddress:
-          _informationsKey.currentState!.addressController.address!,
     );
 
     enterprises.add(enterprise);

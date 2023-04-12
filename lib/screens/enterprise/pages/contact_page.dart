@@ -127,6 +127,10 @@ class ContactPageState extends State<ContactPage> {
                 useSameAddress: _useSameAddress,
                 onChangedUseSame: (newValue) => setState(() {
                   _useSameAddress = newValue!;
+                  if (_useSameAddress) {
+                    _headquartersAddressController.address =
+                        _addressController.address;
+                  }
                 }),
                 addressController: _headquartersAddressController,
                 onSavedNeq: (neq) => _neq = neq,

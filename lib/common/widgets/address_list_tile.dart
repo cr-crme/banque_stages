@@ -5,10 +5,19 @@ import '/screens/enterprise/pages/widgets/show_address_dialog.dart';
 
 class AddressController {
   late Future<String?> Function() _validationFunction;
-  late Address? Function() _address;
+  late Address? Function() _getAddress;
+  late Address? Function(Address) _setAddress;
+  final TextEditingController _textController = TextEditingController();
 
   // Interface to expose to the user
-  Address? get address => _address();
+  Address? get address => _getAddress();
+  set address(Address? value) {
+    if (value != null) _setAddress(value);
+
+    _textController.text = address?.toString() ?? '';
+    _validationFunction();
+  }
+
   Future<String?> requestValidation() async {
     return _validationFunction();
   }
@@ -35,7 +44,6 @@ class AddressListTile extends StatefulWidget {
 }
 
 class _AddressListTileState extends State<AddressListTile> {
-  final _textController = TextEditingController();
   bool isValidating = false;
 
   @override
@@ -44,20 +52,22 @@ class _AddressListTileState extends State<AddressListTile> {
 
     if (widget.addressController != null) {
       widget.addressController!._validationFunction = validate;
-      widget.addressController!._address = getAddress;
+      widget.addressController!._getAddress = getAddress;
+      widget.addressController!._setAddress = setAddress;
     }
 
     if (widget.initialValue != null) {
       _address = widget.initialValue;
-      _textController.text = _address.toString();
+      widget.addressController!._textController.text = _address.toString();
     }
   }
 
   Address? _address;
   Address? getAddress() => _address;
+  Address? setAddress(newAddress) => _address = newAddress;
 
   Future<String?> validate() async {
-    if (_textController.text == '') {
+    if (widget.addressController!._textController.text == '') {
       return widget.isMandatory ? 'Entrer une adresse valide' : null;
     }
 
@@ -68,7 +78,8 @@ class _AddressListTileState extends State<AddressListTile> {
     isValidating = true;
     late Address newAddress;
     try {
-      newAddress = (await Address.fromAddress(_textController.text))!;
+      newAddress = (await Address.fromAddress(
+          widget.addressController!._textController.text))!;
     } catch (e) {
       _address = null;
       isValidating = false;
@@ -78,7 +89,7 @@ class _AddressListTileState extends State<AddressListTile> {
     if (newAddress.toString() == _address.toString()) {
       // Don't don anything if the address did not change
       _address = newAddress;
-      _textController.text = _address.toString();
+      widget.addressController!._textController.text = _address.toString();
       isValidating = false;
       setState(() {});
       return null;
@@ -120,7 +131,7 @@ class _AddressListTileState extends State<AddressListTile> {
     }
 
     _address = newAddress;
-    _textController.text = _address.toString();
+    widget.addressController!._textController.text = _address.toString();
     isValidating = false;
     setState(() {});
     return null;
@@ -144,7 +155,7 @@ class _AddressListTileState extends State<AddressListTile> {
   }
 
   bool _isValid() {
-    if (_textController.text == '') {
+    if (widget.addressController!._textController.text == '') {
       return !widget.isMandatory;
     }
 
@@ -163,7 +174,7 @@ class _AddressListTileState extends State<AddressListTile> {
         alignment: Alignment.centerRight,
         children: [
           TextFormField(
-            controller: _textController,
+            controller: widget.addressController!._textController,
             decoration: InputDecoration(
                 labelText:
                     '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',

@@ -133,8 +133,9 @@ class Enterprise extends ItemSerializable {
         phone = PhoneNumber.fromString(map['phone']),
         fax = PhoneNumber.fromString(map['fax']),
         website = map['website'],
-        headquartersAddress =
-            Address.fromSerialized(map['headquartersAddress']),
+        headquartersAddress = map['headquartersAddress'] == null
+            ? null
+            : Address.fromSerialized(map['headquartersAddress']),
         neq = map['neq'],
         super.fromSerialized(map);
 }
