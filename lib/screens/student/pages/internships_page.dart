@@ -11,6 +11,23 @@ import '/common/providers/teachers_provider.dart';
 import '/common/widgets/sub_title.dart';
 import '/screens/internship_enrollment/steps/schedule_step.dart';
 
+class _MutableInternshipElements {
+  _MutableInternshipElements(Internship internship)
+      : supervisor = internship.supervisor.copyWith(),
+        date = DateTimeRange(
+            start: internship.date.start, end: internship.date.end),
+        weeklySchedules =
+            internship.weeklySchedules.map((week) => week.copyWith()).toList(),
+        protections = internship.protections.map((e) => e).toList(),
+        uniform = internship.uniform;
+
+  Person supervisor;
+  DateTimeRange date;
+  List<WeeklySchedule> weeklySchedules;
+  List<String> protections;
+  String uniform;
+}
+
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
     super.key,
@@ -83,10 +100,13 @@ class _InternshipDetails extends StatefulWidget {
 
 class _InternshipDetailsState extends State<_InternshipDetails> {
   bool _isExpanded = true;
-  bool _editMode = true;
+  bool _editMode = false;
+  _MutableInternshipElements? _currentInternshipModification;
 
   void _onToggleSaveEdit() {
     _editMode = !_editMode;
+    _currentInternshipModification =
+        _MutableInternshipElements(widget.internship);
     setState(() {});
   }
 
@@ -103,7 +123,49 @@ class _InternshipDetailsState extends State<_InternshipDetails> {
     );
     if (range == null) return;
 
-    // TODO : manage all changes
+    _currentInternshipModification!.date = range;
+  }
+
+  void _onUpdatedTime(int indexWeek, int indexDay) async {
+    final start = await _promptTime(
+        title: 'Heure de début',
+        initial: _currentInternshipModification!
+            .weeklySchedules[indexWeek].schedule[indexDay].start);
+    if (start == null) return;
+    final end = await _promptTime(
+        title: 'Heure de fin',
+        initial: _currentInternshipModification!
+            .weeklySchedules[indexWeek].schedule[indexDay].end);
+    if (end == null) return;
+
+    _currentInternshipModification!
+            .weeklySchedules[indexWeek].schedule[indexDay] =
+        _currentInternshipModification!
+            .weeklySchedules[indexWeek].schedule[indexDay]
+            .copyWith(start: start, end: end);
+    setState(() {});
+  }
+
+  void _onRemovedTime(int indexWeek, int indexDay) async {
+    _currentInternshipModification!.weeklySchedules[indexWeek].schedule
+        .removeAt(indexDay);
+    setState(() {});
+  }
+
+  Future<TimeOfDay?> _promptTime(
+      {required TimeOfDay initial, String? title}) async {
+    final time = await showTimePicker(
+      cancelText: 'Annuler',
+      confirmText: 'Confirmer',
+      helpText: title,
+      context: context,
+      initialTime: initial,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child ?? Container(),
+      ),
+    );
+    return time;
   }
 
   @override
@@ -130,6 +192,8 @@ class _InternshipDetailsState extends State<_InternshipDetails> {
                   internship: widget.internship,
                   editMode: _editMode,
                   onRequestChangedDates: _promptDateRange,
+                  onUpdateDayScheduleTime: _onUpdatedTime,
+                  onDeleteDayScheduleTime: _onRemovedTime,
                 ),
                 IconButton(
                     onPressed: _onToggleSaveEdit,
@@ -151,12 +215,16 @@ class _InternshipBody extends StatelessWidget {
     required this.internship,
     required this.editMode,
     required this.onRequestChangedDates,
+    required this.onUpdateDayScheduleTime,
+    required this.onDeleteDayScheduleTime,
   });
 
   final Internship internship;
   final bool editMode;
 
   final Function() onRequestChangedDates;
+  final Function(int indexWeek, int indexDay) onUpdateDayScheduleTime;
+  final Function(int indexWeek, int indexDay) onDeleteDayScheduleTime;
 
   static const TextStyle _titleStyle = TextStyle(fontWeight: FontWeight.bold);
   static const _interline = 12.0;
@@ -218,7 +286,7 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
-  Widget _buildPersonInfo({required Person person}) {
+  Widget _buildSupervisorInfo({required Person person}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -304,8 +372,9 @@ class _InternshipBody extends StatelessWidget {
                     const Text('Total fait : '),
                     editMode
                         ? SizedBox(
-                            width: 10,
+                            width: 45,
                             child: TextFormField(
+                                textAlign: TextAlign.right,
                                 initialValue:
                                     internship.achievedLength.toString()),
                           )
@@ -321,29 +390,24 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
-  Widget _buildSchedule(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Nombre d\'heures de stage', style: _titleStyle),
-        Padding(
-          padding: const EdgeInsets.only(bottom: _interline),
-          child: Table(
-            children: internship.weeklySchedules[0].schedule.map(
-              // TODO Manage when there is more schedules
-              (schedule) {
-                return TableRow(
-                  children: [
-                    Text(schedule.dayOfWeek.name),
-                    Text(schedule.start.format(context)),
-                    Text(schedule.end.format(context)),
-                  ],
-                );
-              },
-            ).toList(),
-          ),
-        ),
-      ],
+  Widget _buildSchedule() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Horaire du stage', style: _titleStyle),
+          ScheduleSelector(
+            withTitle: false,
+            editMode: editMode,
+            scheduleController: WeeklyScheduleController(
+              weeklySchedules:
+                  internship.weeklySchedules.map((e) => e.deepCopy()).toList(),
+              dateRange: internship.date,
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -408,11 +472,10 @@ class _InternshipBody extends StatelessWidget {
         _buildTextSection(
             title: 'Adresse de l\'entreprise',
             text: enterprises[internship.enterpriseId].address.toString()),
-        _buildPersonInfo(person: internship.supervisor),
-        ScheduleStep(),
+        _buildSupervisorInfo(person: internship.supervisor),
         _buildDates(),
         _buildTime(),
-        _buildSchedule(context),
+        _buildSchedule(),
         _buildProtection(),
         _buildUniform(),
       ],

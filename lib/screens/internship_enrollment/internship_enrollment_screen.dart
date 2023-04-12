@@ -106,10 +106,11 @@ class _InternshipEnrollmentScreenState
               _generalInfoKey.currentState!.supervisorPhone)),
       protections: _requirementsKey.currentState!.protections,
       uniform: _requirementsKey.currentState!.uniform,
-      date: _scheduleKey.currentState!.dateRange,
+      date: _scheduleKey.currentState!.scheduleController.dateRange,
       expectedLength: _scheduleKey.currentState!.intershipLength,
       achievedLength: 0,
-      weeklySchedules: _scheduleKey.currentState!.weeklySchedules,
+      weeklySchedules:
+          _scheduleKey.currentState!.scheduleController.weeklySchedules,
       visitingPriority: VisitingPriority.low,
       isClosed: false,
     );

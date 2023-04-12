@@ -5,6 +5,59 @@ import '/common/models/schedule.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
 
+class WeeklyScheduleController {
+  final List<WeeklySchedule> weeklySchedules;
+  DateTimeRange dateRange;
+
+  WeeklyScheduleController(
+      {required this.weeklySchedules, required this.dateRange});
+
+  void updateDateRange(DateTimeRange newRange) {
+    dateRange = newRange;
+  }
+
+  void removedWeeklySchedule(int weeklyIndex) =>
+      weeklySchedules.removeAt(weeklyIndex);
+
+  void addToDailySchedule(int weeklyIndex, DailySchedule newDay) =>
+      weeklySchedules[weeklyIndex].schedule.add(newDay);
+
+  void updateDailyScheduleTime(
+          int weeklyIndex, int dailyIndex, TimeOfDay start, TimeOfDay end) =>
+      weeklySchedules[weeklyIndex].schedule[dailyIndex] =
+          weeklySchedules[weeklyIndex]
+              .schedule[dailyIndex]
+              .copyWith(start: start, end: end);
+
+  void removedDailyScheduleTime(int weeklyIndex, int dailyIndex) =>
+      weeklySchedules[weeklyIndex].schedule.removeAt(dailyIndex);
+
+  void updateDailyScheduleRange(int weeklyIndex, DateTimeRange newRange) =>
+      weeklySchedules[weeklyIndex] =
+          weeklySchedules[weeklyIndex].copyWith(period: newRange);
+}
+
+const TimeOfDay _defaultStart = TimeOfDay(hour: 9, minute: 0);
+const TimeOfDay _defaultEnd = TimeOfDay(hour: 15, minute: 0);
+final DateTimeRange _dateRange = DateTimeRange(
+  start: DateTime.now(),
+  end: DateTime.now().add(const Duration(days: 1)),
+);
+WeeklySchedule _fillNewScheduleList() {
+  return WeeklySchedule(schedule: [
+    DailySchedule(
+        dayOfWeek: Day.monday, start: _defaultStart, end: _defaultEnd),
+    DailySchedule(
+        dayOfWeek: Day.tuesday, start: _defaultStart, end: _defaultEnd),
+    DailySchedule(
+        dayOfWeek: Day.wednesday, start: _defaultStart, end: _defaultEnd),
+    DailySchedule(
+        dayOfWeek: Day.thursday, start: _defaultStart, end: _defaultEnd),
+    DailySchedule(
+        dayOfWeek: Day.friday, start: _defaultStart, end: _defaultEnd),
+  ], period: _dateRange);
+}
+
 class ScheduleStep extends StatefulWidget {
   const ScheduleStep({super.key});
 
@@ -15,147 +68,9 @@ class ScheduleStep extends StatefulWidget {
 class ScheduleStepState extends State<ScheduleStep> {
   final formKey = GlobalKey<FormState>();
 
-  DateTimeRange dateRange = DateTimeRange(
-    start: DateTime.now(),
-    end: DateTime.now().add(const Duration(days: 1)),
-  );
-
+  late final scheduleController = WeeklyScheduleController(
+      weeklySchedules: [_fillNewScheduleList()], dateRange: _dateRange);
   int intershipLength = 0;
-  final TimeOfDay defaultStart = const TimeOfDay(hour: 9, minute: 0);
-  final TimeOfDay defaultEnd = const TimeOfDay(hour: 15, minute: 0);
-  late List<WeeklySchedule> weeklySchedules = [_fillNewScheduleList()];
-
-  WeeklySchedule _fillNewScheduleList() {
-    return WeeklySchedule(schedule: [
-      DailySchedule(
-          dayOfWeek: Day.monday, start: defaultStart, end: defaultEnd),
-      DailySchedule(
-          dayOfWeek: Day.tuesday, start: defaultStart, end: defaultEnd),
-      DailySchedule(
-          dayOfWeek: Day.wednesday, start: defaultStart, end: defaultEnd),
-      DailySchedule(
-          dayOfWeek: Day.thursday, start: defaultStart, end: defaultEnd),
-      DailySchedule(
-          dayOfWeek: Day.friday, start: defaultStart, end: defaultEnd),
-    ], period: dateRange);
-  }
-
-  void _promptDateRange() async {
-    final range = await showDateRangePicker(
-      helpText: 'Sélectionner les dates',
-      cancelText: 'Annuler',
-      confirmText: 'Confirmer',
-      context: context,
-      initialEntryMode: DatePickerEntryMode.input,
-      initialDateRange: dateRange,
-      firstDate: DateTime(DateTime.now().year),
-      lastDate: DateTime(DateTime.now().year + 2),
-    );
-    if (range == null) return;
-
-    dateRange = range;
-    setState(() {});
-  }
-
-  void _onRemovedWeeklySchedule(int weeklyIndex) async {
-    weeklySchedules.removeAt(weeklyIndex);
-    setState(() {});
-  }
-
-  void _onAddedTime(int weeklyIndex) async {
-    final day = await _promptDay();
-    if (day == null) return;
-    final start =
-        await _promptTime(title: 'Heure de début', initial: defaultStart);
-    if (start == null) return;
-    final end = await _promptTime(title: 'Heure de fin', initial: defaultEnd);
-    if (end == null) return;
-
-    weeklySchedules[weeklyIndex]
-        .schedule
-        .add(DailySchedule(dayOfWeek: day, start: start, end: end));
-    setState(() {});
-  }
-
-  void _onUpdatedTime(int weeklyIndex, int i) async {
-    final start = await _promptTime(
-        title: 'Heure de début',
-        initial: weeklySchedules[weeklyIndex].schedule[i].start);
-    if (start == null) return;
-    final end = await _promptTime(
-        title: 'Heure de fin',
-        initial: weeklySchedules[weeklyIndex].schedule[i].end);
-    if (end == null) return;
-
-    weeklySchedules[weeklyIndex].schedule[i] = weeklySchedules[weeklyIndex]
-        .schedule[i]
-        .copyWith(start: start, end: end);
-    setState(() {});
-  }
-
-  void _onRemovedTime(int weeklyIndex, int index) async {
-    weeklySchedules[weeklyIndex].schedule.removeAt(index);
-    setState(() {});
-  }
-
-  void _onPromptChangeWeeks(int weeklyIndex) async {
-    final range = await showDateRangePicker(
-      helpText: 'Sélectionner les dates',
-      cancelText: 'Annuler',
-      confirmText: 'Confirmer',
-      context: context,
-      initialEntryMode: DatePickerEntryMode.input,
-      initialDateRange: weeklySchedules[weeklyIndex].period,
-      firstDate: DateTime(weeklySchedules[weeklyIndex].period.start.year - 1),
-      lastDate: DateTime(weeklySchedules[weeklyIndex].period.start.year + 2),
-    );
-    if (range == null) return;
-
-    weeklySchedules[weeklyIndex] =
-        weeklySchedules[weeklyIndex].copyWith(period: range);
-
-    setState(() {});
-  }
-
-  Future<Day?> _promptDay() async {
-    final choice = (await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-          title: const Text('Sélectionner la journée'),
-          content: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: Day.values
-                  .map((day) => GestureDetector(
-                      onTap: () => Navigator.of(context).pop(day),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: Text(day.name),
-                      )))
-                  .toList(),
-            ),
-          )),
-    ));
-    return choice;
-  }
-
-  Future<TimeOfDay?> _promptTime(
-      {required TimeOfDay initial, String? title}) async {
-    final time = await showTimePicker(
-      cancelText: 'Annuler',
-      confirmText: 'Confirmer',
-      helpText: title,
-      context: context,
-      initialTime: initial,
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-        child: child ?? Container(),
-      ),
-    );
-    return time;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,57 +80,40 @@ class ScheduleStepState extends State<ScheduleStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _DateRange(dateRange: dateRange, promptDateRange: _promptDateRange),
+            _DateRange(scheduleController: scheduleController),
             _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
-            _buildSchedule(),
+            ScheduleSelector(
+              scheduleController: scheduleController,
+              editMode: true,
+              withTitle: true,
+            ),
           ],
         ),
       ),
     );
   }
-
-  Widget _buildSchedule() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Horaire', left: 0),
-        ...weeklySchedules
-            .asMap()
-            .keys
-            .map<Widget>((i) => _Schedule(
-                  periodName:
-                      weeklySchedules.length > 1 ? 'Période ${i + 1}' : null,
-                  weeklySchedule: weeklySchedules[i],
-                  onPeriodRemove: weeklySchedules.length > 1
-                      ? () => _onRemovedWeeklySchedule(i)
-                      : null,
-                  onAddTime: () => _onAddedTime(i),
-                  onChangedTime: (index) => _onUpdatedTime(i, index),
-                  onDeleteTime: (index) => _onRemovedTime(i, index),
-                  promptChangeWeeks: () => _onPromptChangeWeeks(i),
-                ))
-            .toList(),
-        TextButton(
-          onPressed: () =>
-              setState(() => weeklySchedules.add(_fillNewScheduleList())),
-          style: Theme.of(context).textButtonTheme.style!.copyWith(
-              backgroundColor:
-                  Theme.of(context).elevatedButtonTheme.style!.backgroundColor),
-          child: const Text('Ajouter une période'),
-        ),
-      ],
-    );
-  }
 }
 
 class _DateRange extends StatelessWidget {
-  const _DateRange({
-    required this.dateRange,
-    required this.promptDateRange,
-  });
+  const _DateRange({required this.scheduleController});
 
-  final DateTimeRange dateRange;
-  final Function() promptDateRange;
+  final WeeklyScheduleController scheduleController;
+
+  void _promptDateRange(context) async {
+    final range = await showDateRangePicker(
+      helpText: 'Sélectionner les dates',
+      cancelText: 'Annuler',
+      confirmText: 'Confirmer',
+      context: context,
+      initialEntryMode: DatePickerEntryMode.input,
+      initialDateRange: scheduleController.dateRange,
+      firstDate: DateTime(DateTime.now().year),
+      lastDate: DateTime(DateTime.now().year + 2),
+    );
+    if (range == null) return;
+
+    scheduleController.updateDateRange(range);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +135,8 @@ class _DateRange extends StatelessWidget {
                           labelText: '* Date de début du stage',
                           border: InputBorder.none),
                       controller: TextEditingController(
-                          text: DateFormat.yMMMEd().format(dateRange.start)),
+                          text: DateFormat.yMMMEd()
+                              .format(scheduleController.dateRange.start)),
                       enabled: false,
                     ),
                     TextField(
@@ -245,7 +144,8 @@ class _DateRange extends StatelessWidget {
                           labelText: '* Date de fin du stage',
                           border: InputBorder.none),
                       controller: TextEditingController(
-                          text: DateFormat.yMMMEd().format(dateRange.end)),
+                          text: DateFormat.yMMMEd()
+                              .format(scheduleController.dateRange.end)),
                       enabled: false,
                     ),
                   ],
@@ -257,7 +157,7 @@ class _DateRange extends StatelessWidget {
                 Icons.calendar_month_outlined,
                 color: Colors.blue,
               ),
-              onPressed: promptDateRange,
+              onPressed: () => _promptDateRange(context),
             )
           ],
         ),
@@ -286,23 +186,184 @@ class _Hours extends StatelessWidget {
   }
 }
 
-class _Schedule extends StatelessWidget {
-  const _Schedule(
+class ScheduleSelector extends StatefulWidget {
+  const ScheduleSelector(
+      {super.key,
+      required this.scheduleController,
+      required this.editMode,
+      required this.withTitle});
+
+  final WeeklyScheduleController scheduleController;
+  final bool editMode;
+  final bool withTitle;
+
+  @override
+  State<ScheduleSelector> createState() => _ScheduleSelectorState();
+}
+
+class _ScheduleSelectorState extends State<ScheduleSelector> {
+  void _promptNewDayToDailySchedule(weeklyIndex) async {
+    final day = await _promptDay(context);
+    if (day == null || !mounted) return;
+    final start = await _promptTime(context,
+        title: 'Heure de début', initial: _defaultStart);
+    if (start == null || !mounted) return;
+    final end =
+        await _promptTime(context, title: 'Heure de fin', initial: _defaultEnd);
+    if (end == null) return;
+
+    widget.scheduleController.addToDailySchedule(
+        weeklyIndex, DailySchedule(dayOfWeek: day, start: start, end: end));
+    setState(() {});
+  }
+
+  void _promptUpdateToDailySchedule(int weeklyIndex, int dailyIndex) async {
+    final start = await _promptTime(context,
+        title: 'Heure de début',
+        initial: widget.scheduleController.weeklySchedules[weeklyIndex]
+            .schedule[dailyIndex].start);
+    if (start == null || !mounted) return;
+    final end = await _promptTime(context,
+        title: 'Heure de fin',
+        initial: widget.scheduleController.weeklySchedules[weeklyIndex]
+            .schedule[dailyIndex].end);
+    if (end == null) return;
+
+    widget.scheduleController
+        .updateDailyScheduleTime(weeklyIndex, dailyIndex, start, end);
+    setState(() {});
+  }
+
+  Future<Day?> _promptDay(BuildContext context) async {
+    final choice = (await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+          title: const Text('Sélectionner la journée'),
+          content: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: Day.values
+                  .map((day) => GestureDetector(
+                      onTap: () => Navigator.of(context).pop(day),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Text(day.name),
+                      )))
+                  .toList(),
+            ),
+          )),
+    ));
+    return choice;
+  }
+
+  Future<TimeOfDay?> _promptTime(BuildContext context,
+      {required TimeOfDay initial, String? title}) async {
+    final time = await showTimePicker(
+      cancelText: 'Annuler',
+      confirmText: 'Confirmer',
+      helpText: title,
+      context: context,
+      initialTime: initial,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child ?? Container(),
+      ),
+    );
+    return time;
+  }
+
+  void _promptChangeWeek(weeklyIndex) async {
+    final range = await showDateRangePicker(
+      helpText: 'Sélectionner les dates',
+      cancelText: 'Annuler',
+      confirmText: 'Confirmer',
+      context: context,
+      initialEntryMode: DatePickerEntryMode.input,
+      initialDateRange:
+          widget.scheduleController.weeklySchedules[weeklyIndex].period,
+      firstDate: DateTime(widget.scheduleController.weeklySchedules[weeklyIndex]
+              .period.start.year -
+          1),
+      lastDate: DateTime(widget.scheduleController.weeklySchedules[weeklyIndex]
+              .period.start.year +
+          2),
+    );
+    if (range == null) return;
+
+    widget.scheduleController.updateDailyScheduleRange(weeklyIndex, range);
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.withTitle) const SubTitle('Horaire', left: 0),
+        ...widget.scheduleController.weeklySchedules
+            .asMap()
+            .keys
+            .map<Widget>((weeklyIndex) => _ScheduleSelector(
+                  periodName:
+                      widget.scheduleController.weeklySchedules.length > 1
+                          ? 'Période ${weeklyIndex + 1}'
+                          : null,
+                  weeklySchedule:
+                      widget.scheduleController.weeklySchedules[weeklyIndex],
+                  onRemoveWeeklySchedule:
+                      widget.scheduleController.weeklySchedules.length > 1
+                          ? () => setState(() => widget.scheduleController
+                              .removedWeeklySchedule(weeklyIndex))
+                          : null,
+                  onAddDayToDailySchedule: () =>
+                      _promptNewDayToDailySchedule(weeklyIndex),
+                  onUpdateDailyScheduleTime: (dailyIndex) =>
+                      _promptUpdateToDailySchedule(weeklyIndex, dailyIndex),
+                  onRemovedDailyScheduleTime: (dailyIndex) => setState(() =>
+                      widget.scheduleController
+                          .removedDailyScheduleTime(weeklyIndex, dailyIndex)),
+                  promptChangeWeeks: () => _promptChangeWeek(weeklyIndex),
+                  editMode: widget.editMode,
+                ))
+            .toList(),
+        if (widget.editMode)
+          TextButton(
+            onPressed: () => setState(() => widget
+                .scheduleController.weeklySchedules
+                .add(_fillNewScheduleList())),
+            style: Theme.of(context).textButtonTheme.style!.copyWith(
+                backgroundColor: Theme.of(context)
+                    .elevatedButtonTheme
+                    .style!
+                    .backgroundColor),
+            child: const Text('Ajouter une période'),
+          ),
+      ],
+    );
+  }
+}
+
+class _ScheduleSelector extends StatelessWidget {
+  const _ScheduleSelector(
       {required this.periodName,
       required this.weeklySchedule,
-      required this.onPeriodRemove,
-      required this.onAddTime,
-      required this.onChangedTime,
-      required this.onDeleteTime,
-      required this.promptChangeWeeks});
+      required this.onRemoveWeeklySchedule,
+      required this.onAddDayToDailySchedule,
+      required this.onUpdateDailyScheduleTime,
+      required this.onRemovedDailyScheduleTime,
+      required this.promptChangeWeeks,
+      required this.editMode});
 
   final String? periodName;
   final WeeklySchedule weeklySchedule;
-  final Function()? onPeriodRemove;
-  final Function() onAddTime;
-  final Function(int) onChangedTime;
-  final Function(int) onDeleteTime;
+  final Function()? onRemoveWeeklySchedule;
+  final Function() onAddDayToDailySchedule;
+  final Function(int) onUpdateDailyScheduleTime;
+  final Function(int) onRemovedDailyScheduleTime;
   final Function() promptChangeWeeks;
+  final bool editMode;
 
   @override
   Widget build(BuildContext context) {
@@ -321,15 +382,17 @@ class _Schedule extends StatelessWidget {
                     .copyWith(fontWeight: FontWeight.bold),
               ),
             ),
-            IconButton(
-              onPressed: onPeriodRemove,
-              icon: const Icon(Icons.delete, color: Colors.red),
-            )
+            if (editMode)
+              IconButton(
+                onPressed: onRemoveWeeklySchedule,
+                icon: const Icon(Icons.delete, color: Colors.red),
+              )
           ],
         ),
       if (periodName != null)
         Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 10.0),
+          padding: EdgeInsets.only(
+              left: 8.0, right: editMode ? 8.0 : 24.0, bottom: 10.0),
           child: Stack(
             alignment: Alignment.centerRight,
             children: [
@@ -347,13 +410,14 @@ class _Schedule extends StatelessWidget {
                   ]),
                 ],
               ),
-              IconButton(
-                icon: const Icon(
-                  Icons.calendar_month_outlined,
-                  color: Colors.blue,
-                ),
-                onPressed: promptChangeWeeks,
-              )
+              if (editMode)
+                IconButton(
+                  icon: const Icon(
+                    Icons.calendar_month_outlined,
+                    color: Colors.blue,
+                  ),
+                  onPressed: promptChangeWeeks,
+                )
             ],
           ),
         ),
@@ -362,7 +426,8 @@ class _Schedule extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('* Sélectionner les jours et les horaires de stage'),
+            if (editMode)
+              const Text('* Modifier les jours et les horaires de stage'),
             Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               columnWidths: const {
@@ -377,39 +442,38 @@ class _Schedule extends StatelessWidget {
                 ...weeklySchedule.schedule.asMap().keys.map(
                       (i) => TableRow(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text(
-                              weeklySchedule.schedule[i].dayOfWeek.name,
-                            ),
-                          ),
+                          Text(weeklySchedule.schedule[i].dayOfWeek.name),
                           Container(),
                           Text(
                               weeklySchedule.schedule[i].start.format(context)),
                           Text(weeklySchedule.schedule[i].end.format(context)),
-                          GestureDetector(
-                            onTap: () => onChangedTime(i),
-                            child: const Icon(Icons.access_time,
-                                color: Colors.black),
-                          ),
-                          GestureDetector(
-                            onTap: () => onDeleteTime(i),
-                            child: const Icon(Icons.delete, color: Colors.red),
-                          ),
+                          if (editMode)
+                            GestureDetector(
+                              onTap: () => onUpdateDailyScheduleTime(i),
+                              child: const Icon(Icons.access_time,
+                                  color: Colors.black),
+                            ),
+                          if (editMode)
+                            GestureDetector(
+                              onTap: () => onRemovedDailyScheduleTime(i),
+                              child:
+                                  const Icon(Icons.delete, color: Colors.red),
+                            ),
                         ],
                       ),
                     ),
-                TableRow(children: [
-                  Container(),
-                  Container(),
-                  Container(),
-                  Container(),
-                  GestureDetector(
-                    onTap: onAddTime,
-                    child: const Icon(Icons.add, color: Colors.black),
-                  ),
-                  Container(),
-                ]),
+                if (editMode)
+                  TableRow(children: [
+                    Container(),
+                    Container(),
+                    Container(),
+                    Container(),
+                    GestureDetector(
+                      onTap: onAddDayToDailySchedule,
+                      child: const Icon(Icons.add, color: Colors.black),
+                    ),
+                    Container(),
+                  ]),
               ],
             ),
           ],

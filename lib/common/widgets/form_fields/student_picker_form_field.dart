@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/student.dart';
@@ -35,10 +36,14 @@ class StudentPickerFormField extends StatelessWidget {
             displayStringForOption: (student) => student.fullName,
             initialValue: TextEditingValue(text: initialValue?.fullName ?? ''),
             optionsBuilder: (input) {
-              return students.where(
-                (s) =>
-                    s.fullName.toLowerCase().contains(input.text.toLowerCase()),
-              );
+              return students
+                  .map((e) => e)
+                  .sorted((a, b) => a.lastName.compareTo(b.lastName))
+                  .where(
+                    (s) => s.fullName
+                        .toLowerCase()
+                        .contains(input.text.toLowerCase()),
+                  );
             },
             optionsViewBuilder: (context, onSelected, options) =>
                 OptionsBuilderForAutocomplete(
