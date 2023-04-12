@@ -34,4 +34,12 @@ class PhoneNumber {
         ? ''
         : '($areaCode) $cityCode-$number${extension != null ? ' poste $extension' : ''}';
   }
+
+  PhoneNumber deepCopy() {
+    return PhoneNumber(
+        areaCode: areaCode,
+        cityCode: cityCode,
+        number: number,
+        extension: extension);
+  }
 }

@@ -39,6 +39,15 @@ class _MutableElements extends ItemSerializable {
         'protections': protections,
         'uniform': uniform,
       };
+
+  _MutableElements deepCopy() {
+    return _MutableElements(
+        supervisor: supervisor.deepCopy(),
+        date: DateTimeRange(start: date.start, end: date.end),
+        weeklySchedules: weeklySchedules.map((e) => e.deepCopy()).toList(),
+        protections: protections.map((e) => e).toList(),
+        uniform: uniform);
+  }
 }
 
 class Internship extends ItemSerializable {
@@ -49,7 +58,7 @@ class Internship extends ItemSerializable {
   final String enterpriseId;
   final String jobId; // Main job attached to the enterprise
   final List<String>
-      extraSpecializationId; // Any extra jobs added to the internship
+      extraSpecializationsId; // Any extra jobs added to the internship
   final int expectedLength;
 
   // Elements that can be modified (which increase the version number, but
@@ -82,7 +91,7 @@ class Internship extends ItemSerializable {
     required this.isTransfering,
     required this.enterpriseId,
     required this.jobId,
-    required this.extraSpecializationId,
+    required this.extraSpecializationsId,
     required List<_MutableElements> mutables,
     required this.expectedLength,
     required this.achievedLength,
@@ -99,7 +108,7 @@ class Internship extends ItemSerializable {
     this.isTransfering = false,
     required this.enterpriseId,
     required this.jobId,
-    required this.extraSpecializationId,
+    required this.extraSpecializationsId,
     required Person supervisor,
     required DateTimeRange date,
     required List<WeeklySchedule> weeklySchedules,
@@ -127,9 +136,9 @@ class Internship extends ItemSerializable {
         isTransfering = map['isTransfering'],
         enterpriseId = map['enterprise'],
         jobId = map['jobId'],
-        extraSpecializationId = map['extraSpecializationId'] == null
+        extraSpecializationsId = map['extraSpecializationsId'] == null
             ? []
-            : (map['extraSpecializationId'] as List)
+            : (map['extraSpecializationsId'] as List)
                 .map((e) => e as String)
                 .toList(),
         _mutables = (map['mutables'] as List)
@@ -152,7 +161,7 @@ class Internship extends ItemSerializable {
       'isTransfering': isTransfering,
       'enterprise': enterpriseId,
       'jobId': jobId,
-      'extraSpecializationId': extraSpecializationId,
+      'extraSpecializationsId': extraSpecializationsId,
       'mutables': _mutables.map((e) => e.serializedMap()).toList(),
       'expectedLength': expectedLength,
       'achievedLength': achievedLength,
@@ -185,7 +194,7 @@ class Internship extends ItemSerializable {
     bool? isTransfering,
     String? enterpriseId,
     String? jobId,
-    List<String>? extraSpecializationId,
+    List<String>? extraSpecializationsId,
     String? program,
     Person? supervisor,
     DateTimeRange? date,
@@ -214,14 +223,33 @@ class Internship extends ItemSerializable {
       isTransfering: isTransfering ?? this.isTransfering,
       enterpriseId: enterpriseId ?? this.enterpriseId,
       jobId: jobId ?? this.jobId,
-      extraSpecializationId:
-          extraSpecializationId ?? this.extraSpecializationId,
+      extraSpecializationsId:
+          extraSpecializationsId ?? this.extraSpecializationsId,
       mutables: _mutables,
       expectedLength: expectedLength ?? this.expectedLength,
       achievedLength: achievedLength ?? this.achievedLength,
       visitingPriority: visitingPriority ?? this.visitingPriority,
       teacherNotes: teacherNotes ?? this.teacherNotes,
       isClosed: isClosed ?? this.isClosed,
+    );
+  }
+
+  Internship deepCopy() {
+    return Internship._(
+      id: id,
+      studentId: studentId,
+      teacherId: teacherId,
+      previousTeacherId: previousTeacherId,
+      isTransfering: isTransfering,
+      enterpriseId: enterpriseId,
+      jobId: jobId,
+      extraSpecializationsId: extraSpecializationsId.map((e) => e).toList(),
+      mutables: _mutables.map((e) => e).toList(),
+      expectedLength: expectedLength,
+      achievedLength: achievedLength,
+      visitingPriority: VisitingPriority.values[visitingPriority.index],
+      teacherNotes: teacherNotes,
+      isClosed: isClosed,
     );
   }
 }

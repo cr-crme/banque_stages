@@ -69,6 +69,15 @@ class Address extends ItemSerializable {
         postalCode: postalCode ?? this.postalCode);
   }
 
+  Address deepCopy() {
+    return Address(
+        civicNumber: civicNumber,
+        street: street,
+        appartment: appartment,
+        city: city,
+        postalCode: postalCode);
+  }
+
   @override
   String toString() {
     return '$civicNumber $street${appartment == null ? '' : ' #$appartment'}, $city, $postalCode';
