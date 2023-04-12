@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 
 import '/common/models/job.dart';
+import '/common/widgets/autocomplete_options_builder.dart';
 import '/misc/job_data_file_service.dart';
 
 class JobFormFieldListTile extends StatefulWidget {
@@ -89,6 +90,11 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                   (sector) => sector.idWithName
                       .toLowerCase()
                       .contains(textEditingValue.text.toLowerCase())),
+              optionsViewBuilder: (context, onSelected, options) =>
+                  OptionsBuilderForAutocomplete(
+                      onSelected: onSelected,
+                      options: options,
+                      optionToString: (ActivitySector option) => option.name),
               onSelected: (sector) => setState(() {
                 FocusManager.instance.primaryFocus?.unfocus();
                 _activitySector = sector;
@@ -130,6 +136,12 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                           .contains(textEditingValue.text.toLowerCase()))
                       .toList()
                   : [],
+              optionsViewBuilder: (context, onSelected, options) =>
+                  OptionsBuilderForAutocomplete(
+                onSelected: onSelected,
+                options: options,
+                optionToString: (Specialization e) => e.idWithName,
+              ),
               onSelected: (specilization) {
                 FocusManager.instance.primaryFocus?.unfocus();
                 _specialization = specilization;

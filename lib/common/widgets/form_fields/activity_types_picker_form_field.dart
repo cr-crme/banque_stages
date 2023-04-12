@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/widgets/activity_type_cards.dart';
+import '/common/widgets/autocomplete_options_builder.dart';
 
 class ActivityTypesPickerFormField extends FormField<Set<String>> {
   ActivityTypesPickerFormField({
@@ -39,6 +40,11 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
                   !state.value!.contains(activity),
             );
           },
+          optionsViewBuilder: (context, onSelected, options) =>
+              OptionsBuilderForAutocomplete(
+                  onSelected: onSelected,
+                  options: options,
+                  optionToString: (String e) => e),
           onSelected: (activityType) {
             state.value!.add(activityType);
             state.didChange(state.value);

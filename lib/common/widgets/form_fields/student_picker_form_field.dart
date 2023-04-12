@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '/common/models/student.dart';
+import '/common/widgets/autocomplete_options_builder.dart';
 
 class StudentPickerFormField extends StatelessWidget {
   const StudentPickerFormField({
@@ -39,6 +40,12 @@ class StudentPickerFormField extends StatelessWidget {
                     s.fullName.toLowerCase().contains(input.text.toLowerCase()),
               );
             },
+            optionsViewBuilder: (context, onSelected, options) =>
+                OptionsBuilderForAutocomplete(
+              onSelected: onSelected,
+              options: options,
+              optionToString: (Student e) => e.fullName,
+            ),
             onSelected: (student) {
               FocusManager.instance.primaryFocus?.unfocus();
               state.didChange(student);

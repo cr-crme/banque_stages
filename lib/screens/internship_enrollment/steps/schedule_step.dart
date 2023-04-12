@@ -17,7 +17,7 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   DateTimeRange dateRange = DateTimeRange(
     start: DateTime.now(),
-    end: DateTime.now().add(const Duration(days: 90)),
+    end: DateTime.now().add(const Duration(days: 1)),
   );
 
   int intershipLength = 0;

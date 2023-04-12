@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '/common/widgets/autocomplete_options_builder.dart';
 import '/misc/job_data_file_service.dart';
 import '../../specialization_list_risks_and_skills/specialization_list_screen.dart';
 
@@ -92,6 +93,12 @@ class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
     return Autocomplete<String>(
       fieldViewBuilder: _fieldViewBuilder,
       optionsBuilder: (value) => _optionsBuilder(value, options),
+      optionsViewBuilder: (context, onSelected, options) =>
+          OptionsBuilderForAutocomplete(
+        onSelected: onSelected,
+        options: options,
+        optionToString: (String e) => e,
+      ),
       onSelected: (choice) {
         FocusManager.instance.primaryFocus?.unfocus();
         goTo(context, choice, options);

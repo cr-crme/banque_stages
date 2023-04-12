@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
+import '/common/widgets/autocomplete_options_builder.dart';
+
 const List<String> shareWithSuggestions = [
   'Tout le monde',
   'Personne',
@@ -37,6 +39,12 @@ class ShareWithPickerFormField extends FormField<String> {
           (activity) => activity.contains(textEditingValue.text),
         );
       },
+      optionsViewBuilder: (context, onSelected, options) =>
+          OptionsBuilderForAutocomplete(
+        onSelected: onSelected,
+        options: options,
+        optionToString: (String e) => e,
+      ),
       onSelected: (item) => state.didChange(item),
       fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
         return TextField(
