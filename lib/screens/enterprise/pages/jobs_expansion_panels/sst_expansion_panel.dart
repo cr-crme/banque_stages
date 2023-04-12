@@ -27,8 +27,8 @@ class SstExpansionPanel extends ExpansionPanel {
               child: IconButton(
                   onPressed: () => addSstEvent(job),
                   icon: const Icon(
-                    Icons.warning,
-                    color: Colors.red,
+                    Icons.warning_amber_sharp,
+                    color: Colors.deepOrange,
                   )),
             ),
           ),

@@ -43,7 +43,7 @@ class MainDrawer extends StatelessWidget {
                 ),
                 const _DrawerItem(
                   titleText: 'Référentiel SST',
-                  icon: Icon(Icons.warning_rounded),
+                  icon: Icon(Icons.security),
                   route: Screens.homeSst,
                 ),
                 _DrawerItem(
