@@ -19,19 +19,20 @@ class _InternshipController {
         _achievedLength = internship.achievedLength,
         weeklySchedules =
             internship.weeklySchedules.map((week) => week.copyWith()).toList(),
-        initialProtections = internship.protections.map((e) => e).toList(),
-        uniform = internship.uniform,
         scheduleController = WeeklyScheduleController(
           weeklySchedules:
               internship.weeklySchedules.map((e) => e.deepCopy()).toList(),
           dateRange: internship.date,
-        );
+        ),
+        initialProtections = internship.protections.map((e) => e).toList(),
+        initialUniform = internship.uniform;
 
   bool get hasChanged =>
       scheduleController.hasChanged ||
       dateHasChanged ||
       supervisorChanged ||
-      protectionsHasChanged;
+      protectionsHasChanged ||
+      _uniformHasChanged;
 
   Person supervisor;
   bool get supervisorChanged =>
@@ -109,7 +110,7 @@ class _InternshipController {
       orElse: () => '');
   late final otherProtectionController =
       TextEditingController(text: initialOtherProtections);
-  late bool _hasOtherProtections = otherProtectionController.text.isNotEmpty;
+  late bool _hasOtherProtections = initialOtherProtections.isNotEmpty;
   bool get hasOtherProtections => _hasOtherProtections;
   set hasOtherProtections(value) {
     _hasOtherProtections = value;
@@ -117,12 +118,17 @@ class _InternshipController {
     if (!_hasOtherProtections) otherProtectionController.text = '';
   }
 
-  set otherProtections(value) {
-    otherProtectionController.text = value;
-    _protectionsHasChanged = true;
+  bool _uniformHasChanged = false;
+  final String initialUniform;
+  late final uniformController = TextEditingController(text: initialUniform);
+  String get uniform => uniformController.text;
+  late bool _hasUniform = initialUniform.isNotEmpty;
+  bool get hasUniform => _hasUniform;
+  set hasUniform(value) {
+    _hasUniform = value;
+    _uniformHasChanged = true;
+    if (!_hasUniform) uniformController.text = '';
   }
-
-  String uniform;
 }
 
 class InternshipDetails extends StatefulWidget {
@@ -183,7 +189,7 @@ class _InternshipDetailsState extends State<InternshipDetails> {
           weeklySchedules:
               _internshipController.scheduleController.weeklySchedules,
           protections: _internshipController.protections,
-          uniform: widget.internship.uniform);
+          uniform: _internshipController.uniform);
 
       InternshipsProvider.of(context, listen: false).replace(widget.internship);
     }
@@ -515,7 +521,8 @@ class _InternshipBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Uniforme requis', style: _titleStyle),
-          if (editMode) _UniformRequiredChoser(internship: internship),
+          if (editMode)
+            _UniformRequiredChoser(internshipController: internshipController),
           if (!editMode && internship.uniform.isEmpty) const Text('Aucun'),
           if (!editMode && internship.uniform.isNotEmpty)
             Text(internship.uniform),
@@ -677,18 +684,15 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
 }
 
 class _UniformRequiredChoser extends StatefulWidget {
-  const _UniformRequiredChoser({required this.internship});
+  const _UniformRequiredChoser({required this.internshipController});
 
-  final Internship internship;
+  final _InternshipController internshipController;
 
   @override
   State<_UniformRequiredChoser> createState() => _UniformRequiredChoserState();
 }
 
 class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
-  late bool _needUniform = widget.internship.uniform.isNotEmpty;
-  String? uniform;
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -701,9 +705,9 @@ class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
                 width: 125,
                 child: RadioListTile(
                   value: true,
-                  groupValue: _needUniform,
-                  onChanged: (bool? newValue) =>
-                      setState(() => _needUniform = newValue!),
+                  groupValue: widget.internshipController.hasUniform,
+                  onChanged: (bool? newValue) => setState(
+                      () => widget.internshipController.hasUniform = newValue!),
                   title: const Text('Oui'),
                 ),
               ),
@@ -711,9 +715,9 @@ class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
                 width: 125,
                 child: RadioListTile(
                   value: false,
-                  groupValue: _needUniform,
-                  onChanged: (bool? newValue) =>
-                      setState(() => _needUniform = newValue!),
+                  groupValue: widget.internshipController.hasUniform,
+                  onChanged: (bool? newValue) => setState(
+                      () => widget.internshipController.hasUniform = newValue!),
                   title: const Text('Non'),
                 ),
               ),
@@ -723,7 +727,7 @@ class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
         SizedBox(
           width: MediaQuery.of(context).size.width * 3 / 4,
           child: Visibility(
-            visible: _needUniform,
+            visible: widget.internshipController.hasUniform,
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -737,8 +741,7 @@ class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   TextFormField(
-                    initialValue: widget.internship.uniform,
-                    onSaved: (text) => uniform = text,
+                    controller: widget.internshipController.uniformController,
                     maxLines: null,
                     keyboardType: TextInputType.multiline,
                   ),
