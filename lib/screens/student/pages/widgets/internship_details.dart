@@ -141,7 +141,7 @@ class InternshipDetails extends StatefulWidget {
 }
 
 class _InternshipDetailsState extends State<InternshipDetails> {
-  bool _isExpanded = true;
+  bool _isExpanded = false;
   bool _editMode = false;
   late var _internshipController = _InternshipController(widget.internship);
 
