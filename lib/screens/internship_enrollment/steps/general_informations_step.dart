@@ -248,13 +248,15 @@ class _SupervisonInformation extends StatelessWidget {
             children: [
               TextFormField(
                 decoration: const InputDecoration(labelText: '* Prénom'),
-                validator: FormService.textNotEmptyValidator,
+                validator: (text) =>
+                    text!.isEmpty ? 'Ajouter un prénom.' : null,
                 onSaved: onSavedFirstName,
               ),
               TextFormField(
                 decoration:
                     const InputDecoration(labelText: '* Nom de famille'),
-                validator: FormService.textNotEmptyValidator,
+                validator: (text) =>
+                    text!.isEmpty ? 'Ajouter un nom de famille.' : null,
                 onSaved: onSavedLastName,
               ),
               PhoneListTile(

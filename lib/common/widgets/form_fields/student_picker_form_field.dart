@@ -21,7 +21,7 @@ class StudentPickerFormField extends StatelessWidget {
   final void Function(Student?)? onSelect;
 
   static String? _validator(Student? student) {
-    return student == null ? 'Ce champ est obligatoire' : null;
+    return student == null ? 'Sélectionner un élève.' : null;
   }
 
   @override

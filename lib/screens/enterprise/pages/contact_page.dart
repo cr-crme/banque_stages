@@ -178,7 +178,9 @@ class _ContactInfo extends StatelessWidget {
                   disabledBorder: InputBorder.none,
                 ),
                 enabled: editMode,
-                validator: FormService.textNotEmptyValidator,
+                validator: (text) => text!.isEmpty
+                    ? 'Ajouter le nom de la personne représentant l\'entreprise.'
+                    : null,
                 maxLines: null,
                 onSaved: onSavedName,
               ),
@@ -190,7 +192,9 @@ class _ContactInfo extends StatelessWidget {
                   disabledBorder: InputBorder.none,
                 ),
                 enabled: editMode,
-                validator: FormService.textNotEmptyValidator,
+                validator: (text) => text!.isEmpty
+                    ? 'Ajouter la fonction de cette personne.'
+                    : null,
                 onSaved: onSavedJob,
               ),
               const SizedBox(height: 8),

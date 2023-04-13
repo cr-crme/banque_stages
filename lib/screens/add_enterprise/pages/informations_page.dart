@@ -27,7 +27,7 @@ class InformationsPageState extends State<InformationsPage> {
     await addressController.requestValidation();
 
     if (!_formKey.currentState!.validate()) {
-      return 'Vérifier que tous les champs sont remplis.';
+      return 'Vérifier que tous les champs avec un * sont remplis.';
     }
 
     _formKey.currentState!.save();
@@ -44,7 +44,8 @@ class InformationsPageState extends State<InformationsPage> {
           children: [
             TextFormField(
               decoration: const InputDecoration(labelText: '* Nom'),
-              validator: (text) => text!.isEmpty ? 'Coucou' : null,
+              validator: (text) =>
+                  text!.isEmpty ? 'Ajouter le nom de l\'entreprise.' : null,
               onSaved: (name) => this.name = name,
             ),
             AddressListTile(

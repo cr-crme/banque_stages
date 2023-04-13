@@ -129,6 +129,9 @@ class _GeneralInformation extends StatelessWidget {
                             TextEditingController(text: enterprise.name),
                         enabled: editMode,
                         onSaved: onSaved,
+                        validator: (text) => text!.isEmpty
+                            ? 'Ajouter le nom de l\'entreprise.'
+                            : null,
                       ),
                     ),
                   ],

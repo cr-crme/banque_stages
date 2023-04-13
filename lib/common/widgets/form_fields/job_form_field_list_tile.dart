@@ -112,7 +112,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                 decoration: InputDecoration(
                     labelText: '* Secteur d\'activités',
                     errorText: state.errorText == _invalidActivitySector
-                        ? 'Entrez une valeur valide'
+                        ? 'Sélectionner un secteur d\'activités.'
                         : null,
                     hintText: 'Saisir nom ou n° de secteur',
                     suffixIcon: IconButton(
@@ -159,7 +159,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                   decoration: InputDecoration(
                       labelText: '* Métier semi-spécialisé',
                       errorText: state.errorText == _invalidSpecialization
-                          ? 'Entrez une valeur valide'
+                          ? 'Sélectionner un métier.'
                           : null,
                       hintText: 'Saisir nom ou n° de métier',
                       suffixIcon: IconButton(
@@ -189,7 +189,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                         border: UnderlineInputBorder(),
                       ),
                       validator: (value) =>
-                          int.parse(value!) == 0 ? 'Indiquer un nombre' : null,
+                          int.parse(value!) == 0 ? 'Indiquer un nombre.' : null,
                       onChanged: (double value) =>
                           _positionOffered = value.toInt(),
                     ),

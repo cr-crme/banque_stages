@@ -18,7 +18,7 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
         );
 
   static String? _validator(Set<String>? activityTypes) {
-    if (activityTypes!.isEmpty) return 'Il faut au moins un type d\'activité';
+    if (activityTypes!.isEmpty) return 'Ajouter au moins un type d\'activité.';
 
     return null;
   }

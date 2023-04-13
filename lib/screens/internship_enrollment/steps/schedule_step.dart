@@ -191,7 +191,8 @@ class _Hours extends StatelessWidget {
       child: TextFormField(
         decoration:
             const InputDecoration(labelText: '* Nombre d\'heures de stage'),
-        validator: FormService.textNotEmptyValidator,
+        validator: (text) =>
+            text!.isEmpty ? 'Indiquer un nombre d\'heures.' : null,
         keyboardType: TextInputType.number,
         onSaved: onSaved,
       ),

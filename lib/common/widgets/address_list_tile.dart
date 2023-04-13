@@ -184,7 +184,7 @@ class _AddressListTileState extends State<AddressListTile> {
             enabled: widget.enabled,
             maxLines: null,
             onSaved: (newAddress) => validate(),
-            validator: (_) => _isValid() ? null : 'Entrer une adresse valide',
+            validator: (_) => _isValid() ? null : 'Entrer une adresse valide.',
             keyboardType: TextInputType.streetAddress,
           ),
           IconButton(

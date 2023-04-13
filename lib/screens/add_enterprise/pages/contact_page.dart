@@ -25,7 +25,7 @@ class ContactPageState extends State<ContactPage> {
     _formKey.currentState!.save();
 
     if (!_formKey.currentState!.validate()) {
-      return 'Vérifier que tous les champs sont remplis.';
+      return 'Vérifier que tous les champs avec un * sont remplis.';
     }
 
     return null;
@@ -45,12 +45,16 @@ class ContactPageState extends State<ContactPage> {
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: '* Nom'),
-              validator: FormService.textNotEmptyValidator,
+              validator: (text) => text!.isEmpty
+                  ? 'Ajouter le nom de la personne représentant l\'entreprise.'
+                  : null,
               onSaved: (name) => contactName = name!,
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: '* Fonction'),
-              validator: FormService.textNotEmptyValidator,
+              validator: (text) => text!.isEmpty
+                  ? 'Ajouter la fonction de cette personne.'
+                  : null,
               onSaved: (function) => contactFunction = function!,
             ),
             PhoneListTile(

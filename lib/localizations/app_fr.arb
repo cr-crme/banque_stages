@@ -19,13 +19,13 @@
     "student_program": "Programme",
     "student_linkWithStudent": "Lien avec l'élève",
     "internship_teacherName": "Enseignant superviseur de stage",
-    "error_emptyField": "Le champ ne peut pas être vide",
-    "error_emptyUsername": "Un nom d'utilisateur est requis",
-    "error_emptyEmail": "Une adresse courriel est requise",
-    "error_emptyPhone": "Un numéro de téléphone est requis",
-    "error_invalidNeq": "Le NEQ est composé de 10 chiffres",
-    "error_invalidEmail": "L'adresse courriel entrée n'est pas valide",
-    "error_invalidPhone": "Le numéro entré n'est pas valide",
-    "error_invalidPassword": "Le mot de passe n'est pas valide",
-    "error_passwordMatch": "Les mots de passe ne correspondent pas"
+    "error_emptyField": "Le champ ne peut pas être vide.",
+    "error_emptyUsername": "Un nom d'utilisateur est requis.",
+    "error_emptyEmail": "Une adresse courriel est obligatoire.",
+    "error_emptyPhone": "Un numéro de téléphone est obligatoire.",
+    "error_invalidNeq": "Le NEQ est composé de 10 chiffres.",
+    "error_invalidEmail": "L'adresse courriel n'est pas valide.",
+    "error_invalidPhone": "Le numéro entré n'est pas valide.",
+    "error_invalidPassword": "Le mot de passe n'est pas valide.",
+    "error_passwordMatch": "Les mots de passe ne correspondent pas."
 }
