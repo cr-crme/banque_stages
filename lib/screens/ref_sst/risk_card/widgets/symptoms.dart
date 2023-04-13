@@ -18,8 +18,7 @@ class Symptoms extends StatelessWidget {
             child: Text(
               'Symptômes et effets sur la santé les plus fréquents',
               style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 190, 77, 81)),
+                  fontWeight: FontWeight.bold, color: Color(0xFFE65D4E)),
             ),
           ),
           subtitle: Paragraph(texts),

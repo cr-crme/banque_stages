@@ -14,7 +14,7 @@ abstract class FormService {
     if (!formKey.currentState!.validate()) {
       ScaffoldMessenger.of(formKey.currentContext!).showSnackBar(
         const SnackBar(
-          content: Text('Assurez vous que tous les champs soient valides'),
+          content: Text('Vérifier que tous les champs sont remplis.'),
         ),
       );
       return false;

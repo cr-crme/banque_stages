@@ -25,7 +25,7 @@ class ContactPageState extends State<ContactPage> {
     _formKey.currentState!.save();
 
     if (!_formKey.currentState!.validate()) {
-      return 'Assurez vous que tous les champs soient emplis';
+      return 'Vérifier que tous les champs sont remplis.';
     }
 
     return null;

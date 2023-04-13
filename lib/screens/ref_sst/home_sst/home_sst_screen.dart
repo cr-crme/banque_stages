@@ -36,17 +36,17 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
           width: 350,
           height: 280,
           padding: const EdgeInsets.all(17.0),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: Colors.blue,
-            boxShadow: [
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            color: Theme.of(context).colorScheme.primary,
+            boxShadow: const [
               BoxShadow(color: Colors.grey, spreadRadius: 1, blurRadius: 15)
             ],
           ),
           child: InkWell(
               child: Column(
             children: const [
-              Text('Analyse des risques par métier',
+              Text('Analyse des risques \npar métier',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -80,10 +80,10 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
               ));
             },
             child: Ink(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: Colors.blue,
-                boxShadow: [
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                color: Theme.of(context).colorScheme.primary,
+                boxShadow: const [
                   BoxShadow(color: Colors.grey, spreadRadius: 1, blurRadius: 15)
                 ],
               ),
@@ -93,7 +93,7 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
                 padding: EdgeInsets.all(45.0),
                 child: Center(
                   child: Text(
-                    'Consulter les fiches de risques',
+                    'Fiches de risques',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
