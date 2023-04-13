@@ -77,11 +77,11 @@ class Internship extends ItemSerializable {
   final bool isTransfering;
   final VisitingPriority visitingPriority;
   final String teacherNotes;
+  final DateTime? endDate;
 
   final bool isClosed; // Finished and evaluation is done
-  bool get isEvaluationPending =>
-      !isClosed && DateTime.now().compareTo(date.end) >= 0;
-  bool get isActive => !isClosed && DateTime.now().compareTo(date.end) < 0;
+  bool get isEvaluationPending => !isClosed && endDate != null;
+  bool get isActive => !isClosed && endDate == null;
 
   Internship._({
     required super.id,
@@ -97,6 +97,7 @@ class Internship extends ItemSerializable {
     required this.achievedLength,
     required this.visitingPriority,
     required this.teacherNotes,
+    required this.endDate,
     required this.isClosed,
   }) : _mutables = mutables;
 
@@ -118,6 +119,7 @@ class Internship extends ItemSerializable {
     required this.achievedLength,
     required this.visitingPriority,
     this.teacherNotes = '',
+    this.endDate,
     required this.isClosed,
   })  : previousTeacherId = previousTeacherId ?? teacherId,
         _mutables = [
@@ -148,6 +150,9 @@ class Internship extends ItemSerializable {
         achievedLength = map['achievedLength'],
         visitingPriority = VisitingPriority.values[map['priority']],
         teacherNotes = map['teacherNotes'],
+        endDate = map['endDate'] == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(map['endDate']),
         isClosed = map['isClosed'],
         super.fromSerialized(map);
 
@@ -167,6 +172,7 @@ class Internship extends ItemSerializable {
       'achievedLength': achievedLength,
       'priority': visitingPriority.index,
       'teacherNotes': teacherNotes,
+      'endDate': endDate?.millisecondsSinceEpoch,
       'isClosed': isClosed,
     };
   }
@@ -205,6 +211,7 @@ class Internship extends ItemSerializable {
     int? achievedLength,
     VisitingPriority? visitingPriority,
     String? teacherNotes,
+    DateTime? endDate,
     bool? isClosed,
   }) {
     if (supervisor != null ||
@@ -230,6 +237,7 @@ class Internship extends ItemSerializable {
       achievedLength: achievedLength ?? this.achievedLength,
       visitingPriority: visitingPriority ?? this.visitingPriority,
       teacherNotes: teacherNotes ?? this.teacherNotes,
+      endDate: endDate ?? this.endDate,
       isClosed: isClosed ?? this.isClosed,
     );
   }
@@ -249,6 +257,13 @@ class Internship extends ItemSerializable {
       achievedLength: achievedLength,
       visitingPriority: VisitingPriority.values[visitingPriority.index],
       teacherNotes: teacherNotes,
+      endDate: endDate == null
+          ? null
+          : DateTime(
+              endDate!.year,
+              endDate!.month,
+              endDate!.day,
+            ),
       isClosed: isClosed,
     );
   }

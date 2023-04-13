@@ -164,9 +164,7 @@ class _InternshipListState extends State<_InternshipList> {
     if (!mounted || result == null || !result) return;
 
     final internships = InternshipsProvider.of(context, listen: false);
-    internships.replace(internship.copyWith(
-        date:
-            DateTimeRange(start: internship.date.start, end: DateTime.now())));
+    internships.replace(internship.copyWith(endDate: DateTime.now()));
     setState(() {});
   }
 
