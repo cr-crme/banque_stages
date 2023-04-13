@@ -19,7 +19,7 @@ class _InternshipController {
         _achievedLength = internship.achievedLength,
         weeklySchedules =
             internship.weeklySchedules.map((week) => week.copyWith()).toList(),
-        protections = internship.protections.map((e) => e).toList(),
+        initialProtections = internship.protections.map((e) => e).toList(),
         uniform = internship.uniform,
         scheduleController = WeeklyScheduleController(
           weeklySchedules:
@@ -27,9 +27,11 @@ class _InternshipController {
           dateRange: internship.date,
         );
 
-  bool _hasChanged = false;
   bool get hasChanged =>
-      scheduleController.hasChanged || _hasChanged || supervisorChanged;
+      scheduleController.hasChanged ||
+      dateHasChanged ||
+      supervisorChanged ||
+      protectionsHasChanged;
 
   Person supervisor;
   bool get supervisorChanged =>
@@ -48,10 +50,11 @@ class _InternshipController {
       TextEditingController(text: supervisor.email ?? '');
 
   DateTimeRange _date;
+  bool dateHasChanged = false;
   DateTimeRange get date => _date;
   set date(DateTimeRange newDate) {
     _date = newDate;
-    _hasChanged = true;
+    dateHasChanged = true;
   }
 
   bool achievedLengthChanged = false;
@@ -63,9 +66,63 @@ class _InternshipController {
   }
 
   List<WeeklySchedule> weeklySchedules;
-  List<String> protections;
-  String uniform;
   WeeklyScheduleController scheduleController;
+
+  bool _protectionsHasChanged = false;
+  bool get protectionsHasChanged =>
+      _protectionsHasChanged ||
+      initialOtherProtections != otherProtectionController.text;
+  late bool _needProtections = initialProtections.isNotEmpty;
+  bool get needProtections => _needProtections;
+  set needProtections(value) {
+    _needProtections = value;
+    _protectionsHasChanged = true;
+  }
+
+  List<String> initialProtections;
+  List<String> get protections {
+    final List<String> out = [];
+    if (!needProtections) return out;
+
+    for (final protection in hasProtections.keys) {
+      if (hasProtections[protection]!) {
+        out.add(protection);
+      }
+    }
+
+    if (otherProtectionController.text.isNotEmpty) {
+      out.add(otherProtectionController.text);
+    }
+    return out;
+  }
+
+  late final Map<String, bool> hasProtections = Map.fromIterable(
+      RequirementsStep.protectionsList,
+      value: (e) => initialProtections.contains(e) ? true : false);
+  void setHasProtections(key, value) {
+    hasProtections[key] = value;
+    _protectionsHasChanged = true;
+  }
+
+  late final String initialOtherProtections = initialProtections.firstWhere(
+      (e) => !RequirementsStep.protectionsList.contains(e),
+      orElse: () => '');
+  late final otherProtectionController =
+      TextEditingController(text: initialOtherProtections);
+  late bool _hasOtherProtections = otherProtectionController.text.isNotEmpty;
+  bool get hasOtherProtections => _hasOtherProtections;
+  set hasOtherProtections(value) {
+    _hasOtherProtections = value;
+    _protectionsHasChanged = true;
+    if (!_hasOtherProtections) otherProtectionController.text = '';
+  }
+
+  set otherProtections(value) {
+    otherProtectionController.text = value;
+    _protectionsHasChanged = true;
+  }
+
+  String uniform;
 }
 
 class InternshipDetails extends StatefulWidget {
@@ -86,50 +143,52 @@ class _InternshipDetailsState extends State<InternshipDetails> {
     _editMode = !_editMode;
     if (_editMode) {
       _internshipController = _InternshipController(widget.internship);
-    } else {
-      // Validate before starting to save
-      if (_internshipController.supervisorChanged) {
-        if (!_internshipController.supervisorFormKey.currentState!.validate()) {
-          // Prevent from exiting the edit mode if the field can't be validated
-          _editMode = true;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Vérifier que tous les champs sont remplis.'),
-            ),
-          );
-          return;
-        }
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {});
+      });
+      return;
+    }
 
-      // Saving the values that do not require an extra version
-      if (_internshipController.achievedLengthChanged) {
-        InternshipsProvider.of(context, listen: false).replace(widget.internship
-            .copyWith(achievedLength: _internshipController._achievedLength));
-      }
-
-      // Saving the values that require an extra version
-      if (_internshipController.hasChanged) {
-        widget.internship.addVersion(
-            supervisor: widget.internship.supervisor.copyWith(
-                firstName:
-                    _internshipController.supervisorFirstNameController.text,
-                lastName:
-                    _internshipController.supervisorLastNameController.text,
-                phone: PhoneNumber.fromString(
-                    _internshipController.supervisorPhoneController.text),
-                email: _internshipController.supervisorEmailController.text),
-            date: _internshipController.date,
-            weeklySchedules:
-                _internshipController.scheduleController.weeklySchedules,
-            protections: widget.internship.protections,
-            uniform: widget.internship.uniform);
-
-        InternshipsProvider.of(context, listen: false)
-            .replace(widget.internship);
+    // Validate before starting to save
+    if (_internshipController.supervisorChanged) {
+      if (!_internshipController.supervisorFormKey.currentState!.validate()) {
+        // Prevent from exiting the edit mode if the field can't be validated
+        _editMode = true;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Vérifier que tous les champs sont remplis.'),
+          ),
+        );
+        return;
       }
     }
+
+    // Saving the values that do not require an extra version
+    if (_internshipController.achievedLengthChanged) {
+      InternshipsProvider.of(context, listen: false).replace(widget.internship
+          .copyWith(achievedLength: _internshipController._achievedLength));
+    }
+
+    // Saving the values that require an extra version
+    if (_internshipController.hasChanged) {
+      widget.internship.addVersion(
+          supervisor: widget.internship.supervisor.copyWith(
+              firstName:
+                  _internshipController.supervisorFirstNameController.text,
+              lastName: _internshipController.supervisorLastNameController.text,
+              phone: PhoneNumber.fromString(
+                  _internshipController.supervisorPhoneController.text),
+              email: _internshipController.supervisorEmailController.text),
+          date: _internshipController.date,
+          weeklySchedules:
+              _internshipController.scheduleController.weeklySchedules,
+          protections: _internshipController.protections,
+          uniform: widget.internship.uniform);
+
+      InternshipsProvider.of(context, listen: false).replace(widget.internship);
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _internshipController = _InternshipController(widget.internship);
       setState(() {});
     });
   }
@@ -141,7 +200,7 @@ class _InternshipDetailsState extends State<InternshipDetails> {
       confirmText: 'Confirmer',
       context: context,
       initialEntryMode: DatePickerEntryMode.input,
-      initialDateRange: widget.internship.date,
+      initialDateRange: _internshipController.date,
       firstDate: DateTime(DateTime.now().year),
       lastDate: DateTime(DateTime.now().year + 2),
     );
@@ -266,7 +325,7 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
-  Widget _buildSupervisorInfo({required Person person}) {
+  Widget _buildSupervisorInfo() {
     return Form(
       key: internshipController.supervisorFormKey,
       child: Column(
@@ -300,7 +359,7 @@ class _InternshipBody extends StatelessWidget {
                           ),
                         ],
                       )
-                    : Text(internshipController.supervisor.fullName),
+                    : Text(internship.supervisor.fullName),
                 const SizedBox(height: 8),
                 const Text('Numéro de téléphone'),
                 editMode
@@ -309,7 +368,7 @@ class _InternshipBody extends StatelessWidget {
                             internshipController.supervisorPhoneController,
                         keyboardType: TextInputType.phone,
                       )
-                    : Text(internshipController.supervisor.phone.toString()),
+                    : Text(internship.supervisor.phone.toString()),
                 const SizedBox(height: 8),
                 const Text('Courriel'),
                 editMode
@@ -318,7 +377,7 @@ class _InternshipBody extends StatelessWidget {
                         controller:
                             internshipController.supervisorEmailController,
                       )
-                    : Text(person.email ?? 'Aucun'),
+                    : Text(internship.supervisor.email ?? 'Aucun'),
                 const SizedBox(height: 8),
               ],
             ),
@@ -335,8 +394,7 @@ class _InternshipBody extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Date du stage',
-                style: _titleStyle), // TODO: Fixed the changes
+            const Text('Date du stage', style: _titleStyle),
             Padding(
               padding: const EdgeInsets.only(bottom: _interline),
               child: Table(
@@ -433,7 +491,9 @@ class _InternshipBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('EPI requis', style: _titleStyle),
-          if (editMode) _ProtectionRequiredChoser(internship: internship),
+          if (editMode)
+            _ProtectionRequiredChoser(
+                internshipController: internshipController),
           if (!editMode && internship.protections.isEmpty) const Text('Aucun'),
           if (!editMode && internship.protections.isNotEmpty)
             ...internship.protections.map((e) => Row(
@@ -491,7 +551,7 @@ class _InternshipBody extends StatelessWidget {
         _buildTextSection(
             title: 'Adresse de l\'entreprise',
             text: enterprises[internship.enterpriseId].address.toString()),
-        _buildSupervisorInfo(person: internship.supervisor),
+        _buildSupervisorInfo(),
         _buildDates(),
         _buildTime(),
         _buildSchedule(),
@@ -503,9 +563,9 @@ class _InternshipBody extends StatelessWidget {
 }
 
 class _ProtectionRequiredChoser extends StatefulWidget {
-  const _ProtectionRequiredChoser({required this.internship});
+  const _ProtectionRequiredChoser({required this.internshipController});
 
-  final Internship internship;
+  final _InternshipController internshipController;
 
   @override
   State<_ProtectionRequiredChoser> createState() =>
@@ -513,13 +573,6 @@ class _ProtectionRequiredChoser extends StatefulWidget {
 }
 
 class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
-  late bool _needProtections = widget.internship.protections.isNotEmpty;
-  late final Map<String, bool> _protections = Map.fromIterable(
-      RequirementsStep.protectionsList,
-      value: (e) => widget.internship.protections.contains(e) ? true : false);
-  bool _otherProtections = false;
-  String? otherProtection;
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -532,9 +585,9 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
                 width: 125,
                 child: RadioListTile(
                   value: true,
-                  groupValue: _needProtections,
-                  onChanged: (bool? newValue) =>
-                      setState(() => _needProtections = newValue!),
+                  groupValue: widget.internshipController.needProtections,
+                  onChanged: (bool? newValue) => setState(() =>
+                      widget.internshipController.needProtections = newValue!),
                   title: const Text('Oui'),
                 ),
               ),
@@ -542,9 +595,9 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
                 width: 125,
                 child: RadioListTile(
                   value: false,
-                  groupValue: _needProtections,
-                  onChanged: (bool? newValue) =>
-                      setState(() => _needProtections = newValue!),
+                  groupValue: widget.internshipController.needProtections,
+                  onChanged: (bool? newValue) => setState(() =>
+                      widget.internshipController.needProtections = newValue!),
                   title: const Text('Non'),
                 ),
               ),
@@ -554,7 +607,7 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
         SizedBox(
           width: MediaQuery.of(context).size.width * 3 / 4,
           child: Visibility(
-            visible: _needProtections,
+            visible: widget.internshipController.needProtections,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -562,7 +615,7 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
                   'Lesquels ?',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
-                ..._protections.keys.map(
+                ...widget.internshipController.hasProtections.keys.map(
                   (requirement) => CheckboxListTile(
                     controlAffinity: ListTileControlAffinity.leading,
                     visualDensity: VisualDensity.compact,
@@ -571,9 +624,11 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
                       requirement,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    value: _protections[requirement],
-                    onChanged: (newValue) =>
-                        setState(() => _protections[requirement] = newValue!),
+                    value:
+                        widget.internshipController.hasProtections[requirement],
+                    onChanged: (newValue) => setState(() => widget
+                        .internshipController
+                        .setHasProtections(requirement, newValue!)),
                   ),
                 ),
                 CheckboxListTile(
@@ -584,12 +639,12 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
                     'Autre',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  value: _otherProtections,
-                  onChanged: (newValue) =>
-                      setState(() => _otherProtections = newValue!),
+                  value: widget.internshipController.hasOtherProtections,
+                  onChanged: (newValue) => setState(() => widget
+                      .internshipController.hasOtherProtections = newValue!),
                 ),
                 Visibility(
-                  visible: _otherProtections,
+                  visible: widget.internshipController.hasOtherProtections,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -603,7 +658,8 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(
-                          onSaved: (text) => otherProtection = text,
+                          controller: widget
+                              .internshipController.otherProtectionController,
                           maxLines: null,
                           keyboardType: TextInputType.multiline,
                         ),
