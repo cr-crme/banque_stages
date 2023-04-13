@@ -20,9 +20,14 @@ class ActivityTypeCards extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Chip(
                   visualDensity: VisualDensity.compact,
-                  deleteIcon: const Icon(Icons.delete),
+                  deleteIcon: const Icon(Icons.delete, color: Colors.black),
                   deleteIconColor: Theme.of(context).colorScheme.onPrimary,
-                  label: Text(activityType.toString()),
+                  label: Text(
+                    activityType.toString(),
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.normal),
+                  ),
+                  backgroundColor: const Color(0xFFB8D8E6),
                   onDeleted: onDeleted != null
                       ? () => onDeleted!(activityType)
                       : null),

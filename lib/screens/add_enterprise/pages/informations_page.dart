@@ -44,7 +44,7 @@ class InformationsPageState extends State<InformationsPage> {
           children: [
             TextFormField(
               decoration: const InputDecoration(labelText: '* Nom'),
-              validator: FormService.textNotEmptyValidator,
+              validator: (text) => text!.isEmpty ? 'Coucou' : null,
               onSaved: (name) => this.name = name,
             ),
             AddressListTile(
