@@ -1,11 +1,12 @@
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '/common/models/internship.dart';
 import '/common/models/person.dart';
+import '/common/models/phone_number.dart';
 import '/common/models/schedule.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/screens/internship_enrollment/steps/requirements_step.dart';
 import '/screens/internship_enrollment/steps/schedule_step.dart';
@@ -27,9 +28,24 @@ class _InternshipController {
         );
 
   bool _hasChanged = false;
-  bool get hasChanged => scheduleController.hasChanged || _hasChanged;
+  bool get hasChanged =>
+      scheduleController.hasChanged || _hasChanged || supervisorChanged;
 
   Person supervisor;
+  bool get supervisorChanged =>
+      supervisor.firstName != supervisorFirstNameController.text ||
+      supervisor.lastName != supervisorLastNameController.text ||
+      supervisor.phone.toString() != supervisorPhoneController.text ||
+      supervisor.email != supervisorEmailController.text;
+  final supervisorFormKey = GlobalKey<FormState>();
+  late final supervisorFirstNameController =
+      TextEditingController(text: supervisor.firstName);
+  late final supervisorLastNameController =
+      TextEditingController(text: supervisor.lastName);
+  late final supervisorPhoneController =
+      TextEditingController(text: supervisor.phone.toString());
+  late final supervisorEmailController =
+      TextEditingController(text: supervisor.email ?? '');
 
   DateTimeRange _date;
   DateTimeRange get date => _date;
@@ -71,13 +87,37 @@ class _InternshipDetailsState extends State<InternshipDetails> {
     if (_editMode) {
       _internshipController = _InternshipController(widget.internship);
     } else {
+      // Validate before starting to save
+      if (_internshipController.supervisorChanged) {
+        if (!_internshipController.supervisorFormKey.currentState!.validate()) {
+          // Prevent from exiting the edit mode if the field can't be validated
+          _editMode = true;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Vérifier que tous les champs sont remplis.'),
+            ),
+          );
+          return;
+        }
+      }
+
+      // Saving the values that do not require an extra version
       if (_internshipController.achievedLengthChanged) {
         InternshipsProvider.of(context, listen: false).replace(widget.internship
             .copyWith(achievedLength: _internshipController._achievedLength));
       }
+
+      // Saving the values that require an extra version
       if (_internshipController.hasChanged) {
         widget.internship.addVersion(
-            supervisor: widget.internship.supervisor,
+            supervisor: widget.internship.supervisor.copyWith(
+                firstName:
+                    _internshipController.supervisorFirstNameController.text,
+                lastName:
+                    _internshipController.supervisorLastNameController.text,
+                phone: PhoneNumber.fromString(
+                    _internshipController.supervisorPhoneController.text),
+                email: _internshipController.supervisorEmailController.text),
             date: _internshipController.date,
             weeklySchedules:
                 _internshipController.scheduleController.weeklySchedules,
@@ -88,7 +128,10 @@ class _InternshipDetailsState extends State<InternshipDetails> {
             .replace(widget.internship);
       }
     }
-    setState(() {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _internshipController = _InternshipController(widget.internship);
+      setState(() {});
+    });
   }
 
   void _promptDateRange() async {
@@ -224,34 +267,64 @@ class _InternshipBody extends StatelessWidget {
   }
 
   Widget _buildSupervisorInfo({required Person person}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Superviseur en milieu de stage', style: _titleStyle),
-        Padding(
-          padding: const EdgeInsets.only(top: 2, bottom: _interline),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Nom'), // TODO: Fixed the changes
-              editMode
-                  ? TextFormField(initialValue: person.fullName)
-                  : Text(person.fullName),
-              const SizedBox(height: 8),
-              const Text('Numéro de téléphone'),
-              editMode
-                  ? TextFormField(initialValue: person.phone.toString())
-                  : Text(person.phone.toString()),
-              const SizedBox(height: 8),
-              const Text('Courriel'),
-              editMode
-                  ? TextFormField(initialValue: person.email ?? '')
-                  : Text(person.email ?? 'Aucun'),
-              const SizedBox(height: 8),
-            ],
-          ),
-        )
-      ],
+    return Form(
+      key: internshipController.supervisorFormKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Superviseur en milieu de stage', style: _titleStyle),
+          Padding(
+            padding: const EdgeInsets.only(top: 2, bottom: _interline),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (!editMode) const Text('Nom'),
+                editMode
+                    ? Column(
+                        children: [
+                          TextFormField(
+                            controller: internshipController
+                                .supervisorFirstNameController,
+                            decoration:
+                                const InputDecoration(label: Text('* Prénom')),
+                            validator: (value) =>
+                                value!.isEmpty ? 'Ajouter un prénom' : null,
+                          ),
+                          TextFormField(
+                            controller: internshipController
+                                .supervisorLastNameController,
+                            decoration:
+                                const InputDecoration(label: Text('* Nom')),
+                            validator: (value) =>
+                                value!.isEmpty ? 'Ajouter un nom' : null,
+                          ),
+                        ],
+                      )
+                    : Text(internshipController.supervisor.fullName),
+                const SizedBox(height: 8),
+                const Text('Numéro de téléphone'),
+                editMode
+                    ? TextFormField(
+                        controller:
+                            internshipController.supervisorPhoneController,
+                        keyboardType: TextInputType.phone,
+                      )
+                    : Text(internshipController.supervisor.phone.toString()),
+                const SizedBox(height: 8),
+                const Text('Courriel'),
+                editMode
+                    ? TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        controller:
+                            internshipController.supervisorEmailController,
+                      )
+                    : Text(person.email ?? 'Aucun'),
+                const SizedBox(height: 8),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -320,6 +393,8 @@ class _InternshipBody extends StatelessWidget {
                               onChanged: (newValue) =>
                                   internshipController.achievedLength =
                                       newValue == '' ? 0 : int.parse(newValue),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(),
                             ),
                           )
                         : Text(internshipController.achievedLength.toString()),
