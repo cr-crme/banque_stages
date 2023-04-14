@@ -366,7 +366,7 @@ class _AddInternshipButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.only(top: 20.0),
+        padding: const EdgeInsets.only(top: 40.0),
         child: editingMode
             ? Container()
             : ElevatedButton(
