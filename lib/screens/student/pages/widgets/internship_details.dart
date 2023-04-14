@@ -302,7 +302,6 @@ class _InternshipBody extends StatelessWidget {
 
   Widget _buildJob(
     String title, {
-    required String specializationId,
     required enterprises,
   }) {
     return Padding(
@@ -542,14 +541,11 @@ class _InternshipBody extends StatelessWidget {
         _buildTeacher(text: teachers[internship.teacherId].fullName),
         _buildJob(
             'Métier${internship.extraSpecializationsId.isNotEmpty ? ' principal' : ''}',
-            specializationId: internship.jobId,
             enterprises: enterprises),
         if (internship.extraSpecializationsId.isNotEmpty)
           ...internship.extraSpecializationsId.asMap().keys.map(
                 (indexExtra) => _buildJob(
                     'Métier secondaire${internship.extraSpecializationsId.length > 1 ? ' (${indexExtra + 1})' : ''}',
-                    specializationId:
-                        internship.extraSpecializationsId[indexExtra],
                     enterprises: enterprises),
               ),
         _buildTextSection(

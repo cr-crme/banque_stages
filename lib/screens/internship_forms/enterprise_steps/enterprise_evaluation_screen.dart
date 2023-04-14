@@ -5,9 +5,9 @@ import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/misc/form_service.dart';
-import 'enterprise_steps/prerequisites_step.dart';
-import 'enterprise_steps/supervision_step.dart';
-import 'enterprise_steps/tasks_step.dart';
+import 'prerequisites_step.dart';
+import 'supervision_step.dart';
+import 'tasks_step.dart';
 
 class EnterpriseEvaluationScreen extends StatefulWidget {
   const EnterpriseEvaluationScreen(

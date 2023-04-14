@@ -10,12 +10,14 @@ import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/generate_debug_data_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
-import 'screens/internship_forms/enterprise_evaluation_screen.dart';
-import 'screens/internship_forms/student_evaluation_screen.dart';
+import 'screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
+import 'screens/internship_forms/student_steps/student_evaluation_form_screen.dart';
+import 'screens/internship_forms/student_steps/student_evaluation_main_screen.dart';
+import 'screens/internship_forms/student_steps/student_form_controller.dart';
 import 'screens/login_screen.dart';
 import 'screens/ref_sst/home_sst/home_sst_screen.dart';
-import 'screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
 import 'screens/ref_sst/risks_list/risks_list_screen.dart';
+import 'screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
 import 'screens/supervision_chart/supervision_chart_screen.dart';
@@ -41,7 +43,8 @@ abstract class Screens {
 
   static const internshipEnrollement = 'add-internship';
   static const enterpriseEvaluationScreen = 'enterprise-evaluation';
-  static const studentEvaluationScreen = 'student-evaluation';
+  static const studentEvaluationMainScreen = 'student-evaluation-main';
+  static const studentEvaluationFormScreen = 'student-evaluation-form';
 
   static const homeSst = 'home-sst';
   static const jobSst = 'job-sst';
@@ -147,11 +150,20 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/student-evaluation/:internshipId',
-      name: Screens.studentEvaluationScreen,
-      builder: (context, state) => StudentEvaluationScreen(
+      path: '/student-evaluation-main/:internshipId',
+      name: Screens.studentEvaluationMainScreen,
+      builder: (context, state) => StudentEvaluationMainScreen(
         internshipId: state.params['internshipId']!,
       ),
+    ),
+    GoRoute(
+      path: '/student-evaluation-form',
+      name: Screens.studentEvaluationFormScreen,
+      builder: (context, state) {
+        return StudentEvaluationFormScreen(
+          formController: state.extra as StudentFormController,
+        );
+      },
     ),
     GoRoute(
       path: '/sst',

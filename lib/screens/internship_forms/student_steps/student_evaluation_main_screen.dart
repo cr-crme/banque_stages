@@ -1,25 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '/common/models/internship.dart';
+import '/common/providers/enterprises_provider.dart';
+import '/common/providers/internships_provider.dart';
+import '/common/providers/students_provider.dart';
 import '/common/widgets/sub_title.dart';
+import '/router.dart';
 import 'student_form_controller.dart';
 
-class GenericQuestions extends StatelessWidget {
-  const GenericQuestions(
-      {super.key, required this.internship, required this.formController});
+class StudentEvaluationMainScreen extends StatefulWidget {
+  const StudentEvaluationMainScreen({super.key, required this.internshipId});
 
-  final Internship internship;
-  final StudentFormController formController;
+  final String internshipId;
+
+  @override
+  State<StudentEvaluationMainScreen> createState() =>
+      _StudentEvaluationMainScreenState();
+}
+
+class _StudentEvaluationMainScreenState
+    extends State<StudentEvaluationMainScreen> {
+  late final _formController =
+      StudentFormController(context, internshipId: widget.internshipId);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _EvaluationDate(formController: formController),
-        _PersonAtMeeting(formController: formController),
-      ],
+    final internship = InternshipsProvider.of(context)[widget.internshipId];
+    final allStudents = StudentsProvider.of(context);
+    if (!allStudents.hasId(internship.studentId)) return Container();
+    final student = allStudents[internship.studentId];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Évaluation de ${student.fullName}'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _EvaluationDate(formController: _formController),
+            _PersonAtMeeting(formController: _formController),
+            _JobToEvaluate(formController: _formController),
+            _StartEvaluation(formController: _formController),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -155,6 +181,52 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _JobToEvaluate extends StatelessWidget {
+  const _JobToEvaluate({required this.formController});
+
+  final StudentFormController formController;
+
+  @override
+  Widget build(BuildContext context) {
+    final internship = formController.internship(context);
+    final job = EnterprisesProvider.of(context)[internship.enterpriseId]
+        .jobs[internship.jobId];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Métier évalué'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(job.specialization.idWithName),
+        ),
+      ],
+    );
+  }
+}
+
+class _StartEvaluation extends StatelessWidget {
+  const _StartEvaluation({required this.formController});
+
+  final StudentFormController formController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 24, right: 24.0),
+        child: TextButton(
+            onPressed: () {
+              GoRouter.of(context).goNamed(Screens.studentEvaluationFormScreen,
+                  extra: formController);
+            },
+            child: const Text('Commencer l\'évaluation')),
+      ),
     );
   }
 }

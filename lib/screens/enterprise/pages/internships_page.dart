@@ -170,7 +170,7 @@ class _InternshipListState extends State<_InternshipList> {
   }
 
   void _evaluateInternship(Internship internship) async {
-    GoRouter.of(context).pushNamed(Screens.studentEvaluationScreen,
+    GoRouter.of(context).pushNamed(Screens.studentEvaluationMainScreen,
         params: {'internshipId': internship.id});
     setState(() {});
   }
