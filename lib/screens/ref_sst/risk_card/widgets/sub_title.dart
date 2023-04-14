@@ -12,7 +12,7 @@ class SubTitle extends StatelessWidget {
       children: [
         ListTile(
             leading: CircleAvatar(
-              backgroundColor: const Color(0xFFC75205),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               child: Text(
                 index.toString(),
                 style: const TextStyle(

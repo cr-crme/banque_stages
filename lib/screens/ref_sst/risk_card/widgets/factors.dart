@@ -13,13 +13,13 @@ class Factors extends StatelessWidget {
         margin: const EdgeInsets.only(top: 30, right: 25, left: 10),
         child: ListTile(
           textColor: Colors.black,
-          title: const Padding(
-            padding: EdgeInsets.only(bottom: 5),
+          title: Padding(
+            padding: const EdgeInsets.only(bottom: 5),
             child: Text(
               'Principaux facteurs aggravants',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Color(0xFFC75205),
+                color: Theme.of(context).colorScheme.secondary,
               ),
             ),
           ),
