@@ -7,10 +7,19 @@ import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 import 'student_form_controller.dart';
 
-class StudentEvaluationFormScreen extends StatelessWidget {
+class StudentEvaluationFormScreen extends StatefulWidget {
   const StudentEvaluationFormScreen({super.key, required this.formController});
 
   final StudentFormController formController;
+
+  @override
+  State<StudentEvaluationFormScreen> createState() =>
+      _StudentEvaluationFormScreenState();
+}
+
+class _StudentEvaluationFormScreenState
+    extends State<StudentEvaluationFormScreen> {
+  int _currentStep = 0;
 
   SkillList _extractSkills(BuildContext context,
       {required Internship internship}) {
@@ -19,9 +28,45 @@ class StudentEvaluationFormScreen extends StatelessWidget {
     return job.specialization.skills;
   }
 
+  void _nextStep() {
+    _currentStep++;
+    setState(() {});
+  }
+
+  void _previousStep() {
+    _currentStep--;
+    setState(() {});
+  }
+
+  Widget _controlBuilder(BuildContext context, ControlsDetails details) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Expanded(child: SizedBox()),
+              if (_currentStep != 0)
+                OutlinedButton(
+                    onPressed: _previousStep, child: const Text('Précédent')),
+              const SizedBox(width: 20),
+              TextButton(
+                onPressed: details.onStepContinue,
+                child: const Text('Suivant'),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final internship = formController.internship(context);
+    final internship = widget.formController.internship(context);
     final allStudents = StudentsProvider.of(context);
     if (!allStudents.hasId(internship.studentId)) return Container();
     final student = allStudents[internship.studentId];
@@ -31,16 +76,23 @@ class StudentEvaluationFormScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Évaluation de ${student.fullName}'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...skills.map((skill) => _EvaluateSkill(
-                  formController: formController,
-                  skill: skill,
-                )),
-          ],
-        ),
+      body: Stepper(
+        type: StepperType.vertical,
+        currentStep: _currentStep,
+        onStepContinue: _nextStep,
+        onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
+        onStepCancel: () => Navigator.pop(context),
+        steps: skills
+            .map((skill) => Step(
+                  isActive: _currentStep == 0,
+                  title: SubTitle(skill.id, top: 0, bottom: 0),
+                  content: _EvaluateSkill(
+                    formController: widget.formController,
+                    skill: skill,
+                  ),
+                ))
+            .toList(),
+        controlsBuilder: _controlBuilder,
       ),
     );
   }
@@ -56,73 +108,57 @@ class _EvaluateSkill extends StatelessWidget {
   Widget build(BuildContext context) {
     const spacing = 8.0;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SubTitle(skill.id),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: spacing),
-                  child: Text(
-                    skill.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: spacing),
-                  child: Text(
-                    'Niveau de complexité : ${skill.complexity}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: spacing),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Critères de performance:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      ...skill.criteria
-                          .map((e) => Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 12.0, bottom: 4.0),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      '\u00b7 ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Flexible(child: Text(e)),
-                                  ],
-                                ),
-                              ))
-                          .toList(),
-                    ],
-                  ),
-                ),
-                _TaskEvaluation(
-                    spacing: spacing,
-                    skill: skill,
-                    formController: formController),
-                _AppreciationEvaluation(
-                    spacing: spacing,
-                    skill: skill,
-                    formController: formController),
-              ],
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: spacing),
+          child: Text(
+            skill.name,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: spacing),
+          child: Text(
+            'Niveau de complexité : ${skill.complexity}',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: spacing),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Critères de performance:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              ...skill.criteria
+                  .map((e) => Padding(
+                        padding: const EdgeInsets.only(left: 12.0, bottom: 4.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              '\u00b7 ',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Flexible(child: Text(e)),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+            ],
+          ),
+        ),
+        _TaskEvaluation(
+            spacing: spacing, skill: skill, formController: formController),
+        _AppreciationEvaluation(
+            spacing: spacing, skill: skill, formController: formController),
+      ],
     );
   }
 }
@@ -149,6 +185,7 @@ class _TaskEvaluationState extends State<_TaskEvaluation> {
       padding: EdgeInsets.only(bottom: widget.spacing),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
             'La ou le stagiaire a été en mesure d\'effectuer les '
@@ -195,6 +232,7 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
       padding: EdgeInsets.only(bottom: widget.spacing),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
             'Appréciation générale de la compétence :',
