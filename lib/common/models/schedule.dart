@@ -38,7 +38,8 @@ class DailySchedule extends ItemSerializable {
   DailySchedule.fromSerialized(map)
       : dayOfWeek = Day.values[map['day']],
         start = TimeOfDay(hour: map['start'][0], minute: map['start'][1]),
-        end = TimeOfDay(hour: map['end'][0], minute: map['end'][1]);
+        end = TimeOfDay(hour: map['end'][0], minute: map['end'][1]),
+        super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {
@@ -81,7 +82,8 @@ class WeeklySchedule extends ItemSerializable {
             .toList(),
         period = DateTimeRange(
             start: DateTime.fromMillisecondsSinceEpoch(map['start']),
-            end: DateTime.fromMillisecondsSinceEpoch(map['end']));
+            end: DateTime.fromMillisecondsSinceEpoch(map['end'])),
+        super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {

@@ -111,6 +111,7 @@ class _InternshipListState extends State<_InternshipList> {
 
   void _prepareExpander(List<Internship> internships) {
     if (_expanded.length != widget.internships.length) {
+      _expanded.clear();
       for (final internship in internships) {
         _expanded[internship.id] = false;
       }
@@ -210,9 +211,12 @@ class _InternshipListState extends State<_InternshipList> {
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       const SizedBox(width: 24),
-                      Text(
-                        specialization.idWithName,
-                        style: Theme.of(context).textTheme.bodyLarge,
+                      Flexible(
+                        child: Text(
+                          specialization.idWithName,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          maxLines: null,
+                        ),
                       ),
                     ],
                   ),

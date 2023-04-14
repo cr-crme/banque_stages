@@ -22,8 +22,8 @@ class _MutableElements extends ItemSerializable {
   _MutableElements.fromSerialized(map)
       : supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
-            start: DateTime.parse(map['date'][0]),
-            end: DateTime.parse(map['date'][1])),
+            start: DateTime.fromMillisecondsSinceEpoch(map['date'][0]),
+            end: DateTime.fromMillisecondsSinceEpoch(map['date'][1])),
         weeklySchedules = (map['schedule'] as List)
             .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
@@ -34,7 +34,10 @@ class _MutableElements extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'name': supervisor.serializedMap(),
-        'date': [date.start.toString(), date.end.toString()],
+        'date': [
+          date.start.millisecondsSinceEpoch,
+          date.end.millisecondsSinceEpoch
+        ],
         'schedule': weeklySchedules.map((e) => e.serializedMap()).toList(),
         'protections': protections,
         'uniform': uniform,
@@ -138,7 +141,7 @@ class Internship extends ItemSerializable {
         isTransfering = map['isTransfering'],
         enterpriseId = map['enterprise'],
         jobId = map['jobId'],
-        extraSpecializationsId = map['extraSpecializationsId'] == null
+        extraSpecializationsId = map['extraSpecializationsId'] == -1
             ? []
             : (map['extraSpecializationsId'] as List)
                 .map((e) => e as String)
@@ -150,7 +153,7 @@ class Internship extends ItemSerializable {
         achievedLength = map['achievedLength'],
         visitingPriority = VisitingPriority.values[map['priority']],
         teacherNotes = map['teacherNotes'],
-        endDate = map['endDate'] == null
+        endDate = map['endDate'] == -1
             ? null
             : DateTime.fromMillisecondsSinceEpoch(map['endDate']),
         isClosed = map['isClosed'],
@@ -166,13 +169,13 @@ class Internship extends ItemSerializable {
       'isTransfering': isTransfering,
       'enterprise': enterpriseId,
       'jobId': jobId,
-      'extraSpecializationsId': extraSpecializationsId,
+      'extraSpecializationsId': extraSpecializationsId.isEmpty ? -1 : extraSpecializationsId,
       'mutables': _mutables.map((e) => e.serializedMap()).toList(),
       'expectedLength': expectedLength,
       'achievedLength': achievedLength,
       'priority': visitingPriority.index,
       'teacherNotes': teacherNotes,
-      'endDate': endDate?.millisecondsSinceEpoch,
+      'endDate': endDate?.millisecondsSinceEpoch ?? -1,
       'isClosed': isClosed,
     };
   }
