@@ -52,8 +52,18 @@ class _StudentEvaluationFormScreenState
         context: context,
         builder: (context) => AlertDialog(
               title: const Text('Soumettre l\'évaluation?'),
-              content: const Text(
-                  'Les informations pour cette évaluation ne seront plus modifiables.'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                      'Les informations pour cette évaluation ne seront plus modifiables.'),
+                  if (!widget.formController.allAppreciationsAreDone)
+                    const Text(
+                      '\n\n**Attention toutes les compétences n\'ont pas été évaluée**',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                ],
+              ),
               actions: [
                 OutlinedButton(
                     onPressed: () => Navigator.of(context).pop(false),
@@ -119,7 +129,11 @@ class _StudentEvaluationFormScreenState
         onStepCancel: _cancel,
         steps: [
           ...skills.map((skill) => Step(
-                isActive: _currentStep == 0,
+                isActive: true,
+                state: widget.formController.appreciation[skill]! ==
+                        SkillAppreciation.notEvaluated
+                    ? StepState.indexed
+                    : StepState.complete,
                 title: SubTitle(skill.id, top: 0, bottom: 0),
                 content: _EvaluateSkill(
                   formController: widget.formController,
@@ -127,7 +141,7 @@ class _StudentEvaluationFormScreenState
                 ),
               )),
           Step(
-            isActive: _currentStep == 0,
+            isActive: true,
             title: const SubTitle('Commentaires', top: 0, bottom: 0),
             content: _Comments(formController: widget.formController),
           )

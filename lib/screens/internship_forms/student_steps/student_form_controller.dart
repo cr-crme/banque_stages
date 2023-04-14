@@ -73,6 +73,13 @@ class StudentFormController {
   }
 
   Map<Skill, SkillAppreciation> appreciation;
+  bool get allAppreciationsAreDone {
+    for (final skill in appreciation.keys) {
+      if (appreciation[skill] == SkillAppreciation.notEvaluated) return false;
+    }
+    return true;
+  }
+
   static Map<Skill, SkillAppreciation> _prepareAppreciation(
       context, String internshipId) {
     final internship =
