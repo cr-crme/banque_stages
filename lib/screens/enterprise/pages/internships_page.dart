@@ -150,9 +150,9 @@ class _InternshipListState extends State<_InternshipList> {
     final result = await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text('Terminer le stage'),
+              title: const Text('Mettre fin au stage?'),
               content: const Text(
-                  'Voulez-vous vraiment mettre fin au stage? \nCette action est irrévocable.'),
+                  'Les informations pour ce stage ne seront plus modifiables.'),
               actions: [
                 OutlinedButton(
                     onPressed: () => Navigator.of(context).pop(false),

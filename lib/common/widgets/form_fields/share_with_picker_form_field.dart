@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import '/common/widgets/autocomplete_options_builder.dart';
 
 const List<String> shareWithSuggestions = [
-  'Tout le monde',
+  'Mon centre de services scolaire',
+  'Enseignants PFAE de l\'école',
+  'Enseignants FMS de l\'école',
+  'Enseignants FPT de l\'école',
   'Personne',
-  'Mon service scolaire',
-  'Mon école'
 ];
 
 class ShareWithPickerFormField extends FormField<String> {
   const ShareWithPickerFormField({
     super.key,
-    String initialValue = 'Tout le monde',
+    String initialValue = 'Enseignants PFAE de l\'école',
     void Function(String? shareWith)? onSaved,
     String? Function(String? shareWith)? validator,
   }) : super(

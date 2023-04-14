@@ -8,9 +8,9 @@ class ConfirmPopDialog extends StatelessWidget {
     return WillPopScope(
         onWillPop: () async => false,
         child: AlertDialog(
-          title: const Text('Voulez-vous vraiment quitter?'),
+          title: const Text('Voulez-vous quitter?'),
           content: const SingleChildScrollView(
-              child: Text('Vous allez perdre toutes vos modifications.')),
+              child: Text('Toutes les modifications seront perdues.')),
           actions: [
             OutlinedButton(
                 onPressed: () => Navigator.pop(context, false),
