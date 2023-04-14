@@ -26,7 +26,7 @@ class InformationsPageState extends State<InformationsPage> {
     await addressController.requestValidation();
 
     if (!_formKey.currentState!.validate()) {
-      return 'Vérifier que tous les champs avec un * sont remplis.';
+      return 'Remplir tous les champs avec un *.';
     }
 
     _formKey.currentState!.save();

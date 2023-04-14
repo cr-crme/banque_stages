@@ -162,7 +162,7 @@ class _InternshipDetailsState extends State<InternshipDetails> {
         _editMode = true;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Vérifier que tous les champs sont remplis.'),
+            content: Text('Remplir tous les champs avec un *.'),
           ),
         );
         return;

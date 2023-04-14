@@ -19,7 +19,7 @@ class Factors extends StatelessWidget {
               'Principaux facteurs aggravants',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Color(0xFFE65D4E),
+                color: Color(0xFFC75205),
               ),
             ),
           ),

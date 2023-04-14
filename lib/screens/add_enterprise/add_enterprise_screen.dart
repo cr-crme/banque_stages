@@ -31,8 +31,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   void _showInvalidFieldsSnakBar([String? message]) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message ??
-            'Vérifier que tous les champs avec un * sont remplis.')));
+        content: Text(message ?? 'Remplir tous les champs avec un *.')));
   }
 
   void _previousStep() {

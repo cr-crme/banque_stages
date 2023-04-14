@@ -19,7 +19,7 @@ class SituationRisk extends StatelessWidget {
               'Exemples de situation à risque',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Color(0xFFE65D4E),
+                color: Color(0xFFC75205),
               ),
             ),
           ),
