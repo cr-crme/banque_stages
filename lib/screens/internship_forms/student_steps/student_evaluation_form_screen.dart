@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '/common/models/internship.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/students_provider.dart';
+import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 import 'student_form_controller.dart';
@@ -38,7 +39,37 @@ class _StudentEvaluationFormScreenState
     setState(() {});
   }
 
-  Widget _controlBuilder(BuildContext context, ControlsDetails details) {
+  void _cancel() async {
+    final result = await showDialog(
+        context: context, builder: (context) => const ConfirmPopDialog());
+    if (!mounted || result == null || !result) return;
+
+    Navigator.of(context).pop();
+  }
+
+  void _submit() async {
+    final result = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Soumettre l\'évaluation?'),
+              content: const Text(
+                  'Les informations pour cette évaluation ne seront plus modifiables.'),
+              actions: [
+                OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text('Non')),
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text('Oui')),
+              ],
+            ));
+    if (!mounted || result == null || !result) return;
+
+    Navigator.of(context).pop();
+  }
+
+  Widget _controlBuilder(
+      BuildContext context, ControlsDetails details, SkillList skills) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
@@ -53,10 +84,13 @@ class _StudentEvaluationFormScreenState
                 OutlinedButton(
                     onPressed: _previousStep, child: const Text('Précédent')),
               const SizedBox(width: 20),
-              TextButton(
-                onPressed: details.onStepContinue,
-                child: const Text('Suivant'),
-              )
+              if (_currentStep != skills.length)
+                TextButton(
+                  onPressed: details.onStepContinue,
+                  child: const Text('Suivant'),
+                ),
+              if (_currentStep == skills.length)
+                TextButton(onPressed: _submit, child: const Text('Soumettre')),
             ],
           ),
         ],
@@ -74,25 +108,32 @@ class _StudentEvaluationFormScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Évaluation de ${student.fullName}'),
-      ),
+          title: Text('Évaluation de ${student.fullName}'),
+          leading: IconButton(
+              onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
       body: Stepper(
         type: StepperType.vertical,
         currentStep: _currentStep,
         onStepContinue: _nextStep,
         onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
-        onStepCancel: () => Navigator.pop(context),
-        steps: skills
-            .map((skill) => Step(
-                  isActive: _currentStep == 0,
-                  title: SubTitle(skill.id, top: 0, bottom: 0),
-                  content: _EvaluateSkill(
-                    formController: widget.formController,
-                    skill: skill,
-                  ),
-                ))
-            .toList(),
-        controlsBuilder: _controlBuilder,
+        onStepCancel: _cancel,
+        steps: [
+          ...skills.map((skill) => Step(
+                isActive: _currentStep == 0,
+                title: SubTitle(skill.id, top: 0, bottom: 0),
+                content: _EvaluateSkill(
+                  formController: widget.formController,
+                  skill: skill,
+                ),
+              )),
+          Step(
+            isActive: _currentStep == 0,
+            title: const SubTitle('Commentaires', top: 0, bottom: 0),
+            content: _Comments(formController: widget.formController),
+          )
+        ],
+        controlsBuilder: (BuildContext context, ControlsDetails details) =>
+            _controlBuilder(context, details, skills),
       ),
     );
   }
@@ -253,6 +294,35 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
               .toList(),
         ],
       ),
+    );
+  }
+}
+
+class _Comments extends StatelessWidget {
+  const _Comments({required this.formController});
+
+  final StudentFormController formController;
+
+  @override
+  Widget build(BuildContext context) {
+    const spacing = 8.0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(bottom: spacing),
+          child: Text(
+            'Ajouter des commentaires sur le stage',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        TextFormField(
+          controller: formController.commentsController,
+          maxLines: null,
+        ),
+      ],
     );
   }
 }

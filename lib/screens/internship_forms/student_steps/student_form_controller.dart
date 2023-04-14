@@ -89,4 +89,6 @@ class StudentFormController {
     }
     return out;
   }
+
+  final commentsController = TextEditingController();
 }

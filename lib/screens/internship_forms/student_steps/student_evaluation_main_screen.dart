@@ -222,7 +222,8 @@ class _StartEvaluation extends StatelessWidget {
         padding: const EdgeInsets.only(top: 24, right: 24.0),
         child: TextButton(
             onPressed: () {
-              GoRouter.of(context).goNamed(Screens.studentEvaluationFormScreen,
+              GoRouter.of(context).pushReplacementNamed(
+                  Screens.studentEvaluationFormScreen,
                   extra: formController);
             },
             child: const Text('Commencer l\'évaluation')),
