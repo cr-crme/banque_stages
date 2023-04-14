@@ -9,20 +9,20 @@ import 'steps/prerequisites_step.dart';
 import 'steps/supervision_step.dart';
 import 'steps/tasks_step.dart';
 
-class PostInternshipEvaluationScreen extends StatefulWidget {
-  const PostInternshipEvaluationScreen(
+class EnterpriseEvaluationScreen extends StatefulWidget {
+  const EnterpriseEvaluationScreen(
       {super.key, required this.enterpriseId, required this.jobId});
 
   final String enterpriseId;
   final String jobId;
 
   @override
-  State<PostInternshipEvaluationScreen> createState() =>
-      _PostInternshipEvaluationScreenState();
+  State<EnterpriseEvaluationScreen> createState() =>
+      _EnterpriseEvaluationScreenState();
 }
 
-class _PostInternshipEvaluationScreenState
-    extends State<PostInternshipEvaluationScreen> {
+class _EnterpriseEvaluationScreenState
+    extends State<EnterpriseEvaluationScreen> {
   final _tasksKey = GlobalKey<TasksStepState>();
   final _supervisionKey = GlobalKey<SupervisionStepState>();
   final _prerequisitesKey = GlobalKey<PrerequisitesStepState>();

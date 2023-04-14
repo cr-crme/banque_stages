@@ -10,7 +10,8 @@ import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/generate_debug_data_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
-import 'screens/internship_forms/post_internship_evaluation_screen.dart';
+import 'screens/internship_forms/enterprise_evaluation_screen.dart';
+import 'screens/internship_forms/student_evaluation_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
@@ -39,7 +40,8 @@ abstract class Screens {
   static const addStudent = 'add-student';
 
   static const internshipEnrollement = 'add-internship';
-  static const postInternshipEvaluationScreen = 'post-internship-evaluation';
+  static const enterpriseEvaluationScreen = 'enterprise-evaluation';
+  static const studentEvaluationScreen = 'student-evaluation';
 
   static const homeSst = 'home-sst';
   static const jobSst = 'job-sst';
@@ -137,11 +139,18 @@ final router = GoRouter(
       builder: (context, state) => const ItineraryScreen(),
     ),
     GoRoute(
-      path: '/post-internship-evaluation',
-      name: Screens.postInternshipEvaluationScreen,
-      builder: (context, state) => PostInternshipEvaluationScreen(
+      path: '/enterprise-evaluation',
+      name: Screens.enterpriseEvaluationScreen,
+      builder: (context, state) => EnterpriseEvaluationScreen(
         enterpriseId: state.params['enterpriseId']!,
         jobId: state.params['jobId']!,
+      ),
+    ),
+    GoRoute(
+      path: '/student-evaluation/:internshipId',
+      name: Screens.studentEvaluationScreen,
+      builder: (context, state) => StudentEvaluationScreen(
+        internshipId: state.params['internshipId']!,
       ),
     ),
     GoRoute(

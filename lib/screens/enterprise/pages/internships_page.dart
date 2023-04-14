@@ -169,6 +169,12 @@ class _InternshipListState extends State<_InternshipList> {
     setState(() {});
   }
 
+  void _evaluateInternship(Internship internship) async {
+    GoRouter.of(context).pushNamed(Screens.studentEvaluationScreen,
+        params: {'internshipId': internship.id});
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     _prepareExpander(widget.internships);
@@ -261,6 +267,17 @@ class _InternshipListState extends State<_InternshipList> {
                                 onPressed: () =>
                                     _finalizeInternship(internship),
                                 child: const Text('Terminer le stage')),
+                          ),
+                        ),
+                      if (internship.isEvaluationPending)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: TextButton(
+                                onPressed: () =>
+                                    _evaluateInternship(internship),
+                                child: const Text('Évaluer le stage')),
                           ),
                         ),
                     ],
