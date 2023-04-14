@@ -410,9 +410,9 @@ class _InternshipBody extends StatelessWidget {
                     Text('Date de fin :'),
                   ]),
                   TableRow(children: [
-                    Text(DateFormat.yMMMEd()
+                    Text(DateFormat.yMMMEd('fr_CA')
                         .format(internshipController.date.start)),
-                    Text(DateFormat.yMMMEd()
+                    Text(DateFormat.yMMMEd('fr_CA')
                         .format(internshipController.date.end)),
                   ]),
                 ],

@@ -147,7 +147,7 @@ class _DateRange extends StatelessWidget {
                           labelText: '* Date de début du stage',
                           border: InputBorder.none),
                       controller: TextEditingController(
-                          text: DateFormat.yMMMEd()
+                          text: DateFormat.yMMMEd('fr_CA')
                               .format(scheduleController.dateRange.start)),
                       enabled: false,
                     ),
@@ -156,7 +156,7 @@ class _DateRange extends StatelessWidget {
                           labelText: '* Date de fin du stage',
                           border: InputBorder.none),
                       controller: TextEditingController(
-                          text: DateFormat.yMMMEd()
+                          text: DateFormat.yMMMEd('fr_CA')
                               .format(scheduleController.dateRange.end)),
                       enabled: false,
                     ),
@@ -414,12 +414,13 @@ class _ScheduleSelector extends StatelessWidget {
                 children: [
                   Column(children: [
                     const Text('* Date de début'),
-                    Text(
-                        DateFormat.yMMMEd().format(weeklySchedule.period.start))
+                    Text(DateFormat.yMMMEd('fr_CA')
+                        .format(weeklySchedule.period.start))
                   ]),
                   Column(children: [
                     const Text('* Date de fin'),
-                    Text(DateFormat.yMMMEd().format(weeklySchedule.period.end))
+                    Text(DateFormat.yMMMEd('fr_CA')
+                        .format(weeklySchedule.period.end))
                   ]),
                 ],
               ),
