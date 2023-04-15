@@ -38,8 +38,7 @@
                     "beginsPattern": "Starting emulators",
                     "endsPattern": "All emulators ready! It is now safe to connect your app."
                 }
-            },
-            "dependsOn": ["Open Firebase Emulator's Console"]
+            }
         },
         {
             "label": "Open Firebase Emulator's Console",
