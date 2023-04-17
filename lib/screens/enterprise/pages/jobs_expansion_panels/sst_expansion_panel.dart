@@ -114,7 +114,7 @@ class _SstBody extends StatelessWidget {
                   Screens.jobSstForm,
                   params: Screens.withId(enterprise, jobId: job),
                 ),
-                child: const Text("Ouvrir le formulaire"),
+                child: const Text("Ouvrir le formulaire SST"),
               ),
             ),
           ],

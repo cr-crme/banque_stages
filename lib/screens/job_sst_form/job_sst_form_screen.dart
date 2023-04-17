@@ -67,7 +67,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inscrire un stagiaire'),
+        title: const Text('SST dans l\'entreprise'),
       ),
       body: Selector<EnterprisesProvider, Enterprise>(
         builder: (context, enterprise, _) => Stepper(
