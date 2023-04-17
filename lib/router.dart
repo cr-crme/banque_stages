@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.dart';
 import 'package:enhanced_containers/item_serializable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,7 @@ abstract class Screens {
   static const enterprisesList = 'enterprises-list';
   static const enterprise = 'enterprise';
   static const addEnterprise = 'add-enterprise';
+  static const jobSstForm = 'job-sst-form';
 
   static const home = supervisionChart;
   static const supervisionChart = 'supervision';
@@ -50,21 +52,23 @@ abstract class Screens {
   static const jobSst = 'job-sst';
   static const cardsSst = 'cards-sst';
 
-  static Map<String, String> withId(id) {
-    if (id is String) {
-      return {'id': id};
-    } else if (id is ItemSerializable) {
-      return {'id': id.id};
-    }
-
-    throw TypeError();
+  static Map<String, String> withId(id, {jobId}) {
+    return {
+      'id': (id is String)
+          ? id
+          : (id is ItemSerializable ? id.id : throw TypeError()),
+      if (jobId != null)
+        'jobId': (jobId is String)
+            ? jobId
+            : (jobId is ItemSerializable ? jobId.id : throw TypeError())
+    };
   }
 }
 
 final router = GoRouter(
   redirect: (context, state) {
     if (context.read<AuthProvider>().isSignedIn()) {
-      return populateWithDebugData && !hasDummyData(context)
+      return (populateWithDebugData && !hasDummyData(context))
           ? '/debug-data'
           : null;
     }
@@ -117,6 +121,13 @@ final router = GoRouter(
               name: Screens.internshipEnrollement,
               builder: (context, state) =>
                   InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
+            ),
+            GoRoute(
+              path: ':jobId',
+              name: Screens.jobSstForm,
+              builder: (context, state) => JobSstFormScreen(
+                  enterpriseId: state.params['id']!,
+                  jobId: state.params['jobId']!),
             ),
           ],
         ),

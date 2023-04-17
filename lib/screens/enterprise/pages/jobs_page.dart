@@ -76,13 +76,13 @@ class JobsPageState extends State<JobsPage> {
 
     switch (eventType) {
       case SstEventType.pastWounds:
-        job.pastWounds.add(description);
+        // job.pastWounds.add(description);
         break;
       case SstEventType.pastIncidents:
-        job.pastIncidents.add(description);
+        // job.pastIncidents.add(description);
         break;
       case SstEventType.dangerousSituations:
-        job.dangerousSituations.add(description);
+        // job.dangerousSituations.add(description);
         break;
       default:
         return;
@@ -157,6 +157,7 @@ class JobsPageState extends State<JobsPage> {
                         ),
                         SstExpansionPanel(
                           isExpanded: _expandedSections[job.id]![3],
+                          enterprise: widget.enterprise,
                           job: job,
                           addSstEvent: _addSstEvent,
                         ),

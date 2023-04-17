@@ -30,10 +30,11 @@ class Job extends ItemSerializable {
   final double welcomingMentalHealthIssue;
 
   // SST
+  final String dangerousSituations;
   final List<String> equipmentRequired;
-  final List<String> dangerousSituations;
-  final List<String> pastWounds;
-  final List<String> pastIncidents;
+  final String pastIncidents;
+  final String incidentContact;
+  final Map<String, dynamic> sstQuestions;
 
   // Prerequisites
   final int minimalAge;
@@ -56,10 +57,11 @@ class Job extends ItemSerializable {
     this.welcomingCommunication = -1.0,
     this.welcomingMentalDeficiency = -1.0,
     this.welcomingMentalHealthIssue = -1.0,
+    this.dangerousSituations = "",
     List<String>? equipmentRequired,
-    List<String>? dangerousSituations,
-    List<String>? pastWounds,
-    List<String>? pastIncidents,
+    this.pastIncidents = "",
+    this.incidentContact = "",
+    Map<String, dynamic>? sstQuestions,
     this.minimalAge = 0,
     this.uniform = '',
     List<String>? requirements,
@@ -67,9 +69,7 @@ class Job extends ItemSerializable {
   })  : photosUrl = photosUrl ?? [],
         skillsRequired = skillsRequired ?? [],
         equipmentRequired = equipmentRequired ?? [],
-        dangerousSituations = dangerousSituations ?? [],
-        pastWounds = pastWounds ?? [],
-        pastIncidents = pastIncidents ?? [],
+        sstQuestions = sstQuestions ?? {},
         requirements = requirements ?? [],
         comments = comments ?? [];
 
@@ -86,10 +86,11 @@ class Job extends ItemSerializable {
     double? welcomingCommunication,
     double? welcomingMentalDeficiency,
     double? welcomingMentalHealthIssue,
+    String? dangerousSituations,
     List<String>? equipmentRequired,
-    List<String>? dangerousSituations,
-    List<String>? pastWounds,
-    List<String>? pastIncidents,
+    String? pastIncidents,
+    String? incidentContact,
+    Map<String, dynamic>? sstQuestions,
     int? minimalAge,
     String? uniform,
     List<String>? requirements,
@@ -111,10 +112,11 @@ class Job extends ItemSerializable {
             welcomingMentalDeficiency ?? this.welcomingMentalDeficiency,
         welcomingMentalHealthIssue:
             welcomingMentalHealthIssue ?? this.welcomingMentalHealthIssue,
-        equipmentRequired: equipmentRequired ?? this.equipmentRequired,
         dangerousSituations: dangerousSituations ?? this.dangerousSituations,
-        pastWounds: pastWounds ?? this.pastWounds,
+        equipmentRequired: equipmentRequired ?? this.equipmentRequired,
         pastIncidents: pastIncidents ?? this.pastIncidents,
+        incidentContact: incidentContact ?? this.incidentContact,
+        sstQuestions: sstQuestions ?? this.sstQuestions,
         minimalAge: minimalAge ?? this.minimalAge,
         uniform: uniform ?? this.uniform,
         requirements: requirements ?? this.requirements,
@@ -136,10 +138,11 @@ class Job extends ItemSerializable {
       'welcomingCommunication': welcomingCommunication,
       'welcomingMentalDeficiency': welcomingMentalDeficiency,
       'welcomingMentalHealthIssue': welcomingMentalHealthIssue,
-      'equipmentRequired': equipmentRequired,
       'dangerousSituations': dangerousSituations,
-      'pastWounds': pastWounds,
+      'equipmentRequired': equipmentRequired,
       'pastIncidents': pastIncidents,
+      'incidentContact': incidentContact,
+      'sstQuestions': sstQuestions,
       'minimalAge': minimalAge,
       'uniform': uniform,
       'requirements': requirements,
@@ -167,13 +170,12 @@ class Job extends ItemSerializable {
             map['welcomingMentalDeficiency']),
         welcomingMentalHealthIssue = ItemSerializable.doubleFromSerialized(
             map['welcomingMentalHealthIssue']),
+        dangerousSituations = map['dangerousSituations'],
         equipmentRequired =
             ItemSerializable.listFromSerialized(map['equipmentRequired']),
-        dangerousSituations =
-            ItemSerializable.listFromSerialized(map['dangerousSituations']),
-        pastWounds = ItemSerializable.listFromSerialized(map['pastWounds']),
-        pastIncidents =
-            ItemSerializable.listFromSerialized(map['pastIncidents']),
+        pastIncidents = map['pastIncidents'],
+        incidentContact = map['incidentContact'],
+        sstQuestions = ItemSerializable.mapFromSerialized(map['sstQuestions']),
         minimalAge = map['minimalAge'],
         uniform = map['uniform'],
         requirements = ItemSerializable.listFromSerialized(map['requirements']),
