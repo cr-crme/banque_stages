@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 
 import '/common/models/internship.dart';
-import '/common/models/internship_evaluation.dart';
+import '/common/models/internship_evaluation_skill.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
-import 'student_form_controller.dart';
+import 'skill_evaluation_form_controller.dart';
 
-class StudentEvaluationFormScreen extends StatefulWidget {
-  const StudentEvaluationFormScreen({super.key, required this.formController});
+class SkillEvaluationFormScreen extends StatefulWidget {
+  const SkillEvaluationFormScreen({super.key, required this.formController});
 
-  final StudentFormController formController;
+  final SkillEvaluationFormController formController;
 
   @override
-  State<StudentEvaluationFormScreen> createState() =>
-      _StudentEvaluationFormScreenState();
+  State<SkillEvaluationFormScreen> createState() =>
+      _SkillEvaluationFormScreenState();
 }
 
-class _StudentEvaluationFormScreenState
-    extends State<StudentEvaluationFormScreen> {
+class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
   int _currentStep = 0;
 
   SkillList _extractSkills(BuildContext context,
@@ -111,7 +110,7 @@ class _StudentEvaluationFormScreenState
     }
 
     final internship = widget.formController.internship(context, listen: false);
-    internship.studentEvaluation.add(InternshipEvaluation(
+    internship.skillEvaluation.add(InternshipEvaluationSkill(
       date: widget.formController.evaluationDate,
       presentAtEvaluation: wereAtMeeting,
       skills: skillEvaluation,
@@ -202,7 +201,7 @@ class _StudentEvaluationFormScreenState
 class _EvaluateSkill extends StatelessWidget {
   const _EvaluateSkill({required this.formController, required this.skill});
 
-  final StudentFormController formController;
+  final SkillEvaluationFormController formController;
   final Skill skill;
 
   @override
@@ -273,7 +272,7 @@ class _TaskEvaluation extends StatefulWidget {
 
   final double spacing;
   final Skill skill;
-  final StudentFormController formController;
+  final SkillEvaluationFormController formController;
 
   @override
   State<_TaskEvaluation> createState() => _TaskEvaluationState();
@@ -319,7 +318,7 @@ class _AppreciationEvaluation extends StatefulWidget {
 
   final double spacing;
   final Skill skill;
-  final StudentFormController formController;
+  final SkillEvaluationFormController formController;
 
   @override
   State<_AppreciationEvaluation> createState() =>
@@ -361,7 +360,7 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
 class _Comments extends StatelessWidget {
   const _Comments({required this.formController});
 
-  final StudentFormController formController;
+  final SkillEvaluationFormController formController;
 
   @override
   Widget build(BuildContext context) {

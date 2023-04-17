@@ -8,22 +8,21 @@ import '/common/providers/students_provider.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 import '/router.dart';
-import 'student_form_controller.dart';
+import 'skill_evaluation_form_controller.dart';
 
-class StudentEvaluationMainScreen extends StatefulWidget {
-  const StudentEvaluationMainScreen({super.key, required this.internshipId});
+class SkillEvaluationMainScreen extends StatefulWidget {
+  const SkillEvaluationMainScreen({super.key, required this.internshipId});
 
   final String internshipId;
 
   @override
-  State<StudentEvaluationMainScreen> createState() =>
-      _StudentEvaluationMainScreenState();
+  State<SkillEvaluationMainScreen> createState() =>
+      _SkillEvaluationMainScreenState();
 }
 
-class _StudentEvaluationMainScreenState
-    extends State<StudentEvaluationMainScreen> {
+class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   late final _formController =
-      StudentFormController(context, internshipId: widget.internshipId);
+      SkillEvaluationFormController(context, internshipId: widget.internshipId);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +54,7 @@ class _StudentEvaluationMainScreenState
 class _EvaluationDate extends StatefulWidget {
   const _EvaluationDate({required this.formController});
 
-  final StudentFormController formController;
+  final SkillEvaluationFormController formController;
   @override
   State<_EvaluationDate> createState() => _EvaluationDateState();
 }
@@ -108,7 +107,7 @@ class _EvaluationDateState extends State<_EvaluationDate> {
 class _PersonAtMeeting extends StatefulWidget {
   const _PersonAtMeeting({required this.formController});
 
-  final StudentFormController formController;
+  final SkillEvaluationFormController formController;
   @override
   State<_PersonAtMeeting> createState() => _PersonAtMeetingState();
 }
@@ -190,7 +189,7 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
 class _JobToEvaluate extends StatefulWidget {
   const _JobToEvaluate({required this.formController});
 
-  final StudentFormController formController;
+  final SkillEvaluationFormController formController;
 
   @override
   State<_JobToEvaluate> createState() => _JobToEvaluateState();
@@ -317,7 +316,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
 class _StartEvaluation extends StatelessWidget {
   const _StartEvaluation({required this.formController});
 
-  final StudentFormController formController;
+  final SkillEvaluationFormController formController;
 
   @override
   Widget build(BuildContext context) {
@@ -330,7 +329,7 @@ class _StartEvaluation extends StatelessWidget {
               formController.prepareTaskCompleted();
               formController.prepareAppreciation();
               GoRouter.of(context).pushReplacementNamed(
-                  Screens.studentEvaluationFormScreen,
+                  Screens.skillEvaluationFormScreen,
                   extra: formController);
             },
             child: const Text('Commencer l\'évaluation')),

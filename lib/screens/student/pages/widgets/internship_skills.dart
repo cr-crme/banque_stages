@@ -1,11 +1,12 @@
-import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '/common/models/internship.dart';
-import '/common/models/internship_evaluation.dart';
+import '/common/models/internship_evaluation_attitude.dart';
+import '/common/models/internship_evaluation_skill.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/router.dart';
 
 class InternshipSkills extends StatefulWidget {
   const InternshipSkills({super.key, required this.internship});
@@ -36,22 +37,45 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                     .textTheme
                     .titleLarge!
                     .copyWith(color: Colors.black)),
-            body: Stack(
-              alignment: Alignment.topRight,
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: _SpecificSkillBody(
-                        internship: widget.internship,
-                        evaluation: widget.internship.studentEvaluation)),
-                IconButton(
-                    onPressed: () => GoRouter.of(context).pushNamed(
-                        Screens.studentEvaluationMainScreen,
-                        params: {'internshipId': widget.internship.id}),
-                    icon: const Icon(
-                      Icons.add_chart_rounded,
-                      color: Colors.black,
-                    ))
+                Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: _SpecificSkillBody(
+                            internship: widget.internship,
+                            evaluation: widget.internship.skillEvaluation)),
+                    IconButton(
+                        onPressed: () => GoRouter.of(context).pushNamed(
+                            Screens.skillEvaluationMainScreen,
+                            params: {'internshipId': widget.internship.id}),
+                        icon: const Icon(
+                          Icons.add_chart_rounded,
+                          color: Colors.black,
+                        ))
+                  ],
+                ),
+                Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: _AttitudeBody(
+                            internship: widget.internship,
+                            evaluation: widget.internship.attitudeEvaluation)),
+                    IconButton(
+                        onPressed: () => GoRouter.of(context).pushNamed(
+                            Screens.skillEvaluationMainScreen,
+                            params: {'internshipId': widget.internship.id}),
+                        icon: const Icon(
+                          Icons.add_chart_rounded,
+                          color: Colors.black,
+                        ))
+                  ],
+                )
               ],
             ),
           )
@@ -68,7 +92,7 @@ class _SpecificSkillBody extends StatefulWidget {
   });
 
   final Internship internship;
-  final List<InternshipEvaluation> evaluation;
+  final List<InternshipEvaluationSkill> evaluation;
 
   @override
   State<_SpecificSkillBody> createState() => _SpecificSkillBodyState();
@@ -209,7 +233,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
     );
   }
 
-  Widget _buildShowOtherForms() {
+  Widget _buildShowOtherDate() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
       child: Row(
@@ -282,6 +306,131 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
                             ],
                           ),
                         )),
+              _buildComment(),
+              _buildShowOtherDate(),
+            ],
+          )
+      ],
+    );
+  }
+}
+
+class _AttitudeBody extends StatefulWidget {
+  const _AttitudeBody({
+    required this.internship,
+    required this.evaluation,
+  });
+
+  final Internship internship;
+  final List<InternshipEvaluationAttitude> evaluation;
+
+  @override
+  State<_AttitudeBody> createState() => _AttitudeBodyState();
+}
+
+class _AttitudeBodyState extends State<_AttitudeBody> {
+  static const _interline = 12.0;
+  late var _currentEvaluationIndex = widget.evaluation.length - 1;
+
+  Widget _buildLastEvaluation() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Text('Dernière évaluation : '
+          '${DateFormat('dd MMMM yyyy', 'fr_CA').format(widget.evaluation[_currentEvaluationIndex].date)}'),
+    );
+  }
+
+  Widget _buildPresentAtMeeting() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Personnes présentes',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          ...widget.evaluation[_currentEvaluationIndex].presentAtEvaluation
+              .map((e) => Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('\u2022 '),
+                        Flexible(child: Text(e)),
+                      ],
+                    ),
+                  ))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildComment() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Commentaires sur le stage',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+                widget.evaluation[_currentEvaluationIndex].comments.isEmpty
+                    ? 'Aucun commentaire'
+                    : widget.evaluation[_currentEvaluationIndex].comments),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShowOtherForms() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('Afficher formulaire d\'évaluation'),
+          DropdownButton<int>(
+            value: _currentEvaluationIndex,
+            onChanged: (value) =>
+                setState(() => _currentEvaluationIndex = value!),
+            items: widget.evaluation
+                .asMap()
+                .keys
+                .map((index) => DropdownMenuItem(
+                    value: index,
+                    child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
+                        .format(widget.evaluation[index].date))))
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('C2. Attitudes et comportements',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        if (widget.evaluation.isEmpty)
+          const Padding(
+            padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
+            child: Text('Aucune évaluation disponible pour ce stage'),
+          ),
+        if (widget.evaluation.isNotEmpty)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildLastEvaluation(),
+              _buildPresentAtMeeting(),
               _buildComment(),
               _buildShowOtherForms(),
             ],

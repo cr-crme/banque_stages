@@ -63,19 +63,19 @@ class SkillEvaluation extends ItemSerializable {
   }
 }
 
-class InternshipEvaluation extends ItemSerializable {
+class InternshipEvaluationSkill extends ItemSerializable {
   DateTime date;
   List<String> presentAtEvaluation;
   List<SkillEvaluation> skills;
   String comments;
 
-  InternshipEvaluation({
+  InternshipEvaluationSkill({
     required this.date,
     required this.presentAtEvaluation,
     required this.skills,
     required this.comments,
   });
-  InternshipEvaluation.fromSerialized(map)
+  InternshipEvaluationSkill.fromSerialized(map)
       : date = DateTime.fromMillisecondsSinceEpoch(map['date']),
         presentAtEvaluation =
             (map['present'] as List).map((e) => e as String).toList(),
@@ -96,8 +96,8 @@ class InternshipEvaluation extends ItemSerializable {
     };
   }
 
-  InternshipEvaluation deepCopy() {
-    return InternshipEvaluation(
+  InternshipEvaluationSkill deepCopy() {
+    return InternshipEvaluationSkill(
       date: DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch),
       presentAtEvaluation: presentAtEvaluation.map((e) => e).toList(),
       skills: skills.map((e) => e.deepCopy()).toList(),

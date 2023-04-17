@@ -12,9 +12,9 @@ import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/generate_debug_data_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
-import 'screens/internship_forms/student_steps/student_evaluation_form_screen.dart';
-import 'screens/internship_forms/student_steps/student_evaluation_main_screen.dart';
-import 'screens/internship_forms/student_steps/student_form_controller.dart';
+import 'screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
+import 'screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
+import 'screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 import 'screens/login_screen.dart';
 import 'screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'screens/ref_sst/risks_list/risks_list_screen.dart';
@@ -45,8 +45,8 @@ abstract class Screens {
 
   static const internshipEnrollement = 'add-internship';
   static const enterpriseEvaluationScreen = 'enterprise-evaluation';
-  static const studentEvaluationMainScreen = 'student-evaluation-main';
-  static const studentEvaluationFormScreen = 'student-evaluation-form';
+  static const skillEvaluationMainScreen = 'skill-evaluation-main';
+  static const skillEvaluationFormScreen = 'skill-evaluation-form';
 
   static const homeSst = 'home-sst';
   static const jobSst = 'job-sst';
@@ -161,18 +161,18 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/student-evaluation-main/:internshipId',
-      name: Screens.studentEvaluationMainScreen,
-      builder: (context, state) => StudentEvaluationMainScreen(
+      path: '/skill-evaluation-main/:internshipId',
+      name: Screens.skillEvaluationMainScreen,
+      builder: (context, state) => SkillEvaluationMainScreen(
         internshipId: state.params['internshipId']!,
       ),
     ),
     GoRoute(
-      path: '/student-evaluation-form',
-      name: Screens.studentEvaluationFormScreen,
+      path: '/skill-evaluation-form',
+      name: Screens.skillEvaluationFormScreen,
       builder: (context, state) {
-        return StudentEvaluationFormScreen(
-          formController: state.extra as StudentFormController,
+        return SkillEvaluationFormScreen(
+          formController: state.extra as SkillEvaluationFormController,
         );
       },
     ),

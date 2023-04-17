@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 
 import '/common/models/internship.dart';
-import '/common/models/internship_evaluation.dart';
+import '/common/models/internship_evaluation_skill.dart';
 import '/common/providers/internships_provider.dart';
 import '/misc/job_data_file_service.dart';
 
-class StudentFormController {
-  StudentFormController(context, {required this.internshipId});
+class SkillEvaluationFormController {
+  SkillEvaluationFormController(context, {required this.internshipId});
   final String internshipId;
   Internship internship(context, {listen = true}) =>
       InternshipsProvider.of(context, listen: listen)[internshipId];

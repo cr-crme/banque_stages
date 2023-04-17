@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 import '/common/models/person.dart';
 import '/common/models/visiting_priority.dart';
-import 'internship_evaluation.dart';
+import 'internship_evaluation_skill.dart';
+import 'internship_evaluation_attitude.dart';
 import 'schedule.dart';
 
 class _MutableElements extends ItemSerializable {
@@ -82,10 +83,15 @@ class Internship extends ItemSerializable {
   final VisitingPriority visitingPriority;
   final String teacherNotes;
   final DateTime? endDate;
-  final List<InternshipEvaluation> studentEvaluation;
+  final List<InternshipEvaluationSkill> skillEvaluation;
+  final List<InternshipEvaluationAttitude> attitudeEvaluation;
 
-  bool get isClosed => endDate != null && studentEvaluation.isEmpty;
-  bool get isEvaluationPending => endDate != null && studentEvaluation.isEmpty;
+  bool get isClosed =>
+      endDate != null &&
+      skillEvaluation.isNotEmpty &&
+      attitudeEvaluation.isNotEmpty;
+  bool get isEvaluationPending =>
+      endDate != null && (skillEvaluation.isEmpty || skillEvaluation.isEmpty);
   bool get isActive => endDate == null;
 
   Internship._({
@@ -103,7 +109,8 @@ class Internship extends ItemSerializable {
     required this.visitingPriority,
     required this.teacherNotes,
     required this.endDate,
-    required this.studentEvaluation,
+    required this.skillEvaluation,
+    required this.attitudeEvaluation,
   }) : _mutables = mutables;
 
   Internship({
@@ -125,7 +132,8 @@ class Internship extends ItemSerializable {
     required this.visitingPriority,
     this.teacherNotes = '',
     this.endDate,
-    this.studentEvaluation = const [],
+    this.skillEvaluation = const [],
+    this.attitudeEvaluation = const [],
   })  : previousTeacherId = previousTeacherId ?? teacherId,
         _mutables = [
           _MutableElements(
@@ -158,10 +166,15 @@ class Internship extends ItemSerializable {
         endDate = map['endDate'] == -1
             ? null
             : DateTime.fromMillisecondsSinceEpoch(map['endDate']),
-        studentEvaluation = map['studentEvaluation'] == null
+        skillEvaluation = map['skillEvaluation'] == null
             ? []
-            : (map['studentEvaluation'] as List)
-                .map((e) => InternshipEvaluation.fromSerialized(e))
+            : (map['skillEvaluation'] as List)
+                .map((e) => InternshipEvaluationSkill.fromSerialized(e))
+                .toList(),
+        attitudeEvaluation = map['attitudeEvaluation'] == null
+            ? []
+            : (map['attitudeEvaluation'] as List)
+                .map((e) => InternshipEvaluationAttitude.fromSerialized(e))
                 .toList(),
         super.fromSerialized(map);
 
@@ -183,8 +196,9 @@ class Internship extends ItemSerializable {
       'priority': visitingPriority.index,
       'teacherNotes': teacherNotes,
       'endDate': endDate?.millisecondsSinceEpoch ?? -1,
-      'studentEvaluation':
-          studentEvaluation.map((e) => e.serializedMap()).toList(),
+      'skillEvaluation': skillEvaluation.map((e) => e.serializedMap()).toList(),
+      'attitudeEvaluation':
+          attitudeEvaluation.map((e) => e.serializedMap()).toList(),
     };
   }
 
@@ -223,7 +237,8 @@ class Internship extends ItemSerializable {
     VisitingPriority? visitingPriority,
     String? teacherNotes,
     DateTime? endDate,
-    List<InternshipEvaluation>? studentEvaluation,
+    List<InternshipEvaluationSkill>? skillEvaluation,
+    List<InternshipEvaluationAttitude>? attitudeEvaluation,
   }) {
     if (supervisor != null ||
         date != null ||
@@ -249,7 +264,8 @@ class Internship extends ItemSerializable {
       visitingPriority: visitingPriority ?? this.visitingPriority,
       teacherNotes: teacherNotes ?? this.teacherNotes,
       endDate: endDate ?? this.endDate,
-      studentEvaluation: studentEvaluation ?? this.studentEvaluation,
+      skillEvaluation: skillEvaluation ?? this.skillEvaluation,
+      attitudeEvaluation: attitudeEvaluation ?? this.attitudeEvaluation,
     );
   }
 
@@ -275,7 +291,8 @@ class Internship extends ItemSerializable {
               endDate!.month,
               endDate!.day,
             ),
-      studentEvaluation: studentEvaluation.map((e) => e.deepCopy()).toList(),
+      skillEvaluation: skillEvaluation.map((e) => e.deepCopy()).toList(),
+      attitudeEvaluation: attitudeEvaluation.map((e) => e.deepCopy()).toList(),
     );
   }
 }

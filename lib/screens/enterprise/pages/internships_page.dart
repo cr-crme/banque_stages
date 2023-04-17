@@ -171,7 +171,7 @@ class _InternshipListState extends State<_InternshipList> {
 
   void _evaluateInternship(Internship internship) async {
     // TODO Change this method for the evaluation of the enterprise rather than the student
-    GoRouter.of(context).pushNamed(Screens.studentEvaluationMainScreen,
+    GoRouter.of(context).pushNamed(Screens.skillEvaluationMainScreen,
         params: {'internshipId': internship.id});
     setState(() {});
   }
