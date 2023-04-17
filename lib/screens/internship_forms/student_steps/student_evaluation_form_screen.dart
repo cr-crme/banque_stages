@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '/common/models/internship.dart';
+import '/common/models/internship_evaluation.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/common/widgets/sub_title.dart';
@@ -47,33 +49,72 @@ class _StudentEvaluationFormScreenState
     Navigator.of(context).pop();
   }
 
-  void _submit() async {
-    final result = await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: const Text('Soumettre l\'évaluation?'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                      'Les informations pour cette évaluation ne seront plus modifiables.'),
-                  if (!widget.formController.allAppreciationsAreDone)
-                    const Text(
-                      '\n\n**Attention toutes les compétences n\'ont pas été évaluée**',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                ],
-              ),
-              actions: [
-                OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('Non')),
-                TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('Oui')),
-              ],
-            ));
-    if (!mounted || result == null || !result) return;
+  void _submit() {
+    // // Confirm the user is really ready to submit
+    // final result = await showDialog(
+    //     context: context,
+    //     builder: (context) => AlertDialog(
+    //           title: const Text('Soumettre l\'évaluation?'),
+    //           content: Column(
+    //             mainAxisSize: MainAxisSize.min,
+    //             children: [
+    //               const Text(
+    //                   'Les informations pour cette évaluation ne seront plus modifiables.'),
+    //               if (!widget.formController.allAppreciationsAreDone)
+    //                 const Text(
+    //                   '\n\n**Attention toutes les compétences n\'ont pas été évaluée**',
+    //                   style: TextStyle(color: Colors.red),
+    //                 ),
+    //             ],
+    //           ),
+    //           actions: [
+    //             OutlinedButton(
+    //                 onPressed: () => Navigator.of(context).pop(false),
+    //                 child: const Text('Non')),
+    //             TextButton(
+    //                 onPressed: () => Navigator.of(context).pop(true),
+    //                 child: const Text('Oui')),
+    //           ],
+    //         ));
+    // if (!mounted || result == null || !result) return;
+
+    // Fetch the data from the form controller
+    final List<String> wereAtMeeting = [];
+    for (final person in widget.formController.wereAtMeeting.keys) {
+      if (widget.formController.wereAtMeeting[person]!) {
+        wereAtMeeting.add(person);
+      }
+    }
+    if (widget.formController.withOtherAtMeeting) {
+      wereAtMeeting.add(widget.formController.othersAtMeetingController.text);
+    }
+
+    final List<SkillEvaluation> skillEvaluation = [];
+    for (final skill in widget.formController.taskCompleted.keys) {
+      final List<String> tasks = [];
+      for (final task in widget.formController.taskCompleted[skill]!.keys) {
+        if (widget.formController.taskCompleted[skill]![task]!) {
+          tasks.add(task);
+        }
+      }
+      skillEvaluation.add(SkillEvaluation(
+        skillName: skill.name,
+        tasks: tasks,
+        appreciation: widget.formController.appreciation[skill]!,
+      ));
+    }
+
+    final evaluation = InternshipEvaluation(
+      date: widget.formController.evaluationDate,
+      presentAtEvaluation: wereAtMeeting,
+      skills: skillEvaluation,
+      comments: widget.formController.commentsController.text,
+    );
+
+    // Pass the evaluation data to the rest of the app
+    final internship = widget.formController.internship(context, listen: false);
+    InternshipsProvider.of(context, listen: false)
+        .replace(internship.copyWith(evaluation: evaluation));
 
     Navigator.of(context).pop();
   }

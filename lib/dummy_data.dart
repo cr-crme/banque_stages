@@ -654,7 +654,7 @@ Future<void> addDummyInterships(
         lastName: 'Forever',
         phone: PhoneNumber.fromString('514-555-1234')),
     date: period,
-    isClosed: false,
+    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -709,7 +709,7 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    isClosed: false,
+    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -760,7 +760,7 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    isClosed: true,
+    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -806,7 +806,7 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    isClosed: true,
+    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -847,7 +847,7 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    isClosed: false,
+    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -888,7 +888,7 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    isClosed: false,
+    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -939,7 +939,7 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    isClosed: false,
+    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [

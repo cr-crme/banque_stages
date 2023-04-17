@@ -112,7 +112,6 @@ class _InternshipEnrollmentScreenState
       weeklySchedules:
           _scheduleKey.currentState!.scheduleController.weeklySchedules,
       visitingPriority: VisitingPriority.low,
-      isClosed: false,
     );
 
     InternshipsProvider.of(context, listen: false).add(internship);

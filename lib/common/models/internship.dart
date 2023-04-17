@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '/common/models/person.dart';
 import '/common/models/visiting_priority.dart';
+import 'internship_evaluation.dart';
 import 'schedule.dart';
 
 class _MutableElements extends ItemSerializable {
@@ -81,10 +82,11 @@ class Internship extends ItemSerializable {
   final VisitingPriority visitingPriority;
   final String teacherNotes;
   final DateTime? endDate;
+  final InternshipEvaluation? evaluation;
 
-  final bool isClosed; // Finished and evaluation is done
-  bool get isEvaluationPending => !isClosed && endDate != null;
-  bool get isActive => !isClosed && endDate == null;
+  bool get isClosed => endDate != null && evaluation != null;
+  bool get isEvaluationPending => endDate != null && evaluation == null;
+  bool get isActive => endDate == null;
 
   Internship._({
     required super.id,
@@ -101,7 +103,7 @@ class Internship extends ItemSerializable {
     required this.visitingPriority,
     required this.teacherNotes,
     required this.endDate,
-    required this.isClosed,
+    required this.evaluation,
   }) : _mutables = mutables;
 
   Internship({
@@ -123,7 +125,7 @@ class Internship extends ItemSerializable {
     required this.visitingPriority,
     this.teacherNotes = '',
     this.endDate,
-    required this.isClosed,
+    this.evaluation,
   })  : previousTeacherId = previousTeacherId ?? teacherId,
         _mutables = [
           _MutableElements(
@@ -156,7 +158,9 @@ class Internship extends ItemSerializable {
         endDate = map['endDate'] == -1
             ? null
             : DateTime.fromMillisecondsSinceEpoch(map['endDate']),
-        isClosed = map['isClosed'],
+        evaluation = map['evaluation'] == -1
+            ? null
+            : InternshipEvaluation.fromSerialized(map['evaluation']),
         super.fromSerialized(map);
 
   @override
@@ -169,14 +173,15 @@ class Internship extends ItemSerializable {
       'isTransfering': isTransfering,
       'enterprise': enterpriseId,
       'jobId': jobId,
-      'extraSpecializationsId': extraSpecializationsId.isEmpty ? -1 : extraSpecializationsId,
+      'extraSpecializationsId':
+          extraSpecializationsId.isEmpty ? -1 : extraSpecializationsId,
       'mutables': _mutables.map((e) => e.serializedMap()).toList(),
       'expectedLength': expectedLength,
       'achievedLength': achievedLength,
       'priority': visitingPriority.index,
       'teacherNotes': teacherNotes,
       'endDate': endDate?.millisecondsSinceEpoch ?? -1,
-      'isClosed': isClosed,
+      'evaluation': evaluation?.serializedMap() ?? -1,
     };
   }
 
@@ -215,7 +220,7 @@ class Internship extends ItemSerializable {
     VisitingPriority? visitingPriority,
     String? teacherNotes,
     DateTime? endDate,
-    bool? isClosed,
+    InternshipEvaluation? evaluation,
   }) {
     if (supervisor != null ||
         date != null ||
@@ -241,7 +246,7 @@ class Internship extends ItemSerializable {
       visitingPriority: visitingPriority ?? this.visitingPriority,
       teacherNotes: teacherNotes ?? this.teacherNotes,
       endDate: endDate ?? this.endDate,
-      isClosed: isClosed ?? this.isClosed,
+      evaluation: evaluation ?? this.evaluation,
     );
   }
 
@@ -267,7 +272,7 @@ class Internship extends ItemSerializable {
               endDate!.month,
               endDate!.day,
             ),
-      isClosed: isClosed,
+      evaluation: evaluation?.deepCopy(),
     );
   }
 }

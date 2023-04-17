@@ -1,31 +1,10 @@
 import 'package:flutter/widgets.dart';
 
 import '/common/models/internship.dart';
+import '/common/models/internship_evaluation.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/misc/job_data_file_service.dart';
-
-enum SkillAppreciation {
-  acquired,
-  toPursuit,
-  failed,
-  notEvaluated,
-}
-
-extension SkillAppreciationNamed on SkillAppreciation {
-  String get name {
-    switch (this) {
-      case SkillAppreciation.acquired:
-        return 'Acquise';
-      case SkillAppreciation.toPursuit:
-        return 'À poursuivre';
-      case SkillAppreciation.failed:
-        return 'Échouée';
-      case SkillAppreciation.notEvaluated:
-        return 'Non évaluée';
-    }
-  }
-}
 
 class StudentFormController {
   StudentFormController(context, {required this.internshipId})
