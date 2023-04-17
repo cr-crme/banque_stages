@@ -34,7 +34,8 @@ class _StudentEvaluationMainScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Évaluation de ${student.fullName}'),
+        title: Text(
+            'Évaluation de ${student.fullName}\nC1. Compétences spécifiques'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -217,10 +218,17 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
         .toList();
 
     for (final skill in _specialization.skills) {
+      widget.formController.skillsAreFromSpecializationId[skill] =
+          _specialization.id;
       widget.formController.skillsToEvaluate[skill] = true;
     }
     for (final specialization in _extraSpecialization) {
       for (final skill in specialization.skills) {
+        if (!widget.formController.skillsAreFromSpecializationId
+            .containsKey(skill)) {
+          widget.formController.skillsAreFromSpecializationId[skill] =
+              specialization.id;
+        }
         if (widget.formController.skillsToEvaluate.containsKey(skill)) {
           _usedDuplicateSkills[skill] = false;
         } else {

@@ -100,8 +100,11 @@ class _StudentEvaluationFormScreenState
           tasks.add(task);
         }
       }
+
       skillEvaluation.add(SkillEvaluation(
-        skillName: skill.name,
+        specializationId:
+            widget.formController.skillsAreFromSpecializationId[skill]!,
+        skillName: skill.idWithName,
         tasks: tasks,
         appreciation: widget.formController.appreciation[skill]!,
       ));

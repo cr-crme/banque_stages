@@ -27,11 +27,12 @@ class StudentFormController {
   }
 
   final Map<Skill, bool> skillsToEvaluate = {};
-
+  final Map<Skill, String> skillsAreFromSpecializationId = {};
   Map<Skill, Map<String, bool>> taskCompleted = {};
   void prepareTaskCompleted() {
     taskCompleted.clear();
     for (final skill in skillsToEvaluate.keys) {
+      if (!skillsToEvaluate[skill]!) continue;
       Map<String, bool> tp = {};
       for (final task in skill.tasks) {
         tp[task] = false;
@@ -51,6 +52,7 @@ class StudentFormController {
   void prepareAppreciation() {
     appreciation.clear();
     for (final skill in skillsToEvaluate.keys) {
+      if (!skillsToEvaluate[skill]!) continue;
       appreciation[skill] = SkillAppreciation.notEvaluated;
     }
   }
