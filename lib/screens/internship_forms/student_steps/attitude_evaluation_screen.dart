@@ -98,26 +98,20 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
               title: Container(),
               state: _stepStatus[1],
               isActive: _currentStep == 1,
-              content:
-                  _AttitudeGeneralDetailsStep(formController: _formController),
+              content: _AttitudeRadioChoices(
+                  title: '1. ${Inattendance.title}',
+                  formController: _formController,
+                  elements: Inattendance.values),
             ),
             Step(
               label: const Text('Détails de\nl\'évaluation'),
               title: Container(),
-              state: _stepStatus[2],
-              isActive: _currentStep == 2,
-              content:
-                  _AttitudeGeneralDetailsStep(formController: _formController),
-            ),
-            Step(
-              label: const Text(
-                'Détails de\nl\'évaluation',
-              ),
-              title: Container(),
-              state: _stepStatus[3],
-              isActive: _currentStep == 3,
-              content:
-                  _AttitudeGeneralDetailsStep(formController: _formController),
+              state: _stepStatus[1],
+              isActive: _currentStep == 1,
+              content: _AttitudeRadioChoices(
+                  title: '1. ${Ponctuality.title}',
+                  formController: _formController,
+                  elements: Ponctuality.values),
             ),
           ],
           controlsBuilder: _controlBuilder,
@@ -274,6 +268,47 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _AttitudeRadioChoices extends StatefulWidget {
+  const _AttitudeRadioChoices({
+    required this.title,
+    required this.formController,
+    required this.elements,
+  });
+
+  final String title;
+  final AttitudeEvaluationFormController formController;
+  final List<AttitudeCategoryEnum> elements;
+
+  @override
+  State<_AttitudeRadioChoices> createState() => _AttitudeRadioChoicesState();
+}
+
+class _AttitudeRadioChoicesState extends State<_AttitudeRadioChoices> {
+  @override
+  void initState() {
+    super.initState();
+    widget.formController.responses[widget.elements[0].runtimeType] = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SubTitle(widget.title),
+        ...widget.elements.map((e) => RadioListTile<AttitudeCategoryEnum>(
+            dense: true,
+            visualDensity: VisualDensity.compact,
+            title: Text(e.name),
+            value: e,
+            groupValue: widget.formController.responses[e.runtimeType],
+            onChanged: (newValue) => setState(() =>
+                widget.formController.responses[e.runtimeType] = newValue!))),
       ],
     );
   }
