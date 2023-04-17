@@ -2,7 +2,7 @@
     "@@locale": "fr",
     "appName": "Banque de stages",
     "generalInformations": "Informations générales",
-    "emergencyContact": "Personne à prévenir en cas d'urgence",
+    "emergencyContact": "Contact en cas d'urgence",
     "contactInformations": "Coordonnées",
     "firstName": "Prénom",
     "middleName": "Second prénom",

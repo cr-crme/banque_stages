@@ -382,7 +382,7 @@ class _EnterpriseRequirements extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(left: 32.0),
           child: Text('EPI requis :',
-              style: TextStyle(fontWeight: FontWeight.w500)),
+              style: TextStyle(fontWeight: FontWeight.w600)),
         ),
         Padding(
           padding: EdgeInsets.only(left: 32.0),
@@ -393,7 +393,7 @@ class _EnterpriseRequirements extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(left: 32.0, top: 8.0),
           child: Text('Uniforme requis :',
-              style: TextStyle(fontWeight: FontWeight.w500)),
+              style: TextStyle(fontWeight: FontWeight.w600)),
         ),
         Padding(
           padding: EdgeInsets.only(left: 32.0),
