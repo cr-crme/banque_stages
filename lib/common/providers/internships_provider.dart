@@ -44,7 +44,7 @@ class InternshipsProvider extends FirebaseListProvided<Internship> {
   }
 
   List<Internship> byStudentId(String studentId) {
-    return where((intership) => intership.studentId == studentId).toList();
+    return where((internship) => internship.studentId == studentId).toList();
   }
 
   @override

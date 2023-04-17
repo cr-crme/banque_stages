@@ -147,7 +147,6 @@ class _InternshipListState extends State<_InternshipList> {
   }
 
   void _finalizeInternship(Internship internship) async {
-    // TODO Change this method for the evaluation of the enterprise rather than the student
     final result = await showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -171,6 +170,7 @@ class _InternshipListState extends State<_InternshipList> {
   }
 
   void _evaluateInternship(Internship internship) async {
+    // TODO Change this method for the evaluation of the enterprise rather than the student
     GoRouter.of(context).pushNamed(Screens.studentEvaluationMainScreen,
         params: {'internshipId': internship.id});
     setState(() {});

@@ -5,6 +5,7 @@ import '/common/models/student.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/widgets/sub_title.dart';
 import 'widgets/internship_details.dart';
+import 'widgets/internship_skills.dart';
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
@@ -58,6 +59,7 @@ class InternshipsPageState extends State<InternshipsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InternshipDetails(internship: internship),
+                    InternshipSkills(internship: internship),
                   ]),
             ),
           ],

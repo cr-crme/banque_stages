@@ -107,17 +107,16 @@ class _StudentEvaluationFormScreenState
       ));
     }
 
-    final evaluation = InternshipEvaluation(
+    final internship = widget.formController.internship(context, listen: false);
+    internship.studentEvaluation.add(InternshipEvaluation(
       date: widget.formController.evaluationDate,
       presentAtEvaluation: wereAtMeeting,
       skills: skillEvaluation,
       comments: widget.formController.commentsController.text,
-    );
+    ));
 
     // Pass the evaluation data to the rest of the app
-    final internship = widget.formController.internship(context, listen: false);
-    InternshipsProvider.of(context, listen: false)
-        .replace(internship.copyWith(evaluation: evaluation));
+    InternshipsProvider.of(context, listen: false).replace(internship);
 
     Navigator.of(context).pop();
   }

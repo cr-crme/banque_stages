@@ -199,6 +199,10 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
   late Specialization _specialization;
   late List<Specialization> _extraSpecialization;
 
+  // Duplicate skills deals with common skills in different jobs. Only allows for
+  // modification of the first occurence (and tie them)
+  final Map<Skill, bool> _usedDuplicateSkills = {};
+
   @override
   void initState() {
     super.initState();
@@ -217,7 +221,11 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
     }
     for (final specialization in _extraSpecialization) {
       for (final skill in specialization.skills) {
-        widget.formController.skillsToEvaluate[skill] = true;
+        if (widget.formController.skillsToEvaluate.containsKey(skill)) {
+          _usedDuplicateSkills[skill] = false;
+        } else {
+          widget.formController.skillsToEvaluate[skill] = false;
+        }
       }
     }
   }
@@ -238,15 +246,23 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
                 '* Compétences à évaluer :',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              ...skills.map((skill) => CheckboxListTile(
-                    controlAffinity: ListTileControlAffinity.leading,
-                    dense: true,
-                    visualDensity: VisualDensity.compact,
-                    onChanged: (value) => setState(() =>
-                        widget.formController.skillsToEvaluate[skill] = value!),
-                    value: widget.formController.skillsToEvaluate[skill],
-                    title: Text(skill.idWithName),
-                  )),
+              ...skills.map((skill) {
+                final out = CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  dense: true,
+                  visualDensity: VisualDensity.compact,
+                  onChanged: (value) => setState(() =>
+                      widget.formController.skillsToEvaluate[skill] = value!),
+                  value: widget.formController.skillsToEvaluate[skill],
+                  title: Text(skill.idWithName),
+                  enabled: !_usedDuplicateSkills.containsKey(skill) ||
+                      !_usedDuplicateSkills[skill]!,
+                );
+                if (_usedDuplicateSkills.containsKey(skill)) {
+                  _usedDuplicateSkills[skill] = true;
+                }
+                return out;
+              }),
             ],
           ),
         ),
@@ -256,6 +272,11 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
 
   @override
   Widget build(BuildContext context) {
+    // Reset the duplacte skill flag
+    for (final skill in _usedDuplicateSkills.keys) {
+      _usedDuplicateSkills[skill] = false;
+    }
+
     // If there is only one job, evaluate all skills
     if (_extraSpecialization.isEmpty) {
       return Column(

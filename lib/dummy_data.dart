@@ -645,8 +645,8 @@ Future<void> addDummyInterships(
     enterpriseId: enterprises[0].id,
     jobId: enterprises[0].jobs[0].id,
     extraSpecializationsId: [
-      enterprises[0].jobs[0].id,
-      enterprises[0].jobs[0].id,
+      enterprises[0].jobs[0].specialization.id,
+      enterprises[0].jobs[0].specialization.id,
     ],
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(
@@ -654,7 +654,6 @@ Future<void> addDummyInterships(
         lastName: 'Forever',
         phone: PhoneNumber.fromString('514-555-1234')),
     date: period,
-    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -709,7 +708,6 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -760,7 +758,6 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -806,7 +803,6 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -847,7 +843,6 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -888,7 +883,6 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
@@ -939,7 +933,6 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
-    evaluation: null,
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
