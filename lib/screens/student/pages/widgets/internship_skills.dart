@@ -58,6 +58,7 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                         ))
                   ],
                 ),
+                const SizedBox(height: 16.0),
                 Stack(
                   alignment: Alignment.topRight,
                   children: [
@@ -68,7 +69,7 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                             evaluation: widget.internship.attitudeEvaluation)),
                     IconButton(
                         onPressed: () => GoRouter.of(context).pushNamed(
-                            Screens.skillEvaluationMainScreen,
+                            Screens.attitudeEvaluationScreen,
                             params: {'internshipId': widget.internship.id}),
                         icon: const Icon(
                           Icons.add_chart_rounded,

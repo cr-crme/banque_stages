@@ -1,4 +1,3 @@
-import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.dart';
 import 'package:enhanced_containers/item_serializable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +11,11 @@ import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/generate_debug_data_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
+import 'screens/internship_forms/student_steps/attitude_evaluation_screen.dart';
+import 'screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 import 'screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
 import 'screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
-import 'screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
+import 'screens/job_sst_form/job_sst_form_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'screens/ref_sst/risks_list/risks_list_screen.dart';
@@ -47,6 +48,7 @@ abstract class Screens {
   static const enterpriseEvaluationScreen = 'enterprise-evaluation';
   static const skillEvaluationMainScreen = 'skill-evaluation-main';
   static const skillEvaluationFormScreen = 'skill-evaluation-form';
+  static const attitudeEvaluationScreen = 'attitude-evaluation';
 
   static const homeSst = 'home-sst';
   static const jobSst = 'job-sst';
@@ -175,6 +177,13 @@ final router = GoRouter(
           formController: state.extra as SkillEvaluationFormController,
         );
       },
+    ),
+    GoRoute(
+      path: '/attitude-evaluation-form/:internshipId',
+      name: Screens.attitudeEvaluationScreen,
+      builder: (context, state) => AttitudeEvaluationScreen(
+        internshipId: state.params['internshipId']!,
+      ),
     ),
     GoRoute(
       path: '/sst',
