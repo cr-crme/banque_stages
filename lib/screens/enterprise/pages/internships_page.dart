@@ -147,6 +147,7 @@ class _InternshipListState extends State<_InternshipList> {
   }
 
   void _finalizeInternship(Internship internship) async {
+    // TODO Change this method for the evaluation of the enterprise rather than the student
     final result = await showDialog(
         context: context,
         builder: (context) => AlertDialog(

@@ -6,6 +6,7 @@ import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/sub_title.dart';
+import '/misc/job_data_file_service.dart';
 import '/router.dart';
 import 'student_form_controller.dart';
 
@@ -185,25 +186,100 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
   }
 }
 
-class _JobToEvaluate extends StatelessWidget {
+class _JobToEvaluate extends StatefulWidget {
   const _JobToEvaluate({required this.formController});
 
   final StudentFormController formController;
 
   @override
-  Widget build(BuildContext context) {
-    final internship = formController.internship(context);
-    final job = EnterprisesProvider.of(context)[internship.enterpriseId]
-        .jobs[internship.jobId];
+  State<_JobToEvaluate> createState() => _JobToEvaluateState();
+}
 
+class _JobToEvaluateState extends State<_JobToEvaluate> {
+  late Specialization _specialization;
+  late List<Specialization> _extraSpecialization;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final internship = widget.formController.internship(context, listen: false);
+    final enterprise =
+        EnterprisesProvider.of(context, listen: false)[internship.enterpriseId];
+    _specialization = enterprise.jobs[internship.jobId].specialization;
+    _extraSpecialization = internship.extraSpecializationsId
+        .map((specializationId) =>
+            ActivitySectorsService.specialization(specializationId))
+        .toList();
+
+    for (final skill in _specialization.skills) {
+      widget.formController.skillsToEvaluate[skill] = true;
+    }
+    for (final specialization in _extraSpecialization) {
+      for (final skill in specialization.skills) {
+        widget.formController.skillsToEvaluate[skill] = true;
+      }
+    }
+  }
+
+  Widget _buildJobTile({required String title, required SkillList skills}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Métier évalué'),
+        SubTitle(title),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Text(job.specialization.idWithName),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(_specialization.idWithName),
+              const SizedBox(height: 4),
+              const Text(
+                '* Compétences à évaluer :',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              ...skills.map((skill) => CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    dense: true,
+                    visualDensity: VisualDensity.compact,
+                    onChanged: (value) => setState(() =>
+                        widget.formController.skillsToEvaluate[skill] = value!),
+                    value: widget.formController.skillsToEvaluate[skill],
+                    title: Text(skill.idWithName),
+                  )),
+            ],
+          ),
         ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // If there is only one job, evaluate all skills
+    if (_extraSpecialization.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SubTitle('Métier évalué'),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(_specialization.idWithName),
+          ),
+        ],
+      );
+    }
+
+    // If there is more than one job, the user must select which skills are evaluated
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildJobTile(
+            title: 'Métier principal', skills: _specialization.skills),
+        ..._extraSpecialization.asMap().keys.map((i) => _buildJobTile(
+            title:
+                'Métier secondaire${_extraSpecialization.length > 1 ? ' (${i + 1})' : ''}',
+            skills: _extraSpecialization[i].skills)),
       ],
     );
   }
@@ -222,6 +298,8 @@ class _StartEvaluation extends StatelessWidget {
         padding: const EdgeInsets.only(top: 24, right: 24.0),
         child: TextButton(
             onPressed: () {
+              formController.prepareTaskCompleted();
+              formController.prepareAppreciation();
               GoRouter.of(context).pushReplacementNamed(
                   Screens.studentEvaluationFormScreen,
                   extra: formController);

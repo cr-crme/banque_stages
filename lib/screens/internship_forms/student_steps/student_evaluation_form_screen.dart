@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '/common/models/internship.dart';
 import '/common/models/internship_evaluation.dart';
-import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
@@ -26,9 +25,13 @@ class _StudentEvaluationFormScreenState
 
   SkillList _extractSkills(BuildContext context,
       {required Internship internship}) {
-    final job = EnterprisesProvider.of(context)[internship.enterpriseId]
-        .jobs[internship.jobId];
-    return job.specialization.skills;
+    final out = SkillList.empty();
+    for (final skill in widget.formController.skillsToEvaluate.keys) {
+      if (widget.formController.skillsToEvaluate[skill]!) {
+        out.add(skill);
+      }
+    }
+    return out;
   }
 
   void _nextStep() {
@@ -49,34 +52,34 @@ class _StudentEvaluationFormScreenState
     Navigator.of(context).pop();
   }
 
-  void _submit() {
-    // // Confirm the user is really ready to submit
-    // final result = await showDialog(
-    //     context: context,
-    //     builder: (context) => AlertDialog(
-    //           title: const Text('Soumettre l\'évaluation?'),
-    //           content: Column(
-    //             mainAxisSize: MainAxisSize.min,
-    //             children: [
-    //               const Text(
-    //                   'Les informations pour cette évaluation ne seront plus modifiables.'),
-    //               if (!widget.formController.allAppreciationsAreDone)
-    //                 const Text(
-    //                   '\n\n**Attention toutes les compétences n\'ont pas été évaluée**',
-    //                   style: TextStyle(color: Colors.red),
-    //                 ),
-    //             ],
-    //           ),
-    //           actions: [
-    //             OutlinedButton(
-    //                 onPressed: () => Navigator.of(context).pop(false),
-    //                 child: const Text('Non')),
-    //             TextButton(
-    //                 onPressed: () => Navigator.of(context).pop(true),
-    //                 child: const Text('Oui')),
-    //           ],
-    //         ));
-    // if (!mounted || result == null || !result) return;
+  void _submit() async {
+    // Confirm the user is really ready to submit
+    final result = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Soumettre l\'évaluation?'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                      'Les informations pour cette évaluation ne seront plus modifiables.'),
+                  if (!widget.formController.allAppreciationsAreDone)
+                    const Text(
+                      '\n\n**Attention toutes les compétences n\'ont pas été évaluée**',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                ],
+              ),
+              actions: [
+                OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text('Non')),
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text('Oui')),
+              ],
+            ));
+    if (!mounted || result == null || !result) return;
 
     // Fetch the data from the form controller
     final List<String> wereAtMeeting = [];

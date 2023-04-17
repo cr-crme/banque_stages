@@ -2,14 +2,11 @@ import 'package:flutter/widgets.dart';
 
 import '/common/models/internship.dart';
 import '/common/models/internship_evaluation.dart';
-import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/misc/job_data_file_service.dart';
 
 class StudentFormController {
-  StudentFormController(context, {required this.internshipId})
-      : taskCompleted = _prepareTaskCompleted(context, internshipId),
-        appreciation = _prepareAppreciation(context, internshipId);
+  StudentFormController(context, {required this.internshipId});
   final String internshipId;
   Internship internship(context, {listen = true}) =>
       InternshipsProvider.of(context, listen: listen)[internshipId];
@@ -29,29 +26,21 @@ class StudentFormController {
     if (!value) othersAtMeetingController.text = '';
   }
 
-  Map<Skill, Map<String, bool>> taskCompleted;
-  static Map<Skill, Map<String, bool>> _prepareTaskCompleted(
-      context, String internshipId) {
-    final internship =
-        InternshipsProvider.of(context, listen: false)[internshipId];
-    final skills =
-        EnterprisesProvider.of(context, listen: false)[internship.enterpriseId]
-            .jobs[internship.jobId]
-            .specialization
-            .skills;
+  final Map<Skill, bool> skillsToEvaluate = {};
 
-    Map<Skill, Map<String, bool>> out = {};
-    for (final skill in skills) {
+  Map<Skill, Map<String, bool>> taskCompleted = {};
+  void prepareTaskCompleted() {
+    taskCompleted.clear();
+    for (final skill in skillsToEvaluate.keys) {
       Map<String, bool> tp = {};
       for (final task in skill.tasks) {
         tp[task] = false;
       }
-      out[skill] = tp;
+      taskCompleted[skill] = tp;
     }
-    return out;
   }
 
-  Map<Skill, SkillAppreciation> appreciation;
+  Map<Skill, SkillAppreciation> appreciation = {};
   bool get allAppreciationsAreDone {
     for (final skill in appreciation.keys) {
       if (appreciation[skill] == SkillAppreciation.notEvaluated) return false;
@@ -59,21 +48,11 @@ class StudentFormController {
     return true;
   }
 
-  static Map<Skill, SkillAppreciation> _prepareAppreciation(
-      context, String internshipId) {
-    final internship =
-        InternshipsProvider.of(context, listen: false)[internshipId];
-    final skills =
-        EnterprisesProvider.of(context, listen: false)[internship.enterpriseId]
-            .jobs[internship.jobId]
-            .specialization
-            .skills;
-
-    Map<Skill, SkillAppreciation> out = {};
-    for (final skill in skills) {
-      out[skill] = SkillAppreciation.notEvaluated;
+  void prepareAppreciation() {
+    appreciation.clear();
+    for (final skill in skillsToEvaluate.keys) {
+      appreciation[skill] = SkillAppreciation.notEvaluated;
     }
-    return out;
   }
 
   final commentsController = TextEditingController();
