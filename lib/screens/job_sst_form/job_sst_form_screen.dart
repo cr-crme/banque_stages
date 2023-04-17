@@ -60,12 +60,6 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
             incidentContact: _dangerKey.currentState!.incidentContact,
           ),
     );
-
-    print(context
-        .read<EnterprisesProvider>()[widget.enterpriseId]
-        .jobs[widget.jobId]
-        .sstQuestions);
-
     Navigator.pop(context);
   }
 
