@@ -58,7 +58,9 @@ class _SstBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Historique d’accidents et incidents au poste de travail (ex. blessure d’élève même mineure, agression verbale ou harcèlement subis par l’élève)',
+              'Historique d\'accidents et incidents au poste de travail '
+              '(ex. blessure d\'élève même mineure, agression verbale ou '
+              'harcèlement subis par l\'élève)',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
@@ -69,7 +71,8 @@ class _SstBody extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Personne de l’entreprise à qui s’adresser en cas de blessure ou d’incident?',
+              'Personne de l\'entreprise à qui s\'adresser en cas de blessure '
+              'ou d\'incident?',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Padding(
