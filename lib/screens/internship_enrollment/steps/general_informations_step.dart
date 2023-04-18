@@ -14,9 +14,11 @@ import '/misc/form_service.dart';
 import '/misc/job_data_file_service.dart';
 
 class GeneralInformationsStep extends StatefulWidget {
-  const GeneralInformationsStep({super.key, required this.enterprise});
+  const GeneralInformationsStep(
+      {super.key, required this.enterprise, required this.student});
 
-  final Enterprise enterprise;
+  final Enterprise? enterprise;
+  final Student? student;
 
   @override
   State<GeneralInformationsStep> createState() =>
@@ -26,7 +28,10 @@ class GeneralInformationsStep extends StatefulWidget {
 class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   final formKey = GlobalKey<FormState>();
 
-  Student? student;
+  late Enterprise? enterprise = widget.enterprise;
+  late bool enterpriseIsFixed = widget.enterprise != null;
+  late Student? student = widget.student;
+  late bool studentIsFixed = widget.student != null;
 
   Job? primaryJob;
   final List<Specialization?> extraSpecializations = [];
@@ -45,11 +50,15 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _GeneralInformations(
-              enterprise: widget.enterprise,
+              enterprise: enterprise,
+              enterpriseIsFixed: enterpriseIsFixed,
+              onSelectEnterprise: (e) => setState(() => enterprise = e),
+              student: student,
+              studentIsFixed: studentIsFixed,
               onSelectStudent: (s) => setState(() => student = s),
             ),
             _MainJob(
-              enterprise: widget.enterprise,
+              enterprise: enterprise,
               onSaved: (job) => setState(() => primaryJob = job),
             ),
             if (student != null && student!.program == Program.fpt)
@@ -78,10 +87,18 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 class _GeneralInformations extends StatelessWidget {
   const _GeneralInformations({
     required this.enterprise,
+    required this.enterpriseIsFixed,
+    required this.onSelectEnterprise,
+    required this.student,
+    required this.studentIsFixed,
     required this.onSelectStudent,
   });
 
-  final Enterprise enterprise;
+  final Enterprise? enterprise;
+  final bool enterpriseIsFixed;
+  final Function(Enterprise?) onSelectEnterprise;
+  final Student? student;
+  final bool studentIsFixed;
   final Function(Student?) onSelectStudent;
 
   @override
@@ -95,18 +112,26 @@ class _GeneralInformations extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
-                decoration: const InputDecoration(labelText: '* Entreprise'),
-                controller: TextEditingController(text: enterprise.name),
-                enabled: false,
-              ),
-              Consumer<StudentsProvider>(
-                builder: (context, students, _) => StudentPickerFormField(
-                  students: students.toList(),
-                  onSaved: onSelectStudent,
-                  onSelect: onSelectStudent,
+              if (enterpriseIsFixed)
+                TextField(
+                  decoration: const InputDecoration(labelText: '* Entreprise'),
+                  controller: TextEditingController(text: enterprise!.name),
+                  enabled: false,
                 ),
-              ),
+              if (studentIsFixed)
+                TextField(
+                  decoration: const InputDecoration(labelText: '* Élève'),
+                  controller: TextEditingController(text: student!.fullName),
+                  enabled: false,
+                ),
+              if (!studentIsFixed)
+                Consumer<StudentsProvider>(
+                  builder: (context, students, _) => StudentPickerFormField(
+                    students: students.toList(),
+                    onSaved: onSelectStudent,
+                    onSelect: onSelectStudent,
+                  ),
+                ),
             ],
           ),
         ),
@@ -118,12 +143,13 @@ class _GeneralInformations extends StatelessWidget {
 class _MainJob extends StatelessWidget {
   const _MainJob({required this.enterprise, required this.onSaved});
 
-  final Enterprise enterprise;
+  final Enterprise? enterprise;
   final Function(Job?) onSaved;
 
   Map<Specialization, int> _generateSpecializationAndAvailability(context) {
     final Map<Specialization, int> out = {};
-    for (final job in enterprise.availableJobs(context)) {
+    if (enterprise == null) return out;
+    for (final job in enterprise!.availableJobs(context)) {
       out[job.specialization] = job.positionsRemaining(context);
     }
     return out;

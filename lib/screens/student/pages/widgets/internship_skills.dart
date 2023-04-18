@@ -18,7 +18,7 @@ class InternshipSkills extends StatefulWidget {
 }
 
 class _InternshipSkillsState extends State<InternshipSkills> {
-  bool _isExpanded = true;
+  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {

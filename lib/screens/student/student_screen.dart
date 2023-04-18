@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/person.dart';
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
+import '/router.dart';
 import '/screens/student/pages/skills_page.dart';
 import 'pages/about_page.dart';
 import 'pages/internships_page.dart';
@@ -51,6 +53,11 @@ class _StudentScreenState extends State<StudentScreen>
             onPressed: () async {
               if (_tabController.index == 0) {
                 await _aboutPageKey.currentState?.toggleEdit();
+              } else if (_tabController.index == 1) {
+                GoRouter.of(context).goNamed(
+                  Screens.internshipEnrollementFromStudent,
+                  params: Screens.withId(widget.id),
+                );
               }
               await _updateActionButton();
             },

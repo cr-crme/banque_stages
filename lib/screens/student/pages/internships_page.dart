@@ -25,7 +25,7 @@ class InternshipsPageState extends State<InternshipsPage> {
   void _prepareExpander(List<Internship> internships) {
     if (_expanded.length != internships.length) {
       for (final internship in internships) {
-        _expanded[internship.id] = false;
+        _expanded[internship.id] = internship.isActive;
       }
     }
   }
@@ -49,7 +49,7 @@ class InternshipsPageState extends State<InternshipsPage> {
               isExpanded: _expanded[internship.id]!,
               headerBuilder: (context, isExpanded) => ListTile(
                 title: SubTitle(
-                  'Année ${internship.date.start.year}-${internship.date.end.year}',
+                  'Année ${internship.date.start.year}${internship.date.end.year != internship.date.start.year ? '-${internship.date.end.year}' : ''}',
                   top: 0,
                   left: 0,
                   bottom: 0,
