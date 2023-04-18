@@ -60,7 +60,7 @@ class QuestionsStepState extends State<QuestionsStep> {
                   case Type.checkbox:
                     return QuestionWithCheckboxList(
                       initialChoices:
-                          widget.job.sstQuestions[question.id] ?? {},
+                          Set.from(widget.job.sstQuestions[question.id] ?? []),
                       initialText:
                           widget.job.sstQuestions["${question.id}+t"] ?? "",
                       choicesQuestion:

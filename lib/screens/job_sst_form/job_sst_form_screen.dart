@@ -60,6 +60,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
             incidentContact: _dangerKey.currentState!.incidentContact,
           ),
     );
+
     Navigator.pop(context);
   }
 
