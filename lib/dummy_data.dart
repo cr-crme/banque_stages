@@ -167,9 +167,33 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[9].specializations[3],
-      positionsOffered: 3,
-    ),
+        specialization: ActivitySectorsService.sectors[9].specializations[3],
+        positionsOffered: 3,
+        equipmentRequired: ["Chaussures de sécurité"],
+        incidentContact: "Jonny M. 514 514-5544",
+        dangerousSituations: "- Outils mal rangés\n- Tas de pneus",
+        sstQuestions: {
+          "1": "Installer des pneus (les soulevers + transporter)",
+          "2": false,
+          "2+t": "",
+          "3": true,
+          "3+t": "Peu souvent, à la discrétion des employés.",
+          "5": ["Un diable"],
+          "6": [],
+          "7": ["Des ciseaux"],
+          "8": [],
+          "12": ["Des solvants", "Des produits de nettoyage"],
+          "15": [],
+          "16": true,
+          "16+t": "Bouchons a oreilles",
+          "19": true,
+          "19+t": "",
+          "20": "",
+          "21": "",
+          "22": false,
+          "22+t": "",
+          "23": ""
+        }),
   );
   enterprises.add(
     Enterprise(
