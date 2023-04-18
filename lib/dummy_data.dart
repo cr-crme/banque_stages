@@ -669,7 +669,7 @@ Future<void> addDummyInterships(
     enterpriseId: enterprises[0].id,
     jobId: enterprises[0].jobs[0].id,
     extraSpecializationsId: [
-      ActivitySectorsService.sectors[0].specializations[1].id,
+      ActivitySectorsService.sectors[2].specializations[1].id,
       ActivitySectorsService.sectors[1].specializations[0].id,
     ],
     visitingPriority: VisitingPriority.values[rng.nextInt(3)],

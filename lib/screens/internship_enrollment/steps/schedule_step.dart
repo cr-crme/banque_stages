@@ -106,25 +106,30 @@ class ScheduleStepState extends State<ScheduleStep> {
   }
 }
 
-class _DateRange extends StatelessWidget {
+class _DateRange extends StatefulWidget {
   const _DateRange({required this.scheduleController});
 
   final WeeklyScheduleController scheduleController;
 
-  void _promptDateRange(context) async {
+  @override
+  State<_DateRange> createState() => _DateRangeState();
+}
+
+class _DateRangeState extends State<_DateRange> {
+  Future<void> _promptDateRange(context) async {
     final range = await showDateRangePicker(
       helpText: 'Sélectionner les dates',
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,
       initialEntryMode: DatePickerEntryMode.input,
-      initialDateRange: scheduleController.dateRange,
+      initialDateRange: widget.scheduleController.dateRange,
       firstDate: DateTime(DateTime.now().year),
       lastDate: DateTime(DateTime.now().year + 2),
     );
     if (range == null) return;
 
-    scheduleController.updateDateRange(range);
+    widget.scheduleController.updateDateRange(range);
   }
 
   @override
@@ -147,8 +152,8 @@ class _DateRange extends StatelessWidget {
                           labelText: '* Date de début du stage',
                           border: InputBorder.none),
                       controller: TextEditingController(
-                          text: DateFormat.yMMMEd('fr_CA')
-                              .format(scheduleController.dateRange.start)),
+                          text: DateFormat.yMMMEd('fr_CA').format(
+                              widget.scheduleController.dateRange.start)),
                       enabled: false,
                     ),
                     TextField(
@@ -157,7 +162,7 @@ class _DateRange extends StatelessWidget {
                           border: InputBorder.none),
                       controller: TextEditingController(
                           text: DateFormat.yMMMEd('fr_CA')
-                              .format(scheduleController.dateRange.end)),
+                              .format(widget.scheduleController.dateRange.end)),
                       enabled: false,
                     ),
                   ],
@@ -169,7 +174,10 @@ class _DateRange extends StatelessWidget {
                 Icons.calendar_month_outlined,
                 color: Colors.blue,
               ),
-              onPressed: () => _promptDateRange(context),
+              onPressed: () async {
+                await _promptDateRange(context);
+                setState(() {});
+              },
             )
           ],
         ),
