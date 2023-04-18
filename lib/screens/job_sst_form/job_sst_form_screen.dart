@@ -61,11 +61,6 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
           ),
     );
 
-    print(context
-        .read<EnterprisesProvider>()[widget.enterpriseId]
-        .jobs[widget.jobId]
-        .sstQuestions);
-
     Navigator.pop(context);
   }
 
