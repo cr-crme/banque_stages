@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/models/student.dart';
+import '/common/providers/enterprises_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/add_job_button.dart';
+import '/common/widgets/form_fields/enterprise_picker_form_field.dart';
 import '/common/widgets/form_fields/job_form_field_list_tile.dart';
 import '/common/widgets/form_fields/student_picker_form_field.dart';
 import '/common/widgets/phone_list_tile.dart';
@@ -117,6 +119,15 @@ class _GeneralInformations extends StatelessWidget {
                   decoration: const InputDecoration(labelText: '* Entreprise'),
                   controller: TextEditingController(text: enterprise!.name),
                   enabled: false,
+                ),
+              if (!enterpriseIsFixed)
+                Consumer<EnterprisesProvider>(
+                  builder: (context, enterprises, _) =>
+                      EnterprisePickerFormField(
+                    enterprises: enterprises.toList(),
+                    onSaved: onSelectEnterprise,
+                    onSelect: onSelectEnterprise,
+                  ),
                 ),
               if (studentIsFixed)
                 TextField(

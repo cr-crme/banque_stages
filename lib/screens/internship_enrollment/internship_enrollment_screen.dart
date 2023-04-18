@@ -93,8 +93,7 @@ class _InternshipEnrollmentScreenState
       studentId: _generalInfoKey.currentState!.student!.id,
       teacherId: TeachersProvider.of(context, listen: false).currentTeacherId,
       enterpriseId: _generalInfoKey.currentState!.enterprise!.id,
-      jobId: enterprise
-          .availableJobs(context)
+      jobId: enterprise.jobs
           .firstWhere((job) =>
               job.specialization ==
               _generalInfoKey.currentState!.primaryJob!.specialization)
@@ -133,12 +132,19 @@ class _InternshipEnrollmentScreenState
 
   @override
   Widget build(BuildContext context) {
+    final enterprises = EnterprisesProvider.of(context);
+    final students = StudentsProvider.of(context);
+    if ((widget.enterpriseId != null &&
+            !enterprises.hasId(widget.enterpriseId!)) ||
+        (widget.studentId != null && !students.hasId(widget.studentId!))) {
+      return Container();
+    }
+
     final enterprise = widget.enterpriseId == null
         ? null
-        : EnterprisesProvider.of(context).fromId(widget.enterpriseId!);
-    final student = widget.studentId == null
-        ? null
-        : StudentsProvider.of(context).fromId(widget.studentId!);
+        : enterprises.fromId(widget.enterpriseId!);
+    final student =
+        widget.studentId == null ? null : students.fromId(widget.studentId!);
 
     return Scaffold(
       appBar: AppBar(

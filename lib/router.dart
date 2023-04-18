@@ -44,7 +44,8 @@ abstract class Screens {
   static const student = 'student';
   static const addStudent = 'add-student';
 
-  static const internshipEnrollementFromEnterprise = 'add-internship-from-enterprise';
+  static const internshipEnrollementFromEnterprise =
+      'add-internship-from-enterprise';
   static const internshipEnrollementFromStudent = 'add-internship-from-student';
   static const enterpriseEvaluationScreen = 'enterprise-evaluation';
   static const skillEvaluationMainScreen = 'skill-evaluation-main';
@@ -120,14 +121,8 @@ final router = GoRouter(
               EnterpriseScreen(id: state.params['id']!),
           routes: [
             GoRoute(
-              path: 'internship',
+              path: 'add-internship-enterprise',
               name: Screens.internshipEnrollementFromEnterprise,
-              builder: (context, state) =>
-                  InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
-            ),
-            GoRoute(
-              path: 'internship',
-              name: Screens.internshipEnrollementFromStudent,
               builder: (context, state) =>
                   InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
             ),
@@ -148,7 +143,13 @@ final router = GoRouter(
       builder: (context, state) => const StudentsListScreen(),
       routes: [
         GoRoute(
-          path: ':id/:initialPage',
+          path: 'add-internship-student/:id',
+          name: Screens.internshipEnrollementFromStudent,
+          builder: (context, state) =>
+              InternshipEnrollmentScreen(studentId: state.params['id']!),
+        ),
+        GoRoute(
+          path: 'studentScreen/:id:initialPage',
           name: Screens.student,
           builder: (context, state) => StudentScreen(
               id: state.params['id']!,

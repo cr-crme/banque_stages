@@ -39,7 +39,7 @@ class InternshipsPageState extends State<InternshipsPage> {
     return ListView.builder(
       itemCount: internships.length,
       itemBuilder: (context, index) {
-        final internship = internships[index];
+        final internship = internships[internships.length - index - 1];
         return ExpansionPanelList(
           expansionCallback: (int panelIndex, bool isExpanded) =>
               setState(() => _expanded[internship.id] = !isExpanded),
