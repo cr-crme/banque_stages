@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_text.dart';
 import 'package:flutter/material.dart';
 
 import '/misc/form_service.dart';
@@ -13,6 +14,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
   final _formKey = GlobalKey<FormState>();
 
   SstEventType? _eventType;
+  String? _description;
 
   void _onCancel() {
     Navigator.pop(context);
@@ -20,7 +22,10 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
 
   void _onConfirm() {
     if (FormService.validateForm(_formKey, save: true)) {
-      Navigator.pop(context, _eventType);
+      Navigator.pop(context, {
+        "eventType": _eventType,
+        "description": _description,
+      });
     }
   }
 
@@ -34,15 +39,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
           children: [
             RadioListTile(
               title: const Text(
-                  "Un accident du travail (il peut s’agir d’une blessure mineure)"),
-              value: SstEventType.pastWounds,
-              groupValue: _eventType,
-              onChanged: (value) =>
-                  setState(() => _eventType = SstEventType.pastWounds),
-            ),
-            RadioListTile(
-              title: const Text(
-                  "Un incident en stage (ex. agression verbale, harcèlement)"),
+                  "Un accident ou un incident en stage (ex. blessure mineure, agression verbale d’un client, harcèlement des collègues)"),
               value: SstEventType.pastIncidents,
               groupValue: _eventType,
               onChanged: (value) =>
@@ -55,16 +52,23 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
               onChanged: (value) =>
                   setState(() => _eventType = SstEventType.dangerousSituations),
             ),
+            QuestionWithText(
+              question: "Description de l'évènement",
+              onSaved: (text) => setState(() => _description = text),
+              validator: (text) => text?.isEmpty ?? true
+                  ? "Décrivez ce qu'il s'est passé"
+                  : null,
+            ),
           ],
         ),
       ),
       actions: [
-        TextButton(
+        OutlinedButton(
           onPressed: _onCancel,
           child: const Text("Annuler"),
         ),
-        ElevatedButton(
-          onPressed: _onConfirm,
+        TextButton(
+          onPressed: _eventType != null ? _onConfirm : null,
           child: const Text("Confirmer"),
         ),
       ],
@@ -72,4 +76,4 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
   }
 }
 
-enum SstEventType { pastWounds, pastIncidents, dangerousSituations }
+enum SstEventType { pastIncidents, dangerousSituations }

@@ -55,39 +55,33 @@ class JobsPageState extends State<JobsPage> {
   }
 
   void _addSstEvent(Job job) async {
-    final provider = context.read<EnterprisesProvider>();
+    final enterprises = context.read<EnterprisesProvider>();
 
-    final eventType = await showDialog(
+    final result = await showDialog(
       context: context,
       builder: (context) => const AddSstEventDialog(),
     );
-    if (eventType == null) return;
+    if (result == null) return;
 
-    if (!mounted) return;
-    final description = await showDialog(
-      context: context,
-      builder: (context) => AddTextDialog(
-        title: eventType == 2
-            ? 'Décrivez la situation dangereuse identifiée :'
-            : 'Racontez ce qu\'il s\'est passé :',
-      ),
-    );
-    if (description == null) return;
-
-    switch (eventType) {
-      case SstEventType.pastWounds:
-        // job.pastWounds.add(description);
-        break;
+    switch (result["eventType"]) {
       case SstEventType.pastIncidents:
-        // job.pastIncidents.add(description);
+        enterprises.replaceJob(
+          widget.enterprise,
+          job.copyWith(
+            pastIncidents: "- ${result["description"]}\n${job.pastIncidents}",
+          ),
+        );
         break;
       case SstEventType.dangerousSituations:
-        // job.dangerousSituations.add(description);
+        enterprises.replaceJob(
+          widget.enterprise,
+          job.copyWith(
+            dangerousSituations:
+                "- ${result["description"]}\n${job.dangerousSituations}",
+          ),
+        );
         break;
-      default:
-        return;
     }
-    provider.replace(widget.enterprise);
   }
 
   void _addComment(Job job) async {
