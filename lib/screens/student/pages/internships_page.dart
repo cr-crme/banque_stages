@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '/common/models/internship.dart';
 import '/common/models/student.dart';
+import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/widgets/sub_title.dart';
 import 'widgets/internship_details.dart';
@@ -49,11 +51,18 @@ class InternshipsPageState extends State<InternshipsPage> {
               isExpanded: _expanded[internship.id]!,
               headerBuilder: (context, isExpanded) => ListTile(
                 title: SubTitle(
-                  'Année ${internship.date.start.year}${internship.date.end.year != internship.date.start.year ? '-${internship.date.end.year}' : ''}',
+                  '${DateFormat('dd MMMM yyyy', 'fr_CA').format(internship.date.start)} - '
+                  '${DateFormat('dd MMMM yyyy', 'fr_CA').format(internship.date.end)}',
                   top: 0,
                   left: 0,
                   bottom: 0,
                 ),
+                subtitle: Text(EnterprisesProvider.of(context)
+                    .fromId(internship.enterpriseId)
+                    .jobs
+                    .fromId(internship.jobId)
+                    .specialization
+                    .idWithName),
               ),
               body: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
