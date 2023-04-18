@@ -237,7 +237,10 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
     }
   }
 
-  Widget _buildJobTile({required String title, required SkillList skills}) {
+  Widget _buildJobTile({
+    required String title,
+    required Specialization specialization,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -247,13 +250,13 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(_specialization.idWithName),
+              Text(specialization.idWithName),
               const SizedBox(height: 4),
               const Text(
                 '* Compétences à évaluer :',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              ...skills.map((skill) {
+              ...specialization.skills.map((skill) {
                 final out = CheckboxListTile(
                   controlAffinity: ListTileControlAffinity.leading,
                   dense: true,
@@ -303,11 +306,16 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildJobTile(
-            title: 'Métier principal', skills: _specialization.skills),
-        ..._extraSpecialization.asMap().keys.map((i) => _buildJobTile(
-            title:
-                'Métier secondaire${_extraSpecialization.length > 1 ? ' (${i + 1})' : ''}',
-            skills: _extraSpecialization[i].skills)),
+          title: 'Métier principal',
+          specialization: _specialization,
+        ),
+        ..._extraSpecialization.asMap().keys.map(
+              (i) => _buildJobTile(
+                title:
+                    'Métier secondaire${_extraSpecialization.length > 1 ? ' (${i + 1})' : ''}',
+                specialization: _extraSpecialization[i],
+              ),
+            ),
       ],
     );
   }

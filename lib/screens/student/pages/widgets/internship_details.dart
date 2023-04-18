@@ -8,6 +8,7 @@ import '/common/models/schedule.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
+import '/misc/job_data_file_service.dart';
 import '/screens/internship_enrollment/steps/requirements_step.dart';
 import '/screens/internship_enrollment/steps/schedule_step.dart';
 
@@ -302,7 +303,7 @@ class _InternshipBody extends StatelessWidget {
 
   Widget _buildJob(
     String title, {
-    required enterprises,
+    required Specialization specialization,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
@@ -312,18 +313,11 @@ class _InternshipBody extends StatelessWidget {
           Text(title, style: _titleStyle),
           Padding(
             padding: const EdgeInsets.only(top: 2),
-            child: Text(enterprises[internship.enterpriseId]
-                .jobs[internship.jobId]
-                .specialization
-                .idWithName),
+            child: Text(specialization.idWithName),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 2),
-            child: Text(enterprises[internship.enterpriseId]
-                .jobs[internship.jobId]
-                .specialization
-                .sector
-                .idWithName),
+            child: Text(specialization.sector.idWithName),
           ),
         ],
       ),
@@ -541,13 +535,18 @@ class _InternshipBody extends StatelessWidget {
         _buildTeacher(text: teachers[internship.teacherId].fullName),
         _buildJob(
             'Métier${internship.extraSpecializationsId.isNotEmpty ? ' principal' : ''}',
-            enterprises: enterprises),
+            specialization: enterprises[internship.enterpriseId]
+                .jobs[internship.jobId]
+                .specialization),
         if (internship.extraSpecializationsId.isNotEmpty)
-          ...internship.extraSpecializationsId.asMap().keys.map(
-                (indexExtra) => _buildJob(
+          ...internship.extraSpecializationsId
+              .asMap()
+              .keys
+              .map((indexExtra) => _buildJob(
                     'Métier secondaire${internship.extraSpecializationsId.length > 1 ? ' (${indexExtra + 1})' : ''}',
-                    enterprises: enterprises),
-              ),
+                    specialization: ActivitySectorsService.specialization(
+                        internship.extraSpecializationsId[indexExtra]),
+                  )),
         _buildTextSection(
             title: 'Entreprise',
             text: enterprises[internship.enterpriseId].name),

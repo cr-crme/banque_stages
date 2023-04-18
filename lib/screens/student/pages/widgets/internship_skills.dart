@@ -137,47 +137,51 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
     );
   }
 
-  Widget _buillSkillSection(String jobId) {
+  Widget _buillSkillSection(String specializationId) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSkill(
             title: 'Compétences acquises',
             skills: widget.evaluation[_currentEvaluationIndex].skills
-                .map<SkillEvaluation?>((e) => e.specializationId == jobId &&
-                        e.appreciation == SkillAppreciation.acquired
-                    ? e
-                    : null)
+                .map<SkillEvaluation?>((e) =>
+                    e.specializationId == specializationId &&
+                            e.appreciation == SkillAppreciation.acquired
+                        ? e
+                        : null)
                 .where((e) => e != null)
                 .cast<SkillEvaluation>()
                 .toList()),
         _buildSkill(
             title: 'Compétences à poursuivre',
             skills: widget.evaluation[_currentEvaluationIndex].skills
-                .map<SkillEvaluation?>((e) => e.specializationId == jobId &&
-                        e.appreciation == SkillAppreciation.toPursuit
-                    ? e
-                    : null)
+                .map<SkillEvaluation?>((e) =>
+                    e.specializationId == specializationId &&
+                            e.appreciation == SkillAppreciation.toPursuit
+                        ? e
+                        : null)
                 .where((e) => e != null)
                 .cast<SkillEvaluation>()
                 .toList()),
         _buildSkill(
             title: 'Compétences échouées',
             skills: widget.evaluation[_currentEvaluationIndex].skills
-                .map<SkillEvaluation?>((e) => e.specializationId == jobId &&
-                        e.appreciation == SkillAppreciation.failed
-                    ? e
-                    : null)
+                .map<SkillEvaluation?>((e) =>
+                    e.specializationId == specializationId &&
+                            e.appreciation == SkillAppreciation.failed
+                        ? e
+                        : null)
                 .where((e) => e != null)
                 .cast<SkillEvaluation>()
                 .toList()),
         _buildSkill(
             title: 'Compétences non-évaluées',
             skills: widget.evaluation[_currentEvaluationIndex].skills
-                .map<SkillEvaluation?>((e) => e.specializationId == jobId &&
-                        e.appreciation == SkillAppreciation.notEvaluated
-                    ? e
-                    : null)
+                .map<SkillEvaluation?>((e) =>
+                    e.specializationId == specializationId &&
+                            e.appreciation == SkillAppreciation.notEvaluated
+                        ? e
+                        : null)
                 .where((e) => e != null)
                 .cast<SkillEvaluation>()
                 .toList()),
