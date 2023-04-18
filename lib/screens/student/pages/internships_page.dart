@@ -23,6 +23,18 @@ class InternshipsPage extends StatefulWidget {
 
 class InternshipsPageState extends State<InternshipsPage> {
   final Map<String, bool> _expanded = {};
+  final List<GlobalKey<InternshipDetailsState>> detailKeys = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final allInternships = InternshipsProvider.of(context, listen: false);
+    final internships = allInternships.byStudentId(widget.student.id);
+    for (final _ in internships) {
+      detailKeys.add(GlobalKey<InternshipDetailsState>());
+    }
+  }
 
   void _prepareExpander(List<Internship> internships) {
     if (_expanded.length != internships.length) {
@@ -67,7 +79,8 @@ class InternshipsPageState extends State<InternshipsPage> {
               body: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InternshipDetails(internship: internship),
+                    InternshipDetails(
+                        key: detailKeys[index], internship: internship),
                     InternshipSkills(internship: internship),
                   ]),
             ),

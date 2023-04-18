@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '/common/models/person.dart';
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
+import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/router.dart';
 import '/screens/student/pages/skills_page.dart';
 import 'pages/about_page.dart';
@@ -30,6 +31,22 @@ class _StudentScreenState extends State<StudentScreen>
   final _aboutPageKey = GlobalKey<AboutPageState>();
   final _internshipPageKey = GlobalKey<InternshipsPageState>();
   final _skillsPageKey = GlobalKey<SkillsPageState>();
+
+  void _onTapBack() async {
+    if (_tabController.index == 1) {
+      for (final key in _internshipPageKey.currentState!.detailKeys) {
+        if (key.currentState?.editMode ?? false) {
+          final answer = await ConfirmPopDialog.show(context);
+          if (!answer || !mounted) return;
+          Navigator.of(context).pop();
+          return;
+        }
+      }
+    }
+
+    if (!mounted) return;
+    Navigator.of(context).pop();
+  }
 
   Future<void> _updateActionButton() async {
     late Icon? icon;
@@ -79,6 +96,8 @@ class _StudentScreenState extends State<StudentScreen>
         appBar: AppBar(
           title: Text(student.fullName),
           actions: _actionButton == null ? null : [_actionButton!],
+          leading: IconButton(
+              onPressed: _onTapBack, icon: const Icon(Icons.arrow_back)),
           bottom: TabBar(
             controller: _tabController,
             tabs: const [

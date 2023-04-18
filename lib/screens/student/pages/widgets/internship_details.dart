@@ -141,12 +141,13 @@ class InternshipDetails extends StatefulWidget {
   final Internship internship;
 
   @override
-  State<InternshipDetails> createState() => _InternshipDetailsState();
+  State<InternshipDetails> createState() => InternshipDetailsState();
 }
 
-class _InternshipDetailsState extends State<InternshipDetails> {
+class InternshipDetailsState extends State<InternshipDetails> {
   bool _isExpanded = false;
   bool _editMode = false;
+  bool get editMode => _editMode;
   late var _internshipController = _InternshipController(widget.internship);
 
   void _onToggleSaveEdit() {
