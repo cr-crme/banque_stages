@@ -246,12 +246,13 @@ class _InternshipDetailsState extends State<InternshipDetails> {
                   onRequestChangedDates: _promptDateRange,
                   internshipController: _internshipController,
                 ),
-                IconButton(
-                    onPressed: _onToggleSaveEdit,
-                    icon: Icon(
-                      _editMode ? Icons.save : Icons.edit,
-                      color: Colors.black,
-                    )),
+                if (widget.internship.isActive)
+                  IconButton(
+                      onPressed: _onToggleSaveEdit,
+                      icon: Icon(
+                        _editMode ? Icons.save : Icons.edit,
+                        color: Colors.black,
+                      )),
               ],
             ),
           )

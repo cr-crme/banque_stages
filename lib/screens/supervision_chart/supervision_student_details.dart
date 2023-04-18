@@ -91,8 +91,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
             if (internship != null)
               _Contact(enterprise: enterprise!, internship: internship),
             if (internship != null) _Schedule(internship: internship),
-            if (internship != null)
-              _EnterpriseRequirements(enterprise: enterprise),
+            if (internship != null) _Requirements(internship: internship),
             _MoreInfoButton(studentId: studentId),
           ],
         ),
@@ -323,8 +322,8 @@ class _Schedule extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           Padding(
-            padding:
-                EdgeInsets.only(bottom: index != schedules.length - 1 ? 8 : 0),
+            padding: EdgeInsets.only(
+                bottom: index != schedules.length - 1 ? 8 : 0, right: 40),
             child: Table(
               columnWidths: {
                 0: FixedColumnWidth(MediaQuery.of(context).size.width / 3),
@@ -337,10 +336,8 @@ class _Schedule extends StatelessWidget {
                           Text(e.dayOfWeek.name),
                           Text(
                               textAlign: TextAlign.end,
-                              '${e.start.hour}h${e.start.minute.toString().padLeft(2, '0')}'),
-                          Text(
-                              textAlign: TextAlign.end,
-                              '${e.end.hour}h${e.end.minute.toString().padLeft(2, '0')}'),
+                              e.start.format(context)),
+                          Text(textAlign: TextAlign.end, e.end.format(context)),
                         ],
                       ))
                   .toList(),
@@ -368,38 +365,48 @@ class _Schedule extends StatelessWidget {
   }
 }
 
-class _EnterpriseRequirements extends StatelessWidget {
-  const _EnterpriseRequirements({required this.enterprise});
+class _Requirements extends StatelessWidget {
+  const _Requirements({required this.internship});
 
-  final Enterprise? enterprise;
+  final Internship internship;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        SubTitle('Exigences de l\'entreprise'),
-        Padding(
+      children: [
+        const SubTitle('Exigences de l\'entreprise'),
+        const Padding(
           padding: EdgeInsets.only(left: 32.0),
           child: Text('EPI requis :',
               style: TextStyle(fontWeight: FontWeight.w600)),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 32.0),
-          child: Text(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
-          ),
-        ),
-        Padding(
+            padding: const EdgeInsets.only(left: 32.0),
+            child: internship.protections.isEmpty
+                ? const Text('Aucun')
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: internship.protections
+                        .map((e) => Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('\u2022 '),
+                                Flexible(child: Text(e)),
+                              ],
+                            ))
+                        .toList(),
+                  )),
+        const Padding(
           padding: EdgeInsets.only(left: 32.0, top: 8.0),
           child: Text('Uniforme requis :',
               style: TextStyle(fontWeight: FontWeight.w600)),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 32.0),
-          child: Text(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
-          ),
+          padding: const EdgeInsets.only(left: 32.0),
+          child: internship.uniform.isEmpty
+              ? const Text('Aucun')
+              : Text(internship.uniform),
         ),
       ],
     );
