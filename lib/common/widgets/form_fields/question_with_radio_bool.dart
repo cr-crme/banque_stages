@@ -71,7 +71,7 @@ class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
                     onChanged: state.didChange,
                   ),
                   ListTileRadio<bool?>(
-                    titleLabel: "Pas appliquable",
+                    titleLabel: "Non applicable",
                     value: null,
                     groupValue: state.value,
                     onChanged: state.didChange,

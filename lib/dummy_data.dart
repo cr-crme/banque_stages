@@ -434,6 +434,64 @@ Future<void> addDummyEnterprises(
     ),
   );
 
+  jobs = JobList();
+  jobs.add(
+    Job(
+        specialization: ActivitySectorsService.sectors[1].specializations[2],
+        positionsOffered: 1,
+        equipmentRequired: ["Chaussures de sécurité"],
+        incidentContact: "Jonny M. 514 514-5544",
+        dangerousSituations: "- Outils mal rangés\n- Tas de pneus",
+        sstQuestions: {
+          "1": "Installer des pneus (les soulevers + transporter)",
+          "2": false,
+          "2+t": "",
+          "3": true,
+          "3+t": "Peu souvent, à la discrétion des employés.",
+          "5": ["Un diable"],
+          "6": [],
+          "7": ["Des ciseaux"],
+          "8": [],
+          "12": ["Des solvants", "Des produits de nettoyage"],
+          "15": [],
+          "16": true,
+          "16+t": "Bouchons a oreilles",
+          "19": true,
+          "19+t": "",
+          "20": "",
+          "21": "",
+          "22": true,
+          "22+t": "gros accident",
+          "23": ""
+        }),
+  );
+  enterprises.add(
+    Enterprise(
+      name: 'Chez Joanie',
+      activityTypes: {activityTypes[5], activityTypes[11]},
+      recrutedBy: teachers[0].id,
+      shareWith: 'Mon centre de services scolaire',
+      jobs: jobs,
+      contactName: 'Joanie Lemieux',
+      contactFunction: 'Propriétaire',
+      contactPhone: PhoneNumber.fromString('438 789 6543'),
+      contactEmail: 'j.lemieux@email.com',
+      address: Address(
+          civicNumber: 8629,
+          street: 'Rue de Gaspé',
+          city: 'Montréal',
+          postalCode: 'H2P 2K3'),
+      phone: PhoneNumber.fromString('438 789 6543'),
+      website: '',
+      headquartersAddress: Address(
+          civicNumber: 8629,
+          street: 'Rue de Gaspé',
+          city: 'Montréal',
+          postalCode: 'H2P 2K3'),
+      neq: '5679011966',
+    ),
+  );
+
   await _waitForDatabaseUpdate(enterprises, 9);
 }
 
