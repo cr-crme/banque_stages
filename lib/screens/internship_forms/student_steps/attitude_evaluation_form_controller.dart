@@ -12,8 +12,8 @@ class AttitudeEvaluationFormController {
   DateTime evaluationDate = DateTime.now();
 
   Map<String, bool> wereAtMeeting = {
-    'La ou le stagiaire': true,
-    'L\'enseignant\u2022e responsable': true,
+    'L\'enseignant\u2022e superviseur\u2022e': true,
+    'La ou le stagiaire': false,
     'La ou le responsable dans le milieu de stage': false,
   };
   bool _withOtherAtMeeting = false;

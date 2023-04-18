@@ -733,7 +733,7 @@ class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Précisez l\'équipement supplémentaire requis : ',
+                    'Précisez le type d\'uniforme : ',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   TextFormField(

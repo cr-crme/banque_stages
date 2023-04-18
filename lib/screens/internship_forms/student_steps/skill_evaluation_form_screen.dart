@@ -64,7 +64,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
                       'Les informations pour cette évaluation ne seront plus modifiables.'),
                   if (!widget.formController.allAppreciationsAreDone)
                     const Text(
-                      '\n\n**Attention toutes les compétences n\'ont pas été évaluée**',
+                      '\n\n**Attention, toutes les compétences n\'ont pas été évaluées**',
                       style: TextStyle(color: Colors.red),
                     ),
                 ],
