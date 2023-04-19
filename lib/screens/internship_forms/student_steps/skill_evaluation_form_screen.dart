@@ -110,7 +110,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     }
 
     final internship = widget.formController.internship(context, listen: false);
-    internship.skillEvaluation.add(InternshipEvaluationSkill(
+    internship.skillEvaluations.add(InternshipEvaluationSkill(
       date: widget.formController.evaluationDate,
       presentAtEvaluation: wereAtMeeting,
       skills: skillEvaluation,

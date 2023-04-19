@@ -71,7 +71,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
     final internships = InternshipsProvider.of(context, listen: false);
     final internship = internships.fromId(widget.internshipId);
 
-    internship.attitudeEvaluation.add(
+    internship.attitudeEvaluations.add(
       InternshipEvaluationAttitude(
         date: DateTime.now(),
         presentAtEvaluation: wereAtMeeting,

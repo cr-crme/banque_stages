@@ -9,12 +9,14 @@ import 'schedule.dart';
 
 class _MutableElements extends ItemSerializable {
   _MutableElements({
+    required this.versionDate,
     required this.supervisor,
     required this.date,
     required this.weeklySchedules,
     required this.protections,
     required this.uniform,
   });
+  final DateTime versionDate;
   final Person supervisor;
   final DateTimeRange date;
   final List<WeeklySchedule> weeklySchedules;
@@ -22,7 +24,8 @@ class _MutableElements extends ItemSerializable {
   final String uniform;
 
   _MutableElements.fromSerialized(map)
-      : supervisor = Person.fromSerialized(map['name']),
+      : versionDate = DateTime.fromMillisecondsSinceEpoch(map['versionDate']),
+        supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
             start: DateTime.fromMillisecondsSinceEpoch(map['date'][0]),
             end: DateTime.fromMillisecondsSinceEpoch(map['date'][1])),
@@ -35,6 +38,7 @@ class _MutableElements extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() => {
+        'versionDate': versionDate.millisecondsSinceEpoch,
         'name': supervisor.serializedMap(),
         'date': [
           date.start.millisecondsSinceEpoch,
@@ -47,6 +51,8 @@ class _MutableElements extends ItemSerializable {
 
   _MutableElements deepCopy() {
     return _MutableElements(
+        versionDate: DateTime.fromMillisecondsSinceEpoch(
+            versionDate.millisecondsSinceEpoch),
         supervisor: supervisor.deepCopy(),
         date: DateTimeRange(start: date.start, end: date.end),
         weeklySchedules: weeklySchedules.map((e) => e.deepCopy()).toList(),
@@ -69,11 +75,20 @@ class Internship extends ItemSerializable {
   // Elements that can be modified (which increase the version number, but
   // do not require a completely new internship contract)
   final List<_MutableElements> _mutables;
+  int get nbVersions => _mutables.length;
+  DateTime get versionDate => _mutables.last.versionDate;
+  DateTime versionDateFrom(int version) => _mutables[version].versionDate;
   Person get supervisor => _mutables.last.supervisor;
+  Person supervisorFrom(int version) => _mutables[version].supervisor;
   DateTimeRange get date => _mutables.last.date;
+  DateTimeRange dateFrom(int version) => _mutables[version].date;
   List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
+  List<WeeklySchedule> weeklySchedulesFrom(int version) =>
+      _mutables[version].weeklySchedules;
   List<String> get protections => _mutables.last.protections;
+  List<String> protectionsFrom(int version) => _mutables[version].protections;
   String get uniform => _mutables.last.uniform;
+  String uniformFrom(int version) => _mutables[version].uniform;
 
   // Elements that are parts of the inner working of the internship (can be
   // modify, but won't generate a new version)
@@ -83,15 +98,15 @@ class Internship extends ItemSerializable {
   final VisitingPriority visitingPriority;
   final String teacherNotes;
   final DateTime? endDate;
-  final List<InternshipEvaluationSkill> skillEvaluation;
-  final List<InternshipEvaluationAttitude> attitudeEvaluation;
+  final List<InternshipEvaluationSkill> skillEvaluations;
+  final List<InternshipEvaluationAttitude> attitudeEvaluations;
 
   bool get isClosed =>
       endDate != null &&
-      skillEvaluation.isNotEmpty &&
-      attitudeEvaluation.isNotEmpty;
+      skillEvaluations.isNotEmpty &&
+      attitudeEvaluations.isNotEmpty;
   bool get isEvaluationPending =>
-      endDate != null && (skillEvaluation.isEmpty || skillEvaluation.isEmpty);
+      endDate != null && (skillEvaluations.isEmpty || skillEvaluations.isEmpty);
   bool get isActive => endDate == null;
 
   Internship._({
@@ -109,8 +124,8 @@ class Internship extends ItemSerializable {
     required this.visitingPriority,
     required this.teacherNotes,
     required this.endDate,
-    required this.skillEvaluation,
-    required this.attitudeEvaluation,
+    required this.skillEvaluations,
+    required this.attitudeEvaluations,
   }) : _mutables = mutables;
 
   Internship({
@@ -122,6 +137,7 @@ class Internship extends ItemSerializable {
     required this.enterpriseId,
     required this.jobId,
     required this.extraSpecializationsId,
+    required DateTime versionDate,
     required Person supervisor,
     required DateTimeRange date,
     required List<WeeklySchedule> weeklySchedules,
@@ -132,11 +148,12 @@ class Internship extends ItemSerializable {
     required this.visitingPriority,
     this.teacherNotes = '',
     this.endDate,
-    this.skillEvaluation = const [],
-    this.attitudeEvaluation = const [],
+    this.skillEvaluations = const [],
+    this.attitudeEvaluations = const [],
   })  : previousTeacherId = previousTeacherId ?? teacherId,
         _mutables = [
           _MutableElements(
+              versionDate: versionDate,
               supervisor: supervisor,
               date: date,
               weeklySchedules: weeklySchedules,
@@ -166,12 +183,12 @@ class Internship extends ItemSerializable {
         endDate = map['endDate'] == -1
             ? null
             : DateTime.fromMillisecondsSinceEpoch(map['endDate']),
-        skillEvaluation = map['skillEvaluation'] == null
+        skillEvaluations = map['skillEvaluation'] == null
             ? []
             : (map['skillEvaluation'] as List)
                 .map((e) => InternshipEvaluationSkill.fromSerialized(e))
                 .toList(),
-        attitudeEvaluation = map['attitudeEvaluation'] == null
+        attitudeEvaluations = map['attitudeEvaluation'] == null
             ? []
             : (map['attitudeEvaluation'] as List)
                 .map((e) => InternshipEvaluationAttitude.fromSerialized(e))
@@ -196,13 +213,15 @@ class Internship extends ItemSerializable {
       'priority': visitingPriority.index,
       'teacherNotes': teacherNotes,
       'endDate': endDate?.millisecondsSinceEpoch ?? -1,
-      'skillEvaluation': skillEvaluation.map((e) => e.serializedMap()).toList(),
+      'skillEvaluation':
+          skillEvaluations.map((e) => e.serializedMap()).toList(),
       'attitudeEvaluation':
-          attitudeEvaluation.map((e) => e.serializedMap()).toList(),
+          attitudeEvaluations.map((e) => e.serializedMap()).toList(),
     };
   }
 
   void addVersion({
+    required DateTime versionDate,
     required Person supervisor,
     required DateTimeRange date,
     required List<WeeklySchedule> weeklySchedules,
@@ -210,6 +229,7 @@ class Internship extends ItemSerializable {
     required String uniform,
   }) {
     _mutables.add(_MutableElements(
+        versionDate: versionDate,
         supervisor: supervisor,
         date: date,
         weeklySchedules: weeklySchedules,
@@ -237,8 +257,8 @@ class Internship extends ItemSerializable {
     VisitingPriority? visitingPriority,
     String? teacherNotes,
     DateTime? endDate,
-    List<InternshipEvaluationSkill>? skillEvaluation,
-    List<InternshipEvaluationAttitude>? attitudeEvaluation,
+    List<InternshipEvaluationSkill>? skillEvaluations,
+    List<InternshipEvaluationAttitude>? attitudeEvaluations,
   }) {
     if (supervisor != null ||
         date != null ||
@@ -264,8 +284,8 @@ class Internship extends ItemSerializable {
       visitingPriority: visitingPriority ?? this.visitingPriority,
       teacherNotes: teacherNotes ?? this.teacherNotes,
       endDate: endDate ?? this.endDate,
-      skillEvaluation: skillEvaluation ?? this.skillEvaluation,
-      attitudeEvaluation: attitudeEvaluation ?? this.attitudeEvaluation,
+      skillEvaluations: skillEvaluations ?? this.skillEvaluations,
+      attitudeEvaluations: attitudeEvaluations ?? this.attitudeEvaluations,
     );
   }
 
@@ -291,8 +311,9 @@ class Internship extends ItemSerializable {
               endDate!.month,
               endDate!.day,
             ),
-      skillEvaluation: skillEvaluation.map((e) => e.deepCopy()).toList(),
-      attitudeEvaluation: attitudeEvaluation.map((e) => e.deepCopy()).toList(),
+      skillEvaluations: skillEvaluations.map((e) => e.deepCopy()).toList(),
+      attitudeEvaluations:
+          attitudeEvaluations.map((e) => e.deepCopy()).toList(),
     );
   }
 }

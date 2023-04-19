@@ -47,7 +47,7 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                         alignment: Alignment.centerLeft,
                         child: _SpecificSkillBody(
                             internship: widget.internship,
-                            evaluation: widget.internship.skillEvaluation)),
+                            evaluation: widget.internship.skillEvaluations)),
                     IconButton(
                         onPressed: () => GoRouter.of(context).pushNamed(
                             Screens.skillEvaluationMainScreen,
@@ -66,7 +66,7 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                         alignment: Alignment.centerLeft,
                         child: _AttitudeBody(
                             internship: widget.internship,
-                            evaluation: widget.internship.attitudeEvaluation)),
+                            evaluation: widget.internship.attitudeEvaluations)),
                     IconButton(
                         onPressed: () => GoRouter.of(context).pushNamed(
                             Screens.attitudeEvaluationScreen,

@@ -803,6 +803,7 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
+    versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Cedric Masson').id,
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Care').id,
@@ -863,6 +864,7 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
+    versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Thomas Caron').id,
     teacherId: teachers.currentTeacherId,
     enterpriseId:
@@ -915,6 +917,7 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
+    versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
@@ -960,6 +963,7 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
+    versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Vincent Picard').id,
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'IGA').id,
@@ -1000,6 +1004,7 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
+    versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
     teacherId: teachers.firstWhere((e) => e.fullName == 'Benvolio Montaigu').id,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
@@ -1040,6 +1045,7 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
+    versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
     teacherId: teachers.currentTeacherId,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
@@ -1090,6 +1096,7 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
+    versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
     teacherId: teachers.currentTeacherId,
     isTransfering: true,

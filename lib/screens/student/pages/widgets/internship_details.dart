@@ -183,6 +183,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
     // Saving the values that require an extra version
     if (_internshipController.hasChanged) {
       widget.internship.addVersion(
+          versionDate: DateTime.now(),
           supervisor: widget.internship.supervisor.copyWith(
               firstName:
                   _internshipController.supervisorFirstNameController.text,

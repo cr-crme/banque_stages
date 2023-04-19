@@ -90,6 +90,7 @@ class _InternshipEnrollmentScreenState
         .fromId(_generalInfoKey.currentState!.enterprise!.id);
 
     final internship = Internship(
+      versionDate: DateTime.now(),
       studentId: _generalInfoKey.currentState!.student!.id,
       teacherId: TeachersProvider.of(context, listen: false).currentTeacherId,
       enterpriseId: _generalInfoKey.currentState!.enterprise!.id,
