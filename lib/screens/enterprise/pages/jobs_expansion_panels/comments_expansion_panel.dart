@@ -27,7 +27,9 @@ class CommentsExpansionPanel extends ExpansionPanel {
                 ],
               ),
               child: IconButton(
-                onPressed: () => addComment(job),
+                onPressed: () {},
+                // TODO bring this back
+                // => addComment(job),
                 icon: const Icon(Icons.add_comment_outlined),
                 color: Colors.blue,
               ),
