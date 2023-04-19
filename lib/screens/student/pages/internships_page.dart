@@ -7,6 +7,7 @@ import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/widgets/sub_title.dart';
 import 'widgets/internship_details.dart';
+import 'widgets/internship_documents.dart';
 import 'widgets/internship_skills.dart';
 
 class InternshipsPage extends StatefulWidget {
@@ -82,6 +83,7 @@ class InternshipsPageState extends State<InternshipsPage> {
                     InternshipDetails(
                         key: detailKeys[index], internship: internship),
                     InternshipSkills(internship: internship),
+                    InternshipDocuments(internship: internship),
                   ]),
             ),
           ],
