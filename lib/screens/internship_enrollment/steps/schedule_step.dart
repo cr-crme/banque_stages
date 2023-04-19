@@ -208,15 +208,20 @@ class _Hours extends StatelessWidget {
 }
 
 class ScheduleSelector extends StatefulWidget {
-  const ScheduleSelector(
-      {super.key,
-      required this.scheduleController,
-      required this.editMode,
-      required this.withTitle});
+  const ScheduleSelector({
+    super.key,
+    required this.scheduleController,
+    required this.editMode,
+    required this.withTitle,
+    this.leftPadding,
+    this.periodTextSize,
+  });
 
   final WeeklyScheduleController scheduleController;
   final bool editMode;
   final bool withTitle;
+  final double? leftPadding;
+  final double? periodTextSize;
 
   @override
   State<ScheduleSelector> createState() => _ScheduleSelectorState();
@@ -331,6 +336,7 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
                       widget.scheduleController.weeklySchedules.length > 1
                           ? 'Période ${weeklyIndex + 1}'
                           : null,
+                  periodTextSize: widget.periodTextSize,
                   weeklySchedule:
                       widget.scheduleController.weeklySchedules[weeklyIndex],
                   onRemoveWeeklySchedule:
@@ -347,6 +353,7 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
                           .removedDailyScheduleTime(weeklyIndex, dailyIndex)),
                   promptChangeWeeks: () => _promptChangeWeek(weeklyIndex),
                   editMode: widget.editMode,
+                  leftPadding: widget.leftPadding,
                 ))
             .toList(),
         if (widget.editMode)
@@ -367,17 +374,22 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
 }
 
 class _ScheduleSelector extends StatelessWidget {
-  const _ScheduleSelector(
-      {required this.periodName,
-      required this.weeklySchedule,
-      required this.onRemoveWeeklySchedule,
-      required this.onAddDayToDailySchedule,
-      required this.onUpdateDailyScheduleTime,
-      required this.onRemovedDailyScheduleTime,
-      required this.promptChangeWeeks,
-      required this.editMode});
+  const _ScheduleSelector({
+    required this.periodName,
+    required this.periodTextSize,
+    required this.weeklySchedule,
+    required this.onRemoveWeeklySchedule,
+    required this.onAddDayToDailySchedule,
+    required this.onUpdateDailyScheduleTime,
+    required this.onRemovedDailyScheduleTime,
+    required this.promptChangeWeeks,
+    required this.editMode,
+    this.leftPadding,
+  });
 
+  final double? leftPadding;
   final String? periodName;
+  final double? periodTextSize;
   final WeeklySchedule weeklySchedule;
   final Function()? onRemoveWeeklySchedule;
   final Function() onAddDayToDailySchedule;
@@ -394,13 +406,12 @@ class _ScheduleSelector extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 4.0, left: 10.0),
+              padding: EdgeInsets.only(
+                  top: 8.0, bottom: 4.0, left: leftPadding ?? 12),
               child: Text(
                 periodName!,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.bold, fontSize: periodTextSize),
               ),
             ),
             if (editMode)
@@ -413,7 +424,9 @@ class _ScheduleSelector extends StatelessWidget {
       if (periodName != null)
         Padding(
           padding: EdgeInsets.only(
-              left: 8.0, right: editMode ? 8.0 : 24.0, bottom: 10.0),
+              left: 8.0,
+              right: editMode ? 8.0 : 24.0,
+              bottom: leftPadding ?? 12),
           child: Stack(
             alignment: Alignment.centerRight,
             children: [

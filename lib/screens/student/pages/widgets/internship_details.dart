@@ -507,6 +507,8 @@ class _InternshipBody extends StatelessWidget {
             withTitle: false,
             editMode: editMode,
             scheduleController: internshipController.scheduleController,
+            leftPadding: 0,
+            periodTextSize: 14,
           )
         ],
       ),
