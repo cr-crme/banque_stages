@@ -287,20 +287,6 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
       _usedDuplicateSkills[skill] = false;
     }
 
-    // If there is only one job, evaluate all skills
-    if (_extraSpecialization.isEmpty) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SubTitle('Métier évalué'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text(_specialization.idWithName),
-          ),
-        ],
-      );
-    }
-
     // If there is more than one job, the user must select which skills are evaluated
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

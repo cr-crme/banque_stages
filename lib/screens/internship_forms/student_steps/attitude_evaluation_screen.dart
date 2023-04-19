@@ -86,7 +86,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
           onStepCancel: () => Navigator.pop(context),
           steps: [
             Step(
-              label: const Text('Détails de\nl\'évaluation'),
+              label: const Text('Détails'),
               title: Container(),
               state: _stepStatus[0],
               isActive: _currentStep == 0,
@@ -94,25 +94,82 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
                   _AttitudeGeneralDetailsStep(formController: _formController),
             ),
             Step(
-              label: const Text('Détails de\nl\'évaluation'),
+              label: const Text('Attitudes'),
               title: Container(),
               state: _stepStatus[1],
               isActive: _currentStep == 1,
-              content: _AttitudeRadioChoices(
-                  title: '1. ${Inattendance.title}',
-                  formController: _formController,
-                  elements: Inattendance.values),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _AttitudeRadioChoices(
+                      title: '1. ${Inattendance.title}',
+                      formController: _formController,
+                      elements: Inattendance.values),
+                  _AttitudeRadioChoices(
+                      title: '2. ${Ponctuality.title}',
+                      formController: _formController,
+                      elements: Ponctuality.values),
+                  _AttitudeRadioChoices(
+                      title: '3. ${Sociability.title}',
+                      formController: _formController,
+                      elements: Sociability.values),
+                  _AttitudeRadioChoices(
+                      title: '4. ${Politeness.title}',
+                      formController: _formController,
+                      elements: Politeness.values),
+                  _AttitudeRadioChoices(
+                      title: '5. ${Motivation.title}',
+                      formController: _formController,
+                      elements: Motivation.values),
+                  _AttitudeRadioChoices(
+                      title: '6. ${DressCode.title}',
+                      formController: _formController,
+                      elements: DressCode.values),
+                ],
+              ),
             ),
             Step(
-              label: const Text('Détails de\nl\'évaluation'),
+                label: const Text('Rendement'),
+                title: Container(),
+                state: _stepStatus[2],
+                isActive: _currentStep == 2,
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _AttitudeRadioChoices(
+                        title: '7. ${QualityOfWork.title}',
+                        formController: _formController,
+                        elements: QualityOfWork.values),
+                    _AttitudeRadioChoices(
+                        title: '8. ${Productivity.title}',
+                        formController: _formController,
+                        elements: Productivity.values),
+                    _AttitudeRadioChoices(
+                        title: '9. ${Autonomy.title}',
+                        formController: _formController,
+                        elements: Autonomy.values),
+                    _AttitudeRadioChoices(
+                        title: '10. ${Cautiousness.title}',
+                        formController: _formController,
+                        elements: Cautiousness.values),
+                  ],
+                )),
+            Step(
+              label: const Text('Commentaires'),
               title: Container(),
-              state: _stepStatus[1],
-              isActive: _currentStep == 1,
-              content: _AttitudeRadioChoices(
-                  title: '1. ${Ponctuality.title}',
-                  formController: _formController,
-                  elements: Ponctuality.values),
-            ),
+              state: _stepStatus[3],
+              isActive: _currentStep == 3,
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _AttitudeRadioChoices(
+                      title: '11. ${GeneralAppreciation.title}',
+                      formController: _formController,
+                      elements: GeneralAppreciation.values),
+                  _Comments(formController: _formController),
+                ],
+              ),
+            )
           ],
           controlsBuilder: _controlBuilder,
         ));
@@ -309,6 +366,32 @@ class _AttitudeRadioChoicesState extends State<_AttitudeRadioChoices> {
             groupValue: widget.formController.responses[e.runtimeType],
             onChanged: (newValue) => setState(() =>
                 widget.formController.responses[e.runtimeType] = newValue!))),
+      ],
+    );
+  }
+}
+
+class _Comments extends StatelessWidget {
+  const _Comments({required this.formController});
+
+  final AttitudeEvaluationFormController formController;
+
+  @override
+  Widget build(BuildContext context) {
+    const spacing = 8.0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(bottom: spacing),
+          child: SubTitle('12. Autres commentaires'),
+        ),
+        TextFormField(
+          controller: formController.commentsController,
+          maxLines: null,
+        ),
       ],
     );
   }
