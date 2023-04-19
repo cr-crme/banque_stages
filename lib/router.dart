@@ -127,6 +127,14 @@ final router = GoRouter(
                   InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
             ),
             GoRoute(
+              path: 'enterprise-evaluation/:jobId',
+              name: Screens.enterpriseEvaluationScreen,
+              builder: (context, state) => EnterpriseEvaluationScreen(
+                id: state.params['id']!,
+                jobId: state.params['jobId']!,
+              ),
+            ),
+            GoRoute(
               path: ':jobId',
               name: Screens.jobSstForm,
               builder: (context, state) => JobSstFormScreen(
@@ -161,14 +169,6 @@ final router = GoRouter(
       path: '/itinerary',
       name: Screens.itinerary,
       builder: (context, state) => const ItineraryScreen(),
-    ),
-    GoRoute(
-      path: '/enterprise-evaluation',
-      name: Screens.enterpriseEvaluationScreen,
-      builder: (context, state) => EnterpriseEvaluationScreen(
-        enterpriseId: state.params['enterpriseId']!,
-        jobId: state.params['jobId']!,
-      ),
     ),
     GoRoute(
       path: '/skill-evaluation-main/:internshipId',
