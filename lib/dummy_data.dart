@@ -171,30 +171,30 @@ Future<void> addDummyEnterprises(
     Job(
         specialization: ActivitySectorsService.sectors[9].specializations[3],
         positionsOffered: 3,
-        equipmentRequired: ["Chaussures de sécurité"],
-        incidentContact: "Jonny M. 514 514-5544",
-        dangerousSituations: "- Outils mal rangés\n- Tas de pneus",
+        equipmentRequired: ['Chaussures de sécurité'],
+        incidentContact: 'Jonny M. 514 514-5544',
+        dangerousSituations: '- Outils mal rangés\n- Tas de pneus',
         sstQuestions: {
-          "1": "Installer des pneus (les soulevers + transporter)",
-          "2": false,
-          "2+t": "",
-          "3": true,
-          "3+t": "Peu souvent, à la discrétion des employés.",
-          "5": ["Un diable"],
-          "6": [],
-          "7": ["Des ciseaux"],
-          "8": [],
-          "12": ["Des solvants", "Des produits de nettoyage"],
-          "15": [],
-          "16": true,
-          "16+t": "Bouchons a oreilles",
-          "19": true,
-          "19+t": "",
-          "20": "",
-          "21": "",
-          "22": false,
-          "22+t": "",
-          "23": ""
+          '1': 'Installer des pneus (les soulevers + transporter)',
+          '2': false,
+          '2+t': '',
+          '3': true,
+          '3+t': 'Peu souvent, à la discrétion des employés.',
+          '5': ['Un diable'],
+          '6': [],
+          '7': ['Des ciseaux'],
+          '8': [],
+          '12': ['Des solvants', 'Des produits de nettoyage'],
+          '15': [],
+          '16': true,
+          '16+t': 'Bouchons a oreilles',
+          '19': true,
+          '19+t': '',
+          '20': '',
+          '21': '',
+          '22': false,
+          '22+t': '',
+          '23': ''
         }),
   );
   enterprises.add(
@@ -440,43 +440,43 @@ Future<void> addDummyEnterprises(
         specialization: ActivitySectorsService.sectors[1].specializations[2],
         positionsOffered: 1,
         pastIncidents:
-            "L\’élève ne portait pas ses gants malgré plusieurs avertissements, "
-            "et il s\’est coupé profondément la paume. "
-            "\nLa blessure a nécessité des soins majeurs.",
+            'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
+            'et il s\'est coupé profondément la paume. '
+            '\nLa blessure a nécessité des soins majeurs.',
         equipmentRequired: [
-          "Chaussures avec semelles antidérapantes, Gants en kevlar"
+          'Chaussures avec semelles antidérapantes, Gants en kevlar'
         ],
-        incidentContact: "Joanie, la propriétaire",
-        dangerousSituations: "- L\'élève n\'a pas le droit de s'asseoir"
-            "\n- Travailler avec un couteau et sécateur"
-            "\n- Travailler avec des matières biologiques (épines de fleurs, pollen)"
-            "\n- Travailler avec des produits chimiques (pesticides)"
-            "\n- Porter des objets lourds (ex. gros pots de fleurs)"
-            "\n- Travailler avec le dos courbé"
-            "\n- Les planchers sont souvent mouillés (risque de chute)",
+        incidentContact: 'Joanie, la propriétaire',
+        dangerousSituations: '- L\'élève n\'a pas le droit de s\'asseoir'
+            '\n- Travailler avec un couteau et sécateur'
+            '\n- Travailler avec des matières biologiques (épines de fleurs, pollen)'
+            '\n- Travailler avec des produits chimiques (pesticides)'
+            '\n- Porter des objets lourds (ex. gros pots de fleurs)'
+            '\n- Travailler avec le dos courbé'
+            '\n- Les planchers sont souvent mouillés (risque de chute)',
         sstQuestions: {
-          "1": "Entretenir les fleurs et les plantes, servir les clients, "
-              "aider à la préparation de bouquets  ",
-          "2": true,
-          "2+t": "",
-          "3": true,
-          "3+t": "Plusieurs fois par jour, surtout des pots de fleurs.",
-          "5": ["Un diable"],
-          "6": [],
-          "7": ["Un couteau", "Des ciseaux", "Un sécateur"],
-          "8": [],
-          "10": ["Des pesticides (résidus sur les plantes)", "Engrais"],
-          "15": [],
-          "16": false,
-          "19": false,
-          "20": "",
-          "21": "",
-          "22": true,
-          "22+t":
-              "L\’élève ne portait pas ses gants malgré plusieurs avertissements, "
-                  "et il s\’est coupé profondément la paume."
-                  "La blessure a nécessité des soins majeurs.",
-          "23": "Joanie, la propriétaire"
+          '1': 'Entretenir les fleurs et les plantes, servir les clients, '
+              'aider à la préparation de bouquets  ',
+          '2': true,
+          '2+t': '',
+          '3': true,
+          '3+t': 'Plusieurs fois par jour, surtout des pots de fleurs.',
+          '5': ['Un diable'],
+          '6': [],
+          '7': ['Un couteau', 'Des ciseaux', 'Un sécateur'],
+          '8': [],
+          '10': ['Des pesticides (résidus sur les plantes)', 'Engrais'],
+          '15': [],
+          '16': false,
+          '19': false,
+          '20': '',
+          '21': '',
+          '22': true,
+          '22+t':
+              'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
+                  'et il s\'est coupé profondément la paume.'
+                  'La blessure a nécessité des soins majeurs.',
+          '23': 'Joanie, la propriétaire'
         }),
   );
   enterprises.add(
@@ -512,40 +512,40 @@ Future<void> addDummyEnterprises(
         specialization: ActivitySectorsService.sectors[1].specializations[2],
         positionsOffered: 1,
         pastIncidents:
-            "Lorsque l\’élève a laissé tomber un vase dispendieux qui s\’est "
-            "cassé au sol, le superviseur s\’est énervé et lui a crié dessus. "
-            "L\’élève a fait une crise de panique qui n\’a pas nécessité de soins."
-            "\nL\’élève a gâché un nouvel arrivage de fleurs en préparant mal "
-            "les tiges, et le superviseur a menacé de le mettre à la porte. "
-            "L’élève a appelé sa superviseure en pleurant et ne voulait pas "
-            "continuer son stage.",
-        equipmentRequired: ["Chaussures avec semelles antidérapantes"],
-        incidentContact: "Gaëtan Munger, le gérant",
-        dangerousSituations: "- Travailler avec un couteau"
-            "\n- Travailler avec des produits chimiques (pesticides)"
-            "\n- Porter des objets lourds (ex. gros pots de fleurs)"
-            "\n- Les planchers sont souvent mouillés (risque de chute)",
+            'Lorsque l\'élève a laissé tomber un vase dispendieux qui s\'est '
+            'cassé au sol, le superviseur s\'est énervé et lui a crié dessus. '
+            'L\'élève a fait une crise de panique qui n\'a pas nécessité de soins.'
+            '\nL\'élève a gâché un nouvel arrivage de fleurs en préparant mal '
+            'les tiges, et le superviseur a menacé de le mettre à la porte. '
+            'L\'élève a appelé sa superviseure en pleurant et ne voulait pas '
+            'continuer son stage.',
+        equipmentRequired: ['Chaussures avec semelles antidérapantes'],
+        incidentContact: 'Gaëtan Munger, le gérant',
+        dangerousSituations: '- Travailler avec un couteau'
+            '\n- Travailler avec des produits chimiques (pesticides)'
+            '\n- Porter des objets lourds (ex. gros pots de fleurs)'
+            '\n- Les planchers sont souvent mouillés (risque de chute)',
         sstQuestions: {
-          "1": "Arroser les fleurs et les plantes, aider à la confection de "
-              "couronnes, sortir et ranger les plantes à l'ouverture et à la "
-              "fermeture de la boutique",
-          "2": true,
-          "2+t": "",
-          "3": true,
-          "3+t": "En début et en fin de journée, surtout des pots de fleurs.",
-          "5": ["Un diable"],
-          "6": [],
-          "7": ["Un couteau", "Des ciseaux"],
-          "8": [],
-          "10": ["Des pesticides", "Engrais"],
-          "15": [],
-          "16": false,
-          "19": false,
-          "20": "",
-          "21": "",
-          "22": false,
-          "22+t": "",
-          "23": "Gaëtan Munger, le gérant"
+          '1': 'Arroser les fleurs et les plantes, aider à la confection de '
+              'couronnes, sortir et ranger les plantes à l\'ouverture et à la '
+              'fermeture de la boutique',
+          '2': true,
+          '2+t': '',
+          '3': true,
+          '3+t': 'En début et en fin de journée, surtout des pots de fleurs.',
+          '5': ['Un diable'],
+          '6': [],
+          '7': ['Un couteau', 'Des ciseaux'],
+          '8': [],
+          '10': ['Des pesticides', 'Engrais'],
+          '15': [],
+          '16': false,
+          '19': false,
+          '20': '',
+          '21': '',
+          '22': false,
+          '22+t': '',
+          '23': 'Gaëtan Munger, le gérant'
         }),
   );
   enterprises.add(
@@ -706,7 +706,7 @@ Future<void> addDummyStudents(
 
   students.add(
     Student(
-      firstName: 'Geneviève',
+      firstName: 'Jeanne',
       lastName: 'Tremblay',
       dateBirth: DateTime.now(),
       email: 'g.tremblay@email.com',
@@ -769,7 +769,7 @@ Future<void> addDummyStudents(
 
   students.add(
     Student(
-      firstName: 'Mélissa',
+      firstName: 'Melissa',
       lastName: 'Poulain',
       dateBirth: DateTime.now(),
       email: 'm.poulain@email.com',
@@ -797,22 +797,21 @@ Future<void> addDummyInterships(
   EnterprisesProvider enterprises,
   TeachersProvider teachers,
 ) async {
-  final rng = Random(); // Generate random priorities
+  final rng = Random();
 
   var period = DateTimeRange(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    studentId: students[0].id,
+    studentId: students.firstWhere((e) => e.fullName == 'Cedric Masson').id,
     teacherId: teachers.currentTeacherId,
-    isTransfering: true,
-    enterpriseId: enterprises[0].id,
-    jobId: enterprises[0].jobs[0].id,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Care').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Auto Care').jobs[0].id,
     extraSpecializationsId: [
       ActivitySectorsService.sectors[2].specializations[1].id,
       ActivitySectorsService.sectors[1].specializations[0].id,
     ],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    visitingPriority: VisitingPriority.values[2],
     supervisor: Person(
         firstName: 'Nobody',
         lastName: 'Forever',
@@ -864,12 +863,14 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    studentId: students[1].id,
+    studentId: students.firstWhere((e) => e.fullName == 'Thomas Caron').id,
     teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises[0].id,
-    jobId: enterprises[0].jobs[0].id,
+    enterpriseId:
+        enterprises.firstWhere((e) => e.name == 'Boucherie Marien').id,
+    jobId:
+        enterprises.firstWhere((e) => e.name == 'Boucherie Marien').jobs[0].id,
     extraSpecializationsId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    visitingPriority: VisitingPriority.values[2],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     expectedLength: 135,
@@ -914,12 +915,12 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    studentId: students[2].id,
+    studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
     teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises[1].id,
-    jobId: enterprises[1].jobs[0].id,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,
     extraSpecializationsId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    visitingPriority: VisitingPriority.values[2],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     expectedLength: 135,
@@ -959,12 +960,12 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    studentId: students[3].id,
+    studentId: students.firstWhere((e) => e.fullName == 'Vincent Picard').id,
     teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises[2].id,
-    jobId: enterprises[2].jobs[0].id,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'IGA').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'IGA').jobs[0].id,
     extraSpecializationsId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    visitingPriority: VisitingPriority.values[2],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     expectedLength: 135,
@@ -999,12 +1000,12 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    studentId: students[4].id,
-    teacherId: teachers[0].id,
-    enterpriseId: enterprises[3].id,
-    jobId: enterprises[3].jobs[0].id,
+    studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
+    teacherId: teachers.firstWhere((e) => e.fullName == 'Benvolio Montaigu').id,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
     extraSpecializationsId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    visitingPriority: VisitingPriority.values[2],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     expectedLength: 135,
@@ -1039,12 +1040,12 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    studentId: students[5].id,
+    studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
     teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises[4].id,
-    jobId: enterprises[4].jobs[0].id,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
     extraSpecializationsId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    visitingPriority: VisitingPriority.values[2],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     expectedLength: 135,
@@ -1089,12 +1090,13 @@ Future<void> addDummyInterships(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    studentId: students[8].id,
+    studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
     teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises[4].id,
-    jobId: enterprises[4].jobs[0].id,
+    isTransfering: true,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
     extraSpecializationsId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    visitingPriority: VisitingPriority.values[2],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
     expectedLength: 135,

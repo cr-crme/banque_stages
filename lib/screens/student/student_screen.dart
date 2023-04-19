@@ -32,6 +32,27 @@ class _StudentScreenState extends State<StudentScreen>
   final _internshipPageKey = GlobalKey<InternshipsPageState>();
   final _skillsPageKey = GlobalKey<SkillsPageState>();
 
+  Future<void> _navigateToAddInternship() async {
+    final student =
+        StudentsProvider.of(context, listen: false).fromId(widget.id);
+    if (!student.hasActiveInternship(context)) {
+      GoRouter.of(context).goNamed(
+        Screens.internshipEnrollementFromStudent,
+        params: Screens.withId(widget.id),
+      );
+      return;
+    }
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) => const AlertDialog(
+              title: Text('L\'élève a déjà un stage'),
+              content: Text(
+                  'L\'élève est déjà inscrit comme stagiaire dans une autre '
+                  'entreprise. Mettre fin au stage actuel pour l\'inscrire '
+                  'dans un nouveau milieu.'),
+            ));
+  }
+
   void _onTapBack() async {
     if (_tabController.index == 1) {
       for (final key in _internshipPageKey.currentState!.detailKeys) {
@@ -71,10 +92,7 @@ class _StudentScreenState extends State<StudentScreen>
               if (_tabController.index == 0) {
                 await _aboutPageKey.currentState?.toggleEdit();
               } else if (_tabController.index == 1) {
-                GoRouter.of(context).goNamed(
-                  Screens.internshipEnrollementFromStudent,
-                  params: Screens.withId(widget.id),
-                );
+                await _navigateToAddInternship();
               }
               await _updateActionButton();
             },

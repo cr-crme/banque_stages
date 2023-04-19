@@ -103,6 +103,15 @@ class _GeneralInformations extends StatelessWidget {
   final bool studentIsFixed;
   final Function(Student?) onSelectStudent;
 
+  List<Student> _studentsWithoutInternship(context, StudentsProvider students) {
+    final List<Student> out = [];
+    for (final student in students) {
+      if (!student.hasActiveInternship(context)) out.add(student);
+    }
+
+    return out;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -138,7 +147,7 @@ class _GeneralInformations extends StatelessWidget {
               if (!studentIsFixed)
                 Consumer<StudentsProvider>(
                   builder: (context, students, _) => StudentPickerFormField(
-                    students: students.toList(),
+                    students: _studentsWithoutInternship(context, students),
                     onSaved: onSelectStudent,
                     onSelect: onSelectStudent,
                   ),

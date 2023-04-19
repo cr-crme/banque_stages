@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '/common/models/address.dart';
 import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
+import '/common/providers/internships_provider.dart';
 
 enum Program {
   fpt,
@@ -51,6 +52,14 @@ class Student extends Person {
   }) : photo = photo ?? Random().nextInt(0x00FF00).toString() {
     avatar = CircleAvatar(
         backgroundColor: Color(int.parse(this.photo)).withAlpha(255));
+  }
+
+  bool hasActiveInternship(BuildContext context) {
+    final internships = InternshipsProvider.of(context, listen: false);
+    for (final internship in internships) {
+      if (internship.isActive && internship.studentId == id) return true;
+    }
+    return false;
   }
 
   Student.fromSerialized(map)
