@@ -112,6 +112,17 @@ class _GeneralInformations extends StatelessWidget {
     return out;
   }
 
+  List<Enterprise> _enterprisesWithAtLeastOneInternshipAvailable(
+      context, EnterprisesProvider enterprises) {
+    final List<Enterprise> out = [];
+    for (final enterprise in enterprises) {
+      debugPrint(enterprise.name);
+      if (enterprise.availableJobs(context).isNotEmpty) out.add(enterprise);
+    }
+
+    return out;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -133,7 +144,8 @@ class _GeneralInformations extends StatelessWidget {
                 Consumer<EnterprisesProvider>(
                   builder: (context, enterprises, _) =>
                       EnterprisePickerFormField(
-                    enterprises: enterprises.toList(),
+                    enterprises: _enterprisesWithAtLeastOneInternshipAvailable(
+                        context, enterprises),
                     onSaved: onSelectEnterprise,
                     onSelect: onSelectEnterprise,
                   ),
