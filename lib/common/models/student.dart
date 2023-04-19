@@ -48,7 +48,7 @@ class Student extends Person {
     required this.group,
     required this.contact,
     required this.contactLink,
-  }) : photo = photo ?? Random().nextInt(0xFFFFFF).toString() {
+  }) : photo = photo ?? Random().nextInt(0x00FF00).toString() {
     avatar = CircleAvatar(
         backgroundColor: Color(int.parse(this.photo)).withAlpha(255));
   }
