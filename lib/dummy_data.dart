@@ -481,7 +481,7 @@ Future<void> addDummyEnterprises(
   );
   enterprises.add(
     Enterprise(
-      name: 'Chez Joanie',
+      name: 'Le jardin de Joanie',
       activityTypes: {activityTypes[5], activityTypes[11]},
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
@@ -657,7 +657,7 @@ Future<void> addDummyStudents(
           email: 'm.gagnon@email.com'),
       contactLink: 'Mère',
       address:
-          await Address.fromAddress('6655 33e Avenue, Montréal, QC H1T 3B9'),
+          await Address.fromAddress('9277 Rue Meunier, Montréal, QC H2N 1W4'),
       phone: PhoneNumber.fromString('514 999 8877'),
     ),
   );
