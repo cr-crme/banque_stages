@@ -48,7 +48,7 @@ class _StudentScreenState extends State<StudentScreen>
               title: Text('L\'élève a déjà un stage'),
               content: Text(
                   'L\'élève est déjà inscrit comme stagiaire dans une autre '
-                  'entreprise. Mettre fin au stage actuel pour l\'inscrire '
+                  'entreprise. \nMettre fin au stage actuel pour l\'inscrire '
                   'dans un nouveau milieu.'),
             ));
   }
