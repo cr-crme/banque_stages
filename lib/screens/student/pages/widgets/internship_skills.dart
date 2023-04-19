@@ -101,7 +101,15 @@ class _SpecificSkillBody extends StatefulWidget {
 
 class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
   static const _interline = 12.0;
-  late var _currentEvaluationIndex = widget.evaluation.length - 1;
+  int _currentEvaluationIndex = -1;
+  int _nbPreviousEvaluations = -1;
+
+  void _resetIndex() {
+    if (_nbPreviousEvaluations != widget.evaluation.length) {
+      _currentEvaluationIndex = widget.evaluation.length - 1;
+      _nbPreviousEvaluations = widget.evaluation.length;
+    }
+  }
 
   Widget _buildLastEvaluation() {
     return Padding(
@@ -265,6 +273,8 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
 
   @override
   Widget build(BuildContext context) {
+    _resetIndex();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -335,7 +345,15 @@ class _AttitudeBody extends StatefulWidget {
 
 class _AttitudeBodyState extends State<_AttitudeBody> {
   static const _interline = 12.0;
-  late var _currentEvaluationIndex = widget.evaluation.length - 1;
+  int _currentEvaluationIndex = -1;
+  int _nbPreviousEvaluations = -1;
+
+  void _resetIndex() {
+    if (_nbPreviousEvaluations != widget.evaluation.length) {
+      _currentEvaluationIndex = widget.evaluation.length - 1;
+      _nbPreviousEvaluations = widget.evaluation.length;
+    }
+  }
 
   Widget _buildLastEvaluation() {
     return Padding(
@@ -437,11 +455,10 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 12.0),
-            child: Flexible(
-                child: Text(GeneralAppreciation
-                    .values[widget.evaluation[_currentEvaluationIndex].attitude
-                        .generalAppreciation]
-                    .name)),
+            child: Text(GeneralAppreciation
+                .values[widget.evaluation[_currentEvaluationIndex].attitude
+                    .generalAppreciation]
+                .name),
           ),
         ],
       ),
@@ -497,6 +514,8 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
 
   @override
   Widget build(BuildContext context) {
+    _resetIndex();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
