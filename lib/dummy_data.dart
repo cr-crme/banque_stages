@@ -439,30 +439,44 @@ Future<void> addDummyEnterprises(
     Job(
         specialization: ActivitySectorsService.sectors[1].specializations[2],
         positionsOffered: 1,
-        equipmentRequired: ["Chaussures de sécurité"],
-        incidentContact: "Jonny M. 514 514-5544",
-        dangerousSituations: "- Outils mal rangés\n- Tas de pneus",
+        pastIncidents:
+            "L\’élève ne portait pas ses gants malgré plusieurs avertissements, "
+            "et il s\’est coupé profondément la paume. "
+            "\nLa blessure a nécessité des soins majeurs.",
+        equipmentRequired: [
+          "Chaussures avec semelles antidérapantes, Gants en kevlar"
+        ],
+        incidentContact: "Joanie, la propriétaire",
+        dangerousSituations: "- L\'élève n\'a pas le droit de s'asseoir"
+            "\n- Travailler avec un couteau et sécateur"
+            "\n- Travailler avec des matières biologiques (épines de fleurs, pollen)"
+            "\n- Travailler avec des produits chimiques (pesticides)"
+            "\n- Porter des objets lourds (ex. gros pots de fleurs)"
+            "\n- Travailler avec le dos courbé"
+            "\n- Les planchers sont souvent mouillés (risque de chute)",
         sstQuestions: {
-          "1": "Installer des pneus (les soulevers + transporter)",
-          "2": false,
+          "1": "Entretenir les fleurs et les plantes, servir les clients, "
+              "aider à la préparation de bouquets  ",
+          "2": true,
           "2+t": "",
           "3": true,
-          "3+t": "Peu souvent, à la discrétion des employés.",
+          "3+t": "Plusieurs fois par jour, surtout des pots de fleurs.",
           "5": ["Un diable"],
           "6": [],
-          "7": ["Des ciseaux"],
+          "7": ["Un couteau", "Des ciseaux", "Un sécateur"],
           "8": [],
-          "12": ["Des solvants", "Des produits de nettoyage"],
+          "10": ["Des pesticides (résidus sur les plantes)", "Engrais"],
           "15": [],
-          "16": true,
-          "16+t": "Bouchons a oreilles",
-          "19": true,
-          "19+t": "",
+          "16": false,
+          "19": false,
           "20": "",
           "21": "",
           "22": true,
-          "22+t": "gros accident",
-          "23": ""
+          "22+t":
+              "L\’élève ne portait pas ses gants malgré plusieurs avertissements, "
+                  "et il s\’est coupé profondément la paume."
+                  "La blessure a nécessité des soins majeurs.",
+          "23": "Joanie, la propriétaire"
         }),
   );
   enterprises.add(
@@ -492,6 +506,74 @@ Future<void> addDummyEnterprises(
     ),
   );
 
+  jobs = JobList();
+  jobs.add(
+    Job(
+        specialization: ActivitySectorsService.sectors[1].specializations[2],
+        positionsOffered: 1,
+        pastIncidents:
+            "Lorsque l\’élève a laissé tomber un vase dispendieux qui s\’est "
+            "cassé au sol, le superviseur s\’est énervé et lui a crié dessus. "
+            "L\’élève a fait une crise de panique qui n\’a pas nécessité de soins."
+            "\nL\’élève a gâché un nouvel arrivage de fleurs en préparant mal "
+            "les tiges, et le superviseur a menacé de le mettre à la porte. "
+            "L’élève a appelé sa superviseure en pleurant et ne voulait pas "
+            "continuer son stage.",
+        equipmentRequired: ["Chaussures avec semelles antidérapantes"],
+        incidentContact: "Gaëtan Munger, le gérant",
+        dangerousSituations: "- Travailler avec un couteau"
+            "\n- Travailler avec des produits chimiques (pesticides)"
+            "\n- Porter des objets lourds (ex. gros pots de fleurs)"
+            "\n- Les planchers sont souvent mouillés (risque de chute)",
+        sstQuestions: {
+          "1": "Arroser les fleurs et les plantes, aider à la confection de "
+              "couronnes, sortir et ranger les plantes à l'ouverture et à la "
+              "fermeture de la boutique",
+          "2": true,
+          "2+t": "",
+          "3": true,
+          "3+t": "En début et en fin de journée, surtout des pots de fleurs.",
+          "5": ["Un diable"],
+          "6": [],
+          "7": ["Un couteau", "Des ciseaux"],
+          "8": [],
+          "10": ["Des pesticides", "Engrais"],
+          "15": [],
+          "16": false,
+          "19": false,
+          "20": "",
+          "21": "",
+          "22": false,
+          "22+t": "",
+          "23": "Gaëtan Munger, le gérant"
+        }),
+  );
+  enterprises.add(
+    Enterprise(
+      name: 'Fleuriste Joli',
+      activityTypes: {activityTypes[5], activityTypes[11]},
+      recrutedBy: teachers[0].id,
+      shareWith: 'Mon centre de services scolaire',
+      jobs: jobs,
+      contactName: 'Gaëtan Munger',
+      contactFunction: 'Gérant',
+      contactPhone: PhoneNumber.fromString('514 987 6543'),
+      contactEmail: 'g.munger@email.com',
+      address: Address(
+          civicNumber: 70,
+          street: 'Rue Chabanel Ouest',
+          city: 'Montréal',
+          postalCode: 'H2N 1E7'),
+      phone: PhoneNumber.fromString('514 987 6543'),
+      website: '',
+      headquartersAddress: Address(
+          civicNumber: 70,
+          street: 'Rue Chabanel Ouest',
+          city: 'Montréal',
+          postalCode: 'H2N 1E7'),
+      neq: '5679055590',
+    ),
+  );
   await _waitForDatabaseUpdate(enterprises, 9);
 }
 

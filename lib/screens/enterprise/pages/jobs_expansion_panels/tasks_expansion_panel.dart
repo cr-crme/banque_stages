@@ -29,18 +29,18 @@ class _TasksBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Variété des tâches',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             LowHighSliderFormField(
               initialValue: job.taskVariety,
               enabled: false,
             ),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'Habiletés obligatoires',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             Column(
               children: job.skillsRequired.isEmpty
@@ -50,9 +50,9 @@ class _TasksBody extends StatelessWidget {
                       .toList(),
             ),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'Niveau d\'autonomie souhaité',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             LowHighSliderFormField(
               initialValue: job.autonomyExpected,
@@ -61,7 +61,7 @@ class _TasksBody extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               'Rendement attendu',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             LowHighSliderFormField(
               initialValue: job.efficiencyWanted,

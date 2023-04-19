@@ -70,12 +70,12 @@ class _RatingBar extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         rating < 0 || rating > 5
             ?
             // If value is invalid
-            const Text('Aucune valeur pour l\'instant.')
+            const Text('Aucune donnée pour l\'instant.')
             :
             // If value is valid
             RatingBarIndicator(

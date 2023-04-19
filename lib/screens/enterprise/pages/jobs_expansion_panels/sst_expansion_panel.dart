@@ -53,7 +53,7 @@ class _SstBody extends StatelessWidget {
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -61,10 +61,10 @@ class _SstBody extends StatelessWidget {
               'Historique d\'accidents et incidents au poste de travail '
               '(ex. blessure d\'élève même mineure, agression verbale ou '
               'harcèlement subis par l\'élève)',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              padding: const EdgeInsets.only(top: 0, bottom: 20),
               child: job.pastIncidents.isEmpty
                   ? const Text('Aucun incident signalé')
                   : Text(job.pastIncidents),
@@ -73,10 +73,10 @@ class _SstBody extends StatelessWidget {
             Text(
               'Personne de l\'entreprise à qui s\'adresser en cas de blessure '
               'ou d\'incident?',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              padding: const EdgeInsets.only(top: 0, bottom: 20),
               child: job.incidentContact.isEmpty
                   ? const Text('Aucun contact enregistré.')
                   : Text(job.incidentContact),
@@ -84,10 +84,10 @@ class _SstBody extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Situations dangereuses identifiées au poste de travail',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              padding: const EdgeInsets.only(top: 0, bottom: 20),
               child: job.dangerousSituations.isEmpty
                   ? const Text('Aucune situation dangereuse signalée')
                   : Text(job.dangerousSituations),
@@ -95,10 +95,10 @@ class _SstBody extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Équipements de protection individuelle requis',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              padding: const EdgeInsets.only(top: 0, bottom: 20),
               child: Column(
                 children: job.equipmentRequired.isEmpty
                     ? [const Text('Aucun équipement de protection requis')]
