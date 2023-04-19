@@ -161,21 +161,26 @@ class RequirementsStepState extends State<RequirementsStep> {
                   padding: const EdgeInsets.only(left: 12.0),
                   child: Row(
                     children: [
-                      Radio(
-                        value: true,
-                        groupValue: _uniformRequired,
-                        onChanged: (bool? newValue) =>
-                            setState(() => _uniformRequired = newValue!),
+                      SizedBox(
+                        width: 125,
+                        child: RadioListTile(
+                          value: true,
+                          groupValue: _uniformRequired,
+                          onChanged: (bool? newValue) =>
+                              setState(() => _uniformRequired = newValue!),
+                          title: const Text('Oui'),
+                        ),
                       ),
-                      const Text('Oui'),
-                      const SizedBox(width: 32),
-                      Radio(
-                        value: false,
-                        groupValue: _uniformRequired,
-                        onChanged: (bool? newValue) =>
-                            setState(() => _uniformRequired = newValue!),
+                      SizedBox(
+                        width: 125,
+                        child: RadioListTile(
+                          value: false,
+                          groupValue: _uniformRequired,
+                          onChanged: (bool? newValue) =>
+                              setState(() => _uniformRequired = newValue!),
+                          title: const Text('Non'),
+                        ),
                       ),
-                      const Text('Non'),
                     ],
                   ),
                 ),
