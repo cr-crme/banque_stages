@@ -192,9 +192,9 @@ class Ponctuality implements AttitudeCategoryEnum {
       case 1:
         return 'Quelques retards justifiés';
       case 2:
-        return 'Quelques retards injustifiées';
+        return 'Quelques retards injustifiés';
       case 3:
-        return 'Retards fréquentes et injustifiées';
+        return 'Retards fréquents et injustifiés';
       default:
         throw 'Wrong choice of $title';
     }
@@ -408,7 +408,7 @@ class Productivity implements AttitudeCategoryEnum {
       case 1:
         return 'Rendement et rythme de travail bons et contants';
       case 2:
-        return 'Difficulté à maintenant le rythme de travail';
+        return 'Difficulté à maintenir le rythme de travail';
       case 3:
         return 'Rendement insuffisant';
       default:
