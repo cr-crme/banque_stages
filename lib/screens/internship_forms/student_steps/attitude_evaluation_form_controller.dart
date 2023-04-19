@@ -13,7 +13,7 @@ class AttitudeEvaluationFormController {
 
   Map<String, bool> wereAtMeeting = {
     'L\'enseignant\u2022e superviseur\u2022e': true,
-    'La ou le stagiaire': false,
+    'La ou le stagiaire': true,
     'La ou le responsable dans le milieu de stage': false,
   };
   bool _withOtherAtMeeting = false;
@@ -27,6 +27,19 @@ class AttitudeEvaluationFormController {
   Map<Type, AttitudeCategoryEnum?> responses = {};
 
   final commentsController = TextEditingController();
+
+  bool get isCompleted =>
+      responses[Inattendance] != null &&
+      responses[Ponctuality] != null &&
+      responses[Sociability] != null &&
+      responses[Politeness] != null &&
+      responses[Motivation] != null &&
+      responses[DressCode] != null &&
+      responses[QualityOfWork] != null &&
+      responses[Productivity] != null &&
+      responses[Autonomy] != null &&
+      responses[Cautiousness] != null &&
+      responses[GeneralAppreciation] != null;
 }
 
 abstract class AttitudeCategoryEnum {

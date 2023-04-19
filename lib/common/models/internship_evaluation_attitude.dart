@@ -1,26 +1,76 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
 class AttitudeEvaluation extends ItemSerializable {
-  final String skillName;
+  int inattendance;
+  int ponctuality;
+  int sociability;
+  int politeness;
+  int motivation;
+  int dressCode;
+  int qualityOfWork;
+  int productivity;
+  int autonomy;
+  int cautiousness;
+  int generalAppreciation;
 
   AttitudeEvaluation({
-    required this.skillName,
+    required this.inattendance,
+    required this.ponctuality,
+    required this.sociability,
+    required this.politeness,
+    required this.motivation,
+    required this.dressCode,
+    required this.qualityOfWork,
+    required this.productivity,
+    required this.autonomy,
+    required this.cautiousness,
+    required this.generalAppreciation,
   });
   AttitudeEvaluation.fromSerialized(map)
-      : skillName = map['skill'],
+      : inattendance = map['inattendance'],
+        ponctuality = map['ponctuality'],
+        sociability = map['sociability'],
+        politeness = map['politeness'],
+        motivation = map['motivation'],
+        dressCode = map['dressCode'],
+        qualityOfWork = map['qualityOfWork'],
+        productivity = map['productivity'],
+        autonomy = map['autonomy'],
+        cautiousness = map['cautiousness'],
+        generalAppreciation = map['generalAppreciation'],
         super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {
     return {
       'id': id,
-      'skill': skillName,
+      'inattendance': inattendance,
+      'ponctuality': ponctuality,
+      'sociability': sociability,
+      'politeness': politeness,
+      'motivation': motivation,
+      'dressCode': dressCode,
+      'qualityOfWork': qualityOfWork,
+      'productivity': productivity,
+      'autonomy': autonomy,
+      'cautiousness': cautiousness,
+      'generalAppreciation': generalAppreciation,
     };
   }
 
   AttitudeEvaluation deepCopy() {
     return AttitudeEvaluation(
-      skillName: skillName,
+      inattendance: inattendance,
+      ponctuality: ponctuality,
+      sociability: sociability,
+      politeness: politeness,
+      motivation: motivation,
+      dressCode: dressCode,
+      qualityOfWork: qualityOfWork,
+      productivity: productivity,
+      autonomy: autonomy,
+      cautiousness: cautiousness,
+      generalAppreciation: generalAppreciation,
     );
   }
 }
@@ -28,7 +78,7 @@ class AttitudeEvaluation extends ItemSerializable {
 class InternshipEvaluationAttitude extends ItemSerializable {
   DateTime date;
   List<String> presentAtEvaluation;
-  List<AttitudeEvaluation> attitude;
+  AttitudeEvaluation attitude;
   String comments;
 
   InternshipEvaluationAttitude({
@@ -41,9 +91,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
       : date = DateTime.fromMillisecondsSinceEpoch(map['date']),
         presentAtEvaluation =
             (map['present'] as List).map((e) => e as String).toList(),
-        attitude = (map['attitude'] as List)
-            .map((e) => AttitudeEvaluation.fromSerialized(e))
-            .toList(),
+        attitude = AttitudeEvaluation.fromSerialized(map['attitude']),
         comments = map['comments'],
         super.fromSerialized(map);
 
@@ -53,7 +101,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
       'id': id,
       'date': date.millisecondsSinceEpoch,
       'present': presentAtEvaluation,
-      'skills': attitude.map((e) => e.serializedMap()).toList(),
+      'skills': attitude.serializedMap(),
       'comments': comments,
     };
   }
@@ -62,7 +110,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
     return InternshipEvaluationAttitude(
       date: DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch),
       presentAtEvaluation: presentAtEvaluation.map((e) => e).toList(),
-      attitude: attitude.map((e) => e.deepCopy()).toList(),
+      attitude: attitude.deepCopy(),
       comments: comments,
     );
   }

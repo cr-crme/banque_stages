@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '/common/models/internship_evaluation_attitude.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/sub_title.dart';
@@ -35,11 +36,63 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
   }
 
   void _nextStep() {
-    if (_currentStep == 3) return;
+    if (_currentStep == 3) {
+      _submit();
+      return;
+    }
     _stepStatus[_currentStep] = StepState.complete;
 
     _currentStep += 1;
     setState(() {});
+  }
+
+  Future<void> _submit() async {
+    if (!_formController.isCompleted) {
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => const AlertDialog(
+                title: Text('Formulaire incomplet'),
+                content:
+                    Text('Veuillez donner une note à tous les champs indiqués'),
+              ));
+      return;
+    }
+
+    final List<String> wereAtMeeting = [];
+    for (final person in _formController.wereAtMeeting.keys) {
+      if (_formController.wereAtMeeting[person]!) {
+        wereAtMeeting.add(person);
+      }
+    }
+    if (_formController.withOtherAtMeeting) {
+      wereAtMeeting.add(_formController.othersAtMeetingController.text);
+    }
+
+    final internships = InternshipsProvider.of(context, listen: false);
+    final internship = internships.fromId(widget.internshipId);
+
+    internship.attitudeEvaluation.add(
+      InternshipEvaluationAttitude(
+        date: DateTime.now(),
+        presentAtEvaluation: wereAtMeeting,
+        attitude: AttitudeEvaluation(
+            inattendance: _formController.responses[Inattendance]!.index,
+            ponctuality: _formController.responses[Ponctuality]!.index,
+            sociability: _formController.responses[Sociability]!.index,
+            politeness: _formController.responses[Politeness]!.index,
+            motivation: _formController.responses[Motivation]!.index,
+            dressCode: _formController.responses[DressCode]!.index,
+            qualityOfWork: _formController.responses[QualityOfWork]!.index,
+            productivity: _formController.responses[Productivity]!.index,
+            autonomy: _formController.responses[Autonomy]!.index,
+            cautiousness: _formController.responses[Cautiousness]!.index,
+            generalAppreciation:
+                _formController.responses[GeneralAppreciation]!.index),
+        comments: _formController.commentsController.text,
+      ),
+    );
+    internships.replace(internship);
+    Navigator.of(context).pop();
   }
 
   Widget _controlBuilder(BuildContext context, ControlsDetails details) {
@@ -358,14 +411,17 @@ class _AttitudeRadioChoicesState extends State<_AttitudeRadioChoices> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SubTitle(widget.title),
-        ...widget.elements.map((e) => RadioListTile<AttitudeCategoryEnum>(
+        ...widget.elements.map(
+          (e) => RadioListTile<AttitudeCategoryEnum>(
             dense: true,
             visualDensity: VisualDensity.compact,
             title: Text(e.name),
             value: e,
             groupValue: widget.formController.responses[e.runtimeType],
             onChanged: (newValue) => setState(() =>
-                widget.formController.responses[e.runtimeType] = newValue!))),
+                widget.formController.responses[e.runtimeType] = newValue!),
+          ),
+        ),
       ],
     );
   }
