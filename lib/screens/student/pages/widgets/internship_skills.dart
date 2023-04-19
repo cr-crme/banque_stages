@@ -371,6 +371,83 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
     );
   }
 
+  Widget _buildAttitudeIsGood() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Conformes aux exigences',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          ...widget
+              .evaluation[_currentEvaluationIndex].attitude.meetsRequirements
+              .map((e) => Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('\u2022 '),
+                        Flexible(child: Text(e)),
+                      ],
+                    ),
+                  ))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAttitudeIsBad() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'À améliorer',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          ...widget.evaluation[_currentEvaluationIndex].attitude
+              .doesNotMeetRequirements
+              .map((e) => Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('\u2022 '),
+                        Flexible(child: Text(e)),
+                      ],
+                    ),
+                  ))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGeneralAppreciation() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Appréciation générale',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Flexible(
+                child: Text(GeneralAppreciation
+                    .values[widget.evaluation[_currentEvaluationIndex].attitude
+                        .generalAppreciation]
+                    .name)),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildComment() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
@@ -436,6 +513,9 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
             children: [
               _buildLastEvaluation(),
               _buildPresentAtMeeting(),
+              _buildAttitudeIsGood(),
+              _buildAttitudeIsBad(),
+              _buildGeneralAppreciation(),
               _buildComment(),
               _buildShowOtherForms(),
             ],
