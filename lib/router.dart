@@ -190,10 +190,11 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/attitude-evaluation-form/:internshipId',
+      path: '/attitude-evaluation-form/:internshipId:editMode',
       name: Screens.attitudeEvaluationScreen,
       builder: (context, state) => AttitudeEvaluationScreen(
         internshipId: state.params['internshipId']!,
+        editMode: state.params['editMode']! == '1',
       ),
     ),
     GoRoute(

@@ -1,3 +1,4 @@
+import '/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -73,8 +74,11 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                             evaluation: widget.internship.attitudeEvaluations)),
                     IconButton(
                         onPressed: () => GoRouter.of(context).pushNamed(
-                            Screens.attitudeEvaluationScreen,
-                            params: {'internshipId': widget.internship.id}),
+                                Screens.attitudeEvaluationScreen,
+                                params: {
+                                  'internshipId': widget.internship.id,
+                                  'editMode': '1'
+                                }),
                         icon: const Icon(
                           Icons.add_chart_rounded,
                           color: Colors.black,
@@ -520,26 +524,18 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
   Widget _buildShowOtherForms() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          OutlinedButton(
-              onPressed: () {},
-              child: Text('Afficher formulaire d\'évaluation')),
-          DropdownButton<int>(
-            value: _currentEvaluationIndex,
-            onChanged: (value) =>
-                setState(() => _currentEvaluationIndex = value!),
-            items: widget.evaluation
-                .asMap()
-                .keys
-                .map((index) => DropdownMenuItem(
-                    value: index,
-                    child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
-                        .format(widget.evaluation[index].date))))
-                .toList(),
-          ),
-        ],
+      child: Center(
+        child: OutlinedButton(
+            onPressed: () {
+              GoRouter.of(context).pushNamed(Screens.attitudeEvaluationScreen,
+                  params: {'editMode': '0'},
+                  extra: AttitudeEvaluationFormController.fromInternshipId(
+                    context,
+                    internshipId: widget.internship.id,
+                    evaluationIndex: _currentEvaluationIndex,
+                  ));
+            },
+            child: const Text('Afficher formulaire d\'évaluation')),
       ),
     );
   }
