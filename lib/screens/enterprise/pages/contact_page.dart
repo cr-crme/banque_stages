@@ -316,7 +316,7 @@ class _TaxesInfo extends StatelessWidget {
       children: [
         const SubTitle('Informations pour le crédit d\'impôt'),
         Padding(
-          padding: const EdgeInsets.only(left: 30.0, right: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(children: [
             if (editMode)
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

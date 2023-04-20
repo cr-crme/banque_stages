@@ -36,9 +36,7 @@ class ShareWithPickerFormField extends FormField<String> {
     return Autocomplete<String>(
       initialValue: TextEditingValue(text: state.value ?? ''),
       optionsBuilder: (textEditingValue) {
-        return shareWithSuggestions.where(
-          (activity) => activity.contains(textEditingValue.text),
-        );
+        return shareWithSuggestions;
       },
       optionsViewBuilder: (context, onSelected, options) =>
           OptionsBuilderForAutocomplete(
