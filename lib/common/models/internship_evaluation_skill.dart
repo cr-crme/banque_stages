@@ -68,12 +68,15 @@ class InternshipEvaluationSkill extends ItemSerializable {
   List<String> presentAtEvaluation;
   List<SkillEvaluation> skills;
   String comments;
+  String
+      formVersion; // The version of the evaluation form (so data can be parsed properly)
 
   InternshipEvaluationSkill({
     required this.date,
     required this.presentAtEvaluation,
     required this.skills,
     required this.comments,
+    required this.formVersion,
   });
   InternshipEvaluationSkill.fromSerialized(map)
       : date = DateTime.fromMillisecondsSinceEpoch(map['date']),
@@ -83,6 +86,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
             .map((e) => SkillEvaluation.fromSerialized(e))
             .toList(),
         comments = map['comments'],
+        formVersion = map['formVersion'],
         super.fromSerialized(map);
 
   @override
@@ -93,6 +97,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
       'present': presentAtEvaluation,
       'skills': skills.map((e) => e.serializedMap()).toList(),
       'comments': comments,
+      'formVersion': formVersion,
     };
   }
 
@@ -102,6 +107,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
       presentAtEvaluation: presentAtEvaluation.map((e) => e).toList(),
       skills: skills.map((e) => e.deepCopy()).toList(),
       comments: comments,
+      formVersion: formVersion,
     );
   }
 }

@@ -7,6 +7,7 @@ import '/common/models/internship_evaluation_attitude.dart';
 import '/common/models/internship_evaluation_skill.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/router.dart';
+import '/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 
 class InternshipSkills extends StatefulWidget {
   const InternshipSkills({super.key, required this.internship});
@@ -50,8 +51,11 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                             evaluation: widget.internship.skillEvaluations)),
                     IconButton(
                         onPressed: () => GoRouter.of(context).pushNamed(
-                            Screens.skillEvaluationMainScreen,
-                            params: {'internshipId': widget.internship.id}),
+                                Screens.skillEvaluationMainScreen,
+                                params: {
+                                  'internshipId': widget.internship.id,
+                                  'editMode': '1'
+                                }),
                         icon: const Icon(
                           Icons.add_chart_rounded,
                           color: Colors.black,
@@ -255,8 +259,18 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
           const Text('Afficher formulaire d\'évaluation'),
           DropdownButton<int>(
             value: _currentEvaluationIndex,
-            onChanged: (value) =>
-                setState(() => _currentEvaluationIndex = value!),
+            // This piece of code allows for changing the value shown
+            // onChanged: (value) =>
+            //     setState(() => _currentEvaluationIndex = value!),
+            onChanged: (evaluationIndex) {
+              GoRouter.of(context).pushNamed(Screens.skillEvaluationFormScreen,
+                  params: {'editMode': '0'},
+                  extra: SkillEvaluationFormController.fromInternshipId(
+                    context,
+                    internshipId: widget.internship.id,
+                    evaluationIndex: evaluationIndex!,
+                  ));
+            },
             items: widget.evaluation
                 .asMap()
                 .keys

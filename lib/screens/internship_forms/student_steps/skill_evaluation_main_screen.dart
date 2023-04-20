@@ -11,9 +11,11 @@ import '/router.dart';
 import 'skill_evaluation_form_controller.dart';
 
 class SkillEvaluationMainScreen extends StatefulWidget {
-  const SkillEvaluationMainScreen({super.key, required this.internshipId});
+  const SkillEvaluationMainScreen(
+      {super.key, required this.internshipId, required this.editMode});
 
   final String internshipId;
+  final bool editMode;
 
   @override
   State<SkillEvaluationMainScreen> createState() =>
@@ -22,7 +24,7 @@ class SkillEvaluationMainScreen extends StatefulWidget {
 
 class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   late final _formController =
-      SkillEvaluationFormController(context, internshipId: widget.internshipId);
+      SkillEvaluationFormController(internshipId: widget.internshipId);
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +42,22 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _EvaluationDate(formController: _formController),
-            _PersonAtMeeting(formController: _formController),
-            _JobToEvaluate(formController: _formController),
-            _StartEvaluation(formController: _formController),
+            _EvaluationDate(
+              formController: _formController,
+              editMode: widget.editMode,
+            ),
+            _PersonAtMeeting(
+              formController: _formController,
+              editMode: widget.editMode,
+            ),
+            _JobToEvaluate(
+              formController: _formController,
+              editMode: widget.editMode,
+            ),
+            _StartEvaluation(
+              formController: _formController,
+              editMode: widget.editMode,
+            ),
           ],
         ),
       ),
@@ -52,9 +66,10 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
 }
 
 class _EvaluationDate extends StatefulWidget {
-  const _EvaluationDate({required this.formController});
+  const _EvaluationDate({required this.formController, required this.editMode});
 
   final SkillEvaluationFormController formController;
+  final bool editMode;
   @override
   State<_EvaluationDate> createState() => _EvaluationDateState();
 }
@@ -89,13 +104,14 @@ class _EvaluationDateState extends State<_EvaluationDate> {
             children: [
               Text(DateFormat('dd MMMM yyyy', 'fr_CA')
                   .format(widget.formController.evaluationDate)),
-              IconButton(
-                icon: const Icon(
-                  Icons.calendar_month_outlined,
-                  color: Colors.blue,
+              if (widget.editMode)
+                IconButton(
+                  icon: const Icon(
+                    Icons.calendar_month_outlined,
+                    color: Colors.blue,
+                  ),
+                  onPressed: () => _promptDate(context),
                 ),
-                onPressed: () => _promptDate(context),
-              ),
             ],
           ),
         ),
@@ -105,9 +121,12 @@ class _EvaluationDateState extends State<_EvaluationDate> {
 }
 
 class _PersonAtMeeting extends StatefulWidget {
-  const _PersonAtMeeting({required this.formController});
+  const _PersonAtMeeting(
+      {required this.formController, required this.editMode});
 
   final SkillEvaluationFormController formController;
+  final bool editMode;
+
   @override
   State<_PersonAtMeeting> createState() => _PersonAtMeetingState();
 }
@@ -128,6 +147,7 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
           title,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
+        enabled: widget.editMode,
       ),
     );
   }
@@ -173,6 +193,7 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
                         controller:
                             widget.formController.othersAtMeetingController,
                         maxLines: null,
+                        enabled: widget.editMode,
                       ),
                     ],
                   ),
@@ -187,9 +208,10 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
 }
 
 class _JobToEvaluate extends StatefulWidget {
-  const _JobToEvaluate({required this.formController});
+  const _JobToEvaluate({required this.formController, required this.editMode});
 
   final SkillEvaluationFormController formController;
+  final bool editMode;
 
   @override
   State<_JobToEvaluate> createState() => _JobToEvaluateState();
@@ -265,8 +287,9 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
                       widget.formController.skillsToEvaluate[skill] = value!),
                   value: widget.formController.skillsToEvaluate[skill],
                   title: Text(skill.idWithName),
-                  enabled: !_usedDuplicateSkills.containsKey(skill) ||
-                      !_usedDuplicateSkills[skill]!,
+                  enabled: widget.editMode &&
+                      (!_usedDuplicateSkills.containsKey(skill) ||
+                          !_usedDuplicateSkills[skill]!),
                 );
                 if (_usedDuplicateSkills.containsKey(skill)) {
                   _usedDuplicateSkills[skill] = true;
@@ -308,9 +331,11 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
 }
 
 class _StartEvaluation extends StatelessWidget {
-  const _StartEvaluation({required this.formController});
+  const _StartEvaluation(
+      {required this.formController, required this.editMode});
 
   final SkillEvaluationFormController formController;
+  final bool editMode;
 
   @override
   Widget build(BuildContext context) {
@@ -324,6 +349,7 @@ class _StartEvaluation extends StatelessWidget {
               formController.prepareAppreciation();
               GoRouter.of(context).pushReplacementNamed(
                   Screens.skillEvaluationFormScreen,
+                  params: {'editMode': editMode ? '1' : '0'},
                   extra: formController);
             },
             child: const Text('Commencer l\'évaluation')),

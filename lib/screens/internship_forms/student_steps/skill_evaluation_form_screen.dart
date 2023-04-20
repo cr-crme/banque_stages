@@ -10,9 +10,11 @@ import '/misc/job_data_file_service.dart';
 import 'skill_evaluation_form_controller.dart';
 
 class SkillEvaluationFormScreen extends StatefulWidget {
-  const SkillEvaluationFormScreen({super.key, required this.formController});
+  const SkillEvaluationFormScreen(
+      {super.key, required this.formController, required this.editMode});
 
   final SkillEvaluationFormController formController;
+  final bool editMode;
 
   @override
   State<SkillEvaluationFormScreen> createState() =>
@@ -44,6 +46,11 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
   }
 
   void _cancel() async {
+    if (!widget.editMode) {
+      Navigator.of(context).pop();
+      return;
+    }
+
     final result = await showDialog(
         context: context, builder: (context) => const ConfirmPopDialog());
     if (!mounted || result == null || !result) return;
@@ -81,41 +88,9 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     if (!mounted || result == null || !result) return;
 
     // Fetch the data from the form controller
-    final List<String> wereAtMeeting = [];
-    for (final person in widget.formController.wereAtMeeting.keys) {
-      if (widget.formController.wereAtMeeting[person]!) {
-        wereAtMeeting.add(person);
-      }
-    }
-    if (widget.formController.withOtherAtMeeting) {
-      wereAtMeeting.add(widget.formController.othersAtMeetingController.text);
-    }
-
-    final List<SkillEvaluation> skillEvaluation = [];
-    for (final skill in widget.formController.taskCompleted.keys) {
-      final List<String> tasks = [];
-      for (final task in widget.formController.taskCompleted[skill]!.keys) {
-        if (widget.formController.taskCompleted[skill]![task]!) {
-          tasks.add(task);
-        }
-      }
-
-      skillEvaluation.add(SkillEvaluation(
-        specializationId:
-            widget.formController.skillsAreFromSpecializationId[skill]!,
-        skillName: skill.idWithName,
-        tasks: tasks,
-        appreciation: widget.formController.appreciation[skill]!,
-      ));
-    }
-
     final internship = widget.formController.internship(context, listen: false);
-    internship.skillEvaluations.add(InternshipEvaluationSkill(
-      date: widget.formController.evaluationDate,
-      presentAtEvaluation: wereAtMeeting,
-      skills: skillEvaluation,
-      comments: widget.formController.commentsController.text,
-    ));
+    internship.skillEvaluations
+        .add(widget.formController.toInternshipEvaluation());
 
     // Pass the evaluation data to the rest of the app
     InternshipsProvider.of(context, listen: false).replace(internship);
@@ -144,7 +119,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
                   onPressed: details.onStepContinue,
                   child: const Text('Suivant'),
                 ),
-              if (_currentStep == skills.length)
+              if (_currentStep == skills.length && widget.editMode)
                 TextButton(onPressed: _submit, child: const Text('Soumettre')),
             ],
           ),
@@ -175,7 +150,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
         steps: [
           ...skills.map((skill) => Step(
                 isActive: true,
-                state: widget.formController.appreciation[skill]! ==
+                state: widget.formController.appreciations[skill]! ==
                         SkillAppreciation.notEvaluated
                     ? StepState.indexed
                     : StepState.complete,
@@ -183,12 +158,16 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
                 content: _EvaluateSkill(
                   formController: widget.formController,
                   skill: skill,
+                  editMode: widget.editMode,
                 ),
               )),
           Step(
             isActive: true,
             title: const SubTitle('Commentaires', top: 0, bottom: 0),
-            content: _Comments(formController: widget.formController),
+            content: _Comments(
+              formController: widget.formController,
+              editMode: widget.editMode,
+            ),
           )
         ],
         controlsBuilder: (BuildContext context, ControlsDetails details) =>
@@ -199,10 +178,14 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
 }
 
 class _EvaluateSkill extends StatelessWidget {
-  const _EvaluateSkill({required this.formController, required this.skill});
+  const _EvaluateSkill(
+      {required this.formController,
+      required this.skill,
+      required this.editMode});
 
   final SkillEvaluationFormController formController;
   final Skill skill;
+  final bool editMode;
 
   @override
   Widget build(BuildContext context) {
@@ -255,24 +238,31 @@ class _EvaluateSkill extends StatelessWidget {
           ),
         ),
         _TaskEvaluation(
-            spacing: spacing, skill: skill, formController: formController),
+            spacing: spacing,
+            skill: skill,
+            formController: formController,
+            editMode: editMode),
         _AppreciationEvaluation(
-            spacing: spacing, skill: skill, formController: formController),
+            spacing: spacing,
+            skill: skill,
+            formController: formController,
+            editMode: editMode),
       ],
     );
   }
 }
 
 class _TaskEvaluation extends StatefulWidget {
-  const _TaskEvaluation({
-    required this.spacing,
-    required this.skill,
-    required this.formController,
-  });
+  const _TaskEvaluation(
+      {required this.spacing,
+      required this.skill,
+      required this.formController,
+      required this.editMode});
 
   final double spacing;
   final Skill skill;
   final SkillEvaluationFormController formController;
+  final bool editMode;
 
   @override
   State<_TaskEvaluation> createState() => _TaskEvaluationState();
@@ -298,9 +288,10 @@ class _TaskEvaluationState extends State<_TaskEvaluation> {
                     dense: true,
                     onChanged: (value) => setState(() => widget.formController
                         .taskCompleted[widget.skill]![e] = value!),
+                    enabled: widget.editMode,
                     value:
                         widget.formController.taskCompleted[widget.skill]![e]!,
-                    title: Text(e),
+                    title: Text(e, style: const TextStyle(color: Colors.black)),
                   ))
               .toList(),
         ],
@@ -314,11 +305,13 @@ class _AppreciationEvaluation extends StatefulWidget {
     required this.spacing,
     required this.skill,
     required this.formController,
+    required this.editMode,
   });
 
   final double spacing;
   final Skill skill;
   final SkillEvaluationFormController formController;
+  final bool editMode;
 
   @override
   State<_AppreciationEvaluation> createState() =>
@@ -343,12 +336,15 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
                     controlAffinity: ListTileControlAffinity.leading,
                     dense: true,
                     visualDensity: VisualDensity.compact,
-                    onChanged: (value) => setState(() => widget
-                        .formController.appreciation[widget.skill] = value!),
+                    onChanged: widget.editMode
+                        ? (value) => setState(() => widget.formController
+                            .appreciations[widget.skill] = value!)
+                        : null,
                     groupValue:
-                        widget.formController.appreciation[widget.skill],
+                        widget.formController.appreciations[widget.skill],
                     value: e,
-                    title: Text(e.name),
+                    title: Text(e.name,
+                        style: const TextStyle(color: Colors.black)),
                   ))
               .toList(),
         ],
@@ -358,9 +354,10 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
 }
 
 class _Comments extends StatelessWidget {
-  const _Comments({required this.formController});
+  const _Comments({required this.formController, required this.editMode});
 
   final SkillEvaluationFormController formController;
+  final bool editMode;
 
   @override
   Widget build(BuildContext context) {
@@ -379,6 +376,7 @@ class _Comments extends StatelessWidget {
         ),
         TextFormField(
           controller: formController.commentsController,
+          enabled: editMode,
           maxLines: null,
         ),
       ],

@@ -117,8 +117,9 @@ final router = GoRouter(
         GoRoute(
           path: ':id:pageIndex',
           name: Screens.enterprise,
-          builder: (context, state) =>
-              EnterpriseScreen(id: state.params['id']!, pageIndex: int.parse(state.params['pageIndex']!)),
+          builder: (context, state) => EnterpriseScreen(
+              id: state.params['id']!,
+              pageIndex: int.parse(state.params['pageIndex']!)),
           routes: [
             GoRoute(
               path: 'add-internship-enterprise',
@@ -171,18 +172,20 @@ final router = GoRouter(
       builder: (context, state) => const ItineraryScreen(),
     ),
     GoRoute(
-      path: '/skill-evaluation-main/:internshipId',
+      path: '/skill-evaluation-main/:internshipId:editMode',
       name: Screens.skillEvaluationMainScreen,
       builder: (context, state) => SkillEvaluationMainScreen(
         internshipId: state.params['internshipId']!,
+        editMode: state.params['editMode']! == '1',
       ),
     ),
     GoRoute(
-      path: '/skill-evaluation-form',
+      path: '/skill-evaluation-form/:editMode',
       name: Screens.skillEvaluationFormScreen,
       builder: (context, state) {
         return SkillEvaluationFormScreen(
           formController: state.extra as SkillEvaluationFormController,
+          editMode: state.params['editMode']! == '1',
         );
       },
     ),

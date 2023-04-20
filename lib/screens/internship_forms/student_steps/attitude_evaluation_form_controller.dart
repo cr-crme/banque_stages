@@ -5,6 +5,9 @@ import '/common/models/internship_evaluation_attitude.dart';
 import '/common/providers/internships_provider.dart';
 
 class AttitudeEvaluationFormController {
+
+  static const version = '1.0.0';
+  
   AttitudeEvaluationFormController(context, {required this.internshipId});
   final String internshipId;
   Internship internship(context, {listen = true}) =>
