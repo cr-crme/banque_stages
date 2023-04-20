@@ -12,9 +12,11 @@ import 'pages/internships_page.dart';
 import 'pages/jobs_page.dart';
 
 class EnterpriseScreen extends StatefulWidget {
-  const EnterpriseScreen({super.key, required this.id});
+  const EnterpriseScreen(
+      {super.key, required this.id, required this.pageIndex});
 
   final String id;
+  final int pageIndex;
 
   @override
   State<EnterpriseScreen> createState() => _EnterpriseScreenState();
@@ -23,7 +25,7 @@ class EnterpriseScreen extends StatefulWidget {
 class _EnterpriseScreenState extends State<EnterpriseScreen>
     with SingleTickerProviderStateMixin {
   late final _tabController =
-      TabController(initialIndex: 0, length: 4, vsync: this);
+      TabController(initialIndex: widget.pageIndex, length: 4, vsync: this);
 
   late IconButton _actionButton;
 

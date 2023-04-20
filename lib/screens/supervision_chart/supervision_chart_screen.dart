@@ -106,7 +106,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     return students
         .map<Student?>((e) {
           final interships = allInterships.byStudentId(e.id);
-          if (interships.isEmpty) {
+          if (interships.isEmpty || !interships.last.isActive) {
             return _visibilityFilters[VisitingPriority.notApplicable]!
                 ? e
                 : null;

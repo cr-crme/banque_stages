@@ -115,10 +115,10 @@ final router = GoRouter(
           builder: (context, state) => const AddEnterpriseScreen(),
         ),
         GoRoute(
-          path: ':id',
+          path: ':id:pageIndex',
           name: Screens.enterprise,
           builder: (context, state) =>
-              EnterpriseScreen(id: state.params['id']!),
+              EnterpriseScreen(id: state.params['id']!, pageIndex: int.parse(state.params['pageIndex']!)),
           routes: [
             GoRoute(
               path: 'add-internship-enterprise',
