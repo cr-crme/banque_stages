@@ -118,8 +118,24 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
   Widget _buildLastEvaluation() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
-      child: Text('Dernière évaluation : '
-          '${DateFormat('dd MMMM yyyy', 'fr_CA').format(widget.evaluation[_currentEvaluationIndex].date)}'),
+      child: Row(
+        children: [
+          const Text('Évaluation du : '),
+          DropdownButton<int>(
+            value: _currentEvaluationIndex,
+            onChanged: (value) =>
+                setState(() => _currentEvaluationIndex = value!),
+            items: widget.evaluation
+                .asMap()
+                .keys
+                .map((index) => DropdownMenuItem(
+                    value: index,
+                    child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
+                        .format(widget.evaluation[index].date))))
+                .toList(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -253,34 +269,18 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
   Widget _buildShowOtherDate() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text('Afficher formulaire d\'évaluation'),
-          DropdownButton<int>(
-            value: _currentEvaluationIndex,
-            // This piece of code allows for changing the value shown
-            // onChanged: (value) =>
-            //     setState(() => _currentEvaluationIndex = value!),
-            onChanged: (evaluationIndex) {
+      child: Center(
+        child: TextButton(
+            onPressed: () {
               GoRouter.of(context).pushNamed(Screens.skillEvaluationFormScreen,
                   params: {'editMode': '0'},
                   extra: SkillEvaluationFormController.fromInternshipId(
                     context,
                     internshipId: widget.internship.id,
-                    evaluationIndex: evaluationIndex!,
+                    evaluationIndex: _currentEvaluationIndex,
                   ));
             },
-            items: widget.evaluation
-                .asMap()
-                .keys
-                .map((index) => DropdownMenuItem(
-                    value: index,
-                    child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
-                        .format(widget.evaluation[index].date))))
-                .toList(),
-          ),
-        ],
+            child: const Text('Afficher formulaire d\'évaluation')),
       ),
     );
   }
@@ -372,8 +372,24 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
   Widget _buildLastEvaluation() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
-      child: Text('Dernière évaluation : '
-          '${DateFormat('dd MMMM yyyy', 'fr_CA').format(widget.evaluation[_currentEvaluationIndex].date)}'),
+      child: Row(
+        children: [
+          const Text('Évaluation du : '),
+          DropdownButton<int>(
+            value: _currentEvaluationIndex,
+            onChanged: (value) =>
+                setState(() => _currentEvaluationIndex = value!),
+            items: widget.evaluation
+                .asMap()
+                .keys
+                .map((index) => DropdownMenuItem(
+                    value: index,
+                    child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
+                        .format(widget.evaluation[index].date))))
+                .toList(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -507,7 +523,9 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Afficher formulaire d\'évaluation'),
+          OutlinedButton(
+              onPressed: () {},
+              child: Text('Afficher formulaire d\'évaluation')),
           DropdownButton<int>(
             value: _currentEvaluationIndex,
             onChanged: (value) =>
