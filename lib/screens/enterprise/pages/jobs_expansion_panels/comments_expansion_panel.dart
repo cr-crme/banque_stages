@@ -20,7 +20,7 @@ class CommentsExpansionPanel extends ExpansionPanel {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey[400]!,
+                    color: Colors.grey[900]!,
                     blurRadius: 8.0,
                     offset: const Offset(2, 2),
                   ),
@@ -30,8 +30,8 @@ class CommentsExpansionPanel extends ExpansionPanel {
                 onPressed: () {},
                 // TODO bring this back
                 // => addComment(job),
-                icon: const Icon(Icons.add_comment_outlined),
-                color: Colors.blue,
+                icon: const Icon(Icons.add_comment),
+                color: Colors.blueGrey,
               ),
             ),
           ),
@@ -52,7 +52,7 @@ class _SstBody extends StatelessWidget {
         child: Column(
           children: job.comments.isEmpty
               ? [
-                  const Text('Il n\'y a présentement aucun commentaire'),
+                  const Text('Il n\'y a présentement aucun commentaire.'),
                   const SizedBox(height: 16)
                 ]
               : job.comments
