@@ -68,7 +68,8 @@ class _InternshipEnrollmentScreenState
       _stepStatus[1] = isValid ? StepState.complete : StepState.error;
     }
     if (_currentStep >= 2) {
-      final isValid = FormService.validateForm(formKeys[2]);
+      final isValid = FormService.validateForm(formKeys[2]) &&
+          _requirementsKey.currentState!.validateProtectionsCheckboxes();
       isAllValid = isAllValid && isValid;
       _stepStatus[2] = isValid ? StepState.complete : StepState.error;
     }

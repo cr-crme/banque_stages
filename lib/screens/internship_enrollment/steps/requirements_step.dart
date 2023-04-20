@@ -21,16 +21,30 @@ class RequirementsStep extends StatefulWidget {
 class RequirementsStepState extends State<RequirementsStep> {
   final formKey = GlobalKey<FormState>();
 
+  bool validateProtectionsCheckboxes() {
+    if (!_protectionsRequired) return true;
+
+    for (final protection in _protections.keys) {
+      if (_protections[protection]!) return true;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Indiquer au moins une pièce d\'équipement')));
+    return false;
+  }
+
   bool _protectionsRequired = false;
-  final Map<String, bool> _protection =
+  final Map<String, bool> _protections =
       Map.fromIterable(RequirementsStep.protectionsList, value: (e) => false);
 
   bool _otherProtections = false;
   String? _otherProtectionsText;
+  String get otherProtections =>
+      _otherProtections ? _otherProtectionsText ?? '' : '';
 
   List<String> get protections => _protectionsRequired
       ? [
-          ..._protection.entries
+          ..._protections.entries
               .where((e) => e.value)
               .map((e) => e.key)
               .toList(),
@@ -60,7 +74,7 @@ class RequirementsStepState extends State<RequirementsStep> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '*Est-ce que l\'élève devra porter des équipements de protection individuelle?',
+                  'Est-ce que l\'élève devra porter des équipements de protection individuelle?',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Padding(
@@ -99,7 +113,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                         'Lesquels ?',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      ..._protection.keys.map(
+                      ..._protections.keys.map(
                         (requirement) => CheckboxListTile(
                           controlAffinity: ListTileControlAffinity.leading,
                           visualDensity: VisualDensity.compact,
@@ -108,9 +122,9 @@ class RequirementsStepState extends State<RequirementsStep> {
                             requirement,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                          value: _protection[requirement],
+                          value: _protections[requirement],
                           onChanged: (newValue) => setState(
-                              () => _protection[requirement] = newValue!),
+                              () => _protections[requirement] = newValue!),
                         ),
                       ),
                       CheckboxListTile(
@@ -136,13 +150,19 @@ class RequirementsStepState extends State<RequirementsStep> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Précisez l\'équipement supplémentaire requis : ',
+                                '* Précisez l\'équipement supplémentaire requis : ',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               TextFormField(
                                 onSaved: (text) => _otherProtectionsText = text,
+                                onChanged: (text) =>
+                                    _otherProtectionsText = text,
                                 minLines: 2,
                                 maxLines: null,
+                                validator: (text) => _otherProtections &&
+                                        text!.isEmpty
+                                    ? 'Préciser la pièce d\'équipement supplémentaire.'
+                                    : null,
                                 keyboardType: TextInputType.multiline,
                               ),
                             ],
@@ -192,13 +212,17 @@ class RequirementsStepState extends State<RequirementsStep> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Précisez le type d\'uniforme : ',
+                          '* Précisez le type d\'uniforme : ',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(
                           onSaved: (text) => _uniform = text,
+                          onChanged: (text) => _uniform = text,
                           minLines: 2,
                           maxLines: null,
+                          validator: (text) => _uniformRequired && text!.isEmpty
+                              ? 'Préciser l\'uniforme.'
+                              : null,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                           ),

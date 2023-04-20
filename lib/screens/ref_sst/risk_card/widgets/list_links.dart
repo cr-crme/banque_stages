@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '/screens/ref_sst/common/risk.dart';
@@ -32,10 +31,7 @@ class BuildALineOfALink extends StatelessWidget {
       },
       children: [
         TableRow(children: [
-          AutoSizeText(
-            link.source,
-            maxLines: 1,
-          ),
+          Text(link.source),
           InkWell(
             onTap: () => _launchUrl(link.url),
             child: Padding(
