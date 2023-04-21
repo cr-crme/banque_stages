@@ -325,11 +325,11 @@ class _InternshipBody extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 2, bottom: _interline),
           child: GestureDetector(
-            onTap: () {
-              GoRouter.of(context).goNamed(Screens.enterprise,
-                  params: Screens.withId(enterprise)
-                    ..addAll({'pageIndex': '3'}));
-            },
+            onTap: () => GoRouter.of(context).goNamed(
+              Screens.enterprise,
+              params: Screens.params(enterprise),
+              queryParams: Screens.queryParams(pageIndex: "0"),
+            ),
             child: Text(
               enterprise.name,
               style: const TextStyle(

@@ -122,8 +122,11 @@ class _InternshipEnrollmentScreenState
     InternshipsProvider.of(context, listen: false).add(internship);
 
     Navigator.pop(context);
-    GoRouter.of(context).pushNamed(Screens.student,
-        params: {'id': internship.studentId, 'initialPage': '1'});
+    GoRouter.of(context).pushNamed(
+      Screens.student,
+      params: Screens.params(internship.studentId),
+      queryParams: Screens.queryParams(pageIndex: "1"),
+    );
   }
 
   void _onPressBack() async {

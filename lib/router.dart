@@ -57,7 +57,7 @@ abstract class Screens {
   static const jobSst = 'job-sst';
   static const cardsSst = 'cards-sst';
 
-  static Map<String, String> withId(id, {jobId}) {
+  static Map<String, String> params(id, {jobId}) {
     return {
       'id': (id is String)
           ? id
@@ -65,7 +65,16 @@ abstract class Screens {
       if (jobId != null)
         'jobId': (jobId is String)
             ? jobId
-            : (jobId is ItemSerializable ? jobId.id : throw TypeError())
+            : (jobId is ItemSerializable ? jobId.id : throw TypeError()),
+    };
+  }
+
+  static Map<String, String> queryParams({pageIndex}) {
+    return {
+      if (pageIndex != null)
+        'pageIndex': (pageIndex is String)
+            ? pageIndex
+            : (pageIndex is ItemSerializable ? pageIndex.id : throw TypeError())
     };
   }
 }
@@ -116,11 +125,22 @@ final router = GoRouter(
           builder: (context, state) => const AddEnterpriseScreen(),
         ),
         GoRoute(
-          path: ':id:pageIndex',
+          path: ':id',
           name: Screens.enterprise,
           builder: (context, state) => EnterpriseScreen(
-              id: state.params['id']!,
-              pageIndex: int.parse(state.params['pageIndex']!)),
+            id: state.params['id']!,
+            pageIndex: int.parse(state.queryParams['pageIndex'] ?? "0"),
+          ),
+          routes: [
+            GoRoute(
+              path: ':jobId',
+              name: Screens.jobSstForm,
+              builder: (context, state) => JobSstFormScreen(
+                enterpriseId: state.params['id']!,
+                jobId: state.params['jobId']!,
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: 'add-internship-enterprise/:id',
@@ -129,18 +149,12 @@ final router = GoRouter(
               InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
         ),
         GoRoute(
-          path: 'enterprise-evaluation/:id:jobId',
+          path: 'enterprise-evaluation/:id/:jobId',
           name: Screens.enterpriseEvaluationScreen,
           builder: (context, state) => EnterpriseEvaluationScreen(
             id: state.params['id']!,
             jobId: state.params['jobId']!,
           ),
-        ),
-        GoRoute(
-          path: ':id:jobId',
-          name: Screens.jobSstForm,
-          builder: (context, state) => JobSstFormScreen(
-              enterpriseId: state.params['id']!, jobId: state.params['jobId']!),
         ),
       ],
     ),
@@ -156,11 +170,11 @@ final router = GoRouter(
               InternshipEnrollmentScreen(studentId: state.params['id']!),
         ),
         GoRoute(
-          path: 'studentScreen/:id:initialPage',
+          path: 'studentScreen/:id',
           name: Screens.student,
           builder: (context, state) => StudentScreen(
               id: state.params['id']!,
-              initialPage: int.parse(state.params['initialPage']!)),
+              initialPage: int.parse(state.queryParams['pageIndex'] ?? "0")),
         ),
       ],
     ),
@@ -170,7 +184,7 @@ final router = GoRouter(
       builder: (context, state) => const ItineraryScreen(),
     ),
     GoRoute(
-      path: '/skill-evaluation-main/:internshipId:editMode',
+      path: '/skill-evaluation-main/:internshipId/:editMode',
       name: Screens.skillEvaluationMainScreen,
       builder: (context, state) => SkillEvaluationMainScreen(
         internshipId: state.params['internshipId']!,

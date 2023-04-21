@@ -173,8 +173,8 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
                 enterprise: enterprises.elementAt(index),
                 onTap: (enterprise) => GoRouter.of(context).goNamed(
                   Screens.enterprise,
-                  params: Screens.withId(enterprise)
-                    ..addAll({'pageIndex': '0'}),
+                  params: Screens.params(enterprise),
+                  queryParams: Screens.queryParams(pageIndex: "0"),
                 ),
               ),
             ),
@@ -219,9 +219,11 @@ class _EnterprisesByMap extends StatelessWidget {
           builder: (context) => Row(
             children: [
               GestureDetector(
-                onTap: () => GoRouter.of(context).goNamed(Screens.enterprise,
-                    params: Screens.withId(enterprise)
-                      ..addAll({'pageIndex': '0'})),
+                onTap: () => GoRouter.of(context).goNamed(
+                  Screens.enterprise,
+                  params: Screens.params(enterprise),
+                  queryParams: Screens.queryParams(pageIndex: "0"),
+                ),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white.withAlpha(75),

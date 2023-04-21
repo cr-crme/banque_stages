@@ -110,9 +110,9 @@ class _SstBody extends StatelessWidget {
             const SizedBox(height: 8),
             Center(
               child: TextButton(
-                onPressed: () => GoRouter.of(context).goNamed(
+                onPressed: () => GoRouter.of(context).pushNamed(
                   Screens.jobSstForm,
-                  params: Screens.withId(enterprise, jobId: job),
+                  params: Screens.params(enterprise, jobId: job),
                 ),
                 child: const Text('Ouvrir le formulaire SST'),
               ),

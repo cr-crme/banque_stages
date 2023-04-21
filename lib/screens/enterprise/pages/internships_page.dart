@@ -237,8 +237,10 @@ class _InternshipListState extends State<_InternshipList> {
                           const Text('Stagiaire : '),
                           GestureDetector(
                             onTap: () => GoRouter.of(context).pushNamed(
-                                Screens.student,
-                                params: {'id': student.id, 'initialPage': '1'}),
+                              Screens.student,
+                              params: Screens.params(student.id),
+                              queryParams: Screens.queryParams(pageIndex: "1"),
+                            ),
                             child: Text(
                               student.fullName,
                               style: const TextStyle(

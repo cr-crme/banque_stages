@@ -12,7 +12,11 @@ import 'pages/about_page.dart';
 import 'pages/internships_page.dart';
 
 class StudentScreen extends StatefulWidget {
-  const StudentScreen({super.key, required this.id, this.initialPage = 0});
+  const StudentScreen({
+    super.key,
+    required this.id,
+    this.initialPage = 0,
+  });
 
   final String id;
   final int initialPage;
@@ -38,7 +42,7 @@ class _StudentScreenState extends State<StudentScreen>
     if (!student.hasActiveInternship(context)) {
       GoRouter.of(context).goNamed(
         Screens.internshipEnrollementFromStudent,
-        params: Screens.withId(widget.id),
+        params: Screens.params(widget.id),
       );
       return;
     }

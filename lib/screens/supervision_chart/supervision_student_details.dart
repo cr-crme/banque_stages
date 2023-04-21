@@ -424,8 +424,11 @@ class _MoreInfoButton extends StatelessWidget {
       padding: const EdgeInsets.only(top: 50.0, bottom: 40),
       child: Center(
         child: ElevatedButton(
-            onPressed: () => GoRouter.of(context).pushNamed(Screens.student,
-                params: {'id': studentId, 'initialPage': '1'}),
+            onPressed: () => GoRouter.of(context).pushNamed(
+                  Screens.student,
+                  params: Screens.params(studentId),
+                  queryParams: Screens.queryParams(pageIndex: "1"),
+                ),
             child: const Text('Plus de détails sur le stage')),
       ),
     );
