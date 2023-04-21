@@ -1,3 +1,4 @@
+import '/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +8,7 @@ import '/common/models/internship_evaluation_attitude.dart';
 import '/common/models/internship_evaluation_skill.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/router.dart';
+import '/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 
 class InternshipSkills extends StatefulWidget {
   const InternshipSkills({super.key, required this.internship});
@@ -50,8 +52,11 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                             evaluation: widget.internship.skillEvaluations)),
                     IconButton(
                         onPressed: () => GoRouter.of(context).pushNamed(
-                            Screens.skillEvaluationMainScreen,
-                            params: {'internshipId': widget.internship.id}),
+                                Screens.skillEvaluationMainScreen,
+                                params: {
+                                  'internshipId': widget.internship.id,
+                                  'editMode': '1'
+                                }),
                         icon: const Icon(
                           Icons.add_chart_rounded,
                           color: Colors.black,
@@ -70,7 +75,9 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                     IconButton(
                         onPressed: () => GoRouter.of(context).pushNamed(
                             Screens.attitudeEvaluationScreen,
-                            params: {'internshipId': widget.internship.id}),
+                            params: {'editMode': '1'},
+                            extra: AttitudeEvaluationFormController(
+                                internshipId: widget.internship.id)),
                         icon: const Icon(
                           Icons.add_chart_rounded,
                           color: Colors.black,
@@ -114,8 +121,24 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
   Widget _buildLastEvaluation() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
-      child: Text('Dernière évaluation : '
-          '${DateFormat('dd MMMM yyyy', 'fr_CA').format(widget.evaluation[_currentEvaluationIndex].date)}'),
+      child: Row(
+        children: [
+          const Text('Évaluation du : '),
+          DropdownButton<int>(
+            value: _currentEvaluationIndex,
+            onChanged: (value) =>
+                setState(() => _currentEvaluationIndex = value!),
+            items: widget.evaluation
+                .asMap()
+                .keys
+                .map((index) => DropdownMenuItem(
+                    value: index,
+                    child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
+                        .format(widget.evaluation[index].date))))
+                .toList(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -249,24 +272,18 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
   Widget _buildShowOtherDate() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text('Afficher formulaire d\'évaluation'),
-          DropdownButton<int>(
-            value: _currentEvaluationIndex,
-            onChanged: (value) =>
-                setState(() => _currentEvaluationIndex = value!),
-            items: widget.evaluation
-                .asMap()
-                .keys
-                .map((index) => DropdownMenuItem(
-                    value: index,
-                    child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
-                        .format(widget.evaluation[index].date))))
-                .toList(),
-          ),
-        ],
+      child: Center(
+        child: TextButton(
+            onPressed: () {
+              GoRouter.of(context).pushNamed(Screens.skillEvaluationFormScreen,
+                  params: {'editMode': '0'},
+                  extra: SkillEvaluationFormController.fromInternshipId(
+                    context,
+                    internshipId: widget.internship.id,
+                    evaluationIndex: _currentEvaluationIndex,
+                  ));
+            },
+            child: const Text('Afficher formulaire d\'évaluation')),
       ),
     );
   }
@@ -358,8 +375,24 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
   Widget _buildLastEvaluation() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
-      child: Text('Dernière évaluation : '
-          '${DateFormat('dd MMMM yyyy', 'fr_CA').format(widget.evaluation[_currentEvaluationIndex].date)}'),
+      child: Row(
+        children: [
+          const Text('Évaluation du : '),
+          DropdownButton<int>(
+            value: _currentEvaluationIndex,
+            onChanged: (value) =>
+                setState(() => _currentEvaluationIndex = value!),
+            items: widget.evaluation
+                .asMap()
+                .keys
+                .map((index) => DropdownMenuItem(
+                    value: index,
+                    child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
+                        .format(widget.evaluation[index].date))))
+                .toList(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -490,24 +523,18 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
   Widget _buildShowOtherForms() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text('Afficher formulaire d\'évaluation'),
-          DropdownButton<int>(
-            value: _currentEvaluationIndex,
-            onChanged: (value) =>
-                setState(() => _currentEvaluationIndex = value!),
-            items: widget.evaluation
-                .asMap()
-                .keys
-                .map((index) => DropdownMenuItem(
-                    value: index,
-                    child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
-                        .format(widget.evaluation[index].date))))
-                .toList(),
-          ),
-        ],
+      child: Center(
+        child: OutlinedButton(
+            onPressed: () {
+              GoRouter.of(context).pushNamed(Screens.attitudeEvaluationScreen,
+                  params: {'editMode': '0'},
+                  extra: AttitudeEvaluationFormController.fromInternshipId(
+                    context,
+                    internshipId: widget.internship.id,
+                    evaluationIndex: _currentEvaluationIndex,
+                  ));
+            },
+            child: const Text('Afficher formulaire d\'évaluation')),
       ),
     );
   }

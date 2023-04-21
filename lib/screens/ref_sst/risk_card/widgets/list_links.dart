@@ -26,8 +26,8 @@ class BuildALineOfALink extends StatelessWidget {
     final String linkTitle = link.title;
     return Table(
       columnWidths: const {
-        0: FractionColumnWidth(.2),
-        1: FractionColumnWidth(.8),
+        0: FlexColumnWidth(1),
+        1: FlexColumnWidth(2),
       },
       children: [
         TableRow(children: [

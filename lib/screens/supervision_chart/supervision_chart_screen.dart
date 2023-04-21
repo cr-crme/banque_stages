@@ -23,12 +23,12 @@ class SupervisionChart extends StatefulWidget {
 class _SupervisionChartState extends State<SupervisionChart> {
   bool _isSearchBarExpanded = false;
   final _searchTextController = TextEditingController();
-  bool _isFlagFilterExpanded = false;
+  bool _isFlagFilterExpanded = true;
   final _visibilityFilters = {
     VisitingPriority.high: true,
     VisitingPriority.mid: true,
     VisitingPriority.low: true,
-    VisitingPriority.notApplicable: false,
+    VisitingPriority.notApplicable: true,
   };
 
   void _toggleSearchBar() {
@@ -106,7 +106,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     return students
         .map<Student?>((e) {
           final interships = allInterships.byStudentId(e.id);
-          if (interships.isEmpty) {
+          if (interships.isEmpty || !interships.last.isActive) {
             return _visibilityFilters[VisitingPriority.notApplicable]!
                 ? e
                 : null;
@@ -209,16 +209,19 @@ class _SupervisionChartState extends State<SupervisionChart> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _TabIcon(
+                      title: 'Transfert',
                       screenSize: screenSize,
                       iconSize: iconSize,
                       onTap: _transferStudent,
                       icon: Icons.transfer_within_a_station),
                   _TabIcon(
+                      title: 'Recherche',
                       screenSize: screenSize,
                       iconSize: iconSize,
                       onTap: _toggleSearchBar,
                       icon: Icons.search),
                   _TabIcon(
+                      title: 'Priorités',
                       screenSize: screenSize,
                       iconSize: iconSize,
                       onTap: _toggleFlagFilter,
@@ -255,12 +258,14 @@ class _SupervisionChartState extends State<SupervisionChart> {
 class _TabIcon extends StatelessWidget {
   const _TabIcon({
     Key? key,
+    required this.title,
     required this.screenSize,
     required this.iconSize,
     required this.icon,
     this.onTap,
   }) : super(key: key);
 
+  final String title;
   final Size screenSize;
   final double iconSize;
   final IconData icon;
@@ -272,10 +277,18 @@ class _TabIcon extends StatelessWidget {
       onTap: onTap,
       child: SizedBox(
         width: screenSize.width / 3,
-        height: iconSize * 1.5,
-        child: Icon(
-          icon,
-          size: iconSize,
+        height: iconSize * 1.8,
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              size: iconSize,
+            ),
+            Text(
+              title,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ],
         ),
       ),
     );
@@ -296,11 +309,11 @@ class _StudentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final enterprise = internships.isNotEmpty
+    final enterprise = internships.isNotEmpty && internships.last.isActive
         ? EnterprisesProvider.of(context, listen: false)
             .fromId(internships.last.enterpriseId)
         : null;
-    final specialization = internships.isNotEmpty
+    final specialization = internships.isNotEmpty && internships.last.isActive
         ? enterprise?.jobs.fromId(internships.last.jobId).specialization
         : null;
 
@@ -330,9 +343,8 @@ class _StudentTile extends StatelessWidget {
             ),
           ],
         ),
-        trailing: internships.isEmpty
-            ? null
-            : Ink(
+        trailing: internships.isNotEmpty && internships.last.isActive
+            ? Ink(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: const [
@@ -355,7 +367,8 @@ class _StudentTile extends StatelessWidget {
                     size: 30,
                   ),
                 ),
-              ),
+              )
+            : null,
       ),
     );
   }

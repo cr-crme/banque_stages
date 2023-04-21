@@ -583,7 +583,7 @@ Future<void> addDummyStudents(
     Student(
       firstName: 'Cedric',
       lastName: 'Masson',
-      dateBirth: DateTime.now(),
+      dateBirth: DateTime(2005, 5, 20),
       email: 'c.masson@email.com',
       teacherId: teachers[0].id,
       program: Program.fpt,

@@ -11,6 +11,7 @@ import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/generate_debug_data_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
+import 'screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'screens/internship_forms/student_steps/attitude_evaluation_screen.dart';
 import 'screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 import 'screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
@@ -115,25 +116,31 @@ final router = GoRouter(
           builder: (context, state) => const AddEnterpriseScreen(),
         ),
         GoRoute(
-          path: ':id',
+          path: ':id:pageIndex',
           name: Screens.enterprise,
+          builder: (context, state) => EnterpriseScreen(
+              id: state.params['id']!,
+              pageIndex: int.parse(state.params['pageIndex']!)),
+        ),
+        GoRoute(
+          path: 'add-internship-enterprise/:id',
+          name: Screens.internshipEnrollementFromEnterprise,
           builder: (context, state) =>
-              EnterpriseScreen(id: state.params['id']!),
-          routes: [
-            GoRoute(
-              path: 'add-internship-enterprise',
-              name: Screens.internshipEnrollementFromEnterprise,
-              builder: (context, state) =>
-                  InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
-            ),
-            GoRoute(
-              path: ':jobId',
-              name: Screens.jobSstForm,
-              builder: (context, state) => JobSstFormScreen(
-                  enterpriseId: state.params['id']!,
-                  jobId: state.params['jobId']!),
-            ),
-          ],
+              InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
+        ),
+        GoRoute(
+          path: 'enterprise-evaluation/:id:jobId',
+          name: Screens.enterpriseEvaluationScreen,
+          builder: (context, state) => EnterpriseEvaluationScreen(
+            id: state.params['id']!,
+            jobId: state.params['jobId']!,
+          ),
+        ),
+        GoRoute(
+          path: ':id:jobId',
+          name: Screens.jobSstForm,
+          builder: (context, state) => JobSstFormScreen(
+              enterpriseId: state.params['id']!, jobId: state.params['jobId']!),
         ),
       ],
     ),
@@ -163,34 +170,29 @@ final router = GoRouter(
       builder: (context, state) => const ItineraryScreen(),
     ),
     GoRoute(
-      path: '/enterprise-evaluation',
-      name: Screens.enterpriseEvaluationScreen,
-      builder: (context, state) => EnterpriseEvaluationScreen(
-        enterpriseId: state.params['enterpriseId']!,
-        jobId: state.params['jobId']!,
-      ),
-    ),
-    GoRoute(
-      path: '/skill-evaluation-main/:internshipId',
+      path: '/skill-evaluation-main/:internshipId:editMode',
       name: Screens.skillEvaluationMainScreen,
       builder: (context, state) => SkillEvaluationMainScreen(
         internshipId: state.params['internshipId']!,
+        editMode: state.params['editMode']! == '1',
       ),
     ),
     GoRoute(
-      path: '/skill-evaluation-form',
+      path: '/skill-evaluation-form/:editMode',
       name: Screens.skillEvaluationFormScreen,
       builder: (context, state) {
         return SkillEvaluationFormScreen(
           formController: state.extra as SkillEvaluationFormController,
+          editMode: state.params['editMode']! == '1',
         );
       },
     ),
     GoRoute(
-      path: '/attitude-evaluation-form/:internshipId',
+      path: '/attitude-evaluation-form/:editMode',
       name: Screens.attitudeEvaluationScreen,
       builder: (context, state) => AttitudeEvaluationScreen(
-        internshipId: state.params['internshipId']!,
+        formController: state.extra as AttitudeEvaluationFormController,
+        editMode: state.params['editMode']! == '1',
       ),
     ),
     GoRoute(

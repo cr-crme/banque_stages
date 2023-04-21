@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '/common/models/internship_evaluation_skill.dart';
 import '/common/models/student.dart';
+import '/common/providers/enterprises_provider.dart';
+import '/common/providers/internships_provider.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 
@@ -14,24 +17,57 @@ class SkillsPage extends StatefulWidget {
 }
 
 class SkillsPageState extends State<SkillsPage> {
-  Map<Specialization, List<Skill>> _getCurrentSkills(
-      Map<Specialization, List<Skill>> jobs) {
-    return jobs;
+  Map<Specialization, List<SkillEvaluation>> _getAcquiredSkills(
+      Map<Specialization, List<SkillEvaluation>> skills) {
+    final Map<Specialization, List<SkillEvaluation>> out = {};
+    for (final specialization in skills.keys) {
+      out[specialization] = [];
+      for (final skillEvaluation in skills[specialization]!) {
+        if (skillEvaluation.appreciation == SkillAppreciation.acquired) {
+          out[specialization]!.add(skillEvaluation);
+        }
+      }
+    }
+    return out;
   }
 
-  Map<Specialization, List<Skill>> _getFutureSkills(
-      Map<Specialization, List<Skill>> jobs) {
-    return jobs;
+  Map<Specialization, List<SkillEvaluation>> _getToPursuitSkills(
+      Map<Specialization, List<SkillEvaluation>> skills) {
+    final Map<Specialization, List<SkillEvaluation>> out = {};
+    for (final specialization in skills.keys) {
+      out[specialization] = [];
+      for (final skillEvaluation in skills[specialization]!) {
+        if (skillEvaluation.appreciation != SkillAppreciation.acquired) {
+          out[specialization]!.add(skillEvaluation);
+        }
+      }
+    }
+    return out;
   }
 
-  Map<Specialization, List<Skill>> _getAllStudentSkills(BuildContext context) {
-    // TODO, parse for a specific student after the evaluation is done
-    Map<Specialization, List<Skill>> out = {};
-    for (final sector in ActivitySectorsService.sectors) {
-      for (final specialization in sector.specializations) {
-        for (final skill in specialization.skills) {
-          if (!out.containsKey(specialization)) out[specialization] = [];
-          out[specialization]!.add(skill);
+  Map<Specialization, List<SkillEvaluation>> _getAllStudentSkills(
+      BuildContext context) {
+    final enterprises = EnterprisesProvider.of(context, listen: false);
+    final internships = InternshipsProvider.of(context, listen: false)
+        .byStudentId(widget.student.id);
+
+    Map<Specialization, List<SkillEvaluation>> out = {};
+    for (final internship in internships) {
+      final List<Specialization> specializations = [];
+
+      // Fetch all the specialization of the current internship
+      specializations.add(enterprises
+          .fromId(internship.enterpriseId)
+          .jobs[internship.jobId]
+          .specialization);
+      specializations.addAll(internship.extraSpecializationsId
+          .map((id) => ActivitySectorsService.specialization(id)));
+
+      for (final specialization in specializations) {
+        if (!out.containsKey(specialization)) out[specialization] = [];
+
+        for (final evaluation in internship.skillEvaluations) {
+          out[specialization]!.addAll(evaluation.skills);
         }
       }
     }
@@ -40,16 +76,18 @@ class SkillsPageState extends State<SkillsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final jobs = _getAllStudentSkills(context);
+    final skills = _getAllStudentSkills(context);
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _SkillTile(
-              title: 'Compétences acquises', jobs: _getCurrentSkills(jobs)),
+              title: 'Compétences acquises',
+              skills: _getAcquiredSkills(skills)),
           _SkillTile(
-              title: 'Compétences à poursuivre', jobs: _getFutureSkills(jobs)),
+              title: 'Compétences à poursuivre',
+              skills: _getToPursuitSkills(skills)),
         ],
       ),
     );
@@ -57,21 +95,26 @@ class SkillsPageState extends State<SkillsPage> {
 }
 
 class _SkillTile extends StatelessWidget {
-  const _SkillTile({required this.title, required this.jobs});
+  const _SkillTile({required this.title, required this.skills});
 
   final String title;
-  final Map<Specialization, List<Skill>> jobs;
+  final Map<Specialization, List<SkillEvaluation>> skills;
 
-  Map<int, Map<Specialization, List<Skill>>> _filterByLevel() {
-    final Map<int, Map<Specialization, List<Skill>>> out = {};
-    for (final specialization in jobs.keys) {
-      for (final skill in jobs[specialization]!) {
+  Map<int, Map<Specialization, List<SkillEvaluation>>> _filterByLevel() {
+    final Map<int, Map<Specialization, List<SkillEvaluation>>> out = {};
+
+    for (final specialization in skills.keys) {
+      for (final skillEvaluation in skills[specialization]!) {
+        final skill = specialization.skills.firstWhere(
+            (skill) => skill.idWithName == skillEvaluation.skillName);
+
         final level = int.parse(skill.complexity);
         if (!out.containsKey(level)) out[level] = {};
+
         if (!out[level]!.containsKey(specialization)) {
           out[level]![specialization] = [];
         }
-        out[level]![specialization]!.add(skill);
+        out[level]![specialization]!.add(skillEvaluation);
       }
     }
 
@@ -97,7 +140,7 @@ class _SkillTile extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 12.0),
                       child: _LeveledSkillTile(
                         title: 'Compétences de niveau $level',
-                        jobs: filteredSkills[level]!,
+                        specializations: filteredSkills[level]!,
                       ),
                     ))
                 .toList(),
@@ -109,10 +152,10 @@ class _SkillTile extends StatelessWidget {
 }
 
 class _LeveledSkillTile extends StatelessWidget {
-  const _LeveledSkillTile({required this.title, required this.jobs});
+  const _LeveledSkillTile({required this.title, required this.specializations});
 
   final String title;
-  final Map<Specialization, List<Skill>> jobs;
+  final Map<Specialization, List<SkillEvaluation>> specializations;
 
   @override
   Widget build(BuildContext context) {
@@ -126,21 +169,21 @@ class _LeveledSkillTile extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        ...jobs.keys
+        ...specializations.keys
             .map((specialization) => Padding(
                 padding: const EdgeInsets.only(bottom: 12.0, right: 12.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(specialization.idWithName),
-                    ...jobs[specialization]!.map(
-                      (skill) => Padding(
+                    ...specializations[specialization]!.map(
+                      (skillEvaluation) => Padding(
                           padding: const EdgeInsets.only(right: 12.0),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('\u2022 '),
-                              Flexible(child: Text(skill.name)),
+                              Flexible(child: Text(skillEvaluation.skillName)),
                             ],
                           )),
                     ),

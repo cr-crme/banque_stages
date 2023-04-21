@@ -321,15 +321,14 @@ class _InternshipBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Enterprise', style: _titleStyle),
+        const Text('Entreprise', style: _titleStyle),
         Padding(
           padding: const EdgeInsets.only(top: 2, bottom: _interline),
           child: GestureDetector(
             onTap: () {
-              GoRouter.of(context).goNamed(
-                Screens.enterprise,
-                params: Screens.withId(enterprise),
-              );
+              GoRouter.of(context).goNamed(Screens.enterprise,
+                  params: Screens.withId(enterprise)
+                    ..addAll({'pageIndex': '3'}));
             },
             child: Text(
               enterprise.name,

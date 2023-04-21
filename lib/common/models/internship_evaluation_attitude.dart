@@ -100,12 +100,15 @@ class InternshipEvaluationAttitude extends ItemSerializable {
   List<String> presentAtEvaluation;
   AttitudeEvaluation attitude;
   String comments;
+  String
+      formVersion; // The version of the evaluation form (so data can be parsed properly)
 
   InternshipEvaluationAttitude({
     required this.date,
     required this.presentAtEvaluation,
     required this.attitude,
     required this.comments,
+    required this.formVersion,
   });
   InternshipEvaluationAttitude.fromSerialized(map)
       : date = DateTime.fromMillisecondsSinceEpoch(map['date']),
@@ -113,6 +116,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
             (map['present'] as List).map((e) => e as String).toList(),
         attitude = AttitudeEvaluation.fromSerialized(map['attitude']),
         comments = map['comments'],
+        formVersion = map['formVersion'],
         super.fromSerialized(map);
 
   @override
@@ -124,6 +128,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
       'attitude': attitude.serializedMap(),
       'skills': attitude.serializedMap(),
       'comments': comments,
+      'formVersion': formVersion,
     };
   }
 
@@ -133,6 +138,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
       presentAtEvaluation: presentAtEvaluation.map((e) => e).toList(),
       attitude: attitude.deepCopy(),
       comments: comments,
+      formVersion: formVersion,
     );
   }
 }
@@ -192,9 +198,9 @@ class Ponctuality implements AttitudeCategoryEnum {
       case 1:
         return 'Quelques retards justifiés';
       case 2:
-        return 'Quelques retards injustifiées';
+        return 'Quelques retards injustifiés';
       case 3:
-        return 'Retards fréquentes et injustifiées';
+        return 'Retards fréquents et injustifiés';
       default:
         throw 'Wrong choice of $title';
     }
@@ -408,7 +414,7 @@ class Productivity implements AttitudeCategoryEnum {
       case 1:
         return 'Rendement et rythme de travail bons et contants';
       case 2:
-        return 'Difficulté à maintenant le rythme de travail';
+        return 'Difficulté à maintenir le rythme de travail';
       case 3:
         return 'Rendement insuffisant';
       default:

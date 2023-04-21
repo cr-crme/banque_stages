@@ -26,21 +26,17 @@ class InternshipsPageState extends State<InternshipsPage> {
   final Map<String, bool> _expanded = {};
   final List<GlobalKey<InternshipDetailsState>> detailKeys = [];
 
-  @override
-  void initState() {
-    super.initState();
-
-    final allInternships = InternshipsProvider.of(context, listen: false);
-    final internships = allInternships.byStudentId(widget.student.id);
-    for (final _ in internships) {
-      detailKeys.add(GlobalKey<InternshipDetailsState>());
-    }
-  }
-
   void _prepareExpander(List<Internship> internships) {
     if (_expanded.length != internships.length) {
       for (final internship in internships) {
         _expanded[internship.id] = internship.isActive;
+      }
+    }
+
+    if (detailKeys.length != internships.length) {
+      detailKeys.clear();
+      for (final _ in internships) {
+        detailKeys.add(GlobalKey<InternshipDetailsState>());
       }
     }
   }

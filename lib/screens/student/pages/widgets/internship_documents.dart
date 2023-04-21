@@ -6,6 +6,7 @@ import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 
 import '/common/models/internship.dart';
+import '/common/providers/enterprises_provider.dart';
 import '/screens/internship_forms/generate_documents.dart';
 
 class InternshipDocuments extends StatefulWidget {
@@ -19,6 +20,14 @@ class InternshipDocuments extends StatefulWidget {
 
 class _InternshipDocumentsState extends State<InternshipDocuments> {
   bool _isExpanded = false;
+
+  int _getInternshipSectorNumber() {
+    final specialization = EnterprisesProvider.of(context,
+            listen: false)[widget.internship.enterpriseId]
+        .jobs[widget.internship.jobId]
+        .specialization;
+    return int.parse(specialization.sector.id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,13 +83,14 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                   pdfGeneratorCallback:
                       GenerateDocuments.generateTaxeCreditFormPdf,
                 ),
-                _buildPdfTile(
-                  context,
-                  title: 'Formulaire de demande de carte de stage au Club '
-                      'paritaire de l\'automobile',
-                  pdfGeneratorCallback:
-                      GenerateDocuments.generateInternshipAutomotiveCardPdf,
-                ),
+                if (_getInternshipSectorNumber() == 10)
+                  _buildPdfTile(
+                    context,
+                    title: 'Formulaire de demande de carte de stage au Club '
+                        'paritaire de l\'automobile',
+                    pdfGeneratorCallback:
+                        GenerateDocuments.generateInternshipAutomotiveCardPdf,
+                  ),
                 _buildPdfTile(
                   context,
                   title: 'Preuve de couverture d\'assurances',

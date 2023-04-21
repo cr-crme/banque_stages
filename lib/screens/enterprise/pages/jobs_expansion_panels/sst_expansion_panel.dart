@@ -15,14 +15,14 @@ class SstExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _SstBody(enterprise, job),
           headerBuilder: (context, isExpanded) => ListTile(
-            title: const Text('Santé et Sécurité du travail (SST)'),
+            title: const Text('Santé et Sécurité (SST)'),
             trailing: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey[400]!,
+                    color: Colors.grey[900]!,
                     blurRadius: 8.0,
                     offset: const Offset(2, 2),
                   ),
@@ -31,7 +31,7 @@ class SstExpansionPanel extends ExpansionPanel {
               child: IconButton(
                   onPressed: () => addSstEvent(job),
                   icon: const Icon(
-                    Icons.warning,
+                    Icons.add_alert_sharp,
                     color: Colors.red,
                   )),
             ),

@@ -11,9 +11,9 @@ import 'tasks_step.dart';
 
 class EnterpriseEvaluationScreen extends StatefulWidget {
   const EnterpriseEvaluationScreen(
-      {super.key, required this.enterpriseId, required this.jobId});
+      {super.key, required this.id, required this.jobId});
 
-  final String enterpriseId;
+  final String id;
   final String jobId;
 
   @override
@@ -52,8 +52,8 @@ class _EnterpriseEvaluationScreenState
     final enterprises = context.read<EnterprisesProvider>();
 
     enterprises.replaceJob(
-      widget.enterpriseId,
-      enterprises[widget.enterpriseId].jobs[widget.jobId].copyWith(
+      widget.id,
+      enterprises[widget.id].jobs[widget.jobId].copyWith(
             taskVariety: _tasksKey.currentState!.taskVariety,
             autonomyExpected: _tasksKey.currentState!.autonomyExpected,
             efficiencyWanted: _tasksKey.currentState!.efficiencyWanted,
@@ -130,7 +130,7 @@ class _EnterpriseEvaluationScreenState
           controlsBuilder: _controlBuilder,
         ),
         selector: (context, enterprises) =>
-            enterprises[widget.enterpriseId].jobs[widget.jobId],
+            enterprises[widget.id].jobs[widget.jobId],
       ),
     );
   }
