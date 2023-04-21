@@ -73,6 +73,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
                   setState(() => extraSpecializations.removeAt(i)),
             ),
           _SupervisonInformation(
+            enterprise: enterprise,
             onSavedFirstName: (name) => supervisorFirstName = name!,
             onSavedLastName: (name) => supervisorLastName = name!,
             onSavedPhone: (phone) => supervisorPhone = phone!,
@@ -114,7 +115,6 @@ class _GeneralInformations extends StatelessWidget {
       context, EnterprisesProvider enterprises) {
     final List<Enterprise> out = [];
     for (final enterprise in enterprises) {
-      debugPrint(enterprise.name);
       if (enterprise.availableJobs(context).isNotEmpty) out.add(enterprise);
     }
 
@@ -277,18 +277,43 @@ class _ExtraSpecialization extends StatelessWidget {
   }
 }
 
-class _SupervisonInformation extends StatelessWidget {
+class _SupervisonInformation extends StatefulWidget {
   const _SupervisonInformation({
+    required this.enterprise,
     required this.onSavedFirstName,
     required this.onSavedLastName,
     required this.onSavedPhone,
     required this.onSavedEmail,
   });
 
+  final Enterprise? enterprise;
   final Function(String?) onSavedFirstName;
   final Function(String?) onSavedLastName;
   final Function(String?) onSavedPhone;
   final Function(String?) onSavedEmail;
+
+  @override
+  State<_SupervisonInformation> createState() => _SupervisonInformationState();
+}
+
+class _SupervisonInformationState extends State<_SupervisonInformation> {
+  bool _useContactInfo = false;
+
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+
+  void _toggleUseContactInfo() {
+    _useContactInfo = !_useContactInfo;
+    if (_useContactInfo) {
+      _firstNameController.text = widget.enterprise?.contact.firstName ?? '';
+      _lastNameController.text = widget.enterprise?.contact.lastName ?? '';
+      _phoneController.text = widget.enterprise?.phone.toString() ?? '';
+      _emailController.text = widget.enterprise?.contact.email ?? '';
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -296,38 +321,69 @@ class _SupervisonInformation extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Superviseur en milieu de travail', left: 0),
-        const Text('(Responsable du stagiaire)'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('(Responsable du stagiaire)'),
+            Column(
+              children: [
+                Switch(
+                  onChanged: widget.enterprise == null
+                      ? null
+                      : (newValue) => _toggleUseContactInfo(),
+                  value: _useContactInfo,
+                ),
+                GestureDetector(
+                  onTap:
+                      widget.enterprise == null ? null : _toggleUseContactInfo,
+                  child: const Text(
+                    'Identique au\ncontact',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
+                controller: _firstNameController,
                 decoration: const InputDecoration(labelText: '* Prénom'),
                 validator: (text) =>
                     text!.isEmpty ? 'Ajouter un prénom.' : null,
-                onSaved: onSavedFirstName,
+                onSaved: widget.onSavedFirstName,
+                enabled: !_useContactInfo,
               ),
               TextFormField(
+                controller: _lastNameController,
                 decoration:
                     const InputDecoration(labelText: '* Nom de famille'),
                 validator: (text) =>
                     text!.isEmpty ? 'Ajouter un nom de famille.' : null,
-                onSaved: onSavedLastName,
+                onSaved: widget.onSavedLastName,
+                enabled: !_useContactInfo,
               ),
               PhoneListTile(
-                onSaved: onSavedPhone,
+                controller: _phoneController,
+                onSaved: widget.onSavedPhone,
                 isMandatory: true,
-                enabled: true,
+                enabled: !_useContactInfo,
               ),
               TextFormField(
+                controller: _emailController,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.mail),
                   labelText: '* Courriel',
                 ),
                 validator: FormService.emailValidator,
-                onSaved: onSavedEmail,
+                onSaved: widget.onSavedEmail,
                 keyboardType: TextInputType.emailAddress,
+                enabled: !_useContactInfo,
               ),
             ],
           ),
