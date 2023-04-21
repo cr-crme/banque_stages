@@ -11,6 +11,7 @@ import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/generate_debug_data_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
+import 'screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'screens/internship_forms/student_steps/attitude_evaluation_screen.dart';
 import 'screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 import 'screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
@@ -190,10 +191,10 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/attitude-evaluation-form/:internshipId:editMode',
+      path: '/attitude-evaluation-form/:editMode',
       name: Screens.attitudeEvaluationScreen,
       builder: (context, state) => AttitudeEvaluationScreen(
-        internshipId: state.params['internshipId']!,
+        formController: state.extra as AttitudeEvaluationFormController,
         editMode: state.params['editMode']! == '1',
       ),
     ),

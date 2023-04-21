@@ -74,11 +74,10 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                             evaluation: widget.internship.attitudeEvaluations)),
                     IconButton(
                         onPressed: () => GoRouter.of(context).pushNamed(
-                                Screens.attitudeEvaluationScreen,
-                                params: {
-                                  'internshipId': widget.internship.id,
-                                  'editMode': '1'
-                                }),
+                            Screens.attitudeEvaluationScreen,
+                            params: {'editMode': '1'},
+                            extra: AttitudeEvaluationFormController(
+                                internshipId: widget.internship.id)),
                         icon: const Icon(
                           Icons.add_chart_rounded,
                           color: Colors.black,

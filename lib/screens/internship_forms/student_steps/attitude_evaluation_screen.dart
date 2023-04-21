@@ -10,9 +10,9 @@ import 'attitude_evaluation_form_controller.dart';
 
 class AttitudeEvaluationScreen extends StatefulWidget {
   const AttitudeEvaluationScreen(
-      {super.key, required this.internshipId, required this.editMode});
+      {super.key, required this.formController, required this.editMode});
 
-  final String internshipId;
+  final AttitudeEvaluationFormController formController;
   final bool editMode;
 
   @override
@@ -28,8 +28,6 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
     StepState.indexed,
     StepState.indexed,
   ];
-  late final _formController =
-      AttitudeEvaluationFormController(internshipId: widget.internshipId);
 
   void _previousStep() {
     if (_currentStep == 0) return;
@@ -63,7 +61,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
   }
 
   Future<void> _submit() async {
-    if (!_formController.isCompleted) {
+    if (!widget.formController.isCompleted) {
       await showDialog(
           context: context,
           builder: (BuildContext context) => const AlertDialog(
@@ -75,20 +73,20 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
     }
 
     final List<String> wereAtMeeting = [];
-    for (final person in _formController.wereAtMeeting.keys) {
-      if (_formController.wereAtMeeting[person]!) {
+    for (final person in widget.formController.wereAtMeeting.keys) {
+      if (widget.formController.wereAtMeeting[person]!) {
         wereAtMeeting.add(person);
       }
     }
-    if (_formController.withOtherAtMeeting) {
-      wereAtMeeting.add(_formController.othersAtMeetingController.text);
+    if (widget.formController.withOtherAtMeeting) {
+      wereAtMeeting.add(widget.formController.othersAtMeetingController.text);
     }
 
     final internships = InternshipsProvider.of(context, listen: false);
-    final internship = internships.fromId(widget.internshipId);
+    final internship = internships.fromId(widget.formController.internshipId);
 
     internship.attitudeEvaluations
-        .add(_formController.toInternshipEvaluation());
+        .add(widget.formController.toInternshipEvaluation());
     internships.replace(internship);
     Navigator.of(context).pop();
   }
@@ -122,7 +120,8 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final internship = InternshipsProvider.of(context)[widget.internshipId];
+    final internship =
+        InternshipsProvider.of(context)[widget.formController.internshipId];
     final allStudents = StudentsProvider.of(context);
     if (!allStudents.hasId(internship.studentId)) return Container();
     final student = allStudents[internship.studentId];
@@ -147,7 +146,8 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
               state: _stepStatus[0],
               isActive: _currentStep == 0,
               content: _AttitudeGeneralDetailsStep(
-                  formController: _formController, editMode: widget.editMode),
+                  formController: widget.formController,
+                  editMode: widget.editMode),
             ),
             Step(
               label: const Text('Attitudes'),
@@ -159,37 +159,37 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
                 children: [
                   _AttitudeRadioChoices(
                     title: '1. ${Inattendance.title}',
-                    formController: _formController,
+                    formController: widget.formController,
                     elements: Inattendance.values,
                     editMode: widget.editMode,
                   ),
                   _AttitudeRadioChoices(
                     title: '2. ${Ponctuality.title}',
-                    formController: _formController,
+                    formController: widget.formController,
                     elements: Ponctuality.values,
                     editMode: widget.editMode,
                   ),
                   _AttitudeRadioChoices(
                     title: '3. ${Sociability.title}',
-                    formController: _formController,
+                    formController: widget.formController,
                     elements: Sociability.values,
                     editMode: widget.editMode,
                   ),
                   _AttitudeRadioChoices(
                     title: '4. ${Politeness.title}',
-                    formController: _formController,
+                    formController: widget.formController,
                     elements: Politeness.values,
                     editMode: widget.editMode,
                   ),
                   _AttitudeRadioChoices(
                     title: '5. ${Motivation.title}',
-                    formController: _formController,
+                    formController: widget.formController,
                     elements: Motivation.values,
                     editMode: widget.editMode,
                   ),
                   _AttitudeRadioChoices(
                     title: '6. ${DressCode.title}',
-                    formController: _formController,
+                    formController: widget.formController,
                     elements: DressCode.values,
                     editMode: widget.editMode,
                   ),
@@ -206,25 +206,25 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
                   children: [
                     _AttitudeRadioChoices(
                       title: '7. ${QualityOfWork.title}',
-                      formController: _formController,
+                      formController: widget.formController,
                       elements: QualityOfWork.values,
                       editMode: widget.editMode,
                     ),
                     _AttitudeRadioChoices(
                       title: '8. ${Productivity.title}',
-                      formController: _formController,
+                      formController: widget.formController,
                       elements: Productivity.values,
                       editMode: widget.editMode,
                     ),
                     _AttitudeRadioChoices(
                       title: '9. ${Autonomy.title}',
-                      formController: _formController,
+                      formController: widget.formController,
                       elements: Autonomy.values,
                       editMode: widget.editMode,
                     ),
                     _AttitudeRadioChoices(
                       title: '10. ${Cautiousness.title}',
-                      formController: _formController,
+                      formController: widget.formController,
                       elements: Cautiousness.values,
                       editMode: widget.editMode,
                     ),
@@ -240,11 +240,11 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
                 children: [
                   _AttitudeRadioChoices(
                     title: '11. ${GeneralAppreciation.title}',
-                    formController: _formController,
+                    formController: widget.formController,
                     elements: GeneralAppreciation.values,
                     editMode: widget.editMode,
                   ),
-                  _Comments(formController: _formController),
+                  _Comments(formController: widget.formController),
                 ],
               ),
             )
@@ -437,7 +437,9 @@ class _AttitudeRadioChoicesState extends State<_AttitudeRadioChoices> {
   @override
   void initState() {
     super.initState();
-    widget.formController.responses[widget.elements[0].runtimeType] = null;
+    if (widget.editMode) {
+      widget.formController.responses[widget.elements[0].runtimeType] = null;
+    }
   }
 
   @override
