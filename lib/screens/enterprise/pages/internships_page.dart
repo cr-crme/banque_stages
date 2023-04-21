@@ -301,10 +301,21 @@ class _InternshipListState extends State<_InternshipList> {
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: TextButton(
-                                onPressed: () =>
-                                    _evaluateInternship(internship),
-                                child: const Text(
-                                    'Évaluer l\'entreprise \npour ce stage')),
+                              onPressed: () => _evaluateInternship(internship),
+                              style: Theme.of(context)
+                                  .textButtonTheme
+                                  .style!
+                                  .copyWith(
+                                    minimumSize: MaterialStateProperty.all(
+                                        const Size(0, 50)),
+                                    maximumSize: MaterialStateProperty.all(
+                                        const Size(200, 50)),
+                                  ),
+                              child: const Text(
+                                'Évaluer l\'entreprise \npour ce stage',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                           ),
                         ),
                     ],
