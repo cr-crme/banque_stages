@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
+import '/common/models/protections.dart';
 import '/common/models/schedule.dart';
 import '/common/models/student.dart';
 import '/common/models/visiting_priority.dart';
@@ -383,11 +384,11 @@ class _Requirements extends StatelessWidget {
         ),
         Padding(
             padding: const EdgeInsets.only(left: 32.0),
-            child: internship.protections.isEmpty
+            child: internship.protections.status == ProtectionsStatus.none
                 ? const Text('Aucun')
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: internship.protections
+                    children: internship.protections.protections
                         .map((e) => Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

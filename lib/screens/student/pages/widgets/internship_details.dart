@@ -6,6 +6,7 @@ import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
 import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
+import '/common/models/protections.dart';
 import '/common/models/schedule.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
@@ -28,7 +29,9 @@ class _InternshipController {
               internship.weeklySchedules.map((e) => e.deepCopy()).toList(),
           dateRange: internship.date,
         ),
-        initialProtections = internship.protections.map((e) => e).toList(),
+        initialProtectionsStatus = internship.protections.status,
+        initialProtections =
+            internship.protections.protections.map((e) => e).toList(),
         initialUniform = internship.uniform;
 
   bool get hasChanged =>
@@ -77,17 +80,20 @@ class _InternshipController {
   bool get protectionsHasChanged =>
       _protectionsHasChanged ||
       initialOtherProtections != otherProtectionController.text;
-  late bool _needProtections = initialProtections.isNotEmpty;
-  bool get needProtections => _needProtections;
-  set needProtections(value) {
-    _needProtections = value;
+  late ProtectionsStatus _protectionsStatus = initialProtectionsStatus;
+  ProtectionsStatus get protectionsStatus => _protectionsStatus;
+  set protectionsStatus(value) {
+    _protectionsStatus = value;
     _protectionsHasChanged = true;
   }
 
+  ProtectionsStatus initialProtectionsStatus;
   List<String> initialProtections;
-  List<String> get protections {
+  Protections get protections {
     final List<String> out = [];
-    if (!needProtections) return out;
+    if (protectionsStatus == ProtectionsStatus.none) {
+      return Protections(status: ProtectionsStatus.none, protections: []);
+    }
 
     for (final protection in hasProtections.keys) {
       if (hasProtections[protection]!) {
@@ -98,7 +104,7 @@ class _InternshipController {
     if (otherProtectionController.text.isNotEmpty) {
       out.add(otherProtectionController.text);
     }
-    return out;
+    return Protections(status: protectionsStatus, protections: out);
   }
 
   late final Map<String, bool> hasProtections = Map.fromIterable(
@@ -525,9 +531,10 @@ class _InternshipBody extends StatelessWidget {
           if (editMode)
             _ProtectionRequiredChoser(
                 internshipController: internshipController),
-          if (!editMode && internship.protections.isEmpty) const Text('Aucun'),
-          if (!editMode && internship.protections.isNotEmpty)
-            ...internship.protections.map((e) => Row(
+          if (!editMode && internship.protections.protections.isEmpty)
+            const Text('Aucun'),
+          if (!editMode && internship.protections.protections.isNotEmpty)
+            ...internship.protections.protections.map((e) => Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('\u2022 '),
@@ -610,27 +617,35 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                width: 125,
-                child: RadioListTile(
-                  value: true,
-                  groupValue: widget.internshipController.needProtections,
-                  onChanged: (bool? newValue) => setState(() =>
-                      widget.internshipController.needProtections = newValue!),
-                  title: const Text('Oui'),
-                ),
+              RadioListTile<ProtectionsStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: ProtectionsStatus.suppliedByEnterprise,
+                groupValue: widget.internshipController.protectionsStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.protectionsStatus = newValue!),
+                title: Text(ProtectionsStatus.suppliedByEnterprise.name),
               ),
-              SizedBox(
-                width: 125,
-                child: RadioListTile(
-                  value: false,
-                  groupValue: widget.internshipController.needProtections,
-                  onChanged: (bool? newValue) => setState(() =>
-                      widget.internshipController.needProtections = newValue!),
-                  title: const Text('Non'),
-                ),
+              RadioListTile<ProtectionsStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: ProtectionsStatus.suppliedBySchool,
+                groupValue: widget.internshipController.protectionsStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.protectionsStatus = newValue!),
+                title: Text(ProtectionsStatus.suppliedBySchool.name),
+              ),
+              RadioListTile<ProtectionsStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: ProtectionsStatus.none,
+                groupValue: widget.internshipController.protectionsStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.protectionsStatus = newValue!),
+                title: Text(ProtectionsStatus.none.name),
               ),
             ],
           ),
@@ -638,7 +653,8 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
         SizedBox(
           width: MediaQuery.of(context).size.width * 3 / 4,
           child: Visibility(
-            visible: widget.internshipController.needProtections,
+            visible: widget.internshipController.protectionsStatus !=
+                ProtectionsStatus.none,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

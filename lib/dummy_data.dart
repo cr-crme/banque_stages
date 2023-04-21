@@ -10,6 +10,7 @@ import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
+import '/common/models/protections.dart';
 import '/common/models/schedule.dart';
 import '/common/models/school.dart';
 import '/common/models/student.dart';
@@ -852,11 +853,14 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [
-      'Chaussures de sécurité',
-      'Lunettes de sécurités',
-      'Masque',
-    ],
+    protections: Protections(
+      protections: [
+        'Chaussures de sécurité',
+        'Lunettes de sécurités',
+        'Masque',
+      ],
+      status: ProtectionsStatus.suppliedByEnterprise,
+    ),
     uniform: 'Il faut s\'habiller de façon à ce que tous soient identiques',
   ));
 
@@ -909,7 +913,7 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
     uniform: '',
   ));
 
@@ -955,7 +959,7 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
     uniform: '',
   ));
 
@@ -996,7 +1000,7 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
     uniform: '',
   ));
 
@@ -1037,7 +1041,7 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
     uniform: '',
   ));
 
@@ -1088,7 +1092,7 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
     uniform: '',
   ));
 
@@ -1140,7 +1144,7 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
     uniform: '',
   ));
 

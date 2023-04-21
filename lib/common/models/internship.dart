@@ -2,9 +2,10 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/person.dart';
+import 'protections.dart';
 import '/common/models/visiting_priority.dart';
-import 'internship_evaluation_skill.dart';
 import 'internship_evaluation_attitude.dart';
+import 'internship_evaluation_skill.dart';
 import 'schedule.dart';
 
 class _MutableElements extends ItemSerializable {
@@ -20,7 +21,7 @@ class _MutableElements extends ItemSerializable {
   final Person supervisor;
   final DateTimeRange date;
   final List<WeeklySchedule> weeklySchedules;
-  final List<String> protections;
+  final Protections protections;
   final String uniform;
 
   _MutableElements.fromSerialized(map)
@@ -32,12 +33,13 @@ class _MutableElements extends ItemSerializable {
         weeklySchedules = (map['schedule'] as List)
             .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
-        protections = ItemSerializable.listFromSerialized(map['protections']),
+        protections = Protections.fromSerialized(map['protections']),
         uniform = map['uniform'],
         super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() => {
+        'id': id,
         'versionDate': versionDate.millisecondsSinceEpoch,
         'name': supervisor.serializedMap(),
         'date': [
@@ -45,7 +47,7 @@ class _MutableElements extends ItemSerializable {
           date.end.millisecondsSinceEpoch
         ],
         'schedule': weeklySchedules.map((e) => e.serializedMap()).toList(),
-        'protections': protections,
+        'protections': protections.serializedMap(),
         'uniform': uniform,
       };
 
@@ -56,7 +58,7 @@ class _MutableElements extends ItemSerializable {
         supervisor: supervisor.deepCopy(),
         date: DateTimeRange(start: date.start, end: date.end),
         weeklySchedules: weeklySchedules.map((e) => e.deepCopy()).toList(),
-        protections: protections.map((e) => e).toList(),
+        protections: protections.deepCopy(),
         uniform: uniform);
   }
 }
@@ -85,8 +87,8 @@ class Internship extends ItemSerializable {
   List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
   List<WeeklySchedule> weeklySchedulesFrom(int version) =>
       _mutables[version].weeklySchedules;
-  List<String> get protections => _mutables.last.protections;
-  List<String> protectionsFrom(int version) => _mutables[version].protections;
+  Protections get protections => _mutables.last.protections;
+  Protections protectionsFrom(int version) => _mutables[version].protections;
   String get uniform => _mutables.last.uniform;
   String uniformFrom(int version) => _mutables[version].uniform;
 
@@ -141,7 +143,7 @@ class Internship extends ItemSerializable {
     required Person supervisor,
     required DateTimeRange date,
     required List<WeeklySchedule> weeklySchedules,
-    required List<String> protections,
+    required Protections protections,
     required String uniform,
     required this.expectedLength,
     required this.achievedLength,
@@ -225,7 +227,7 @@ class Internship extends ItemSerializable {
     required Person supervisor,
     required DateTimeRange date,
     required List<WeeklySchedule> weeklySchedules,
-    required List<String> protections,
+    required Protections protections,
     required String uniform,
   }) {
     _mutables.add(_MutableElements(

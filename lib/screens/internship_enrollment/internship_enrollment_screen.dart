@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '/common/models/internship.dart';
 import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
+import '/common/models/protections.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
@@ -115,7 +116,9 @@ class _InternshipEnrollmentScreenState
           email: _generalInfoKey.currentState!.supervisorEmail ?? '',
           phone: PhoneNumber.fromString(
               _generalInfoKey.currentState!.supervisorPhone)),
-      protections: _requirementsKey.currentState!.protections,
+      protections: Protections(
+          protections: _requirementsKey.currentState!.protections,
+          status: _requirementsKey.currentState!.protectionsStatus),
       uniform: _requirementsKey.currentState!.uniform,
       date: _scheduleKey.currentState!.scheduleController.dateRange,
       expectedLength: _scheduleKey.currentState!.intershipLength,
