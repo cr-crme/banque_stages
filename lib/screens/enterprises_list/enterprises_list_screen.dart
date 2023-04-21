@@ -4,7 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
+import '/common/models/job_list.dart';
+import '/common/models/person.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/providers/schools_provider.dart';
+import '/common/providers/teachers_provider.dart';
 import '/common/widgets/main_drawer.dart';
 import '/common/widgets/search_bar.dart';
 import '/router.dart';
@@ -201,13 +205,18 @@ class _EnterprisesByMap extends StatelessWidget {
     List<Marker> out = [];
 
     const double markerSize = 40;
-    for (final enterprise in enterprises.keys) {
+    for (final i in enterprises.keys.toList().asMap().keys) {
+      // i == 0 is the school
+      final enterprise = enterprises.keys.toList()[i];
+
       double nameWidth = 160;
       double nameHeight = 100;
       final waypoint = enterprises[enterprise]!;
-      final color = enterprise.availableJobs(context).isNotEmpty
-          ? Colors.green
-          : Colors.red;
+      final color = i == 0
+          ? Colors.purple
+          : enterprise.availableJobs(context).isNotEmpty
+              ? Colors.green
+              : Colors.red;
 
       out.add(
         Marker(
@@ -219,18 +228,20 @@ class _EnterprisesByMap extends StatelessWidget {
           builder: (context) => Row(
             children: [
               GestureDetector(
-                onTap: () => GoRouter.of(context).goNamed(
-                  Screens.enterprise,
-                  params: Screens.params(enterprise),
-                  queryParams: Screens.queryParams(pageIndex: "0"),
-                ),
+                onTap: i == 0
+                    ? null
+                    : () => GoRouter.of(context).goNamed(
+                          Screens.enterprise,
+                          params: Screens.params(enterprise),
+                          queryParams: Screens.queryParams(pageIndex: "0"),
+                        ),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white.withAlpha(75),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    Icons.location_on_sharp,
+                    i == 0 ? Icons.school : Icons.location_on_sharp,
                     size: markerSize,
                     color: color,
                   ),
@@ -256,6 +267,23 @@ class _EnterprisesByMap extends StatelessWidget {
       BuildContext context) async {
     final enterprises = enterpriseController.selectedEnterprises;
     final Map<Enterprise, Waypoint> out = {};
+
+    final teacher = TeachersProvider.of(context, listen: false).currentTeacher;
+    final school =
+        SchoolsProvider.of(context, listen: false).fromId(teacher.schoolId);
+
+    final schoolAsEnterprise = Enterprise(
+      name: school.name,
+      activityTypes: {},
+      recrutedBy: '',
+      shareWith: '',
+      jobs: JobList(),
+      contact: Person(firstName: '', lastName: ''),
+      address: school.address,
+    );
+    out[schoolAsEnterprise] =
+        await Waypoint.fromAddress(school.name, school.address.toString());
+
     for (final enterprise in enterprises) {
       out[enterprise] = await Waypoint.fromAddress(
           enterprise.name, enterprise.address.toString());
