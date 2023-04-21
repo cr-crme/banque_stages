@@ -69,12 +69,18 @@ abstract class Screens {
     };
   }
 
-  static Map<String, String> queryParams({pageIndex}) {
+  static Map<String, String> queryParams({pageIndex, editMode}) {
     return {
       if (pageIndex != null)
         'pageIndex': (pageIndex is String)
             ? pageIndex
-            : (pageIndex is ItemSerializable ? pageIndex.id : throw TypeError())
+            : (pageIndex is ItemSerializable
+                ? pageIndex.id
+                : throw TypeError()),
+      if (editMode != null)
+        'editMode': (editMode is String)
+            ? editMode
+            : (editMode is ItemSerializable ? editMode.id : throw TypeError()),
     };
   }
 }
@@ -89,19 +95,6 @@ final router = GoRouter(
     return '/login';
   },
   routes: [
-    GoRoute(
-      path: '/',
-      name: Screens.supervisionChart,
-      builder: (context, state) => const SupervisionChart(),
-      routes: [
-        GoRoute(
-          path: 'student-details/:studentId',
-          name: Screens.supervisionStudentDetails,
-          builder: (context, state) => SupervisionStudentDetailsScreen(
-              studentId: state.params['studentId']!),
-        ),
-      ],
-    ),
     GoRoute(
       path: '/debug-data',
       name: Screens.populateWithDebugData,
@@ -179,34 +172,48 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
+      path: '/supervision',
+      name: Screens.supervisionChart,
+      builder: (context, state) => const SupervisionChart(),
+      routes: [
+        GoRoute(
+          path: 'student-details/:id',
+          name: Screens.supervisionStudentDetails,
+          builder: (context, state) => SupervisionStudentDetailsScreen(
+            studentId: state.params['id']!,
+          ),
+        ),
+      ],
+    ),
+    GoRoute(
       path: '/itinerary',
       name: Screens.itinerary,
       builder: (context, state) => const ItineraryScreen(),
     ),
     GoRoute(
-      path: '/skill-evaluation-main/:internshipId/:editMode',
+      path: '/skill-evaluation-main/:id',
       name: Screens.skillEvaluationMainScreen,
       builder: (context, state) => SkillEvaluationMainScreen(
-        internshipId: state.params['internshipId']!,
-        editMode: state.params['editMode']! == '1',
+        internshipId: state.params['id']!,
+        editMode: state.queryParams['editMode']! == '1',
       ),
     ),
     GoRoute(
-      path: '/skill-evaluation-form/:editMode',
+      path: '/skill-evaluation-form',
       name: Screens.skillEvaluationFormScreen,
       builder: (context, state) {
         return SkillEvaluationFormScreen(
           formController: state.extra as SkillEvaluationFormController,
-          editMode: state.params['editMode']! == '1',
+          editMode: state.queryParams['editMode']! == '1',
         );
       },
     ),
     GoRoute(
-      path: '/attitude-evaluation-form/:editMode',
+      path: '/attitude-evaluation-form',
       name: Screens.attitudeEvaluationScreen,
       builder: (context, state) => AttitudeEvaluationScreen(
         formController: state.extra as AttitudeEvaluationFormController,
-        editMode: state.params['editMode']! == '1',
+        editMode: state.queryParams['editMode']! == '1',
       ),
     ),
     GoRoute(

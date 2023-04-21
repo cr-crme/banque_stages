@@ -170,8 +170,10 @@ class _InternshipListState extends State<_InternshipList> {
   }
 
   void _evaluateInternship(Internship internship) async {
-    GoRouter.of(context).pushNamed(Screens.enterpriseEvaluationScreen,
-        params: {'id': internship.enterpriseId, 'jobId': internship.jobId});
+    GoRouter.of(context).pushNamed(
+      Screens.enterpriseEvaluationScreen,
+      params: Screens.params(internship.enterpriseId, jobId: internship.jobId),
+    );
     setState(() {});
   }
 
@@ -238,7 +240,7 @@ class _InternshipListState extends State<_InternshipList> {
                           GestureDetector(
                             onTap: () => GoRouter.of(context).pushNamed(
                               Screens.student,
-                              params: Screens.params(student.id),
+                              params: Screens.params(student),
                               queryParams: Screens.queryParams(pageIndex: "1"),
                             ),
                             child: Text(

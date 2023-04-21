@@ -321,8 +321,9 @@ class _StudentTile extends StatelessWidget {
       elevation: 10,
       child: ListTile(
         onTap: () => GoRouter.of(context).goNamed(
-            Screens.supervisionStudentDetails,
-            params: {'studentId': student.id}),
+          Screens.supervisionStudentDetails,
+          params: Screens.params(student),
+        ),
         leading: SizedBox(
           height: double.infinity, // This centers the avatar
           child: student.avatar,

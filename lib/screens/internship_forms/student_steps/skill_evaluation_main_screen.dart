@@ -348,9 +348,11 @@ class _StartEvaluation extends StatelessWidget {
               formController.prepareTaskCompleted();
               formController.prepareAppreciation();
               GoRouter.of(context).pushReplacementNamed(
-                  Screens.skillEvaluationFormScreen,
-                  params: {'editMode': editMode ? '1' : '0'},
-                  extra: formController);
+                Screens.skillEvaluationFormScreen,
+                queryParams:
+                    Screens.queryParams(editMode: editMode ? '1' : '0'),
+                extra: formController,
+              );
             },
             child: const Text('Commencer l\'évaluation')),
       ),
