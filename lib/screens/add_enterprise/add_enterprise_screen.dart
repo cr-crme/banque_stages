@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '/common/models/enterprise.dart';
+import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/teachers_provider.dart';
@@ -110,11 +111,13 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       recrutedBy: teachers.currentTeacherId,
       shareWith: _informationsKey.currentState!.shareWith!,
       jobs: _jobsKey.currentState!.jobs,
-      contactName: _contactKey.currentState!.contactName!,
+      contact: Person(
+        firstName: _contactKey.currentState!.contactFirstName!,
+        lastName: _contactKey.currentState!.contactLastName!,
+        phone: PhoneNumber.fromString(_contactKey.currentState!.contactPhone!),
+        email: _contactKey.currentState!.contactEmail!,
+      ),
       contactFunction: _contactKey.currentState!.contactFunction!,
-      contactPhone:
-          PhoneNumber.fromString(_contactKey.currentState!.contactPhone!),
-      contactEmail: _contactKey.currentState!.contactEmail!,
       address: _informationsKey.currentState!.addressController.address!,
     );
 

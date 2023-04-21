@@ -24,7 +24,8 @@ class ContactPage extends StatefulWidget {
 class ContactPageState extends State<ContactPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String? _contactName;
+  String? _contactFirstName;
+  String? _contactLastName;
   String? _contactFunction;
   String? _contactPhone;
   String? _contactEmail;
@@ -76,12 +77,15 @@ class ContactPageState extends State<ContactPage> {
 
     EnterprisesProvider.of(context).replace(
       widget.enterprise.copyWith(
-        contactName: _contactName,
+        contact: widget.enterprise.contact.copyWith(
+          firstName: _contactFirstName,
+          lastName: _contactLastName,
+          phone: _contactPhone == null
+              ? null
+              : PhoneNumber.fromString(_contactPhone),
+          email: _contactEmail,
+        ),
         contactFunction: _contactFunction,
-        contactPhone: _contactPhone == null
-            ? null
-            : PhoneNumber.fromString(_contactPhone),
-        contactEmail: _contactEmail,
         address: _addressController.address,
         phone: _phone == null ? null : PhoneNumber.fromString(_phone),
         fax: _fax == null ? null : PhoneNumber.fromString(_fax),
@@ -108,7 +112,8 @@ class ContactPageState extends State<ContactPage> {
               _ContactInfo(
                 enterprise: widget.enterprise,
                 editMode: _editing,
-                onSavedName: (name) => _contactName = name!,
+                onSavedFirstName: (name) => _contactFirstName = name!,
+                onSavedLastName: (name) => _contactLastName = name!,
                 onSavedJob: (function) => _contactFunction = function!,
                 onSavedPhone: (phone) => _contactPhone = phone!,
                 onSavedEmail: (email) => _contactEmail = email!,
@@ -148,7 +153,8 @@ class _ContactInfo extends StatelessWidget {
   const _ContactInfo({
     required this.enterprise,
     required this.editMode,
-    required this.onSavedName,
+    required this.onSavedFirstName,
+    required this.onSavedLastName,
     required this.onSavedJob,
     required this.onSavedPhone,
     required this.onSavedEmail,
@@ -156,7 +162,8 @@ class _ContactInfo extends StatelessWidget {
 
   final Enterprise enterprise;
   final bool editMode;
-  final Function(String?) onSavedName;
+  final Function(String?) onSavedFirstName;
+  final Function(String?) onSavedLastName;
   final Function(String?) onSavedJob;
   final Function(String?) onSavedPhone;
   final Function(String?) onSavedEmail;
@@ -172,7 +179,20 @@ class _ContactInfo extends StatelessWidget {
           child: Column(
             children: [
               TextFormField(
-                initialValue: enterprise.contactName,
+                initialValue: enterprise.contact.firstName,
+                decoration: const InputDecoration(
+                  labelText: '* Prénom',
+                  disabledBorder: InputBorder.none,
+                ),
+                enabled: editMode,
+                validator: (text) => text!.isEmpty
+                    ? 'Ajouter le nom de la personne représentant l\'entreprise.'
+                    : null,
+                maxLines: null,
+                onSaved: onSavedFirstName,
+              ),
+              TextFormField(
+                initialValue: enterprise.contact.lastName,
                 decoration: const InputDecoration(
                   labelText: '* Nom',
                   disabledBorder: InputBorder.none,
@@ -182,7 +202,7 @@ class _ContactInfo extends StatelessWidget {
                     ? 'Ajouter le nom de la personne représentant l\'entreprise.'
                     : null,
                 maxLines: null,
-                onSaved: onSavedName,
+                onSaved: onSavedLastName,
               ),
               const SizedBox(height: 8),
               TextFormField(
@@ -199,14 +219,14 @@ class _ContactInfo extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               PhoneListTile(
-                initialValue: enterprise.contactPhone,
+                initialValue: enterprise.contact.phone,
                 onSaved: onSavedPhone,
                 isMandatory: true,
                 enabled: editMode,
               ),
               const SizedBox(height: 8),
               TextFormField(
-                initialValue: enterprise.contactEmail,
+                initialValue: enterprise.contact.email,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.mail),
                   labelText: '* Courriel',
