@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/scrollable_stepper.dart';
 import '/misc/form_service.dart';
 import 'prerequisites_step.dart';
 import 'supervision_step.dart';
@@ -23,6 +24,8 @@ class EnterpriseEvaluationScreen extends StatefulWidget {
 
 class _EnterpriseEvaluationScreenState
     extends State<EnterpriseEvaluationScreen> {
+  final _scrollController = ScrollController();
+
   final _tasksKey = GlobalKey<TasksStepState>();
   final _supervisionKey = GlobalKey<SupervisionStepState>();
   final _prerequisitesKey = GlobalKey<PrerequisitesStepState>();
@@ -40,7 +43,10 @@ class _EnterpriseEvaluationScreenState
     if (_currentStep == 2) {
       _submit();
     } else {
-      setState(() => _currentStep += 1);
+      setState(() {
+        _currentStep += 1;
+        _scrollController.jumpTo(0);
+      });
     }
   }
 
@@ -95,11 +101,15 @@ class _EnterpriseEvaluationScreenState
         leading: Container(),
       ),
       body: Selector<EnterprisesProvider, Job>(
-        builder: (context, job, _) => Stepper(
+        builder: (context, job, _) => ScrollableStepper(
           type: StepperType.horizontal,
+          scrollController: _scrollController,
           currentStep: _currentStep,
           onStepContinue: _nextStep,
-          onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
+          onStepTapped: (int tapped) => setState(() {
+            _scrollController.jumpTo(0);
+            _currentStep = tapped;
+          }),
           onStepCancel: () => Navigator.pop(context),
           steps: [
             Step(

@@ -1,10 +1,11 @@
-import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '/common/models/internship_evaluation_attitude.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
+import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/scrollable_stepper.dart';
 import '/common/widgets/sub_title.dart';
 import 'attitude_evaluation_form_controller.dart';
 
@@ -21,6 +22,8 @@ class AttitudeEvaluationScreen extends StatefulWidget {
 }
 
 class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
+  final _scrollController = ScrollController();
+
   int _currentStep = 0;
   final List<StepState> _stepStatus = [
     StepState.indexed,
@@ -33,6 +36,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
     if (_currentStep == 0) return;
 
     _currentStep -= 1;
+    _scrollController.jumpTo(0);
     setState(() {});
   }
 
@@ -44,6 +48,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
     _stepStatus[_currentStep] = StepState.complete;
 
     _currentStep += 1;
+    _scrollController.jumpTo(0);
     setState(() {});
   }
 
@@ -133,11 +138,15 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
           leading: IconButton(
               onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
         ),
-        body: Stepper(
+        body: ScrollableStepper(
+          scrollController: _scrollController,
           type: StepperType.horizontal,
           currentStep: _currentStep,
           onStepContinue: _nextStep,
-          onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
+          onStepTapped: (int tapped) => setState(() {
+            _currentStep = tapped;
+            _scrollController.jumpTo(0);
+          }),
           onStepCancel: _cancel,
           steps: [
             Step(
