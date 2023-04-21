@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
+import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 import '/router.dart';
@@ -25,6 +26,18 @@ class SkillEvaluationMainScreen extends StatefulWidget {
 class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   late final _formController =
       SkillEvaluationFormController(internshipId: widget.internshipId);
+  void _cancel() async {
+    if (!widget.editMode) {
+      Navigator.of(context).pop();
+      return;
+    }
+
+    final result = await showDialog(
+        context: context, builder: (context) => const ConfirmPopDialog());
+    if (!mounted || result == null || !result) return;
+
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +50,8 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
       appBar: AppBar(
         title: Text(
             'Évaluation de ${student.fullName}\nC1. Compétences spécifiques'),
+        leading:
+            IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
       ),
       body: SingleChildScrollView(
         child: Column(

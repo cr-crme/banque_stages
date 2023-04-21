@@ -5,6 +5,7 @@ import '/common/models/internship_evaluation_skill.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/scrollable_stepper.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 import 'skill_evaluation_form_controller.dart';
@@ -22,6 +23,8 @@ class SkillEvaluationFormScreen extends StatefulWidget {
 }
 
 class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
+  final _scrollController = ScrollController();
+  final double _tabHeight = 74.0;
   int _currentStep = 0;
 
   SkillList _extractSkills(BuildContext context,
@@ -37,11 +40,13 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
 
   void _nextStep() {
     _currentStep++;
+    _scrollToCurrentTab();
     setState(() {});
   }
 
   void _previousStep() {
     _currentStep--;
+    _scrollToCurrentTab();
     setState(() {});
   }
 
@@ -128,6 +133,13 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     );
   }
 
+  void _scrollToCurrentTab() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // Wait until the stepper has closed and reopened before moving
+      _scrollController.jumpTo(_currentStep * _tabHeight);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final internship = widget.formController.internship(context);
@@ -141,11 +153,15 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
           title: Text('Évaluation de ${student.fullName}'),
           leading: IconButton(
               onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
-      body: Stepper(
+      body: ScrollableStepper(
+        scrollController: _scrollController,
         type: StepperType.vertical,
         currentStep: _currentStep,
         onStepContinue: _nextStep,
-        onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
+        onStepTapped: (int tapped) => setState(() {
+          _currentStep = tapped;
+          _scrollToCurrentTab();
+        }),
         onStepCancel: _cancel,
         steps: [
           ...skills.map((skill) => Step(

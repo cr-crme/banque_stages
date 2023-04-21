@@ -601,6 +601,7 @@ class _ScrollableStepperState extends State<ScrollableStepper>
   Widget _buildVertical() {
     return ListView(
       shrinkWrap: true,
+      controller: widget.scrollController,
       physics: widget.physics,
       children: <Widget>[
         for (int i = 0; i < widget.steps.length; i += 1)
