@@ -4,18 +4,23 @@ import 'package:provider/provider.dart';
 import '/common/models/enterprise.dart';
 import '/common/models/job.dart';
 import '/common/models/student.dart';
+import '/common/providers/enterprises_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/add_job_button.dart';
+import '/common/widgets/form_fields/enterprise_picker_form_field.dart';
 import '/common/widgets/form_fields/job_form_field_list_tile.dart';
 import '/common/widgets/form_fields/student_picker_form_field.dart';
+import '/common/widgets/phone_list_tile.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/form_service.dart';
 import '/misc/job_data_file_service.dart';
 
 class GeneralInformationsStep extends StatefulWidget {
-  const GeneralInformationsStep({super.key, required this.enterprise});
+  const GeneralInformationsStep(
+      {super.key, required this.enterprise, required this.student});
 
-  final Enterprise enterprise;
+  final Enterprise? enterprise;
+  final Student? student;
 
   @override
   State<GeneralInformationsStep> createState() =>
@@ -25,7 +30,10 @@ class GeneralInformationsStep extends StatefulWidget {
 class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   final formKey = GlobalKey<FormState>();
 
-  Student? student;
+  late Enterprise? enterprise = widget.enterprise;
+  late bool enterpriseIsFixed = widget.enterprise != null;
+  late Student? student = widget.student;
+  late bool studentIsFixed = widget.student != null;
 
   Job? primaryJob;
   final List<Specialization?> extraSpecializations = [];
@@ -44,11 +52,15 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _GeneralInformations(
-              enterprise: widget.enterprise,
+              enterprise: enterprise,
+              enterpriseIsFixed: enterpriseIsFixed,
+              onSelectEnterprise: (e) => setState(() => enterprise = e),
+              student: student,
+              studentIsFixed: studentIsFixed,
               onSelectStudent: (s) => setState(() => student = s),
             ),
             _MainJob(
-              enterprise: widget.enterprise,
+              enterprise: enterprise,
               onSaved: (job) => setState(() => primaryJob = job),
             ),
             if (student != null && student!.program == Program.fpt)
@@ -77,11 +89,39 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 class _GeneralInformations extends StatelessWidget {
   const _GeneralInformations({
     required this.enterprise,
+    required this.enterpriseIsFixed,
+    required this.onSelectEnterprise,
+    required this.student,
+    required this.studentIsFixed,
     required this.onSelectStudent,
   });
 
-  final Enterprise enterprise;
+  final Enterprise? enterprise;
+  final bool enterpriseIsFixed;
+  final Function(Enterprise?) onSelectEnterprise;
+  final Student? student;
+  final bool studentIsFixed;
   final Function(Student?) onSelectStudent;
+
+  List<Student> _studentsWithoutInternship(context, StudentsProvider students) {
+    final List<Student> out = [];
+    for (final student in students) {
+      if (!student.hasActiveInternship(context)) out.add(student);
+    }
+
+    return out;
+  }
+
+  List<Enterprise> _enterprisesWithAtLeastOneInternshipAvailable(
+      context, EnterprisesProvider enterprises) {
+    final List<Enterprise> out = [];
+    for (final enterprise in enterprises) {
+      debugPrint(enterprise.name);
+      if (enterprise.availableJobs(context).isNotEmpty) out.add(enterprise);
+    }
+
+    return out;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,22 +129,44 @@ class _GeneralInformations extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Informations générales', left: 0, top: 0),
-        ListTile(
-          title: TextField(
-            decoration: const InputDecoration(labelText: '* Entreprise'),
-            controller: TextEditingController(text: enterprise.name),
-            enabled: false,
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (enterpriseIsFixed)
+                TextField(
+                  decoration: const InputDecoration(labelText: '* Entreprise'),
+                  controller: TextEditingController(text: enterprise!.name),
+                  enabled: false,
+                ),
+              if (!enterpriseIsFixed)
+                Consumer<EnterprisesProvider>(
+                  builder: (context, enterprises, _) =>
+                      EnterprisePickerFormField(
+                    enterprises: _enterprisesWithAtLeastOneInternshipAvailable(
+                        context, enterprises),
+                    onSaved: onSelectEnterprise,
+                    onSelect: onSelectEnterprise,
+                  ),
+                ),
+              if (studentIsFixed)
+                TextField(
+                  decoration: const InputDecoration(labelText: '* Élève'),
+                  controller: TextEditingController(text: student!.fullName),
+                  enabled: false,
+                ),
+              if (!studentIsFixed)
+                Consumer<StudentsProvider>(
+                  builder: (context, students, _) => StudentPickerFormField(
+                    students: _studentsWithoutInternship(context, students),
+                    onSaved: onSelectStudent,
+                    onSelect: onSelectStudent,
+                  ),
+                ),
+            ],
           ),
         ),
-        ListTile(
-          title: Consumer<StudentsProvider>(
-            builder: (context, students, _) => StudentPickerFormField(
-              students: students.toList(),
-              onSaved: onSelectStudent,
-              onSelect: onSelectStudent,
-            ),
-          ),
-        )
       ],
     );
   }
@@ -113,12 +175,13 @@ class _GeneralInformations extends StatelessWidget {
 class _MainJob extends StatelessWidget {
   const _MainJob({required this.enterprise, required this.onSaved});
 
-  final Enterprise enterprise;
+  final Enterprise? enterprise;
   final Function(Job?) onSaved;
 
   Map<Specialization, int> _generateSpecializationAndAvailability(context) {
     final Map<Specialization, int> out = {};
-    for (final job in enterprise.availableJobs(context)) {
+    if (enterprise == null) return out;
+    for (final job in enterprise!.availableJobs(context)) {
       out[job.specialization] = job.positionsRemaining(context);
     }
     return out;
@@ -153,7 +216,7 @@ class _ExtraSpecialization extends StatelessWidget {
   final Function(Specialization, int) onSetSpecialization;
   final Function(int) onDeleteSpecialization;
 
-  Widget _extraJobTileBuilder(int index) {
+  Widget _extraJobTileBuilder(context, int index) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -162,8 +225,11 @@ class _ExtraSpecialization extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text('Métier supplémentaire ${index + 1}'),
+              padding: const EdgeInsets.only(left: 12),
+              child: Text(
+                'Métier supplémentaire ${index + 1}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
             IconButton(
               onPressed: () => onDeleteSpecialization(index),
@@ -195,11 +261,18 @@ class _ExtraSpecialization extends StatelessWidget {
           ...extraSpecializations
               .asMap()
               .keys
-              .map<Widget>((i) => _extraJobTileBuilder(i))
+              .map<Widget>((i) => _extraJobTileBuilder(context, i))
               .toList(),
         Padding(
           padding: const EdgeInsets.only(top: 8.0, left: 12),
-          child: AddJobButton(onPressed: onAddSpecialization),
+          child: AddJobButton(
+            onPressed: onAddSpecialization,
+            style: Theme.of(context).textButtonTheme.style!.copyWith(
+                backgroundColor: Theme.of(context)
+                    .elevatedButtonTheme
+                    .style!
+                    .backgroundColor),
+          ),
         ),
       ],
     );
@@ -224,43 +297,41 @@ class _SupervisonInformation extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle(
-            'Superviseur en milieu de travail \n(responsable du stagiaire)',
-            left: 0),
-        ListTile(
-          title: TextFormField(
-            decoration: const InputDecoration(labelText: '* Prénom'),
-            validator: FormService.textNotEmptyValidator,
-            onSaved: onSavedFirstName,
-          ),
-        ),
-        ListTile(
-          title: TextFormField(
-            decoration: const InputDecoration(labelText: '* Nom de famille'),
-            validator: FormService.textNotEmptyValidator,
-            onSaved: onSavedLastName,
-          ),
-        ),
-        ListTile(
-          title: TextFormField(
-            decoration: const InputDecoration(
-              icon: Icon(Icons.phone),
-              labelText: '* Téléphone',
-            ),
-            validator: FormService.phoneValidator,
-            onSaved: onSavedPhone,
-            keyboardType: TextInputType.phone,
-          ),
-        ),
-        ListTile(
-          title: TextFormField(
-            decoration: const InputDecoration(
-              icon: Icon(Icons.mail),
-              labelText: '* Courriel',
-            ),
-            validator: FormService.emailValidator,
-            onSaved: onSavedEmail,
-            keyboardType: TextInputType.emailAddress,
+        const SubTitle('Superviseur en milieu de travail', left: 0),
+        const Text('(Responsable du stagiaire)'),
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(labelText: '* Prénom'),
+                validator: (text) =>
+                    text!.isEmpty ? 'Ajouter un prénom.' : null,
+                onSaved: onSavedFirstName,
+              ),
+              TextFormField(
+                decoration:
+                    const InputDecoration(labelText: '* Nom de famille'),
+                validator: (text) =>
+                    text!.isEmpty ? 'Ajouter un nom de famille.' : null,
+                onSaved: onSavedLastName,
+              ),
+              PhoneListTile(
+                onSaved: onSavedPhone,
+                isMandatory: true,
+                enabled: true,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.mail),
+                  labelText: '* Courriel',
+                ),
+                validator: FormService.emailValidator,
+                onSaved: onSavedEmail,
+                keyboardType: TextInputType.emailAddress,
+              ),
+            ],
           ),
         ),
       ],

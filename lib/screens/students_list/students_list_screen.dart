@@ -24,7 +24,10 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
 
   List<Student> _filterSelectedStudents(List<Student> students) {
     return students.where((student) {
-      if (student.fullName.contains(_searchController.text)) {
+      if (student.fullName
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase()) ||
+          student.group.contains(_searchController.text)) {
         return true;
       }
 
@@ -62,11 +65,14 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
                 itemCount: students.length,
                 itemBuilder: (context, index) => StudentCard(
                   student: students.elementAt(index),
-                  onTap: (student) => GoRouter.of(context).goNamed(
-                    Screens.student,
-                    params: Screens.withId(student)
-                      ..addAll({'initialPage': '0'}),
-                  ),
+                  onTap: (student) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    GoRouter.of(context).goNamed(
+                      Screens.student,
+                      params: Screens.withId(student)
+                        ..addAll({'initialPage': '0'}),
+                    );
+                  },
                 ),
               ),
             ),

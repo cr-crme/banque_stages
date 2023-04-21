@@ -1,17 +1,20 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
+import '/common/widgets/autocomplete_options_builder.dart';
+
 const List<String> shareWithSuggestions = [
-  "Tout le monde",
-  "Personne",
-  "Mon service scolaire",
-  "Mon école"
+  'Mon centre de services scolaire',
+  'Enseignants PFAE de l\'école',
+  'Enseignants FMS de l\'école',
+  'Enseignants FPT de l\'école',
+  'Personne',
 ];
 
 class ShareWithPickerFormField extends FormField<String> {
   const ShareWithPickerFormField({
     super.key,
-    String initialValue = "Tout le monde",
+    String initialValue = 'Enseignants PFAE de l\'école',
     void Function(String? shareWith)? onSaved,
     String? Function(String? shareWith)? validator,
   }) : super(
@@ -23,7 +26,7 @@ class ShareWithPickerFormField extends FormField<String> {
 
   static String? _validator(String? input) {
     if (!shareWithSuggestions.contains(input)) {
-      return "Entrez une valeur valide";
+      return 'Entrez une valeur valide';
     }
 
     return null;
@@ -31,12 +34,18 @@ class ShareWithPickerFormField extends FormField<String> {
 
   static Widget _builder(FormFieldState<String> state) {
     return Autocomplete<String>(
-      initialValue: TextEditingValue(text: state.value ?? ""),
+      initialValue: TextEditingValue(text: state.value ?? ''),
       optionsBuilder: (textEditingValue) {
         return shareWithSuggestions.where(
           (activity) => activity.contains(textEditingValue.text),
         );
       },
+      optionsViewBuilder: (context, onSelected, options) =>
+          OptionsBuilderForAutocomplete(
+        onSelected: onSelected,
+        options: options,
+        optionToString: (String e) => e,
+      ),
       onSelected: (item) => state.didChange(item),
       fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
         return TextField(
@@ -48,7 +57,7 @@ class ShareWithPickerFormField extends FormField<String> {
                 .firstWhereOrNull((suggestion) => suggestion == text));
           },
           decoration: InputDecoration(
-            labelText: "* Partager l'entreprise avec",
+            labelText: '* Partager l\'entreprise avec',
             errorText: state.errorText,
           ),
         );

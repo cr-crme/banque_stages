@@ -22,7 +22,7 @@ class ItineraryScreen extends StatefulWidget {
 class _ItineraryScreenState extends State<ItineraryScreen> {
   List<double>? _distances;
 
-  final _dateFormat = DateFormat("dd_MM_yyyy");
+  final _dateFormat = DateFormat('dd_MM_yyyy');
   DateTime _currentDate = DateTime.now();
   String get _currentDateAsString => _dateFormat.format(_currentDate);
 

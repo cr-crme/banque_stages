@@ -33,14 +33,14 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       late final String errorMessage;
       switch (e.code) {
-        case "invalid-email":
-        case "user-not-found":
-        case "wrong-password":
-          errorMessage = "Identifiants invalides. Veuillez réssayer.";
+        case 'invalid-email':
+        case 'user-not-found':
+        case 'wrong-password':
+          errorMessage = 'Identifiants invalides. Veuillez réssayer.';
           break;
-        case "user-disabled":
+        case 'user-disabled':
           errorMessage =
-              "Impossible de se connecter; ce compte à été désactivé.";
+              'Impossible de se connecter; ce compte à été désactivé.';
           break;
         default:
           errorMessage = 'Erreur non reconnue lors de la connexion';
@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   Text(
-                    "Connectez-vous à votre compte avant de poursuivre.",
+                    'Connectez-vous à votre compte avant de poursuivre.',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFormField(
                     decoration: const InputDecoration(
                       icon: Icon(Icons.mail),
-                      labelText: "Courriel",
+                      labelText: 'Courriel',
                     ),
                     validator: FormService.emailValidator,
                     keyboardType: TextInputType.emailAddress,
@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 8),
                   TextFormField(
                     decoration: const InputDecoration(
-                        icon: Icon(Icons.lock), labelText: "Mot de passe"),
+                        icon: Icon(Icons.lock), labelText: 'Mot de passe'),
                     validator: FormService.passwordValidator,
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: true,
@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _signIn,
-                    child: const Text("Se connecter"),
+                    child: const Text('Se connecter'),
                   ),
                 ],
               ),

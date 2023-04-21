@@ -16,34 +16,19 @@ class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
     super.key,
     required this.enterprise,
+    required this.onAddIntershipRequest,
   });
 
   final Enterprise enterprise;
+  final Function(Enterprise) onAddIntershipRequest;
 
   @override
   State<InternshipsPage> createState() => InternshipsPageState();
 }
 
 class InternshipsPageState extends State<InternshipsPage> {
-  void addStage() async {
-    if (widget.enterprise.jobs.fold<int>(
-            0, (previousValue, e) => e.positionsRemaining(context)) ==
-        0) {
-      await showDialog(
-          context: context,
-          builder: (ctx) => const AlertDialog(
-                title: Text('Plus de stage disponible'),
-                content: Text(
-                    'Il n\'y a plus de stage disponible dans cette entreprise'),
-              ));
-      return;
-    }
-
-    GoRouter.of(context).goNamed(
-      Screens.internshipEnrollement,
-      params: Screens.withId(widget.enterprise.id),
-    );
-  }
+  Future<void> addStage() async =>
+      widget.onAddIntershipRequest(widget.enterprise);
 
   List<Internship> _getActiveInternships(List<Internship> internships) {
     final List<Internship> current = [];
@@ -126,6 +111,7 @@ class _InternshipListState extends State<_InternshipList> {
 
   void _prepareExpander(List<Internship> internships) {
     if (_expanded.length != widget.internships.length) {
+      _expanded.clear();
       for (final internship in internships) {
         _expanded[internship.id] = false;
       }
@@ -164,9 +150,9 @@ class _InternshipListState extends State<_InternshipList> {
     final result = await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text('Terminer stage'),
+              title: const Text('Mettre fin au stage?'),
               content: const Text(
-                  'Êtes-vous sûr de vouloir terminer ce stage? Cette action est irrévocable.'),
+                  'Les informations pour ce stage ne seront plus modifiables.'),
               actions: [
                 OutlinedButton(
                     onPressed: () => Navigator.of(context).pop(false),
@@ -179,9 +165,14 @@ class _InternshipListState extends State<_InternshipList> {
     if (!mounted || result == null || !result) return;
 
     final internships = InternshipsProvider.of(context, listen: false);
-    internships.replace(internship.copyWith(
-        date:
-            DateTimeRange(start: internship.date.start, end: DateTime.now())));
+    internships.replace(internship.copyWith(endDate: DateTime.now()));
+    setState(() {});
+  }
+
+  void _evaluateInternship(Internship internship) async {
+    // TODO Change this method for the evaluation of the enterprise rather than the student
+    GoRouter.of(context).pushNamed(Screens.skillEvaluationMainScreen,
+        params: {'internshipId': internship.id});
     setState(() {});
   }
 
@@ -218,12 +209,27 @@ class _InternshipListState extends State<_InternshipList> {
               return ExpansionPanel(
                 canTapOnHeader: true,
                 isExpanded: _expanded[internship.id] ?? false,
-                headerBuilder: (context, isExpanded) => ListTile(
-                  leading: Text(internship.date.start.year.toString()),
-                  title: Text(specialization.idWithName),
+                headerBuilder: (context, isExpanded) => Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        internship.date.start.year.toString(),
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      const SizedBox(width: 24),
+                      Flexible(
+                        child: Text(
+                          specialization.idWithName,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          maxLines: null,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 body: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -262,6 +268,17 @@ class _InternshipListState extends State<_InternshipList> {
                                 onPressed: () =>
                                     _finalizeInternship(internship),
                                 child: const Text('Terminer le stage')),
+                          ),
+                        ),
+                      if (internship.isEvaluationPending)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: TextButton(
+                                onPressed: () =>
+                                    _evaluateInternship(internship),
+                                child: const Text('Évaluer le stage')),
                           ),
                         ),
                     ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/widgets/activity_type_cards.dart';
+import '/common/widgets/autocomplete_options_builder.dart';
 
 class ActivityTypesPickerFormField extends FormField<Set<String>> {
   ActivityTypesPickerFormField({
@@ -17,7 +18,7 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
         );
 
   static String? _validator(Set<String>? activityTypes) {
-    if (activityTypes!.isEmpty) return 'Il faut au moins un type d\'activité';
+    if (activityTypes!.isEmpty) return 'Ajouter au moins un type d\'activité.';
 
     return null;
   }
@@ -27,6 +28,7 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
     late FocusNode textFieldFocusNode;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Autocomplete<String>(
           optionsBuilder: (textEditingValue) {
@@ -38,6 +40,11 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
                   !state.value!.contains(activity),
             );
           },
+          optionsViewBuilder: (context, onSelected, options) =>
+              OptionsBuilderForAutocomplete(
+                  onSelected: onSelected,
+                  options: options,
+                  optionToString: (String e) => e),
           onSelected: (activityType) {
             state.value!.add(activityType);
             state.didChange(state.value);

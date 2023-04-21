@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/router.dart';
 import 'pages/about_page.dart';
 import 'pages/contact_page.dart';
-import 'pages/jobs_page.dart';
 import 'pages/internships_page.dart';
+import 'pages/jobs_page.dart';
 
 class EnterpriseScreen extends StatefulWidget {
   const EnterpriseScreen({super.key, required this.id});
@@ -52,21 +54,41 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
     }
     _actionButton = IconButton(
       icon: icon,
-      onPressed: () {
+      onPressed: () async {
         if (_tabController.index == 0) {
           _aboutPageKey.currentState?.toggleEdit();
         } else if (_tabController.index == 1) {
-          _contactPageKey.currentState?.toggleEdit();
+          await _contactPageKey.currentState?.toggleEdit();
         } else if (_tabController.index == 2) {
-          _jobsPageKey.currentState?.addJob();
+          await _jobsPageKey.currentState?.addJob();
         } else if (_tabController.index == 3) {
-          _stagePageKey.currentState?.addStage();
+          await _stagePageKey.currentState?.addStage();
         }
 
         _updateActionButton();
       },
     );
     setState(() {});
+  }
+
+  Future<void> addInternship(Enterprise enterprise) async {
+    if (enterprise.jobs.fold<int>(
+            0, (previousValue, e) => e.positionsRemaining(context)) ==
+        0) {
+      await showDialog(
+          context: context,
+          builder: (ctx) => const AlertDialog(
+                title: Text('Plus de stage disponible'),
+                content: Text(
+                    'Il n\'y a plus de stage disponible dans cette entreprise'),
+              ));
+      return;
+    }
+
+    GoRouter.of(context).goNamed(
+      Screens.internshipEnrollementFromEnterprise,
+      params: Screens.withId(enterprise.id),
+    );
   }
 
   @override
@@ -97,7 +119,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
             tabs: const [
               Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
               Tab(icon: Icon(Icons.contact_phone), text: 'Contact'),
-              Tab(icon: Icon(Icons.location_city_rounded), text: 'Métiers'),
+              Tab(icon: Icon(Icons.business_center_rounded), text: 'Métiers'),
               Tab(icon: Icon(Icons.assignment), text: 'Stages'),
             ],
           ),
@@ -106,10 +128,18 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
           controller: _tabController,
           physics: _editing ? const NeverScrollableScrollPhysics() : null,
           children: [
-            EnterpriseAboutPage(key: _aboutPageKey, enterprise: enterprise),
+            EnterpriseAboutPage(
+              key: _aboutPageKey,
+              enterprise: enterprise,
+              onAddInternshipRequest: addInternship,
+            ),
             ContactPage(key: _contactPageKey, enterprise: enterprise),
             JobsPage(key: _jobsPageKey, enterprise: enterprise),
-            InternshipsPage(key: _stagePageKey, enterprise: enterprise),
+            InternshipsPage(
+              key: _stagePageKey,
+              enterprise: enterprise,
+              onAddIntershipRequest: addInternship,
+            ),
           ],
         ),
       ),

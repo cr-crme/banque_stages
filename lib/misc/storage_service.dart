@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 
 abstract class StorageService {
   static Future<String> uploadJobImage(String path) async {
-    return await _uploadFile("enterprises/jobs/", File(path));
+    return await _uploadFile('enterprises/jobs/', File(path));
   }
 
   static Future<String> _uploadFile(String destination, File file) async {

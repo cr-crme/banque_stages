@@ -68,7 +68,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Inscrire un stagiaire"),
+        title: const Text('SST dans l\'entreprise'),
       ),
       body: Selector<EnterprisesProvider, Enterprise>(
         builder: (context, enterprise, _) => Stepper(
@@ -80,7 +80,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
           steps: [
             Step(
               isActive: _currentStep == 0,
-              title: const Text("Général"),
+              title: const Text('Général'),
               content: GeneralInformationsStep(
                 enterprise: enterprise,
                 job: enterprise.jobs[widget.jobId],
@@ -88,7 +88,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
             ),
             Step(
               isActive: _currentStep == 1,
-              title: const Text("Tâches"),
+              title: const Text('Tâches'),
               content: QuestionsStep(
                 key: _questionsKey,
                 job: enterprise.jobs[widget.jobId],
@@ -96,7 +96,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
             ),
             Step(
               isActive: _currentStep == 2,
-              title: const Text("Dangers"),
+              title: const Text('Dangers'),
               content: DangerStep(
                 key: _dangerKey,
                 job: enterprise.jobs[widget.jobId],
@@ -117,15 +117,15 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           OutlinedButton(
-              onPressed: details.onStepCancel, child: const Text("Annuler")),
+              onPressed: details.onStepCancel, child: const Text('Annuler')),
           const SizedBox(
             width: 20,
           ),
           TextButton(
             onPressed: details.onStepContinue,
             child: _currentStep == 2
-                ? const Text("Confirmer")
-                : const Text("Suivant"),
+                ? const Text('Confirmer')
+                : const Text('Suivant'),
           )
         ],
       ),

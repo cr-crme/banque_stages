@@ -32,18 +32,20 @@ class MainDrawer extends StatelessWidget {
                   route: Screens.studentsList,
                 ),
                 const _DrawerItem(
-                  titleText: 'Toutes les entreprises',
-                  icon: Icon(Icons.business_center_rounded),
+                  titleText: 'Entreprises',
+                  icon: Icon(Icons.location_city_rounded),
                   route: Screens.enterprisesList,
                 ),
-                const _DrawerItem(
+                _DrawerItem(
                   titleText: 'Documents',
-                  icon: Icon(Icons.document_scanner_rounded),
-                  route: Screens.enterprisesList,
+                  icon: const Icon(Icons.document_scanner_rounded),
+                  // route: Screens.enterprisesList,
+                  // TODO remove onTap and bring back route
+                  onTap: () {},
                 ),
                 const _DrawerItem(
                   titleText: 'Référentiel SST',
-                  icon: Icon(Icons.warning_rounded),
+                  icon: Icon(Icons.security),
                   route: Screens.homeSst,
                 ),
                 _DrawerItem(

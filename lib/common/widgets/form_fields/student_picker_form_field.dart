@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/student.dart';
+import '/common/widgets/autocomplete_options_builder.dart';
 
 class StudentPickerFormField extends StatelessWidget {
   const StudentPickerFormField({
@@ -19,7 +21,7 @@ class StudentPickerFormField extends StatelessWidget {
   final void Function(Student?)? onSelect;
 
   static String? _validator(Student? student) {
-    return student == null ? "Ce champ est obligatoire" : null;
+    return student == null ? 'Sélectionner un élève.' : null;
   }
 
   @override
@@ -32,14 +34,25 @@ class StudentPickerFormField extends StatelessWidget {
         children: [
           Autocomplete<Student>(
             displayStringForOption: (student) => student.fullName,
-            initialValue: TextEditingValue(text: initialValue?.fullName ?? ""),
+            initialValue: TextEditingValue(text: initialValue?.fullName ?? ''),
             optionsBuilder: (input) {
-              return students.where(
-                (s) =>
-                    s.fullName.toLowerCase().contains(input.text.toLowerCase()),
-              );
+              return students
+                  .map((e) => e)
+                  .sorted((a, b) => a.lastName.compareTo(b.lastName))
+                  .where(
+                    (s) => s.fullName
+                        .toLowerCase()
+                        .contains(input.text.toLowerCase()),
+                  );
             },
+            optionsViewBuilder: (context, onSelected, options) =>
+                OptionsBuilderForAutocomplete(
+              onSelected: onSelected,
+              options: options,
+              optionToString: (Student e) => e.fullName,
+            ),
             onSelected: (student) {
+              FocusManager.instance.primaryFocus?.unfocus();
               state.didChange(student);
               onSelect == null ? null : onSelect!(student);
             },
@@ -49,7 +62,7 @@ class StudentPickerFormField extends StatelessWidget {
                 focusNode: focusNode,
                 onSubmitted: (_) => onSubmitted(),
                 decoration: InputDecoration(
-                  labelText: "* Élève",
+                  labelText: '* Élève',
                   hintText: 'Saisir le nom de l\'élève',
                   errorText: state.errorText,
                 ),

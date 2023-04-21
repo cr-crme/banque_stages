@@ -1,4 +1,3 @@
-import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.dart';
 import 'package:enhanced_containers/item_serializable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -11,11 +10,16 @@ import 'screens/enterprise/enterprise_screen.dart';
 import 'screens/enterprises_list/enterprises_list_screen.dart';
 import 'screens/generate_debug_data_screen.dart';
 import 'screens/internship_enrollment/internship_enrollment_screen.dart';
-import 'screens/internship_forms/post_internship_evaluation_screen.dart';
+import 'screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
+import 'screens/internship_forms/student_steps/attitude_evaluation_screen.dart';
+import 'screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
+import 'screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
+import 'screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
+import 'screens/job_sst_form/job_sst_form_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/ref_sst/home_sst/home_sst_screen.dart';
-import 'screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
 import 'screens/ref_sst/risks_list/risks_list_screen.dart';
+import 'screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
 import 'screens/student/student_screen.dart';
 import 'screens/students_list/students_list_screen.dart';
 import 'screens/supervision_chart/supervision_chart_screen.dart';
@@ -40,8 +44,13 @@ abstract class Screens {
   static const student = 'student';
   static const addStudent = 'add-student';
 
-  static const internshipEnrollement = 'add-internship';
-  static const postInternshipEvaluationScreen = 'post-internship-evaluation';
+  static const internshipEnrollementFromEnterprise =
+      'add-internship-from-enterprise';
+  static const internshipEnrollementFromStudent = 'add-internship-from-student';
+  static const enterpriseEvaluationScreen = 'enterprise-evaluation';
+  static const skillEvaluationMainScreen = 'skill-evaluation-main';
+  static const skillEvaluationFormScreen = 'skill-evaluation-form';
+  static const attitudeEvaluationScreen = 'attitude-evaluation';
 
   static const homeSst = 'home-sst';
   static const jobSst = 'job-sst';
@@ -112,8 +121,8 @@ final router = GoRouter(
               EnterpriseScreen(id: state.params['id']!),
           routes: [
             GoRoute(
-              path: 'internship',
-              name: Screens.internshipEnrollement,
+              path: 'add-internship-enterprise',
+              name: Screens.internshipEnrollementFromEnterprise,
               builder: (context, state) =>
                   InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
             ),
@@ -134,7 +143,13 @@ final router = GoRouter(
       builder: (context, state) => const StudentsListScreen(),
       routes: [
         GoRoute(
-          path: ':id/:initialPage',
+          path: 'add-internship-student/:id',
+          name: Screens.internshipEnrollementFromStudent,
+          builder: (context, state) =>
+              InternshipEnrollmentScreen(studentId: state.params['id']!),
+        ),
+        GoRoute(
+          path: 'studentScreen/:id:initialPage',
           name: Screens.student,
           builder: (context, state) => StudentScreen(
               id: state.params['id']!,
@@ -148,11 +163,34 @@ final router = GoRouter(
       builder: (context, state) => const ItineraryScreen(),
     ),
     GoRoute(
-      path: '/post-internship-evaluation',
-      name: Screens.postInternshipEvaluationScreen,
-      builder: (context, state) => PostInternshipEvaluationScreen(
+      path: '/enterprise-evaluation',
+      name: Screens.enterpriseEvaluationScreen,
+      builder: (context, state) => EnterpriseEvaluationScreen(
         enterpriseId: state.params['enterpriseId']!,
         jobId: state.params['jobId']!,
+      ),
+    ),
+    GoRoute(
+      path: '/skill-evaluation-main/:internshipId',
+      name: Screens.skillEvaluationMainScreen,
+      builder: (context, state) => SkillEvaluationMainScreen(
+        internshipId: state.params['internshipId']!,
+      ),
+    ),
+    GoRoute(
+      path: '/skill-evaluation-form',
+      name: Screens.skillEvaluationFormScreen,
+      builder: (context, state) {
+        return SkillEvaluationFormScreen(
+          formController: state.extra as SkillEvaluationFormController,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/attitude-evaluation-form/:internshipId',
+      name: Screens.attitudeEvaluationScreen,
+      builder: (context, state) => AttitudeEvaluationScreen(
+        internshipId: state.params['internshipId']!,
       ),
     ),
     GoRoute(

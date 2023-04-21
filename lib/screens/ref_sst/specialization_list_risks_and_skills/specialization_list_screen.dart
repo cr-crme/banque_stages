@@ -115,7 +115,7 @@ class SpecializationListScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(width: 10),
-                    Icon(Icons.card_membership),
+                    Icon(Icons.build_circle_sharp),
                   ],
                 ),
               ),

@@ -21,9 +21,11 @@ class EnterpriseAboutPage extends StatefulWidget {
   const EnterpriseAboutPage({
     super.key,
     required this.enterprise,
+    required this.onAddInternshipRequest,
   });
 
   final Enterprise enterprise;
+  final Function(Enterprise) onAddInternshipRequest;
 
   @override
   State<EnterpriseAboutPage> createState() => EnterpriseAboutPageState();
@@ -87,6 +89,11 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
                   enterprise: widget.enterprise,
                   editingMode: _editing,
                   onSaved: (shareWith) => _shareWith = shareWith),
+              _AddInternshipButton(
+                editingMode: _editing,
+                onPressed: () async =>
+                    await widget.onAddInternshipRequest(widget.enterprise),
+              )
             ],
           ),
         ),
@@ -122,6 +129,9 @@ class _GeneralInformation extends StatelessWidget {
                             TextEditingController(text: enterprise.name),
                         enabled: editMode,
                         onSaved: onSaved,
+                        validator: (text) => text!.isEmpty
+                            ? 'Ajouter le nom de l\'entreprise.'
+                            : null,
                       ),
                     ),
                   ],
@@ -158,47 +168,42 @@ class _AvailablePlace extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Places de stage disponibles'),
-        Padding(
-          padding: const EdgeInsets.only(left: 8),
-          child: Column(
-            children: enterprise.jobs
-                .map(
-                  (job) => ListTile(
-                    visualDensity: VisualDensity.compact,
-                    leading: DisponibilityCircle(
-                      positionsOffered: job.positionsOffered,
-                      positionsOccupied: job.positionsOccupied(context),
-                    ),
-                    title: Text(job.specialization.idWithName),
-                    trailing: editMode
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                  onPressed:
-                                      job.positionsRemaining(context) == 0
-                                          ? null
-                                          : () => _modifyNumberOfAvailableJobs(
-                                              context, job, change: -1),
-                                  icon: Icon(Icons.remove,
-                                      color:
-                                          job.positionsRemaining(context) == 0
-                                              ? Colors.grey
-                                              : Colors.black)),
-                              Text(job.positionsOffered.toString()),
-                              IconButton(
-                                  onPressed: () => _modifyNumberOfAvailableJobs(
-                                      context, job, change: 1),
-                                  icon: const Icon(Icons.add,
-                                      color: Colors.black)),
-                            ],
-                          )
-                        : Text(
-                            '${job.positionsRemaining(context)} / ${job.positionsOffered}'),
+        Column(
+          children: enterprise.jobs
+              .map(
+                (job) => ListTile(
+                  visualDensity: VisualDensity.compact,
+                  leading: DisponibilityCircle(
+                    positionsOffered: job.positionsOffered,
+                    positionsOccupied: job.positionsOccupied(context),
                   ),
-                )
-                .toList(),
-          ),
+                  title: Text(job.specialization.idWithName),
+                  trailing: editMode
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                                onPressed: job.positionsRemaining(context) == 0
+                                    ? null
+                                    : () => _modifyNumberOfAvailableJobs(
+                                        context, job, change: -1),
+                                icon: Icon(Icons.remove,
+                                    color: job.positionsRemaining(context) == 0
+                                        ? Colors.grey
+                                        : Colors.black)),
+                            Text(job.positionsOffered.toString()),
+                            IconButton(
+                                onPressed: () => _modifyNumberOfAvailableJobs(
+                                    context, job, change: 1),
+                                icon:
+                                    const Icon(Icons.add, color: Colors.black)),
+                          ],
+                        )
+                      : Text(
+                          '${job.positionsRemaining(context)} / ${job.positionsOffered}'),
+                ),
+              )
+              .toList(),
         )
       ],
     );
@@ -221,7 +226,8 @@ class _ActivityType extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Types d\'activités'),
-        Center(
+        Padding(
+          padding: const EdgeInsets.only(left: 24.0),
           child: Column(
             children: [
               Visibility(
@@ -232,7 +238,7 @@ class _ActivityType extends StatelessWidget {
               Visibility(
                 visible: editMode,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: ActivityTypesPickerFormField(
                     initialValue: enterprise.activityTypes,
                     onSaved: onSaved,
@@ -277,7 +283,7 @@ class _RecrutedBy extends StatelessWidget {
         GestureDetector(
           onTap: teacher.email == null ? null : () => _sendEmail(teacher),
           child: Padding(
-            padding: const EdgeInsets.only(left: 30.0),
+            padding: const EdgeInsets.only(left: 24.0),
             child: Row(
               children: [
                 Text(
@@ -343,6 +349,30 @@ class _SharingLevel extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class _AddInternshipButton extends StatelessWidget {
+  const _AddInternshipButton({
+    required this.editingMode,
+    required this.onPressed,
+  });
+
+  final bool editingMode;
+  final Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 40.0),
+        child: editingMode
+            ? Container()
+            : ElevatedButton(
+                onPressed: onPressed,
+                child: const Text('Inscrire un stagiaire')),
+      ),
     );
   }
 }

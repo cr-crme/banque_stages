@@ -25,18 +25,18 @@ class DisponibilityCircle extends StatelessWidget {
               ]),
           child: const Icon(
             Icons.circle,
-            color: Colors.black,
+            color: Colors.white70,
             size: 30,
           ),
         ),
         const Icon(
           Icons.circle,
-          color: Colors.black,
+          color: Colors.white70,
           size: 38,
         ),
         Icon(
           Icons.circle,
-          color: remainning > 0 ? Colors.green[900] : Colors.red[900],
+          color: remainning > 0 ? Colors.green[800] : Colors.red[800],
           size: 30,
         ),
         Text(

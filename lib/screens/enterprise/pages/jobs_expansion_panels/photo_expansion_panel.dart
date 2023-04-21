@@ -11,7 +11,7 @@ class PhotoExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _PhotoBody(job: job),
           headerBuilder: (context, isExpanded) => ListTile(
-            title: const Text("Photos du poste de travail"),
+            title: const Text('Photos du poste de travail'),
             trailing: isExpanded
                 ? IconButton(
                     onPressed: () => addImage(job),
@@ -35,7 +35,7 @@ class _PhotoBody extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: job.photosUrl.isEmpty
-              ? [const Text("Aucune image disponible")]
+              ? [const Text('Aucune image disponible')]
               : job.photosUrl
                   .map(
                     // TODO: Make images clickables and deletables

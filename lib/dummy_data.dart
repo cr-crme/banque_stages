@@ -9,6 +9,7 @@ import '/common/models/internship.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/models/person.dart';
+import '/common/models/phone_number.dart';
 import '/common/models/schedule.dart';
 import '/common/models/school.dart';
 import '/common/models/student.dart';
@@ -51,8 +52,9 @@ Future<void> addAllDummyData(BuildContext context) async {
 
 Future<void> addDummySchools(SchoolsProvider schools) async {
   schools.add(School(
-    name: 'My lovely school Marie-Vic',
-    address: (await Address.fromAddress('École Marie-Victorin, Montréal'))!,
+    name: 'École',
+    address:
+        (await Address.fromAddress('9105 Rue Verville, Montréal, QC H2N 1Y5'))!,
   ));
 
   await _waitForDatabaseUpdate(schools, 1);
@@ -106,19 +108,19 @@ Future<void> addDummyEnterprises(
       name: 'Metro Gagnon',
       activityTypes: {activityTypes[2], activityTypes[5], activityTypes[10]},
       recrutedBy: teachers[0].id,
-      shareWith: 'Tout le monde',
+      shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
       contactName: 'Marc Arcand',
       contactFunction: 'Directeur',
-      contactPhone: '514 999 6655',
+      contactPhone: PhoneNumber.fromString('514 999 6655'),
       contactEmail: 'm.arcand@email.com',
       address: Address(
           civicNumber: 1853,
           street: 'Chem. Rockland',
           city: 'Mont-Royal',
           postalCode: 'H3P 2Y7'),
-      phone: '514 999 6655',
-      fax: '514 999 6600',
+      phone: PhoneNumber.fromString('514 999 6655'),
+      fax: PhoneNumber.fromString('514 999 6600'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 1853,
@@ -145,21 +147,21 @@ Future<void> addDummyEnterprises(
       jobs: jobs,
       contactName: 'Caroline Mercier',
       contactFunction: 'Assistante-gérante',
-      contactPhone: '514 123 4567 poste 123',
+      contactPhone: PhoneNumber.fromString('514 123 4567 poste 123'),
       contactEmail: 'c.mercier@email.com',
       address: Address(
-          civicNumber: 4885,
-          street: 'Henri-Bourassa Blvd Ouest',
+          civicNumber: 1665,
+          street: 'Poncet',
           city: 'Montréal',
-          postalCode: 'H3L 1P3'),
-      phone: '514 123 4567',
-      fax: '514 123 4560',
+          postalCode: 'H3M 1T8'),
+      phone: PhoneNumber.fromString('514 123 4567'),
+      fax: PhoneNumber.fromString('514 123 4560'),
       website: 'example.com',
       headquartersAddress: Address(
-          civicNumber: 4885,
-          street: 'Henri-Bourassa Blvd Ouest',
+          civicNumber: 1665,
+          street: 'Poncet',
           city: 'Montréal',
-          postalCode: 'H3L 1P3'),
+          postalCode: 'H3M 1T8'),
       neq: '1234567891',
     ),
   );
@@ -169,30 +171,30 @@ Future<void> addDummyEnterprises(
     Job(
         specialization: ActivitySectorsService.sectors[9].specializations[3],
         positionsOffered: 3,
-        equipmentRequired: ["Chaussures de sécurité"],
-        incidentContact: "Jonny M. 514 514-5544",
-        dangerousSituations: "- Outils mal rangés\n- Tas de pneus",
+        equipmentRequired: ['Chaussures de sécurité'],
+        incidentContact: 'Jonny M. 514 514-5544',
+        dangerousSituations: '- Outils mal rangés\n- Tas de pneus',
         sstQuestions: {
-          "1": "Installer des pneus (les soulevers + transporter)",
-          "2": false,
-          "2+t": "",
-          "3": true,
-          "3+t": "Peu souvent, à la discrétion des employés.",
-          "5": ["Un diable"],
-          "6": [],
-          "7": ["Des ciseaux"],
-          "8": [],
-          "12": ["Des solvants", "Des produits de nettoyage"],
-          "15": [],
-          "16": true,
-          "16+t": "Bouchons a oreilles",
-          "19": true,
-          "19+t": "",
-          "20": "",
-          "21": "",
-          "22": false,
-          "22+t": "",
-          "23": ""
+          '1': 'Installer des pneus (les soulevers + transporter)',
+          '2': false,
+          '2+t': '',
+          '3': true,
+          '3+t': 'Peu souvent, à la discrétion des employés.',
+          '5': ['Un diable'],
+          '6': [],
+          '7': ['Des ciseaux'],
+          '8': [],
+          '12': ['Des solvants', 'Des produits de nettoyage'],
+          '15': [],
+          '16': true,
+          '16+t': 'Bouchons a oreilles',
+          '19': true,
+          '19+t': '',
+          '20': '',
+          '21': '',
+          '22': false,
+          '22+t': '',
+          '23': ''
         }),
   );
   enterprises.add(
@@ -200,19 +202,18 @@ Future<void> addDummyEnterprises(
       name: 'Auto Care',
       activityTypes: {activityTypes[12], activityTypes[18]},
       recrutedBy: teachers[0].id,
-      shareWith: 'Tout le monde',
+      shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
       contactName: 'Denis Rondeau',
       contactFunction: 'Propriétaire',
-      contactPhone: '438 987 6543',
+      contactPhone: PhoneNumber.fromString('438 987 6543'),
       contactEmail: 'd.rondeau@email.com',
       address: Address(
           civicNumber: 8490,
           street: 'Rue Saint-Dominique',
           city: 'Montréal',
           postalCode: 'H2P 2L5'),
-      phone: '438 987 6543',
-      fax: '',
+      phone: PhoneNumber.fromString('438 987 6543'),
       website: '',
       headquartersAddress: Address(
           civicNumber: 8490,
@@ -235,19 +236,19 @@ Future<void> addDummyEnterprises(
       name: 'Auto Repair',
       activityTypes: {activityTypes[12], activityTypes[18]},
       recrutedBy: teachers[2].id,
-      shareWith: 'Tout le monde',
+      shareWith: 'Enseignants FPT de l\'école',
       jobs: jobs,
       contactName: 'Claudio Brodeur',
       contactFunction: 'Propriétaire',
-      contactPhone: '514 235 6789',
+      contactPhone: PhoneNumber.fromString('514 235 6789'),
       contactEmail: 'c.brodeur@email.com',
       address: Address(
           civicNumber: 10142,
           street: 'Boul. Saint-Laurent',
           city: 'Montréal',
           postalCode: 'H3L 2N7'),
-      phone: '514 235 6789',
-      fax: '514 321 9870',
+      phone: PhoneNumber.fromString('514 235 6789'),
+      fax: PhoneNumber.fromString('514 321 9870'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 10142,
@@ -271,19 +272,19 @@ Future<void> addDummyEnterprises(
       name: 'Boucherie Marien',
       activityTypes: {activityTypes[2], activityTypes[5]},
       recrutedBy: teachers[0].id,
-      shareWith: 'Tout le monde',
+      shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
       contactName: 'Brigitte Samson',
       contactFunction: 'Gérante',
-      contactPhone: '438 888 2222',
+      contactPhone: PhoneNumber.fromString('438 888 2222'),
       contactEmail: 'b.samson@email.com',
       address: Address(
           civicNumber: 8921,
           street: 'Rue Lajeunesse',
           city: 'Montréal',
           postalCode: 'H2M 1S1'),
-      phone: '514 321 9876',
-      fax: '514 321 9870',
+      phone: PhoneNumber.fromString('514 321 9876'),
+      fax: PhoneNumber.fromString('514 321 9870'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 8921,
@@ -307,19 +308,19 @@ Future<void> addDummyEnterprises(
       name: 'IGA',
       activityTypes: {activityTypes[10], activityTypes[29]},
       recrutedBy: teachers[0].id,
-      shareWith: 'Tout le monde',
+      shareWith: 'Enseignants FPT de l\'école',
       jobs: jobs,
       contactName: 'Gabrielle Fortin',
       contactFunction: 'Gérante',
-      contactPhone: '514 111 2222',
+      contactPhone: PhoneNumber.fromString('514 111 2222'),
       contactEmail: 'g.fortin@email.com',
       address: Address(
           civicNumber: 1415,
           street: 'Rue Jarry E',
           city: 'Montréal',
           postalCode: 'H2E 1A7'),
-      phone: '514 111 2222',
-      fax: '514 111 2200',
+      phone: PhoneNumber.fromString('514 111 2222'),
+      fax: PhoneNumber.fromString('514 111 2200'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 7885,
@@ -343,19 +344,19 @@ Future<void> addDummyEnterprises(
       name: 'Pharmaprix',
       activityTypes: {activityTypes[20], activityTypes[5]},
       recrutedBy: teachers[3].id,
-      shareWith: 'Tout le monde',
+      shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
       contactName: 'Jessica Marcotte',
       contactFunction: 'Pharmacienne',
-      contactPhone: '514 111 2222',
+      contactPhone: PhoneNumber.fromString('514 111 2222'),
       contactEmail: 'g.fortin@email.com',
       address: Address(
           civicNumber: 3611,
           street: 'Rue Jarry E',
           city: 'Montréal',
           postalCode: 'H1Z 2G1'),
-      phone: '514 654 5444',
-      fax: '514 654 5445',
+      phone: PhoneNumber.fromString('514 654 5444'),
+      fax: PhoneNumber.fromString('514 654 5445'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 3611,
@@ -379,19 +380,18 @@ Future<void> addDummyEnterprises(
       name: 'Subway',
       activityTypes: {activityTypes[24], activityTypes[27]},
       recrutedBy: teachers[3].id,
-      shareWith: 'Tout le monde',
+      shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
       contactName: 'Carlos Rodriguez',
       contactFunction: 'Gérant',
-      contactPhone: '514 555 3333',
+      contactPhone: PhoneNumber.fromString('514 555 3333'),
       contactEmail: 'c.rodriguez@email.com',
       address: Address(
           civicNumber: 775,
           street: 'Rue Chabanel O',
           city: 'Montréal',
           postalCode: 'H4N 3J7'),
-      phone: '514 555 7891',
-      fax: '',
+      phone: PhoneNumber.fromString('514 555 7891'),
       website: 'fausse.ca',
       headquartersAddress: null,
       neq: '6790122996',
@@ -411,19 +411,19 @@ Future<void> addDummyEnterprises(
       name: 'Walmart',
       activityTypes: {activityTypes[5], activityTypes[15], activityTypes[29]},
       recrutedBy: teachers[0].id,
-      shareWith: 'Tout le monde',
+      shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
       contactName: 'France Boissonneau',
       contactFunction: 'Directrice des Ressources Humaines',
-      contactPhone: '514 879 8654 poste 1112',
+      contactPhone: PhoneNumber.fromString('514 879 8654 poste 1112'),
       contactEmail: 'f.boissonneau@email.com',
       address: Address(
           civicNumber: 10345,
           street: 'Ave Christophe-Colomb',
           city: 'Montréal',
           postalCode: 'H2C 2V1'),
-      phone: '514 879 8654',
-      fax: '514 879 8000',
+      phone: PhoneNumber.fromString('514 879 8654'),
+      fax: PhoneNumber.fromString('514 879 8000'),
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 10345,
@@ -434,6 +434,146 @@ Future<void> addDummyEnterprises(
     ),
   );
 
+  jobs = JobList();
+  jobs.add(
+    Job(
+        specialization: ActivitySectorsService.sectors[1].specializations[2],
+        positionsOffered: 1,
+        pastIncidents:
+            'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
+            'et il s\'est coupé profondément la paume. '
+            '\nLa blessure a nécessité des soins majeurs.',
+        equipmentRequired: [
+          'Chaussures avec semelles antidérapantes, Gants en kevlar'
+        ],
+        incidentContact: 'Joanie, la propriétaire',
+        dangerousSituations: '- L\'élève n\'a pas le droit de s\'asseoir'
+            '\n- Travailler avec un couteau et sécateur'
+            '\n- Travailler avec des matières biologiques (épines de fleurs, pollen)'
+            '\n- Travailler avec des produits chimiques (pesticides)'
+            '\n- Porter des objets lourds (ex. gros pots de fleurs)'
+            '\n- Travailler avec le dos courbé'
+            '\n- Les planchers sont souvent mouillés (risque de chute)',
+        sstQuestions: {
+          '1': 'Entretenir les fleurs et les plantes, servir les clients, '
+              'aider à la préparation de bouquets  ',
+          '2': true,
+          '2+t': '',
+          '3': true,
+          '3+t': 'Plusieurs fois par jour, surtout des pots de fleurs.',
+          '5': ['Un diable'],
+          '6': [],
+          '7': ['Un couteau', 'Des ciseaux', 'Un sécateur'],
+          '8': [],
+          '10': ['Des pesticides (résidus sur les plantes)', 'Engrais'],
+          '15': [],
+          '16': false,
+          '19': false,
+          '20': '',
+          '21': '',
+          '22': true,
+          '22+t':
+              'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
+                  'et il s\'est coupé profondément la paume.'
+                  'La blessure a nécessité des soins majeurs.',
+          '23': 'Joanie, la propriétaire'
+        }),
+  );
+  enterprises.add(
+    Enterprise(
+      name: 'Le jardin de Joanie',
+      activityTypes: {activityTypes[5], activityTypes[11]},
+      recrutedBy: teachers[0].id,
+      shareWith: 'Mon centre de services scolaire',
+      jobs: jobs,
+      contactName: 'Joanie Lemieux',
+      contactFunction: 'Propriétaire',
+      contactPhone: PhoneNumber.fromString('438 789 6543'),
+      contactEmail: 'j.lemieux@email.com',
+      address: Address(
+          civicNumber: 8629,
+          street: 'Rue de Gaspé',
+          city: 'Montréal',
+          postalCode: 'H2P 2K3'),
+      phone: PhoneNumber.fromString('438 789 6543'),
+      website: '',
+      headquartersAddress: Address(
+          civicNumber: 8629,
+          street: 'Rue de Gaspé',
+          city: 'Montréal',
+          postalCode: 'H2P 2K3'),
+      neq: '5679011966',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+        specialization: ActivitySectorsService.sectors[1].specializations[2],
+        positionsOffered: 1,
+        pastIncidents:
+            'Lorsque l\'élève a laissé tomber un vase dispendieux qui s\'est '
+            'cassé au sol, le superviseur s\'est énervé et lui a crié dessus. '
+            'L\'élève a fait une crise de panique qui n\'a pas nécessité de soins.'
+            '\nL\'élève a gâché un nouvel arrivage de fleurs en préparant mal '
+            'les tiges, et le superviseur a menacé de le mettre à la porte. '
+            'L\'élève a appelé sa superviseure en pleurant et ne voulait pas '
+            'continuer son stage.',
+        equipmentRequired: ['Chaussures avec semelles antidérapantes'],
+        incidentContact: 'Gaëtan Munger, le gérant',
+        dangerousSituations: '- Travailler avec un couteau'
+            '\n- Travailler avec des produits chimiques (pesticides)'
+            '\n- Porter des objets lourds (ex. gros pots de fleurs)'
+            '\n- Les planchers sont souvent mouillés (risque de chute)',
+        sstQuestions: {
+          '1': 'Arroser les fleurs et les plantes, aider à la confection de '
+              'couronnes, sortir et ranger les plantes à l\'ouverture et à la '
+              'fermeture de la boutique',
+          '2': true,
+          '2+t': '',
+          '3': true,
+          '3+t': 'En début et en fin de journée, surtout des pots de fleurs.',
+          '5': ['Un diable'],
+          '6': [],
+          '7': ['Un couteau', 'Des ciseaux'],
+          '8': [],
+          '10': ['Des pesticides', 'Engrais'],
+          '15': [],
+          '16': false,
+          '19': false,
+          '20': '',
+          '21': '',
+          '22': false,
+          '22+t': '',
+          '23': 'Gaëtan Munger, le gérant'
+        }),
+  );
+  enterprises.add(
+    Enterprise(
+      name: 'Fleuriste Joli',
+      activityTypes: {activityTypes[5], activityTypes[11]},
+      recrutedBy: teachers[0].id,
+      shareWith: 'Mon centre de services scolaire',
+      jobs: jobs,
+      contactName: 'Gaëtan Munger',
+      contactFunction: 'Gérant',
+      contactPhone: PhoneNumber.fromString('514 987 6543'),
+      contactEmail: 'g.munger@email.com',
+      address: Address(
+          civicNumber: 70,
+          street: 'Rue Chabanel Ouest',
+          city: 'Montréal',
+          postalCode: 'H2N 1E7'),
+      phone: PhoneNumber.fromString('514 987 6543'),
+      website: '',
+      headquartersAddress: Address(
+          civicNumber: 70,
+          street: 'Rue Chabanel Ouest',
+          city: 'Montréal',
+          postalCode: 'H2N 1E7'),
+      neq: '5679055590',
+    ),
+  );
   await _waitForDatabaseUpdate(enterprises, 9);
 }
 
@@ -450,11 +590,11 @@ Future<void> addDummyStudents(
       group: '550',
       address: await Address.fromAddress(
           '7248 Rue D\'Iberville, Montréal, QC H2E 2Y6'),
-      phone: '514 321 8888',
+      phone: PhoneNumber.fromString('514 321 8888'),
       contact: Person(
           firstName: 'Paul',
           lastName: 'Masson',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'p.masson@email.com'),
       contactLink: 'Père',
     ),
@@ -470,14 +610,14 @@ Future<void> addDummyStudents(
       program: Program.fpt,
       group: '885',
       contact: Person(
-          firstName: 'Joe',
-          lastName: 'Caron',
-          phone: '514 321 9876',
+          firstName: 'Jean-Pierre',
+          lastName: 'Caron Mathieu',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'j.caron@email.com'),
       contactLink: 'Père',
-      address:
-          await Address.fromAddress('6622 16e Avenue, Montréal, QC H1X 2T2'),
-      phone: '514 222 3344',
+      address: await Address.fromAddress(
+          '202 Boulevard Saint-Joseph Est, Montréal, QC H1X 2T2'),
+      phone: PhoneNumber.fromString('514 222 3344'),
     ),
   );
 
@@ -493,11 +633,11 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Nicole',
           lastName: 'Lefranc',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'n.lefranc@email.com'),
       contactLink: 'Mère',
       address: await Address.fromAddress('6723 25e Ave, Montréal, QC H1T 3M1'),
-      phone: '514 333 4455',
+      phone: PhoneNumber.fromString('514 333 4455'),
     ),
   );
 
@@ -513,12 +653,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Martine',
           lastName: 'Gagnon',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'm.gagnon@email.com'),
       contactLink: 'Mère',
       address:
-          await Address.fromAddress('6655 33e Avenue, Montréal, QC H1T 3B9'),
-      phone: '514 999 8877',
+          await Address.fromAddress('9277 Rue Meunier, Montréal, QC H2N 1W4'),
+      phone: PhoneNumber.fromString('514 999 8877'),
     ),
   );
 
@@ -535,11 +675,11 @@ Future<void> addDummyStudents(
           firstName: 'Raoul',
           lastName: 'Gingras',
           email: 'r.gingras@email.com',
-          phone: '514 321 9876'),
+          phone: PhoneNumber.fromString('514 321 9876')),
       contactLink: 'Père',
       address: await Address.fromAddress(
           '4517 Rue d\'Assise, Saint-Léonard, QC H1R 1W2'),
-      phone: '514 888 7766',
+      phone: PhoneNumber.fromString('514 888 7766'),
     ),
   );
 
@@ -555,18 +695,18 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Laura',
           lastName: 'Vargas',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'l.vargas@email.com'),
       contactLink: 'Mère',
       address: await Address.fromAddress(
           '8204 Rue de Blois, Saint-Léonard, QC H1R 2X1'),
-      phone: '514 444 5566',
+      phone: PhoneNumber.fromString('514 444 5566'),
     ),
   );
 
   students.add(
     Student(
-      firstName: 'Geneviève',
+      firstName: 'Jeanne',
       lastName: 'Tremblay',
       dateBirth: DateTime.now(),
       email: 'g.tremblay@email.com',
@@ -576,12 +716,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Vincent',
           lastName: 'Tremblay',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'v.tremblay@email.com'),
       contactLink: 'Père',
       address: await Address.fromAddress(
           '8358 Rue Jean-Nicolet, Saint-Léonard, QC H1R 2R2'),
-      phone: '514 555 9988',
+      phone: PhoneNumber.fromString('514 555 9988'),
     ),
   );
 
@@ -597,12 +737,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Jean-François',
           lastName: 'Picard',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'jp.picard@email.com'),
       contactLink: 'Père',
       address: await Address.fromAddress(
           '8382 Rue du Laus, Saint-Léonard, QC H1R 2P4'),
-      phone: '514 778 8899',
+      phone: PhoneNumber.fromString('514 778 8899'),
     ),
   );
 
@@ -618,18 +758,18 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Stéphane',
           lastName: 'Monette',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 's.monette@email.com'),
       contactLink: 'Père',
       address: await Address.fromAddress(
           '6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5'),
-      phone: '514 321 6655',
+      phone: PhoneNumber.fromString('514 321 6655'),
     ),
   );
 
   students.add(
     Student(
-      firstName: 'Mélissa',
+      firstName: 'Melissa',
       lastName: 'Poulain',
       dateBirth: DateTime.now(),
       email: 'm.poulain@email.com',
@@ -639,12 +779,12 @@ Future<void> addDummyStudents(
       contact: Person(
           firstName: 'Mathieu',
           lastName: 'Poulain',
-          phone: '514 321 9876',
+          phone: PhoneNumber.fromString('514 321 9876'),
           email: 'm.poulain@email.com'),
       contactLink: 'Père',
       address:
           await Address.fromAddress('6585 Rue Lemay, Montréal, QC H1T 2L8'),
-      phone: '514 567 9999',
+      phone: PhoneNumber.fromString('514 567 9999'),
     ),
   );
 
@@ -657,297 +797,351 @@ Future<void> addDummyInterships(
   EnterprisesProvider enterprises,
   TeachersProvider teachers,
 ) async {
-  final rng = Random(); // Generate random priorities
+  final rng = Random();
 
+  var period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    studentId: students[0].id,
+    versionDate: DateTime.now(),
+    studentId: students.firstWhere((e) => e.fullName == 'Cedric Masson').id,
+    teacherId: teachers.currentTeacherId,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Care').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Auto Care').jobs[0].id,
+    extraSpecializationsId: [
+      ActivitySectorsService.sectors[2].specializations[1].id,
+      ActivitySectorsService.sectors[1].specializations[0].id,
+    ],
+    visitingPriority: VisitingPriority.values[0],
+    supervisor: Person(
+        firstName: 'Nobody',
+        lastName: 'Forever',
+        phone: PhoneNumber.fromString('514-555-1234')),
+    date: period,
+    expectedLength: 135,
+    achievedLength: 0,
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.friday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
+    ],
+    protections: [
+      'Chaussures de sécurité',
+      'Lunettes de sécurités',
+      'Masque',
+    ],
+    uniform: 'Il faut s\'habiller de façon à ce que tous soient identiques',
+  ));
+
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
+  internships.add(Internship(
+    versionDate: DateTime.now(),
+    studentId: students.firstWhere((e) => e.fullName == 'Thomas Caron').id,
+    teacherId: teachers.currentTeacherId,
+    enterpriseId:
+        enterprises.firstWhere((e) => e.name == 'Boucherie Marien').id,
+    jobId:
+        enterprises.firstWhere((e) => e.name == 'Boucherie Marien').jobs[0].id,
+    extraSpecializationsId: [],
+    visitingPriority: VisitingPriority.values[0],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: period,
+    expectedLength: 135,
+    achievedLength: 0,
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.friday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
+    ],
+    protections: [],
+    uniform: '',
+  ));
+
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
+  internships.add(Internship(
+    versionDate: DateTime.now(),
+    studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
+    teacherId: teachers.currentTeacherId,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,
+    extraSpecializationsId: [],
+    visitingPriority: VisitingPriority.values[0],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: period,
+    expectedLength: 135,
+    achievedLength: 0,
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
+    ],
+    protections: [],
+    uniform: '',
+  ));
+
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
+  internships.add(Internship(
+    versionDate: DateTime.now(),
+    studentId: students.firstWhere((e) => e.fullName == 'Vincent Picard').id,
+    teacherId: teachers.currentTeacherId,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'IGA').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'IGA').jobs[0].id,
+    extraSpecializationsId: [],
+    visitingPriority: VisitingPriority.values[0],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: period,
+    expectedLength: 135,
+    achievedLength: 0,
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
+    ],
+    protections: [],
+    uniform: '',
+  ));
+
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
+  internships.add(Internship(
+    versionDate: DateTime.now(),
+    studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
+    teacherId: teachers.firstWhere((e) => e.fullName == 'Benvolio Montaigu').id,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
+    extraSpecializationsId: [],
+    visitingPriority: VisitingPriority.values[0],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: period,
+    expectedLength: 135,
+    achievedLength: 0,
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.friday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
+    ],
+    protections: [],
+    uniform: '',
+  ));
+
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
+  internships.add(Internship(
+    versionDate: DateTime.now(),
+    studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
+    teacherId: teachers.currentTeacherId,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
+    extraSpecializationsId: [],
+    visitingPriority: VisitingPriority.values[0],
+    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    date: period,
+    expectedLength: 135,
+    achievedLength: 0,
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.friday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
+    ],
+    protections: [],
+    uniform: '',
+  ));
+
+  period = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
+  internships.add(Internship(
+    versionDate: DateTime.now(),
+    studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
     teacherId: teachers.currentTeacherId,
     isTransfering: true,
-    enterpriseId: enterprises[0].id,
-    jobId: enterprises[0].jobs[0].id,
-    extraSpecializationId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
+    extraSpecializationsId: [],
+    visitingPriority: VisitingPriority.values[0],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    isClosed: false,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.thursday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.friday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
+    date: period,
+    expectedLength: 135,
+    achievedLength: 0,
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.friday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
     ],
-    protection: [],
-    uniform: '-1',
-  ));
-
-  internships.add(Internship(
-    studentId: students[1].id,
-    teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises[0].id,
-    jobId: enterprises[0].jobs[0].id,
-    extraSpecializationId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    isClosed: false,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.thursday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.friday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
-    ],
-    protection: [],
-    uniform: '-1',
-  ));
-
-  internships.add(Internship(
-    studentId: students[2].id,
-    teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises[1].id,
-    jobId: enterprises[1].jobs[0].id,
-    extraSpecializationId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    isClosed: true,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.thursday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
-    ],
-    protection: [],
-    uniform: '-1',
-  ));
-
-  internships.add(Internship(
-    studentId: students[3].id,
-    teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises[2].id,
-    jobId: enterprises[2].jobs[0].id,
-    extraSpecializationId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    isClosed: true,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
-    ],
-    protection: [],
-    uniform: '-1',
-  ));
-
-  internships.add(Internship(
-    studentId: students[4].id,
-    teacherId: teachers[0].id,
-    enterpriseId: enterprises[3].id,
-    jobId: enterprises[3].jobs[0].id,
-    extraSpecializationId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    isClosed: false,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.friday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
-    ],
-    protection: [],
-    uniform: '-1',
-  ));
-
-  internships.add(Internship(
-    studentId: students[5].id,
-    teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises[4].id,
-    jobId: enterprises[4].jobs[0].id,
-    extraSpecializationId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    isClosed: false,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.thursday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.friday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
-    ],
-    protection: [],
-    uniform: '-1',
-  ));
-
-  internships.add(Internship(
-    studentId: students[8].id,
-    teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises[4].id,
-    jobId: enterprises[4].jobs[0].id,
-    extraSpecializationId: [],
-    visitingPriority: VisitingPriority.values[rng.nextInt(3)],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
-    date: DateTimeRange(
-        start: DateTime.now(),
-        end: DateTime.now().add(Duration(days: rng.nextInt(90)))),
-    isClosed: false,
-    schedule: [
-      [
-        Schedule(
-          dayOfWeek: Day.monday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.tuesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.wednesday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.thursday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-        Schedule(
-          dayOfWeek: Day.friday,
-          start: const TimeOfDay(hour: 9, minute: 00),
-          end: const TimeOfDay(hour: 15, minute: 00),
-        ),
-      ]
-    ],
-    protection: [],
-    uniform: '-1',
+    protections: [],
+    uniform: '',
   ));
 
   await _waitForDatabaseUpdate(internships, 7);

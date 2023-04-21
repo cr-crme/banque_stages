@@ -3,25 +3,26 @@ import 'package:provider/provider.dart';
 
 import '/common/models/job.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/misc/form_service.dart';
-import 'steps/prerequisites_step.dart';
-import 'steps/supervision_step.dart';
-import 'steps/tasks_step.dart';
+import 'prerequisites_step.dart';
+import 'supervision_step.dart';
+import 'tasks_step.dart';
 
-class PostInternshipEvaluationScreen extends StatefulWidget {
-  const PostInternshipEvaluationScreen(
+class EnterpriseEvaluationScreen extends StatefulWidget {
+  const EnterpriseEvaluationScreen(
       {super.key, required this.enterpriseId, required this.jobId});
 
   final String enterpriseId;
   final String jobId;
 
   @override
-  State<PostInternshipEvaluationScreen> createState() =>
-      _PostInternshipEvaluationScreenState();
+  State<EnterpriseEvaluationScreen> createState() =>
+      _EnterpriseEvaluationScreenState();
 }
 
-class _PostInternshipEvaluationScreenState
-    extends State<PostInternshipEvaluationScreen> {
+class _EnterpriseEvaluationScreenState
+    extends State<EnterpriseEvaluationScreen> {
   final _tasksKey = GlobalKey<TasksStepState>();
   final _supervisionKey = GlobalKey<SupervisionStepState>();
   final _prerequisitesKey = GlobalKey<PrerequisitesStepState>();
@@ -79,11 +80,19 @@ class _PostInternshipEvaluationScreenState
     Navigator.pop(context);
   }
 
+  void _onPressedCancel(ControlsDetails details) async {
+    final answer = await ConfirmPopDialog.show(context);
+    if (!answer) return;
+
+    details.onStepCancel!();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Évaluation post-stage'),
+        leading: Container(),
       ),
       body: Selector<EnterprisesProvider, Job>(
         builder: (context, job, _) => Stepper(
@@ -133,7 +142,8 @@ class _PostInternshipEvaluationScreenState
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           OutlinedButton(
-              onPressed: details.onStepCancel, child: const Text('Annuler')),
+              onPressed: () => _onPressedCancel(details),
+              child: const Text('Annuler')),
           const SizedBox(
             width: 20,
           ),

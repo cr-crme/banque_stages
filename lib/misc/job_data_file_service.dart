@@ -115,6 +115,10 @@ class Skill extends NamedItemSerializable {
 class SkillList extends _NamedItemSerializableList<Skill> {
   SkillList._();
 
+  factory SkillList.empty() {
+    return SkillList._();
+  }
+
   factory SkillList.fromSerialized(map) {
     final out = SkillList._();
     for (final skill in map) {

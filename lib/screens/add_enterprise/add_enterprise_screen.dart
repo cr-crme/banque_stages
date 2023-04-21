@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/address.dart';
 import '/common/models/enterprise.dart';
+import '/common/models/phone_number.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/providers/teachers_provider.dart';
 import '/common/widgets/add_job_button.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
-import '/common/providers/teachers_provider.dart';
 import 'pages/contact_page.dart';
 import 'pages/informations_page.dart';
 import 'pages/jobs_page.dart';
@@ -22,29 +22,43 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   final _jobsKey = GlobalKey<JobsPageState>();
   final _contactKey = GlobalKey<ContactPageState>();
   int _currentStep = 0;
+  final List<StepState> _stepStatus = [
+    StepState.indexed,
+    StepState.indexed,
+    StepState.indexed
+  ];
 
   void _showInvalidFieldsSnakBar([String? message]) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-            message ?? 'Assurez vous que tous les champs soient valides')));
+        content: Text(message ?? 'Remplir tous les champs avec un *.')));
+  }
+
+  void _previousStep() {
+    if (_currentStep == 0) return;
+
+    _currentStep -= 1;
+    setState(() {});
   }
 
   void _nextStep() async {
     bool valid = false;
     String? message;
-    switch (_currentStep) {
-      case 0:
-        valid = _informationsKey.currentState!.validate();
-        break;
-      case 1:
-        valid = _jobsKey.currentState!.validate();
-        break;
-      case 2:
-        message = await _contactKey.currentState!.validate();
-        valid = message == null;
-        break;
+    if (_currentStep >= 0) {
+      message = await _informationsKey.currentState!.validate();
+      valid = message == null;
+      _stepStatus[0] = valid ? StepState.complete : StepState.error;
     }
+    if (_currentStep >= 1) {
+      valid = _jobsKey.currentState!.validate();
+      _stepStatus[1] = valid ? StepState.complete : StepState.error;
+    }
+    if (_currentStep >= 2) {
+      message = await _contactKey.currentState!.validate();
+      valid = message == null;
+      _stepStatus[2] = valid ? StepState.complete : StepState.error;
+    }
+    setState(() {});
 
     if (!valid) {
       _showInvalidFieldsSnakBar(message);
@@ -55,7 +69,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     ScaffoldMessenger.of(context).clearSnackBars();
 
     if (_currentStep == 2) {
-      if (!_informationsKey.currentState!.validate()) {
+      if ((await _informationsKey.currentState!.validate()) != null) {
         setState(() {
           _currentStep = 0;
         });
@@ -66,6 +80,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
         setState(() {
           _currentStep = 1;
         });
+        return;
       }
       _submit();
     } else {
@@ -86,11 +101,10 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       jobs: _jobsKey.currentState!.jobs,
       contactName: _contactKey.currentState!.contactName!,
       contactFunction: _contactKey.currentState!.contactFunction!,
-      contactPhone: _contactKey.currentState!.contactPhone!,
+      contactPhone:
+          PhoneNumber.fromString(_contactKey.currentState!.contactPhone!),
       contactEmail: _contactKey.currentState!.contactEmail!,
-      address: await Address.fromAddress(_contactKey.currentState!.address!),
-      headquartersAddress:
-          await Address.fromAddress(_contactKey.currentState!.address!),
+      address: _informationsKey.currentState!.addressController.address!,
     );
 
     enterprises.add(enterprise);
@@ -113,16 +127,19 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
           onStepCancel: () => Navigator.pop(context),
           steps: [
             Step(
+              state: _stepStatus[0],
               isActive: _currentStep == 0,
               title: const Text('Informations'),
               content: InformationsPage(key: _informationsKey),
             ),
             Step(
+              state: _stepStatus[1],
               isActive: _currentStep == 1,
               title: const Text('Métiers'),
               content: JobsPage(key: _jobsKey),
             ),
             Step(
+              state: _stepStatus[2],
               isActive: _currentStep == 2,
               title: const Text('Contact'),
               content: ContactPage(key: _contactKey),
@@ -134,37 +151,44 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     );
   }
 
-  void _onPressedCancel(ControlsDetails details) async {
-    final answer = await ConfirmPopDialog.show(context);
-    if (!answer) return;
-
-    details.onStepCancel!();
-  }
-
   Widget _controlBuilder(BuildContext context, ControlsDetails details) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Visibility(
             visible: _currentStep == 1,
-            child: AddJobButton(
-                onPressed: () => _jobsKey.currentState!.addJobToForm()),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: AddJobButton(
+                onPressed: () => _jobsKey.currentState!.addJobToForm(),
+                style: Theme.of(context).textButtonTheme.style!.copyWith(
+                    backgroundColor: Theme.of(context)
+                        .elevatedButtonTheme
+                        .style!
+                        .backgroundColor),
+              ),
+            ),
           ),
-          const Expanded(child: SizedBox()),
-          OutlinedButton(
-              onPressed: () => _onPressedCancel(details),
-              child: const Text('Annuler')),
-          const SizedBox(
-            width: 20,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Expanded(child: SizedBox()),
+              if (_currentStep != 0)
+                OutlinedButton(
+                    onPressed: _previousStep, child: const Text('Précédent')),
+              const SizedBox(
+                width: 20,
+              ),
+              TextButton(
+                onPressed: details.onStepContinue,
+                child: _currentStep == 2
+                    ? const Text('Ajouter')
+                    : const Text('Suivant'),
+              )
+            ],
           ),
-          TextButton(
-            onPressed: details.onStepContinue,
-            child: _currentStep == 2
-                ? const Text('Ajouter')
-                : const Text('Suivant'),
-          )
         ],
       ),
     );

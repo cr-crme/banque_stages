@@ -12,7 +12,7 @@ class CommentsExpansionPanel extends ExpansionPanel {
           body: _SstBody(job: job),
           headerBuilder: (context, isExpanded) => ListTile(
             title: const Text(
-              "Autres commentaires",
+              'Autres commentaires',
             ),
             trailing: Container(
               decoration: BoxDecoration(
@@ -27,7 +27,9 @@ class CommentsExpansionPanel extends ExpansionPanel {
                 ],
               ),
               child: IconButton(
-                onPressed: () => addComment(job),
+                onPressed: () {},
+                // TODO bring this back
+                // => addComment(job),
                 icon: const Icon(Icons.add_comment_outlined),
                 color: Colors.blue,
               ),
@@ -50,7 +52,7 @@ class _SstBody extends StatelessWidget {
         child: Column(
           children: job.comments.isEmpty
               ? [
-                  const Text("Il n'y a présentement aucun commentaire"),
+                  const Text('Il n\'y a présentement aucun commentaire'),
                   const SizedBox(height: 16)
                 ]
               : job.comments

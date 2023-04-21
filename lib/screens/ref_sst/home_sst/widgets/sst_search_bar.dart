@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '/common/widgets/autocomplete_options_builder.dart';
 import '/misc/job_data_file_service.dart';
 import '../../specialization_list_risks_and_skills/specialization_list_screen.dart';
 
@@ -30,27 +31,25 @@ class _AutoCompleteSstSearchBar extends StatefulWidget {
 }
 
 class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
-  final _textController = TextEditingController();
-  final _focusNode = FocusNode();
-
-  void _clearText() => _textController.text = '';
+  TextEditingController? _textController;
+  void _clearText(TextEditingController controller) => controller.text = '';
 
   Widget _fieldViewBuilder(
       BuildContext context,
       TextEditingController textEditingController,
       FocusNode focusNode,
       VoidCallback onFieldSubmitted) {
+    _textController = textEditingController;
     return TextFormField(
       decoration: InputDecoration(
           icon: const Icon(Icons.search),
           labelText: 'Rechercher un métier',
-          suffixIcon:
-              IconButton(onPressed: _clearText, icon: const Icon(Icons.clear))),
+          suffixIcon: IconButton(
+              onPressed: () => _clearText(textEditingController),
+              icon: const Icon(Icons.clear))),
       controller: textEditingController,
       focusNode: focusNode,
-      onFieldSubmitted: (String value) {
-        onFieldSubmitted();
-      },
+      onFieldSubmitted: (String value) => onFieldSubmitted(),
     );
   }
 
@@ -66,38 +65,6 @@ class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
             : null)
         .where((e) => e != null)
         .cast<String>();
-  }
-
-  Align _optionsViewBuilder(
-      Iterable<String> options, AutocompleteOnSelected<String> onSelected) {
-    final scrollController = ScrollController();
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Material(
-        child: SizedBox(
-          width: 275,
-          height: 200,
-          child: Scrollbar(
-            thumbVisibility: true,
-            controller: scrollController,
-            child: ListView.builder(
-                controller: scrollController,
-                scrollDirection: Axis.vertical,
-                itemCount: options.length,
-                itemBuilder: (BuildContext ctx, int index) {
-                  final String option = options.elementAt(index);
-
-                  return GestureDetector(
-                    onTap: () => onSelected(option),
-                    child: ListTile(
-                      title: Text(option),
-                    ),
-                  );
-                }),
-          ),
-        ),
-      ),
-    );
   }
 
   List<Specialization> _evaluatedSpecializations() {
@@ -123,21 +90,26 @@ class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
     options
         .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
-    return RawAutocomplete<String>(
-      textEditingController: _textController,
-      focusNode: _focusNode,
+    return Autocomplete<String>(
       fieldViewBuilder: _fieldViewBuilder,
       optionsBuilder: (value) => _optionsBuilder(value, options),
-      onSelected: (choice) => goTo(context, choice, options),
       optionsViewBuilder: (context, onSelected, options) =>
-          _optionsViewBuilder(options, onSelected),
+          OptionsBuilderForAutocomplete(
+        onSelected: onSelected,
+        options: options,
+        optionToString: (String e) => e,
+      ),
+      onSelected: (choice) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        goTo(context, choice, options);
+      },
     );
   }
 
   goTo(BuildContext context, String choice, List<Specialization> options) {
     final index = options.indexWhere((e) => e.idWithName == choice);
 
-    _clearText();
+    if (_textController != null) _clearText(_textController!);
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => SpecializationListScreen(id: options[index].id),
     ));

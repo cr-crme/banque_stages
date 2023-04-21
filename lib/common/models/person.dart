@@ -1,6 +1,7 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
 import '/common/models/address.dart';
+import '/common/models/phone_number.dart';
 
 class Person extends ItemSerializable {
   final String firstName;
@@ -8,7 +9,7 @@ class Person extends ItemSerializable {
   final String lastName;
   final DateTime? dateBirth;
 
-  final String? phone;
+  final PhoneNumber phone;
   final String? email;
   final Address? address;
 
@@ -20,7 +21,7 @@ class Person extends ItemSerializable {
     this.middleName,
     required this.lastName,
     DateTime? dateBirth,
-    this.phone,
+    this.phone = const PhoneNumber(),
     this.email,
     this.address,
   }) : dateBirth = dateBirth ?? DateTime(0);
@@ -29,8 +30,10 @@ class Person extends ItemSerializable {
       : firstName = map['firstName'],
         middleName = map['middleName'],
         lastName = map['lastName'],
-        dateBirth = DateTime.parse(map['birthDate']),
-        phone = map['phone'],
+        dateBirth = map['birthDate'] == -1
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(map['birthDate']),
+        phone = PhoneNumber.fromString(map['phone']),
         email = map['email'],
         address = Address.fromSerialized(map['address']),
         super.fromSerialized(map);
@@ -42,8 +45,8 @@ class Person extends ItemSerializable {
       'firstName': firstName,
       'middleName': middleName,
       'lastName': lastName,
-      'birthDate': dateBirth.toString(),
-      'phone': phone,
+      'birthDate': dateBirth?.millisecondsSinceEpoch ?? -1,
+      'phone': phone.toString(),
       'email': email,
       'address': address?.serializedMap(),
     };
@@ -55,7 +58,7 @@ class Person extends ItemSerializable {
     String? middleName,
     String? lastName,
     DateTime? dateBirth,
-    String? phone,
+    PhoneNumber? phone,
     String? email,
     Address? address,
   }) =>
@@ -69,4 +72,18 @@ class Person extends ItemSerializable {
         email: email ?? this.email,
         address: address ?? this.address,
       );
+
+  Person deepCopy() {
+    return Person(
+      firstName: firstName,
+      middleName: middleName,
+      lastName: lastName,
+      dateBirth: dateBirth == null
+          ? null
+          : DateTime(dateBirth!.year, dateBirth!.month, dateBirth!.day),
+      phone: phone.deepCopy(),
+      email: email,
+      address: address?.deepCopy(),
+    );
+  }
 }

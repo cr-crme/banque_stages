@@ -28,7 +28,7 @@ class DeleteButton extends StatelessWidget {
       alignment: alignment,
       focusNode: focusNode,
       autofocus: autofocus,
-      tooltip: "Supprimer",
+      tooltip: 'Supprimer',
       icon: const Icon(Icons.delete_forever),
       color: Theme.of(context).colorScheme.error,
     );

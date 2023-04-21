@@ -21,29 +21,30 @@ class JobsPageState extends State<JobsPage> {
   bool validate() {
     jobs.clear();
     _formKey.currentState!.save();
+    if (jobs.isEmpty) return false;
+
     return _formKey.currentState!.validate();
   }
 
   Widget _buildNewJobsForm(int index) {
     final key = _jobsForm.keys.toList()[index];
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       key: Key(key.toString()),
       children: [
-        ListTile(
-          visualDensity:
-              const VisualDensity(vertical: VisualDensity.minimumDensity),
-          title: Text(
-            'Métier ${index + 1}',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          trailing: DeleteButton(
-            onPressed: () => setState(() => _jobsForm.remove(key)),
-          ),
+        Row(
+          children: [
+            Text(
+              'Métier ${index + 1}',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            DeleteButton(
+              onPressed: () => setState(() => _jobsForm.remove(key)),
+            ),
+          ],
         ),
         _jobsForm[key]!,
-        const SizedBox(
-          height: 20,
-        ),
+        const SizedBox(height: 20),
       ],
     );
   }

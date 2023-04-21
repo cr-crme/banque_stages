@@ -6,7 +6,7 @@ import '/common/models/internship.dart';
 import '/common/models/visiting_priority.dart';
 
 class InternshipsProvider extends FirebaseListProvided<Internship> {
-  InternshipsProvider() : super(pathToData: "internships") {
+  InternshipsProvider() : super(pathToData: 'internships') {
     initializeFetchingData();
   }
 
@@ -44,7 +44,7 @@ class InternshipsProvider extends FirebaseListProvided<Internship> {
   }
 
   List<Internship> byStudentId(String studentId) {
-    return where((intership) => intership.studentId == studentId).toList();
+    return where((internship) => internship.studentId == studentId).toList();
   }
 
   @override

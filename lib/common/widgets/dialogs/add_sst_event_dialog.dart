@@ -32,7 +32,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Signaler un évènement"),
+      title: const Text('Signaler un évènement'),
       content: Form(
         key: _formKey,
         child: Column(
@@ -46,7 +46,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
                   setState(() => _eventType = SstEventType.pastIncidents),
             ),
             RadioListTile(
-              title: const Text("Une situation dangereuse"),
+              title: const Text('Une situation dangereuse'),
               value: SstEventType.dangerousSituations,
               groupValue: _eventType,
               onChanged: (value) =>
@@ -65,7 +65,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
       actions: [
         OutlinedButton(
           onPressed: _onCancel,
-          child: const Text("Annuler"),
+          child: const Text('Annuler'),
         ),
         TextButton(
           onPressed: _eventType != null ? _onConfirm : null,

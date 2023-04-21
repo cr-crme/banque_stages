@@ -18,17 +18,14 @@ class LowHighSliderFormField extends FormField<double> {
 
   static Widget _builder(FormFieldState<double> state) {
     if (state.value! < min || state.value! > max) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 12),
-        child: Text("Aucune donnée pour l'instant."),
-      );
+      return const Text('Aucune donnée pour l\'instant.');
     }
 
     return SizedBox(
       width: Size.infinite.width,
       child: Row(
         children: [
-          const Text("Faible"),
+          const Text('Faible'),
           Expanded(
             child: Slider(
               value: state.value!,
@@ -40,7 +37,7 @@ class LowHighSliderFormField extends FormField<double> {
               divisions: max - min,
             ),
           ),
-          const Text("Élevé"),
+          const Text('Élevé'),
         ],
       ),
     );

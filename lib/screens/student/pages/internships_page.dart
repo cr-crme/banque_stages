@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '/common/models/internship.dart';
 import '/common/models/student.dart';
-import '/common/models/teacher.dart';
+import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
-import '/common/providers/teachers_provider.dart';
 import '/common/widgets/sub_title.dart';
+import 'widgets/internship_details.dart';
+import 'widgets/internship_documents.dart';
+import 'widgets/internship_skills.dart';
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
@@ -22,44 +23,72 @@ class InternshipsPage extends StatefulWidget {
 }
 
 class InternshipsPageState extends State<InternshipsPage> {
+  final Map<String, bool> _expanded = {};
+  final List<GlobalKey<InternshipDetailsState>> detailKeys = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final allInternships = InternshipsProvider.of(context, listen: false);
+    final internships = allInternships.byStudentId(widget.student.id);
+    for (final _ in internships) {
+      detailKeys.add(GlobalKey<InternshipDetailsState>());
+    }
+  }
+
+  void _prepareExpander(List<Internship> internships) {
+    if (_expanded.length != internships.length) {
+      for (final internship in internships) {
+        _expanded[internship.id] = internship.isActive;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final allInternships = InternshipsProvider.of(context);
     final internships = allInternships.byStudentId(widget.student.id);
+    _prepareExpander(internships);
 
     return ListView.builder(
       itemCount: internships.length,
-      itemBuilder: (context, index) =>
-          Selector<InternshipsProvider, Internship>(
-        builder: (context, internship, _) => ExpansionPanelList(
+      itemBuilder: (context, index) {
+        final internship = internships[internships.length - index - 1];
+        return ExpansionPanelList(
+          expansionCallback: (int panelIndex, bool isExpanded) =>
+              setState(() => _expanded[internship.id] = !isExpanded),
           children: [
             ExpansionPanel(
+              canTapOnHeader: true,
+              isExpanded: _expanded[internship.id]!,
               headerBuilder: (context, isExpanded) => ListTile(
                 title: SubTitle(
-                    'Année ${internship.date.start.year}-${internship.date.end.year}',
-                    top: 12),
+                  '${DateFormat('dd MMMM yyyy', 'fr_CA').format(internship.date.start)} - '
+                  '${DateFormat('dd MMMM yyyy', 'fr_CA').format(internship.date.end)}',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                ),
+                subtitle: Text(EnterprisesProvider.of(context)
+                    .fromId(internship.enterpriseId)
+                    .jobs
+                    .fromId(internship.jobId)
+                    .specialization
+                    .idWithName),
               ),
               body: Column(
-                children: [
-                  ListTile(
-                    title: Text(
-                        AppLocalizations.of(context)!.internship_teacherName),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Selector<TeachersProvider, Teacher>(
-                      builder: (context, teacher, _) => Text(teacher.fullName),
-                      selector: (context, teachers) =>
-                          teachers[internship.teacherId],
-                    ),
-                  )
-                ],
-              ),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InternshipDetails(
+                        key: detailKeys[index], internship: internship),
+                    InternshipSkills(internship: internship),
+                    InternshipDocuments(internship: internship),
+                  ]),
             ),
           ],
-        ),
-        selector: (context, internships) => internships[index],
-      ),
+        );
+      },
     );
   }
 }

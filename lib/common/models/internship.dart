@@ -3,35 +3,130 @@ import 'package:flutter/material.dart';
 
 import '/common/models/person.dart';
 import '/common/models/visiting_priority.dart';
+import 'internship_evaluation_skill.dart';
+import 'internship_evaluation_attitude.dart';
 import 'schedule.dart';
 
+class _MutableElements extends ItemSerializable {
+  _MutableElements({
+    required this.versionDate,
+    required this.supervisor,
+    required this.date,
+    required this.weeklySchedules,
+    required this.protections,
+    required this.uniform,
+  });
+  final DateTime versionDate;
+  final Person supervisor;
+  final DateTimeRange date;
+  final List<WeeklySchedule> weeklySchedules;
+  final List<String> protections;
+  final String uniform;
+
+  _MutableElements.fromSerialized(map)
+      : versionDate = DateTime.fromMillisecondsSinceEpoch(map['versionDate']),
+        supervisor = Person.fromSerialized(map['name']),
+        date = DateTimeRange(
+            start: DateTime.fromMillisecondsSinceEpoch(map['date'][0]),
+            end: DateTime.fromMillisecondsSinceEpoch(map['date'][1])),
+        weeklySchedules = (map['schedule'] as List)
+            .map((e) => WeeklySchedule.fromSerialized(e))
+            .toList(),
+        protections = ItemSerializable.listFromSerialized(map['protections']),
+        uniform = map['uniform'],
+        super.fromSerialized(map);
+
+  @override
+  Map<String, dynamic> serializedMap() => {
+        'versionDate': versionDate.millisecondsSinceEpoch,
+        'name': supervisor.serializedMap(),
+        'date': [
+          date.start.millisecondsSinceEpoch,
+          date.end.millisecondsSinceEpoch
+        ],
+        'schedule': weeklySchedules.map((e) => e.serializedMap()).toList(),
+        'protections': protections,
+        'uniform': uniform,
+      };
+
+  _MutableElements deepCopy() {
+    return _MutableElements(
+        versionDate: DateTime.fromMillisecondsSinceEpoch(
+            versionDate.millisecondsSinceEpoch),
+        supervisor: supervisor.deepCopy(),
+        date: DateTimeRange(start: date.start, end: date.end),
+        weeklySchedules: weeklySchedules.map((e) => e.deepCopy()).toList(),
+        protections: protections.map((e) => e).toList(),
+        uniform: uniform);
+  }
+}
+
 class Internship extends ItemSerializable {
+  // Elements fixed across versions of the same stage
   final String studentId;
   final String teacherId;
-  final String previousTeacherId; // Keep track of teacherId while transfering
-  final bool isTransfering;
 
   final String enterpriseId;
   final String jobId; // Main job attached to the enterprise
   final List<String>
-      extraSpecializationId; // Any extra jobs added to the internship
-  final Person supervisor;
-  final DateTimeRange date;
+      extraSpecializationsId; // Any extra jobs added to the internship
+  final int expectedLength;
 
-  // The inner list is a semester schedule.
-  // The outer list is if there are multiple schedules during a semester
-  final List<List<Schedule>> schedule;
+  // Elements that can be modified (which increase the version number, but
+  // do not require a completely new internship contract)
+  final List<_MutableElements> _mutables;
+  int get nbVersions => _mutables.length;
+  DateTime get versionDate => _mutables.last.versionDate;
+  DateTime versionDateFrom(int version) => _mutables[version].versionDate;
+  Person get supervisor => _mutables.last.supervisor;
+  Person supervisorFrom(int version) => _mutables[version].supervisor;
+  DateTimeRange get date => _mutables.last.date;
+  DateTimeRange dateFrom(int version) => _mutables[version].date;
+  List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
+  List<WeeklySchedule> weeklySchedulesFrom(int version) =>
+      _mutables[version].weeklySchedules;
+  List<String> get protections => _mutables.last.protections;
+  List<String> protectionsFrom(int version) => _mutables[version].protections;
+  String get uniform => _mutables.last.uniform;
+  String uniformFrom(int version) => _mutables[version].uniform;
 
-  final List<String> protection;
-  final String uniform;
-
+  // Elements that are parts of the inner working of the internship (can be
+  // modify, but won't generate a new version)
+  final int achievedLength;
+  final String previousTeacherId; // Keep track of teacherId while transfering
+  final bool isTransfering;
   final VisitingPriority visitingPriority;
   final String teacherNotes;
+  final DateTime? endDate;
+  final List<InternshipEvaluationSkill> skillEvaluations;
+  final List<InternshipEvaluationAttitude> attitudeEvaluations;
 
-  final bool isClosed; // Finished and evaluation is done
+  bool get isClosed =>
+      endDate != null &&
+      skillEvaluations.isNotEmpty &&
+      attitudeEvaluations.isNotEmpty;
   bool get isEvaluationPending =>
-      !isClosed && DateTime.now().compareTo(date.end) >= 0;
-  bool get isActive => !isClosed && DateTime.now().compareTo(date.end) < 0;
+      endDate != null && (skillEvaluations.isEmpty || skillEvaluations.isEmpty);
+  bool get isActive => endDate == null;
+
+  Internship._({
+    required super.id,
+    required this.studentId,
+    required this.teacherId,
+    required this.previousTeacherId,
+    required this.isTransfering,
+    required this.enterpriseId,
+    required this.jobId,
+    required this.extraSpecializationsId,
+    required List<_MutableElements> mutables,
+    required this.expectedLength,
+    required this.achievedLength,
+    required this.visitingPriority,
+    required this.teacherNotes,
+    required this.endDate,
+    required this.skillEvaluations,
+    required this.attitudeEvaluations,
+  }) : _mutables = mutables;
 
   Internship({
     super.id,
@@ -41,16 +136,30 @@ class Internship extends ItemSerializable {
     this.isTransfering = false,
     required this.enterpriseId,
     required this.jobId,
-    required this.extraSpecializationId,
-    required this.supervisor,
-    required this.date,
-    required this.schedule,
-    required this.protection,
-    required this.uniform,
+    required this.extraSpecializationsId,
+    required DateTime versionDate,
+    required Person supervisor,
+    required DateTimeRange date,
+    required List<WeeklySchedule> weeklySchedules,
+    required List<String> protections,
+    required String uniform,
+    required this.expectedLength,
+    required this.achievedLength,
     required this.visitingPriority,
     this.teacherNotes = '',
-    required this.isClosed,
-  }) : previousTeacherId = previousTeacherId ?? teacherId;
+    this.endDate,
+    this.skillEvaluations = const [],
+    this.attitudeEvaluations = const [],
+  })  : previousTeacherId = previousTeacherId ?? teacherId,
+        _mutables = [
+          _MutableElements(
+              versionDate: versionDate,
+              supervisor: supervisor,
+              date: date,
+              weeklySchedules: weeklySchedules,
+              protections: protections,
+              uniform: uniform)
+        ];
 
   Internship.fromSerialized(map)
       : studentId = map['student'],
@@ -59,21 +168,31 @@ class Internship extends ItemSerializable {
         isTransfering = map['isTransfering'],
         enterpriseId = map['enterprise'],
         jobId = map['jobId'],
-        extraSpecializationId = map['extraSpecializationId'] ?? [],
-        supervisor = Person.fromSerialized(map['name']),
-        date = DateTimeRange(
-            start: DateTime.parse(map['date'][0]),
-            end: DateTime.parse(map['date'][1])),
-        schedule = (map['schedule'] as List)
-            .map<List<Schedule>>((e2) => (e2 as List)
-                .map<Schedule>((e) => Schedule.fromSerialized(e))
-                .toList())
+        extraSpecializationsId = map['extraSpecializationsId'] == -1
+            ? []
+            : (map['extraSpecializationsId'] as List)
+                .map((e) => e as String)
+                .toList(),
+        _mutables = (map['mutables'] as List)
+            .map(((e) => _MutableElements.fromSerialized(e)))
             .toList(),
-        protection = ItemSerializable.listFromSerialized(map['protection']),
-        uniform = map['uniform'],
+        expectedLength = map['expectedLength'],
+        achievedLength = map['achievedLength'],
         visitingPriority = VisitingPriority.values[map['priority']],
         teacherNotes = map['teacherNotes'],
-        isClosed = map['isClosed'],
+        endDate = map['endDate'] == -1
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(map['endDate']),
+        skillEvaluations = map['skillEvaluation'] == null
+            ? []
+            : (map['skillEvaluation'] as List)
+                .map((e) => InternshipEvaluationSkill.fromSerialized(e))
+                .toList(),
+        attitudeEvaluations = map['attitudeEvaluation'] == null
+            ? []
+            : (map['attitudeEvaluation'] as List)
+                .map((e) => InternshipEvaluationAttitude.fromSerialized(e))
+                .toList(),
         super.fromSerialized(map);
 
   @override
@@ -86,19 +205,36 @@ class Internship extends ItemSerializable {
       'isTransfering': isTransfering,
       'enterprise': enterpriseId,
       'jobId': jobId,
-      'extraSpecializationId': extraSpecializationId,
-      'name': supervisor.serializedMap(),
-      'date': [date.start.toString(), date.end.toString()],
-      'schedule': schedule
-          .map<List<Map>>(
-              (e) => e.map<Map>((e2) => e2.serializedMap()).toList())
-          .toList(),
-      'protection': protection,
-      'uniform': uniform,
+      'extraSpecializationsId':
+          extraSpecializationsId.isEmpty ? -1 : extraSpecializationsId,
+      'mutables': _mutables.map((e) => e.serializedMap()).toList(),
+      'expectedLength': expectedLength,
+      'achievedLength': achievedLength,
       'priority': visitingPriority.index,
       'teacherNotes': teacherNotes,
-      'isClosed': isClosed,
+      'endDate': endDate?.millisecondsSinceEpoch ?? -1,
+      'skillEvaluation':
+          skillEvaluations.map((e) => e.serializedMap()).toList(),
+      'attitudeEvaluation':
+          attitudeEvaluations.map((e) => e.serializedMap()).toList(),
     };
+  }
+
+  void addVersion({
+    required DateTime versionDate,
+    required Person supervisor,
+    required DateTimeRange date,
+    required List<WeeklySchedule> weeklySchedules,
+    required List<String> protections,
+    required String uniform,
+  }) {
+    _mutables.add(_MutableElements(
+        versionDate: versionDate,
+        supervisor: supervisor,
+        date: date,
+        weeklySchedules: weeklySchedules,
+        protections: protections,
+        uniform: uniform));
   }
 
   Internship copyWith({
@@ -109,34 +245,75 @@ class Internship extends ItemSerializable {
     bool? isTransfering,
     String? enterpriseId,
     String? jobId,
-    List<String>? extraSpecializationId,
+    List<String>? extraSpecializationsId,
     String? program,
     Person? supervisor,
     DateTimeRange? date,
-    List<List<Schedule>>? schedule,
-    List<String>? protection,
+    List<WeeklySchedule>? weeklySchedules,
+    List<String>? protections,
     String? uniform,
+    int? expectedLength,
+    int? achievedLength,
     VisitingPriority? visitingPriority,
     String? teacherNotes,
-    bool? isClosed,
-  }) =>
-      Internship(
-        id: id ?? this.id,
-        studentId: studentId ?? this.studentId,
-        teacherId: teacherId ?? this.teacherId,
-        previousTeacherId: previousTeacherId ?? this.previousTeacherId,
-        isTransfering: isTransfering ?? this.isTransfering,
-        enterpriseId: enterpriseId ?? this.enterpriseId,
-        jobId: jobId ?? this.jobId,
-        extraSpecializationId:
-            extraSpecializationId ?? this.extraSpecializationId,
-        supervisor: supervisor ?? this.supervisor,
-        date: date ?? this.date,
-        schedule: schedule ?? this.schedule,
-        protection: protection ?? this.protection,
-        uniform: uniform ?? this.uniform,
-        visitingPriority: visitingPriority ?? this.visitingPriority,
-        teacherNotes: teacherNotes ?? this.teacherNotes,
-        isClosed: isClosed ?? this.isClosed,
-      );
+    DateTime? endDate,
+    List<InternshipEvaluationSkill>? skillEvaluations,
+    List<InternshipEvaluationAttitude>? attitudeEvaluations,
+  }) {
+    if (supervisor != null ||
+        date != null ||
+        weeklySchedules != null ||
+        protections != null ||
+        uniform != null) {
+      throw '[supervisor], [date], [weeklySchedules], [protections] or [uniform] '
+          'should not be changed via [copyWith], but using [addVersion]';
+    }
+    return Internship._(
+      id: id ?? this.id,
+      studentId: studentId ?? this.studentId,
+      teacherId: teacherId ?? this.teacherId,
+      previousTeacherId: previousTeacherId ?? this.previousTeacherId,
+      isTransfering: isTransfering ?? this.isTransfering,
+      enterpriseId: enterpriseId ?? this.enterpriseId,
+      jobId: jobId ?? this.jobId,
+      extraSpecializationsId:
+          extraSpecializationsId ?? this.extraSpecializationsId,
+      mutables: _mutables,
+      expectedLength: expectedLength ?? this.expectedLength,
+      achievedLength: achievedLength ?? this.achievedLength,
+      visitingPriority: visitingPriority ?? this.visitingPriority,
+      teacherNotes: teacherNotes ?? this.teacherNotes,
+      endDate: endDate ?? this.endDate,
+      skillEvaluations: skillEvaluations ?? this.skillEvaluations,
+      attitudeEvaluations: attitudeEvaluations ?? this.attitudeEvaluations,
+    );
+  }
+
+  Internship deepCopy() {
+    return Internship._(
+      id: id,
+      studentId: studentId,
+      teacherId: teacherId,
+      previousTeacherId: previousTeacherId,
+      isTransfering: isTransfering,
+      enterpriseId: enterpriseId,
+      jobId: jobId,
+      extraSpecializationsId: extraSpecializationsId.map((e) => e).toList(),
+      mutables: _mutables.map((e) => e).toList(),
+      expectedLength: expectedLength,
+      achievedLength: achievedLength,
+      visitingPriority: VisitingPriority.values[visitingPriority.index],
+      teacherNotes: teacherNotes,
+      endDate: endDate == null
+          ? null
+          : DateTime(
+              endDate!.year,
+              endDate!.month,
+              endDate!.day,
+            ),
+      skillEvaluations: skillEvaluations.map((e) => e.deepCopy()).toList(),
+      attitudeEvaluations:
+          attitudeEvaluations.map((e) => e.deepCopy()).toList(),
+    );
+  }
 }

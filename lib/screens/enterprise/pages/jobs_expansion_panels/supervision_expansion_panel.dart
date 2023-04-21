@@ -11,7 +11,7 @@ class SupervisionExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _SupervisionBody(job: job),
           headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text("Type d'encadrement des stagiaires"),
+            title: Text('Type d\'encadrement des stagiaires'),
           ),
         );
 }
@@ -26,25 +26,25 @@ class _SupervisionBody extends StatelessWidget {
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: const EdgeInsets.only(left: 24.0, right: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _RatingBar(
               title:
-                  "Accueil de stagiaires avec un trouble du spectre de l'autisme (TSA)",
+                  'Accueil de stagiaires avec un trouble du spectre de l\'autisme (TSA)',
               rating: job.welcomingTsa,
             ),
             _RatingBar(
-              title: "Accueil de stagiaires avec un trouble du langage",
+              title: 'Accueil de stagiaires avec un trouble du langage',
               rating: job.welcomingCommunication,
             ),
             _RatingBar(
-              title: "Accueil de stagiaires avec une déficience intellectuelle",
+              title: 'Accueil de stagiaires avec une déficience intellectuelle',
               rating: job.welcomingMentalDeficiency,
             ),
             _RatingBar(
-              title: "Accueil de stagiaires avec un trouble de santé mentale",
+              title: 'Accueil de stagiaires avec un trouble de santé mentale',
               rating: job.welcomingMentalHealthIssue,
             ),
           ],
@@ -65,37 +65,28 @@ class _RatingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: rating < 0 || rating > 5
-                ?
-                // If value is invalid
-                const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Text("Aucune valeur pour l'instant."),
-                  )
-                :
-                // If value is valid
-                RatingBarIndicator(
-                    rating: rating,
-                    itemBuilder: (context, index) => Icon(
-                      Icons.star,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        rating < 0 || rating > 5
+            ?
+            // If value is invalid
+            const Text('Aucune donnée pour l\'instant.')
+            :
+            // If value is valid
+            RatingBarIndicator(
+                rating: rating,
+                itemBuilder: (context, index) => Icon(
+                  Icons.star,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+        const SizedBox(height: 12),
+      ],
     );
   }
 }

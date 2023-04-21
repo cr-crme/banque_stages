@@ -32,7 +32,7 @@ class JobsPage extends StatefulWidget {
 class JobsPageState extends State<JobsPage> {
   final Map<String, List> _expandedSections = {};
 
-  void addJob() async {
+  Future<void> addJob() async {
     final provider = context.read<EnterprisesProvider>();
     final newJob = await showDialog(
         context: context, builder: (context) => const JobCreatorDialog());

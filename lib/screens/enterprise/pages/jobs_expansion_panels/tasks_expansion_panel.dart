@@ -11,7 +11,7 @@ class TasksExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _TasksBody(job: job),
           headerBuilder: (context, isExpanded) => const ListTile(
-              title: Text("Tâches et exigences envers les stagiaires")),
+              title: Text('Tâches et exigences envers les stagiaires')),
         );
 }
 
@@ -25,57 +25,49 @@ class _TasksBody extends StatelessWidget {
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: const EdgeInsets.only(left: 24, right: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Variété des tâches",
-              style: Theme.of(context).textTheme.bodyLarge,
+              'Variété des tâches',
+              style: Theme.of(context).textTheme.titleSmall,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: LowHighSliderFormField(
-                initialValue: job.taskVariety,
-                enabled: false,
-              ),
+            LowHighSliderFormField(
+              initialValue: job.taskVariety,
+              enabled: false,
             ),
+            const SizedBox(height: 12),
             Text(
-              "Habiletés obligatoires",
-              style: Theme.of(context).textTheme.bodyLarge,
+              'Habiletés obligatoires',
+              style: Theme.of(context).textTheme.titleSmall,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: Column(
-                children: job.skillsRequired.isEmpty
-                    ? [const Text("Aucune habileté requise")]
-                    : job.skillsRequired
-                        .map((skills) => Text("- $skills"))
-                        .toList(),
-              ),
+            Column(
+              children: job.skillsRequired.isEmpty
+                  ? [const Text('Aucune habileté requise')]
+                  : job.skillsRequired
+                      .map((skills) => Text('- $skills'))
+                      .toList(),
             ),
+            const SizedBox(height: 12),
             Text(
-              "Niveau d’autonomie souhaité",
-              style: Theme.of(context).textTheme.bodyLarge,
+              'Niveau d\'autonomie souhaité',
+              style: Theme.of(context).textTheme.titleSmall,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: LowHighSliderFormField(
-                initialValue: job.autonomyExpected,
-                enabled: false,
-              ),
+            LowHighSliderFormField(
+              initialValue: job.autonomyExpected,
+              enabled: false,
             ),
+            const SizedBox(height: 12),
             Text(
-              "Rendement attendu",
-              style: Theme.of(context).textTheme.bodyLarge,
+              'Rendement attendu',
+              style: Theme.of(context).textTheme.titleSmall,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: LowHighSliderFormField(
-                initialValue: job.efficiencyWanted,
-                enabled: false,
-              ),
+            LowHighSliderFormField(
+              initialValue: job.efficiencyWanted,
+              enabled: false,
             ),
+            const SizedBox(height: 12),
           ],
         ),
       ),

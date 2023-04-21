@@ -10,7 +10,7 @@ class PrerequisitesExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _PrerequisitesBody(job: job),
           headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text("Prérequis pour le recrutement"),
+            title: Text('Prérequis pour le recrutement'),
           ),
         );
 }
@@ -25,42 +25,36 @@ class _PrerequisitesBody extends StatelessWidget {
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: const EdgeInsets.only(left: 24, right: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Âge minimum",
-              style: Theme.of(context).textTheme.bodyLarge,
+            const Text(
+              'Âge minimum',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: Text("${job.minimalAge} ans"),
+            Text('${job.minimalAge} ans'),
+            const SizedBox(height: 12),
+            const Text(
+              'Uniforme en vigueur',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(
-              "Uniforme en vigueur",
-              style: Theme.of(context).textTheme.bodyLarge,
+            job.uniform.isEmpty
+                ? const Text('Aucun uniforme requis')
+                : Text(job.uniform),
+            const SizedBox(height: 12),
+            const Text(
+              'L\'entreprise a demandé :',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: job.uniform.isEmpty
-                  ? const Text("Aucun uniforme requis")
-                  : Text(job.uniform),
+            Column(
+              children: job.requirements.isEmpty
+                  ? [const Text('Il n\'y a aucun prérequis pour ce métier')]
+                  : job.requirements
+                      .map((requirement) => Text('- $requirement'))
+                      .toList(),
             ),
-            Text(
-              "L'entreprise a demandé :",
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: Column(
-                children: job.requirements.isEmpty
-                    ? [const Text("Il n'y a aucun prérequis pour ce métier")]
-                    : job.requirements
-                        .map((requirement) => Text("- $requirement"))
-                        .toList(),
-              ),
-            ),
+            const SizedBox(height: 12),
           ],
         ),
       ),

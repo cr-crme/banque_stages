@@ -199,7 +199,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Élèves à superviser'),
+        title: const Text('Tableau des supervisions'),
         actions: [
           IconButton(onPressed: _goToItinerary, icon: const Icon(Icons.route))
         ],

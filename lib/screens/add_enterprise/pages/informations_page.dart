@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '/common/widgets/address_list_tile.dart';
 import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import '/common/widgets/form_fields/share_with_picker_form_field.dart';
-import '/misc/form_service.dart';
 
 class InformationsPage extends StatefulWidget {
   const InformationsPage({super.key});
@@ -15,15 +15,23 @@ class InformationsPageState extends State<InformationsPage> {
   final _formKey = GlobalKey<FormState>();
 
   String? name;
+  final addressController = AddressController();
   String? neq;
 
   Set<String> activityTypes = {};
 
   String? shareWith;
 
-  bool validate() {
+  Future<String?> validate() async {
+    await addressController.requestValidation();
+
+    if (!_formKey.currentState!.validate()) {
+      return 'Remplir tous les champs avec un *.';
+    }
+
     _formKey.currentState!.save();
-    return _formKey.currentState!.validate();
+
+    return null;
   }
 
   @override
@@ -33,32 +41,31 @@ class InformationsPageState extends State<InformationsPage> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            ListTile(
-              title: TextFormField(
-                decoration: const InputDecoration(labelText: '* Nom'),
-                validator: FormService.textNotEmptyValidator,
-                onSaved: (name) => this.name = name,
-              ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: '* Nom'),
+              validator: (text) =>
+                  text!.isEmpty ? 'Ajouter le nom de l\'entreprise.' : null,
+              onSaved: (name) => this.name = name,
             ),
-            ListTile(
-              title: TextFormField(
-                decoration: const InputDecoration(labelText: 'NEQ'),
-                validator: null,
-                onSaved: (neq) => this.neq = neq,
-                keyboardType: TextInputType.number,
-              ),
+            AddressListTile(
+              title: 'Adresse de l\'établissement',
+              isMandatory: true,
+              enabled: true,
+              addressController: addressController,
             ),
-            ListTile(
-              title: ActivityTypesPickerFormField(
-                onSaved: (Set<String>? activityTypes) =>
-                    setState(() => this.activityTypes = activityTypes!),
-              ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'NEQ'),
+              validator: null,
+              onSaved: (neq) => this.neq = neq,
+              keyboardType: TextInputType.number,
             ),
-            ListTile(
-              title: ShareWithPickerFormField(
-                onSaved: (String? shareWith) =>
-                    setState(() => this.shareWith = shareWith),
-              ),
+            ActivityTypesPickerFormField(
+              onSaved: (Set<String>? activityTypes) =>
+                  setState(() => this.activityTypes = activityTypes!),
+            ),
+            ShareWithPickerFormField(
+              onSaved: (String? shareWith) =>
+                  setState(() => this.shareWith = shareWith),
             ),
           ],
         ),
