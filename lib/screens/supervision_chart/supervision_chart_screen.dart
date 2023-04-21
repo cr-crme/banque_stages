@@ -296,11 +296,11 @@ class _StudentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final enterprise = internships.isNotEmpty
+    final enterprise = internships.isNotEmpty && internships.last.isActive
         ? EnterprisesProvider.of(context, listen: false)
             .fromId(internships.last.enterpriseId)
         : null;
-    final specialization = internships.isNotEmpty
+    final specialization = internships.isNotEmpty && internships.last.isActive
         ? enterprise?.jobs.fromId(internships.last.jobId).specialization
         : null;
 
@@ -330,9 +330,8 @@ class _StudentTile extends StatelessWidget {
             ),
           ],
         ),
-        trailing: internships.isEmpty
-            ? null
-            : Ink(
+        trailing: internships.isNotEmpty && internships.last.isActive
+            ? Ink(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: const [
@@ -355,7 +354,8 @@ class _StudentTile extends StatelessWidget {
                     size: 30,
                   ),
                 ),
-              ),
+              )
+            : null,
       ),
     );
   }
