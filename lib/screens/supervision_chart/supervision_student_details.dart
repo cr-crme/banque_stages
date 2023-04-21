@@ -6,6 +6,7 @@ import '/common/models/internship.dart';
 import '/common/models/protections.dart';
 import '/common/models/schedule.dart';
 import '/common/models/student.dart';
+import '/common/models/uniform.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
@@ -405,9 +406,9 @@ class _Requirements extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 32.0),
-          child: internship.uniform.isEmpty
+          child: internship.uniform.status == UniformStatus.none
               ? const Text('Aucun')
-              : Text(internship.uniform),
+              : Text(internship.uniform.uniform),
         ),
       ],
     );

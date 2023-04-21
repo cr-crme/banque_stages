@@ -8,6 +8,7 @@ import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
 import '/common/models/protections.dart';
 import '/common/models/schedule.dart';
+import '/common/models/uniform.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
@@ -32,7 +33,8 @@ class _InternshipController {
         initialProtectionsStatus = internship.protections.status,
         initialProtections =
             internship.protections.protections.map((e) => e).toList(),
-        initialUniform = internship.uniform;
+        initialUniformStatus = internship.uniform.status,
+        initialUniform = internship.uniform.uniform;
 
   bool get hasChanged =>
       scheduleController.hasChanged ||
@@ -129,15 +131,17 @@ class _InternshipController {
   }
 
   bool _uniformHasChanged = false;
+  final UniformStatus initialUniformStatus;
   final String initialUniform;
   late final uniformController = TextEditingController(text: initialUniform);
-  String get uniform => uniformController.text;
-  late bool _hasUniform = initialUniform.isNotEmpty;
-  bool get hasUniform => _hasUniform;
-  set hasUniform(value) {
-    _hasUniform = value;
+  Uniform get uniform =>
+      Uniform(status: uniformStatus, uniform: uniformController.text);
+  late UniformStatus _uniformStatus = initialUniformStatus;
+  UniformStatus get uniformStatus => _uniformStatus;
+  set uniformStatus(value) {
+    _uniformStatus = value;
     _uniformHasChanged = true;
-    if (!_hasUniform) uniformController.text = '';
+    if (_uniformStatus == UniformStatus.none) uniformController.text = '';
   }
 }
 
@@ -554,10 +558,11 @@ class _InternshipBody extends StatelessWidget {
         children: [
           const Text('Uniforme requis', style: _titleStyle),
           if (editMode)
-            _UniformRequiredChoser(internshipController: internshipController),
-          if (!editMode && internship.uniform.isEmpty) const Text('Aucun'),
-          if (!editMode && internship.uniform.isNotEmpty)
-            Text(internship.uniform),
+            _UniformRequiredChooser(internshipController: internshipController),
+          if (!editMode && internship.uniform.status == UniformStatus.none)
+            const Text('Aucun'),
+          if (!editMode && internship.uniform.status != UniformStatus.none)
+            Text(internship.uniform.uniform),
         ],
       ),
     );
@@ -723,43 +728,51 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
   }
 }
 
-class _UniformRequiredChoser extends StatefulWidget {
-  const _UniformRequiredChoser({required this.internshipController});
+class _UniformRequiredChooser extends StatefulWidget {
+  const _UniformRequiredChooser({required this.internshipController});
 
   final _InternshipController internshipController;
 
   @override
-  State<_UniformRequiredChoser> createState() => _UniformRequiredChoserState();
+  State<_UniformRequiredChooser> createState() =>
+      _UniformRequiredChooserState();
 }
 
-class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
+class _UniformRequiredChooserState extends State<_UniformRequiredChooser> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
-          child: Row(
+          child: Column(
             children: [
-              SizedBox(
-                width: 125,
-                child: RadioListTile(
-                  value: true,
-                  groupValue: widget.internshipController.hasUniform,
-                  onChanged: (bool? newValue) => setState(
-                      () => widget.internshipController.hasUniform = newValue!),
-                  title: const Text('Oui'),
-                ),
+              RadioListTile<UniformStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: UniformStatus.suppliedByEnterprise,
+                groupValue: widget.internshipController.uniformStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.uniformStatus = newValue!),
+                title: Text(UniformStatus.suppliedByEnterprise.name),
               ),
-              SizedBox(
-                width: 125,
-                child: RadioListTile(
-                  value: false,
-                  groupValue: widget.internshipController.hasUniform,
-                  onChanged: (bool? newValue) => setState(
-                      () => widget.internshipController.hasUniform = newValue!),
-                  title: const Text('Non'),
-                ),
+              RadioListTile<UniformStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: UniformStatus.suppliedByStudent,
+                groupValue: widget.internshipController.uniformStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.uniformStatus = newValue!),
+                title: Text(UniformStatus.suppliedByStudent.name),
+              ),
+              RadioListTile<UniformStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: UniformStatus.none,
+                groupValue: widget.internshipController.uniformStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.uniformStatus = newValue!),
+                title: Text(UniformStatus.none.name),
               ),
             ],
           ),
@@ -767,7 +780,8 @@ class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
         SizedBox(
           width: MediaQuery.of(context).size.width * 3 / 4,
           child: Visibility(
-            visible: widget.internshipController.hasUniform,
+            visible:
+                widget.internshipController.uniformStatus != UniformStatus.none,
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,

@@ -15,6 +15,7 @@ import '/common/models/schedule.dart';
 import '/common/models/school.dart';
 import '/common/models/student.dart';
 import '/common/models/teacher.dart';
+import '/common/models/uniform.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
@@ -861,7 +862,10 @@ Future<void> addDummyInterships(
       ],
       status: ProtectionsStatus.suppliedByEnterprise,
     ),
-    uniform: 'Il faut s\'habiller de façon à ce que tous soient identiques',
+    uniform: Uniform(
+        status: UniformStatus.suppliedByEnterprise,
+        uniform:
+            'Il faut s\'habiller de façon à ce que tous soient identiques'),
   ));
 
   period = DateTimeRange(
@@ -914,7 +918,7 @@ Future<void> addDummyInterships(
       ),
     ],
     protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: '',
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -960,7 +964,7 @@ Future<void> addDummyInterships(
       ),
     ],
     protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: '',
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -1001,7 +1005,7 @@ Future<void> addDummyInterships(
       ),
     ],
     protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: '',
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -1042,7 +1046,7 @@ Future<void> addDummyInterships(
       ),
     ],
     protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: '',
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -1093,7 +1097,7 @@ Future<void> addDummyInterships(
       ),
     ],
     protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: '',
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -1145,7 +1149,7 @@ Future<void> addDummyInterships(
       ),
     ],
     protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: '',
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   await _waitForDatabaseUpdate(internships, 7);

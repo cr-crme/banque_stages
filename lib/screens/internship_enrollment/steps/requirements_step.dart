@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '/common/models/protections.dart';
+import '/common/models/uniform.dart';
 import '/common/widgets/sub_title.dart';
 
 class RequirementsStep extends StatefulWidget {
@@ -55,10 +56,11 @@ class RequirementsStepState extends State<RequirementsStep> {
             _otherProtectionsText ?? ''
         ];
 
-  bool _uniformRequired = false;
+  UniformStatus uniformStatus = UniformStatus.none;
   String? _uniform;
 
-  String get uniform => _uniformRequired ? _uniform ?? '' : '';
+  String get uniform =>
+      uniformStatus == UniformStatus.none ? '' : _uniform ?? '';
 
   @override
   Widget build(BuildContext context) {
@@ -188,33 +190,40 @@ class RequirementsStepState extends State<RequirementsStep> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 12.0),
-                  child: Row(
+                  child: Column(
                     children: [
-                      SizedBox(
-                        width: 125,
-                        child: RadioListTile(
-                          value: true,
-                          groupValue: _uniformRequired,
-                          onChanged: (bool? newValue) =>
-                              setState(() => _uniformRequired = newValue!),
-                          title: const Text('Oui'),
-                        ),
+                      RadioListTile<UniformStatus>(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        value: UniformStatus.suppliedByEnterprise,
+                        groupValue: uniformStatus,
+                        onChanged: (newValue) =>
+                            setState(() => uniformStatus = newValue!),
+                        title: Text(UniformStatus.suppliedByEnterprise.name),
                       ),
-                      SizedBox(
-                        width: 125,
-                        child: RadioListTile(
-                          value: false,
-                          groupValue: _uniformRequired,
-                          onChanged: (bool? newValue) =>
-                              setState(() => _uniformRequired = newValue!),
-                          title: const Text('Non'),
-                        ),
+                      RadioListTile<UniformStatus>(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        value: UniformStatus.suppliedByStudent,
+                        groupValue: uniformStatus,
+                        onChanged: (newValue) =>
+                            setState(() => uniformStatus = newValue!),
+                        title: Text(UniformStatus.suppliedByStudent.name),
+                      ),
+                      RadioListTile<UniformStatus>(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        value: UniformStatus.none,
+                        groupValue: uniformStatus,
+                        onChanged: (newValue) =>
+                            setState(() => uniformStatus = newValue!),
+                        title: Text(UniformStatus.none.name),
                       ),
                     ],
                   ),
                 ),
                 Visibility(
-                  visible: _uniformRequired,
+                  visible: uniformStatus != UniformStatus.none,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 24),
                     child: Column(
@@ -229,9 +238,11 @@ class RequirementsStepState extends State<RequirementsStep> {
                           onChanged: (text) => _uniform = text,
                           minLines: 2,
                           maxLines: null,
-                          validator: (text) => _uniformRequired && text!.isEmpty
-                              ? 'Préciser l\'uniforme.'
-                              : null,
+                          validator: (text) =>
+                              uniformStatus != UniformStatus.none &&
+                                      text!.isEmpty
+                                  ? 'Préciser l\'uniforme.'
+                                  : null,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                           ),

@@ -2,10 +2,11 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/person.dart';
-import 'protections.dart';
+import '/common/models/uniform.dart';
 import '/common/models/visiting_priority.dart';
 import 'internship_evaluation_attitude.dart';
 import 'internship_evaluation_skill.dart';
+import 'protections.dart';
 import 'schedule.dart';
 
 class _MutableElements extends ItemSerializable {
@@ -22,7 +23,7 @@ class _MutableElements extends ItemSerializable {
   final DateTimeRange date;
   final List<WeeklySchedule> weeklySchedules;
   final Protections protections;
-  final String uniform;
+  final Uniform uniform;
 
   _MutableElements.fromSerialized(map)
       : versionDate = DateTime.fromMillisecondsSinceEpoch(map['versionDate']),
@@ -34,7 +35,7 @@ class _MutableElements extends ItemSerializable {
             .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
         protections = Protections.fromSerialized(map['protections']),
-        uniform = map['uniform'],
+        uniform = Uniform.fromSerialized(map['uniform']),
         super.fromSerialized(map);
 
   @override
@@ -48,7 +49,7 @@ class _MutableElements extends ItemSerializable {
         ],
         'schedule': weeklySchedules.map((e) => e.serializedMap()).toList(),
         'protections': protections.serializedMap(),
-        'uniform': uniform,
+        'uniform': uniform.serializedMap(),
       };
 
   _MutableElements deepCopy() {
@@ -89,8 +90,8 @@ class Internship extends ItemSerializable {
       _mutables[version].weeklySchedules;
   Protections get protections => _mutables.last.protections;
   Protections protectionsFrom(int version) => _mutables[version].protections;
-  String get uniform => _mutables.last.uniform;
-  String uniformFrom(int version) => _mutables[version].uniform;
+  Uniform get uniform => _mutables.last.uniform;
+  Uniform uniformFrom(int version) => _mutables[version].uniform;
 
   // Elements that are parts of the inner working of the internship (can be
   // modify, but won't generate a new version)
@@ -144,7 +145,7 @@ class Internship extends ItemSerializable {
     required DateTimeRange date,
     required List<WeeklySchedule> weeklySchedules,
     required Protections protections,
-    required String uniform,
+    required Uniform uniform,
     required this.expectedLength,
     required this.achievedLength,
     required this.visitingPriority,
@@ -228,7 +229,7 @@ class Internship extends ItemSerializable {
     required DateTimeRange date,
     required List<WeeklySchedule> weeklySchedules,
     required Protections protections,
-    required String uniform,
+    required Uniform uniform,
   }) {
     _mutables.add(_MutableElements(
         versionDate: versionDate,
