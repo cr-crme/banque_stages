@@ -10,6 +10,7 @@ import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/scrollable_stepper.dart';
 import '/misc/form_service.dart';
 import '/router.dart';
 import 'steps/general_informations_step.dart';
@@ -33,9 +34,12 @@ class InternshipEnrollmentScreen extends StatefulWidget {
 
 class _InternshipEnrollmentScreenState
     extends State<InternshipEnrollmentScreen> {
+  final _scrollController = ScrollController();
+
   final _generalInfoKey = GlobalKey<GeneralInformationsStepState>();
   final _scheduleKey = GlobalKey<ScheduleStepState>();
   final _requirementsKey = GlobalKey<RequirementsStepState>();
+
   int _currentStep = 0;
   final List<StepState> _stepStatus = [
     StepState.indexed,
@@ -46,6 +50,7 @@ class _InternshipEnrollmentScreenState
   void _previousStep() {
     if (_currentStep == 0) return;
     _currentStep -= 1;
+    _scrollController.jumpTo(0);
     setState(() {});
   }
 
@@ -79,6 +84,7 @@ class _InternshipEnrollmentScreenState
 
     if (_currentStep != 2) {
       _currentStep += 1;
+      _scrollController.jumpTo(0);
       setState(() {});
       return;
     }
@@ -129,6 +135,14 @@ class _InternshipEnrollmentScreenState
     );
   }
 
+  void _cancel() async {
+    final result = await showDialog(
+        context: context, builder: (context) => const ConfirmPopDialog());
+    if (!mounted || result == null || !result) return;
+
+    Navigator.of(context).pop();
+  }
+
   void _onPressBack() async {
     final answer = await ConfirmPopDialog.show(context);
     if (!answer || !mounted) return;
@@ -157,12 +171,18 @@ class _InternshipEnrollmentScreenState
         leading: IconButton(
             onPressed: _onPressBack, icon: const Icon(Icons.arrow_back)),
       ),
-      body: Stepper(
+      body: ScrollableStepper(
         type: StepperType.horizontal,
+        scrollController: _scrollController,
         currentStep: _currentStep,
         onStepContinue: _nextStep,
-        onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
-        onStepCancel: () => Navigator.pop(context),
+        onStepTapped: (int tapped) {
+          setState(() {
+            _currentStep = tapped;
+            _scrollController.jumpTo(0);
+          });
+        },
+        onStepCancel: _cancel,
         steps: [
           Step(
             state: _stepStatus[0],
@@ -198,9 +218,7 @@ class _InternshipEnrollmentScreenState
           if (_currentStep != 0)
             OutlinedButton(
                 onPressed: _previousStep, child: const Text('Précédent')),
-          const SizedBox(
-            width: 20,
-          ),
+          const SizedBox(width: 20),
           TextButton(
             onPressed: details.onStepContinue,
             child: _currentStep == 2
