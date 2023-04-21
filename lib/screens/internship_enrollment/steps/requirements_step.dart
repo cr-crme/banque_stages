@@ -150,7 +150,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '* Précisez l\'équipement supplémentaire requis : ',
+                                '* Préciser l\'équipement supplémentaire requis : ',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               TextFormField(
@@ -212,7 +212,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '* Précisez le type d\'uniforme : ',
+                          '* Préciser le type d\'uniforme : ',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(

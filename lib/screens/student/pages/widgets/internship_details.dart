@@ -575,7 +575,7 @@ class _InternshipBody extends StatelessWidget {
               .asMap()
               .keys
               .map((indexExtra) => _buildJob(
-                    'Métier secondaire${internship.extraSpecializationsId.length > 1 ? ' (${indexExtra + 1})' : ''}',
+                    'Métier supplémentaire${internship.extraSpecializationsId.length > 1 ? ' (${indexExtra + 1})' : ''}',
                     specialization: ActivitySectorsService.specialization(
                         internship.extraSpecializationsId[indexExtra]),
                   )),
@@ -685,7 +685,7 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Précisez l\'équipement supplémentaire requis : ',
+                          'Préciser l\'équipement supplémentaire requis : ',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(
@@ -761,7 +761,7 @@ class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Précisez le type d\'uniforme : ',
+                    'Préciser le type d\'uniforme : ',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   TextFormField(

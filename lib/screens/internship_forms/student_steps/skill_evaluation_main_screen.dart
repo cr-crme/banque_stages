@@ -201,7 +201,7 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Précisez : ',
+                        'Préciser : ',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       TextFormField(
@@ -336,7 +336,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
         ..._extraSpecialization.asMap().keys.map(
               (i) => _buildJobTile(
                 title:
-                    'Métier secondaire${_extraSpecialization.length > 1 ? ' (${i + 1})' : ''}',
+                    'Métier supplémentaire${_extraSpecialization.length > 1 ? ' (${i + 1})' : ''}',
                 specialization: _extraSpecialization[i],
               ),
             ),

@@ -406,7 +406,7 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Précisez : ',
+                        'Préciser : ',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       TextFormField(

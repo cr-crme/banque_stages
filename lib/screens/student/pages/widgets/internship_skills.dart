@@ -328,7 +328,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Métier secondaire${widget.internship.extraSpecializationsId.length > 1 ? ' (${index + 1})' : ''}',
+                                'Métier supplémentaire${widget.internship.extraSpecializationsId.length > 1 ? ' (${index + 1})' : ''}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),

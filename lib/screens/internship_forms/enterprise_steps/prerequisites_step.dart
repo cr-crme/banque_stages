@@ -84,7 +84,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Précisez le type d\'uniforme : ',
+                      'Préciser le type d\'uniforme : ',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(
@@ -141,7 +141,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Précisez : ',
+                      'Préciser : ',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(

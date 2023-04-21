@@ -281,7 +281,8 @@ class _InternshipListState extends State<_InternshipList> {
                             child: TextButton(
                                 onPressed: () =>
                                     _evaluateInternship(internship),
-                                child: const Text('Évaluer le stage')),
+                                child: const Text(
+                                    'Évaluer l\'entreprise \npour ce stage')),
                           ),
                         ),
                     ],
