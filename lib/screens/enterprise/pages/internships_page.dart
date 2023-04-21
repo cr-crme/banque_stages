@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
+import '/common/models/person.dart';
 import '/common/models/student.dart';
 import '/common/models/teacher.dart';
 import '/common/providers/internships_provider.dart';
@@ -151,8 +152,17 @@ class _InternshipListState extends State<_InternshipList> {
         context: context,
         builder: (context) => AlertDialog(
               title: const Text('Mettre fin au stage?'),
-              content: const Text(
-                  'Les informations pour ce stage ne seront plus modifiables.'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Text(
+                      'Avez-vous mis à jour le nombre d\'heures de stage fait par votre élève? '),
+                  Text(
+                    '\n\n**Attention, les informations pour ce stage ne seront plus modifiables.**',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ],
+              ),
               actions: [
                 OutlinedButton(
                     onPressed: () => Navigator.of(context).pop(false),
@@ -193,6 +203,7 @@ class _InternshipListState extends State<_InternshipList> {
               late Specialization specialization;
               late Teacher teacher;
               late Student student;
+              late Person contact;
 
               try {
                 specialization =
@@ -201,6 +212,7 @@ class _InternshipListState extends State<_InternshipList> {
                     TeachersProvider.of(context).fromId(internship.teacherId);
                 student =
                     StudentsProvider.of(context).fromId(internship.studentId);
+                contact = widget.enterprise.contact;
               } catch (e) {
                 return ExpansionPanel(
                     headerBuilder: ((context, isExpanded) => Container()),
@@ -257,6 +269,16 @@ class _InternshipListState extends State<_InternshipList> {
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
                             'Enseignant\u00b7e superviseur\u00b7e : ${teacher.fullName}'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                            'Nom du superviseur\u00b7e en milieu de stage : ${contact.fullName}'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                            'Nombre d\'heures de stage : ${widget.internships.last.achievedLength}h'),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0, bottom: 15),
