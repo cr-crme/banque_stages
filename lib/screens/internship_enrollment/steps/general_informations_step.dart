@@ -45,42 +45,40 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _GeneralInformations(
-              enterprise: enterprise,
-              enterpriseIsFixed: enterpriseIsFixed,
-              onSelectEnterprise: (e) => setState(() => enterprise = e),
-              student: student,
-              studentIsFixed: studentIsFixed,
-              onSelectStudent: (s) => setState(() => student = s),
+    return Form(
+      key: formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _GeneralInformations(
+            enterprise: enterprise,
+            enterpriseIsFixed: enterpriseIsFixed,
+            onSelectEnterprise: (e) => setState(() => enterprise = e),
+            student: student,
+            studentIsFixed: studentIsFixed,
+            onSelectStudent: (s) => setState(() => student = s),
+          ),
+          _MainJob(
+            enterprise: enterprise,
+            onSaved: (job) => setState(() => primaryJob = job),
+          ),
+          if (student != null && student!.program == Program.fpt)
+            _ExtraSpecialization(
+              extraSpecializations: extraSpecializations,
+              onAddSpecialization: () =>
+                  setState(() => extraSpecializations.add(null)),
+              onSetSpecialization: (specialization, i) =>
+                  setState(() => extraSpecializations[i] = specialization),
+              onDeleteSpecialization: (i) =>
+                  setState(() => extraSpecializations.removeAt(i)),
             ),
-            _MainJob(
-              enterprise: enterprise,
-              onSaved: (job) => setState(() => primaryJob = job),
-            ),
-            if (student != null && student!.program == Program.fpt)
-              _ExtraSpecialization(
-                extraSpecializations: extraSpecializations,
-                onAddSpecialization: () =>
-                    setState(() => extraSpecializations.add(null)),
-                onSetSpecialization: (specialization, i) =>
-                    setState(() => extraSpecializations[i] = specialization),
-                onDeleteSpecialization: (i) =>
-                    setState(() => extraSpecializations.removeAt(i)),
-              ),
-            _SupervisonInformation(
-              onSavedFirstName: (name) => supervisorFirstName = name!,
-              onSavedLastName: (name) => supervisorLastName = name!,
-              onSavedPhone: (phone) => supervisorPhone = phone!,
-              onSavedEmail: (email) => supervisorEmail = email!,
-            ),
-          ],
-        ),
+          _SupervisonInformation(
+            onSavedFirstName: (name) => supervisorFirstName = name!,
+            onSavedLastName: (name) => supervisorLastName = name!,
+            onSavedPhone: (phone) => supervisorPhone = phone!,
+            onSavedEmail: (email) => supervisorEmail = email!,
+          ),
+        ],
       ),
     );
   }

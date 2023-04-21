@@ -86,21 +86,19 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _DateRange(scheduleController: scheduleController),
-            _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
-            ScheduleSelector(
-              scheduleController: scheduleController,
-              editMode: true,
-              withTitle: true,
-            ),
-          ],
-        ),
+    return Form(
+      key: formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _DateRange(scheduleController: scheduleController),
+          _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
+          ScheduleSelector(
+            scheduleController: scheduleController,
+            editMode: true,
+            withTitle: true,
+          ),
+        ],
       ),
     );
   }
