@@ -49,8 +49,9 @@
 "c":[
 "Un diable ",
 "Un transpalette",
-"Un chariot",
-"Une brouette"
+"Un chariot (incluant chariot d'\u00e9picerie)",
+"Une brouette",
+"Ne s'applique pas"
 ],
 "sp":"Mon \u00e9l\u00e8ve n\u2019a jamais utilis\u00e9 ce type d\u2019\u00e9quipement auparavant. Est-ce que vous ou un coll\u00e8gue pourrait prendre quelques minutes pour lui expliquer comment s\u2019en servir (comment pousser, tirer, charger, d\u00e9charger, circuler, \u2026)?",
 "ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire?"
@@ -62,9 +63,11 @@
 "t":"Choix de r\u00e9ponse",
 "c":[
 "Un escabeau",
-"Une \u00e9chelle"
+"Une \u00e9chelle",
+"Un marchepied",
+"Ne s'applique pas"
 ],
-"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais travaill\u00e9 avec ce genre d\u2019\u00e9quipement, est-ce que vous pourriez lui montrer comment s\u2019en servir?",
+"sp":"Est-ce qu'il sera possible de faire une d\u00e9monstration \u00e0 mon \u00e9l\u00e8ve?",
 "ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire?"
 },
 {
@@ -76,9 +79,10 @@
 "Un couteau",
 "Un couteau \u00e0 lame r\u00e9tractable (Exacto)",
 "Des ciseaux",
-"Une scie"
+"Une scie",
+"Ne s'applique pas"
 ],
-"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais travaill\u00e9 avec ce genre d\u2019\u00e9quipement, est-ce que vous pourriez lui montrer comment s\u2019en servir?",
+"sp":"Est-ce que vous ou un coll\u00e8gue pourrait montrer \u00e0 l'\u00e9l\u00e8ve comment utiliser cet \u00e9quipement?",
 "ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire?"
 },
 {
@@ -88,10 +92,11 @@
 "t":"Choix de r\u00e9ponse",
 "c":[
 "Une perceuse",
-"Une polisseuse"
+"Une polisseuse",
+"Ne s'applique pas"
 ],
-"sp":"Mon \u00e9l\u00e8ve n\u2019a jamais travaill\u00e9 avec ce genre d\u2019\u00e9quipement, est-ce que vous pourriez lui montrer comment s\u2019en servir?",
-"ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire? "
+"sp":"Quelle est la formation pr\u00e9vue pour apprendre \u00e0 l'\u00e9l\u00e8ve \u00e0 se servir de cet \u00e9quipement?",
+"ss":"Peux-tu me montrer comment tu t\u2019en sers? Qui t\u2019a expliqu\u00e9 comment faire? Est-ce qu'on t'a fait part des dangers \u00e0 utiliser cet \u00e9quipement?"
 },
 {
 "id":"9",
@@ -107,7 +112,8 @@
 "c":[
 "Des a\u00e9rosols",
 "Des produits de nettoyage",
-"Des pesticides"
+"Des pesticides",
+"Ne s'applique pas"
 ],
 "sp":"Est-ce que vous devez suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?",
 "ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?"
@@ -122,7 +128,8 @@
 "Des produits de nettoyage",
 "Des produits pour la teinture",
 "Des produits d\u00e9colorants",
-"Des shampoings"
+"Des shampoings",
+"Ne s'applique pas"
 ],
 "sp":"Est-ce que vous devez suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?",
 "ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?"
@@ -136,7 +143,8 @@
 "Des a\u00e9rosols",
 "Des produits de nettoyage",
 "Des solvants",
-"Des vernis"
+"Des vernis",
+"Ne s'applique pas"
 ],
 "sp":"Est-ce que vous devez suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?",
 "ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re par rapport \u00e0 ces produits ou porter des \u00e9quipements sp\u00e9cifiques? Lesquels?"
@@ -160,7 +168,8 @@
 "t":"Choix de r\u00e9ponse",
 "c":[
 "Il fait chaud (sup\u00e9rieur \u00e0 25\u00b0C)?",
-"Il fait froid (inf\u00e9rieur \u00e0 10\u00b0C)?"
+"Il fait froid (inf\u00e9rieur \u00e0 10\u00b0C)?",
+"Ne s'applique pas"
 ],
 "sp":"Est-ce qu\u2019il y a des \u00e9quipements de protection pr\u00e9vus? Est-ce qu\u2019il y a des choses que mon \u00e9l\u00e8ve doit savoir par rapport \u00e0 \u00e7a? ",
 "ss":"Est-ce que tu dois porter des v\u00eatements ou des \u00e9quipements sp\u00e9cifiques?"
@@ -174,7 +183,7 @@
 "Oui",
 "Non"
 ],
-"sp":"Est-ce qu\u2019il y a des choses que mon \u00e9l\u00e8ve doit savoir par rapport \u00e0 \u00e7a (p.ex. une proc\u00e9dure \u00e0 connaitre, des \u00e9quipements \u00e0 porter\u2026)? ",
+"sp":"Quelles sont les mesures de pr\u00e9vention que mon \u00e9l\u00e8ve doit connaitre?",
 "ss":"Est-ce qu\u2019il y a des choses que tu dois savoir par rapport \u00e0 \u00e7a? (p. ex. une proc\u00e9dure \u00e0 connaitre, des \u00e9quipements \u00e0 porter?)"
 },
 {
@@ -184,9 +193,10 @@
 "t":"Choix de r\u00e9ponse",
 "c":[
 "Conduire un tracteur?",
-"Travailler dans un silo?"
+"Travailler dans un silo?",
+"Ne s'applique pas"
 ],
-"sp":"Est-ce que les employ\u00e9s doivent suivre une proc\u00e9dure particuli\u00e8re ou porter des \u00e9quipements sp\u00e9cifiques pour \u00e7a? ",
+"sp":"Est-ce que vous pr\u00e9voyez une formation avant que mon \u00e9l\u00e8ve puisse le faire? Laquelle?",
 "ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re ou porter des \u00e9quipements sp\u00e9cifiques pour \u00e7a? "
 },
 {
@@ -198,7 +208,8 @@
 "Soigner les animaux?",
 "Nettoyer des box ou les enclos d\u2019animaux?",
 "D\u00e9placer ou monter les animaux?",
-"Porter les animaux?"
+"Porter les animaux?",
+"Ne s'applique pas"
 ],
 "sp":"Est-ce qu'il y a une proc\u00e9dure particuli\u00e8re \u00e0 suivre? Des \u00e9quipements sp\u00e9cifiques \u00e0 porter? Quelles sont les choses que mon \u00e9l\u00e8ve doit savoir pour que cela se passe bien avec les animaux et \u00e9viter les coups ou les morsures?",
 "ss":"Est-ce que tu dois suivre une proc\u00e9dure particuli\u00e8re ou porter des \u00e9quipements sp\u00e9cifiques pour \u00e7a? Qu\u2019est-ce qu\u2019il faut faire pour que cela se passe bien avec les animaux et qu'ils ne te fassent pas mal?"
