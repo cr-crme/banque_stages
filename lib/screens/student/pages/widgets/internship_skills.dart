@@ -531,8 +531,7 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
                     evaluationIndex: _currentEvaluationIndex,
                   ));
             },
-            child: const Text('Voir l\'évaluation détaillée')
-            color: Theme.of(context).colorScheme.primary,),
+            child: const Text('Voir l\'évaluation détaillée')),
       ),
     );
   }
