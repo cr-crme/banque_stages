@@ -200,18 +200,18 @@ class _InternshipListState extends State<_InternshipList> {
               () => _expanded[widget.internships[panelIndex].id] = !isExpanded),
           children: widget.internships.map(
             (internship) {
+              final teachers = TeachersProvider.of(context);
               late Specialization specialization;
               late Teacher teacher;
-              late Student student;
               late Person contact;
+              late Future<Student> student;
 
               try {
                 specialization =
                     widget.enterprise.jobs[internship.jobId].specialization;
-                teacher =
-                    TeachersProvider.of(context).fromId(internship.teacherId);
-                student =
-                    StudentsProvider.of(context).fromId(internship.studentId);
+                teacher = teachers.fromId(internship.teacherId);
+                student = StudentsProvider.fromLimitedId(context,
+                    studentId: internship.studentId);
                 contact = widget.enterprise.contact;
               } catch (e) {
                 return ExpansionPanel(
@@ -241,87 +241,108 @@ class _InternshipListState extends State<_InternshipList> {
                     ],
                   ),
                 ),
-                body: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text('Stagiaire : '),
-                          GestureDetector(
-                            onTap: () => GoRouter.of(context).pushNamed(
-                              Screens.student,
-                              params: Screens.params(student),
-                              queryParams: Screens.queryParams(pageIndex: "1"),
-                            ),
-                            child: Text(
-                              student.fullName,
-                              style: const TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline),
-                            ),
-                          ),
-                          Text(' (${student.program.title})'),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                            'Enseignant\u00b7e superviseur\u00b7e : ${teacher.fullName}'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                            'Responsable en milieu de stage : ${contact.fullName}'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                            'Nombre d\'heures de stage : ${widget.internships.last.achievedLength}h'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0, bottom: 15),
-                        child: _dateBuild(internship),
-                      ),
-                      if (internship.isActive)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: TextButton(
-                                onPressed: () =>
-                                    _finalizeInternship(internship),
-                                child: const Text('Terminer le stage')),
-                          ),
-                        ),
-                      if (internship.isEvaluationPending)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: TextButton(
-                              onPressed: () => _evaluateInternship(internship),
-                              style: Theme.of(context)
-                                  .textButtonTheme
-                                  .style!
-                                  .copyWith(
-                                    minimumSize: MaterialStateProperty.all(
-                                        const Size(0, 50)),
-                                    maximumSize: MaterialStateProperty.all(
-                                        const Size(200, 50)),
+                body: FutureBuilder<Student>(
+                    future: student,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return Container();
+                      final student = snapshot.data!;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Text('Stagiaire : '),
+                                GestureDetector(
+                                  onTap: () => GoRouter.of(context).pushNamed(
+                                    Screens.student,
+                                    params: Screens.params(student),
+                                    queryParams:
+                                        Screens.queryParams(pageIndex: "1"),
                                   ),
-                              child: const Text(
-                                'Évaluer l\'entreprise \npour ce stage',
-                                textAlign: TextAlign.center,
-                              ),
+                                  child: Text(
+                                    student.fullName,
+                                    style: const TextStyle(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                ),
+                                Text(' (${student.program.title})'),
+                              ],
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                  'Enseignant\u00b7e superviseur\u00b7e : ${teacher.fullName}'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                  'Responsable en milieu de stage : ${contact.fullName}'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                  'Nombre d\'heures de stage : ${widget.internships.last.achievedLength}h'),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 10.0, bottom: 15),
+                              child: _dateBuild(internship),
+                            ),
+                            FutureBuilder<bool>(
+                                future: teachers.canControlInternship(context,
+                                    internshipId: internship.id),
+                                builder: (context, snapshot) =>
+                                    !internship.isActive ||
+                                            !snapshot.hasData ||
+                                            !snapshot.data!
+                                        ? Container()
+                                        : Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8.0),
+                                              child: TextButton(
+                                                  onPressed: () =>
+                                                      _finalizeInternship(
+                                                          internship),
+                                                  child: const Text(
+                                                      'Terminer le stage')),
+                                            ),
+                                          )),
+                            if (internship.isEvaluationPending)
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: TextButton(
+                                    onPressed: () =>
+                                        _evaluateInternship(internship),
+                                    style: Theme.of(context)
+                                        .textButtonTheme
+                                        .style!
+                                        .copyWith(
+                                          minimumSize:
+                                              MaterialStateProperty.all(
+                                                  const Size(0, 50)),
+                                          maximumSize:
+                                              MaterialStateProperty.all(
+                                                  const Size(200, 50)),
+                                        ),
+                                    child: const Text(
+                                      'Évaluer l\'entreprise \npour ce stage',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                    ],
-                  ),
-                ),
+                      );
+                    }),
               );
             },
           ).toList(),

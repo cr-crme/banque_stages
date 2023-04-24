@@ -159,8 +159,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
     for (final internship in internships) {
       if (internship.isTransfering && internship.teacherId == myId) {
-        final student =
-            await StudentsProvider.fromLimitedId(context, internship.studentId);
+        final student = await StudentsProvider.fromLimitedId(context,
+            studentId: internship.studentId);
         if (!mounted) return;
         final acceptTransfer = await showDialog<bool>(
             barrierDismissible: false,

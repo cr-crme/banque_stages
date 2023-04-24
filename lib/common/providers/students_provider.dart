@@ -51,7 +51,7 @@ class StudentsProvider extends FirebaseListProvided<Student> {
       if (internship.isNotActive || internship.teacherId != myId) continue;
       if (out.any((e) => e.id == internship.studentId)) continue;
 
-      out.add(await fromLimitedId(context, internship.studentId));
+      out.add(await fromLimitedId(context, studentId: internship.studentId));
     }
 
     return out;
@@ -60,7 +60,8 @@ class StudentsProvider extends FirebaseListProvided<Student> {
   /// This allows to get access in read only to a student of id [studentId]
   /// outside of the available ones, so all the student can be shown if needed
   ///
-  static Future<Student> fromLimitedId(context, String studentId) async {
+  static Future<Student> fromLimitedId(context,
+      {required String studentId}) async {
     final students = StudentsProvider.of(context, listen: false);
     // In case this is a student we happen to already have access, we can
     // return this one already instead of fetching it from the database

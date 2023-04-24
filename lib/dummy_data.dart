@@ -1172,7 +1172,7 @@ Future<void> addDummyInterships(
     previousTeacherId: '42', // Was transfered from Roméo Montaigu
     isTransfering: true,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
-    jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
