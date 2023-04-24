@@ -51,7 +51,7 @@ class InternshipsPageState extends State<InternshipsPage> {
   List<Internship> _getToFinalizeInternships(List<Internship> internships) {
     final List<Internship> current = [];
     for (final internship in internships) {
-      if (internship.isEvaluationPending) current.add(internship);
+      if (internship.isEnterpriseEvaluationPending) current.add(internship);
     }
     return current;
   }
@@ -311,7 +311,7 @@ class _InternshipListState extends State<_InternshipList> {
                                                       'Terminer le stage')),
                                             ),
                                           )),
-                            if (internship.isEvaluationPending)
+                            if (internship.isEnterpriseEvaluationPending)
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Padding(

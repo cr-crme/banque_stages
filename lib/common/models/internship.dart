@@ -104,12 +104,9 @@ class Internship extends ItemSerializable {
   final List<InternshipEvaluationSkill> skillEvaluations;
   final List<InternshipEvaluationAttitude> attitudeEvaluations;
 
-  bool get isClosed =>
-      endDate != null &&
-      skillEvaluations.isNotEmpty &&
-      attitudeEvaluations.isNotEmpty;
-  bool get isEvaluationPending =>
-      endDate != null && (skillEvaluations.isEmpty || skillEvaluations.isEmpty);
+  bool get isClosed => isNotActive && !isEnterpriseEvaluationPending;
+  bool get isEnterpriseEvaluationPending =>
+      isNotActive; // TODO add enterprise evaluation
   bool get isActive => endDate == null;
   bool get isNotActive => !isActive;
 
