@@ -70,7 +70,7 @@ class InternshipsPageState extends State<InternshipsPage> {
         children: [
           if (toFinalize.isNotEmpty)
             _InternshipList(
-              title: 'À évaluer',
+              title: 'Évaluations post-stage',
               internships: toFinalize,
               enterprise: widget.enterprise,
             ),
@@ -158,7 +158,7 @@ class _InternshipListState extends State<_InternshipList> {
                   Text(
                       'Attention, les informations pour ce stage ne seront plus modifiables.'),
                   Text(
-                    '\n\n**Avant de mettre fin au stage, s\'assurer que le nombre d\'heures de stage de votre élève est à jour.**',
+                    '\n\n**Avant de mettre fin au stage, s\'assurer que le nombre d\'heures de stage faites est à jour.**',
                     style: TextStyle(color: Colors.red),
                   ),
                 ],

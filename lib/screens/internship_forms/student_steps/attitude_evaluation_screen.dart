@@ -72,7 +72,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
           builder: (BuildContext context) => const AlertDialog(
                 title: Text('Formulaire incomplet'),
                 content:
-                    Text('Veuillez donner une note à tous les champs indiqués'),
+                    Text('Veuillez répondre à toutes les questions avec un *.'),
               ));
       return;
     }
@@ -206,7 +206,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
               ),
             ),
             Step(
-                label: const Text('Rendement'),
+                label: const Text('Aptitudes'),
                 title: Container(),
                 state: _stepStatus[2],
                 isActive: _currentStep == 2,

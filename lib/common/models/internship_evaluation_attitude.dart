@@ -149,7 +149,7 @@ abstract class AttitudeCategoryEnum {
 }
 
 class Inattendance implements AttitudeCategoryEnum {
-  static String get title => 'Assiduité';
+  static String get title => '*Assiduité';
 
   @override
   final int index;
@@ -185,7 +185,7 @@ class Inattendance implements AttitudeCategoryEnum {
 }
 
 class Ponctuality implements AttitudeCategoryEnum {
-  static String get title => 'Ponctualité';
+  static String get title => '*Ponctualité';
 
   @override
   final int index;
@@ -221,7 +221,7 @@ class Ponctuality implements AttitudeCategoryEnum {
 }
 
 class Sociability implements AttitudeCategoryEnum {
-  static String get title => 'Sociabilité';
+  static String get title => '*Sociabilité';
 
   @override
   final int index;
@@ -234,7 +234,7 @@ class Sociability implements AttitudeCategoryEnum {
       case 1:
         return 'Sociable';
       case 2:
-        return 'Établit très peu de contact';
+        return 'Établit très peu de contacts';
       case 3:
         return 'Pas d\'intégration à l\'équipe de travail';
       default:
@@ -257,7 +257,7 @@ class Sociability implements AttitudeCategoryEnum {
 }
 
 class Politeness implements AttitudeCategoryEnum {
-  static String get title => 'Politesse et langage';
+  static String get title => '*Politesse et langage';
 
   @override
   final int index;
@@ -293,7 +293,7 @@ class Politeness implements AttitudeCategoryEnum {
 }
 
 class Motivation implements AttitudeCategoryEnum {
-  static String get title => 'Motivation';
+  static String get title => '*Motivation';
 
   @override
   final int index;
@@ -329,7 +329,7 @@ class Motivation implements AttitudeCategoryEnum {
 }
 
 class DressCode implements AttitudeCategoryEnum {
-  static String get title => 'Tenue vestimentaire';
+  static String get title => '*Tenue vestimentaire';
 
   @override
   final int index;
@@ -365,7 +365,7 @@ class DressCode implements AttitudeCategoryEnum {
 }
 
 class QualityOfWork implements AttitudeCategoryEnum {
-  static String get title => 'Qualité du travail';
+  static String get title => '*Qualité du travail';
 
   @override
   final int index;
@@ -401,7 +401,7 @@ class QualityOfWork implements AttitudeCategoryEnum {
 }
 
 class Productivity implements AttitudeCategoryEnum {
-  static String get title => 'Rendement et constance';
+  static String get title => '*Rendement et constance';
 
   @override
   final int index;
@@ -412,7 +412,7 @@ class Productivity implements AttitudeCategoryEnum {
       case 0:
         return 'Rendement et rythme de travail excellents';
       case 1:
-        return 'Rendement et rythme de travail bons et contants';
+        return 'Rendement et rythme de travail bons et constants';
       case 2:
         return 'Difficulté à maintenir le rythme de travail';
       case 3:
@@ -437,7 +437,7 @@ class Productivity implements AttitudeCategoryEnum {
 }
 
 class Autonomy implements AttitudeCategoryEnum {
-  static String get title => 'Autonomie et sens de l\'initiative';
+  static String get title => '*Autonomie et sens de l\'initiative';
 
   @override
   final int index;
@@ -474,7 +474,7 @@ class Autonomy implements AttitudeCategoryEnum {
 
 class Cautiousness implements AttitudeCategoryEnum {
   static String get title =>
-      'Respect des règles de santé et de sécurité du travail';
+      '*Respect des règles de santé et de sécurité du travail (SST)';
 
   @override
   final int index;
@@ -510,7 +510,7 @@ class Cautiousness implements AttitudeCategoryEnum {
 }
 
 class GeneralAppreciation implements AttitudeCategoryEnum {
-  static String get title => 'Appréciation générale du ou de la stagiaire';
+  static String get title => '*Appréciation générale du ou de la stagiaire';
 
   @override
   final int index;

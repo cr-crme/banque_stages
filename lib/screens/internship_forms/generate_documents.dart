@@ -128,7 +128,7 @@ class GenerateDocuments {
       pw.Page(
         build: (pw.Context context) => pw.Center(
             child: pw.Text(
-                'Évaluation de l\'attitude du ${DateFormat('yMd', 'fr_CA').format(internship.attitudeEvaluations[evaluationIndex].date)}')),
+                'Évaluation des attitudes et comportements du ${DateFormat('yMd', 'fr_CA').format(internship.attitudeEvaluations[evaluationIndex].date)}')),
       ),
     );
 

@@ -56,9 +56,9 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                               params: Screens.params(widget.internship.id),
                               queryParams: Screens.queryParams(editMode: '1'),
                             ),
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.add_chart_rounded,
-                          color: Colors.black,
+                          color: Theme.of(context).colorScheme.primary,
                         ))
                   ],
                 ),
@@ -77,10 +77,8 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                             queryParams: Screens.queryParams(editMode: '1'),
                             extra: AttitudeEvaluationFormController(
                                 internshipId: widget.internship.id)),
-                        icon: const Icon(
-                          Icons.add_chart_rounded,
-                          color: Colors.black,
-                        ))
+                        icon: Icon(Icons.add_chart_rounded,
+                            color: Theme.of(context).colorScheme.primary))
                   ],
                 )
               ],
@@ -282,7 +280,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
                     evaluationIndex: _currentEvaluationIndex,
                   ));
             },
-            child: const Text('Afficher formulaire d\'évaluation')),
+            child: const Text('Voir l\'évaluation détaillée')),
       ),
     );
   }
@@ -299,7 +297,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
         if (widget.evaluation.isEmpty)
           const Padding(
             padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
-            child: Text('Aucune évaluation disponible pour ce stage'),
+            child: Text('Aucune évaluation disponible pour ce stage.'),
           ),
         if (widget.evaluation.isNotEmpty)
           Column(
@@ -533,7 +531,8 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
                     evaluationIndex: _currentEvaluationIndex,
                   ));
             },
-            child: const Text('Afficher formulaire d\'évaluation')),
+            child: const Text('Voir l\'évaluation détaillée')
+            color: Theme.of(context).colorScheme.primary,),
       ),
     );
   }
@@ -550,7 +549,7 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
         if (widget.evaluation.isEmpty)
           const Padding(
             padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
-            child: Text('Aucune évaluation disponible pour ce stage'),
+            child: Text('Aucune évaluation disponible pour ce stage.'),
           ),
         if (widget.evaluation.isNotEmpty)
           Column(

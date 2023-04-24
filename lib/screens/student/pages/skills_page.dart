@@ -174,7 +174,7 @@ class _SkillTile extends StatelessWidget {
                                       const Text('\u2022 '),
                                       Flexible(
                                           child: Text(
-                                              '${skillEvaluation.skillName} (${_skillComplexity(skillEvaluation)})')),
+                                              '${skillEvaluation.skillName} (Niv.${_skillComplexity(skillEvaluation)})')),
                                     ],
                                   ),
                                 ),
