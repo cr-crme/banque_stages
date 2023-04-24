@@ -24,7 +24,8 @@ class _AddTextDialogState extends State<AddTextDialog> {
   }
 
   void _onConfirm() {
-    if (FormService.validateForm(_formKey, save: true)) {
+    if (FormService.validateForm(_formKey,
+        save: true, showSnackbarError: false)) {
       Navigator.pop(context, _comment);
     }
   }
@@ -44,11 +45,11 @@ class _AddTextDialogState extends State<AddTextDialog> {
         ),
       ),
       actions: [
-        TextButton(
+        OutlinedButton(
           onPressed: _onCancel,
           child: const Text('Annuler'),
         ),
-        ElevatedButton(
+        TextButton(
           onPressed: _onConfirm,
           child: const Text('Ajouter'),
         ),

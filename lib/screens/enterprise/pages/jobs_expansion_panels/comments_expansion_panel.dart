@@ -27,9 +27,7 @@ class CommentsExpansionPanel extends ExpansionPanel {
                 ],
               ),
               child: IconButton(
-                onPressed: () {},
-                // TODO bring this back
-                // => addComment(job),
+                onPressed: () => addComment(job),
                 icon: const Icon(Icons.add_comment),
                 color: Colors.blueGrey,
               ),
@@ -50,6 +48,9 @@ class _SstBody extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Column(
+          crossAxisAlignment: job.comments.isEmpty
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.start,
           children: job.comments.isEmpty
               ? [
                   const Text('Il n\'y a présentement aucun commentaire.'),

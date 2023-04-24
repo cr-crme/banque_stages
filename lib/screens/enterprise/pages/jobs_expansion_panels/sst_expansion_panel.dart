@@ -53,7 +53,7 @@ class _SstBody extends StatelessWidget {
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
