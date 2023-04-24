@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-import '/common/models/person.dart';
 import '/common/models/student.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
@@ -113,47 +111,40 @@ class _StudentScreenState extends State<StudentScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Selector<StudentsProvider, Student>(
-      builder: (context, student, _) => Scaffold(
-        appBar: AppBar(
-          title: Text(student.fullName),
-          actions: _actionButton == null ? null : [_actionButton!],
-          leading: IconButton(
-              onPressed: _onTapBack, icon: const Icon(Icons.arrow_back)),
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: const [
-              Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
-              Tab(icon: Icon(Icons.assignment), text: 'Stages'),
-              Tab(icon: Icon(Icons.card_membership), text: 'Plan formation'),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            AboutPage(key: _aboutPageKey, student: student),
-            InternshipsPage(key: _internshipPageKey, student: student),
-            SkillsPage(key: _skillsPageKey, student: student),
-          ],
-        ),
-      ),
-      selector: (context, students) =>
-          students.isNotEmpty && students.hasId(widget.id)
-              ? students[widget.id]
-              : Student(
-                  id: '-1',
-                  firstName: 'NoName',
-                  lastName: 'NoMore',
-                  dateBirth: DateTime.now(),
-                  address: null,
-                  contact: Person(firstName: 'NoMore', lastName: 'NoName'),
-                  contactLink: '',
-                  email: '',
-                  group: '',
-                  program: Program.fms,
-                  teacherId: '-1',
-                ),
-    );
+    return FutureBuilder<Student>(
+        future: StudentsProvider.fromLimitedId(context, studentId: widget.id),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final student = snapshot.data!;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(student.fullName),
+              actions: _actionButton == null ? null : [_actionButton!],
+              leading: IconButton(
+                  onPressed: _onTapBack, icon: const Icon(Icons.arrow_back)),
+              bottom: TabBar(
+                controller: _tabController,
+                tabs: const [
+                  Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
+                  Tab(icon: Icon(Icons.assignment), text: 'Stages'),
+                  Tab(
+                      icon: Icon(Icons.card_membership),
+                      text: 'Plan formation'),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                AboutPage(key: _aboutPageKey, student: student),
+                InternshipsPage(key: _internshipPageKey, student: student),
+                SkillsPage(key: _skillsPageKey, student: student),
+              ],
+            ),
+          );
+        });
   }
 }

@@ -203,7 +203,6 @@ class _InternshipListState extends State<_InternshipList> {
               final teachers = TeachersProvider.of(context);
               late Specialization specialization;
               late Teacher teacher;
-              late Person contact;
               late Future<Student> student;
 
               try {
@@ -212,7 +211,6 @@ class _InternshipListState extends State<_InternshipList> {
                 teacher = teachers.fromId(internship.teacherId);
                 student = StudentsProvider.fromLimitedId(context,
                     studentId: internship.studentId);
-                contact = widget.enterprise.contact;
               } catch (e) {
                 return ExpansionPanel(
                     headerBuilder: ((context, isExpanded) => Container()),
@@ -280,7 +278,7 @@ class _InternshipListState extends State<_InternshipList> {
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
-                                  'Responsable en milieu de stage : ${contact.fullName}'),
+                                  'Responsable en milieu de stage : ${widget.internships.last.supervisor.fullName}'),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),

@@ -43,8 +43,8 @@ class InternshipsPageState extends State<InternshipsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final allInternships = InternshipsProvider.of(context);
-    final internships = allInternships.byStudentId(widget.student.id);
+    final internships =
+        InternshipsProvider.of(context).byStudentId(widget.student.id);
     _prepareExpander(internships);
 
     return ListView.builder(
