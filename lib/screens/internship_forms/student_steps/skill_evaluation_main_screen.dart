@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '/common/models/student.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
@@ -42,41 +43,58 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   @override
   Widget build(BuildContext context) {
     final internship = InternshipsProvider.of(context)[widget.internshipId];
-    final allStudents = StudentsProvider.of(context);
-    if (!allStudents.hasId(internship.studentId)) return Container();
-    final student = allStudents[internship.studentId];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-            'Évaluation de ${student.fullName}\nC1. Compétences spécifiques'),
-        leading:
-            IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _EvaluationDate(
-              formController: _formController,
-              editMode: widget.editMode,
+    return FutureBuilder<Student>(
+        future: StudentsProvider.fromLimitedId(context,
+            studentId: internship.studentId),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text(
+                    'En attente des informations\nC1. Compétences spécifiques'),
+                leading: IconButton(
+                    onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
+              ),
+              body: const Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          final student = snapshot.data!;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                  'Évaluation de ${student.fullName}\nC1. Compétences spécifiques'),
+              leading: IconButton(
+                  onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
             ),
-            _PersonAtMeeting(
-              formController: _formController,
-              editMode: widget.editMode,
+            body: SingleChildScrollView(
+              child: Builder(builder: (context) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _EvaluationDate(
+                      formController: _formController,
+                      editMode: widget.editMode,
+                    ),
+                    _PersonAtMeeting(
+                      formController: _formController,
+                      editMode: widget.editMode,
+                    ),
+                    _JobToEvaluate(
+                      formController: _formController,
+                      editMode: widget.editMode,
+                    ),
+                    _StartEvaluation(
+                      formController: _formController,
+                      editMode: widget.editMode,
+                    ),
+                  ],
+                );
+              }),
             ),
-            _JobToEvaluate(
-              formController: _formController,
-              editMode: widget.editMode,
-            ),
-            _StartEvaluation(
-              formController: _formController,
-              editMode: widget.editMode,
-            ),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 }
 
