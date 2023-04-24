@@ -111,9 +111,9 @@ class SkillEvaluationFormController {
   DateTime evaluationDate = DateTime.now();
 
   final Map<String, bool> wereAtMeeting = {
-    'L\'enseignant\u2022e superviseur\u2022e': true,
-    'La ou le stagiaire': false,
-    'La ou le responsable dans le milieu de stage': false,
+    'Enseignant\u2022e superviseur\u2022e': true,
+    'Stagiaire': false,
+    'Responsable en milieu de stage': false,
   };
   bool _withOtherAtMeeting = false;
   bool get withOtherAtMeeting => _withOtherAtMeeting;

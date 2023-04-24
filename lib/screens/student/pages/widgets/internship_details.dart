@@ -343,7 +343,9 @@ class _InternshipBody extends StatelessWidget {
             child: Text(
               enterprise.name,
               style: const TextStyle(
-                  decoration: TextDecoration.underline, color: Colors.blue),
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                  color: Colors.blue),
             ),
           ),
         )
@@ -370,7 +372,7 @@ class _InternshipBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Superviseur en milieu de stage', style: _titleStyle),
+          const Text('Responsable en milieu de stage', style: _titleStyle),
           Padding(
             padding: const EdgeInsets.only(top: 2, bottom: _interline),
             child: Column(

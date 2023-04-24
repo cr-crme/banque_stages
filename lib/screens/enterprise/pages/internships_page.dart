@@ -156,9 +156,9 @@ class _InternshipListState extends State<_InternshipList> {
                 mainAxisSize: MainAxisSize.min,
                 children: const [
                   Text(
-                      'Avez-vous mis à jour le nombre d\'heures de stage fait par votre élève? '),
+                      'Attention, les informations pour ce stage ne seront plus modifiables.'),
                   Text(
-                    '\n\n**Attention, les informations pour ce stage ne seront plus modifiables.**',
+                    '\n\n**Avant de mettre fin au stage, s\'assurer que le nombre d\'heures de stage de votre élève est à jour.**',
                     style: TextStyle(color: Colors.red),
                   ),
                 ],
@@ -259,6 +259,7 @@ class _InternshipListState extends State<_InternshipList> {
                               student.fullName,
                               style: const TextStyle(
                                   color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
                                   decoration: TextDecoration.underline),
                             ),
                           ),
@@ -273,7 +274,7 @@ class _InternshipListState extends State<_InternshipList> {
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
-                            'Nom du superviseur\u00b7e en milieu de stage : ${contact.fullName}'),
+                            'Responsable en milieu de stage : ${contact.fullName}'),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),

@@ -325,7 +325,7 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('(Responsable du stagiaire)'),
+            const Text('(Responsable en milieu de stage)'),
             Column(
               children: [
                 Switch(
