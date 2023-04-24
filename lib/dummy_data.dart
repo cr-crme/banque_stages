@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/address.dart';
@@ -65,6 +66,7 @@ Future<void> addDummySchools(SchoolsProvider schools) async {
 Future<void> addDummyTeachers(
     TeachersProvider teachers, SchoolsProvider schools) async {
   teachers.add(Teacher(
+      id: '42',
       firstName: 'Roméo',
       lastName: 'Montaigu',
       schoolId: schools[0].id,
@@ -619,7 +621,7 @@ Future<void> addDummyStudents(
       lastName: 'Masson',
       dateBirth: DateTime(2005, 5, 20),
       email: 'c.masson@email.com',
-      teacherId: teachers[0].id,
+      teacherId: teachers.currentTeacherId,
       program: Program.fpt,
       group: '550',
       address: await Address.fromAddress(
@@ -702,7 +704,7 @@ Future<void> addDummyStudents(
       lastName: 'Gingras',
       dateBirth: DateTime.now(),
       email: 's.gingras@email.com',
-      teacherId: teachers[0].id,
+      teacherId: '42', // This is a Roméo Montaigu's student
       program: Program.fms,
       group: '789',
       contact: Person(
@@ -723,7 +725,7 @@ Future<void> addDummyStudents(
       lastName: 'Vargas',
       dateBirth: DateTime.now(),
       email: 'd.vargas@email.com',
-      teacherId: teachers.currentTeacherId,
+      teacherId: '42', // This is a Roméo Montaigu's student
       program: Program.fpt,
       group: '789',
       contact: Person(
@@ -823,6 +825,33 @@ Future<void> addDummyStudents(
   );
 
   await _waitForDatabaseUpdate(students, 10);
+
+  // Simulate that some of the students were actually added by someone else
+  {
+    final student =
+        students.firstWhere((student) => student.fullName == 'Diego Vargas');
+    FirebaseDatabase.instance
+        .ref('/students-ids/42/')
+        .child(student.id)
+        .set(true);
+    FirebaseDatabase.instance
+        .ref(students.pathToAvailableDataIds)
+        .child(student.id)
+        .remove();
+  }
+  {
+    final student =
+        students.firstWhere((student) => student.fullName == 'Simon Gingras');
+    FirebaseDatabase.instance
+        .ref('/students-ids/42/')
+        .child(student.id)
+        .set(true);
+    FirebaseDatabase.instance
+        .ref(students.pathToAvailableDataIds)
+        .child(student.id)
+        .remove();
+  }
+  await _waitForDatabaseUpdate(students, 8);
 }
 
 Future<void> addDummyInterships(
@@ -1046,7 +1075,7 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
-    teacherId: teachers.firstWhere((e) => e.fullName == 'Benvolio Montaigu').id,
+    teacherId: '42', // This is a Roméo Montaigu's student
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
     extraSpecializationsId: [],
@@ -1087,7 +1116,8 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
-    teacherId: teachers.currentTeacherId,
+    teacherId: '42', // Transfered to Roméo Montaigu
+    isTransfering: false,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
     extraSpecializationsId: [],
@@ -1139,6 +1169,7 @@ Future<void> addDummyInterships(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
     teacherId: teachers.currentTeacherId,
+    previousTeacherId: '42', // Was transfered from Roméo Montaigu
     isTransfering: true,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
@@ -1189,7 +1220,7 @@ Future<void> addDummyInterships(
 
 Future<void> _waitForDatabaseUpdate(
     FirebaseListProvided list, int expectedLength) async {
-// Wait for the database to add all the students
+  // Wait for the database to add all the students
   while (list.length < expectedLength) {
     await Future.delayed(const Duration(milliseconds: 250));
   }

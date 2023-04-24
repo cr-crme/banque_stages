@@ -62,23 +62,11 @@ class BanqueStagesApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AllItineraries()),
         ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
           create: (context) => TeachersProvider(),
-          update: (context, auth, previous) {
-            previous!.initializeFetchingData();
-            previous.currentTeacherId = auth.currentUser!.uid;
-            return previous;
-          },
+          update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
           create: (context) => StudentsProvider(),
-          update: (context, auth, previous) {
-            if (auth.currentUser == null) {
-              previous!.pathToAvailableDataIds = '';
-            } else {
-              previous!.pathToAvailableDataIds =
-                  '/students-ids/${auth.currentUser!.uid}/';
-            }
-            return previous;
-          },
+          update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
       ],
       child: MaterialApp.router(

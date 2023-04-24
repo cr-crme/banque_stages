@@ -117,4 +117,24 @@ class Student extends Person {
         contact: contact ?? this.contact,
         contactLink: contactLink ?? this.contactLink,
       );
+
+  @override
+  Student deepCopy() {
+    return Student(
+      firstName: firstName,
+      middleName: middleName,
+      lastName: lastName,
+      dateBirth: dateBirth == null
+          ? null
+          : DateTime(dateBirth!.year, dateBirth!.month, dateBirth!.day),
+      phone: phone.deepCopy(),
+      email: email,
+      address: address?.deepCopy(),
+      contact: contact.deepCopy(),
+      contactLink: contactLink,
+      group: group,
+      program: program,
+      teacherId: teacherId,
+    );
+  }
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '/common/models/student.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/schools_provider.dart';
+import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import 'models/all_itineraries.dart';
 import 'models/itinerary.dart';
@@ -47,9 +49,10 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         SchoolsProvider.of(context, listen: false).fromId(teacher.schoolId);
     final enterprises = EnterprisesProvider.of(context, listen: false);
     final waypoints = AllStudentsWaypoints.of(context, listen: false);
-    final interships = InternshipsProvider.of(context, listen: false);
+    final internships = InternshipsProvider.of(context, listen: false);
     final students =
-        TeachersProvider.getSupervizedStudents(context, listen: false);
+        (await StudentsProvider.getMySupervizedStudents(context, listen: false))
+            .map<Student>((e) => e);
     waypoints.clear(notify: false);
 
     // Add the school as the first waypoint
@@ -61,7 +64,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     // Get the students from the registered students, but we copy them so
     // we don't mess with them
     for (final student in students) {
-      final studentInterships = interships.byStudentId(student.id);
+      final studentInterships = internships.byStudentId(student.id);
       if (studentInterships.isEmpty) continue;
       final intership = studentInterships.last;
 

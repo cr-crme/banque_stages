@@ -101,7 +101,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   List<Student> _filterByFlag(List<Student> students) {
-    final allInterships = InternshipsProvider.of(context, listen: true);
+    final allInterships = InternshipsProvider.of(context, listen: false);
 
     return students
         .map<Student?>((e) {
@@ -133,7 +133,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
   void _transferStudent() async {
     final internships = InternshipsProvider.of(context, listen: false);
     final students =
-        TeachersProvider.getInChargeStudents(context, listen: false);
+        StudentsProvider.of(context, listen: false).map((e) => e).toList();
     final teachers =
         TeachersProvider.of(context, listen: false).map((e) => e).toList();
 
@@ -152,13 +152,16 @@ class _SupervisionChartState extends State<SupervisionChart> {
     internships.transferStudent(studentId: answer[0], newTeacherId: answer[1]);
   }
 
-  void _showTransferedStudent(InternshipsProvider internships) async {
+  Future<void> _showTransferedStudent({listenInternships = false}) async {
     final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
-    final students = StudentsProvider.of(context, listen: false);
+    final internships =
+        InternshipsProvider.of(context, listen: listenInternships);
 
     for (final internship in internships) {
       if (internship.isTransfering && internship.teacherId == myId) {
-        final student = students.fromId(internship.studentId);
+        final student =
+            await StudentsProvider.fromLimitedId(context, internship.studentId);
+        if (!mounted) return;
         final acceptTransfer = await showDialog<bool>(
             barrierDismissible: false,
             context: context,
@@ -177,25 +180,27 @@ class _SupervisionChartState extends State<SupervisionChart> {
     GoRouter.of(context).pushNamed(Screens.itinerary);
   }
 
+  Future<List<Student>> _fetchSupervizedStudents() async {
+    // Check if a student was transfered to the teacher, if so, show a dialog
+    // box to accept or refuse
+    await _showTransferedStudent(listenInternships: true);
+    if (!mounted) return [];
+
+    var out =
+        await StudentsProvider.getMySupervizedStudents(context, listen: false);
+    out.sort(
+      (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
+    );
+    out = _filterByName(out);
+    out = _filterByFlag(out);
+
+    return out;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final iconSize = screenSize.width / 16;
-
-    // Make a copy before filtering
-    var students =
-        TeachersProvider.getSupervizedStudents(context, listen: false);
-    final allInternships = InternshipsProvider.of(context, listen: true);
-
-    students.sort(
-      (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
-    );
-    students = _filterByName(students);
-    students = _filterByFlag(students);
-
-    // Check if a student was transfered to the teacher, if so, show a dialog
-    // box to accept or refuse
-    Future.microtask(() => _showTransferedStudent(allInternships));
 
     return Scaffold(
       appBar: AppBar(
@@ -228,28 +233,43 @@ class _SupervisionChartState extends State<SupervisionChart> {
                       icon: Icons.filter_alt_sharp),
                 ])),
       ),
-      body: Column(
-        children: [
-          if (_isSearchBarExpanded) _searchBarBuilder(),
-          if (_isFlagFilterExpanded) _flagFilterBuilder(),
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: students.length,
-              itemBuilder: ((ctx, i) {
-                final student = students[i];
+      body: FutureBuilder<List<Student>>(
+          future: _fetchSupervizedStudents(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-                return _StudentTile(
-                  key: Key(student.id),
-                  student: student,
-                  internships: allInternships.byStudentId(student.id),
-                  onUpdatePriority: () => _updatePriority(student.id),
-                );
-              }),
-            ),
-          ),
-        ],
-      ),
+            final students = snapshot.data!;
+            return Column(
+              children: [
+                if (_isSearchBarExpanded) _searchBarBuilder(),
+                if (_isFlagFilterExpanded) _flagFilterBuilder(),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: students.length,
+                    itemBuilder: ((ctx, i) {
+                      final student = students[i];
+                      final internships =
+                          InternshipsProvider.of(context, listen: true)
+                              .byStudentId(student.id);
+
+                      return _StudentTile(
+                        key: Key(student.id),
+                        student: student,
+                        internship:
+                            internships.isNotEmpty ? internships.last : null,
+                        onUpdatePriority: () => _updatePriority(student.id),
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            );
+          }),
       drawer: const MainDrawer(),
     );
   }
@@ -299,22 +319,22 @@ class _StudentTile extends StatelessWidget {
   const _StudentTile({
     super.key,
     required this.student,
-    required this.internships,
+    required this.internship,
     required this.onUpdatePriority,
   });
 
   final Student student;
-  final List<Internship> internships;
+  final Internship? internship;
   final Function() onUpdatePriority;
 
   @override
   Widget build(BuildContext context) {
-    final enterprise = internships.isNotEmpty && internships.last.isActive
+    final enterprise = internship?.isActive ?? false
         ? EnterprisesProvider.of(context, listen: false)
-            .fromId(internships.last.enterpriseId)
+            .fromId(internship!.enterpriseId)
         : null;
-    final specialization = internships.isNotEmpty && internships.last.isActive
-        ? enterprise?.jobs.fromId(internships.last.jobId).specialization
+    final specialization = internship?.isActive ?? false
+        ? enterprise?.jobs.fromId(internship!.jobId).specialization
         : null;
 
     return Card(
@@ -344,7 +364,7 @@ class _StudentTile extends StatelessWidget {
             ),
           ],
         ),
-        trailing: internships.isNotEmpty && internships.last.isActive
+        trailing: internship?.isActive ?? false
             ? Ink(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -365,8 +385,8 @@ class _StudentTile extends StatelessWidget {
                     onPressed: onUpdatePriority,
                     alignment: Alignment.center,
                     icon: Icon(
-                      internships.last.visitingPriority.icon,
-                      color: internships.last.visitingPriority.color,
+                      internship!.visitingPriority.icon,
+                      color: internship!.visitingPriority.color,
                       size: 30,
                     ),
                   ),

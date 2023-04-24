@@ -111,6 +111,7 @@ class Internship extends ItemSerializable {
   bool get isEvaluationPending =>
       endDate != null && (skillEvaluations.isEmpty || skillEvaluations.isEmpty);
   bool get isActive => endDate == null;
+  bool get isNotActive => !isActive;
 
   Internship._({
     required super.id,
