@@ -41,12 +41,6 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late Student student;
-    try {
-      student = StudentsProvider.of(context).fromId(studentId);
-    } catch (e) {
-      return Container();
-    }
     final internships = InternshipsProvider.of(context).byStudentId(studentId);
     final internship = internships.isNotEmpty ? internships.last : null;
 
@@ -55,50 +49,60 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
             .fromId(internship.enterpriseId)
         : null;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(children: [
-          student.avatar,
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(student.fullName),
-              Text(
-                enterprise?.name ?? 'Aucun stage',
-                style: const TextStyle(fontSize: 14),
-              )
-            ],
-          ),
-        ]),
-        actions: [
-          IconButton(
-              onPressed: () => _transferStudent(context),
-              icon: const Icon(Icons.transfer_within_a_station)),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (internship == null)
-              const Padding(
-                padding: EdgeInsets.only(top: 10.0),
-                child:
-                    Center(child: Text('Aucun stage pour cet\u00b7te élève')),
+    return FutureBuilder<Student>(
+        future: StudentsProvider.fromLimitedId(context, studentId: studentId),
+        builder: (context, snapshot) {
+          final student = snapshot.hasData ? snapshot.data! : null;
+          return Scaffold(
+            appBar: AppBar(
+              title: student == null
+                  ? const Text('En attente des données')
+                  : Row(children: [
+                      student.avatar,
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(student.fullName),
+                          Text(
+                            enterprise?.name ?? 'Aucun stage',
+                            style: const TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                    ]),
+              actions: [
+                IconButton(
+                    onPressed: () => _transferStudent(context),
+                    icon: const Icon(Icons.transfer_within_a_station)),
+              ],
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (internship == null)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: Center(
+                          child: Text('Aucun stage pour cet\u00b7te élève')),
+                    ),
+                  if (internship != null)
+                    _VisitingPriority(studentId: studentId),
+                  if (internship != null)
+                    _Specialization(internship: internship),
+                  if (internship != null)
+                    _PersonalNotes(internship: internship),
+                  if (internship != null)
+                    _Contact(enterprise: enterprise!, internship: internship),
+                  if (internship != null) _Schedule(internship: internship),
+                  if (internship != null) _Requirements(internship: internship),
+                  _MoreInfoButton(studentId: studentId),
+                ],
               ),
-            if (internship != null) _VisitingPriority(studentId: studentId),
-            if (internship != null) _Specialization(internship: internship),
-            if (internship != null) _PersonalNotes(internship: internship),
-            if (internship != null)
-              _Contact(enterprise: enterprise!, internship: internship),
-            if (internship != null) _Schedule(internship: internship),
-            if (internship != null) _Requirements(internship: internship),
-            _MoreInfoButton(studentId: studentId),
-          ],
-        ),
-      ),
-    );
+            ),
+          );
+        });
   }
 }
 
