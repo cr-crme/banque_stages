@@ -150,61 +150,55 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
         future: StudentsProvider.fromLimitedId(context,
             studentId: internship.studentId),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text(
-                    'En attente des informations\nC1. Compétences spécifiques'),
-                leading: IconButton(
-                    onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
-              ),
-              body: const Center(child: CircularProgressIndicator()),
-            );
-          }
-
-          final student = snapshot.data!;
+          final student = snapshot.hasData ? snapshot.data! : null;
           return Scaffold(
             appBar: AppBar(
-                title: Text('Évaluation de ${student.fullName}'),
-                leading: IconButton(
-                    onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
-            body: ScrollableStepper(
-              scrollController: _scrollController,
-              type: StepperType.vertical,
-              currentStep: _currentStep,
-              onStepContinue: _nextStep,
-              onStepTapped: (int tapped) => setState(() {
-                _currentStep = tapped;
-                _scrollToCurrentTab();
-              }),
-              onStepCancel: _cancel,
-              steps: [
-                ...skills.map((skill) => Step(
-                      isActive: true,
-                      state: widget.formController.appreciations[skill]! ==
-                              SkillAppreciation.notEvaluated
-                          ? StepState.indexed
-                          : StepState.complete,
-                      title: SubTitle(skill.id, top: 0, bottom: 0),
-                      content: _EvaluateSkill(
-                        formController: widget.formController,
-                        skill: skill,
-                        editMode: widget.editMode,
-                      ),
-                    )),
-                Step(
-                  isActive: true,
-                  title: const SubTitle('Commentaires', top: 0, bottom: 0),
-                  content: _Comments(
-                    formController: widget.formController,
-                    editMode: widget.editMode,
-                  ),
-                )
-              ],
-              controlsBuilder:
-                  (BuildContext context, ControlsDetails details) =>
-                      _controlBuilder(context, details, skills),
+              title: Text(
+                  '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\nC1. Compétences spécifiques'),
+              leading: IconButton(
+                  onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
             ),
+            body: student == null
+                ? const Center(child: CircularProgressIndicator())
+                : ScrollableStepper(
+                    scrollController: _scrollController,
+                    type: StepperType.vertical,
+                    currentStep: _currentStep,
+                    onStepContinue: _nextStep,
+                    onStepTapped: (int tapped) => setState(() {
+                      _currentStep = tapped;
+                      _scrollToCurrentTab();
+                    }),
+                    onStepCancel: _cancel,
+                    steps: [
+                      ...skills.map((skill) => Step(
+                            isActive: true,
+                            state:
+                                widget.formController.appreciations[skill]! ==
+                                        SkillAppreciation.notEvaluated
+                                    ? StepState.indexed
+                                    : StepState.complete,
+                            title: SubTitle(skill.id, top: 0, bottom: 0),
+                            content: _EvaluateSkill(
+                              formController: widget.formController,
+                              skill: skill,
+                              editMode: widget.editMode,
+                            ),
+                          )),
+                      Step(
+                        isActive: true,
+                        title:
+                            const SubTitle('Commentaires', top: 0, bottom: 0),
+                        content: _Comments(
+                          formController: widget.formController,
+                          editMode: widget.editMode,
+                        ),
+                      )
+                    ],
+                    controlsBuilder:
+                        (BuildContext context, ControlsDetails details) =>
+                            _controlBuilder(context, details, skills),
+                  ),
           );
         });
   }

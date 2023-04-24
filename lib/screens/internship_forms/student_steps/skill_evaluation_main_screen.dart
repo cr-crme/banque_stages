@@ -48,51 +48,41 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
         future: StudentsProvider.fromLimitedId(context,
             studentId: internship.studentId),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text(
-                    'En attente des informations\nC1. Compétences spécifiques'),
-                leading: IconButton(
-                    onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
-              ),
-              body: const Center(child: CircularProgressIndicator()),
-            );
-          }
-
-          final student = snapshot.data!;
+          final student = snapshot.hasData ? snapshot.data! : null;
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                  'Évaluation de ${student.fullName}\nC1. Compétences spécifiques'),
+                  '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\nC1. Compétences spécifiques'),
               leading: IconButton(
                   onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
             ),
-            body: SingleChildScrollView(
-              child: Builder(builder: (context) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _EvaluationDate(
-                      formController: _formController,
-                      editMode: widget.editMode,
-                    ),
-                    _PersonAtMeeting(
-                      formController: _formController,
-                      editMode: widget.editMode,
-                    ),
-                    _JobToEvaluate(
-                      formController: _formController,
-                      editMode: widget.editMode,
-                    ),
-                    _StartEvaluation(
-                      formController: _formController,
-                      editMode: widget.editMode,
-                    ),
-                  ],
-                );
-              }),
-            ),
+            body: student == null
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                    child: Builder(builder: (context) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _EvaluationDate(
+                            formController: _formController,
+                            editMode: widget.editMode,
+                          ),
+                          _PersonAtMeeting(
+                            formController: _formController,
+                            editMode: widget.editMode,
+                          ),
+                          _JobToEvaluate(
+                            formController: _formController,
+                            editMode: widget.editMode,
+                          ),
+                          _StartEvaluation(
+                            formController: _formController,
+                            editMode: widget.editMode,
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
           );
         });
   }
