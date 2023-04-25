@@ -42,6 +42,8 @@ class QuestionsStepState extends State<QuestionsStep> {
                     widget.job.specialization.questions.elementAt(index);
                 final question = QuestionFileService.fromId(id);
 
+                if (id == "21" || id == "22" || id == "23") return null;
+
                 switch (question.type) {
                   case Type.radio:
                     return QuestionWithRadioBool(
