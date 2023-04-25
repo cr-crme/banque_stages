@@ -151,13 +151,15 @@ class _SkillTile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            specialization.idWithName,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                        if (skills[specialization]!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4.0),
+                            child: Text(
+                              specialization.idWithName,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
                         ...skills[specialization]!
                             .sorted(
                                 (a, b) => a.skillName.compareTo(b.skillName))
