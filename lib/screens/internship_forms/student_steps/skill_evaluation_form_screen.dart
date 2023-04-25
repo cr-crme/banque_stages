@@ -232,7 +232,7 @@ class _EvaluateSkill extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: spacing),
           child: Text(
-            'Niveau de complexité : ${skill.complexity}',
+            'Niveau : ${skill.complexity}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -320,6 +320,7 @@ class _TaskEvaluationState extends State<_TaskEvaluation> {
                         widget.formController.taskCompleted[widget.skill]![e]!,
                     title: Text(e, style: const TextStyle(color: Colors.black)),
                   ))
+              // TODO Benjamin apply regular for checkbox
               .toList(),
         ],
       ),
