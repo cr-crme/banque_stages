@@ -265,27 +265,6 @@ class _InternshipListState extends State<_InternshipList> {
                                   const EdgeInsets.only(top: 10.0, bottom: 15),
                               child: _dateBuild(internship),
                             ),
-                            FutureBuilder<bool>(
-                                future: teachers.canControlInternship(context,
-                                    internshipId: internship.id),
-                                builder: (context, snapshot) =>
-                                    !internship.isActive ||
-                                            !snapshot.hasData ||
-                                            !snapshot.data!
-                                        ? Container()
-                                        : Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 8.0),
-                                              child: TextButton(
-                                                  onPressed: () =>
-                                                      _finalizeInternship(
-                                                          internship),
-                                                  child: const Text(
-                                                      'Terminer le stage')),
-                                            ),
-                                          )),
                             if (internship.isEnterpriseEvaluationPending)
                               Align(
                                 alignment: Alignment.centerRight,

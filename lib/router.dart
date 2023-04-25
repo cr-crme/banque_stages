@@ -136,7 +136,7 @@ final router = GoRouter(
           name: Screens.enterprise,
           builder: (context, state) => EnterpriseScreen(
             id: state.params['id']!,
-            pageIndex: int.parse(state.queryParams['pageIndex'] ?? "0"),
+            pageIndex: int.parse(state.queryParams['pageIndex'] ?? '0'),
           ),
           routes: [
             GoRoute(
@@ -167,7 +167,7 @@ final router = GoRouter(
           name: Screens.student,
           builder: (context, state) => StudentScreen(
               id: state.params['id']!,
-              initialPage: int.parse(state.queryParams['pageIndex'] ?? "0")),
+              initialPage: int.parse(state.queryParams['pageIndex'] ?? '0')),
         ),
       ],
     ),

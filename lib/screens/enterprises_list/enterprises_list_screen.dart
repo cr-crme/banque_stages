@@ -178,7 +178,7 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
                 onTap: (enterprise) => GoRouter.of(context).goNamed(
                   Screens.enterprise,
                   params: Screens.params(enterprise),
-                  queryParams: Screens.queryParams(pageIndex: "0"),
+                  queryParams: Screens.queryParams(pageIndex: '0'),
                 ),
               ),
             ),
@@ -233,7 +233,7 @@ class _EnterprisesByMap extends StatelessWidget {
                     : () => GoRouter.of(context).goNamed(
                           Screens.enterprise,
                           params: Screens.params(enterprise),
-                          queryParams: Screens.queryParams(pageIndex: "0"),
+                          queryParams: Screens.queryParams(pageIndex: '0'),
                         ),
                 child: Container(
                   decoration: BoxDecoration(
