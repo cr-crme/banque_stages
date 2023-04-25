@@ -65,10 +65,8 @@ class GeneralInformationsStep extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.only(bottom: 16, top: 8),
                   child: Text(
-                    'Susciter une discussion sur la santé et la sécurité du '
-                    'travail (SST) des stagiaires. Les différentes questions et '
-                    'sous-questions visent à favoriser le dialogue avec '
-                    'les entreprises.',
+                    'Susciter un dialogue avec les entreprises sur la santé et '
+                    'la sécurité du travail (SST).',
                   ),
                 ),
                 Text(
@@ -81,13 +79,12 @@ class GeneralInformationsStep extends StatelessWidget {
                     children: const [
                       Text(
                         '\u2022 Éclairer les enseignants sur de possibles '
-                        'risques pour la santé et la sécurité du travail (SST) '
-                        'des élèves en stage.',
+                        'risques pour la SST des élèves en stage',
                       ),
                       Text(
-                        '\u2022 Faire prendre conscience aux personnes de '
-                        'l\'entreprise que l\'enseignant est attentif à la SST '
-                        'et qu\'il sera un partenaire pour former l\'élève '
+                        '\u2022 Faire prendre conscience aux entreprises '
+                        'que l\'enseignant est attentif à la SST '
+                        'et est un partenaire pour former l\'élève '
                         'sur ce sujet.',
                       ),
                     ],
@@ -100,8 +97,8 @@ class GeneralInformationsStep extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Entreprise dans laquelle un élève est placée pour la '
-              'première fois en stage',
+              'Entreprise dans laquelle l\'élève est placé pour la '
+              'première fois en stage.',
             ),
           ),
           const SubTitle('Recommandations'),
@@ -111,42 +108,28 @@ class GeneralInformationsStep extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Remplir ce formulaire lors d\'un entretien :',
+                  'Remplir ce formulaire, lors d\'un entretien, avec la personne '
+                  'qui est en charge de former l\'élève sur le plancher, car:',
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '\u2022 Avec la personne qui est en charge de former '
-                        'l\'élève sur le plancher:',
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              '\u2022 C\'est elle qui connait le mieux le poste '
-                              'de travail de l\'élève',
-                            ),
-                            Text(
-                              '\u2022 Il sera plus facile d\'aborder avec elle '
-                              'qu\'avec les employeurs les questions relatives '
-                              'aux dangers et aux accidents)',
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Text('\u2022 La 1ère semaine de stage'),
-                      const Text(
-                        '\u2022 Pendant (ou à la suite) d\'une visite du poste '
-                        'de travail de l\'élève',
-                      ),
+                    children: const [
+                      Text('\u2022 C\'est elle qui connait le mieux le poste '
+                          'de travail de l\'élève'),
+                      Text('\u2022 Il sera plus facile d\'aborder avec elle '
+                          'les questions relatives aux dangers et aux accidents '
+                          '(qu\'avec les employeurs),')
                     ],
                   ),
                 ),
+                const Text(''),
+                const Text('Quand:'),
+                const Text('\u2022 La 1ère semaine de stage'),
+                const Text(
+                    '\u2022 Pendant (ou à la suite) d\'une visite du poste '
+                    'de travail de l\'élève'),
                 const Text(''),
                 const Text('Durée de remplissage : 15 minutes'),
               ],
