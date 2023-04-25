@@ -321,28 +321,18 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Superviseur en milieu de travail', left: 0),
+        const Text('(Responsable en milieu de stage)'),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('(Responsable en milieu de stage)'),
-            Column(
-              children: [
-                Switch(
-                  onChanged: widget.enterprise == null
-                      ? null
-                      : (newValue) => _toggleUseContactInfo(),
-                  value: _useContactInfo,
-                ),
-                GestureDetector(
-                  onTap:
-                      widget.enterprise == null ? null : _toggleUseContactInfo,
-                  child: const Text(
-                    'Identique au\ncontact',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
+            Text('Identique au contact',
+                style: Theme.of(context).textTheme.titleMedium),
+            Switch(
+              onChanged: widget.enterprise == null
+                  ? null
+                  : (newValue) => _toggleUseContactInfo(),
+              value: _useContactInfo,
             ),
           ],
         ),
