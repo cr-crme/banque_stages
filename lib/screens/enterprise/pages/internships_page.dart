@@ -7,7 +7,6 @@ import '/common/models/student.dart';
 import '/common/models/teacher.dart';
 import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
-import '/common/widgets/dialogs/finalize_internship_dialog.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 import '/router.dart';
@@ -144,14 +143,6 @@ class _InternshipListState extends State<_InternshipList> {
         )
       ],
     );
-  }
-
-  void _finalizeInternship(Internship internship) async {
-    await showDialog(
-        context: context,
-        builder: (context) =>
-            FinalizeInternshipDialog(internshipId: internship.id));
-    setState(() {});
   }
 
   void _evaluateInternship(Internship internship) async {

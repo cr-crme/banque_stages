@@ -222,13 +222,7 @@ class _EvaluateSkill extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: spacing),
-          child: Text(
-            skill.name,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
+        SubTitle(skill.name, top: 0, left: 0),
         Padding(
           padding: const EdgeInsets.only(bottom: spacing),
           child: Text(
@@ -318,9 +312,11 @@ class _TaskEvaluationState extends State<_TaskEvaluation> {
                     enabled: widget.editMode,
                     value:
                         widget.formController.taskCompleted[widget.skill]![e]!,
-                    title: Text(e, style: const TextStyle(color: Colors.black)),
+                    title: Text(e,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Colors.black,
+                            )),
                   ))
-              // TODO Benjamin apply regular for checkbox
               .toList(),
         ],
       ),
@@ -372,7 +368,9 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
                         widget.formController.appreciations[widget.skill],
                     value: e,
                     title: Text(e.name,
-                        style: const TextStyle(color: Colors.black)),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Colors.black,
+                            )),
                   ))
               .toList(),
         ],

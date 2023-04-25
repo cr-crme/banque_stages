@@ -53,16 +53,20 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                             evaluation: widget.internship.skillEvaluations)),
                     Container(
                       decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
+                          border: Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 3),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(15))),
+                              const BorderRadius.all(Radius.circular(18))),
                       child: IconButton(
-                          onPressed: () => GoRouter.of(context).pushNamed(
-                                Screens.skillEvaluationMainScreen,
-                                params: Screens.params(widget.internship.id),
-                                queryParams: Screens.queryParams(editMode: '1'),
-                              ),
-                          icon: const Icon(Icons.add_chart_rounded)),
+                        onPressed: () => GoRouter.of(context).pushNamed(
+                          Screens.skillEvaluationMainScreen,
+                          params: Screens.params(widget.internship.id),
+                          queryParams: Screens.queryParams(editMode: '1'),
+                        ),
+                        icon: const Icon(Icons.add_chart_rounded),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     )
                   ],
                 ),
@@ -77,16 +81,20 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                             evaluation: widget.internship.attitudeEvaluations)),
                     Container(
                       decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
+                          border: Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 3),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(15))),
+                              const BorderRadius.all(Radius.circular(18))),
                       child: IconButton(
-                          onPressed: () => GoRouter.of(context).pushNamed(
-                              Screens.attitudeEvaluationScreen,
-                              queryParams: Screens.queryParams(editMode: '1'),
-                              extra: AttitudeEvaluationFormController(
-                                  internshipId: widget.internship.id)),
-                          icon: const Icon(Icons.add_chart_rounded)),
+                        onPressed: () => GoRouter.of(context).pushNamed(
+                            Screens.attitudeEvaluationScreen,
+                            queryParams: Screens.queryParams(editMode: '1'),
+                            extra: AttitudeEvaluationFormController(
+                                internshipId: widget.internship.id)),
+                        icon: const Icon(Icons.add_chart_rounded),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     )
                   ],
                 )
@@ -279,7 +287,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
       child: Center(
-        child: TextButton(
+        child: OutlinedButton(
             onPressed: () {
               GoRouter.of(context).pushNamed(Screens.skillEvaluationFormScreen,
                   queryParams: Screens.queryParams(editMode: '0'),

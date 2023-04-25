@@ -51,11 +51,11 @@ class InternshipQuickAccess extends StatelessWidget {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 3),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18))),
                         child: IconButton(
                           onPressed: () => GoRouter.of(context).pushNamed(
                             Screens.skillEvaluationMainScreen,
@@ -63,7 +63,7 @@ class InternshipQuickAccess extends StatelessWidget {
                             queryParams: Screens.queryParams(editMode: '1'),
                           ),
                           icon: const Icon(Icons.add_chart_rounded),
-                          color: Colors.black,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       Text(
@@ -79,11 +79,11 @@ class InternshipQuickAccess extends StatelessWidget {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 3),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18))),
                         child: IconButton(
                           onPressed: () => GoRouter.of(context).pushNamed(
                               Screens.attitudeEvaluationScreen,
@@ -91,7 +91,7 @@ class InternshipQuickAccess extends StatelessWidget {
                               extra: AttitudeEvaluationFormController(
                                   internshipId: internshipId)),
                           icon: const Icon(Icons.add_chart_rounded),
-                          color: Colors.black,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       Text(
