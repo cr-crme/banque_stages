@@ -38,7 +38,7 @@ class _StudentScreenState extends State<StudentScreen>
     final student =
         StudentsProvider.of(context, listen: false).fromId(widget.id);
     if (!student.hasActiveInternship(context)) {
-      GoRouter.of(context).goNamed(
+      GoRouter.of(context).pushNamed(
         Screens.internshipEnrollementFromStudent,
         params: Screens.params(widget.id),
       );
