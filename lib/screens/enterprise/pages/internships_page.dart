@@ -256,11 +256,6 @@ class _InternshipListState extends State<_InternshipList> {
                                   'Responsable en milieu de stage : ${widget.internships.last.supervisor.fullName}'),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                  'Nombre d\'heures de stage : ${widget.internships.last.achievedLength}h'),
-                            ),
-                            Padding(
                               padding:
                                   const EdgeInsets.only(top: 10.0, bottom: 15),
                               child: _dateBuild(internship),
