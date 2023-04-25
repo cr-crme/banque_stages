@@ -21,7 +21,8 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
   }
 
   void _onConfirm() {
-    if (FormService.validateForm(_formKey, save: true)) {
+    if (FormService.validateForm(_formKey,
+        save: true, showSnackbarError: false)) {
       Navigator.pop(context, {
         'eventType': _eventType,
         'description': _description,
