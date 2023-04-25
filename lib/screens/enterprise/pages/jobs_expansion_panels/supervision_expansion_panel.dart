@@ -30,11 +30,12 @@ class _SupervisionBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _RatingBar(
-              title:
-                  'Accueil de stagiaires avec un trouble du spectre de l\'autisme (TSA)',
-              rating: job.welcomingTsa,
-            ),
+            if (job.welcomingTsa != -1)
+              _RatingBar(
+                title:
+                    'Accueil de stagiaires avec un trouble du spectre de l\'autisme (TSA)',
+                rating: job.welcomingTsa,
+              ),
             _RatingBar(
               title: 'Accueil de stagiaires avec un trouble du langage',
               rating: job.welcomingCommunication,
