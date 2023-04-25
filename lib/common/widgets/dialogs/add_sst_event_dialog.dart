@@ -23,8 +23,8 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
   void _onConfirm() {
     if (FormService.validateForm(_formKey, save: true)) {
       Navigator.pop(context, {
-        "eventType": _eventType,
-        "description": _description,
+        'eventType': _eventType,
+        'description': _description,
       });
     }
   }
@@ -39,7 +39,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
           children: [
             RadioListTile(
               title: const Text(
-                  "Un accident ou un incident en stage (ex. blessure mineure, agression verbale d’un client, harcèlement des collègues)"),
+                  'Un accident ou un incident en stage (ex. blessure mineure, agression verbale d’un client, harcèlement des collègues)'),
               value: SstEventType.pastIncidents,
               groupValue: _eventType,
               onChanged: (value) =>
@@ -53,10 +53,10 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
                   setState(() => _eventType = SstEventType.dangerousSituations),
             ),
             QuestionWithText(
-              question: "Description de l'évènement",
+              question: 'Description de l\'évènement',
               onSaved: (text) => setState(() => _description = text),
               validator: (text) => text?.isEmpty ?? true
-                  ? "Décrivez ce qu'il s'est passé"
+                  ? 'Décrivez ce qu\'il s\'est passé'
                   : null,
             ),
           ],
@@ -69,7 +69,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
         ),
         TextButton(
           onPressed: _eventType != null ? _onConfirm : null,
-          child: const Text("Confirmer"),
+          child: const Text('Confirmer'),
         ),
       ],
     );

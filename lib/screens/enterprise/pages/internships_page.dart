@@ -232,7 +232,7 @@ class _InternshipListState extends State<_InternshipList> {
                                     Screens.student,
                                     params: Screens.params(student),
                                     queryParams:
-                                        Screens.queryParams(pageIndex: "1"),
+                                        Screens.queryParams(pageIndex: '1'),
                                   ),
                                   child: Text(
                                     student.fullName,

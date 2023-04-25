@@ -37,7 +37,7 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
       Map.fromIterable(widget.choices, value: (_) => false);
 
   bool _choiceOther = false;
-  String _textOther = "";
+  String _textOther = '';
 
   void _updateChoice(
       FormFieldState<Set<String>> state, String choice, bool? value) {
@@ -92,7 +92,7 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
                       ),
                       title: TextField(
                         decoration: const InputDecoration(
-                          labelText: "Autre :",
+                          labelText: 'Autre :',
                         ),
                         enabled: _choiceOther,
                         onChanged: (text) => setState(() => _textOther = text),
@@ -105,9 +105,9 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
             QuestionWithText(
               visible: choices.values.any((c) => c == true) ||
                   (_choiceOther && _textOther.isNotEmpty),
-              question: widget.textQuestion ?? "",
+              question: widget.textQuestion ?? '',
               onSaved: widget.onSavedText,
-              initialValue: widget.initialText ?? "",
+              initialValue: widget.initialText ?? '',
             ),
           ],
         ),

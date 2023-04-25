@@ -70,7 +70,7 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
                     GoRouter.of(context).goNamed(
                       Screens.student,
                       params: Screens.params(student),
-                      queryParams: Screens.queryParams(pageIndex: "0"),
+                      queryParams: Screens.queryParams(pageIndex: '0'),
                     );
                   },
                 ),

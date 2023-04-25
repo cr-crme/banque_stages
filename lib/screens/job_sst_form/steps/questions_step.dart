@@ -42,21 +42,21 @@ class QuestionsStepState extends State<QuestionsStep> {
                     widget.job.specialization.questions.elementAt(index);
                 final question = QuestionFileService.fromId(id);
 
-                if (id == "21" || id == "22" || id == "23") return null;
+                if (id == '21' || id == '22' || id == '23') return null;
 
                 switch (question.type) {
                   case Type.radio:
                     return QuestionWithRadioBool(
                       initialChoice: widget.job.sstQuestions[question.id],
                       initialText:
-                          widget.job.sstQuestions["${question.id}+t"] ?? "",
+                          widget.job.sstQuestions['${question.id}+t'] ?? '',
                       choiceQuestion:
-                          "${index + 1}. ${question.getQuestion(isProfessor)}",
+                          '${index + 1}. ${question.getQuestion(isProfessor)}',
                       textTrue: question.choices.firstOrNull,
                       textFalse: question.choices.lastOrNull,
                       textQuestion: question.getTextQuestion(isProfessor),
                       onSavedChoice: (choice) => awnser[question.id] = choice,
-                      onSavedText: (text) => awnser["${question.id}+t"] = text,
+                      onSavedText: (text) => awnser['${question.id}+t'] = text,
                     );
 
                   case Type.checkbox:
@@ -64,21 +64,21 @@ class QuestionsStepState extends State<QuestionsStep> {
                       initialChoices:
                           Set.from(widget.job.sstQuestions[question.id] ?? []),
                       initialText:
-                          widget.job.sstQuestions["${question.id}+t"] ?? "",
+                          widget.job.sstQuestions['${question.id}+t'] ?? '',
                       choicesQuestion:
-                          "${index + 1}. ${question.getQuestion(isProfessor)}",
+                          '${index + 1}. ${question.getQuestion(isProfessor)}',
                       choices: question.choices,
                       textQuestion: question.getTextQuestion(isProfessor),
                       onSavedChoices: (choices) =>
                           awnser[question.id] = choices?.toList(),
-                      onSavedText: (text) => awnser["${question.id}+t"] = text,
+                      onSavedText: (text) => awnser['${question.id}+t'] = text,
                     );
 
                   case Type.text:
                     return QuestionWithText(
-                      initialValue: widget.job.sstQuestions[question.id] ?? "",
+                      initialValue: widget.job.sstQuestions[question.id] ?? '',
                       question:
-                          "${index + 1}. ${question.getQuestion(isProfessor)}",
+                          '${index + 1}. ${question.getQuestion(isProfessor)}',
                       onSaved: (text) => awnser[question.id] = text,
                     );
                 }

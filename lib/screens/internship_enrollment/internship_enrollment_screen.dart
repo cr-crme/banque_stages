@@ -137,7 +137,7 @@ class _InternshipEnrollmentScreenState
     GoRouter.of(context).pushNamed(
       Screens.student,
       params: Screens.params(internship.studentId),
-      queryParams: Screens.queryParams(pageIndex: "1"),
+      queryParams: Screens.queryParams(pageIndex: '1'),
     );
   }
 

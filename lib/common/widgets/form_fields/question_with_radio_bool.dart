@@ -52,35 +52,35 @@ class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
               onSaved: (value) {
                 if (widget.onSavedChoice != null) widget.onSavedChoice!(value);
                 if (widget.onSavedText != null && value != true) {
-                  widget.onSavedText!("");
+                  widget.onSavedText!('');
                 }
               },
               initialValue: widget.initialChoice,
               builder: (state) => Column(
                 children: [
                   ListTileRadio<bool?>(
-                    titleLabel: widget.textTrue ?? "Oui",
+                    titleLabel: widget.textTrue ?? 'Oui',
                     value: true,
                     groupValue: state.value,
                     onChanged: state.didChange,
                   ),
                   ListTileRadio<bool?>(
-                    titleLabel: widget.textFalse ?? "Non",
+                    titleLabel: widget.textFalse ?? 'Non',
                     value: false,
                     groupValue: state.value,
                     onChanged: state.didChange,
                   ),
                   ListTileRadio<bool?>(
-                    titleLabel: "Non applicable",
+                    titleLabel: 'Non applicable',
                     value: null,
                     groupValue: state.value,
                     onChanged: state.didChange,
                   ),
                   QuestionWithText(
                     visible: state.value == true && widget.textQuestion != null,
-                    question: widget.textQuestion ?? "",
+                    question: widget.textQuestion ?? '',
                     onSaved: widget.onSavedText,
-                    initialValue: widget.initialText ?? "",
+                    initialValue: widget.initialText ?? '',
                   ),
                 ],
               ),

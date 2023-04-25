@@ -433,7 +433,7 @@ class _MoreInfoButton extends StatelessWidget {
             onPressed: () => GoRouter.of(context).pushNamed(
                   Screens.student,
                   params: Screens.params(studentId),
-                  queryParams: Screens.queryParams(pageIndex: "1"),
+                  queryParams: Screens.queryParams(pageIndex: '1'),
                 ),
             child: const Text('Plus de détails sur le stage')),
       ),
