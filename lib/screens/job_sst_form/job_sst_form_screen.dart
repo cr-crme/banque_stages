@@ -83,7 +83,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SST dans l\'entreprise'),
+        title: const Text('La SST en stage'),
       ),
       body: Selector<EnterprisesProvider, Enterprise>(
         builder: (context, enterprise, _) => ScrollableStepper(
