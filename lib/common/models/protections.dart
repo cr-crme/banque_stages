@@ -10,7 +10,7 @@ extension ProtectionStatusNamed on ProtectionsStatus {
   String get name {
     switch (this) {
       case ProtectionsStatus.suppliedByEnterprise:
-        return 'Oui et l\'entreprise les fournis';
+        return 'Oui et l\'entreprise les fournit';
       case ProtectionsStatus.suppliedBySchool:
         return 'Oui mais l\'école doit les acheter';
       case ProtectionsStatus.none:
