@@ -247,23 +247,12 @@ class InternshipDetailsState extends State<InternshipDetails> {
                     .textTheme
                     .titleLarge!
                     .copyWith(color: Colors.black)),
-            body: Stack(
-              alignment: Alignment.topRight,
-              children: [
-                _InternshipBody(
-                  internship: widget.internship,
-                  editMode: _editMode,
-                  onRequestChangedDates: _promptDateRange,
-                  internshipController: _internshipController,
-                ),
-                if (widget.internship.isActive)
-                  IconButton(
-                      onPressed: _onToggleSaveEdit,
-                      icon: Icon(
-                        _editMode ? Icons.save : Icons.edit,
-                        color: Colors.black,
-                      )),
-              ],
+            body: _InternshipBody(
+              internship: widget.internship,
+              editMode: _editMode,
+              onRequestChangedDates: _promptDateRange,
+              internshipController: _internshipController,
+              onToggleSaveEdit: _onToggleSaveEdit,
             ),
           )
         ],
@@ -278,12 +267,14 @@ class _InternshipBody extends StatelessWidget {
     required this.editMode,
     required this.onRequestChangedDates,
     required this.internshipController,
+    required this.onToggleSaveEdit,
   });
 
   final Internship internship;
   final bool editMode;
 
   final Function() onRequestChangedDates;
+  final Function() onToggleSaveEdit;
   final _InternshipController internshipController;
 
   static const TextStyle _titleStyle = TextStyle(fontWeight: FontWeight.bold);
@@ -566,7 +557,23 @@ class _InternshipBody extends StatelessWidget {
                         internship.extraSpecializationsId[indexExtra]),
                   )),
         _buildAddress(enterprise: enterprises[internship.enterpriseId]),
-        _buildSupervisorInfo(),
+        Stack(
+          alignment: Alignment.topLeft,
+          children: [
+            SizedBox(width: MediaQuery.of(context).size.width),
+            _buildSupervisorInfo(),
+            if (internship.isActive)
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                    onPressed: onToggleSaveEdit,
+                    icon: Icon(
+                      editMode ? Icons.save : Icons.edit,
+                      color: Colors.black,
+                    )),
+              ),
+          ],
+        ),
         _buildDates(),
         _buildTime(),
         _buildSchedule(),
