@@ -125,7 +125,7 @@ class InternshipQuickAccess extends StatelessWidget {
         onTap: () => GoRouter.of(context).pushNamed(
           Screens.enterprise,
           params: Screens.params(enterprise),
-          queryParams: Screens.queryParams(pageIndex: "0"),
+          queryParams: Screens.queryParams(pageIndex: '3'),
         ),
         child: Text(
           enterprise.name,
