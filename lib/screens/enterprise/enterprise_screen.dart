@@ -78,16 +78,17 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
             0, (previousValue, e) => e.positionsRemaining(context)) ==
         0) {
       await showDialog(
-          context: context,
-          builder: (ctx) => const AlertDialog(
-                title: Text('Plus de stage disponible'),
-                content: Text(
-                    'Il n\'y a plus de stage disponible dans cette entreprise'),
-              ));
+        context: context,
+        builder: (ctx) => const AlertDialog(
+          title: Text('Plus de stage disponible'),
+          content:
+              Text('Il n\'y a plus de stage disponible dans cette entreprise'),
+        ),
+      );
       return;
     }
 
-    GoRouter.of(context).goNamed(
+    GoRouter.of(context).pushNamed(
       Screens.internshipEnrollementFromEnterprise,
       params: Screens.params(enterprise),
     );

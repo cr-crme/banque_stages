@@ -118,6 +118,20 @@ final router = GoRouter(
           builder: (context, state) => const AddEnterpriseScreen(),
         ),
         GoRoute(
+          path: 'add-internship-enterprise/:id',
+          name: Screens.internshipEnrollementFromEnterprise,
+          builder: (context, state) =>
+              InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
+        ),
+        GoRoute(
+          path: 'enterprise-evaluation/:id/:jobId',
+          name: Screens.enterpriseEvaluationScreen,
+          builder: (context, state) => EnterpriseEvaluationScreen(
+            id: state.params['id']!,
+            jobId: state.params['jobId']!,
+          ),
+        ),
+        GoRoute(
           path: ':id',
           name: Screens.enterprise,
           builder: (context, state) => EnterpriseScreen(
@@ -134,20 +148,6 @@ final router = GoRouter(
               ),
             ),
           ],
-        ),
-        GoRoute(
-          path: 'add-internship-enterprise/:id',
-          name: Screens.internshipEnrollementFromEnterprise,
-          builder: (context, state) =>
-              InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
-        ),
-        GoRoute(
-          path: 'enterprise-evaluation/:id/:jobId',
-          name: Screens.enterpriseEvaluationScreen,
-          builder: (context, state) => EnterpriseEvaluationScreen(
-            id: state.params['id']!,
-            jobId: state.params['jobId']!,
-          ),
         ),
       ],
     ),
