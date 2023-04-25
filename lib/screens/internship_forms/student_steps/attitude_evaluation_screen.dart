@@ -467,7 +467,10 @@ class _AttitudeRadioChoicesState extends State<_AttitudeRadioChoices> {
           (e) => RadioListTile<AttitudeCategoryEnum>(
             dense: true,
             visualDensity: VisualDensity.compact,
-            title: Text(e.name, style: const TextStyle(color: Colors.black)),
+            title: Text(e.name,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Colors.black,
+                    )),
             value: e,
             groupValue: widget.formController.responses[e.runtimeType],
             onChanged: widget.editMode
