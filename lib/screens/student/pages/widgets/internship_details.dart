@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '/common/models/enterprise.dart';
@@ -13,7 +12,6 @@ import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/misc/job_data_file_service.dart';
-import '/router.dart';
 import '/screens/internship_enrollment/steps/requirements_step.dart';
 import '/screens/internship_enrollment/steps/schedule_step.dart';
 
@@ -327,32 +325,6 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
-  Widget _buildEnterprise(context, {required Enterprise enterprise}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Entreprise', style: _titleStyle),
-        Padding(
-          padding: const EdgeInsets.only(top: 2, bottom: _interline),
-          child: GestureDetector(
-            onTap: () => GoRouter.of(context).goNamed(
-              Screens.enterprise,
-              params: Screens.params(enterprise),
-              queryParams: Screens.queryParams(pageIndex: "0"),
-            ),
-            child: Text(
-              enterprise.name,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                  color: Colors.blue),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
   Widget _buildAddress({required Enterprise enterprise}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -496,7 +468,7 @@ class _InternshipBody extends StatelessWidget {
                                   const TextInputType.numberWithOptions(),
                             ),
                           )
-                        : Text(internshipController.achievedLength.toString()),
+                        : Text(internship.achievedLength.toString()),
                     const Text('h'),
                   ],
                 ),
@@ -593,8 +565,6 @@ class _InternshipBody extends StatelessWidget {
                     specialization: ActivitySectorsService.specialization(
                         internship.extraSpecializationsId[indexExtra]),
                   )),
-        _buildEnterprise(context,
-            enterprise: enterprises[internship.enterpriseId]),
         _buildAddress(enterprise: enterprises[internship.enterpriseId]),
         _buildSupervisorInfo(),
         _buildDates(),

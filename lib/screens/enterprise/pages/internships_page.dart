@@ -3,12 +3,11 @@ import 'package:go_router/go_router.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
-import '/common/models/person.dart';
 import '/common/models/student.dart';
 import '/common/models/teacher.dart';
-import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
+import '/common/widgets/dialogs/finalize_internship_dialog.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 import '/router.dart';
@@ -148,34 +147,10 @@ class _InternshipListState extends State<_InternshipList> {
   }
 
   void _finalizeInternship(Internship internship) async {
-    final result = await showDialog(
+    await showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-              title: const Text('Mettre fin au stage?'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Text(
-                      'Attention, les informations pour ce stage ne seront plus modifiables.'),
-                  Text(
-                    '\n\n**Avant de mettre fin au stage, s\'assurer que le nombre d\'heures de stage faites est à jour.**',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ],
-              ),
-              actions: [
-                OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('Non')),
-                TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('Oui')),
-              ],
-            ));
-    if (!mounted || result == null || !result) return;
-
-    final internships = InternshipsProvider.of(context, listen: false);
-    internships.replace(internship.copyWith(endDate: DateTime.now()));
+        builder: (context) =>
+            FinalizeInternshipDialog(internshipId: internship.id));
     setState(() {});
   }
 
