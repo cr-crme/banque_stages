@@ -69,8 +69,8 @@ class InternshipQuickAccess extends StatelessWidget {
                       Text(
                         'Évaluer C1',
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
@@ -90,15 +90,15 @@ class InternshipQuickAccess extends StatelessWidget {
                               queryParams: Screens.queryParams(editMode: '1'),
                               extra: AttitudeEvaluationFormController(
                                   internshipId: internshipId)),
-                          icon: const Icon(Icons.add_chart_rounded),
+                          icon: const Icon(Icons.playlist_add_sharp),
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       Text(
                         'Évaluer C2',
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),

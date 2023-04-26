@@ -92,7 +92,7 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                             queryParams: Screens.queryParams(editMode: '1'),
                             extra: AttitudeEvaluationFormController(
                                 internshipId: widget.internship.id)),
-                        icon: const Icon(Icons.add_chart_rounded),
+                        icon: const Icon(Icons.playlist_add_sharp),
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     )
