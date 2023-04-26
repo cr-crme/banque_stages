@@ -364,7 +364,7 @@ class _TaxesInfo extends StatelessWidget {
             TextFormField(
               initialValue: enterprise.neq,
               decoration: const InputDecoration(
-                labelText: 'NEQ',
+                labelText: 'Numéro d\'entreprise du Québec (NEQ)',
                 disabledBorder: InputBorder.none,
               ),
               enabled: editMode,
