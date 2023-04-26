@@ -145,7 +145,7 @@ class _InternshipListState extends State<_InternshipList> {
     );
   }
 
-  void _evaluateInternship(Internship internship) async {
+  void _evaluateEnterprise(Internship internship) async {
     GoRouter.of(context).pushNamed(
       Screens.enterpriseEvaluationScreen,
       params: Screens.params(internship.enterpriseId, jobId: internship.jobId),
@@ -258,7 +258,7 @@ class _InternshipListState extends State<_InternshipList> {
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: TextButton(
                                     onPressed: () =>
-                                        _evaluateInternship(internship),
+                                        _evaluateEnterprise(internship),
                                     style: Theme.of(context)
                                         .textButtonTheme
                                         .style!

@@ -110,7 +110,11 @@ class InternshipQuickAccess extends StatelessWidget {
                         context: context,
                         builder: (context) => FinalizeInternshipDialog(
                             internshipId: internshipId)),
-                    child: const Text('Terminer le stage'))
+                    child: const Text('Terminer le stage')),
+              if (internship.isEnterpriseEvaluationPending)
+                TextButton(
+                    onPressed: () => _evaluateEnterprise(context, internship),
+                    child: const Text('Évaluer l\'entreprise')),
             ],
           )
         ],
@@ -135,6 +139,13 @@ class InternshipQuickAccess extends StatelessWidget {
               color: Colors.blue),
         ),
       ),
+    );
+  }
+
+  void _evaluateEnterprise(context, Internship internship) async {
+    GoRouter.of(context).pushNamed(
+      Screens.enterpriseEvaluationScreen,
+      params: Screens.params(internship.enterpriseId, jobId: internship.jobId),
     );
   }
 }
