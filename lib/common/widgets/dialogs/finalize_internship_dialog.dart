@@ -42,7 +42,7 @@ class FinalizeInternshipDialog extends StatelessWidget {
                 children: [
                   const Text(
                       'Attention, les informations pour ce stage ne seront plus modifiables.\n\n'
-                      'Bien vous assurer que le nombre d\'heures réalisées et correct\n'),
+                      'Bien vous assurer que le nombre d\'heures réalisées est correct\n'),
                   Row(
                     children: [
                       const Flexible(
