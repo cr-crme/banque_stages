@@ -230,6 +230,7 @@ class _InternshipListState extends State<_InternshipList> {
                                     style: const TextStyle(
                                         color: Colors.blue,
                                         fontWeight: FontWeight.bold,
+                                        fontSize: 16,
                                         decoration: TextDecoration.underline),
                                   ),
                                 ),

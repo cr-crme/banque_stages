@@ -135,6 +135,7 @@ class InternshipQuickAccess extends StatelessWidget {
           enterprise.name,
           style: const TextStyle(
               fontWeight: FontWeight.bold,
+              fontSize: 18,
               decoration: TextDecoration.underline,
               color: Colors.blue),
         ),

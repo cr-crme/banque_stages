@@ -249,10 +249,12 @@ class _ExtraSpecialization extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 16.0),
+          padding: const EdgeInsets.only(top: 24.0),
           child: Text(
             'Métiers supplémentaires',
             style: Theme.of(context).textTheme.titleLarge,
+            //TO DO Benjamin Text ('(ajout de compétences additionnelles)',
+            // style: Theme.of(context).textTheme.bodyLarge),
           ),
         ),
         if (extraSpecializations.isNotEmpty)
