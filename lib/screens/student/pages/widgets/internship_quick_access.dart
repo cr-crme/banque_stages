@@ -20,12 +20,15 @@ class InternshipQuickAccess extends StatelessWidget {
     final internship = InternshipsProvider.of(context)[internshipId];
     final enterprise = enterprises[internship.enterpriseId];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildEnterprise(context, enterprise: enterprise),
-        _buildQuickAccessButton(context, internship: internship),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildEnterprise(context, enterprise: enterprise),
+          _buildQuickAccessButton(context, internship: internship),
+        ],
+      ),
     );
   }
 

@@ -248,15 +248,9 @@ class _ExtraSpecialization extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 24.0),
-          child: Text(
-            'Métiers supplémentaires',
-            style: Theme.of(context).textTheme.titleLarge,
-            //TO DO Benjamin Text ('(ajout de compétences additionnelles)',
-            // style: Theme.of(context).textTheme.bodyLarge),
-          ),
-        ),
+        const SubTitle('Métiers supplémentaires', left: 0),
+        Text('(ajout de compétences additionnelles)',
+            style: Theme.of(context).textTheme.bodyLarge),
         if (extraSpecializations.isNotEmpty)
           ...extraSpecializations
               .asMap()
@@ -264,7 +258,7 @@ class _ExtraSpecialization extends StatelessWidget {
               .map<Widget>((i) => _extraJobTileBuilder(context, i))
               .toList(),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0, left: 12),
+          padding: const EdgeInsets.only(top: 12.0, left: 12),
           child: AddJobButton(
             onPressed: onAddSpecialization,
             style: Theme.of(context).textButtonTheme.style!.copyWith(
