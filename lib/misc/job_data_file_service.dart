@@ -21,6 +21,16 @@ abstract class ActivitySectorsService {
     }
     throw 'Specialization not found';
   }
+
+  static List<Specialization> get allSpecializations {
+    final List<Specialization> out = [];
+    for (final sector in sectors) {
+      for (final specialization in sector.specializations) {
+        out.add(specialization);
+      }
+    }
+    return out;
+  }
 }
 
 class ActivitySector extends NamedItemSerializable {
