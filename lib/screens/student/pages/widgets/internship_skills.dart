@@ -234,13 +234,17 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
     );
   }
 
-  Widget _buildSkill({required title, required List<SkillEvaluation> skills}) {
+  Widget _buildSkill({
+    required String title,
+    required List<SkillEvaluation> skills,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title),
+          Text(title,
+              style: TextStyle(color: Theme.of(context).colorScheme.primary)),
           if (skills.isEmpty)
             const Padding(
                 padding: EdgeInsets.only(left: 12.0),
