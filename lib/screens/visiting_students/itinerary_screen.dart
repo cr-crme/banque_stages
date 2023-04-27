@@ -196,7 +196,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('Résumé de l\'itinéraire', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 8),
         if (itinerary.isNotEmpty)
           ReorderableListView.builder(
@@ -259,13 +258,22 @@ class __DistanceState extends State<_Distance> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                     child: Text(
-                        'Distance totale : '
+                        'Itinéraire : '
                         '${(widget.distances!.reduce((a, b) => a + b).toDouble() / 1000).toStringAsFixed(1)}km',
-                        style: const TextStyle(fontSize: 17)),
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600)),
                   ),
-                  Icon(
-                    _isExpanded ? Icons.expand_less : Icons.expand_more,
-                    color: Colors.grey[700],
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey[500]!),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Icon(
+                      _isExpanded ? Icons.expand_less : Icons.expand_more,
+                      color: Colors.grey[700],
+                    ),
                   ),
                 ],
               ),
