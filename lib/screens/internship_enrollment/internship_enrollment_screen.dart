@@ -56,7 +56,7 @@ class _InternshipEnrollmentScreenState
     setState(() {});
   }
 
-  void _nextStep() {
+  void _nextStep() async {
     final formKeys = [
       _generalInfoKey.currentState!.formKey,
       _scheduleKey.currentState!.formKey,
@@ -133,6 +133,23 @@ class _InternshipEnrollmentScreenState
 
     InternshipsProvider.of(context, listen: false).add(internship);
 
+    final student = StudentsProvider.of(context,
+        listen: false)[_generalInfoKey.currentState!.student!.id];
+    await showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              content: Text(
+                  '${student.fullName} a bien été inscrit comme stagiaire chez ${enterprise.name}.'
+                  '\n\nVous pouvez maintenant accéder aux documents administratifs du stage.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Ok'),
+                )
+              ],
+            ));
+
+    if (!mounted) return;
     Navigator.pop(context);
     GoRouter.of(context).pushNamed(
       Screens.student,
