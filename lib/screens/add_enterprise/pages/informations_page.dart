@@ -53,13 +53,6 @@ class InformationsPageState extends State<InformationsPage> {
               enabled: true,
               addressController: addressController,
             ),
-            TextFormField(
-              decoration: const InputDecoration(
-                  labelText: 'Numéro d\'entreprise du Québec (NEQ)'),
-              validator: null,
-              onSaved: (neq) => this.neq = neq,
-              keyboardType: TextInputType.number,
-            ),
             ActivityTypesPickerFormField(
               onSaved: (Set<String>? activityTypes) =>
                   setState(() => this.activityTypes = activityTypes!),
