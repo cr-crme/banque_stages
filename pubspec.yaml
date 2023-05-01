@@ -30,10 +30,10 @@ dependencies:
     flutter_spinbox: ^0.12.0
     flutter_rating_bar: ^4.0.1
     image_picker: ^0.8.5+3
-    firebase_core: ^2.1.1
-    firebase_auth: ^4.1.0
-    firebase_storage: ^11.0.3
-    firebase_database: ^10.0.3
+    firebase_core: ^2.10.0
+    firebase_auth: ^4.4.2
+    firebase_storage: ^11.1.1
+    firebase_database: ^10.1.1
     path: ^1.8.1
     nanoid: ^1.0.0
     collection: ^1.16.0
@@ -47,7 +47,7 @@ dependencies:
     crcrme_material_theme:
     go_router: ^6.0.4
     url_strategy: ^0.2.0
-    url_launcher: ^6.1.7
+    url_launcher: ^6.1.10
     auto_size_text: ^3.0.0
     pdf: ^3.10.1
     printing: ^5.10.3
