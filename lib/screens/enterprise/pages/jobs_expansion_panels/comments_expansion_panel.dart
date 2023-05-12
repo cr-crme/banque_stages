@@ -41,12 +41,12 @@ class _SstBody extends StatelessWidget {
                     const Text('Il n\'y a présentement aucun commentaire.'),
                     const SizedBox(height: 16)
                   ]
-                : job.comments
-                    .map((comment) => Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: Text(comment),
-                        ))
-                    .toList(),
+                : job.comments.map(
+                    (comment) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Text(comment),
+                    ),
+                  ),
             Center(
               child: TextButton(
                 onPressed: () => addComment(job),
