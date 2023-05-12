@@ -13,7 +13,7 @@ class SstExpansionPanel extends ExpansionPanel {
     required void Function(Job job) addSstEvent,
   }) : super(
           canTapOnHeader: true,
-          body: _SstBody(enterprise, job),
+          body: SstBody(enterprise, job, addSstEvent),
           headerBuilder: (context, isExpanded) => ListTile(
             title: const Text('Santé et Sécurité (SST)'),
             trailing: Container(
@@ -28,25 +28,32 @@ class SstExpansionPanel extends ExpansionPanel {
                   ),
                 ],
               ),
-              child: IconButton(
-                  onPressed: () => addSstEvent(job),
-                  icon: const Icon(
-                    Icons.add_alert_sharp,
-                    color: Colors.red,
-                  )),
+              child: Visibility(
+                visible: job.pastIncidents.isNotEmpty,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.warning,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ),
             ),
           ),
         );
 }
 
-class _SstBody extends StatelessWidget {
-  const _SstBody(
+class SstBody extends StatelessWidget {
+  const SstBody(
     this.enterprise,
     this.job,
-  );
+    this.addSstEvent, {
+    super.key,
+  });
 
   final Enterprise enterprise;
   final Job job;
+  final void Function(Job job) addSstEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +64,23 @@ class _SstBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: ElevatedButton(
+                onPressed: () => addSstEvent(job),
+                child: const Text('Signaler un événement'),
+              ),
+            ),
+            const SizedBox(height: 8),
             Text(
-              'Historique d\'accidents et incidents au poste de travail '
-              '(ex. blessure d\'élève même mineure, agression verbale ou '
-              'harcèlement subis par l\'élève)',
+              'Historique d\'accidents et incidents au poste de travail ',
               style: Theme.of(context).textTheme.titleSmall,
             ),
+            const Text(
+              '(ex. blessure d\'élève même mineure, agression verbale ou '
+              'harcèlement subis par l\'élève)',
+            ),
             Padding(
-              padding: const EdgeInsets.only(top: 0, bottom: 20),
+              padding: const EdgeInsets.only(top: 4, bottom: 8),
               child: job.pastIncidents.isEmpty
                   ? const Text('Aucun incident signalé')
                   : Text(job.pastIncidents),
@@ -76,7 +92,7 @@ class _SstBody extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 0, bottom: 20),
+              padding: const EdgeInsets.only(top: 4, bottom: 8),
               child: job.incidentContact.isEmpty
                   ? const Text('Aucun contact enregistré.')
                   : Text(job.incidentContact),
@@ -87,7 +103,7 @@ class _SstBody extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 0, bottom: 20),
+              padding: const EdgeInsets.only(top: 4, bottom: 8),
               child: job.dangerousSituations.isEmpty
                   ? const Text('Aucune situation dangereuse signalée')
                   : Text(job.dangerousSituations),
@@ -98,7 +114,7 @@ class _SstBody extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 0, bottom: 20),
+              padding: const EdgeInsets.only(top: 4, bottom: 8),
               child: Column(
                 children: job.equipmentRequired.isEmpty
                     ? [const Text('Aucun équipement de protection requis')]
@@ -107,6 +123,14 @@ class _SstBody extends StatelessWidget {
                         .toList(),
               ),
             ),
+            const SizedBox(height: 8),
+            Text(
+              'Détail des tâches et risques associés',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const Text("Formulaire SST rempli avec l’entreprise"),
+            Text(
+                "Mis à jour le ${job.sstLastUpdate.year}-${job.sstLastUpdate.month}-${job.sstLastUpdate.day}"),
             const SizedBox(height: 8),
             Center(
               child: TextButton(

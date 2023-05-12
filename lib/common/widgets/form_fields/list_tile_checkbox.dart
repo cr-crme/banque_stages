@@ -5,6 +5,7 @@ class ListTileCheckbox extends StatelessWidget {
     required this.titleLabel,
     this.value,
     required this.onChanged,
+    this.dense = true,
     super.key,
   });
 
@@ -12,12 +13,15 @@ class ListTileCheckbox extends StatelessWidget {
 
   final bool? value;
   final void Function(bool? value) onChanged;
+  final bool dense;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => onChanged(!value!),
       child: ListTile(
+        dense: dense,
+        visualDensity: dense ? VisualDensity.compact : null,
         leading: Checkbox(
           value: value,
           onChanged: onChanged,

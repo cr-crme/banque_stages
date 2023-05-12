@@ -37,14 +37,14 @@ class DangerStepState extends State<DangerStep> {
             QuestionWithText(
               initialValue: widget.job.dangerousSituations,
               question:
-                  'Quelles sont les situations de travail qui pourraient être '
+                  '1. Quelles sont les situations de travail qui pourraient être '
                   'dangereuses pour mon élève? Comment faudrait-il l\'y préparer?',
               onSaved: (text) => dangerousSituations = text,
             ),
             QuestionWithCheckboxList(
               initialChoices: widget.job.equipmentRequired.toSet(),
               choicesQuestion:
-                  'Est-ce que l\'élève devra porter un des équipements de '
+                  '2. Est-ce que l\'élève devra porter un des équipements de '
                   'protection individuelle suivants?',
               choices: const {
                 'Chaussures de sécurité',
@@ -61,15 +61,17 @@ class DangerStepState extends State<DangerStep> {
               initialChoice: widget.job.pastIncidents.isNotEmpty,
               initialText: widget.job.pastIncidents,
               choiceQuestion:
-                  'Est-ce qu\'il y a déjà eu des incidents ou des accidents du '
+                  '3. Est-ce qu\'il y a déjà eu des incidents ou des accidents du '
                   'travail au poste que l\'élève occupera en stage?',
               textQuestion: 'Pouvez-vous me raconter ce qu\'il s\'est passé?',
               onSavedText: (text) => pastIncidents = text,
             ),
-            const QuestionWithText(
+            QuestionWithText(
+              initialValue: widget.job.incidentContact,
               question:
-                  'À quelle personne dans l\'entreprise, l\'élève doit-il '
+                  '4. À quelle personne dans l\'entreprise, l\'élève doit-il '
                   's\'adresser en cas de blessure ou d\'incident?',
+              onSaved: (text) => incidentContact = text,
             ),
           ],
         ),

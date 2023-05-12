@@ -35,6 +35,7 @@ class Job extends ItemSerializable {
   final String pastIncidents;
   final String incidentContact;
   final Map<String, dynamic> sstQuestions;
+  final DateTime sstLastUpdate;
 
   // Prerequisites
   final int minimalAge;
@@ -62,12 +63,14 @@ class Job extends ItemSerializable {
     this.pastIncidents = "",
     this.incidentContact = "",
     Map<String, dynamic>? sstQuestions,
+    DateTime? sstLastUpdate,
     this.minimalAge = 0,
     this.uniform = '',
     List<String>? requirements,
     List<String>? comments,
   })  : photosUrl = photosUrl ?? [],
         skillsRequired = skillsRequired ?? [],
+        sstLastUpdate = sstLastUpdate ?? DateTime.now(),
         equipmentRequired = equipmentRequired ?? [],
         sstQuestions = sstQuestions ?? {},
         requirements = requirements ?? [],
@@ -91,6 +94,7 @@ class Job extends ItemSerializable {
     String? pastIncidents,
     String? incidentContact,
     Map<String, dynamic>? sstQuestions,
+    DateTime? sstLastUpdate,
     int? minimalAge,
     String? uniform,
     List<String>? requirements,
@@ -117,6 +121,7 @@ class Job extends ItemSerializable {
         pastIncidents: pastIncidents ?? this.pastIncidents,
         incidentContact: incidentContact ?? this.incidentContact,
         sstQuestions: sstQuestions ?? this.sstQuestions,
+        sstLastUpdate: sstLastUpdate ?? this.sstLastUpdate,
         minimalAge: minimalAge ?? this.minimalAge,
         uniform: uniform ?? this.uniform,
         requirements: requirements ?? this.requirements,
@@ -143,6 +148,7 @@ class Job extends ItemSerializable {
       'pastIncidents': pastIncidents,
       'incidentContact': incidentContact,
       'sstQuestions': sstQuestions,
+      'sstLastUpdate': sstLastUpdate.millisecondsSinceEpoch,
       'minimalAge': minimalAge,
       'uniform': uniform,
       'requirements': requirements,
@@ -176,6 +182,8 @@ class Job extends ItemSerializable {
         pastIncidents = map['pastIncidents'],
         incidentContact = map['incidentContact'],
         sstQuestions = ItemSerializable.mapFromSerialized(map['sstQuestions']),
+        sstLastUpdate =
+            DateTime.fromMillisecondsSinceEpoch(map['sstLastUpdate']),
         minimalAge = map['minimalAge'],
         uniform = map['uniform'],
         requirements = ItemSerializable.listFromSerialized(map['requirements']),

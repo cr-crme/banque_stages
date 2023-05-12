@@ -9,39 +9,23 @@ class CommentsExpansionPanel extends ExpansionPanel {
     required void Function(Job job) addComment,
   }) : super(
           canTapOnHeader: true,
-          body: _SstBody(job: job),
-          headerBuilder: (context, isExpanded) => ListTile(
-            title: const Text(
+          body: _SstBody(job, addComment),
+          headerBuilder: (context, isExpanded) => const ListTile(
+            title: Text(
               'Autres commentaires',
-            ),
-            trailing: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey[900]!,
-                    blurRadius: 8.0,
-                    offset: const Offset(2, 2),
-                  ),
-                ],
-              ),
-              child: IconButton(
-                onPressed: () {},
-                // TODO bring this back
-                // => addComment(job),
-                icon: const Icon(Icons.add_comment),
-                color: Colors.blueGrey,
-              ),
             ),
           ),
         );
 }
 
 class _SstBody extends StatelessWidget {
-  const _SstBody({required this.job});
+  const _SstBody(
+    this.job,
+    this.addComment,
+  );
 
   final Job job;
+  final void Function(Job job) addComment;
 
   @override
   Widget build(BuildContext context) {
@@ -50,17 +34,26 @@ class _SstBody extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Column(
-          children: job.comments.isEmpty
-              ? [
-                  const Text('Il n\'y a présentement aucun commentaire.'),
-                  const SizedBox(height: 16)
-                ]
-              : job.comments
-                  .map((comment) => Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: Text(comment),
-                      ))
-                  .toList(),
+          children: [
+            const SizedBox(height: 8),
+            ...job.comments.isEmpty
+                ? [
+                    const Text('Il n\'y a présentement aucun commentaire.'),
+                    const SizedBox(height: 16)
+                  ]
+                : job.comments
+                    .map((comment) => Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Text(comment),
+                        ))
+                    .toList(),
+            Center(
+              child: TextButton(
+                onPressed: () => addComment(job),
+                child: const Text('Ajouter un commentaire'),
+              ),
+            ),
+          ],
         ),
       ),
     );
