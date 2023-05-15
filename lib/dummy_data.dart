@@ -471,8 +471,7 @@ Future<void> addDummyEnterprises(
         positionsOffered: 1,
         pastIncidents:
             'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
-            'et il s\'est coupé profondément la paume. '
-            '\nLa blessure a nécessité des soins majeurs.',
+            'et elle s\'est ouvert profondément la paume en voulant couper une tige. ',
         equipmentRequired: [
           'Chaussures avec semelles antidérapantes, Gants en kevlar'
         ],
@@ -547,7 +546,7 @@ Future<void> addDummyEnterprises(
         pastIncidents:
             'Lorsque l\'élève a laissé tomber un vase dispendieux qui s\'est '
             'cassé au sol, le superviseur s\'est énervé et lui a crié dessus. '
-            'L\'élève a fait une crise de panique qui n\'a pas nécessité de soins.'
+            'L\'élève a fait une crise de panique.'
             '\nL\'élève a gâché un nouvel arrivage de fleurs en préparant mal '
             'les tiges, et le superviseur a menacé de le mettre à la porte. '
             'L\'élève a appelé sa superviseure en pleurant et ne voulait pas '
@@ -989,8 +988,12 @@ Future<void> addDummyInterships(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
     teacherId: teachers.currentTeacherId,
-    enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
-    jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,
+    enterpriseId:
+        enterprises.firstWhere((e) => e.name == 'Le jardin de Joanie').id,
+    jobId: enterprises
+        .firstWhere((e) => e.name == 'Le jardin de Joanie')
+        .jobs[0]
+        .id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),

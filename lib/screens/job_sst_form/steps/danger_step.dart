@@ -69,7 +69,7 @@ class DangerStepState extends State<DangerStep> {
             const QuestionWithText(
               question:
                   'À quelle personne dans l\'entreprise, l\'élève doit-il '
-                  's\'adresser en cas de blessure ou d\'incident?',
+                  's\'adresser en cas de blessure ou d\'incident',
             ),
           ],
         ),
