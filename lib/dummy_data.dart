@@ -471,7 +471,7 @@ Future<void> addDummyEnterprises(
         positionsOffered: 1,
         pastIncidents:
             'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
-            'et elle s\'est ouvert profondément la paume en voulant couper une tige. ',
+            'et il s\'est ouvert profondément la paume en voulant couper une tige. ',
         equipmentRequired: [
           'Chaussures avec semelles antidérapantes, Gants en kevlar'
         ],
@@ -501,10 +501,8 @@ Future<void> addDummyEnterprises(
           '20': '',
           '21': '',
           '22': true,
-          '22+t':
-              'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
-                  'et il s\'est coupé profondément la paume.'
-                  'La blessure a nécessité des soins majeurs.',
+          '22+t': 'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
+              'et il s\'est ouvert profondément la paume en voulant couper une tige.',
           '23': 'Joanie, la propriétaire'
         }),
   );
@@ -988,12 +986,8 @@ Future<void> addDummyInterships(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
     teacherId: teachers.currentTeacherId,
-    enterpriseId:
-        enterprises.firstWhere((e) => e.name == 'Le jardin de Joanie').id,
-    jobId: enterprises
-        .firstWhere((e) => e.name == 'Le jardin de Joanie')
-        .jobs[0]
-        .id,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
@@ -1079,8 +1073,12 @@ Future<void> addDummyInterships(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
     teacherId: '42', // This is a Roméo Montaigu's student
-    enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
-    jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
+    enterpriseId:
+        enterprises.firstWhere((e) => e.name == 'Le jardin de Joanie').id,
+    jobId: enterprises
+        .firstWhere((e) => e.name == 'Le jardin de Joanie')
+        .jobs[0]
+        .id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
