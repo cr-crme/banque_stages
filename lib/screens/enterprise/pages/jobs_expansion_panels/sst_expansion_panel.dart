@@ -75,10 +75,6 @@ class SstBody extends StatelessWidget {
               'Historique d\'accidents et incidents au poste de travail ',
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            const Text(
-              '(ex. blessure d\'élève même mineure, agression verbale ou '
-              'harcèlement subis par l\'élève)',
-            ),
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 8),
               child: job.pastIncidents.isEmpty

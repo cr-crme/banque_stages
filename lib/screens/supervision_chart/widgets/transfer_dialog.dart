@@ -68,7 +68,7 @@ class _TransferDialogState extends State<TransferDialog> {
               margin: const EdgeInsets.only(top: 8),
               padding: const EdgeInsets.all(8),
               child: const Text(
-                'Aucun stage pour cet élève',
+                'L\'élève n\'est pas en stage',
                 style: TextStyle(color: Colors.grey),
               ),
             ),
