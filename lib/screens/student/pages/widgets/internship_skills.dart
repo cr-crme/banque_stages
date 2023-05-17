@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '/common/models/internship.dart';
-import '/common/models/internship_evaluation_attitude.dart';
-import '/common/models/internship_evaluation_skill.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/misc/job_data_file_service.dart';
-import '/router.dart';
-import '/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
-import '/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
+import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 
 class InternshipSkills extends StatefulWidget {
   const InternshipSkills({super.key, required this.internship});

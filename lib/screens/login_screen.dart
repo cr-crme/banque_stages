@@ -1,12 +1,11 @@
+import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
+import 'package:crcrme_banque_stages/router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
-import '/common/providers/auth_provider.dart';
-import '/misc/form_service.dart';
-import '/router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

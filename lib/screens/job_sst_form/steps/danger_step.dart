@@ -1,9 +1,8 @@
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_checkbox_list.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_radio_bool.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_text.dart';
 import 'package:flutter/material.dart';
-
-import '/common/widgets/form_fields/question_with_checkbox_list.dart';
-import '/common/widgets/form_fields/question_with_radio_bool.dart';
-import '/common/widgets/form_fields/question_with_text.dart';
 
 class DangerStep extends StatefulWidget {
   const DangerStep({

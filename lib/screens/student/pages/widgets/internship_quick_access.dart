@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/models/internship.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/providers/internships_provider.dart';
-import '/common/widgets/dialogs/finalize_internship_dialog.dart';
-import '/router.dart';
-import '/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/finalize_internship_dialog.dart';
+import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 
 class InternshipQuickAccess extends StatelessWidget {
   const InternshipQuickAccess({super.key, required this.internshipId});

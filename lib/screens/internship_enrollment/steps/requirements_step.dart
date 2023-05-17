@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/protections.dart';
-import '/common/models/uniform.dart';
-import '/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/common/models/protections.dart';
+import 'package:crcrme_banque_stages/common/models/uniform.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 
 class RequirementsStep extends StatefulWidget {
   const RequirementsStep({super.key});

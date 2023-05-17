@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '/common/widgets/autocomplete_options_builder.dart';
+import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
 
 const List<String> shareWithSuggestions = [
   'Mon centre de services scolaire',

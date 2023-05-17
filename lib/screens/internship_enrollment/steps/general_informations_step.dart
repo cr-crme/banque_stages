@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/models/job.dart';
-import '/common/models/student.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/providers/students_provider.dart';
-import '/common/widgets/add_job_button.dart';
-import '/common/widgets/form_fields/enterprise_picker_form_field.dart';
-import '/common/widgets/form_fields/job_form_field_list_tile.dart';
-import '/common/widgets/form_fields/student_picker_form_field.dart';
-import '/common/widgets/phone_list_tile.dart';
-import '/common/widgets/sub_title.dart';
-import '/misc/form_service.dart';
-import '/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/enterprise_picker_form_field.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/student_picker_form_field.dart';
+import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 
 class GeneralInformationsStep extends StatefulWidget {
   const GeneralInformationsStep(

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
-import '/common/models/person.dart';
-import '/common/models/phone_number.dart';
-import '/common/models/student.dart';
-import '/common/providers/students_provider.dart';
-import '/common/widgets/address_list_tile.dart';
-import '/common/widgets/dialogs/confirm_pop_dialog.dart';
-import '/common/widgets/phone_list_tile.dart';
-import '/common/widgets/sub_title.dart';
-import '/misc/form_service.dart';
+import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({

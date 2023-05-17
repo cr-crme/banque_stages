@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/widgets/disponibility_circle.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 
 class EnterpriseCard extends StatelessWidget {
   const EnterpriseCard({

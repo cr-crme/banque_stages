@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '/common/models/internship.dart';
-import '/common/models/internship_evaluation_attitude.dart';
-import '/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 
 class AttitudeEvaluationFormController {
   static const _formVersion = '1.0.0';

@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/models/job.dart';
-import '/common/models/job_list.dart';
-import '/common/models/teacher.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/providers/schools_provider.dart';
-import '/common/providers/teachers_provider.dart';
-import '/common/widgets/activity_type_cards.dart';
-import '/common/widgets/dialogs/confirm_pop_dialog.dart';
-import '/common/widgets/disponibility_circle.dart';
-import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
-import '/common/widgets/form_fields/share_with_picker_form_field.dart';
-import '/common/widgets/sub_title.dart';
-import '/misc/form_service.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/job_list.dart';
+import 'package:crcrme_banque_stages/common/models/teacher.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/activity_type_cards.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/share_with_picker_form_field.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
 
 class EnterpriseAboutPage extends StatefulWidget {
   const EnterpriseAboutPage({

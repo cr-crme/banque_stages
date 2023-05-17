@@ -1,5 +1,18 @@
 import 'dart:io';
 
+import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/firebase_options.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/misc/question_file_service.dart';
+import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
+import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/models/all_itineraries.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -9,20 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
-
-import 'common/providers/auth_provider.dart';
-import 'common/providers/enterprises_provider.dart';
-import 'common/providers/internships_provider.dart';
-import 'common/providers/schools_provider.dart';
-import 'common/providers/students_provider.dart';
-import 'common/providers/teachers_provider.dart';
-import 'firebase_options.dart';
-import 'misc/form_service.dart';
-import 'misc/job_data_file_service.dart';
-import 'misc/question_file_service.dart';
-import 'misc/risk_data_file_service.dart';
-import 'router.dart';
-import 'screens/visiting_students/models/all_itineraries.dart';
 
 bool useEmulator = false;
 bool populateWithDebugData = true;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '/common/widgets/main_drawer.dart';
-import '/screens/ref_sst/risks_list/risks_list_screen.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'widgets/sst_search_bar.dart';
 
 class HomeSstScreen extends StatefulWidget {

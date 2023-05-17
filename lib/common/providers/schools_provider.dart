@@ -2,7 +2,7 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/school.dart';
+import 'package:crcrme_banque_stages/common/models/school.dart';
 
 class SchoolsProvider extends FirebaseListProvided<School> {
   SchoolsProvider() : super(pathToData: 'schools') {

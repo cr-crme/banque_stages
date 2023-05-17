@@ -1,6 +1,5 @@
+import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 import 'package:flutter/material.dart';
-
-import '../../common/risk.dart';
 
 //SST
 class ClickableRiskTile extends StatelessWidget {

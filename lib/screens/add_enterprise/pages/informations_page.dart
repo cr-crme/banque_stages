@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/common/widgets/address_list_tile.dart';
-import '/common/widgets/form_fields/activity_types_picker_form_field.dart';
-import '/common/widgets/form_fields/share_with_picker_form_field.dart';
+import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/share_with_picker_form_field.dart';
 
 class InformationsPage extends StatefulWidget {
   const InformationsPage({super.key});

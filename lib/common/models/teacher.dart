@@ -1,6 +1,6 @@
-import '/common/models/address.dart';
-import '/common/models/person.dart';
-import '/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 
 class Teacher extends Person {
   final String schoolId;

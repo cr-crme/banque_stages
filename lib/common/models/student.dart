@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '/common/models/address.dart';
-import '/common/models/person.dart';
-import '/common/models/phone_number.dart';
-import '/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 
 enum Program {
   fpt,

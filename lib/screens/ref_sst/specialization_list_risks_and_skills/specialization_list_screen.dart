@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import '/misc/job_data_file_service.dart';
-import '/misc/risk_data_file_service.dart';
-import '/screens/ref_sst/common/risk.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 import 'widgets/tile_job_risk.dart';
 
 class SpecializationListScreen extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/teacher.dart';
+import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'auth_provider.dart';
 import 'internships_provider.dart';
 import 'students_provider.dart';

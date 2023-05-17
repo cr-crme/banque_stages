@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/job.dart';
-import '/common/models/job_list.dart';
-import '/common/widgets/delete_button.dart';
-import '/common/widgets/form_fields/job_form_field_list_tile.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/job_list.dart';
+import 'package:crcrme_banque_stages/common/widgets/delete_button.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 
 class JobsPage extends StatefulWidget {
   const JobsPage({super.key});

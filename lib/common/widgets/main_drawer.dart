@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '/common/providers/auth_provider.dart';
-import '/router.dart';
+import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
+import 'package:crcrme_banque_stages/router.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});

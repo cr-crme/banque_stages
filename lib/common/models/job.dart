@@ -1,7 +1,7 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
-import '/common/providers/internships_provider.dart';
-import '/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 
 class Job extends ItemSerializable {
 // Details
@@ -183,7 +183,7 @@ class Job extends ItemSerializable {
         incidentContact = map['incidentContact'],
         sstQuestions = ItemSerializable.mapFromSerialized(map['sstQuestions']),
         sstLastUpdate =
-            DateTime.fromMillisecondsSinceEpoch(map['sstLastUpdate']),
+            DateTime.fromMillisecondsSinceEpoch(map['sstLastUpdate'] ?? 0),
         minimalAge = map['minimalAge'],
         uniform = map['uniform'],
         requirements = ItemSerializable.listFromSerialized(map['requirements']),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/job.dart';
-import '/common/widgets/form_fields/job_form_field_list_tile.dart';
-import '/misc/form_service.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
 
 class JobCreatorDialog extends StatefulWidget {
   const JobCreatorDialog({super.key});

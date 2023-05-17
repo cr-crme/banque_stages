@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 
-import '/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 
 class PrerequisitesStep extends StatefulWidget {
   const PrerequisitesStep({

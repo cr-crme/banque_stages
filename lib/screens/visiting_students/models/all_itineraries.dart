@@ -2,7 +2,7 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/screens/visiting_students/models/waypoints.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.dart';
 import 'itinerary.dart';
 
 class AllItineraries extends MapProvided<Itinerary> {

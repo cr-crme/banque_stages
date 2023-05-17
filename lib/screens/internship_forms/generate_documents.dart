@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
 
 class GenerateDocuments {
   static Future<Uint8List> generateIntershipContractPdf(format,

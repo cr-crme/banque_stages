@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/job.dart';
-import '/common/widgets/form_fields/low_high_slider_form_field.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_form_field.dart';
 
 class TasksExpansionPanel extends ExpansionPanel {
   TasksExpansionPanel({

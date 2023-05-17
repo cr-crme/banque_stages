@@ -1,12 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '/common/models/internship_evaluation_skill.dart';
-import '/common/models/student.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/providers/internships_provider.dart';
-import '/common/widgets/sub_title.dart';
-import '/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 
 class SkillsPage extends StatefulWidget {
   const SkillsPage({super.key, required this.student});

@@ -3,7 +3,7 @@ import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 
 class SstExpansionPanel extends ExpansionPanel {
   SstExpansionPanel({

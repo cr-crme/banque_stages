@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/phone_number.dart';
-import '/misc/form_service.dart';
+import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
 
 class PhoneListTile extends StatefulWidget {
   const PhoneListTile({

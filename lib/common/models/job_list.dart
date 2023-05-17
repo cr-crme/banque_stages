@@ -1,6 +1,6 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
-import '/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 
 class JobList extends ListSerializable<Job> {
   JobList();

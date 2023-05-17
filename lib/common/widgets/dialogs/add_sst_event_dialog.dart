@@ -1,7 +1,7 @@
 import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_text.dart';
 import 'package:flutter/material.dart';
 
-import '/misc/form_service.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
 
 class AddSstEventDialog extends StatefulWidget {
   const AddSstEventDialog({super.key});

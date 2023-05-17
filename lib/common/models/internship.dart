@@ -1,9 +1,9 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
-import '/common/models/person.dart';
-import '/common/models/uniform.dart';
-import '/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:crcrme_banque_stages/common/models/uniform.dart';
+import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'internship_evaluation_attitude.dart';
 import 'internship_evaluation_skill.dart';
 import 'protections.dart';

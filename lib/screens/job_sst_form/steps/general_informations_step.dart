@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/models/job.dart';
-import '/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 
 class GeneralInformationsStep extends StatelessWidget {
   const GeneralInformationsStep({
@@ -147,8 +147,7 @@ class GeneralInformationsStep extends StatelessWidget {
                 Text(''),
                 Text('Quand:'),
                 Text('\u2022 La 1ère semaine de stage'),
-                Text(
-                    '\u2022 Pendant (ou à la suite) d\'une visite du poste '
+                Text('\u2022 Pendant (ou à la suite) d\'une visite du poste '
                     'de travail de l\'élève'),
                 Text(''),
                 Text('Durée de remplissage : 15 minutes'),

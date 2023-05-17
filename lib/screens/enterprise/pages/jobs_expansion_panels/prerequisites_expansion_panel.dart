@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 
 class PrerequisitesExpansionPanel extends ExpansionPanel {
   PrerequisitesExpansionPanel({

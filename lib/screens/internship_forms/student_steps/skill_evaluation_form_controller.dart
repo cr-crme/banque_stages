@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-import '/common/models/internship.dart';
-import '/common/models/internship_evaluation_skill.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/providers/internships_provider.dart';
-import '/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 
 class SkillEvaluationFormController {
   static const _formVersion = '1.0.0';

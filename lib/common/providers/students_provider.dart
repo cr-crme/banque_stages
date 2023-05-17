@@ -3,7 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'auth_provider.dart';
 import 'internships_provider.dart';
 import 'teachers_provider.dart';

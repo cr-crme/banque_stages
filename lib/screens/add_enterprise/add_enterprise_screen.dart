@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/models/person.dart';
-import '/common/models/phone_number.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/providers/teachers_provider.dart';
-import '/common/widgets/add_job_button.dart';
-import '/common/widgets/dialogs/confirm_pop_dialog.dart';
-import '/common/widgets/scrollable_stepper.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'pages/contact_page.dart';
 import 'pages/informations_page.dart';
 import 'pages/jobs_page.dart';

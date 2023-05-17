@@ -1,12 +1,11 @@
+import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/job_list.dart';
+import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
-
-import '/common/models/address.dart';
-import '/common/models/internship.dart';
-import '/common/models/job.dart';
-import '/common/models/job_list.dart';
-import '/common/models/person.dart';
-import '/common/models/phone_number.dart';
-import '/common/providers/internships_provider.dart';
 
 class Enterprise extends ItemSerializable {
   final String name;
