@@ -57,11 +57,11 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
       ],
       bottom: TabBar(
         controller: _tabController,
-        tabs: const [
+        tabs: [
           Tab(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Icon(Icons.list),
                 SizedBox(width: 8),
                 Text('Vue liste')
@@ -71,7 +71,7 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
           Tab(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Icon(Icons.map),
                 SizedBox(width: 8),
                 Text('Vue carte')

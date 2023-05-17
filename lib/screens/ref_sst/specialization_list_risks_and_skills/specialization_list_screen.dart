@@ -88,12 +88,12 @@ class SpecializationListScreen extends StatelessWidget {
               padding: const EdgeInsets.only(top: 5.0, bottom: 5),
               child: AutoSizeText(specialization.idWithName, maxLines: 2),
             ),
-            bottom: const TabBar(tabs: [
+            bottom: TabBar(tabs: [
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text(
                       'Affichage par\nrisque',
                       style: TextStyle(fontSize: 16),
@@ -105,10 +105,10 @@ class SpecializationListScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text(
                       'Affichage par\ncompétence',
                       style: TextStyle(fontSize: 16),

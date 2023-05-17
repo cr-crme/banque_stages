@@ -43,9 +43,9 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
               BoxShadow(color: Colors.grey, spreadRadius: 1, blurRadius: 15)
             ],
           ),
-          child: const InkWell(
+          child: InkWell(
               child: Column(
-            children: [
+            children: const [
               Text('Analyse des risques \npar métier',
                   textAlign: TextAlign.center,
                   style: TextStyle(
