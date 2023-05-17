@@ -10,10 +10,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-import '/common/providers/schools_provider.dart';
 import 'common/providers/auth_provider.dart';
 import 'common/providers/enterprises_provider.dart';
 import 'common/providers/internships_provider.dart';
+import 'common/providers/schools_provider.dart';
 import 'common/providers/students_provider.dart';
 import 'common/providers/teachers_provider.dart';
 import 'firebase_options.dart';

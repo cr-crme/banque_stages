@@ -160,10 +160,10 @@ class _RoutingMapState extends State<RoutingMap> {
     return Consumer<AllStudentsWaypoints>(builder: (context, waypoints, child) {
       if (waypoints.isEmpty) {
         // The column is necessary otherwise the ProgressIndicator is huge
-        return Column(
+        return const Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [CircularProgressIndicator()]);
+            children: [CircularProgressIndicator()]);
       }
 
       return Padding(
