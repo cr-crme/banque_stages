@@ -37,7 +37,13 @@ class WeeklyScheduleController {
     _hasChanged = true;
   }
 
-  void removedDailyScheduleTime(int weeklyIndex, int dailyIndex) {
+  void removedDailyScheduleTime(context, int weeklyIndex, int dailyIndex) {
+    if (weeklySchedules[weeklyIndex].schedule.length == 1) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Au moins une plage horaire est nécessaire'),
+      ));
+      return;
+    }
     weeklySchedules[weeklyIndex].schedule.removeAt(dailyIndex);
     _hasChanged = true;
   }
@@ -86,21 +92,19 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _DateRange(scheduleController: scheduleController),
-            _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
-            ScheduleSelector(
-              scheduleController: scheduleController,
-              editMode: true,
-              withTitle: true,
-            ),
-          ],
-        ),
+    return Form(
+      key: formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _DateRange(scheduleController: scheduleController),
+          _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
+          ScheduleSelector(
+            scheduleController: scheduleController,
+            editMode: true,
+            withTitle: true,
+          ),
+        ],
       ),
     );
   }
@@ -196,8 +200,8 @@ class _Hours extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 12.0),
       child: TextFormField(
-        decoration:
-            const InputDecoration(labelText: '* Nombre d\'heures de stage'),
+        decoration: const InputDecoration(
+            labelText: '* Nombre d\'heures de stage (total à faire)'),
         validator: (text) =>
             text!.isEmpty ? 'Indiquer un nombre d\'heures.' : null,
         keyboardType: TextInputType.number,
@@ -349,8 +353,8 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
                   onUpdateDailyScheduleTime: (dailyIndex) =>
                       _promptUpdateToDailySchedule(weeklyIndex, dailyIndex),
                   onRemovedDailyScheduleTime: (dailyIndex) => setState(() =>
-                      widget.scheduleController
-                          .removedDailyScheduleTime(weeklyIndex, dailyIndex)),
+                      widget.scheduleController.removedDailyScheduleTime(
+                          context, weeklyIndex, dailyIndex)),
                   promptChangeWeeks: () => _promptChangeWeek(weeklyIndex),
                   editMode: widget.editMode,
                   leftPadding: widget.leftPadding,

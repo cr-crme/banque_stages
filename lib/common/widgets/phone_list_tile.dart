@@ -12,6 +12,7 @@ class PhoneListTile extends StatefulWidget {
     required this.onSaved,
     required this.isMandatory,
     required this.enabled,
+    this.controller,
   });
 
   final String title;
@@ -20,13 +21,14 @@ class PhoneListTile extends StatefulWidget {
   final Function(String?) onSaved;
   final bool isMandatory;
   final bool enabled;
+  final TextEditingController? controller;
 
   @override
   State<PhoneListTile> createState() => _PhoneListTileState();
 }
 
 class _PhoneListTileState extends State<PhoneListTile> {
-  final _phoneController = TextEditingController();
+  late final _phoneController = widget.controller ?? TextEditingController();
 
   @override
   void initState() {

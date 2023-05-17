@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
 import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
+import '/common/models/protections.dart';
 import '/common/models/schedule.dart';
+import '/common/models/uniform.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/misc/job_data_file_service.dart';
-import '/router.dart';
 import '/screens/internship_enrollment/steps/requirements_step.dart';
 import '/screens/internship_enrollment/steps/schedule_step.dart';
 
@@ -28,8 +28,11 @@ class _InternshipController {
               internship.weeklySchedules.map((e) => e.deepCopy()).toList(),
           dateRange: internship.date,
         ),
-        initialProtections = internship.protections.map((e) => e).toList(),
-        initialUniform = internship.uniform;
+        initialProtectionsStatus = internship.protections.status,
+        initialProtections =
+            internship.protections.protections.map((e) => e).toList(),
+        initialUniformStatus = internship.uniform.status,
+        initialUniform = internship.uniform.uniform;
 
   bool get hasChanged =>
       scheduleController.hasChanged ||
@@ -77,17 +80,20 @@ class _InternshipController {
   bool get protectionsHasChanged =>
       _protectionsHasChanged ||
       initialOtherProtections != otherProtectionController.text;
-  late bool _needProtections = initialProtections.isNotEmpty;
-  bool get needProtections => _needProtections;
-  set needProtections(value) {
-    _needProtections = value;
+  late ProtectionsStatus _protectionsStatus = initialProtectionsStatus;
+  ProtectionsStatus get protectionsStatus => _protectionsStatus;
+  set protectionsStatus(value) {
+    _protectionsStatus = value;
     _protectionsHasChanged = true;
   }
 
+  ProtectionsStatus initialProtectionsStatus;
   List<String> initialProtections;
-  List<String> get protections {
+  Protections get protections {
     final List<String> out = [];
-    if (!needProtections) return out;
+    if (protectionsStatus == ProtectionsStatus.none) {
+      return Protections(status: ProtectionsStatus.none, protections: []);
+    }
 
     for (final protection in hasProtections.keys) {
       if (hasProtections[protection]!) {
@@ -98,7 +104,7 @@ class _InternshipController {
     if (otherProtectionController.text.isNotEmpty) {
       out.add(otherProtectionController.text);
     }
-    return out;
+    return Protections(status: protectionsStatus, protections: out);
   }
 
   late final Map<String, bool> hasProtections = Map.fromIterable(
@@ -123,15 +129,17 @@ class _InternshipController {
   }
 
   bool _uniformHasChanged = false;
+  final UniformStatus initialUniformStatus;
   final String initialUniform;
   late final uniformController = TextEditingController(text: initialUniform);
-  String get uniform => uniformController.text;
-  late bool _hasUniform = initialUniform.isNotEmpty;
-  bool get hasUniform => _hasUniform;
-  set hasUniform(value) {
-    _hasUniform = value;
+  Uniform get uniform =>
+      Uniform(status: uniformStatus, uniform: uniformController.text);
+  late UniformStatus _uniformStatus = initialUniformStatus;
+  UniformStatus get uniformStatus => _uniformStatus;
+  set uniformStatus(value) {
+    _uniformStatus = value;
     _uniformHasChanged = true;
-    if (!_hasUniform) uniformController.text = '';
+    if (_uniformStatus == UniformStatus.none) uniformController.text = '';
   }
 }
 
@@ -239,23 +247,12 @@ class InternshipDetailsState extends State<InternshipDetails> {
                     .textTheme
                     .titleLarge!
                     .copyWith(color: Colors.black)),
-            body: Stack(
-              alignment: Alignment.topRight,
-              children: [
-                _InternshipBody(
-                  internship: widget.internship,
-                  editMode: _editMode,
-                  onRequestChangedDates: _promptDateRange,
-                  internshipController: _internshipController,
-                ),
-                if (widget.internship.isActive)
-                  IconButton(
-                      onPressed: _onToggleSaveEdit,
-                      icon: Icon(
-                        _editMode ? Icons.save : Icons.edit,
-                        color: Colors.black,
-                      )),
-              ],
+            body: _InternshipBody(
+              internship: widget.internship,
+              editMode: _editMode,
+              onRequestChangedDates: _promptDateRange,
+              internshipController: _internshipController,
+              onToggleSaveEdit: _onToggleSaveEdit,
             ),
           )
         ],
@@ -270,12 +267,14 @@ class _InternshipBody extends StatelessWidget {
     required this.editMode,
     required this.onRequestChangedDates,
     required this.internshipController,
+    required this.onToggleSaveEdit,
   });
 
   final Internship internship;
   final bool editMode;
 
   final Function() onRequestChangedDates;
+  final Function() onToggleSaveEdit;
   final _InternshipController internshipController;
 
   static const TextStyle _titleStyle = TextStyle(fontWeight: FontWeight.bold);
@@ -317,30 +316,6 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
-  Widget _buildEnterprise(context, {required Enterprise enterprise}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Entreprise', style: _titleStyle),
-        Padding(
-          padding: const EdgeInsets.only(top: 2, bottom: _interline),
-          child: GestureDetector(
-            onTap: () => GoRouter.of(context).goNamed(
-              Screens.enterprise,
-              params: Screens.params(enterprise),
-              queryParams: Screens.queryParams(pageIndex: "0"),
-            ),
-            child: Text(
-              enterprise.name,
-              style: const TextStyle(
-                  decoration: TextDecoration.underline, color: Colors.blue),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
   Widget _buildAddress({required Enterprise enterprise}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,7 +335,7 @@ class _InternshipBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Superviseur en milieu de stage', style: _titleStyle),
+          const Text('Responsable en milieu de stage', style: _titleStyle),
           Padding(
             padding: const EdgeInsets.only(top: 2, bottom: _interline),
             child: Column(
@@ -484,7 +459,7 @@ class _InternshipBody extends StatelessWidget {
                                   const TextInputType.numberWithOptions(),
                             ),
                           )
-                        : Text(internshipController.achievedLength.toString()),
+                        : Text(internship.achievedLength.toString()),
                     const Text('h'),
                   ],
                 ),
@@ -525,9 +500,10 @@ class _InternshipBody extends StatelessWidget {
           if (editMode)
             _ProtectionRequiredChoser(
                 internshipController: internshipController),
-          if (!editMode && internship.protections.isEmpty) const Text('Aucun'),
-          if (!editMode && internship.protections.isNotEmpty)
-            ...internship.protections.map((e) => Row(
+          if (!editMode && internship.protections.protections.isEmpty)
+            const Text('Aucun'),
+          if (!editMode && internship.protections.protections.isNotEmpty)
+            ...internship.protections.protections.map((e) => Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('\u2022 '),
@@ -547,10 +523,11 @@ class _InternshipBody extends StatelessWidget {
         children: [
           const Text('Uniforme requis', style: _titleStyle),
           if (editMode)
-            _UniformRequiredChoser(internshipController: internshipController),
-          if (!editMode && internship.uniform.isEmpty) const Text('Aucun'),
-          if (!editMode && internship.uniform.isNotEmpty)
-            Text(internship.uniform),
+            _UniformRequiredChooser(internshipController: internshipController),
+          if (!editMode && internship.uniform.status == UniformStatus.none)
+            const Text('Aucun'),
+          if (!editMode && internship.uniform.status != UniformStatus.none)
+            Text(internship.uniform.uniform),
         ],
       ),
     );
@@ -575,14 +552,28 @@ class _InternshipBody extends StatelessWidget {
               .asMap()
               .keys
               .map((indexExtra) => _buildJob(
-                    'Métier secondaire${internship.extraSpecializationsId.length > 1 ? ' (${indexExtra + 1})' : ''}',
+                    'Métier supplémentaire${internship.extraSpecializationsId.length > 1 ? ' (${indexExtra + 1})' : ''}',
                     specialization: ActivitySectorsService.specialization(
                         internship.extraSpecializationsId[indexExtra]),
                   )),
-        _buildEnterprise(context,
-            enterprise: enterprises[internship.enterpriseId]),
         _buildAddress(enterprise: enterprises[internship.enterpriseId]),
-        _buildSupervisorInfo(),
+        Stack(
+          alignment: Alignment.topLeft,
+          children: [
+            SizedBox(width: MediaQuery.of(context).size.width),
+            _buildSupervisorInfo(),
+            if (internship.isActive)
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                    onPressed: onToggleSaveEdit,
+                    icon: Icon(
+                      editMode ? Icons.save : Icons.edit,
+                      color: Colors.black,
+                    )),
+              ),
+          ],
+        ),
         _buildDates(),
         _buildTime(),
         _buildSchedule(),
@@ -610,27 +601,35 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                width: 125,
-                child: RadioListTile(
-                  value: true,
-                  groupValue: widget.internshipController.needProtections,
-                  onChanged: (bool? newValue) => setState(() =>
-                      widget.internshipController.needProtections = newValue!),
-                  title: const Text('Oui'),
-                ),
+              RadioListTile<ProtectionsStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: ProtectionsStatus.suppliedByEnterprise,
+                groupValue: widget.internshipController.protectionsStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.protectionsStatus = newValue!),
+                title: Text(ProtectionsStatus.suppliedByEnterprise.name),
               ),
-              SizedBox(
-                width: 125,
-                child: RadioListTile(
-                  value: false,
-                  groupValue: widget.internshipController.needProtections,
-                  onChanged: (bool? newValue) => setState(() =>
-                      widget.internshipController.needProtections = newValue!),
-                  title: const Text('Non'),
-                ),
+              RadioListTile<ProtectionsStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: ProtectionsStatus.suppliedBySchool,
+                groupValue: widget.internshipController.protectionsStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.protectionsStatus = newValue!),
+                title: Text(ProtectionsStatus.suppliedBySchool.name),
+              ),
+              RadioListTile<ProtectionsStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: ProtectionsStatus.none,
+                groupValue: widget.internshipController.protectionsStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.protectionsStatus = newValue!),
+                title: Text(ProtectionsStatus.none.name),
               ),
             ],
           ),
@@ -638,7 +637,8 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
         SizedBox(
           width: MediaQuery.of(context).size.width * 3 / 4,
           child: Visibility(
-            visible: widget.internshipController.needProtections,
+            visible: widget.internshipController.protectionsStatus !=
+                ProtectionsStatus.none,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -685,7 +685,7 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Précisez l\'équipement supplémentaire requis : ',
+                          'Préciser l\'équipement supplémentaire requis : ',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(
@@ -707,43 +707,51 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
   }
 }
 
-class _UniformRequiredChoser extends StatefulWidget {
-  const _UniformRequiredChoser({required this.internshipController});
+class _UniformRequiredChooser extends StatefulWidget {
+  const _UniformRequiredChooser({required this.internshipController});
 
   final _InternshipController internshipController;
 
   @override
-  State<_UniformRequiredChoser> createState() => _UniformRequiredChoserState();
+  State<_UniformRequiredChooser> createState() =>
+      _UniformRequiredChooserState();
 }
 
-class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
+class _UniformRequiredChooserState extends State<_UniformRequiredChooser> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
-          child: Row(
+          child: Column(
             children: [
-              SizedBox(
-                width: 125,
-                child: RadioListTile(
-                  value: true,
-                  groupValue: widget.internshipController.hasUniform,
-                  onChanged: (bool? newValue) => setState(
-                      () => widget.internshipController.hasUniform = newValue!),
-                  title: const Text('Oui'),
-                ),
+              RadioListTile<UniformStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: UniformStatus.suppliedByEnterprise,
+                groupValue: widget.internshipController.uniformStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.uniformStatus = newValue!),
+                title: Text(UniformStatus.suppliedByEnterprise.name),
               ),
-              SizedBox(
-                width: 125,
-                child: RadioListTile(
-                  value: false,
-                  groupValue: widget.internshipController.hasUniform,
-                  onChanged: (bool? newValue) => setState(
-                      () => widget.internshipController.hasUniform = newValue!),
-                  title: const Text('Non'),
-                ),
+              RadioListTile<UniformStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: UniformStatus.suppliedByStudent,
+                groupValue: widget.internshipController.uniformStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.uniformStatus = newValue!),
+                title: Text(UniformStatus.suppliedByStudent.name),
+              ),
+              RadioListTile<UniformStatus>(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                value: UniformStatus.none,
+                groupValue: widget.internshipController.uniformStatus,
+                onChanged: (newValue) => setState(() =>
+                    widget.internshipController.uniformStatus = newValue!),
+                title: Text(UniformStatus.none.name),
               ),
             ],
           ),
@@ -751,7 +759,8 @@ class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
         SizedBox(
           width: MediaQuery.of(context).size.width * 3 / 4,
           child: Visibility(
-            visible: widget.internshipController.hasUniform,
+            visible:
+                widget.internshipController.uniformStatus != UniformStatus.none,
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -761,7 +770,7 @@ class _UniformRequiredChoserState extends State<_UniformRequiredChoser> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Précisez le type d\'uniforme : ',
+                    'Préciser le type d\'uniforme : ',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   TextFormField(

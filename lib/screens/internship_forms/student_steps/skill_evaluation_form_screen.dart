@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import '/common/models/internship.dart';
 import '/common/models/internship_evaluation_skill.dart';
+import '/common/models/student.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/scrollable_stepper.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 import 'skill_evaluation_form_controller.dart';
@@ -22,6 +24,8 @@ class SkillEvaluationFormScreen extends StatefulWidget {
 }
 
 class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
+  final _scrollController = ScrollController();
+  final double _tabHeight = 74.0;
   int _currentStep = 0;
 
   SkillList _extractSkills(BuildContext context,
@@ -37,11 +41,13 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
 
   void _nextStep() {
     _currentStep++;
+    _scrollToCurrentTab();
     setState(() {});
   }
 
   void _previousStep() {
     _currentStep--;
+    _scrollToCurrentTab();
     setState(() {});
   }
 
@@ -128,52 +134,73 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     );
   }
 
+  void _scrollToCurrentTab() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // Wait until the stepper has closed and reopened before moving
+      _scrollController.jumpTo(_currentStep * _tabHeight);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final internship = widget.formController.internship(context);
-    final allStudents = StudentsProvider.of(context);
-    if (!allStudents.hasId(internship.studentId)) return Container();
-    final student = allStudents[internship.studentId];
     final skills = _extractSkills(context, internship: internship);
 
-    return Scaffold(
-      appBar: AppBar(
-          title: Text('Évaluation de ${student.fullName}'),
-          leading: IconButton(
-              onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
-      body: Stepper(
-        type: StepperType.vertical,
-        currentStep: _currentStep,
-        onStepContinue: _nextStep,
-        onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
-        onStepCancel: _cancel,
-        steps: [
-          ...skills.map((skill) => Step(
-                isActive: true,
-                state: widget.formController.appreciations[skill]! ==
-                        SkillAppreciation.notEvaluated
-                    ? StepState.indexed
-                    : StepState.complete,
-                title: SubTitle(skill.id, top: 0, bottom: 0),
-                content: _EvaluateSkill(
-                  formController: widget.formController,
-                  skill: skill,
-                  editMode: widget.editMode,
-                ),
-              )),
-          Step(
-            isActive: true,
-            title: const SubTitle('Commentaires', top: 0, bottom: 0),
-            content: _Comments(
-              formController: widget.formController,
-              editMode: widget.editMode,
+    return FutureBuilder<Student>(
+        future: StudentsProvider.fromLimitedId(context,
+            studentId: internship.studentId),
+        builder: (context, snapshot) {
+          final student = snapshot.hasData ? snapshot.data! : null;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                  '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\nC1. Compétences spécifiques'),
+              leading: IconButton(
+                  onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
             ),
-          )
-        ],
-        controlsBuilder: (BuildContext context, ControlsDetails details) =>
-            _controlBuilder(context, details, skills),
-      ),
-    );
+            body: student == null
+                ? const Center(child: CircularProgressIndicator())
+                : ScrollableStepper(
+                    scrollController: _scrollController,
+                    type: StepperType.vertical,
+                    currentStep: _currentStep,
+                    onStepContinue: _nextStep,
+                    onStepTapped: (int tapped) => setState(() {
+                      _currentStep = tapped;
+                      _scrollToCurrentTab();
+                    }),
+                    onStepCancel: _cancel,
+                    steps: [
+                      ...skills.map((skill) => Step(
+                            isActive: true,
+                            state:
+                                widget.formController.appreciations[skill]! ==
+                                        SkillAppreciation.notEvaluated
+                                    ? StepState.indexed
+                                    : StepState.complete,
+                            title: SubTitle(skill.id, top: 0, bottom: 0),
+                            content: _EvaluateSkill(
+                              formController: widget.formController,
+                              skill: skill,
+                              editMode: widget.editMode,
+                            ),
+                          )),
+                      Step(
+                        isActive: true,
+                        title:
+                            const SubTitle('Commentaires', top: 0, bottom: 0),
+                        content: _Comments(
+                          formController: widget.formController,
+                          editMode: widget.editMode,
+                        ),
+                      )
+                    ],
+                    controlsBuilder:
+                        (BuildContext context, ControlsDetails details) =>
+                            _controlBuilder(context, details, skills),
+                  ),
+          );
+        });
   }
 }
 
@@ -195,17 +222,11 @@ class _EvaluateSkill extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
+        SubTitle(skill.name, top: 0, left: 0),
         Padding(
           padding: const EdgeInsets.only(bottom: spacing),
           child: Text(
-            skill.name,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: spacing),
-          child: Text(
-            'Niveau de complexité : ${skill.complexity}',
+            'Niveau : ${skill.complexity}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -291,7 +312,10 @@ class _TaskEvaluationState extends State<_TaskEvaluation> {
                     enabled: widget.editMode,
                     value:
                         widget.formController.taskCompleted[widget.skill]![e]!,
-                    title: Text(e, style: const TextStyle(color: Colors.black)),
+                    title: Text(e,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Colors.black,
+                            )),
                   ))
               .toList(),
         ],
@@ -344,7 +368,9 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
                         widget.formController.appreciations[widget.skill],
                     value: e,
                     title: Text(e.name,
-                        style: const TextStyle(color: Colors.black)),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Colors.black,
+                            )),
                   ))
               .toList(),
         ],

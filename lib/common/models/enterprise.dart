@@ -4,6 +4,7 @@ import '/common/models/address.dart';
 import '/common/models/internship.dart';
 import '/common/models/job.dart';
 import '/common/models/job_list.dart';
+import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
 import '/common/providers/internships_provider.dart';
 
@@ -15,10 +16,8 @@ class Enterprise extends ItemSerializable {
 
   final JobList jobs;
 
-  final String contactName;
+  final Person contact;
   final String contactFunction;
-  final PhoneNumber contactPhone;
-  final String contactEmail;
 
   final Address? address;
   final PhoneNumber phone;
@@ -46,10 +45,8 @@ class Enterprise extends ItemSerializable {
     required this.recrutedBy,
     required this.shareWith,
     required this.jobs,
-    required this.contactName,
+    required this.contact,
     this.contactFunction = '',
-    required this.contactPhone,
-    this.contactEmail = '',
     this.address,
     this.phone = const PhoneNumber(),
     this.fax = const PhoneNumber(),
@@ -64,10 +61,8 @@ class Enterprise extends ItemSerializable {
     String? recrutedBy,
     String? shareWith,
     JobList? jobs,
-    String? contactName,
+    Person? contact,
     String? contactFunction,
-    PhoneNumber? contactPhone,
-    String? contactEmail,
     Address? address,
     PhoneNumber? phone,
     PhoneNumber? fax,
@@ -82,10 +77,8 @@ class Enterprise extends ItemSerializable {
       recrutedBy: recrutedBy ?? this.recrutedBy,
       shareWith: shareWith ?? this.shareWith,
       jobs: jobs ?? this.jobs,
-      contactName: contactName ?? this.contactName,
+      contact: contact ?? this.contact,
       contactFunction: contactFunction ?? this.contactFunction,
-      contactPhone: contactPhone ?? this.contactPhone,
-      contactEmail: contactEmail ?? this.contactEmail,
       address: address ?? this.address,
       phone: phone ?? this.phone,
       fax: fax ?? this.fax,
@@ -104,10 +97,8 @@ class Enterprise extends ItemSerializable {
       'recrutedBy': recrutedBy,
       'shareWith': shareWith,
       'jobs': jobs.serialize(),
-      'contactName': contactName,
+      'contact': contact.serialize(),
       'contactFunction': contactFunction,
-      'contactPhone': contactPhone.toString(),
-      'contactEmail': contactEmail,
       'address': address?.serializedMap(),
       'phone': phone.toString(),
       'fax': fax.toString(),
@@ -125,10 +116,8 @@ class Enterprise extends ItemSerializable {
         recrutedBy = map['recrutedBy'],
         shareWith = map['shareWith'],
         jobs = JobList.fromSerialized(map['jobs']),
-        contactName = map['contactName'],
+        contact = Person.fromSerialized(map['contact']),
         contactFunction = map['contactFunction'],
-        contactPhone = PhoneNumber.fromString(map['contactPhone']),
-        contactEmail = map['contactEmail'],
         address = Address.fromSerialized(map['address']),
         phone = PhoneNumber.fromString(map['phone']),
         fax = PhoneNumber.fromString(map['fax']),
@@ -143,6 +132,7 @@ class Enterprise extends ItemSerializable {
 const List<String> activityTypes = [
   'Animalerie',
   'Barbier',
+  'Bâtiment',
   'Boucherie',
   'Boulangerie',
   'Coiffeur',
@@ -151,11 +141,14 @@ const List<String> activityTypes = [
   'Cuisine',
   'Dépanneur',
   'Ébénisterie',
+  'Entretien',
   'Épicerie',
+  'Ferme',
   'Fleuriste',
   'Garage',
   'Garderie',
   'Industriel',
+  'Loisirs',
   'Magasin',
   'Magasin de vêtements',
   'Magasin entrepôt',
@@ -164,6 +157,8 @@ const List<String> activityTypes = [
   'Pharmacie',
   'Préparation de commandes',
   'Quincaillerie',
+  'Recyclage',
+  'Réparation',
   'Restaurant',
   'Restauration rapide',
   'Salon de coiffure',

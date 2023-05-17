@@ -4,12 +4,15 @@ import 'package:go_router/go_router.dart';
 import '/common/models/internship.dart';
 import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
+import '/common/models/protections.dart';
+import '/common/models/uniform.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/scrollable_stepper.dart';
 import '/misc/form_service.dart';
 import '/router.dart';
 import 'steps/general_informations_step.dart';
@@ -33,9 +36,12 @@ class InternshipEnrollmentScreen extends StatefulWidget {
 
 class _InternshipEnrollmentScreenState
     extends State<InternshipEnrollmentScreen> {
+  final _scrollController = ScrollController();
+
   final _generalInfoKey = GlobalKey<GeneralInformationsStepState>();
   final _scheduleKey = GlobalKey<ScheduleStepState>();
   final _requirementsKey = GlobalKey<RequirementsStepState>();
+
   int _currentStep = 0;
   final List<StepState> _stepStatus = [
     StepState.indexed,
@@ -46,10 +52,11 @@ class _InternshipEnrollmentScreenState
   void _previousStep() {
     if (_currentStep == 0) return;
     _currentStep -= 1;
+    _scrollController.jumpTo(0);
     setState(() {});
   }
 
-  void _nextStep() {
+  void _nextStep() async {
     final formKeys = [
       _generalInfoKey.currentState!.formKey,
       _scheduleKey.currentState!.formKey,
@@ -79,6 +86,7 @@ class _InternshipEnrollmentScreenState
 
     if (_currentStep != 2) {
       _currentStep += 1;
+      _scrollController.jumpTo(0);
       setState(() {});
       return;
     }
@@ -109,8 +117,12 @@ class _InternshipEnrollmentScreenState
           email: _generalInfoKey.currentState!.supervisorEmail ?? '',
           phone: PhoneNumber.fromString(
               _generalInfoKey.currentState!.supervisorPhone)),
-      protections: _requirementsKey.currentState!.protections,
-      uniform: _requirementsKey.currentState!.uniform,
+      protections: Protections(
+          protections: _requirementsKey.currentState!.protections,
+          status: _requirementsKey.currentState!.protectionsStatus),
+      uniform: Uniform(
+          status: _requirementsKey.currentState!.uniformStatus,
+          uniform: _requirementsKey.currentState!.uniform),
       date: _scheduleKey.currentState!.scheduleController.dateRange,
       expectedLength: _scheduleKey.currentState!.intershipLength,
       achievedLength: 0,
@@ -121,12 +133,37 @@ class _InternshipEnrollmentScreenState
 
     InternshipsProvider.of(context, listen: false).add(internship);
 
+    final student = StudentsProvider.of(context,
+        listen: false)[_generalInfoKey.currentState!.student!.id];
+    await showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              content: Text(
+                  '${student.fullName} a bien été inscrit comme stagiaire chez ${enterprise.name}.'
+                  '\n\nVous pouvez maintenant accéder aux documents administratifs du stage.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Ok'),
+                )
+              ],
+            ));
+
+    if (!mounted) return;
     Navigator.pop(context);
     GoRouter.of(context).pushNamed(
       Screens.student,
       params: Screens.params(internship.studentId),
-      queryParams: Screens.queryParams(pageIndex: "1"),
+      queryParams: Screens.queryParams(pageIndex: '1'),
     );
+  }
+
+  void _cancel() async {
+    final result = await showDialog(
+        context: context, builder: (context) => const ConfirmPopDialog());
+    if (!mounted || result == null || !result) return;
+
+    Navigator.of(context).pop();
   }
 
   void _onPressBack() async {
@@ -157,12 +194,18 @@ class _InternshipEnrollmentScreenState
         leading: IconButton(
             onPressed: _onPressBack, icon: const Icon(Icons.arrow_back)),
       ),
-      body: Stepper(
+      body: ScrollableStepper(
         type: StepperType.horizontal,
+        scrollController: _scrollController,
         currentStep: _currentStep,
         onStepContinue: _nextStep,
-        onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
-        onStepCancel: () => Navigator.pop(context),
+        onStepTapped: (int tapped) {
+          setState(() {
+            _currentStep = tapped;
+            _scrollController.jumpTo(0);
+          });
+        },
+        onStepCancel: _cancel,
         steps: [
           Step(
             state: _stepStatus[0],
@@ -198,9 +241,7 @@ class _InternshipEnrollmentScreenState
           if (_currentStep != 0)
             OutlinedButton(
                 onPressed: _previousStep, child: const Text('Précédent')),
-          const SizedBox(
-            width: 20,
-          ),
+          const SizedBox(width: 20),
           TextButton(
             onPressed: details.onStepContinue,
             child: _currentStep == 2

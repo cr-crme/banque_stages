@@ -13,7 +13,8 @@ class ContactPage extends StatefulWidget {
 class ContactPageState extends State<ContactPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String? contactName;
+  String? contactFirstName;
+  String? contactLastName;
   String? contactFunction;
   String? contactPhone;
   String? contactEmail;
@@ -44,11 +45,18 @@ class ContactPageState extends State<ContactPage> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             TextFormField(
+              decoration: const InputDecoration(labelText: '* Prénom'),
+              validator: (text) => text!.isEmpty
+                  ? 'Ajouter le nom de la personne représentant l\'entreprise.'
+                  : null,
+              onSaved: (name) => contactFirstName = name!,
+            ),
+            TextFormField(
               decoration: const InputDecoration(labelText: '* Nom'),
               validator: (text) => text!.isEmpty
                   ? 'Ajouter le nom de la personne représentant l\'entreprise.'
                   : null,
-              onSaved: (name) => contactName = name!,
+              onSaved: (name) => contactLastName = name!,
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: '* Fonction'),

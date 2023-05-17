@@ -9,6 +9,7 @@ import '/common/widgets/sub_title.dart';
 import 'widgets/internship_details.dart';
 import 'widgets/internship_documents.dart';
 import 'widgets/internship_skills.dart';
+import 'widgets/internship_quick_access.dart';
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
@@ -43,8 +44,8 @@ class InternshipsPageState extends State<InternshipsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final allInternships = InternshipsProvider.of(context);
-    final internships = allInternships.byStudentId(widget.student.id);
+    final internships =
+        InternshipsProvider.of(context).byStudentId(widget.student.id);
     _prepareExpander(internships);
 
     return ListView.builder(
@@ -76,6 +77,7 @@ class InternshipsPageState extends State<InternshipsPage> {
               body: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    InternshipQuickAccess(internshipId: internship.id),
                     InternshipDetails(
                         key: detailKeys[index], internship: internship),
                     InternshipSkills(internship: internship),

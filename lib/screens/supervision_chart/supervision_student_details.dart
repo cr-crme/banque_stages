@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/models/internship.dart';
+import '/common/models/protections.dart';
 import '/common/models/schedule.dart';
 import '/common/models/student.dart';
+import '/common/models/uniform.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
@@ -39,12 +41,6 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late Student student;
-    try {
-      student = StudentsProvider.of(context).fromId(studentId);
-    } catch (e) {
-      return Container();
-    }
     final internships = InternshipsProvider.of(context).byStudentId(studentId);
     final internship = internships.isNotEmpty ? internships.last : null;
 
@@ -53,50 +49,60 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
             .fromId(internship.enterpriseId)
         : null;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(children: [
-          student.avatar,
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(student.fullName),
-              Text(
-                enterprise?.name ?? 'Aucun stage',
-                style: const TextStyle(fontSize: 14),
-              )
-            ],
-          ),
-        ]),
-        actions: [
-          IconButton(
-              onPressed: () => _transferStudent(context),
-              icon: const Icon(Icons.transfer_within_a_station)),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (internship == null)
-              const Padding(
-                padding: EdgeInsets.only(top: 10.0),
-                child:
-                    Center(child: Text('Aucun stage pour cet\u00b7te élève')),
+    return FutureBuilder<Student>(
+        future: StudentsProvider.fromLimitedId(context, studentId: studentId),
+        builder: (context, snapshot) {
+          final student = snapshot.hasData ? snapshot.data! : null;
+          return Scaffold(
+            appBar: AppBar(
+              title: student == null
+                  ? const Text('En attente des données')
+                  : Row(children: [
+                      student.avatar,
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(student.fullName),
+                          Text(
+                            enterprise?.name ?? 'Aucun stage',
+                            style: const TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                    ]),
+              actions: [
+                IconButton(
+                    onPressed: () => _transferStudent(context),
+                    icon: const Icon(Icons.transfer_within_a_station)),
+              ],
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (internship == null)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: Center(
+                          child: Text('Aucun stage pour cet\u00b7te élève')),
+                    ),
+                  if (internship != null)
+                    _VisitingPriority(studentId: studentId),
+                  if (internship != null)
+                    _Specialization(internship: internship),
+                  if (internship != null)
+                    _PersonalNotes(internship: internship),
+                  if (internship != null)
+                    _Contact(enterprise: enterprise!, internship: internship),
+                  if (internship != null) _Schedule(internship: internship),
+                  if (internship != null) _Requirements(internship: internship),
+                  _MoreInfoButton(studentId: studentId),
+                ],
               ),
-            if (internship != null) _VisitingPriority(studentId: studentId),
-            if (internship != null) _Specialization(internship: internship),
-            if (internship != null) _PersonalNotes(internship: internship),
-            if (internship != null)
-              _Contact(enterprise: enterprise!, internship: internship),
-            if (internship != null) _Schedule(internship: internship),
-            if (internship != null) _Requirements(internship: internship),
-            _MoreInfoButton(studentId: studentId),
-          ],
-        ),
-      ),
-    );
+            ),
+          );
+        });
   }
 }
 
@@ -383,11 +389,11 @@ class _Requirements extends StatelessWidget {
         ),
         Padding(
             padding: const EdgeInsets.only(left: 32.0),
-            child: internship.protections.isEmpty
+            child: internship.protections.status == ProtectionsStatus.none
                 ? const Text('Aucun')
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: internship.protections
+                    children: internship.protections.protections
                         .map((e) => Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -404,9 +410,9 @@ class _Requirements extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 32.0),
-          child: internship.uniform.isEmpty
+          child: internship.uniform.status == UniformStatus.none
               ? const Text('Aucun')
-              : Text(internship.uniform),
+              : Text(internship.uniform.uniform),
         ),
       ],
     );
@@ -427,7 +433,7 @@ class _MoreInfoButton extends StatelessWidget {
             onPressed: () => GoRouter.of(context).pushNamed(
                   Screens.student,
                   params: Screens.params(studentId),
-                  queryParams: Screens.queryParams(pageIndex: "1"),
+                  queryParams: Screens.queryParams(pageIndex: '1'),
                 ),
             child: const Text('Plus de détails sur le stage')),
       ),

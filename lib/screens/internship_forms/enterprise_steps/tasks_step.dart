@@ -25,7 +25,7 @@ class TasksStepState extends State<TasksStep> {
   final Map<String, bool> skillsRequired = {
     'Communiquer à l\'écrit': false,
     'Communiquer en anglais': false,
-    'Conduire un chariot (ex. cariste)': false,
+    'Conduire un chariot (élèves CFER)': false,
     'Interagir avec des clients': false,
     'Manipuler de l\'argent': false,
   };
@@ -94,7 +94,7 @@ class TasksStepState extends State<TasksStep> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Précisez les autres attentes : ',
+                      'Préciser les autres attentes : ',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(

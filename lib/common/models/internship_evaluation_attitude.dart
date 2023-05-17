@@ -234,7 +234,7 @@ class Sociability implements AttitudeCategoryEnum {
       case 1:
         return 'Sociable';
       case 2:
-        return 'Établit très peu de contact';
+        return 'Établit très peu de contacts';
       case 3:
         return 'Pas d\'intégration à l\'équipe de travail';
       default:
@@ -412,7 +412,7 @@ class Productivity implements AttitudeCategoryEnum {
       case 0:
         return 'Rendement et rythme de travail excellents';
       case 1:
-        return 'Rendement et rythme de travail bons et contants';
+        return 'Rendement et rythme de travail bons et constants';
       case 2:
         return 'Difficulté à maintenir le rythme de travail';
       case 3:
@@ -474,7 +474,7 @@ class Autonomy implements AttitudeCategoryEnum {
 
 class Cautiousness implements AttitudeCategoryEnum {
   static String get title =>
-      'Respect des règles de santé et de sécurité du travail';
+      'Respect des règles de santé et de sécurité du travail (SST)';
 
   @override
   final int index;

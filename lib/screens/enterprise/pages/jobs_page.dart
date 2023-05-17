@@ -63,12 +63,12 @@ class JobsPageState extends State<JobsPage> {
     );
     if (result == null) return;
 
-    switch (result["eventType"]) {
+    switch (result['eventType']) {
       case SstEventType.pastIncidents:
         enterprises.replaceJob(
           widget.enterprise,
           job.copyWith(
-            pastIncidents: "- ${result["description"]}\n${job.pastIncidents}",
+            pastIncidents: '- ${result['description']}\n${job.pastIncidents}',
           ),
         );
         break;
@@ -77,7 +77,7 @@ class JobsPageState extends State<JobsPage> {
           widget.enterprise,
           job.copyWith(
             dangerousSituations:
-                "- ${result["description"]}\n${job.dangerousSituations}",
+                '- ${result['description']}\n${job.dangerousSituations}',
           ),
         );
         break;

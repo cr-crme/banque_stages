@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '/common/models/enterprise.dart';
+import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/teachers_provider.dart';
 import '/common/widgets/add_job_button.dart';
 import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/scrollable_stepper.dart';
 import 'pages/contact_page.dart';
 import 'pages/informations_page.dart';
 import 'pages/jobs_page.dart';
@@ -18,9 +20,12 @@ class AddEnterpriseScreen extends StatefulWidget {
 }
 
 class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
+  final _scrollController = ScrollController();
+
   final _informationsKey = GlobalKey<InformationsPageState>();
   final _jobsKey = GlobalKey<JobsPageState>();
   final _contactKey = GlobalKey<ContactPageState>();
+
   int _currentStep = 0;
   final List<StepState> _stepStatus = [
     StepState.indexed,
@@ -38,6 +43,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     if (_currentStep == 0) return;
 
     _currentStep -= 1;
+    _scrollController.jumpTo(0);
     setState(() {});
   }
 
@@ -72,6 +78,8 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       if ((await _informationsKey.currentState!.validate()) != null) {
         setState(() {
           _currentStep = 0;
+          _scrollController.jumpTo(0);
+          _scrollController.jumpTo(0);
         });
         return;
       }
@@ -79,12 +87,16 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       if (!_jobsKey.currentState!.validate()) {
         setState(() {
           _currentStep = 1;
+          _scrollController.jumpTo(0);
         });
         return;
       }
       _submit();
     } else {
-      setState(() => _currentStep += 1);
+      setState(() {
+        _currentStep += 1;
+        _scrollController.jumpTo(0);
+      });
     }
   }
 
@@ -99,16 +111,26 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       recrutedBy: teachers.currentTeacherId,
       shareWith: _informationsKey.currentState!.shareWith!,
       jobs: _jobsKey.currentState!.jobs,
-      contactName: _contactKey.currentState!.contactName!,
+      contact: Person(
+        firstName: _contactKey.currentState!.contactFirstName!,
+        lastName: _contactKey.currentState!.contactLastName!,
+        phone: PhoneNumber.fromString(_contactKey.currentState!.contactPhone!),
+        email: _contactKey.currentState!.contactEmail!,
+      ),
       contactFunction: _contactKey.currentState!.contactFunction!,
-      contactPhone:
-          PhoneNumber.fromString(_contactKey.currentState!.contactPhone!),
-      contactEmail: _contactKey.currentState!.contactEmail!,
       address: _informationsKey.currentState!.addressController.address!,
     );
 
     enterprises.add(enterprise);
     if (mounted) Navigator.pop(context);
+  }
+
+  void _cancel() async {
+    final result = await showDialog(
+        context: context, builder: (context) => const ConfirmPopDialog());
+    if (!mounted || result == null || !result) return;
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -119,12 +141,16 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
         appBar: AppBar(
           title: const Text('Nouvelle entreprise'),
         ),
-        body: Stepper(
+        body: ScrollableStepper(
           type: StepperType.horizontal,
+          scrollController: _scrollController,
           currentStep: _currentStep,
           onStepContinue: _nextStep,
-          onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
-          onStepCancel: () => Navigator.pop(context),
+          onStepTapped: (int tapped) => setState(() {
+            _scrollController.jumpTo(0);
+            _currentStep = tapped;
+          }),
+          onStepCancel: _cancel,
           steps: [
             Step(
               state: _stepStatus[0],

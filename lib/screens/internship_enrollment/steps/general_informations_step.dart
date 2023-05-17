@@ -45,42 +45,41 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _GeneralInformations(
-              enterprise: enterprise,
-              enterpriseIsFixed: enterpriseIsFixed,
-              onSelectEnterprise: (e) => setState(() => enterprise = e),
-              student: student,
-              studentIsFixed: studentIsFixed,
-              onSelectStudent: (s) => setState(() => student = s),
+    return Form(
+      key: formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _GeneralInformations(
+            enterprise: enterprise,
+            enterpriseIsFixed: enterpriseIsFixed,
+            onSelectEnterprise: (e) => setState(() => enterprise = e),
+            student: student,
+            studentIsFixed: studentIsFixed,
+            onSelectStudent: (s) => setState(() => student = s),
+          ),
+          _MainJob(
+            enterprise: enterprise,
+            onSaved: (job) => setState(() => primaryJob = job),
+          ),
+          if (student != null && student!.program == Program.fpt)
+            _ExtraSpecialization(
+              extraSpecializations: extraSpecializations,
+              onAddSpecialization: () =>
+                  setState(() => extraSpecializations.add(null)),
+              onSetSpecialization: (specialization, i) =>
+                  setState(() => extraSpecializations[i] = specialization),
+              onDeleteSpecialization: (i) =>
+                  setState(() => extraSpecializations.removeAt(i)),
             ),
-            _MainJob(
-              enterprise: enterprise,
-              onSaved: (job) => setState(() => primaryJob = job),
-            ),
-            if (student != null && student!.program == Program.fpt)
-              _ExtraSpecialization(
-                extraSpecializations: extraSpecializations,
-                onAddSpecialization: () =>
-                    setState(() => extraSpecializations.add(null)),
-                onSetSpecialization: (specialization, i) =>
-                    setState(() => extraSpecializations[i] = specialization),
-                onDeleteSpecialization: (i) =>
-                    setState(() => extraSpecializations.removeAt(i)),
-              ),
-            _SupervisonInformation(
-              onSavedFirstName: (name) => supervisorFirstName = name!,
-              onSavedLastName: (name) => supervisorLastName = name!,
-              onSavedPhone: (phone) => supervisorPhone = phone!,
-              onSavedEmail: (email) => supervisorEmail = email!,
-            ),
-          ],
-        ),
+          _SupervisonInformation(
+            enterprise: enterprise,
+            onSavedFirstName: (name) => supervisorFirstName = name!,
+            onSavedLastName: (name) => supervisorLastName = name!,
+            onSavedPhone: (phone) => supervisorPhone = phone!,
+            onSavedEmail: (email) => supervisorEmail = email!,
+          ),
+        ],
       ),
     );
   }
@@ -116,7 +115,6 @@ class _GeneralInformations extends StatelessWidget {
       context, EnterprisesProvider enterprises) {
     final List<Enterprise> out = [];
     for (final enterprise in enterprises) {
-      debugPrint(enterprise.name);
       if (enterprise.availableJobs(context).isNotEmpty) out.add(enterprise);
     }
 
@@ -250,13 +248,9 @@ class _ExtraSpecialization extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 16.0),
-          child: Text(
-            'Métiers supplémentaires',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
+        const SubTitle('Métiers supplémentaires', left: 0),
+        Text('(ajout de compétences additionnelles)',
+            style: Theme.of(context).textTheme.bodyLarge),
         if (extraSpecializations.isNotEmpty)
           ...extraSpecializations
               .asMap()
@@ -264,7 +258,7 @@ class _ExtraSpecialization extends StatelessWidget {
               .map<Widget>((i) => _extraJobTileBuilder(context, i))
               .toList(),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0, left: 12),
+          padding: const EdgeInsets.only(top: 12.0, left: 12),
           child: AddJobButton(
             onPressed: onAddSpecialization,
             style: Theme.of(context).textButtonTheme.style!.copyWith(
@@ -279,18 +273,43 @@ class _ExtraSpecialization extends StatelessWidget {
   }
 }
 
-class _SupervisonInformation extends StatelessWidget {
+class _SupervisonInformation extends StatefulWidget {
   const _SupervisonInformation({
+    required this.enterprise,
     required this.onSavedFirstName,
     required this.onSavedLastName,
     required this.onSavedPhone,
     required this.onSavedEmail,
   });
 
+  final Enterprise? enterprise;
   final Function(String?) onSavedFirstName;
   final Function(String?) onSavedLastName;
   final Function(String?) onSavedPhone;
   final Function(String?) onSavedEmail;
+
+  @override
+  State<_SupervisonInformation> createState() => _SupervisonInformationState();
+}
+
+class _SupervisonInformationState extends State<_SupervisonInformation> {
+  bool _useContactInfo = false;
+
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+
+  void _toggleUseContactInfo() {
+    _useContactInfo = !_useContactInfo;
+    if (_useContactInfo) {
+      _firstNameController.text = widget.enterprise?.contact.firstName ?? '';
+      _lastNameController.text = widget.enterprise?.contact.lastName ?? '';
+      _phoneController.text = widget.enterprise?.phone.toString() ?? '';
+      _emailController.text = widget.enterprise?.contact.email ?? '';
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -298,38 +317,59 @@ class _SupervisonInformation extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Superviseur en milieu de travail', left: 0),
-        const Text('(Responsable du stagiaire)'),
+        const Text('(Responsable en milieu de stage)'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('Identique au contact',
+                style: Theme.of(context).textTheme.titleMedium),
+            Switch(
+              onChanged: widget.enterprise == null
+                  ? null
+                  : (newValue) => _toggleUseContactInfo(),
+              value: _useContactInfo,
+            ),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
+                controller: _firstNameController,
                 decoration: const InputDecoration(labelText: '* Prénom'),
                 validator: (text) =>
                     text!.isEmpty ? 'Ajouter un prénom.' : null,
-                onSaved: onSavedFirstName,
+                onSaved: widget.onSavedFirstName,
+                enabled: !_useContactInfo,
               ),
               TextFormField(
+                controller: _lastNameController,
                 decoration:
                     const InputDecoration(labelText: '* Nom de famille'),
                 validator: (text) =>
                     text!.isEmpty ? 'Ajouter un nom de famille.' : null,
-                onSaved: onSavedLastName,
+                onSaved: widget.onSavedLastName,
+                enabled: !_useContactInfo,
               ),
               PhoneListTile(
-                onSaved: onSavedPhone,
+                controller: _phoneController,
+                onSaved: widget.onSavedPhone,
                 isMandatory: true,
-                enabled: true,
+                enabled: !_useContactInfo,
               ),
               TextFormField(
+                controller: _emailController,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.mail),
                   labelText: '* Courriel',
                 ),
                 validator: FormService.emailValidator,
-                onSaved: onSavedEmail,
+                onSaved: widget.onSavedEmail,
                 keyboardType: TextInputType.emailAddress,
+                enabled: !_useContactInfo,
               ),
             ],
           ),

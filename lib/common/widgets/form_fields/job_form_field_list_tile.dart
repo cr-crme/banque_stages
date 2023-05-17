@@ -25,17 +25,13 @@ class JobFormFieldListTile extends StatefulWidget {
 }
 
 class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
-  ActivitySector? _activitySector;
+  final _sectorTextController = TextEditingController();
   Specialization? _specialization;
   int _positionOffered = 0;
-  static const String _invalidActivitySector = 'invalid_activitySector';
   static const String _invalidSpecialization = 'invalid_specialization';
   static const String _invalidNumber = 'invalid_number';
 
   String? _validator() {
-    if (_activitySector == null) {
-      return _invalidActivitySector;
-    }
     if (_specialization == null) {
       return _invalidSpecialization;
     }
@@ -45,21 +41,11 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
     return null;
   }
 
-  List<ActivitySector> get _availableSectors {
-    if (widget.specializations == null) {
-      return ActivitySectorsService.sectors.toList();
-    }
-
-    final List<ActivitySector> out = [];
-    for (final specialization in widget.specializations!.keys) {
-      out.add(specialization.sector);
-    }
-    return out;
-  }
-
   List<Specialization> get _availableSpecialization {
     if (widget.specializations == null) {
-      return _activitySector!.specializations.toList();
+      final out = ActivitySectorsService.allSpecializations;
+      out.sort((a, b) => a.name.compareTo(b.name));
+      return out;
     }
 
     return widget.specializations!.keys.toList();
@@ -84,43 +70,6 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Autocomplete<ActivitySector>(
-              displayStringForOption: (sector) => sector.idWithName,
-              optionsBuilder: (textEditingValue) => _availableSectors.where(
-                  (sector) => sector.idWithName
-                      .toLowerCase()
-                      .contains(textEditingValue.text.toLowerCase())),
-              optionsViewBuilder: (context, onSelected, options) =>
-                  OptionsBuilderForAutocomplete(
-                      onSelected: onSelected,
-                      options: options,
-                      optionToString: (ActivitySector option) => option.name),
-              onSelected: (sector) => setState(() {
-                FocusManager.instance.primaryFocus?.unfocus();
-                _activitySector = sector;
-                _specialization = null;
-              }),
-              fieldViewBuilder: (_, controller, focusNode, onSubmitted) =>
-                  TextField(
-                controller: controller,
-                focusNode: focusNode,
-                onSubmitted: (_) => onSubmitted(),
-                onChanged: (_) => setState(() {
-                  _activitySector = null;
-                  _specialization = null;
-                }),
-                decoration: InputDecoration(
-                    labelText: '* Secteur d\'activités',
-                    errorText: state.errorText == _invalidActivitySector
-                        ? 'Sélectionner un secteur d\'activités.'
-                        : null,
-                    hintText: 'Saisir nom ou n° de secteur',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () => controller.text = '',
-                    )),
-              ),
-            ),
             Autocomplete<Specialization>(
               displayStringForOption: (specialization) {
                 final available = widget.specializations == null
@@ -129,13 +78,11 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                 return '${specialization.idWithName}'
                     '${available == null ? '' : '\n($available stage${available > 1 ? 's' : ''} disponible${available > 1 ? 's' : ''})'}';
               },
-              optionsBuilder: (textEditingValue) => _activitySector != null
-                  ? _availableSpecialization
-                      .where((s) => s.idWithName
-                          .toLowerCase()
-                          .contains(textEditingValue.text.toLowerCase()))
-                      .toList()
-                  : [],
+              optionsBuilder: (textEditingValue) => _availableSpecialization
+                  .where((s) => s.idWithName
+                      .toLowerCase()
+                      .contains(textEditingValue.text.toLowerCase()))
+                  .toList(),
               optionsViewBuilder: (context, onSelected, options) =>
                   OptionsBuilderForAutocomplete(
                 onSelected: onSelected,
@@ -145,14 +92,20 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
               onSelected: (specilization) {
                 FocusManager.instance.primaryFocus?.unfocus();
                 _specialization = specilization;
+                _sectorTextController.text = _specialization!.sector.idWithName;
                 setState(() {});
               },
               fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
                 if (_specialization == null) {
                   controller.text = '';
                 }
+                if (_availableSpecialization.length == 1) {
+                  _specialization = _availableSpecialization[0];
+                  controller.text = _specialization!.idWithName;
+                  _sectorTextController.text =
+                      _specialization!.sector.idWithName;
+                }
                 return TextField(
-                  enabled: _activitySector != null,
                   controller: controller,
                   focusNode: focusNode,
                   onSubmitted: (_) => onSubmitted(),
@@ -164,11 +117,20 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                       hintText: 'Saisir nom ou n° de métier',
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
-                        onPressed: () => controller.text = '',
+                        onPressed: () {
+                          controller.text = '';
+                          _sectorTextController.text = '';
+                        },
                       )),
                 );
               },
             ),
+            TextField(
+                controller: _sectorTextController,
+                decoration: const InputDecoration(
+                  labelText: '* Secteur d\'activités',
+                  enabled: false,
+                )),
             if (widget.askNumberPositionsOffered)
               Row(
                 children: [

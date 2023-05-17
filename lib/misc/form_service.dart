@@ -4,7 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '/common/models/phone_number.dart';
 
 abstract class FormService {
-  static bool validateForm(GlobalKey<FormState> formKey, {bool save = false}) {
+  static bool validateForm(GlobalKey<FormState> formKey,
+      {bool save = false, bool showSnackbarError = true}) {
     if (formKey.currentContext == null || formKey.currentState == null) {
       return false;
     }
@@ -12,11 +13,13 @@ abstract class FormService {
     ScaffoldMessenger.of(formKey.currentContext!).clearSnackBars();
 
     if (!formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(formKey.currentContext!).showSnackBar(
-        const SnackBar(
-          content: Text('Remplir tous les champs avec un *.'),
-        ),
-      );
+      if (showSnackbarError) {
+        ScaffoldMessenger.of(formKey.currentContext!).showSnackBar(
+          const SnackBar(
+            content: Text('Remplir tous les champs avec un *.'),
+          ),
+        );
+      }
       return false;
     }
 

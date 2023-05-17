@@ -1,10 +1,12 @@
-import 'package:crcrme_banque_stages/screens/job_sst_form/steps/danger_step.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/common/models/enterprise.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/common/widgets/dialogs/confirm_pop_dialog.dart';
+import '/common/widgets/scrollable_stepper.dart';
 import '/misc/form_service.dart';
+import '/screens/job_sst_form/steps/danger_step.dart';
 import 'steps/general_informations_step.dart';
 import 'steps/questions_step.dart';
 
@@ -23,6 +25,8 @@ class JobSstFormScreen extends StatefulWidget {
 }
 
 class _JobSstFormScreenState extends State<JobSstFormScreen> {
+  final _scrollController = ScrollController();
+
   final _questionsKey = GlobalKey<QuestionsStepState>();
   final _dangerKey = GlobalKey<DangerStepState>();
   int _currentStep = 0;
@@ -41,7 +45,10 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     if (_currentStep == 2) {
       _submit();
     } else {
-      setState(() => _currentStep += 1);
+      setState(() {
+        _currentStep += 1;
+        _scrollController.jumpTo(0);
+      });
     }
   }
 
@@ -64,19 +71,31 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     Navigator.pop(context);
   }
 
+  void _cancel() async {
+    final result = await showDialog(
+        context: context, builder: (context) => const ConfirmPopDialog());
+    if (!mounted || result == null || !result) return;
+
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SST dans l\'entreprise'),
+        title: const Text('La SST en stage'),
       ),
       body: Selector<EnterprisesProvider, Enterprise>(
-        builder: (context, enterprise, _) => Stepper(
+        builder: (context, enterprise, _) => ScrollableStepper(
+          scrollController: _scrollController,
           type: StepperType.horizontal,
           currentStep: _currentStep,
           onStepContinue: _nextStep,
-          onStepTapped: (int tapped) => setState(() => _currentStep = tapped),
-          onStepCancel: () => Navigator.pop(context),
+          onStepTapped: (int tapped) => setState(() {
+            _currentStep = tapped;
+            _scrollController.jumpTo(0);
+          }),
+          onStepCancel: _cancel,
           steps: [
             Step(
               isActive: _currentStep == 0,

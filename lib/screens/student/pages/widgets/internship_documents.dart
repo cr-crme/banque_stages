@@ -97,12 +97,12 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                   pdfGeneratorCallback: GenerateDocuments.generateInsurancePdf,
                 ),
                 _buildEvaluations(
-                    title: 'Formulaire d\'évaluation des compétences',
+                    title: 'Évaluation des compétences',
                     evaluations: widget.internship.skillEvaluations,
                     pdfGeneratorCallback:
                         GenerateDocuments.generateSkillEvaluationPdf),
                 _buildEvaluations(
-                    title: 'Formulaire d\'évaluation de l\'attitude',
+                    title: 'Évaluation des attitudes et comportements',
                     evaluations: widget.internship.attitudeEvaluations,
                     pdfGeneratorCallback:
                         GenerateDocuments.generateAttitudeEvaluationPdf),

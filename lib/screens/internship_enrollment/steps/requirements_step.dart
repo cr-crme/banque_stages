@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '/common/models/protections.dart';
+import '/common/models/uniform.dart';
 import '/common/widgets/sub_title.dart';
 
 class RequirementsStep extends StatefulWidget {
@@ -22,7 +24,7 @@ class RequirementsStepState extends State<RequirementsStep> {
   final formKey = GlobalKey<FormState>();
 
   bool validateProtectionsCheckboxes() {
-    if (!_protectionsRequired) return true;
+    if (protectionsStatus == ProtectionsStatus.none) return true;
 
     for (final protection in _protections.keys) {
       if (_protections[protection]!) return true;
@@ -33,7 +35,7 @@ class RequirementsStepState extends State<RequirementsStep> {
     return false;
   }
 
-  bool _protectionsRequired = false;
+  ProtectionsStatus protectionsStatus = ProtectionsStatus.none;
   final Map<String, bool> _protections =
       Map.fromIterable(RequirementsStep.protectionsList, value: (e) => false);
 
@@ -42,23 +44,23 @@ class RequirementsStepState extends State<RequirementsStep> {
   String get otherProtections =>
       _otherProtections ? _otherProtectionsText ?? '' : '';
 
-  List<String> get protections => _protectionsRequired
-      ? [
+  List<String> get protections => protectionsStatus == ProtectionsStatus.none
+      ? []
+      : [
           ..._protections.entries
               .where((e) => e.value)
               .map((e) => e.key)
               .toList(),
-          if (_protectionsRequired &&
-              _otherProtectionsText != null &&
+          if (_otherProtectionsText != null &&
               _otherProtectionsText!.isNotEmpty)
             _otherProtectionsText ?? ''
-        ]
-      : [];
+        ];
 
-  bool _uniformRequired = false;
+  UniformStatus uniformStatus = UniformStatus.none;
   String? _uniform;
 
-  String get uniform => _uniformRequired ? _uniform ?? '' : '';
+  String get uniform =>
+      uniformStatus == UniformStatus.none ? '' : _uniform ?? '';
 
   @override
   Widget build(BuildContext context) {
@@ -79,33 +81,42 @@ class RequirementsStepState extends State<RequirementsStep> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 12.0),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        width: 125,
-                        child: RadioListTile(
-                          value: true,
-                          groupValue: _protectionsRequired,
-                          onChanged: (bool? newValue) =>
-                              setState(() => _protectionsRequired = newValue!),
-                          title: const Text('Oui'),
-                        ),
+                      RadioListTile<ProtectionsStatus>(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        value: ProtectionsStatus.suppliedByEnterprise,
+                        groupValue: protectionsStatus,
+                        onChanged: (newValue) =>
+                            setState(() => protectionsStatus = newValue!),
+                        title:
+                            Text(ProtectionsStatus.suppliedByEnterprise.name),
                       ),
-                      SizedBox(
-                        width: 125,
-                        child: RadioListTile(
-                          value: false,
-                          groupValue: _protectionsRequired,
-                          onChanged: (bool? newValue) =>
-                              setState(() => _protectionsRequired = newValue!),
-                          title: const Text('Non'),
-                        ),
+                      RadioListTile<ProtectionsStatus>(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        value: ProtectionsStatus.suppliedBySchool,
+                        groupValue: protectionsStatus,
+                        onChanged: (newValue) =>
+                            setState(() => protectionsStatus = newValue!),
+                        title: Text(ProtectionsStatus.suppliedBySchool.name),
+                      ),
+                      RadioListTile<ProtectionsStatus>(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        value: ProtectionsStatus.none,
+                        groupValue: protectionsStatus,
+                        onChanged: (newValue) =>
+                            setState(() => protectionsStatus = newValue!),
+                        title: Text(ProtectionsStatus.none.name),
                       ),
                     ],
                   ),
                 ),
                 Visibility(
-                  visible: _protectionsRequired,
+                  visible: protectionsStatus != ProtectionsStatus.none,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -150,7 +161,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '* Précisez l\'équipement supplémentaire requis : ',
+                                '* Préciser l\'équipement supplémentaire requis : ',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               TextFormField(
@@ -179,40 +190,47 @@ class RequirementsStepState extends State<RequirementsStep> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 12.0),
-                  child: Row(
+                  child: Column(
                     children: [
-                      SizedBox(
-                        width: 125,
-                        child: RadioListTile(
-                          value: true,
-                          groupValue: _uniformRequired,
-                          onChanged: (bool? newValue) =>
-                              setState(() => _uniformRequired = newValue!),
-                          title: const Text('Oui'),
-                        ),
+                      RadioListTile<UniformStatus>(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        value: UniformStatus.suppliedByEnterprise,
+                        groupValue: uniformStatus,
+                        onChanged: (newValue) =>
+                            setState(() => uniformStatus = newValue!),
+                        title: Text(UniformStatus.suppliedByEnterprise.name),
                       ),
-                      SizedBox(
-                        width: 125,
-                        child: RadioListTile(
-                          value: false,
-                          groupValue: _uniformRequired,
-                          onChanged: (bool? newValue) =>
-                              setState(() => _uniformRequired = newValue!),
-                          title: const Text('Non'),
-                        ),
+                      RadioListTile<UniformStatus>(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        value: UniformStatus.suppliedByStudent,
+                        groupValue: uniformStatus,
+                        onChanged: (newValue) =>
+                            setState(() => uniformStatus = newValue!),
+                        title: Text(UniformStatus.suppliedByStudent.name),
+                      ),
+                      RadioListTile<UniformStatus>(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        value: UniformStatus.none,
+                        groupValue: uniformStatus,
+                        onChanged: (newValue) =>
+                            setState(() => uniformStatus = newValue!),
+                        title: Text(UniformStatus.none.name),
                       ),
                     ],
                   ),
                 ),
                 Visibility(
-                  visible: _uniformRequired,
+                  visible: uniformStatus != UniformStatus.none,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '* Précisez le type d\'uniforme : ',
+                          '* Préciser le type d\'uniforme : ',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(
@@ -220,9 +238,11 @@ class RequirementsStepState extends State<RequirementsStep> {
                           onChanged: (text) => _uniform = text,
                           minLines: 2,
                           maxLines: null,
-                          validator: (text) => _uniformRequired && text!.isEmpty
-                              ? 'Préciser l\'uniforme.'
-                              : null,
+                          validator: (text) =>
+                              uniformStatus != UniformStatus.none &&
+                                      text!.isEmpty
+                                  ? 'Préciser l\'uniforme.'
+                                  : null,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                           ),

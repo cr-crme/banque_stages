@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '/common/models/student.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
 import '/common/providers/students_provider.dart';
+import '/common/widgets/dialogs/confirm_pop_dialog.dart';
 import '/common/widgets/sub_title.dart';
 import '/misc/job_data_file_service.dart';
 import '/router.dart';
@@ -25,43 +27,64 @@ class SkillEvaluationMainScreen extends StatefulWidget {
 class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   late final _formController =
       SkillEvaluationFormController(internshipId: widget.internshipId);
+  void _cancel() async {
+    if (!widget.editMode) {
+      Navigator.of(context).pop();
+      return;
+    }
+
+    final result = await showDialog(
+        context: context, builder: (context) => const ConfirmPopDialog());
+    if (!mounted || result == null || !result) return;
+
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
     final internship = InternshipsProvider.of(context)[widget.internshipId];
-    final allStudents = StudentsProvider.of(context);
-    if (!allStudents.hasId(internship.studentId)) return Container();
-    final student = allStudents[internship.studentId];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-            'Évaluation de ${student.fullName}\nC1. Compétences spécifiques'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _EvaluationDate(
-              formController: _formController,
-              editMode: widget.editMode,
+    return FutureBuilder<Student>(
+        future: StudentsProvider.fromLimitedId(context,
+            studentId: internship.studentId),
+        builder: (context, snapshot) {
+          final student = snapshot.hasData ? snapshot.data! : null;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                  '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\nC1. Compétences spécifiques'),
+              leading: IconButton(
+                  onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
             ),
-            _PersonAtMeeting(
-              formController: _formController,
-              editMode: widget.editMode,
-            ),
-            _JobToEvaluate(
-              formController: _formController,
-              editMode: widget.editMode,
-            ),
-            _StartEvaluation(
-              formController: _formController,
-              editMode: widget.editMode,
-            ),
-          ],
-        ),
-      ),
-    );
+            body: student == null
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                    child: Builder(builder: (context) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _EvaluationDate(
+                            formController: _formController,
+                            editMode: widget.editMode,
+                          ),
+                          _PersonAtMeeting(
+                            formController: _formController,
+                            editMode: widget.editMode,
+                          ),
+                          _JobToEvaluate(
+                            formController: _formController,
+                            editMode: widget.editMode,
+                          ),
+                          _StartEvaluation(
+                            formController: _formController,
+                            editMode: widget.editMode,
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+          );
+        });
   }
 }
 
@@ -186,7 +209,7 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Précisez : ',
+                        'Préciser : ',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       TextFormField(
@@ -321,7 +344,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
         ..._extraSpecialization.asMap().keys.map(
               (i) => _buildJobTile(
                 title:
-                    'Métier secondaire${_extraSpecialization.length > 1 ? ' (${i + 1})' : ''}',
+                    'Métier supplémentaire${_extraSpecialization.length > 1 ? ' (${i + 1})' : ''}',
                 specialization: _extraSpecialization[i],
               ),
             ),

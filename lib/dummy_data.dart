@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/address.dart';
@@ -10,10 +11,12 @@ import '/common/models/job.dart';
 import '/common/models/job_list.dart';
 import '/common/models/person.dart';
 import '/common/models/phone_number.dart';
+import '/common/models/protections.dart';
 import '/common/models/schedule.dart';
 import '/common/models/school.dart';
 import '/common/models/student.dart';
 import '/common/models/teacher.dart';
+import '/common/models/uniform.dart';
 import '/common/models/visiting_priority.dart';
 import '/common/providers/enterprises_provider.dart';
 import '/common/providers/internships_provider.dart';
@@ -63,6 +66,7 @@ Future<void> addDummySchools(SchoolsProvider schools) async {
 Future<void> addDummyTeachers(
     TeachersProvider teachers, SchoolsProvider schools) async {
   teachers.add(Teacher(
+      id: '42',
       firstName: 'Roméo',
       lastName: 'Montaigu',
       schoolId: schools[0].id,
@@ -110,10 +114,12 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
-      contactName: 'Marc Arcand',
+      contact: Person(
+          firstName: 'Marc',
+          lastName: 'Arcand',
+          phone: PhoneNumber.fromString('514 999 6655'),
+          email: 'm.arcand@email.com'),
       contactFunction: 'Directeur',
-      contactPhone: PhoneNumber.fromString('514 999 6655'),
-      contactEmail: 'm.arcand@email.com',
       address: Address(
           civicNumber: 1853,
           street: 'Chem. Rockland',
@@ -145,10 +151,13 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[1].id,
       shareWith: 'Personne',
       jobs: jobs,
-      contactName: 'Caroline Mercier',
+      contact: Person(
+        firstName: 'Caroline',
+        lastName: 'Mercier',
+        phone: PhoneNumber.fromString('514 123 4567 poste 123'),
+        email: 'c.mercier@email.com',
+      ),
       contactFunction: 'Assistante-gérante',
-      contactPhone: PhoneNumber.fromString('514 123 4567 poste 123'),
-      contactEmail: 'c.mercier@email.com',
       address: Address(
           civicNumber: 1665,
           street: 'Poncet',
@@ -204,10 +213,13 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
-      contactName: 'Denis Rondeau',
+      contact: Person(
+        firstName: 'Denis',
+        lastName: 'Rondeau',
+        phone: PhoneNumber.fromString('438 987 6543'),
+        email: 'd.rondeau@email.com',
+      ),
       contactFunction: 'Propriétaire',
-      contactPhone: PhoneNumber.fromString('438 987 6543'),
-      contactEmail: 'd.rondeau@email.com',
       address: Address(
           civicNumber: 8490,
           street: 'Rue Saint-Dominique',
@@ -238,10 +250,13 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[2].id,
       shareWith: 'Enseignants FPT de l\'école',
       jobs: jobs,
-      contactName: 'Claudio Brodeur',
+      contact: Person(
+        firstName: 'Claudio',
+        lastName: 'Brodeur',
+        phone: PhoneNumber.fromString('514 235 6789'),
+        email: 'c.brodeur@email.com',
+      ),
       contactFunction: 'Propriétaire',
-      contactPhone: PhoneNumber.fromString('514 235 6789'),
-      contactEmail: 'c.brodeur@email.com',
       address: Address(
           civicNumber: 10142,
           street: 'Boul. Saint-Laurent',
@@ -274,10 +289,13 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[0].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
-      contactName: 'Brigitte Samson',
+      contact: Person(
+        firstName: 'Brigitte',
+        lastName: 'Samson',
+        phone: PhoneNumber.fromString('438 888 2222'),
+        email: 'b.samson@email.com',
+      ),
       contactFunction: 'Gérante',
-      contactPhone: PhoneNumber.fromString('438 888 2222'),
-      contactEmail: 'b.samson@email.com',
       address: Address(
           civicNumber: 8921,
           street: 'Rue Lajeunesse',
@@ -310,10 +328,13 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[0].id,
       shareWith: 'Enseignants FPT de l\'école',
       jobs: jobs,
-      contactName: 'Gabrielle Fortin',
+      contact: Person(
+        firstName: 'Gabrielle',
+        lastName: 'Fortin',
+        phone: PhoneNumber.fromString('514 111 2222'),
+        email: 'g.fortin@email.com',
+      ),
       contactFunction: 'Gérante',
-      contactPhone: PhoneNumber.fromString('514 111 2222'),
-      contactEmail: 'g.fortin@email.com',
       address: Address(
           civicNumber: 1415,
           street: 'Rue Jarry E',
@@ -346,10 +367,13 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[3].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
-      contactName: 'Jessica Marcotte',
+      contact: Person(
+        firstName: 'Jessica',
+        lastName: 'Marcotte',
+        phone: PhoneNumber.fromString('514 111 2222'),
+        email: 'g.fortin@email.com',
+      ),
       contactFunction: 'Pharmacienne',
-      contactPhone: PhoneNumber.fromString('514 111 2222'),
-      contactEmail: 'g.fortin@email.com',
       address: Address(
           civicNumber: 3611,
           street: 'Rue Jarry E',
@@ -382,10 +406,13 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[3].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
-      contactName: 'Carlos Rodriguez',
+      contact: Person(
+        firstName: 'Carlos',
+        lastName: 'Rodriguez',
+        phone: PhoneNumber.fromString('514 555 3333'),
+        email: 'c.rodriguez@email.com',
+      ),
       contactFunction: 'Gérant',
-      contactPhone: PhoneNumber.fromString('514 555 3333'),
-      contactEmail: 'c.rodriguez@email.com',
       address: Address(
           civicNumber: 775,
           street: 'Rue Chabanel O',
@@ -413,10 +440,13 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[0].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
-      contactName: 'France Boissonneau',
+      contact: Person(
+        firstName: 'France',
+        lastName: 'Boissonneau',
+        phone: PhoneNumber.fromString('514 879 8654 poste 1112'),
+        email: 'f.boissonneau@email.com',
+      ),
       contactFunction: 'Directrice des Ressources Humaines',
-      contactPhone: PhoneNumber.fromString('514 879 8654 poste 1112'),
-      contactEmail: 'f.boissonneau@email.com',
       address: Address(
           civicNumber: 10345,
           street: 'Ave Christophe-Colomb',
@@ -486,10 +516,13 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
-      contactName: 'Joanie Lemieux',
+      contact: Person(
+        firstName: 'Joanie',
+        lastName: 'Lemieux',
+        phone: PhoneNumber.fromString('438 789 6543'),
+        email: 'j.lemieux@email.com',
+      ),
       contactFunction: 'Propriétaire',
-      contactPhone: PhoneNumber.fromString('438 789 6543'),
-      contactEmail: 'j.lemieux@email.com',
       address: Address(
           civicNumber: 8629,
           street: 'Rue de Gaspé',
@@ -555,10 +588,13 @@ Future<void> addDummyEnterprises(
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
-      contactName: 'Gaëtan Munger',
+      contact: Person(
+        firstName: 'Gaëtan',
+        lastName: 'Munger',
+        phone: PhoneNumber.fromString('514 987 6543'),
+        email: 'g.munger@email.com',
+      ),
       contactFunction: 'Gérant',
-      contactPhone: PhoneNumber.fromString('514 987 6543'),
-      contactEmail: 'g.munger@email.com',
       address: Address(
           civicNumber: 70,
           street: 'Rue Chabanel Ouest',
@@ -585,7 +621,7 @@ Future<void> addDummyStudents(
       lastName: 'Masson',
       dateBirth: DateTime(2005, 5, 20),
       email: 'c.masson@email.com',
-      teacherId: teachers[0].id,
+      teacherId: teachers.currentTeacherId,
       program: Program.fpt,
       group: '550',
       address: await Address.fromAddress(
@@ -668,7 +704,7 @@ Future<void> addDummyStudents(
       lastName: 'Gingras',
       dateBirth: DateTime.now(),
       email: 's.gingras@email.com',
-      teacherId: teachers[0].id,
+      teacherId: '42', // This is a Roméo Montaigu's student
       program: Program.fms,
       group: '789',
       contact: Person(
@@ -689,7 +725,7 @@ Future<void> addDummyStudents(
       lastName: 'Vargas',
       dateBirth: DateTime.now(),
       email: 'd.vargas@email.com',
-      teacherId: teachers.currentTeacherId,
+      teacherId: '42', // This is a Roméo Montaigu's student
       program: Program.fpt,
       group: '789',
       contact: Person(
@@ -789,6 +825,33 @@ Future<void> addDummyStudents(
   );
 
   await _waitForDatabaseUpdate(students, 10);
+
+  // Simulate that some of the students were actually added by someone else
+  {
+    final student =
+        students.firstWhere((student) => student.fullName == 'Diego Vargas');
+    FirebaseDatabase.instance
+        .ref('/students-ids/42/')
+        .child(student.id)
+        .set(true);
+    FirebaseDatabase.instance
+        .ref(students.pathToAvailableDataIds)
+        .child(student.id)
+        .remove();
+  }
+  {
+    final student =
+        students.firstWhere((student) => student.fullName == 'Simon Gingras');
+    FirebaseDatabase.instance
+        .ref('/students-ids/42/')
+        .child(student.id)
+        .set(true);
+    FirebaseDatabase.instance
+        .ref(students.pathToAvailableDataIds)
+        .child(student.id)
+        .remove();
+  }
+  await _waitForDatabaseUpdate(students, 8);
 }
 
 Future<void> addDummyInterships(
@@ -852,12 +915,18 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [
-      'Chaussures de sécurité',
-      'Lunettes de sécurités',
-      'Masque',
-    ],
-    uniform: 'Il faut s\'habiller de façon à ce que tous soient identiques',
+    protections: Protections(
+      protections: [
+        'Chaussures de sécurité',
+        'Lunettes de sécurités',
+        'Masque',
+      ],
+      status: ProtectionsStatus.suppliedByEnterprise,
+    ),
+    uniform: Uniform(
+        status: UniformStatus.suppliedByEnterprise,
+        uniform:
+            'Il faut s\'habiller de façon à ce que tous soient identiques'),
   ));
 
   period = DateTimeRange(
@@ -909,8 +978,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
-    uniform: '',
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -955,8 +1024,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
-    uniform: '',
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -996,8 +1065,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
-    uniform: '',
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -1006,7 +1075,7 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
-    teacherId: teachers.firstWhere((e) => e.fullName == 'Benvolio Montaigu').id,
+    teacherId: '42', // This is a Roméo Montaigu's student
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
     extraSpecializationsId: [],
@@ -1037,8 +1106,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
-    uniform: '',
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -1047,7 +1116,8 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
-    teacherId: teachers.currentTeacherId,
+    teacherId: '42', // Transfered to Roméo Montaigu
+    isTransfering: false,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
     extraSpecializationsId: [],
@@ -1088,8 +1158,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
-    uniform: '',
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -1099,9 +1169,10 @@ Future<void> addDummyInterships(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
     teacherId: teachers.currentTeacherId,
+    previousTeacherId: '42', // Was transfered from Roméo Montaigu
     isTransfering: true,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
-    jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
@@ -1140,8 +1211,8 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: [],
-    uniform: '',
+    protections: Protections(protections: [], status: ProtectionsStatus.none),
+    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   await _waitForDatabaseUpdate(internships, 7);
@@ -1149,7 +1220,7 @@ Future<void> addDummyInterships(
 
 Future<void> _waitForDatabaseUpdate(
     FirebaseListProvided list, int expectedLength) async {
-// Wait for the database to add all the students
+  // Wait for the database to add all the students
   while (list.length < expectedLength) {
     await Future.delayed(const Duration(milliseconds: 250));
   }

@@ -4,7 +4,7 @@ class QuestionWithText extends StatelessWidget {
   const QuestionWithText({
     this.visible = true,
     required this.question,
-    this.initialValue = "",
+    this.initialValue = '',
     this.onSaved,
     this.validator,
     super.key,

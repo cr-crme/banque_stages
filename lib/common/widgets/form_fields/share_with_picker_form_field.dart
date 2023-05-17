@@ -51,13 +51,17 @@ class ShareWithPickerFormField extends FormField<String> {
           focusNode: focusNode,
           onSubmitted: (_) => onSubmitted(),
           onChanged: (text) {
+            if (!shareWithSuggestions.contains(text)) {
+              controller.text = '';
+              return;
+            }
             state.didChange(shareWithSuggestions
                 .firstWhereOrNull((suggestion) => suggestion == text));
           },
           decoration: InputDecoration(
-            labelText: '* Partager l\'entreprise avec',
-            errorText: state.errorText,
-          ),
+              labelText: '* Sélectionner avec qui partager l\'entreprise',
+              errorText: state.errorText,
+              suffixIcon: const Icon(Icons.expand_more, color: Colors.black)),
         );
       },
     );

@@ -130,7 +130,7 @@ class SpecializationListScreen extends StatelessWidget {
               itemBuilder: (context, i) => TileJobRisk(
                 title: risks[i].name,
                 elements: skillsAssociatedToRisks[risks[i]]!,
-                nbMaximumElements: specialization.skills.length,
+                nbMaximumElements: 0,
                 tooltipMessage:
                     'Nombre de compétences pour lesquelles le risque est potentiellement présent',
               ),

@@ -1,4 +1,3 @@
-import '/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +6,9 @@ import '/common/models/internship.dart';
 import '/common/models/internship_evaluation_attitude.dart';
 import '/common/models/internship_evaluation_skill.dart';
 import '/common/providers/enterprises_provider.dart';
+import '/misc/job_data_file_service.dart';
 import '/router.dart';
+import '/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import '/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 
 class InternshipSkills extends StatefulWidget {
@@ -50,16 +51,23 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                         child: _SpecificSkillBody(
                             internship: widget.internship,
                             evaluation: widget.internship.skillEvaluations)),
-                    IconButton(
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 3),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(18))),
+                      child: IconButton(
                         onPressed: () => GoRouter.of(context).pushNamed(
-                              Screens.skillEvaluationMainScreen,
-                              params: Screens.params(widget.internship.id),
-                              queryParams: Screens.queryParams(editMode: '1'),
-                            ),
-                        icon: const Icon(
-                          Icons.add_chart_rounded,
-                          color: Colors.black,
-                        ))
+                          Screens.skillEvaluationMainScreen,
+                          params: Screens.params(widget.internship.id),
+                          queryParams: Screens.queryParams(editMode: '1'),
+                        ),
+                        icon: const Icon(Icons.add_chart_rounded),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
                   ],
                 ),
                 const SizedBox(height: 16.0),
@@ -71,16 +79,23 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                         child: _AttitudeBody(
                             internship: widget.internship,
                             evaluation: widget.internship.attitudeEvaluations)),
-                    IconButton(
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 3),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(18))),
+                      child: IconButton(
                         onPressed: () => GoRouter.of(context).pushNamed(
                             Screens.attitudeEvaluationScreen,
                             queryParams: Screens.queryParams(editMode: '1'),
                             extra: AttitudeEvaluationFormController(
                                 internshipId: widget.internship.id)),
-                        icon: const Icon(
-                          Icons.add_chart_rounded,
-                          color: Colors.black,
-                        ))
+                        icon: const Icon(Icons.playlist_add_sharp),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
                   ],
                 )
               ],
@@ -219,13 +234,17 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
     );
   }
 
-  Widget _buildSkill({required title, required List<SkillEvaluation> skills}) {
+  Widget _buildSkill({
+    required String title,
+    required List<SkillEvaluation> skills,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title),
+          Text(title,
+              style: TextStyle(color: Theme.of(context).colorScheme.primary)),
           if (skills.isEmpty)
             const Padding(
                 padding: EdgeInsets.only(left: 12.0),
@@ -272,7 +291,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
       child: Center(
-        child: TextButton(
+        child: OutlinedButton(
             onPressed: () {
               GoRouter.of(context).pushNamed(Screens.skillEvaluationFormScreen,
                   queryParams: Screens.queryParams(editMode: '0'),
@@ -282,7 +301,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
                     evaluationIndex: _currentEvaluationIndex,
                   ));
             },
-            child: const Text('Afficher formulaire d\'évaluation')),
+            child: const Text('Voir l\'évaluation détaillée')),
       ),
     );
   }
@@ -299,7 +318,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
         if (widget.evaluation.isEmpty)
           const Padding(
             padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
-            child: Text('Aucune évaluation disponible pour ce stage'),
+            child: Text('Aucune évaluation disponible pour ce stage.'),
           ),
         if (widget.evaluation.isNotEmpty)
           Column(
@@ -308,9 +327,14 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
               _buildLastEvaluation(),
               _buildPresentAtMeeting(),
               if (widget.internship.extraSpecializationsId.isNotEmpty)
-                const Text(
-                  'Métier principal',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Text(
+                  EnterprisesProvider.of(context, listen: false)
+                      .fromId(widget.internship.enterpriseId)
+                      .jobs
+                      .fromId(widget.internship.jobId)
+                      .specialization
+                      .idWithName,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               _buillSkillSection(EnterprisesProvider.of(context)
                   .fromId(widget.internship.enterpriseId)
@@ -328,7 +352,10 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Métier secondaire${widget.internship.extraSpecializationsId.length > 1 ? ' (${index + 1})' : ''}',
+                                ActivitySectorsService.specialization(widget
+                                        .internship
+                                        .extraSpecializationsId[index])
+                                    .idWithName,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
@@ -533,7 +560,7 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
                     evaluationIndex: _currentEvaluationIndex,
                   ));
             },
-            child: const Text('Afficher formulaire d\'évaluation')),
+            child: const Text('Voir l\'évaluation détaillée')),
       ),
     );
   }
@@ -550,7 +577,7 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
         if (widget.evaluation.isEmpty)
           const Padding(
             padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
-            child: Text('Aucune évaluation disponible pour ce stage'),
+            child: Text('Aucune évaluation disponible pour ce stage.'),
           ),
         if (widget.evaluation.isNotEmpty)
           Column(
