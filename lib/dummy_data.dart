@@ -148,7 +148,7 @@ Future<void> addDummyEnterprises(
       name: 'Jean Coutu',
       activityTypes: {activityTypes[6], activityTypes[24]},
       recrutedBy: teachers[1].id,
-      shareWith: 'Personne',
+      shareWith: 'Aucun partage',
       jobs: jobs,
       contact: Person(
         firstName: 'Caroline',

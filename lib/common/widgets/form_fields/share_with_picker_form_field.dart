@@ -8,7 +8,7 @@ const List<String> shareWithSuggestions = [
   'Enseignants PFAE de l\'école',
   'Enseignants FMS de l\'école',
   'Enseignants FPT de l\'école',
-  'Personne',
+  'Aucun partage',
 ];
 
 class ShareWithPickerFormField extends FormField<String> {
