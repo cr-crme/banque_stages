@@ -316,13 +316,13 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Superviseur en milieu de travail', left: 0),
-        const Text('(Responsable en milieu de stage)'),
+        const SubTitle('Responsable de stage en entreprise', left: 0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Identique au contact',
+            Text(
+                'Même personne que celle \nreprésentant l\'entreprise (contact)',
                 style: Theme.of(context).textTheme.titleMedium),
             Switch(
               onChanged: widget.enterprise == null

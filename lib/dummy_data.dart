@@ -543,10 +543,10 @@ Future<void> addDummyEnterprises(
         positionsOffered: 1,
         pastIncidents:
             'Lorsque l\'élève a laissé tomber un vase dispendieux qui s\'est '
-            'cassé au sol, le superviseur s\'est énervé et lui a crié dessus. '
+            'cassé au sol, le patron s\'est énervé et lui a crié dessus. '
             'L\'élève a fait une crise de panique.'
             '\nL\'élève a gâché un nouvel arrivage de fleurs en préparant mal '
-            'les tiges, et le superviseur a menacé de le mettre à la porte. '
+            'les tiges, et le patron a menacé de le mettre à la porte. '
             'L\'élève a appelé sa superviseure en pleurant et ne voulait pas '
             'continuer son stage.',
         equipmentRequired: ['Chaussures avec semelles antidérapantes'],

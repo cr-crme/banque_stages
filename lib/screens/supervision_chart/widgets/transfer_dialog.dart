@@ -60,7 +60,7 @@ class _TransferDialogState extends State<TransferDialog> {
           ),
           const SizedBox(height: 20),
           const Text(
-            'Superviseur\u00b7e',
+            'Enseignant\u00b7e',
           ),
           if (_choiceTeacher == null)
             Container(
