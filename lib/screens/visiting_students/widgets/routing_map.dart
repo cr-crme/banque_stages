@@ -3,8 +3,8 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
-import '/common/models/visiting_priority.dart';
-import '/screens/visiting_students/widgets/zoom_button.dart';
+import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import '../models/all_itineraries.dart';
 import '../models/lng_lat_utils.dart';
 
@@ -160,10 +160,10 @@ class _RoutingMapState extends State<RoutingMap> {
     return Consumer<AllStudentsWaypoints>(builder: (context, waypoints, child) {
       if (waypoints.isEmpty) {
         // The column is necessary otherwise the ProgressIndicator is huge
-        return Column(
+        return const Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [CircularProgressIndicator()]);
+            children: [CircularProgressIndicator()]);
       }
 
       return Padding(

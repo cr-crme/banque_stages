@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import '/misc/risk_data_file_service.dart';
-import '/screens/ref_sst/risk_card/risk_card_screen.dart';
+import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/risk_card_screen.dart';
 import 'widgets/clickable_risk_tile.dart';
 
 class SstCardsScreen extends StatefulWidget {
@@ -91,7 +91,7 @@ class _MenuRisksFormScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: RiskDataFileService.risks
-          .map<Widget>((e) =>
+          .map((e) =>
               ClickableRiskTile(e, onTap: (risk) => navigate(risk.number)))
           .toList(),
     );

@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import '/misc/job_data_file_service.dart';
-import '/misc/risk_data_file_service.dart';
-import '/screens/ref_sst/common/risk.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 import 'widgets/tile_job_risk.dart';
 
 class SpecializationListScreen extends StatelessWidget {
@@ -88,12 +88,12 @@ class SpecializationListScreen extends StatelessWidget {
               padding: const EdgeInsets.only(top: 5.0, bottom: 5),
               child: AutoSizeText(specialization.idWithName, maxLines: 2),
             ),
-            bottom: TabBar(tabs: [
+            bottom: const TabBar(tabs: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
                       'Affichage par\nrisque',
                       style: TextStyle(fontSize: 16),
@@ -105,10 +105,10 @@ class SpecializationListScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
                       'Affichage par\ncompétence',
                       style: TextStyle(fontSize: 16),

@@ -1,8 +1,7 @@
 import 'package:crcrme_banque_stages/dummy_data.dart';
+import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '/router.dart';
 
 class GenerateDebugDataScreen extends StatelessWidget {
   const GenerateDebugDataScreen({super.key});

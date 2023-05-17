@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/models/internship.dart';
-import '/common/models/person.dart';
-import '/common/models/phone_number.dart';
-import '/common/models/protections.dart';
-import '/common/models/schedule.dart';
-import '/common/models/uniform.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/providers/internships_provider.dart';
-import '/common/providers/teachers_provider.dart';
-import '/misc/job_data_file_service.dart';
-import '/screens/internship_enrollment/steps/requirements_step.dart';
-import '/screens/internship_enrollment/steps/schedule_step.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/models/protections.dart';
+import 'package:crcrme_banque_stages/common/models/schedule.dart';
+import 'package:crcrme_banque_stages/common/models/uniform.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/requirements_step.dart';
+import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
 
 class _InternshipController {
   _InternshipController(Internship internship)

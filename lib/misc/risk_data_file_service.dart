@@ -1,9 +1,8 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 import 'package:flutter/services.dart';
-
-import '/screens/ref_sst/common/risk.dart';
 
 abstract class RiskDataFileService {
   static List<Risk> _risks = [];

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/screens/ref_sst/risk_card/widgets/paragraph.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/widgets/paragraph.dart';
 
 class Factors extends StatelessWidget {
   //params and variables

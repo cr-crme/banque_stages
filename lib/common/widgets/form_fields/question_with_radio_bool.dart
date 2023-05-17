@@ -70,12 +70,6 @@ class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
                     groupValue: state.value,
                     onChanged: state.didChange,
                   ),
-                  ListTileRadio<bool?>(
-                    titleLabel: 'Non applicable',
-                    value: null,
-                    groupValue: state.value,
-                    onChanged: state.didChange,
-                  ),
                   QuestionWithText(
                     visible: state.value == true && widget.textQuestion != null,
                     question: widget.textQuestion ?? '',

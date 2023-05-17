@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/misc/form_service.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
 
 class AddTextDialog extends StatefulWidget {
   const AddTextDialog({

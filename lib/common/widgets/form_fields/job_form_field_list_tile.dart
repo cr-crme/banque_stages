@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 
-import '/common/models/job.dart';
-import '/common/widgets/autocomplete_options_builder.dart';
-import '/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 
 class JobFormFieldListTile extends StatefulWidget {
   const JobFormFieldListTile({

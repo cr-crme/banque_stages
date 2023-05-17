@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-import '/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 
 class SupervisionExpansionPanel extends ExpansionPanel {
   SupervisionExpansionPanel({

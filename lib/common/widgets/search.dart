@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SearchBar extends StatelessWidget with PreferredSizeWidget {
-  const SearchBar({
+class Search extends StatelessWidget implements PreferredSizeWidget {
+  const Search({
     super.key,
     required this.controller,
   });

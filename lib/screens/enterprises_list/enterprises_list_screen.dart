@@ -3,17 +3,17 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/models/job_list.dart';
-import '/common/models/person.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/providers/schools_provider.dart';
-import '/common/providers/teachers_provider.dart';
-import '/common/widgets/main_drawer.dart';
-import '/common/widgets/search_bar.dart';
-import '/router.dart';
-import '/screens/visiting_students/models/waypoints.dart';
-import '/screens/visiting_students/widgets/zoom_button.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/job_list.dart';
+import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
+import 'package:crcrme_banque_stages/common/widgets/search.dart';
+import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'widgets/enterprise_card.dart';
 
 class EnterpriseController {
@@ -57,26 +57,31 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
       ],
       bottom: TabBar(
         controller: _tabController,
-        tabs: [
+        tabs: const [
           Tab(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 Icon(Icons.list),
                 SizedBox(width: 8),
                 Text('Vue liste')
-              ])),
+              ],
+            ),
+          ),
           Tab(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 Icon(Icons.map),
                 SizedBox(width: 8),
                 Text('Vue carte')
-              ])),
+              ],
+            ),
+          ),
         ],
       ),
     );
+
     return Scaffold(
       appBar: appBar,
       drawer: const MainDrawer(),
@@ -162,7 +167,7 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.withSearchBar) SearchBar(controller: _searchController),
+        if (widget.withSearchBar) Search(controller: _searchController),
         SwitchListTile(
           title: const Text('Afficher que les stages disponibles'),
           value: _hideNotAvailable,

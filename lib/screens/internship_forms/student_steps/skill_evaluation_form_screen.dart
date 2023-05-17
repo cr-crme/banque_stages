@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/internship.dart';
-import '/common/models/internship_evaluation_skill.dart';
-import '/common/models/student.dart';
-import '/common/providers/internships_provider.dart';
-import '/common/providers/students_provider.dart';
-import '/common/widgets/dialogs/confirm_pop_dialog.dart';
-import '/common/widgets/scrollable_stepper.dart';
-import '/common/widgets/sub_title.dart';
-import '/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'skill_evaluation_form_controller.dart';
 
 class SkillEvaluationFormScreen extends StatefulWidget {

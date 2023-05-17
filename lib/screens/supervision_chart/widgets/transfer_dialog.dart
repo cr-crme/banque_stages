@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/student.dart';
-import '/common/models/teacher.dart';
-import '/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/models/teacher.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 
 class TransferDialog extends StatefulWidget {
   const TransferDialog({

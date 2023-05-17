@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/models/job.dart';
-import '/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 
 class GeneralInformationsStep extends StatelessWidget {
   const GeneralInformationsStep({
@@ -73,10 +73,10 @@ class GeneralInformationsStep extends StatelessWidget {
                   'Objectif spécifiques : ',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 8),
+                const Padding(
+                  padding: EdgeInsets.only(left: 16, top: 8),
                   child: Column(
-                    children: const [
+                    children: [
                       Text(
                         '\u2022 Éclairer les enseignants sur de possibles '
                         'risques pour la SST des élèves en stage',
@@ -102,36 +102,55 @@ class GeneralInformationsStep extends StatelessWidget {
             ),
           ),
           const SubTitle('Recommandations'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Remplir ce formulaire, lors d\'un entretien, avec la personne '
-                  'qui est en charge de former l\'élève sur le plancher, car:',
+                Text(
+                  'Remplir ce formulaire lors d\'un entretien :',
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 16),
+                  padding: EdgeInsets.only(left: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text('\u2022 C\'est elle qui connait le mieux le poste '
-                          'de travail de l\'élève'),
-                      Text('\u2022 Il sera plus facile d\'aborder avec elle '
-                          'les questions relatives aux dangers et aux accidents '
-                          '(qu\'avec les employeurs),')
+                    children: [
+                      Text(
+                        '\u2022 Avec la personne qui est en charge de former '
+                        'l\'élève sur le plancher:',
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '\u2022 C\'est elle qui connait le mieux le poste '
+                              'de travail de l\'élève',
+                            ),
+                            Text(
+                              '\u2022 Il sera plus facile d\'aborder avec elle '
+                              'qu\'avec les employeurs les questions relatives '
+                              'aux dangers et aux accidents)',
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text('\u2022 La 1ère semaine de stage'),
+                      Text(
+                        '\u2022 Pendant (ou à la suite) d\'une visite du poste '
+                        'de travail de l\'élève',
+                      ),
                     ],
                   ),
                 ),
-                const Text(''),
-                const Text('Quand:'),
-                const Text('\u2022 La 1ère semaine de stage'),
-                const Text(
-                    '\u2022 Pendant (ou à la suite) d\'une visite du poste '
+                Text(''),
+                Text('Quand:'),
+                Text('\u2022 La 1ère semaine de stage'),
+                Text('\u2022 Pendant (ou à la suite) d\'une visite du poste '
                     'de travail de l\'élève'),
-                const Text(''),
-                const Text('Durée de remplissage : 15 minutes'),
+                Text(''),
+                Text('Durée de remplissage : 15 minutes'),
               ],
             ),
           ),

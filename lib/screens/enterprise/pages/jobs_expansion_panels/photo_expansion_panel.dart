@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 
 class PhotoExpansionPanel extends ExpansionPanel {
   PhotoExpansionPanel({
@@ -9,42 +9,52 @@ class PhotoExpansionPanel extends ExpansionPanel {
     required void Function(Job job) addImage,
   }) : super(
           canTapOnHeader: true,
-          body: _PhotoBody(job: job),
-          headerBuilder: (context, isExpanded) => ListTile(
-            title: const Text('Photos du poste de travail'),
-            trailing: isExpanded
-                ? IconButton(
-                    onPressed: () => addImage(job),
-                    icon: const Icon(Icons.add_photo_alternate_outlined))
-                : null,
+          body: _PhotoBody(job, addImage),
+          headerBuilder: (context, isExpanded) => const ListTile(
+            title: Text('Photos du poste de travail'),
           ),
         );
 }
 
 class _PhotoBody extends StatelessWidget {
-  const _PhotoBody({required this.job});
+  const _PhotoBody(
+    this.job,
+    this.addImage,
+  );
 
   final Job job;
+  final void Function(Job job) addImage;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: job.photosUrl.isEmpty
-              ? [const Text('Aucune image disponible')]
-              : job.photosUrl
-                  .map(
-                    // TODO: Make images clickables and deletables
-                    (url) => Card(
-                      child: Image.network(url, height: 250),
-                    ),
-                  )
-                  .toList(),
-        ),
+      child: Column(
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ...job.photosUrl.isEmpty
+                    ? [const Text('Aucune image disponible')]
+                    : job.photosUrl.map(
+                        // TODO: Make images clickables and deletables
+                        (url) => Card(
+                          child: Image.network(url, height: 250),
+                        ),
+                      ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Center(
+            child: TextButton(
+              onPressed: () => addImage(job),
+              child: const Text('Ajouter une image'),
+            ),
+          ),
+        ],
       ),
     );
   }

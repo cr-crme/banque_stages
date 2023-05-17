@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/screens/ref_sst/common/risk.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ListLinks extends StatelessWidget {

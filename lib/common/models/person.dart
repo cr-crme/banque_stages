@@ -1,7 +1,7 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
-import '/common/models/address.dart';
-import '/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 
 class Person extends ItemSerializable {
   final String firstName;

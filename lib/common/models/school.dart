@@ -1,6 +1,6 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 
-import '/common/models/address.dart';
+import 'package:crcrme_banque_stages/common/models/address.dart';
 
 class School extends ItemSerializable {
   final String name;

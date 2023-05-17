@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/widgets/dialogs/confirm_pop_dialog.dart';
-import '/common/widgets/scrollable_stepper.dart';
-import '/misc/form_service.dart';
-import '/screens/job_sst_form/steps/danger_step.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
+import 'package:crcrme_banque_stages/screens/job_sst_form/steps/danger_step.dart';
 import 'steps/general_informations_step.dart';
 import 'steps/questions_step.dart';
 

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/widgets/dialogs/confirm_pop_dialog.dart';
-import '/router.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/router.dart';
 import 'pages/about_page.dart';
 import 'pages/contact_page.dart';
 import 'pages/internships_page.dart';

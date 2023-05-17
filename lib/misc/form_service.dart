@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 
 abstract class FormService {
   static bool validateForm(GlobalKey<FormState> formKey,

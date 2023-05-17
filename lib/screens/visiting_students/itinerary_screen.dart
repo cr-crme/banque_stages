@@ -1,18 +1,17 @@
+import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/models/all_itineraries.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/models/itinerary.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/widgets/routing_map.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/widgets/waypoint_card.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '/common/models/student.dart';
-import '/common/models/visiting_priority.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/providers/internships_provider.dart';
-import '/common/providers/schools_provider.dart';
-import '/common/providers/students_provider.dart';
-import '/common/providers/teachers_provider.dart';
-import 'models/all_itineraries.dart';
-import 'models/itinerary.dart';
-import 'models/waypoints.dart';
-import 'widgets/routing_map.dart';
-import 'widgets/waypoint_card.dart';
 
 class ItineraryScreen extends StatefulWidget {
   const ItineraryScreen({super.key});
@@ -57,9 +56,13 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
     // Add the school as the first waypoint
     waypoints.add(
-        await Waypoint.fromAddress('École', school.address.toString(),
-            priority: VisitingPriority.school),
-        notify: false);
+      await Waypoint.fromAddress(
+        'École',
+        school.address.toString(),
+        priority: VisitingPriority.school,
+      ),
+      notify: false,
+    );
 
     // Get the students from the registered students, but we copy them so
     // we don't mess with them

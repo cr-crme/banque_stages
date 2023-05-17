@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/job.dart';
-import '/common/providers/enterprises_provider.dart';
-import '/common/widgets/dialogs/confirm_pop_dialog.dart';
-import '/common/widgets/scrollable_stepper.dart';
-import '/misc/form_service.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'prerequisites_step.dart';
 import 'supervision_step.dart';
 import 'tasks_step.dart';

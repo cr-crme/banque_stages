@@ -4,11 +4,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '/common/models/student.dart';
-import '/common/providers/students_provider.dart';
-import '/common/widgets/main_drawer.dart';
-import '/common/widgets/search_bar.dart';
-import '/router.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
+import 'package:crcrme_banque_stages/common/widgets/search.dart';
+import 'package:crcrme_banque_stages/router.dart';
 import 'widgets/student_card.dart';
 
 class StudentsListScreen extends StatefulWidget {
@@ -52,8 +52,7 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
             icon: const Icon(Icons.search),
           )
         ],
-        bottom:
-            _showSearchBar ? SearchBar(controller: _searchController) : null,
+        bottom: _showSearchBar ? Search(controller: _searchController) : null,
       ),
       drawer: const MainDrawer(),
       body: Column(

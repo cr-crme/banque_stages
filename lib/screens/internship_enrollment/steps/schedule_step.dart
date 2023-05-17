@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '/common/models/schedule.dart';
-import '/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/common/models/schedule.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 
 class WeeklyScheduleController {
   final List<WeeklySchedule> weeklySchedules;

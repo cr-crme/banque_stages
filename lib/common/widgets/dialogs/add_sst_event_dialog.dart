@@ -1,7 +1,7 @@
 import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_text.dart';
 import 'package:flutter/material.dart';
 
-import '/misc/form_service.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
 
 class AddSstEventDialog extends StatefulWidget {
   const AddSstEventDialog({super.key});
@@ -36,31 +36,33 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
       title: const Text('Signaler un évènement'),
       content: Form(
         key: _formKey,
-        child: Column(
-          children: [
-            RadioListTile(
-              title: const Text(
-                  'Un accident ou un incident en stage (ex. blessure mineure, agression verbale d’un client, harcèlement des collègues)'),
-              value: SstEventType.pastIncidents,
-              groupValue: _eventType,
-              onChanged: (value) =>
-                  setState(() => _eventType = SstEventType.pastIncidents),
-            ),
-            RadioListTile(
-              title: const Text('Une situation dangereuse'),
-              value: SstEventType.dangerousSituations,
-              groupValue: _eventType,
-              onChanged: (value) =>
-                  setState(() => _eventType = SstEventType.dangerousSituations),
-            ),
-            QuestionWithText(
-              question: 'Description de l\'évènement',
-              onSaved: (text) => setState(() => _description = text),
-              validator: (text) => text?.isEmpty ?? true
-                  ? 'Décrivez ce qu\'il s\'est passé'
-                  : null,
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              RadioListTile(
+                title: const Text(
+                    'Un accident ou un incident en stage (ex. blessure mineure, agression verbale d’un client, harcèlement des collègues)'),
+                value: SstEventType.pastIncidents,
+                groupValue: _eventType,
+                onChanged: (value) =>
+                    setState(() => _eventType = SstEventType.pastIncidents),
+              ),
+              RadioListTile(
+                title: const Text('Une situation dangereuse'),
+                value: SstEventType.dangerousSituations,
+                groupValue: _eventType,
+                onChanged: (value) => setState(
+                    () => _eventType = SstEventType.dangerousSituations),
+              ),
+              QuestionWithText(
+                question: 'Description de l\'évènement',
+                onSaved: (text) => setState(() => _description = text),
+                validator: (text) => text?.isEmpty ?? true
+                    ? 'Décrivez ce qu\'il s\'est passé'
+                    : null,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '/common/widgets/phone_list_tile.dart';
-import '/misc/form_service.dart';
+import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
+import 'package:crcrme_banque_stages/misc/form_service.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});

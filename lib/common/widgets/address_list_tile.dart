@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/address.dart';
-import '/screens/enterprise/pages/widgets/show_address_dialog.dart';
+import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/pages/widgets/show_address_dialog.dart';
 
 class AddressController {
   late Future<String?> Function() _validationFunction;

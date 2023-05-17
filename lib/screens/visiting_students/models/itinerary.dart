@@ -6,8 +6,7 @@ import 'package:routing_client_dart/routing_client_dart.dart';
 import 'waypoints.dart';
 
 class Itinerary extends ListSerializable<Waypoint>
-    with Iterator<Waypoint>
-    implements ItemSerializable {
+    implements Iterator<Waypoint>, ItemSerializable {
   List<LatLng> toLatLng() {
     List<LatLng> out = [];
     for (final address in this) {

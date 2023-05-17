@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/common/models/enterprise.dart';
-import '/common/widgets/activity_type_cards.dart';
-import '/common/widgets/autocomplete_options_builder.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/widgets/activity_type_cards.dart';
+import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
 
 class ActivityTypesPickerFormField extends FormField<Set<String>> {
   ActivityTypesPickerFormField({
