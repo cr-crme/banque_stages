@@ -137,7 +137,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
           return Scaffold(
               appBar: AppBar(
                 title: Text(
-                    '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\nC2. Attitudes et comportements'),
+                    '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\nC2. Attitudes - Comportements'),
                 leading: IconButton(
                     onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
               ),

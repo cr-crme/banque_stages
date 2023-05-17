@@ -139,7 +139,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       onWillPop: () => ConfirmPopDialog.show(context),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Nouvelle entreprise'),
+          title: const Text('Ajouter une entreprise'),
         ),
         body: ScrollableStepper(
           type: StepperType.horizontal,
