@@ -110,9 +110,9 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Metro Gagnon',
-      activityTypes: {activityTypes[2], activityTypes[5], activityTypes[10]},
+      activityTypes: {activityTypes[3], activityTypes[6], activityTypes[12]},
       recrutedBy: teachers[0].id,
-      shareWith: 'Mon centre de services scolaire',
+      shareWith: 'Mon centre de services scolire',
       jobs: jobs,
       contact: Person(
           firstName: 'Marc',
@@ -147,7 +147,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Jean Coutu',
-      activityTypes: {activityTypes[20], activityTypes[5]},
+      activityTypes: {activityTypes[6], activityTypes[24]},
       recrutedBy: teachers[1].id,
       shareWith: 'Personne',
       jobs: jobs,
@@ -209,7 +209,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Auto Care',
-      activityTypes: {activityTypes[12], activityTypes[18]},
+      activityTypes: {activityTypes[15]},
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
@@ -246,7 +246,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Auto Repair',
-      activityTypes: {activityTypes[12], activityTypes[18]},
+      activityTypes: {activityTypes[15], activityTypes[22]},
       recrutedBy: teachers[2].id,
       shareWith: 'Enseignants FPT de l\'école',
       jobs: jobs,
@@ -285,7 +285,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Boucherie Marien',
-      activityTypes: {activityTypes[2], activityTypes[5]},
+      activityTypes: {activityTypes[3], activityTypes[6]},
       recrutedBy: teachers[0].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
@@ -324,7 +324,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'IGA',
-      activityTypes: {activityTypes[10], activityTypes[29]},
+      activityTypes: {activityTypes[12], activityTypes[35]},
       recrutedBy: teachers[0].id,
       shareWith: 'Enseignants FPT de l\'école',
       jobs: jobs,
@@ -363,7 +363,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Pharmaprix',
-      activityTypes: {activityTypes[20], activityTypes[5]},
+      activityTypes: {activityTypes[19], activityTypes[24]},
       recrutedBy: teachers[3].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
@@ -402,7 +402,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Subway',
-      activityTypes: {activityTypes[24], activityTypes[27]},
+      activityTypes: {activityTypes[30], activityTypes[33]},
       recrutedBy: teachers[3].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
@@ -436,7 +436,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Walmart',
-      activityTypes: {activityTypes[5], activityTypes[15], activityTypes[29]},
+      activityTypes: {activityTypes[6], activityTypes[19], activityTypes[35]},
       recrutedBy: teachers[0].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
@@ -509,7 +509,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Le jardin de Joanie',
-      activityTypes: {activityTypes[5], activityTypes[11]},
+      activityTypes: {activityTypes[6], activityTypes[14]},
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
@@ -581,7 +581,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Fleuriste Joli',
-      activityTypes: {activityTypes[5], activityTypes[11]},
+      activityTypes: {activityTypes[6], activityTypes[14]},
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
       jobs: jobs,

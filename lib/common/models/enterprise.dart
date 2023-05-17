@@ -153,7 +153,7 @@ const List<String> activityTypes = [
   'Magasin de vêtements',
   'Magasin entrepôt',
   'Mécanique',
-  'Mensuiserie',
+  'Menuiserie',
   'Pharmacie',
   'Préparation de commandes',
   'Quincaillerie',
