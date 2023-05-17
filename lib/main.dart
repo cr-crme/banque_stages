@@ -24,6 +24,7 @@ import 'misc/risk_data_file_service.dart';
 import 'router.dart';
 import 'screens/visiting_students/models/all_itineraries.dart';
 
+bool useEmulator = false;
 bool populateWithDebugData = true;
 
 void main() async {
@@ -34,14 +35,16 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Connect Firebase to local emulators
-  assert(() {
-    //! I got a weird error when using the emulator: (Ignoring header X-Firebase-Locale because its value was null.)
-    // FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-    FirebaseDatabase.instance.useDatabaseEmulator(
-        !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost', 9000);
-    FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
-    return true;
-  }());
+  if (useEmulator) {
+    assert(() {
+      //! I got a weird error when using the emulator: (Ignoring header X-Firebase-Locale because its value was null.)
+      // FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      FirebaseDatabase.instance.useDatabaseEmulator(
+          !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost', 9000);
+      FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+      return true;
+    }());
+  }
 
   setPathUrlStrategy();
   runApp(const BanqueStagesApp());
