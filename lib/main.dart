@@ -14,6 +14,7 @@ import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/models/all_itineraries.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -23,8 +24,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-bool useEmulator = false;
-bool populateWithDebugData = true;
+bool useEmulator = true;
+bool populateWithDebugData = kDebugMode;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,11 +37,10 @@ void main() async {
   // Connect Firebase to local emulators
   if (useEmulator) {
     assert(() {
-      //! I got a weird error when using the emulator: (Ignoring header X-Firebase-Locale because its value was null.)
-      // FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-      FirebaseDatabase.instance.useDatabaseEmulator(
-          !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost', 9000);
-      FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+      final host = !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost';
+      FirebaseAuth.instance.useAuthEmulator(host, 9099);
+      FirebaseDatabase.instance.useDatabaseEmulator(host, 9000);
+      FirebaseStorage.instance.useStorageEmulator(host, 9199);
       return true;
     }());
   }

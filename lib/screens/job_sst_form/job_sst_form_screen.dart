@@ -65,6 +65,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
             equipmentRequired: _dangerKey.currentState!.equipmentRequired,
             pastIncidents: _dangerKey.currentState!.pastIncidents,
             incidentContact: _dangerKey.currentState!.incidentContact,
+            sstLastUpdate: DateTime.now(),
           ),
     );
 
