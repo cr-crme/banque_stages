@@ -72,7 +72,7 @@ class SstBody extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Historique d\'accidents et incidents au poste de travail ',
+              'Historique d\'accidents et d\'incidents au poste de travail',
               style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
@@ -84,24 +84,24 @@ class SstBody extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Personne de l\'entreprise à qui s\'adresser en cas de blessure '
-              'ou d\'incident?',
+              'ou d\'incident',
               style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 8),
               child: job.incidentContact.isEmpty
-                  ? const Text('Aucun contact enregistré.')
+                  ? const Text('Aucun contact enregistré')
                   : Text(job.incidentContact),
             ),
             const SizedBox(height: 8),
             Text(
-              'Situations dangereuses identifiées au poste de travail',
+              'Situations dangereuses repérées sur le poste de travail',
               style: Theme.of(context).textTheme.titleSmall,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 8),
               child: job.dangerousSituations.isEmpty
-                  ? const Text('Aucune situation dangereuse signalée')
+                  ? const Text('Aucune situation')
                   : Text(job.dangerousSituations),
             ),
             const SizedBox(height: 8),
@@ -113,7 +113,7 @@ class SstBody extends StatelessWidget {
               padding: const EdgeInsets.only(top: 4, bottom: 8),
               child: Column(
                 children: job.equipmentRequired.isEmpty
-                    ? [const Text('Aucun équipement de protection requis')]
+                    ? [const Text('Aucun équipement')]
                     : job.equipmentRequired
                         .map((equipment) => Text('- $equipment'))
                         .toList(),

@@ -68,8 +68,8 @@ class DangerStepState extends State<DangerStep> {
             QuestionWithText(
               initialValue: widget.job.incidentContact,
               question:
-                  'À quelle personne dans l\'entreprise, l\'élève doit-il '
-                  's\'adresser en cas de blessure ou d\'incident',
+                  '4. À quelle personne dans l\'entreprise, l\'élève doit-il '
+                  's\'adresser en cas de blessure ou d\'incident?',
               onSaved: (text) => incidentContact = text,
             ),
           ],
