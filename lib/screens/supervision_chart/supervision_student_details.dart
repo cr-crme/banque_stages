@@ -265,7 +265,7 @@ class _Contact extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Contact'),
+        const SubTitle('Contact en entreprise'),
         Padding(
           padding: const EdgeInsets.only(left: 32.0, top: 8.0),
           child: Row(
