@@ -126,7 +126,7 @@ class _DateRangeState extends State<_DateRange> {
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,
-      initialEntryMode: DatePickerEntryMode.input,
+      initialEntryMode: DatePickerEntryMode.calendar,
       initialDateRange: widget.scheduleController.dateRange,
       firstDate: DateTime(DateTime.now().year),
       lastDate: DateTime(DateTime.now().year + 2),
