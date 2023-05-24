@@ -29,7 +29,13 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
 
   final _questionsKey = GlobalKey<QuestionsStepState>();
   final _dangerKey = GlobalKey<DangerStepState>();
+
   int _currentStep = 0;
+  final List<StepState> _stepStatus = [
+    StepState.indexed,
+    StepState.indexed,
+    StepState.indexed
+  ];
 
   void _nextStep() {
     final formKeys = [
@@ -39,6 +45,9 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
 
     if (_currentStep != 0 &&
         !FormService.validateForm(formKeys[_currentStep - 1])) {
+      setState(() {
+        _stepStatus[_currentStep] = StepState.error;
+      });
       return;
     }
 
@@ -46,6 +55,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
       _submit();
     } else {
       setState(() {
+        _stepStatus[_currentStep] = StepState.complete;
         _currentStep += 1;
         _scrollController.jumpTo(0);
       });
@@ -99,6 +109,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
           onStepCancel: _cancel,
           steps: [
             Step(
+              state: _stepStatus[0],
               isActive: _currentStep == 0,
               title: const Text('Général'),
               content: GeneralInformationsStep(
@@ -107,6 +118,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
               ),
             ),
             Step(
+              state: _stepStatus[1],
               isActive: _currentStep == 1,
               title: const Text('Tâches'),
               content: QuestionsStep(
@@ -115,6 +127,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
               ),
             ),
             Step(
+              state: _stepStatus[2],
               isActive: _currentStep == 2,
               title: const Text('Dangers'),
               content: DangerStep(
