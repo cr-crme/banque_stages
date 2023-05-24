@@ -8,7 +8,7 @@ abstract class RiskDataFileService {
   static List<Risk> _risks = [];
   static List<Risk> get risks => _risks;
 
-  static Future<String> loadData() async {
+  static Future<void> loadData() async {
     final file = await rootBundle.loadString('assets/risks-data.json');
     final json = jsonDecode(file) as List;
 
@@ -16,7 +16,6 @@ abstract class RiskDataFileService {
       json.map((e) => Risk.fromSerialized(e)),
       growable: false,
     );
-    return 'test';
   }
 
   static Risk? fromId(String id) {
