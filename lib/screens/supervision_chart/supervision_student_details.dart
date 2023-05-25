@@ -278,8 +278,8 @@ class _Contact extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(enterprise.address == null
-                      ? 'Aucune adresse'
-                      : '${enterprise.address!.civicNumber} ${enterprise.address!.street}\n'
+                      ? 'Adresse de l\'entreprise \nAucune adresse'
+                      : 'Adresse de l\'entreprise \n${enterprise.address!.civicNumber} ${enterprise.address!.street}\n'
                           '${enterprise.address!.city}\n'
                           '${enterprise.address!.postalCode}'),
                 ),
@@ -297,7 +297,8 @@ class _Contact extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
-                child: Text('${internship.supervisor.fullName}\n'
+                child: Text(
+                    'Responsable en milieu de stage \n${internship.supervisor.fullName}\n'
                     '${internship.supervisor.phone.toString() == '' ? 'Aucun téléphone enregistré' : internship.supervisor.phone}'),
               ),
             ],
@@ -404,13 +405,13 @@ class _Requirements extends StatelessWidget {
                   )),
         const Padding(
           padding: EdgeInsets.only(left: 32.0, top: 8.0),
-          child: Text('Uniforme requis :',
+          child: Text('Tenue de travail :',
               style: TextStyle(fontWeight: FontWeight.w600)),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 32.0),
           child: internship.uniform.status == UniformStatus.none
-              ? const Text('Aucun')
+              ? const Text('Aucune consigne de l\'entreprise')
               : Text(internship.uniform.uniform),
         ),
       ],
