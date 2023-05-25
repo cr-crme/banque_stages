@@ -15,7 +15,7 @@ class SstExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: SstBody(enterprise, job, addSstEvent),
           headerBuilder: (context, isExpanded) => ListTile(
-            title: const Text('Santé et Sécurité (SST)'),
+            title: const Text('Santé et Sécurité du Travail (SST)'),
             trailing: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,

@@ -11,7 +11,7 @@ class SupervisionExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _SupervisionBody(job: job),
           headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text('Type d\'encadrement des stagiaires'),
+            title: Text('Encadrement des stagiaires'),
           ),
         );
 }

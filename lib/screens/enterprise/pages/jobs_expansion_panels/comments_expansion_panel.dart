@@ -12,7 +12,7 @@ class CommentsExpansionPanel extends ExpansionPanel {
           body: _SstBody(job, addComment),
           headerBuilder: (context, isExpanded) => const ListTile(
             title: Text(
-              'Autres commentaires',
+              'Commentaires',
             ),
           ),
         );
