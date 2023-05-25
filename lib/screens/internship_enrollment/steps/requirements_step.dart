@@ -76,7 +76,7 @@ class RequirementsStepState extends State<RequirementsStep> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Est-ce que l\'élève devra porter des équipements de protection individuelle?',
+                  'Est-ce que l\'élève devra porter des équipements de protection individuelle (EPI)?',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Padding(

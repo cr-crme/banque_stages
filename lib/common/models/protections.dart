@@ -12,7 +12,7 @@ extension ProtectionStatusNamed on ProtectionsStatus {
       case ProtectionsStatus.suppliedByEnterprise:
         return 'Oui et l\'entreprise les fournit';
       case ProtectionsStatus.suppliedBySchool:
-        return 'Oui mais l\'école doit les acheter';
+        return 'Oui mais l\'entreprise ne les fournit pas';
       case ProtectionsStatus.none:
         return 'Non';
     }

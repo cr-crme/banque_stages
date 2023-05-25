@@ -384,7 +384,7 @@ class _Requirements extends StatelessWidget {
         const SubTitle('Exigences de l\'entreprise'),
         const Padding(
           padding: EdgeInsets.only(left: 32.0),
-          child: Text('EPI requis :',
+          child: Text('Équipements de protection individuelle requis :',
               style: TextStyle(fontWeight: FontWeight.w600)),
         ),
         Padding(

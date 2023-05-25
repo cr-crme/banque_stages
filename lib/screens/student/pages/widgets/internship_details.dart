@@ -496,7 +496,8 @@ class _InternshipBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('EPI requis', style: _titleStyle),
+          const Text('Équipements de protection individuelle ',
+              style: _titleStyle),
           if (editMode)
             _ProtectionRequiredChoser(
                 internshipController: internshipController),
