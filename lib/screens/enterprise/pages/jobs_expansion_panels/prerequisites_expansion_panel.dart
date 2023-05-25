@@ -36,11 +36,11 @@ class _PrerequisitesBody extends StatelessWidget {
             Text('${job.minimalAge} ans'),
             const SizedBox(height: 12),
             const Text(
-              'Uniforme en vigueur',
+              'Tenue de travail',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             job.uniform.isEmpty
-                ? const Text('Aucun uniforme requis')
+                ? const Text('Aucune consigne de l\'entreprise')
                 : Text(job.uniform),
             const SizedBox(height: 12),
             const Text(

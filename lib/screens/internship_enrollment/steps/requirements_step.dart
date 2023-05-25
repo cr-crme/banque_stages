@@ -185,7 +185,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Est-ce qu\'un uniforme est exigé ?',
+                  'Est-ce qu\'une tenue de travail spécifique est exigée ?',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Padding(
@@ -230,7 +230,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '* Préciser le type d\'uniforme : ',
+                          '* Laquelle ? : ',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(
@@ -241,7 +241,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                           validator: (text) =>
                               uniformStatus != UniformStatus.none &&
                                       text!.isEmpty
-                                  ? 'Préciser l\'uniforme.'
+                                  ? 'Décrire la tenue de travail.'
                                   : null,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),

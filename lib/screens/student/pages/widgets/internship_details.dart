@@ -521,11 +521,11 @@ class _InternshipBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Uniforme requis', style: _titleStyle),
+          const Text('Tenue de travail', style: _titleStyle),
           if (editMode)
             _UniformRequiredChooser(internshipController: internshipController),
           if (!editMode && internship.uniform.status == UniformStatus.none)
-            const Text('Aucun'),
+            const Text('Aucune consigne de l\'entreprise'),
           if (!editMode && internship.uniform.status != UniformStatus.none)
             Text(internship.uniform.uniform),
         ],
@@ -770,7 +770,7 @@ class _UniformRequiredChooserState extends State<_UniformRequiredChooser> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Préciser le type d\'uniforme : ',
+                    'Décrire la tenue de travail : ',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   TextFormField(

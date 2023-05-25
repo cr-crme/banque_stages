@@ -10,9 +10,9 @@ extension UniformStatusNamed on UniformStatus {
   String get name {
     switch (this) {
       case UniformStatus.suppliedByEnterprise:
-        return 'Oui et l\'entreprise le fournit';
+        return 'Oui et l\'entreprise la fournit';
       case UniformStatus.suppliedByStudent:
-        return 'Oui mais l\'élève doit se le procurer';
+        return 'Oui mais l\'entreprise ne la fournit pas';
       case UniformStatus.none:
         return 'Non';
     }
