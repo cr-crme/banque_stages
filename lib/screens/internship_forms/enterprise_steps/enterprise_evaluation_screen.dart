@@ -114,7 +114,7 @@ class _EnterpriseEvaluationScreenState
           steps: [
             Step(
               isActive: _currentStep == 0,
-              title: const Text('Tâches'),
+              title: const Text('Encadrement'),
               content: TasksStep(
                 key: _tasksKey,
                 job: job,
@@ -122,7 +122,7 @@ class _EnterpriseEvaluationScreenState
             ),
             Step(
               isActive: _currentStep == 1,
-              title: const Text('Encadrement'),
+              title: const Text('Clientèle \nspécialisée'),
               content: SupervisionStep(
                 key: _supervisionKey,
                 job: job,
