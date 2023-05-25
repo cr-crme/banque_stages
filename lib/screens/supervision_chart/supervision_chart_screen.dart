@@ -206,7 +206,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
       appBar: AppBar(
         title: const Text('Tableau des supervisions'),
         actions: [
-          IconButton(onPressed: _goToItinerary, icon: const Icon(Icons.route))
+          IconButton(
+              onPressed: _goToItinerary, icon: const Icon(Icons.directions))
         ],
         bottom: PreferredSize(
             preferredSize: Size(screenSize.width, iconSize * 1.5),
@@ -226,7 +227,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
                       onTap: _toggleSearchBar,
                       icon: Icons.search),
                   _TabIcon(
-                      title: 'Priorités',
+                      title: 'Niveau de priorité',
                       screenSize: screenSize,
                       iconSize: iconSize,
                       onTap: _toggleFlagFilter,
