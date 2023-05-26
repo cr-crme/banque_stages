@@ -107,6 +107,8 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     setState(() {});
   }
 
+  // TODO: Add the enterprise in the Provider and make the provider a firebase
+  // TODO: Check if the itinerary is computed when changing back date
   @override
   Widget build(BuildContext context) {
     return Scaffold(
