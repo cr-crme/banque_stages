@@ -52,7 +52,7 @@ class ContactPageState extends State<ContactPage> {
               onSaved: (name) => contactFirstName = name!,
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: '* Nom'),
+              decoration: const InputDecoration(labelText: '* Nom de famille'),
               validator: (text) => text!.isEmpty
                   ? 'Ajouter le nom de la personne représentant l\'entreprise.'
                   : null,
