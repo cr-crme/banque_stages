@@ -46,6 +46,7 @@ class DangerStepState extends State<DangerStep> {
                   '2. Est-ce que l\'élève devra porter un des équipements de '
                   'protection individuelle suivants?',
               choices: const {
+                'Chaussures à semelles antidérapantes',
                 'Chaussures de sécurité',
                 'Lunettes de sécurité',
                 'Protections auditives (p. ex. bouchons)',
