@@ -132,7 +132,7 @@ class SpecializationListScreen extends StatelessWidget {
                 elements: skillsAssociatedToRisks[risks[i]]!,
                 nbMaximumElements: 0,
                 tooltipMessage:
-                    'Nombre de compétences pour lesquelles le risque est potentiellement présent',
+                    'Nombre de compétences possiblement concernées par ce risque',
               ),
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(
