@@ -435,7 +435,8 @@ class _MoreInfoButton extends StatelessWidget {
                   params: Screens.params(studentId),
                   queryParams: Screens.queryParams(pageIndex: '1'),
                 ),
-            child: const Text('Plus de détails sur le stage')),
+            child: const Text('Plus de détails\nsur le stage',
+                textAlign: TextAlign.center)),
       ),
     );
   }
