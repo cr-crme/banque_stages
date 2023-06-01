@@ -24,7 +24,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-bool useEmulator = true;
+bool useEmulator = false;
 bool populateWithDebugData = kDebugMode;
 
 void main() async {
