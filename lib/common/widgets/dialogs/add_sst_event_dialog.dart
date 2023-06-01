@@ -54,11 +54,10 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
                     () => _eventType = SstEventType.dangerousSituations),
               ),
               QuestionWithText(
-                question: 'Description de l\'évènement',
+                question: 'Décrire ce qu\'il s\'est passé:',
                 onSaved: (text) => setState(() => _description = text),
-                validator: (text) => text?.isEmpty ?? true
-                    ? 'Décrivez ce qu\'il s\'est passé'
-                    : null,
+                validator: (text) =>
+                    text?.isEmpty ?? true ? 'Que s\'est-il passé?' : null,
               ),
             ],
           ),
