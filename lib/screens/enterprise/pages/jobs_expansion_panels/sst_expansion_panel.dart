@@ -33,8 +33,8 @@ class SstExpansionPanel extends ExpansionPanel {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Icon(
-                    Icons.warning,
-                    color: Theme.of(context).colorScheme.secondary,
+                    Icons.warning_amber,
+                    color: Theme.of(context).colorScheme.error,
                   ),
                 ),
               ),
