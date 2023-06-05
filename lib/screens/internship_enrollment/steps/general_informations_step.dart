@@ -248,8 +248,8 @@ class _ExtraSpecialization extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Compétences additionnelles', left: 0),
-        Text('(À sélectionner dans métiers supplémentaires)',
+        const SubTitle('Métiers supplémentaires', left: 0),
+        Text('(Si besoin d\'ajouter d\'autres compétences)',
             style: Theme.of(context).textTheme.bodyLarge),
         if (extraSpecializations.isNotEmpty)
           ...extraSpecializations
