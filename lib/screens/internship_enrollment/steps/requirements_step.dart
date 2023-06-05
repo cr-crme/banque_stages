@@ -8,8 +8,8 @@ class RequirementsStep extends StatefulWidget {
   const RequirementsStep({super.key});
 
   static const protectionsList = [
+    'Chaussures à cap d\'acier',
     'Chaussures à semelles antidérapantes',
-    'Chaussures de sécurité',
     'Lunettes de sécurité',
     'Protections auditives',
     'Masque',
