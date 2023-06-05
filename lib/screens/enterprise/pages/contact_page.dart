@@ -267,7 +267,7 @@ class _EnterpriseInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Informations de l\'établissement'),
+        const SubTitle('Coordonnées de l\'établissement'),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(

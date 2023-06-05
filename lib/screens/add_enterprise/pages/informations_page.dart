@@ -42,13 +42,14 @@ class InformationsPageState extends State<InformationsPage> {
         child: Column(
           children: [
             TextFormField(
-              decoration: const InputDecoration(labelText: '* Nom'),
+              decoration:
+                  const InputDecoration(labelText: '* Nom de l\'entreprise'),
               validator: (text) =>
                   text!.isEmpty ? 'Ajouter le nom de l\'entreprise.' : null,
               onSaved: (name) => this.name = name,
             ),
             AddressListTile(
-              title: 'Adresse de l\'établissement',
+              title: 'Adresse',
               isMandatory: true,
               enabled: true,
               addressController: addressController,
