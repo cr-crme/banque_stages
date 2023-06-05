@@ -141,7 +141,7 @@ class _DateRangeState extends State<_DateRange> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Dates', top: 0, left: 0),
+        const SubTitle('Dates et nombre d\'heures', top: 0, left: 0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
