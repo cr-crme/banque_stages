@@ -316,7 +316,7 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Responsable de stage en entreprise', left: 0),
+        const SubTitle('Responsable en milieu de stage', left: 0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
