@@ -50,7 +50,7 @@ dependencies:
     auto_size_text: ^3.0.0
     pdf: ^3.10.1
     printing: ^5.10.3
-    intl: ^0.17.0
+    intl: ^0.18.0
 
 dependency_overrides:
     enhanced_containers:

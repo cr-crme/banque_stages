@@ -24,7 +24,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-bool useEmulator = false;
+bool useDatabaseEmulator = kDebugMode;
 bool populateWithDebugData = kDebugMode;
 
 void main() async {
@@ -39,7 +39,7 @@ void main() async {
 
   // Connect Firebase to local emulators
   assert(() {
-    if (useEmulator) {
+    if (useDatabaseEmulator) {
       final host = !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost';
       FirebaseAuth.instance.useAuthEmulator(host, 9099);
       FirebaseDatabase.instance.useDatabaseEmulator(host, 9000);

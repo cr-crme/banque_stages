@@ -606,7 +606,7 @@ Future<void> addDummyEnterprises(
       neq: '5679055590',
     ),
   );
-  await _waitForDatabaseUpdate(enterprises, 9);
+  await _waitForDatabaseUpdate(enterprises, 11);
 }
 
 Future<void> addDummyStudents(

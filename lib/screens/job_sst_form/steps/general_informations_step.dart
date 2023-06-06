@@ -73,10 +73,10 @@ class GeneralInformationsStep extends StatelessWidget {
                   'Objectif spécifiques : ',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 8),
+                const Padding(
+                  padding: EdgeInsets.only(left: 16, top: 8),
                   child: Column(
-                    children: const [
+                    children: [
                       Text(
                         '\u2022 Éclairer les enseignants sur de possibles '
                         'risques pour la SST des élèves en stage',
@@ -102,28 +102,28 @@ class GeneralInformationsStep extends StatelessWidget {
             ),
           ),
           const SubTitle('Recommandations'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Remplir ce formulaire lors d\'un entretien :',
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 16),
+                  padding: EdgeInsets.only(left: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         '\u2022 Avec la personne qui est en charge de former '
                         'l\'élève sur le plancher:',
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 16),
+                        padding: EdgeInsets.only(left: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               '\u2022 C\'est elle qui connait le mieux le poste '
                               'de travail de l\'élève',
@@ -136,22 +136,21 @@ class GeneralInformationsStep extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const Text('\u2022 La 1ère semaine de stage'),
-                      const Text(
+                      Text('\u2022 La 1ère semaine de stage'),
+                      Text(
                         '\u2022 Pendant (ou à la suite) d\'une visite du poste '
                         'de travail de l\'élève',
                       ),
                     ],
                   ),
                 ),
-                const Text(''),
-                const Text('Quand:'),
-                const Text('\u2022 La 1ère semaine de stage'),
-                const Text(
-                    '\u2022 Pendant (ou à la suite) d\'une visite du poste '
+                Text(''),
+                Text('Quand:'),
+                Text('\u2022 La 1ère semaine de stage'),
+                Text('\u2022 Pendant (ou à la suite) d\'une visite du poste '
                     'de travail de l\'élève'),
-                const Text(''),
-                const Text('Durée de remplissage : 15 minutes'),
+                Text(''),
+                Text('Durée de remplissage : 15 minutes'),
               ],
             ),
           ),
