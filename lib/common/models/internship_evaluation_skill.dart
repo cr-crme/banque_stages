@@ -11,11 +11,11 @@ extension SkillAppreciationNamed on SkillAppreciation {
   String get name {
     switch (this) {
       case SkillAppreciation.acquired:
-        return 'Acquise';
+        return 'Réussie';
       case SkillAppreciation.toPursuit:
         return 'À poursuivre';
       case SkillAppreciation.failed:
-        return 'Échouée';
+        return 'Non réussie';
       case SkillAppreciation.notEvaluated:
         return 'Non évaluée';
     }
