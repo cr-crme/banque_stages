@@ -25,7 +25,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
 
   final Map<String, bool> requiredForJob = {
     'Une entrevue de recrutement de l\'élève en solo': false,
-    'Une vérification d\'empêchement pour les élèves majeurs (vérification des antécédents judiciaires)':
+    'Une vérification des antécédents judiciaires pour les élèves majeurs':
         false,
   };
 
