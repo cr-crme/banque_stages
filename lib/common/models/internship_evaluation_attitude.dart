@@ -126,7 +126,6 @@ class InternshipEvaluationAttitude extends ItemSerializable {
       'date': date.millisecondsSinceEpoch,
       'present': presentAtEvaluation,
       'attitude': attitude.serializedMap(),
-      'skills': attitude.serializedMap(),
       'comments': comments,
       'formVersion': formVersion,
     };
