@@ -31,8 +31,8 @@ class RequirementsStepState extends State<RequirementsStep> {
       if (_protections[protection]!) return true;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Indiquer au moins une pièce d\'équipement')));
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Indiquer au moins un équipement.')));
     return false;
   }
 
