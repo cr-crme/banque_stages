@@ -129,6 +129,7 @@ class Enterprise extends ItemSerializable {
 }
 
 const List<String> activityTypes = [
+  'Agricole',
   'Animalerie',
   'Barbier',
   'Bâtiment',
@@ -140,17 +141,21 @@ const List<String> activityTypes = [
   'Cuisine',
   'Dépanneur',
   'Ébénisterie',
+  'École',
+  'Entreposage',
   'Entretien',
   'Épicerie',
+  'Esthétique',
   'Ferme',
   'Fleuriste',
   'Garage',
   'Garderie',
-  'Industriel',
+  'Industrie',
   'Loisirs',
   'Magasin',
   'Magasin de vêtements',
   'Magasin entrepôt',
+  'Maison de retraite',
   'Mécanique',
   'Menuiserie',
   'Pharmacie',
@@ -163,7 +168,11 @@ const List<String> activityTypes = [
   'Salon de coiffure',
   'Salon de toilettage',
   'Sandwicherie',
+  'Soins',
   'Station-service',
   'Supermarché',
-  'Usine'
+  'Transformation alimentaire',
+  'Travaux publics',
+  'Usine',
+  'Autre'
 ];
