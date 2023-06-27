@@ -263,16 +263,16 @@ class __DistanceState extends State<_Distance> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                     child: Text(
-                        'Itinéraire : '
+                        'Kilométrage : '
                         '${(widget.distances!.reduce((a, b) => a + b).toDouble() / 1000).toStringAsFixed(1)}km',
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontSize: 16,
-                            fontWeight: FontWeight.w600)),
+                            fontWeight: FontWeight.w700)),
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey[500]!),
+                      border: Border.all(color: Colors.grey[700]!),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: Icon(
