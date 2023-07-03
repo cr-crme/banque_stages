@@ -231,7 +231,8 @@ class RequirementsStepState extends State<RequirementsStep> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '* Laquelle ? : ',
+                          '* Décrire la tenue exigée par l\'entreprise ou les '
+                          'règles d\'habillement ? : ',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(
