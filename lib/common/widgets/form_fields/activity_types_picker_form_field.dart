@@ -64,7 +64,7 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
                 controller.text = '';
               },
               decoration: InputDecoration(
-                  labelText: '* Types d\'activité',
+                  labelText: '* Type d\'activité de l\'entreprise',
                   errorText: state.errorText,
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
