@@ -112,7 +112,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Choix de l\'itinéraire')),
+      appBar: AppBar(title: const Text('Itinéraire des visites')),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
         child: Column(
@@ -133,7 +133,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       alignment: Alignment.center,
       children: [
         Text(
-            'Itinéraire du\n${DateFormat('d MMMM yyyy', 'fr_CA').format(_currentDate)}',
+            'Faire l\'itinéraire du\n${DateFormat('d MMMM yyyy', 'fr_CA').format(_currentDate)}',
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 20)),
         Padding(
