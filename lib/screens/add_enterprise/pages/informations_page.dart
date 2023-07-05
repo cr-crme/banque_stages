@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/share_with_picker_form_field.dart';
+import 'package:flutter/material.dart';
 
 class InformationsPage extends StatefulWidget {
   const InformationsPage({super.key});
@@ -40,6 +39,7 @@ class InformationsPageState extends State<InformationsPage> {
       key: _formKey,
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
               decoration:
@@ -48,15 +48,15 @@ class InformationsPageState extends State<InformationsPage> {
                   text!.isEmpty ? 'Ajouter le nom de l\'entreprise.' : null,
               onSaved: (name) => this.name = name,
             ),
+            ActivityTypesPickerFormField(
+              onSaved: (Set<String>? activityTypes) =>
+                  setState(() => this.activityTypes = activityTypes!),
+            ),
             AddressListTile(
               title: 'Adresse',
               isMandatory: true,
               enabled: true,
               addressController: addressController,
-            ),
-            ActivityTypesPickerFormField(
-              onSaved: (Set<String>? activityTypes) =>
-                  setState(() => this.activityTypes = activityTypes!),
             ),
             ShareWithPickerFormField(
               onSaved: (String? shareWith) =>

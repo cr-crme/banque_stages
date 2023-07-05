@@ -45,7 +45,7 @@ class AddressListTile extends StatefulWidget {
 
 class _AddressListTileState extends State<AddressListTile> {
   bool isValidating = false;
-  late bool addressHasChanged = widget.title == null;
+  late bool addressHasChanged = widget.initialValue == null;
 
   @override
   void initState() {

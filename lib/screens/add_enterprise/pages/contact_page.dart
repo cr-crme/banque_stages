@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
@@ -40,10 +41,7 @@ class ContactPageState extends State<ContactPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Entreprise représentée par',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            const SubTitle('Entreprise représentée par', left: 0, top: 0),
             TextFormField(
               decoration: const InputDecoration(labelText: '* Prénom'),
               validator: (text) => text!.isEmpty

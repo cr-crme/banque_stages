@@ -26,7 +26,7 @@ class ShareWithPickerFormField extends FormField<String> {
 
   static String? _validator(String? input) {
     if (!shareWithSuggestions.contains(input)) {
-      return 'Entrez une valeur valide';
+      return 'Sélectionner avec qui partager';
     }
 
     return null;
@@ -52,16 +52,27 @@ class ShareWithPickerFormField extends FormField<String> {
           onSubmitted: (_) => onSubmitted(),
           onChanged: (text) {
             if (!shareWithSuggestions.contains(text)) {
+              if (controller.text != '') state.didChange(null);
               controller.text = '';
               return;
             }
             state.didChange(shareWithSuggestions
                 .firstWhereOrNull((suggestion) => suggestion == text));
           },
+          readOnly: true,
           decoration: InputDecoration(
-              labelText: '* Sélectionner avec qui partager l\'entreprise',
+              labelText: '* Partager l\'entreprise avec',
               errorText: state.errorText,
-              suffixIcon: const Icon(Icons.expand_more, color: Colors.black)),
+              suffixIcon: IconButton(
+                  onPressed: () {
+                    if (focusNode.hasFocus) {
+                      focusNode.previousFocus();
+                    }
+
+                    controller.text = '';
+                    state.didChange(null);
+                  },
+                  icon: const Icon(Icons.clear))),
         );
       },
     );

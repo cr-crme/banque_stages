@@ -36,7 +36,7 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
               (activity) =>
                   activity
                       .toLowerCase()
-                      .contains(textEditingValue.text.toLowerCase()) &&
+                      .contains(textEditingValue.text.toLowerCase().trim()) &&
                   !state.value!.contains(activity),
             );
           },
@@ -66,7 +66,11 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
                   errorText: state.errorText,
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
-                    onPressed: () => controller.text = '',
+                    onPressed: () {
+                      if (focusNode.hasFocus) focusNode.nextFocus();
+
+                      controller.text = '';
+                    },
                   )),
             );
           },

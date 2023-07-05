@@ -97,6 +97,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
               },
               fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
                 if (_specialization == null) {
+                  if (controller.text != '') state.didChange(null);
                   controller.text = '';
                 }
                 if (_availableSpecialization.length == 1) {
@@ -118,6 +119,9 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () {
+                          if (focusNode.hasFocus) focusNode.nextFocus();
+
+                          state.didChange(null);
                           controller.text = '';
                           _sectorTextController.text = '';
                         },
@@ -125,12 +129,16 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                 );
               },
             ),
-            TextField(
-                controller: _sectorTextController,
-                decoration: const InputDecoration(
-                  labelText: '* Secteur d\'activités',
-                  enabled: false,
-                )),
+            // TODO: Benjamin check how having a predefined space
+            Visibility(
+              visible: _sectorTextController.text != '',
+              child: TextField(
+                  controller: _sectorTextController,
+                  decoration: const InputDecoration(
+                    labelText: '* Secteur d\'activités',
+                    enabled: false,
+                  )),
+            ),
             if (widget.askNumberPositionsOffered)
               Row(
                 children: [
@@ -151,7 +159,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                         border: UnderlineInputBorder(),
                       ),
                       validator: (value) =>
-                          int.parse(value!) == 0 ? 'Indiquer un nombre.' : null,
+                          int.parse(value!) == 0 ? 'Combien?' : null,
                       onChanged: (double value) =>
                           _positionOffered = value.toInt(),
                     ),
