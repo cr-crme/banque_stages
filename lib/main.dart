@@ -24,6 +24,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
+// TODO Benjamin : remove the intl
+
 bool useDatabaseEmulator = kDebugMode;
 bool populateWithDebugData = kDebugMode;
 

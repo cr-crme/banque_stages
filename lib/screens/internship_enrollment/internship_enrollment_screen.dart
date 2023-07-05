@@ -22,12 +22,10 @@ import 'steps/schedule_step.dart';
 class InternshipEnrollmentScreen extends StatefulWidget {
   const InternshipEnrollmentScreen({
     super.key,
-    this.enterpriseId,
-    this.studentId,
+    required this.enterpriseId,
   });
 
-  final String? enterpriseId;
-  final String? studentId;
+  final String enterpriseId;
 
   @override
   State<InternshipEnrollmentScreen> createState() =>
@@ -175,22 +173,15 @@ class _InternshipEnrollmentScreenState
   @override
   Widget build(BuildContext context) {
     final enterprises = EnterprisesProvider.of(context);
-    final students = StudentsProvider.of(context);
-    if ((widget.enterpriseId != null &&
-            !enterprises.hasId(widget.enterpriseId!)) ||
-        (widget.studentId != null && !students.hasId(widget.studentId!))) {
+    if ((!enterprises.hasId(widget.enterpriseId))) {
       return Container();
     }
 
-    final enterprise = widget.enterpriseId == null
-        ? null
-        : enterprises.fromId(widget.enterpriseId!);
-    final student =
-        widget.studentId == null ? null : students.fromId(widget.studentId!);
+    final enterprise = enterprises.fromId(widget.enterpriseId);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inscrire un stagiaire'),
+        title: Text('Inscrire un stagiaire chez\n${enterprise.name}'),
         leading: IconButton(
             onPressed: _onPressBack, icon: const Icon(Icons.arrow_back)),
       ),
@@ -212,7 +203,7 @@ class _InternshipEnrollmentScreenState
             isActive: _currentStep == 0,
             title: const Text('Général'),
             content: GeneralInformationsStep(
-                key: _generalInfoKey, enterprise: enterprise, student: student),
+                key: _generalInfoKey, enterprise: enterprise),
           ),
           Step(
             state: _stepStatus[1],

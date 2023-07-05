@@ -62,10 +62,17 @@ class StudentPickerFormField extends StatelessWidget {
                 focusNode: focusNode,
                 onSubmitted: (_) => onSubmitted(),
                 decoration: InputDecoration(
-                  labelText: '* Élève',
-                  hintText: 'Saisir le nom de l\'élève',
-                  errorText: state.errorText,
-                ),
+                    labelText: '* Élève',
+                    hintText: 'Saisir le nom de l\'élève',
+                    errorText: state.errorText,
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        if (focusNode.hasFocus) focusNode.nextFocus();
+
+                        controller.text = '';
+                      },
+                    )),
               );
             },
           ),

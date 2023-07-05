@@ -1,26 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
-import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/enterprise_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/student_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class GeneralInformationsStep extends StatefulWidget {
-  const GeneralInformationsStep(
-      {super.key, required this.enterprise, required this.student});
+  const GeneralInformationsStep({super.key, required this.enterprise});
 
-  final Enterprise? enterprise;
-  final Student? student;
+  final Enterprise enterprise;
 
   @override
   State<GeneralInformationsStep> createState() =>
@@ -31,9 +26,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   final formKey = GlobalKey<FormState>();
 
   late Enterprise? enterprise = widget.enterprise;
-  late bool enterpriseIsFixed = widget.enterprise != null;
-  late Student? student = widget.student;
-  late bool studentIsFixed = widget.student != null;
+  Student? student;
 
   Job? primaryJob;
   final List<Specialization?> extraSpecializations = [];
@@ -52,12 +45,11 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
         children: [
           _GeneralInformations(
             enterprise: enterprise,
-            enterpriseIsFixed: enterpriseIsFixed,
             onSelectEnterprise: (e) => setState(() => enterprise = e),
             student: student,
-            studentIsFixed: studentIsFixed,
             onSelectStudent: (s) => setState(() => student = s),
           ),
+          const SizedBox(height: 10),
           _MainJob(
             enterprise: enterprise,
             onSaved: (job) => setState(() => primaryJob = job),
@@ -88,18 +80,14 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 class _GeneralInformations extends StatelessWidget {
   const _GeneralInformations({
     required this.enterprise,
-    required this.enterpriseIsFixed,
     required this.onSelectEnterprise,
     required this.student,
-    required this.studentIsFixed,
     required this.onSelectStudent,
   });
 
   final Enterprise? enterprise;
-  final bool enterpriseIsFixed;
   final Function(Enterprise?) onSelectEnterprise;
   final Student? student;
-  final bool studentIsFixed;
   final Function(Student?) onSelectStudent;
 
   List<Student> _studentsWithoutInternship(context, StudentsProvider students) {
@@ -111,57 +99,24 @@ class _GeneralInformations extends StatelessWidget {
     return out;
   }
 
-  List<Enterprise> _enterprisesWithAtLeastOneInternshipAvailable(
-      context, EnterprisesProvider enterprises) {
-    final List<Enterprise> out = [];
-    for (final enterprise in enterprises) {
-      if (enterprise.availableJobs(context).isNotEmpty) out.add(enterprise);
-    }
-
-    return out;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Informations générales', left: 0, top: 0),
+        const SubTitle('Stagiaire', left: 0, top: 0),
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (enterpriseIsFixed)
-                TextField(
-                  decoration: const InputDecoration(labelText: '* Entreprise'),
-                  controller: TextEditingController(text: enterprise!.name),
-                  enabled: false,
+              Consumer<StudentsProvider>(
+                builder: (context, students, _) => StudentPickerFormField(
+                  students: _studentsWithoutInternship(context, students),
+                  onSaved: onSelectStudent,
+                  onSelect: onSelectStudent,
                 ),
-              if (!enterpriseIsFixed)
-                Consumer<EnterprisesProvider>(
-                  builder: (context, enterprises, _) =>
-                      EnterprisePickerFormField(
-                    enterprises: _enterprisesWithAtLeastOneInternshipAvailable(
-                        context, enterprises),
-                    onSaved: onSelectEnterprise,
-                    onSelect: onSelectEnterprise,
-                  ),
-                ),
-              if (studentIsFixed)
-                TextField(
-                  decoration: const InputDecoration(labelText: '* Élève'),
-                  controller: TextEditingController(text: student!.fullName),
-                  enabled: false,
-                ),
-              if (!studentIsFixed)
-                Consumer<StudentsProvider>(
-                  builder: (context, students, _) => StudentPickerFormField(
-                    students: _studentsWithoutInternship(context, students),
-                    onSaved: onSelectStudent,
-                    onSelect: onSelectStudent,
-                  ),
-                ),
+              ),
             ],
           ),
         ),

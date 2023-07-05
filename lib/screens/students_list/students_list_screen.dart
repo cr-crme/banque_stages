@@ -1,14 +1,13 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
 import 'widgets/student_card.dart';
 
 class StudentsListScreen extends StatefulWidget {
@@ -45,7 +44,7 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.studentsList_title),
+        title: const Text('Mes élèves'),
         actions: [
           IconButton(
             onPressed: () => setState(() => _showSearchBar = !_showSearchBar),

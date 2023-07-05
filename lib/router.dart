@@ -157,12 +157,6 @@ final router = GoRouter(
       builder: (context, state) => const StudentsListScreen(),
       routes: [
         GoRoute(
-          path: 'add-internship-student/:id',
-          name: Screens.internshipEnrollementFromStudent,
-          builder: (context, state) =>
-              InternshipEnrollmentScreen(studentId: state.params['id']!),
-        ),
-        GoRoute(
           path: 'studentScreen/:id',
           name: Screens.student,
           builder: (context, state) => StudentScreen(

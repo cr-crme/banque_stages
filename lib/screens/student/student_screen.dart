@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
-import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/student/pages/skills_page.dart';
+import 'package:flutter/material.dart';
+
 import 'pages/about_page.dart';
 import 'pages/internships_page.dart';
 
@@ -28,32 +26,9 @@ class _StudentScreenState extends State<StudentScreen>
   late final _tabController = TabController(length: 3, vsync: this)
     ..index = widget.initialPage;
 
-  late IconButton? _actionButton;
-
   final _aboutPageKey = GlobalKey<AboutPageState>();
   final _internshipPageKey = GlobalKey<InternshipsPageState>();
   final _skillsPageKey = GlobalKey<SkillsPageState>();
-
-  Future<void> _navigateToAddInternship() async {
-    final student =
-        StudentsProvider.of(context, listen: false).fromId(widget.id);
-    if (!student.hasActiveInternship(context)) {
-      GoRouter.of(context).pushNamed(
-        Screens.internshipEnrollementFromStudent,
-        params: Screens.params(widget.id),
-      );
-      return;
-    }
-    await showDialog(
-        context: context,
-        builder: (BuildContext context) => const AlertDialog(
-              title: Text('L\'élève a déjà un stage'),
-              content: Text(
-                  'L\'élève est déjà inscrit comme stagiaire dans une autre '
-                  'entreprise. \nMettre fin au stage actuel pour l\'inscrire '
-                  'dans un nouveau milieu.'),
-            ));
-  }
 
   void _onTapBack() async {
     if (_tabController.index == 1) {
@@ -71,44 +46,6 @@ class _StudentScreenState extends State<StudentScreen>
     Navigator.of(context).pop();
   }
 
-  Future<void> _updateActionButton() async {
-    late Icon? icon;
-
-    if (_tabController.index == 0) {
-      icon = null;
-      // This was disabled for security reasons
-      // icon = _aboutPageKey.currentState?.editing ?? false
-      //     ? const Icon(Icons.save)
-      //     : const Icon(Icons.edit);
-    } else if (_tabController.index == 1) {
-      icon = const Icon(Icons.add);
-    } else if (_tabController.index == 2) {
-      icon = const Icon(Icons.add);
-    }
-
-    _actionButton = icon == null
-        ? null
-        : IconButton(
-            icon: icon,
-            onPressed: () async {
-              if (_tabController.index == 0) {
-                await _aboutPageKey.currentState?.toggleEdit();
-              } else if (_tabController.index == 1) {
-                await _navigateToAddInternship();
-              }
-              await _updateActionButton();
-            },
-          );
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _updateActionButton();
-    _tabController.addListener(() => _updateActionButton());
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Student>(
@@ -122,7 +59,6 @@ class _StudentScreenState extends State<StudentScreen>
           return Scaffold(
             appBar: AppBar(
               title: Text(student.fullName),
-              actions: _actionButton == null ? null : [_actionButton!],
               leading: IconButton(
                   onPressed: _onTapBack, icon: const Icon(Icons.arrow_back)),
               bottom: TabBar(

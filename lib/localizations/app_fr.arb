@@ -11,7 +11,6 @@
     "email": "Email",
     "address": "Adresse",
     "dateBirth": "Date de naissance",
-    "studentsList_title": "Mes élèves",
     "student_name": "Nom de l'élève",
     "student_group_current": "Groupe {group}",
     "student_group": "Groupe",
