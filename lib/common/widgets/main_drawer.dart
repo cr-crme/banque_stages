@@ -82,7 +82,13 @@ class _DrawerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        onTap: onTap ?? () => GoRouter.of(context).goNamed(route!),
+        onTap: onTap ??
+            () {
+              if (ModalRoute.of(context)!.settings.name == route!) {
+                Navigator.pop(context);
+              }
+              GoRouter.of(context).goNamed(route!);
+            },
         leading: icon,
         title: Text(
           titleText,
