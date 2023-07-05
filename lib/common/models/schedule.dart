@@ -74,7 +74,7 @@ class WeeklySchedule extends ItemSerializable {
   });
 
   final List<DailySchedule> schedule;
-  final DateTimeRange period;
+  final DateTimeRange? period;
 
   WeeklySchedule.fromSerialized(map)
       : schedule = (map['days'] as List)
@@ -89,8 +89,8 @@ class WeeklySchedule extends ItemSerializable {
   Map<String, dynamic> serializedMap() {
     return {
       'days': schedule.map((e) => e.serialize()).toList(),
-      'start': period.start.millisecondsSinceEpoch,
-      'end': period.end.millisecondsSinceEpoch,
+      'start': period!.start.millisecondsSinceEpoch,
+      'end': period!.end.millisecondsSinceEpoch,
     };
   }
 
@@ -107,6 +107,6 @@ class WeeklySchedule extends ItemSerializable {
   WeeklySchedule deepCopy() {
     return WeeklySchedule(
         schedule: schedule.map((e) => e.deepCopy()).toList(),
-        period: DateTimeRange(start: period.start, end: period.end));
+        period: DateTimeRange(start: period!.start, end: period!.end));
   }
 }

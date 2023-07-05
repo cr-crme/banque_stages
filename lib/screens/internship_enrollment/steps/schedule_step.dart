@@ -5,13 +5,14 @@ import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 
 class WeeklyScheduleController {
-  final List<WeeklySchedule> weeklySchedules;
-  DateTimeRange dateRange;
+  List<WeeklySchedule> weeklySchedules = [];
+  DateTimeRange? dateRange;
   bool _hasChanged = false;
   bool get hasChanged => _hasChanged;
 
   WeeklyScheduleController(
-      {required this.weeklySchedules, required this.dateRange});
+      {List<WeeklySchedule>? weeklySchedules, this.dateRange})
+      : weeklySchedules = weeklySchedules ?? [];
 
   void updateDateRange(DateTimeRange newRange) {
     dateRange = newRange;
@@ -57,11 +58,8 @@ class WeeklyScheduleController {
 
 const TimeOfDay _defaultStart = TimeOfDay(hour: 9, minute: 0);
 const TimeOfDay _defaultEnd = TimeOfDay(hour: 15, minute: 0);
-final DateTimeRange _dateRange = DateTimeRange(
-  start: DateTime.now(),
-  end: DateTime.now().add(const Duration(days: 1)),
-);
-WeeklySchedule _fillNewScheduleList() {
+
+WeeklySchedule _fillNewScheduleList(DateTimeRange dateRange) {
   return WeeklySchedule(schedule: [
     DailySchedule(
         dayOfWeek: Day.monday, start: _defaultStart, end: _defaultEnd),
@@ -73,7 +71,7 @@ WeeklySchedule _fillNewScheduleList() {
         dayOfWeek: Day.thursday, start: _defaultStart, end: _defaultEnd),
     DailySchedule(
         dayOfWeek: Day.friday, start: _defaultStart, end: _defaultEnd),
-  ], period: _dateRange);
+  ], period: dateRange);
 }
 
 class ScheduleStep extends StatefulWidget {
@@ -86,9 +84,17 @@ class ScheduleStep extends StatefulWidget {
 class ScheduleStepState extends State<ScheduleStep> {
   final formKey = GlobalKey<FormState>();
 
-  late final scheduleController = WeeklyScheduleController(
-      weeklySchedules: [_fillNewScheduleList()], dateRange: _dateRange);
+  late final scheduleController = WeeklyScheduleController();
   int intershipLength = 0;
+
+  void onScheduleChanged() {
+    if (scheduleController.dateRange != null &&
+        scheduleController.weeklySchedules.isEmpty) {
+      scheduleController.weeklySchedules
+          .add(_fillNewScheduleList(scheduleController.dateRange!));
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,13 +103,18 @@ class ScheduleStepState extends State<ScheduleStep> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _DateRange(scheduleController: scheduleController),
-          _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
-          ScheduleSelector(
+          _DateRange(
             scheduleController: scheduleController,
-            editMode: true,
-            withTitle: true,
+            onScheduleChanged: onScheduleChanged,
           ),
+          _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
+          Visibility(
+              visible: scheduleController.dateRange != null,
+              child: ScheduleSelector(
+                scheduleController: scheduleController,
+                editMode: true,
+                withTitle: true,
+              )),
         ],
       ),
     );
@@ -111,15 +122,19 @@ class ScheduleStepState extends State<ScheduleStep> {
 }
 
 class _DateRange extends StatefulWidget {
-  const _DateRange({required this.scheduleController});
+  const _DateRange(
+      {required this.scheduleController, required this.onScheduleChanged});
 
   final WeeklyScheduleController scheduleController;
+  final Function() onScheduleChanged;
 
   @override
   State<_DateRange> createState() => _DateRangeState();
 }
 
 class _DateRangeState extends State<_DateRange> {
+  bool _isValid = true;
+
   Future<void> _promptDateRange(context) async {
     final range = await showDateRangePicker(
       helpText: 'Sélectionner les dates',
@@ -133,7 +148,11 @@ class _DateRangeState extends State<_DateRange> {
     );
     if (range == null) return;
 
+    _isValid = true;
     widget.scheduleController.updateDateRange(range);
+
+    widget.onScheduleChanged();
+    setState(() {});
   }
 
   @override
@@ -142,48 +161,91 @@ class _DateRangeState extends State<_DateRange> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Dates et nombre d\'heures', top: 0, left: 0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 12.0),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 2 / 3,
-                child: Column(
-                  children: [
-                    TextField(
-                      decoration: const InputDecoration(
-                          labelText: '* Date de début du stage',
-                          border: InputBorder.none),
-                      controller: TextEditingController(
-                          text: DateFormat.yMMMEd('fr_CA').format(
-                              widget.scheduleController.dateRange.start)),
-                      enabled: false,
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 2 / 3,
+            child: Theme(
+              data: Theme.of(context).copyWith(disabledColor: Colors.grey[700]),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      FormField<void>(
+                        validator: (value) {
+                          if (widget.scheduleController.dateRange == null) {
+                            _isValid = false;
+                            setState(() {});
+                            return 'Nope';
+                          } else {
+                            _isValid = true;
+                            setState(() {});
+                            return null;
+                          }
+                        },
+                        builder: (state) => Text(
+                          '* Sélectionner les dates du stage',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(
+                                  color: _isValid ? Colors.black : Colors.red),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.calendar_month_outlined,
+                          color: Colors.blue,
+                        ),
+                        onPressed: () async {
+                          await _promptDateRange(context);
+                          setState(() {});
+                        },
+                      )
+                    ],
+                  ),
+                  Visibility(
+                    visible: widget.scheduleController.dateRange != null,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: TextField(
+                            decoration: const InputDecoration(
+                                labelText: 'Date de début',
+                                border: InputBorder.none),
+                            controller: TextEditingController(
+                                text: widget.scheduleController.dateRange ==
+                                        null
+                                    ? null
+                                    : DateFormat.yMMMEd('fr_CA').format(widget
+                                        .scheduleController.dateRange!.start)),
+                            enabled: false,
+                          ),
+                        ),
+                        Flexible(
+                          child: TextField(
+                            decoration: const InputDecoration(
+                                labelText: 'Date de fin',
+                                border: InputBorder.none),
+                            controller: TextEditingController(
+                                text: widget.scheduleController.dateRange ==
+                                        null
+                                    ? null
+                                    : DateFormat.yMMMEd('fr_CA').format(widget
+                                        .scheduleController.dateRange!.end)),
+                            enabled: false,
+                          ),
+                        ),
+                      ],
                     ),
-                    TextField(
-                      decoration: const InputDecoration(
-                          labelText: '* Date de fin du stage',
-                          border: InputBorder.none),
-                      controller: TextEditingController(
-                          text: DateFormat.yMMMEd('fr_CA')
-                              .format(widget.scheduleController.dateRange.end)),
-                      enabled: false,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            IconButton(
-              icon: const Icon(
-                Icons.calendar_month_outlined,
-                color: Colors.blue,
-              ),
-              onPressed: () async {
-                await _promptDateRange(context);
-                setState(() {});
-              },
-            )
-          ],
+          ),
         ),
       ],
     );
@@ -313,12 +375,18 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
       initialEntryMode: DatePickerEntryMode.input,
       initialDateRange:
           widget.scheduleController.weeklySchedules[weeklyIndex].period,
-      firstDate: DateTime(widget.scheduleController.weeklySchedules[weeklyIndex]
-              .period.start.year -
-          1),
-      lastDate: DateTime(widget.scheduleController.weeklySchedules[weeklyIndex]
-              .period.start.year +
-          2),
+      firstDate:
+          widget.scheduleController.weeklySchedules[weeklyIndex].period == null
+              ? DateTime.now()
+              : DateTime(widget.scheduleController.weeklySchedules[weeklyIndex]
+                      .period!.start.year -
+                  1),
+      lastDate:
+          widget.scheduleController.weeklySchedules[weeklyIndex].period == null
+              ? DateTime.now()
+              : DateTime(widget.scheduleController.weeklySchedules[weeklyIndex]
+                      .period!.start.year +
+                  2),
     );
     if (range == null) return;
 
@@ -364,7 +432,8 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
           TextButton(
             onPressed: () => setState(() => widget
                 .scheduleController.weeklySchedules
-                .add(_fillNewScheduleList())),
+                .add(_fillNewScheduleList(
+                    widget.scheduleController.dateRange!))),
             style: Theme.of(context).textButtonTheme.style!.copyWith(
                 backgroundColor: Theme.of(context)
                     .elevatedButtonTheme
@@ -440,12 +509,12 @@ class _ScheduleSelector extends StatelessWidget {
                   Column(children: [
                     const Text('* Date de début'),
                     Text(DateFormat.yMMMEd('fr_CA')
-                        .format(weeklySchedule.period.start))
+                        .format(weeklySchedule.period!.start))
                   ]),
                   Column(children: [
                     const Text('* Date de fin'),
                     Text(DateFormat.yMMMEd('fr_CA')
-                        .format(weeklySchedule.period.end))
+                        .format(weeklySchedule.period!.end))
                   ]),
                 ],
               ),

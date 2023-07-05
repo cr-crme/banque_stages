@@ -9,7 +9,7 @@ class PhoneListTile extends StatefulWidget {
     this.title = 'Téléphone',
     this.initialValue,
     this.icon = Icons.phone,
-    required this.onSaved,
+    this.onSaved,
     required this.isMandatory,
     required this.enabled,
     this.controller,
@@ -18,7 +18,7 @@ class PhoneListTile extends StatefulWidget {
   final String title;
   final PhoneNumber? initialValue;
   final IconData icon;
-  final Function(String?) onSaved;
+  final Function(String?)? onSaved;
   final bool isMandatory;
   final bool enabled;
   final TextEditingController? controller;

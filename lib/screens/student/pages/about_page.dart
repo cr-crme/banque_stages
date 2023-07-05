@@ -1,17 +1,12 @@
+import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
-import 'package:crcrme_banque_stages/common/models/person.dart';
-import 'package:crcrme_banque_stages/common/models/phone_number.dart';
-import 'package:crcrme_banque_stages/common/models/student.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
-import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
-import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
-import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
-import 'package:crcrme_banque_stages/misc/form_service.dart';
-
+// TODO Benjamin - Change color of the app
 class AboutPage extends StatefulWidget {
   const AboutPage({
     super.key,
@@ -28,58 +23,12 @@ class AboutPageState extends State<AboutPage> {
   final _formKey = GlobalKey<FormState>();
   final _dateFormat = DateFormat.yMd();
 
-  String? _phone;
-  String? _email;
   final _addressController = AddressController();
-
-  String? _contactFirstName;
-  String? _contactLastName;
-  String? _contactLink;
-  String? _contactPhone;
-  String? _contactEmail;
-
-  bool editing = false;
-
-  Future<void> toggleEdit() async {
-    if (!editing) {
-      setState(() => editing = true);
-      return;
-    }
-    final status = await _addressController.requestValidation();
-    if (!mounted) return;
-    if (status != null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(status)));
-      return;
-    }
-
-    if (!FormService.validateForm(_formKey, save: true)) {
-      return;
-    }
-
-    editing = false;
-    if (mounted) {
-      StudentsProvider.of(context, listen: false).replace(
-        widget.student.copyWith(
-          phone: PhoneNumber.fromString(_phone),
-          email: _email,
-          address: _addressController.address,
-          contact: Person(
-              firstName: _contactFirstName!,
-              lastName: _contactLastName!,
-              phone: PhoneNumber.fromString(_contactPhone),
-              email: _contactEmail),
-          contactLink: _contactLink,
-        ),
-      );
-    }
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => ConfirmPopDialog.show(context, editing: editing),
+    return Theme(
+      data: Theme.of(context).copyWith(disabledColor: Colors.grey[700]),
       child: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -90,20 +39,9 @@ class AboutPageState extends State<AboutPage> {
                   student: widget.student, dateFormat: _dateFormat),
               _ContactInformation(
                 student: widget.student,
-                isEditing: editing,
-                onSavedPhone: (phone) => _phone = phone,
-                onSavedEmail: (email) => _email = email,
                 addressController: _addressController,
               ),
-              _EmergencyContact(
-                student: widget.student,
-                isEditing: editing,
-                onSavedFirstName: (name) => _contactFirstName = name,
-                onSavedLastName: (name) => _contactLastName = name,
-                onSavedLink: (link) => _contactLink = link,
-                onSavedPhone: (phone) => _contactPhone = phone,
-                onSavedEmail: (email) => _contactEmail = email,
-              ),
+              _EmergencyContact(student: widget.student),
             ],
           ),
         ),
@@ -140,7 +78,10 @@ class _GeneralInformation extends StatelessWidget {
                     ),
                     Text(
                       student.program.title,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(color: Colors.grey[700]),
                     ),
                   ],
                 ),
@@ -152,7 +93,10 @@ class _GeneralInformation extends StatelessWidget {
                     ),
                     Text(
                       student.group,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(color: Colors.grey[700]),
                     ),
                   ],
                 ),
@@ -171,7 +115,10 @@ class _GeneralInformation extends StatelessWidget {
                 ),
                 Text(
                   dateFormat.format(student.dateBirth!),
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: Colors.grey[700]),
                 ),
               ],
             ),
@@ -185,16 +132,10 @@ class _GeneralInformation extends StatelessWidget {
 class _ContactInformation extends StatelessWidget {
   const _ContactInformation({
     required this.student,
-    required this.isEditing,
-    required this.onSavedPhone,
-    required this.onSavedEmail,
     required this.addressController,
   });
 
   final Student student;
-  final bool isEditing;
-  final Function(String?) onSavedPhone;
-  final Function(String?) onSavedEmail;
   final AddressController addressController;
 
   @override
@@ -213,25 +154,24 @@ class _ContactInformation extends StatelessWidget {
           child: Column(
             children: [
               PhoneListTile(
-                onSaved: onSavedPhone,
-                isMandatory: false,
-                enabled: isEditing,
-              ),
+                  initialValue: student.phone,
+                  isMandatory: false,
+                  enabled: false),
               const SizedBox(height: 8),
               TextFormField(
                 controller: TextEditingController(text: student.email),
                 decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.email,
-                    disabledBorder: InputBorder.none),
-                enabled: isEditing,
-                onSaved: onSavedEmail,
+                  labelText: AppLocalizations.of(context)!.email,
+                  disabledBorder: InputBorder.none,
+                ),
+                enabled: false,
               ),
               const SizedBox(height: 8),
               AddressListTile(
                 initialValue: student.address,
                 addressController: addressController,
                 isMandatory: false,
-                enabled: isEditing,
+                enabled: false,
               ),
             ],
           ),
@@ -242,23 +182,9 @@ class _ContactInformation extends StatelessWidget {
 }
 
 class _EmergencyContact extends StatelessWidget {
-  const _EmergencyContact({
-    required this.student,
-    required this.isEditing,
-    required this.onSavedFirstName,
-    required this.onSavedLastName,
-    required this.onSavedLink,
-    required this.onSavedPhone,
-    required this.onSavedEmail,
-  });
+  const _EmergencyContact({required this.student});
 
   final Student student;
-  final bool isEditing;
-  final Function(String?) onSavedFirstName;
-  final Function(String?) onSavedLastName;
-  final Function(String?) onSavedLink;
-  final Function(String?) onSavedPhone;
-  final Function(String?) onSavedEmail;
 
   @override
   Widget build(BuildContext context) {
@@ -281,8 +207,7 @@ class _EmergencyContact extends StatelessWidget {
                   labelText: AppLocalizations.of(context)!.firstName,
                   disabledBorder: InputBorder.none,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedFirstName,
+                enabled: false,
               ),
               TextFormField(
                 controller:
@@ -291,8 +216,7 @@ class _EmergencyContact extends StatelessWidget {
                   labelText: AppLocalizations.of(context)!.lastName,
                   disabledBorder: InputBorder.none,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedLastName,
+                enabled: false,
               ),
               const SizedBox(height: 8),
               TextFormField(
@@ -302,13 +226,12 @@ class _EmergencyContact extends StatelessWidget {
                       AppLocalizations.of(context)!.student_linkWithStudent,
                   disabledBorder: InputBorder.none,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedLink,
+                enabled: false,
               ),
               const SizedBox(height: 8),
               PhoneListTile(
-                onSaved: onSavedPhone,
-                enabled: isEditing,
+                initialValue: student.contact.phone,
+                enabled: false,
                 isMandatory: false,
               ),
               const SizedBox(height: 8),
@@ -318,8 +241,7 @@ class _EmergencyContact extends StatelessWidget {
                   labelText: AppLocalizations.of(context)!.email,
                   disabledBorder: InputBorder.none,
                 ),
-                enabled: isEditing,
-                onSaved: onSavedEmail,
+                enabled: false,
               ),
               const SizedBox(height: 12),
             ],

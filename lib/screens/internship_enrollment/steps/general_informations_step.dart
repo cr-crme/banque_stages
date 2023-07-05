@@ -260,7 +260,7 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
     if (_useContactInfo) {
       _firstNameController.text = widget.enterprise?.contact.firstName ?? '';
       _lastNameController.text = widget.enterprise?.contact.lastName ?? '';
-      _phoneController.text = widget.enterprise?.phone.toString() ?? '';
+      _phoneController.text = widget.enterprise?.contact.phone.toString() ?? '';
       _emailController.text = widget.enterprise?.contact.email ?? '';
     }
     setState(() {});
@@ -276,9 +276,10 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-                'Même personne que celle \nreprésentant l\'entreprise (contact)',
-                style: Theme.of(context).textTheme.titleMedium),
+            Flexible(
+              child: Text('Même personne que le contact de l\'entreprise',
+                  style: Theme.of(context).textTheme.titleMedium),
+            ),
             Switch(
               onChanged: widget.enterprise == null
                   ? null

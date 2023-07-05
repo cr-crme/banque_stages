@@ -121,7 +121,7 @@ class _InternshipEnrollmentScreenState
       uniform: Uniform(
           status: _requirementsKey.currentState!.uniformStatus,
           uniform: _requirementsKey.currentState!.uniform),
-      date: _scheduleKey.currentState!.scheduleController.dateRange,
+      date: _scheduleKey.currentState!.scheduleController.dateRange!,
       expectedLength: _scheduleKey.currentState!.intershipLength,
       achievedLength: 0,
       weeklySchedules:
