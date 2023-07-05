@@ -45,6 +45,7 @@ class AddressListTile extends StatefulWidget {
 
 class _AddressListTileState extends State<AddressListTile> {
   bool isValidating = false;
+  bool addressHasChanged = true;
 
   @override
   void initState() {
@@ -91,9 +92,11 @@ class _AddressListTileState extends State<AddressListTile> {
       _address = newAddress;
       widget.addressController!._textController.text = _address.toString();
       isValidating = false;
+      addressHasChanged = false;
       setState(() {});
       return null;
     }
+    debugPrint('coucou');
     if (!mounted) {
       isValidating = false;
       return 'Erreur inconnue';
@@ -133,6 +136,7 @@ class _AddressListTileState extends State<AddressListTile> {
     _address = newAddress;
     widget.addressController!._textController.text = _address.toString();
     isValidating = false;
+    addressHasChanged = false;
     setState(() {});
     return null;
   }
@@ -166,9 +170,7 @@ class _AddressListTileState extends State<AddressListTile> {
   Widget build(BuildContext context) {
     return Focus(
       onFocusChange: (hasFocus) {
-        if (!hasFocus) {
-          validate();
-        }
+        if (!hasFocus) validate();
       },
       child: Stack(
         alignment: Alignment.centerRight,
@@ -179,18 +181,26 @@ class _AddressListTileState extends State<AddressListTile> {
                 labelText:
                     '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
                 // Add an invisible icon so the text wraps
-                suffixIcon: const Icon(Icons.map, color: Colors.white),
+                //suffixIcon: const Icon(Icons.map, color: Colors.white),
                 disabledBorder: InputBorder.none),
             enabled: widget.enabled,
             maxLines: null,
             onSaved: (newAddress) => validate(),
             validator: (_) => _isValid() ? null : 'Entrer une adresse valide.',
             keyboardType: TextInputType.streetAddress,
+            onChanged: (value) => setState(() {
+              addressHasChanged = true;
+            }),
           ),
           IconButton(
-            onPressed: _address != null ? () => _showAddress(context) : null,
-            icon: Icon(Icons.map,
-                color: _address != null ? Colors.purple : Colors.grey),
+            onPressed:
+                addressHasChanged ? validate : () => _showAddress(context),
+            icon: Icon(addressHasChanged ? Icons.search : Icons.map,
+                color: addressHasChanged
+                    ? (widget.addressController!._textController.text == ''
+                        ? Colors.grey
+                        : Colors.black)
+                    : Colors.purple),
           )
         ],
       ),
