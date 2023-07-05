@@ -23,11 +23,11 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
   bool _showSearchBar = false;
 
   List<Student> _filterSelectedStudents(List<Student> students) {
+    final textToSearch = _searchController.text.toLowerCase().trim();
+
     return students.where((student) {
-      if (student.fullName
-              .toLowerCase()
-              .contains(_searchController.text.toLowerCase()) ||
-          student.group.contains(_searchController.text)) {
+      if (student.fullName.toLowerCase().contains(textToSearch) ||
+          student.group.toLowerCase().contains(textToSearch)) {
         return true;
       }
 

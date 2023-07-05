@@ -81,7 +81,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
               optionsBuilder: (textEditingValue) => _availableSpecialization
                   .where((s) => s.idWithName
                       .toLowerCase()
-                      .contains(textEditingValue.text.toLowerCase()))
+                      .contains(textEditingValue.text.toLowerCase().trim()))
                   .toList(),
               optionsViewBuilder: (context, onSelected, options) =>
                   OptionsBuilderForAutocomplete(

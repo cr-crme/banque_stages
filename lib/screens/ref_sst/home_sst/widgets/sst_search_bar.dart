@@ -56,13 +56,14 @@ class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
   Iterable<String> _optionsBuilder(value, List<Specialization> options) {
     if (value.text == '') return const Iterable<String>.empty();
     return options
-        .map<String?>((e) => e.name
-                    .toLowerCase()
-                    .contains(value.text.toLowerCase()) ||
-                e.id.contains(value.text) ||
-                e.idWithName.toLowerCase().contains(value.text.toLowerCase())
-            ? e.idWithName
-            : null)
+        .map<String?>((e) {
+          final textToSearch = value.text.toLowerCase().trim();
+          return e.name.toLowerCase().contains(textToSearch) ||
+                  e.id.contains(value.text) ||
+                  e.idWithName.toLowerCase().contains(textToSearch)
+              ? e.idWithName
+              : null;
+        })
         .where((e) => e != null)
         .cast<String>();
   }

@@ -138,31 +138,26 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
         return false;
       }
 
+      final textToSearch = searchController.text.toLowerCase().trim();
+
       // Perform the searchbar filter
-      if (enterprise.name
-          .toLowerCase()
-          .contains(searchController.text.toLowerCase())) {
+      if (enterprise.name.toLowerCase().contains(textToSearch)) {
         return true;
       }
       if (enterprise.jobs.any((job) {
-        final hasSpecialization = job.specialization.name
-            .toLowerCase()
-            .contains(searchController.text.toLowerCase());
-        final hasSector = job.specialization.sector.name
-            .toLowerCase()
-            .contains(searchController.text.toLowerCase());
+        final hasSpecialization =
+            job.specialization.name.toLowerCase().contains(textToSearch);
+        final hasSector =
+            job.specialization.sector.name.toLowerCase().contains(textToSearch);
         return hasSpecialization || hasSector;
       })) {
         return true;
       }
-      if (enterprise.activityTypes.any((type) =>
-          type.toLowerCase().contains(searchController.text.toLowerCase()))) {
+      if (enterprise.activityTypes
+          .any((type) => type.toLowerCase().contains(textToSearch))) {
         return true;
       }
-      if (enterprise.address
-          .toString()
-          .toLowerCase()
-          .contains(searchController.text.toLowerCase())) {
+      if (enterprise.address.toString().toLowerCase().contains(textToSearch)) {
         return true;
       }
       return false;
