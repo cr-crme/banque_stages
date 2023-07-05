@@ -32,8 +32,6 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
       children: [
         Autocomplete<String>(
           optionsBuilder: (textEditingValue) {
-            if (textEditingValue.text == '') return [];
-
             return activityTypes.where(
               (activity) =>
                   activity

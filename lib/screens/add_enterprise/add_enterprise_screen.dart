@@ -122,6 +122,22 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     );
 
     enterprises.add(enterprise);
+
+    await showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              content: Text(
+                  'L\'entreprise ${enterprise.name} a bien été ajoutée à la banque '
+                  'de stages.\n\n'
+                  'Vous pouvez maintenant y inscrire des stagiaires.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Ok'),
+                )
+              ],
+            ));
+
     if (mounted) Navigator.pop(context);
   }
 

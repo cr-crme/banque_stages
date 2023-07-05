@@ -30,6 +30,7 @@ class EnterprisesListScreen extends StatefulWidget {
 
 class _EnterprisesListScreenState extends State<EnterprisesListScreen>
     with SingleTickerProviderStateMixin {
+  final _enterpriseKey = GlobalKey<_EnterprisesByListState>();
   bool _withSearchBar = false;
   final _enterpriseController = EnterpriseController();
 
@@ -50,7 +51,10 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
             icon: const Icon(Icons.search),
           ),
         IconButton(
-          onPressed: () => GoRouter.of(context).goNamed(Screens.addEnterprise),
+          onPressed: () {
+            _enterpriseKey.currentState!.searchController.text = '';
+            GoRouter.of(context).goNamed(Screens.addEnterprise);
+          },
           tooltip: 'Ajouter une entreprise',
           icon: const Icon(Icons.add),
         ),
@@ -89,6 +93,7 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
         controller: _tabController,
         children: [
           _EnterprisesByList(
+            key: _enterpriseKey,
             withSearchBar: _withSearchBar,
             enterpriseController: _enterpriseController,
           ),
@@ -101,6 +106,7 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
 
 class _EnterprisesByList extends StatefulWidget {
   const _EnterprisesByList({
+    super.key,
     required this.withSearchBar,
     required this.enterpriseController,
   });
@@ -114,7 +120,7 @@ class _EnterprisesByList extends StatefulWidget {
 
 class _EnterprisesByListState extends State<_EnterprisesByList> {
   bool _hideNotAvailable = false;
-  late final _searchController = TextEditingController()
+  late final searchController = TextEditingController()
     ..addListener(() => setState(() {}));
 
   List<Enterprise> _sortEnterprisesByName(List<Enterprise> enterprises) {
@@ -135,28 +141,28 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
       // Perform the searchbar filter
       if (enterprise.name
           .toLowerCase()
-          .contains(_searchController.text.toLowerCase())) {
+          .contains(searchController.text.toLowerCase())) {
         return true;
       }
       if (enterprise.jobs.any((job) {
         final hasSpecialization = job.specialization.name
             .toLowerCase()
-            .contains(_searchController.text.toLowerCase());
+            .contains(searchController.text.toLowerCase());
         final hasSector = job.specialization.sector.name
             .toLowerCase()
-            .contains(_searchController.text.toLowerCase());
+            .contains(searchController.text.toLowerCase());
         return hasSpecialization || hasSector;
       })) {
         return true;
       }
       if (enterprise.activityTypes.any((type) =>
-          type.toLowerCase().contains(_searchController.text.toLowerCase()))) {
+          type.toLowerCase().contains(searchController.text.toLowerCase()))) {
         return true;
       }
       if (enterprise.address
           .toString()
           .toLowerCase()
-          .contains(_searchController.text.toLowerCase())) {
+          .contains(searchController.text.toLowerCase())) {
         return true;
       }
       return false;
@@ -167,7 +173,7 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.withSearchBar) Search(controller: _searchController),
+        if (widget.withSearchBar) Search(controller: searchController),
         SwitchListTile(
           title: const Text('Afficher que les stages disponibles'),
           value: _hideNotAvailable,
