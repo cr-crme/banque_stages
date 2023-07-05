@@ -45,7 +45,7 @@ class AddressListTile extends StatefulWidget {
 
 class _AddressListTileState extends State<AddressListTile> {
   bool isValidating = false;
-  bool addressHasChanged = true;
+  late bool addressHasChanged = widget.title == null;
 
   @override
   void initState() {
@@ -68,6 +68,8 @@ class _AddressListTileState extends State<AddressListTile> {
   Address? setAddress(newAddress) => _address = newAddress;
 
   Future<String?> validate() async {
+    if (!addressHasChanged) return null;
+
     if (widget.addressController!._textController.text == '') {
       return widget.isMandatory ? 'Entrer une adresse valide' : null;
     }
@@ -96,7 +98,7 @@ class _AddressListTileState extends State<AddressListTile> {
       setState(() {});
       return null;
     }
-    debugPrint('coucou');
+
     if (!mounted) {
       isValidating = false;
       return 'Erreur inconnue';
@@ -181,7 +183,8 @@ class _AddressListTileState extends State<AddressListTile> {
                 labelText:
                     '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
                 // Add an invisible icon so the text wraps
-                //suffixIcon: const Icon(Icons.map, color: Colors.white),
+                suffixIcon: Icon(addressHasChanged ? Icons.search : Icons.map,
+                    color: Colors.white),
                 disabledBorder: InputBorder.none),
             enabled: widget.enabled,
             maxLines: null,
