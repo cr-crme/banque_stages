@@ -97,12 +97,14 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[2].specializations[9],
       positionsOffered: 1,
+      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
     ),
   );
   jobs.add(
     Job(
       specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 2,
+      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
     ),
   );
 
@@ -141,6 +143,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 3,
+      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
     ),
   );
   enterprises.add(
@@ -177,12 +180,32 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-        specialization: ActivitySectorsService.sectors[9].specializations[3],
-        positionsOffered: 3,
+      specialization: ActivitySectorsService.sectors[9].specializations[3],
+      positionsOffered: 3,
+      postInternshipEvaluations: [
+        JobPostIntershipEvaluation(
+          uniform: 'Un beau chandail',
+          taskVariety: 3,
+          autonomyExpected: 4,
+          efficiencyWanted: 2,
+          minimalAge: 16,
+          requirements: [],
+          skillsRequired: [],
+          welcomingCommunication: 4,
+          welcomingMentalDeficiency: 4,
+          welcomingMentalHealthIssue: 2,
+          welcomingTsa: 1,
+        )
+      ],
+      sstEvaluation: JobSstEvaluation(
+        dangerousSituations: ['Outils mal rangés', 'Tas de pneus'],
         equipmentRequired: ['Chaussures de sécurité'],
+        incidents: [
+          'Le stagiaire a eu la peur de sa vie!',
+          'Le stagiaire a coupé un doigt à un client',
+        ],
         incidentContact: 'Jonny M. 514 514-5544',
-        dangerousSituations: '- Outils mal rangés\n- Tas de pneus',
-        sstQuestions: {
+        questions: {
           '1': 'Installer des pneus (les soulevers + transporter)',
           '2': false,
           '2+t': '',
@@ -203,7 +226,10 @@ Future<void> addDummyEnterprises(
           '22': false,
           '22+t': '',
           '23': ''
-        }),
+        },
+        date: DateTime.now(),
+      ),
+    ),
   );
   enterprises.add(
     Enterprise(
@@ -240,6 +266,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[9].specializations[3],
       positionsOffered: 2,
+      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
     ),
   );
   enterprises.add(
@@ -278,6 +305,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[2].specializations[9],
       positionsOffered: 2,
+      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
     ),
   );
 
@@ -317,6 +345,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[2].specializations[7],
       positionsOffered: 1,
+      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
     ),
   );
 
@@ -356,6 +385,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 2,
+      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
     ),
   );
 
@@ -395,6 +425,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[2].specializations[14],
       positionsOffered: 1,
+      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
     ),
   );
 
@@ -429,6 +460,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 3,
+      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
     ),
   );
 
@@ -466,23 +498,27 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-        specialization: ActivitySectorsService.sectors[1].specializations[2],
-        positionsOffered: 1,
-        pastIncidents:
-            'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
-            'et il s\'est ouvert profondément la paume en voulant couper une tige. ',
+      specialization: ActivitySectorsService.sectors[1].specializations[2],
+      positionsOffered: 1,
+      sstEvaluation: JobSstEvaluation(
+        incidents: [
+          'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
+              'et il s\'est ouvert profondément la paume en voulant couper une tige. '
+        ],
         equipmentRequired: [
           'Chaussures avec semelles antidérapantes, Gants en kevlar'
         ],
         incidentContact: 'Joanie, la propriétaire',
-        dangerousSituations: '- L\'élève n\'a pas le droit de s\'asseoir'
-            '\n- Travailler avec un couteau et sécateur'
-            '\n- Travailler avec des matières biologiques (épines de fleurs, pollen)'
-            '\n- Travailler avec des produits chimiques (pesticides)'
-            '\n- Porter des objets lourds (ex. gros pots de fleurs)'
-            '\n- Travailler avec le dos courbé'
-            '\n- Les planchers sont souvent mouillés (risque de chute)',
-        sstQuestions: {
+        dangerousSituations: [
+          'L\'élève n\'a pas le droit de s\'asseoir',
+          'Travailler avec un couteau et sécateur',
+          'Travailler avec des matières biologiques (épines de fleurs, pollen)',
+          'Travailler avec des produits chimiques (pesticides)',
+          'Porter des objets lourds (ex. gros pots de fleurs)',
+          'Travailler avec le dos courbé',
+          'Les planchers sont souvent mouillés (risque de chute)'
+        ],
+        questions: {
           '1': 'Entretenir les fleurs et les plantes, servir les clients, '
               'aider à la préparation de bouquets  ',
           '2': true,
@@ -503,7 +539,9 @@ Future<void> addDummyEnterprises(
           '22+t': 'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
               'et il s\'est ouvert profondément la paume en voulant couper une tige.',
           '23': 'Joanie, la propriétaire'
-        }),
+        },
+      ),
+    ),
   );
   enterprises.add(
     Enterprise(
@@ -540,42 +578,47 @@ Future<void> addDummyEnterprises(
     Job(
         specialization: ActivitySectorsService.sectors[1].specializations[2],
         positionsOffered: 1,
-        pastIncidents:
+        sstEvaluation: JobSstEvaluation(
+          incidents: [
             'Lorsque l\'élève a laissé tomber un vase dispendieux qui s\'est '
-            'cassé au sol, le patron s\'est énervé et lui a crié dessus. '
-            'L\'élève a fait une crise de panique.'
-            '\nL\'élève a gâché un nouvel arrivage de fleurs en préparant mal '
-            'les tiges, et le patron a menacé de le mettre à la porte. '
-            'L\'élève a appelé sa superviseure en pleurant et ne voulait pas '
-            'continuer son stage.',
-        equipmentRequired: ['Chaussures avec semelles antidérapantes'],
-        incidentContact: 'Gaëtan Munger, le gérant',
-        dangerousSituations: '- Travailler avec un couteau'
-            '\n- Travailler avec des produits chimiques (pesticides)'
-            '\n- Porter des objets lourds (ex. gros pots de fleurs)'
-            '\n- Les planchers sont souvent mouillés (risque de chute)',
-        sstQuestions: {
-          '1': 'Arroser les fleurs et les plantes, aider à la confection de '
-              'couronnes, sortir et ranger les plantes à l\'ouverture et à la '
-              'fermeture de la boutique',
-          '2': true,
-          '2+t': '',
-          '3': true,
-          '3+t': 'En début et en fin de journée, surtout des pots de fleurs.',
-          '5': ['Un diable'],
-          '6': [],
-          '7': ['Un couteau', 'Des ciseaux'],
-          '8': [],
-          '10': ['Des pesticides', 'Engrais'],
-          '15': [],
-          '16': false,
-          '19': false,
-          '20': '',
-          '21': '',
-          '22': false,
-          '22+t': '',
-          '23': 'Gaëtan Munger, le gérant'
-        }),
+                'cassé au sol, le patron s\'est énervé et lui a crié dessus. '
+                'L\'élève a fait une crise de panique.',
+            'L\'élève a gâché un nouvel arrivage de fleurs en préparant mal '
+                'les tiges, et le patron a menacé de le mettre à la porte. '
+                'L\'élève a appelé sa superviseure en pleurant et ne voulait pas '
+                'continuer son stage.'
+          ],
+          equipmentRequired: ['Chaussures avec semelles antidérapantes'],
+          incidentContact: 'Gaëtan Munger, le gérant',
+          dangerousSituations: [
+            'Travailler avec un couteau',
+            'Travailler avec des produits chimiques (pesticides)',
+            'Porter des objets lourds (ex. gros pots de fleurs)',
+            'Les planchers sont souvent mouillés (risque de chute)',
+          ],
+          questions: {
+            '1': 'Arroser les fleurs et les plantes, aider à la confection de '
+                'couronnes, sortir et ranger les plantes à l\'ouverture et à la '
+                'fermeture de la boutique',
+            '2': true,
+            '2+t': '',
+            '3': true,
+            '3+t': 'En début et en fin de journée, surtout des pots de fleurs.',
+            '5': ['Un diable'],
+            '6': [],
+            '7': ['Un couteau', 'Des ciseaux'],
+            '8': [],
+            '10': ['Des pesticides', 'Engrais'],
+            '15': [],
+            '16': false,
+            '19': false,
+            '20': '',
+            '21': '',
+            '22': false,
+            '22+t': '',
+            '23': 'Gaëtan Munger, le gérant'
+          },
+        )),
   );
   enterprises.add(
     Enterprise(

@@ -31,7 +31,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
 
   bool _otherRequirements = false;
 
-  String? _otherRequirementsText;
+  String? otherRequirementsText;
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +145,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(
-                      onSaved: (text) => _otherRequirementsText = text,
+                      onSaved: (text) => otherRequirementsText = text,
                       minLines: 2,
                       maxLines: null,
                       keyboardType: TextInputType.multiline,

@@ -57,31 +57,38 @@ class _EnterpriseEvaluationScreenState
 
     final enterprises = context.read<EnterprisesProvider>();
 
-    enterprises.replaceJob(
-      widget.id,
-      enterprises[widget.id].jobs[widget.jobId].copyWith(
-            taskVariety: _tasksKey.currentState!.taskVariety,
-            autonomyExpected: _tasksKey.currentState!.autonomyExpected,
-            efficiencyWanted: _tasksKey.currentState!.efficiencyWanted,
+    final List<String> requirements = _prerequisitesKey
+        .currentState!.requiredForJob.entries
+        .where((e) => e.value)
+        .map((e) => e.key)
+        .toList();
+    if (_prerequisitesKey.currentState!.otherRequirementsText != null) {
+      requirements.add(_prerequisitesKey.currentState!.otherRequirementsText!);
+    }
+
+    enterprises[widget.id].jobs[widget.jobId].postInternshipEvaluations.add(
+          JobPostIntershipEvaluation(
+            taskVariety: _tasksKey.currentState!.taskVariety!,
+            autonomyExpected: _tasksKey.currentState!.autonomyExpected!,
+            efficiencyWanted: _tasksKey.currentState!.efficiencyWanted!,
             skillsRequired: _tasksKey.currentState!.skillsRequired.entries
                 .where((e) => e.value)
                 .map((e) => e.key)
                 .toList(),
-            welcomingTsa: _supervisionKey.currentState!.welcomingTSA,
+            welcomingTsa: _supervisionKey.currentState!.welcomingTSA!,
             welcomingCommunication:
-                _supervisionKey.currentState!.welcomingCommunication,
+                _supervisionKey.currentState!.welcomingCommunication!,
             welcomingMentalDeficiency:
-                _supervisionKey.currentState!.welcomingMentalDeficiency,
+                _supervisionKey.currentState!.welcomingMentalDeficiency!,
             welcomingMentalHealthIssue:
-                _supervisionKey.currentState!.welcomingMentalHealthIssue,
-            minimalAge: _prerequisitesKey.currentState!.minimalAge,
-            uniform: _prerequisitesKey.currentState!.uniform,
-            requirements: _prerequisitesKey.currentState!.requiredForJob.entries
-                .where((e) => e.value)
-                .map((e) => e.key)
-                .toList(),
+                _supervisionKey.currentState!.welcomingMentalHealthIssue!,
+            minimalAge: _prerequisitesKey.currentState!.minimalAge!,
+            uniform: _prerequisitesKey.currentState!.uniform!,
+            requirements: requirements,
           ),
-    );
+        );
+    enterprises.replaceJob(
+        widget.id, enterprises[widget.id].jobs[widget.jobId]);
 
     Navigator.pop(context);
   }

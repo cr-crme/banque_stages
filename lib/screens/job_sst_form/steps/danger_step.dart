@@ -16,6 +16,8 @@ class DangerStep extends StatefulWidget {
   State<DangerStep> createState() => DangerStepState();
 }
 
+String listToString(List<String> list) => list.join('\n');
+
 class DangerStepState extends State<DangerStep> {
   final formKey = GlobalKey<FormState>();
 
@@ -34,14 +36,16 @@ class DangerStepState extends State<DangerStep> {
         child: Column(
           children: [
             QuestionWithText(
-              initialValue: widget.job.dangerousSituations,
+              initialValue:
+                  listToString(widget.job.sstEvaluation.dangerousSituations),
               question:
                   '1. Quelles sont les situations de travail qui pourraient être '
                   'dangereuses pour mon élève? Comment faudrait-il l\'y préparer?',
               onSaved: (text) => dangerousSituations = text,
             ),
             QuestionWithCheckboxList(
-              initialChoices: widget.job.equipmentRequired.toSet(),
+              initialChoices:
+                  widget.job.sstEvaluation.equipmentRequired.toSet(),
               choicesQuestion:
                   '2. Est-ce que l\'élève devra porter un des équipements de '
                   'protection individuelle suivants?',
@@ -58,8 +62,8 @@ class DangerStepState extends State<DangerStep> {
                   equipmentRequired = choices?.toList(),
             ),
             QuestionWithRadioBool(
-              initialChoice: widget.job.pastIncidents.isNotEmpty,
-              initialText: widget.job.pastIncidents,
+              initialChoice: widget.job.sstEvaluation.incidents.isNotEmpty,
+              initialText: listToString(widget.job.sstEvaluation.incidents),
               choiceQuestion:
                   '3. Est-ce qu\'il y a déjà eu des incidents ou des accidents du '
                   'travail au poste que l\'élève occupera en stage?',
@@ -67,7 +71,7 @@ class DangerStepState extends State<DangerStep> {
               onSavedText: (text) => pastIncidents = text,
             ),
             QuestionWithText(
-              initialValue: widget.job.incidentContact,
+              initialValue: widget.job.sstEvaluation.incidentContact,
               question:
                   '4. À quelle personne dans l\'entreprise, l\'élève doit-il '
                   's\'adresser en cas de blessure ou d\'incident?',

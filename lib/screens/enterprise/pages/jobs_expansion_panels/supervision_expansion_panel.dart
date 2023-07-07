@@ -23,33 +23,43 @@ class _SupervisionBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasData = job.postInternshipEvaluations.isNotEmpty;
+
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
         padding: const EdgeInsets.only(left: 24.0, right: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (job.welcomingTsa != -1)
-              _RatingBar(
-                title:
-                    'Accueil de stagiaires avec un trouble du spectre de l\'autisme (TSA)',
-                rating: job.welcomingTsa,
-              ),
-            _RatingBar(
-              title: 'Accueil de stagiaires avec un trouble du langage',
-              rating: job.welcomingCommunication,
-            ),
-            _RatingBar(
-              title: 'Accueil de stagiaires avec une déficience intellectuelle',
-              rating: job.welcomingMentalDeficiency,
-            ),
-            _RatingBar(
-              title: 'Accueil de stagiaires avec un trouble de santé mentale',
-              rating: job.welcomingMentalHealthIssue,
-            ),
-          ],
-        ),
+        child: hasData
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (job.welcomingTsa != -1)
+                    _RatingBar(
+                      title:
+                          'Accueil de stagiaires avec un trouble du spectre de l\'autisme (TSA)',
+                      rating: job.welcomingTsa,
+                    ),
+                  _RatingBar(
+                    title: 'Accueil de stagiaires avec un trouble du langage',
+                    rating: job.welcomingCommunication,
+                  ),
+                  _RatingBar(
+                    title:
+                        'Accueil de stagiaires avec une déficience intellectuelle',
+                    rating: job.welcomingMentalDeficiency,
+                  ),
+                  _RatingBar(
+                    title:
+                        'Accueil de stagiaires avec un trouble de santé mentale',
+                    rating: job.welcomingMentalHealthIssue,
+                  ),
+                ],
+              )
+            : const Center(
+                child: Padding(
+                padding: EdgeInsets.only(bottom: 12.0),
+                child: Text('Aucune donnée pour l\'instant'),
+              )),
       ),
     );
   }

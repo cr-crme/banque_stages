@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/screens/job_sst_form/steps/danger_step.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'steps/general_informations_step.dart';
 import 'steps/questions_step.dart';
 
@@ -67,17 +67,17 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     _dangerKey.currentState!.formKey.currentState!.save();
 
     final enterprises = context.read<EnterprisesProvider>();
-    enterprises.replaceJob(
-      widget.enterpriseId,
-      enterprises[widget.enterpriseId].jobs[widget.jobId].copyWith(
-            sstQuestions: _questionsKey.currentState!.awnser,
-            dangerousSituations: _dangerKey.currentState!.dangerousSituations,
-            equipmentRequired: _dangerKey.currentState!.equipmentRequired,
-            pastIncidents: _dangerKey.currentState!.pastIncidents,
-            incidentContact: _dangerKey.currentState!.incidentContact,
-            sstLastUpdate: DateTime.now(),
-          ),
-    );
+    enterprises[widget.enterpriseId].jobs[widget.jobId].sstEvaluation.update(
+          questions: _questionsKey.currentState!.awnser,
+          dangerousSituations:
+              _dangerKey.currentState!.dangerousSituations!.split('\n'),
+          equipmentRequired: _dangerKey.currentState!.equipmentRequired!,
+          incidents: _dangerKey.currentState!.pastIncidents!.split('\n'),
+          incidentContact: _dangerKey.currentState!.incidentContact!,
+        );
+
+    enterprises.replaceJob(widget.enterpriseId,
+        enterprises[widget.enterpriseId].jobs[widget.jobId]);
 
     Navigator.pop(context);
   }

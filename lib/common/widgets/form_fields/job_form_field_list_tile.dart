@@ -61,8 +61,11 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
           return;
         }
         widget.onSaved!(Job(
-            specialization: _specialization!,
-            positionsOffered: _positionOffered));
+          specialization: _specialization!,
+          positionsOffered: _positionOffered,
+          // TODO Aurelie - Add incident contact?
+          sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+        ));
       },
       validator: (_) => _validator(),
       builder: (state) => Padding(

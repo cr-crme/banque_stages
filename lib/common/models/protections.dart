@@ -30,7 +30,8 @@ class Protections extends ItemSerializable {
 
   Protections.fromSerialized(map)
       : status = ProtectionsStatus.values[map['status']],
-        protections = ItemSerializable.listFromSerialized(map['protections']);
+        protections =
+            (map['protections'] as List? ?? []).map<String>((e) => e).toList();
 
   @override
   Map<String, dynamic> serializedMap() => {

@@ -34,6 +34,9 @@ class _SstBody extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Column(
+          crossAxisAlignment: job.comments.isEmpty
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8),
             ...job.comments.isEmpty
@@ -48,9 +51,12 @@ class _SstBody extends StatelessWidget {
                     ),
                   ),
             Center(
-              child: TextButton(
+              child: IconButton(
                 onPressed: () => addComment(job),
-                child: const Text('Ajouter un commentaire'),
+                icon: Icon(
+                  Icons.add_comment,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           ],

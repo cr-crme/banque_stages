@@ -49,9 +49,12 @@ class _PhotoBody extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Center(
-            child: TextButton(
+            child: IconButton(
               onPressed: () => addImage(job),
-              child: const Text('Ajouter une image'),
+              icon: Icon(
+                Icons.camera_alt,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
           ),
         ],

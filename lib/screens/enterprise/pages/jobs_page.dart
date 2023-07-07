@@ -65,23 +65,13 @@ class JobsPageState extends State<JobsPage> {
 
     switch (result['eventType']) {
       case SstEventType.pastIncidents:
-        enterprises.replaceJob(
-          widget.enterprise,
-          job.copyWith(
-            pastIncidents: '- ${result['description']}\n${job.pastIncidents}',
-          ),
-        );
+        job.sstEvaluation.incidents.add(result['description']);
         break;
       case SstEventType.dangerousSituations:
-        enterprises.replaceJob(
-          widget.enterprise,
-          job.copyWith(
-            dangerousSituations:
-                '- ${result['description']}\n${job.dangerousSituations}',
-          ),
-        );
+        job.sstEvaluation.dangerousSituations.add(result['description']);
         break;
     }
+    enterprises.replaceJob(widget.enterprise, job);
   }
 
   void _addComment(Job job) async {

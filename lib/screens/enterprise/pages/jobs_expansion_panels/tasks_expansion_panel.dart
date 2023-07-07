@@ -22,54 +22,62 @@ class _TasksBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasData = job.postInternshipEvaluations.isNotEmpty;
+
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
         padding: const EdgeInsets.only(left: 24, right: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Variété des tâches',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            LowHighSliderFormField(
-              initialValue: job.taskVariety,
-              enabled: false,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Habiletés obligatoires',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            Column(
-              children: job.skillsRequired.isEmpty
-                  ? [const Text('Aucune habileté requise')]
-                  : job.skillsRequired
-                      .map((skills) => Text('- $skills'))
-                      .toList(),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Niveau d\'autonomie souhaité',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            LowHighSliderFormField(
-              initialValue: job.autonomyExpected,
-              enabled: false,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Rendement attendu',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            LowHighSliderFormField(
-              initialValue: job.efficiencyWanted,
-              enabled: false,
-            ),
-            const SizedBox(height: 12),
-          ],
-        ),
+        child: hasData
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Variété des tâches',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  LowHighSliderFormField(
+                    initialValue: job.taskVariety,
+                    enabled: false,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Habiletés obligatoires',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  Column(
+                    children: job.skillsRequired.isEmpty
+                        ? [const Text('Aucune habileté requise')]
+                        : job.skillsRequired
+                            .map((skills) => Text('- $skills'))
+                            .toList(),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Niveau d\'autonomie souhaité',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  LowHighSliderFormField(
+                    initialValue: job.autonomyExpected,
+                    enabled: false,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Rendement attendu',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  LowHighSliderFormField(
+                    initialValue: job.efficiencyWanted,
+                    enabled: false,
+                  ),
+                  const SizedBox(height: 12),
+                ],
+              )
+            : const Center(
+                child: Padding(
+                padding: EdgeInsets.only(bottom: 12.0),
+                child: Text('Aucune tâche ou exigence fournies'),
+              )),
       ),
     );
   }

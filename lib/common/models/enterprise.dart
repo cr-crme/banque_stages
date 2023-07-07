@@ -111,7 +111,7 @@ class Enterprise extends ItemSerializable {
   Enterprise.fromSerialized(map)
       : name = map['name'],
         activityTypes =
-            ItemSerializable.setFromSerialized(map['activityTypes']),
+            (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
         recrutedBy = map['recrutedBy'],
         shareWith = map['shareWith'],
         jobs = JobList.fromSerialized(map['jobs']),

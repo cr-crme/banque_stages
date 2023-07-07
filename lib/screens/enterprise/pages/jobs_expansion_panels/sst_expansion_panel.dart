@@ -29,7 +29,7 @@ class SstExpansionPanel extends ExpansionPanel {
                 ],
               ),
               child: Visibility(
-                visible: job.pastIncidents.isNotEmpty,
+                visible: job.sstEvaluation.incidents.isNotEmpty,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Icon(
@@ -77,9 +77,14 @@ class SstBody extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 8),
-              child: job.pastIncidents.isEmpty
-                  ? const Text('Aucun incident signalé')
-                  : Text(job.pastIncidents),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: job.sstEvaluation.incidents.isNotEmpty
+                    ? job.sstEvaluation.incidents
+                        .map((e) => Text('- $e'))
+                        .toList()
+                    : [const Text('Aucun incident signalé')],
+              ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -89,9 +94,9 @@ class SstBody extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 8),
-              child: job.incidentContact.isEmpty
-                  ? const Text('Aucun contact enregistré')
-                  : Text(job.incidentContact),
+              child: job.sstEvaluation.incidentContact.isNotEmpty
+                  ? Text(job.sstEvaluation.incidentContact)
+                  : const Text('Aucun contact enregistré'),
             ),
             const SizedBox(height: 8),
             Text(
@@ -100,9 +105,14 @@ class SstBody extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 8),
-              child: job.dangerousSituations.isEmpty
-                  ? const Text('Aucune situation')
-                  : Text(job.dangerousSituations),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: job.sstEvaluation.dangerousSituations.isNotEmpty
+                    ? job.sstEvaluation.dangerousSituations
+                        .map((e) => Text('- $e'))
+                        .toList()
+                    : [const Text('Aucun situation')],
+              ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -112,11 +122,12 @@ class SstBody extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 8),
               child: Column(
-                children: job.equipmentRequired.isEmpty
-                    ? [const Text('Aucun équipement')]
-                    : job.equipmentRequired
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: job.sstEvaluation.equipmentRequired.isNotEmpty
+                    ? job.sstEvaluation.equipmentRequired
                         .map((equipment) => Text('- $equipment'))
-                        .toList(),
+                        .toList()
+                    : [const Text('Aucun équipement')],
               ),
             ),
             const SizedBox(height: 8),
@@ -124,9 +135,11 @@ class SstBody extends StatelessWidget {
               'Détail des tâches et risques associés',
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            const Text("Formulaire SST rempli avec l’entreprise"),
-            Text(
-                "Mis à jour le ${job.sstLastUpdate.year}-${job.sstLastUpdate.month}-${job.sstLastUpdate.day}"),
+            const Text('Formulaire SST rempli avec l\'entreprise'),
+            Text(job.sstEvaluation.isNotEmpty
+                ? 'Aucun incident enregistré'
+                : 'Mis à jour le ${job.sstEvaluation.date.year}-'
+                    '${job.sstEvaluation.date.month}-${job.sstEvaluation.date.day}'),
             const SizedBox(height: 8),
             Center(
               child: TextButton(

@@ -47,9 +47,11 @@ class QuestionsStepState extends State<QuestionsStep> {
                 switch (question.type) {
                   case Type.radio:
                     return QuestionWithRadioBool(
-                      initialChoice: widget.job.sstQuestions[question.id],
-                      initialText:
-                          widget.job.sstQuestions['${question.id}+t'] ?? '',
+                      initialChoice:
+                          widget.job.sstEvaluation.questions[question.id],
+                      initialText: widget.job.sstEvaluation
+                              .questions['${question.id}+t'] ??
+                          '',
                       choiceQuestion:
                           '${index + 1}. ${question.getQuestion(isProfessor)}',
                       textTrue: question.choices.firstOrNull,
@@ -61,10 +63,12 @@ class QuestionsStepState extends State<QuestionsStep> {
 
                   case Type.checkbox:
                     return QuestionWithCheckboxList(
-                      initialChoices:
-                          Set.from(widget.job.sstQuestions[question.id] ?? []),
-                      initialText:
-                          widget.job.sstQuestions['${question.id}+t'] ?? '',
+                      initialChoices: Set.from(
+                          widget.job.sstEvaluation.questions[question.id] ??
+                              []),
+                      initialText: widget.job.sstEvaluation
+                              .questions['${question.id}+t'] ??
+                          '',
                       choicesQuestion:
                           '${index + 1}. ${question.getQuestion(isProfessor)}',
                       choices: question.choices,
@@ -76,7 +80,8 @@ class QuestionsStepState extends State<QuestionsStep> {
 
                   case Type.text:
                     return QuestionWithText(
-                      initialValue: widget.job.sstQuestions[question.id] ?? '',
+                      initialValue:
+                          widget.job.sstEvaluation.questions[question.id] ?? '',
                       question:
                           '${index + 1}. ${question.getQuestion(isProfessor)}',
                       onSaved: (text) => awnser[question.id] = text,
