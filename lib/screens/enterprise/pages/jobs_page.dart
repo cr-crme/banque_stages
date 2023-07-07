@@ -147,6 +147,7 @@ class JobsPageState extends State<JobsPage> {
                         ),
                         PrerequisitesExpansionPanel(
                           isExpanded: _expandedSections[job.id]![4],
+                          enterprise: widget.enterprise,
                           job: job,
                         ),
                         CommentsExpansionPanel(

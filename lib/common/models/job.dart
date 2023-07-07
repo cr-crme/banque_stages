@@ -192,7 +192,7 @@ class Job extends ItemSerializable {
 
   int get minimalAge =>
       _meanInList(_pie, (e) => (e.minimalAge as int).toDouble()).toInt();
-  List<String> get uniform => _pie.map((e) => e.uniform).toList();
+  List<String> get uniforms => _pie.map((e) => e.uniform).toList();
   List<String> get requirements => _pie.expand((e) => e.requirements).toList();
 
   // SST
