@@ -71,20 +71,22 @@ class SstBody extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              'Historique d\'accidents et d\'incidents au poste de travail',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
             Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: job.sstEvaluation.incidents.isNotEmpty
-                    ? job.sstEvaluation.incidents
-                        .map((e) => Text('- $e'))
-                        .toList()
-                    : [const Text('Aucun incident signalé')],
-              ),
+              padding: const EdgeInsets.only(top: 4, bottom: 8.0),
+              child: job.sstEvaluation.incidents.isEmpty
+                  ? const Center(
+                      child: Text('Aucun incident n\'a été signalé'),
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Historique d\'accidents et d\'incidents au poste de travail',
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        ...job.sstEvaluation.incidents.map((e) => Text('- $e')),
+                      ],
+                    ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -135,10 +137,10 @@ class SstBody extends StatelessWidget {
               'Détail des tâches et risques associés',
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            const Text('Formulaire SST rempli avec l\'entreprise'),
-            Text(job.sstEvaluation.isNotEmpty
-                ? 'Aucun incident enregistré'
-                : 'Mis à jour le ${job.sstEvaluation.date.year}-'
+            Text(job.sstEvaluation.incidentContact.isEmpty
+                ? 'Le formulaire n\'a jamais été rempli avec cette entreprise'
+                : 'Formulaire SST rempli avec l\'entreprise\n'
+                    'Mis à jour le ${job.sstEvaluation.date.year}-'
                     '${job.sstEvaluation.date.month}-${job.sstEvaluation.date.day}'),
             const SizedBox(height: 8),
             Center(

@@ -52,14 +52,6 @@ class JobSstEvaluation extends ItemSerializable {
     date = DateTime.now();
   }
 
-  bool get isEmpty =>
-      dangerousSituations.isEmpty &&
-      equipmentRequired.isEmpty &&
-      incidents.isEmpty &&
-      incidentContact.isEmpty &&
-      questions.isEmpty;
-  bool get isNotEmpty => !isEmpty;
-
   JobSstEvaluation({
     required this.dangerousSituations,
     required this.equipmentRequired,
