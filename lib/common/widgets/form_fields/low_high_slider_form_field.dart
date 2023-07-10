@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 
 class LowHighSliderFormField extends FormField<double> {
-  const LowHighSliderFormField({
-    super.key,
-    double initialValue = 3,
-    bool enabled = true,
-    void Function(double? value)? onSaved,
-  }) : super(
+  LowHighSliderFormField(
+      {super.key,
+      double initialValue = 3,
+      bool enabled = true,
+      void Function(double? value)? onSaved,
+      String lowLabel = 'Faible',
+      String highLabel = 'Élevé'})
+      : super(
           initialValue: initialValue,
           enabled: enabled,
           onSaved: onSaved,
-          builder: _builder,
+          builder: (state) => _builder(state, lowLabel, highLabel),
         );
 
   static const int min = 1;
   static const int max = 5;
 
-  static Widget _builder(FormFieldState<double> state) {
+  static Widget _builder(
+      FormFieldState<double> state, String lowLabel, String highLabel) {
     if (state.value! < min || state.value! > max) {
       return const Text('Aucune donnée pour l\'instant.');
     }
@@ -25,7 +28,7 @@ class LowHighSliderFormField extends FormField<double> {
       width: Size.infinite.width,
       child: Row(
         children: [
-          const Text('Faible'),
+          Text(lowLabel, textAlign: TextAlign.center),
           Expanded(
             child: Slider(
               value: state.value!,
@@ -35,9 +38,10 @@ class LowHighSliderFormField extends FormField<double> {
               min: min.toDouble(),
               max: max.toDouble(),
               divisions: max - min,
+              label: '${state.value!.toInt()}',
             ),
           ),
-          const Text('Élevé'),
+          Text(highLabel, textAlign: TextAlign.center),
         ],
       ),
     );

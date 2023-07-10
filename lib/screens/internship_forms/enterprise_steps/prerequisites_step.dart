@@ -1,8 +1,21 @@
+import 'package:collection/collection.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 
 class PrerequisitesStep extends StatefulWidget {
-  const PrerequisitesStep({super.key});
+  const PrerequisitesStep({
+    super.key,
+    required this.job,
+  });
+
+  final Job job;
 
   @override
   State<PrerequisitesStep> createState() => PrerequisitesStepState();
@@ -10,6 +23,27 @@ class PrerequisitesStep extends StatefulWidget {
 
 class PrerequisitesStepState extends State<PrerequisitesStep> {
   final _formKey = GlobalKey<FormState>();
+
+  int? minimalAge;
+
+  final Map<String, bool> requiredForJob = {
+    'Une entrevue de recrutement de l\'élève en solo': false,
+    'Une vérification des antécédents judiciaires pour les élèves majeurs':
+        false,
+  };
+  bool _otherRequirements = false;
+  String? otherRequirementsText;
+
+  final Map<String, bool> skillsRequired = {
+    'Communiquer à l\'écrit': false,
+    'Communiquer en anglais': false,
+    'Conduire un chariot (élèves CFER)': false,
+    'Interagir avec des clients': false,
+    'Manipuler de l\'argent': false,
+  };
+
+  bool _otherSkills = false;
+  String? otherSkillsText;
 
   Future<String?> validate() async {
     if (!_formKey.currentState!.validate()) {
@@ -19,93 +53,228 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
     return null;
   }
 
-  int? minimalAge;
-
-  final Map<String, bool> requiredForJob = {
-    'Une entrevue de recrutement de l\'élève en solo': false,
-    'Une vérification des antécédents judiciaires pour les élèves majeurs':
-        false,
-  };
-
-  bool _otherRequirements = false;
-
-  String? otherRequirementsText;
-
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Âge minimum requis pour le stage :',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            _AgeSpinBox(
-              onSaved: (newValue) => minimalAge = newValue,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'L\'entreprise a demandé : ',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            Column(
-              children: requiredForJob.keys
-                  .map(
-                    (requirement) => CheckboxListTile(
-                      visualDensity: VisualDensity.compact,
-                      dense: true,
-                      title: Text(
-                        requirement,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      value: requiredForJob[requirement],
-                      onChanged: (newValue) => setState(
-                          () => requiredForJob[requirement] = newValue!),
-                    ),
-                  )
-                  .toList(),
-            ),
-            CheckboxListTile(
-              visualDensity: VisualDensity.compact,
-              dense: true,
-              title: Text(
-                'Autre',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              value: _otherRequirements,
-              onChanged: (newValue) =>
-                  setState(() => _otherRequirements = newValue!),
-            ),
-            Visibility(
-              visible: _otherRequirements,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Préciser : ',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    TextFormField(
-                      onSaved: (text) => otherRequirementsText = text,
-                      minLines: 2,
-                      maxLines: null,
-                      keyboardType: TextInputType.multiline,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+    final internship = InternshipsProvider.of(context, listen: false)
+        .firstWhere((e) => e.jobId == widget.job.id);
+    final enterprise = EnterprisesProvider.of(context, listen: false)
+        .firstWhereOrNull((e) => e.id == internship.enterpriseId);
+    final student = StudentsProvider.of(context, listen: false)
+        .firstWhereOrNull((e) => e.id == internship.studentId);
+
+    // Sometimes for some reason the build is called this with these
+    // provider empty on the first call
+    if (enterprise == null || student == null) return Container();
+
+    return Theme(
+      data: Theme.of(context).copyWith(disabledColor: Colors.grey[700]),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildStudentName(student),
+              _buildEnterpriseName(enterprise),
+              _buildScholarYear(internship),
+              _buildMinimumAge(context),
+              const SizedBox(height: 16),
+              _buildRequirements(context),
+              const SizedBox(height: 16),
+              _buildSkillsRequired(context),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSkillsRequired(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '* Habileté requises pour le stage ?',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        Column(
+          children: skillsRequired.keys
+              .map(
+                (skill) => CheckboxListTile(
+                  visualDensity: VisualDensity.compact,
+                  dense: true,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: Text(
+                    skill,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  value: skillsRequired[skill],
+                  onChanged: (newValue) =>
+                      setState(() => skillsRequired[skill] = newValue!),
+                ),
+              )
+              .toList(),
+        ),
+        CheckboxListTile(
+          visualDensity: VisualDensity.compact,
+          dense: true,
+          controlAffinity: ListTileControlAffinity.leading,
+          title: Text(
+            'Autre',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          value: _otherSkills,
+          onChanged: (newValue) => setState(() => _otherSkills = newValue!),
+        ),
+        Visibility(
+          visible: _otherSkills,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '* Préciser les autres attentes : ',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                TextFormField(
+                  onChanged: (text) => otherSkillsText = text,
+                  minLines: 2,
+                  maxLines: null,
+                  validator: (value) => _otherSkills &&
+                          (otherSkillsText == null || otherSkillsText!.isEmpty)
+                      ? 'Préciser les autres attentes'
+                      : null,
+                  keyboardType: TextInputType.multiline,
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildRequirements(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'L\'entreprise a demandé : ',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        ...requiredForJob.keys
+            .map(
+              (requirement) => CheckboxListTile(
+                visualDensity: VisualDensity.compact,
+                dense: true,
+                controlAffinity: ListTileControlAffinity.leading,
+                title: Text(
+                  requirement,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                value: requiredForJob[requirement],
+                onChanged: (newValue) =>
+                    setState(() => requiredForJob[requirement] = newValue!),
+              ),
+            )
+            .toList(),
+        CheckboxListTile(
+          visualDensity: VisualDensity.compact,
+          dense: true,
+          controlAffinity: ListTileControlAffinity.leading,
+          title: Text(
+            'Autre',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          value: _otherRequirements,
+          onChanged: (newValue) =>
+              setState(() => _otherRequirements = newValue!),
+        ),
+        Visibility(
+          visible: _otherRequirements,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Préciser : ',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                TextFormField(
+                  onSaved: (text) => otherRequirementsText = text,
+                  minLines: 2,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  validator: (value) => _otherRequirements &&
+                          (otherRequirementsText == null ||
+                              otherRequirementsText!.isEmpty)
+                      ? 'Préciser les autres demandes'
+                      : null,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMinimumAge(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Âge minimum requis pour le stage :',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.3,
+          child: _AgeSpinBox(
+            onSaved: (newValue) => minimalAge = newValue,
+          ),
+        ),
+      ],
+    );
+  }
+
+  TextField _buildScholarYear(Internship internship) {
+    final starting = internship.dateFrom(0).start;
+    final startingYear = starting.month < 9 ? starting.year - 1 : starting.year;
+    final scholarYear = DateTimeRange(
+        start: DateTime(startingYear), end: DateTime(startingYear + 1));
+
+    return TextField(
+      decoration: const InputDecoration(
+          labelText: 'Année scolaire', border: InputBorder.none),
+      controller: TextEditingController(
+          text: '${scholarYear.start.year}-${scholarYear.end.year}'),
+      enabled: false,
+    );
+  }
+
+  TextField _buildEnterpriseName(Enterprise enterprise) {
+    return TextField(
+      decoration: const InputDecoration(
+          labelText: 'Nom de l\'entreprise', border: InputBorder.none),
+      controller: TextEditingController(text: enterprise.name),
+      enabled: false,
+    );
+  }
+
+  TextField _buildStudentName(Student student) {
+    return TextField(
+      decoration: const InputDecoration(
+          labelText: 'Nom de l\'élève', border: InputBorder.none),
+      controller: TextEditingController(text: student.fullName),
+      enabled: false,
     );
   }
 }
@@ -115,8 +284,8 @@ class _AgeSpinBox extends FormField<int> {
 
   static Widget _build(FormFieldState<int> state) {
     return SpinBox(
-      value: 0,
-      min: 0,
+      value: 15,
+      min: 10,
       max: 30,
       spacing: 0,
       decoration: const InputDecoration(border: UnderlineInputBorder()),

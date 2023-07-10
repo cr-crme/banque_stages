@@ -7,9 +7,9 @@ import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'prerequisites_step.dart';
+import 'specialized_students_step.dart';
 import 'supervision_step.dart';
-import 'tasks_step.dart';
+import 'prerequisites_step.dart';
 
 class EnterpriseEvaluationScreen extends StatefulWidget {
   const EnterpriseEvaluationScreen(
@@ -33,9 +33,10 @@ class _EnterpriseEvaluationScreenState
     StepState.indexed
   ];
 
-  final _tasksKey = GlobalKey<TasksStepState>();
-  final _supervisionKey = GlobalKey<SupervisionStepState>();
   final _prerequisitesKey = GlobalKey<PrerequisitesStepState>();
+  final _supervisionKey = GlobalKey<SupervisionStepState>();
+  final _specializedStudentsKey = GlobalKey<SpecializedStudentsStepState>();
+  final double _tabHeight = 0.0;
   int _currentStep = 0;
 
   void _showInvalidFieldsSnakBar([String? message]) {
@@ -48,7 +49,7 @@ class _EnterpriseEvaluationScreenState
     bool valid = false;
     String? message;
     if (_currentStep >= 0) {
-      message = await _tasksKey.currentState!.validate();
+      message = await _prerequisitesKey.currentState!.validate();
       valid = message == null;
       _stepStatus[0] = valid ? StepState.complete : StepState.error;
     }
@@ -58,7 +59,7 @@ class _EnterpriseEvaluationScreenState
       _stepStatus[1] = valid ? StepState.complete : StepState.error;
     }
     if (_currentStep >= 2) {
-      message = await _prerequisitesKey.currentState!.validate();
+      message = await _specializedStudentsKey.currentState!.validate();
       valid = message == null;
       _stepStatus[2] = valid ? StepState.complete : StepState.error;
     }
@@ -73,10 +74,10 @@ class _EnterpriseEvaluationScreenState
     ScaffoldMessenger.of(context).clearSnackBars();
 
     if (_currentStep == 2) {
-      if ((await _tasksKey.currentState!.validate()) != null) {
+      if ((await _prerequisitesKey.currentState!.validate()) != null) {
         setState(() {
           _currentStep = 0;
-          _scrollController.jumpTo(0);
+          _scrollToCurrentTab();
         });
         _showInvalidFieldsSnakBar(message);
         return;
@@ -85,7 +86,7 @@ class _EnterpriseEvaluationScreenState
       if (await _supervisionKey.currentState!.validate() != null) {
         setState(() {
           _currentStep = 1;
-          _scrollController.jumpTo(0);
+          _scrollToCurrentTab();
         });
         _showInvalidFieldsSnakBar(message);
         return;
@@ -94,9 +95,22 @@ class _EnterpriseEvaluationScreenState
     } else {
       setState(() {
         _currentStep += 1;
-        _scrollController.jumpTo(0);
+        _scrollToCurrentTab();
       });
     }
+  }
+
+  void _previousStep() {
+    _currentStep--;
+    _scrollToCurrentTab();
+    setState(() {});
+  }
+
+  void _scrollToCurrentTab() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // Wait until the stepper has closed and reopened before moving
+      _scrollController.jumpTo(_currentStep * _tabHeight);
+    });
   }
 
   void _submit() {
@@ -109,12 +123,13 @@ class _EnterpriseEvaluationScreenState
       requirements.add(_prerequisitesKey.currentState!.otherRequirementsText!);
     }
 
-    final List<String> skills = _tasksKey.currentState!.skillsRequired.entries
+    final List<String> skills = _prerequisitesKey
+        .currentState!.skillsRequired.entries
         .where((e) => e.value)
         .map((e) => e.key)
         .toList();
-    if (_tasksKey.currentState!.otherSkillsText != null) {
-      skills.add(_tasksKey.currentState!.otherSkillsText!);
+    if (_prerequisitesKey.currentState!.otherSkillsText != null) {
+      skills.add(_prerequisitesKey.currentState!.otherSkillsText!);
     }
 
     // Add the evaluation to a copy of the internship
@@ -122,17 +137,17 @@ class _EnterpriseEvaluationScreenState
     final internship = internships.firstWhere((e) => e.jobId == widget.jobId);
     internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
       internshipId: internship.id,
-      taskVariety: _tasksKey.currentState!.taskVariety!,
-      autonomyExpected: _tasksKey.currentState!.autonomyExpected!,
-      efficiencyWanted: _tasksKey.currentState!.efficiencyWanted!,
+      taskVariety: _supervisionKey.currentState!.taskVariety!,
+      autonomyExpected: _supervisionKey.currentState!.autonomyExpected!,
+      efficiencyWanted: _supervisionKey.currentState!.efficiencyWanted!,
       skillsRequired: skills,
-      welcomingTsa: _supervisionKey.currentState!.welcomingTSA,
+      welcomingTsa: _specializedStudentsKey.currentState!.welcomingTSA,
       welcomingCommunication:
-          _supervisionKey.currentState!.welcomingCommunication,
+          _specializedStudentsKey.currentState!.welcomingCommunication,
       welcomingMentalDeficiency:
-          _supervisionKey.currentState!.welcomingMentalDeficiency,
+          _specializedStudentsKey.currentState!.welcomingMentalDeficiency,
       welcomingMentalHealthIssue:
-          _supervisionKey.currentState!.welcomingMentalHealthIssue,
+          _specializedStudentsKey.currentState!.welcomingMentalHealthIssue,
       minimalAge: _prerequisitesKey.currentState!.minimalAge!,
       requirements: requirements,
     );
@@ -143,20 +158,21 @@ class _EnterpriseEvaluationScreenState
     Navigator.pop(context);
   }
 
-  void _onPressedCancel(ControlsDetails details) async {
-    final answer = await ConfirmPopDialog.show(context);
-    if (!answer) return;
+  void _cancel() async {
+    final result = await showDialog(
+        context: context, builder: (context) => const ConfirmPopDialog());
+    if (!mounted || result == null || !result) return;
 
-    details.onStepCancel!();
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Évaluation post-stage'),
-        leading: Container(),
-      ),
+          title: const Text('Évaluation post-stage'),
+          leading: IconButton(
+              onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
       body: Selector<EnterprisesProvider, Job>(
         builder: (context, job, _) => ScrollableStepper(
           type: StepperType.horizontal,
@@ -172,16 +188,16 @@ class _EnterpriseEvaluationScreenState
             Step(
               state: _stepStatus[0],
               isActive: _currentStep == 0,
-              title: const Text('Encadrement'),
-              content: TasksStep(
-                key: _tasksKey,
+              title: const Text('Prérequis'),
+              content: PrerequisitesStep(
+                key: _prerequisitesKey,
                 job: job,
               ),
             ),
             Step(
               state: _stepStatus[1],
               isActive: _currentStep == 1,
-              title: const Text('Clientèle \nspécialisée'),
+              title: const Text('Encadrement'),
               content: SupervisionStep(
                 key: _supervisionKey,
                 job: job,
@@ -191,7 +207,7 @@ class _EnterpriseEvaluationScreenState
               state: _stepStatus[2],
               isActive: _currentStep == 2,
               title: const Text('Prérequis'),
-              content: PrerequisitesStep(key: _prerequisitesKey),
+              content: SpecializedStudentsStep(key: _specializedStudentsKey),
             ),
           ],
           controlsBuilder: _controlBuilder,
@@ -208,9 +224,9 @@ class _EnterpriseEvaluationScreenState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          OutlinedButton(
-              onPressed: () => _onPressedCancel(details),
-              child: const Text('Annuler')),
+          if (_currentStep != 0)
+            OutlinedButton(
+                onPressed: _previousStep, child: const Text('Précédent')),
           const SizedBox(
             width: 20,
           ),

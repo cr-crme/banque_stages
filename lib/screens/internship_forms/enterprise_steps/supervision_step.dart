@@ -1,7 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_form_field.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:flutter/material.dart';
+
+enum _TaskVariety { none, low, high }
+
+enum _TrainingPlan { none, notFilled, filled }
 
 class SupervisionStep extends StatefulWidget {
   const SupervisionStep({
@@ -18,14 +22,36 @@ class SupervisionStep extends StatefulWidget {
 class SupervisionStepState extends State<SupervisionStep> {
   final _formKey = GlobalKey<FormState>();
 
-  double welcomingTSA = -1;
-  double welcomingCommunication = -1;
-  double welcomingMentalDeficiency = -1;
-  double welcomingMentalHealthIssue = -1;
+  // Tasks
+  var _taskVariety = _TaskVariety.none;
+  double? get taskVariety => _taskVariety == _TaskVariety.none
+      ? null
+      : _taskVariety == _TaskVariety.low
+          ? 0.0
+          : 1.0;
+  var _trainingPlan = _TrainingPlan.none;
+  double? get trainingPlan => _trainingPlan == _TrainingPlan.none
+      ? null
+      : _trainingPlan == _TrainingPlan.notFilled
+          ? 0.0
+          : 1.0;
+
+  // Expectations
+  double? autonomyExpected;
+  double? efficiencyWanted;
+
+  // Management
+  double? supervisionStyle;
+  double? easeOfCommunication;
+  double? absenceTolerance;
+
+  // Commentaires
+  final _commentsController = TextEditingController();
+  String get comments => _commentsController.text;
 
   Future<String?> validate() async {
-    if (!_formKey.currentState!.validate()) {
-      return 'Évaluer toutes les valeurs nottées par Oui.';
+    if (!_formKey.currentState!.validate() || taskVariety == null) {
+      return 'Remplir tous les champs avec un *.';
     }
     _formKey.currentState!.save();
     return null;
@@ -37,107 +63,258 @@ class SupervisionStepState extends State<SupervisionStep> {
       key: _formKey,
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _RatingBar(
-              question:
-                  '* Est-ce que le ou la stagiaire avait un trouble du spectre de l\'autisme (TSA) ?',
-              initialValue: welcomingTSA,
-              validator: (value) =>
-                  value == 0 ? 'Sélectionner une valeur' : null,
-              onSaved: (newValue) => welcomingTSA = newValue!,
-            ),
+            const SubTitle('Tâches', left: 0),
+            _buildVariety(context),
             const SizedBox(height: 8),
-            _RatingBar(
-              question:
-                  '* Est-ce que le ou la stagiaire avait un trouble du langage?',
-              initialValue: welcomingCommunication,
-              validator: (value) =>
-                  value == 0 ? 'Sélectionner une valeur' : null,
-              onSaved: (newValue) => welcomingCommunication = newValue!,
-            ),
+            _buildTrainingPlan(context),
             const SizedBox(height: 8),
-            _RatingBar(
-              question:
-                  '* Est-ce que le ou la stagiaire avait une déficience intellectuelle ?',
-              initialValue: welcomingMentalDeficiency,
-              validator: (value) =>
-                  value == 0 ? 'Sélectionner une valeur' : null,
-              onSaved: (newValue) => welcomingMentalDeficiency = newValue!,
-            ),
+            const SubTitle('Attentes envers le stagiaire', left: 0),
+            _buildAutonomyRequired(context),
             const SizedBox(height: 8),
-            _RatingBar(
-              question:
-                  '* Est-ce que le ou la stagiaire avait un trouble de santé mentale ?',
-              initialValue: welcomingMentalHealthIssue,
-              validator: (value) =>
-                  value == 0 ? 'Sélectionner une valeur' : null,
-              onSaved: (newValue) => welcomingMentalHealthIssue = newValue!,
-            ),
+            _buildEfficiency(context),
+            const SubTitle('Encadrement', left: 0),
+            _buildSupervisionStyle(context),
+            const SizedBox(height: 8),
+            _buildCommunication(context),
+            const SizedBox(height: 8),
+            _buildAbsenceTolerance(context),
+            const SizedBox(height: 8),
+            _Comments(controller: _commentsController),
           ],
         ),
       ),
     );
   }
-}
 
-class _RatingBar extends FormField<double> {
-  const _RatingBar({
-    required this.question,
-    required super.initialValue,
-    required super.validator,
-    required void Function(double? rating) onSaved,
-  }) : super(onSaved: onSaved, builder: _builder);
-
-  final String question;
-
-  static Widget _builder(FormFieldState<double> state) {
+  Widget _buildAbsenceTolerance(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          (state.widget as _RatingBar).question,
-          style: Theme.of(state.context).textTheme.bodyLarge,
+          '* Tolérance du milieu à l\'égard des retards et absences de l\'élève',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: LowHighSliderFormField(
+            onSaved: (value) => absenceTolerance = value,
+            lowLabel: 'Aucune\ntolérance',
+            highLabel: 'Grande\ntolérance',
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildCommunication(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '* Communication avec l\'entreprise',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: LowHighSliderFormField(
+            onSaved: (value) => easeOfCommunication = value,
+            lowLabel: 'Retour\ndifficile à\nobtenir',
+            highLabel: 'Retour\ntrès facile à\nobtenir',
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildSupervisionStyle(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '* Type d\'encadrement',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: LowHighSliderFormField(
+            onSaved: (value) => supervisionStyle = value,
+            lowLabel: 'Milieu peu\nencadrant',
+            highLabel: 'Milieu très\nencadrant',
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildEfficiency(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '* Rendement de l\'élève',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: LowHighSliderFormField(
+            onSaved: (value) => efficiencyWanted = value,
+            lowLabel: 'Aucun\nrendement\nexigé',
+            highLabel: 'Élève\nproductif',
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildAutonomyRequired(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '* Niveau d\'autonomie de l\'élève souhaité',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: LowHighSliderFormField(
+            onSaved: (value) => autonomyExpected = value,
+            lowLabel: 'Élève pas\nautonome',
+            highLabel: 'Élève très\nautonome',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVariety(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '* Tâches données à l\'élève',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
         ),
         Row(
           children: [
-            Radio(
-              value: true,
-              groupValue: state.value! >= 0,
-              onChanged: (_) => state.didChange(0),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: RadioListTile<_TaskVariety>(
+                value: _TaskVariety.low,
+                dense: true,
+                groupValue: _taskVariety,
+                visualDensity: VisualDensity.compact,
+                onChanged: (value) => setState(() => _taskVariety = value!),
+                title: const Text('Peu variées'),
+              ),
             ),
-            const Text('Oui'),
-            const SizedBox(width: 32),
-            Radio(
-              value: false,
-              groupValue: state.value! >= 0,
-              onChanged: (_) => state.didChange(-1),
-            ),
-            const Text('Non'),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: RadioListTile<_TaskVariety>(
+                value: _TaskVariety.high,
+                groupValue: _taskVariety,
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                onChanged: (value) => setState(() => _taskVariety = value!),
+                title: const Text('Très variées'),
+              ),
+            )
           ],
         ),
-        Visibility(
-          visible: state.value! >= 0.0,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: RatingBar(
-              initialRating: state.value! < 0 ? 0.0 : state.value!,
-              ratingWidget: RatingWidget(
-                full: Icon(
-                  Icons.star,
-                  color: Theme.of(state.context).colorScheme.secondary,
-                ),
-                half: Icon(
-                  Icons.star_half,
-                  color: Theme.of(state.context).colorScheme.secondary,
-                ),
-                empty: Icon(
-                  Icons.star_border,
-                  color: Theme.of(state.context).colorScheme.secondary,
-                ),
+      ],
+    );
+  }
+
+  Widget _buildTrainingPlan(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '* Respect du plan de formation',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+        Text(
+          'Tâches et compétences prévues dans le plan de formation ont été'
+          'faites par l\'élève :',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        Row(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: RadioListTile<_TrainingPlan>(
+                value: _TrainingPlan.notFilled,
+                dense: true,
+                groupValue: _trainingPlan,
+                visualDensity: VisualDensity.compact,
+                onChanged: (value) => setState(() => _trainingPlan = value!),
+                title: const Text('En partie'),
               ),
-              onRatingUpdate: (double value) => state.didChange(value),
             ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: RadioListTile<_TrainingPlan>(
+                value: _TrainingPlan.filled,
+                groupValue: _trainingPlan,
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                onChanged: (value) => setState(() => _trainingPlan = value!),
+                title: const Text('En totalité'),
+              ),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _Comments extends StatelessWidget {
+  const _Comments({required this.controller});
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    const spacing = 8.0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(bottom: spacing),
+          child: Text(
+            'Autres commentaires sur l\'encadrement',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
+        ),
+        TextFormField(
+          controller: controller,
+          enabled: true,
+          maxLines: null,
         ),
       ],
     );
