@@ -16,7 +16,7 @@ class TasksStep extends StatefulWidget {
 }
 
 class TasksStepState extends State<TasksStep> {
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   double? taskVariety;
   double? autonomyExpected;
@@ -31,12 +31,20 @@ class TasksStepState extends State<TasksStep> {
   };
 
   bool _otherSkills = false;
-  String? _otherSkillsText;
+  String? otherSkillsText;
+
+  Future<String?> validate() async {
+    if (!_formKey.currentState!.validate()) {
+      return 'Remplir tous les champs avec un *.';
+    }
+    _formKey.currentState!.save();
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: _formKey,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,13 +102,18 @@ class TasksStepState extends State<TasksStep> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Préciser les autres attentes : ',
+                      '* Préciser les autres attentes : ',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextFormField(
-                      onSaved: (text) => _otherSkillsText = text,
+                      onChanged: (text) => otherSkillsText = text,
                       minLines: 2,
                       maxLines: null,
+                      validator: (value) => _otherSkills &&
+                              (otherSkillsText == null ||
+                                  otherSkillsText!.isEmpty)
+                          ? 'Préciser les autres attentes'
+                          : null,
                       keyboardType: TextInputType.multiline,
                     ),
                   ],

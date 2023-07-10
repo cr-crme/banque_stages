@@ -16,42 +16,62 @@ class SupervisionStep extends StatefulWidget {
 }
 
 class SupervisionStepState extends State<SupervisionStep> {
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
-  double? welcomingTSA;
-  double? welcomingCommunication;
-  double? welcomingMentalDeficiency;
-  double? welcomingMentalHealthIssue;
+  double welcomingTSA = -1;
+  double welcomingCommunication = -1;
+  double welcomingMentalDeficiency = -1;
+  double welcomingMentalHealthIssue = -1;
+
+  Future<String?> validate() async {
+    if (!_formKey.currentState!.validate()) {
+      return 'Évaluer toutes les valeurs nottées par Oui.';
+    }
+    _formKey.currentState!.save();
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: _formKey,
       child: SingleChildScrollView(
         child: Column(
           children: [
             _RatingBar(
               question:
                   '* Est-ce que le ou la stagiaire avait un trouble du spectre de l\'autisme (TSA) ?',
-              onSaved: (newValue) => welcomingTSA = newValue,
+              initialValue: welcomingTSA,
+              validator: (value) =>
+                  value == 0 ? 'Sélectionner une valeur' : null,
+              onSaved: (newValue) => welcomingTSA = newValue!,
             ),
             const SizedBox(height: 8),
             _RatingBar(
               question:
                   '* Est-ce que le ou la stagiaire avait un trouble du langage?',
-              onSaved: (newValue) => welcomingCommunication = newValue,
+              initialValue: welcomingCommunication,
+              validator: (value) =>
+                  value == 0 ? 'Sélectionner une valeur' : null,
+              onSaved: (newValue) => welcomingCommunication = newValue!,
             ),
             const SizedBox(height: 8),
             _RatingBar(
               question:
                   '* Est-ce que le ou la stagiaire avait une déficience intellectuelle ?',
-              onSaved: (newValue) => welcomingMentalDeficiency = newValue,
+              initialValue: welcomingMentalDeficiency,
+              validator: (value) =>
+                  value == 0 ? 'Sélectionner une valeur' : null,
+              onSaved: (newValue) => welcomingMentalDeficiency = newValue!,
             ),
             const SizedBox(height: 8),
             _RatingBar(
               question:
                   '* Est-ce que le ou la stagiaire avait un trouble de santé mentale ?',
-              onSaved: (newValue) => welcomingMentalHealthIssue = newValue,
+              initialValue: welcomingMentalHealthIssue,
+              validator: (value) =>
+                  value == 0 ? 'Sélectionner une valeur' : null,
+              onSaved: (newValue) => welcomingMentalHealthIssue = newValue!,
             ),
           ],
         ),
@@ -63,11 +83,10 @@ class SupervisionStepState extends State<SupervisionStep> {
 class _RatingBar extends FormField<double> {
   const _RatingBar({
     required this.question,
+    required super.initialValue,
+    required super.validator,
     required void Function(double? rating) onSaved,
-  }) : super(
-          onSaved: onSaved,
-          builder: _builder,
-        );
+  }) : super(onSaved: onSaved, builder: _builder);
 
   final String question;
 
@@ -83,25 +102,25 @@ class _RatingBar extends FormField<double> {
           children: [
             Radio(
               value: true,
-              groupValue: state.value != null,
+              groupValue: state.value! >= 0,
               onChanged: (_) => state.didChange(0),
             ),
             const Text('Oui'),
             const SizedBox(width: 32),
             Radio(
               value: false,
-              groupValue: state.value != null,
-              onChanged: (_) => state.didChange(null),
+              groupValue: state.value! >= 0,
+              onChanged: (_) => state.didChange(-1),
             ),
             const Text('Non'),
           ],
         ),
         Visibility(
-          visible: state.value != null,
+          visible: state.value! >= 0.0,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: RatingBar(
-              initialRating: state.value ?? 0,
+              initialRating: state.value! < 0 ? 0.0 : state.value!,
               ratingWidget: RatingWidget(
                 full: Icon(
                   Icons.star,

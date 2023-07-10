@@ -182,21 +182,6 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[9].specializations[3],
       positionsOffered: 3,
-      postInternshipEvaluations: [
-        JobPostIntershipEvaluation(
-          uniform: 'Un beau chandail',
-          taskVariety: 3,
-          autonomyExpected: 4,
-          efficiencyWanted: 2,
-          minimalAge: 16,
-          requirements: [],
-          skillsRequired: [],
-          welcomingCommunication: 4,
-          welcomingMentalDeficiency: 4,
-          welcomingMentalHealthIssue: 2,
-          welcomingTsa: 1,
-        )
-      ],
       sstEvaluation: JobSstEvaluation(
         dangerousSituations: ['Outils mal rangés', 'Tas de pneus'],
         equipmentRequired: ['Chaussures de sécurité'],
@@ -1024,7 +1009,7 @@ Future<void> addDummyInterships(
   period = DateTimeRange(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
-  internships.add(Internship(
+  var internship = Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
     teacherId: teachers.currentTeacherId,
@@ -1034,8 +1019,9 @@ Future<void> addDummyInterships(
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
+    endDate: DateTime.now().add(const Duration(days: 10)),
     expectedLength: 135,
-    achievedLength: 0,
+    achievedLength: 125,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -1065,7 +1051,27 @@ Future<void> addDummyInterships(
     ],
     protections: Protections(protections: [], status: ProtectionsStatus.none),
     uniform: Uniform(status: UniformStatus.none, uniform: ''),
-  ));
+  );
+  internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
+    internshipId: internship.id,
+    taskVariety: 3,
+    autonomyExpected: 4,
+    efficiencyWanted: 2,
+    minimalAge: 16,
+    welcomingCommunication: 4,
+    welcomingMentalDeficiency: 4,
+    welcomingMentalHealthIssue: 2,
+    welcomingTsa: -1,
+    requirements: [
+      'Une entrevue de recrutement de l\'élève en solo',
+      'Un beau cadeau à \'arrivée'
+    ],
+    skillsRequired: [
+      'Communiquer à l\'écrit',
+      'Interagir avec des clients',
+    ],
+  );
+  internships.add(internship);
 
   period = DateTimeRange(
       start: DateTime.now(),

@@ -1,7 +1,7 @@
+import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
-import 'package:crcrme_banque_stages/common/models/job.dart';
 
 class SupervisionExpansionPanel extends ExpansionPanel {
   SupervisionExpansionPanel({
@@ -23,35 +23,80 @@ class _SupervisionBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasData = job.postInternshipEvaluations.isNotEmpty;
+    final evaluations = job.postInternshipEnterpriseEvaluations(context);
+    final skillsRequired = evaluations.expand((e) => e.skillsRequired).toList();
 
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
         padding: const EdgeInsets.only(left: 24.0, right: 24),
-        child: hasData
+        child: evaluations.isNotEmpty
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (job.welcomingTsa != -1)
-                    _RatingBar(
-                      title:
-                          'Accueil de stagiaires avec un trouble du spectre de l\'autisme (TSA)',
-                      rating: job.welcomingTsa,
-                    ),
+                  Text(
+                    'Variété des tâches',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  LowHighSliderFormField(
+                    initialValue: meanOf(evaluations, (e) => e.taskVariety),
+                    enabled: false,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Habiletés obligatoires',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: skillsRequired.isEmpty
+                        ? [const Text('Aucune habileté requise')]
+                        : skillsRequired
+                            .map((skills) => Text('- $skills'))
+                            .toList(),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Niveau d\'autonomie souhaité',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  LowHighSliderFormField(
+                    initialValue:
+                        meanOf(evaluations, (e) => e.autonomyExpected),
+                    enabled: false,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Rendement attendu',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  LowHighSliderFormField(
+                    initialValue:
+                        meanOf(evaluations, (e) => e.efficiencyWanted),
+                    enabled: false,
+                  ),
+                  const SizedBox(height: 12),
+                  _RatingBar(
+                    title:
+                        'Accueil de stagiaires avec un trouble du spectre de l\'autisme (TSA)',
+                    rating: meanOf(evaluations, (e) => e.welcomingTsa),
+                  ),
                   _RatingBar(
                     title: 'Accueil de stagiaires avec un trouble du langage',
-                    rating: job.welcomingCommunication,
+                    rating:
+                        meanOf(evaluations, (e) => e.welcomingCommunication),
                   ),
                   _RatingBar(
                     title:
                         'Accueil de stagiaires avec une déficience intellectuelle',
-                    rating: job.welcomingMentalDeficiency,
+                    rating:
+                        meanOf(evaluations, (e) => e.welcomingMentalDeficiency),
                   ),
                   _RatingBar(
                     title:
                         'Accueil de stagiaires avec un trouble de santé mentale',
-                    rating: job.welcomingMentalHealthIssue,
+                    rating: meanOf(
+                        evaluations, (e) => e.welcomingMentalHealthIssue),
                   ),
                 ],
               )

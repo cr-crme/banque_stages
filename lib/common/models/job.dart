@@ -1,12 +1,7 @@
-import 'package:enhanced_containers/enhanced_containers.dart';
-
+import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
-
-double _doubleFromSerialized(num? number, {double defaultValue = 0}) {
-  if (number is int) return number.toDouble();
-  return (number ?? defaultValue) as double;
-}
+import 'package:enhanced_containers/enhanced_containers.dart';
 
 List<String> _stringListFromSerialized(List? list) =>
     (list ?? []).map<String>((e) => e).toList();
@@ -89,71 +84,7 @@ class JobSstEvaluation extends ItemSerializable {
       };
 }
 
-class JobPostIntershipEvaluation extends ItemSerializable {
-  JobPostIntershipEvaluation({
-    required this.taskVariety,
-    required this.skillsRequired,
-    required this.autonomyExpected,
-    required this.efficiencyWanted,
-    required this.welcomingTsa,
-    required this.welcomingCommunication,
-    required this.welcomingMentalDeficiency,
-    required this.welcomingMentalHealthIssue,
-    required this.minimalAge,
-    required this.uniform,
-    required this.requirements,
-  });
-
-  JobPostIntershipEvaluation.fromSerialized(map)
-      : taskVariety = _doubleFromSerialized(map['taskVariety']),
-        skillsRequired = _stringListFromSerialized(map['skillsRequired']),
-        autonomyExpected = _doubleFromSerialized(map['autonomyExpected']),
-        efficiencyWanted = _doubleFromSerialized(map['efficiencyWanted']),
-        welcomingTsa = _doubleFromSerialized(map['welcomingTSA']),
-        welcomingCommunication =
-            _doubleFromSerialized(map['welcomingCommunication']),
-        welcomingMentalDeficiency =
-            _doubleFromSerialized(map['welcomingMentalDeficiency']),
-        welcomingMentalHealthIssue =
-            _doubleFromSerialized(map['welcomingMentalHealthIssue']),
-        minimalAge = map['minimalAge'],
-        uniform = map['uniform'],
-        requirements = _stringListFromSerialized(map['requirements']);
-
-  // Tasks
-  final double taskVariety;
-  final List<String> skillsRequired;
-  final double autonomyExpected;
-  final double efficiencyWanted;
-
-  // Supervision
-  final double welcomingTsa;
-  final double welcomingCommunication;
-  final double welcomingMentalDeficiency;
-  final double welcomingMentalHealthIssue;
-
-  // Prerequisites
-  final int minimalAge;
-  final String uniform;
-  final List<String> requirements;
-
-  @override
-  Map<String, dynamic> serializedMap() => {
-        'taskVariety': taskVariety,
-        'skillsRequired': skillsRequired,
-        'autonomyExpected': autonomyExpected,
-        'efficiencyWanted': efficiencyWanted,
-        'welcomingTSA': welcomingTsa,
-        'welcomingCommunication': welcomingCommunication,
-        'welcomingMentalDeficiency': welcomingMentalDeficiency,
-        'welcomingMentalHealthIssue': welcomingMentalHealthIssue,
-        'minimalAge': minimalAge,
-        'uniform': uniform,
-        'requirements': requirements,
-      };
-}
-
-double _meanInList(List list, double Function(dynamic) value) =>
+double meanOf(List list, double Function(dynamic) value) =>
     list.fold<double>(0.0, (prev, e) => value(e)) / list.length;
 
 class Job extends ItemSerializable {
@@ -171,29 +102,17 @@ class Job extends ItemSerializable {
   final List<String> photosUrl;
 
   // Post-internship evaluations
-
-  final List<JobPostIntershipEvaluation> postInternshipEvaluations;
-  List<JobPostIntershipEvaluation> get _pie => postInternshipEvaluations;
-
-  // Mean values of intership evaluations
-  double get taskVariety => _meanInList(_pie, (e) => e.taskVariety);
-  List<String> get skillsRequired =>
-      _pie.expand((e) => e.skillsRequired).toList();
-  double get autonomyExpected => _meanInList(_pie, (e) => e.autonomyExpected);
-  double get efficiencyWanted => _meanInList(_pie, (e) => e.efficiencyWanted);
-
-  double get welcomingTsa => _meanInList(_pie, (e) => e.welcomingTsa);
-  double get welcomingCommunication =>
-      _meanInList(_pie, (e) => e.welcomingCommunication);
-  double get welcomingMentalDeficiency =>
-      _meanInList(_pie, (e) => e.welcomingMentalDeficiency);
-  double get welcomingMentalHealthIssue =>
-      _meanInList(_pie, (e) => e.welcomingMentalHealthIssue);
-
-  int get minimalAge =>
-      _meanInList(_pie, (e) => (e.minimalAge as int).toDouble()).toInt();
-  List<String> get uniforms => _pie.map((e) => e.uniform).toList();
-  List<String> get requirements => _pie.expand((e) => e.requirements).toList();
+  List<PostIntershipEnterpriseEvaluation> postInternshipEnterpriseEvaluations(
+      context) {
+    final internships = [
+      for (final internship in InternshipsProvider.of(context, listen: false))
+        if (internship.jobId == id) internship
+    ];
+    return [
+      for (final evaluation in internships.map((e) => e.enterpriseEvaluation))
+        if (evaluation != null) evaluation
+    ];
+  }
 
   // SST
   final JobSstEvaluation sstEvaluation;
@@ -206,11 +125,9 @@ class Job extends ItemSerializable {
     required this.specialization,
     required this.positionsOffered,
     List<String>? photosUrl,
-    List<JobPostIntershipEvaluation>? postInternshipEvaluations,
     required this.sstEvaluation,
     List<String>? comments,
   })  : photosUrl = photosUrl ?? [],
-        postInternshipEvaluations = postInternshipEvaluations ?? [],
         comments = comments ?? [];
 
   Job copyWith({
@@ -218,7 +135,6 @@ class Job extends ItemSerializable {
     Specialization? specialization,
     int? positionsOffered,
     List<String>? photosUrl,
-    List<JobPostIntershipEvaluation>? postInternshipEvaluations,
     JobSstEvaluation? sstEvaluation,
     List<String>? comments,
     String? id,
@@ -227,8 +143,6 @@ class Job extends ItemSerializable {
         specialization: specialization ?? this.specialization,
         positionsOffered: positionsOffered ?? this.positionsOffered,
         photosUrl: photosUrl ?? this.photosUrl,
-        postInternshipEvaluations:
-            postInternshipEvaluations ?? this.postInternshipEvaluations,
         sstEvaluation: sstEvaluation ?? this.sstEvaluation,
         comments: comments ?? this.comments,
         id: id ?? this.id);
@@ -240,8 +154,6 @@ class Job extends ItemSerializable {
       'specialization': specialization.id,
       'positionsOffered': positionsOffered,
       'photosUrl': photosUrl,
-      'postInternshipEvaluations':
-          postInternshipEvaluations.map((e) => e.serialize()).toList(),
       'sstEvaluations': sstEvaluation.serialize(),
       'comments': comments,
     };
@@ -252,10 +164,6 @@ class Job extends ItemSerializable {
             ActivitySectorsService.specialization(map['specialization']),
         positionsOffered = map['positionsOffered'],
         photosUrl = _stringListFromSerialized(map['photosUrl']),
-        postInternshipEvaluations =
-            (map['postInternshipEvaluations'] as List? ?? [])
-                .map((e) => JobPostIntershipEvaluation.fromSerialized(e))
-                .toList(),
         sstEvaluation = JobSstEvaluation.fromSerialized(map['sstEvaluations']),
         comments = _stringListFromSerialized(map['comments']),
         super.fromSerialized(map);

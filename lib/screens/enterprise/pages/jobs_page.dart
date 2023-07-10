@@ -15,7 +15,6 @@ import 'jobs_expansion_panels/photo_expansion_panel.dart';
 import 'jobs_expansion_panels/prerequisites_expansion_panel.dart';
 import 'jobs_expansion_panels/sst_expansion_panel.dart';
 import 'jobs_expansion_panels/supervision_expansion_panel.dart';
-import 'jobs_expansion_panels/tasks_expansion_panel.dart';
 
 class JobsPage extends StatefulWidget {
   const JobsPage({
@@ -126,32 +125,28 @@ class JobsPageState extends State<JobsPage> {
                           () => _expandedSections[job.id]![panelIndex] =
                               !isExpanded),
                       children: [
-                        PhotoExpansionPanel(
+                        SstExpansionPanel(
                           isExpanded: _expandedSections[job.id]![0],
+                          enterprise: widget.enterprise,
                           job: job,
-                          addImage: _addImage,
+                          addSstEvent: _addSstEvent,
                         ),
-                        TasksExpansionPanel(
+                        PrerequisitesExpansionPanel(
                           isExpanded: _expandedSections[job.id]![1],
+                          enterprise: widget.enterprise,
                           job: job,
                         ),
                         SupervisionExpansionPanel(
                           isExpanded: _expandedSections[job.id]![2],
                           job: job,
                         ),
-                        SstExpansionPanel(
+                        PhotoExpansionPanel(
                           isExpanded: _expandedSections[job.id]![3],
-                          enterprise: widget.enterprise,
                           job: job,
-                          addSstEvent: _addSstEvent,
-                        ),
-                        PrerequisitesExpansionPanel(
-                          isExpanded: _expandedSections[job.id]![4],
-                          enterprise: widget.enterprise,
-                          job: job,
+                          addImage: _addImage,
                         ),
                         CommentsExpansionPanel(
-                          isExpanded: _expandedSections[job.id]![5],
+                          isExpanded: _expandedSections[job.id]![4],
                           job: job,
                           addComment: _addComment,
                         ),

@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 
-import 'package:crcrme_banque_stages/common/models/job.dart';
-
 class PrerequisitesStep extends StatefulWidget {
-  const PrerequisitesStep({
-    super.key,
-    required this.job,
-  });
-
-  final Job job;
+  const PrerequisitesStep({super.key});
 
   @override
   State<PrerequisitesStep> createState() => PrerequisitesStepState();
 }
 
 class PrerequisitesStepState extends State<PrerequisitesStep> {
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
-  bool _uniformRequired = false;
+  Future<String?> validate() async {
+    if (!_formKey.currentState!.validate()) {
+      return 'Remplir tous les champs avec un *.';
+    }
+    _formKey.currentState!.save();
+    return null;
+  }
 
   int? minimalAge;
-  String? uniform;
 
   final Map<String, bool> requiredForJob = {
     'Une entrevue de recrutement de l\'élève en solo': false,
@@ -36,7 +34,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: _formKey,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,58 +44,9 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             _AgeSpinBox(
-              initialValue: widget.job.minimalAge,
               onSaved: (newValue) => minimalAge = newValue,
             ),
             const SizedBox(height: 16),
-            Text(
-              'Est-ce qu\'un uniforme était exigé ?',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            Row(
-              children: [
-                Radio(
-                  value: true,
-                  groupValue: _uniformRequired,
-                  onChanged: (bool? newValue) =>
-                      setState(() => _uniformRequired = newValue!),
-                ),
-                const Text('Oui'),
-                const SizedBox(width: 32),
-                Radio(
-                  value: false,
-                  groupValue: _uniformRequired,
-                  onChanged: (bool? newValue) =>
-                      setState(() => _uniformRequired = newValue!),
-                ),
-                const Text('Non'),
-              ],
-            ),
-            Visibility(
-              visible: _uniformRequired,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Préciser le type d\'uniforme : ',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    TextFormField(
-                      onSaved: (text) => uniform = text,
-                      minLines: 2,
-                      maxLines: null,
-                      keyboardType: TextInputType.multiline,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
             Text(
               'L\'entreprise a demandé : ',
               style: Theme.of(context).textTheme.bodyLarge,
@@ -162,10 +111,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
 }
 
 class _AgeSpinBox extends FormField<int> {
-  const _AgeSpinBox({
-    super.initialValue,
-    super.onSaved,
-  }) : super(builder: _build);
+  const _AgeSpinBox({super.onSaved}) : super(builder: _build);
 
   static Widget _build(FormFieldState<int> state) {
     return SpinBox(

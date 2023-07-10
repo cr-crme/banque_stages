@@ -9,6 +9,94 @@ import 'internship_evaluation_skill.dart';
 import 'protections.dart';
 import 'schedule.dart';
 
+double _doubleFromSerialized(num? number, {double defaultValue = 0}) {
+  if (number is int) return number.toDouble();
+  return (number ?? defaultValue) as double;
+}
+
+List<String> _stringListFromSerialized(List? list) =>
+    (list ?? []).map<String>((e) => e).toList();
+
+class PostIntershipEnterpriseEvaluation extends ItemSerializable {
+  PostIntershipEnterpriseEvaluation({
+    required this.internshipId,
+    required this.taskVariety,
+    required this.skillsRequired,
+    required this.autonomyExpected,
+    required this.efficiencyWanted,
+    required this.welcomingTsa,
+    required this.welcomingCommunication,
+    required this.welcomingMentalDeficiency,
+    required this.welcomingMentalHealthIssue,
+    required this.minimalAge,
+    required this.requirements,
+  });
+
+  PostIntershipEnterpriseEvaluation.fromSerialized(map)
+      : internshipId = map['internshipId'],
+        taskVariety = _doubleFromSerialized(map['taskVariety']),
+        skillsRequired = _stringListFromSerialized(map['skillsRequired']),
+        autonomyExpected = _doubleFromSerialized(map['autonomyExpected']),
+        efficiencyWanted = _doubleFromSerialized(map['efficiencyWanted']),
+        welcomingTsa = _doubleFromSerialized(map['welcomingTSA']),
+        welcomingCommunication =
+            _doubleFromSerialized(map['welcomingCommunication']),
+        welcomingMentalDeficiency =
+            _doubleFromSerialized(map['welcomingMentalDeficiency']),
+        welcomingMentalHealthIssue =
+            _doubleFromSerialized(map['welcomingMentalHealthIssue']),
+        minimalAge = map['minimalAge'],
+        requirements = _stringListFromSerialized(map['requirements']);
+
+  String internshipId;
+
+  // Tasks
+  final double taskVariety;
+  final List<String> skillsRequired;
+  final double autonomyExpected;
+  final double efficiencyWanted;
+
+  // Supervision
+  final double welcomingTsa;
+  final double welcomingCommunication;
+  final double welcomingMentalDeficiency;
+  final double welcomingMentalHealthIssue;
+
+  // Prerequisites
+  final int minimalAge;
+  final List<String> requirements;
+
+  @override
+  Map<String, dynamic> serializedMap() => {
+        'internshipId': internshipId,
+        'taskVariety': taskVariety,
+        'skillsRequired': skillsRequired,
+        'autonomyExpected': autonomyExpected,
+        'efficiencyWanted': efficiencyWanted,
+        'welcomingTSA': welcomingTsa,
+        'welcomingCommunication': welcomingCommunication,
+        'welcomingMentalDeficiency': welcomingMentalDeficiency,
+        'welcomingMentalHealthIssue': welcomingMentalHealthIssue,
+        'minimalAge': minimalAge,
+        'requirements': requirements,
+      };
+
+  PostIntershipEnterpriseEvaluation deepCopy() {
+    return PostIntershipEnterpriseEvaluation(
+        internshipId: internshipId,
+        taskVariety: taskVariety,
+        skillsRequired: [for (final skill in skillsRequired) skill],
+        autonomyExpected: autonomyExpected,
+        efficiencyWanted: efficiencyWanted,
+        welcomingTsa: welcomingTsa,
+        welcomingCommunication: welcomingCommunication,
+        welcomingMentalDeficiency: welcomingMentalDeficiency,
+        welcomingMentalHealthIssue: welcomingMentalHealthIssue,
+        minimalAge: minimalAge,
+        requirements: [for (final requirement in requirements) requirement]);
+  }
+}
+
 class _MutableElements extends ItemSerializable {
   _MutableElements({
     required this.versionDate,
@@ -105,9 +193,11 @@ class Internship extends ItemSerializable {
   final List<InternshipEvaluationSkill> skillEvaluations;
   final List<InternshipEvaluationAttitude> attitudeEvaluations;
 
+  PostIntershipEnterpriseEvaluation? enterpriseEvaluation;
+
   bool get isClosed => isNotActive && !isEnterpriseEvaluationPending;
   bool get isEnterpriseEvaluationPending =>
-      isNotActive; // TODO add enterprise evaluation
+      isNotActive && enterpriseEvaluation == null;
   bool get isActive => endDate == null;
   bool get isNotActive => !isActive;
 
@@ -128,6 +218,7 @@ class Internship extends ItemSerializable {
     required this.endDate,
     required this.skillEvaluations,
     required this.attitudeEvaluations,
+    required this.enterpriseEvaluation,
   }) : _mutables = mutables;
 
   Internship({
@@ -152,6 +243,7 @@ class Internship extends ItemSerializable {
     this.endDate,
     this.skillEvaluations = const [],
     this.attitudeEvaluations = const [],
+    this.enterpriseEvaluation,
   })  : previousTeacherId = previousTeacherId ?? teacherId,
         _mutables = [
           _MutableElements(
@@ -195,6 +287,10 @@ class Internship extends ItemSerializable {
             : (map['attitudeEvaluation'] as List)
                 .map((e) => InternshipEvaluationAttitude.fromSerialized(e))
                 .toList(),
+        enterpriseEvaluation = map['enterpriseEvaluation'] == null
+            ? null
+            : PostIntershipEnterpriseEvaluation.fromSerialized(
+                map['enterpriseEvaluation']),
         super.fromSerialized(map);
 
   @override
@@ -219,6 +315,7 @@ class Internship extends ItemSerializable {
           skillEvaluations.map((e) => e.serializedMap()).toList(),
       'attitudeEvaluation':
           attitudeEvaluations.map((e) => e.serializedMap()).toList(),
+      'enterpriseEvaluation': enterpriseEvaluation?.serialize(),
     };
   }
 
@@ -261,6 +358,7 @@ class Internship extends ItemSerializable {
     DateTime? endDate,
     List<InternshipEvaluationSkill>? skillEvaluations,
     List<InternshipEvaluationAttitude>? attitudeEvaluations,
+    PostIntershipEnterpriseEvaluation? enterpriseEvaluation,
   }) {
     if (supervisor != null ||
         date != null ||
@@ -288,6 +386,7 @@ class Internship extends ItemSerializable {
       endDate: endDate ?? this.endDate,
       skillEvaluations: skillEvaluations ?? this.skillEvaluations,
       attitudeEvaluations: attitudeEvaluations ?? this.attitudeEvaluations,
+      enterpriseEvaluation: enterpriseEvaluation ?? this.enterpriseEvaluation,
     );
   }
 
@@ -316,6 +415,7 @@ class Internship extends ItemSerializable {
       skillEvaluations: skillEvaluations.map((e) => e.deepCopy()).toList(),
       attitudeEvaluations:
           attitudeEvaluations.map((e) => e.deepCopy()).toList(),
+      enterpriseEvaluation: enterpriseEvaluation?.deepCopy(),
     );
   }
 }

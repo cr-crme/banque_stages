@@ -39,35 +39,37 @@ class _PrerequisitesBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasData = job.postInternshipEvaluations.isNotEmpty;
+    final evaluations = job.postInternshipEnterpriseEvaluations(context);
 
-    // TODO Benjamin - This is a workaround because uniforms are currently
+    // TODO Benjamin - This is a workaround because uniforms and job requirements are currently
     // stored in intership. I think this should be moved to the job creation
     final allInternships = InternshipsProvider.of(context);
     final internships =
         allInternships.where((e) => enterprise.jobs.hasId(e.jobId));
 
     // Workaround for "job.uniforms"
-    final uniforms = internships.map<Uniform>((e) => e.uniform).toSet();
-    final uniformsByEnterprise = uniforms
-        .where((e) => e.status == UniformStatus.suppliedByEnterprise)
-        .toSet();
-    final uniformsByStudent = uniforms
-        .where((e) => e.status == UniformStatus.suppliedByStudent)
-        .toSet();
+    final allUniforms = internships.map<Uniform>((e) => e.uniform).toSet();
+    final uniforms = {
+      UniformStatus.suppliedByEnterprise: allUniforms
+          .where((e) => e.status == UniformStatus.suppliedByEnterprise)
+          .toSet(),
+      UniformStatus.suppliedByStudent: allUniforms
+          .where((e) => e.status == UniformStatus.suppliedByStudent)
+          .toSet(),
+    };
 
     // Workaround for "job.requirements"
-    final protections = internships.map<Protections>((e) => e.protections);
-    final protectionsByEnterprise = protections
-        .where((e) => e.status == ProtectionsStatus.suppliedByEnterprise);
-    final protectionsBySchool = protections
-        .where((e) => e.status == ProtectionsStatus.suppliedBySchool);
-    final requirementsByEnterprise =
-        protectionsByEnterprise.expand((e) => e.protections);
-    final requirementsBySchool =
-        protectionsBySchool.expand((e) => e.protections);
+    final allProtections = internships.map<Protections>((e) => e.protections);
+    final protections = {
+      ProtectionsStatus.suppliedByEnterprise: allProtections
+          .where((e) => e.status == ProtectionsStatus.suppliedByEnterprise)
+        ..expand((e) => e.protections),
+      ProtectionsStatus.suppliedBySchool: allProtections
+          .where((e) => e.status == ProtectionsStatus.suppliedBySchool)
+        ..expand((e) => e.protections),
+    };
 
-    return hasData
+    return evaluations.isNotEmpty
         ? SizedBox(
             width: Size.infinite.width,
             child: Padding(
@@ -79,60 +81,12 @@ class _PrerequisitesBody extends StatelessWidget {
                     'Âge minimum',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Text('${job.minimalAge} ans'),
+                  Text(
+                      '${meanOf(evaluations, (e) => (e.minimalAge as int).toDouble()).toInt()} ans'),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Tenue de travail',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  if (uniformsByEnterprise.isEmpty && uniformsByStudent.isEmpty)
-                    const Text('Aucune consigne de l\'entreprise'),
-                  if (uniformsByEnterprise.isNotEmpty)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Fournies par l\'entreprise :'),
-                        ..._printCountedList<Uniform>(
-                            uniformsByEnterprise, (e) => e.uniform),
-                      ],
-                    ),
-                  if (uniformsByStudent.isNotEmpty)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (uniformsByEnterprise.isNotEmpty)
-                          const SizedBox(height: 8),
-                        const Text('Fournies par l\'étudiant :'),
-                        ..._printCountedList<Uniform>(
-                            uniformsByStudent, (e) => e.uniform),
-                      ],
-                    ),
+                  ..._buildUniform(uniforms),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Équipement de protection individuelle :',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  if (requirementsByEnterprise.isEmpty &&
-                      requirementsBySchool.isEmpty)
-                    const Text('Il n\'y a aucun prérequis pour ce métier'),
-                  if (requirementsByEnterprise.isNotEmpty)
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Fournies par l\'entreprise :'),
-                          ..._printCountedList<String>(
-                              requirementsByEnterprise, (e) => e),
-                        ]),
-                  if (requirementsBySchool.isNotEmpty)
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (requirementsBySchool.isNotEmpty)
-                            const SizedBox(height: 8),
-                          const Text('Fournies par l\'école :'),
-                          ..._printCountedList<String>(
-                              requirementsBySchool, (e) => e),
-                        ]),
+                  ..._buildProtections(protections),
                   const SizedBox(height: 12),
                 ],
               ),
@@ -143,5 +97,64 @@ class _PrerequisitesBody extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 12.0),
             child: Text('Aucune donnée pour l\'instant'),
           ));
+  }
+
+  List<Widget> _buildUniform(uniforms) {
+    return [
+      const Text(
+        'Tenue de travail',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      if (uniforms[UniformStatus.suppliedByEnterprise]!.isEmpty &&
+          uniforms[UniformStatus.suppliedByStudent]!.isEmpty)
+        const Text('Aucune consigne de l\'entreprise'),
+      if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Fournie par l\'entreprise :'),
+            ..._printCountedList<Uniform>(
+                uniforms[UniformStatus.suppliedByEnterprise]!,
+                (e) => e.uniform),
+          ],
+        ),
+      if (uniforms[UniformStatus.suppliedByStudent]!.isNotEmpty)
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
+              const SizedBox(height: 8),
+            const Text('Fournie par l\'étudiant :'),
+            ..._printCountedList<Uniform>(
+                uniforms[UniformStatus.suppliedByStudent]!, (e) => e.uniform),
+          ],
+        ),
+    ];
+  }
+
+  List<Widget> _buildProtections(protections) {
+    return [
+      const Text(
+        'Équipement de protection individuelle :',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      if (protections[ProtectionsStatus.suppliedByEnterprise]!.isEmpty &&
+          protections[ProtectionsStatus.suppliedBySchool]!.isEmpty)
+        const Text('Il n\'y a aucun prérequis pour ce métier'),
+      if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Text('Fournis par l\'entreprise :'),
+          ..._printCountedList<String>(
+              protections[ProtectionsStatus.suppliedByEnterprise]!, (e) => e),
+        ]),
+      if (protections[ProtectionsStatus.suppliedBySchool]!.isNotEmpty)
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
+            const SizedBox(height: 8),
+          const Text('Fournis par l\'école :'),
+          ..._printCountedList<String>(
+              protections[ProtectionsStatus.suppliedBySchool]!, (e) => e),
+        ]),
+    ];
   }
 }
