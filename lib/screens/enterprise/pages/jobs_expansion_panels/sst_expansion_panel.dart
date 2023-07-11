@@ -84,7 +84,8 @@ class SstBody extends StatelessWidget {
                           'Historique d\'accidents et d\'incidents au poste de travail',
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
-                        ...job.sstEvaluation.incidents.map((e) => Text('- $e')),
+                        ...job.sstEvaluation.incidents
+                            .map((e) => Text('\u2022 $e')),
                       ],
                     ),
             ),
@@ -111,7 +112,7 @@ class SstBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: job.sstEvaluation.dangerousSituations.isNotEmpty
                     ? job.sstEvaluation.dangerousSituations
-                        .map((e) => Text('- $e'))
+                        .map((e) => Text('\u2022 $e'))
                         .toList()
                     : [const Text('Aucun situation')],
               ),
@@ -127,7 +128,7 @@ class SstBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: job.sstEvaluation.equipmentRequired.isNotEmpty
                     ? job.sstEvaluation.equipmentRequired
-                        .map((equipment) => Text('- $equipment'))
+                        .map((equipment) => Text('\u2022 $equipment'))
                         .toList()
                     : [const Text('Aucun équipement')],
               ),

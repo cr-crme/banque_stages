@@ -38,7 +38,7 @@ class SupervisionStepState extends State<SupervisionStep> {
 
   // Expectations
   double? autonomyExpected;
-  double? efficiencyWanted;
+  double? efficiencyExpected;
 
   // Management
   double? supervisionStyle;
@@ -171,7 +171,7 @@ class SupervisionStepState extends State<SupervisionStep> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: LowHighSliderFormField(
-            onSaved: (value) => efficiencyWanted = value,
+            onSaved: (value) => efficiencyExpected = value,
             lowLabel: 'Aucun\nrendement\nexigé',
             highLabel: 'Élève\nproductif',
           ),

@@ -26,7 +26,7 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
     required this.taskVariety,
     required this.trainingPlanRespect,
     required this.autonomyExpected,
-    required this.efficiencyWanted,
+    required this.efficiencyExpected,
     required this.supervisionStyle,
     required this.easeOfCommunication,
     required this.absenceAcceptance,
@@ -48,7 +48,7 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
         taskVariety = _doubleFromSerialized(map['taskVariety']),
         trainingPlanRespect = _doubleFromSerialized(map['trainingPlanRespect']),
         autonomyExpected = _doubleFromSerialized(map['autonomyExpected']),
-        efficiencyWanted = _doubleFromSerialized(map['efficiencyWanted']),
+        efficiencyExpected = _doubleFromSerialized(map['efficiencyExpected']),
         supervisionStyle = _doubleFromSerialized(map['supervisionStyle']),
         easeOfCommunication = _doubleFromSerialized(map['easeOfCommunication']),
         absenceAcceptance = _doubleFromSerialized(map['absenceAcceptance']),
@@ -76,7 +76,7 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
   final double taskVariety;
   final double trainingPlanRespect;
   final double autonomyExpected;
-  final double efficiencyWanted;
+  final double efficiencyExpected;
 
   // Management
   final double supervisionStyle;
@@ -101,7 +101,7 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
         'taskVariety': taskVariety,
         'trainingPlanRespect': trainingPlanRespect,
         'autonomyExpected': autonomyExpected,
-        'efficiencyWanted': efficiencyWanted,
+        'efficiencyExpected': efficiencyExpected,
         'supervisionStyle': supervisionStyle,
         'easeOfCommunication': easeOfCommunication,
         'absenceAcceptance': absenceAcceptance,
@@ -125,7 +125,7 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
       taskVariety: taskVariety,
       trainingPlanRespect: trainingPlanRespect,
       autonomyExpected: autonomyExpected,
-      efficiencyWanted: efficiencyWanted,
+      efficiencyExpected: efficiencyExpected,
       supervisionStyle: supervisionStyle,
       easeOfCommunication: easeOfCommunication,
       absenceAcceptance: absenceAcceptance,

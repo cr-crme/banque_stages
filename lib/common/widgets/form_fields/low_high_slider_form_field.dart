@@ -1,28 +1,31 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class LowHighSliderFormField extends FormField<double> {
-  const LowHighSliderFormField({
+  LowHighSliderFormField({
     super.key,
     double initialValue = 3,
-    bool enabled = true,
-    void Function(double? value)? onSaved,
+    this.fixed = false,
+    int decimal = 0,
+    super.onSaved,
     this.min = 1,
     this.max = 5,
     this.lowLabel = 'Faible',
     this.highLabel = 'Élevé',
-  }) : super(
-          initialValue: initialValue,
-          enabled: enabled,
-          onSaved: onSaved,
-          builder: _builder,
-        );
+  })  : factor = pow(10, decimal).toDouble(),
+        super(builder: _builder, enabled: true, initialValue: initialValue);
 
+  final double factor;
   final String lowLabel;
   final String highLabel;
   final int min;
   final int max;
+  final bool fixed; // We use true for enables so we have the active colors
 
   static Widget _builder(FormFieldState<double> state) {
+    final fixed = (state.widget as LowHighSliderFormField).fixed;
+    final factor = (state.widget as LowHighSliderFormField).factor;
     final lowLabel = (state.widget as LowHighSliderFormField).lowLabel;
     final highLabel = (state.widget as LowHighSliderFormField).highLabel;
     final min = (state.widget as LowHighSliderFormField).min;
@@ -39,14 +42,14 @@ class LowHighSliderFormField extends FormField<double> {
           Text(lowLabel, textAlign: TextAlign.center),
           Expanded(
             child: Slider(
-              value: state.value!,
-              onChanged: state.widget.enabled
-                  ? (double newValue) => state.didChange(newValue)
-                  : null,
-              min: min.toDouble(),
-              max: max.toDouble(),
-              divisions: max - min,
-              label: '${state.value!.toInt()}',
+              value: state.value! * factor,
+              onChanged: (value) {
+                fixed ? state.didChange(value / factor) : null;
+              },
+              min: (min * factor).toDouble(),
+              max: (max * factor).toDouble(),
+              divisions: (max - min) * factor.toInt(),
+              label: '${factor == 1 ? state.value!.toInt() : state.value!}',
             ),
           ),
           Text(highLabel, textAlign: TextAlign.center),
