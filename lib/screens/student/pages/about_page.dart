@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
-// TODO Benjamin - Change color of the app
+// TODO Benjamin - Change color of the app for disabled values
 class AboutPage extends StatefulWidget {
   const AboutPage({
     super.key,

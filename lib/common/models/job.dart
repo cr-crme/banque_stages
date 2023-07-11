@@ -24,7 +24,7 @@ class JobSstEvaluation extends ItemSerializable {
     String? incidentContact,
     Map<String, dynamic>? questions,
   }) {
-    // TODO Aurelie - Confirm clearing is the desired behavior
+    // TODO Aurelie - Confirm clearing when changing page is the desired behavior
     if (dangerousSituations != null) {
       this.dangerousSituations.clear();
       this.dangerousSituations.addAll(dangerousSituations);

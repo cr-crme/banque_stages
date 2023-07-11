@@ -153,7 +153,6 @@ class _MutableElements extends ItemSerializable {
   final Person supervisor;
   final DateTimeRange date;
   final List<WeeklySchedule> weeklySchedules;
-  // TODO Aurelie - Confirm protections and uniform should be moved out
   final Protections protections;
   final Uniform uniform;
 
