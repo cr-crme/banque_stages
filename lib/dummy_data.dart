@@ -1057,7 +1057,7 @@ Future<void> addDummyInterships(
     minimumAge: 16,
     enterpriseRequests: [
       'Une entrevue de recrutement de l\'élève en solo',
-      'Un beau cadeau à \'arrivée'
+      'Un beau cadeau à l\'arrivée'
     ],
     skillsRequired: [
       'Communiquer à l\'écrit',

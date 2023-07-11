@@ -1,4 +1,5 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
@@ -41,33 +42,12 @@ class _PrerequisitesBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final evaluations = job.postInternshipEnterpriseEvaluations(context);
 
-    // TODO Benjamin - This is a workaround because uniforms and job requirements are currently
-    // stored in intership. I think this should be moved to the job creation
+    // TODO Benjamin - We have to make a workaround because uniforms and job
+    // requirements are currently stored in intership.
+    // I think this should be moved to the job creation.
     final allInternships = InternshipsProvider.of(context);
     final internships =
         allInternships.where((e) => enterprise.jobs.hasId(e.jobId));
-
-    // Workaround for "job.uniforms"
-    final allUniforms = internships.map<Uniform>((e) => e.uniform).toSet();
-    final uniforms = {
-      UniformStatus.suppliedByEnterprise: allUniforms
-          .where((e) => e.status == UniformStatus.suppliedByEnterprise)
-          .toSet(),
-      UniformStatus.suppliedByStudent: allUniforms
-          .where((e) => e.status == UniformStatus.suppliedByStudent)
-          .toSet(),
-    };
-
-    // Workaround for "job.requirements"
-    final allProtections = internships.map<Protections>((e) => e.protections);
-    final protections = {
-      ProtectionsStatus.suppliedByEnterprise: allProtections
-          .where((e) => e.status == ProtectionsStatus.suppliedByEnterprise)
-        ..expand((e) => e.protections),
-      ProtectionsStatus.suppliedBySchool: allProtections
-          .where((e) => e.status == ProtectionsStatus.suppliedBySchool)
-        ..expand((e) => e.protections),
-    };
 
     return evaluations.isNotEmpty
         ? SizedBox(
@@ -84,9 +64,13 @@ class _PrerequisitesBody extends StatelessWidget {
                   Text(
                       '${evaluations.fold(0, (prev, e) => e.minimumAge) ~/ evaluations.length} ans'),
                   const SizedBox(height: 12),
-                  ..._buildUniform(uniforms),
+                  ..._buildUniform(internships),
                   const SizedBox(height: 12),
-                  ..._buildProtections(protections),
+                  ..._buildProtections(internships),
+                  const SizedBox(height: 12),
+                  ..._buildEntepriseRequests(internships),
+                  const SizedBox(height: 12),
+                  ..._buildSkillsRequired(internships),
                   const SizedBox(height: 12),
                 ],
               ),
@@ -99,7 +83,18 @@ class _PrerequisitesBody extends StatelessWidget {
           ));
   }
 
-  List<Widget> _buildUniform(uniforms) {
+  List<Widget> _buildUniform(Iterable<Internship> internships) {
+    // Workaround for "job.uniforms"
+    final allUniforms = internships.map<Uniform>((e) => e.uniform).toSet();
+    final uniforms = {
+      UniformStatus.suppliedByEnterprise: allUniforms
+          .where((e) => e.status == UniformStatus.suppliedByEnterprise)
+          .toSet(),
+      UniformStatus.suppliedByStudent: allUniforms
+          .where((e) => e.status == UniformStatus.suppliedByStudent)
+          .toSet(),
+    };
+
     return [
       const Text(
         'Tenue de travail',
@@ -132,7 +127,47 @@ class _PrerequisitesBody extends StatelessWidget {
     ];
   }
 
-  List<Widget> _buildProtections(protections) {
+  List<Widget> _buildSkillsRequired(Iterable<Internship> internships) {
+    final skills = internships
+        .expand((e) => e.enterpriseEvaluation?.skillsRequired ?? [])
+        .where((e) => e != null);
+
+    return [
+      const Text(
+        'Habiletés exigées pour le stage',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      if (skills.isEmpty) const Text('Aucune'),
+      if (skills.isNotEmpty) ..._printCountedList<String>(skills, (e) => e),
+    ];
+  }
+
+  List<Widget> _buildEntepriseRequests(Iterable<Internship> internships) {
+    final requests = internships
+        .expand((e) => e.enterpriseEvaluation?.enterpriseRequests ?? [])
+        .where((e) => e != null);
+
+    return [
+      const Text(
+        'L\'entreprise a demandé',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      if (requests.isEmpty) const Text('Aucune exigence particulière'),
+      if (requests.isNotEmpty) ..._printCountedList<String>(requests, (e) => e),
+    ];
+  }
+
+  List<Widget> _buildProtections(Iterable<Internship> internships) {
+    final allProtections = internships.map<Protections>((e) => e.protections);
+    final protections = {
+      ProtectionsStatus.suppliedByEnterprise: allProtections
+          .where((e) => e.status == ProtectionsStatus.suppliedByEnterprise)
+        ..expand((e) => e.protections),
+      ProtectionsStatus.suppliedBySchool: allProtections
+          .where((e) => e.status == ProtectionsStatus.suppliedBySchool)
+        ..expand((e) => e.protections),
+    };
+
     return [
       const Text(
         'Équipement de protection individuelle :',
