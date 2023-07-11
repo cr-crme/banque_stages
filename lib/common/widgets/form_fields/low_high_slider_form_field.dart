@@ -1,25 +1,33 @@
 import 'package:flutter/material.dart';
 
 class LowHighSliderFormField extends FormField<double> {
-  LowHighSliderFormField(
-      {super.key,
-      double initialValue = 3,
-      bool enabled = true,
-      void Function(double? value)? onSaved,
-      String lowLabel = 'Faible',
-      String highLabel = 'Élevé'})
-      : super(
+  const LowHighSliderFormField({
+    super.key,
+    double initialValue = 3,
+    bool enabled = true,
+    void Function(double? value)? onSaved,
+    this.min = 1,
+    this.max = 5,
+    this.lowLabel = 'Faible',
+    this.highLabel = 'Élevé',
+  }) : super(
           initialValue: initialValue,
           enabled: enabled,
           onSaved: onSaved,
-          builder: (state) => _builder(state, lowLabel, highLabel),
+          builder: _builder,
         );
 
-  static const int min = 1;
-  static const int max = 5;
+  final String lowLabel;
+  final String highLabel;
+  final int min;
+  final int max;
 
-  static Widget _builder(
-      FormFieldState<double> state, String lowLabel, String highLabel) {
+  static Widget _builder(FormFieldState<double> state) {
+    final lowLabel = (state.widget as LowHighSliderFormField).lowLabel;
+    final highLabel = (state.widget as LowHighSliderFormField).highLabel;
+    final min = (state.widget as LowHighSliderFormField).min;
+    final max = (state.widget as LowHighSliderFormField).max;
+
     if (state.value! < min || state.value! > max) {
       return const Text('Aucune donnée pour l\'instant.');
     }

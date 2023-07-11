@@ -24,7 +24,7 @@ class PrerequisitesStep extends StatefulWidget {
 class PrerequisitesStepState extends State<PrerequisitesStep> {
   final _formKey = GlobalKey<FormState>();
 
-  int? minimalAge;
+  int minimalAge = 15;
 
   final Map<String, bool> requiredForJob = {
     'Une entrevue de recrutement de l\'élève en solo': false,
@@ -163,7 +163,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'L\'entreprise a demandé : ',
+          '* L\'entreprise a demandé : ',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         ...requiredForJob.keys
@@ -238,7 +238,8 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.3,
           child: _AgeSpinBox(
-            onSaved: (newValue) => minimalAge = newValue,
+            initialValue: minimalAge,
+            onSaved: (newValue) => minimalAge = newValue!,
           ),
         ),
       ],
@@ -280,11 +281,12 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
 }
 
 class _AgeSpinBox extends FormField<int> {
-  const _AgeSpinBox({super.onSaved}) : super(builder: _build);
+  const _AgeSpinBox({super.onSaved, super.initialValue = 0})
+      : super(builder: _build);
 
   static Widget _build(FormFieldState<int> state) {
     return SpinBox(
-      value: 15,
+      value: state.widget.initialValue!.toDouble(),
       min: 10,
       max: 30,
       spacing: 0,

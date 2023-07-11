@@ -114,13 +114,14 @@ class _EnterpriseEvaluationScreenState
   }
 
   void _submit() {
-    final List<String> requirements = _prerequisitesKey
+    final List<String> enterpriseRequests = _prerequisitesKey
         .currentState!.requiredForJob.entries
         .where((e) => e.value)
         .map((e) => e.key)
         .toList();
     if (_prerequisitesKey.currentState!.otherRequirementsText != null) {
-      requirements.add(_prerequisitesKey.currentState!.otherRequirementsText!);
+      enterpriseRequests
+          .add(_prerequisitesKey.currentState!.otherRequirementsText!);
     }
 
     final List<String> skills = _prerequisitesKey
@@ -137,19 +138,28 @@ class _EnterpriseEvaluationScreenState
     final internship = internships.firstWhere((e) => e.jobId == widget.jobId);
     internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
       internshipId: internship.id,
+      minimumAge: _prerequisitesKey.currentState!.minimalAge,
+      enterpriseRequests: enterpriseRequests,
+      skillsRequired: skills,
       taskVariety: _supervisionKey.currentState!.taskVariety!,
+      trainingPlanRespect: _supervisionKey.currentState!.trainingPlan!,
       autonomyExpected: _supervisionKey.currentState!.autonomyExpected!,
       efficiencyWanted: _supervisionKey.currentState!.efficiencyWanted!,
-      skillsRequired: skills,
-      welcomingTsa: _specializedStudentsKey.currentState!.welcomingTSA,
-      welcomingCommunication:
-          _specializedStudentsKey.currentState!.welcomingCommunication,
-      welcomingMentalDeficiency:
-          _specializedStudentsKey.currentState!.welcomingMentalDeficiency,
-      welcomingMentalHealthIssue:
-          _specializedStudentsKey.currentState!.welcomingMentalHealthIssue,
-      minimalAge: _prerequisitesKey.currentState!.minimalAge!,
-      requirements: requirements,
+      supervisionStyle: _supervisionKey.currentState!.supervisionStyle!,
+      easeOfCommunication: _supervisionKey.currentState!.easeOfCommunication!,
+      absenceAcceptance: _supervisionKey.currentState!.absenceAcceptance!,
+      supervisionComments: _supervisionKey.currentState!.supervisionComments,
+      acceptanceTsa: _specializedStudentsKey.currentState!.acceptanceTsa,
+      acceptanceLanguageDeficiency:
+          _specializedStudentsKey.currentState!.acceptanceLanguageDeficiency,
+      acceptanceMentalDeficiency:
+          _specializedStudentsKey.currentState!.acceptanceMentalDeficiency,
+      acceptancePhysicalDeficiency:
+          _specializedStudentsKey.currentState!.acceptancePhysicalDeficiency,
+      acceptanceMentalHealthIssue:
+          _specializedStudentsKey.currentState!.acceptanceMentalHealthIssue,
+      acceptanceBehaviorIssue:
+          _specializedStudentsKey.currentState!.acceptanceBehaviorIssue,
     );
 
     // Pass the evaluation data to the rest of the app
@@ -206,7 +216,7 @@ class _EnterpriseEvaluationScreenState
             Step(
               state: _stepStatus[2],
               isActive: _currentStep == 2,
-              title: const Text('Prérequis'),
+              title: const Text('Clientèle\nspécialisée'),
               content: SpecializedStudentsStep(key: _specializedStudentsKey),
             ),
           ],

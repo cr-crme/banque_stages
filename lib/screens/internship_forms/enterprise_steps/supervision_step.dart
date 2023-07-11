@@ -43,11 +43,11 @@ class SupervisionStepState extends State<SupervisionStep> {
   // Management
   double? supervisionStyle;
   double? easeOfCommunication;
-  double? absenceTolerance;
+  double? absenceAcceptance;
 
   // Commentaires
   final _commentsController = TextEditingController();
-  String get comments => _commentsController.text;
+  String get supervisionComments => _commentsController.text;
 
   Future<String?> validate() async {
     if (!_formKey.currentState!.validate() || taskVariety == null) {
@@ -102,7 +102,7 @@ class SupervisionStepState extends State<SupervisionStep> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: LowHighSliderFormField(
-            onSaved: (value) => absenceTolerance = value,
+            onSaved: (value) => absenceAcceptance = value,
             lowLabel: 'Aucune\ntolérance',
             highLabel: 'Grande\ntolérance',
           ),

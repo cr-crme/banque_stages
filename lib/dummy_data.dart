@@ -1054,15 +1054,8 @@ Future<void> addDummyInterships(
   );
   internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
     internshipId: internship.id,
-    taskVariety: 3,
-    autonomyExpected: 4,
-    efficiencyWanted: 2,
-    minimalAge: 16,
-    welcomingCommunication: 4,
-    welcomingMentalDeficiency: 4,
-    welcomingMentalHealthIssue: 2,
-    welcomingTsa: -1,
-    requirements: [
+    minimumAge: 16,
+    enterpriseRequests: [
       'Une entrevue de recrutement de l\'élève en solo',
       'Un beau cadeau à \'arrivée'
     ],
@@ -1070,6 +1063,20 @@ Future<void> addDummyInterships(
       'Communiquer à l\'écrit',
       'Interagir avec des clients',
     ],
+    taskVariety: 3,
+    trainingPlanRespect: 1,
+    autonomyExpected: 4,
+    efficiencyWanted: 2,
+    supervisionStyle: 1,
+    easeOfCommunication: 5,
+    absenceAcceptance: 4,
+    supervisionComments: 'Milieu peu aidant, mais ouvert',
+    acceptanceTsa: -1,
+    acceptanceLanguageDeficiency: 4,
+    acceptanceMentalDeficiency: 4,
+    acceptancePhysicalDeficiency: 4,
+    acceptanceMentalHealthIssue: 2,
+    acceptanceBehaviorIssue: 2,
   );
   internships.add(internship);
 

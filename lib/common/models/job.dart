@@ -84,9 +84,6 @@ class JobSstEvaluation extends ItemSerializable {
       };
 }
 
-double meanOf(List list, double Function(dynamic) value) =>
-    list.fold<double>(0.0, (prev, e) => value(e)) / list.length;
-
 class Job extends ItemSerializable {
 // Details
   final Specialization specialization;

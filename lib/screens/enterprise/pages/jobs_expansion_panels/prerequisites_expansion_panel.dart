@@ -82,7 +82,7 @@ class _PrerequisitesBody extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                      '${meanOf(evaluations, (e) => (e.minimalAge as int).toDouble()).toInt()} ans'),
+                      '${evaluations.fold(0, (prev, e) => e.minimumAge) ~/ evaluations.length} ans'),
                   const SizedBox(height: 12),
                   ..._buildUniform(uniforms),
                   const SizedBox(height: 12),

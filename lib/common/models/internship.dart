@@ -20,80 +20,123 @@ List<String> _stringListFromSerialized(List? list) =>
 class PostIntershipEnterpriseEvaluation extends ItemSerializable {
   PostIntershipEnterpriseEvaluation({
     required this.internshipId,
-    required this.taskVariety,
+    required this.minimumAge,
+    required this.enterpriseRequests,
     required this.skillsRequired,
+    required this.taskVariety,
+    required this.trainingPlanRespect,
     required this.autonomyExpected,
     required this.efficiencyWanted,
-    required this.welcomingTsa,
-    required this.welcomingCommunication,
-    required this.welcomingMentalDeficiency,
-    required this.welcomingMentalHealthIssue,
-    required this.minimalAge,
-    required this.requirements,
+    required this.supervisionStyle,
+    required this.easeOfCommunication,
+    required this.absenceAcceptance,
+    required this.supervisionComments,
+    required this.acceptanceTsa,
+    required this.acceptanceLanguageDeficiency,
+    required this.acceptanceMentalDeficiency,
+    required this.acceptancePhysicalDeficiency,
+    required this.acceptanceMentalHealthIssue,
+    required this.acceptanceBehaviorIssue,
   });
 
   PostIntershipEnterpriseEvaluation.fromSerialized(map)
       : internshipId = map['internshipId'],
-        taskVariety = _doubleFromSerialized(map['taskVariety']),
+        minimumAge = map['minimumAge'],
+        enterpriseRequests =
+            _stringListFromSerialized(map['enterpriseRequests']),
         skillsRequired = _stringListFromSerialized(map['skillsRequired']),
+        taskVariety = _doubleFromSerialized(map['taskVariety']),
+        trainingPlanRespect = _doubleFromSerialized(map['trainingPlanRespect']),
         autonomyExpected = _doubleFromSerialized(map['autonomyExpected']),
         efficiencyWanted = _doubleFromSerialized(map['efficiencyWanted']),
-        welcomingTsa = _doubleFromSerialized(map['welcomingTSA']),
-        welcomingCommunication =
-            _doubleFromSerialized(map['welcomingCommunication']),
-        welcomingMentalDeficiency =
-            _doubleFromSerialized(map['welcomingMentalDeficiency']),
-        welcomingMentalHealthIssue =
-            _doubleFromSerialized(map['welcomingMentalHealthIssue']),
-        minimalAge = map['minimalAge'],
-        requirements = _stringListFromSerialized(map['requirements']);
+        supervisionStyle = _doubleFromSerialized(map['supervisionStyle']),
+        easeOfCommunication = _doubleFromSerialized(map['easeOfCommunication']),
+        absenceAcceptance = _doubleFromSerialized(map['absenceAcceptance']),
+        supervisionComments = map['supervisionComments'],
+        acceptanceTsa = _doubleFromSerialized(map['acceptanceTSA']),
+        acceptanceLanguageDeficiency =
+            _doubleFromSerialized(map['acceptanceLanguageDeficiency']),
+        acceptanceMentalDeficiency =
+            _doubleFromSerialized(map['acceptanceMentalDeficiency']),
+        acceptancePhysicalDeficiency =
+            _doubleFromSerialized(map['acceptancePhysicalDeficiency']),
+        acceptanceMentalHealthIssue =
+            _doubleFromSerialized(map['acceptanceMentalHealthIssue']),
+        acceptanceBehaviorIssue =
+            _doubleFromSerialized(map['acceptanceBehaviorIssue']);
 
   String internshipId;
 
+  // Prerequisites
+  final int minimumAge;
+  final List<String> enterpriseRequests;
+  final List<String> skillsRequired;
+
   // Tasks
   final double taskVariety;
-  final List<String> skillsRequired;
+  final double trainingPlanRespect;
   final double autonomyExpected;
   final double efficiencyWanted;
 
-  // Supervision
-  final double welcomingTsa;
-  final double welcomingCommunication;
-  final double welcomingMentalDeficiency;
-  final double welcomingMentalHealthIssue;
+  // Management
+  final double supervisionStyle;
+  final double easeOfCommunication;
+  final double absenceAcceptance;
+  final String supervisionComments;
 
-  // Prerequisites
-  final int minimalAge;
-  final List<String> requirements;
+  // Supervision
+  final double acceptanceTsa;
+  final double acceptanceLanguageDeficiency;
+  final double acceptanceMentalDeficiency;
+  final double acceptancePhysicalDeficiency;
+  final double acceptanceMentalHealthIssue;
+  final double acceptanceBehaviorIssue;
 
   @override
   Map<String, dynamic> serializedMap() => {
         'internshipId': internshipId,
-        'taskVariety': taskVariety,
+        'minimumAge': minimumAge,
+        'enterpriseRequests': enterpriseRequests,
         'skillsRequired': skillsRequired,
+        'taskVariety': taskVariety,
+        'trainingPlanRespect': trainingPlanRespect,
         'autonomyExpected': autonomyExpected,
         'efficiencyWanted': efficiencyWanted,
-        'welcomingTSA': welcomingTsa,
-        'welcomingCommunication': welcomingCommunication,
-        'welcomingMentalDeficiency': welcomingMentalDeficiency,
-        'welcomingMentalHealthIssue': welcomingMentalHealthIssue,
-        'minimalAge': minimalAge,
-        'requirements': requirements,
+        'supervisionStyle': supervisionStyle,
+        'easeOfCommunication': easeOfCommunication,
+        'absenceAcceptance': absenceAcceptance,
+        'supervisionComments': supervisionComments,
+        'acceptanceTSA': acceptanceTsa,
+        'acceptanceLanguageDeficiency': acceptanceLanguageDeficiency,
+        'acceptanceMentalDeficiency': acceptanceMentalDeficiency,
+        'acceptancePhysicalDeficiency': acceptancePhysicalDeficiency,
+        'acceptanceMentalHealthIssue': acceptanceMentalHealthIssue,
+        'acceptanceBehaviorIssue': acceptanceBehaviorIssue,
       };
 
   PostIntershipEnterpriseEvaluation deepCopy() {
     return PostIntershipEnterpriseEvaluation(
-        internshipId: internshipId,
-        taskVariety: taskVariety,
-        skillsRequired: [for (final skill in skillsRequired) skill],
-        autonomyExpected: autonomyExpected,
-        efficiencyWanted: efficiencyWanted,
-        welcomingTsa: welcomingTsa,
-        welcomingCommunication: welcomingCommunication,
-        welcomingMentalDeficiency: welcomingMentalDeficiency,
-        welcomingMentalHealthIssue: welcomingMentalHealthIssue,
-        minimalAge: minimalAge,
-        requirements: [for (final requirement in requirements) requirement]);
+      internshipId: internshipId,
+      minimumAge: minimumAge,
+      enterpriseRequests: [
+        for (final requirement in enterpriseRequests) requirement
+      ],
+      skillsRequired: [for (final skill in skillsRequired) skill],
+      taskVariety: taskVariety,
+      trainingPlanRespect: trainingPlanRespect,
+      autonomyExpected: autonomyExpected,
+      efficiencyWanted: efficiencyWanted,
+      supervisionStyle: supervisionStyle,
+      easeOfCommunication: easeOfCommunication,
+      absenceAcceptance: absenceAcceptance,
+      supervisionComments: supervisionComments,
+      acceptanceTsa: acceptanceTsa,
+      acceptanceLanguageDeficiency: acceptanceLanguageDeficiency,
+      acceptanceMentalDeficiency: acceptanceMentalDeficiency,
+      acceptancePhysicalDeficiency: acceptancePhysicalDeficiency,
+      acceptanceMentalHealthIssue: acceptanceMentalHealthIssue,
+      acceptanceBehaviorIssue: acceptanceBehaviorIssue,
+    );
   }
 }
 

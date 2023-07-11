@@ -1,7 +1,12 @@
+import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
+double _meanOf(
+        List list, double Function(PostIntershipEnterpriseEvaluation) value) =>
+    list.fold<double>(0.0, (prev, e) => value(e)) / list.length;
 
 class SupervisionExpansionPanel extends ExpansionPanel {
   SupervisionExpansionPanel({
@@ -39,7 +44,7 @@ class _SupervisionBody extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   LowHighSliderFormField(
-                    initialValue: meanOf(evaluations, (e) => e.taskVariety),
+                    initialValue: _meanOf(evaluations, (e) => e.taskVariety),
                     enabled: false,
                   ),
                   const SizedBox(height: 12),
@@ -62,7 +67,7 @@ class _SupervisionBody extends StatelessWidget {
                   ),
                   LowHighSliderFormField(
                     initialValue:
-                        meanOf(evaluations, (e) => e.autonomyExpected),
+                        _meanOf(evaluations, (e) => e.autonomyExpected),
                     enabled: false,
                   ),
                   const SizedBox(height: 12),
@@ -72,31 +77,31 @@ class _SupervisionBody extends StatelessWidget {
                   ),
                   LowHighSliderFormField(
                     initialValue:
-                        meanOf(evaluations, (e) => e.efficiencyWanted),
+                        _meanOf(evaluations, (e) => e.efficiencyWanted),
                     enabled: false,
                   ),
                   const SizedBox(height: 12),
                   _RatingBar(
                     title:
                         'Accueil de stagiaires avec un trouble du spectre de l\'autisme (TSA)',
-                    rating: meanOf(evaluations, (e) => e.welcomingTsa),
+                    rating: _meanOf(evaluations, (e) => e.acceptanceTsa),
                   ),
                   _RatingBar(
                     title: 'Accueil de stagiaires avec un trouble du langage',
-                    rating:
-                        meanOf(evaluations, (e) => e.welcomingCommunication),
+                    rating: _meanOf(
+                        evaluations, (e) => e.acceptanceLanguageDeficiency),
                   ),
                   _RatingBar(
                     title:
                         'Accueil de stagiaires avec une déficience intellectuelle',
-                    rating:
-                        meanOf(evaluations, (e) => e.welcomingMentalDeficiency),
+                    rating: _meanOf(
+                        evaluations, (e) => e.acceptanceMentalDeficiency),
                   ),
                   _RatingBar(
                     title:
                         'Accueil de stagiaires avec un trouble de santé mentale',
-                    rating: meanOf(
-                        evaluations, (e) => e.welcomingMentalHealthIssue),
+                    rating: _meanOf(
+                        evaluations, (e) => e.acceptanceMentalHealthIssue),
                   ),
                 ],
               )
