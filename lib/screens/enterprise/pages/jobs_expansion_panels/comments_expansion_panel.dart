@@ -11,9 +11,7 @@ class CommentsExpansionPanel extends ExpansionPanel {
           canTapOnHeader: true,
           body: _SstBody(job, addComment),
           headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text(
-              'Commentaires',
-            ),
+            title: Text('Commentaires'),
           ),
         );
 }
@@ -46,8 +44,14 @@ class _SstBody extends StatelessWidget {
                   ]
                 : job.comments.map(
                     (comment) => Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Text(comment),
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('\u2022 '),
+                          Flexible(child: Text(comment)),
+                        ],
+                      ),
                     ),
                   ),
             Center(

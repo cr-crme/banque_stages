@@ -81,6 +81,7 @@ class _SupervisionBody extends StatelessWidget {
                     _buildAcceptanceBehaviorIssue(evaluations),
                     const SizedBox(height: 12),
                     _buildComments(context, evaluations),
+                    const SizedBox(height: 12),
                   ],
                 )
               ],
@@ -148,7 +149,13 @@ class _SupervisionBody extends StatelessWidget {
           'Autres commentaires sur l\'encadrement',
           style: Theme.of(context).textTheme.titleSmall,
         ),
-        ...comments.map((e) => Text('\u2022 $e\n')),
+        ...comments.map((e) => Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('\u2022 '),
+                Flexible(child: Text(e)),
+              ],
+            )),
       ],
     );
   }
