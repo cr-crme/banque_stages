@@ -7,20 +7,22 @@ class PhotoExpansionPanel extends ExpansionPanel {
     required super.isExpanded,
     required Job job,
     required void Function(Job job) addImage,
+    required void Function(Job job, int index) removeImage,
   }) : super(
           headerBuilder: (context, isExpanded) => const ListTile(
             title: Text('Photos du poste de travail'),
           ),
           canTapOnHeader: true,
-          body: _PhotoBody(job, addImage),
+          body: _PhotoBody(job, addImage, removeImage),
         );
 }
 
 class _PhotoBody extends StatefulWidget {
-  const _PhotoBody(this.job, this.addImage);
+  const _PhotoBody(this.job, this.addImage, this.removeImage);
 
   final Job job;
   final void Function(Job job) addImage;
+  final void Function(Job job, int index) removeImage;
 
   @override
   State<_PhotoBody> createState() => _PhotoBodyState();
@@ -44,6 +46,38 @@ class _PhotoBodyState extends State<_PhotoBody> {
         curve: Curves.easeInOut);
   }
 
+  void _showPhoto(int index) {
+    showDialog(
+        context: context,
+        builder: (context) => Dialog(
+                child: Stack(
+              children: [
+                Image.network(widget.job.photosUrl[index]),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 50,
+                    width: double.infinity,
+                    decoration:
+                        BoxDecoration(color: Colors.white.withAlpha(200)),
+                    child: InkWell(
+                      onTap: () {
+                        widget.removeImage(widget.job, index);
+                        setState(() {});
+                        Navigator.of(context).pop();
+                      },
+                      borderRadius: BorderRadius.circular(25),
+                      child: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            )));
+  }
+
   @override
   Widget build(BuildContext context) {
     final canLeftScroll =
@@ -60,6 +94,7 @@ class _PhotoBodyState extends State<_PhotoBody> {
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (widget.job.photosUrl.isNotEmpty &&
                   _scrollController.hasClients)
@@ -82,12 +117,16 @@ class _PhotoBodyState extends State<_PhotoBody> {
                     children: [
                       ...widget.job.photosUrl.isEmpty
                           ? [const Text('Aucune image disponible')]
-                          : widget.job.photosUrl.map(
-                              // TODO: Make images clickables and deletables
-                              (url) => Card(
-                                child: Image.network(url, height: 250),
+                          : widget.job.photosUrl.asMap().keys.map(
+                                (i) => InkWell(
+                                  onTap: () => _showPhoto(i),
+                                  child: Card(
+                                    child: Image.network(
+                                        widget.job.photosUrl[i],
+                                        height: 250),
+                                  ),
+                                ),
                               ),
-                            ),
                     ],
                   ),
                 ),

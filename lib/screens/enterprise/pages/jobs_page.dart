@@ -42,7 +42,7 @@ class JobsPageState extends State<JobsPage> {
   }
 
   void _addImage(Job job) async {
-    final provider = context.read<EnterprisesProvider>();
+    final enterprises = EnterprisesProvider.of(context);
 
     final images = await ImagePicker().pickMultiImage();
 
@@ -50,7 +50,15 @@ class JobsPageState extends State<JobsPage> {
       var url = await StorageService.uploadJobImage(file.path);
       job.photosUrl.add(url);
     }
-    provider.replace(widget.enterprise);
+
+    enterprises.replace(widget.enterprise);
+  }
+
+  void _removeImage(Job job, int index) async {
+    final enterprises = EnterprisesProvider.of(context);
+    // TODO also remove int storage
+    job.photosUrl.removeAt(index);
+    enterprises.replace(widget.enterprise);
   }
 
   void _addSstEvent(Job job) async {
@@ -144,6 +152,7 @@ class JobsPageState extends State<JobsPage> {
                           isExpanded: _expandedSections[job.id]![3],
                           job: job,
                           addImage: _addImage,
+                          removeImage: _removeImage,
                         ),
                         CommentsExpansionPanel(
                           isExpanded: _expandedSections[job.id]![4],
