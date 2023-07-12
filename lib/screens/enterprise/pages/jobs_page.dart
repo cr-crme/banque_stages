@@ -41,12 +41,18 @@ class JobsPageState extends State<JobsPage> {
     provider.replace(widget.enterprise);
   }
 
-  void _addImage(Job job) async {
+  void _addImage(Job job, ImageSource source) async {
     final enterprises = EnterprisesProvider.of(context);
 
-    final images = await ImagePicker().pickMultiImage();
+    late List<XFile?> images;
+    if (source == ImageSource.camera) {
+      images = [(await ImagePicker().pickImage(source: ImageSource.camera))];
+    } else {
+      images = await ImagePicker().pickMultiImage();
+    }
 
-    for (XFile file in images) {
+    for (XFile? file in images) {
+      if (file == null) continue;
       var url = await StorageService.uploadJobImage(file.path);
       job.photosUrl.add(url);
     }
@@ -56,8 +62,9 @@ class JobsPageState extends State<JobsPage> {
 
   void _removeImage(Job job, int index) async {
     final enterprises = EnterprisesProvider.of(context);
-    // TODO also remove int storage
+    await StorageService.removeJobImage(job.photosUrl[index]);
     job.photosUrl.removeAt(index);
+
     enterprises.replace(widget.enterprise);
   }
 

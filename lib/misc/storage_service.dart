@@ -9,6 +9,16 @@ abstract class StorageService {
     return await _uploadFile('enterprises/jobs/', File(path));
   }
 
+  static Future<void> removeJobImage(String url) async {
+    final match = RegExp(r'^.*enterprises%2Fjobs%2F(.*)\?.*$').firstMatch(url);
+    if (match == null) return;
+
+    // This is unauthorized
+    // final imageName = match.group(1)!;
+    // await FirebaseStorage.instance.ref('entreprises/jobs/$imageName').delete();
+    return;
+  }
+
   static Future<String> _uploadFile(String destination, File file) async {
     var ref = FirebaseStorage.instance.ref(destination +
         nanoid() +

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PhotoExpansionPanel extends ExpansionPanel {
   PhotoExpansionPanel({
     required super.isExpanded,
     required Job job,
-    required void Function(Job job) addImage,
+    required void Function(Job job, ImageSource source) addImage,
     required void Function(Job job, int index) removeImage,
   }) : super(
           headerBuilder: (context, isExpanded) => const ListTile(
@@ -21,7 +22,7 @@ class _PhotoBody extends StatefulWidget {
   const _PhotoBody(this.job, this.addImage, this.removeImage);
 
   final Job job;
-  final void Function(Job job) addImage;
+  final void Function(Job job, ImageSource source) addImage;
   final void Function(Job job, int index) removeImage;
 
   @override
@@ -51,6 +52,7 @@ class _PhotoBodyState extends State<_PhotoBody> {
         context: context,
         builder: (context) => Dialog(
                 child: Stack(
+              alignment: Alignment.center,
               children: [
                 Image.network(widget.job.photosUrl[index]),
                 Align(
@@ -147,12 +149,26 @@ class _PhotoBodyState extends State<_PhotoBody> {
           ),
           const SizedBox(height: 16),
           Center(
-            child: IconButton(
-              onPressed: () => widget.addImage(widget.job),
-              icon: Icon(
-                Icons.camera_alt,
-                color: Theme.of(context).primaryColor,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  onPressed: () =>
+                      widget.addImage(widget.job, ImageSource.gallery),
+                  icon: Icon(
+                    Icons.image,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () =>
+                      widget.addImage(widget.job, ImageSource.camera),
+                  icon: Icon(
+                    Icons.camera_alt,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
