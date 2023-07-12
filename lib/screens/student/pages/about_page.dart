@@ -3,7 +3,6 @@ import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class AboutPage extends StatefulWidget {
@@ -59,7 +58,7 @@ class _GeneralInformation extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SubTitle(AppLocalizations.of(context)!.generalInformations, top: 12),
+          const SubTitle('Informations générales', top: 12),
           Padding(
             padding: const EdgeInsets.only(left: 32.0, right: 40),
             child: Row(
@@ -69,7 +68,7 @@ class _GeneralInformation extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.student_program,
+                      'Programme',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     Text(
@@ -77,14 +76,14 @@ class _GeneralInformation extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .titleMedium!
-                          .copyWith(color: Colors.grey[700]),
+                          .copyWith(color: Theme.of(context).disabledColor),
                     ),
                   ],
                 ),
                 Column(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.student_group,
+                      'Groupe',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     Text(
@@ -92,7 +91,7 @@ class _GeneralInformation extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .titleMedium!
-                          .copyWith(color: Colors.grey[700]),
+                          .copyWith(color: Theme.of(context).disabledColor),
                     ),
                   ],
                 ),
@@ -106,7 +105,7 @@ class _GeneralInformation extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.dateBirth,
+                  'Date de naissance',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Text(
@@ -114,7 +113,7 @@ class _GeneralInformation extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium!
-                      .copyWith(color: Colors.grey[700]),
+                      .copyWith(color: Theme.of(context).disabledColor),
                 ),
               ],
             ),
@@ -141,7 +140,7 @@ class _ContactInformation extends StatelessWidget {
       children: [
         ListTile(
           title: Text(
-            AppLocalizations.of(context)!.contactInformations,
+            'Coordonnées',
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
@@ -156,8 +155,8 @@ class _ContactInformation extends StatelessWidget {
               const SizedBox(height: 8),
               TextFormField(
                 controller: TextEditingController(text: student.email),
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.email,
+                decoration: const InputDecoration(
+                  labelText: 'Courriel',
                   disabledBorder: InputBorder.none,
                 ),
                 enabled: false,
@@ -188,7 +187,7 @@ class _EmergencyContact extends StatelessWidget {
       children: [
         ListTile(
           title: Text(
-            AppLocalizations.of(context)!.emergencyContact,
+            'Contact en cas d\'urgence',
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
@@ -199,8 +198,8 @@ class _EmergencyContact extends StatelessWidget {
               TextFormField(
                 controller:
                     TextEditingController(text: student.contact.firstName),
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.firstName,
+                decoration: const InputDecoration(
+                  labelText: 'Prénom',
                   disabledBorder: InputBorder.none,
                 ),
                 enabled: false,
@@ -208,8 +207,8 @@ class _EmergencyContact extends StatelessWidget {
               TextFormField(
                 controller:
                     TextEditingController(text: student.contact.lastName),
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.lastName,
+                decoration: const InputDecoration(
+                  labelText: 'Nom de famille',
                   disabledBorder: InputBorder.none,
                 ),
                 enabled: false,
@@ -217,9 +216,8 @@ class _EmergencyContact extends StatelessWidget {
               const SizedBox(height: 8),
               TextFormField(
                 controller: TextEditingController(text: student.contactLink),
-                decoration: InputDecoration(
-                  labelText:
-                      AppLocalizations.of(context)!.student_linkWithStudent,
+                decoration: const InputDecoration(
+                  labelText: 'Lien avec l\'élève',
                   disabledBorder: InputBorder.none,
                 ),
                 enabled: false,
@@ -233,8 +231,8 @@ class _EmergencyContact extends StatelessWidget {
               const SizedBox(height: 8),
               TextFormField(
                 controller: TextEditingController(text: student.contact.email),
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.email,
+                decoration: const InputDecoration(
+                  labelText: 'Courriel',
                   disabledBorder: InputBorder.none,
                 ),
                 enabled: false,

@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:flutter/material.dart';
 
 abstract class FormService {
   static bool validateForm(GlobalKey<FormState> formKey,
@@ -32,7 +30,7 @@ abstract class FormService {
 
   static String? textNotEmptyValidator(String? text) {
     if (text!.isEmpty) {
-      return _localizations.error_emptyField;
+      return 'Le champ ne peut pas être vide.';
     }
     return null;
   }
@@ -40,42 +38,42 @@ abstract class FormService {
   static String? neqValidator(String? neq) {
     if (neq == null || neq == '') return 'Un NEQ doit être spécifié';
     if (neq.isNotEmpty && !RegExp(r'^\d{10}$').hasMatch(neq)) {
-      return _localizations.error_invalidNeq;
+      return 'Le NEQ est composé de 10 chiffres.';
     }
     return null;
   }
 
   static String? phoneValidator(String? phone) {
     if (phone!.isEmpty) {
-      return _localizations.error_emptyPhone;
+      return 'Un numéro de téléphone est obligatoire.';
     } else if (!PhoneNumber.isValid(phone)) {
-      return _localizations.error_invalidPhone;
+      return 'Le numéro entré n\'est pas valide.';
     }
     return null;
   }
 
   static String? emailValidator(String? email) {
     if (email == null || email.isEmpty) {
-      return _localizations.error_emptyEmail;
+      return 'Une adresse courriel est obligatoire.';
     }
     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      return _localizations.error_invalidEmail;
+      return 'L\'adresse courriel n\'est pas valide.';
     }
     return null;
   }
 
   static String? usernameValidator(String? username) {
     if (username == null || username.isEmpty) {
-      return _localizations.error_emptyUsername;
+      return 'Un nom d\'utilisateur est requis.';
     }
     return null;
   }
 
   static String? passwordValidator(String? password) {
     if (password == null || password.isEmpty) {
-      return _localizations.error_emptyField;
+      return 'Le champ ne peut pas être vide.';
     } else if (password.length < 8) {
-      return _localizations.error_invalidPassword;
+      return 'Le mot de passe n\'est pas valide.';
     }
     return null;
   }
@@ -88,12 +86,8 @@ abstract class FormService {
       return null;
     }
     if (confirmPassword != password) {
-      return _localizations.error_passwordMatch;
+      return 'Les mots de passe ne correspondent pas.';
     }
     return null;
   }
-
-  static late BuildContext _context;
-  static set setContext(BuildContext context) => _context = context;
-  static AppLocalizations get _localizations => AppLocalizations.of(_context)!;
 }

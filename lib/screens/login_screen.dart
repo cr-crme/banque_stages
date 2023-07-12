@@ -3,7 +3,6 @@ import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -61,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.appName),
+          title: const Text('Banque de stages'),
           automaticallyImplyLeading: false,
         ),
         body: Form(

@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:flutter/material.dart';
 
 class StudentCard extends StatelessWidget {
   const StudentCard({
@@ -25,7 +23,7 @@ class StudentCard extends StatelessWidget {
         ),
         title: Text(student.fullName),
         subtitle: Text(
-          AppLocalizations.of(context)!.student_group_current(student.group),
+          'Groupe ${student.group}',
           style: const TextStyle(color: Colors.black87),
         ),
       ),

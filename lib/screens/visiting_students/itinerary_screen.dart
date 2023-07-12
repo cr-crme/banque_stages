@@ -272,12 +272,13 @@ class __DistanceState extends State<_Distance> {
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey[700]!),
+                      border:
+                          Border.all(color: Theme.of(context).disabledColor),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: Icon(
                       _isExpanded ? Icons.expand_less : Icons.expand_more,
-                      color: Colors.grey[700],
+                      color: Theme.of(context).disabledColor,
                     ),
                   ),
                 ],

@@ -7,7 +7,6 @@ import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/firebase_options.dart';
-import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
@@ -23,8 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
-
-// TODO Benjamin : remove the intl
 
 bool useDatabaseEmulator = kDebugMode;
 bool populateWithDebugData = kDebugMode;
@@ -77,10 +74,7 @@ class BanqueStagesApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
-        onGenerateTitle: (context) {
-          FormService.setContext = context;
-          return AppLocalizations.of(context)!.appName;
-        },
+        onGenerateTitle: (context) => 'Banque de stages',
         theme: crcrmeMaterialTheme,
         routerConfig: router,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
