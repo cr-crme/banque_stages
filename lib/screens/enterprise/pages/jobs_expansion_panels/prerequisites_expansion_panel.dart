@@ -45,11 +45,10 @@ class _PrerequisitesBody extends StatelessWidget {
     // TODO Benjamin - We have to make a workaround because uniforms and job
     // requirements are currently stored in intership.
     // I think this should be moved to the job creation.
-    final allInternships = InternshipsProvider.of(context);
-    final internships =
-        allInternships.where((e) => enterprise.jobs.hasId(e.jobId));
+    final internships = InternshipsProvider.of(context)
+        .where((internship) => job.id == internship.jobId);
 
-    return evaluations.isNotEmpty
+    return evaluations.isEmpty
         ? SizedBox(
             width: Size.infinite.width,
             child: Padding(
@@ -62,7 +61,7 @@ class _PrerequisitesBody extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                      '${evaluations.fold(0, (prev, e) => e.minimumAge) ~/ evaluations.length} ans'),
+                      '${evaluations.fold(0, (prev, e) => e.minimumAge) ~/ 1} ans'),
                   const SizedBox(height: 12),
                   ..._buildUniform(internships),
                   const SizedBox(height: 12),
@@ -89,10 +88,10 @@ class _PrerequisitesBody extends StatelessWidget {
     final uniforms = {
       UniformStatus.suppliedByEnterprise: allUniforms
           .where((e) => e.status == UniformStatus.suppliedByEnterprise)
-          .toSet(),
+          .map((e) => e.uniform),
       UniformStatus.suppliedByStudent: allUniforms
           .where((e) => e.status == UniformStatus.suppliedByStudent)
-          .toSet(),
+          .map((e) => e.uniform),
     };
 
     return [
@@ -108,9 +107,8 @@ class _PrerequisitesBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text('Fournie par l\'entreprise :'),
-            ..._printCountedList<Uniform>(
-                uniforms[UniformStatus.suppliedByEnterprise]!,
-                (e) => e.uniform),
+            ..._printCountedList<String>(
+                uniforms[UniformStatus.suppliedByEnterprise]!, (e) => e),
           ],
         ),
       if (uniforms[UniformStatus.suppliedByStudent]!.isNotEmpty)
@@ -120,8 +118,8 @@ class _PrerequisitesBody extends StatelessWidget {
             if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
               const SizedBox(height: 8),
             const Text('Fournie par l\'étudiant :'),
-            ..._printCountedList<Uniform>(
-                uniforms[UniformStatus.suppliedByStudent]!, (e) => e.uniform),
+            ..._printCountedList<String>(
+                uniforms[UniformStatus.suppliedByStudent]!, (e) => e),
           ],
         ),
     ];
@@ -162,10 +160,12 @@ class _PrerequisitesBody extends StatelessWidget {
     final protections = {
       ProtectionsStatus.suppliedByEnterprise: allProtections
           .where((e) => e.status == ProtectionsStatus.suppliedByEnterprise)
-        ..expand((e) => e.protections),
+          .map((e) => e.protections)
+          .expand((e) => e),
       ProtectionsStatus.suppliedBySchool: allProtections
           .where((e) => e.status == ProtectionsStatus.suppliedBySchool)
-        ..expand((e) => e.protections),
+          .map((e) => e.protections)
+          .expand((e) => e),
     };
 
     return [

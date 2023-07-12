@@ -1128,12 +1128,8 @@ Future<void> addDummyInterships(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
     teacherId: '42', // This is a Roméo Montaigu's student
-    enterpriseId:
-        enterprises.firstWhere((e) => e.name == 'Le jardin de Joanie').id,
-    jobId: enterprises
-        .firstWhere((e) => e.name == 'Le jardin de Joanie')
-        .jobs[0]
-        .id,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
@@ -1162,8 +1158,12 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: Uniform(status: UniformStatus.none, uniform: ''),
+    protections: Protections(
+        protections: ['Des gants', 'Des bijoux'],
+        status: ProtectionsStatus.suppliedBySchool),
+    uniform: Uniform(
+        status: UniformStatus.suppliedByEnterprise,
+        uniform: 'Un chapeau fleuri'),
   ));
 
   period = DateTimeRange(
@@ -1214,8 +1214,12 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: Uniform(status: UniformStatus.none, uniform: ''),
+    protections: Protections(
+        protections: ['Des gants', 'Une paire de lunettes'],
+        status: ProtectionsStatus.suppliedBySchool),
+    uniform: Uniform(
+        status: UniformStatus.suppliedByEnterprise,
+        uniform: 'Un chapeau fleuri'),
   ));
 
   period = DateTimeRange(
@@ -1267,8 +1271,12 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: Uniform(status: UniformStatus.none, uniform: ''),
+    protections: Protections(
+        protections: ['Des gants', 'Des bas antidérapants'],
+        status: ProtectionsStatus.suppliedBySchool),
+    uniform: Uniform(
+        status: UniformStatus.suppliedByEnterprise,
+        uniform: 'Un chapeau fleuri'),
   ));
 
   await _waitForDatabaseUpdate(internships, 7);
