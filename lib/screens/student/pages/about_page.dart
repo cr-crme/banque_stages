@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
-// TODO Benjamin - Change color of the app for disabled values
 class AboutPage extends StatefulWidget {
   const AboutPage({
     super.key,
@@ -27,23 +26,20 @@ class AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(disabledColor: Colors.grey[700]),
-      child: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _GeneralInformation(
-                  student: widget.student, dateFormat: _dateFormat),
-              _ContactInformation(
-                student: widget.student,
-                addressController: _addressController,
-              ),
-              _EmergencyContact(student: widget.student),
-            ],
-          ),
+    return Form(
+      key: _formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _GeneralInformation(
+                student: widget.student, dateFormat: _dateFormat),
+            _ContactInformation(
+              student: widget.student,
+              addressController: _addressController,
+            ),
+            _EmergencyContact(student: widget.student),
+          ],
         ),
       ),
     );

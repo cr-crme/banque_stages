@@ -165,85 +165,77 @@ class _DateRangeState extends State<_DateRange> {
           padding: const EdgeInsets.only(left: 12.0),
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 2 / 3,
-            child: Theme(
-              data: Theme.of(context).copyWith(disabledColor: Colors.grey[700]),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    FormField<void>(
+                      validator: (value) {
+                        if (widget.scheduleController.dateRange == null) {
+                          _isValid = false;
+                          setState(() {});
+                          return 'Nope';
+                        } else {
+                          _isValid = true;
+                          setState(() {});
+                          return null;
+                        }
+                      },
+                      builder: (state) => Text(
+                        '* Sélectionner les dates du stage',
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: _isValid ? Colors.black : Colors.red),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.calendar_month_outlined,
+                        color: Colors.blue,
+                      ),
+                      onPressed: () async {
+                        await _promptDateRange(context);
+                        setState(() {});
+                      },
+                    )
+                  ],
+                ),
+                Visibility(
+                  visible: widget.scheduleController.dateRange != null,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      FormField<void>(
-                        validator: (value) {
-                          if (widget.scheduleController.dateRange == null) {
-                            _isValid = false;
-                            setState(() {});
-                            return 'Nope';
-                          } else {
-                            _isValid = true;
-                            setState(() {});
-                            return null;
-                          }
-                        },
-                        builder: (state) => Text(
-                          '* Sélectionner les dates du stage',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(
-                                  color: _isValid ? Colors.black : Colors.red),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: TextField(
+                          decoration: const InputDecoration(
+                              labelText: 'Date de début',
+                              border: InputBorder.none),
+                          controller: TextEditingController(
+                              text: widget.scheduleController.dateRange == null
+                                  ? null
+                                  : DateFormat.yMMMEd('fr_CA').format(widget
+                                      .scheduleController.dateRange!.start)),
+                          enabled: false,
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.calendar_month_outlined,
-                          color: Colors.blue,
+                      Flexible(
+                        child: TextField(
+                          decoration: const InputDecoration(
+                              labelText: 'Date de fin',
+                              border: InputBorder.none),
+                          controller: TextEditingController(
+                              text: widget.scheduleController.dateRange == null
+                                  ? null
+                                  : DateFormat.yMMMEd('fr_CA').format(widget
+                                      .scheduleController.dateRange!.end)),
+                          enabled: false,
                         ),
-                        onPressed: () async {
-                          await _promptDateRange(context);
-                          setState(() {});
-                        },
-                      )
+                      ),
                     ],
                   ),
-                  Visibility(
-                    visible: widget.scheduleController.dateRange != null,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 3,
-                          child: TextField(
-                            decoration: const InputDecoration(
-                                labelText: 'Date de début',
-                                border: InputBorder.none),
-                            controller: TextEditingController(
-                                text: widget.scheduleController.dateRange ==
-                                        null
-                                    ? null
-                                    : DateFormat.yMMMEd('fr_CA').format(widget
-                                        .scheduleController.dateRange!.start)),
-                            enabled: false,
-                          ),
-                        ),
-                        Flexible(
-                          child: TextField(
-                            decoration: const InputDecoration(
-                                labelText: 'Date de fin',
-                                border: InputBorder.none),
-                            controller: TextEditingController(
-                                text: widget.scheduleController.dateRange ==
-                                        null
-                                    ? null
-                                    : DateFormat.yMMMEd('fr_CA').format(widget
-                                        .scheduleController.dateRange!.end)),
-                            enabled: false,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

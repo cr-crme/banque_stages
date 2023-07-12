@@ -72,24 +72,21 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
           final student = snapshot.data;
           if (student == null) return Container();
 
-          return Theme(
-            data: Theme.of(context).copyWith(disabledColor: Colors.grey[700]),
-            child: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildStudentName(student),
-                    _buildEnterpriseName(enterprise),
-                    _buildScholarYear(widget.internship),
-                    _buildMinimumAge(context),
-                    const SizedBox(height: 16),
-                    _buildRequirements(context),
-                    const SizedBox(height: 16),
-                    _buildSkillsRequired(context),
-                  ],
-                ),
+          return Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildStudentName(student),
+                  _buildEnterpriseName(enterprise),
+                  _buildScholarYear(widget.internship),
+                  _buildMinimumAge(context),
+                  const SizedBox(height: 16),
+                  _buildRequirements(context),
+                  const SizedBox(height: 16),
+                  _buildSkillsRequired(context),
+                ],
               ),
             ),
           );
