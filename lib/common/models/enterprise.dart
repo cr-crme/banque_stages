@@ -98,11 +98,11 @@ class Enterprise extends ItemSerializable {
       'jobs': jobs.serialize(),
       'contact': contact.serialize(),
       'contactFunction': contactFunction,
-      'address': address?.serializedMap(),
+      'address': address?.serialize(),
       'phone': phone.toString(),
       'fax': fax.toString(),
       'website': website,
-      'headquartersAddress': headquartersAddress?.serializedMap() ?? -1,
+      'headquartersAddress': headquartersAddress?.serialize() ?? -1,
       'neq': neq,
     };
   }

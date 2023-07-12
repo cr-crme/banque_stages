@@ -48,7 +48,7 @@ class Person extends ItemSerializable {
       'birthDate': dateBirth?.millisecondsSinceEpoch ?? -1,
       'phone': phone.toString(),
       'email': email,
-      'address': address?.serializedMap(),
+      'address': address?.serialize(),
     };
   }
 

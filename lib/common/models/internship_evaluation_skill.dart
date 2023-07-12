@@ -95,7 +95,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
       'id': id,
       'date': date.millisecondsSinceEpoch,
       'present': presentAtEvaluation,
-      'skills': skills.map((e) => e.serializedMap()).toList(),
+      'skills': skills.map((e) => e.serialize()).toList(),
       'comments': comments,
       'formVersion': formVersion,
     };

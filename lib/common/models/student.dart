@@ -81,7 +81,7 @@ class Student extends Person {
         'teacherId': teacherId,
         'program': program.index,
         'group': group,
-        'contact': contact.serializedMap(),
+        'contact': contact.serialize(),
         'contactLink': contactLink,
       });
   }

@@ -15,7 +15,7 @@ class School extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() {
-    return {'name': name, 'address': address.serializedMap()};
+    return {'name': name, 'address': address.serialize()};
   }
 
   School copyWith({String? name, Address? address}) => School(

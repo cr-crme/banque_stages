@@ -173,14 +173,14 @@ class _MutableElements extends ItemSerializable {
   Map<String, dynamic> serializedMap() => {
         'id': id,
         'versionDate': versionDate.millisecondsSinceEpoch,
-        'name': supervisor.serializedMap(),
+        'name': supervisor.serialize(),
         'date': [
           date.start.millisecondsSinceEpoch,
           date.end.millisecondsSinceEpoch
         ],
-        'schedule': weeklySchedules.map((e) => e.serializedMap()).toList(),
-        'protections': protections.serializedMap(),
-        'uniform': uniform.serializedMap(),
+        'schedule': weeklySchedules.map((e) => e.serialize()).toList(),
+        'protections': protections.serialize(),
+        'uniform': uniform.serialize(),
       };
 
   _MutableElements deepCopy() {
@@ -338,7 +338,6 @@ class Internship extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      'id': id,
       'student': studentId,
       'teacherId': teacherId,
       'previousTeacherId': previousTeacherId,
@@ -347,16 +346,15 @@ class Internship extends ItemSerializable {
       'jobId': jobId,
       'extraSpecializationsId':
           extraSpecializationsId.isEmpty ? -1 : extraSpecializationsId,
-      'mutables': _mutables.map((e) => e.serializedMap()).toList(),
+      'mutables': _mutables.map((e) => e.serialize()).toList(),
       'expectedLength': expectedLength,
       'achievedLength': achievedLength,
       'priority': visitingPriority.index,
       'teacherNotes': teacherNotes,
       'endDate': endDate?.millisecondsSinceEpoch ?? -1,
-      'skillEvaluation':
-          skillEvaluations.map((e) => e.serializedMap()).toList(),
+      'skillEvaluation': skillEvaluations.map((e) => e.serialize()).toList(),
       'attitudeEvaluation':
-          attitudeEvaluations.map((e) => e.serializedMap()).toList(),
+          attitudeEvaluations.map((e) => e.serialize()).toList(),
       'enterpriseEvaluation': enterpriseEvaluation?.serialize(),
     };
   }
