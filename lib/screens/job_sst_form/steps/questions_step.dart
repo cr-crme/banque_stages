@@ -19,6 +19,7 @@ class QuestionsStep extends StatefulWidget {
   State<QuestionsStep> createState() => QuestionsStepState();
 }
 
+// TODO Fix 'Autre' that won't save and show the extra messages when reopening
 class QuestionsStepState extends State<QuestionsStep> {
   final formKey = GlobalKey<FormState>();
 

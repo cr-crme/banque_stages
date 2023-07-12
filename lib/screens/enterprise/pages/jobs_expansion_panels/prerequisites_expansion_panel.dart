@@ -94,7 +94,7 @@ class _PrerequisitesBody extends StatelessWidget {
   }
 
   List<Widget> _buildUniform(Iterable<Internship> internships) {
-    // Workaround for "job.uniforms"
+    // Workaround for job.uniforms
     final allUniforms = internships.map<Uniform>((e) => e.uniform).toSet();
     final uniforms = {
       UniformStatus.suppliedByEnterprise: allUniforms

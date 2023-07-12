@@ -66,14 +66,19 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     _questionsKey.currentState!.formKey.currentState!.save();
     _dangerKey.currentState!.formKey.currentState!.save();
 
+    final stateDanger = _dangerKey.currentState!;
+
     final enterprises = context.read<EnterprisesProvider>();
     enterprises[widget.enterpriseId].jobs[widget.jobId].sstEvaluation.update(
           questions: _questionsKey.currentState!.awnser,
-          dangerousSituations:
-              _dangerKey.currentState!.dangerousSituations!.split('\n'),
-          equipmentRequired: _dangerKey.currentState!.equipmentRequired!,
-          incidents: _dangerKey.currentState!.pastIncidents!.split('\n'),
-          incidentContact: _dangerKey.currentState!.incidentContact!,
+          dangerousSituations: stateDanger.dangerousSituations.isEmpty
+              ? []
+              : stateDanger.dangerousSituations.split('\n'),
+          equipmentRequired: stateDanger.equipmentRequired,
+          incidents: stateDanger.pastIncidents.isEmpty
+              ? []
+              : stateDanger.pastIncidents.split('\n'),
+          incidentContact: stateDanger.incidentContact,
         );
 
     enterprises.replaceJob(widget.enterpriseId,

@@ -23,10 +23,10 @@ class DangerStepState extends State<DangerStep> {
 
   bool isProfessor = true;
 
-  String? dangerousSituations;
-  List<String>? equipmentRequired;
-  String? pastIncidents;
-  String? incidentContact;
+  String dangerousSituations = '';
+  List<String> equipmentRequired = [];
+  String pastIncidents = '';
+  String incidentContact = '';
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class DangerStepState extends State<DangerStep> {
               question:
                   '1. Quelles sont les situations de travail qui pourraient être '
                   'dangereuses pour mon élève? Comment faudrait-il l\'y préparer?',
-              onSaved: (text) => dangerousSituations = text,
+              onSaved: (text) => dangerousSituations = text ?? '',
             ),
             QuestionWithCheckboxList(
               initialChoices:
@@ -59,7 +59,7 @@ class DangerStepState extends State<DangerStep> {
                 'Gants',
               },
               onSavedChoices: (choices) =>
-                  equipmentRequired = choices?.toList(),
+                  equipmentRequired = choices!.toList(),
             ),
             QuestionWithRadioBool(
               initialChoice: widget.job.sstEvaluation.incidents.isNotEmpty,
@@ -68,14 +68,14 @@ class DangerStepState extends State<DangerStep> {
                   '3. Est-ce qu\'il y a déjà eu des incidents ou des accidents du '
                   'travail au poste que l\'élève occupera en stage?',
               textQuestion: 'Pouvez-vous me raconter ce qu\'il s\'est passé?',
-              onSavedText: (text) => pastIncidents = text,
+              onSavedText: (text) => pastIncidents = text!,
             ),
             QuestionWithText(
               initialValue: widget.job.sstEvaluation.incidentContact,
               question:
                   '4. À quelle personne dans l\'entreprise, l\'élève doit-il '
                   's\'adresser en cas de blessure ou d\'incident?',
-              onSaved: (text) => incidentContact = text,
+              onSaved: (text) => incidentContact = text!,
             ),
           ],
         ),

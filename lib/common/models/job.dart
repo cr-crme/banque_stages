@@ -18,32 +18,26 @@ class JobSstEvaluation extends ItemSerializable {
   DateTime date;
 
   void update({
-    List<String>? dangerousSituations,
-    List<String>? equipmentRequired,
-    List<String>? incidents,
-    String? incidentContact,
-    Map<String, dynamic>? questions,
+    required List<String> dangerousSituations,
+    required List<String> equipmentRequired,
+    required List<String> incidents,
+    required String incidentContact,
+    required Map<String, dynamic> questions,
   }) {
-    // TODO Aurelie - Confirm clearing when changing page is the desired behavior
-    if (dangerousSituations != null) {
-      this.dangerousSituations.clear();
-      this.dangerousSituations.addAll(dangerousSituations);
-    }
-    if (equipmentRequired != null) {
-      this.equipmentRequired.clear();
-      this.equipmentRequired.addAll(equipmentRequired);
-    }
-    if (incidents != null) {
-      this.incidents.clear();
-      this.incidents.addAll(incidents);
-    }
-    if (incidentContact != null && incidentContact.isNotEmpty) {
-      this.incidentContact = incidentContact;
-    }
-    if (questions != null && questions.isNotEmpty) {
-      this.questions.clear();
-      this.questions.addAll(questions);
-    }
+    this.dangerousSituations.clear();
+    this.dangerousSituations.addAll(dangerousSituations);
+
+    this.equipmentRequired.clear();
+    this.equipmentRequired.addAll(equipmentRequired);
+
+    this.incidents.clear();
+    this.incidents.addAll(incidents);
+
+    this.incidentContact = incidentContact;
+
+    this.questions.clear();
+    this.questions.addAll(questions);
+
     date = DateTime.now();
   }
 

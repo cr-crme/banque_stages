@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:intl/intl.dart';
 
 class SstExpansionPanel extends ExpansionPanel {
   SstExpansionPanel({
@@ -73,21 +74,27 @@ class SstBody extends StatelessWidget {
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 8.0),
-              child: job.sstEvaluation.incidents.isEmpty
-                  ? const Center(
-                      child: Text('Aucun incident n\'a été signalé'),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Historique d\'accidents et d\'incidents au poste de travail',
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                        ...job.sstEvaluation.incidents
-                            .map((e) => Text('\u2022 $e')),
-                      ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Historique d\'accidents et d\'incidents au poste de travail',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      '(ex. blessure d\'élève même mineure, agression verbale '
+                      'harcèlement subis par l\'élève)',
                     ),
+                  ),
+                  if (job.sstEvaluation.incidents.isEmpty)
+                    const Text('Aucun incident n\'a été signalé'),
+                  if (job.sstEvaluation.incidents.isNotEmpty)
+                    ...job.sstEvaluation.incidents
+                        .map((e) => Text('\u2022 $e')),
+                ],
+              ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -114,23 +121,7 @@ class SstBody extends StatelessWidget {
                     ? job.sstEvaluation.dangerousSituations
                         .map((e) => Text('\u2022 $e'))
                         .toList()
-                    : [const Text('Aucun situation')],
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Équipements de protection individuelle requis',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: job.sstEvaluation.equipmentRequired.isNotEmpty
-                    ? job.sstEvaluation.equipmentRequired
-                        .map((equipment) => Text('\u2022 $equipment'))
-                        .toList()
-                    : [const Text('Aucun équipement')],
+                    : [const Text('Aucune situation')],
               ),
             ),
             const SizedBox(height: 8),
@@ -141,8 +132,7 @@ class SstBody extends StatelessWidget {
             Text(job.sstEvaluation.incidentContact.isEmpty
                 ? 'Le formulaire n\'a jamais été rempli avec cette entreprise'
                 : 'Formulaire SST rempli avec l\'entreprise\n'
-                    'Mis à jour le ${job.sstEvaluation.date.year}-'
-                    '${job.sstEvaluation.date.month}-${job.sstEvaluation.date.day}'),
+                    'Mis à jour le ${DateFormat.yMMMEd('fr_CA').format(job.sstEvaluation.date)}'),
             const SizedBox(height: 8),
             Center(
               child: TextButton(
@@ -156,6 +146,7 @@ class SstBody extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 8),
           ],
         ),
       ),
