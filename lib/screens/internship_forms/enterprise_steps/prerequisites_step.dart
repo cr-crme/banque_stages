@@ -1,10 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
@@ -12,10 +10,10 @@ import 'package:flutter_spinbox/flutter_spinbox.dart';
 class PrerequisitesStep extends StatefulWidget {
   const PrerequisitesStep({
     super.key,
-    required this.job,
+    required this.internship,
   });
 
-  final Job job;
+  final Internship internship;
 
   @override
   State<PrerequisitesStep> createState() => PrerequisitesStepState();
@@ -55,38 +53,47 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
 
   @override
   Widget build(BuildContext context) {
-    final internship = InternshipsProvider.of(context, listen: false)
-        .firstWhere((e) => e.jobId == widget.job.id);
     final enterprise = EnterprisesProvider.of(context, listen: false)
-        .firstWhereOrNull((e) => e.id == internship.enterpriseId);
-    final student = StudentsProvider.of(context, listen: false)
-        .firstWhereOrNull((e) => e.id == internship.studentId);
+        .firstWhereOrNull((e) => e.id == widget.internship.enterpriseId);
 
     // Sometimes for some reason the build is called this with these
     // provider empty on the first call
-    if (enterprise == null || student == null) return Container();
+    if (enterprise == null) return Container();
 
-    return Theme(
-      data: Theme.of(context).copyWith(disabledColor: Colors.grey[700]),
-      child: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildStudentName(student),
-              _buildEnterpriseName(enterprise),
-              _buildScholarYear(internship),
-              _buildMinimumAge(context),
-              const SizedBox(height: 16),
-              _buildRequirements(context),
-              const SizedBox(height: 16),
-              _buildSkillsRequired(context),
-            ],
-          ),
-        ),
-      ),
-    );
+    return FutureBuilder<Student?>(
+        future: StudentsProvider.fromLimitedId(context,
+            studentId: widget.internship.studentId),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final student = snapshot.data;
+          if (student == null) return Container();
+
+          return Theme(
+            data: Theme.of(context).copyWith(disabledColor: Colors.grey[700]),
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildStudentName(student),
+                    _buildEnterpriseName(enterprise),
+                    _buildScholarYear(widget.internship),
+                    _buildMinimumAge(context),
+                    const SizedBox(height: 16),
+                    _buildRequirements(context),
+                    const SizedBox(height: 16),
+                    _buildSkillsRequired(context),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   Widget _buildSkillsRequired(BuildContext context) {
@@ -209,7 +216,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextFormField(
-                  onSaved: (text) => otherRequirementsText = text,
+                  onChanged: (text) => otherRequirementsText = text,
                   minLines: 2,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,

@@ -161,6 +161,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
       if (internship.isTransfering && internship.teacherId == myId) {
         final student = await StudentsProvider.fromLimitedId(context,
             studentId: internship.studentId);
+        if (student == null) continue;
+
         if (!mounted) return;
         final acceptTransfer = await showDialog<bool>(
             barrierDismissible: false,

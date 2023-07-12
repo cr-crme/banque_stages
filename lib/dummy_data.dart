@@ -96,7 +96,7 @@ Future<void> addDummyEnterprises(
   jobs.add(
     Job(
       specialization: ActivitySectorsService.sectors[2].specializations[9],
-      positionsOffered: 1,
+      positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
     ),
   );

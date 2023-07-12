@@ -49,10 +49,11 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
             .fromId(internship.enterpriseId)
         : null;
 
-    return FutureBuilder<Student>(
+    return FutureBuilder<Student?>(
         future: StudentsProvider.fromLimitedId(context, studentId: studentId),
         builder: (context, snapshot) {
-          final student = snapshot.hasData ? snapshot.data! : null;
+          final student = snapshot.hasData ? snapshot.data : null;
+
           return Scaffold(
             appBar: AppBar(
               title: student == null

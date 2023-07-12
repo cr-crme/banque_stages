@@ -44,11 +44,12 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   Widget build(BuildContext context) {
     final internship = InternshipsProvider.of(context)[widget.internshipId];
 
-    return FutureBuilder<Student>(
+    return FutureBuilder<Student?>(
         future: StudentsProvider.fromLimitedId(context,
             studentId: internship.studentId),
         builder: (context, snapshot) {
-          final student = snapshot.hasData ? snapshot.data! : null;
+          final student = snapshot.hasData ? snapshot.data : null;
+
           return Scaffold(
             appBar: AppBar(
               title: Text(

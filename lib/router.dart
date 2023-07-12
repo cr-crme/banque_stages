@@ -124,12 +124,10 @@ final router = GoRouter(
               InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
         ),
         GoRoute(
-          path: 'enterprise-evaluation/:id/:jobId',
+          path: 'enterprise-evaluation/:id',
           name: Screens.enterpriseEvaluationScreen,
-          builder: (context, state) => EnterpriseEvaluationScreen(
-            id: state.params['id']!,
-            jobId: state.params['jobId']!,
-          ),
+          builder: (context, state) =>
+              EnterpriseEvaluationScreen(id: state.params['id']!),
         ),
         GoRoute(
           path: ':id',

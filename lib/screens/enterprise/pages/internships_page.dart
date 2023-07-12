@@ -148,7 +148,7 @@ class _InternshipListState extends State<_InternshipList> {
   void _evaluateEnterprise(Internship internship) async {
     GoRouter.of(context).pushNamed(
       Screens.enterpriseEvaluationScreen,
-      params: Screens.params(internship.enterpriseId, jobId: internship.jobId),
+      params: Screens.params(internship.id),
     );
     setState(() {});
   }
@@ -169,7 +169,7 @@ class _InternshipListState extends State<_InternshipList> {
               final teachers = TeachersProvider.of(context);
               late Specialization specialization;
               late Teacher teacher;
-              late Future<Student> student;
+              late Future<Student?> student;
 
               try {
                 specialization =
@@ -205,11 +205,13 @@ class _InternshipListState extends State<_InternshipList> {
                     ],
                   ),
                 ),
-                body: FutureBuilder<Student>(
+                body: FutureBuilder<Student?>(
                     future: student,
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) return Container();
-                      final student = snapshot.data!;
+                      final student = snapshot.data;
+                      if (student == null) return Container();
+
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: Column(

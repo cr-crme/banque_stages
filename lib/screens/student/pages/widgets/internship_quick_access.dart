@@ -149,7 +149,7 @@ class InternshipQuickAccess extends StatelessWidget {
   void _evaluateEnterprise(context, Internship internship) async {
     GoRouter.of(context).pushNamed(
       Screens.enterpriseEvaluationScreen,
-      params: Screens.params(internship.enterpriseId, jobId: internship.jobId),
+      params: Screens.params(internship.id),
     );
   }
 }

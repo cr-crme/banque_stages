@@ -35,6 +35,7 @@ class TeachersProvider extends FirebaseListProvided<Teacher> {
         InternshipsProvider.of(context, listen: listen)[internshipId];
     final student = await StudentsProvider.fromLimitedId(context,
         studentId: internship.studentId);
+    if (student == null) return false;
 
     return student.teacherId == _currentId ||
         internship.teacherId == _currentId;

@@ -25,10 +25,12 @@ class PrerequisitesExpansionPanel extends ExpansionPanel {
 
 List<Widget> _printCountedList<T>(
     Iterable iterable, String Function(T) toString) {
-  return iterable
+  final out = iterable.map<String>((e) => toString(e));
+
+  return out
       .toSet()
       .map<Widget>((e) => Text(
-          '\u2022 ${toString(e)} (${iterable.fold<int>(0, (prev, e2) => prev + (e == e2 ? 1 : 0))})'))
+          '\u2022 $e (${out.fold<int>(0, (prev, e2) => prev + (e == e2 ? 1 : 0))})'))
       .toList();
 }
 
@@ -48,7 +50,7 @@ class _PrerequisitesBody extends StatelessWidget {
     final internships = InternshipsProvider.of(context)
         .where((internship) => job.id == internship.jobId);
 
-    return evaluations.isEmpty
+    return evaluations.isNotEmpty || internships.isNotEmpty
         ? SizedBox(
             width: Size.infinite.width,
             child: Padding(
@@ -56,21 +58,15 @@ class _PrerequisitesBody extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Âge minimum',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                      '${evaluations.fold(0, (prev, e) => e.minimumAge) ~/ 1} ans'),
-                  const SizedBox(height: 12),
+                  if (evaluations.isNotEmpty) _buildMinimumAge(evaluations),
                   ..._buildUniform(internships),
                   const SizedBox(height: 12),
                   ..._buildProtections(internships),
                   const SizedBox(height: 12),
-                  ..._buildEntepriseRequests(internships),
-                  const SizedBox(height: 12),
-                  ..._buildSkillsRequired(internships),
-                  const SizedBox(height: 12),
+                  if (evaluations.isNotEmpty)
+                    ..._buildEntepriseRequests(evaluations),
+                  if (evaluations.isNotEmpty)
+                    ..._buildSkillsRequired(evaluations),
                 ],
               ),
             ),
@@ -82,16 +78,29 @@ class _PrerequisitesBody extends StatelessWidget {
           ));
   }
 
+  Widget _buildMinimumAge(List<PostIntershipEnterpriseEvaluation> evaluations) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Âge minimum',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(
+            '${evaluations.fold<double>(0, (prev, e) => prev + e.minimumAge) ~/ evaluations.length} ans'),
+        const SizedBox(height: 12),
+      ],
+    );
+  }
+
   List<Widget> _buildUniform(Iterable<Internship> internships) {
     // Workaround for "job.uniforms"
     final allUniforms = internships.map<Uniform>((e) => e.uniform).toSet();
     final uniforms = {
       UniformStatus.suppliedByEnterprise: allUniforms
-          .where((e) => e.status == UniformStatus.suppliedByEnterprise)
-          .map((e) => e.uniform),
-      UniformStatus.suppliedByStudent: allUniforms
-          .where((e) => e.status == UniformStatus.suppliedByStudent)
-          .map((e) => e.uniform),
+          .where((e) => e.status == UniformStatus.suppliedByEnterprise),
+      UniformStatus.suppliedByStudent:
+          allUniforms.where((e) => e.status == UniformStatus.suppliedByStudent),
     };
 
     return [
@@ -107,8 +116,9 @@ class _PrerequisitesBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text('Fournie par l\'entreprise :'),
-            ..._printCountedList<String>(
-                uniforms[UniformStatus.suppliedByEnterprise]!, (e) => e),
+            ..._printCountedList<Uniform>(
+                uniforms[UniformStatus.suppliedByEnterprise]!,
+                (e) => e.uniform),
           ],
         ),
       if (uniforms[UniformStatus.suppliedByStudent]!.isNotEmpty)
@@ -118,17 +128,16 @@ class _PrerequisitesBody extends StatelessWidget {
             if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
               const SizedBox(height: 8),
             const Text('Fournie par l\'étudiant :'),
-            ..._printCountedList<String>(
-                uniforms[UniformStatus.suppliedByStudent]!, (e) => e),
+            ..._printCountedList<Uniform>(
+                uniforms[UniformStatus.suppliedByStudent]!, (e) => e.uniform),
           ],
         ),
     ];
   }
 
-  List<Widget> _buildSkillsRequired(Iterable<Internship> internships) {
-    final skills = internships
-        .expand((e) => e.enterpriseEvaluation?.skillsRequired ?? [])
-        .where((e) => e != null);
+  List<Widget> _buildSkillsRequired(
+      List<PostIntershipEnterpriseEvaluation> evaluations) {
+    final skills = evaluations.expand((e) => e.skillsRequired);
 
     return [
       const Text(
@@ -137,13 +146,13 @@ class _PrerequisitesBody extends StatelessWidget {
       ),
       if (skills.isEmpty) const Text('Aucune'),
       if (skills.isNotEmpty) ..._printCountedList<String>(skills, (e) => e),
+      const SizedBox(height: 12),
     ];
   }
 
-  List<Widget> _buildEntepriseRequests(Iterable<Internship> internships) {
-    final requests = internships
-        .expand((e) => e.enterpriseEvaluation?.enterpriseRequests ?? [])
-        .where((e) => e != null);
+  List<Widget> _buildEntepriseRequests(
+      List<PostIntershipEnterpriseEvaluation> evaluations) {
+    final requests = evaluations.expand((e) => e.enterpriseRequests);
 
     return [
       const Text(
@@ -152,6 +161,7 @@ class _PrerequisitesBody extends StatelessWidget {
       ),
       if (requests.isEmpty) const Text('Aucune exigence particulière'),
       if (requests.isNotEmpty) ..._printCountedList<String>(requests, (e) => e),
+      const SizedBox(height: 12),
     ];
   }
 

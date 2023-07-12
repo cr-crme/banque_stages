@@ -48,14 +48,17 @@ class _StudentScreenState extends State<StudentScreen>
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Student>(
+    return FutureBuilder<Student?>(
         future: StudentsProvider.fromLimitedId(context, studentId: widget.id),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
+          final student = snapshot.data;
+          if (student == null) {
+            return Container();
+          }
 
-          final student = snapshot.data!;
           return Scaffold(
             appBar: AppBar(
               title: Text(student.fullName),

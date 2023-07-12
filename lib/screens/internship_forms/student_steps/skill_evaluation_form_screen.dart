@@ -146,11 +146,12 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     final internship = widget.formController.internship(context);
     final skills = _extractSkills(context, internship: internship);
 
-    return FutureBuilder<Student>(
+    return FutureBuilder<Student?>(
         future: StudentsProvider.fromLimitedId(context,
             studentId: internship.studentId),
         builder: (context, snapshot) {
-          final student = snapshot.hasData ? snapshot.data! : null;
+          final student = snapshot.hasData ? snapshot.data : null;
+
           return Scaffold(
             appBar: AppBar(
               title: Text(

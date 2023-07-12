@@ -129,11 +129,12 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
     final internship =
         InternshipsProvider.of(context)[widget.formController.internshipId];
 
-    return FutureBuilder<Student>(
+    return FutureBuilder<Student?>(
         future: StudentsProvider.fromLimitedId(context,
             studentId: internship.studentId),
         builder: (context, snapshot) {
-          final student = snapshot.hasData ? snapshot.data! : null;
+          final student = snapshot.hasData ? snapshot.data : null;
+
           return Scaffold(
               appBar: AppBar(
                 title: Text(

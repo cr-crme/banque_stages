@@ -5,8 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 double _meanOf(
-        List list, double Function(PostIntershipEnterpriseEvaluation) value) =>
-    list.fold<double>(0.0, (prev, e) => value(e)) / list.length;
+    List list, double Function(PostIntershipEnterpriseEvaluation) value) {
+  var runningSum = 0.0;
+  var nElements = 0;
+  for (final e in list) {
+    final valueTp = value(e);
+    if (valueTp < 0) continue;
+    runningSum += valueTp;
+    nElements++;
+  }
+  return nElements == 0 ? -1 : runningSum / nElements;
+}
 
 class SupervisionExpansionPanel extends ExpansionPanel {
   SupervisionExpansionPanel({
@@ -23,10 +32,12 @@ class SupervisionExpansionPanel extends ExpansionPanel {
 
 List<Widget> _printCountedList<T>(
     Iterable iterable, String Function(T) toString) {
-  return iterable
+  final out = iterable.map<String>((e) => toString(e));
+
+  return out
       .toSet()
       .map<Widget>((e) => Text(
-          '\u2022 ${toString(e)} (${iterable.fold<int>(0, (prev, e2) => prev + (e == e2 ? 1 : 0))})'))
+          '\u2022 $e (${out.fold<int>(0, (prev, e2) => prev + (e == e2 ? 1 : 0))})'))
       .toList();
 }
 
@@ -69,17 +80,11 @@ class _SupervisionBody extends StatelessWidget {
                     _buildAbsenceAcceptance(evaluations),
                     const SizedBox(height: 12),
                     _buildAcceptanceTsa(evaluations),
-                    const SizedBox(height: 12),
                     _buildAcceptanceLanguageDeficiency(evaluations),
-                    const SizedBox(height: 12),
                     _buildAcceptanceMentalDeficiency(evaluations),
-                    const SizedBox(height: 12),
                     _buildAcceptancePhysicalDeficiency(evaluations),
-                    const SizedBox(height: 12),
                     _buildAcceptanceMentalHealtyIssue(evaluations),
-                    const SizedBox(height: 12),
                     _buildAcceptanceBehaviorIssue(evaluations),
-                    const SizedBox(height: 12),
                     _buildComments(context, evaluations),
                     const SizedBox(height: 12),
                   ],
@@ -264,7 +269,7 @@ class _TitledFixSlider extends StatelessWidget {
         LowHighSliderFormField(
           initialValue: value,
           decimal: 1,
-          fixed: false,
+          fixed: true,
         ),
       ],
     );

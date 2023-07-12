@@ -12,11 +12,9 @@ import 'supervision_step.dart';
 import 'prerequisites_step.dart';
 
 class EnterpriseEvaluationScreen extends StatefulWidget {
-  const EnterpriseEvaluationScreen(
-      {super.key, required this.id, required this.jobId});
+  const EnterpriseEvaluationScreen({super.key, required this.id});
 
-  final String id;
-  final String jobId;
+  final String id; // Internship id
 
   @override
   State<EnterpriseEvaluationScreen> createState() =>
@@ -135,7 +133,8 @@ class _EnterpriseEvaluationScreenState
 
     // Add the evaluation to a copy of the internship
     final internships = InternshipsProvider.of(context, listen: false);
-    final internship = internships.firstWhere((e) => e.jobId == widget.jobId);
+    final internship = internships.firstWhere((e) => e.id == widget.id);
+
     internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
       internshipId: internship.id,
       minimumAge: _prerequisitesKey.currentState!.minimalAge,
@@ -178,6 +177,9 @@ class _EnterpriseEvaluationScreenState
 
   @override
   Widget build(BuildContext context) {
+    final internships = InternshipsProvider.of(context, listen: false);
+    final internship = internships.firstWhere((e) => e.id == widget.id);
+
     return Scaffold(
       appBar: AppBar(
           title: const Text('Évaluation post-stage'),
@@ -201,7 +203,7 @@ class _EnterpriseEvaluationScreenState
               title: const Text('Prérequis'),
               content: PrerequisitesStep(
                 key: _prerequisitesKey,
-                job: job,
+                internship: internship,
               ),
             ),
             Step(
@@ -223,7 +225,7 @@ class _EnterpriseEvaluationScreenState
           controlsBuilder: _controlBuilder,
         ),
         selector: (context, enterprises) =>
-            enterprises[widget.id].jobs[widget.jobId],
+            enterprises[internship.enterpriseId].jobs[internship.jobId],
       ),
     );
   }
