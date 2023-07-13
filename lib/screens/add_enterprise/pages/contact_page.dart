@@ -1,8 +1,7 @@
+import 'package:crcrme_banque_stages/common/widgets/email_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
-import 'package:crcrme_banque_stages/misc/form_service.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -69,14 +68,10 @@ class ContactPageState extends State<ContactPage> {
               canCall: false,
               enabled: true,
             ),
-            TextFormField(
-              decoration: const InputDecoration(
-                icon: Icon(Icons.mail),
-                labelText: '* Courriel',
-              ),
-              validator: FormService.emailValidator,
+            EmailListTile(
               onSaved: (email) => contactEmail = email!,
-              keyboardType: TextInputType.emailAddress,
+              isMandatory: true,
+              canMail: false,
             ),
             const SizedBox(height: 20),
           ],

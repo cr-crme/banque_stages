@@ -15,6 +15,7 @@ import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/supervision_chart/widgets/transfer_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SupervisionStudentDetailsScreen extends StatelessWidget {
   const SupervisionStudentDetailsScreen({super.key, required this.studentId});
@@ -292,9 +293,13 @@ class _Contact extends StatelessWidget {
           padding: const EdgeInsets.only(left: 32.0, top: 8.0),
           child: Row(
             children: [
-              const Icon(
-                Icons.phone,
-                color: Colors.black,
+              InkWell(
+                onTap: () =>
+                    launchUrl(Uri.parse('tel:${internship.supervisor.phone}')),
+                child: Icon(
+                  Icons.phone,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),

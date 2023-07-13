@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/email_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
+import 'package:flutter/material.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({
@@ -225,17 +225,11 @@ class _ContactInfo extends StatelessWidget {
                 enabled: editMode,
               ),
               const SizedBox(height: 8),
-              TextFormField(
+              EmailListTile(
                 initialValue: enterprise.contact.email,
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.mail),
-                  labelText: '* Courriel',
-                  disabledBorder: InputBorder.none,
-                ),
                 enabled: editMode,
-                validator: FormService.emailValidator,
                 onSaved: onSavedEmail,
-                keyboardType: TextInputType.emailAddress,
+                isMandatory: true,
               ),
             ],
           ),

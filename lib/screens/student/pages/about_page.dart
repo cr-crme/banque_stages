@@ -1,5 +1,6 @@
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/email_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
@@ -153,12 +154,8 @@ class _ContactInformation extends StatelessWidget {
                   isMandatory: false,
                   enabled: false),
               const SizedBox(height: 8),
-              TextFormField(
+              EmailListTile(
                 controller: TextEditingController(text: student.email),
-                decoration: const InputDecoration(
-                  labelText: 'Courriel',
-                  disabledBorder: InputBorder.none,
-                ),
                 enabled: false,
               ),
               const SizedBox(height: 8),
@@ -229,12 +226,8 @@ class _EmergencyContact extends StatelessWidget {
                 isMandatory: false,
               ),
               const SizedBox(height: 8),
-              TextFormField(
+              EmailListTile(
                 controller: TextEditingController(text: student.contact.email),
-                decoration: const InputDecoration(
-                  labelText: 'Courriel',
-                  disabledBorder: InputBorder.none,
-                ),
                 enabled: false,
               ),
               const SizedBox(height: 12),

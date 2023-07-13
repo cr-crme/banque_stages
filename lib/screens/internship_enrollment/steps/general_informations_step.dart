@@ -3,11 +3,11 @@ import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
+import 'package:crcrme_banque_stages/common/widgets/email_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/student_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
-import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -317,16 +317,12 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
                 canCall: false,
                 enabled: !_useContactInfo,
               ),
-              TextFormField(
+              EmailListTile(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.mail),
-                  labelText: '* Courriel',
-                ),
-                validator: FormService.emailValidator,
+                isMandatory: true,
                 onSaved: widget.onSavedEmail,
-                keyboardType: TextInputType.emailAddress,
                 enabled: !_useContactInfo,
+                canMail: false,
               ),
             ],
           ),
