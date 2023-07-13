@@ -27,12 +27,14 @@ class SkillEvaluation extends ItemSerializable {
   final String skillName;
   final List<String> tasks;
   final SkillAppreciation appreciation;
+  final String comment;
 
   SkillEvaluation({
     required this.specializationId,
     required this.skillName,
     required this.tasks,
     required this.appreciation,
+    required this.comment,
   });
   SkillEvaluation.fromSerialized(map)
       : specializationId = map['jobId'],
@@ -41,6 +43,7 @@ class SkillEvaluation extends ItemSerializable {
             ? []
             : (map['tasks'] as List).map((e) => e as String).toList(),
         appreciation = SkillAppreciation.values[map['appreciation']],
+        comment = map['comment'],
         super.fromSerialized(map);
 
   @override
@@ -51,15 +54,18 @@ class SkillEvaluation extends ItemSerializable {
       'skill': skillName,
       'tasks': tasks,
       'appreciation': appreciation.index,
+      'comment': comment,
     };
   }
 
   SkillEvaluation deepCopy() {
     return SkillEvaluation(
-        specializationId: specializationId,
-        skillName: skillName,
-        tasks: tasks.map((e) => e).toList(),
-        appreciation: appreciation);
+      specializationId: specializationId,
+      skillName: skillName,
+      tasks: tasks.map((e) => e).toList(),
+      appreciation: appreciation,
+      comment: comment,
+    );
   }
 }
 

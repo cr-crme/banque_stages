@@ -206,10 +206,11 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
 }
 
 class _EvaluateSkill extends StatelessWidget {
-  const _EvaluateSkill(
-      {required this.formController,
-      required this.skill,
-      required this.editMode});
+  const _EvaluateSkill({
+    required this.formController,
+    required this.skill,
+    required this.editMode,
+  });
 
   final SkillEvaluationFormController formController;
   final Skill skill;
@@ -269,6 +270,11 @@ class _EvaluateSkill extends StatelessWidget {
             skill: skill,
             formController: formController,
             editMode: editMode),
+        TextFormField(
+          decoration: const InputDecoration(label: Text('Commentaires')),
+          controller: formController.skillCommentsControllers[skill]!,
+          enabled: editMode,
+        ),
       ],
     );
   }

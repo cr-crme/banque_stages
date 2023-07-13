@@ -65,6 +65,8 @@ class SkillEvaluationFormController {
       }
 
       controller.appreciations[skill] = skillEvaluation.appreciation;
+      controller.skillCommentsControllers[skill] =
+          TextEditingController(text: skillEvaluation.comment);
     }
 
     controller.commentsController.text = evaluation.comments;
@@ -97,6 +99,7 @@ class SkillEvaluationFormController {
         skillName: skill.idWithName,
         tasks: tasks,
         appreciation: appreciations[skill]!,
+        comment: skillCommentsControllers[skill]!.text,
       ));
     }
     return InternshipEvaluationSkill(
@@ -126,7 +129,7 @@ class SkillEvaluationFormController {
   Map<Skill, bool> skillsToEvaluate = {};
   final Map<Skill, String> skillsAreFromSpecializationId = {};
   Map<Skill, Map<String, bool>> taskCompleted = {};
-  void prepareTaskCompleted() {
+  void _initializeTaskCompleted() {
     taskCompleted.clear();
     for (final skill in skillsToEvaluate.keys) {
       if (!skillsToEvaluate[skill]!) continue;
@@ -146,12 +149,29 @@ class SkillEvaluationFormController {
     return true;
   }
 
-  void prepareAppreciation() {
+  void _initializeAppreciation() {
     appreciations.clear();
     for (final skill in skillsToEvaluate.keys) {
       if (!skillsToEvaluate[skill]!) continue;
       appreciations[skill] = SkillAppreciation.notEvaluated;
     }
+  }
+
+  Map<Skill, TextEditingController> skillCommentsControllers = {};
+  void _initializeSkillCommentControllers() {
+    skillCommentsControllers.clear();
+    for (final skill in skillsToEvaluate.keys) {
+      if (!skillsToEvaluate[skill]!) continue;
+      skillCommentsControllers[skill] = TextEditingController();
+    }
+  }
+
+  ///
+  /// This properly initialize the controller
+  void initializeController() {
+    _initializeTaskCompleted();
+    _initializeAppreciation();
+    _initializeSkillCommentControllers();
   }
 
   TextEditingController commentsController = TextEditingController();

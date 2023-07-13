@@ -369,8 +369,7 @@ class _StartEvaluation extends StatelessWidget {
         padding: const EdgeInsets.only(top: 24, right: 24.0),
         child: TextButton(
             onPressed: () {
-              formController.prepareTaskCompleted();
-              formController.prepareAppreciation();
+              formController.initializeController();
               GoRouter.of(context).pushReplacementNamed(
                 Screens.skillEvaluationFormScreen,
                 queryParams:
