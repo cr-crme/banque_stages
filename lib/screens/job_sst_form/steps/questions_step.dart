@@ -1,11 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:flutter/material.dart';
-
 import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_checkbox_list.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_radio_bool.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_text.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
+import 'package:flutter/material.dart';
 
 class QuestionsStep extends StatefulWidget {
   const QuestionsStep({
@@ -19,13 +18,12 @@ class QuestionsStep extends StatefulWidget {
   State<QuestionsStep> createState() => QuestionsStepState();
 }
 
-// TODO Fix 'Autre' that won't save and show the extra messages when reopening
 class QuestionsStepState extends State<QuestionsStep> {
   final formKey = GlobalKey<FormState>();
 
   bool isProfessor = true;
 
-  Map<String, dynamic> awnser = {};
+  Map<String, dynamic> answer = {};
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +56,8 @@ class QuestionsStepState extends State<QuestionsStep> {
                       textTrue: question.choices.firstOrNull,
                       textFalse: question.choices.lastOrNull,
                       textQuestion: question.getTextQuestion(isProfessor),
-                      onSavedChoice: (choice) => awnser[question.id] = choice,
-                      onSavedText: (text) => awnser['${question.id}+t'] = text,
+                      onSavedChoice: (choice) => answer[question.id] = choice,
+                      onSavedText: (text) => answer['${question.id}+t'] = text,
                     );
 
                   case Type.checkbox:
@@ -75,8 +73,8 @@ class QuestionsStepState extends State<QuestionsStep> {
                       choices: question.choices,
                       textQuestion: question.getTextQuestion(isProfessor),
                       onSavedChoices: (choices) =>
-                          awnser[question.id] = choices?.toList(),
-                      onSavedText: (text) => awnser['${question.id}+t'] = text,
+                          answer[question.id] = choices?.toList(),
+                      onSavedText: (text) => answer['${question.id}+t'] = text,
                     );
 
                   case Type.text:
@@ -85,7 +83,7 @@ class QuestionsStepState extends State<QuestionsStep> {
                           widget.job.sstEvaluation.questions[question.id] ?? '',
                       question:
                           '${index + 1}. ${question.getQuestion(isProfessor)}',
-                      onSaved: (text) => awnser[question.id] = text,
+                      onSaved: (text) => answer[question.id] = text,
                     );
                 }
               },

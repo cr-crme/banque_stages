@@ -70,7 +70,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
 
     final enterprises = context.read<EnterprisesProvider>();
     enterprises[widget.enterpriseId].jobs[widget.jobId].sstEvaluation.update(
-          questions: _questionsKey.currentState!.awnser,
+          questions: _questionsKey.currentState!.answer,
           dangerousSituations: stateDanger.dangerousSituations.isEmpty
               ? []
               : stateDanger.dangerousSituations.split('\n'),

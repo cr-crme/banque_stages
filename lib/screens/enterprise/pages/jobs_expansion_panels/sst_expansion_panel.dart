@@ -1,9 +1,8 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:intl/intl.dart';
 
 class SstExpansionPanel extends ExpansionPanel {
@@ -71,7 +70,7 @@ class SstBody extends StatelessWidget {
                 child: const Text('Signaler un événement'),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 8.0),
               child: Column(
@@ -133,7 +132,7 @@ class SstBody extends StatelessWidget {
                 ? 'Le formulaire n\'a jamais été rempli avec cette entreprise'
                 : 'Formulaire SST rempli avec l\'entreprise\n'
                     'Mis à jour le ${DateFormat.yMMMEd('fr_CA').format(job.sstEvaluation.date)}'),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Center(
               child: TextButton(
                 onPressed: () => GoRouter.of(context).pushNamed(
@@ -141,12 +140,12 @@ class SstBody extends StatelessWidget {
                   params: Screens.params(enterprise, jobId: job),
                 ),
                 child: const Text(
-                  'Aborder la SST \navec l\'entreprise',
+                  'Afficher le\nformulaire',
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
           ],
         ),
       ),
