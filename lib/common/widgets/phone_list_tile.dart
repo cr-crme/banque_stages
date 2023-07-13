@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PhoneListTile extends StatefulWidget {
   const PhoneListTile({
@@ -12,6 +13,7 @@ class PhoneListTile extends StatefulWidget {
     this.onSaved,
     required this.isMandatory,
     required this.enabled,
+    this.canCall = true,
     this.controller,
   });
 
@@ -22,6 +24,7 @@ class PhoneListTile extends StatefulWidget {
   final bool isMandatory;
   final bool enabled;
   final TextEditingController? controller;
+  final bool canCall;
 
   @override
   State<PhoneListTile> createState() => _PhoneListTileState();
@@ -51,24 +54,45 @@ class _PhoneListTileState extends State<PhoneListTile> {
           }
         }
       },
-      child: TextFormField(
-        controller: _phoneController,
-        decoration: InputDecoration(
-          icon: Icon(widget.icon),
-          labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
-          disabledBorder: InputBorder.none,
-        ),
-        validator: (value) {
-          if (!widget.enabled) return null;
+      child: Stack(
+        alignment: Alignment.centerLeft,
+        children: [
+          TextFormField(
+            controller: _phoneController,
+            decoration: InputDecoration(
+              icon: const SizedBox(width: 30),
+              labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
+              disabledBorder: InputBorder.none,
+            ),
+            validator: (value) {
+              if (!widget.enabled) return null;
 
-          if (!widget.isMandatory && (value == '' || value == null)) {
-            return null;
-          }
-          return FormService.phoneValidator(value);
-        },
-        enabled: widget.enabled,
-        onSaved: widget.onSaved,
-        keyboardType: TextInputType.phone,
+              if (!widget.isMandatory && (value == '' || value == null)) {
+                return null;
+              }
+              return FormService.phoneValidator(value);
+            },
+            enabled: widget.enabled,
+            onSaved: widget.onSaved,
+            keyboardType: TextInputType.phone,
+          ),
+          InkWell(
+            onTap: widget.canCall
+                ? () async =>
+                    await launchUrl(Uri.parse('tel:${_phoneController.text}'))
+                : null,
+            borderRadius: BorderRadius.circular(25),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                widget.icon,
+                color: widget.canCall
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

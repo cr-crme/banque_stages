@@ -66,6 +66,7 @@ class ContactPageState extends State<ContactPage> {
             PhoneListTile(
               onSaved: (phone) => contactPhone = phone!,
               isMandatory: true,
+              canCall: false,
               enabled: true,
             ),
             TextFormField(

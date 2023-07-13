@@ -314,6 +314,7 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
                 controller: _phoneController,
                 onSaved: widget.onSavedPhone,
                 isMandatory: true,
+                canCall: false,
                 enabled: !_useContactInfo,
               ),
               TextFormField(
