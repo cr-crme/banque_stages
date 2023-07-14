@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/accident_history/models/accidents_by_enterprise.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/accident_history/widgets/accident_list_tile.dart';
@@ -20,16 +21,40 @@ class AccidentHistoryScreen extends StatefulWidget {
 }
 
 class _AccidentHistoryScreenState extends State<AccidentHistoryScreen> {
+  final _searchController = TextEditingController();
+  bool _showSearchBar = false;
   var _currentFilter = _FilterType.byNumberOfAccident;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
+  }
 
   Map<Specialization, AccidentsByEnterprise> _fetchAllAccidents(context) {
     final enterprises = EnterprisesProvider.of(context);
+    final textToSearch = _searchController.text.toLowerCase().trim();
 
     Map<Specialization, AccidentsByEnterprise> out = {};
     for (final enterprise in enterprises) {
       for (final job in enterprise.jobs) {
         // Do not add if there is no incident
         if (job.sstEvaluation.incidents.isEmpty) continue;
+
+        // If a search filter is added
+        if (_showSearchBar && textToSearch != '') {
+          if (!job.specialization.idWithName
+              .toLowerCase()
+              .contains(textToSearch)) {
+            continue;
+          }
+        }
 
         if (!out.containsKey(job.specialization.id)) {
           out[job.specialization] = AccidentsByEnterprise();
@@ -71,6 +96,13 @@ class _AccidentHistoryScreenState extends State<AccidentHistoryScreen> {
         leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.arrow_back)),
+        actions: [
+          IconButton(
+            onPressed: () => setState(() => _showSearchBar = !_showSearchBar),
+            icon: const Icon(Icons.search),
+          )
+        ],
+        bottom: _showSearchBar ? Search(controller: _searchController) : null,
       ),
       body: Column(
         children: [
