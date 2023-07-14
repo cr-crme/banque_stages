@@ -1,7 +1,8 @@
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/widgets/sst_main_card.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'widgets/sst_search_bar.dart';
 
 class HomeSstScreen extends StatefulWidget {
@@ -29,87 +30,29 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
     Widget body;
     body = ListView(
       children: [
-        // Container for the search bar
-        Center(
-            child: Container(
-          margin: const EdgeInsets.only(top: 50.0),
-          width: 350,
-          height: 280,
-          padding: const EdgeInsets.all(17.0),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            color: Theme.of(context).colorScheme.primary,
-            boxShadow: const [
-              BoxShadow(color: Colors.grey, spreadRadius: 1, blurRadius: 15)
-            ],
-          ),
-          child: const InkWell(
-              child: Column(
-            children: [
-              Text('Analyse des risques \npar métier',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                      color: Colors.white,
-                      fontFamily: 'Noto Sans')),
-              Padding(
-                  padding: EdgeInsets.only(top: 25.0), child: SstSearchBar()),
-              Padding(
-                padding: EdgeInsets.only(top: 30.0),
-                child: Text(
-                  'Seuls les 45 métiers du répertoire du Ministère de l\'éducation, '
-                  'qui ont été analysés, apparaissent dans la liste.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontStyle: FontStyle.italic),
-                ),
-              )
-            ],
-          )),
-        )),
-        Center(
-            child: Container(
-          margin: const EdgeInsets.only(top: 35.0),
-          child: InkWell(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const SstCardsScreen(),
-              ));
-            },
-            child: Ink(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                color: Theme.of(context).colorScheme.primary,
-                boxShadow: const [
-                  BoxShadow(color: Colors.grey, spreadRadius: 1, blurRadius: 15)
-                ],
-              ),
-              width: 350,
-              height: 250,
-              child: const Padding(
-                padding: EdgeInsets.all(45.0),
-                child: Center(
-                  child: Text(
-                    'Fiches de risques',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: Colors.white,
-                        fontFamily: 'Noto Sans'),
-                  ),
-                ),
-              ),
+        SstMainCard(
+            title: 'Fiches de risques',
+            content: const Text(
+              'Résumé des principaux risques à la santé et à la sécurité en '
+              'milieu de travail',
             ),
-          ),
-        )),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const SstCardsScreen(),
+                ))),
+        SstMainCard(
+            title: 'Historique d\'accidents',
+            content: const Text(
+              'Métiers pour lesquels des stagiaires se sont déjà blessés selon '
+              'les accidents rapportés par le personnel enseignant',
+            ),
+            onTap: () {}), // => Navigator.of(context).pushNamed(''),
+        SstMainCard(
+            title: 'Aperçu des risques par métier',
+            content: _buildRiskCard(),
+            onTap: null),
       ],
     );
-    //}
-    // To refresh the scaffold body after the data fetch
+    // To refresh the scaffold body after the data are fetched
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
     return Scaffold(
         appBar: AppBar(
@@ -117,5 +60,111 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
         ),
         drawer: const MainDrawer(),
         body: body);
+  }
+
+  Widget _buildRiskCard() {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _TextWithBoldTitle(
+            title: 'Par compétence : ',
+            text: 'nombre de risques potentiellement présents'),
+        _TextWithBoldTitle(
+            title: 'Par risque : ',
+            text: 'nombre de compétences possiblement concernées'),
+        SizedBox(height: 4),
+        SizedBox(height: 12),
+        SstSearchBar(),
+        SizedBox(height: 12),
+        Center(
+          child: Text(
+            '** Attention, l\'évaluation ne considère pas la dangerosité des '
+            'risques!\nIl s\'agit plutôt d\'évaluer la possibilité qu\'un '
+            'risque soit présent pour un métier donné. **',
+            style: TextStyle(color: Colors.red),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        SizedBox(height: 24),
+        Text(
+          'Évaluation des risques :',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        _TextWithBoldTitle(
+            title: 'Basée sur la description des compétences de chaque métier ',
+            text: 'figurant dans le répertoire des métiers semi-spécialisés du '
+                'Ministère'),
+        _TextWithBoldTitle(
+            title: 'Pour les 45 métiers les plus populaires ',
+            text: 'du répertoire'),
+        _TextWithBoldTitle(
+            title: 'Théorique : ',
+            text: 'ne tient pas compte du contexte de chaque milieu de stage'),
+        SizedBox(height: 24),
+        _BoxWarning(),
+        SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+class _BoxWarning extends StatelessWidget {
+  const _BoxWarning();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(color: Colors.grey[400]),
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'POUR CONNAITRE LES RISQUES DANS UNE ENTREPRISE SPÉCIFIQUE',
+                style: TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Remplir le formulaire "Aborder la SST avec l\'entreprise" '
+                'accessible sur la fiche de chaque entreprise.',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
+class _TextWithBoldTitle extends StatelessWidget {
+  const _TextWithBoldTitle({
+    required this.title,
+    required this.text,
+  });
+
+  final String title;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('\u2022 '),
+        Flexible(
+          child: RichText(
+              text: TextSpan(children: [
+            TextSpan(
+                text: title,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(fontWeight: FontWeight.bold)),
+            TextSpan(text: text, style: Theme.of(context).textTheme.bodyLarge)
+          ])),
+        )
+      ],
+    );
   }
 }

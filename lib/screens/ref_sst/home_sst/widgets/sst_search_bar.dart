@@ -11,13 +11,27 @@ class SstSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8), color: Colors.white),
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
-      child: const ListTile(
-        title: _AutoCompleteSstSearchBar(),
-      ),
+    return Stack(
+      children: [
+        Container(
+          width: 50,
+          height: 75,
+          decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                bottomLeft: Radius.circular(8),
+              ),
+              color: Theme.of(context).primaryColor),
+        ),
+        Container(
+          decoration: BoxDecoration(
+              border: Border.all(), borderRadius: BorderRadius.circular(8)),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+          child: const ListTile(
+            title: _AutoCompleteSstSearchBar(),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -42,7 +56,7 @@ class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
     _textController = textEditingController;
     return TextFormField(
       decoration: InputDecoration(
-          icon: const Icon(Icons.search),
+          icon: const Icon(Icons.search, color: Colors.white),
           labelText: 'Rechercher un métier',
           suffixIcon: IconButton(
               onPressed: () => _clearText(textEditingController),
