@@ -95,12 +95,12 @@ class SpecializationListScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Affichage par\nrisque',
+                      'Affichage par\ncompétence',
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(width: 10),
-                    Icon(Icons.warning),
+                    Icon(Icons.build_circle_sharp),
                   ],
                 ),
               ),
@@ -110,12 +110,12 @@ class SpecializationListScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Affichage par\ncompétence',
+                      'Affichage par\nrisque',
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(width: 10),
-                    Icon(Icons.build_circle_sharp),
+                    Icon(Icons.warning),
                   ],
                 ),
               ),
@@ -130,7 +130,7 @@ class SpecializationListScreen extends StatelessWidget {
               itemBuilder: (context, i) => TileJobRisk(
                 title: risks[i].name,
                 elements: skillsAssociatedToRisks[risks[i]]!,
-                nbMaximumElements: 0,
+                nbMaximumElements: 1000, // Show all in orange
                 tooltipMessage:
                     'Nombre de compétences possiblement concernées par ce risque',
               ),
@@ -149,7 +149,7 @@ class SpecializationListScreen extends StatelessWidget {
               itemBuilder: (context, i) => TileJobRisk(
                 title: skills[i].name,
                 elements: risksAssociatedToSkill[skills[i]]!,
-                nbMaximumElements: 10, // Show in red if at least 5 is present
+                nbMaximumElements: 1000, // Show all in orange
                 tooltipMessage:
                     'Nombre de risques potentiellement présents pour cette compétence',
               ),
