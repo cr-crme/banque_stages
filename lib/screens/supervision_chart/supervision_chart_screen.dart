@@ -63,28 +63,38 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   Widget _flagFilterBuilder() {
-    final flags = _visibilityFilters.keys.map<Widget>((priority) {
-      return InkWell(
-        onTap: () => setState(() =>
-            _visibilityFilters[priority] = !_visibilityFilters[priority]!),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Checkbox(
-                value: _visibilityFilters[priority],
-                onChanged: (value) =>
-                    setState(() => _visibilityFilters[priority] = value!)),
-            Padding(
-              padding: const EdgeInsets.only(right: 25),
-              child: Icon(priority.icon, color: priority.color),
-            )
-          ],
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            'Niveau de priorité',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
         ),
-      );
-    }).toList();
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: flags,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: _visibilityFilters.keys.map<Widget>((priority) {
+            return InkWell(
+              onTap: () => setState(() => _visibilityFilters[priority] =
+                  !_visibilityFilters[priority]!),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Checkbox(
+                      value: _visibilityFilters[priority],
+                      onChanged: (value) => setState(
+                          () => _visibilityFilters[priority] = value!)),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 25),
+                    child: Icon(priority.icon, color: priority.color),
+                  )
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
@@ -209,7 +219,10 @@ class _SupervisionChartState extends State<SupervisionChart> {
         title: const Text('Tableau des supervisions'),
         actions: [
           IconButton(
-              onPressed: _goToItinerary, icon: const Icon(Icons.directions))
+            onPressed: _goToItinerary,
+            icon: const Icon(Icons.directions),
+            iconSize: 35,
+          )
         ],
         bottom: PreferredSize(
             preferredSize: Size(screenSize.width, iconSize * 1.5),
