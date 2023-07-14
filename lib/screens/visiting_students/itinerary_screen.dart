@@ -33,14 +33,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     super.initState();
 
     _fillAllWaypoints();
-    _initializeItinariesForCurrentDate();
-  }
-
-  void _initializeItinariesForCurrentDate() {
-    final itineraries = AllItineraries.of(context, listen: false);
-    if (!itineraries.containsKey(_currentDateAsString)) {
-      itineraries.add(Itinerary(), key: _currentDateAsString, notify: false);
-    }
   }
 
   void _fillAllWaypoints() async {
@@ -84,29 +76,30 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   void setRouteDistances(List<double>? legs) {
     _distances = legs;
-    setState(() {});
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   void addStopToCurrentItinerary(int indexInWaypoints) {
     final itineraries = AllItineraries.of(context, listen: false);
-    final itinerary = itineraries[_currentDateAsString]!;
+    final itinerary =
+        itineraries.isNotEmpty && itineraries.hasId(_currentDateAsString)
+            ? itineraries[_currentDateAsString]
+            : Itinerary(date: _currentDateAsString);
 
     itinerary.add(_waypoints[indexInWaypoints].copyWith());
-    itineraries.replace(itinerary, key: _currentDateAsString, notify: true);
+    itineraries.replace(itinerary, notify: true);
     setState(() {});
   }
 
   void removeStopToCurrentItinerary(int indexInItinerary) {
     final itineraries = AllItineraries.of(context, listen: false);
-    final itinerary = itineraries[_currentDateAsString]!;
+    final itinerary = itineraries[_currentDateAsString];
 
     itinerary.remove(indexInItinerary);
-    itineraries.replace(itinerary, key: _currentDateAsString, notify: true);
+    itineraries.replace(itinerary, notify: true);
     setState(() {});
   }
 
-  // TODO: Add the enterprise in the Provider and make the provider a firebase
-  // TODO: Check if the itinerary is computed when changing back date
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,7 +137,8 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                 onTap: _showDatePicker,
                 child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.grey[600], shape: BoxShape.circle),
+                        color: Theme.of(context).primaryColor,
+                        shape: BoxShape.circle),
                     child: const Padding(
                       padding: EdgeInsets.all(6.0),
                       child: Icon(
@@ -173,7 +167,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     if (newDate == null || !mounted) return;
 
     _currentDate = newDate;
-    _initializeItinariesForCurrentDate();
 
     // Force update of all widgets
     final itineraries = AllItineraries.of(context, listen: false);
@@ -195,8 +188,11 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   Widget _studentsToVisitWidget(BuildContext context) {
     final itineraries = AllItineraries.of(context, listen: false);
+    if (itineraries.isEmpty || !itineraries.hasId(_currentDateAsString)) {
+      return Container();
+    }
+
     final itinerary = itineraries[_currentDateAsString];
-    if (itinerary == null) return Container();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -292,7 +288,7 @@ class __DistanceState extends State<_Distance> {
 
   List<Widget> _distancesTo(List<double?> distances) {
     final itineraries = AllItineraries.of(context, listen: false);
-    final itinerary = itineraries[widget.currentDate]!;
+    final itinerary = itineraries[widget.currentDate];
 
     List<Widget> out = [];
     if (distances.length + 1 != itinerary.length) return out;

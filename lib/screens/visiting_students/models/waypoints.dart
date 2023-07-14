@@ -49,11 +49,11 @@ class Waypoint extends ItemSerializable {
       'street': address.street,
       'locality': address.locality,
       'postalCode': address.postalCode,
-      'priority': priority,
+      'priority': priority.index,
     };
   }
 
-  static Waypoint deserialize(Map<String, dynamic> data) {
+  static Waypoint deserialize(data) {
     final address = Placemark(
       street: data['street'],
       locality: data['locality'],
@@ -64,7 +64,7 @@ class Waypoint extends ItemSerializable {
       data['latitude'],
       data['longitude'],
       address: address,
-      priority: data['priority'] as VisitingPriority,
+      priority: VisitingPriority.values[data['priority']],
     );
   }
 

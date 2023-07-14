@@ -63,7 +63,10 @@ class BanqueStagesApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => SchoolsProvider()),
         ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
         ChangeNotifierProvider(create: (context) => InternshipsProvider()),
-        ChangeNotifierProvider(create: (context) => AllItineraries()),
+        ChangeNotifierProxyProvider<AuthProvider, AllItineraries>(
+          create: (context) => AllItineraries(),
+          update: (context, auth, previous) => previous!..initializeAuth(auth),
+        ),
         ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
           create: (context) => TeachersProvider(),
           update: (context, auth, previous) => previous!..initializeAuth(auth),

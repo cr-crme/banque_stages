@@ -1,12 +1,15 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:nanoid/nanoid.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
 import 'waypoints.dart';
 
 class Itinerary extends ListSerializable<Waypoint>
     implements Iterator<Waypoint>, ItemSerializable {
+  String date;
+
+  Itinerary({required this.date});
+
   List<LatLng> toLatLng() {
     List<LatLng> out = [];
     for (final address in this) {
@@ -28,6 +31,14 @@ class Itinerary extends ListSerializable<Waypoint>
     return Waypoint.deserialize(data);
   }
 
+  static Itinerary fromSerialized(map) {
+    final out = Itinerary(date: map['date']);
+    for (final waypoint in map['waypoints']) {
+      out.add(Waypoint.deserialize(waypoint));
+    }
+    return out;
+  }
+
   // Iterator implementation
   int _currentIndex = 0;
 
@@ -41,14 +52,12 @@ class Itinerary extends ListSerializable<Waypoint>
   }
 
   @override
-  final String id = nanoid();
+  late final String id = date;
 
   @override
-  Map<String, dynamic> serializedMap() {
-    final map = <String, dynamic>{};
-    for (final waypoint in this) {
-      map[waypoint.id] = waypoint.serialize();
-    }
-    return map;
-  }
+  Map<String, dynamic> serialize() => serializedMap();
+
+  @override
+  Map<String, dynamic> serializedMap() =>
+      {'date': date, 'waypoints': super.map((e) => e.serialize()).toList()};
 }

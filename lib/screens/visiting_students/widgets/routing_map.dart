@@ -43,10 +43,15 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   Future<Road?> _getActivatedRoute(AllItineraries itineraries) async {
-    if (itineraries.isEmpty) return null;
+    if (itineraries.isEmpty || !itineraries.hasId(widget.currentDate)) {
+      if (widget.onComputedDistancesCallback != null) {
+        widget.onComputedDistancesCallback!([]);
+      }
+      return null;
+    }
 
     final manager = OSRMManager();
-    final route = itineraries[widget.currentDate]!.toLngLat();
+    final route = itineraries[widget.currentDate].toLngLat();
 
     late Road out;
     try {
