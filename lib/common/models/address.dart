@@ -78,8 +78,17 @@ class Address extends ItemSerializable {
         postalCode: postalCode);
   }
 
+  bool get isEmpty =>
+      civicNumber == null &&
+      street == null &&
+      appartment == null &&
+      city == null &&
+      postalCode == null;
+
   @override
   String toString() {
-    return '$civicNumber $street${appartment == null ? '' : ' #$appartment'}, $city, $postalCode';
+    return isEmpty
+        ? ''
+        : '$civicNumber $street${appartment == null ? '' : ' #$appartment'}, $city, $postalCode';
   }
 }

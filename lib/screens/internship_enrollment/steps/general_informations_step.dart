@@ -262,6 +262,11 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
       _lastNameController.text = widget.enterprise?.contact.lastName ?? '';
       _phoneController.text = widget.enterprise?.contact.phone.toString() ?? '';
       _emailController.text = widget.enterprise?.contact.email ?? '';
+    } else {
+      _firstNameController.text = '';
+      _lastNameController.text = '';
+      _phoneController.text = '';
+      _emailController.text = '';
     }
     setState(() {});
   }

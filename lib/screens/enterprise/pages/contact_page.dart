@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
@@ -135,6 +136,8 @@ class ContactPageState extends State<ContactPage> {
                   if (_useSameAddress) {
                     _headquartersAddressController.address =
                         _addressController.address;
+                  } else {
+                    _headquartersAddressController.address = Address();
                   }
                 }),
                 addressController: _headquartersAddressController,
