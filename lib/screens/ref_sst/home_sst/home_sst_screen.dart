@@ -1,4 +1,5 @@
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/accident_history/accident_history_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/widgets/sst_main_card.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -40,12 +41,15 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
                   builder: (_) => const SstCardsScreen(),
                 ))),
         SstMainCard(
-            title: 'Historique d\'accidents',
-            content: const Text(
-              'Métiers pour lesquels des stagiaires se sont déjà blessés selon '
-              'les accidents rapportés par le personnel enseignant',
-            ),
-            onTap: () {}), // => Navigator.of(context).pushNamed(''),
+          title: 'Historique d\'accidents',
+          content: const Text(
+            'Métiers pour lesquels des stagiaires se sont déjà blessés selon '
+            'les accidents rapportés par le personnel enseignant',
+          ),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => const AccidentHistoryScreen(),
+          )),
+        ),
         SstMainCard(
             title: 'Aperçu des risques par métier',
             content: _buildRiskCard(),
