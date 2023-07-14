@@ -22,6 +22,7 @@ class ItineraryScreen extends StatefulWidget {
 
 class _ItineraryScreenState extends State<ItineraryScreen> {
   List<double>? _distances;
+  final List<Waypoint> _waypoints = [];
 
   final _dateFormat = DateFormat('dd_MM_yyyy');
   DateTime _currentDate = DateTime.now();
@@ -47,21 +48,20 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     final school =
         SchoolsProvider.of(context, listen: false).fromId(teacher.schoolId);
     final enterprises = EnterprisesProvider.of(context, listen: false);
-    final waypoints = AllStudentsWaypoints.of(context, listen: false);
+
     final internships = InternshipsProvider.of(context, listen: false);
     final students =
         (await StudentsProvider.getMySupervizedStudents(context, listen: false))
             .map<Student>((e) => e);
-    waypoints.clear(notify: false);
 
     // Add the school as the first waypoint
-    waypoints.add(
+    _waypoints.clear();
+    _waypoints.add(
       await Waypoint.fromAddress(
         'École',
         school.address.toString(),
         priority: VisitingPriority.school,
       ),
-      notify: false,
     );
 
     // Get the students from the registered students, but we copy them so
@@ -71,16 +71,15 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       if (studentInterships.isEmpty) continue;
       final intership = studentInterships.last;
 
-      waypoints.add(
+      _waypoints.add(
         await Waypoint.fromAddress(
           '${student.firstName} ${student.lastName[0]}.',
           enterprises.fromId(intership.enterpriseId).address.toString(),
           priority: intership.visitingPriority,
         ),
-        notify: false, // Only notify at the end
       );
     }
-    waypoints.notifyListeners();
+    setState(() {});
   }
 
   void setRouteDistances(List<double>? legs) {
@@ -90,10 +89,9 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   void addStopToCurrentItinerary(int indexInWaypoints) {
     final itineraries = AllItineraries.of(context, listen: false);
-    final waypoints = AllStudentsWaypoints.of(context, listen: false);
     final itinerary = itineraries[_currentDateAsString]!;
 
-    itinerary.add(waypoints[indexInWaypoints].copyWith());
+    itinerary.add(_waypoints[indexInWaypoints].copyWith());
     itineraries.replace(itinerary, key: _currentDateAsString, notify: true);
     setState(() {});
   }
@@ -118,7 +116,8 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         child: Column(
           children: [
             _showDate(),
-            _map(),
+            if (_waypoints.isNotEmpty) _map(),
+            if (_waypoints.isEmpty) const CircularProgressIndicator(),
             _Distance(_distances, currentDate: _currentDateAsString),
             const SizedBox(height: 20),
             _studentsToVisitWidget(context),
@@ -187,6 +186,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.5,
         child: RoutingMap(
+          waypoints: _waypoints,
           currentDate: _currentDateAsString,
           onClickWaypointCallback: addStopToCurrentItinerary,
           onComputedDistancesCallback: setRouteDistances,

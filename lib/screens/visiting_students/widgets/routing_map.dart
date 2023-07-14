@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
@@ -12,10 +13,12 @@ class RoutingMap extends StatefulWidget {
   const RoutingMap({
     Key? key,
     required this.currentDate,
+    required this.waypoints,
     this.onClickWaypointCallback,
     this.onComputedDistancesCallback,
   }) : super(key: key);
 
+  final List<Waypoint> waypoints;
   final Function(int index)? onClickWaypointCallback;
   final Function(List<double>?)? onComputedDistancesCallback;
   final String currentDate;
@@ -88,18 +91,16 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   void _toggleName(index) {
-    final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
-    waypoints[index] =
-        waypoints[index].copyWith(showTitle: !waypoints[index].showTitle);
+    widget.waypoints[index] = widget.waypoints[index]
+        .copyWith(showTitle: !widget.waypoints[index].showTitle);
     setState(() {});
   }
 
   List<Marker> _waypointsToMarkers() {
-    final waypoints = Provider.of<AllStudentsWaypoints>(context, listen: false);
     List<Marker> out = [];
 
-    for (var i = 0; i < waypoints.length; i++) {
-      final waypoint = waypoints[i];
+    for (var i = 0; i < widget.waypoints.length; i++) {
+      final waypoint = widget.waypoints[i];
       const markerSize = 30.0;
 
       double nameWidth = 160;
@@ -157,36 +158,26 @@ class _RoutingMapState extends State<RoutingMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AllStudentsWaypoints>(builder: (context, waypoints, child) {
-      if (waypoints.isEmpty) {
-        // The column is necessary otherwise the ProgressIndicator is huge
-        return const Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [CircularProgressIndicator()]);
-      }
-
-      return Padding(
-        padding: const EdgeInsets.all(8),
-        child: FlutterMap(
-          options: MapOptions(center: waypoints[0].toLatLng(), zoom: 12),
-          nonRotatedChildren: const [ZoomButtons()],
-          children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-            ),
-            FutureBuilder<Road?>(
-              future: _road,
-              builder: (context, road) {
-                if (!road.hasData || waypoints.isEmpty) return Container();
-                return PolylineLayer(polylines: _roadToPolyline(road.data));
-              },
-            ),
-            MarkerLayer(markers: _waypointsToMarkers()),
-          ],
-        ),
-      );
-    });
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: FlutterMap(
+        options: MapOptions(center: widget.waypoints[0].toLatLng(), zoom: 12),
+        nonRotatedChildren: const [ZoomButtons()],
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+          ),
+          FutureBuilder<Road?>(
+            future: _road,
+            builder: (context, road) {
+              if (!road.hasData || widget.waypoints.isEmpty) return Container();
+              return PolylineLayer(polylines: _roadToPolyline(road.data));
+            },
+          ),
+          MarkerLayer(markers: _waypointsToMarkers()),
+        ],
+      ),
+    );
   }
 }
