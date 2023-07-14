@@ -56,7 +56,7 @@ class _AccidentHistoryScreenState extends State<AccidentHistoryScreen> {
           }
         }
 
-        if (!out.containsKey(job.specialization.id)) {
+        if (!out.containsKey(job.specialization)) {
           out[job.specialization] = AccidentsByEnterprise();
         }
         out[job.specialization]!.add(enterprise, job.sstEvaluation.incidents);

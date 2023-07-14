@@ -188,6 +188,7 @@ Future<void> addDummyEnterprises(
         incidents: [
           'Le stagiaire a eu la peur de sa vie!',
           'Le stagiaire a eu la peur de sa vie, deux fois plutôt qu\'une!',
+          'Le stagiaire a eu la peur de sa vie, en fait trois...',
           'Le stagiaire a coupé un doigt à un client',
         ],
         incidentContact: 'Jonny M. 514 514-5544',

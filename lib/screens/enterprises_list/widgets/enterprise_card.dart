@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
@@ -55,8 +56,20 @@ class EnterpriseCard extends StatelessWidget {
                         ),
                       ),
                     ])))
-                .toList()
+                .toList(),
           ],
+        ),
+        trailing: Visibility(
+          visible: enterprise.jobs.lastWhereOrNull(
+                  (e) => e.sstEvaluation.incidents.isNotEmpty) !=
+              null,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.warning_amber,
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
         ),
       ),
     );

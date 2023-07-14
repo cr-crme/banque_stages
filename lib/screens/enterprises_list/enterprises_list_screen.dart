@@ -170,7 +170,7 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
       children: [
         if (widget.withSearchBar) Search(controller: searchController),
         SwitchListTile(
-          title: const Text('Afficher que les stages disponibles'),
+          title: const Text('N\'afficher que les stages disponibles'),
           value: _hideNotAvailable,
           onChanged: (value) => setState(() => _hideNotAvailable = value),
         ),
