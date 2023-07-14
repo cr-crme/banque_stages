@@ -10,7 +10,8 @@ class AccidentsByEnterprise {
     _all[enterprise]!.addAll(accidents);
   }
 
-  int get length => _all.length;
+  int get length =>
+      _all.keys.fold(0, (running, e) => running + _all[e]!.length);
   Iterable<T> map<T>(Enterprise enterprise, toElement) =>
       _all[enterprise]!.map(toElement);
 
