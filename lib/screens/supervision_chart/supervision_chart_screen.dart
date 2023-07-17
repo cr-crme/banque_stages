@@ -209,6 +209,13 @@ class _SupervisionChartState extends State<SupervisionChart> {
     return out;
   }
 
+  void _navigateToStudentInfo(Student student) {
+    GoRouter.of(context).goNamed(
+      Screens.supervisionStudentDetails,
+      params: Screens.params(student),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -278,7 +285,10 @@ class _SupervisionChartState extends State<SupervisionChart> {
                         student: student,
                         internship:
                             internships.isNotEmpty ? internships.last : null,
+                        onTap: () => _navigateToStudentInfo(student),
                         onUpdatePriority: () => _updatePriority(student.id),
+                        onAlreadyEndedInternship: () =>
+                            _navigateToStudentInfo(student),
                       );
                     }),
                   ),
@@ -336,12 +346,16 @@ class _StudentTile extends StatelessWidget {
     super.key,
     required this.student,
     required this.internship,
+    required this.onTap,
     required this.onUpdatePriority,
+    required this.onAlreadyEndedInternship,
   });
 
   final Student student;
   final Internship? internship;
+  final Function() onTap;
   final Function() onUpdatePriority;
+  final Function() onAlreadyEndedInternship;
 
   @override
   Widget build(BuildContext context) {
@@ -356,10 +370,7 @@ class _StudentTile extends StatelessWidget {
     return Card(
       elevation: 10,
       child: ListTile(
-        onTap: () => GoRouter.of(context).goNamed(
-          Screens.supervisionStudentDetails,
-          params: Screens.params(student),
-        ),
+        onTap: onTap,
         leading: SizedBox(
           height: double.infinity, // This centers the avatar
           child: student.avatar,
@@ -392,21 +403,31 @@ class _StudentTile extends StatelessWidget {
                       offset: Offset(2.0, 2.0),
                     )
                   ],
-                  border: Border.all(color: Colors.lightBlue, width: 3),
+                  border: Border.all(
+                      color: Theme.of(context).primaryColor.withAlpha(100),
+                      width: 2.5),
                   shape: BoxShape.circle,
                 ),
-                child: Tooltip(
-                  message: 'Niveau de priorité pour les visites de supervision',
-                  child: IconButton(
-                    onPressed: onUpdatePriority,
-                    alignment: Alignment.center,
-                    icon: Icon(
-                      internship!.visitingPriority.icon,
-                      color: internship!.visitingPriority.color,
-                      size: 30,
-                    ),
-                  ),
-                ),
+                child: internship!.date.end.compareTo(DateTime.now()) > 0
+                    ? Tooltip(
+                        message:
+                            'Niveau de priorité pour les visites de supervision',
+                        child: IconButton(
+                          onPressed: onUpdatePriority,
+                          alignment: Alignment.center,
+                          icon: Icon(
+                            internship!.visitingPriority.icon,
+                            color: internship!.visitingPriority.color,
+                            size: 30,
+                          ),
+                        ),
+                      )
+                    : IconButton(
+                        onPressed: onAlreadyEndedInternship,
+                        iconSize: 35,
+                        alignment: Alignment.center,
+                        icon: Icon(Icons.priority_high,
+                            color: Theme.of(context).primaryColor)),
               )
             : null,
       ),

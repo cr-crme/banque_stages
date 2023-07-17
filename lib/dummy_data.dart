@@ -955,9 +955,11 @@ Future<void> addDummyInterships(
             'Il faut s\'habiller de façon à ce que tous soient identiques'),
   ));
 
+  final startingPeriod =
+      DateTime.now().subtract(Duration(days: rng.nextInt(90)));
   period = DateTimeRange(
-      start: DateTime.now(),
-      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
+      start: startingPeriod,
+      end: startingPeriod.add(Duration(days: rng.nextInt(50))));
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Thomas Caron').id,
