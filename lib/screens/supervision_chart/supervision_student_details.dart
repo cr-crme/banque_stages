@@ -40,10 +40,20 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
     internships.transferStudent(studentId: answer[0], newTeacherId: answer[1]);
   }
 
+  void _navigateToStudentIntership(BuildContext context) {
+    GoRouter.of(context).pushNamed(
+      Screens.student,
+      params: Screens.params(studentId),
+      queryParams: Screens.queryParams(pageIndex: '1'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final internships = InternshipsProvider.of(context).byStudentId(studentId);
-    final internship = internships.isNotEmpty ? internships.last : null;
+    final internship = internships.isNotEmpty && internships.last.isActive
+        ? internships.last
+        : null;
 
     final enterprise = internship != null
         ? EnterprisesProvider.of(context, listen: false)
@@ -89,7 +99,11 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                       child: Center(child: Text('Aucun stage pour l\'élève')),
                     ),
                   if (internship != null)
-                    _VisitingPriority(studentId: studentId),
+                    _VisitingPriority(
+                      studentId: studentId,
+                      onTapGoToInternship: () =>
+                          _navigateToStudentIntership(context),
+                    ),
                   if (internship != null)
                     _Specialization(internship: internship),
                   if (internship != null)
@@ -98,7 +112,10 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                     _Contact(enterprise: enterprise!, internship: internship),
                   if (internship != null) _Schedule(internship: internship),
                   if (internship != null) _Requirements(internship: internship),
-                  _MoreInfoButton(studentId: studentId),
+                  _MoreInfoButton(
+                    studentId: studentId,
+                    onTap: () => _navigateToStudentIntership(context),
+                  ),
                 ],
               ),
             ),
@@ -108,9 +125,13 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
 }
 
 class _VisitingPriority extends StatefulWidget {
-  const _VisitingPriority({required this.studentId});
+  const _VisitingPriority({
+    required this.studentId,
+    required this.onTapGoToInternship,
+  });
 
   final String studentId;
+  final Function() onTapGoToInternship;
 
   @override
   State<_VisitingPriority> createState() => _VisitingPriorityState();
@@ -137,32 +158,78 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
     final internships = InternshipsProvider.of(context, listen: false)
         .byStudentId(widget.studentId);
     if (internships.isEmpty) return Container();
+
     final internship = internships.last;
-    final flags = _visibilityFilters.map<Widget>((priority) {
-      return InkWell(
-        onTap: () => _updatePriority(priority),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Checkbox(
-                value: priority == internship.visitingPriority,
-                onChanged: (value) => _updatePriority(priority)),
-            Padding(
-              padding: const EdgeInsets.only(right: 25),
-              child: Icon(priority.icon, color: priority.color),
-            )
-          ],
-        ),
-      );
-    }).toList();
+    final isOver = internship.date.end.compareTo(DateTime.now()) < 1;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Niveau de priorité pour les visites'),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: flags,
+          children: _visibilityFilters.map<Widget>((priority) {
+            return InkWell(
+              onTap: isOver ? null : () => _updatePriority(priority),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Checkbox(
+                    value: isOver
+                        ? false
+                        : priority == internship.visitingPriority,
+                    onChanged:
+                        isOver ? null : (value) => _updatePriority(priority),
+                    fillColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.disabled)) {
+                        return Theme.of(context).primaryColor.withOpacity(.32);
+                      }
+                      return Theme.of(context).primaryColor;
+                    }),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 25),
+                    child: Icon(priority.icon, color: priority.color),
+                  )
+                ],
+              ),
+            );
+          }).toList(),
         ),
+        if (isOver)
+          Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.priority_high,
+                      color: Theme.of(context).primaryColor,
+                      size: 35,
+                    ),
+                    Text(
+                      'La date de fin du stage est dépasseée.',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                    onPressed: widget.onTapGoToInternship,
+                    child: Text(
+                      'Aller au stage',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(color: Colors.white),
+                    ))
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -426,9 +493,10 @@ class _Requirements extends StatelessWidget {
 }
 
 class _MoreInfoButton extends StatelessWidget {
-  const _MoreInfoButton({required this.studentId});
+  const _MoreInfoButton({required this.studentId, required this.onTap});
 
   final String studentId;
+  final Function() onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -436,11 +504,7 @@ class _MoreInfoButton extends StatelessWidget {
       padding: const EdgeInsets.only(top: 50.0, bottom: 40),
       child: Center(
         child: ElevatedButton(
-            onPressed: () => GoRouter.of(context).pushNamed(
-                  Screens.student,
-                  params: Screens.params(studentId),
-                  queryParams: Screens.queryParams(pageIndex: '1'),
-                ),
+            onPressed: onTap,
             child: const Text('Plus de détails\nsur le stage',
                 textAlign: TextAlign.center)),
       ),
