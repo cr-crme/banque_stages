@@ -163,8 +163,9 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 3 / 4,
       child: CheckboxListTile(
-        visualDensity: VisualDensity.compact,
         controlAffinity: ListTileControlAffinity.leading,
+        visualDensity: VisualDensity.compact,
+        dense: true,
         value: value,
         onChanged: onChanged,
         title: Text(
@@ -296,11 +297,13 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(specialization.idWithName),
+              Text(
+                specialization.idWithName,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 4),
               const Text(
                 '* Compétences à évaluer :',
-                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               ...specialization.skills.map((skill) {
                 final out = CheckboxListTile(
@@ -310,7 +313,10 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
                   onChanged: (value) => setState(() =>
                       widget.formController.skillsToEvaluate[skill] = value!),
                   value: widget.formController.skillsToEvaluate[skill],
-                  title: Text(skill.idWithName),
+                  title: Text(
+                    skill.idWithName,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                   enabled: widget.editMode &&
                       (!_usedDuplicateSkills.containsKey(skill) ||
                           !_usedDuplicateSkills[skill]!),
