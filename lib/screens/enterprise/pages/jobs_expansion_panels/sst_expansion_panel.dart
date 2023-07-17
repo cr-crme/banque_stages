@@ -139,9 +139,17 @@ class SstBody extends StatelessWidget {
                   Screens.jobSstForm,
                   params: Screens.params(enterprise, jobId: job),
                 ),
-                child: const Text(
-                  'Afficher le\nformulaire',
-                  textAlign: TextAlign.center,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('Afficher le'),
+                      Text('formulaire'),
+                    ],
+                  ),
                 ),
               ),
             ),

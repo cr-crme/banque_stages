@@ -397,32 +397,6 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
     );
   }
 
-  Widget _buildPresentAtMeeting() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: _interline),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Personnes présentes',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          ...widget.evaluation[_currentEvaluationIndex].presentAtEvaluation
-              .map((e) => Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('\u2022 '),
-                        Flexible(child: Text(e)),
-                      ],
-                    ),
-                  ))
-        ],
-      ),
-    );
-  }
-
   Widget _buildAttitudeIsGood() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
