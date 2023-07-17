@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
@@ -12,9 +9,12 @@ import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart'
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/supervision_chart/widgets/transfer_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SupervisionStudentDetailsScreen extends StatelessWidget {
@@ -90,34 +90,42 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
               ],
             ),
             body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (internship == null)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 10.0),
-                      child: Center(child: Text('Aucun stage pour l\'élève')),
+              child: student == null
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (internship == null)
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10.0),
+                            child: Center(
+                                child: Text('Aucun stage pour l\'élève')),
+                          ),
+                        if (internship != null)
+                          _VisitingPriority(
+                            studentId: studentId,
+                            onTapGoToInternship: () =>
+                                _navigateToStudentIntership(context),
+                          ),
+                        if (internship != null)
+                          _StudentInformation(student: student),
+                        if (internship != null)
+                          _Specialization(internship: internship),
+                        if (internship != null)
+                          _PersonalNotes(internship: internship),
+                        if (internship != null)
+                          _Contact(
+                              enterprise: enterprise!, internship: internship),
+                        if (internship != null)
+                          _Schedule(internship: internship),
+                        if (internship != null)
+                          _Requirements(internship: internship),
+                        _MoreInfoButton(
+                          studentId: studentId,
+                          onTap: () => _navigateToStudentIntership(context),
+                        ),
+                      ],
                     ),
-                  if (internship != null)
-                    _VisitingPriority(
-                      studentId: studentId,
-                      onTapGoToInternship: () =>
-                          _navigateToStudentIntership(context),
-                    ),
-                  if (internship != null)
-                    _Specialization(internship: internship),
-                  if (internship != null)
-                    _PersonalNotes(internship: internship),
-                  if (internship != null)
-                    _Contact(enterprise: enterprise!, internship: internship),
-                  if (internship != null) _Schedule(internship: internship),
-                  if (internship != null) _Requirements(internship: internship),
-                  _MoreInfoButton(
-                    studentId: studentId,
-                    onTap: () => _navigateToStudentIntership(context),
-                  ),
-                ],
-              ),
             ),
           );
         });
@@ -263,6 +271,30 @@ class _Specialization extends StatelessWidget {
   }
 }
 
+class _StudentInformation extends StatelessWidget {
+  const _StudentInformation({required this.student});
+
+  final Student student;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Contact de l\'élève'),
+        Padding(
+          padding: const EdgeInsets.only(left: 25.0),
+          child: PhoneListTile(
+            initialValue: student.phone,
+            enabled: false,
+            isMandatory: false,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _PersonalNotes extends StatefulWidget {
   const _PersonalNotes({required this.internship});
 
@@ -346,11 +378,20 @@ class _Contact extends StatelessWidget {
               Flexible(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
-                  child: Text(enterprise.address == null
-                      ? 'Adresse de l\'entreprise \nAucune adresse'
-                      : 'Adresse de l\'entreprise \n${enterprise.address!.civicNumber} ${enterprise.address!.street}\n'
-                          '${enterprise.address!.city}\n'
-                          '${enterprise.address!.postalCode}'),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Adresse de l\'entreprise',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(enterprise.address == null
+                          ? 'Aucune adresse'
+                          : '${enterprise.address!.civicNumber} ${enterprise.address!.street}\n'
+                              '${enterprise.address!.city}\n'
+                              '${enterprise.address!.postalCode}'),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -370,9 +411,17 @@ class _Contact extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
-                child: Text(
-                    'Responsable en milieu de stage \n${internship.supervisor.fullName}\n'
-                    '${internship.supervisor.phone.toString() == '' ? 'Aucun téléphone enregistré' : internship.supervisor.phone}'),
+                child: Column(
+                  children: [
+                    const Text(
+                      'Responsable en milieu de stage',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                        'Responsable en milieu de stage\n${internship.supervisor.fullName}\n'
+                        '${internship.supervisor.phone.toString() == '' ? 'Aucun téléphone enregistré' : internship.supervisor.phone}'),
+                  ],
+                ),
               ),
             ],
           ),
