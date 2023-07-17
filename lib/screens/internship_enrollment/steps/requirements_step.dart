@@ -31,6 +31,10 @@ class RequirementsStepState extends State<RequirementsStep> {
       if (_protections[protection]!) return true;
     }
 
+    // If none is check, there is still the option for "other". If it is check
+    // there is no need to check the textfield as it is already done
+    if (_otherProtections) return true;
+
     ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Indiquer au moins un équipement.')));
     return false;
