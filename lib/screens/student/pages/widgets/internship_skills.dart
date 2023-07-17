@@ -156,38 +156,12 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
     );
   }
 
-  Widget _buildPresentAtMeeting() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: _interline),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Personnes présentes',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          ...widget.evaluation[_currentEvaluationIndex].presentAtEvaluation
-              .map((e) => Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('\u2022 '),
-                        Flexible(child: Text(e)),
-                      ],
-                    ),
-                  ))
-        ],
-      ),
-    );
-  }
-
   Widget _buillSkillSection(String specializationId) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSkill(
-            title: 'Compétences réussies',
+            title: 'Compétences acquises',
             skills: widget.evaluation[_currentEvaluationIndex].skills
                 .map<SkillEvaluation?>((e) =>
                     e.specializationId == specializationId &&
@@ -209,7 +183,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
                 .cast<SkillEvaluation>()
                 .toList()),
         _buildSkill(
-            title: 'Compétences non réussies',
+            title: 'Compétences échouées',
             skills: widget.evaluation[_currentEvaluationIndex].skills
                 .map<SkillEvaluation?>((e) =>
                     e.specializationId == specializationId &&
@@ -243,8 +217,10 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           if (skills.isEmpty)
             const Padding(
                 padding: EdgeInsets.only(left: 12.0),
@@ -325,7 +301,6 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildLastEvaluation(),
-              _buildPresentAtMeeting(),
               if (widget.internship.extraSpecializationsId.isNotEmpty)
                 Text(
                   EnterprisesProvider.of(context, listen: false)
@@ -584,7 +559,6 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildLastEvaluation(),
-              _buildPresentAtMeeting(),
               _buildAttitudeIsGood(),
               _buildAttitudeIsBad(),
               _buildGeneralAppreciation(),
