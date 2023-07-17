@@ -4,10 +4,10 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'itinerary.dart';
+import '../models/itinerary.dart';
 
-class AllItineraries extends FirebaseListProvided<Itinerary> {
-  AllItineraries()
+class ItinerariesProvider extends FirebaseListProvided<Itinerary> {
+  ItinerariesProvider()
       : super(
           pathToData: 'itineraries',
           pathToAvailableDataIds: '',
@@ -20,8 +20,8 @@ class AllItineraries extends FirebaseListProvided<Itinerary> {
     initializeFetchingData();
   }
 
-  static AllItineraries of(BuildContext context, {listen = true}) =>
-      Provider.of<AllItineraries>(context, listen: listen);
+  static ItinerariesProvider of(BuildContext context, {listen = true}) =>
+      Provider.of<ItinerariesProvider>(context, listen: listen);
 
   @override
   Itinerary deserializeItem(data) {

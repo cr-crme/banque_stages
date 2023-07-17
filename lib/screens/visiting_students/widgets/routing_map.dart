@@ -1,13 +1,12 @@
-import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.dart';
+import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/models/waypoints.dart';
+import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/models/lng_lat_utils.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
-
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
-import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
-import '../models/all_itineraries.dart';
-import '../models/lng_lat_utils.dart';
 
 class RoutingMap extends StatefulWidget {
   const RoutingMap({
@@ -37,12 +36,12 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   void computeRoute() {
-    final itineraries = Provider.of<AllItineraries>(context);
+    final itineraries = Provider.of<ItinerariesProvider>(context);
     _road = _getActivatedRoute(itineraries);
     setState(() {});
   }
 
-  Future<Road?> _getActivatedRoute(AllItineraries itineraries) async {
+  Future<Road?> _getActivatedRoute(ItinerariesProvider itineraries) async {
     if (itineraries.isEmpty || !itineraries.hasId(widget.currentDate)) {
       if (widget.onComputedDistancesCallback != null) {
         widget.onComputedDistancesCallback!([]);

@@ -1,10 +1,10 @@
-import 'package:flutter/services.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
-import 'package:geocoding/geocoding.dart';
 
-import '../../../common/models/visiting_priority.dart';
+import 'visiting_priority.dart';
 
 class Waypoint extends ItemSerializable {
   Waypoint(

@@ -1,7 +1,6 @@
+import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:flutter/material.dart';
-
-import '../models/waypoints.dart';
-import '../../../common/models/visiting_priority.dart';
 
 class WaypointCard extends StatelessWidget {
   const WaypointCard({

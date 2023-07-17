@@ -1,9 +1,8 @@
+import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:crcrme_banque_stages/common/models/waypoints.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-
-import 'package:crcrme_banque_stages/common/models/address.dart';
-import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.dart';
-import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 
 class ShowAddressDialog extends StatelessWidget {
   const ShowAddressDialog(this.address, {super.key});

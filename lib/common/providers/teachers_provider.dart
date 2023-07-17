@@ -42,7 +42,7 @@ class TeachersProvider extends FirebaseListProvided<Teacher> {
   }
 
   void initializeAuth(AuthProvider auth) {
-    currentTeacherId = auth.currentUser!.uid;
+    currentTeacherId = auth.currentUser?.uid ?? '';
     initializeFetchingData();
   }
 }

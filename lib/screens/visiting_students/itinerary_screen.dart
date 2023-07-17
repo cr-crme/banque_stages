@@ -1,13 +1,13 @@
+import 'package:crcrme_banque_stages/common/models/itinerary.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/screens/visiting_students/models/all_itineraries.dart';
-import 'package:crcrme_banque_stages/screens/visiting_students/models/itinerary.dart';
-import 'package:crcrme_banque_stages/screens/visiting_students/models/waypoints.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/routing_map.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/waypoint_card.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +80,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   }
 
   void addStopToCurrentItinerary(int indexInWaypoints) {
-    final itineraries = AllItineraries.of(context, listen: false);
+    final itineraries = ItinerariesProvider.of(context, listen: false);
     final itinerary =
         itineraries.isNotEmpty && itineraries.hasId(_currentDateAsString)
             ? itineraries[_currentDateAsString]
@@ -92,7 +92,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   }
 
   void removeStopToCurrentItinerary(int indexInItinerary) {
-    final itineraries = AllItineraries.of(context, listen: false);
+    final itineraries = ItinerariesProvider.of(context, listen: false);
     final itinerary = itineraries[_currentDateAsString];
 
     itinerary.remove(indexInItinerary);
@@ -169,7 +169,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     _currentDate = newDate;
 
     // Force update of all widgets
-    final itineraries = AllItineraries.of(context, listen: false);
+    final itineraries = ItinerariesProvider.of(context, listen: false);
     itineraries.forceNotify();
     setState(() {});
   }
@@ -187,7 +187,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   }
 
   Widget _studentsToVisitWidget(BuildContext context) {
-    final itineraries = AllItineraries.of(context, listen: false);
+    final itineraries = ItinerariesProvider.of(context, listen: false);
     if (itineraries.isEmpty || !itineraries.hasId(_currentDateAsString)) {
       return Container();
     }
@@ -287,7 +287,7 @@ class __DistanceState extends State<_Distance> {
   }
 
   List<Widget> _distancesTo(List<double?> distances) {
-    final itineraries = AllItineraries.of(context, listen: false);
+    final itineraries = ItinerariesProvider.of(context, listen: false);
     final itinerary = itineraries[widget.currentDate];
 
     List<Widget> out = [];
