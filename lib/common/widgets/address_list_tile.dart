@@ -202,8 +202,8 @@ class _AddressListTileState extends State<AddressListTile> {
                 color: addressHasChanged
                     ? (widget.addressController!._textController.text == ''
                         ? Colors.grey
-                        : Colors.black)
-                    : Colors.purple),
+                        : Theme.of(context).primaryColor)
+                    : Theme.of(context).primaryColor),
           )
         ],
       ),
