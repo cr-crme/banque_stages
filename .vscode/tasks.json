@@ -2,27 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Generate localization",
-            "command": "flutter",
-            "args": ["gen-l10n"],
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": true
-            },
-            "problemMatcher": []
-        },
-        {
             "label": "Run Firebase Emulator",
             "command": "firebase",
-            "args": ["emulators:start", "--import", "firebase-export"],
+            "args": ["emulators:start"],
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}"
