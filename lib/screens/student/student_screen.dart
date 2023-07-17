@@ -31,9 +31,12 @@ class _StudentScreenState extends State<StudentScreen>
   final _skillsPageKey = GlobalKey<SkillsPageState>();
 
   void _onTapBack() async {
-    if (_tabController.index == 1) {
-      for (final key in _internshipPageKey.currentState!.detailKeys) {
-        if (key.currentState?.editMode ?? false) {
+    if (_tabController.index == 1 &&
+        _internshipPageKey.currentState!.activeKey.currentState != null) {
+      final keys =
+          _internshipPageKey.currentState!.activeKey.currentState!.detailKeys;
+      for (final key in keys.keys) {
+        if (keys[key]!.currentState?.editMode ?? false) {
           final answer = await ConfirmPopDialog.show(context);
           if (!answer || !mounted) return;
           Navigator.of(context).pop();

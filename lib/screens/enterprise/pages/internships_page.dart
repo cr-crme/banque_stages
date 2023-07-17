@@ -30,46 +30,46 @@ class InternshipsPageState extends State<InternshipsPage> {
       widget.onAddIntershipRequest(widget.enterprise);
 
   List<Internship> _getActiveInternships(List<Internship> internships) {
-    final List<Internship> current = [];
+    final List<Internship> out = [];
     for (final internship in internships) {
-      if (internship.isActive) current.add(internship);
+      if (internship.isActive) out.add(internship);
     }
 
-    return current;
+    return out;
   }
 
-  List<Internship> _getDoneInternships(List<Internship> internships) {
-    final List<Internship> current = [];
+  List<Internship> _getClosedInternships(List<Internship> internships) {
+    final List<Internship> out = [];
     for (final internship in internships) {
-      if (internship.isClosed) current.add(internship);
+      if (internship.isClosed) out.add(internship);
     }
-    return current;
+    return out;
   }
 
-  List<Internship> _getToFinalizeInternships(List<Internship> internships) {
-    final List<Internship> current = [];
+  List<Internship> _getToEvaluateInternships(List<Internship> internships) {
+    final List<Internship> out = [];
     for (final internship in internships) {
-      if (internship.isEnterpriseEvaluationPending) current.add(internship);
+      if (internship.isEnterpriseEvaluationPending) out.add(internship);
     }
-    return current;
+    return out;
   }
 
   @override
   Widget build(BuildContext context) {
     final internships = widget.enterprise.internships(context, listen: true);
 
-    final toFinalize = _getToFinalizeInternships(internships);
+    final toEvaluate = _getToEvaluateInternships(internships);
     final active = _getActiveInternships(internships);
-    final done = _getDoneInternships(internships);
+    final closed = _getClosedInternships(internships);
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (toFinalize.isNotEmpty)
+          if (toEvaluate.isNotEmpty)
             _InternshipList(
               title: 'Évaluations post-stage',
-              internships: toFinalize,
+              internships: toEvaluate,
               enterprise: widget.enterprise,
             ),
           if (active.isNotEmpty)
@@ -78,10 +78,10 @@ class InternshipsPageState extends State<InternshipsPage> {
               internships: active,
               enterprise: widget.enterprise,
             ),
-          if (done.isNotEmpty)
+          if (closed.isNotEmpty)
             _InternshipList(
               title: 'Historique des stages',
-              internships: done,
+              internships: closed,
               enterprise: widget.enterprise,
             ),
         ],

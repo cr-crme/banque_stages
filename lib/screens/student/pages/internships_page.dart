@@ -12,10 +12,7 @@ import 'widgets/internship_skills.dart';
 import 'widgets/internship_quick_access.dart';
 
 class InternshipsPage extends StatefulWidget {
-  const InternshipsPage({
-    super.key,
-    required this.student,
-  });
+  const InternshipsPage({super.key, required this.student});
 
   final Student student;
 
@@ -24,8 +21,93 @@ class InternshipsPage extends StatefulWidget {
 }
 
 class InternshipsPageState extends State<InternshipsPage> {
+  final activeKey = GlobalKey<_StudentInternshipListViewState>();
+  final closedKey = GlobalKey<_StudentInternshipListViewState>();
+  final toEvaluateKey = GlobalKey<_StudentInternshipListViewState>();
+
+  List<Internship> _getActiveInternships(List<Internship> internships) {
+    final List<Internship> out = [];
+    for (final internship in internships) {
+      if (internship.isActive) out.add(internship);
+    }
+    _sortByDate(out);
+    return out;
+  }
+
+  List<Internship> _getClosedInternships(List<Internship> internships) {
+    final List<Internship> out = [];
+    for (final internship in internships) {
+      if (internship.isClosed) out.add(internship);
+    }
+    _sortByDate(out);
+    return out;
+  }
+
+  List<Internship> _getToEvaluateInternships(List<Internship> internships) {
+    final List<Internship> out = [];
+    for (final internship in internships) {
+      if (internship.isEnterpriseEvaluationPending) out.add(internship);
+    }
+    _sortByDate(out);
+    return out;
+  }
+
+  void _sortByDate(List<Internship> internships) {
+    internships.sort((a, b) => a.date.start.compareTo(b.date.start));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final internships =
+        InternshipsProvider.of(context).byStudentId(widget.student.id);
+    final toEvaluateInternships = _getToEvaluateInternships(internships);
+    final activeInternships = _getActiveInternships(internships);
+    final closedInternships = _getClosedInternships(internships);
+
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (toEvaluateInternships.isNotEmpty)
+            _StudentInternshipListView(
+                key: toEvaluateKey,
+                title: 'Évaluations post-stage',
+                internships: toEvaluateInternships),
+          if (activeInternships.isNotEmpty) const SizedBox(height: 12),
+          if (activeInternships.isNotEmpty)
+            _StudentInternshipListView(
+              key: activeKey,
+              title: 'En cours',
+              internships: activeInternships,
+            ),
+          if (closedInternships.isNotEmpty) const SizedBox(height: 12),
+          if (closedInternships.isNotEmpty)
+            _StudentInternshipListView(
+                key: closedKey,
+                title: 'Historique des stages',
+                internships: closedInternships),
+        ],
+      ),
+    );
+  }
+}
+
+class _StudentInternshipListView extends StatefulWidget {
+  const _StudentInternshipListView(
+      {super.key, required this.title, required this.internships});
+
+  final String title;
+  final List<Internship> internships;
+
+  @override
+  State<_StudentInternshipListView> createState() =>
+      _StudentInternshipListViewState();
+}
+
+class _StudentInternshipListViewState
+    extends State<_StudentInternshipListView> {
   final Map<String, bool> _expanded = {};
-  final List<GlobalKey<InternshipDetailsState>> detailKeys = [];
+  final Map<String, GlobalKey<InternshipDetailsState>> detailKeys = {};
 
   void _prepareExpander(List<Internship> internships) {
     if (_expanded.length != internships.length) {
@@ -36,57 +118,57 @@ class InternshipsPageState extends State<InternshipsPage> {
 
     if (detailKeys.length != internships.length) {
       detailKeys.clear();
-      for (final _ in internships) {
-        detailKeys.add(GlobalKey<InternshipDetailsState>());
+      for (final internship in internships) {
+        detailKeys[internship.id] = GlobalKey<InternshipDetailsState>();
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final internships =
-        InternshipsProvider.of(context).byStudentId(widget.student.id);
-    _prepareExpander(internships);
+    _prepareExpander(widget.internships);
 
-    return ListView.builder(
-      itemCount: internships.length,
-      itemBuilder: (context, index) {
-        final internship = internships[internships.length - index - 1];
-        return ExpansionPanelList(
-          expansionCallback: (int panelIndex, bool isExpanded) =>
-              setState(() => _expanded[internship.id] = !isExpanded),
-          children: [
-            ExpansionPanel(
-              canTapOnHeader: true,
-              isExpanded: _expanded[internship.id]!,
-              headerBuilder: (context, isExpanded) => ListTile(
-                title: SubTitle(
-                  '${DateFormat('dd MMMM yyyy', 'fr_CA').format(internship.date.start)} - '
-                  '${DateFormat('dd MMMM yyyy', 'fr_CA').format(internship.date.end)}',
-                  top: 0,
-                  left: 0,
-                  bottom: 0,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SubTitle(widget.title),
+        ExpansionPanelList(
+            expansionCallback: (int panelIndex, bool isExpanded) => setState(
+                () =>
+                    _expanded[widget.internships[panelIndex].id] = !isExpanded),
+            children: widget.internships.asMap().keys.map((index) {
+              final internship = widget.internships[index];
+              return ExpansionPanel(
+                canTapOnHeader: true,
+                isExpanded: _expanded[internship.id]!,
+                headerBuilder: (context, isExpanded) => ListTile(
+                  title: Text(
+                    '${DateFormat('dd MMMM yyyy', 'fr_CA').format(internship.date.start)} - '
+                    '${DateFormat('dd MMMM yyyy', 'fr_CA').format(internship.date.end)}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: Colors.black),
+                  ),
+                  subtitle: Text(EnterprisesProvider.of(context)
+                      .fromId(internship.enterpriseId)
+                      .jobs
+                      .fromId(internship.jobId)
+                      .specialization
+                      .idWithName),
                 ),
-                subtitle: Text(EnterprisesProvider.of(context)
-                    .fromId(internship.enterpriseId)
-                    .jobs
-                    .fromId(internship.jobId)
-                    .specialization
-                    .idWithName),
-              ),
-              body: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    InternshipQuickAccess(internshipId: internship.id),
-                    InternshipDetails(
-                        key: detailKeys[index], internship: internship),
-                    InternshipSkills(internship: internship),
-                    InternshipDocuments(internship: internship),
-                  ]),
-            ),
-          ],
-        );
-      },
+                body: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InternshipQuickAccess(internshipId: internship.id),
+                      InternshipDetails(
+                          key: detailKeys[index], internship: internship),
+                      InternshipSkills(internship: internship),
+                      InternshipDocuments(internship: internship),
+                    ]),
+              );
+            }).toList()),
+      ],
     );
   }
 }

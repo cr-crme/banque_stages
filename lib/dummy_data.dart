@@ -58,7 +58,6 @@ Future<void> addDummySchools(SchoolsProvider schools) async {
     address:
         (await Address.fromAddress('9105 Rue Verville, Montréal, QC H2N 1Y5'))!,
   ));
-
   await _waitForDatabaseUpdate(schools, 1);
 }
 
@@ -70,23 +69,25 @@ Future<void> addDummyTeachers(
       lastName: 'Montaigu',
       schoolId: schools[0].id,
       email: 'romeo.montaigu@shakespeare.qc'));
+
   teachers.add(Teacher(
       id: teachers.currentTeacherId,
       firstName: 'Juliette',
       lastName: 'Capulet',
       schoolId: schools[0].id,
       email: 'juliette.capulet@shakespeare.qc'));
+
   teachers.add(Teacher(
       firstName: 'Tybalt',
       lastName: 'Capulet',
       schoolId: schools[0].id,
       email: 'tybalt.capulet@shakespeare.qc'));
+
   teachers.add(Teacher(
       firstName: 'Benvolio',
       lastName: 'Montaigu',
       schoolId: schools[0].id,
       email: 'benvolio.montaigu@shakespeare.qc'));
-
   await _waitForDatabaseUpdate(teachers, 4);
 }
 
@@ -218,6 +219,7 @@ Future<void> addDummyEnterprises(
       ),
     ),
   );
+
   enterprises.add(
     Enterprise(
       name: 'Auto Care',
@@ -955,8 +957,7 @@ Future<void> addDummyInterships(
             'Il faut s\'habiller de façon à ce que tous soient identiques'),
   ));
 
-  final startingPeriod =
-      DateTime.now().subtract(Duration(days: rng.nextInt(90)));
+  var startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(90)));
   period = DateTimeRange(
       start: startingPeriod,
       end: startingPeriod.add(Duration(days: rng.nextInt(50))));
@@ -1283,13 +1284,100 @@ Future<void> addDummyInterships(
         uniform: 'Un chapeau fleuri'),
   ));
 
-  await _waitForDatabaseUpdate(internships, 7);
+  startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(250)));
+  period = DateTimeRange(
+      start: startingPeriod,
+      end: startingPeriod.add(Duration(days: rng.nextInt(50))));
+  internships.add(
+    Internship(
+      versionDate: DateTime.now(),
+      studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
+      teacherId: teachers.currentTeacherId,
+      isTransfering: false,
+      enterpriseId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').id,
+      jobId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').jobs[0].id,
+      extraSpecializationsId: [],
+      visitingPriority: VisitingPriority.values[0],
+      supervisor: Person(firstName: 'Un', lastName: 'Ami'),
+      date: period,
+      endDate: period.end,
+      expectedLength: 135,
+      achievedLength: 100,
+      weeklySchedules: [
+        WeeklySchedule(
+          schedule: [
+            DailySchedule(
+              dayOfWeek: Day.monday,
+              start: const TimeOfDay(hour: 9, minute: 00),
+              end: const TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.tuesday,
+              start: const TimeOfDay(hour: 9, minute: 00),
+              end: const TimeOfDay(hour: 15, minute: 00),
+            ),
+          ],
+          period: period,
+        ),
+      ],
+      protections: Protections(
+          protections: ['Des gants', 'Une paire de lunettes'],
+          status: ProtectionsStatus.suppliedBySchool),
+      uniform: Uniform(
+          status: UniformStatus.suppliedByEnterprise,
+          uniform: 'Un chapeau fleuri'),
+    ),
+  );
+
+  startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(200)));
+  period = DateTimeRange(
+      start: startingPeriod,
+      end: startingPeriod.add(Duration(days: rng.nextInt(50))));
+  internships.add(Internship(
+    versionDate: DateTime.now(),
+    studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
+    teacherId: teachers.currentTeacherId,
+    isTransfering: false,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,
+    extraSpecializationsId: [],
+    visitingPriority: VisitingPriority.values[0],
+    supervisor: Person(firstName: 'Deux', lastName: 'Ami'),
+    date: period,
+    endDate: period.end,
+    expectedLength: 135,
+    achievedLength: 100,
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const TimeOfDay(hour: 9, minute: 00),
+            end: const TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
+    ],
+    protections: Protections(
+        protections: ['Des gants', 'Une paire de lunettes'],
+        status: ProtectionsStatus.suppliedBySchool),
+    uniform: Uniform(
+        status: UniformStatus.suppliedByEnterprise,
+        uniform: 'Un chapeau fleuri'),
+  ));
+  await _waitForDatabaseUpdate(internships, 9);
 }
 
 Future<void> _waitForDatabaseUpdate(
     FirebaseListProvided list, int expectedLength) async {
   // Wait for the database to add all the students
   while (list.length < expectedLength) {
-    await Future.delayed(const Duration(milliseconds: 250));
+    await Future.delayed(const Duration(milliseconds: 100));
   }
 }
