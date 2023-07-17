@@ -180,7 +180,7 @@ final router = GoRouter(
     GoRoute(
       path: '/itinerary',
       name: Screens.itinerary,
-      builder: (context, state) => const ItineraryScreen(),
+      builder: (context, state) => const ItineraryMainScreen(),
     ),
     GoRoute(
       path: '/skill-evaluation-main/:id',

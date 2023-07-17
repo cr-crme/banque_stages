@@ -13,38 +13,44 @@ import 'package:crcrme_banque_stages/screens/visiting_students/widgets/waypoint_
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ItineraryScreen extends StatefulWidget {
-  const ItineraryScreen({super.key});
+class ItineraryMainScreen extends StatefulWidget {
+  const ItineraryMainScreen({super.key});
 
   @override
-  State<ItineraryScreen> createState() => _ItineraryScreenState();
+  State<ItineraryMainScreen> createState() => _ItineraryMainScreenState();
 }
 
-class _ItineraryScreenState extends State<ItineraryScreen> {
-  List<double>? _distances;
+class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
   final List<Waypoint> _waypoints = [];
 
-  final _dateFormat = DateFormat('dd_MM_yyyy');
-  DateTime _currentDate = DateTime.now();
-  String get _currentDateAsString => _dateFormat.format(_currentDate);
-
-  @override
-  void initState() {
-    super.initState();
-
-    _fillAllWaypoints();
+  Future<T?> _waitFor<T>(
+      Function(BuildContext context, {bool listen}) providerOf) async {
+    var provided = providerOf(context, listen: false);
+    while (provided.isEmpty) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (!mounted) return null;
+      provided = providerOf(context, listen: false);
+    }
+    return provided;
   }
 
-  void _fillAllWaypoints() async {
+  Future<bool> _fillAllWaypoints() async {
     final teacher = TeachersProvider.of(context, listen: false).currentTeacher;
-    final school =
-        SchoolsProvider.of(context, listen: false).fromId(teacher.schoolId);
-    final enterprises = EnterprisesProvider.of(context, listen: false);
+    var school = (await _waitFor<SchoolsProvider>(SchoolsProvider.of))
+        ?.fromId(teacher.schoolId);
+    if (!mounted || school == null) return false;
+
+    final enterprises =
+        await _waitFor<EnterprisesProvider>(EnterprisesProvider.of);
+    if (!mounted || enterprises == null) return false;
 
     final internships = InternshipsProvider.of(context, listen: false);
+    if (!mounted) return false;
+
     final students =
         (await StudentsProvider.getMySupervizedStudents(context, listen: false))
             .map<Student>((e) => e);
+    if (!mounted) return false;
 
     // Add the school as the first waypoint
     _waypoints.clear();
@@ -71,8 +77,41 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         ),
       );
     }
-    setState(() {});
+
+    return true;
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Itinéraire des visites')),
+      body: SingleChildScrollView(
+        physics: const ScrollPhysics(),
+        child: FutureBuilder(
+          future: _fillAllWaypoints(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) const CircularProgressIndicator();
+
+            return ItineraryScreen(waypoints: _waypoints);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class ItineraryScreen extends StatefulWidget {
+  const ItineraryScreen({super.key, required this.waypoints});
+
+  @override
+  State<ItineraryScreen> createState() => _ItineraryScreenState();
+  final List<Waypoint> waypoints;
+}
+
+class _ItineraryScreenState extends State<ItineraryScreen> {
+  List<double>? _distances;
+
+  DateTime _currentDate = DateTime.now();
 
   void setRouteDistances(List<double>? legs) {
     _distances = legs;
@@ -82,18 +121,17 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   void addStopToCurrentItinerary(int indexInWaypoints) {
     final itineraries = ItinerariesProvider.of(context, listen: false);
     final itinerary =
-        itineraries.isNotEmpty && itineraries.hasId(_currentDateAsString)
-            ? itineraries[_currentDateAsString]
-            : Itinerary(date: _currentDateAsString);
+        itineraries.fromDate(_currentDate) ?? Itinerary(date: _currentDate);
 
-    itinerary.add(_waypoints[indexInWaypoints].copyWith());
+    itinerary.add(widget.waypoints[indexInWaypoints].copyWith());
     itineraries.replace(itinerary, notify: true);
     setState(() {});
   }
 
   void removeStopToCurrentItinerary(int indexInItinerary) {
     final itineraries = ItinerariesProvider.of(context, listen: false);
-    final itinerary = itineraries[_currentDateAsString];
+    final itinerary = itineraries.fromDate(_currentDate);
+    if (itinerary == null) return;
 
     itinerary.remove(indexInItinerary);
     itineraries.replace(itinerary, notify: true);
@@ -102,21 +140,15 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Itinéraire des visites')),
-      body: SingleChildScrollView(
-        physics: const ScrollPhysics(),
-        child: Column(
-          children: [
-            _showDate(),
-            if (_waypoints.isNotEmpty) _map(),
-            if (_waypoints.isEmpty) const CircularProgressIndicator(),
-            _Distance(_distances, currentDate: _currentDateAsString),
-            const SizedBox(height: 20),
-            _studentsToVisitWidget(context),
-          ],
-        ),
-      ),
+    return Column(
+      children: [
+        _showDate(),
+        if (widget.waypoints.isNotEmpty) _map(),
+        if (widget.waypoints.isEmpty) const CircularProgressIndicator(),
+        _Distance(_distances, currentDate: _currentDate),
+        const SizedBox(height: 20),
+        _studentsToVisitWidget(context),
+      ],
     );
   }
 
@@ -179,8 +211,8 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.5,
         child: RoutingMap(
-          waypoints: _waypoints,
-          currentDate: _currentDateAsString,
+          waypoints: widget.waypoints,
+          currentDate: _currentDate,
           onClickWaypointCallback: addStopToCurrentItinerary,
           onComputedDistancesCallback: setRouteDistances,
         ));
@@ -188,11 +220,11 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   Widget _studentsToVisitWidget(BuildContext context) {
     final itineraries = ItinerariesProvider.of(context, listen: false);
-    if (itineraries.isEmpty || !itineraries.hasId(_currentDateAsString)) {
+    if (itineraries.isEmpty || !itineraries.hasDate(_currentDate)) {
       return Container();
     }
 
-    final itinerary = itineraries[_currentDateAsString];
+    final itinerary = itineraries.fromDate(_currentDate)!;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -202,7 +234,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
           ReorderableListView.builder(
             onReorder: (oldIndex, newIndex) {
               itinerary.move(oldIndex, newIndex);
-              itineraries.forceNotify();
+              itineraries.replace(itinerary);
               setState(() {});
             },
             physics: const NeverScrollableScrollPhysics(),
@@ -227,7 +259,7 @@ class _Distance extends StatefulWidget {
   const _Distance(this.distances, {required this.currentDate});
 
   final List<double>? distances;
-  final String currentDate;
+  final DateTime currentDate;
 
   @override
   State<_Distance> createState() => __DistanceState();
@@ -288,7 +320,8 @@ class __DistanceState extends State<_Distance> {
 
   List<Widget> _distancesTo(List<double?> distances) {
     final itineraries = ItinerariesProvider.of(context, listen: false);
-    final itinerary = itineraries[widget.currentDate];
+    final itinerary = itineraries.fromDate(widget.currentDate);
+    if (itinerary == null) return [];
 
     List<Widget> out = [];
     if (distances.length + 1 != itinerary.length) return out;

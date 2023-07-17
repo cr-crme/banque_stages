@@ -20,7 +20,7 @@ class RoutingMap extends StatefulWidget {
   final List<Waypoint> waypoints;
   final Function(int index)? onClickWaypointCallback;
   final Function(List<double>?)? onComputedDistancesCallback;
-  final String currentDate;
+  final DateTime currentDate;
 
   @override
   State<RoutingMap> createState() => _RoutingMapState();
@@ -42,7 +42,7 @@ class _RoutingMapState extends State<RoutingMap> {
   }
 
   Future<Road?> _getActivatedRoute(ItinerariesProvider itineraries) async {
-    if (itineraries.isEmpty || !itineraries.hasId(widget.currentDate)) {
+    if (itineraries.isEmpty || !itineraries.hasDate(widget.currentDate)) {
       if (widget.onComputedDistancesCallback != null) {
         widget.onComputedDistancesCallback!([]);
       }
@@ -50,7 +50,7 @@ class _RoutingMapState extends State<RoutingMap> {
     }
 
     final manager = OSRMManager();
-    final route = itineraries[widget.currentDate].toLngLat();
+    final route = itineraries.fromDate(widget.currentDate)!.toLngLat();
 
     late Road out;
     try {

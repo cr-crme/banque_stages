@@ -48,4 +48,14 @@ class ItinerariesProvider extends FirebaseListProvided<Itinerary> {
       add(item, notify: notify);
 
   bool containsKey(String key) => hasId(key);
+
+  bool hasDate(DateTime date) {
+    final dateAsString = Itinerary.dateFormat.format(date);
+    return indexWhere((e) => e.dateAsString == dateAsString) >= 0;
+  }
+
+  Itinerary? fromDate(DateTime date) {
+    final dateAsString = Itinerary.dateFormat.format(date);
+    return firstWhereOrNull((e) => e.dateAsString == dateAsString);
+  }
 }

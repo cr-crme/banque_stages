@@ -1,14 +1,20 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:nanoid/nanoid.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
 import 'waypoints.dart';
 
 class Itinerary extends ListSerializable<Waypoint>
     implements Iterator<Waypoint>, ItemSerializable {
-  String date;
+  final DateTime date;
+  final String dateAsString;
+  static final dateFormat = DateFormat('dd_MM_yyyy');
 
-  Itinerary({required this.date});
+  Itinerary({String? id, required this.date})
+      : _myId = id ?? nanoid(),
+        dateAsString = dateFormat.format(date);
 
   List<LatLng> toLatLng() {
     List<LatLng> out = [];
@@ -32,7 +38,8 @@ class Itinerary extends ListSerializable<Waypoint>
   }
 
   static Itinerary fromSerialized(map) {
-    final out = Itinerary(date: map['date']);
+    final out = Itinerary(
+        id: map['id'], date: DateTime.fromMillisecondsSinceEpoch(map['date']));
     for (final waypoint in map['waypoints']) {
       out.add(Waypoint.deserialize(waypoint));
     }
@@ -51,13 +58,17 @@ class Itinerary extends ListSerializable<Waypoint>
     return _currentIndex < length;
   }
 
+  final String _myId;
   @override
-  late final String id = date;
+  late final String id = _myId;
 
   @override
   Map<String, dynamic> serialize() => serializedMap();
 
   @override
-  Map<String, dynamic> serializedMap() =>
-      {'date': date, 'waypoints': super.map((e) => e.serialize()).toList()};
+  Map<String, dynamic> serializedMap() => {
+        'id': id,
+        'date': date.millisecondsSinceEpoch,
+        'waypoints': super.map((e) => e.serialize()).toList()
+      };
 }
