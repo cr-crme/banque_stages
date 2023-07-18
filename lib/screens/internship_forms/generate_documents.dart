@@ -5,7 +5,6 @@ import 'package:pdf/widgets.dart' as pw;
 
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 
-// TODO: Look if html can be used
 class GenerateDocuments {
   static Future<Uint8List> generateIntershipContractPdf(format,
       {required Internship internship, required int versionIndex}) async {

@@ -63,7 +63,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
         widget.onSaved!(Job(
           specialization: _specialization!,
           positionsOffered: _positionOffered,
-          // TODO Aurelie - Should we add incident contact at that moment?
+          // TODO Aurelie - Should we really add incident contact at that moment?
           sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
         ));
       },
@@ -132,9 +132,11 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                 );
               },
             ),
-            // TODO: Benjamin check how having a predefined space
             Visibility(
               visible: _sectorTextController.text != '',
+              maintainState: true,
+              maintainSize: true,
+              maintainAnimation: true,
               child: TextField(
                   controller: _sectorTextController,
                   decoration: const InputDecoration(

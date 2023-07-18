@@ -43,10 +43,6 @@ class _PrerequisitesBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final evaluations = job.postInternshipEnterpriseEvaluations(context);
-
-    // TODO Benjamin - We have to make a workaround because uniforms and job
-    // requirements are currently stored in intership instead of evaluations.
-    // I think this should be moved to the job creation.
     final internships = InternshipsProvider.of(context)
         .where((internship) => job.id == internship.jobId);
 

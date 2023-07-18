@@ -40,7 +40,6 @@ class MainDrawer extends StatelessWidget {
                   titleText: 'Documents',
                   icon: const Icon(Icons.document_scanner_rounded),
                   // route: Screens.enterprisesList,
-                  // TODO remove onTap and bring back route
                   onTap: () {},
                 ),
                 const _DrawerItem(
