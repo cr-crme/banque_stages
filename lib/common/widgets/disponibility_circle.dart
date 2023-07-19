@@ -14,7 +14,7 @@ class DisponibilityCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     int remainning = positionsOffered - positionsOccupied;
     return Tooltip(
-      message: 'Nombre de places de disponibles dans l\'entreprise',
+      message: 'Nombre de places disponibles dans l\'entreprise',
       child: Stack(
         alignment: Alignment.center,
         children: [

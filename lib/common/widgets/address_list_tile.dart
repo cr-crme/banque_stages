@@ -174,38 +174,42 @@ class _AddressListTileState extends State<AddressListTile> {
       onFocusChange: (hasFocus) {
         if (!hasFocus) validate();
       },
-      child: Stack(
-        alignment: Alignment.centerRight,
-        children: [
-          TextFormField(
-            controller: widget.addressController!._textController,
-            decoration: InputDecoration(
-                labelText:
-                    '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
-                // Add an invisible icon so the text wraps
-                suffixIcon: Icon(addressHasChanged ? Icons.search : Icons.map,
-                    color: Colors.white),
-                disabledBorder: InputBorder.none),
-            enabled: widget.enabled,
-            maxLines: null,
-            onSaved: (newAddress) => validate(),
-            validator: (_) => _isValid() ? null : 'Entrer une adresse valide.',
-            keyboardType: TextInputType.streetAddress,
-            onChanged: (value) => setState(() {
-              addressHasChanged = true;
-            }),
-          ),
-          IconButton(
-            onPressed:
-                addressHasChanged ? validate : () => _showAddress(context),
-            icon: Icon(addressHasChanged ? Icons.search : Icons.map,
-                color: addressHasChanged
-                    ? (widget.addressController!._textController.text == ''
-                        ? Colors.grey
-                        : Theme.of(context).primaryColor)
-                    : Theme.of(context).primaryColor),
-          )
-        ],
+      child: InkWell(
+        onTap: widget.enabled ? null : () => _showAddress(context),
+        child: Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            TextFormField(
+              controller: widget.addressController!._textController,
+              decoration: InputDecoration(
+                  labelText:
+                      '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
+                  // Add an invisible icon so the text wraps
+                  suffixIcon: Icon(addressHasChanged ? Icons.search : Icons.map,
+                      color: Colors.white),
+                  disabledBorder: InputBorder.none),
+              enabled: widget.enabled,
+              maxLines: null,
+              onSaved: (newAddress) => validate(),
+              validator: (_) =>
+                  _isValid() ? null : 'Entrer une adresse valide.',
+              keyboardType: TextInputType.streetAddress,
+              onChanged: (value) => setState(() {
+                addressHasChanged = true;
+              }),
+            ),
+            IconButton(
+              onPressed:
+                  addressHasChanged ? validate : () => _showAddress(context),
+              icon: Icon(addressHasChanged ? Icons.search : Icons.map,
+                  color: addressHasChanged
+                      ? (widget.addressController!._textController.text == ''
+                          ? Colors.grey
+                          : Theme.of(context).primaryColor)
+                      : Theme.of(context).primaryColor),
+            )
+          ],
+        ),
       ),
     );
   }

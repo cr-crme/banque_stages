@@ -200,7 +200,9 @@ class _AvailablePlace extends StatelessWidget {
                           ],
                         )
                       : Text(
-                          '${job.positionsRemaining(context)} / ${job.positionsOffered}'),
+                          '${job.positionsRemaining(context)} / ${job.positionsOffered}',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                 ),
               )
               .toList(),

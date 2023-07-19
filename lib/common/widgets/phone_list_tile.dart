@@ -41,6 +41,8 @@ class _PhoneListTileState extends State<PhoneListTile> {
     }
   }
 
+  _call() async => await launchUrl(Uri.parse('tel:${_phoneController.text}'));
+
   @override
   Widget build(BuildContext context) {
     return Focus(
@@ -54,45 +56,45 @@ class _PhoneListTileState extends State<PhoneListTile> {
           }
         }
       },
-      child: Stack(
-        alignment: Alignment.centerLeft,
-        children: [
-          TextFormField(
-            controller: _phoneController,
-            decoration: InputDecoration(
-              icon: const SizedBox(width: 30),
-              labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
-              disabledBorder: InputBorder.none,
-            ),
-            validator: (value) {
-              if (!widget.enabled) return null;
+      child: InkWell(
+        onTap: widget.enabled || _phoneController.text == '' ? null : _call,
+        child: Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            TextFormField(
+              controller: _phoneController,
+              decoration: InputDecoration(
+                icon: const SizedBox(width: 30),
+                labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
+                disabledBorder: InputBorder.none,
+              ),
+              validator: (value) {
+                if (!widget.enabled) return null;
 
-              if (!widget.isMandatory && (value == '' || value == null)) {
-                return null;
-              }
-              return FormService.phoneValidator(value);
-            },
-            enabled: widget.enabled,
-            onSaved: widget.onSaved,
-            keyboardType: TextInputType.phone,
-          ),
-          InkWell(
-            onTap: widget.canCall
-                ? () async =>
-                    await launchUrl(Uri.parse('tel:${_phoneController.text}'))
-                : null,
-            borderRadius: BorderRadius.circular(25),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                widget.icon,
-                color: widget.canCall
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey,
+                if (!widget.isMandatory && (value == '' || value == null)) {
+                  return null;
+                }
+                return FormService.phoneValidator(value);
+              },
+              enabled: widget.enabled,
+              onSaved: widget.onSaved,
+              keyboardType: TextInputType.phone,
+            ),
+            InkWell(
+              onTap: widget.canCall ? _call : null,
+              borderRadius: BorderRadius.circular(25),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  widget.icon,
+                  color: widget.canCall
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

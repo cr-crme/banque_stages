@@ -7,6 +7,7 @@ import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.d
 import 'package:crcrme_banque_stages/common/widgets/email_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/common/widgets/web_site_list_tile.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:flutter/material.dart';
 
@@ -291,15 +292,10 @@ class _EnterpriseInfo extends StatelessWidget {
                   isMandatory: false,
                   enabled: editMode),
               const SizedBox(height: 8),
-              TextFormField(
+              WebSiteListTile(
                 initialValue: enterprise.website,
-                decoration: const InputDecoration(
-                  labelText: 'Site web',
-                  disabledBorder: InputBorder.none,
-                ),
                 enabled: editMode,
                 onSaved: onSavedWebsite,
-                keyboardType: TextInputType.url,
               ),
             ],
           ),

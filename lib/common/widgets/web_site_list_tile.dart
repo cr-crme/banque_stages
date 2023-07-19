@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class EmailListTile extends StatefulWidget {
-  const EmailListTile({
+class WebSiteListTile extends StatefulWidget {
+  const WebSiteListTile({
     super.key,
-    this.title = 'Courriel',
+    this.title = 'Site web',
     this.initialValue,
-    this.icon = Icons.mail,
+    this.icon = Icons.link,
     this.onSaved,
     this.isMandatory = false,
     this.enabled = true,
-    this.canMail = true,
+    this.canVisit = true,
     this.controller,
   });
 
@@ -23,60 +21,60 @@ class EmailListTile extends StatefulWidget {
   final bool isMandatory;
   final bool enabled;
   final TextEditingController? controller;
-  final bool canMail;
+  final bool canVisit;
 
   @override
-  State<EmailListTile> createState() => _EmailListTileState();
+  State<WebSiteListTile> createState() => _WebSiteListTileState();
 }
 
-class _EmailListTileState extends State<EmailListTile> {
-  late final _emailController = widget.controller ?? TextEditingController();
+class _WebSiteListTileState extends State<WebSiteListTile> {
+  late final _websiteController = widget.controller ?? TextEditingController();
 
   @override
   void initState() {
     super.initState();
     if (widget.initialValue != null) {
-      _emailController.text = widget.initialValue.toString();
+      _websiteController.text = widget.initialValue.toString();
     }
   }
 
-  _email() async =>
-      await launchUrl(Uri.parse('mailto:${_emailController.text}'));
+  _visit() async => await launchUrl(Uri.parse(_websiteController.text));
+
+  void _addHttp(String value) {
+    if (widget.onSaved == null || _websiteController.text == '') return;
+
+    if (!value.startsWith('http:') && !value.startsWith('https:')) {
+      _websiteController.text = 'https://$value';
+    }
+    widget.onSaved!(_websiteController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: widget.enabled || _emailController.text == '' ? null : _email,
+      onTap: widget.enabled || _websiteController.text == '' ? null : _visit,
       child: Stack(
         alignment: Alignment.centerLeft,
         children: [
           TextFormField(
-            controller: _emailController,
+            controller: _websiteController,
             decoration: InputDecoration(
               icon: const SizedBox(width: 30),
               labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
               disabledBorder: InputBorder.none,
             ),
-            validator: (value) {
-              if (!widget.enabled) return null;
-
-              if (!widget.isMandatory && (value == '' || value == null)) {
-                return null;
-              }
-              return FormService.emailValidator(value);
-            },
             enabled: widget.enabled,
-            onSaved: widget.onSaved,
-            keyboardType: TextInputType.emailAddress,
+            onSaved: (value) => _addHttp(value!),
+            keyboardType: TextInputType.url,
           ),
           InkWell(
-            onTap: widget.canMail ? _email : null,
+            onTap: widget.canVisit ? _visit : null,
             borderRadius: BorderRadius.circular(25),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Icon(
                 widget.icon,
-                color: widget.canMail
+                color: widget.canVisit
                     ? Theme.of(context).primaryColor
                     : Colors.grey,
               ),
