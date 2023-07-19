@@ -242,6 +242,7 @@ class _ActivityType extends StatelessWidget {
                   child: ActivityTypesPickerFormField(
                     initialValue: enterprise.activityTypes,
                     onSaved: onSaved,
+                    activityTabAtTop: true,
                   ),
                 ),
               ),
@@ -345,6 +346,7 @@ class _SharingLevel extends StatelessWidget {
                   onSaved: onSaved,
                 ),
               ),
+              if (editingMode) const SizedBox(height: 200)
             ],
           ),
         )

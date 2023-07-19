@@ -51,6 +51,7 @@ class InformationsPageState extends State<InformationsPage> {
             ActivityTypesPickerFormField(
               onSaved: (Set<String>? activityTypes) =>
                   setState(() => this.activityTypes = activityTypes!),
+              activityTabAtTop: false,
             ),
             AddressListTile(
               title: 'Adresse',
