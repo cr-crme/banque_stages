@@ -63,11 +63,17 @@ class EnterpriseCard extends StatelessWidget {
           visible: enterprise.jobs.lastWhereOrNull(
                   (e) => e.sstEvaluation.incidents.isNotEmpty) !=
               null,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(
-              Icons.warning_amber,
-              color: Theme.of(context).colorScheme.error,
+          child: Tooltip(
+            message:
+                'Il y a au moins eu un accident répertorié pour cette entreprise',
+            margin: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width / 4, right: 12),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                Icons.warning_amber,
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
           ),
         ),

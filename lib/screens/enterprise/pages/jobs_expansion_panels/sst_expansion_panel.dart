@@ -16,20 +16,13 @@ class SstExpansionPanel extends ExpansionPanel {
           body: SstBody(enterprise, job, addSstEvent),
           headerBuilder: (context, isExpanded) => ListTile(
             title: const Text('Santé et Sécurité (SST)'),
-            trailing: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey[900]!,
-                    blurRadius: 8.0,
-                    offset: const Offset(2, 2),
-                  ),
-                ],
-              ),
-              child: Visibility(
-                visible: job.sstEvaluation.incidents.isNotEmpty,
+            trailing: Visibility(
+              visible: job.sstEvaluation.incidents.isNotEmpty,
+              child: Tooltip(
+                message:
+                    'Il y a au moins eu un accident répertorié pour cette entreprise',
+                margin: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width / 4, right: 12),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Icon(
