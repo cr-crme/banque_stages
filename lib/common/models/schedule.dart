@@ -1,13 +1,11 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
-enum Day { sunday, monday, tuesday, wednesday, thursday, friday, saturday }
+enum Day { monday, tuesday, wednesday, thursday, friday, saturday, sunday }
 
 extension DayAsString on Day {
   String get name {
     switch (this) {
-      case (Day.sunday):
-        return 'Dimanche';
       case (Day.monday):
         return 'Lundi';
       case (Day.tuesday):
@@ -20,6 +18,27 @@ extension DayAsString on Day {
         return 'Vendredi';
       case (Day.saturday):
         return 'Samedi';
+      case (Day.sunday):
+        return 'Dimanche';
+    }
+  }
+
+  int get asInt {
+    switch (this) {
+      case (Day.monday):
+        return 0;
+      case (Day.tuesday):
+        return 1;
+      case (Day.wednesday):
+        return 2;
+      case (Day.thursday):
+        return 3;
+      case (Day.friday):
+        return 4;
+      case (Day.saturday):
+        return 5;
+      case (Day.sunday):
+        return 6;
     }
   }
 }

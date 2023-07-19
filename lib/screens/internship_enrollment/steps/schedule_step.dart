@@ -26,6 +26,9 @@ class WeeklyScheduleController {
 
   void addToDailySchedule(int weeklyIndex, DailySchedule newDay) {
     weeklySchedules[weeklyIndex].schedule.add(newDay);
+    weeklySchedules[weeklyIndex]
+        .schedule
+        .sort((a, b) => a.dayOfWeek.asInt - b.dayOfWeek.asInt);
     _hasChanged = true;
   }
 
@@ -544,13 +547,13 @@ class _ScheduleSelector extends StatelessWidget {
                               weeklySchedule.schedule[i].start.format(context)),
                           Text(weeklySchedule.schedule[i].end.format(context)),
                           if (editMode)
-                            GestureDetector(
+                            InkWell(
                               onTap: () => onUpdateDailyScheduleTime(i),
                               child: const Icon(Icons.access_time,
                                   color: Colors.black),
                             ),
                           if (editMode)
-                            GestureDetector(
+                            InkWell(
                               onTap: () => onRemovedDailyScheduleTime(i),
                               child:
                                   const Icon(Icons.delete, color: Colors.red),
@@ -564,7 +567,7 @@ class _ScheduleSelector extends StatelessWidget {
                     Container(),
                     Container(),
                     Container(),
-                    GestureDetector(
+                    InkWell(
                       onTap: onAddDayToDailySchedule,
                       child: const Icon(Icons.add, color: Colors.black),
                     ),
