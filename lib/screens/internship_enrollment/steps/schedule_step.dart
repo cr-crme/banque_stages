@@ -204,7 +204,7 @@ class _DateRangeState extends State<_DateRange> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width / 3,
+                      width: MediaQuery.of(context).size.width / 2 - 36,
                       child: TextField(
                         decoration: const InputDecoration(
                             labelText: 'Date de début',

@@ -308,7 +308,6 @@ class _EvaluationDateState extends State<_EvaluationDate> {
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,
-      initialEntryMode: DatePickerEntryMode.input,
       initialDate: widget.formController.evaluationDate,
       firstDate: DateTime(DateTime.now().year),
       lastDate: DateTime(DateTime.now().year + 2),
