@@ -123,7 +123,7 @@ class _InternshipListState extends State<_InternshipList> {
       children: [
         Column(
           children: [
-            const Text('Début :'),
+            const Text('Début\u00a0:'),
             Text(
               '${internship.date.start.year.toString().padLeft(4, '0')}-'
               '${internship.date.start.month.toString().padLeft(2, '0')}-'
@@ -133,7 +133,7 @@ class _InternshipListState extends State<_InternshipList> {
         ),
         Column(
           children: [
-            const Text('Fin :'),
+            const Text('Fin\u00a0:'),
             Text(
               '${internship.date.end.year.toString().padLeft(4, '0')}-'
               '${internship.date.end.month.toString().padLeft(2, '0')}-'
@@ -219,7 +219,7 @@ class _InternshipListState extends State<_InternshipList> {
                           children: [
                             Row(
                               children: [
-                                const Text('Stagiaire : '),
+                                const Text('Stagiaire\u00a0: '),
                                 GestureDetector(
                                   onTap: () => GoRouter.of(context).pushNamed(
                                     Screens.student,
@@ -242,12 +242,12 @@ class _InternshipListState extends State<_InternshipList> {
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
-                                  'Enseignant\u00b7e superviseur\u00b7e : ${teacher.fullName}'),
+                                  'Enseignant\u00b7e superviseur\u00b7e\u00a0: ${teacher.fullName}'),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
-                                  'Responsable en milieu de stage : ${widget.internships.last.supervisor.fullName}'),
+                                  'Responsable en milieu de stage\u00a0: ${widget.internships.last.supervisor.fullName}'),
                             ),
                             Padding(
                               padding:

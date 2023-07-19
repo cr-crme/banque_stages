@@ -228,7 +228,7 @@ class _EvaluateSkill extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: spacing),
           child: Text(
-            'Niveau : ${skill.complexity}',
+            'Niveau\u00a0: ${skill.complexity}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -307,7 +307,7 @@ class _TaskEvaluationState extends State<_TaskEvaluation> {
         children: [
           const Text(
             'La ou le stagiaire a été en mesure d\'effectuer les '
-            'tâches suivantes :',
+            'tâches suivantes\u00a0:',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           ...widget.skill.tasks
@@ -359,7 +359,7 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
-            'Appréciation générale de la compétence :',
+            'Appréciation générale de la compétence\u00a0:',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           ...SkillAppreciation.values

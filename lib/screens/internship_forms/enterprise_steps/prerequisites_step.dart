@@ -98,7 +98,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '* Habileté requises pour le stage ?',
+          '* Habileté requises pour le stage\u00a0?',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         Column(

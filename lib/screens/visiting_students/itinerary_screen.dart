@@ -291,7 +291,7 @@ class __DistanceState extends State<_Distance> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                     child: Text(
-                        'Kilométrage : '
+                        'Kilométrage\u00a0: '
                         '${(widget.distances!.reduce((a, b) => a + b).toDouble() / 1000).toStringAsFixed(1)}km',
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,

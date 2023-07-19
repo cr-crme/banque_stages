@@ -111,7 +111,7 @@ class _AddressListTileState extends State<AddressListTile> {
               title: const Text('Confimer l\'adresse'),
               content: SingleChildScrollView(
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Text('L\'adresse trouvée est :\n$newAddress'),
+                  Text('L\'adresse trouvée est\u00a0:\n$newAddress'),
                   const SizedBox(height: 10),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 1 / 2,

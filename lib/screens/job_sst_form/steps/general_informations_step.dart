@@ -59,7 +59,7 @@ class GeneralInformationsStep extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Objectif principal : ',
+                  'Objectif principal\u00a0: ',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const Padding(
@@ -70,7 +70,7 @@ class GeneralInformationsStep extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Objectif spécifiques : ',
+                  'Objectif spécifiques\u00a0: ',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const Padding(
@@ -108,7 +108,7 @@ class GeneralInformationsStep extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Remplir ce formulaire lors d\'un entretien :',
+                  'Remplir ce formulaire lors d\'un entretien\u00a0:',
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16),
@@ -150,7 +150,7 @@ class GeneralInformationsStep extends StatelessWidget {
                 Text('\u2022 Pendant (ou à la suite) d\'une visite du poste '
                     'de travail de l\'élève'),
                 Text(''),
-                Text('Durée de remplissage : 15 minutes'),
+                Text('Durée de remplissage\u00a0: 15 minutes'),
               ],
             ),
           ),

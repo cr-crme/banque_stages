@@ -137,7 +137,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
       padding: const EdgeInsets.only(bottom: _interline),
       child: Row(
         children: [
-          const Text('Évaluation du : '),
+          const Text('Évaluation du\u00a0: '),
           DropdownButton<int>(
             value: _currentEvaluationIndex,
             onChanged: (value) =>
@@ -378,7 +378,7 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
       padding: const EdgeInsets.only(bottom: _interline),
       child: Row(
         children: [
-          const Text('Évaluation du : '),
+          const Text('Évaluation du\u00a0: '),
           DropdownButton<int>(
             value: _currentEvaluationIndex,
             onChanged: (value) =>

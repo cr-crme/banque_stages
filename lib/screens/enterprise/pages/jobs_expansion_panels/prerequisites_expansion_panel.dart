@@ -111,7 +111,7 @@ class _PrerequisitesBody extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Fournie par l\'entreprise :'),
+            const Text('Fournie par l\'entreprise\u00a0:'),
             ..._printCountedList<Uniform>(
                 uniforms[UniformStatus.suppliedByEnterprise]!,
                 (e) => e.uniform),
@@ -123,7 +123,7 @@ class _PrerequisitesBody extends StatelessWidget {
           children: [
             if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
               const SizedBox(height: 8),
-            const Text('Fournie par l\'étudiant :'),
+            const Text('Fournie par l\'étudiant\u00a0:'),
             ..._printCountedList<Uniform>(
                 uniforms[UniformStatus.suppliedByStudent]!, (e) => e.uniform),
           ],
@@ -176,7 +176,7 @@ class _PrerequisitesBody extends StatelessWidget {
 
     return [
       const Text(
-        'Équipement de protection individuelle :',
+        'Équipement de protection individuelle\u00a0:',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       if (protections[ProtectionsStatus.suppliedByEnterprise]!.isEmpty &&
@@ -184,7 +184,7 @@ class _PrerequisitesBody extends StatelessWidget {
         const Text('Il n\'y a aucun prérequis pour ce métier'),
       if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Fournis par l\'entreprise :'),
+          const Text('Fournis par l\'entreprise\u00a0:'),
           ..._printCountedList<String>(
               protections[ProtectionsStatus.suppliedByEnterprise]!, (e) => e),
         ]),
@@ -192,7 +192,7 @@ class _PrerequisitesBody extends StatelessWidget {
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
             const SizedBox(height: 8),
-          const Text('Fournis par l\'école :'),
+          const Text('Fournis par l\'école\u00a0:'),
           ..._printCountedList<String>(
               protections[ProtectionsStatus.suppliedBySchool]!, (e) => e),
         ]),

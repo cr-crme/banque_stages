@@ -65,7 +65,8 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
                 children: [
                   const SizedBox(height: 8),
                   _RadioWithRatingBar(
-                    question: '*Un trouble du spectre de l\'autisme (TSA) ?',
+                    question:
+                        '*Un trouble du spectre de l\'autisme (TSA)\u00a0?',
                     initialValue: _acceptanceTSA,
                     validator: (value) =>
                         value == 0 ? 'Sélectionner une valeur' : null,
@@ -82,7 +83,7 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
                   ),
                   const SizedBox(height: 8),
                   _RadioWithRatingBar(
-                    question: '* Une déficience intellectuelle ?',
+                    question: '* Une déficience intellectuelle\u00a0?',
                     initialValue: _acceptanceMentalDeficiency,
                     validator: (value) =>
                         value == 0 ? 'Sélectionner une valeur' : null,
@@ -91,7 +92,7 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
                   ),
                   const SizedBox(height: 8),
                   _RadioWithRatingBar(
-                    question: '* Une déficience physique ?',
+                    question: '* Une déficience physique\u00a0?',
                     initialValue: _acceptancePhysicalDeficiency,
                     validator: (value) =>
                         value == 0 ? 'Sélectionner une valeur' : null,
@@ -100,7 +101,7 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
                   ),
                   const SizedBox(height: 8),
                   _RadioWithRatingBar(
-                    question: '* Un trouble de santé mentale ?',
+                    question: '* Un trouble de santé mentale\u00a0?',
                     initialValue: _acceptanceMentalHealthIssue,
                     validator: (value) =>
                         value == 0 ? 'Sélectionner une valeur' : null,
@@ -109,7 +110,7 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
                   ),
                   const SizedBox(height: 8),
                   _RadioWithRatingBar(
-                    question: '* Des difficultés comportementales ?',
+                    question: '* Des difficultés comportementales\u00a0?',
                     initialValue: _acceptanceBehaviorIssue,
                     validator: (value) =>
                         value == 0 ? 'Sélectionner une valeur' : null,

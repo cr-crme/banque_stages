@@ -176,7 +176,7 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
                             .copyWith(disabledColor: Colors.grey),
                         child: TextField(
                           decoration: const InputDecoration(
-                            labelText: 'Autre :',
+                            labelText: 'Autre\u00a0:',
                           ),
                           enabled: _isOtherChecked,
                           controller: _otherController,

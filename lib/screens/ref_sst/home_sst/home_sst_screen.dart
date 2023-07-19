@@ -71,10 +71,10 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _TextWithBoldTitle(
-            title: 'Par compétence : ',
+            title: 'Par compétence\u00a0: ',
             text: 'nombre de risques potentiellement présents'),
         _TextWithBoldTitle(
-            title: 'Par risque : ',
+            title: 'Par risque\u00a0: ',
             text: 'nombre de compétences possiblement concernées'),
         SizedBox(height: 4),
         SizedBox(height: 12),
@@ -91,7 +91,7 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
         ),
         SizedBox(height: 24),
         Text(
-          'Évaluation des risques :',
+          'Évaluation des risques\u00a0:',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         _TextWithBoldTitle(
@@ -102,7 +102,7 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
             title: 'Pour les 45 métiers les plus populaires ',
             text: 'du répertoire'),
         _TextWithBoldTitle(
-            title: 'Théorique : ',
+            title: 'Théorique\u00a0: ',
             text: 'ne tient pas compte du contexte de chaque milieu de stage'),
         SizedBox(height: 24),
         _BoxWarning(),

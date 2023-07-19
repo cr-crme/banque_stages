@@ -126,7 +126,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Lesquels ?',
+                        'Lesquels\u00a0?',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       ..._protections.keys.map(
@@ -166,7 +166,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '* Préciser l\'équipement supplémentaire requis : ',
+                                '* Préciser l\'équipement supplémentaire requis\u00a0: ',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               TextFormField(
@@ -190,7 +190,7 @@ class RequirementsStepState extends State<RequirementsStep> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Est-ce qu\'une tenue de travail spécifique est exigée ?',
+                  'Est-ce qu\'une tenue de travail spécifique est exigée\u00a0?',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Padding(

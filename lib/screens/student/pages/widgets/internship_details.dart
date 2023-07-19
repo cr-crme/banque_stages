@@ -643,7 +643,7 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Lesquels ?',
+                  'Lesquels\u00a0?',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 ...widget.internshipController.hasProtections.keys.map(
@@ -685,7 +685,7 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Préciser l\'équipement supplémentaire requis : ',
+                          'Préciser l\'équipement supplémentaire requis\u00a0: ',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(
@@ -770,7 +770,7 @@ class _UniformRequiredChooserState extends State<_UniformRequiredChooser> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Décrire la tenue de travail : ',
+                    'Décrire la tenue de travail\u00a0: ',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   TextFormField(

@@ -257,7 +257,7 @@ class SupervisionStepState extends State<SupervisionStep> {
         ),
         Text(
           'Tâches et compétences prévues dans le plan de formation ont été'
-          'faites par l\'élève :',
+          'faites par l\'élève\u00a0:',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         Row(
