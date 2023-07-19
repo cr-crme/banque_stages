@@ -168,7 +168,10 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.withSearchBar) Search(controller: searchController),
+        if (widget.withSearchBar)
+          Container(
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+              child: Search(controller: searchController)),
         SwitchListTile(
           title: const Text('N\'afficher que les stages disponibles'),
           value: _hideNotAvailable,
