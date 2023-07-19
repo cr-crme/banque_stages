@@ -224,7 +224,10 @@ class SupervisionStepState extends State<SupervisionStep> {
                 groupValue: _taskVariety,
                 visualDensity: VisualDensity.compact,
                 onChanged: (value) => setState(() => _taskVariety = value!),
-                title: const Text('Peu variées'),
+                title: Text(
+                  'Peu variées',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
             ),
             SizedBox(
@@ -235,7 +238,10 @@ class SupervisionStepState extends State<SupervisionStep> {
                 dense: true,
                 visualDensity: VisualDensity.compact,
                 onChanged: (value) => setState(() => _taskVariety = value!),
-                title: const Text('Très variées'),
+                title: Text(
+                  'Très variées',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
             )
           ],
@@ -270,7 +276,10 @@ class SupervisionStepState extends State<SupervisionStep> {
                 groupValue: _trainingPlan,
                 visualDensity: VisualDensity.compact,
                 onChanged: (value) => setState(() => _trainingPlan = value!),
-                title: const Text('En partie'),
+                title: Text(
+                  'En partie',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
             ),
             SizedBox(
@@ -281,7 +290,10 @@ class SupervisionStepState extends State<SupervisionStep> {
                 dense: true,
                 visualDensity: VisualDensity.compact,
                 onChanged: (value) => setState(() => _trainingPlan = value!),
-                title: const Text('En totalité'),
+                title: Text(
+                  'En totalité',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
             )
           ],

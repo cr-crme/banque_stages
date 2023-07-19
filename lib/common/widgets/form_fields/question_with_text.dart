@@ -28,7 +28,7 @@ class QuestionWithText extends StatelessWidget {
           children: [
             Text(
               question,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             TextFormField(
               initialValue: initialValue,

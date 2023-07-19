@@ -96,8 +96,10 @@ class RequirementsStepState extends State<RequirementsStep> {
                         groupValue: protectionsStatus,
                         onChanged: (newValue) =>
                             setState(() => protectionsStatus = newValue!),
-                        title:
-                            Text(ProtectionsStatus.suppliedByEnterprise.name),
+                        title: Text(
+                          ProtectionsStatus.suppliedByEnterprise.name,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
                       RadioListTile<ProtectionsStatus>(
                         dense: true,
@@ -106,7 +108,10 @@ class RequirementsStepState extends State<RequirementsStep> {
                         groupValue: protectionsStatus,
                         onChanged: (newValue) =>
                             setState(() => protectionsStatus = newValue!),
-                        title: Text(ProtectionsStatus.suppliedBySchool.name),
+                        title: Text(
+                          ProtectionsStatus.suppliedBySchool.name,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
                       RadioListTile<ProtectionsStatus>(
                         dense: true,
@@ -115,7 +120,10 @@ class RequirementsStepState extends State<RequirementsStep> {
                         groupValue: protectionsStatus,
                         onChanged: (newValue) =>
                             setState(() => protectionsStatus = newValue!),
-                        title: Text(ProtectionsStatus.none.name),
+                        title: Text(
+                          ProtectionsStatus.none.name,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
                     ],
                   ),
@@ -130,30 +138,36 @@ class RequirementsStepState extends State<RequirementsStep> {
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       ..._protections.keys.map(
-                        (requirement) => CheckboxListTile(
-                          controlAffinity: ListTileControlAffinity.leading,
-                          visualDensity: VisualDensity.compact,
-                          dense: true,
-                          title: Text(
-                            requirement,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                        (requirement) => Padding(
+                          padding: const EdgeInsets.only(left: 12.0),
+                          child: CheckboxListTile(
+                            controlAffinity: ListTileControlAffinity.leading,
+                            visualDensity: VisualDensity.compact,
+                            dense: true,
+                            title: Text(
+                              requirement,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            value: _protections[requirement],
+                            onChanged: (newValue) => setState(
+                                () => _protections[requirement] = newValue!),
                           ),
-                          value: _protections[requirement],
-                          onChanged: (newValue) => setState(
-                              () => _protections[requirement] = newValue!),
                         ),
                       ),
-                      CheckboxListTile(
-                        visualDensity: VisualDensity.compact,
-                        controlAffinity: ListTileControlAffinity.leading,
-                        dense: true,
-                        title: Text(
-                          'Autre',
-                          style: Theme.of(context).textTheme.bodyMedium,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: CheckboxListTile(
+                          visualDensity: VisualDensity.compact,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          dense: true,
+                          title: Text(
+                            'Autre',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          value: _otherProtections,
+                          onChanged: (newValue) =>
+                              setState(() => _otherProtections = newValue!),
                         ),
-                        value: _otherProtections,
-                        onChanged: (newValue) =>
-                            setState(() => _otherProtections = newValue!),
                       ),
                       Visibility(
                         visible: _otherProtections,
@@ -204,7 +218,10 @@ class RequirementsStepState extends State<RequirementsStep> {
                         groupValue: uniformStatus,
                         onChanged: (newValue) =>
                             setState(() => uniformStatus = newValue!),
-                        title: Text(UniformStatus.suppliedByEnterprise.name),
+                        title: Text(
+                          UniformStatus.suppliedByEnterprise.name,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
                       RadioListTile<UniformStatus>(
                         dense: true,
@@ -213,7 +230,10 @@ class RequirementsStepState extends State<RequirementsStep> {
                         groupValue: uniformStatus,
                         onChanged: (newValue) =>
                             setState(() => uniformStatus = newValue!),
-                        title: Text(UniformStatus.suppliedByStudent.name),
+                        title: Text(
+                          UniformStatus.suppliedByStudent.name,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
                       RadioListTile<UniformStatus>(
                         dense: true,
@@ -222,7 +242,10 @@ class RequirementsStepState extends State<RequirementsStep> {
                         groupValue: uniformStatus,
                         onChanged: (newValue) =>
                             setState(() => uniformStatus = newValue!),
-                        title: Text(UniformStatus.none.name),
+                        title: Text(
+                          UniformStatus.none.name,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
                     ],
                   ),

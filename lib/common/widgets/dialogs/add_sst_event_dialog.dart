@@ -40,14 +40,20 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
           child: Column(
             children: [
               RadioListTile(
-                title: const Text('Blessure d\'élève en stage ou incident'),
+                title: Text(
+                  'Blessure d\'élève en stage ou incident',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
                 value: SstEventType.pastIncidents,
                 groupValue: _eventType,
                 onChanged: (value) =>
                     setState(() => _eventType = SstEventType.pastIncidents),
               ),
               RadioListTile(
-                title: const Text('Situation dangereuse'),
+                title: Text(
+                  'Situation dangereuse',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
                 value: SstEventType.dangerousSituations,
                 groupValue: _eventType,
                 onChanged: (value) => setState(

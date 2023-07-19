@@ -155,7 +155,10 @@ class _RadioWithRatingBar extends FormField<double> {
             SizedBox(
               width: 150,
               child: RadioListTile(
-                title: const Text('Oui'),
+                title: Text(
+                  'Oui',
+                  style: Theme.of(state.context).textTheme.bodyMedium,
+                ),
                 dense: true,
                 visualDensity: VisualDensity.compact,
                 value: true,
@@ -169,7 +172,10 @@ class _RadioWithRatingBar extends FormField<double> {
             SizedBox(
               width: 150,
               child: RadioListTile(
-                title: const Text('Non'),
+                title: Text(
+                  'Non',
+                  style: Theme.of(state.context).textTheme.bodyMedium,
+                ),
                 dense: true,
                 visualDensity: VisualDensity.compact,
                 value: false,
