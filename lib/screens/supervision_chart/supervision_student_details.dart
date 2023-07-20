@@ -220,7 +220,7 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
                       size: 35,
                     ),
                     Text(
-                      'La date de fin du stage est dépasseée.',
+                      'La date de fin du stage est dépassée.',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
@@ -281,7 +281,7 @@ class _StudentInformation extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Contact de l\'élève'),
+        const SubTitle('Contacter l\'élève'),
         Padding(
           padding: const EdgeInsets.only(left: 25.0),
           child: PhoneListTile(
@@ -366,7 +366,7 @@ class _Contact extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Contact en entreprise'),
+        const SubTitle('Contacter l\'entreprise'),
         Padding(
           padding: const EdgeInsets.only(left: 32.0, top: 8.0),
           child: Row(
