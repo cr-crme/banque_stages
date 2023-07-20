@@ -161,7 +161,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSkill(
-            title: 'Compétences acquises',
+            title: 'Compétences réussies',
             skills: widget.evaluation[_currentEvaluationIndex].skills
                 .map<SkillEvaluation?>((e) =>
                     e.specializationId == specializationId &&
@@ -183,7 +183,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
                 .cast<SkillEvaluation>()
                 .toList()),
         _buildSkill(
-            title: 'Compétences échouées',
+            title: 'Compétences non réussies',
             skills: widget.evaluation[_currentEvaluationIndex].skills
                 .map<SkillEvaluation?>((e) =>
                     e.specializationId == specializationId &&
