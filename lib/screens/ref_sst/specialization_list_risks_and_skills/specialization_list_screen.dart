@@ -125,11 +125,11 @@ class SpecializationListScreen extends StatelessWidget {
             ListView.separated(
               physics: const ScrollPhysics(),
               shrinkWrap: true,
-              itemCount: risks.length,
+              itemCount: specialization.skills.length,
               padding: const EdgeInsets.all(16.0),
               itemBuilder: (context, i) => TileJobRisk(
-                title: risks[i].name,
-                elements: skillsAssociatedToRisks[risks[i]]!,
+                title: skills[i].name,
+                elements: risksAssociatedToSkill[skills[i]]!,
                 nbMaximumElements: 1000, // Show all in orange
                 tooltipMessage:
                     'Nombre de compétences possiblement concernées par ce risque',
@@ -144,11 +144,11 @@ class SpecializationListScreen extends StatelessWidget {
             ListView.separated(
               physics: const ScrollPhysics(),
               shrinkWrap: true,
-              itemCount: specialization.skills.length,
+              itemCount: risks.length,
               padding: const EdgeInsets.all(16.0),
               itemBuilder: (context, i) => TileJobRisk(
-                title: skills[i].name,
-                elements: risksAssociatedToSkill[skills[i]]!,
+                title: risks[i].name,
+                elements: skillsAssociatedToRisks[risks[i]]!,
                 nbMaximumElements: 1000, // Show all in orange
                 tooltipMessage:
                     'Nombre de risques potentiellement présents pour cette compétence',
