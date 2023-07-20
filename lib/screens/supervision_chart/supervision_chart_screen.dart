@@ -68,7 +68,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Text(
-            'Niveau de priorité',
+            'Niveau de priorité des visites',
             style: Theme.of(context).textTheme.titleSmall,
           ),
         ),
@@ -249,7 +249,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
                       onTap: _toggleSearchBar,
                       icon: Icons.search),
                   _TabIcon(
-                      title: 'Niveau de priorité',
+                      title: 'Priorité',
                       screenSize: screenSize,
                       iconSize: iconSize,
                       onTap: _toggleFlagFilter,
