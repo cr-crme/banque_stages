@@ -70,7 +70,7 @@ class SupervisionStepState extends State<SupervisionStep> {
             const SizedBox(height: 8),
             _buildTrainingPlan(context),
             const SizedBox(height: 8),
-            const SubTitle('Attentes envers le stagiaire', left: 0),
+            const SubTitle('Attentes envers le ou la stagiaire', left: 0),
             _buildAutonomyRequired(context),
             const SizedBox(height: 8),
             _buildEfficiency(context),
@@ -126,8 +126,8 @@ class SupervisionStepState extends State<SupervisionStep> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: LowHighSliderFormField(
             onSaved: (value) => easeOfCommunication = value,
-            lowLabel: 'Retour\ndifficile à\nobtenir',
-            highLabel: 'Retour\ntrès facile à\nobtenir',
+            lowLabel: 'Rétroaction\ndifficile à\nobtenir',
+            highLabel: 'Rétroaction\ntrès facile à\nobtenir',
           ),
         )
       ],
@@ -262,7 +262,7 @@ class SupervisionStepState extends State<SupervisionStep> {
               .copyWith(fontWeight: FontWeight.bold),
         ),
         Text(
-          'Tâches et compétences prévues dans le plan de formation ont été'
+          'Tâches et compétences prévues dans le plan de formation ont été '
           'faites par l\'élève\u00a0:',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
@@ -319,7 +319,7 @@ class _Comments extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.only(bottom: spacing),
           child: Text(
-            'Autres commentaires sur l\'encadrement',
+            'Autres commentaires sur l\'encadrement\u00a0:',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),

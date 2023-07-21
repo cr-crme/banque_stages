@@ -196,7 +196,7 @@ class _RadioWithRatingBar extends FormField<double> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Évaluer sa prise en charge de l\'entreprise'),
+                  const Text('Évaluer sa prise en charge par l\'entreprise'),
                   RatingBar(
                     initialRating: state.value!,
                     ratingWidget: RatingWidget(

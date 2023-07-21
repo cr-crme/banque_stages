@@ -98,7 +98,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '* Habileté requises pour le stage\u00a0?',
+          '* Habiletés requises pour le stage\u00a0:',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         Column(
@@ -141,7 +141,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '* Préciser les autres attentes : ',
+                  '* Préciser\u00a0:',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextFormField(
@@ -150,7 +150,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                   maxLines: null,
                   validator: (value) => _otherSkills &&
                           (otherSkillsText == null || otherSkillsText!.isEmpty)
-                      ? 'Préciser les autres attentes'
+                      ? 'Préciser les autres habiletés requises.'
                       : null,
                   keyboardType: TextInputType.multiline,
                 ),
@@ -167,7 +167,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '* L\'entreprise a demandé : ',
+          '* Exigences de l\'entreprise avant d\'accueillir l\'élève\u00a0:',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         ...requiredForJob.keys
@@ -209,7 +209,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Préciser : ',
+                  'Préciser\u00a0:',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextFormField(
@@ -220,7 +220,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
                   validator: (value) => _otherRequirements &&
                           (otherRequirementsText == null ||
                               otherRequirementsText!.isEmpty)
-                      ? 'Préciser les autres demandes'
+                      ? 'Préciser les autres exigences de l\'entreprise.'
                       : null,
                 ),
               ],
@@ -236,7 +236,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Âge minimum requis pour le stage :',
+          '* Âge minimum requis pour le stage (ans)\u00a0:',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         SizedBox(

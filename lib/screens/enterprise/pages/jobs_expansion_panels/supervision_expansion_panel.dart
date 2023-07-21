@@ -151,7 +151,7 @@ class _SupervisionBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Autres commentaires sur l\'encadrement',
+          'Autres commentaires sur l\'encadrement\u00a0:',
           style: Theme.of(context).textTheme.titleSmall,
         ),
         ...comments.map((e) => Row(

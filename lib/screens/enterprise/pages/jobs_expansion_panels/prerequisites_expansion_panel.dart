@@ -79,7 +79,7 @@ class _PrerequisitesBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Âge minimum',
+          'Âge minimum\u00a0:',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         Text(
@@ -101,7 +101,7 @@ class _PrerequisitesBody extends StatelessWidget {
 
     return [
       const Text(
-        'Tenue de travail',
+        'Tenue de travail\u00a0:',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       if (uniforms[UniformStatus.suppliedByEnterprise]!.isEmpty &&
@@ -137,7 +137,7 @@ class _PrerequisitesBody extends StatelessWidget {
 
     return [
       const Text(
-        'Habiletés exigées pour le stage',
+        'Habiletés requises pour le stage\u00a0:',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       if (skills.isEmpty) const Text('Aucune'),
@@ -152,7 +152,7 @@ class _PrerequisitesBody extends StatelessWidget {
 
     return [
       const Text(
-        'L\'entreprise a demandé',
+        'Exigences de l\'entreprise\u00a0:',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       if (requests.isEmpty) const Text('Aucune exigence particulière'),
