@@ -189,10 +189,10 @@ class RequirementsStepState extends State<RequirementsStep> {
                                     _otherProtectionsText = text,
                                 minLines: 2,
                                 maxLines: null,
-                                validator: (text) => _otherProtections &&
-                                        text!.isEmpty
-                                    ? 'Préciser la pièce d\'équipement supplémentaire.'
-                                    : null,
+                                validator: (text) =>
+                                    _otherProtections && text!.isEmpty
+                                        ? 'Indiquer au moins un équipement.'
+                                        : null,
                                 keyboardType: TextInputType.multiline,
                               ),
                             ],

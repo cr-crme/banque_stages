@@ -254,7 +254,7 @@ class _Hours extends StatelessWidget {
       padding: const EdgeInsets.only(left: 12.0),
       child: TextFormField(
         decoration: const InputDecoration(
-            labelText: '* Nombre d\'heures de stage (total à faire)'),
+            labelText: '* Nombre total d\'heures de stage à faire'),
         validator: (text) =>
             text!.isEmpty ? 'Indiquer un nombre d\'heures.' : null,
         keyboardType: TextInputType.number,
