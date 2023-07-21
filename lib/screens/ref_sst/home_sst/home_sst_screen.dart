@@ -80,9 +80,8 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
         SizedBox(height: 12),
         Center(
           child: Text(
-            '** Attention, l\'évaluation ne considère pas la dangerosité des '
-            'risques!\nIl s\'agit plutôt d\'évaluer la possibilité qu\'un '
-            'risque soit présent pour un métier donné. **',
+            '** Attention, l\'évaluation indique \nles risques potentiellement '
+            'présents \npour un métier donné, \nsans considérer leur dangerosité! ** ',
             style: TextStyle(color: Colors.red),
             textAlign: TextAlign.center,
           ),
