@@ -43,7 +43,7 @@ class MainDrawer extends StatelessWidget {
                   onTap: () {},
                 ),
                 const _DrawerItem(
-                  titleText: 'Référentiel SST',
+                  titleText: 'SST en stage',
                   icon: Icon(Icons.security),
                   route: Screens.homeSst,
                 ),

@@ -60,7 +60,7 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Référentiel SST'),
+          title: const Text('SST en stage'),
         ),
         drawer: const MainDrawer(),
         body: body);
