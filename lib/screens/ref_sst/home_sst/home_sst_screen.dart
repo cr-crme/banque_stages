@@ -34,17 +34,15 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
         SstMainCard(
             title: 'Fiches de risques',
             content: const Text(
-              'Résumé des principaux risques à la santé et à la sécurité en '
-              'milieu de travail',
+              'Principaux risques à la santé et à la sécurité en milieu de travail ',
             ),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
                   builder: (_) => const SstCardsScreen(),
                 ))),
         SstMainCard(
-          title: 'Historique d\'accidents',
+          title: 'Historique d\'accidents et d\'incidents',
           content: const Text(
-            'Métiers pour lesquels des stagiaires se sont déjà blessés selon '
-            'les accidents rapportés par le personnel enseignant',
+            'Blessures d\'élèves et incidents en stage rapportés par le personnel enseignant',
           ),
           onTap: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => const AccidentHistoryScreen(),
@@ -60,7 +58,7 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
     return Scaffold(
         appBar: AppBar(
-          title: const Text('SST en stage'),
+          title: const Text('Santé et sécurité au PFAE'),
         ),
         drawer: const MainDrawer(),
         body: body);
