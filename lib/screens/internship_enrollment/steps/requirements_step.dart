@@ -81,7 +81,8 @@ class RequirementsStepState extends State<RequirementsStep> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Est-ce que l\'élève devra porter des équipements de protection individuelle (EPI)?',
+                  'Est-ce que l\'élève devra porter des équipements de protection '
+                  'individuelle (EPI) pour faire ce métier?',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Padding(
@@ -204,7 +205,8 @@ class RequirementsStepState extends State<RequirementsStep> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Est-ce qu\'une tenue de travail spécifique est exigée\u00a0?',
+                  'Est-ce qu\'une tenue de travail spécifique est exigée '
+                  'pour exercer ce métier\u00a0?',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Padding(

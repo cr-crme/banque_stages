@@ -149,7 +149,7 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Places de stages disponibles',
+                      '* Places de stages disponibles',
                       style: Theme.of(state.context).textTheme.titleMedium,
                     ),
                   ),
