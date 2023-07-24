@@ -32,7 +32,7 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
     body = ListView(
       children: [
         SstMainCard(
-            title: 'Fiches de risques',
+            title: 'Fiches de risques SST',
             content: const Text(
               'Principaux risques à la santé et à la sécurité en milieu de travail ',
             ),
@@ -49,7 +49,7 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
           )),
         ),
         SstMainCard(
-            title: 'Aperçu des risques par métier',
+            title: 'Aperçu des risques SST par métier',
             content: _buildRiskCard(),
             onTap: null),
       ],

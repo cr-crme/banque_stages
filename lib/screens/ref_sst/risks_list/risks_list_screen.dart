@@ -54,7 +54,7 @@ class _SstCardsScreenState extends State<SstCardsScreen>
   Widget _appBarBuilder(int index) {
     return AutoSizeText(
       index == 0
-          ? 'Fiches de risques'
+          ? 'Fiches de risques SST'
           : '$index. ${RiskDataFileService.risks[index - 1].nameHeader}',
       maxLines: 2,
     );
