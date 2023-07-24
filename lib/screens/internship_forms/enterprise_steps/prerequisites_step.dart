@@ -167,7 +167,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '* Exigences de l\'entreprise avant d\'accueillir l\'élève\u00a0:',
+          '* Exigences de l\'entreprise avant d\'accueillir des élèves en stage\u00a0:',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         ...requiredForJob.keys
@@ -236,7 +236,7 @@ class PrerequisitesStepState extends State<PrerequisitesStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '* Âge minimum requis pour le stage (ans)\u00a0:',
+          '* Âge minimum des stagiaires (ans)\u00a0:',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         SizedBox(
