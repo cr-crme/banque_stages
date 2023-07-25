@@ -151,7 +151,7 @@ class _SupervisionBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Autres commentaires sur l\'encadrement\u00a0:',
+          'Autres commentaires sur l\'encadrement',
           style: Theme.of(context).textTheme.titleSmall,
         ),
         ...comments.map((e) => Row(
@@ -210,7 +210,7 @@ class _SupervisionBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Tâches et compétences prévues dans le plan ont été faites par l\'élève:',
+          'Tâches et compétences prévues dans le plan ont été faites par l\'élève',
           style: Theme.of(context).textTheme.titleSmall,
         ),
         ..._printCountedList<PostIntershipEnterpriseEvaluation>(evaluations,
