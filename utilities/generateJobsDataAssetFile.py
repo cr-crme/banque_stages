@@ -250,6 +250,7 @@ def fetchSpecializationURLsOfSector(sectorId: str):
 def fetchSpecialization(specializationURL: str):
     '''Returns a detailed specialization.'''
     titleRegex = re.compile(r"(\d+) - ([^\t\r\n]*)")
+    optionalRegex = re.compile(r"images/ico_opt.gif")
 
     page = requests.get(
         f"http://www1.education.gouv.qc.ca/sections/metiers/index.asp?page=fiche&id={specializationURL}"
@@ -272,6 +273,7 @@ def fetchSpecialization(specializationURL: str):
 
         # Extract id and name from the title
         titleSearch = titleRegex.search(headerSections[0].text)
+        is_optional = optionalRegex.search(str(header)) is not None
         if titleSearch is None:
             setMessage(
                 f"Missing data ! The title of skill {header.find('th').text} (specialization: {specializationURL}) could not be found")
@@ -297,7 +299,7 @@ def fetchSpecialization(specializationURL: str):
             tasks.append(task.text)
 
         result["s"].append(
-            {"id": skillID, "n": skillName, "x": complexity, "c": criteria, "t": tasks})
+            {"id": skillID, "n": skillName, "x": complexity, "c": criteria, "t": tasks, "o": is_optional})
 
     return result
 

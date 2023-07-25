@@ -110,16 +110,24 @@ class Skill extends NamedItemSerializable {
         criteria = List.from(map['c'], growable: false),
         tasks = List.from(map['t'], growable: false),
         risks = List.from(map['r'], growable: false),
+        isOptional = map['o'],
         super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() => super.serializedMap()
-    ..addAll({'x': complexity, 'c': criteria, 't': tasks, 'r': risks});
+    ..addAll({
+      'x': complexity,
+      'c': criteria,
+      't': tasks,
+      'r': risks,
+      'o': isOptional
+    });
 
   final String complexity;
   final List<String> criteria;
   final List<String> tasks;
   final List<String> risks;
+  final bool isOptional;
 }
 
 class SkillList extends _NamedItemSerializableList<Skill> {
