@@ -97,8 +97,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptanceTsa(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title:
-          'Accueil de stagiaires avec un trouble du spectre de l\'autisme (TSA)',
+      title: 'Stagiaires avec un trouble du spectre de l\'autisme (TSA)',
       rating: _meanOf(evaluations, (e) => e.acceptanceTsa),
     );
   }
@@ -106,7 +105,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptanceLanguageDeficiency(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Accueil de stagiaires avec un trouble du langage',
+      title: 'Stagiaires avec un trouble du langage',
       rating: _meanOf(evaluations, (e) => e.acceptanceLanguageDeficiency),
     );
   }
@@ -114,7 +113,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptanceMentalDeficiency(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Accueil de stagiaires avec une déficience intellectuelle',
+      title: 'Stagiaires avec une déficience intellectuelle',
       rating: _meanOf(evaluations, (e) => e.acceptanceMentalDeficiency),
     );
   }
@@ -122,7 +121,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptancePhysicalDeficiency(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Accueil de stagiaires avec une déficience physique',
+      title: 'Stagiaires avec une déficience physique',
       rating: _meanOf(evaluations, (e) => e.acceptancePhysicalDeficiency),
     );
   }
@@ -130,7 +129,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptanceMentalHealtyIssue(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Accueil de stagiaires avec un trouble de santé mentale',
+      title: 'Stagiaires avec un trouble de santé mentale',
       rating: _meanOf(evaluations, (e) => e.acceptanceMentalHealthIssue),
     );
   }
@@ -138,7 +137,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptanceBehaviorIssue(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Accueil de stagiaires avec un trouble du comportement',
+      title: 'Stagiaires avec un trouble du comportement',
       rating: _meanOf(evaluations, (e) => e.acceptanceBehaviorIssue),
     );
   }
@@ -177,11 +176,11 @@ class _SupervisionBody extends StatelessWidget {
           onTap: () =>
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   duration: Duration(seconds: 10),
-                  content: Text('Les évaluations sont obtenues en cumulant les '
-                      'évaluations des enseignants et enseignantes qui '
-                      'ont précédemment placé des élèves dans cette '
-                      'entreprise. Les résultats sont différenciés entre '
-                      'les stages FMS et les stages FPT.'))),
+                  content: Text('Les résultats sont le cumul des '
+                      'évaluations des personnes ayant '
+                      'supervisé des élèves dans cette entreprise. '
+                      '\nIls sont différenciés entre '
+                      'FMS et FPT.'))),
           child: Icon(
             Icons.info,
             color: Theme.of(context).primaryColor,
