@@ -79,6 +79,13 @@ class _SupervisionBody extends StatelessWidget {
                     const SizedBox(height: 12),
                     _buildAbsenceAcceptance(evaluations),
                     const SizedBox(height: 12),
+                    Text(
+                      'Évaluation de l\'accueil de la clientèle spécialisée',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
                     _buildAcceptanceTsa(evaluations),
                     _buildAcceptanceLanguageDeficiency(evaluations),
                     _buildAcceptanceMentalDeficiency(evaluations),
@@ -146,22 +153,24 @@ class _SupervisionBody extends StatelessWidget {
       context, List<PostIntershipEnterpriseEvaluation> evaluations) {
     final comments =
         evaluations.map((e) => e.supervisionComments).where((e) => e != '');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Autres commentaires sur l\'encadrement',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        ...comments.map((e) => Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('\u2022 '),
-                Flexible(child: Text(e)),
-              ],
-            )),
-      ],
-    );
+    return comments.isEmpty
+        ? Container()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Autres commentaires sur l\'encadrement',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              ...comments.map((e) => Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('\u2022 '),
+                      Flexible(child: Text(e)),
+                    ],
+                  )),
+            ],
+          );
   }
 
   Widget _buildInfoButton(BuildContext context) {
@@ -293,13 +302,26 @@ class _RatingBar extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: Theme.of(context).textTheme.titleSmall,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
-              RatingBarIndicator(
-                rating: rating,
-                itemBuilder: (context, index) => Icon(
-                  Icons.star,
-                  color: Theme.of(context).colorScheme.secondary,
+              RatingBar(
+                initialRating: rating,
+                onRatingUpdate: (value) {},
+                allowHalfRating: true,
+                ignoreGestures: true,
+                ratingWidget: RatingWidget(
+                  full: Icon(
+                    Icons.star,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  half: Icon(
+                    Icons.star_half,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  empty: Icon(
+                    Icons.star_border,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
