@@ -57,10 +57,8 @@ class _SstBody extends StatelessWidget {
             Center(
               child: IconButton(
                 onPressed: () => addComment(job),
-                icon: Icon(
-                  Icons.add_comment,
-                  color: Theme.of(context).primaryColor,
-                ),
+                icon: Icon(Icons.add_comment,
+                    color: Theme.of(context).primaryColor, size: 36),
               ),
             ),
           ],

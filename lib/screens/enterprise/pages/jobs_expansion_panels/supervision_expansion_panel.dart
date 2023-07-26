@@ -24,10 +24,41 @@ class SupervisionExpansionPanel extends ExpansionPanel {
   }) : super(
           canTapOnHeader: true,
           body: _SupervisionBody(job: job),
-          headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text('Encadrement des stagiaires'),
+          headerBuilder: (context, isExpanded) => ListTile(
+            title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Encadrement des stagiaires'),
+                  if (isExpanded) _buildInfoButton(context),
+                ]),
           ),
         );
+
+  static Widget _buildInfoButton(BuildContext context) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(25),
+          onTap: () =>
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  duration: Duration(seconds: 10),
+                  content: Text('Les résultats sont le cumul des '
+                      'évaluations des personnes ayant '
+                      'supervisé des élèves dans cette entreprise. '
+                      '\nIls sont différenciés entre '
+                      'FMS et FPT.'))),
+          child: Icon(
+            Icons.info,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 List<Widget> _printCountedList<T>(
@@ -61,7 +92,6 @@ class _SupervisionBody extends StatelessWidget {
             )
           : Stack(
               children: [
-                _buildInfoButton(context),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -171,32 +201,6 @@ class _SupervisionBody extends StatelessWidget {
                   )),
             ],
           );
-  }
-
-  Widget _buildInfoButton(BuildContext context) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(25),
-          onTap: () =>
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  duration: Duration(seconds: 10),
-                  content: Text('Les résultats sont le cumul des '
-                      'évaluations des personnes ayant '
-                      'supervisé des élèves dans cette entreprise. '
-                      '\nIls sont différenciés entre '
-                      'FMS et FPT.'))),
-          child: Icon(
-            Icons.info,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
-      ),
-    );
   }
 
   Widget _buildTaskVariety(BuildContext context, evaluations) {

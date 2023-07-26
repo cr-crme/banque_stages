@@ -10,12 +10,42 @@ class PhotoExpansionPanel extends ExpansionPanel {
     required void Function(Job job, ImageSource source) addImage,
     required void Function(Job job, int index) removeImage,
   }) : super(
-          headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text('Photos du poste de travail'),
+          headerBuilder: (context, isExpanded) => ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Photos du poste de travail'),
+                if (isExpanded) _buildInfoButton(context),
+              ],
+            ),
           ),
           canTapOnHeader: true,
           body: _PhotoBody(job, addImage, removeImage),
         );
+  static Widget _buildInfoButton(BuildContext context) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(25),
+          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  duration: Duration(seconds: 10),
+                  content: Text(
+                      'Les photos doivent représenter un poste de travail vide ou '
+                      'encore un élève ou un travailleur de dos.\n'
+                      'Éviter de prendre des photos où on peut les reconnaitre.'))),
+          child: Icon(
+            Icons.info,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _PhotoBody extends StatefulWidget {
@@ -158,14 +188,17 @@ class _PhotoBodyState extends State<_PhotoBody> {
                   icon: Icon(
                     Icons.image,
                     color: Theme.of(context).primaryColor,
+                    size: 36,
                   ),
                 ),
+                const SizedBox(width: 12),
                 IconButton(
                   onPressed: () =>
                       widget.addImage(widget.job, ImageSource.camera),
                   icon: Icon(
                     Icons.camera_alt,
                     color: Theme.of(context).primaryColor,
+                    size: 36,
                   ),
                 ),
               ],
