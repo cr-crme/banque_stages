@@ -56,8 +56,8 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
     _waypoints.clear();
     _waypoints.add(
       await Waypoint.fromAddress(
-        'École',
-        school.address.toString(),
+        title: 'École',
+        address: school.address.toString(),
         priority: VisitingPriority.school,
       ),
     );
@@ -69,10 +69,12 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
       if (studentInterships.isEmpty) continue;
       final intership = studentInterships.last;
 
+      final enterprise = enterprises.fromId(intership.enterpriseId);
       _waypoints.add(
         await Waypoint.fromAddress(
-          '${student.firstName} ${student.lastName[0]}.',
-          enterprises.fromId(intership.enterpriseId).address.toString(),
+          title: '${student.firstName} ${student.lastName[0]}.',
+          subtitle: enterprise.name,
+          address: enterprise.address.toString(),
           priority: intership.visitingPriority,
         ),
       );

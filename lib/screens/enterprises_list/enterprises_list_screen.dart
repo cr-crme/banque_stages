@@ -290,12 +290,12 @@ class _EnterprisesByMap extends StatelessWidget {
       contact: Person(firstName: '', lastName: ''),
       address: school.address,
     );
-    out[schoolAsEnterprise] =
-        await Waypoint.fromAddress(school.name, school.address.toString());
+    out[schoolAsEnterprise] = await Waypoint.fromAddress(
+        title: school.name, address: school.address.toString());
 
     for (final enterprise in enterprises) {
       out[enterprise] = await Waypoint.fromAddress(
-          enterprise.name, enterprise.address.toString());
+          title: enterprise.name, address: enterprise.address.toString());
     }
     return out;
   }

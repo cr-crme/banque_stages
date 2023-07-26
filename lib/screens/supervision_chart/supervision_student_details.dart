@@ -9,7 +9,6 @@ import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart'
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/supervision_chart/widgets/transfer_dialog.dart';
@@ -108,14 +107,12 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                                 _navigateToStudentIntership(context),
                           ),
                         if (internship != null)
-                          _StudentInformation(student: student),
-                        if (internship != null)
-                          _Specialization(internship: internship),
+                          _Contact(
+                              student: student,
+                              enterprise: enterprise!,
+                              internship: internship),
                         if (internship != null)
                           _PersonalNotes(internship: internship),
-                        if (internship != null)
-                          _Contact(
-                              enterprise: enterprise!, internship: internship),
                         if (internship != null)
                           _Schedule(internship: internship),
                         if (internship != null)
@@ -243,58 +240,6 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
   }
 }
 
-class _Specialization extends StatelessWidget {
-  const _Specialization({required this.internship});
-
-  final Internship? internship;
-
-  @override
-  Widget build(BuildContext context) {
-    final specialization = internship == null
-        ? null
-        : EnterprisesProvider.of(context, listen: false)
-            .fromId(internship!.enterpriseId)
-            .jobs
-            .fromId(internship!.jobId)
-            .specialization;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Métier'),
-        Padding(
-          padding: const EdgeInsets.only(left: 25.0, top: 8.0),
-          child: Text(specialization?.idWithName ?? 'Aucun stage'),
-        ),
-      ],
-    );
-  }
-}
-
-class _StudentInformation extends StatelessWidget {
-  const _StudentInformation({required this.student});
-
-  final Student student;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Contacter l\'élève'),
-        Padding(
-          padding: const EdgeInsets.only(left: 25.0),
-          child: PhoneListTile(
-            initialValue: student.phone,
-            enabled: false,
-            isMandatory: false,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _PersonalNotes extends StatefulWidget {
   const _PersonalNotes({required this.internship});
 
@@ -356,8 +301,12 @@ class _PersonalNotesState extends State<_PersonalNotes> {
 }
 
 class _Contact extends StatelessWidget {
-  const _Contact({required this.enterprise, required this.internship});
+  const _Contact(
+      {required this.student,
+      required this.enterprise,
+      required this.internship});
 
+  final Student student;
   final Enterprise enterprise;
   final Internship internship;
 
@@ -366,7 +315,35 @@ class _Contact extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Contacter l\'entreprise'),
+        const SubTitle('Contacts'),
+        Padding(
+          padding: const EdgeInsets.only(left: 32.0, top: 8.0),
+          child: Row(
+            children: [
+              InkWell(
+                onTap: () => launchUrl(Uri.parse('tel:${student.phone}')),
+                child: Icon(
+                  Icons.phone,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Élève',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text('${student.fullName}\n'
+                        '${student.phone.toString() == '' ? 'Aucun téléphone enregistré' : student.phone}'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.only(left: 32.0, top: 8.0),
           child: Row(
@@ -412,13 +389,13 @@ class _Contact extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
                       'Responsable en milieu de stage',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                        'Responsable en milieu de stage\n${internship.supervisor.fullName}\n'
+                    Text('${internship.supervisor.fullName}\n'
                         '${internship.supervisor.phone.toString() == '' ? 'Aucun téléphone enregistré' : internship.supervisor.phone}'),
                   ],
                 ),

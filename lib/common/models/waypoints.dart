@@ -7,19 +7,21 @@ import 'package:routing_client_dart/routing_client_dart.dart';
 import 'visiting_priority.dart';
 
 class Waypoint extends ItemSerializable {
-  Waypoint(
-    this.title,
-    this.latitude,
-    this.longitude, {
+  Waypoint({
+    required this.title,
+    this.subtitle,
+    required this.latitude,
+    required this.longitude,
     required this.address,
     this.priority = VisitingPriority.notApplicable,
     this.showTitle = true,
   });
 
-  static Future<Waypoint> fromCoordinates(
-    String title,
-    double latitude,
-    double longitude, {
+  static Future<Waypoint> fromCoordinates({
+    required String title,
+    String? subtitle,
+    required double latitude,
+    required double longitude,
     priority = VisitingPriority.notApplicable,
     showTitle = true,
   }) async {
@@ -31,9 +33,10 @@ class Waypoint extends ItemSerializable {
     }
 
     return Waypoint(
-      title,
-      latitude,
-      longitude,
+      title: title,
+      subtitle: subtitle,
+      latitude: latitude,
+      longitude: longitude,
       address: placemark,
       priority: priority,
       showTitle: showTitle,
@@ -44,6 +47,7 @@ class Waypoint extends ItemSerializable {
   Map<String, dynamic> serializedMap() {
     return {
       'title': title,
+      'subtitle': subtitle,
       'latitude': latitude,
       'longitude': longitude,
       'street': address.street,
@@ -60,9 +64,10 @@ class Waypoint extends ItemSerializable {
       postalCode: data['postalCode'],
     );
     return Waypoint(
-      data['title'],
-      data['latitude'],
-      data['longitude'],
+      title: data['title'],
+      subtitle: data['subtitle'],
+      latitude: data['latitude'],
+      longitude: data['longitude'],
       address: address,
       priority: VisitingPriority.values[data['priority']],
     );
@@ -70,9 +75,10 @@ class Waypoint extends ItemSerializable {
 
   static Waypoint copy(Waypoint other) {
     return Waypoint(
-      other.title,
-      other.latitude,
-      other.longitude,
+      title: other.title,
+      subtitle: other.subtitle,
+      latitude: other.latitude,
+      longitude: other.longitude,
       address: other.address,
       priority: other.priority,
       showTitle: other.showTitle,
@@ -81,6 +87,7 @@ class Waypoint extends ItemSerializable {
 
   Waypoint copyWith({
     String? title,
+    String? subtitle,
     double? latitude,
     double? longitude,
     Placemark? address,
@@ -88,18 +95,20 @@ class Waypoint extends ItemSerializable {
     bool? showTitle,
   }) {
     return Waypoint(
-      title ?? this.title,
-      latitude ?? this.latitude,
-      longitude ?? this.longitude,
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
       address: address ?? this.address,
       priority: priority ?? this.priority,
       showTitle: showTitle ?? this.showTitle,
     );
   }
 
-  static Future<Waypoint> fromAddress(
-    String title,
-    String address, {
+  static Future<Waypoint> fromAddress({
+    required String title,
+    String? subtitle,
+    required String address,
     priority = VisitingPriority.notApplicable,
     showTitle = true,
   }) async {
@@ -107,29 +116,37 @@ class Waypoint extends ItemSerializable {
     try {
       locations = await locationFromAddress(address);
     } on PlatformException {
-      return Waypoint('', 0.0, 0.0, address: Placemark());
+      return Waypoint(
+          title: '',
+          subtitle: subtitle,
+          latitude: 0.0,
+          longitude: 0.0,
+          address: Placemark());
     }
 
     var first = locations.first;
     return Waypoint.fromCoordinates(
-      title,
-      first.latitude,
-      first.longitude,
+      title: title,
+      subtitle: subtitle,
+      latitude: first.latitude,
+      longitude: first.longitude,
       priority: priority,
       showTitle: showTitle,
     );
   }
 
-  static Future<Waypoint> fromLatLng(
-    String title,
-    LatLng point, {
+  static Future<Waypoint> fromLatLng({
+    required String title,
+    String? subtitle,
+    required LatLng point,
     priority = VisitingPriority.notApplicable,
     showTitle = true,
   }) async {
     return Waypoint.fromCoordinates(
-      title,
-      point.latitude,
-      point.longitude,
+      title: title,
+      subtitle: subtitle,
+      latitude: point.latitude,
+      longitude: point.longitude,
       priority: priority,
       showTitle: showTitle,
     );
@@ -137,16 +154,18 @@ class Waypoint extends ItemSerializable {
 
   LatLng toLatLng() => LatLng(latitude, longitude);
 
-  static Future<Waypoint> fromLngLat(
-    String title,
-    LngLat point, {
+  static Future<Waypoint> fromLngLat({
+    required String title,
+    String? subtitle,
+    required LngLat point,
     priority = VisitingPriority.notApplicable,
     showTitle = true,
   }) {
     return Waypoint.fromCoordinates(
-      title,
-      point.lat,
-      point.lng,
+      title: title,
+      subtitle: subtitle,
+      latitude: point.lat,
+      longitude: point.lng,
       priority: priority,
       showTitle: showTitle,
     );
@@ -155,6 +174,7 @@ class Waypoint extends ItemSerializable {
   LngLat toLngLat() => LngLat(lng: longitude, lat: latitude);
 
   final String title;
+  final String? subtitle;
   final double latitude;
   final double longitude;
   final Placemark address;
@@ -162,6 +182,10 @@ class Waypoint extends ItemSerializable {
   final bool showTitle;
 
   @override
-  String toString() =>
-      '${address.street}\n${address.locality} ${address.postalCode}';
+  String toString() {
+    String out = '';
+    if (subtitle != null) out += '$subtitle\n';
+    out += '${address.street}\n${address.locality} ${address.postalCode}';
+    return out;
+  }
 }
