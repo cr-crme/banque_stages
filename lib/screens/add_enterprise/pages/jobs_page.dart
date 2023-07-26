@@ -14,14 +14,18 @@ class JobsPage extends StatefulWidget {
 
 class JobsPageState extends State<JobsPage> {
   final _formKey = GlobalKey<FormState>();
-  final Map<int, Widget> _jobsForm = {};
-  int _formsKey = 0;
+  final Map<GlobalKey<FormState>, Widget> _jobsForm = {};
   final JobList jobs = JobList();
 
   bool validate() {
     jobs.clear();
     _formKey.currentState!.save();
-    if (jobs.isEmpty) return false;
+
+    if (_jobsForm.isEmpty) return false;
+
+    for (final key in _jobsForm.keys) {
+      key.currentState?.activate();
+    }
 
     return _formKey.currentState!.validate();
   }
@@ -30,7 +34,7 @@ class JobsPageState extends State<JobsPage> {
     final key = _jobsForm.keys.toList()[index];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      key: Key(key.toString()),
+      key: Key('${key}_formKey'),
       children: [
         Row(
           children: [
@@ -50,10 +54,11 @@ class JobsPageState extends State<JobsPage> {
   }
 
   void addJobToForm() {
-    _jobsForm[_formsKey] = JobFormFieldListTile(
+    final key = GlobalKey<FormState>();
+    _jobsForm[key] = JobFormFieldListTile(
+      key: key,
       onSaved: (Job? job) => setState(() => jobs.add(job!)),
     );
-    _formsKey++;
     setState(() {});
   }
 

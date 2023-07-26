@@ -163,7 +163,7 @@ class _AvailablePlace extends StatelessWidget {
     for (final jobTp in enterprise.jobs) {
       jobs.add(jobTp.id == job.id
           ? jobTp.copyWith(positionsOffered: jobTp.positionsOffered + change)
-          : job);
+          : jobTp);
     }
     EnterprisesProvider.of(context).replace(enterprise.copyWith(jobs: jobs));
   }

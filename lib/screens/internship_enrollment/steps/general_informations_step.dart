@@ -51,9 +51,9 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
           ),
           const SizedBox(height: 10),
           _MainJob(
-            enterprise: enterprise,
-            onSaved: (job) => setState(() => primaryJob = job),
-          ),
+              enterprise: enterprise,
+              onSaved: (job) => setState(() => primaryJob = job),
+              extraSpecializations: extraSpecializations),
           if (student != null && student!.program == Program.fpt)
             _ExtraSpecialization(
               extraSpecializations: extraSpecializations,
@@ -126,10 +126,14 @@ class _GeneralInformations extends StatelessWidget {
 }
 
 class _MainJob extends StatelessWidget {
-  const _MainJob({required this.enterprise, required this.onSaved});
+  const _MainJob(
+      {required this.enterprise,
+      required this.onSaved,
+      required this.extraSpecializations});
 
   final Enterprise? enterprise;
   final Function(Job?) onSaved;
+  final List<Specialization?> extraSpecializations;
 
   Map<Specialization, int> _generateSpecializationAndAvailability(context) {
     final Map<Specialization, int> out = {};
@@ -145,11 +149,25 @@ class _MainJob extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Métier principal', left: 0),
-        JobFormFieldListTile(
-          specializations: _generateSpecializationAndAvailability(context),
-          askNumberPositionsOffered: false,
-          onSaved: onSaved,
+        const SubTitle('Métier', left: 0),
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (extraSpecializations.isNotEmpty)
+                Text(
+                  'Métier principal',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              JobFormFieldListTile(
+                specializations:
+                    _generateSpecializationAndAvailability(context),
+                askNumberPositionsOffered: false,
+                onSaved: onSaved,
+              ),
+            ],
+          ),
         )
       ],
     );
@@ -177,16 +195,18 @@ class _ExtraSpecialization extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: Text(
-                'Métier supplémentaire ${index + 1}',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+            Text(
+              'Métier supplémentaire ${index + 1}',
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-            IconButton(
-              onPressed: () => onDeleteSpecialization(index),
-              icon: const Icon(Icons.delete, color: Colors.red),
+            SizedBox(
+              width: 35,
+              height: 35,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(25),
+                onTap: () => onDeleteSpecialization(index),
+                child: const Icon(Icons.delete, color: Colors.red),
+              ),
             )
           ],
         ),
@@ -200,21 +220,25 @@ class _ExtraSpecialization extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Métiers supplémentaires', left: 0),
-        Text('(Si besoin d\'ajouter d\'autres compétences)',
-            style: Theme.of(context).textTheme.bodyLarge),
-        if (extraSpecializations.isNotEmpty)
-          ...extraSpecializations
-              .asMap()
-              .keys
-              .map<Widget>((i) => _extraJobTileBuilder(context, i))
-              .toList(),
-        Padding(
-          padding: const EdgeInsets.only(top: 12.0, left: 12),
-          child: AddJobButton(
+    return Padding(
+      padding: const EdgeInsets.only(left: 12.0, top: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (extraSpecializations.isNotEmpty)
+            ...extraSpecializations
+                .asMap()
+                .keys
+                .map<Widget>((i) => Padding(
+                      padding: const EdgeInsets.only(bottom: 24.0),
+                      child: _extraJobTileBuilder(context, i),
+                    ))
+                .toList(),
+          Text(
+              'Besoin d\'ajouter des compétences d\'un autre métier pour ce stage?',
+              style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 8),
+          AddJobButton(
             onPressed: onAddSpecialization,
             style: Theme.of(context).textButtonTheme.style!.copyWith(
                 backgroundColor: Theme.of(context)
@@ -222,8 +246,8 @@ class _ExtraSpecialization extends StatelessWidget {
                     .style!
                     .backgroundColor),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

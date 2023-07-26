@@ -112,8 +112,9 @@ class JobsPageState extends State<JobsPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
     _updateExpandedSections();
     context.read<EnterprisesProvider>().addListener(() {
       if (mounted) {

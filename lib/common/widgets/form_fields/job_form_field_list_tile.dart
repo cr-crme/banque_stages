@@ -21,17 +21,20 @@ class JobFormFieldListTile extends StatefulWidget {
   final bool askNumberPositionsOffered;
 
   @override
-  State<JobFormFieldListTile> createState() => _JobFormFieldListTileState();
+  State<JobFormFieldListTile> createState() => JobFormFieldListTileState();
 }
 
-class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
+class JobFormFieldListTileState extends State<JobFormFieldListTile> {
+  final _textKey = GlobalKey<FormState>();
+  bool _isValidating = false;
   final _sectorTextController = TextEditingController();
   Specialization? _specialization;
   int _positionOffered = 0;
   static const String _invalidSpecialization = 'invalid_specialization';
   static const String _invalidNumber = 'invalid_number';
 
-  String? _validator() {
+  String? validator() {
+    _textKey.currentState?.validate();
     if (_specialization == null) {
       return _invalidSpecialization;
     }
@@ -67,112 +70,106 @@ class _JobFormFieldListTileState extends State<JobFormFieldListTile> {
           sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
         ));
       },
-      validator: (_) => _validator(),
-      builder: (state) => Padding(
-        padding: const EdgeInsets.only(left: 12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Autocomplete<Specialization>(
-              displayStringForOption: (specialization) {
-                final available = widget.specializations == null
-                    ? null
-                    : widget.specializations![specialization];
-                return '${specialization.idWithName}'
-                    '${available == null ? '' : '\n($available stage${available > 1 ? 's' : ''} disponible${available > 1 ? 's' : ''})'}';
-              },
-              optionsBuilder: (textEditingValue) => _availableSpecialization
-                  .where((s) => s.idWithName
-                      .toLowerCase()
-                      .contains(textEditingValue.text.toLowerCase().trim()))
-                  .toList(),
-              optionsViewBuilder: (context, onSelected, options) =>
-                  OptionsBuilderForAutocomplete(
-                onSelected: onSelected,
-                options: options,
-                optionToString: (Specialization e) => e.idWithName,
-              ),
-              onSelected: (specilization) {
-                FocusManager.instance.primaryFocus?.unfocus();
-                _specialization = specilization;
+      validator: (_) => validator(),
+      builder: (state) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Autocomplete<Specialization>(
+            displayStringForOption: (specialization) {
+              final available = widget.specializations == null
+                  ? null
+                  : widget.specializations![specialization];
+              return '${specialization.idWithName}'
+                  '${available == null ? '' : '\n($available stage${available > 1 ? 's' : ''} disponible${available > 1 ? 's' : ''})'}';
+            },
+            optionsBuilder: (textEditingValue) => _availableSpecialization
+                .where((s) => s.idWithName
+                    .toLowerCase()
+                    .contains(textEditingValue.text.toLowerCase().trim()))
+                .toList(),
+            optionsViewBuilder: (context, onSelected, options) =>
+                OptionsBuilderForAutocomplete(
+              onSelected: onSelected,
+              options: options,
+              optionToString: (Specialization e) => e.idWithName,
+            ),
+            onSelected: (specilization) {
+              FocusManager.instance.primaryFocus?.unfocus();
+              _specialization = specilization;
+              _sectorTextController.text = _specialization!.sector.idWithName;
+              setState(() {});
+            },
+            fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
+              if (_specialization == null) {
+                if (controller.text != '') state.didChange(null);
+                controller.text = '';
+              }
+              if (_availableSpecialization.length == 1) {
+                _specialization = _availableSpecialization[0];
+                controller.text = _specialization!.idWithName;
                 _sectorTextController.text = _specialization!.sector.idWithName;
-                setState(() {});
-              },
-              fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
-                if (_specialization == null) {
-                  if (controller.text != '') state.didChange(null);
-                  controller.text = '';
-                }
-                if (_availableSpecialization.length == 1) {
-                  _specialization = _availableSpecialization[0];
-                  controller.text = _specialization!.idWithName;
-                  _sectorTextController.text =
-                      _specialization!.sector.idWithName;
-                }
-                return TextField(
-                  controller: controller,
-                  focusNode: focusNode,
-                  onSubmitted: (_) => onSubmitted(),
-                  decoration: InputDecoration(
-                      labelText: '* Métier semi-spécialisé',
-                      errorText: state.errorText == _invalidSpecialization
-                          ? 'Sélectionner un métier.'
-                          : null,
-                      hintText: 'Saisir nom ou n° de métier',
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          if (focusNode.hasFocus) focusNode.nextFocus();
+              }
+              return TextFormField(
+                key: _textKey,
+                controller: controller,
+                focusNode: focusNode,
+                validator: (value) {
+                  _isValidating = true;
+                  return value!.isEmpty ? 'Sélectionner un métier' : null;
+                },
+                decoration: InputDecoration(
+                    labelText: '* Métier semi-spécialisé',
+                    errorText: state.errorText == _invalidSpecialization
+                        ? 'Sélectionner un métier.'
+                        : null,
+                    hintText: 'Saisir nom ou n° de métier',
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        if (focusNode.hasFocus) focusNode.nextFocus();
 
-                          state.didChange(null);
-                          controller.text = '';
-                          _sectorTextController.text = '';
-                        },
-                      )),
-                );
-              },
-            ),
-            Visibility(
-              visible: _sectorTextController.text != '',
-              maintainState: true,
-              maintainSize: true,
-              maintainAnimation: true,
-              child: TextField(
-                  controller: _sectorTextController,
-                  decoration: const InputDecoration(
-                    labelText: '* Secteur d\'activités',
-                    enabled: false,
-                  )),
-            ),
-            if (widget.askNumberPositionsOffered)
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '* Places de stages disponibles',
-                      style: Theme.of(state.context).textTheme.titleMedium,
-                    ),
+                        state.didChange(null);
+                        controller.text = '';
+                        _specialization = null;
+                        _sectorTextController.text = '';
+                      },
+                    )),
+              );
+            },
+          ),
+          if (widget.askNumberPositionsOffered)
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '* Places de stages disponibles',
+                    style: Theme.of(state.context).textTheme.titleMedium,
                   ),
-                  SizedBox(
-                    width: 112,
-                    child: SpinBox(
-                      value: state.value?.positionsOffered.toDouble() ?? 0,
-                      min: 1,
-                      max: 10,
-                      spacing: 0,
-                      decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                      ),
-                      validator: (value) =>
-                          int.parse(value!) == 0 ? 'Combien?' : null,
-                      onChanged: (double value) =>
-                          _positionOffered = value.toInt(),
+                ),
+                SizedBox(
+                  width: 112,
+                  child: SpinBox(
+                    value: state.value?.positionsOffered.toDouble() ?? 0,
+                    min: 1,
+                    max: 10,
+                    spacing: 0,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
                     ),
+                    validator: (value) {
+                      final out = _isValidating && int.parse(value!) == 0
+                          ? 'Combien?'
+                          : null;
+                      _isValidating = false;
+                      return out;
+                    },
+                    onChanged: (double value) =>
+                        _positionOffered = value.toInt(),
                   ),
-                ],
-              ),
-          ],
-        ),
+                ),
+              ],
+            ),
+        ],
       ),
     );
   }

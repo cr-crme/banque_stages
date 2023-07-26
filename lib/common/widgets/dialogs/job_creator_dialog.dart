@@ -35,7 +35,8 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
         content: Form(
           key: _formKey,
           child: JobFormFieldListTile(
-              onSaved: (Job? job) => setState(() => _job = job)),
+            onSaved: (Job? job) => setState(() => _job = job),
+          ),
         ),
         actions: [
           OutlinedButton(
