@@ -8,6 +8,7 @@ import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/requirements_step.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
@@ -157,9 +158,15 @@ class InternshipDetailsState extends State<InternshipDetails> {
   bool get editMode => _editMode;
   late var _internshipController = _InternshipController(widget.internship);
 
-  void _onToggleSaveEdit() {
-    _editMode = !_editMode;
+  void _toggleEditMode({bool save = true}) {
     if (_editMode) {
+      _editMode = false;
+      if (!save) {
+        setState(() {});
+        return;
+      }
+    } else {
+      _editMode = true;
       _internshipController = _InternshipController(widget.internship);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setState(() {});
@@ -229,29 +236,52 @@ class InternshipDetailsState extends State<InternshipDetails> {
     setState(() {});
   }
 
+  Future<bool> preventClosingIfEditing() async {
+    if (!editMode) return false;
+
+    final prevent = !(await ConfirmPopDialog.show(context));
+    if (!prevent) _toggleEditMode(save: false);
+    return prevent;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 24),
       child: ExpansionPanelList(
         elevation: 0,
-        expansionCallback: (index, isExpanded) =>
-            setState(() => _isExpanded = !_isExpanded),
+        expansionCallback: (index, isExpanded) async {
+          if (_isExpanded && _editMode) {
+            if (await preventClosingIfEditing()) return;
+          }
+          setState(() => _isExpanded = !_isExpanded);
+        },
         children: [
           ExpansionPanel(
             isExpanded: _isExpanded,
             canTapOnHeader: true,
-            headerBuilder: (context, isExpanded) => Text('Détails du stage',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge!
-                    .copyWith(color: Colors.black)),
+            headerBuilder: (context, isExpanded) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Détails du stage',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: Colors.black)),
+                if (_isExpanded && widget.internship.isActive)
+                  IconButton(
+                      onPressed: _toggleEditMode,
+                      icon: Icon(
+                        editMode ? Icons.save : Icons.edit,
+                        color: Theme.of(context).primaryColor,
+                      )),
+              ],
+            ),
             body: _InternshipBody(
               internship: widget.internship,
               editMode: _editMode,
               onRequestChangedDates: _promptDateRange,
               internshipController: _internshipController,
-              onToggleSaveEdit: _onToggleSaveEdit,
             ),
           )
         ],
@@ -266,14 +296,12 @@ class _InternshipBody extends StatelessWidget {
     required this.editMode,
     required this.onRequestChangedDates,
     required this.internshipController,
-    required this.onToggleSaveEdit,
   });
 
   final Internship internship;
   final bool editMode;
 
   final Function() onRequestChangedDates;
-  final Function() onToggleSaveEdit;
   final _InternshipController internshipController;
 
   static const TextStyle _titleStyle = TextStyle(fontWeight: FontWeight.bold);
@@ -562,16 +590,6 @@ class _InternshipBody extends StatelessWidget {
           children: [
             SizedBox(width: MediaQuery.of(context).size.width),
             _buildSupervisorInfo(),
-            if (internship.isActive)
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                    onPressed: onToggleSaveEdit,
-                    icon: Icon(
-                      editMode ? Icons.save : Icons.edit,
-                      color: Colors.black,
-                    )),
-              ),
           ],
         ),
         _buildDates(),

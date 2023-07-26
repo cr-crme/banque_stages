@@ -167,7 +167,8 @@ class _StudentInternshipListViewState
                     children: [
                       InternshipQuickAccess(internshipId: internship.id),
                       InternshipDetails(
-                          key: detailKeys[index], internship: internship),
+                          key: detailKeys[internship.id],
+                          internship: internship),
                       InternshipSkills(internship: internship),
                       InternshipDocuments(internship: internship),
                     ]),

@@ -41,8 +41,14 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
   bool _editing = false;
   bool get editing => _editing;
 
-  void toggleEdit() {
-    if (!_editing) {
+  void toggleEdit({bool save = true}) {
+    if (_editing) {
+      _editing = false;
+      if (!save) {
+        setState(() {});
+        return;
+      }
+    } else {
       setState(() => _editing = true);
       return;
     }

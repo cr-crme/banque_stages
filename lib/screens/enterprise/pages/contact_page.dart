@@ -45,9 +45,15 @@ class ContactPageState extends State<ContactPage> {
   bool _editing = false;
   bool get editing => _editing;
 
-  Future<void> toggleEdit() async {
-    if (!_editing) {
-      _editing = !_editing;
+  Future<void> toggleEdit({bool save = true}) async {
+    if (_editing) {
+      _editing = false;
+      if (!save) {
+        setState(() {});
+        return;
+      }
+    } else {
+      _editing = true;
       setState(() {});
       return;
     }

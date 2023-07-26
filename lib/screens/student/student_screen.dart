@@ -1,6 +1,5 @@
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'package:crcrme_banque_stages/screens/student/pages/skills_page.dart';
 import 'package:flutter/material.dart';
 
@@ -30,20 +29,28 @@ class _StudentScreenState extends State<StudentScreen>
   final _internshipPageKey = GlobalKey<InternshipsPageState>();
   final _skillsPageKey = GlobalKey<SkillsPageState>();
 
-  void _onTapBack() async {
-    if (_tabController.index == 1 &&
-        _internshipPageKey.currentState!.activeKey.currentState != null) {
-      final keys =
-          _internshipPageKey.currentState!.activeKey.currentState!.detailKeys;
-      for (final key in keys.keys) {
+  Future<bool> _preventIfEditing(int tabIndex) async {
+    if (tabIndex != 1) return false;
+    if (_internshipPageKey.currentState?.activeKey.currentState == null) {
+      return false;
+    }
+
+    // For each internships
+    final keys =
+        _internshipPageKey.currentState!.activeKey.currentState!.detailKeys;
+    for (final key in keys.keys) {
+      if (keys[key]!.currentState?.editMode ?? false) {
         if (keys[key]!.currentState?.editMode ?? false) {
-          final answer = await ConfirmPopDialog.show(context);
-          if (!answer || !mounted) return;
-          Navigator.of(context).pop();
-          return;
+          return await keys[key]!.currentState?.preventClosingIfEditing() ??
+              false;
         }
       }
     }
+    return false;
+  }
+
+  void _onTapBack() async {
+    if (await _preventIfEditing(_tabController.index)) return;
 
     if (!mounted) return;
     Navigator.of(context).pop();
@@ -84,6 +91,17 @@ class _StudentScreenState extends State<StudentScreen>
                   onPressed: _onTapBack, icon: const Icon(Icons.arrow_back)),
               bottom: TabBar(
                 controller: _tabController,
+                onTap: (value) {
+                  // Prevent from changing for now
+                  int previousIndex = _tabController.previousIndex;
+                  _tabController.index = previousIndex;
+                  Future.microtask(() async {
+                    if (!(await _preventIfEditing(previousIndex))) {
+                      // If it is allowed to change, then do it
+                      _tabController.index = value;
+                    }
+                  });
+                },
                 tabs: const [
                   Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
                   Tab(icon: Icon(Icons.assignment), text: 'Stages'),

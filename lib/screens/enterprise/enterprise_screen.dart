@@ -37,6 +37,15 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
   bool get _editing =>
       (_aboutPageKey.currentState?.editing ?? false) ||
       (_contactPageKey.currentState?.editing ?? false);
+  void cancelEditing() {
+    if (_aboutPageKey.currentState?.editing != null) {
+      _aboutPageKey.currentState!.toggleEdit(save: false);
+    }
+    if (_contactPageKey.currentState?.editing != null) {
+      _contactPageKey.currentState!.toggleEdit(save: false);
+    }
+    setState(() {});
+  }
 
   void _updateActionButton() {
     late Icon icon;
@@ -113,8 +122,9 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
               if (!_editing || !_tabController.indexIsChanging) return;
 
               _tabController.index = _tabController.previousIndex;
-              final shouldShow = await ConfirmPopDialog.show(context);
-              if (shouldShow) {
+              final acceptLosingChanges = await ConfirmPopDialog.show(context);
+              if (acceptLosingChanges) {
+                cancelEditing();
                 _tabController.animateTo(index);
               }
             },
