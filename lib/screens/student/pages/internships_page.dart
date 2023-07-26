@@ -68,19 +68,21 @@ class InternshipsPageState extends State<InternshipsPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (toEvaluateInternships.isNotEmpty)
-            _StudentInternshipListView(
-                key: toEvaluateKey,
-                title: 'Évaluations post-stage',
-                internships: toEvaluateInternships),
-          if (activeInternships.isNotEmpty) const SizedBox(height: 12),
           if (activeInternships.isNotEmpty)
             _StudentInternshipListView(
               key: activeKey,
               title: 'En cours',
               internships: activeInternships,
             ),
-          if (closedInternships.isNotEmpty) const SizedBox(height: 12),
+          if (activeInternships.isNotEmpty && toEvaluateInternships.isNotEmpty)
+            const SizedBox(height: 12),
+          if (toEvaluateInternships.isNotEmpty)
+            _StudentInternshipListView(
+                key: toEvaluateKey,
+                title: 'Évaluations post-stage',
+                internships: toEvaluateInternships),
+          if (toEvaluateInternships.isNotEmpty && closedInternships.isNotEmpty)
+            const SizedBox(height: 12),
           if (closedInternships.isNotEmpty)
             _StudentInternshipListView(
                 key: closedKey,
@@ -112,7 +114,8 @@ class _StudentInternshipListViewState
   void _prepareExpander(List<Internship> internships) {
     if (_expanded.length != internships.length) {
       for (final internship in internships) {
-        _expanded[internship.id] = internship.isActive;
+        _expanded[internship.id] =
+            internship.isActive || internship.isEnterpriseEvaluationPending;
       }
     }
 
@@ -138,13 +141,15 @@ class _StudentInternshipListViewState
                     _expanded[widget.internships[panelIndex].id] = !isExpanded),
             children: widget.internships.asMap().keys.map((index) {
               final internship = widget.internships[index];
+              final endDate = internship.endDate == null
+                  ? DateFormat.yMMMd('fr_CA').format(internship.date.end)
+                  : DateFormat.yMMMd('fr_CA').format(internship.endDate!);
               return ExpansionPanel(
                 canTapOnHeader: true,
                 isExpanded: _expanded[internship.id]!,
                 headerBuilder: (context, isExpanded) => ListTile(
                   title: Text(
-                    '${DateFormat('dd MMMM yyyy', 'fr_CA').format(internship.date.start)} - '
-                    '${DateFormat('dd MMMM yyyy', 'fr_CA').format(internship.date.end)}',
+                    '${DateFormat.yMMMd('fr_CA').format(internship.date.start)} - $endDate',
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!
