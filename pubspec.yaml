@@ -51,6 +51,7 @@ dependencies:
     pdf: ^3.10.1
     printing: ^5.10.3
     intl: ^0.18.0
+    shared_preferences: ^2.2.0
 
 dependency_overrides:
     enhanced_containers:

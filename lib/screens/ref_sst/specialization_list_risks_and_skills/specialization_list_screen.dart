@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'widgets/tile_job_risk.dart';
 
 class SpecializationListScreen extends StatelessWidget {
@@ -58,8 +59,50 @@ class SpecializationListScreen extends StatelessWidget {
     return out;
   }
 
+  void _showHelp(BuildContext context, {required bool force}) async {
+    bool shouldShow = force;
+    if (!shouldShow) {
+      final prefs = await SharedPreferences.getInstance();
+      final wasShown = prefs.getBool('SstHelpWasShown');
+      if (wasShown == null || !wasShown) shouldShow = true;
+    }
+
+    if (!shouldShow) return;
+
+    // ignore: use_build_context_synchronously
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'REPÈRES\nComment lire l’évaluation des risques?',
+          textAlign: TextAlign.center,
+        ),
+        content: const Text(
+            'Elle indique le nombre de risques potentiellement présents pour '
+            'chaque compétence d\'un métier et inversement.\n'
+            '\n'
+            'Elle a été faite pour les 45 métiers les plus populaires du '
+            'répertoire du Ministère de l\'éducation.\n'
+            '\n'
+            'Elle ne tient pas compte du contexte de chaque milieu de stage.\n'
+            'Pour connaitre les risques dans une entreprise spécifique, '
+            'consulter la fiche de cette entreprise, onglet «\u00a0Métiers\u00a0»'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK'))
+        ],
+      ),
+    );
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('SstHelpWasShown', true);
+  }
+
   @override
   Widget build(BuildContext context) {
+    _showHelp(context, force: false);
+
     final specialization = ActivitySectorsService.specialization(id);
 
     final risks = _extractAllRisks(specialization);
@@ -86,21 +129,31 @@ class SpecializationListScreen extends StatelessWidget {
           appBar: AppBar(
             title: Padding(
               padding: const EdgeInsets.only(top: 5.0, bottom: 5),
-              child: AutoSizeText(specialization.idWithName, maxLines: 2),
+              child: AutoSizeText(specialization.name, maxLines: 2),
             ),
+            actions: [
+              InkWell(
+                onTap: () => _showHelp(context, force: true),
+                borderRadius: BorderRadius.circular(25),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Icon(Icons.info),
+                ),
+              )
+            ],
             bottom: const TabBar(tabs: [
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Icon(Icons.build_circle_sharp),
+                    SizedBox(width: 10),
                     Text(
                       'Affichage par\ncompétence',
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(width: 10),
-                    Icon(Icons.build_circle_sharp),
                   ],
                 ),
               ),
@@ -109,13 +162,13 @@ class SpecializationListScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Icon(Icons.warning),
+                    SizedBox(width: 10),
                     Text(
                       'Affichage par\nrisque',
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(width: 10),
-                    Icon(Icons.warning),
                   ],
                 ),
               ),
