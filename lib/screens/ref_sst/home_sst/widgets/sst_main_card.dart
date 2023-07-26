@@ -17,12 +17,15 @@ class SstMainCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 10,
-      child: ListTile(
-        onTap: onTap,
-        title: SubTitle(title, left: 0, top: 0),
-        subtitle: content,
-        subtitleTextStyle: Theme.of(context).textTheme.bodyLarge,
-        textColor: Colors.black,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 12.0),
+        child: ListTile(
+          onTap: onTap,
+          title: SubTitle(title, left: 0, top: 0),
+          subtitle: content,
+          subtitleTextStyle: Theme.of(context).textTheme.bodyLarge,
+          textColor: Colors.black,
+        ),
       ),
     );
   }

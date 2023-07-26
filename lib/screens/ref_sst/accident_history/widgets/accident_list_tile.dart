@@ -23,7 +23,7 @@ class AccidentListTile extends StatelessWidget {
         title: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Text(
-            specialization.idWithName,
+            specialization.name,
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!
