@@ -77,7 +77,7 @@ class _RoutingMapState extends State<RoutingMap> {
       Polyline(
         points: LngLatUtils.fromLngLatToLatLng(road.polyline!),
         strokeWidth: 4,
-        color: Colors.red,
+        color: Theme.of(context).primaryColor,
       )
     ];
   }

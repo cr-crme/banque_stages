@@ -87,15 +87,22 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Itinéraire des visites')),
-      body: SingleChildScrollView(
-        physics: const ScrollPhysics(),
-        child: FutureBuilder(
-          future: _fillAllWaypoints(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) const CircularProgressIndicator();
+      body: RawScrollbar(
+        thumbVisibility: true,
+        thickness: 7,
+        minThumbLength: 75,
+        thumbColor: Theme.of(context).primaryColor,
+        radius: const Radius.circular(20),
+        child: SingleChildScrollView(
+          physics: const ScrollPhysics(),
+          child: FutureBuilder(
+            future: _fillAllWaypoints(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) const CircularProgressIndicator();
 
-            return ItineraryScreen(waypoints: _waypoints);
-          },
+              return ItineraryScreen(waypoints: _waypoints);
+            },
+          ),
         ),
       ),
     );
@@ -285,34 +292,32 @@ class __DistanceState extends State<_Distance> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (widget.distances!.isNotEmpty)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                    child: Text(
-                        'Kilométrage\u00a0: '
-                        '${(widget.distances!.reduce((a, b) => a + b).toDouble() / 1000).toStringAsFixed(1)}km',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  child: Text(
+                      'Kilométrage\u00a0: '
+                      '${(widget.distances!.isEmpty ? 0 : widget.distances!.reduce((a, b) => a + b).toDouble() / 1000).toStringAsFixed(1)}km',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700)),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).disabledColor),
+                    borderRadius: BorderRadius.circular(50),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border:
-                          Border.all(color: Theme.of(context).disabledColor),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Icon(
-                      _isExpanded ? Icons.expand_less : Icons.expand_more,
-                      color: Theme.of(context).disabledColor,
-                    ),
+                  child: Icon(
+                    _isExpanded ? Icons.expand_less : Icons.expand_more,
+                    color: Theme.of(context).disabledColor,
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
             if (_isExpanded) ..._distancesTo(widget.distances!)
           ],
         ),
