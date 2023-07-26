@@ -4,6 +4,8 @@ import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 
+final _hasOneCharacterRe = RegExp('[a-zA-Z0-9]');
+
 class RequirementsStep extends StatefulWidget {
   const RequirementsStep({super.key});
 
@@ -190,10 +192,11 @@ class RequirementsStepState extends State<RequirementsStep> {
                                     _otherProtectionsText = text,
                                 minLines: 2,
                                 maxLines: null,
-                                validator: (text) =>
-                                    _otherProtections && text!.isEmpty
-                                        ? 'Indiquer au moins un équipement.'
-                                        : null,
+                                validator: (text) => _otherProtections &&
+                                        (text!.isEmpty ||
+                                            !_hasOneCharacterRe.hasMatch(text))
+                                    ? 'Indiquer au moins un équipement.'
+                                    : null,
                                 keyboardType: TextInputType.multiline,
                               ),
                             ],
@@ -271,7 +274,8 @@ class RequirementsStepState extends State<RequirementsStep> {
                           maxLines: null,
                           validator: (text) =>
                               uniformStatus != UniformStatus.none &&
-                                      text!.isEmpty
+                                      (text!.isEmpty ||
+                                          !_hasOneCharacterRe.hasMatch(text))
                                   ? 'Décrire la tenue de travail.'
                                   : null,
                           decoration: const InputDecoration(
