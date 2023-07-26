@@ -70,7 +70,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                   ? const Text('En attente des données')
                   : Row(children: [
                       student.avatar,
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 12),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

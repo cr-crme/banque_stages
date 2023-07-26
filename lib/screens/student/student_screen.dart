@@ -64,7 +64,22 @@ class _StudentScreenState extends State<StudentScreen>
 
           return Scaffold(
             appBar: AppBar(
-              title: Text(student.fullName),
+              title: Row(
+                children: [
+                  student.avatar,
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(student.fullName),
+                      Text(
+                        '${student.program.title} - groupe ${student.group}',
+                        style: const TextStyle(fontSize: 14),
+                      )
+                    ],
+                  )
+                ],
+              ),
               leading: IconButton(
                   onPressed: _onTapBack, icon: const Icon(Icons.arrow_back)),
               bottom: TabBar(

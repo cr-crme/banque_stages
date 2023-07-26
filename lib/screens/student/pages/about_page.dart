@@ -33,9 +33,8 @@ class AboutPageState extends State<AboutPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _GeneralInformation(
-                student: widget.student, dateFormat: _dateFormat),
-            _ContactInformation(
               student: widget.student,
+              dateFormat: _dateFormat,
               addressController: _addressController,
             ),
             _EmergencyContact(student: widget.student),
@@ -47,10 +46,15 @@ class AboutPageState extends State<AboutPage> {
 }
 
 class _GeneralInformation extends StatelessWidget {
-  const _GeneralInformation({required this.student, required this.dateFormat});
+  const _GeneralInformation({
+    required this.student,
+    required this.dateFormat,
+    required this.addressController,
+  });
 
   final Student student;
   final DateFormat dateFormat;
+  final AddressController addressController;
 
   @override
   Widget build(BuildContext context) {
@@ -61,114 +65,59 @@ class _GeneralInformation extends StatelessWidget {
         children: [
           const SubTitle('Informations générales', top: 12),
           Padding(
-            padding: const EdgeInsets.only(left: 32.0, right: 40),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(width: 105, height: 105, child: student.avatar),
-                Column(
-                  children: [
-                    Text(
-                      'Programme',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    Text(
-                      student.program.title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(color: Theme.of(context).disabledColor),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text(
-                      'Groupe',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    Text(
-                      student.group,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(color: Theme.of(context).disabledColor),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.only(left: 32.0),
+            padding: const EdgeInsets.only(left: 12.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Date de naissance',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    TextFormField(
+                      controller: TextEditingController(
+                          text: dateFormat.format(student.dateBirth!)),
+                      decoration: const InputDecoration(
+                        icon: SizedBox(width: 30),
+                        labelText: 'Date de naissance',
+                        disabledBorder: InputBorder.none,
+                      ),
+                      enabled: false,
+                    ),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(25),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.cake,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                Text(
-                  dateFormat.format(student.dateBirth!),
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(color: Theme.of(context).disabledColor),
+                PhoneListTile(
+                    initialValue: student.phone,
+                    isMandatory: false,
+                    enabled: false),
+                const SizedBox(height: 8),
+                EmailListTile(
+                  controller: TextEditingController(text: student.email),
+                  enabled: false,
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: AddressListTile(
+                    initialValue: student.address,
+                    addressController: addressController,
+                    isMandatory: false,
+                    enabled: false,
+                  ),
                 ),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ContactInformation extends StatelessWidget {
-  const _ContactInformation({
-    required this.student,
-    required this.addressController,
-  });
-
-  final Student student;
-  final AddressController addressController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          title: Text(
-            'Coordonnées',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: [
-              PhoneListTile(
-                  initialValue: student.phone,
-                  isMandatory: false,
-                  enabled: false),
-              const SizedBox(height: 8),
-              EmailListTile(
-                controller: TextEditingController(text: student.email),
-                enabled: false,
-              ),
-              const SizedBox(height: 8),
-              AddressListTile(
-                initialValue: student.address,
-                addressController: addressController,
-                isMandatory: false,
-                enabled: false,
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
