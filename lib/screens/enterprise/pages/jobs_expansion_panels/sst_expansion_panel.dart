@@ -60,7 +60,7 @@ class SstBody extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () => addSstEvent(job),
-                child: const Text('Signaler un événement'),
+                child: const Text('Signaler un incident'),
               ),
             ),
             const SizedBox(height: 16),
@@ -81,7 +81,7 @@ class SstBody extends StatelessWidget {
                     ),
                   ),
                   if (job.sstEvaluation.incidents.isEmpty)
-                    const Text('Aucun incident n\'a été signalé'),
+                    const Text('Aucun incident rapporté'),
                   if (job.sstEvaluation.incidents.isNotEmpty)
                     ...job.sstEvaluation.incidents
                         .map((e) => Text('\u2022 $e')),
