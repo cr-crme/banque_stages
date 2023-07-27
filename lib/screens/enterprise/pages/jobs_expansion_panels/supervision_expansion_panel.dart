@@ -134,7 +134,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptanceTsa(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Stagiaires avec un trouble du spectre de l\'autisme (TSA)',
+      title: 'Un trouble du spectre de l\'autisme (TSA)',
       rating: _meanOf(evaluations, (e) => e.acceptanceTsa),
     );
   }
@@ -142,7 +142,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptanceLanguageDeficiency(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Stagiaires avec un trouble du langage',
+      title: 'Un trouble du langage',
       rating: _meanOf(evaluations, (e) => e.acceptanceLanguageDeficiency),
     );
   }
@@ -150,7 +150,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptanceMentalDeficiency(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Stagiaires avec une déficience intellectuelle',
+      title: 'Une déficience intellectuelle',
       rating: _meanOf(evaluations, (e) => e.acceptanceMentalDeficiency),
     );
   }
@@ -158,7 +158,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptancePhysicalDeficiency(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Stagiaires avec une déficience physique',
+      title: 'Une déficience physique',
       rating: _meanOf(evaluations, (e) => e.acceptancePhysicalDeficiency),
     );
   }
@@ -166,7 +166,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptanceMentalHealtyIssue(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Stagiaires avec un trouble de santé mentale',
+      title: 'Un trouble de santé mentale',
       rating: _meanOf(evaluations, (e) => e.acceptanceMentalHealthIssue),
     );
   }
@@ -174,7 +174,7 @@ class _SupervisionBody extends StatelessWidget {
   Widget _buildAcceptanceBehaviorIssue(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
-      title: 'Stagiaires avec un trouble du comportement',
+      title: 'Des difficultés comportementales',
       rating: _meanOf(evaluations, (e) => e.acceptanceBehaviorIssue),
     );
   }
