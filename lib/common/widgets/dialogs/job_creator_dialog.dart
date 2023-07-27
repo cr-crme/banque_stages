@@ -31,7 +31,7 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: AlertDialog(
-        title: const Text('Ajouter un nouveau métier'),
+        title: const Text('Ajouter un nouveau poste'),
         content: Form(
           key: _formKey,
           child: JobFormFieldListTile(
