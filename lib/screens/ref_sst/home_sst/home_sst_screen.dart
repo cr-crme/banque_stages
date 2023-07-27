@@ -69,14 +69,14 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-            'Évaluation théorique des risques basée sur la description des '
-            'compétences de chaque métier figurant dans le répertoire'),
+            'Analyse des risques basée sur la description des compétences '
+            'de chaque métier figurant dans le répertoire'),
         const SizedBox(height: 24),
         const SstSearchBar(),
         const SizedBox(height: 24),
         Center(
           child: Text(
-            '** Attention, l\'évaluation indique \nles risques potentiellement '
+            '** Attention, l\'analyse indique \nles risques potentiellement '
             'présents \npour un métier donné, \nsans considérer leur dangerosité! ** ',
             style: Theme.of(context)
                 .textTheme
