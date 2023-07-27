@@ -176,12 +176,12 @@ class _PrerequisitesBody extends StatelessWidget {
 
     return [
       const Text(
-        'Équipement de protection individuelle',
+        'Équipements de protection individuelle',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       if (protections[ProtectionsStatus.suppliedByEnterprise]!.isEmpty &&
           protections[ProtectionsStatus.suppliedBySchool]!.isEmpty)
-        const Text('Il n\'y a aucun prérequis pour ce métier'),
+        const Text('Aucun équipement requis'),
       if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text('Fournis par l\'entreprise\u00a0:'),

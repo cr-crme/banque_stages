@@ -703,7 +703,7 @@ class _ProtectionRequiredChoserState extends State<_ProtectionRequiredChoser> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Préciser l\'équipement supplémentaire requis\u00a0: ',
+                          'Préciser\u00a0: ',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(
@@ -788,7 +788,8 @@ class _UniformRequiredChooserState extends State<_UniformRequiredChooser> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Décrire la tenue de travail\u00a0: ',
+                    '* Décrire la tenue exigée par l\'entreprise ou les '
+                    'règles d\'habillement\u00a0:',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   TextFormField(

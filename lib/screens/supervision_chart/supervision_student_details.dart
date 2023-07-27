@@ -483,7 +483,7 @@ class _Requirements extends StatelessWidget {
         const SubTitle('Exigences de l\'entreprise'),
         const Padding(
           padding: EdgeInsets.only(left: 32.0),
-          child: Text('Équipements de protection individuelle requis\u00a0:',
+          child: Text('Équipements de protection individuelle',
               style: TextStyle(fontWeight: FontWeight.w600)),
         ),
         Padding(
@@ -504,7 +504,7 @@ class _Requirements extends StatelessWidget {
                   )),
         const Padding(
           padding: EdgeInsets.only(left: 32.0, top: 8.0),
-          child: Text('Tenue de travail\u00a0:',
+          child: Text('Tenue de travail',
               style: TextStyle(fontWeight: FontWeight.w600)),
         ),
         Padding(

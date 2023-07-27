@@ -110,7 +110,7 @@ class _SupervisionBody extends StatelessWidget {
                     _buildAbsenceAcceptance(evaluations),
                     const SizedBox(height: 12),
                     Text(
-                      'Évaluation de l\'accueil de la clientèle spécialisée',
+                      'Évaluation de l\'accueil de stagiaires avec',
                       style: Theme.of(context)
                           .textTheme
                           .titleSmall!
