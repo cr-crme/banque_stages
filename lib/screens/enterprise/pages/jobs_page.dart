@@ -3,6 +3,7 @@ import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_sst_event_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_text_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/job_creator_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/storage_service.dart';
@@ -34,7 +35,7 @@ class JobsPageState extends State<JobsPage> {
       {};
   final Map<String, bool> _isEditingPrerequisites = {};
 
-  bool get editing => _isEditingPrerequisites.containsValue(true);
+  bool get isEditing => _isEditingPrerequisites.containsValue(true);
   void cancelEditing() {
     for (final e in _isEditingPrerequisites.keys) {
       _isEditingPrerequisites[e] = false;
@@ -83,7 +84,7 @@ class JobsPageState extends State<JobsPage> {
   }
 
   void _addSstEvent(Job job) async {
-    final enterprises = context.read<EnterprisesProvider>();
+    final enterprises = EnterprisesProvider.of(context, listen: false);
 
     final result = await showDialog(
       context: context,
@@ -103,7 +104,7 @@ class JobsPageState extends State<JobsPage> {
   }
 
   void _addComment(Job job) async {
-    final provider = context.read<EnterprisesProvider>();
+    final provider = EnterprisesProvider.of(context, listen: false);
     final newComment = await showDialog(
       context: context,
       builder: (context) => const AddTextDialog(
@@ -181,9 +182,14 @@ class JobsPageState extends State<JobsPage> {
                 body: Column(
                   children: [
                     ExpansionPanelList(
-                      expansionCallback: (panelIndex, isExpanded) => setState(
-                          () => _expandedSections[job.id]![panelIndex] =
-                              !isExpanded),
+                      expansionCallback: (panelIndex, isExpanded) async {
+                        if (isEditing) {
+                          if (!await ConfirmPopDialog.show(context)) return;
+                          cancelEditing();
+                        }
+                        _expandedSections[job.id]![panelIndex] = !isExpanded;
+                        setState(() {});
+                      },
                       children: [
                         PrerequisitesExpansionPanel(
                           key: _prerequisitesFormKeys[job.id]!,

@@ -37,7 +37,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
   bool get _editing =>
       (_aboutPageKey.currentState?.editing ?? false) ||
       (_contactPageKey.currentState?.editing ?? false) ||
-      (_jobsPageKey.currentState?.editing ?? false);
+      (_jobsPageKey.currentState?.isEditing ?? false);
 
   void cancelEditing() {
     if (_aboutPageKey.currentState?.editing != null) {
@@ -46,7 +46,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
     if (_contactPageKey.currentState?.editing != null) {
       _contactPageKey.currentState!.toggleEdit(save: false);
     }
-    if (_jobsPageKey.currentState?.editing != null) {
+    if (_jobsPageKey.currentState?.isEditing != null) {
       _jobsPageKey.currentState!.cancelEditing();
     }
     setState(() {});
@@ -76,12 +76,9 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
         } else if (_tabController.index == 1) {
           await _contactPageKey.currentState?.toggleEdit();
         } else if (_tabController.index == 2) {
-          if (_jobsPageKey.currentState!.editing) {
-            if (await ConfirmPopDialog.show(context)) {
-              cancelEditing();
-            } else {
-              return;
-            }
+          if (_jobsPageKey.currentState!.isEditing) {
+            if (!await ConfirmPopDialog.show(context)) return;
+            cancelEditing();
           }
           await _jobsPageKey.currentState?.addJob();
         } else if (_tabController.index == 3) {
