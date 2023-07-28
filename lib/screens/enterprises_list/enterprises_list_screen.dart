@@ -52,6 +52,7 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
           ),
         IconButton(
           onPressed: () {
+            _withSearchBar = false;
             _enterpriseKey.currentState!.searchController.text = '';
             GoRouter.of(context).goNamed(Screens.addEnterprise);
           },
