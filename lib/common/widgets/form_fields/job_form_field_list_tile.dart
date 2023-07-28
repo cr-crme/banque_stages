@@ -278,8 +278,8 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Décrire la tenue exigée par l\'entreprise ou les régles '
-              'd\'habillement\u00a0:',
+              'Décrire la tenue exigée par l\'entreprise ou les '
+              'règles d\'habillement\u00a0',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             TextFormField(

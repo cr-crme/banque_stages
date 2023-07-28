@@ -33,7 +33,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Signaler un évènement'),
+      title: const Text('Signaler un incident'),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
