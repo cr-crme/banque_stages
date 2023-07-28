@@ -49,7 +49,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   static const String _invalidSpecialization = 'invalid_specialization';
   static const String _invalidNumber = 'invalid_number';
 
-  int _minimalAge = -1;
+  int _minimumAge = -1;
 
   String? validator() {
     _textKey.currentState?.validate();
@@ -113,7 +113,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
         widget.onSaved!(Job(
           specialization: _specialization!,
           positionsOffered: _positionOffered,
-          minimumAge: _minimalAge,
+          minimumAge: _minimumAge,
           preInternshipRequest: preInternshipRequest,
           uniform: uniform,
           protections: protections,
@@ -252,7 +252,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
               return null;
             },
             keyboardType: TextInputType.number,
-            onSaved: (value) => _minimalAge = int.tryParse(value!) ?? -1,
+            onChanged: (value) => _minimumAge = int.tryParse(value) ?? -1,
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp("[0-9]")),
             ], // Only numbers can be entered
