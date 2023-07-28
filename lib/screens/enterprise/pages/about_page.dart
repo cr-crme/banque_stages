@@ -1,7 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
@@ -16,6 +12,9 @@ import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_p
 import 'package:crcrme_banque_stages/common/widgets/form_fields/share_with_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EnterpriseAboutPage extends StatefulWidget {
   const EnterpriseAboutPage({
@@ -170,12 +169,19 @@ class _AvailablePlace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final jobs = enterprise.jobs.map((e) => e).toList();
+    jobs.sort(
+      (a, b) => a.specialization.name
+          .toLowerCase()
+          .compareTo(b.specialization.name.toLowerCase()),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Places de stage disponibles'),
         Column(
-          children: enterprise.jobs
+          children: jobs
               .map(
                 (job) => ListTile(
                   visualDensity: VisualDensity.compact,

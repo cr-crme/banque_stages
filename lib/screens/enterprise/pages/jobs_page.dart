@@ -1,15 +1,15 @@
-import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_sst_event_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_text_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/job_creator_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/storage_service.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
 import 'jobs_expansion_panels/comments_expansion_panel.dart';
 import 'jobs_expansion_panels/photo_expansion_panel.dart';
 import 'jobs_expansion_panels/prerequisites_expansion_panel.dart';
@@ -34,7 +34,10 @@ class JobsPageState extends State<JobsPage> {
   Future<void> addJob() async {
     final provider = context.read<EnterprisesProvider>();
     final newJob = await showDialog(
-        context: context, builder: (context) => const JobCreatorDialog());
+        context: context,
+        builder: (context) => JobCreatorDialog(
+              enterprise: widget.enterprise,
+            ));
 
     if (newJob == null) return;
     widget.enterprise.jobs.add(newJob);
@@ -125,12 +128,17 @@ class JobsPageState extends State<JobsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final jobs = widget.enterprise.jobs.map((e) => e).toList();
+    jobs.sort(
+      (a, b) => a.specialization.name
+          .toLowerCase()
+          .compareTo(b.specialization.name.toLowerCase()),
+    );
+
     return SingleChildScrollView(
       child: ExpansionPanelList.radio(
-        initialOpenPanelValue: widget.enterprise.jobs.length == 1
-            ? widget.enterprise.jobs.first.id
-            : null,
-        children: widget.enterprise.jobs
+        initialOpenPanelValue: jobs.length == 1 ? jobs.first.id : null,
+        children: jobs
             .map((job) => ExpansionPanelRadio(
                 canTapOnHeader: true,
                 value: job.id,

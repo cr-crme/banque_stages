@@ -16,13 +16,16 @@ class JobFormFieldListTile extends StatefulWidget {
     this.initialValue,
     this.onSaved,
     this.specializations,
+    this.specializationBlackList,
     this.specializationOnly = false,
   });
 
   final Job? initialValue;
   final FormFieldSetter<Job>? onSaved;
-  final Map<Specialization, int>?
-      specializations; // Specialization and number of position for each
+  // Specialization and number of position for each
+  final Map<Specialization, int>? specializations;
+  // Specialization to ignore in the list when fetching automatically
+  final List<Specialization>? specializationBlackList;
   final bool specializationOnly;
 
   @override
@@ -70,13 +73,22 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   }
 
   List<Specialization> get _availableSpecialization {
-    if (widget.specializations == null) {
-      final out = ActivitySectorsService.allSpecializations;
-      out.sort((a, b) => a.name.compareTo(b.name));
-      return out;
+    // Make a copy of the available specializations
+    List<Specialization> out = widget.specializations?.keys.toList() ??
+        ActivitySectorsService.allSpecializations.map((e) => e).toList();
+
+    // Sort them by name
+    out.sort((a, b) => a.name.compareTo(b.name));
+
+    // Remove the blacklisted
+    if (widget.specializationBlackList != null) {
+      out = out
+          .where(
+              (element) => !widget.specializationBlackList!.contains(element))
+          .toList();
     }
 
-    return widget.specializations!.keys.toList();
+    return out;
   }
 
   @override
@@ -96,7 +108,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
             uniform: _uniformTextController.text);
         final protections = Protections(
             status: _protectionsKey.currentState!.value!,
-            protections: _protectionsTypeKey.currentState!.values);
+            protections: _protectionsTypeKey.currentState?.values ?? []);
 
         widget.onSaved!(Job(
           specialization: _specialization!,
@@ -134,11 +146,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   Row _buildAvailability(FormFieldState<Job> state) {
     return Row(
       children: [
-        const Expanded(
-          child: Text(
-            '* Places de stages disponibles',
-          ),
-        ),
+        const Expanded(child: Text('* Places de stages disponibles')),
         SizedBox(
           width: 112,
           child: SpinBox(
@@ -146,9 +154,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
             min: 1,
             max: 10,
             spacing: 0,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-            ),
+            decoration: const InputDecoration(border: InputBorder.none),
             validator: (value) {
               final out =
                   _isValidating && int.parse(value!) == 0 ? 'Combien?' : null;
