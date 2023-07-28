@@ -110,7 +110,6 @@ class ScheduleStepState extends State<ScheduleStep> {
             scheduleController: scheduleController,
             onScheduleChanged: onScheduleChanged,
           ),
-          _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
           Visibility(
               visible: scheduleController.dateRange != null,
               child: ScheduleSelector(
@@ -118,6 +117,7 @@ class ScheduleStepState extends State<ScheduleStep> {
                 editMode: true,
                 withTitle: true,
               )),
+          _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
         ],
       ),
     );
@@ -250,16 +250,22 @@ class _Hours extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 12.0),
-      child: TextFormField(
-        decoration: const InputDecoration(
-            labelText: '* Nombre total d\'heures de stage à faire'),
-        validator: (text) =>
-            text!.isEmpty ? 'Indiquer un nombre d\'heures.' : null,
-        keyboardType: TextInputType.number,
-        onSaved: onSaved,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Spécifications', left: 0, bottom: 0),
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: TextFormField(
+            decoration: const InputDecoration(
+                labelText: '* Nombre total d\'heures de stage à faire'),
+            validator: (text) =>
+                text!.isEmpty ? 'Indiquer un nombre d\'heures.' : null,
+            keyboardType: TextInputType.number,
+            onSaved: onSaved,
+          ),
+        ),
+      ],
     );
   }
 }

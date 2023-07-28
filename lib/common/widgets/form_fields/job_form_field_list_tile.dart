@@ -206,23 +206,26 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
             _isValidating = true;
             return value!.isEmpty ? 'Sélectionner un métier' : null;
           },
+          enabled: _availableSpecialization.length != 1,
           decoration: InputDecoration(
               labelText: '* Métier semi-spécialisé',
               errorText: state.errorText == _invalidSpecialization
                   ? 'Sélectionner un métier.'
                   : null,
               hintText: 'Saisir nom ou n° de métier',
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  if (focusNode.hasFocus) focusNode.nextFocus();
+              suffixIcon: _availableSpecialization.length == 1
+                  ? null
+                  : IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        if (focusNode.hasFocus) focusNode.nextFocus();
 
-                  state.didChange(null);
-                  controller.text = '';
-                  _specialization = null;
-                  _sectorTextController.text = '';
-                },
-              )),
+                        state.didChange(null);
+                        controller.text = '';
+                        _specialization = null;
+                        _sectorTextController.text = '';
+                      },
+                    )),
         );
       },
     );
