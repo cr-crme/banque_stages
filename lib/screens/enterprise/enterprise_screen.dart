@@ -83,8 +83,8 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
   }
 
   Future<void> addInternship(Enterprise enterprise) async {
-    if (enterprise.jobs.fold<int>(
-            0, (previousValue, e) => e.positionsRemaining(context)) ==
+    if (enterprise.jobs
+            .fold<int>(0, (prev, e) => prev + e.positionsRemaining(context)) ==
         0) {
       await showDialog(
         context: context,

@@ -117,7 +117,7 @@ Future<void> addDummyEnterprises(
   jobs.add(
     Job(
         specialization: ActivitySectorsService.sectors[0].specializations[7],
-        positionsOffered: 2,
+        positionsOffered: 3,
         sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
         minimumAge: 15,
         preInternshipRequest:
