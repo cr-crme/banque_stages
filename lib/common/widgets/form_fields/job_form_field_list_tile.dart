@@ -254,7 +254,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
             keyboardType: TextInputType.number,
             onChanged: (value) => _minimumAge = int.tryParse(value) ?? -1,
             inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+              FilteringTextInputFormatter.digitsOnly,
             ], // Only numbers can be entered
           ),
         ),

@@ -22,7 +22,7 @@ class Uniform extends ItemSerializable {
   final UniformStatus status;
   final String _uniform;
 
-  List<String> get uniforms => _uniform.split('\n');
+  List<String> get uniforms => _uniform.isEmpty ? [] : _uniform.split('\n');
 
   Uniform({required this.status, String? uniform = ''})
       : _uniform = uniform ?? '';

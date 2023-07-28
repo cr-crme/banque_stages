@@ -30,9 +30,20 @@ class JobsPage extends StatefulWidget {
 
 class JobsPageState extends State<JobsPage> {
   final Map<String, List> _expandedSections = {};
+  final Map<String, GlobalKey<PrerequisitesBodyState>> _prerequisitesFormKeys =
+      {};
+  final Map<String, bool> _isEditingPrerequisites = {};
+
+  bool get editing => _isEditingPrerequisites.containsValue(true);
+  void cancelEditing() {
+    for (final e in _isEditingPrerequisites.keys) {
+      _isEditingPrerequisites[e] = false;
+    }
+    setState(() {});
+  }
 
   Future<void> addJob() async {
-    final provider = context.read<EnterprisesProvider>();
+    final enterprises = EnterprisesProvider.of(context, listen: false);
     final newJob = await showDialog(
         context: context,
         builder: (context) => JobCreatorDialog(
@@ -41,11 +52,11 @@ class JobsPageState extends State<JobsPage> {
 
     if (newJob == null) return;
     widget.enterprise.jobs.add(newJob);
-    provider.replace(widget.enterprise);
+    enterprises.replace(widget.enterprise);
   }
 
   void _addImage(Job job, ImageSource source) async {
-    final enterprises = EnterprisesProvider.of(context);
+    final enterprises = EnterprisesProvider.of(context, listen: false);
 
     late List<XFile?> images;
     if (source == ImageSource.camera) {
@@ -64,7 +75,7 @@ class JobsPageState extends State<JobsPage> {
   }
 
   void _removeImage(Job job, int index) async {
-    final enterprises = EnterprisesProvider.of(context);
+    final enterprises = EnterprisesProvider.of(context, listen: false);
     await StorageService.removeJobImage(job.photosUrl[index]);
     job.photosUrl.removeAt(index);
 
@@ -105,25 +116,48 @@ class JobsPageState extends State<JobsPage> {
     provider.replace(widget.enterprise);
   }
 
-  void _updateExpandedSections() {
-    setState(() {
-      for (Job job in widget.enterprise.jobs) {
-        _expandedSections.putIfAbsent(
-            job.id, () => [false, false, false, false, false, false]);
-      }
-    });
+  void _updateSections() {
+    for (Job job in widget.enterprise.jobs) {
+      _expandedSections.putIfAbsent(
+          job.id, () => [false, false, false, false, false, false]);
+      _prerequisitesFormKeys.putIfAbsent(
+          job.id, () => GlobalKey<PrerequisitesBodyState>());
+      _isEditingPrerequisites.putIfAbsent(job.id, () => false);
+    }
+    setState(() {});
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _updateExpandedSections();
+    _updateSections();
     context.read<EnterprisesProvider>().addListener(() {
       if (mounted) {
-        _updateExpandedSections();
+        _updateSections();
       }
     });
+  }
+
+  void _onClickPrerequisiteEdit(Job job) {
+    // If we have to validate something before switching
+    if (_isEditingPrerequisites[job.id]!) {
+      final formKey =
+          _prerequisitesFormKeys[job.id]!.currentState!.formKey.currentState!;
+      if (!formKey.validate()) {
+        return;
+      }
+
+      final enterprises = EnterprisesProvider.of(context, listen: false);
+
+      widget.enterprise.jobs.replace(job.copyWith(
+        minimumAge: _prerequisitesFormKeys[job.id]!.currentState!.minimumAge,
+      ));
+      enterprises.replace(widget.enterprise);
+    }
+
+    _isEditingPrerequisites[job.id] = !_isEditingPrerequisites[job.id]!;
+    setState(() {});
   }
 
   @override
@@ -152,9 +186,12 @@ class JobsPageState extends State<JobsPage> {
                               !isExpanded),
                       children: [
                         PrerequisitesExpansionPanel(
+                          key: _prerequisitesFormKeys[job.id]!,
                           isExpanded: _expandedSections[job.id]![0],
+                          isEditing: _isEditingPrerequisites[job.id]!,
                           enterprise: widget.enterprise,
                           job: job,
+                          onClickEdit: () => _onClickPrerequisiteEdit(job),
                         ),
                         SstExpansionPanel(
                           isExpanded: _expandedSections[job.id]![1],

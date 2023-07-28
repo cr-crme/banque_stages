@@ -4,48 +4,90 @@ import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PrerequisitesExpansionPanel extends ExpansionPanel {
   PrerequisitesExpansionPanel({
+    required GlobalKey<PrerequisitesBodyState> key,
     required super.isExpanded,
+    required bool isEditing,
     required Enterprise enterprise,
+    required Function() onClickEdit,
     required Job job,
   }) : super(
           canTapOnHeader: true,
           body: _PrerequisitesBody(
+            key: key,
             job: job,
             enterprise: enterprise,
+            isEditing: isEditing,
           ),
-          headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text('Prérequis et équipements'),
+          headerBuilder: (context, isExpanded) => ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Prérequis et équipements'),
+                if (isExpanded)
+                  SizedBox(
+                    width: 35,
+                    height: 35,
+                    child: InkWell(
+                        onTap: onClickEdit,
+                        borderRadius: BorderRadius.circular(25),
+                        child: Icon(isEditing ? Icons.save : Icons.edit,
+                            color: Theme.of(context).primaryColor)),
+                  ),
+              ],
+            ),
           ),
         );
 }
 
-class _PrerequisitesBody extends StatelessWidget {
-  const _PrerequisitesBody({required this.job, required this.enterprise});
+class _PrerequisitesBody extends StatefulWidget {
+  const _PrerequisitesBody({
+    required super.key,
+    required this.job,
+    required this.enterprise,
+    required this.isEditing,
+  });
 
   final Job job;
   final Enterprise enterprise;
+  final bool isEditing;
+
+  @override
+  State<_PrerequisitesBody> createState() => PrerequisitesBodyState();
+}
+
+class PrerequisitesBodyState extends State<_PrerequisitesBody> {
+  late final _ageController =
+      TextEditingController(text: widget.job.minimumAge.toString());
+  int get minimumAge =>
+      _ageController.text.isEmpty ? -1 : int.parse(_ageController.text);
+
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: Size.infinite.width,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 24, right: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildMinimumAge(),
-            const SizedBox(height: 12),
-            ..._buildEntepriseRequests(),
-            const SizedBox(height: 12),
-            ..._buildUniform(),
-            const SizedBox(height: 12),
-            ..._buildProtections(),
-            const SizedBox(height: 12),
-          ],
+    return Form(
+      key: formKey,
+      child: SizedBox(
+        width: Size.infinite.width,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 24, right: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildMinimumAge(),
+              const SizedBox(height: 12),
+              ..._buildEntepriseRequests(),
+              const SizedBox(height: 12),
+              ..._buildUniform(),
+              const SizedBox(height: 12),
+              ..._buildProtections(),
+              const SizedBox(height: 12),
+            ],
+          ),
         ),
       ),
     );
@@ -57,14 +99,36 @@ class _PrerequisitesBody extends StatelessWidget {
       children: [
         const Text('Âge minimum',
             style: TextStyle(fontWeight: FontWeight.bold)),
-        Text('${job.minimumAge} ans'),
+        widget.isEditing
+            ? Row(
+                children: [
+                  SizedBox(
+                    width: 100,
+                    child: TextFormField(
+                      controller: _ageController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        final current = int.tryParse(value!);
+                        if (current == null) return 'Préciser';
+                        if (current < 10 || current > 30) {
+                          return 'Entre 10 et 30';
+                        }
+                        return null;
+                      },
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    ),
+                  ),
+                  const Text(' ans')
+                ],
+              )
+            : Text('${widget.job.minimumAge} ans'),
       ],
     );
   }
 
   List<Widget> _buildUniform() {
     // Workaround for job.uniforms
-    final uniforms = job.uniform;
+    final uniforms = widget.job.uniform;
 
     return [
       const Text(
@@ -82,7 +146,7 @@ class _PrerequisitesBody extends StatelessWidget {
   }
 
   List<Widget> _buildEntepriseRequests() {
-    final requests = job.preInternshipRequest.requests;
+    final requests = widget.job.preInternshipRequest.requests;
     return [
       const Text(
         'Exigences de l\'entreprise',
@@ -94,7 +158,7 @@ class _PrerequisitesBody extends StatelessWidget {
   }
 
   List<Widget> _buildProtections() {
-    final protections = job.protections;
+    final protections = widget.job.protections;
 
     return [
       const Text(
