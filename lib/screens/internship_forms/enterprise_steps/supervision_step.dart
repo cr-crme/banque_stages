@@ -3,10 +3,6 @@ import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 
-enum _TaskVariety { none, low, high }
-
-enum _TrainingPlan { none, notFilled, filled }
-
 class SupervisionStep extends StatefulWidget {
   const SupervisionStep({
     super.key,
@@ -22,20 +18,6 @@ class SupervisionStep extends StatefulWidget {
 class SupervisionStepState extends State<SupervisionStep> {
   final _formKey = GlobalKey<FormState>();
 
-  // Tasks
-  var _taskVariety = _TaskVariety.none;
-  double? get taskVariety => _taskVariety == _TaskVariety.none
-      ? null
-      : _taskVariety == _TaskVariety.low
-          ? 0.0
-          : 1.0;
-  var _trainingPlan = _TrainingPlan.none;
-  double? get trainingPlan => _trainingPlan == _TrainingPlan.none
-      ? null
-      : _trainingPlan == _TrainingPlan.notFilled
-          ? 0.0
-          : 1.0;
-
   // Expectations
   double? autonomyExpected;
   double? efficiencyExpected;
@@ -50,7 +32,7 @@ class SupervisionStepState extends State<SupervisionStep> {
   String get supervisionComments => _commentsController.text;
 
   Future<String?> validate() async {
-    if (!_formKey.currentState!.validate() || taskVariety == null) {
+    if (!_formKey.currentState!.validate()) {
       return 'Remplir tous les champs avec un *.';
     }
     _formKey.currentState!.save();
@@ -65,11 +47,6 @@ class SupervisionStepState extends State<SupervisionStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SubTitle('Tâches', left: 0),
-            _buildVariety(context),
-            const SizedBox(height: 8),
-            _buildTrainingPlan(context),
-            const SizedBox(height: 8),
             const SubTitle('Attentes envers le ou la stagiaire', left: 0),
             _buildAutonomyRequired(context),
             const SizedBox(height: 8),
@@ -198,105 +175,6 @@ class SupervisionStepState extends State<SupervisionStep> {
             lowLabel: 'Élève pas\nautonome',
             highLabel: 'Élève très\nautonome',
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildVariety(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '* Tâches données à l\'élève',
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge!
-              .copyWith(fontWeight: FontWeight.bold),
-        ),
-        Row(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
-              child: RadioListTile<_TaskVariety>(
-                value: _TaskVariety.low,
-                dense: true,
-                groupValue: _taskVariety,
-                visualDensity: VisualDensity.compact,
-                onChanged: (value) => setState(() => _taskVariety = value!),
-                title: Text(
-                  'Peu variées',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
-              child: RadioListTile<_TaskVariety>(
-                value: _TaskVariety.high,
-                groupValue: _taskVariety,
-                dense: true,
-                visualDensity: VisualDensity.compact,
-                onChanged: (value) => setState(() => _taskVariety = value!),
-                title: Text(
-                  'Très variées',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTrainingPlan(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '* Respect du plan de formation',
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge!
-              .copyWith(fontWeight: FontWeight.bold),
-        ),
-        Text(
-          'Tâches et compétences prévues dans le plan de formation ont été '
-          'faites par l\'élève\u00a0:',
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        Row(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
-              child: RadioListTile<_TrainingPlan>(
-                value: _TrainingPlan.notFilled,
-                dense: true,
-                groupValue: _trainingPlan,
-                visualDensity: VisualDensity.compact,
-                onChanged: (value) => setState(() => _trainingPlan = value!),
-                title: Text(
-                  'En partie',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
-              child: RadioListTile<_TrainingPlan>(
-                value: _TrainingPlan.filled,
-                groupValue: _trainingPlan,
-                dense: true,
-                visualDensity: VisualDensity.compact,
-                onChanged: (value) => setState(() => _trainingPlan = value!),
-                title: Text(
-                  'En totalité',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-            )
-          ],
         ),
       ],
     );

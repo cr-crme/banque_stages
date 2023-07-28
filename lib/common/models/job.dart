@@ -1,4 +1,7 @@
 import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
+import 'package:crcrme_banque_stages/common/models/protections.dart';
+import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
@@ -89,6 +92,12 @@ class Job extends ItemSerializable {
   int positionsRemaining(context) =>
       positionsOffered - positionsOccupied(context);
 
+  // Prerequisites for an internship
+  final int minimumAge;
+  final PreInternshipRequest preInternshipRequest;
+  final Uniform uniform;
+  final Protections protections;
+
   // Photos
   final List<String> photosUrl;
 
@@ -115,6 +124,10 @@ class Job extends ItemSerializable {
     super.id,
     required this.specialization,
     required this.positionsOffered,
+    required this.minimumAge,
+    required this.preInternshipRequest,
+    required this.uniform,
+    required this.protections,
     List<String>? photosUrl,
     required this.sstEvaluation,
     List<String>? comments,
@@ -125,6 +138,10 @@ class Job extends ItemSerializable {
     ActivitySector? activitySector,
     Specialization? specialization,
     int? positionsOffered,
+    int? minimumAge,
+    PreInternshipRequest? preInternshipRequest,
+    Uniform? uniform,
+    Protections? protections,
     List<String>? photosUrl,
     JobSstEvaluation? sstEvaluation,
     List<String>? comments,
@@ -133,6 +150,10 @@ class Job extends ItemSerializable {
     return Job(
         specialization: specialization ?? this.specialization,
         positionsOffered: positionsOffered ?? this.positionsOffered,
+        minimumAge: minimumAge ?? this.minimumAge,
+        preInternshipRequest: preInternshipRequest ?? this.preInternshipRequest,
+        uniform: uniform ?? this.uniform,
+        protections: protections ?? this.protections,
         photosUrl: photosUrl ?? this.photosUrl,
         sstEvaluation: sstEvaluation ?? this.sstEvaluation,
         comments: comments ?? this.comments,
@@ -144,6 +165,10 @@ class Job extends ItemSerializable {
     return {
       'specialization': specialization.id,
       'positionsOffered': positionsOffered,
+      'minimumAge': minimumAge,
+      'preInternshipRequest': preInternshipRequest.serialize(),
+      'uniform': uniform.serialize(),
+      'protections': protections.serialize(),
       'photosUrl': photosUrl,
       'sstEvaluations': sstEvaluation.serialize(),
       'comments': comments,
@@ -154,6 +179,11 @@ class Job extends ItemSerializable {
       : specialization =
             ActivitySectorsService.specialization(map['specialization']),
         positionsOffered = map['positionsOffered'],
+        minimumAge = map['minimumAge'],
+        preInternshipRequest =
+            PreInternshipRequest.fromSerialized(map['preInternshipRequest']),
+        uniform = Uniform.fromSerialized(map['uniform']),
+        protections = Protections.fromSerialized(map['protections']),
         photosUrl = _stringListFromSerialized(map['photosUrl']),
         sstEvaluation = JobSstEvaluation.fromSerialized(map['sstEvaluations']),
         comments = _stringListFromSerialized(map['comments']),

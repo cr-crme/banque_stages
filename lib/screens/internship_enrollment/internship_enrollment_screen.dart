@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
-import 'package:crcrme_banque_stages/common/models/protections.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
@@ -16,7 +14,6 @@ import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'steps/general_informations_step.dart';
-import 'steps/requirements_step.dart';
 import 'steps/schedule_step.dart';
 
 class InternshipEnrollmentScreen extends StatefulWidget {
@@ -38,14 +35,9 @@ class _InternshipEnrollmentScreenState
 
   final _generalInfoKey = GlobalKey<GeneralInformationsStepState>();
   final _scheduleKey = GlobalKey<ScheduleStepState>();
-  final _requirementsKey = GlobalKey<RequirementsStepState>();
 
   int _currentStep = 0;
-  final List<StepState> _stepStatus = [
-    StepState.indexed,
-    StepState.indexed,
-    StepState.indexed
-  ];
+  final List<StepState> _stepStatus = [StepState.indexed, StepState.indexed];
 
   void _previousStep() {
     if (_currentStep == 0) return;
@@ -58,7 +50,6 @@ class _InternshipEnrollmentScreenState
     final formKeys = [
       _generalInfoKey.currentState!.formKey,
       _scheduleKey.currentState!.formKey,
-      _requirementsKey.currentState!.formKey
     ];
 
     bool isAllValid = true;
@@ -72,17 +63,11 @@ class _InternshipEnrollmentScreenState
       isAllValid = isAllValid && isValid;
       _stepStatus[1] = isValid ? StepState.complete : StepState.error;
     }
-    if (_currentStep >= 2) {
-      final isValid = FormService.validateForm(formKeys[2]) &&
-          _requirementsKey.currentState!.validateProtectionsCheckboxes();
-      isAllValid = isAllValid && isValid;
-      _stepStatus[2] = isValid ? StepState.complete : StepState.error;
-    }
     setState(() {});
 
     if (!isAllValid) return;
 
-    if (_currentStep != 2) {
+    if (_currentStep != 1) {
       _currentStep += 1;
       _scrollController.jumpTo(0);
       setState(() {});
@@ -92,7 +77,6 @@ class _InternshipEnrollmentScreenState
     // Submit
     _generalInfoKey.currentState!.formKey.currentState!.save();
     _scheduleKey.currentState!.formKey.currentState!.save();
-    _requirementsKey.currentState!.formKey.currentState!.save();
     final enterprise = EnterprisesProvider.of(context, listen: false)
         .fromId(_generalInfoKey.currentState!.enterprise!.id);
 
@@ -115,12 +99,6 @@ class _InternshipEnrollmentScreenState
           email: _generalInfoKey.currentState!.supervisorEmail ?? '',
           phone: PhoneNumber.fromString(
               _generalInfoKey.currentState!.supervisorPhone)),
-      protections: Protections(
-          protections: _requirementsKey.currentState!.protections,
-          status: _requirementsKey.currentState!.protectionsStatus),
-      uniform: Uniform(
-          status: _requirementsKey.currentState!.uniformStatus,
-          uniform: _requirementsKey.currentState!.uniform),
       date: _scheduleKey.currentState!.scheduleController.dateRange!,
       expectedLength: _scheduleKey.currentState!.intershipLength,
       achievedLength: 0,
@@ -211,12 +189,6 @@ class _InternshipEnrollmentScreenState
             title: const Text('Horaire'),
             content: ScheduleStep(key: _scheduleKey),
           ),
-          Step(
-            state: _stepStatus[2],
-            isActive: _currentStep == 2,
-            title: const Text('Exigences'),
-            content: RequirementsStep(key: _requirementsKey),
-          ),
         ],
         controlsBuilder: _controlBuilder,
       ),
@@ -235,7 +207,7 @@ class _InternshipEnrollmentScreenState
           const SizedBox(width: 20),
           TextButton(
             onPressed: details.onStepContinue,
-            child: _currentStep == 2
+            child: _currentStep == 1
                 ? const Text('Confirmer')
                 : const Text('Suivant'),
           )

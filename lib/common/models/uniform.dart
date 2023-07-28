@@ -4,10 +4,9 @@ enum UniformStatus {
   suppliedByEnterprise,
   suppliedByStudent,
   none;
-}
 
-extension UniformStatusNamed on UniformStatus {
-  String get name {
+  @override
+  String toString() {
     switch (this) {
       case UniformStatus.suppliedByEnterprise:
         return 'Oui et l\'entreprise la fournit';
@@ -23,14 +22,13 @@ class Uniform extends ItemSerializable {
   UniformStatus status;
   String uniform;
 
-  Uniform({
-    required this.status,
-    required this.uniform,
-  });
+  Uniform({required this.status, String? uniform = ''})
+      : uniform = uniform ?? '';
 
   Uniform.fromSerialized(map)
       : status = UniformStatus.values[map['status']],
-        uniform = map['uniform'];
+        uniform = map['uniform'],
+        super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() => {

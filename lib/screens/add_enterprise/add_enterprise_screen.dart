@@ -56,12 +56,12 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       _stepStatus[0] = valid ? StepState.complete : StepState.error;
     }
     if (_currentStep >= 1) {
-      valid = _jobsKey.currentState!.validate();
+      message = await _contactKey.currentState!.validate();
+      valid = message == null;
       _stepStatus[1] = valid ? StepState.complete : StepState.error;
     }
     if (_currentStep >= 2) {
-      message = await _contactKey.currentState!.validate();
-      valid = message == null;
+      valid = _jobsKey.currentState!.validate();
       _stepStatus[2] = valid ? StepState.complete : StepState.error;
     }
     setState(() {});
@@ -84,7 +84,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
         return;
       }
 
-      if (!_jobsKey.currentState!.validate()) {
+      if ((await _contactKey.currentState!.validate()) != null) {
         setState(() {
           _currentStep = 1;
           _scrollController.jumpTo(0);
@@ -177,15 +177,15 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
             Step(
               state: _stepStatus[1],
               isActive: _currentStep == 1,
-              title: const Text('Métiers'),
-              content: JobsPage(key: _jobsKey),
+              title: const Text('Contact'),
+              content: ContactPage(key: _contactKey),
             ),
             Step(
               state: _stepStatus[2],
               isActive: _currentStep == 2,
-              title: const Text('Contact'),
-              content: ContactPage(key: _contactKey),
-            )
+              title: const Text('Postes'),
+              content: JobsPage(key: _jobsKey),
+            ),
           ],
           controlsBuilder: _controlBuilder,
         ),
@@ -200,7 +200,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Visibility(
-            visible: _currentStep == 1,
+            visible: _currentStep == 2,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: AddJobButton(
@@ -226,7 +226,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
               TextButton(
                 onPressed: details.onStepContinue,
                 child: _currentStep == 2
-                    ? const Text('Ajouter')
+                    ? const Text('Terminer')
                     : const Text('Suivant'),
               )
             ],

@@ -30,29 +30,6 @@ class JobsPageState extends State<JobsPage> {
     return _formKey.currentState!.validate();
   }
 
-  Widget _buildNewJobsForm(int index) {
-    final key = _jobsForm.keys.toList()[index];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      key: Key('${key}_formKey'),
-      children: [
-        Row(
-          children: [
-            Text(
-              'Métier ${index + 1}',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            DeleteButton(
-              onPressed: () => setState(() => _jobsForm.remove(key)),
-            ),
-          ],
-        ),
-        _jobsForm[key]!,
-        const SizedBox(height: 20),
-      ],
-    );
-  }
-
   void addJobToForm() {
     final key = GlobalKey<FormState>();
     _jobsForm[key] = JobFormFieldListTile(
@@ -73,6 +50,29 @@ class JobsPageState extends State<JobsPage> {
         itemBuilder: (BuildContext context, int index) =>
             _buildNewJobsForm(index),
       ),
+    );
+  }
+
+  Widget _buildNewJobsForm(int index) {
+    final key = _jobsForm.keys.toList()[index];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      key: Key('${key}_formKey'),
+      children: [
+        Row(
+          children: [
+            Text(
+              'Métier ${index + 1}',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            DeleteButton(
+              onPressed: () => setState(() => _jobsForm.remove(key)),
+            ),
+          ],
+        ),
+        _jobsForm[key]!,
+        const SizedBox(height: 20),
+      ],
     );
   }
 }

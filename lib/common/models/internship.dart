@@ -2,11 +2,9 @@ import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/common/models/person.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'internship_evaluation_attitude.dart';
 import 'internship_evaluation_skill.dart';
-import 'protections.dart';
 import 'schedule.dart';
 
 double _doubleFromSerialized(num? number, {double defaultValue = 0}) {
@@ -20,8 +18,6 @@ List<String> _stringListFromSerialized(List? list) =>
 class PostIntershipEnterpriseEvaluation extends ItemSerializable {
   PostIntershipEnterpriseEvaluation({
     required this.internshipId,
-    required this.minimumAge,
-    required this.enterpriseRequests,
     required this.skillsRequired,
     required this.taskVariety,
     required this.trainingPlanRespect,
@@ -41,9 +37,6 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
 
   PostIntershipEnterpriseEvaluation.fromSerialized(map)
       : internshipId = map['internshipId'],
-        minimumAge = map['minimumAge'],
-        enterpriseRequests =
-            _stringListFromSerialized(map['enterpriseRequests']),
         skillsRequired = _stringListFromSerialized(map['skillsRequired']),
         taskVariety = _doubleFromSerialized(map['taskVariety']),
         trainingPlanRespect = _doubleFromSerialized(map['trainingPlanRespect']),
@@ -68,8 +61,6 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
   String internshipId;
 
   // Prerequisites
-  final int minimumAge;
-  final List<String> enterpriseRequests;
   final List<String> skillsRequired;
 
   // Tasks
@@ -95,8 +86,6 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'internshipId': internshipId,
-        'minimumAge': minimumAge,
-        'enterpriseRequests': enterpriseRequests,
         'skillsRequired': skillsRequired,
         'taskVariety': taskVariety,
         'trainingPlanRespect': trainingPlanRespect,
@@ -117,10 +106,6 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
   PostIntershipEnterpriseEvaluation deepCopy() {
     return PostIntershipEnterpriseEvaluation(
       internshipId: internshipId,
-      minimumAge: minimumAge,
-      enterpriseRequests: [
-        for (final requirement in enterpriseRequests) requirement
-      ],
       skillsRequired: [for (final skill in skillsRequired) skill],
       taskVariety: taskVariety,
       trainingPlanRespect: trainingPlanRespect,
@@ -146,15 +131,11 @@ class _MutableElements extends ItemSerializable {
     required this.supervisor,
     required this.date,
     required this.weeklySchedules,
-    required this.protections,
-    required this.uniform,
   });
   final DateTime versionDate;
   final Person supervisor;
   final DateTimeRange date;
   final List<WeeklySchedule> weeklySchedules;
-  final Protections protections;
-  final Uniform uniform;
 
   _MutableElements.fromSerialized(map)
       : versionDate = DateTime.fromMillisecondsSinceEpoch(map['versionDate']),
@@ -165,8 +146,6 @@ class _MutableElements extends ItemSerializable {
         weeklySchedules = (map['schedule'] as List)
             .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
-        protections = Protections.fromSerialized(map['protections']),
-        uniform = Uniform.fromSerialized(map['uniform']),
         super.fromSerialized(map);
 
   @override
@@ -179,19 +158,16 @@ class _MutableElements extends ItemSerializable {
           date.end.millisecondsSinceEpoch
         ],
         'schedule': weeklySchedules.map((e) => e.serialize()).toList(),
-        'protections': protections.serialize(),
-        'uniform': uniform.serialize(),
       };
 
   _MutableElements deepCopy() {
     return _MutableElements(
-        versionDate: DateTime.fromMillisecondsSinceEpoch(
-            versionDate.millisecondsSinceEpoch),
-        supervisor: supervisor.deepCopy(),
-        date: DateTimeRange(start: date.start, end: date.end),
-        weeklySchedules: weeklySchedules.map((e) => e.deepCopy()).toList(),
-        protections: protections.deepCopy(),
-        uniform: uniform);
+      versionDate: DateTime.fromMillisecondsSinceEpoch(
+          versionDate.millisecondsSinceEpoch),
+      supervisor: supervisor.deepCopy(),
+      date: DateTimeRange(start: date.start, end: date.end),
+      weeklySchedules: weeklySchedules.map((e) => e.deepCopy()).toList(),
+    );
   }
 }
 
@@ -219,10 +195,6 @@ class Internship extends ItemSerializable {
   List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
   List<WeeklySchedule> weeklySchedulesFrom(int version) =>
       _mutables[version].weeklySchedules;
-  Protections get protections => _mutables.last.protections;
-  Protections protectionsFrom(int version) => _mutables[version].protections;
-  Uniform get uniform => _mutables.last.uniform;
-  Uniform uniformFrom(int version) => _mutables[version].uniform;
 
   // Elements that are parts of the inner working of the internship (can be
   // modify, but won't generate a new version)
@@ -276,8 +248,6 @@ class Internship extends ItemSerializable {
     required Person supervisor,
     required DateTimeRange date,
     required List<WeeklySchedule> weeklySchedules,
-    required Protections protections,
-    required Uniform uniform,
     required this.expectedLength,
     required this.achievedLength,
     required this.visitingPriority,
@@ -289,12 +259,11 @@ class Internship extends ItemSerializable {
   })  : previousTeacherId = previousTeacherId ?? teacherId,
         _mutables = [
           _MutableElements(
-              versionDate: versionDate,
-              supervisor: supervisor,
-              date: date,
-              weeklySchedules: weeklySchedules,
-              protections: protections,
-              uniform: uniform)
+            versionDate: versionDate,
+            supervisor: supervisor,
+            date: date,
+            weeklySchedules: weeklySchedules,
+          )
         ];
 
   Internship.fromSerialized(map)
@@ -364,16 +333,13 @@ class Internship extends ItemSerializable {
     required Person supervisor,
     required DateTimeRange date,
     required List<WeeklySchedule> weeklySchedules,
-    required Protections protections,
-    required Uniform uniform,
   }) {
     _mutables.add(_MutableElements(
-        versionDate: versionDate,
-        supervisor: supervisor,
-        date: date,
-        weeklySchedules: weeklySchedules,
-        protections: protections,
-        uniform: uniform));
+      versionDate: versionDate,
+      supervisor: supervisor,
+      date: date,
+      weeklySchedules: weeklySchedules,
+    ));
   }
 
   Internship copyWith({
@@ -390,7 +356,6 @@ class Internship extends ItemSerializable {
     DateTimeRange? date,
     List<WeeklySchedule>? weeklySchedules,
     List<String>? protections,
-    String? uniform,
     int? expectedLength,
     int? achievedLength,
     VisitingPriority? visitingPriority,
@@ -403,9 +368,8 @@ class Internship extends ItemSerializable {
     if (supervisor != null ||
         date != null ||
         weeklySchedules != null ||
-        protections != null ||
-        uniform != null) {
-      throw '[supervisor], [date], [weeklySchedules], [protections] or [uniform] '
+        protections != null) {
+      throw '[supervisor], [date], [weeklySchedules] or [protections] '
           'should not be changed via [copyWith], but using [addVersion]';
     }
     return Internship._(

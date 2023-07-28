@@ -1,8 +1,6 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/models/protections.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -54,13 +52,10 @@ class _PrerequisitesBody extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (evaluations.isNotEmpty) _buildMinimumAge(evaluations),
-                  ..._buildUniform(internships),
+                  //..._buildProtections(internships),
                   const SizedBox(height: 12),
-                  ..._buildProtections(internships),
-                  const SizedBox(height: 12),
-                  if (evaluations.isNotEmpty)
-                    ..._buildEntepriseRequests(evaluations),
+                  // if (evaluations.isNotEmpty)
+                  //   ..._buildEntepriseRequests(evaluations),
                   if (evaluations.isNotEmpty)
                     ..._buildSkillsRequired(evaluations),
                 ],
@@ -74,62 +69,62 @@ class _PrerequisitesBody extends StatelessWidget {
           ));
   }
 
-  Widget _buildMinimumAge(List<PostIntershipEnterpriseEvaluation> evaluations) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Âge minimum',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Text(
-            '${evaluations.fold<double>(0, (prev, e) => prev + e.minimumAge) ~/ evaluations.length} ans'),
-        const SizedBox(height: 12),
-      ],
-    );
-  }
+  // Widget _buildMinimumAge(List<PostIntershipEnterpriseEvaluation> evaluations) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       const Text(
+  //         'Âge minimum',
+  //         style: TextStyle(fontWeight: FontWeight.bold),
+  //       ),
+  //       Text(
+  //           '${evaluations.fold<double>(0, (prev, e) => prev + e.minimumAge) ~/ evaluations.length} ans'),
+  //       const SizedBox(height: 12),
+  //     ],
+  //   );
+  // }
 
-  List<Widget> _buildUniform(Iterable<Internship> internships) {
-    // Workaround for job.uniforms
-    final allUniforms = internships.map<Uniform>((e) => e.uniform).toSet();
-    final uniforms = {
-      UniformStatus.suppliedByEnterprise: allUniforms
-          .where((e) => e.status == UniformStatus.suppliedByEnterprise),
-      UniformStatus.suppliedByStudent:
-          allUniforms.where((e) => e.status == UniformStatus.suppliedByStudent),
-    };
+  // List<Widget> _buildUniform(Iterable<Internship> internships) {
+  //   // Workaround for job.uniforms
+  //   final allUniforms = internships.map<Uniform>((e) => e.uniform).toSet();
+  //   final uniforms = {
+  //     UniformStatus.suppliedByEnterprise: allUniforms
+  //         .where((e) => e.status == UniformStatus.suppliedByEnterprise),
+  //     UniformStatus.suppliedByStudent:
+  //         allUniforms.where((e) => e.status == UniformStatus.suppliedByStudent),
+  //   };
 
-    return [
-      const Text(
-        'Tenue de travail',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      if (uniforms[UniformStatus.suppliedByEnterprise]!.isEmpty &&
-          uniforms[UniformStatus.suppliedByStudent]!.isEmpty)
-        const Text('Aucune consigne de l\'entreprise'),
-      if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Fournie par l\'entreprise\u00a0:'),
-            ..._printCountedList<Uniform>(
-                uniforms[UniformStatus.suppliedByEnterprise]!,
-                (e) => e.uniform),
-          ],
-        ),
-      if (uniforms[UniformStatus.suppliedByStudent]!.isNotEmpty)
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
-              const SizedBox(height: 8),
-            const Text('Fournie par l\'étudiant\u00a0:'),
-            ..._printCountedList<Uniform>(
-                uniforms[UniformStatus.suppliedByStudent]!, (e) => e.uniform),
-          ],
-        ),
-    ];
-  }
+  //   return [
+  //     const Text(
+  //       'Tenue de travail',
+  //       style: TextStyle(fontWeight: FontWeight.bold),
+  //     ),
+  //     if (uniforms[UniformStatus.suppliedByEnterprise]!.isEmpty &&
+  //         uniforms[UniformStatus.suppliedByStudent]!.isEmpty)
+  //       const Text('Aucune consigne de l\'entreprise'),
+  //     if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
+  //       Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           const Text('Fournie par l\'entreprise\u00a0:'),
+  //           ..._printCountedList<Uniform>(
+  //               uniforms[UniformStatus.suppliedByEnterprise]!,
+  //               (e) => e.uniform),
+  //         ],
+  //       ),
+  //     if (uniforms[UniformStatus.suppliedByStudent]!.isNotEmpty)
+  //       Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
+  //             const SizedBox(height: 8),
+  //           const Text('Fournie par l\'étudiant\u00a0:'),
+  //           ..._printCountedList<Uniform>(
+  //               uniforms[UniformStatus.suppliedByStudent]!, (e) => e.uniform),
+  //         ],
+  //       ),
+  //   ];
+  // }
 
   List<Widget> _buildSkillsRequired(
       List<PostIntershipEnterpriseEvaluation> evaluations) {
@@ -146,56 +141,56 @@ class _PrerequisitesBody extends StatelessWidget {
     ];
   }
 
-  List<Widget> _buildEntepriseRequests(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
-    final requests = evaluations.expand((e) => e.enterpriseRequests);
+  // List<Widget> _buildEntepriseRequests(
+  //     List<PostIntershipEnterpriseEvaluation> evaluations) {
+  //   final requests = evaluations.expand((e) => e.enterpriseRequests);
 
-    return [
-      const Text(
-        'Exigences de l\'entreprise',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      if (requests.isEmpty) const Text('Aucune exigence particulière'),
-      if (requests.isNotEmpty) ..._printCountedList<String>(requests, (e) => e),
-      const SizedBox(height: 12),
-    ];
-  }
+  //   return [
+  //     const Text(
+  //       'Exigences de l\'entreprise',
+  //       style: TextStyle(fontWeight: FontWeight.bold),
+  //     ),
+  //     if (requests.isEmpty) const Text('Aucune exigence particulière'),
+  //     if (requests.isNotEmpty) ..._printCountedList<String>(requests, (e) => e),
+  //     const SizedBox(height: 12),
+  //   ];
+  // }
 
-  List<Widget> _buildProtections(Iterable<Internship> internships) {
-    final allProtections = internships.map<Protections>((e) => e.protections);
-    final protections = {
-      ProtectionsStatus.suppliedByEnterprise: allProtections
-          .where((e) => e.status == ProtectionsStatus.suppliedByEnterprise)
-          .map((e) => e.protections)
-          .expand((e) => e),
-      ProtectionsStatus.suppliedBySchool: allProtections
-          .where((e) => e.status == ProtectionsStatus.suppliedBySchool)
-          .map((e) => e.protections)
-          .expand((e) => e),
-    };
+  // List<Widget> _buildProtections(Iterable<Internship> internships) {
+  //   final allProtections = internships.map<Protections>((e) => e.protections);
+  //   final protections = {
+  //     ProtectionsStatus.suppliedByEnterprise: allProtections
+  //         .where((e) => e.status == ProtectionsStatus.suppliedByEnterprise)
+  //         .map((e) => e.protections)
+  //         .expand((e) => e),
+  //     ProtectionsStatus.suppliedBySchool: allProtections
+  //         .where((e) => e.status == ProtectionsStatus.suppliedBySchool)
+  //         .map((e) => e.protections)
+  //         .expand((e) => e),
+  //   };
 
-    return [
-      const Text(
-        'Équipement de protection individuelle',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      if (protections[ProtectionsStatus.suppliedByEnterprise]!.isEmpty &&
-          protections[ProtectionsStatus.suppliedBySchool]!.isEmpty)
-        const Text('Il n\'y a aucun prérequis pour ce métier'),
-      if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Fournis par l\'entreprise\u00a0:'),
-          ..._printCountedList<String>(
-              protections[ProtectionsStatus.suppliedByEnterprise]!, (e) => e),
-        ]),
-      if (protections[ProtectionsStatus.suppliedBySchool]!.isNotEmpty)
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
-            const SizedBox(height: 8),
-          const Text('Fournis par l\'école\u00a0:'),
-          ..._printCountedList<String>(
-              protections[ProtectionsStatus.suppliedBySchool]!, (e) => e),
-        ]),
-    ];
-  }
+  //   return [
+  //     const Text(
+  //       'Équipement de protection individuelle',
+  //       style: TextStyle(fontWeight: FontWeight.bold),
+  //     ),
+  //     if (protections[ProtectionsStatus.suppliedByEnterprise]!.isEmpty &&
+  //         protections[ProtectionsStatus.suppliedBySchool]!.isEmpty)
+  //       const Text('Il n\'y a aucun prérequis pour ce métier'),
+  //     if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
+  //       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+  //         const Text('Fournis par l\'entreprise\u00a0:'),
+  //         ..._printCountedList<String>(
+  //             protections[ProtectionsStatus.suppliedByEnterprise]!, (e) => e),
+  //       ]),
+  //     if (protections[ProtectionsStatus.suppliedBySchool]!.isNotEmpty)
+  //       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+  //         if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
+  //           const SizedBox(height: 8),
+  //         const Text('Fournis par l\'école\u00a0:'),
+  //         ..._printCountedList<String>(
+  //             protections[ProtectionsStatus.suppliedBySchool]!, (e) => e),
+  //       ]),
+  //   ];
+  // }
 }

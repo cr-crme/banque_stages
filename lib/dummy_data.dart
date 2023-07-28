@@ -7,6 +7,7 @@ import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
@@ -96,17 +97,41 @@ Future<void> addDummyEnterprises(
   JobList jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[2].specializations[9],
-      positionsOffered: 2,
-      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
-    ),
+        specialization: ActivitySectorsService.sectors[2].specializations[9],
+        positionsOffered: 2,
+        sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+        minimumAge: 12,
+        preInternshipRequest:
+            PreInternshipRequest(requests: ['Manger de la poutine']),
+        uniform: Uniform(
+            status: UniformStatus.suppliedByEnterprise,
+            uniform: 'Un beau chapeu bleu'),
+        protections: Protections(
+            status: ProtectionsStatus.suppliedByEnterprise,
+            protections: [
+              'Une veste de mithril',
+              'Une cotte de maille',
+              'Une drole de bague'
+            ])),
   );
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[0].specializations[7],
-      positionsOffered: 2,
-      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
-    ),
+        specialization: ActivitySectorsService.sectors[0].specializations[7],
+        positionsOffered: 2,
+        sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+        minimumAge: 15,
+        preInternshipRequest:
+            PreInternshipRequest(requests: ['Manger de la tarte']),
+        uniform: Uniform(
+            status: UniformStatus.suppliedByEnterprise,
+            uniform: 'Deux dents en or'),
+        protections: Protections(
+            status: ProtectionsStatus.suppliedByEnterprise,
+            protections: [
+              'Une veste de mithril',
+              'Une cotte de maille',
+              'Une drole de bague'
+            ])),
   );
 
   enterprises.add(
@@ -142,10 +167,13 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[0].specializations[7],
-      positionsOffered: 3,
-      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
-    ),
+        specialization: ActivitySectorsService.sectors[0].specializations[7],
+        positionsOffered: 3,
+        sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+        minimumAge: 15,
+        preInternshipRequest: PreInternshipRequest(requests: []),
+        uniform: Uniform(status: UniformStatus.none),
+        protections: Protections(status: ProtectionsStatus.none)),
   );
   enterprises.add(
     Enterprise(
@@ -217,6 +245,10 @@ Future<void> addDummyEnterprises(
         },
         date: DateTime.now(),
       ),
+      minimumAge: 15,
+      preInternshipRequest: PreInternshipRequest(requests: []),
+      uniform: Uniform(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
     ),
   );
 
@@ -256,6 +288,10 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[9].specializations[3],
       positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      minimumAge: 15,
+      preInternshipRequest: PreInternshipRequest(requests: []),
+      uniform: Uniform(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
     ),
   );
   enterprises.add(
@@ -295,6 +331,10 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[2].specializations[9],
       positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      minimumAge: 15,
+      preInternshipRequest: PreInternshipRequest(requests: []),
+      uniform: Uniform(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
     ),
   );
 
@@ -335,6 +375,10 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[2].specializations[7],
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      minimumAge: 15,
+      preInternshipRequest: PreInternshipRequest(requests: []),
+      uniform: Uniform(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
     ),
   );
 
@@ -375,6 +419,10 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      minimumAge: 15,
+      preInternshipRequest: PreInternshipRequest(requests: []),
+      uniform: Uniform(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
     ),
   );
 
@@ -415,6 +463,10 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[2].specializations[14],
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      minimumAge: 15,
+      preInternshipRequest: PreInternshipRequest(requests: []),
+      uniform: Uniform(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
     ),
   );
 
@@ -450,6 +502,10 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 3,
       sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      minimumAge: 15,
+      preInternshipRequest: PreInternshipRequest(requests: []),
+      uniform: Uniform(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
     ),
   );
 
@@ -530,6 +586,10 @@ Future<void> addDummyEnterprises(
           '23': 'Joanie, la propriétaire'
         },
       ),
+      minimumAge: 15,
+      preInternshipRequest: PreInternshipRequest(requests: []),
+      uniform: Uniform(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
     ),
   );
   enterprises.add(
@@ -565,49 +625,54 @@ Future<void> addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-        specialization: ActivitySectorsService.sectors[1].specializations[2],
-        positionsOffered: 1,
-        sstEvaluation: JobSstEvaluation(
-          incidents: [
-            'Lorsque l\'élève a laissé tomber un vase dispendieux qui s\'est '
-                'cassé au sol, le patron s\'est énervé et lui a crié dessus. '
-                'L\'élève a fait une crise de panique.',
-            'L\'élève a gâché un nouvel arrivage de fleurs en préparant mal '
-                'les tiges, et le patron a menacé de le mettre à la porte. '
-                'L\'élève a appelé sa superviseure en pleurant et ne voulait pas '
-                'continuer son stage.'
-          ],
-          equipmentRequired: ['Chaussures avec semelles antidérapantes'],
-          incidentContact: 'Gaëtan Munger, le gérant',
-          dangerousSituations: [
-            'Travailler avec un couteau',
-            'Travailler avec des produits chimiques (pesticides)',
-            'Porter des objets lourds (ex. gros pots de fleurs)',
-            'Les planchers sont souvent mouillés (risque de chute)',
-          ],
-          questions: {
-            '1': 'Arroser les fleurs et les plantes, aider à la confection de '
-                'couronnes, sortir et ranger les plantes à l\'ouverture et à la '
-                'fermeture de la boutique',
-            '2': true,
-            '2+t': '',
-            '3': true,
-            '3+t': 'En début et en fin de journée, surtout des pots de fleurs.',
-            '5': ['Un diable'],
-            '6': [],
-            '7': ['Un couteau', 'Des ciseaux'],
-            '8': [],
-            '10': ['Des pesticides', 'Engrais'],
-            '15': [],
-            '16': false,
-            '19': false,
-            '20': '',
-            '21': '',
-            '22': false,
-            '22+t': '',
-            '23': 'Gaëtan Munger, le gérant'
-          },
-        )),
+      specialization: ActivitySectorsService.sectors[1].specializations[2],
+      positionsOffered: 1,
+      sstEvaluation: JobSstEvaluation(
+        incidents: [
+          'Lorsque l\'élève a laissé tomber un vase dispendieux qui s\'est '
+              'cassé au sol, le patron s\'est énervé et lui a crié dessus. '
+              'L\'élève a fait une crise de panique.',
+          'L\'élève a gâché un nouvel arrivage de fleurs en préparant mal '
+              'les tiges, et le patron a menacé de le mettre à la porte. '
+              'L\'élève a appelé sa superviseure en pleurant et ne voulait pas '
+              'continuer son stage.'
+        ],
+        equipmentRequired: ['Chaussures avec semelles antidérapantes'],
+        incidentContact: 'Gaëtan Munger, le gérant',
+        dangerousSituations: [
+          'Travailler avec un couteau',
+          'Travailler avec des produits chimiques (pesticides)',
+          'Porter des objets lourds (ex. gros pots de fleurs)',
+          'Les planchers sont souvent mouillés (risque de chute)',
+        ],
+        questions: {
+          '1': 'Arroser les fleurs et les plantes, aider à la confection de '
+              'couronnes, sortir et ranger les plantes à l\'ouverture et à la '
+              'fermeture de la boutique',
+          '2': true,
+          '2+t': '',
+          '3': true,
+          '3+t': 'En début et en fin de journée, surtout des pots de fleurs.',
+          '5': ['Un diable'],
+          '6': [],
+          '7': ['Un couteau', 'Des ciseaux'],
+          '8': [],
+          '10': ['Des pesticides', 'Engrais'],
+          '15': [],
+          '16': false,
+          '19': false,
+          '20': '',
+          '21': '',
+          '22': false,
+          '22+t': '',
+          '23': 'Gaëtan Munger, le gérant'
+        },
+      ),
+      minimumAge: 15,
+      preInternshipRequest: PreInternshipRequest(requests: []),
+      uniform: Uniform(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
   );
   enterprises.add(
     Enterprise(
@@ -943,18 +1008,6 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(
-      protections: [
-        'Chaussures de sécurité',
-        'Lunettes de sécurités',
-        'Masque',
-      ],
-      status: ProtectionsStatus.suppliedByEnterprise,
-    ),
-    uniform: Uniform(
-        status: UniformStatus.suppliedByEnterprise,
-        uniform:
-            'Il faut s\'habiller de façon à ce que tous soient identiques'),
   ));
 
   var startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(90)));
@@ -1007,8 +1060,6 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -1054,16 +1105,9 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   );
   internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
     internshipId: internship.id,
-    minimumAge: 16,
-    enterpriseRequests: [
-      'Une entrevue de recrutement de l\'élève en solo',
-      'Un beau cadeau à l\'arrivée'
-    ],
     skillsRequired: [
       'Communiquer à l\'écrit',
       'Interagir avec des clients',
@@ -1122,8 +1166,6 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(protections: [], status: ProtectionsStatus.none),
-    uniform: Uniform(status: UniformStatus.none, uniform: ''),
   ));
 
   period = DateTimeRange(
@@ -1163,12 +1205,6 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(
-        protections: ['Des gants', 'Des bijoux'],
-        status: ProtectionsStatus.suppliedBySchool),
-    uniform: Uniform(
-        status: UniformStatus.suppliedByEnterprise,
-        uniform: 'Un chapeau fleuri'),
   ));
 
   period = DateTimeRange(
@@ -1219,12 +1255,6 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(
-        protections: ['Des gants', 'Une paire de lunettes'],
-        status: ProtectionsStatus.suppliedBySchool),
-    uniform: Uniform(
-        status: UniformStatus.suppliedByEnterprise,
-        uniform: 'Un chapeau fleuri'),
   ));
 
   period = DateTimeRange(
@@ -1276,12 +1306,6 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(
-        protections: ['Des gants', 'Des bas antidérapants'],
-        status: ProtectionsStatus.suppliedBySchool),
-    uniform: Uniform(
-        status: UniformStatus.suppliedByEnterprise,
-        uniform: 'Un chapeau fleuri'),
   ));
 
   startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(250)));
@@ -1320,12 +1344,6 @@ Future<void> addDummyInterships(
           period: period,
         ),
       ],
-      protections: Protections(
-          protections: ['Des gants', 'Une paire de lunettes'],
-          status: ProtectionsStatus.suppliedBySchool),
-      uniform: Uniform(
-          status: UniformStatus.suppliedByEnterprise,
-          uniform: 'Un chapeau fleuri'),
     ),
   );
 
@@ -1364,12 +1382,6 @@ Future<void> addDummyInterships(
         period: period,
       ),
     ],
-    protections: Protections(
-        protections: ['Des gants', 'Une paire de lunettes'],
-        status: ProtectionsStatus.suppliedBySchool),
-    uniform: Uniform(
-        status: UniformStatus.suppliedByEnterprise,
-        uniform: 'Un chapeau fleuri'),
   ));
   await _waitForDatabaseUpdate(internships, 9);
 }
