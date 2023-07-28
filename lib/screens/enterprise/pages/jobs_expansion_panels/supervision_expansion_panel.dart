@@ -143,7 +143,7 @@ class _SupervisionBody extends StatelessWidget {
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Un trouble du langage',
-      rating: _meanOf(evaluations, (e) => e.acceptanceLanguageDeficiency),
+      rating: _meanOf(evaluations, (e) => e.acceptanceLanguageDisorder),
     );
   }
 
@@ -151,7 +151,7 @@ class _SupervisionBody extends StatelessWidget {
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Une déficience intellectuelle',
-      rating: _meanOf(evaluations, (e) => e.acceptanceMentalDeficiency),
+      rating: _meanOf(evaluations, (e) => e.acceptanceIntellectualDisability),
     );
   }
 
@@ -159,7 +159,7 @@ class _SupervisionBody extends StatelessWidget {
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Une déficience physique',
-      rating: _meanOf(evaluations, (e) => e.acceptancePhysicalDeficiency),
+      rating: _meanOf(evaluations, (e) => e.acceptancePhysicalDisability),
     );
   }
 
@@ -167,7 +167,7 @@ class _SupervisionBody extends StatelessWidget {
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Un trouble de santé mentale',
-      rating: _meanOf(evaluations, (e) => e.acceptanceMentalHealthIssue),
+      rating: _meanOf(evaluations, (e) => e.acceptanceMentalHealthDisorder),
     );
   }
 
@@ -175,7 +175,7 @@ class _SupervisionBody extends StatelessWidget {
       List<PostIntershipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Des difficultés comportementales',
-      rating: _meanOf(evaluations, (e) => e.acceptanceBehaviorIssue),
+      rating: _meanOf(evaluations, (e) => e.acceptanceBehaviorDifficulties),
     );
   }
 

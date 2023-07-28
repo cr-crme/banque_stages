@@ -128,16 +128,16 @@ class _EnterpriseEvaluationScreenState
       absenceAcceptance: _supervisionKey.currentState!.absenceAcceptance!,
       supervisionComments: _supervisionKey.currentState!.supervisionComments,
       acceptanceTsa: _specializedStudentsKey.currentState!.acceptanceTsa,
-      acceptanceLanguageDeficiency:
-          _specializedStudentsKey.currentState!.acceptanceLanguageDeficiency,
-      acceptanceMentalDeficiency:
-          _specializedStudentsKey.currentState!.acceptanceMentalDeficiency,
-      acceptancePhysicalDeficiency:
-          _specializedStudentsKey.currentState!.acceptancePhysicalDeficiency,
-      acceptanceMentalHealthIssue:
-          _specializedStudentsKey.currentState!.acceptanceMentalHealthIssue,
-      acceptanceBehaviorIssue:
-          _specializedStudentsKey.currentState!.acceptanceBehaviorIssue,
+      acceptanceLanguageDisorder:
+          _specializedStudentsKey.currentState!.acceptanceLanguageDisorder,
+      acceptanceIntellectualDisability: _specializedStudentsKey
+          .currentState!.acceptanceIntellectualDisability,
+      acceptancePhysicalDisability:
+          _specializedStudentsKey.currentState!.acceptancePhysicalDisability,
+      acceptanceMentalHealthDisorder:
+          _specializedStudentsKey.currentState!.acceptanceMentalHealthDisorder,
+      acceptanceBehaviorDifficulties:
+          _specializedStudentsKey.currentState!.acceptanceBehaviorDifficulties,
     );
 
     // Pass the evaluation data to the rest of the app

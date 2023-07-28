@@ -28,11 +28,11 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
     required this.absenceAcceptance,
     required this.supervisionComments,
     required this.acceptanceTsa,
-    required this.acceptanceLanguageDeficiency,
-    required this.acceptanceMentalDeficiency,
-    required this.acceptancePhysicalDeficiency,
-    required this.acceptanceMentalHealthIssue,
-    required this.acceptanceBehaviorIssue,
+    required this.acceptanceLanguageDisorder,
+    required this.acceptanceIntellectualDisability,
+    required this.acceptancePhysicalDisability,
+    required this.acceptanceMentalHealthDisorder,
+    required this.acceptanceBehaviorDifficulties,
   });
 
   PostIntershipEnterpriseEvaluation.fromSerialized(map)
@@ -47,16 +47,16 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
         absenceAcceptance = _doubleFromSerialized(map['absenceAcceptance']),
         supervisionComments = map['supervisionComments'],
         acceptanceTsa = _doubleFromSerialized(map['acceptanceTSA']),
-        acceptanceLanguageDeficiency =
-            _doubleFromSerialized(map['acceptanceLanguageDeficiency']),
-        acceptanceMentalDeficiency =
-            _doubleFromSerialized(map['acceptanceMentalDeficiency']),
-        acceptancePhysicalDeficiency =
-            _doubleFromSerialized(map['acceptancePhysicalDeficiency']),
-        acceptanceMentalHealthIssue =
-            _doubleFromSerialized(map['acceptanceMentalHealthIssue']),
-        acceptanceBehaviorIssue =
-            _doubleFromSerialized(map['acceptanceBehaviorIssue']);
+        acceptanceLanguageDisorder =
+            _doubleFromSerialized(map['acceptanceLanguageDisorder']),
+        acceptanceIntellectualDisability =
+            _doubleFromSerialized(map['acceptanceIntellectualDisability']),
+        acceptancePhysicalDisability =
+            _doubleFromSerialized(map['acceptancePhysicalDisability']),
+        acceptanceMentalHealthDisorder =
+            _doubleFromSerialized(map['acceptanceMentalHealthDisorder']),
+        acceptanceBehaviorDifficulties =
+            _doubleFromSerialized(map['acceptanceBehaviorDifficulties']);
 
   String internshipId;
 
@@ -77,11 +77,11 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
 
   // Supervision
   final double acceptanceTsa;
-  final double acceptanceLanguageDeficiency;
-  final double acceptanceMentalDeficiency;
-  final double acceptancePhysicalDeficiency;
-  final double acceptanceMentalHealthIssue;
-  final double acceptanceBehaviorIssue;
+  final double acceptanceLanguageDisorder;
+  final double acceptanceIntellectualDisability;
+  final double acceptancePhysicalDisability;
+  final double acceptanceMentalHealthDisorder;
+  final double acceptanceBehaviorDifficulties;
 
   @override
   Map<String, dynamic> serializedMap() => {
@@ -96,11 +96,11 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
         'absenceAcceptance': absenceAcceptance,
         'supervisionComments': supervisionComments,
         'acceptanceTSA': acceptanceTsa,
-        'acceptanceLanguageDeficiency': acceptanceLanguageDeficiency,
-        'acceptanceMentalDeficiency': acceptanceMentalDeficiency,
-        'acceptancePhysicalDeficiency': acceptancePhysicalDeficiency,
-        'acceptanceMentalHealthIssue': acceptanceMentalHealthIssue,
-        'acceptanceBehaviorIssue': acceptanceBehaviorIssue,
+        'acceptanceLanguageDisorder': acceptanceLanguageDisorder,
+        'acceptanceIntellectualDisability': acceptanceIntellectualDisability,
+        'acceptancePhysicalDisability': acceptancePhysicalDisability,
+        'acceptanceMentalHealthDisorder': acceptanceMentalHealthDisorder,
+        'acceptanceBehaviorDifficulties': acceptanceBehaviorDifficulties,
       };
 
   PostIntershipEnterpriseEvaluation deepCopy() {
@@ -116,11 +116,11 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
       absenceAcceptance: absenceAcceptance,
       supervisionComments: supervisionComments,
       acceptanceTsa: acceptanceTsa,
-      acceptanceLanguageDeficiency: acceptanceLanguageDeficiency,
-      acceptanceMentalDeficiency: acceptanceMentalDeficiency,
-      acceptancePhysicalDeficiency: acceptancePhysicalDeficiency,
-      acceptanceMentalHealthIssue: acceptanceMentalHealthIssue,
-      acceptanceBehaviorIssue: acceptanceBehaviorIssue,
+      acceptanceLanguageDisorder: acceptanceLanguageDisorder,
+      acceptanceIntellectualDisability: acceptanceIntellectualDisability,
+      acceptancePhysicalDisability: acceptancePhysicalDisability,
+      acceptanceMentalHealthDisorder: acceptanceMentalHealthDisorder,
+      acceptanceBehaviorDifficulties: acceptanceBehaviorDifficulties,
     );
   }
 }

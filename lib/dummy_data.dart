@@ -1121,11 +1121,11 @@ Future<void> addDummyInterships(
     absenceAcceptance: 4,
     supervisionComments: 'Milieu peu aidant, mais ouvert',
     acceptanceTsa: -1,
-    acceptanceLanguageDeficiency: 4,
-    acceptanceMentalDeficiency: 4,
-    acceptancePhysicalDeficiency: 4,
-    acceptanceMentalHealthIssue: 2,
-    acceptanceBehaviorIssue: 2,
+    acceptanceLanguageDisorder: 4,
+    acceptanceIntellectualDisability: 4,
+    acceptancePhysicalDisability: 4,
+    acceptanceMentalHealthDisorder: 2,
+    acceptanceBehaviorDifficulties: 2,
   );
   internships.add(internship);
 

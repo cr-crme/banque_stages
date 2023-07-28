@@ -4,13 +4,19 @@ class CheckboxWithOther<T> extends StatefulWidget {
   const CheckboxWithOther({
     super.key,
     required this.title,
+    this.titleStyle,
     required this.elements,
+    this.showOtherOption = true,
     this.errorMessageOther = 'Préciser au moins un élément',
+    this.onOptionWasSelected,
   });
 
   final String title;
+  final TextStyle? titleStyle;
   final List<T> elements;
+  final bool showOtherOption;
   final String errorMessageOther;
+  final Function()? onOptionWasSelected;
 
   @override
   State<CheckboxWithOther<T>> createState() => CheckboxWithOtherState<T>();
@@ -21,6 +27,21 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
   bool _hasOther = false;
   String? _other;
 
+  ///
+  /// This returns all the selected elements except for everything related to
+  /// others
+  List<T> get selected {
+    final List<T> out = [];
+    for (final e in _elementValues.keys) {
+      if (_elementValues[e]!) {
+        out.add(e);
+      }
+    }
+    return out;
+  }
+
+  ///
+  /// This returns all the element in the form of a list of String
   List<String> get values {
     final List<String> out = [];
     for (final e in _elementValues.keys) {
@@ -47,22 +68,46 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
       children: [
         Text(
           widget.title,
-          style: Theme.of(context).textTheme.bodyLarge,
+          style: widget.titleStyle ?? Theme.of(context).textTheme.bodyLarge,
         ),
         ..._elementValues.keys
-            .map((element) => _buildElementTile(element))
+            .map(
+              (element) => CheckboxListTile(
+                visualDensity: VisualDensity.compact,
+                dense: true,
+                controlAffinity: ListTileControlAffinity.leading,
+                title: Text(
+                  element.toString(),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                value: _elementValues[element],
+                onChanged: (newValue) {
+                  setState(() => _elementValues[element] = newValue!);
+                  if (widget.onOptionWasSelected != null) {
+                    widget.onOptionWasSelected!();
+                  }
+                },
+              ),
+            )
             .toList(),
-        CheckboxListTile(
-          visualDensity: VisualDensity.compact,
-          dense: true,
-          controlAffinity: ListTileControlAffinity.leading,
-          title: Text(
-            'Autre',
-            style: Theme.of(context).textTheme.bodyMedium,
+        if (widget.showOtherOption)
+          CheckboxListTile(
+            visualDensity: VisualDensity.compact,
+            dense: true,
+            controlAffinity: ListTileControlAffinity.leading,
+            title: Text(
+              'Autre',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            value: _hasOther,
+            onChanged: (newValue) {
+              setState(() => _hasOther = newValue!);
+
+              if (widget.onOptionWasSelected != null) {
+                widget.onOptionWasSelected!();
+              }
+            },
           ),
-          value: _hasOther,
-          onChanged: (newValue) => setState(() => _hasOther = newValue!),
-        ),
         Visibility(
           visible: _hasOther,
           child: Padding(
@@ -93,21 +138,6 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
           ),
         ),
       ],
-    );
-  }
-
-  CheckboxListTile _buildElementTile(element) {
-    return CheckboxListTile(
-      visualDensity: VisualDensity.compact,
-      dense: true,
-      controlAffinity: ListTileControlAffinity.leading,
-      title: Text(
-        element.toString(),
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
-      value: _elementValues[element],
-      onChanged: (newValue) =>
-          setState(() => _elementValues[element] = newValue!),
     );
   }
 }
