@@ -1,5 +1,6 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -80,11 +81,9 @@ class SstBody extends StatelessWidget {
                       'harcèlement subis par l\'élève)',
                     ),
                   ),
-                  if (job.sstEvaluation.incidents.isEmpty)
-                    const Text('Aucun incident rapporté'),
-                  if (job.sstEvaluation.incidents.isNotEmpty)
-                    ...job.sstEvaluation.incidents
-                        .map((e) => Text('\u2022 $e')),
+                  job.sstEvaluation.incidents.isEmpty
+                      ? const Text('Aucun incident rapporté')
+                      : ItemizedText(job.sstEvaluation.incidents),
                 ],
               ),
             ),
@@ -105,17 +104,9 @@ class SstBody extends StatelessWidget {
               'Situations dangereuses repérées sur le poste de travail',
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: job.sstEvaluation.dangerousSituations.isNotEmpty
-                    ? job.sstEvaluation.dangerousSituations
-                        .map((e) => Text('\u2022 $e'))
-                        .toList()
-                    : [const Text('Aucune situation')],
-              ),
-            ),
+            job.sstEvaluation.dangerousSituations.isEmpty
+                ? const Text('Aucune situation')
+                : ItemizedText(job.sstEvaluation.dangerousSituations),
             const SizedBox(height: 8),
             Text(
               'Détail des tâches et risques associés',

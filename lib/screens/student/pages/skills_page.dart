@@ -1,12 +1,12 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:flutter/material.dart';
 
 class SkillsPage extends StatefulWidget {
   const SkillsPage({super.key, required this.student});
@@ -133,6 +133,14 @@ class _SkillTile extends StatelessWidget {
     return skill.complexity;
   }
 
+  List<String> skillsToStrings(Specialization specialization) {
+    return skills[specialization]!
+        .sorted((a, b) => a.skillName.compareTo(b.skillName))
+        .map((skillEvaluation) =>
+            '${skillEvaluation.skillName}\u00a0(Niv.${_skillComplexity(skillEvaluation)})')
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -160,29 +168,7 @@ class _SkillTile extends StatelessWidget {
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
-                        ...skills[specialization]!
-                            .sorted(
-                                (a, b) => a.skillName.compareTo(b.skillName))
-                            .map(
-                              (skillEvaluation) => Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 4.0, right: 12.0),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 12.0),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('\u2022 '),
-                                      Flexible(
-                                          child: Text(
-                                              '${skillEvaluation.skillName} (Niv.${_skillComplexity(skillEvaluation)})')),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
+                        ItemizedText(skillsToStrings(specialization)),
                       ],
                     ),
                   ),

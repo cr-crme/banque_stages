@@ -1,6 +1,7 @@
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_form_field.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -61,15 +62,15 @@ class SupervisionExpansionPanel extends ExpansionPanel {
   }
 }
 
-List<Widget> _printCountedList<T>(
-    Iterable iterable, String Function(T) toString) {
-  final out = iterable.map<String>((e) => toString(e));
+Widget _printCountedList<T>(Iterable iterable, String Function(T) toString) {
+  var out = iterable.map<String>((e) => toString(e)).toList();
 
-  return out
+  out = out
       .toSet()
-      .map<Widget>((e) => Text(
-          '\u2022 $e (${out.fold<int>(0, (prev, e2) => prev + (e == e2 ? 1 : 0))})'))
+      .map((e) =>
+          '$e (${out.fold<int>(0, (prev, e2) => prev + (e == e2 ? 1 : 0))})')
       .toList();
+  return ItemizedText(out);
 }
 
 class _SupervisionBody extends StatelessWidget {
@@ -181,8 +182,10 @@ class _SupervisionBody extends StatelessWidget {
 
   Widget _buildComments(
       context, List<PostIntershipEnterpriseEvaluation> evaluations) {
-    final comments =
-        evaluations.map((e) => e.supervisionComments).where((e) => e != '');
+    final comments = evaluations
+        .map((e) => e.supervisionComments)
+        .where((e) => e != '')
+        .toList();
     return comments.isEmpty
         ? Container()
         : Column(
@@ -192,13 +195,7 @@ class _SupervisionBody extends StatelessWidget {
                 'Autres commentaires sur l\'encadrement',
                 style: Theme.of(context).textTheme.titleSmall,
               ),
-              ...comments.map((e) => Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('\u2022 '),
-                      Flexible(child: Text(e)),
-                    ],
-                  )),
+              ItemizedText(comments),
             ],
           );
   }
@@ -211,7 +208,7 @@ class _SupervisionBody extends StatelessWidget {
           'Tâches données à l\'élève',
           style: Theme.of(context).textTheme.titleSmall,
         ),
-        ..._printCountedList<PostIntershipEnterpriseEvaluation>(evaluations,
+        _printCountedList<PostIntershipEnterpriseEvaluation>(evaluations,
             (e) => e.taskVariety == 0 ? 'Peu variées' : 'Très variées'),
       ],
     );
@@ -225,7 +222,7 @@ class _SupervisionBody extends StatelessWidget {
           'Tâches et compétences prévues dans le plan ont été faites par l\'élève',
           style: Theme.of(context).textTheme.titleSmall,
         ),
-        ..._printCountedList<PostIntershipEnterpriseEvaluation>(evaluations,
+        _printCountedList<PostIntershipEnterpriseEvaluation>(evaluations,
             (e) => e.trainingPlanRespect == 0 ? 'En partie' : 'En totalité'),
       ],
     );

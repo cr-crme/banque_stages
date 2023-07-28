@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ItemizedText extends StatelessWidget {
-  const ItemizedText({super.key, required this.elements, this.interline = 0});
+  const ItemizedText(this.elements, {super.key, this.interline = 0});
 
   final List<String> elements;
   final double interline;

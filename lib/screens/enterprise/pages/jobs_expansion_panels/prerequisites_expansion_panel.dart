@@ -77,7 +77,7 @@ class _PrerequisitesBody extends StatelessWidget {
         const Text('Fournie par l\'entreprise\u00a0:'),
       if (uniforms.status == UniformStatus.suppliedByStudent)
         const Text('Fournie par l\'étudiant\u00a0:'),
-      ItemizedText(elements: uniforms.uniforms),
+      ItemizedText(uniforms.uniforms),
     ];
   }
 
@@ -89,7 +89,7 @@ class _PrerequisitesBody extends StatelessWidget {
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       if (requests.isEmpty) const Text('Aucune exigence particulière'),
-      if (requests.isNotEmpty) ItemizedText(elements: requests),
+      if (requests.isNotEmpty) ItemizedText(requests),
     ];
   }
 
@@ -107,7 +107,7 @@ class _PrerequisitesBody extends StatelessWidget {
         const Text('Fournis par l\'entreprise\u00a0:'),
       if (protections.status == ProtectionsStatus.suppliedBySchool)
         const Text('Fournis par l\'école\u00a0:'),
-      ItemizedText(elements: protections.protections),
+      ItemizedText(protections.protections),
     ];
   }
 }

@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/accident_history/models/accidents_by_enterprise.dart';
 import 'package:flutter/material.dart';
@@ -63,25 +64,13 @@ class AccidentListTile extends StatelessWidget {
                   children: [
                     Text(enterprise.name),
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0, bottom: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: accidents
-                            .description(enterprise)!
-                            .map((accident) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('\u2022'),
-                                      Flexible(child: Text(accident)),
-                                    ],
-                                  ),
-                                ))
-                            .toList(),
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: ItemizedText(
+                        accidents.description(enterprise)!,
+                        interline: 8,
                       ),
                     ),
+                    const SizedBox(height: 8),
                   ],
                 ))
             .toList(),

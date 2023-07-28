@@ -1,15 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class InternshipSkills extends StatefulWidget {
   const InternshipSkills({super.key, required this.internship});
@@ -221,21 +221,11 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
             title,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          if (skills.isEmpty)
-            const Padding(
-                padding: EdgeInsets.only(left: 12.0),
-                child: Text('\u2022 Aucune')),
-          if (skills.isNotEmpty)
-            ...skills.map((e) => Padding(
-                  padding: const EdgeInsets.only(left: 12.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('\u2022 '),
-                      Flexible(child: Text(e.skillName)),
-                    ],
-                  ),
-                ))
+          Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: skills.isEmpty
+                  ? const ItemizedText(['Aucune'])
+                  : ItemizedText(skills.map((e) => e.skillName).toList())),
         ],
       ),
     );
@@ -407,18 +397,11 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
             'Conformes aux exigences',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          ...widget
-              .evaluation[_currentEvaluationIndex].attitude.meetsRequirements
-              .map((e) => Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('\u2022 '),
-                        Flexible(child: Text(e)),
-                      ],
-                    ),
-                  ))
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: ItemizedText(widget.evaluation[_currentEvaluationIndex]
+                .attitude.meetsRequirements),
+          ),
         ],
       ),
     );
@@ -434,18 +417,11 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
             'À améliorer',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          ...widget.evaluation[_currentEvaluationIndex].attitude
-              .doesNotMeetRequirements
-              .map((e) => Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('\u2022 '),
-                        Flexible(child: Text(e)),
-                      ],
-                    ),
-                  ))
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: ItemizedText(widget.evaluation[_currentEvaluationIndex]
+                .attitude.doesNotMeetRequirements),
+          ),
         ],
       ),
     );
