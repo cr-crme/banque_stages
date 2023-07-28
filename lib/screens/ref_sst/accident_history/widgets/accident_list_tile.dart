@@ -30,27 +30,30 @@ class AccidentListTile extends StatelessWidget {
                 .copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        trailing: Container(
-            height: 30,
-            width: 30,
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 2),
-                boxShadow: const [
-                  BoxShadow(
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    color: Colors.grey,
-                  )
-                ],
-                color: Colors.orange,
-                borderRadius: BorderRadius.circular(100)),
-            child: Center(
-              child: Text(
-                '${accidents.length}',
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            )),
+        trailing: Tooltip(
+          message: 'Nombre d\'accidents pour ce métier',
+          child: Container(
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 2),
+                  boxShadow: const [
+                    BoxShadow(
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      color: Colors.grey,
+                    )
+                  ],
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.circular(100)),
+              child: Center(
+                child: Text(
+                  '${accidents.length}',
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              )),
+        ),
         expandedAlignment: Alignment.topLeft,
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
         childrenPadding: const EdgeInsets.only(left: 24),
