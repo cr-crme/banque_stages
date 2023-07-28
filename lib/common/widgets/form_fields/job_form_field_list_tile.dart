@@ -131,7 +131,8 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
                 _buildAvailability(state),
                 _buildMinimumAge(),
                 const SizedBox(height: 8),
-                _buildPrerequisite(),
+                BuildPrerequisitesCheckboxes(
+                    checkBoxKey: _preInternshipRequestKey),
                 const SizedBox(height: 8),
                 _buildUniform(),
                 const SizedBox(height: 8),
@@ -262,15 +263,6 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
     );
   }
 
-  Widget _buildPrerequisite() {
-    return CheckboxWithOther<PreInternshipRequestType>(
-      key: _preInternshipRequestKey,
-      title:
-          '* Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
-      elements: PreInternshipRequestType.values,
-    );
-  }
-
   Widget _buildUniform() {
     return RadioWithChild<UniformStatus>(
       key: _uniformKey,
@@ -322,6 +314,25 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
         title: 'Lesquels\u00a0:',
         elements: ProtectionsType.values,
       ),
+    );
+  }
+}
+
+class BuildPrerequisitesCheckboxes extends StatelessWidget {
+  const BuildPrerequisitesCheckboxes({
+    super.key,
+    required this.checkBoxKey,
+  });
+
+  final GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>> checkBoxKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxWithOther<PreInternshipRequestType>(
+      key: checkBoxKey,
+      title:
+          '* Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
+      elements: PreInternshipRequestType.values,
     );
   }
 }

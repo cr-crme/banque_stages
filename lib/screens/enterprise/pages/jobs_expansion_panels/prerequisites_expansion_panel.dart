@@ -1,7 +1,10 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,12 +63,17 @@ class _PrerequisitesBody extends StatefulWidget {
 }
 
 class PrerequisitesBodyState extends State<_PrerequisitesBody> {
+  final formKey = GlobalKey<FormState>();
+
   late final _ageController =
       TextEditingController(text: widget.job.minimumAge.toString());
   int get minimumAge =>
       _ageController.text.isEmpty ? -1 : int.parse(_ageController.text);
 
-  final formKey = GlobalKey<FormState>();
+  final _preInternshipRequestKey =
+      GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>>();
+  List<String> get prerequisites =>
+      _preInternshipRequestKey.currentState!.values;
 
   @override
   Widget build(BuildContext context) {
@@ -99,29 +107,29 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
       children: [
         const Text('Âge minimum',
             style: TextStyle(fontWeight: FontWeight.bold)),
-        widget.isEditing
-            ? Row(
-                children: [
-                  SizedBox(
-                    width: 100,
-                    child: TextFormField(
-                      controller: _ageController,
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        final current = int.tryParse(value!);
-                        if (current == null) return 'Préciser';
-                        if (current < 10 || current > 30) {
-                          return 'Entre 10 et 30';
-                        }
-                        return null;
-                      },
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    ),
-                  ),
-                  const Text(' ans')
-                ],
-              )
-            : Text('${widget.job.minimumAge} ans'),
+        if (widget.isEditing)
+          Row(
+            children: [
+              SizedBox(
+                width: 100,
+                child: TextFormField(
+                  controller: _ageController,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    final current = int.tryParse(value!);
+                    if (current == null) return 'Préciser';
+                    if (current < 10 || current > 30) {
+                      return 'Entre 10 et 30';
+                    }
+                    return null;
+                  },
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                ),
+              ),
+              const Text(' ans')
+            ],
+          ),
+        if (!widget.isEditing) Text('${widget.job.minimumAge} ans'),
       ],
     );
   }
@@ -147,13 +155,18 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
 
   List<Widget> _buildEntepriseRequests() {
     final requests = widget.job.preInternshipRequest.requests;
+    // TODO: Add the editing for the other and add that it 'remembers'
     return [
       const Text(
         'Exigences de l\'entreprise',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      if (requests.isEmpty) const Text('Aucune exigence particulière'),
-      if (requests.isNotEmpty) ItemizedText(requests),
+      if (widget.isEditing)
+        BuildPrerequisitesCheckboxes(checkBoxKey: _preInternshipRequestKey),
+      if (!widget.isEditing)
+        requests.isEmpty
+            ? const Text('Aucune exigence particulière')
+            : ItemizedText(requests),
     ];
   }
 
