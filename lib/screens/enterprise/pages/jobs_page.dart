@@ -143,7 +143,7 @@ class JobsPageState extends State<JobsPage> {
                 canTapOnHeader: true,
                 value: job.id,
                 headerBuilder: (context, isExpanded) =>
-                    SubTitle(job.specialization.idWithName, top: 12),
+                    SubTitle(job.specialization.name, top: 12),
                 body: Column(
                   children: [
                     ExpansionPanelList(
@@ -151,16 +151,16 @@ class JobsPageState extends State<JobsPage> {
                           () => _expandedSections[job.id]![panelIndex] =
                               !isExpanded),
                       children: [
-                        SstExpansionPanel(
+                        PrerequisitesExpansionPanel(
                           isExpanded: _expandedSections[job.id]![0],
                           enterprise: widget.enterprise,
                           job: job,
-                          addSstEvent: _addSstEvent,
                         ),
-                        PrerequisitesExpansionPanel(
+                        SstExpansionPanel(
                           isExpanded: _expandedSections[job.id]![1],
                           enterprise: widget.enterprise,
                           job: job,
+                          addSstEvent: _addSstEvent,
                         ),
                         SupervisionExpansionPanel(
                           isExpanded: _expandedSections[job.id]![2],

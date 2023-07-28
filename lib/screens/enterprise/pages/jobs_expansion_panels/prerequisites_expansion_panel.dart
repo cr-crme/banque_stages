@@ -1,7 +1,8 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/models/protections.dart';
+import 'package:crcrme_banque_stages/common/models/uniform.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
 
 class PrerequisitesExpansionPanel extends ExpansionPanel {
@@ -16,20 +17,9 @@ class PrerequisitesExpansionPanel extends ExpansionPanel {
             enterprise: enterprise,
           ),
           headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text('Prérequis pour le recrutement'),
+            title: Text('Prérequis et équipements'),
           ),
         );
-}
-
-List<Widget> _printCountedList<T>(
-    Iterable iterable, String Function(T) toString) {
-  final out = iterable.map<String>((e) => toString(e));
-
-  return out
-      .toSet()
-      .map<Widget>((e) => Text(
-          '\u2022 $e (${out.fold<int>(0, (prev, e2) => prev + (e == e2 ? 1 : 0))})'))
-      .toList();
 }
 
 class _PrerequisitesBody extends StatelessWidget {
@@ -40,157 +30,84 @@ class _PrerequisitesBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final evaluations = job.postInternshipEnterpriseEvaluations(context);
-    final internships = InternshipsProvider.of(context)
-        .where((internship) => job.id == internship.jobId);
-
-    return evaluations.isNotEmpty || internships.isNotEmpty
-        ? SizedBox(
-            width: Size.infinite.width,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //..._buildProtections(internships),
-                  const SizedBox(height: 12),
-                  // if (evaluations.isNotEmpty)
-                  //   ..._buildEntepriseRequests(evaluations),
-                  if (evaluations.isNotEmpty)
-                    ..._buildSkillsRequired(evaluations),
-                ],
-              ),
-            ),
-          )
-        : const Center(
-            child: Padding(
-            padding: EdgeInsets.only(bottom: 12.0),
-            child: Text('Aucune donnée pour l\'instant'),
-          ));
+    return SizedBox(
+      width: Size.infinite.width,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 24, right: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildMinimumAge(),
+            const SizedBox(height: 12),
+            ..._buildEntepriseRequests(),
+            const SizedBox(height: 12),
+            ..._buildUniform(),
+            const SizedBox(height: 12),
+            ..._buildProtections(),
+            const SizedBox(height: 12),
+          ],
+        ),
+      ),
+    );
   }
 
-  // Widget _buildMinimumAge(List<PostIntershipEnterpriseEvaluation> evaluations) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       const Text(
-  //         'Âge minimum',
-  //         style: TextStyle(fontWeight: FontWeight.bold),
-  //       ),
-  //       Text(
-  //           '${evaluations.fold<double>(0, (prev, e) => prev + e.minimumAge) ~/ evaluations.length} ans'),
-  //       const SizedBox(height: 12),
-  //     ],
-  //   );
-  // }
+  Widget _buildMinimumAge() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Âge minimum',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        Text('${job.minimumAge} ans'),
+      ],
+    );
+  }
 
-  // List<Widget> _buildUniform(Iterable<Internship> internships) {
-  //   // Workaround for job.uniforms
-  //   final allUniforms = internships.map<Uniform>((e) => e.uniform).toSet();
-  //   final uniforms = {
-  //     UniformStatus.suppliedByEnterprise: allUniforms
-  //         .where((e) => e.status == UniformStatus.suppliedByEnterprise),
-  //     UniformStatus.suppliedByStudent:
-  //         allUniforms.where((e) => e.status == UniformStatus.suppliedByStudent),
-  //   };
-
-  //   return [
-  //     const Text(
-  //       'Tenue de travail',
-  //       style: TextStyle(fontWeight: FontWeight.bold),
-  //     ),
-  //     if (uniforms[UniformStatus.suppliedByEnterprise]!.isEmpty &&
-  //         uniforms[UniformStatus.suppliedByStudent]!.isEmpty)
-  //       const Text('Aucune consigne de l\'entreprise'),
-  //     if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
-  //       Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           const Text('Fournie par l\'entreprise\u00a0:'),
-  //           ..._printCountedList<Uniform>(
-  //               uniforms[UniformStatus.suppliedByEnterprise]!,
-  //               (e) => e.uniform),
-  //         ],
-  //       ),
-  //     if (uniforms[UniformStatus.suppliedByStudent]!.isNotEmpty)
-  //       Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
-  //             const SizedBox(height: 8),
-  //           const Text('Fournie par l\'étudiant\u00a0:'),
-  //           ..._printCountedList<Uniform>(
-  //               uniforms[UniformStatus.suppliedByStudent]!, (e) => e.uniform),
-  //         ],
-  //       ),
-  //   ];
-  // }
-
-  List<Widget> _buildSkillsRequired(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
-    final skills = evaluations.expand((e) => e.skillsRequired);
+  List<Widget> _buildUniform() {
+    // Workaround for job.uniforms
+    final uniforms = job.uniform;
 
     return [
       const Text(
-        'Habiletés requises pour le stage',
+        'Tenue de travail',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      if (skills.isEmpty) const Text('Aucune'),
-      if (skills.isNotEmpty) ..._printCountedList<String>(skills, (e) => e),
-      const SizedBox(height: 12),
+      if (uniforms.status == UniformStatus.none)
+        const Text('Aucune consigne de l\'entreprise'),
+      if (uniforms.status == UniformStatus.suppliedByEnterprise)
+        const Text('Fournie par l\'entreprise\u00a0:'),
+      if (uniforms.status == UniformStatus.suppliedByStudent)
+        const Text('Fournie par l\'étudiant\u00a0:'),
+      ItemizedText(elements: uniforms.uniforms),
     ];
   }
 
-  // List<Widget> _buildEntepriseRequests(
-  //     List<PostIntershipEnterpriseEvaluation> evaluations) {
-  //   final requests = evaluations.expand((e) => e.enterpriseRequests);
+  List<Widget> _buildEntepriseRequests() {
+    final requests = job.preInternshipRequest.requests;
+    return [
+      const Text(
+        'Exigences de l\'entreprise',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      if (requests.isEmpty) const Text('Aucune exigence particulière'),
+      if (requests.isNotEmpty) ItemizedText(elements: requests),
+    ];
+  }
 
-  //   return [
-  //     const Text(
-  //       'Exigences de l\'entreprise',
-  //       style: TextStyle(fontWeight: FontWeight.bold),
-  //     ),
-  //     if (requests.isEmpty) const Text('Aucune exigence particulière'),
-  //     if (requests.isNotEmpty) ..._printCountedList<String>(requests, (e) => e),
-  //     const SizedBox(height: 12),
-  //   ];
-  // }
+  List<Widget> _buildProtections() {
+    final protections = job.protections;
 
-  // List<Widget> _buildProtections(Iterable<Internship> internships) {
-  //   final allProtections = internships.map<Protections>((e) => e.protections);
-  //   final protections = {
-  //     ProtectionsStatus.suppliedByEnterprise: allProtections
-  //         .where((e) => e.status == ProtectionsStatus.suppliedByEnterprise)
-  //         .map((e) => e.protections)
-  //         .expand((e) => e),
-  //     ProtectionsStatus.suppliedBySchool: allProtections
-  //         .where((e) => e.status == ProtectionsStatus.suppliedBySchool)
-  //         .map((e) => e.protections)
-  //         .expand((e) => e),
-  //   };
-
-  //   return [
-  //     const Text(
-  //       'Équipements de protection individuelle',
-  //       style: TextStyle(fontWeight: FontWeight.bold),
-  //     ),
-  //     if (protections[ProtectionsStatus.suppliedByEnterprise]!.isEmpty &&
-  //         protections[ProtectionsStatus.suppliedBySchool]!.isEmpty)
-  //       const Text('Aucun équipement requis'),
-  //     if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
-  //       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-  //         const Text('Fournis par l\'entreprise\u00a0:'),
-  //         ..._printCountedList<String>(
-  //             protections[ProtectionsStatus.suppliedByEnterprise]!, (e) => e),
-  //       ]),
-  //     if (protections[ProtectionsStatus.suppliedBySchool]!.isNotEmpty)
-  //       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-  //         if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
-  //           const SizedBox(height: 8),
-  //         const Text('Fournis par l\'école\u00a0:'),
-  //         ..._printCountedList<String>(
-  //             protections[ProtectionsStatus.suppliedBySchool]!, (e) => e),
-  //       ]),
-  //   ];
-  // }
+    return [
+      const Text(
+        'Équipements de protection individuelle',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      if (protections.status == ProtectionsStatus.none)
+        const Text('Aucun équipement requis'),
+      if (protections.status == ProtectionsStatus.suppliedByEnterprise)
+        const Text('Fournis par l\'entreprise\u00a0:'),
+      if (protections.status == ProtectionsStatus.suppliedBySchool)
+        const Text('Fournis par l\'école\u00a0:'),
+      ItemizedText(elements: protections.protections),
+    ];
+  }
 }
