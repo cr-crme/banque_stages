@@ -267,7 +267,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
     return RadioWithChild<UniformStatus>(
       key: _uniformKey,
       title: '* Est-ce qu\'une tenue de travail spécifique est exigée pour '
-          'exercer ce métier\u00a0?',
+          'ce poste\u00a0?',
       elements: UniformStatus.values,
       elementsThatShowChild: const [
         UniformStatus.suppliedByEnterprise,
@@ -280,7 +280,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
           children: [
             Text(
               'Décrire la tenue exigée par l\'entreprise ou les '
-              'règles d\'habillement\u00a0',
+              'règles d\'habillement\u00a0:',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             TextFormField(
@@ -303,7 +303,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
     return RadioWithChild<ProtectionsStatus>(
       key: _protectionsKey,
       title: '*Est-ce que l\'élève devra porter des équipements de protection '
-          'individuelle (EPI) pour faire ce métier\u00a0?',
+          'individuelle (EPI)\u00a0?',
       elements: ProtectionsStatus.values,
       elementsThatShowChild: const [
         ProtectionsStatus.suppliedByEnterprise,
