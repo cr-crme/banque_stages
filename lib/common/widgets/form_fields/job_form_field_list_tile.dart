@@ -13,14 +13,12 @@ import 'package:flutter_spinbox/flutter_spinbox.dart';
 class JobFormFieldListTile extends StatefulWidget {
   const JobFormFieldListTile({
     super.key,
-    this.initialValue,
     this.onSaved,
     this.specializations,
     this.specializationBlackList,
     this.specializationOnly = false,
   });
 
-  final Job? initialValue;
   final FormFieldSetter<Job>? onSaved;
   // Specialization and number of position for each
   final Map<Specialization, int>? specializations;
@@ -97,19 +95,20 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   Widget build(BuildContext context) {
     return FormField<Job>(
       onSaved: (_) {
-        if (widget.specializationOnly) return;
-        if (widget.onSaved == null || _specialization == null) return;
         if (validator() != null) return;
+        if (widget.onSaved == null || _specialization == null) return;
 
         final preInternshipRequest = PreInternshipRequest(
-            requests: _preInternshipRequestKey.currentState!.values
-                .map<String>((e) => e.toString())
-                .toList());
+            requests: _preInternshipRequestKey.currentState?.values
+                    .map<String>((e) => e.toString())
+                    .toList() ??
+                []);
         final uniform = Uniform(
-            status: _uniformKey.currentState!.value!,
+            status: _uniformKey.currentState?.value ?? UniformStatus.none,
             uniform: _uniformTextController.text);
         final protections = Protections(
-            status: _protectionsKey.currentState!.value!,
+            status:
+                _protectionsKey.currentState?.value ?? ProtectionsStatus.none,
             protections: _protectionsTypeKey.currentState?.values ?? []);
 
         widget.onSaved!(Job(
@@ -191,9 +190,9 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
         options: options,
         optionToString: (Specialization e) => e.idWithName,
       ),
-      onSelected: (specilization) {
+      onSelected: (specialization) {
         FocusManager.instance.primaryFocus?.unfocus();
-        _specialization = specilization;
+        _specialization = specialization;
         _sectorTextController.text = _specialization!.sector.idWithName;
         setState(() {});
       },
