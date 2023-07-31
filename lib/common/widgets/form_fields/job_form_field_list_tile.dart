@@ -4,7 +4,7 @@ import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_precision.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_child_subquestion.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,8 +36,10 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   final _textKey = GlobalKey<FormState>();
   final _preInternshipRequestKey =
       GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>>();
-  final _uniformKey = GlobalKey<RadioWithChildState<UniformStatus>>();
-  final _protectionsKey = GlobalKey<RadioWithChildState<ProtectionsStatus>>();
+  final _uniformKey =
+      GlobalKey<RadioWithChildSubquestionState<UniformStatus>>();
+  final _protectionsKey =
+      GlobalKey<RadioWithChildSubquestionState<ProtectionsStatus>>();
   final _protectionsTypeKey =
       GlobalKey<CheckboxWithOtherState<ProtectionsType>>();
   final _uniformTextController = TextEditingController();
@@ -64,7 +66,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
 
     if (_uniformKey.currentState!.value == null) return 'invalid_radio_choice';
 
-    if (_protectionsKey.currentState!.hasOther &&
+    if (_protectionsKey.currentState!.hasSubquestion &&
         _protectionsTypeKey.currentState!.values.isEmpty) {
       return 'invalid_protections_choice';
     }
@@ -264,7 +266,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   }
 
   Widget _buildUniform() {
-    return RadioWithChild<UniformStatus>(
+    return RadioWithChildSubquestion<UniformStatus>(
       key: _uniformKey,
       title:
           '* Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
@@ -273,7 +275,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
         UniformStatus.suppliedByEnterprise,
         UniformStatus.suppliedByStudent
       ],
-      child: Padding(
+      childSubquestion: Padding(
         padding: const EdgeInsets.only(left: 32.0, right: 8, top: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,7 +302,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   }
 
   Widget _buildProtections() {
-    return RadioWithChild<ProtectionsStatus>(
+    return RadioWithChildSubquestion<ProtectionsStatus>(
       key: _protectionsKey,
       title: '*Est-ce que l\'élève devra porter des équipements de protection '
           'individuelle (EPI) pour faire ce métier\u00a0?',
@@ -309,7 +311,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
         ProtectionsStatus.suppliedByEnterprise,
         ProtectionsStatus.suppliedBySchool
       ],
-      child: CheckboxWithOther<ProtectionsType>(
+      childSubquestion: CheckboxWithOther<ProtectionsType>(
         key: _protectionsTypeKey,
         title: 'Lesquels\u00a0:',
         elements: ProtectionsType.values,

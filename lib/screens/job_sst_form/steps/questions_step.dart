@@ -1,8 +1,7 @@
-import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_checkbox_list.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_radio_bool.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_text.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_child_subquestion.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/text_with_form.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:flutter/material.dart';
 
@@ -45,45 +44,67 @@ class QuestionsStepState extends State<QuestionsStep> {
 
                 switch (question.type) {
                   case Type.radio:
-                    return QuestionWithRadioBool(
-                      initialChoice:
-                          widget.job.sstEvaluation.questions[question.id],
-                      initialText: widget.job.sstEvaluation
-                              .questions['${question.id}+t'] ??
-                          '',
-                      choiceQuestion:
-                          '${index + 1}. ${question.getQuestion(isProfessor)}',
-                      textTrue: question.choices.firstOrNull,
-                      textFalse: question.choices.lastOrNull,
-                      textQuestion: question.getTextQuestion(isProfessor),
-                      onSavedChoice: (choice) => answer[question.id] = choice,
-                      onSavedText: (text) => answer['${question.id}+t'] = text,
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 24.0),
+                      child: RadioWithChildSubquestion(
+                        title: '${index + 1}. ${question.title}',
+                        elements: question.choices.toList(),
+                        elementsThatShowChild: [question.choices.first],
+                        childSubquestion: question.subquestion == null
+                            ? null
+                            : Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: TextWithForm(
+                                  title: question.subquestion!,
+                                  initialValue: widget.job.sstEvaluation
+                                          .questions['${question.id}+t'] ??
+                                      '',
+                                  onSaved: (text) =>
+                                      answer['${question.id}+t'] = text,
+                                ),
+                              ),
+                      ),
                     );
 
                   case Type.checkbox:
-                    return QuestionWithCheckboxList(
-                      initialChoices: Set.from(
-                          widget.job.sstEvaluation.questions[question.id] ??
-                              []),
-                      initialText: widget.job.sstEvaluation
-                              .questions['${question.id}+t'] ??
-                          '',
-                      choicesQuestion:
-                          '${index + 1}. ${question.getQuestion(isProfessor)}',
-                      choices: question.choices,
-                      textQuestion: question.getTextQuestion(isProfessor),
-                      onSavedChoices: (choices) =>
-                          answer[question.id] = choices?.toList(),
-                      onSavedText: (text) => answer['${question.id}+t'] = text,
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 24.0),
+                      child: CheckboxWithOther(
+                        title: '${index + 1}. ${question.title}',
+                        elements: question.choices.toList(),
+                        hasNotApplicableOption: true,
+                        initialValues: (widget.job.sstEvaluation
+                                .questions[question.id] as List?)
+                            ?.map((e) => e as String)
+                            .toList(),
+                        onOptionWasSelected: (values) =>
+                            answer[question.id] = values,
+                        childSubquestion: question.subquestion == null
+                            ? null
+                            : Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: TextWithForm(
+                                  title: question.subquestion!,
+                                  initialValue: widget.job.sstEvaluation
+                                          .questions['${question.id}+t'] ??
+                                      '',
+                                  onSaved: (text) =>
+                                      answer['${question.id}+t'] = text,
+                                ),
+                              ),
+                      ),
                     );
 
                   case Type.text:
-                    return QuestionWithText(
-                      initialValue:
-                          widget.job.sstEvaluation.questions[question.id] ?? '',
-                      question:
-                          '${index + 1}. ${question.getQuestion(isProfessor)}',
-                      onSaved: (text) => answer[question.id] = text,
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 36.0),
+                      child: TextWithForm(
+                        title: '${index + 1}. ${question.title}',
+                        initialValue:
+                            widget.job.sstEvaluation.questions[question.id] ??
+                                '',
+                        onSaved: (text) => answer[question.id] = text,
+                      ),
                     );
                 }
               },

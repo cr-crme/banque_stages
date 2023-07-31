@@ -32,8 +32,8 @@ class PrerequisitesExpansionPanel extends ExpansionPanel {
                 const Text('Prérequis et équipements'),
                 if (isExpanded)
                   SizedBox(
-                    width: 35,
-                    height: 35,
+                    width: 50,
+                    height: 50,
                     child: InkWell(
                         onTap: onClickEdit,
                         borderRadius: BorderRadius.circular(25),

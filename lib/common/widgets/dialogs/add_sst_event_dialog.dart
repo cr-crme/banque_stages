@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/widgets/form_fields/question_with_text.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/text_with_form.dart';
 import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/misc/form_service.dart';
@@ -59,8 +59,8 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
                 onChanged: (value) => setState(
                     () => _eventType = SstEventType.dangerousSituations),
               ),
-              QuestionWithText(
-                question: 'Décrire ce qu\'il s\'est passé:',
+              TextWithForm(
+                title: 'Décrire ce qu\'il s\'est passé:',
                 onSaved: (text) => setState(() => _description = text),
                 validator: (text) =>
                     text?.isEmpty ?? true ? 'Que s\'est-il passé?' : null,

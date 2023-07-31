@@ -25,12 +25,11 @@ abstract class QuestionFileService {
 
 class Question extends ItemSerializable {
   Question.fromSerialized(map)
-      : questionProfessor = map['qp'],
-        questionStudent = map['qs'],
+      : title = map['qp'],
         type = Type.fromSerialized(map['t']),
-        choices = Set.from(map['c'] ?? []),
-        textQuestionProfessor = map['sp'],
-        textQuestionStudent = map['ss'],
+        choices = Set.from(
+            (map['c'] as List?)?.map((e) => (e as String).trim()) ?? []),
+        subquestion = map['sp'],
         super.fromSerialized(map);
 
   @override
@@ -38,28 +37,10 @@ class Question extends ItemSerializable {
     throw 'Question should not be serialized. Store its ID intead.';
   }
 
-  String getQuestion(bool isProfessor) {
-    if (isProfessor) {
-      return questionProfessor;
-    }
-
-    return questionStudent;
-  }
-
-  String? getTextQuestion(bool isProfessor) {
-    if (isProfessor) {
-      return textQuestionProfessor;
-    }
-
-    return textQuestionStudent;
-  }
-
-  final String questionProfessor;
-  final String questionStudent;
+  final String title;
   final Type type;
   final Set<String> choices;
-  final String? textQuestionProfessor;
-  final String? textQuestionStudent;
+  final String? subquestion;
 }
 
 enum Type {
@@ -73,8 +54,10 @@ enum Type {
         return Type.text;
       case 'Choix de réponse':
         return Type.checkbox;
-      default:
+      case 'Vrai ou Faux':
         return Type.radio;
+      default:
+        throw 'Wrong format';
     }
   }
 }

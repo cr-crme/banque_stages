@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
 
-class RadioWithChild<T> extends StatefulWidget {
-  const RadioWithChild({
+class RadioWithChildSubquestion<T> extends StatefulWidget {
+  const RadioWithChildSubquestion({
     super.key,
     required this.title,
     required this.elements,
-    required this.elementsThatShowChild,
-    required this.child,
+    this.elementsThatShowChild,
+    this.childSubquestion,
   });
 
   final String title;
   final List<T> elements;
-  final List<T> elementsThatShowChild;
-  final Widget child;
+  final List<T>? elementsThatShowChild;
+  final Widget? childSubquestion;
 
   @override
-  State<RadioWithChild<T>> createState() => RadioWithChildState<T>();
+  State<RadioWithChildSubquestion<T>> createState() =>
+      RadioWithChildSubquestionState<T>();
 }
 
-class RadioWithChildState<T> extends State<RadioWithChild<T>> {
+class RadioWithChildSubquestionState<T>
+    extends State<RadioWithChildSubquestion<T>> {
   T? _current;
 
-  bool get hasOther => _hasOther;
-  bool _hasOther = false;
+  bool get hasSubquestion => _hasSubquestion;
+  bool _hasSubquestion = false;
+
+  bool get _showSubquestion =>
+      widget.childSubquestion != null && _hasSubquestion;
 
   T? get value => _current;
 
@@ -38,7 +43,7 @@ class RadioWithChildState<T> extends State<RadioWithChild<T>> {
         ...widget.elements
             .map((element) => _buildElementTile(element))
             .toList(),
-        if (_hasOther) widget.child,
+        if (_showSubquestion) widget.childSubquestion!,
       ],
     );
   }
@@ -57,7 +62,8 @@ class RadioWithChildState<T> extends State<RadioWithChild<T>> {
       onChanged: (newValue) {
         setState(() {
           _current = newValue;
-          _hasOther = widget.elementsThatShowChild.contains(element);
+          _hasSubquestion =
+              widget.elementsThatShowChild?.contains(element) ?? false;
         });
       },
     );
