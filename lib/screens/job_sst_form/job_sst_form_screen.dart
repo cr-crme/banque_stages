@@ -5,11 +5,13 @@ import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.d
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_child_subquestion.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/text_with_form.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class JobSstFormScreen extends StatefulWidget {
   const JobSstFormScreen({
@@ -54,8 +56,126 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     Navigator.of(context).pop();
   }
 
+  void _showHelp({required bool force}) async {
+    bool shouldShowHelp = force;
+    if (!shouldShowHelp) {
+      final prefs = await SharedPreferences.getInstance();
+      final wasShown = prefs.getBool('SstRiskFormHelpWasShown');
+      if (wasShown == null || !wasShown) shouldShowHelp = true;
+    }
+
+    if (!shouldShowHelp) return;
+
+    final scrollController = ScrollController();
+    // ignore: use_build_context_synchronously
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'REPÈRES',
+          textAlign: TextAlign.center,
+        ),
+        content: RawScrollbar(
+            controller: scrollController,
+            thumbVisibility: true,
+            thickness: 7,
+            minThumbLength: 75,
+            thumbColor: Theme.of(context).primaryColor,
+            radius: const Radius.circular(20),
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: Container(
+                margin: const EdgeInsets.only(right: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Objectifs du questionnaire',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    ItemizedText(
+                      const [
+                        'S\'informer sur les risques auxquels est exposé l\'élève à ce '
+                            'poste de travail.',
+                        'Susciter un dialogue avec l\'entreprise sur les mesures '
+                            'de prévention.\n'
+                            'Les différentes sous-questions visent spécifiquement à '
+                            'favoriser les échanges.'
+                      ],
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Avec qui le remplir\u00a0?',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    Text(
+                      'La personne qui est en charge de former l\'élève sur le plancher\u00a0:',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    ItemizedText(
+                      const [
+                        'C\'est elle qui connait le mieux le poste de travail de l\'élève',
+                        'Il sera plus facile d\'aborder avec elle qu\'avec l\'employeur '
+                            'les questions relatives aux dangers et aux accident',
+                      ],
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Quand',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    ItemizedText(
+                      const [
+                        'La première semaine de stage',
+                        'Pendant (ou après) une visite du poste de travail de l\'élève',
+                      ],
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Durée',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    Text(
+                      '15 minutes',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Cibles',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    ItemizedText(
+                      const [
+                        'Nouvelle entreprise : remplissage initial',
+                        'Milieu de stage récurrent : validation et mise à jour des '
+                            'réponses des années précédentes',
+                      ],
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+            )),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK')),
+        ],
+      ),
+    );
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('SstRiskFormHelpWasShown', true);
+  }
+
   @override
   Widget build(BuildContext context) {
+    _showHelp(force: false);
+
     final enterprise =
         EnterprisesProvider.of(context).fromId(widget.enterpriseId);
 
@@ -63,7 +183,17 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
       appBar: AppBar(
           title: const Text('La SST en stage'),
           leading: IconButton(
-              onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
+              onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
+          actions: [
+            InkWell(
+              onTap: () => _showHelp(force: true),
+              borderRadius: BorderRadius.circular(25),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Icon(Icons.info),
+              ),
+            )
+          ]),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(12.0),

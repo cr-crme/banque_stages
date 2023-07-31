@@ -60,14 +60,14 @@ class SpecializationListScreen extends StatelessWidget {
   }
 
   void _showHelp(BuildContext context, {required bool force}) async {
-    bool shouldShow = force;
-    if (!shouldShow) {
+    bool shouldShowHelp = force;
+    if (!shouldShowHelp) {
       final prefs = await SharedPreferences.getInstance();
       final wasShown = prefs.getBool('SstHelpWasShown');
-      if (wasShown == null || !wasShown) shouldShow = true;
+      if (wasShown == null || !wasShown) shouldShowHelp = true;
     }
 
-    if (!shouldShow) return;
+    if (!shouldShowHelp) return;
 
     // ignore: use_build_context_synchronously
     showDialog(

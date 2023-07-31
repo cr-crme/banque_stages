@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ItemizedText extends StatelessWidget {
-  const ItemizedText(this.elements, {super.key, this.interline = 0});
+  const ItemizedText(
+    this.elements, {
+    super.key,
+    this.interline = 0,
+    this.style,
+  });
 
   final List<String> elements;
+  final TextStyle? style;
   final double interline;
 
   @override
@@ -18,8 +24,15 @@ class ItemizedText extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('\u2022 '),
-                  Flexible(child: Text(elements[i])),
+                  Text(
+                    '\u2022 ',
+                    style: style,
+                  ),
+                  Flexible(
+                      child: Text(
+                    elements[i],
+                    style: style,
+                  )),
                 ],
               ),
             ),
