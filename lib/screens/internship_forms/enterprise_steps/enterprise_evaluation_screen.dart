@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 import 'specialized_students_step.dart';
 import 'supervision_step.dart';
-import 'prerequisites_step.dart';
+import 'task_and_ability_step.dart';
 
 class EnterpriseEvaluationScreen extends StatefulWidget {
   const EnterpriseEvaluationScreen({super.key, required this.id});
@@ -31,7 +31,7 @@ class _EnterpriseEvaluationScreenState
     StepState.indexed
   ];
 
-  final _prerequisitesKey = GlobalKey<PrerequisitesStepState>();
+  final _taskAndAbilityKey = GlobalKey<TaskAndAbilityStepState>();
   final _supervisionKey = GlobalKey<SupervisionStepState>();
   final _specializedStudentsKey = GlobalKey<SpecializedStudentsStepState>();
   final double _tabHeight = 0.0;
@@ -47,7 +47,7 @@ class _EnterpriseEvaluationScreenState
     bool valid = false;
     String? message;
     if (_currentStep >= 0) {
-      message = await _prerequisitesKey.currentState!.validate();
+      message = await _taskAndAbilityKey.currentState!.validate();
       valid = message == null;
       _stepStatus[0] = valid ? StepState.complete : StepState.error;
     }
@@ -72,7 +72,7 @@ class _EnterpriseEvaluationScreenState
     ScaffoldMessenger.of(context).clearSnackBars();
 
     if (_currentStep == 2) {
-      if ((await _prerequisitesKey.currentState!.validate()) != null) {
+      if ((await _taskAndAbilityKey.currentState!.validate()) != null) {
         setState(() {
           _currentStep = 0;
           _scrollToCurrentTab();
@@ -112,36 +112,15 @@ class _EnterpriseEvaluationScreenState
   }
 
   void _submit() {
-    final List<String> enterpriseRequests = _prerequisitesKey
-        .currentState!.requiredForJob.entries
-        .where((e) => e.value)
-        .map((e) => e.key)
-        .toList();
-    if (_prerequisitesKey.currentState!.otherRequirementsText != null) {
-      enterpriseRequests
-          .add(_prerequisitesKey.currentState!.otherRequirementsText!);
-    }
-
-    final List<String> skills = _prerequisitesKey
-        .currentState!.skillsRequired.entries
-        .where((e) => e.value)
-        .map((e) => e.key)
-        .toList();
-    if (_prerequisitesKey.currentState!.otherSkillsText != null) {
-      skills.add(_prerequisitesKey.currentState!.otherSkillsText!);
-    }
-
     // Add the evaluation to a copy of the internship
     final internships = InternshipsProvider.of(context, listen: false);
     final internship = internships.firstWhere((e) => e.id == widget.id);
 
     internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
       internshipId: internship.id,
-      minimumAge: _prerequisitesKey.currentState!.minimalAge,
-      enterpriseRequests: enterpriseRequests,
-      skillsRequired: skills,
-      taskVariety: _supervisionKey.currentState!.taskVariety!,
-      trainingPlanRespect: _supervisionKey.currentState!.trainingPlan!,
+      skillsRequired: _taskAndAbilityKey.currentState!.requiredSkills,
+      taskVariety: _taskAndAbilityKey.currentState!.taskVariety!,
+      trainingPlanRespect: _taskAndAbilityKey.currentState!.trainingPlan!,
       autonomyExpected: _supervisionKey.currentState!.autonomyExpected!,
       efficiencyExpected: _supervisionKey.currentState!.efficiencyExpected!,
       supervisionStyle: _supervisionKey.currentState!.supervisionStyle!,
@@ -149,16 +128,16 @@ class _EnterpriseEvaluationScreenState
       absenceAcceptance: _supervisionKey.currentState!.absenceAcceptance!,
       supervisionComments: _supervisionKey.currentState!.supervisionComments,
       acceptanceTsa: _specializedStudentsKey.currentState!.acceptanceTsa,
-      acceptanceLanguageDeficiency:
-          _specializedStudentsKey.currentState!.acceptanceLanguageDeficiency,
-      acceptanceMentalDeficiency:
-          _specializedStudentsKey.currentState!.acceptanceMentalDeficiency,
-      acceptancePhysicalDeficiency:
-          _specializedStudentsKey.currentState!.acceptancePhysicalDeficiency,
-      acceptanceMentalHealthIssue:
-          _specializedStudentsKey.currentState!.acceptanceMentalHealthIssue,
-      acceptanceBehaviorIssue:
-          _specializedStudentsKey.currentState!.acceptanceBehaviorIssue,
+      acceptanceLanguageDisorder:
+          _specializedStudentsKey.currentState!.acceptanceLanguageDisorder,
+      acceptanceIntellectualDisability: _specializedStudentsKey
+          .currentState!.acceptanceIntellectualDisability,
+      acceptancePhysicalDisability:
+          _specializedStudentsKey.currentState!.acceptancePhysicalDisability,
+      acceptanceMentalHealthDisorder:
+          _specializedStudentsKey.currentState!.acceptanceMentalHealthDisorder,
+      acceptanceBehaviorDifficulties:
+          _specializedStudentsKey.currentState!.acceptanceBehaviorDifficulties,
     );
 
     // Pass the evaluation data to the rest of the app
@@ -200,9 +179,12 @@ class _EnterpriseEvaluationScreenState
             Step(
               state: _stepStatus[0],
               isActive: _currentStep == 0,
-              title: const Text('Prérequis'),
-              content: PrerequisitesStep(
-                key: _prerequisitesKey,
+              title: const Text(
+                'Tâches et\nhabiletés',
+                textAlign: TextAlign.center,
+              ),
+              content: TaskAndAbilityStep(
+                key: _taskAndAbilityKey,
                 internship: internship,
               ),
             ),

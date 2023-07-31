@@ -1,201 +1,190 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PrerequisitesExpansionPanel extends ExpansionPanel {
   PrerequisitesExpansionPanel({
+    required GlobalKey<PrerequisitesBodyState> key,
     required super.isExpanded,
+    required bool isEditing,
     required Enterprise enterprise,
+    required Function() onClickEdit,
     required Job job,
   }) : super(
           canTapOnHeader: true,
           body: _PrerequisitesBody(
+            key: key,
             job: job,
             enterprise: enterprise,
+            isEditing: isEditing,
           ),
-          headerBuilder: (context, isExpanded) => const ListTile(
-            title: Text('Prérequis pour le recrutement'),
+          headerBuilder: (context, isExpanded) => ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Prérequis et équipements'),
+                if (isExpanded)
+                  SizedBox(
+                    width: 35,
+                    height: 35,
+                    child: InkWell(
+                        onTap: onClickEdit,
+                        borderRadius: BorderRadius.circular(25),
+                        child: Icon(isEditing ? Icons.save : Icons.edit,
+                            color: Theme.of(context).primaryColor)),
+                  ),
+              ],
+            ),
           ),
         );
 }
 
-List<Widget> _printCountedList<T>(
-    Iterable iterable, String Function(T) toString) {
-  final out = iterable.map<String>((e) => toString(e));
-
-  return out
-      .toSet()
-      .map<Widget>((e) => Text(
-          '\u2022 $e (${out.fold<int>(0, (prev, e2) => prev + (e == e2 ? 1 : 0))})'))
-      .toList();
-}
-
-class _PrerequisitesBody extends StatelessWidget {
-  const _PrerequisitesBody({required this.job, required this.enterprise});
+class _PrerequisitesBody extends StatefulWidget {
+  const _PrerequisitesBody({
+    required super.key,
+    required this.job,
+    required this.enterprise,
+    required this.isEditing,
+  });
 
   final Job job;
   final Enterprise enterprise;
+  final bool isEditing;
+
+  @override
+  State<_PrerequisitesBody> createState() => PrerequisitesBodyState();
+}
+
+class PrerequisitesBodyState extends State<_PrerequisitesBody> {
+  final formKey = GlobalKey<FormState>();
+
+  late final _ageController =
+      TextEditingController(text: widget.job.minimumAge.toString());
+  int get minimumAge =>
+      _ageController.text.isEmpty ? -1 : int.parse(_ageController.text);
+
+  final _preInternshipRequestKey =
+      GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>>();
+  List<String> get prerequisites =>
+      _preInternshipRequestKey.currentState!.values;
 
   @override
   Widget build(BuildContext context) {
-    final evaluations = job.postInternshipEnterpriseEvaluations(context);
-    final internships = InternshipsProvider.of(context)
-        .where((internship) => job.id == internship.jobId);
-
-    return evaluations.isNotEmpty || internships.isNotEmpty
-        ? SizedBox(
-            width: Size.infinite.width,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (evaluations.isNotEmpty) _buildMinimumAge(evaluations),
-                  ..._buildUniform(internships),
-                  const SizedBox(height: 12),
-                  ..._buildProtections(internships),
-                  const SizedBox(height: 12),
-                  if (evaluations.isNotEmpty)
-                    ..._buildEntepriseRequests(evaluations),
-                  if (evaluations.isNotEmpty)
-                    ..._buildSkillsRequired(evaluations),
-                ],
-              ),
-            ),
-          )
-        : const Center(
-            child: Padding(
-            padding: EdgeInsets.only(bottom: 12.0),
-            child: Text('Aucune donnée pour l\'instant'),
-          ));
+    return Form(
+      key: formKey,
+      child: SizedBox(
+        width: Size.infinite.width,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 24, right: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildMinimumAge(),
+              const SizedBox(height: 12),
+              ..._buildEntepriseRequests(),
+              const SizedBox(height: 12),
+              ..._buildUniform(),
+              const SizedBox(height: 12),
+              ..._buildProtections(),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  Widget _buildMinimumAge(List<PostIntershipEnterpriseEvaluation> evaluations) {
+  Widget _buildMinimumAge() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Âge minimum',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Text(
-            '${evaluations.fold<double>(0, (prev, e) => prev + e.minimumAge) ~/ evaluations.length} ans'),
-        const SizedBox(height: 12),
+        const Text('Âge minimum',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        if (widget.isEditing)
+          Row(
+            children: [
+              SizedBox(
+                width: 100,
+                child: TextFormField(
+                  controller: _ageController,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    final current = int.tryParse(value!);
+                    if (current == null) return 'Préciser';
+                    if (current < 10 || current > 30) {
+                      return 'Entre 10 et 30';
+                    }
+                    return null;
+                  },
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                ),
+              ),
+              const Text(' ans')
+            ],
+          ),
+        if (!widget.isEditing) Text('${widget.job.minimumAge} ans'),
       ],
     );
   }
 
-  List<Widget> _buildUniform(Iterable<Internship> internships) {
+  List<Widget> _buildUniform() {
     // Workaround for job.uniforms
-    final allUniforms = internships.map<Uniform>((e) => e.uniform).toSet();
-    final uniforms = {
-      UniformStatus.suppliedByEnterprise: allUniforms
-          .where((e) => e.status == UniformStatus.suppliedByEnterprise),
-      UniformStatus.suppliedByStudent:
-          allUniforms.where((e) => e.status == UniformStatus.suppliedByStudent),
-    };
+    final uniforms = widget.job.uniform;
 
     return [
       const Text(
         'Tenue de travail',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      if (uniforms[UniformStatus.suppliedByEnterprise]!.isEmpty &&
-          uniforms[UniformStatus.suppliedByStudent]!.isEmpty)
+      if (uniforms.status == UniformStatus.none)
         const Text('Aucune consigne de l\'entreprise'),
-      if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Fournie par l\'entreprise\u00a0:'),
-            ..._printCountedList<Uniform>(
-                uniforms[UniformStatus.suppliedByEnterprise]!,
-                (e) => e.uniform),
-          ],
-        ),
-      if (uniforms[UniformStatus.suppliedByStudent]!.isNotEmpty)
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (uniforms[UniformStatus.suppliedByEnterprise]!.isNotEmpty)
-              const SizedBox(height: 8),
-            const Text('Fournie par l\'étudiant\u00a0:'),
-            ..._printCountedList<Uniform>(
-                uniforms[UniformStatus.suppliedByStudent]!, (e) => e.uniform),
-          ],
-        ),
+      if (uniforms.status == UniformStatus.suppliedByEnterprise)
+        const Text('Fournie par l\'entreprise\u00a0:'),
+      if (uniforms.status == UniformStatus.suppliedByStudent)
+        const Text('Fournie par l\'étudiant\u00a0:'),
+      ItemizedText(uniforms.uniforms),
     ];
   }
 
-  List<Widget> _buildSkillsRequired(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
-    final skills = evaluations.expand((e) => e.skillsRequired);
-
-    return [
-      const Text(
-        'Habiletés requises pour le stage',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      if (skills.isEmpty) const Text('Aucune'),
-      if (skills.isNotEmpty) ..._printCountedList<String>(skills, (e) => e),
-      const SizedBox(height: 12),
-    ];
-  }
-
-  List<Widget> _buildEntepriseRequests(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
-    final requests = evaluations.expand((e) => e.enterpriseRequests);
-
+  List<Widget> _buildEntepriseRequests() {
+    final requests = widget.job.preInternshipRequest.requests;
+    // TODO: Add the editing for the other and add that it 'remembers'
     return [
       const Text(
         'Exigences de l\'entreprise',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      if (requests.isEmpty) const Text('Aucune exigence particulière'),
-      if (requests.isNotEmpty) ..._printCountedList<String>(requests, (e) => e),
-      const SizedBox(height: 12),
+      if (widget.isEditing)
+        BuildPrerequisitesCheckboxes(checkBoxKey: _preInternshipRequestKey),
+      if (!widget.isEditing)
+        requests.isEmpty
+            ? const Text('Aucune exigence particulière')
+            : ItemizedText(requests),
     ];
   }
 
-  List<Widget> _buildProtections(Iterable<Internship> internships) {
-    final allProtections = internships.map<Protections>((e) => e.protections);
-    final protections = {
-      ProtectionsStatus.suppliedByEnterprise: allProtections
-          .where((e) => e.status == ProtectionsStatus.suppliedByEnterprise)
-          .map((e) => e.protections)
-          .expand((e) => e),
-      ProtectionsStatus.suppliedBySchool: allProtections
-          .where((e) => e.status == ProtectionsStatus.suppliedBySchool)
-          .map((e) => e.protections)
-          .expand((e) => e),
-    };
+  List<Widget> _buildProtections() {
+    final protections = widget.job.protections;
 
     return [
       const Text(
         'Équipements de protection individuelle',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      if (protections[ProtectionsStatus.suppliedByEnterprise]!.isEmpty &&
-          protections[ProtectionsStatus.suppliedBySchool]!.isEmpty)
+      if (protections.status == ProtectionsStatus.none)
         const Text('Aucun équipement requis'),
-      if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Fournis par l\'entreprise\u00a0:'),
-          ..._printCountedList<String>(
-              protections[ProtectionsStatus.suppliedByEnterprise]!, (e) => e),
-        ]),
-      if (protections[ProtectionsStatus.suppliedBySchool]!.isNotEmpty)
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          if (protections[ProtectionsStatus.suppliedByEnterprise]!.isNotEmpty)
-            const SizedBox(height: 8),
-          const Text('Fournis par l\'école\u00a0:'),
-          ..._printCountedList<String>(
-              protections[ProtectionsStatus.suppliedBySchool]!, (e) => e),
-        ]),
+      if (protections.status == ProtectionsStatus.suppliedByEnterprise)
+        const Text('Fournis par l\'entreprise\u00a0:'),
+      if (protections.status == ProtectionsStatus.suppliedBySchool)
+        const Text('Fournis par l\'école\u00a0:'),
+      ItemizedText(protections.protections),
     ];
   }
 }

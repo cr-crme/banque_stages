@@ -36,13 +36,18 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
 
   bool get _editing =>
       (_aboutPageKey.currentState?.editing ?? false) ||
-      (_contactPageKey.currentState?.editing ?? false);
+      (_contactPageKey.currentState?.editing ?? false) ||
+      (_jobsPageKey.currentState?.isEditing ?? false);
+
   void cancelEditing() {
     if (_aboutPageKey.currentState?.editing != null) {
       _aboutPageKey.currentState!.toggleEdit(save: false);
     }
     if (_contactPageKey.currentState?.editing != null) {
       _contactPageKey.currentState!.toggleEdit(save: false);
+    }
+    if (_jobsPageKey.currentState?.isEditing != null) {
+      _jobsPageKey.currentState!.cancelEditing();
     }
     setState(() {});
   }
@@ -71,6 +76,10 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
         } else if (_tabController.index == 1) {
           await _contactPageKey.currentState?.toggleEdit();
         } else if (_tabController.index == 2) {
+          if (_jobsPageKey.currentState!.isEditing) {
+            if (!await ConfirmPopDialog.show(context)) return;
+            cancelEditing();
+          }
           await _jobsPageKey.currentState?.addJob();
         } else if (_tabController.index == 3) {
           await _stagePageKey.currentState?.addStage();
@@ -83,8 +92,8 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
   }
 
   Future<void> addInternship(Enterprise enterprise) async {
-    if (enterprise.jobs.fold<int>(
-            0, (previousValue, e) => e.positionsRemaining(context)) ==
+    if (enterprise.jobs
+            .fold<int>(0, (prev, e) => prev + e.positionsRemaining(context)) ==
         0) {
       await showDialog(
         context: context,
@@ -122,8 +131,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
               if (!_editing || !_tabController.indexIsChanging) return;
 
               _tabController.index = _tabController.previousIndex;
-              final acceptLosingChanges = await ConfirmPopDialog.show(context);
-              if (acceptLosingChanges) {
+              if (await ConfirmPopDialog.show(context)) {
                 cancelEditing();
                 _tabController.animateTo(index);
               }

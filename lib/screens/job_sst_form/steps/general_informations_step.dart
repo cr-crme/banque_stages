@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
@@ -73,23 +74,14 @@ class GeneralInformationsStep extends StatelessWidget {
                   'Objectif spécifiques\u00a0: ',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 16, top: 8),
-                  child: Column(
-                    children: [
-                      Text(
-                        '\u2022 Éclairer les enseignants sur de possibles '
-                        'risques pour la SST des élèves en stage',
-                      ),
-                      Text(
-                        '\u2022 Faire prendre conscience aux entreprises '
-                        'que l\'enseignant est attentif à la SST '
-                        'et est un partenaire pour former l\'élève '
-                        'sur ce sujet.',
-                      ),
-                    ],
-                  ),
-                ),
+                const SizedBox(height: 8),
+                const ItemizedText([
+                  'Éclairer les enseignants sur de possibles risques pour la '
+                      'SST des élèves en stage',
+                  'Faire prendre conscience aux entreprises que l\'enseignant '
+                      'est attentif à la SST et est un partenaire pour former '
+                      'l\'élève sur ce sujet.',
+                ]),
               ],
             ),
           ),
@@ -115,41 +107,35 @@ class GeneralInformationsStep extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '\u2022 Avec la personne qui est en charge de former '
-                        'l\'élève sur le plancher:',
-                      ),
+                      ItemizedText([
+                        'Avec la personne qui est en charge de former '
+                            'l\'élève sur le plancher:'
+                      ]),
                       Padding(
-                        padding: EdgeInsets.only(left: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '\u2022 C\'est elle qui connait le mieux le poste '
-                              'de travail de l\'élève',
-                            ),
-                            Text(
-                              '\u2022 Il sera plus facile d\'aborder avec elle '
-                              'qu\'avec les employeurs les questions relatives '
-                              'aux dangers et aux accidents)',
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text('\u2022 La 1ère semaine de stage'),
-                      Text(
-                        '\u2022 Pendant (ou à la suite) d\'une visite du poste '
-                        'de travail de l\'élève',
-                      ),
+                          padding: EdgeInsets.only(left: 16),
+                          child: ItemizedText([
+                            'C\'est elle qui connait le mieux le poste de '
+                                'travail de l\'élève',
+                            'Il sera plus facile d\'aborder avec elle qu\'avec '
+                                'les employeurs les questions relatives aux '
+                                'dangers et aux accidents)',
+                          ])),
+                      ItemizedText([
+                        'La 1ère semaine de stage',
+                        'Pendant (ou à la suite) d\'une visite du poste de '
+                            'travail de l\'élève',
+                      ])
                     ],
                   ),
                 ),
-                Text(''),
+                SizedBox(height: 12),
                 Text('Quand:'),
-                Text('\u2022 La 1ère semaine de stage'),
-                Text('\u2022 Pendant (ou à la suite) d\'une visite du poste '
-                    'de travail de l\'élève'),
-                Text(''),
+                ItemizedText([
+                  'La 1ère semaine de stage',
+                  'Pendant (ou à la suite) d\'une visite du poste de travail '
+                      'de l\'élève',
+                ]),
+                SizedBox(height: 12),
                 Text('Durée de remplissage\u00a0: 15 minutes'),
               ],
             ),

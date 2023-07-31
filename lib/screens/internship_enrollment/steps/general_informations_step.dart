@@ -163,7 +163,7 @@ class _MainJob extends StatelessWidget {
               JobFormFieldListTile(
                 specializations:
                     _generateSpecializationAndAvailability(context),
-                askNumberPositionsOffered: false,
+                specializationOnly: true,
                 onSaved: onSaved,
               ),
             ],
@@ -212,7 +212,7 @@ class _ExtraSpecialization extends StatelessWidget {
         ),
         JobFormFieldListTile(
           onSaved: (job) => onSetSpecialization(job!.specialization, index),
-          askNumberPositionsOffered: false,
+          specializationOnly: true,
         ),
       ],
     );

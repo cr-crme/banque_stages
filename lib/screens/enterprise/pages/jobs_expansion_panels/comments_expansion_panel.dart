@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
+import 'package:flutter/material.dart';
 
 class CommentsExpansionPanel extends ExpansionPanel {
   CommentsExpansionPanel({
@@ -37,23 +37,9 @@ class _SstBody extends StatelessWidget {
               : CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8),
-            ...job.comments.isEmpty
-                ? [
-                    const Text('Il n\'y a présentement aucun commentaire.'),
-                    const SizedBox(height: 16)
-                  ]
-                : job.comments.map(
-                    (comment) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('\u2022 '),
-                          Flexible(child: Text(comment)),
-                        ],
-                      ),
-                    ),
-                  ),
+            job.comments.isEmpty
+                ? const Text('Il n\'y a présentement aucun commentaire.')
+                : ItemizedText(job.comments, interline: 8),
             Center(
               child: IconButton(
                 onPressed: () => addComment(job),

@@ -38,7 +38,10 @@ class _AccidentHistoryScreenState extends State<AccidentHistoryScreen> {
   }
 
   Map<Specialization, AccidentsByEnterprise> _fetchAllAccidents(context) {
-    final enterprises = EnterprisesProvider.of(context);
+    final enterprises = EnterprisesProvider.of(context).map((e) => e).toList()
+      ..sort(
+        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+      );
     final textToSearch = _searchController.text.toLowerCase().trim();
 
     Map<Specialization, AccidentsByEnterprise> out = {};

@@ -1,9 +1,7 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
@@ -115,8 +113,6 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                           _PersonalNotes(internship: internship),
                         if (internship != null)
                           _Schedule(internship: internship),
-                        if (internship != null)
-                          _Requirements(internship: internship),
                         _MoreInfoButton(
                           studentId: studentId,
                           onTap: () => _navigateToStudentIntership(context),
@@ -464,54 +460,6 @@ class _Schedule extends StatelessWidget {
           child: internship != null
               ? _scheduleBuilder(context, internship!.weeklySchedules)
               : const Text('Aucun stage'),
-        ),
-      ],
-    );
-  }
-}
-
-class _Requirements extends StatelessWidget {
-  const _Requirements({required this.internship});
-
-  final Internship internship;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Exigences de l\'entreprise'),
-        const Padding(
-          padding: EdgeInsets.only(left: 32.0),
-          child: Text('Équipements de protection individuelle',
-              style: TextStyle(fontWeight: FontWeight.w600)),
-        ),
-        Padding(
-            padding: const EdgeInsets.only(left: 32.0),
-            child: internship.protections.status == ProtectionsStatus.none
-                ? const Text('Aucun')
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: internship.protections.protections
-                        .map((e) => Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('\u2022 '),
-                                Flexible(child: Text(e)),
-                              ],
-                            ))
-                        .toList(),
-                  )),
-        const Padding(
-          padding: EdgeInsets.only(left: 32.0, top: 8.0),
-          child: Text('Tenue de travail',
-              style: TextStyle(fontWeight: FontWeight.w600)),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 32.0),
-          child: internship.uniform.status == UniformStatus.none
-              ? const Text('Aucune consigne de l\'entreprise')
-              : Text(internship.uniform.uniform),
         ),
       ],
     );
