@@ -345,7 +345,7 @@ class _InternshipBody extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Date du stage', style: _titleStyle),
+            const Text('Dates du stage', style: _titleStyle),
             Padding(
               padding: const EdgeInsets.only(bottom: _interline),
               child: Table(

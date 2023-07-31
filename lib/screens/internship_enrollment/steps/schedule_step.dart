@@ -163,7 +163,7 @@ class _DateRangeState extends State<_DateRange> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Dates et nombre d\'heures', top: 0, left: 0),
+        const SubTitle('Dates de stage', top: 0, left: 0),
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Column(
@@ -184,7 +184,7 @@ class _DateRangeState extends State<_DateRange> {
                       }
                     },
                     builder: (state) => Text(
-                      '* Sélectionner les dates du stage',
+                      '* Sélectionner les dates',
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
                           color: _isValid ? Colors.black : Colors.red),
                     ),
@@ -253,7 +253,7 @@ class _Hours extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Spécifications', left: 0, bottom: 0),
+        const SubTitle('Nombre d\'heures', left: 0, bottom: 0),
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: TextFormField(

@@ -49,8 +49,8 @@ class SupervisionExpansionPanel extends ExpansionPanel {
                   duration: Duration(seconds: 10),
                   content: Text('Les résultats sont le cumul des '
                       'évaluations des personnes ayant '
-                      'supervisé des élèves dans cette entreprise. '
-                      '\nIls sont différenciés entre '
+                      'supervisé des stagiaires dans cette entreprise. '
+                      '\nIls sont différenciés entre stages '
                       'FMS et FPT.'))),
           child: Icon(
             Icons.info,
