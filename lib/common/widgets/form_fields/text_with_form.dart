@@ -5,7 +5,8 @@ class TextWithForm extends StatelessWidget {
     this.visible = true,
     required this.title,
     this.titleStyle,
-    this.initialValue = '',
+    this.controller,
+    this.initialValue,
     this.onChanged,
     this.onSaved,
     this.validator,
@@ -16,7 +17,8 @@ class TextWithForm extends StatelessWidget {
 
   final String title;
   final TextStyle? titleStyle;
-  final String initialValue;
+  final TextEditingController? controller;
+  final String? initialValue;
   final void Function(String? text)? onChanged;
   final void Function(String? text)? onSaved;
   final String? Function(String? text)? validator;
@@ -31,6 +33,7 @@ class TextWithForm extends StatelessWidget {
           style: titleStyle ?? Theme.of(context).textTheme.titleSmall,
         ),
         TextFormField(
+          controller: controller,
           initialValue: initialValue,
           onChanged: onChanged,
           onSaved: onSaved,

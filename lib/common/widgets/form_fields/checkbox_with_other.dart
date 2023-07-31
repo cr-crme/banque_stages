@@ -31,8 +31,9 @@ class CheckboxWithOther<T> extends StatefulWidget {
 class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
   final Map<T, bool> _elementValues = {};
   bool _isNotApplicable = false;
+
+  final _otherTextController = TextEditingController();
   bool _hasOther = false;
-  String? _other;
 
   bool get hasSubquestion => _hasSubquestion;
   bool _hasSubquestion = false;
@@ -56,13 +57,18 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
   ///
   /// This returns all the element in the form of a list of String
   List<String> get values {
+    if (_isNotApplicable) return ['__NOT_APPLICABLE_INTERNAL__'];
+
     final List<String> out = [];
+
     for (final e in _elementValues.keys) {
       if (_elementValues[e]!) {
         out.add(e.toString());
       }
     }
-    if (_hasOther && _other != null) out.add(_other!);
+    if (_hasOther && _otherTextController.text.isNotEmpty) {
+      out.add(_otherTextController.text);
+    }
     return out;
   }
 
@@ -80,12 +86,22 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
     }
 
     // But initial values may contains "other" element which must be parsed too
+    if (widget.hasNotApplicableOption &&
+        widget.initialValues != null &&
+        widget.initialValues!.length == 1 &&
+        widget.initialValues![0] == '__NOT_APPLICABLE_INTERNAL__') {
+      _isNotApplicable = true;
+      return;
+    }
+
     if (widget.initialValues != null) {
       final elementsAsString = widget.elements.map((e) => e.toString());
       for (final initial in widget.initialValues!) {
         if (initial.isNotEmpty && !elementsAsString.contains(initial)) {
           _hasOther = true;
-          _other = _other == null ? initial : '$_other\n$initial';
+          _otherTextController.text = _otherTextController.text.isEmpty
+              ? initial
+              : '${_otherTextController.text}\n$initial';
         }
       }
     }
@@ -142,6 +158,7 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
                   _elementValues[e] = false;
                 }
                 _hasOther = false;
+                _otherTextController.text = '';
                 _checkForShowingChild();
               }
               setState(() {});
@@ -185,15 +202,14 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextFormField(
+                  controller: _otherTextController,
                   decoration:
                       const InputDecoration(border: OutlineInputBorder()),
                   minLines: 1,
                   maxLines: null,
                   style: Theme.of(context).textTheme.bodyMedium,
-                  initialValue: _other,
                   keyboardType: TextInputType.multiline,
                   onChanged: (text) {
-                    _other = text;
                     if (widget.onOptionWasSelected != null) {
                       widget.onOptionWasSelected!(values);
                     }

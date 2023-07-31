@@ -118,6 +118,8 @@ class QuestionsStep extends StatefulWidget {
 }
 
 class _QuestionsStepState extends State<QuestionsStep> {
+  final Map<String, TextEditingController> _followUpController = {};
+
   final formKey = GlobalKey<FormState>();
 
   bool isProfessor = true;
@@ -166,8 +168,13 @@ class _QuestionsStepState extends State<QuestionsStep> {
                         widget.job.sstEvaluation.questions[question.id],
                     elements: question.choices.toList(),
                     elementsThatShowChild: [question.choices.first],
-                    onChanged: (value) =>
-                        answer[question.id] = value.toString(),
+                    onChanged: (value) {
+                      answer[question.id] = value.toString();
+                      _followUpController['${question.id}+t']!.text = '';
+                      if (question.choices.first != value) {
+                        answer['${question.id}+t'] = null;
+                      }
+                    },
                     childSubquestion: question.subquestion == null
                         ? null
                         : _buildFollowUpQuestion(question, context),
@@ -185,8 +192,13 @@ class _QuestionsStepState extends State<QuestionsStep> {
                             .job.sstEvaluation.questions[question.id] as List?)
                         ?.map((e) => e as String)
                         .toList(),
-                    onOptionWasSelected: (values) =>
-                        answer[question.id] = values,
+                    onOptionWasSelected: (values) {
+                      answer[question.id] = values;
+                      if (!question.choices.any((q) => values.contains(q))) {
+                        answer['${question.id}+t'] = null;
+                        _followUpController['${question.id}+t']!.text = '';
+                      }
+                    },
                     childSubquestion: question.subquestion == null
                         ? null
                         : _buildFollowUpQuestion(question, context),
@@ -211,13 +223,14 @@ class _QuestionsStepState extends State<QuestionsStep> {
   }
 
   Padding _buildFollowUpQuestion(Question question, BuildContext context) {
+    _followUpController['${question.id}+t'] = TextEditingController(
+        text: widget.job.sstEvaluation.questions['${question.id}+t'] ?? '');
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: TextWithForm(
+        controller: _followUpController['${question.id}+t'],
         title: question.subquestion!,
         titleStyle: Theme.of(context).textTheme.bodyMedium,
-        initialValue:
-            widget.job.sstEvaluation.questions['${question.id}+t'] ?? '',
         onChanged: (text) => answer['${question.id}+t'] = text,
       ),
     );
