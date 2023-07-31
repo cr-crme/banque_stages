@@ -73,7 +73,7 @@ class SupervisionStepState extends State<SupervisionStep> {
           '* Tolérance du milieu à l\'égard des retards et absences de l\'élève',
           style: Theme.of(context)
               .textTheme
-              .bodyLarge!
+              .titleSmall!
               .copyWith(fontWeight: FontWeight.bold),
         ),
         Padding(
@@ -96,7 +96,7 @@ class SupervisionStepState extends State<SupervisionStep> {
           '* Communication avec l\'entreprise',
           style: Theme.of(context)
               .textTheme
-              .bodyLarge!
+              .titleSmall!
               .copyWith(fontWeight: FontWeight.bold),
         ),
         Padding(
@@ -119,7 +119,7 @@ class SupervisionStepState extends State<SupervisionStep> {
           '* Type d\'encadrement',
           style: Theme.of(context)
               .textTheme
-              .bodyLarge!
+              .titleSmall!
               .copyWith(fontWeight: FontWeight.bold),
         ),
         Padding(
@@ -142,7 +142,7 @@ class SupervisionStepState extends State<SupervisionStep> {
           '* Rendement de l\'élève',
           style: Theme.of(context)
               .textTheme
-              .bodyLarge!
+              .titleSmall!
               .copyWith(fontWeight: FontWeight.bold),
         ),
         Padding(
@@ -165,7 +165,7 @@ class SupervisionStepState extends State<SupervisionStep> {
           '* Niveau d\'autonomie de l\'élève souhaité',
           style: Theme.of(context)
               .textTheme
-              .bodyLarge!
+              .titleSmall!
               .copyWith(fontWeight: FontWeight.bold),
         ),
         Padding(

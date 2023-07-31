@@ -23,7 +23,7 @@ class SstMainCard extends StatelessWidget {
           onTap: onTap,
           title: SubTitle(title, left: 0, top: 0),
           subtitle: content,
-          subtitleTextStyle: Theme.of(context).textTheme.bodyLarge,
+          subtitleTextStyle: Theme.of(context).textTheme.titleSmall,
           textColor: Colors.black,
         ),
       ),
