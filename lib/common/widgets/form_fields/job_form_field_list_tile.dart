@@ -119,7 +119,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
           preInternshipRequest: preInternshipRequest,
           uniform: uniform,
           protections: protections,
-          sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+          sstEvaluation: JobSstEvaluation.empty,
         ));
       },
       validator: (_) => validator(),

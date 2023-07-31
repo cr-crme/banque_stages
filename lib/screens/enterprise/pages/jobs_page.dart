@@ -97,9 +97,8 @@ class JobsPageState extends State<JobsPage> {
       case SstEventType.pastIncidents:
         job.sstEvaluation.incidents.add(result['description']);
         break;
-      case SstEventType.dangerousSituations:
-        job.sstEvaluation.dangerousSituations.add(result['description']);
-        break;
+      default:
+        throw 'Unrecognized eventType';
     }
     enterprises.replaceJob(widget.enterprise, job);
   }

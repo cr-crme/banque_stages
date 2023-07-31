@@ -4,15 +4,19 @@ class RadioWithChildSubquestion<T> extends StatefulWidget {
   const RadioWithChildSubquestion({
     super.key,
     required this.title,
+    this.initialValue,
     required this.elements,
     this.elementsThatShowChild,
     this.childSubquestion,
+    this.onChanged,
   });
 
   final String title;
+  final T? initialValue;
   final List<T> elements;
   final List<T>? elementsThatShowChild;
   final Widget? childSubquestion;
+  final Function(T? values)? onChanged;
 
   @override
   State<RadioWithChildSubquestion<T>> createState() =>
@@ -21,7 +25,7 @@ class RadioWithChildSubquestion<T> extends StatefulWidget {
 
 class RadioWithChildSubquestionState<T>
     extends State<RadioWithChildSubquestion<T>> {
-  T? _current;
+  late T? _current = widget.initialValue;
 
   bool get hasSubquestion => _hasSubquestion;
   bool _hasSubquestion = false;
@@ -30,6 +34,16 @@ class RadioWithChildSubquestionState<T>
       widget.childSubquestion != null && _hasSubquestion;
 
   T? get value => _current;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkShowSubquestion();
+  }
+
+  void _checkShowSubquestion() {
+    _hasSubquestion = widget.elementsThatShowChild?.contains(_current) ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +74,10 @@ class RadioWithChildSubquestionState<T>
       ),
       value: element,
       onChanged: (newValue) {
-        setState(() {
-          _current = newValue;
-          _hasSubquestion =
-              widget.elementsThatShowChild?.contains(element) ?? false;
-        });
+        _current = newValue;
+        _checkShowSubquestion();
+        setState(() {});
+        if (widget.onChanged != null) widget.onChanged!(value);
       },
     );
   }

@@ -1,14 +1,15 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
-import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_child_subquestion.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/text_with_form.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
-import 'package:crcrme_banque_stages/screens/job_sst_form/steps/danger_step.dart';
+import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'steps/general_informations_step.dart';
-import 'steps/questions_step.dart';
 
 class JobSstFormScreen extends StatefulWidget {
   const JobSstFormScreen({
@@ -25,61 +26,21 @@ class JobSstFormScreen extends StatefulWidget {
 }
 
 class _JobSstFormScreenState extends State<JobSstFormScreen> {
-  final _scrollController = ScrollController();
+  final _questionsKey = GlobalKey<_QuestionsStepState>();
 
-  final _questionsKey = GlobalKey<QuestionsStepState>();
-  final _dangerKey = GlobalKey<DangerStepState>();
-
-  int _currentStep = 0;
-  final List<StepState> _stepStatus = [
-    StepState.indexed,
-    StepState.indexed,
-    StepState.indexed
-  ];
-
-  void _nextStep() {
-    final formKeys = [
-      _questionsKey.currentState!.formKey,
-      _dangerKey.currentState!.formKey
-    ];
-
-    if (_currentStep != 0 &&
-        !FormService.validateForm(formKeys[_currentStep - 1])) {
-      setState(() {
-        _stepStatus[_currentStep] = StepState.error;
-      });
+  void _submit() {
+    if (!FormService.validateForm(_questionsKey.currentState!.formKey)) {
+      setState(() {});
       return;
     }
 
-    if (_currentStep == 2) {
-      _submit();
-    } else {
-      setState(() {
-        _stepStatus[_currentStep] = StepState.complete;
-        _currentStep += 1;
-        _scrollController.jumpTo(0);
-      });
-    }
-  }
-
-  void _submit() {
     _questionsKey.currentState!.formKey.currentState!.save();
-    _dangerKey.currentState!.formKey.currentState!.save();
-
-    final stateDanger = _dangerKey.currentState!;
 
     final enterprises = context.read<EnterprisesProvider>();
-    enterprises[widget.enterpriseId].jobs[widget.jobId].sstEvaluation.update(
-          questions: _questionsKey.currentState!.answer,
-          dangerousSituations: stateDanger.dangerousSituations.isEmpty
-              ? []
-              : stateDanger.dangerousSituations.split('\n'),
-          equipmentRequired: stateDanger.equipmentRequired,
-          incidents: stateDanger.pastIncidents.isEmpty
-              ? []
-              : stateDanger.pastIncidents.split('\n'),
-          incidentContact: stateDanger.incidentContact,
-        );
+    enterprises[widget.enterpriseId]
+        .jobs[widget.jobId]
+        .sstEvaluation
+        .update(questions: _questionsKey.currentState!.answer);
 
     enterprises.replaceJob(widget.enterpriseId,
         enterprises[widget.enterpriseId].jobs[widget.jobId]);
@@ -88,85 +49,199 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
   }
 
   void _cancel() async {
-    final result = await showDialog(
-        context: context, builder: (context) => const ConfirmPopDialog());
-    if (!mounted || result == null || !result) return;
-
+    final answer = await ConfirmPopDialog.show(context);
+    if (!answer || !mounted) return;
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    final enterprise =
+        EnterprisesProvider.of(context).fromId(widget.enterpriseId);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('La SST en stage'),
-      ),
-      body: Selector<EnterprisesProvider, Enterprise>(
-        builder: (context, enterprise, _) => ScrollableStepper(
-          scrollController: _scrollController,
-          type: StepperType.horizontal,
-          currentStep: _currentStep,
-          onStepContinue: _nextStep,
-          onStepTapped: (int tapped) => setState(() {
-            _currentStep = tapped;
-            _scrollController.jumpTo(0);
-          }),
-          onStepCancel: _cancel,
-          steps: [
-            Step(
-              state: _stepStatus[0],
-              isActive: _currentStep == 0,
-              title: const Text('Général'),
-              content: GeneralInformationsStep(
+          title: const Text('La SST en stage'),
+          leading: IconButton(
+              onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              QuestionsStep(
+                key: _questionsKey,
                 enterprise: enterprise,
                 job: enterprise.jobs[widget.jobId],
               ),
-            ),
-            Step(
-              state: _stepStatus[1],
-              isActive: _currentStep == 1,
-              title: const Text('Tâches'),
-              content: QuestionsStep(
-                key: _questionsKey,
-                job: enterprise.jobs[widget.jobId],
-              ),
-            ),
-            Step(
-              state: _stepStatus[2],
-              isActive: _currentStep == 2,
-              title: const Text('Dangers'),
-              content: DangerStep(
-                key: _dangerKey,
-                job: enterprise.jobs[widget.jobId],
-              ),
-            ),
-          ],
-          controlsBuilder: _controlBuilder,
+              _controlBuilder(),
+            ],
+          ),
         ),
-        selector: (context, enterprises) => enterprises[widget.enterpriseId],
       ),
     );
   }
 
-  Widget _controlBuilder(BuildContext context, ControlsDetails details) {
+  Widget _controlBuilder() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          OutlinedButton(
-              onPressed: details.onStepCancel, child: const Text('Annuler')),
+          OutlinedButton(onPressed: _cancel, child: const Text('Annuler')),
           const SizedBox(
             width: 20,
           ),
           TextButton(
-            onPressed: details.onStepContinue,
-            child: _currentStep == 2
-                ? const Text('Confirmer')
-                : const Text('Suivant'),
+            onPressed: _submit,
+            child: const Text('Confirmer'),
           )
         ],
       ),
+    );
+  }
+}
+
+class QuestionsStep extends StatefulWidget {
+  const QuestionsStep({
+    super.key,
+    required this.enterprise,
+    required this.job,
+  });
+
+  final Enterprise enterprise;
+  final Job job;
+
+  @override
+  State<QuestionsStep> createState() => _QuestionsStepState();
+}
+
+class _QuestionsStepState extends State<QuestionsStep> {
+  final formKey = GlobalKey<FormState>();
+
+  bool isProfessor = true;
+
+  Map<String, dynamic> answer = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          _buildHeader(),
+          _buildQuestions(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuestions() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Questions', left: 0),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: widget.job.specialization.questions.length,
+          itemBuilder: (context, index) {
+            String id = widget.job.specialization.questions.elementAt(index);
+            final question = QuestionFileService.fromId(id);
+
+            // Fill the initial answer
+            answer[question.id] =
+                widget.job.sstEvaluation.questions[question.id];
+            answer['${question.id}+t'] =
+                widget.job.sstEvaluation.questions['${question.id}+t'];
+
+            switch (question.type) {
+              case Type.radio:
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  child: RadioWithChildSubquestion(
+                    title: '${index + 1}. ${question.title}',
+                    initialValue:
+                        widget.job.sstEvaluation.questions[question.id],
+                    elements: question.choices.toList(),
+                    elementsThatShowChild: [question.choices.first],
+                    onChanged: (value) =>
+                        answer[question.id] = value.toString(),
+                    childSubquestion: question.subquestion == null
+                        ? null
+                        : _buildFollowUpQuestion(question, context),
+                  ),
+                );
+
+              case Type.checkbox:
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  child: CheckboxWithOther(
+                    title: '${index + 1}. ${question.title}',
+                    elements: question.choices.toList(),
+                    hasNotApplicableOption: true,
+                    initialValues: (widget
+                            .job.sstEvaluation.questions[question.id] as List?)
+                        ?.map((e) => e as String)
+                        .toList(),
+                    onOptionWasSelected: (values) =>
+                        answer[question.id] = values,
+                    childSubquestion: question.subquestion == null
+                        ? null
+                        : _buildFollowUpQuestion(question, context),
+                  ),
+                );
+
+              case Type.text:
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 36.0),
+                  child: TextWithForm(
+                    title: '${index + 1}. ${question.title}',
+                    initialValue:
+                        widget.job.sstEvaluation.questions[question.id] ?? '',
+                    onChanged: (text) => answer[question.id] = text,
+                  ),
+                );
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Padding _buildFollowUpQuestion(Question question, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: TextWithForm(
+        title: question.subquestion!,
+        titleStyle: Theme.of(context).textTheme.bodyMedium,
+        initialValue:
+            widget.job.sstEvaluation.questions['${question.id}+t'] ?? '',
+        onChanged: (text) => answer['${question.id}+t'] = text,
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Informations générales', top: 0, left: 0),
+        TextField(
+          decoration: const InputDecoration(
+              labelText: 'Nom de l\'entreprise', border: InputBorder.none),
+          controller: TextEditingController(text: widget.enterprise.name),
+          enabled: false,
+        ),
+        TextField(
+          decoration: const InputDecoration(
+              labelText: 'Métier semi-spécialisé', border: InputBorder.none),
+          controller:
+              TextEditingController(text: widget.job.specialization.name),
+          enabled: false,
+        ),
+      ],
     );
   }
 }

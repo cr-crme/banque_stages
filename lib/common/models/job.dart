@@ -13,31 +13,17 @@ Map<String, dynamic> _stringMapFromSerialized(Map? list) =>
     (list ?? {}).map((k, v) => MapEntry(k.toString(), v));
 
 class JobSstEvaluation extends ItemSerializable {
-  final List<String> dangerousSituations;
-  final List<String> equipmentRequired;
-  final List<String> incidents;
-  String incidentContact;
   final Map<String, dynamic> questions;
   DateTime date;
 
+  // TODO incident to be done
+  final List<String> incidents = const [];
+
+  bool get isFilled => questions.isNotEmpty;
+
   void update({
-    required List<String> dangerousSituations,
-    required List<String> equipmentRequired,
-    required List<String> incidents,
-    required String incidentContact,
     required Map<String, dynamic> questions,
   }) {
-    this.dangerousSituations.clear();
-    this.dangerousSituations.addAll(dangerousSituations);
-
-    this.equipmentRequired.clear();
-    this.equipmentRequired.addAll(equipmentRequired);
-
-    this.incidents.clear();
-    this.incidents.addAll(incidents);
-
-    this.incidentContact = incidentContact;
-
     this.questions.clear();
     this.questions.addAll(questions);
 
@@ -45,37 +31,18 @@ class JobSstEvaluation extends ItemSerializable {
   }
 
   JobSstEvaluation({
-    required this.dangerousSituations,
-    required this.equipmentRequired,
-    required this.incidents,
-    required this.incidentContact,
     required this.questions,
     DateTime? date,
   }) : date = date ?? DateTime.now();
 
-  JobSstEvaluation.empty({required this.incidentContact})
-      : dangerousSituations = [],
-        equipmentRequired = [],
-        incidents = [],
-        questions = {},
-        date = DateTime.now();
+  static JobSstEvaluation get empty => JobSstEvaluation(questions: {});
 
   JobSstEvaluation.fromSerialized(map)
-      : dangerousSituations =
-            _stringListFromSerialized(map['dangerousSituations']),
-        equipmentRequired = _stringListFromSerialized(map['equipmentRequired']),
-        incidents =
-            (map['incidents'] as List? ?? []).map<String>((e) => e).toList(),
-        incidentContact = map['incidentContact'],
-        questions = _stringMapFromSerialized(map['questions']),
+      : questions = _stringMapFromSerialized(map['questions']),
         date = DateTime.fromMillisecondsSinceEpoch(map['date'] ?? 0);
 
   @override
   Map<String, dynamic> serializedMap() => {
-        'dangerousSituations': dangerousSituations,
-        'equipmentRequired': equipmentRequired,
-        'incidents': incidents,
-        'incidentContact': incidentContact,
         'questions': questions,
         'date': date.millisecondsSinceEpoch,
       };

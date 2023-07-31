@@ -93,26 +93,12 @@ class SstBody extends StatelessWidget {
               'ou d\'incident',
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 8),
-              child: job.sstEvaluation.incidentContact.isNotEmpty
-                  ? Text(job.sstEvaluation.incidentContact)
-                  : const Text('Aucun contact enregistré'),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Situations dangereuses repérées sur le poste de travail',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            job.sstEvaluation.dangerousSituations.isEmpty
-                ? const Text('Aucune situation')
-                : ItemizedText(job.sstEvaluation.dangerousSituations),
             const SizedBox(height: 8),
             Text(
               'Détail des tâches et risques associés',
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            Text(job.sstEvaluation.incidentContact.isEmpty
+            Text(job.sstEvaluation.isFilled
                 ? 'Le formulaire n\'a jamais été rempli avec cette entreprise'
                 : 'Formulaire SST rempli avec l\'entreprise\n'
                     'Mis à jour le ${DateFormat.yMMMEd('fr_CA').format(job.sstEvaluation.date)}'),

@@ -99,7 +99,7 @@ Future<void> addDummyEnterprises(
     Job(
         specialization: ActivitySectorsService.sectors[2].specializations[9],
         positionsOffered: 2,
-        sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+        sstEvaluation: JobSstEvaluation.empty,
         minimumAge: 12,
         preInternshipRequest:
             PreInternshipRequest(requests: ['Manger de la poutine']),
@@ -118,7 +118,7 @@ Future<void> addDummyEnterprises(
     Job(
         specialization: ActivitySectorsService.sectors[0].specializations[7],
         positionsOffered: 3,
-        sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+        sstEvaluation: JobSstEvaluation.empty,
         minimumAge: 15,
         preInternshipRequest:
             PreInternshipRequest(requests: ['Manger de la tarte']),
@@ -169,7 +169,7 @@ Future<void> addDummyEnterprises(
     Job(
         specialization: ActivitySectorsService.sectors[0].specializations[7],
         positionsOffered: 3,
-        sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+        sstEvaluation: JobSstEvaluation.empty,
         minimumAge: 15,
         preInternshipRequest: PreInternshipRequest(requests: []),
         uniform: Uniform(status: UniformStatus.none),
@@ -212,15 +212,6 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[9].specializations[3],
       positionsOffered: 3,
       sstEvaluation: JobSstEvaluation(
-        dangerousSituations: ['Outils mal rangés', 'Tas de pneus'],
-        equipmentRequired: ['Chaussures de sécurité'],
-        incidents: [
-          'Le stagiaire a eu la peur de sa vie!',
-          'Le stagiaire a eu la peur de sa vie, deux fois plutôt qu\'une!',
-          'Le stagiaire a eu la peur de sa vie, en fait trois...',
-          'Le stagiaire a coupé un doigt à un client',
-        ],
-        incidentContact: 'Jonny M. 514 514-5544',
         questions: {
           '1': 'Installer des pneus (les soulevers + transporter)',
           '2': false,
@@ -287,7 +278,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[9].specializations[3],
       positionsOffered: 2,
-      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      sstEvaluation: JobSstEvaluation.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -330,7 +321,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[2].specializations[9],
       positionsOffered: 2,
-      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      sstEvaluation: JobSstEvaluation.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -374,7 +365,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[2].specializations[7],
       positionsOffered: 1,
-      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      sstEvaluation: JobSstEvaluation.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -418,7 +409,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 2,
-      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      sstEvaluation: JobSstEvaluation.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -462,7 +453,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[2].specializations[14],
       positionsOffered: 1,
-      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      sstEvaluation: JobSstEvaluation.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -501,7 +492,7 @@ Future<void> addDummyEnterprises(
     Job(
       specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 3,
-      sstEvaluation: JobSstEvaluation.empty(incidentContact: ''),
+      sstEvaluation: JobSstEvaluation.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -546,23 +537,6 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[1].specializations[2],
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation(
-        incidents: [
-          'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
-              'et il s\'est ouvert profondément la paume en voulant couper une tige. '
-        ],
-        equipmentRequired: [
-          'Chaussures avec semelles antidérapantes, Gants en kevlar'
-        ],
-        incidentContact: 'Joanie, la propriétaire',
-        dangerousSituations: [
-          'L\'élève n\'a pas le droit de s\'asseoir',
-          'Travailler avec un couteau et sécateur',
-          'Travailler avec des matières biologiques (épines de fleurs, pollen)',
-          'Travailler avec des produits chimiques (pesticides)',
-          'Porter des objets lourds (ex. gros pots de fleurs)',
-          'Travailler avec le dos courbé',
-          'Les planchers sont souvent mouillés (risque de chute)'
-        ],
         questions: {
           '1': 'Entretenir les fleurs et les plantes, servir les clients, '
               'aider à la préparation de bouquets  ',
@@ -628,23 +602,6 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[1].specializations[2],
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation(
-        incidents: [
-          'Lorsque l\'élève a laissé tomber un vase dispendieux qui s\'est '
-              'cassé au sol, le patron s\'est énervé et lui a crié dessus. '
-              'L\'élève a fait une crise de panique.',
-          'L\'élève a gâché un nouvel arrivage de fleurs en préparant mal '
-              'les tiges, et le patron a menacé de le mettre à la porte. '
-              'L\'élève a appelé sa superviseure en pleurant et ne voulait pas '
-              'continuer son stage.'
-        ],
-        equipmentRequired: ['Chaussures avec semelles antidérapantes'],
-        incidentContact: 'Gaëtan Munger, le gérant',
-        dangerousSituations: [
-          'Travailler avec un couteau',
-          'Travailler avec des produits chimiques (pesticides)',
-          'Porter des objets lourds (ex. gros pots de fleurs)',
-          'Les planchers sont souvent mouillés (risque de chute)',
-        ],
         questions: {
           '1': 'Arroser les fleurs et les plantes, aider à la confection de '
               'couronnes, sortir et ranger les plantes à l\'ouverture et à la '

@@ -4,6 +4,7 @@ class TextWithForm extends StatelessWidget {
   const TextWithForm({
     this.visible = true,
     required this.title,
+    this.titleStyle,
     this.initialValue = '',
     this.onChanged,
     this.onSaved,
@@ -14,6 +15,7 @@ class TextWithForm extends StatelessWidget {
   final bool visible;
 
   final String title;
+  final TextStyle? titleStyle;
   final String initialValue;
   final void Function(String? text)? onChanged;
   final void Function(String? text)? onSaved;
@@ -26,7 +28,7 @@ class TextWithForm extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: titleStyle ?? Theme.of(context).textTheme.titleSmall,
         ),
         TextFormField(
           initialValue: initialValue,
