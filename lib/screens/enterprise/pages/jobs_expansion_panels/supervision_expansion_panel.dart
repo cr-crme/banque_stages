@@ -46,7 +46,7 @@ class SupervisionExpansionPanel extends ExpansionPanel {
           borderRadius: BorderRadius.circular(25),
           onTap: () =>
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  duration: Duration(seconds: 10),
+                  duration: Duration(seconds: 6),
                   content: Text('Les résultats sont le cumul des '
                       'évaluations des personnes ayant '
                       'supervisé des stagiaires dans cette entreprise. '

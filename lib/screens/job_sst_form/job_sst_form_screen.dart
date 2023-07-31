@@ -181,7 +181,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          title: const Text('La SST en stage'),
+          title: const Text('Repérer les risques SST'),
           leading: IconButton(
               onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
           actions: [

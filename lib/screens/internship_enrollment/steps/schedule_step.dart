@@ -112,12 +112,18 @@ class ScheduleStepState extends State<ScheduleStep> {
           ),
           Visibility(
               visible: scheduleController.dateRange != null,
-              child: ScheduleSelector(
-                scheduleController: scheduleController,
-                editMode: true,
-                withTitle: true,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ScheduleSelector(
+                    scheduleController: scheduleController,
+                    editMode: true,
+                    withTitle: true,
+                  ),
+                  _Hours(
+                      onSaved: (value) => intershipLength = int.parse(value!)),
+                ],
               )),
-          _Hours(onSaved: (value) => intershipLength = int.parse(value!)),
         ],
       ),
     );
