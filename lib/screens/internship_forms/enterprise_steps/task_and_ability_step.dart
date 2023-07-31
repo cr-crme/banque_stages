@@ -82,12 +82,14 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SubTitle('Informations générales', left: 0),
                   _buildEnterpriseName(enterprise),
                   _buildStudentName(student),
                   const SubTitle('Tâches', left: 0),
                   _buildVariety(context),
                   const SizedBox(height: 8),
                   _buildTrainingPlan(context),
+                  const SubTitle('Habiletés', left: 0),
                   const SizedBox(height: 16),
                   _buildSkillsRequired(context),
                 ],
