@@ -110,12 +110,15 @@ class _SupervisionBody extends StatelessWidget {
                     const SizedBox(height: 12),
                     _buildAbsenceAcceptance(evaluations),
                     const SizedBox(height: 12),
-                    Text(
-                      'Évaluation de l\'accueil de stagiaires avec',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall!
-                          .copyWith(fontWeight: FontWeight.bold),
+                    Visibility(
+                      visible: evaluations.any((e) => e.hasDisorder),
+                      child: Text(
+                        'Évaluation de l\'accueil de stagiaires avec',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     _buildAcceptanceTsa(evaluations),
                     _buildAcceptanceLanguageDeficiency(evaluations),
@@ -296,37 +299,38 @@ class _RatingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return rating < 0 || rating > 5
-        ? Container()
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.bodyMedium,
+    return Visibility(
+      visible: rating >= 0 && rating <= 5,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          RatingBar(
+            initialRating: rating,
+            onRatingUpdate: (value) {},
+            allowHalfRating: true,
+            ignoreGestures: true,
+            ratingWidget: RatingWidget(
+              full: Icon(
+                Icons.star,
+                color: Theme.of(context).colorScheme.secondary,
               ),
-              RatingBar(
-                initialRating: rating,
-                onRatingUpdate: (value) {},
-                allowHalfRating: true,
-                ignoreGestures: true,
-                ratingWidget: RatingWidget(
-                  full: Icon(
-                    Icons.star,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  half: Icon(
-                    Icons.star_half,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  empty: Icon(
-                    Icons.star_border,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
+              half: Icon(
+                Icons.star_half,
+                color: Theme.of(context).colorScheme.secondary,
               ),
-              const SizedBox(height: 12),
-            ],
-          );
+              empty: Icon(
+                Icons.star_border,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+      ),
+    );
   }
 }

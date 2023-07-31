@@ -82,6 +82,13 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
   final double acceptancePhysicalDisability;
   final double acceptanceMentalHealthDisorder;
   final double acceptanceBehaviorDifficulties;
+  bool get hasDisorder =>
+      acceptanceTsa >= 0 ||
+      acceptanceLanguageDisorder >= 0 ||
+      acceptanceIntellectualDisability >= 0 ||
+      acceptancePhysicalDisability >= 0 ||
+      acceptanceMentalHealthDisorder >= 0 ||
+      acceptanceBehaviorDifficulties >= 0;
 
   @override
   Map<String, dynamic> serializedMap() => {
