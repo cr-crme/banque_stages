@@ -59,7 +59,7 @@ class QuestionsStepState extends State<QuestionsStep> {
                                   initialValue: widget.job.sstEvaluation
                                           .questions['${question.id}+t'] ??
                                       '',
-                                  onSaved: (text) =>
+                                  onChanged: (text) =>
                                       answer['${question.id}+t'] = text,
                                 ),
                               ),
@@ -88,7 +88,7 @@ class QuestionsStepState extends State<QuestionsStep> {
                                   initialValue: widget.job.sstEvaluation
                                           .questions['${question.id}+t'] ??
                                       '',
-                                  onSaved: (text) =>
+                                  onChanged: (text) =>
                                       answer['${question.id}+t'] = text,
                                 ),
                               ),
@@ -103,7 +103,7 @@ class QuestionsStepState extends State<QuestionsStep> {
                         initialValue:
                             widget.job.sstEvaluation.questions[question.id] ??
                                 '',
-                        onSaved: (text) => answer[question.id] = text,
+                        onChanged: (text) => answer[question.id] = text,
                       ),
                     );
                 }

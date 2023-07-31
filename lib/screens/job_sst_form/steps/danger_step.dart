@@ -39,7 +39,7 @@ class DangerStepState extends State<DangerStep> {
               title:
                   '1. Quelles sont les situations de travail qui pourraient être '
                   'dangereuses pour mon élève? Comment faudrait-il l\'y préparer?',
-              onSaved: (text) => dangerousSituations = text ?? '',
+              onChanged: (text) => dangerousSituations = text ?? '',
             ),
             // QuestionWithCheckboxList(
             //   initialChoices:
@@ -73,7 +73,7 @@ class DangerStepState extends State<DangerStep> {
               title:
                   '4. À quelle personne dans l\'entreprise, l\'élève doit-il '
                   's\'adresser en cas de blessure ou d\'incident?',
-              onSaved: (text) => incidentContact = text!,
+              onChanged: (text) => incidentContact = text!,
             ),
           ],
         ),

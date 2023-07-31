@@ -38,7 +38,7 @@ class RadioWithChildSubquestionState<T>
       children: [
         Text(
           widget.title,
-          style: Theme.of(context).textTheme.bodyLarge,
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         ...widget.elements
             .map((element) => _buildElementTile(element))

@@ -73,9 +73,24 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
   @override
   void initState() {
     super.initState();
+
+    // Initialize all elements from the initial value
     for (final e in widget.elements) {
       _elementValues[e] = widget.initialValues?.contains(e.toString()) ?? false;
     }
+
+    // But initial values may contains "other" element which must be parsed too
+    if (widget.initialValues != null) {
+      final elementsAsString = widget.elements.map((e) => e.toString());
+      for (final initial in widget.initialValues!) {
+        if (initial.isNotEmpty && !elementsAsString.contains(initial)) {
+          _hasOther = true;
+          _other = _other == null ? initial : '$_other\n$initial';
+        }
+      }
+    }
+
+    _checkForShowingChild();
   }
 
   @override
@@ -85,8 +100,31 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
       children: [
         Text(
           widget.title,
-          style: widget.titleStyle ?? Theme.of(context).textTheme.bodyLarge,
+          style: widget.titleStyle ?? Theme.of(context).textTheme.titleSmall,
         ),
+        ..._elementValues.keys
+            .map(
+              (element) => CheckboxListTile(
+                visualDensity: VisualDensity.compact,
+                dense: true,
+                controlAffinity: ListTileControlAffinity.leading,
+                title: Text(
+                  element.toString(),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                enabled: !_isNotApplicable,
+                value: _elementValues[element]!,
+                onChanged: (newValue) {
+                  _elementValues[element] = newValue!;
+                  _checkForShowingChild();
+                  setState(() {});
+                  if (widget.onOptionWasSelected != null) {
+                    widget.onOptionWasSelected!(values);
+                  }
+                },
+              ),
+            )
+            .toList(),
         if (widget.hasNotApplicableOption)
           CheckboxListTile(
             visualDensity: VisualDensity.compact,
@@ -112,29 +150,6 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
               }
             },
           ),
-        ..._elementValues.keys
-            .map(
-              (element) => CheckboxListTile(
-                visualDensity: VisualDensity.compact,
-                dense: true,
-                controlAffinity: ListTileControlAffinity.leading,
-                title: Text(
-                  element.toString(),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                enabled: !_isNotApplicable,
-                value: _elementValues[element]!,
-                onChanged: (newValue) {
-                  _elementValues[element] = newValue!;
-                  _checkForShowingChild();
-                  setState(() {});
-                  if (widget.onOptionWasSelected != null) {
-                    widget.onOptionWasSelected!(values);
-                  }
-                },
-              ),
-            )
-            .toList(),
         if (widget.showOtherOption)
           CheckboxListTile(
             visualDensity: VisualDensity.compact,
@@ -170,12 +185,19 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextFormField(
-                  onChanged: (text) => _other = text,
                   decoration:
                       const InputDecoration(border: OutlineInputBorder()),
                   minLines: 1,
                   maxLines: null,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  initialValue: _other,
                   keyboardType: TextInputType.multiline,
+                  onChanged: (text) {
+                    _other = text;
+                    if (widget.onOptionWasSelected != null) {
+                      widget.onOptionWasSelected!(values);
+                    }
+                  },
                   validator: (value) => _hasOther &&
                           (value == null ||
                               !RegExp('[a-zA-Z0-9]').hasMatch(value))
