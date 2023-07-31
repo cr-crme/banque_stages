@@ -266,8 +266,8 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   Widget _buildUniform() {
     return RadioWithChild<UniformStatus>(
       key: _uniformKey,
-      title:
-          '* Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
+      title: '* Est-ce qu\'une tenue de travail spécifique est exigée pour '
+          'exercer ce métier\u00a0?',
       elements: UniformStatus.values,
       elementsThatShowChild: const [
         UniformStatus.suppliedByEnterprise,
