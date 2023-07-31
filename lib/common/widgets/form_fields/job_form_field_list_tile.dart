@@ -197,10 +197,6 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
         setState(() {});
       },
       fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
-        if (_specialization == null) {
-          if (controller.text != '') state.didChange(null);
-          controller.text = '';
-        }
         if (_availableSpecialization.length == 1) {
           _specialization = _availableSpecialization[0];
           controller.text = _specialization!.idWithName;
