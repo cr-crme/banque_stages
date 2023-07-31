@@ -438,13 +438,13 @@ class _ScrollableStepperState extends State<ScrollableStepper>
       case StepState.indexed:
       case StepState.editing:
       case StepState.complete:
-        return textTheme.bodyLarge!;
+        return textTheme.bodyMedium!;
       case StepState.disabled:
-        return textTheme.bodyLarge!.copyWith(
+        return textTheme.bodyMedium!.copyWith(
           color: _isDark() ? _kDisabledDark : _kDisabledLight,
         );
       case StepState.error:
-        return textTheme.bodyLarge!.copyWith(
+        return textTheme.bodyMedium!.copyWith(
           color: _isDark() ? _kErrorDark : _kErrorLight,
         );
     }
@@ -478,13 +478,13 @@ class _ScrollableStepperState extends State<ScrollableStepper>
       case StepState.indexed:
       case StepState.editing:
       case StepState.complete:
-        return textTheme.bodyLarge!;
+        return textTheme.bodyMedium!;
       case StepState.disabled:
-        return textTheme.bodyLarge!.copyWith(
+        return textTheme.bodyMedium!.copyWith(
           color: _isDark() ? _kDisabledDark : _kDisabledLight,
         );
       case StepState.error:
-        return textTheme.bodyLarge!.copyWith(
+        return textTheme.bodyMedium!.copyWith(
           color: _isDark() ? _kErrorDark : _kErrorLight,
         );
     }
