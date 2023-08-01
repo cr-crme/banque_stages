@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
@@ -119,6 +120,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
           uniform: uniform,
           protections: protections,
           sstEvaluation: JobSstEvaluation.empty,
+          incidents: Incidents.empty,
         ));
       },
       validator: (_) => validator(),

@@ -1,13 +1,13 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 
-class AccidentsByEnterprise {
+class IncidentsByEnterprise {
   final Map<Enterprise, List<String>> _all = {};
 
-  void add(Enterprise enterprise, List<String> accidents) {
+  void add(Enterprise enterprise, List<String> incidents) {
     if (!_all.containsKey(enterprise)) {
       _all[enterprise] = [];
     }
-    _all[enterprise]!.addAll(accidents);
+    _all[enterprise]!.addAll(incidents);
   }
 
   int get length =>

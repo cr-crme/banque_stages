@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
@@ -100,6 +101,8 @@ Future<void> addDummyEnterprises(
         specialization: ActivitySectorsService.sectors[2].specializations[9],
         positionsOffered: 2,
         sstEvaluation: JobSstEvaluation.empty,
+        incidents:
+            Incidents(severeInjuries: ['Vaut mieux ne pas détailler...']),
         minimumAge: 12,
         preInternshipRequest:
             PreInternshipRequest(requests: ['Manger de la poutine']),
@@ -119,6 +122,10 @@ Future<void> addDummyEnterprises(
         specialization: ActivitySectorsService.sectors[0].specializations[7],
         positionsOffered: 3,
         sstEvaluation: JobSstEvaluation.empty,
+        incidents: Incidents(minorInjuries: [
+          'Juste un petit couteau de 5cm dans la main',
+          'Une deuxième fois, mais seulement 5 points de suture'
+        ]),
         minimumAge: 15,
         preInternshipRequest:
             PreInternshipRequest(requests: ['Manger de la tarte']),
@@ -170,6 +177,7 @@ Future<void> addDummyEnterprises(
         specialization: ActivitySectorsService.sectors[0].specializations[7],
         positionsOffered: 3,
         sstEvaluation: JobSstEvaluation.empty,
+        incidents: Incidents.empty,
         minimumAge: 15,
         preInternshipRequest: PreInternshipRequest(requests: []),
         uniform: Uniform(status: UniformStatus.none),
@@ -236,6 +244,7 @@ Future<void> addDummyEnterprises(
         },
         date: DateTime.now(),
       ),
+      incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -279,6 +288,7 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[9].specializations[3],
       positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -322,6 +332,7 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[2].specializations[9],
       positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -366,6 +377,7 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[2].specializations[7],
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -410,6 +422,7 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -454,6 +467,7 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[2].specializations[14],
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -493,6 +507,7 @@ Future<void> addDummyEnterprises(
       specialization: ActivitySectorsService.sectors[0].specializations[7],
       positionsOffered: 3,
       sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -560,6 +575,7 @@ Future<void> addDummyEnterprises(
           '23': 'Joanie, la propriétaire'
         },
       ),
+      incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),
@@ -625,6 +641,7 @@ Future<void> addDummyEnterprises(
           '23': 'Gaëtan Munger, le gérant'
         },
       ),
+      incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequest: PreInternshipRequest(requests: []),
       uniform: Uniform(status: UniformStatus.none),

@@ -1,5 +1,5 @@
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/accident_history/accident_history_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/incident_history_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/widgets/sst_main_card.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
             'Blessures d\'élèves et incidents en stage rapportés par le personnel enseignant',
           ),
           onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => const AccidentHistoryScreen(),
+            builder: (_) => const IncidentHistoryScreen(),
           )),
         ),
         SstMainCard(

@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
@@ -15,9 +16,6 @@ Map<String, dynamic> _stringMapFromSerialized(Map? list) =>
 class JobSstEvaluation extends ItemSerializable {
   final Map<String, dynamic> questions;
   DateTime date;
-
-  // TODO incident to be done
-  final List<String> incidents = const [];
 
   bool get isFilled => questions.isNotEmpty;
 
@@ -83,6 +81,7 @@ class Job extends ItemSerializable {
 
   // SST
   final JobSstEvaluation sstEvaluation;
+  final Incidents incidents;
 
   // Comments
   final List<String> comments;
@@ -97,6 +96,7 @@ class Job extends ItemSerializable {
     required this.protections,
     List<String>? photosUrl,
     required this.sstEvaluation,
+    required this.incidents,
     List<String>? comments,
   })  : photosUrl = photosUrl ?? [],
         comments = comments ?? [];
@@ -111,6 +111,7 @@ class Job extends ItemSerializable {
     Protections? protections,
     List<String>? photosUrl,
     JobSstEvaluation? sstEvaluation,
+    Incidents? incidents,
     List<String>? comments,
     String? id,
   }) {
@@ -123,6 +124,7 @@ class Job extends ItemSerializable {
         protections: protections ?? this.protections,
         photosUrl: photosUrl ?? this.photosUrl,
         sstEvaluation: sstEvaluation ?? this.sstEvaluation,
+        incidents: incidents ?? this.incidents,
         comments: comments ?? this.comments,
         id: id ?? this.id);
   }
@@ -138,6 +140,7 @@ class Job extends ItemSerializable {
       'protections': protections.serialize(),
       'photosUrl': photosUrl,
       'sstEvaluations': sstEvaluation.serialize(),
+      'incidents': incidents.serialize(),
       'comments': comments,
     };
   }
@@ -153,6 +156,7 @@ class Job extends ItemSerializable {
         protections = Protections.fromSerialized(map['protections']),
         photosUrl = _stringListFromSerialized(map['photosUrl']),
         sstEvaluation = JobSstEvaluation.fromSerialized(map['sstEvaluations']),
+        incidents = Incidents.fromSerialized(map['incidents']),
         comments = _stringListFromSerialized(map['comments']),
         super.fromSerialized(map);
 }

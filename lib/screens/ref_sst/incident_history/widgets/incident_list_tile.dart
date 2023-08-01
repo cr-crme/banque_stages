@@ -1,17 +1,17 @@
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/accident_history/models/accidents_by_enterprise.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/models/incidents_by_enterprise.dart';
 import 'package:flutter/material.dart';
 
-class AccidentListTile extends StatelessWidget {
-  const AccidentListTile({
+class IncidentListTile extends StatelessWidget {
+  const IncidentListTile({
     super.key,
     required this.specializationId,
-    required this.accidents,
+    required this.incidents,
   });
 
   final String specializationId;
-  final AccidentsByEnterprise accidents;
+  final IncidentsByEnterprise incidents;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class AccidentListTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(100)),
               child: Center(
                 child: Text(
-                  '${accidents.length}',
+                  '${incidents.length}',
                   style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
@@ -58,7 +58,7 @@ class AccidentListTile extends StatelessWidget {
         expandedAlignment: Alignment.topLeft,
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
         childrenPadding: const EdgeInsets.only(left: 24),
-        children: accidents.enterprises
+        children: incidents.enterprises
             .map((enterprise) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -66,7 +66,7 @@ class AccidentListTile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: ItemizedText(
-                        accidents.description(enterprise)!,
+                        incidents.description(enterprise)!,
                         interline: 8,
                       ),
                     ),

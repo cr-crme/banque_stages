@@ -2,28 +2,28 @@ import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/accident_history/models/accidents_by_enterprise.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/accident_history/widgets/accident_list_tile.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/models/incidents_by_enterprise.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/widgets/incident_list_tile.dart';
 import 'package:flutter/material.dart';
 
 enum _FilterType {
   bySpecialization,
-  byNumberOfAccident,
+  byNumberOfIncident,
 }
 
-class AccidentHistoryScreen extends StatefulWidget {
-  const AccidentHistoryScreen({super.key});
+class IncidentHistoryScreen extends StatefulWidget {
+  const IncidentHistoryScreen({super.key});
 
   static const route = '/accident-history-screen';
 
   @override
-  State<AccidentHistoryScreen> createState() => _AccidentHistoryScreenState();
+  State<IncidentHistoryScreen> createState() => _IncidentHistoryScreenState();
 }
 
-class _AccidentHistoryScreenState extends State<AccidentHistoryScreen> {
+class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
   final _searchController = TextEditingController();
   bool _showSearchBar = false;
-  var _currentFilter = _FilterType.byNumberOfAccident;
+  var _currentFilter = _FilterType.byNumberOfIncident;
 
   @override
   void initState() {
@@ -37,18 +37,18 @@ class _AccidentHistoryScreenState extends State<AccidentHistoryScreen> {
     _searchController.dispose();
   }
 
-  Map<Specialization, AccidentsByEnterprise> _fetchAllAccidents(context) {
+  Map<Specialization, IncidentsByEnterprise> _fetchAllIncidents(context) {
     final enterprises = EnterprisesProvider.of(context).map((e) => e).toList()
       ..sort(
         (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
       );
     final textToSearch = _searchController.text.toLowerCase().trim();
 
-    Map<Specialization, AccidentsByEnterprise> out = {};
+    Map<Specialization, IncidentsByEnterprise> out = {};
     for (final enterprise in enterprises) {
       for (final job in enterprise.jobs) {
         // Do not add if there is no incident
-        if (job.sstEvaluation.incidents.isEmpty) continue;
+        if (job.incidents.isEmpty) continue;
 
         // If a search filter is added
         if (_showSearchBar && textToSearch != '') {
@@ -60,9 +60,9 @@ class _AccidentHistoryScreenState extends State<AccidentHistoryScreen> {
         }
 
         if (!out.containsKey(job.specialization)) {
-          out[job.specialization] = AccidentsByEnterprise();
+          out[job.specialization] = IncidentsByEnterprise();
         }
-        out[job.specialization]!.add(enterprise, job.sstEvaluation.incidents);
+        out[job.specialization]!.add(enterprise, job.incidents.all);
       }
     }
 
@@ -70,27 +70,27 @@ class _AccidentHistoryScreenState extends State<AccidentHistoryScreen> {
   }
 
   List<Specialization> _filterBySpecialization(
-      Map<Specialization, AccidentsByEnterprise> accidents) {
-    return accidents.keys.sorted((a, b) => a.name.compareTo(b.name)).toList();
+      Map<Specialization, IncidentsByEnterprise> incidents) {
+    return incidents.keys.sorted((a, b) => a.name.compareTo(b.name)).toList();
   }
 
-  List<Specialization> _filterByNumberOfAccident(
-      Map<Specialization, AccidentsByEnterprise> accidents) {
-    return accidents.keys
-        .sorted((a, b) => accidents[b]!.length - accidents[a]!.length);
+  List<Specialization> _filterByNumberOfIncident(
+      Map<Specialization, IncidentsByEnterprise> incidents) {
+    return incidents.keys
+        .sorted((a, b) => incidents[b]!.length - incidents[a]!.length);
   }
 
   @override
   Widget build(BuildContext context) {
-    final accidents = _fetchAllAccidents(context);
+    final incidents = _fetchAllIncidents(context);
 
     late List<Specialization> sortedSpecializationId;
     switch (_currentFilter) {
       case _FilterType.bySpecialization:
-        sortedSpecializationId = _filterBySpecialization(accidents);
+        sortedSpecializationId = _filterBySpecialization(incidents);
         break;
-      case _FilterType.byNumberOfAccident:
-        sortedSpecializationId = _filterByNumberOfAccident(accidents);
+      case _FilterType.byNumberOfIncident:
+        sortedSpecializationId = _filterByNumberOfIncident(incidents);
     }
 
     return Scaffold(
@@ -123,20 +123,20 @@ class _AccidentHistoryScreenState extends State<AccidentHistoryScreen> {
                 child: _FilterTile(
                   title: 'Nombre accidents',
                   onTap: () => setState(
-                      () => _currentFilter = _FilterType.byNumberOfAccident),
-                  isSelected: _currentFilter == _FilterType.byNumberOfAccident,
+                      () => _currentFilter = _FilterType.byNumberOfIncident),
+                  isSelected: _currentFilter == _FilterType.byNumberOfIncident,
                 ),
               ),
             ],
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: accidents.length,
+              itemCount: incidents.length,
               itemBuilder: (context, index) {
                 final specialization = sortedSpecializationId[index];
-                return AccidentListTile(
+                return IncidentListTile(
                     specializationId: specialization.id,
-                    accidents: accidents[specialization]!);
+                    incidents: incidents[specialization]!);
               },
             ),
           ),

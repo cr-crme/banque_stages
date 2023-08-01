@@ -8,6 +8,7 @@ import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.d
 import 'package:crcrme_banque_stages/common/widgets/dialogs/job_creator_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/storage_service.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/pages/jobs_expansion_panels/incidents_expansion_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -94,8 +95,9 @@ class JobsPageState extends State<JobsPage> {
     if (result == null) return;
 
     switch (result['eventType']) {
+// TODO HERE
       case SstEventType.pastIncidents:
-        job.sstEvaluation.incidents.add(result['description']);
+        job.incidents.severeInjuries.add(result['description']);
         break;
       default:
         throw 'Unrecognized eventType';
@@ -210,18 +212,24 @@ class JobsPageState extends State<JobsPage> {
                           job: job,
                           addSstEvent: _addSstEvent,
                         ),
-                        SupervisionExpansionPanel(
+                        IncidentsExpansionPanel(
                           isExpanded: _expandedSections[job.id]![2],
+                          enterprise: widget.enterprise,
+                          job: job,
+                          addSstEvent: _addSstEvent,
+                        ),
+                        SupervisionExpansionPanel(
+                          isExpanded: _expandedSections[job.id]![3],
                           job: job,
                         ),
                         PhotoExpansionPanel(
-                          isExpanded: _expandedSections[job.id]![3],
+                          isExpanded: _expandedSections[job.id]![4],
                           job: job,
                           addImage: _addImage,
                           removeImage: _removeImage,
                         ),
                         CommentsExpansionPanel(
-                          isExpanded: _expandedSections[job.id]![4],
+                          isExpanded: _expandedSections[job.id]![5],
                           job: job,
                           addComment: _addComment,
                         ),
