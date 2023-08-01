@@ -157,6 +157,7 @@ class JobsPageState extends State<JobsPage> {
             requests:
                 _prerequisitesFormKeys[job.id]!.currentState!.prerequisites),
         uniform: _prerequisitesFormKeys[job.id]!.currentState!.uniforms,
+        protections: _prerequisitesFormKeys[job.id]!.currentState!.protections,
       ));
       enterprises.replace(widget.enterprise);
     }

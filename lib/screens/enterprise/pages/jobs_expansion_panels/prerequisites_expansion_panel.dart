@@ -80,6 +80,17 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
           ? ''
           : _uniformTextController.text);
 
+  final _protectionsRequestKey =
+      GlobalKey<RadioWithChildSubquestionState<ProtectionsStatus>>();
+  final _protectionsController =
+      GlobalKey<CheckboxWithOtherState<ProtectionsType>>();
+  Protections get protections => Protections(
+      status: _protectionsRequestKey.currentState!.value!,
+      protections:
+          _protectionsRequestKey.currentState!.value! == ProtectionsStatus.none
+              ? []
+              : _protectionsController.currentState!.values);
+
   final _preInternshipRequestKey =
       GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>>();
   List<String> get prerequisites =>
@@ -213,13 +224,27 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
           'Équipements de protection individuelle',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        if (protections.status == ProtectionsStatus.none)
-          const Text('Aucun équipement requis'),
-        if (protections.status == ProtectionsStatus.suppliedByEnterprise)
-          const Text('Fournis par l\'entreprise\u00a0:'),
-        if (protections.status == ProtectionsStatus.suppliedBySchool)
-          const Text('Fournis par l\'école\u00a0:'),
-        ItemizedText(protections.protections),
+        widget.isEditing
+            ? BuildProtectionsRadio(
+                hideTitle: true,
+                protectionsKey: _protectionsRequestKey,
+                protectionsTypeKey: _protectionsController,
+                initialSelection: protections.status,
+                initialItems: protections.protections,
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (protections.status == ProtectionsStatus.none)
+                    const Text('Aucun équipement requis'),
+                  if (protections.status ==
+                      ProtectionsStatus.suppliedByEnterprise)
+                    const Text('Fournis par l\'entreprise\u00a0:'),
+                  if (protections.status == ProtectionsStatus.suppliedBySchool)
+                    const Text('Fournis par l\'école\u00a0:'),
+                  ItemizedText(protections.protections),
+                ],
+              )
       ],
     );
   }

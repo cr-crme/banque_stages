@@ -139,7 +139,9 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
                     uniformKey: _uniformKey,
                     uniformTextController: _uniformTextController),
                 const SizedBox(height: 8),
-                _buildProtections(),
+                BuildProtectionsRadio(
+                    protectionsKey: _protectionsKey,
+                    protectionsTypeKey: _protectionsTypeKey),
               ],
             ),
         ],
@@ -261,21 +263,45 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
       ],
     );
   }
+}
 
-  Widget _buildProtections() {
+class BuildProtectionsRadio extends StatelessWidget {
+  const BuildProtectionsRadio({
+    super.key,
+    required this.protectionsKey,
+    required this.protectionsTypeKey,
+    this.hideTitle = false,
+    this.initialSelection,
+    this.initialItems,
+  });
+
+  final GlobalKey<RadioWithChildSubquestionState<ProtectionsStatus>>
+      protectionsKey;
+  final GlobalKey<CheckboxWithOtherState<ProtectionsType>> protectionsTypeKey;
+
+  final bool hideTitle;
+  final ProtectionsStatus? initialSelection;
+  final List<String>? initialItems;
+
+  @override
+  Widget build(BuildContext context) {
     return RadioWithChildSubquestion<ProtectionsStatus>(
-      key: _protectionsKey,
-      title: '*Est-ce que l\'élève devra porter des équipements de protection '
-          'individuelle (EPI)\u00a0?',
+      key: protectionsKey,
+      title: hideTitle
+          ? null
+          : '*Est-ce que l\'élève devra porter des équipements de protection '
+              'individuelle (EPI)\u00a0?',
       elements: ProtectionsStatus.values,
       elementsThatShowChild: const [
         ProtectionsStatus.suppliedByEnterprise,
         ProtectionsStatus.suppliedBySchool
       ],
+      initialValue: initialSelection,
       childSubquestion: CheckboxWithOther<ProtectionsType>(
-        key: _protectionsTypeKey,
+        key: protectionsTypeKey,
         title: 'Lesquels\u00a0:',
         elements: ProtectionsType.values,
+        initialValues: initialItems,
       ),
     );
   }
@@ -288,7 +314,6 @@ class BuildUniformRadio extends StatelessWidget {
     required this.uniformTextController,
     this.hideTitle = false,
     this.initialSelection,
-    this.initialValues,
   });
 
   final GlobalKey<RadioWithChildSubquestionState<UniformStatus>> uniformKey;
@@ -296,7 +321,6 @@ class BuildUniformRadio extends StatelessWidget {
 
   final bool hideTitle;
   final UniformStatus? initialSelection;
-  final List<String>? initialValues;
 
   @override
   Widget build(BuildContext context) {
