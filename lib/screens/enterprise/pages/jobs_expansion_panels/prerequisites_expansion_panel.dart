@@ -5,7 +5,7 @@ import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_child_subquestion.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,8 +71,7 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
   int get minimumAge =>
       _ageController.text.isEmpty ? -1 : int.parse(_ageController.text);
 
-  final _uniformRequestKey =
-      GlobalKey<RadioWithChildSubquestionState<UniformStatus>>();
+  final _uniformRequestKey = GlobalKey<RadioWithFollowUpState<UniformStatus>>();
   final _uniformTextController = TextEditingController();
   Uniform get uniforms => Uniform(
       status: _uniformRequestKey.currentState!.value!,
@@ -81,7 +80,7 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
           : _uniformTextController.text);
 
   final _protectionsRequestKey =
-      GlobalKey<RadioWithChildSubquestionState<ProtectionsStatus>>();
+      GlobalKey<RadioWithFollowUpState<ProtectionsStatus>>();
   final _protectionsController =
       GlobalKey<CheckboxWithOtherState<ProtectionsType>>();
   Protections get protections => Protections(

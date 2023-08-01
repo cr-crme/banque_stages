@@ -55,13 +55,6 @@ class _IncidentsBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: ElevatedButton(
-                onPressed: () => addSstEvent(job),
-                child: const Text('Signaler un incident'),
-              ),
-            ),
-            const SizedBox(height: 32),
             _buildIncidents(context,
                 title: 'Blessures graves d\'élèves',
                 incidents: job.incidents.severeInjuries),
@@ -73,6 +66,13 @@ class _IncidentsBody extends StatelessWidget {
             _buildIncidents(context,
                 title: 'Blessures mineures d\'élèves',
                 incidents: job.incidents.minorInjuries),
+            const SizedBox(height: 24),
+            Center(
+              child: ElevatedButton(
+                onPressed: () => addSstEvent(job),
+                child: const Text('Signaler un incident'),
+              ),
+            ),
             const SizedBox(height: 16),
           ],
         ),

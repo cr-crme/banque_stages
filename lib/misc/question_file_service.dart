@@ -24,23 +24,35 @@ abstract class QuestionFileService {
 }
 
 class Question extends ItemSerializable {
+  final int order;
+  final int orderSummary;
+  final String title;
+  final String? titleSummary;
+  final Type type;
+  final bool hasOther;
+  final Set<String>? choices;
+  final String? followUpQuestion;
+  final String? followUpQuestionSummary;
+
   Question.fromSerialized(map)
-      : title = map['qp'],
-        type = Type.fromSerialized(map['t']),
-        choices = Set.from(
-            (map['c'] as List?)?.map((e) => (e as String).trim()) ?? []),
-        subquestion = map['sp'],
+      : order = int.parse(map['id']),
+        orderSummary = int.parse(map['idSummary']),
+        title = map['question'],
+        titleSummary = map['summary'],
+        type = Type.fromSerialized(map['type']),
+        hasOther = map['hasOther'] == "Oui",
+        choices = map['choices'] == null
+            ? null
+            : Set.from(
+                (map['choices'] as List).map((e) => (e as String).trim())),
+        followUpQuestion = map['followUp'],
+        followUpQuestionSummary = map['followUpSummary'],
         super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() {
     throw 'Question should not be serialized. Store its ID intead.';
   }
-
-  final String title;
-  final Type type;
-  final Set<String> choices;
-  final String? subquestion;
 }
 
 enum Type {

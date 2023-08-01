@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class RadioWithChildSubquestion<T> extends StatefulWidget {
-  const RadioWithChildSubquestion({
+class RadioWithFollowUp<T> extends StatefulWidget {
+  const RadioWithFollowUp({
     super.key,
     this.title,
     this.initialValue,
     required this.elements,
     this.elementsThatShowChild,
-    this.childSubquestion,
+    this.followUpChild,
     this.onChanged,
   });
 
@@ -15,34 +15,31 @@ class RadioWithChildSubquestion<T> extends StatefulWidget {
   final T? initialValue;
   final List<T> elements;
   final List<T>? elementsThatShowChild;
-  final Widget? childSubquestion;
+  final Widget? followUpChild;
   final Function(T? values)? onChanged;
 
   @override
-  State<RadioWithChildSubquestion<T>> createState() =>
-      RadioWithChildSubquestionState<T>();
+  State<RadioWithFollowUp<T>> createState() => RadioWithFollowUpState<T>();
 }
 
-class RadioWithChildSubquestionState<T>
-    extends State<RadioWithChildSubquestion<T>> {
+class RadioWithFollowUpState<T> extends State<RadioWithFollowUp<T>> {
   late T? _current = widget.initialValue;
 
-  bool get hasSubquestion => _hasSubquestion;
-  bool _hasSubquestion = false;
+  bool get hasFollowUp => _hasFollowUp;
+  bool _hasFollowUp = false;
 
-  bool get _showSubquestion =>
-      widget.childSubquestion != null && _hasSubquestion;
+  bool get _showFollowUp => widget.followUpChild != null && _hasFollowUp;
 
   T? get value => _current;
 
   @override
   void initState() {
     super.initState();
-    _checkShowSubquestion();
+    _checkShowFollowUp();
   }
 
-  void _checkShowSubquestion() {
-    _hasSubquestion = widget.elementsThatShowChild?.contains(_current) ?? false;
+  void _checkShowFollowUp() {
+    _hasFollowUp = widget.elementsThatShowChild?.contains(_current) ?? false;
   }
 
   @override
@@ -58,7 +55,7 @@ class RadioWithChildSubquestionState<T>
         ...widget.elements
             .map((element) => _buildElementTile(element))
             .toList(),
-        if (_showSubquestion) widget.childSubquestion!,
+        if (_showFollowUp) widget.followUpChild!,
       ],
     );
   }
@@ -76,7 +73,7 @@ class RadioWithChildSubquestionState<T>
       value: element,
       onChanged: (newValue) {
         _current = newValue;
-        _checkShowSubquestion();
+        _checkShowFollowUp();
         setState(() {});
         if (widget.onChanged != null) widget.onChanged!(value);
       },

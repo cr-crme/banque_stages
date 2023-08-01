@@ -14,19 +14,21 @@ JSON_FILE_PATH = "assets/questions.json"
 # Data to change
 EXCEL_DATA_HEADERS = {
     # json : excel
-    "id": "Question ID",
-    "qp": "Question Professeur",
-    "qs": "Question Élève",
-    "t": "Type de réponse",
-    "c": "Choix de réponses",
-    "sp": "Sous-question Professeur",
-    "ss": "Sous-question Élève",
+    "id": "ID Form",
+    "idSummary": "ID Summary",
+    "question": "Question Form",
+    "summary": "Question Summary",
+    "type": "Question Type",
+    "choices": "Answer choices",
+    "hasOther": "Add Other to answer choices",
+    "followUp": "Follow up Question",
+    "followUpSummary": "Follow up Question Summary",
 }
 
 
 # Main functions
 def run():
-    '''Starts the main script'''
+    """Starts the main script"""
     try:
         excel = pd.read_excel(excelPath.get())
     except FileNotFoundError:
@@ -37,7 +39,7 @@ def run():
     for _, row in excel.iterrows():
         question = {}
         for name, excelHeader in EXCEL_DATA_HEADERS.items():
-            if excelHeader == "Choix de réponses":
+            if excelHeader == "Answer choices":
                 if type(row[excelHeader]) is str:
                     question[name] = str(row[excelHeader]).splitlines()
 
@@ -71,7 +73,7 @@ def cleanUpData(data):
 
 # Utils
 def saveJson(data: dict, path: str):
-    '''Saves [json] as a file named [path].'''
+    """Saves [json] as a file named [path]."""
     setMessage("Saving json...")
     with open(path, "w") as file:
         file.write(json.dumps(cleanUpData(data),

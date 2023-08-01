@@ -5,7 +5,7 @@ import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_child_subquestion.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,10 +35,9 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   final _textKey = GlobalKey<FormState>();
   final _preInternshipRequestKey =
       GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>>();
-  final _uniformKey =
-      GlobalKey<RadioWithChildSubquestionState<UniformStatus>>();
+  final _uniformKey = GlobalKey<RadioWithFollowUpState<UniformStatus>>();
   final _protectionsKey =
-      GlobalKey<RadioWithChildSubquestionState<ProtectionsStatus>>();
+      GlobalKey<RadioWithFollowUpState<ProtectionsStatus>>();
   final _protectionsTypeKey =
       GlobalKey<CheckboxWithOtherState<ProtectionsType>>();
   final _uniformTextController = TextEditingController();
@@ -65,7 +64,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
 
     if (_uniformKey.currentState!.value == null) return 'invalid_radio_choice';
 
-    if (_protectionsKey.currentState!.hasSubquestion &&
+    if (_protectionsKey.currentState!.hasFollowUp &&
         _protectionsTypeKey.currentState!.values.isEmpty) {
       return 'invalid_protections_choice';
     }
@@ -277,8 +276,7 @@ class BuildProtectionsRadio extends StatelessWidget {
     this.initialItems,
   });
 
-  final GlobalKey<RadioWithChildSubquestionState<ProtectionsStatus>>
-      protectionsKey;
+  final GlobalKey<RadioWithFollowUpState<ProtectionsStatus>> protectionsKey;
   final GlobalKey<CheckboxWithOtherState<ProtectionsType>> protectionsTypeKey;
 
   final bool hideTitle;
@@ -287,7 +285,7 @@ class BuildProtectionsRadio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RadioWithChildSubquestion<ProtectionsStatus>(
+    return RadioWithFollowUp<ProtectionsStatus>(
       key: protectionsKey,
       title: hideTitle
           ? null
@@ -299,7 +297,7 @@ class BuildProtectionsRadio extends StatelessWidget {
         ProtectionsStatus.suppliedBySchool
       ],
       initialValue: initialSelection,
-      childSubquestion: CheckboxWithOther<ProtectionsType>(
+      followUpChild: CheckboxWithOther<ProtectionsType>(
         key: protectionsTypeKey,
         title: 'Lesquels\u00a0:',
         elements: ProtectionsType.values,
@@ -318,7 +316,7 @@ class BuildUniformRadio extends StatelessWidget {
     this.initialSelection,
   });
 
-  final GlobalKey<RadioWithChildSubquestionState<UniformStatus>> uniformKey;
+  final GlobalKey<RadioWithFollowUpState<UniformStatus>> uniformKey;
   final TextEditingController uniformTextController;
 
   final bool hideTitle;
@@ -326,7 +324,7 @@ class BuildUniformRadio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RadioWithChildSubquestion<UniformStatus>(
+    return RadioWithFollowUp<UniformStatus>(
       key: uniformKey,
       title: hideTitle
           ? null
@@ -338,7 +336,7 @@ class BuildUniformRadio extends StatelessWidget {
         UniformStatus.suppliedByStudent
       ],
       initialValue: initialSelection,
-      childSubquestion: Padding(
+      followUpChild: Padding(
         padding: const EdgeInsets.only(left: 32.0, right: 8, top: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

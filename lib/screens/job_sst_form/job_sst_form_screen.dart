@@ -3,7 +3,7 @@ import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_child_subquestion.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/text_with_form.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
@@ -292,20 +292,20 @@ class _QuestionsStepState extends State<QuestionsStep> {
               case Type.radio:
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 24.0),
-                  child: RadioWithChildSubquestion(
+                  child: RadioWithFollowUp(
                     title: '${index + 1}. ${question.title}',
                     initialValue:
                         widget.job.sstEvaluation.questions[question.id],
-                    elements: question.choices.toList(),
-                    elementsThatShowChild: [question.choices.first],
+                    elements: question.choices!.toList(),
+                    elementsThatShowChild: [question.choices!.first],
                     onChanged: (value) {
                       answer[question.id] = value.toString();
                       _followUpController['${question.id}+t']!.text = '';
-                      if (question.choices.first != value) {
+                      if (question.choices!.first != value) {
                         answer['${question.id}+t'] = null;
                       }
                     },
-                    childSubquestion: question.subquestion == null
+                    followUpChild: question.followUpQuestion == null
                         ? null
                         : _buildFollowUpQuestion(question, context),
                   ),
@@ -316,7 +316,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
                   padding: const EdgeInsets.only(bottom: 24.0),
                   child: CheckboxWithOther(
                     title: '${index + 1}. ${question.title}',
-                    elements: question.choices.toList(),
+                    elements: question.choices!.toList(),
                     hasNotApplicableOption: true,
                     initialValues: (widget
                             .job.sstEvaluation.questions[question.id] as List?)
@@ -324,12 +324,12 @@ class _QuestionsStepState extends State<QuestionsStep> {
                         .toList(),
                     onOptionWasSelected: (values) {
                       answer[question.id] = values;
-                      if (!question.choices.any((q) => values.contains(q))) {
+                      if (!question.choices!.any((q) => values.contains(q))) {
                         answer['${question.id}+t'] = null;
                         _followUpController['${question.id}+t']!.text = '';
                       }
                     },
-                    childSubquestion: question.subquestion == null
+                    followUpChild: question.followUpQuestion == null
                         ? null
                         : _buildFollowUpQuestion(question, context),
                   ),
@@ -359,7 +359,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
       padding: const EdgeInsets.only(bottom: 12.0),
       child: TextWithForm(
         controller: _followUpController['${question.id}+t'],
-        title: question.subquestion!,
+        title: question.followUpQuestion!,
         titleStyle: Theme.of(context).textTheme.bodyMedium,
         onChanged: (text) => answer['${question.id}+t'] = text,
       ),

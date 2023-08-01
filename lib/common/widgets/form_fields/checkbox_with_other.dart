@@ -11,7 +11,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
     this.showOtherOption = true,
     this.errorMessageOther = 'Préciser au moins un élément',
     this.onOptionWasSelected,
-    this.childSubquestion,
+    this.followUpChild,
   });
 
   final String? title;
@@ -22,7 +22,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
   final bool hasNotApplicableOption;
   final String errorMessageOther;
   final Function(List<String>)? onOptionWasSelected;
-  final Widget? childSubquestion;
+  final Widget? followUpChild;
 
   @override
   State<CheckboxWithOther<T>> createState() => CheckboxWithOtherState<T>();
@@ -35,11 +35,10 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
   final _otherTextController = TextEditingController();
   bool _hasOther = false;
 
-  bool get hasSubquestion => _hasSubquestion;
-  bool _hasSubquestion = false;
+  bool get hasFollowUp => _hasFollowUp;
+  bool _hasFollowUp = false;
 
-  bool get _showSubquestion =>
-      widget.childSubquestion != null && _hasSubquestion;
+  bool get _showFollowUp => widget.followUpChild != null && _hasFollowUp;
 
   ///
   /// This returns all the selected elements except for everything related to
@@ -73,7 +72,7 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
   }
 
   void _checkForShowingChild() {
-    _hasSubquestion = _elementValues.values.any((e) => e) || _hasOther;
+    _hasFollowUp = _elementValues.values.any((e) => e) || _hasOther;
   }
 
   @override
@@ -225,9 +224,8 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
             ),
           ),
         ),
-        if (_showSubquestion && widget.showOtherOption)
-          const SizedBox(height: 12),
-        if (_showSubquestion) widget.childSubquestion!,
+        if (_showFollowUp && widget.showOtherOption) const SizedBox(height: 12),
+        if (_showFollowUp) widget.followUpChild!,
       ],
     );
   }
