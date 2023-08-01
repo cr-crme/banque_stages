@@ -156,6 +156,7 @@ class JobsPageState extends State<JobsPage> {
         preInternshipRequest: PreInternshipRequest(
             requests:
                 _prerequisitesFormKeys[job.id]!.currentState!.prerequisites),
+        uniform: _prerequisitesFormKeys[job.id]!.currentState!.uniforms,
       ));
       enterprises.replace(widget.enterprise);
     }

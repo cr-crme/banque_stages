@@ -135,7 +135,9 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
                 BuildPrerequisitesCheckboxes(
                     checkBoxKey: _preInternshipRequestKey),
                 const SizedBox(height: 8),
-                _buildUniform(),
+                BuildUniformRadio(
+                    uniformKey: _uniformKey,
+                    uniformTextController: _uniformTextController),
                 const SizedBox(height: 8),
                 _buildProtections(),
               ],
@@ -260,42 +262,6 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
     );
   }
 
-  Widget _buildUniform() {
-    return RadioWithChildSubquestion<UniformStatus>(
-      key: _uniformKey,
-      title: '* Est-ce qu\'une tenue de travail spécifique est exigée pour '
-          'ce poste\u00a0?',
-      elements: UniformStatus.values,
-      elementsThatShowChild: const [
-        UniformStatus.suppliedByEnterprise,
-        UniformStatus.suppliedByStudent
-      ],
-      childSubquestion: Padding(
-        padding: const EdgeInsets.only(left: 32.0, right: 8, top: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Décrire la tenue exigée par l\'entreprise ou les '
-              'règles d\'habillement\u00a0:',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            TextFormField(
-              controller: _uniformTextController,
-              minLines: 1,
-              maxLines: null,
-              keyboardType: TextInputType.multiline,
-              validator: (value) =>
-                  value == null || !RegExp('[a-zA-Z0-9]').hasMatch(value)
-                      ? 'Décrire la tenue de travail.'
-                      : null,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildProtections() {
     return RadioWithChildSubquestion<ProtectionsStatus>(
       key: _protectionsKey,
@@ -315,21 +281,85 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   }
 }
 
+class BuildUniformRadio extends StatelessWidget {
+  const BuildUniformRadio({
+    super.key,
+    required this.uniformKey,
+    required this.uniformTextController,
+    this.hideTitle = false,
+    this.initialSelection,
+    this.initialValues,
+  });
+
+  final GlobalKey<RadioWithChildSubquestionState<UniformStatus>> uniformKey;
+  final TextEditingController uniformTextController;
+
+  final bool hideTitle;
+  final UniformStatus? initialSelection;
+  final List<String>? initialValues;
+
+  @override
+  Widget build(BuildContext context) {
+    return RadioWithChildSubquestion<UniformStatus>(
+      key: uniformKey,
+      title: hideTitle
+          ? null
+          : '* Est-ce qu\'une tenue de travail spécifique est exigée pour '
+              'ce poste\u00a0?',
+      elements: UniformStatus.values,
+      elementsThatShowChild: const [
+        UniformStatus.suppliedByEnterprise,
+        UniformStatus.suppliedByStudent
+      ],
+      initialValue: initialSelection,
+      childSubquestion: Padding(
+        padding: const EdgeInsets.only(left: 32.0, right: 8, top: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Décrire la tenue exigée par l\'entreprise ou les '
+              'règles d\'habillement\u00a0:',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            TextFormField(
+              controller: uniformTextController,
+              minLines: 1,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              validator: (value) =>
+                  value == null || !RegExp('[a-zA-Z0-9]').hasMatch(value)
+                      ? 'Décrire la tenue de travail.'
+                      : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class BuildPrerequisitesCheckboxes extends StatelessWidget {
   const BuildPrerequisitesCheckboxes({
     super.key,
     required this.checkBoxKey,
+    this.hideTitle = false,
+    this.initialValues,
   });
 
   final GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>> checkBoxKey;
+  final bool hideTitle;
+  final List<String>? initialValues;
 
   @override
   Widget build(BuildContext context) {
     return CheckboxWithOther<PreInternshipRequestType>(
       key: checkBoxKey,
-      title:
-          '* Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
+      title: hideTitle
+          ? null
+          : '* Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
       elements: PreInternshipRequestType.values,
+      initialValues: initialValues,
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_child_subquestion.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,6 +71,15 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
   int get minimumAge =>
       _ageController.text.isEmpty ? -1 : int.parse(_ageController.text);
 
+  final _uniformRequestKey =
+      GlobalKey<RadioWithChildSubquestionState<UniformStatus>>();
+  final _uniformTextController = TextEditingController();
+  Uniform get uniforms => Uniform(
+      status: _uniformRequestKey.currentState!.value!,
+      uniform: _uniformRequestKey.currentState!.value! == UniformStatus.none
+          ? ''
+          : _uniformTextController.text);
+
   final _preInternshipRequestKey =
       GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>>();
   List<String> get prerequisites =>
@@ -88,11 +98,11 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
             children: [
               _buildMinimumAge(),
               const SizedBox(height: 12),
-              ..._buildEntepriseRequests(),
+              _buildEntepriseRequests(),
               const SizedBox(height: 12),
-              ..._buildUniform(),
+              _buildUniform(),
               const SizedBox(height: 12),
-              ..._buildProtections(),
+              _buildProtections(),
               const SizedBox(height: 12),
             ],
           ),
@@ -107,84 +117,110 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
       children: [
         const Text('Âge minimum',
             style: TextStyle(fontWeight: FontWeight.bold)),
-        if (widget.isEditing)
-          Row(
-            children: [
-              SizedBox(
-                width: 100,
-                child: TextFormField(
-                  controller: _ageController,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    final current = int.tryParse(value!);
-                    if (current == null) return 'Préciser';
-                    if (current < 10 || current > 30) {
-                      return 'Entre 10 et 30';
-                    }
-                    return null;
-                  },
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                ),
-              ),
-              const Text(' ans')
-            ],
-          ),
-        if (!widget.isEditing) Text('${widget.job.minimumAge} ans'),
+        widget.isEditing
+            ? Row(
+                children: [
+                  SizedBox(
+                    width: 100,
+                    child: TextFormField(
+                      controller: _ageController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        final current = int.tryParse(value!);
+                        if (current == null) return 'Préciser';
+                        if (current < 10 || current > 30) {
+                          return 'Entre 10 et 30';
+                        }
+                        return null;
+                      },
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    ),
+                  ),
+                  const Text(' ans')
+                ],
+              )
+            : Text('${widget.job.minimumAge} ans'),
       ],
     );
   }
 
-  List<Widget> _buildUniform() {
+  Widget _buildUniform() {
     // Workaround for job.uniforms
     final uniforms = widget.job.uniform;
 
-    return [
-      const Text(
-        'Tenue de travail',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      if (uniforms.status == UniformStatus.none)
-        const Text('Aucune consigne de l\'entreprise'),
-      if (uniforms.status == UniformStatus.suppliedByEnterprise)
-        const Text('Fournie par l\'entreprise\u00a0:'),
-      if (uniforms.status == UniformStatus.suppliedByStudent)
-        const Text('Fournie par l\'étudiant\u00a0:'),
-      ItemizedText(uniforms.uniforms),
-    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Tenue de travail',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        widget.isEditing
+            ? BuildUniformRadio(
+                hideTitle: true,
+                uniformKey: _uniformRequestKey,
+                uniformTextController: _uniformTextController
+                  ..text = uniforms.status == UniformStatus.none
+                      ? ''
+                      : uniforms.uniforms.join('\n'),
+                initialSelection: uniforms.status,
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (uniforms.status == UniformStatus.none)
+                    const Text('Aucune consigne de l\'entreprise'),
+                  if (uniforms.status == UniformStatus.suppliedByEnterprise)
+                    const Text('Fournie par l\'entreprise\u00a0:'),
+                  if (uniforms.status == UniformStatus.suppliedByStudent)
+                    const Text('Fournie par l\'étudiant\u00a0:'),
+                  ItemizedText(uniforms.uniforms),
+                ],
+              )
+      ],
+    );
   }
 
-  List<Widget> _buildEntepriseRequests() {
+  Widget _buildEntepriseRequests() {
     final requests = widget.job.preInternshipRequest.requests;
-    // TODO: Add the editing for the other and add that it 'remembers'
-    return [
-      const Text(
-        'Exigences de l\'entreprise',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      if (widget.isEditing)
-        BuildPrerequisitesCheckboxes(checkBoxKey: _preInternshipRequestKey),
-      if (!widget.isEditing)
-        requests.isEmpty
-            ? const Text('Aucune exigence particulière')
-            : ItemizedText(requests),
-    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Exigences de l\'entreprise',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        widget.isEditing
+            ? BuildPrerequisitesCheckboxes(
+                checkBoxKey: _preInternshipRequestKey,
+                initialValues: requests,
+                hideTitle: true,
+              )
+            : requests.isEmpty
+                ? const Text('Aucune exigence particulière')
+                : ItemizedText(requests),
+      ],
+    );
   }
 
-  List<Widget> _buildProtections() {
+  Widget _buildProtections() {
     final protections = widget.job.protections;
 
-    return [
-      const Text(
-        'Équipements de protection individuelle',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      if (protections.status == ProtectionsStatus.none)
-        const Text('Aucun équipement requis'),
-      if (protections.status == ProtectionsStatus.suppliedByEnterprise)
-        const Text('Fournis par l\'entreprise\u00a0:'),
-      if (protections.status == ProtectionsStatus.suppliedBySchool)
-        const Text('Fournis par l\'école\u00a0:'),
-      ItemizedText(protections.protections),
-    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Équipements de protection individuelle',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        if (protections.status == ProtectionsStatus.none)
+          const Text('Aucun équipement requis'),
+        if (protections.status == ProtectionsStatus.suppliedByEnterprise)
+          const Text('Fournis par l\'entreprise\u00a0:'),
+        if (protections.status == ProtectionsStatus.suppliedBySchool)
+          const Text('Fournis par l\'école\u00a0:'),
+        ItemizedText(protections.protections),
+      ],
+    );
   }
 }

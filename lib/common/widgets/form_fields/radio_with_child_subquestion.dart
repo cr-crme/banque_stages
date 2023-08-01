@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class RadioWithChildSubquestion<T> extends StatefulWidget {
   const RadioWithChildSubquestion({
     super.key,
-    required this.title,
+    this.title,
     this.initialValue,
     required this.elements,
     this.elementsThatShowChild,
@@ -11,7 +11,7 @@ class RadioWithChildSubquestion<T> extends StatefulWidget {
     this.onChanged,
   });
 
-  final String title;
+  final String? title;
   final T? initialValue;
   final List<T> elements;
   final List<T>? elementsThatShowChild;
@@ -50,10 +50,11 @@ class RadioWithChildSubquestionState<T>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.title,
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
+        if (widget.title != null)
+          Text(
+            widget.title!,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
         ...widget.elements
             .map((element) => _buildElementTile(element))
             .toList(),

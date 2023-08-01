@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CheckboxWithOther<T> extends StatefulWidget {
   const CheckboxWithOther({
     super.key,
-    required this.title,
+    this.title,
     this.titleStyle,
     required this.elements,
     this.initialValues,
@@ -14,7 +14,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
     this.childSubquestion,
   });
 
-  final String title;
+  final String? title;
   final TextStyle? titleStyle;
   final List<T> elements;
   final List<String>? initialValues;
@@ -114,10 +114,11 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.title,
-          style: widget.titleStyle ?? Theme.of(context).textTheme.titleSmall,
-        ),
+        if (widget.title != null)
+          Text(
+            widget.title!,
+            style: widget.titleStyle ?? Theme.of(context).textTheme.titleSmall,
+          ),
         ..._elementValues.keys
             .map(
               (element) => CheckboxListTile(
