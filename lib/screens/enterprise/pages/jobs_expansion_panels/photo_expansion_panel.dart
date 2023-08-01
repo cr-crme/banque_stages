@@ -33,11 +33,11 @@ class PhotoExpansionPanel extends ExpansionPanel {
           borderRadius: BorderRadius.circular(25),
           onTap: () => ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                  duration: Duration(seconds: 10),
+                  duration: Duration(seconds: 6),
                   content: Text(
-                      'Les photos doivent représenter un poste de travail vide ou '
-                      'encore un élève ou un travailleur de dos.\n'
-                      'Éviter de prendre des photos où on peut les reconnaitre.'))),
+                      'Les photos doivent représenter un poste de travail vide, ou '
+                      'encore des travailleurs de dos.\n'
+                      'Ne pas prendre des photos où on peut les reconnaitre.'))),
           child: Icon(
             Icons.info,
             color: Theme.of(context).primaryColor,
