@@ -236,7 +236,7 @@ class _ExtraSpecialization extends StatelessWidget {
                 .toList(),
           Text(
               'Besoin d\'ajouter des compétences d\'un autre métier pour ce stage?',
-              style: Theme.of(context).textTheme.titleSmall),
+              style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           AddJobButton(
             onPressed: onAddSpecialization,
