@@ -1,4 +1,5 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
@@ -94,13 +95,17 @@ class JobsPageState extends State<JobsPage> {
     );
     if (result == null) return;
 
+    final incident = Incident(result['description']);
     switch (result['eventType']) {
-// TODO HERE
-      case SstEventType.pastIncidents:
-        job.incidents.severeInjuries.add(result['description']);
+      case SstEventType.severe:
+        job.incidents.severeInjuries.add(incident);
         break;
-      default:
-        throw 'Unrecognized eventType';
+      case SstEventType.verbal:
+        job.incidents.verbalAbuses.add(incident);
+        break;
+      case SstEventType.minor:
+        job.incidents.minorInjuries.add(incident);
+        break;
     }
     enterprises.replaceJob(widget.enterprise, job);
   }

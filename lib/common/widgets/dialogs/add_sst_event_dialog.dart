@@ -21,8 +21,17 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
   }
 
   void _onConfirm() {
+    if (_eventType == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sélectionner un type d\'incident.'),
+        ),
+      );
+      return;
+    }
+
     if (FormService.validateForm(_formKey,
-        save: true, showSnackbarError: false)) {
+        save: true, showSnackbarError: true)) {
       Navigator.pop(context, {
         'eventType': _eventType,
         'description': _description,
@@ -41,26 +50,37 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
             children: [
               RadioListTile(
                 title: Text(
-                  'Blessure d\'élève en stage ou incident',
+                  'Blessure grave : l\'élève a dû aller à l\'hôpital pour recevoir des soins',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                value: SstEventType.pastIncidents,
+                value: SstEventType.severe,
                 groupValue: _eventType,
                 onChanged: (value) =>
-                    setState(() => _eventType = SstEventType.pastIncidents),
+                    setState(() => _eventType = SstEventType.severe),
               ),
               RadioListTile(
                 title: Text(
-                  'Situation dangereuse',
+                  'Agression verbale ou harcèlement par des collègues ou des clients',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                value: SstEventType.dangerousSituations,
+                value: SstEventType.verbal,
                 groupValue: _eventType,
-                onChanged: (value) => setState(
-                    () => _eventType = SstEventType.dangerousSituations),
+                onChanged: (value) =>
+                    setState(() => _eventType = SstEventType.verbal),
               ),
+              RadioListTile(
+                title: Text(
+                  'Blessure mineure de l\'élève\n(p. ex. brûlure légère)',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                value: SstEventType.minor,
+                groupValue: _eventType,
+                onChanged: (value) =>
+                    setState(() => _eventType = SstEventType.minor),
+              ),
+              const SizedBox(height: 12),
               TextWithForm(
-                title: 'Décrire ce qu\'il s\'est passé:',
+                title: 'Raconter ce qu\'il s\'est passé:',
                 onSaved: (text) => setState(() => _description = text),
                 validator: (text) =>
                     text?.isEmpty ?? true ? 'Que s\'est-il passé?' : null,
@@ -75,7 +95,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
           child: const Text('Annuler'),
         ),
         TextButton(
-          onPressed: _eventType != null ? _onConfirm : null,
+          onPressed: _onConfirm,
           child: const Text('Confirmer'),
         ),
       ],
@@ -83,4 +103,4 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
   }
 }
 
-enum SstEventType { pastIncidents, dangerousSituations }
+enum SstEventType { severe, verbal, minor }
