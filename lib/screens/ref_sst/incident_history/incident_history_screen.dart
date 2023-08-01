@@ -62,7 +62,8 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
         if (!out.containsKey(job.specialization)) {
           out[job.specialization] = IncidentsByEnterprise();
         }
-        out[job.specialization]!.add(enterprise, job.incidents.all);
+        out[job.specialization]!
+            .add(enterprise, job.incidents.all.map((e) => e.incident).toList());
       }
     }
 

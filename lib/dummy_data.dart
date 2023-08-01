@@ -101,8 +101,8 @@ Future<void> addDummyEnterprises(
         specialization: ActivitySectorsService.sectors[2].specializations[9],
         positionsOffered: 2,
         sstEvaluation: JobSstEvaluation.empty,
-        incidents:
-            Incidents(severeInjuries: ['Vaut mieux ne pas détailler...']),
+        incidents: Incidents(
+            severeInjuries: [Incident('Vaut mieux ne pas détailler...')]),
         minimumAge: 12,
         preInternshipRequest:
             PreInternshipRequest(requests: ['Manger de la poutine']),
@@ -123,8 +123,8 @@ Future<void> addDummyEnterprises(
         positionsOffered: 3,
         sstEvaluation: JobSstEvaluation.empty,
         incidents: Incidents(minorInjuries: [
-          'Juste un petit couteau de 5cm dans la main',
-          'Une deuxième fois, mais seulement 5 points de suture'
+          Incident('Juste un petit couteau de 5cm dans la main'),
+          Incident('Une deuxième fois, mais seulement 5 points de suture'),
         ]),
         minimumAge: 15,
         preInternshipRequest:

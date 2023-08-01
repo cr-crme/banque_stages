@@ -1,10 +1,8 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
-import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 class IncidentsExpansionPanel extends ExpansionPanel {
   IncidentsExpansionPanel({
@@ -18,10 +16,10 @@ class IncidentsExpansionPanel extends ExpansionPanel {
           headerBuilder: (context, isExpanded) => ListTile(
             title: const Text('Accidents et incidents en stage'),
             trailing: Visibility(
-              visible: job.incidents.isNotEmpty,
+              visible: job.incidents.hasMajorIncident,
               child: Tooltip(
-                message:
-                    'Il y a au moins eu un accident répertorié pour cette entreprise',
+                message: 'Il y a au moins eu un incident majeur répertorié'
+                    ' pour cette entreprise',
                 margin: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width / 4, right: 12),
                 child: Padding(
@@ -63,59 +61,38 @@ class _IncidentsBody extends StatelessWidget {
                 child: const Text('Signaler un incident'),
               ),
             ),
+            const SizedBox(height: 32),
+            _buildIncidents(context,
+                title: 'Blessures graves d\'élèves',
+                incidents: job.incidents.severeInjuries),
             const SizedBox(height: 16),
-            Text(
-              'Blessures graves d\'élèves',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                '(ex. blessure d\'élève même mineure, agression verbale '
-                'harcèlement subis par l\'élève)',
-              ),
-            ),
-            Text(
-              'Cas d\'agression ou de harcèlement',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            job.incidents.isEmpty
-                ? const Text('Aucun incident rapporté')
-                : ItemizedText(job.incidents.verbalAbuses),
-            const SizedBox(height: 8),
-            Text(
-              'Blessures mineures d\'élèves',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            Text(job.sstEvaluation.isFilled
-                ? 'Le formulaire n\'a jamais été rempli avec cette entreprise'
-                : 'Formulaire SST rempli avec l\'entreprise\n'
-                    'Mis à jour le ${DateFormat.yMMMEd('fr_CA').format(job.sstEvaluation.date)}'),
-            const SizedBox(height: 12),
-            Center(
-              child: TextButton(
-                onPressed: () => GoRouter.of(context).pushNamed(
-                  Screens.jobSstForm,
-                  params: Screens.params(enterprise, jobId: job),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('Afficher le'),
-                      Text('formulaire'),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
+            _buildIncidents(context,
+                title: 'Cas d\'agression ou de harcèlement',
+                incidents: job.incidents.verbalAbuses),
+            const SizedBox(height: 16),
+            _buildIncidents(context,
+                title: 'Blessures mineures d\'élèves',
+                incidents: job.incidents.minorInjuries),
+            const SizedBox(height: 16),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildIncidents(BuildContext context,
+      {required String title, required List<Incident> incidents}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        incidents.isEmpty
+            ? const Text('Aucun incident rapporté')
+            : ItemizedText(incidents.map((e) => e.toString()).toList()),
+      ],
     );
   }
 }
