@@ -127,6 +127,8 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
                     const SizedBox(height: 12),
                     _buildTrainingPlanRespect(evaluations),
                     const SizedBox(height: 12),
+                    _buildSkillsRequired(evaluations),
+                    const SizedBox(height: 12),
                     _buildAutonomy(evaluations),
                     const SizedBox(height: 12),
                     _buildEfficiency(evaluations),
@@ -275,6 +277,23 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
         ),
         _printCountedList<PostIntershipEnterpriseEvaluation>(evaluations,
             (e) => e.trainingPlanRespect == 0 ? 'En partie' : 'En totalité'),
+      ],
+    );
+  }
+
+  Widget _buildSkillsRequired(
+      List<PostIntershipEnterpriseEvaluation> evaluations) {
+    final List<String> allSkills =
+        evaluations.expand((eval) => eval.skillsRequired).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Habiletés requises pour le stage',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        _printCountedList<String>(allSkills, (e) => e),
       ],
     );
   }
