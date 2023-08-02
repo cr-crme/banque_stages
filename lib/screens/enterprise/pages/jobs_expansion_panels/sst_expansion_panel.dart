@@ -1,5 +1,7 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
+import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -41,12 +43,14 @@ class _SstBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(job.sstEvaluation.isFilled
-                ? 'Formulaire «\u00a0Repérer les risques SST\u00a0» rempli '
-                    '(ou mis à jour) avec l\'entreprise le '
+                ? 'Le questionnaire «\u00a0Repérer les risques SST\u00a0» a '
+                    'été rempli pour ce poste de travail.\n'
+                    'Dernière modification le '
                     '${DateFormat.yMMMEd('fr_CA').format(job.sstEvaluation.date)}'
                 : 'Le questionnaire «\u00a0Repérer les risques SST\u00a0» n\'a '
                     'jamais été rempli pour ce poste de travail.'),
             const SizedBox(height: 12),
+            _buildAnswers(context),
             Center(
               child: TextButton(
                 onPressed: () => GoRouter.of(context).pushNamed(
@@ -56,7 +60,9 @@ class _SstBody extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Text(
-                    '${job.sstEvaluation.isFilled ? 'Visualiser le\n' : 'Remplir le\n'}questionnaire SST',
+                    job.sstEvaluation.isFilled
+                        ? 'Afficher le détail\ndes risques et moyens\nde prévention'
+                        : 'Remplir le\nquestionnaire SST',
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -66,6 +72,82 @@ class _SstBody extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAnswers(BuildContext context) {
+    final questionIds = [...job.specialization.questions.map((e) => e)];
+    final questions =
+        questionIds.map((e) => QuestionFileService.fromId(e)).toList();
+    questions.sort((a, b) => int.parse(a.idSummary) - int.parse(b.idSummary));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: questions.map((q) {
+        final answer = job.sstEvaluation.questions[q.id];
+        final answerT = job.sstEvaluation.questions['${q.id}+t'];
+        if ((q.questionSummary == null && q.followUpQuestionSummary == null) ||
+            (answer == null && answerT == null)) {
+          return Container();
+        }
+
+        late Widget question;
+        late Widget answerWidget;
+        if (q.followUpQuestionSummary == null) {
+          question = Text(
+            q.questionSummary!,
+            style: Theme.of(context).textTheme.titleSmall,
+          );
+
+          switch (q.type) {
+            case Type.radio:
+              answerWidget = Text(
+                answer,
+                style: Theme.of(context).textTheme.bodyMedium,
+              );
+              break;
+            case Type.checkbox:
+              if ((answer as List).isEmpty ||
+                  answer[0] == '__NOT_APPLICABLE_INTERNAL__') {
+                return Container();
+              }
+              answerWidget =
+                  ItemizedText(answer.map((e) => e as String).toList());
+              break;
+            case Type.text:
+              answerWidget = Text(answer);
+              break;
+          }
+        } else {
+          if (q.type == Type.checkbox || q.type == Type.text) {
+            throw 'Showing follow up question for Checkbox or Text '
+                'is not implemented yet';
+          }
+
+          if (answer == q.choices!.last) {
+            // No follow up question was needed
+            return Container();
+          }
+
+          question = question = Text(
+            q.followUpQuestionSummary!,
+            style: Theme.of(context).textTheme.titleSmall,
+          );
+          answerWidget = Text(
+            answerT ?? 'Aucune réponse fournie',
+            style: Theme.of(context).textTheme.bodyMedium,
+          );
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            question,
+            answerWidget,
+            const SizedBox(height: 12),
+          ],
+        );
+      }).toList(),
     );
   }
 }

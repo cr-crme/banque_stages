@@ -60,10 +60,9 @@ class EnterpriseCard extends StatelessWidget {
           ],
         ),
         trailing: Visibility(
-          visible:
-              // TODO REMOVE?
-              enterprise.jobs.lastWhereOrNull((e) => e.incidents.isNotEmpty) !=
-                  null,
+          visible: enterprise.jobs
+                  .lastWhereOrNull((e) => e.incidents.hasMajorIncident) !=
+              null,
           child: Tooltip(
             message:
                 'Il y a au moins eu un accident répertorié pour cette entreprise',

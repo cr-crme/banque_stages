@@ -15,7 +15,7 @@ abstract class QuestionFileService {
   }
 
   static Question fromId(String id) {
-    return _questions.firstWhere((sector) => sector.id == id);
+    return _questions.firstWhere((question) => question.id == id);
   }
 
   static List<Question> get questions => _questions;
@@ -24,10 +24,9 @@ abstract class QuestionFileService {
 }
 
 class Question extends ItemSerializable {
-  final int order;
-  final int orderSummary;
-  final String title;
-  final String? titleSummary;
+  final String idSummary;
+  final String question;
+  final String? questionSummary;
   final Type type;
   final bool hasOther;
   final Set<String>? choices;
@@ -35,10 +34,9 @@ class Question extends ItemSerializable {
   final String? followUpQuestionSummary;
 
   Question.fromSerialized(map)
-      : order = int.parse(map['id']),
-        orderSummary = int.parse(map['idSummary']),
-        title = map['question'],
-        titleSummary = map['summary'],
+      : idSummary = map['idSummary'],
+        question = map['question'],
+        questionSummary = map['summary'],
         type = Type.fromSerialized(map['type']),
         hasOther = map['hasOther'] == "Oui",
         choices = map['choices'] == null

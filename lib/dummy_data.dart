@@ -605,6 +605,8 @@ Future<void> addDummyEnterprises(
           '7': ['Des pesticides', 'Engrais'],
           '12': ['__NOT_APPLICABLE_INTERNAL__'],
           '15': "Oui",
+          '15+t': "Mais pourquoi donc??",
+          '16': "Beurk",
           '18': "Non",
         },
       ),

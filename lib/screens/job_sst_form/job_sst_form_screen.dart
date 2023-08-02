@@ -270,6 +270,13 @@ class _QuestionsStepState extends State<QuestionsStep> {
   }
 
   Widget _buildQuestions() {
+    // Sort the question by "id"
+    final questionIds =
+        widget.job.specialization.questions.map((e) => e).toList();
+    questionIds.sort((a, b) => int.parse(a) - int.parse(b));
+    final questions =
+        questionIds.map((e) => QuestionFileService.fromId(e)).toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -277,10 +284,9 @@ class _QuestionsStepState extends State<QuestionsStep> {
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: widget.job.specialization.questions.length,
+          itemCount: questions.length,
           itemBuilder: (context, index) {
-            String id = widget.job.specialization.questions.elementAt(index);
-            final question = QuestionFileService.fromId(id);
+            final question = questions[index];
 
             // Fill the initial answer
             answer[question.id] =
@@ -293,7 +299,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 24.0),
                   child: RadioWithFollowUp(
-                    title: '${index + 1}. ${question.title}',
+                    title: '${index + 1}. ${question.question}',
                     initialValue:
                         widget.job.sstEvaluation.questions[question.id],
                     elements: question.choices!.toList(),
@@ -315,7 +321,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 24.0),
                   child: CheckboxWithOther(
-                    title: '${index + 1}. ${question.title}',
+                    title: '${index + 1}. ${question.question}',
                     elements: question.choices!.toList(),
                     hasNotApplicableOption: true,
                     initialValues: (widget
@@ -339,7 +345,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 36.0),
                   child: TextWithForm(
-                    title: '${index + 1}. ${question.title}',
+                    title: '${index + 1}. ${question.question}',
                     initialValue:
                         widget.job.sstEvaluation.questions[question.id] ?? '',
                     onChanged: (text) => answer[question.id] = text,
