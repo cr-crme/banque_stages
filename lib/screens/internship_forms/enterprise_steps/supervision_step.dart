@@ -3,6 +3,27 @@ import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 
+List<String> labelAbsenceAcceptance = [
+  'Aucune\ntolérance',
+  'Grande\ntolérance',
+];
+List<String> labelEaseOfCommunication = [
+  'Rétroaction\ndifficile à\nobtenir',
+  'Rétroaction\ntrès facile à\nobtenir',
+];
+List<String> labelSupervisionStyle = [
+  'Milieu peu\nencadrant',
+  'Milieu très\nencadrant',
+];
+List<String> labelEfficiencyExpected = [
+  'Aucun\nrendement\nexigé',
+  'Élève\nproductif',
+];
+List<String> labelAutonomyExpected = [
+  'Élève pas\nautonome',
+  'Élève très\nautonome',
+];
+
 class SupervisionStep extends StatefulWidget {
   const SupervisionStep({
     super.key,
@@ -80,8 +101,8 @@ class SupervisionStepState extends State<SupervisionStep> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: LowHighSliderFormField(
             onSaved: (value) => absenceAcceptance = value,
-            lowLabel: 'Aucune\ntolérance',
-            highLabel: 'Grande\ntolérance',
+            lowLabel: labelAbsenceAcceptance[0],
+            highLabel: labelAbsenceAcceptance[1],
           ),
         )
       ],
@@ -103,8 +124,8 @@ class SupervisionStepState extends State<SupervisionStep> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: LowHighSliderFormField(
             onSaved: (value) => easeOfCommunication = value,
-            lowLabel: 'Rétroaction\ndifficile à\nobtenir',
-            highLabel: 'Rétroaction\ntrès facile à\nobtenir',
+            lowLabel: labelEaseOfCommunication[0],
+            highLabel: labelEaseOfCommunication[1],
           ),
         )
       ],
@@ -126,8 +147,8 @@ class SupervisionStepState extends State<SupervisionStep> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: LowHighSliderFormField(
             onSaved: (value) => supervisionStyle = value,
-            lowLabel: 'Milieu peu\nencadrant',
-            highLabel: 'Milieu très\nencadrant',
+            lowLabel: labelSupervisionStyle[0],
+            highLabel: labelSupervisionStyle[1],
           ),
         )
       ],
@@ -149,8 +170,8 @@ class SupervisionStepState extends State<SupervisionStep> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: LowHighSliderFormField(
             onSaved: (value) => efficiencyExpected = value,
-            lowLabel: 'Aucun\nrendement\nexigé',
-            highLabel: 'Élève\nproductif',
+            lowLabel: labelEfficiencyExpected[0],
+            highLabel: labelEfficiencyExpected[1],
           ),
         )
       ],
@@ -172,8 +193,8 @@ class SupervisionStepState extends State<SupervisionStep> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: LowHighSliderFormField(
             onSaved: (value) => autonomyExpected = value,
-            lowLabel: 'Élève pas\nautonome',
-            highLabel: 'Élève très\nautonome',
+            lowLabel: labelAutonomyExpected[0],
+            highLabel: labelAutonomyExpected[1],
           ),
         ),
       ],

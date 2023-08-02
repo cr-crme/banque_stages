@@ -1,7 +1,12 @@
+import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/supervision_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -73,32 +78,54 @@ Widget _printCountedList<T>(Iterable iterable, String Function(T) toString) {
   return ItemizedText(out);
 }
 
-class _SupervisionBody extends StatelessWidget {
+class _SupervisionBody extends StatefulWidget {
   const _SupervisionBody({required this.job});
 
   final Job job;
 
   @override
-  Widget build(BuildContext context) {
-    final evaluations = job.postInternshipEnterpriseEvaluations(context);
+  State<_SupervisionBody> createState() => _SupervisionBodyState();
+}
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 24.0, right: 24),
-      child: evaluations.isEmpty
-          ? const Center(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 12.0),
-                child: Text('Aucune donnée pour l\'instant'),
-              ),
-            )
-          : Stack(
-              children: [
-                Column(
+class _SupervisionBodyState extends State<_SupervisionBody> {
+  var _currentProgramToShow = Program.fms;
+
+  List<PostIntershipEnterpriseEvaluation> _getFilteredEvaluations() {
+    final internships = InternshipsProvider.of(context);
+    final students = StudentsProvider.of(context);
+    var evaluations = widget.job.postInternshipEnterpriseEvaluations(context);
+
+    // Only keep evaluations from the requested students
+    return evaluations.where((eval) {
+      final internship = internships.fromId(eval.internshipId);
+      final student = students
+          .firstWhereOrNull((student) => student.id == internship.studentId);
+      return student?.program == _currentProgramToShow;
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final evaluations = _getFilteredEvaluations();
+
+    return Column(
+      children: [
+        _buildStudentSelector(),
+        Padding(
+          padding: const EdgeInsets.only(left: 24.0, right: 24, top: 8),
+          child: evaluations.isEmpty
+              ? const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 12.0),
+                    child: Text('Aucune donnée pour l\'instant'),
+                  ),
+                )
+              : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildTaskVariety(context, evaluations),
+                    _buildTaskVariety(evaluations),
                     const SizedBox(height: 12),
-                    _buildTrainingPlanRespect(context, evaluations),
+                    _buildTrainingPlanRespect(evaluations),
                     const SizedBox(height: 12),
                     _buildAutonomy(evaluations),
                     const SizedBox(height: 12),
@@ -129,9 +156,30 @@ class _SupervisionBody extends StatelessWidget {
                     _buildComments(context, evaluations),
                     const SizedBox(height: 12),
                   ],
-                )
-              ],
-            ),
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStudentSelector() {
+    return Row(
+      children: [
+        Expanded(
+          child: _FilterTile(
+            title: 'Élèves FMS',
+            onTap: () => setState(() => _currentProgramToShow = Program.fms),
+            isSelected: _currentProgramToShow == Program.fms,
+          ),
+        ),
+        Expanded(
+          child: _FilterTile(
+            title: 'Élèves FPT',
+            onTap: () => setState(() => _currentProgramToShow = Program.fpt),
+            isSelected: _currentProgramToShow == Program.fpt,
+          ),
+        ),
+      ],
     );
   }
 
@@ -203,7 +251,7 @@ class _SupervisionBody extends StatelessWidget {
           );
   }
 
-  Widget _buildTaskVariety(BuildContext context, evaluations) {
+  Widget _buildTaskVariety(evaluations) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -217,7 +265,7 @@ class _SupervisionBody extends StatelessWidget {
     );
   }
 
-  Widget _buildTrainingPlanRespect(BuildContext context, evaluations) {
+  Widget _buildTrainingPlanRespect(evaluations) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -233,33 +281,48 @@ class _SupervisionBody extends StatelessWidget {
 
   Widget _buildAutonomy(evaluations) {
     return _TitledFixSlider(
-        title: 'Niveau d\'autonomie souhaité',
-        value: _meanOf(evaluations, (e) => e.autonomyExpected));
+      title: 'Niveau d\'autonomie souhaité',
+      value: _meanOf(evaluations, (e) => e.autonomyExpected),
+      lowLabel: labelAutonomyExpected[0],
+      highLabel: labelAutonomyExpected[1],
+    );
   }
 
   Widget _buildEfficiency(evaluations) {
     return _TitledFixSlider(
-        title: 'Rendement de l\'élève attendu',
-        value: _meanOf(evaluations, (e) => e.efficiencyExpected));
+      title: 'Rendement de l\'élève attendu',
+      value: _meanOf(evaluations, (e) => e.efficiencyExpected),
+      lowLabel: labelEfficiencyExpected[0],
+      highLabel: labelEfficiencyExpected[1],
+    );
   }
 
   Widget _buildSupervisionStyle(evaluations) {
     return _TitledFixSlider(
-        title: 'Type d\'encadrement',
-        value: _meanOf(evaluations, (e) => e.supervisionStyle));
+      title: 'Type d\'encadrement',
+      value: _meanOf(evaluations, (e) => e.supervisionStyle),
+      lowLabel: labelSupervisionStyle[0],
+      highLabel: labelSupervisionStyle[1],
+    );
   }
 
   Widget _buildEaseOfCommunication(evaluations) {
     return _TitledFixSlider(
-        title: 'Communication avec l\'entreprise',
-        value: _meanOf(evaluations, (e) => e.easeOfCommunication));
+      title: 'Communication avec l\'entreprise',
+      value: _meanOf(evaluations, (e) => e.easeOfCommunication),
+      lowLabel: labelEaseOfCommunication[0],
+      highLabel: labelEaseOfCommunication[1],
+    );
   }
 
   Widget _buildAbsenceAcceptance(evaluations) {
     return _TitledFixSlider(
-        title:
-            'Tolérance du milieu à l\'égard des retards et absences de l\'élève',
-        value: _meanOf(evaluations, (e) => e.absenceAcceptance));
+      title:
+          'Tolérance du milieu à l\'égard des retards et absences de l\'élève',
+      value: _meanOf(evaluations, (e) => e.absenceAcceptance),
+      lowLabel: labelAbsenceAcceptance[0],
+      highLabel: labelAbsenceAcceptance[1],
+    );
   }
 }
 
@@ -267,10 +330,14 @@ class _TitledFixSlider extends StatelessWidget {
   const _TitledFixSlider({
     required this.title,
     required this.value,
+    required this.lowLabel,
+    required this.highLabel,
   });
 
   final String title;
   final double value;
+  final String lowLabel;
+  final String highLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -282,6 +349,8 @@ class _TitledFixSlider extends StatelessWidget {
           initialValue: value,
           decimal: 1,
           fixed: true,
+          lowLabel: lowLabel,
+          highLabel: highLabel,
         ),
       ],
     );
@@ -330,6 +399,38 @@ class _RatingBar extends StatelessWidget {
           ),
           const SizedBox(height: 12),
         ],
+      ),
+    );
+  }
+}
+
+class _FilterTile extends StatelessWidget {
+  const _FilterTile({
+    required this.title,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String title;
+  final bool isSelected;
+  final Function() onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Card(
+        color:
+            isSelected ? Theme.of(context).primaryColor.withAlpha(150) : null,
+        child: Row(
+          children: [
+            const SizedBox(height: 48, width: 12),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+        ),
       ),
     );
   }
