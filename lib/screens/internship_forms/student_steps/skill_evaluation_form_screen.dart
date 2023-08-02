@@ -306,8 +306,7 @@ class _TaskEvaluationState extends State<_TaskEvaluation> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
-            'La ou le stagiaire a été en mesure d\'effectuer les '
-            'tâches suivantes\u00a0:',
+            'La ou le stagiaire a réussi les tâches suivantes\u00a0:',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           ...widget.skill.tasks
