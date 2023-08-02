@@ -117,7 +117,9 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
               ? const Center(
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 12.0),
-                    child: Text('Aucune donnée pour l\'instant'),
+                    child:
+                        Text('L\'entreprise n\'a pas encore été évaluée dans '
+                            'ce programme.'),
                   ),
                 )
               : Column(
