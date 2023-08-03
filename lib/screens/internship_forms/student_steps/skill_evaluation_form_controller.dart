@@ -30,7 +30,7 @@ class SkillEvaluationFormController {
 
   void clearForm(context) {
     wereAtMeeting.clear();
-    _initializeSkills(context);
+    _reinitialize(context);
     commentsController.text = '';
   }
 
@@ -48,7 +48,7 @@ class SkillEvaluationFormController {
     wereAtMeeting.addAll(evaluation.presentAtEvaluation);
 
     // Fill skill to evaluated as if it was all false
-    _initializeSkills(context, forceFalse: true);
+    _reinitialize(context, forceFalse: true);
 
     // Now fill the structures from the evaluation
     for (final skillEvaluation in evaluation.skills) {
@@ -111,27 +111,6 @@ class SkillEvaluationFormController {
 
   Map<Skill, bool> skillsToEvaluate = {};
   final Map<Skill, String> skillsAreFromSpecializationId = {};
-  void _initializeSkills(context, {bool forceFalse = false}) {
-    final internshipTp = internship(context, listen: false);
-    final enterprise = EnterprisesProvider.of(context,
-        listen: false)[internshipTp.enterpriseId];
-
-    // Do the extra first as they should be overriden by the principal when they duplicate
-    for (final extraSpecializationId in internshipTp.extraSpecializationsId) {
-      for (final skill
-          in ActivitySectorsService.specialization(extraSpecializationId)
-              .skills) {
-        skillsToEvaluate[skill] = false;
-        skillsAreFromSpecializationId[skill] = extraSpecializationId;
-      }
-    }
-
-    final specialization = enterprise.jobs[internshipTp.jobId].specialization;
-    for (final skill in specialization.skills) {
-      skillsToEvaluate[skill] = !forceFalse;
-      skillsAreFromSpecializationId[skill] = specialization.id;
-    }
-  }
 
   Map<Skill, Map<String, bool>> taskCompleted = {};
   void _initializeTaskCompleted() {
@@ -171,9 +150,27 @@ class SkillEvaluationFormController {
     }
   }
 
-  ///
-  /// This properly initialize the controller
-  void initializeController() {
+  void _reinitialize(context, {bool forceFalse = false}) {
+    final internshipTp = internship(context, listen: false);
+    final enterprise = EnterprisesProvider.of(context,
+        listen: false)[internshipTp.enterpriseId];
+
+    // Do the extra first as they should be overriden by the principal when they duplicate
+    for (final extraSpecializationId in internshipTp.extraSpecializationsId) {
+      for (final skill
+          in ActivitySectorsService.specialization(extraSpecializationId)
+              .skills) {
+        skillsToEvaluate[skill] = false;
+        skillsAreFromSpecializationId[skill] = extraSpecializationId;
+      }
+    }
+
+    final specialization = enterprise.jobs[internshipTp.jobId].specialization;
+    for (final skill in specialization.skills) {
+      skillsToEvaluate[skill] = !forceFalse;
+      skillsAreFromSpecializationId[skill] = specialization.id;
+    }
+
     _initializeTaskCompleted();
     _initializeAppreciation();
     _initializeSkillCommentControllers();

@@ -368,7 +368,6 @@ class _StartEvaluation extends StatelessWidget {
         child: TextButton(
             onPressed: () {
               formController.setWereAtMeeting();
-              formController.initializeController();
               GoRouter.of(context).pushReplacementNamed(
                 Screens.skillEvaluationFormScreen,
                 queryParams:
