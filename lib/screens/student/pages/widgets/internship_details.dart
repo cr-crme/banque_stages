@@ -1,12 +1,15 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
+import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
 import 'package:flutter/material.dart';
@@ -157,9 +160,9 @@ class InternshipDetailsState extends State<InternshipDetails> {
   }
 
   Future<bool> preventClosingIfEditing() async {
-    if (!editMode) return false;
-
-    final prevent = !(await ConfirmPopDialog.show(context));
+    final prevent = await ConfirmExitDialog.show(context,
+        message: 'Toutes les modifications seront perdues.',
+        isEditing: editMode);
     if (!prevent) _toggleEditMode(save: false);
     return prevent;
   }
@@ -437,10 +440,39 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
+  Widget _buildUniform(Job job) {
+    // Workaround for job.uniforms
+    final uniforms = job.uniform;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Tenue de travail',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (uniforms.status == UniformStatus.none)
+              const Text('Aucune consigne de l\'entreprise'),
+            if (uniforms.status == UniformStatus.suppliedByEnterprise)
+              const Text('Fournie par l\'entreprise\u00a0:'),
+            if (uniforms.status == UniformStatus.suppliedByStudent)
+              const Text('Fournie par l\'étudiant\u00a0:'),
+            ItemizedText(uniforms.uniforms),
+            const SizedBox(height: 12),
+          ],
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final teachers = TeachersProvider.of(context);
     final enterprises = EnterprisesProvider.of(context);
+    final job = enterprises[internship.enterpriseId].jobs[internship.jobId];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -448,9 +480,7 @@ class _InternshipBody extends StatelessWidget {
         _buildTeacher(text: teachers[internship.teacherId].fullName),
         _buildJob(
             'Métier${internship.extraSpecializationsId.isNotEmpty ? ' principal' : ''}',
-            specialization: enterprises[internship.enterpriseId]
-                .jobs[internship.jobId]
-                .specialization),
+            specialization: job.specialization),
         if (internship.extraSpecializationsId.isNotEmpty)
           ...internship.extraSpecializationsId
               .asMap()
@@ -471,6 +501,7 @@ class _InternshipBody extends StatelessWidget {
         _buildDates(),
         _buildTime(),
         _buildSchedule(),
+        _buildUniform(job)
       ],
     );
   }

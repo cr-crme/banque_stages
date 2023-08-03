@@ -77,7 +77,9 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
           await _contactPageKey.currentState?.toggleEdit();
         } else if (_tabController.index == 2) {
           if (_jobsPageKey.currentState!.isEditing) {
-            if (!await ConfirmPopDialog.show(context)) return;
+            if (!await ConfirmExitDialog.show(context,
+                message: 'Enregistrer vos modifications en cliquant sur la '
+                    'disquette, sinon, elles seront perdues.')) return;
             cancelEditing();
           }
           await _jobsPageKey.currentState?.addJob();
@@ -131,7 +133,9 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
               if (!_editing || !_tabController.indexIsChanging) return;
 
               _tabController.index = _tabController.previousIndex;
-              if (await ConfirmPopDialog.show(context)) {
+              if (await ConfirmExitDialog.show(context,
+                  message: 'Enregistrer vos modifications en cliquant sur la '
+                      'disquette, sinon, elles seront perdues.')) {
                 cancelEditing();
                 _tabController.animateTo(index);
               }

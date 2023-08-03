@@ -1,7 +1,26 @@
 import 'package:flutter/material.dart';
 
-class ConfirmPopDialog extends StatelessWidget {
-  const ConfirmPopDialog({super.key});
+class ConfirmExitDialog {
+  static Future<bool> show(
+    BuildContext context, {
+    required String message,
+    bool? isEditing,
+  }) async {
+    if (isEditing != null && !isEditing) return true;
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    return await showDialog<bool>(
+            context: context,
+            builder: (context) => _ConfirmExitDialog(message: message)) ??
+        false;
+  }
+}
+
+class _ConfirmExitDialog extends StatelessWidget {
+  const _ConfirmExitDialog({required this.message});
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
@@ -9,8 +28,7 @@ class ConfirmPopDialog extends StatelessWidget {
         onWillPop: () async => false,
         child: AlertDialog(
           title: const Text('Voulez-vous quitter?'),
-          content: const SingleChildScrollView(
-              child: Text('Toutes les modifications seront perdues.')),
+          content: SingleChildScrollView(child: Text(message)),
           actions: [
             OutlinedButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -20,14 +38,5 @@ class ConfirmPopDialog extends StatelessWidget {
                 child: const Text('Oui'))
           ],
         ));
-  }
-
-  static Future<bool> show(BuildContext context, {bool? editing}) async {
-    if (editing != null && !editing) return true;
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-
-    return await showDialog(
-        context: context, builder: (context) => const ConfirmPopDialog());
   }
 }

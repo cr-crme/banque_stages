@@ -52,15 +52,10 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
   }
 
   void _cancel() async {
-    if (!widget.editMode) {
-      Navigator.of(context).pop();
-      return;
-    }
-
-    final result = await showDialog(
-        context: context, builder: (context) => const ConfirmPopDialog());
-    if (!mounted || result == null || !result) return;
-
+    final answer = await ConfirmExitDialog.show(context,
+        message: 'Toutes les modifications seront perdues.',
+        isEditing: widget.editMode);
+    if (!mounted || !answer) return;
     Navigator.of(context).pop();
   }
 

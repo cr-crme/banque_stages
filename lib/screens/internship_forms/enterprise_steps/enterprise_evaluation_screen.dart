@@ -147,10 +147,9 @@ class _EnterpriseEvaluationScreenState
   }
 
   void _cancel() async {
-    final result = await showDialog(
-        context: context, builder: (context) => const ConfirmPopDialog());
-    if (!mounted || result == null || !result) return;
-
+    final answer = await ConfirmExitDialog.show(context,
+        message: 'Toutes les modifications seront perdues.');
+    if (!mounted || !answer) return;
     Navigator.of(context).pop();
   }
 

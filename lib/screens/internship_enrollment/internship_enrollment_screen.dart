@@ -135,16 +135,10 @@ class _InternshipEnrollmentScreenState
   }
 
   void _cancel() async {
-    final result = await showDialog(
-        context: context, builder: (context) => const ConfirmPopDialog());
-    if (!mounted || result == null || !result) return;
+    final answer = await ConfirmExitDialog.show(context,
+        message: 'Toutes les modifications seront perdues.');
+    if (!mounted || !answer) return;
 
-    Navigator.of(context).pop();
-  }
-
-  void _onPressBack() async {
-    final answer = await ConfirmPopDialog.show(context);
-    if (!answer || !mounted) return;
     Navigator.of(context).pop();
   }
 
@@ -160,8 +154,8 @@ class _InternshipEnrollmentScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text('Inscrire un stagiaire chez\n${enterprise.name}'),
-        leading: IconButton(
-            onPressed: _onPressBack, icon: const Icon(Icons.arrow_back)),
+        leading:
+            IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
       ),
       body: ScrollableStepper(
         type: StepperType.horizontal,

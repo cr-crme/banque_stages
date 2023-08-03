@@ -196,7 +196,12 @@ class JobsPageState extends State<JobsPage> {
                     ExpansionPanelList(
                       expansionCallback: (panelIndex, isExpanded) async {
                         if (isEditing) {
-                          if (!await ConfirmPopDialog.show(context)) return;
+                          if (!await ConfirmExitDialog.show(
+                            context,
+                            message:
+                                'Enregistrer vos modifications en cliquant sur '
+                                'la disquette, sinon, elles seront perdues.',
+                          )) return;
                           cancelEditing();
                         }
                         _expandedSections[job.id]![panelIndex] = !isExpanded;

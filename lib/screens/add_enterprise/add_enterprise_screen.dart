@@ -142,9 +142,9 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   }
 
   void _cancel() async {
-    final result = await showDialog(
-        context: context, builder: (context) => const ConfirmPopDialog());
-    if (!mounted || result == null || !result) return;
+    final result = await ConfirmExitDialog.show(context,
+        message: 'Toutes les modifications seront perdues.');
+    if (!mounted || !result) return;
 
     Navigator.of(context).pop();
   }
@@ -152,7 +152,8 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => ConfirmPopDialog.show(context),
+      onWillPop: () => ConfirmExitDialog.show(context,
+          message: 'Toutes les modifications seront perdues.'),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Ajouter une entreprise'),

@@ -70,7 +70,11 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => ConfirmPopDialog.show(context, editing: editing),
+      onWillPop: () => ConfirmExitDialog.show(context,
+          message:
+              'Enregistrer vos modifications en cliquant sur la disquette, '
+              'sinon, elles seront perdues.',
+          isEditing: editing),
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,

@@ -1,12 +1,15 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/supervision_chart/widgets/transfer_dialog.dart';
@@ -56,6 +59,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
         ? EnterprisesProvider.of(context, listen: false)
             .fromId(internship.enterpriseId)
         : null;
+    final job = enterprise?.jobs[internship?.jobId];
 
     return FutureBuilder<Student?>(
         future: StudentsProvider.fromLimitedId(context, studentId: studentId),
@@ -113,6 +117,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                           _PersonalNotes(internship: internship),
                         if (internship != null)
                           _Schedule(internship: internship),
+                        if (internship != null) _buildUniform(job!),
                         _MoreInfoButton(
                           studentId: studentId,
                           onTap: () => _navigateToStudentIntership(context),
@@ -122,6 +127,34 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
             ),
           );
         });
+  }
+
+  Widget _buildUniform(Job job) {
+    // Workaround for job.uniforms
+    final uniforms = job.uniform;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Tenue de travail'),
+        Padding(
+          padding: const EdgeInsets.only(left: 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (uniforms.status == UniformStatus.none)
+                const Text('Aucune consigne de l\'entreprise'),
+              if (uniforms.status == UniformStatus.suppliedByEnterprise)
+                const Text('Fournie par l\'entreprise\u00a0:'),
+              if (uniforms.status == UniformStatus.suppliedByStudent)
+                const Text('Fournie par l\'étudiant\u00a0:'),
+              ItemizedText(uniforms.uniforms),
+              const SizedBox(height: 12),
+            ],
+          ),
+        )
+      ],
+    );
   }
 }
 
