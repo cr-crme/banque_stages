@@ -1,10 +1,10 @@
-import 'package:flutter/widgets.dart';
-
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:flutter/widgets.dart';
 
 class SkillEvaluationFormController {
   static const _formVersion = '1.0.0';
@@ -28,13 +28,10 @@ class SkillEvaluationFormController {
         SkillEvaluationFormController(internshipId: internshipId);
 
     controller.evaluationDate = evaluation.date;
-    for (final present in evaluation.presentAtEvaluation) {
-      if (controller.wereAtMeeting.keys.contains(present)) {
-        controller.wereAtMeeting[present] = true;
-      } else {
-        controller.othersAtMeetingController.text = present;
-      }
-    }
+
+    controller.wereAtMeetingInitialValues.clear();
+    controller.wereAtMeetingInitialValues
+        .addAll(evaluation.presentAtEvaluation);
 
     // Fill skill to evaluated as if it was none
     final enterprise =
@@ -75,16 +72,6 @@ class SkillEvaluationFormController {
   }
 
   InternshipEvaluationSkill toInternshipEvaluation() {
-    final List<String> wereAtMeetingTp = [];
-    for (final person in wereAtMeeting.keys) {
-      if (wereAtMeeting[person]!) {
-        wereAtMeetingTp.add(person);
-      }
-    }
-    if (withOtherAtMeeting) {
-      wereAtMeetingTp.add(othersAtMeetingController.text);
-    }
-
     final List<SkillEvaluation> skillEvaluation = [];
     for (final skill in taskCompleted.keys) {
       final List<String> tasks = [];
@@ -104,7 +91,7 @@ class SkillEvaluationFormController {
     }
     return InternshipEvaluationSkill(
       date: evaluationDate,
-      presentAtEvaluation: wereAtMeetingTp,
+      presentAtEvaluation: wereAtMeeting,
       skills: skillEvaluation,
       comments: commentsController.text,
       formVersion: _formVersion,
@@ -113,18 +100,13 @@ class SkillEvaluationFormController {
 
   DateTime evaluationDate = DateTime.now();
 
-  final Map<String, bool> wereAtMeeting = {
-    'Enseignant\u2022e superviseur\u2022e': true,
-    'Stagiaire': false,
-    'Responsable en milieu de stage': false,
-  };
-  bool _withOtherAtMeeting = false;
-  bool get withOtherAtMeeting => _withOtherAtMeeting;
-  TextEditingController othersAtMeetingController = TextEditingController();
-  set withOtherAtMeeting(bool value) {
-    _withOtherAtMeeting = value;
-    if (!value) othersAtMeetingController.text = '';
-  }
+  final wereAtMeetingKey = GlobalKey<CheckboxWithOtherState<String>>();
+  final List<String> wereAtMeetingOptions = [
+    'Stagiaire',
+    'Responsable en milieu de stage',
+  ];
+  final List<String> wereAtMeetingInitialValues = [];
+  List<String> get wereAtMeeting => wereAtMeetingKey.currentState!.values;
 
   Map<Skill, bool> skillsToEvaluate = {};
   final Map<Skill, String> skillsAreFromSpecializationId = {};

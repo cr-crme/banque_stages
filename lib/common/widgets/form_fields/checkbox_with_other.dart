@@ -12,6 +12,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
     this.errorMessageOther = 'Préciser au moins un élément',
     this.onOptionWasSelected,
     this.followUpChild,
+    this.enabled = true,
   });
 
   final String? title;
@@ -23,6 +24,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
   final String errorMessageOther;
   final Function(List<String>)? onOptionWasSelected;
   final Widget? followUpChild;
+  final bool enabled;
 
   @override
   State<CheckboxWithOther<T>> createState() => CheckboxWithOtherState<T>();
@@ -128,7 +130,7 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
                   element.toString(),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                enabled: !_isNotApplicable,
+                enabled: widget.enabled && !_isNotApplicable,
                 value: _elementValues[element]!,
                 onChanged: (newValue) {
                   _elementValues[element] = newValue!;
@@ -150,6 +152,7 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
               'Ne s\'applique pas',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
+            enabled: widget.enabled,
             value: _isNotApplicable,
             onChanged: (newValue) {
               _isNotApplicable = newValue!;
@@ -177,7 +180,7 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             value: _hasOther,
-            enabled: !_isNotApplicable,
+            enabled: widget.enabled && !_isNotApplicable,
             onChanged: (newValue) {
               _hasOther = newValue!;
               _checkForShowingChild();

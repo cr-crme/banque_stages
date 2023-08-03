@@ -1,8 +1,8 @@
-import 'package:flutter/widgets.dart';
-
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
+import 'package:flutter/widgets.dart';
 
 class AttitudeEvaluationFormController {
   static const _formVersion = '1.0.0';
@@ -26,13 +26,10 @@ class AttitudeEvaluationFormController {
         AttitudeEvaluationFormController(internshipId: internshipId);
 
     controller.evaluationDate = evaluation.date;
-    for (final present in evaluation.presentAtEvaluation) {
-      if (controller.wereAtMeeting.keys.contains(present)) {
-        controller.wereAtMeeting[present] = true;
-      } else {
-        controller.othersAtMeetingController.text = present;
-      }
-    }
+
+    controller.wereAtMeetingInitialValues.clear();
+    controller.wereAtMeetingInitialValues
+        .addAll(evaluation.presentAtEvaluation);
 
     controller.responses[Inattendance] =
         Inattendance.values[evaluation.attitude.inattendance];
@@ -63,19 +60,9 @@ class AttitudeEvaluationFormController {
   }
 
   InternshipEvaluationAttitude toInternshipEvaluation() {
-    final List<String> wereAtMeetingTp = [];
-    for (final person in wereAtMeeting.keys) {
-      if (wereAtMeeting[person]!) {
-        wereAtMeetingTp.add(person);
-      }
-    }
-    if (withOtherAtMeeting) {
-      wereAtMeetingTp.add(othersAtMeetingController.text);
-    }
-
     return InternshipEvaluationAttitude(
       date: DateTime.now(),
-      presentAtEvaluation: wereAtMeetingTp,
+      presentAtEvaluation: wereAtMeeting,
       attitude: AttitudeEvaluation(
           inattendance: responses[Inattendance]!.index,
           ponctuality: responses[Ponctuality]!.index,
@@ -95,18 +82,13 @@ class AttitudeEvaluationFormController {
 
   DateTime evaluationDate = DateTime.now();
 
-  Map<String, bool> wereAtMeeting = {
-    'Enseignant\u2022e superviseur\u2022e': true,
-    'Stagiaire': true,
-    'Responsable en milieu de stage': false,
-  };
-  bool _withOtherAtMeeting = false;
-  bool get withOtherAtMeeting => _withOtherAtMeeting;
-  TextEditingController othersAtMeetingController = TextEditingController();
-  set withOtherAtMeeting(bool value) {
-    _withOtherAtMeeting = value;
-    if (!value) othersAtMeetingController.text = '';
-  }
+  final wereAtMeetingKey = GlobalKey<CheckboxWithOtherState<String>>();
+  final List<String> wereAtMeetingOptions = [
+    'Stagiaire',
+    'Responsable en milieu de stage',
+  ];
+  final List<String> wereAtMeetingInitialValues = [];
+  List<String> get wereAtMeeting => wereAtMeetingKey.currentState!.values;
 
   Map<Type, AttitudeCategoryEnum?> responses = {};
 

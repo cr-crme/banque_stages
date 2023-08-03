@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import 'attitude_evaluation_form_controller.dart';
 
 class AttitudeEvaluationScreen extends StatefulWidget {
@@ -72,16 +73,6 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
                     Text('Veuillez répondre à toutes les questions avec un *.'),
               ));
       return;
-    }
-
-    final List<String> wereAtMeeting = [];
-    for (final person in widget.formController.wereAtMeeting.keys) {
-      if (widget.formController.wereAtMeeting[person]!) {
-        wereAtMeeting.add(person);
-      }
-    }
-    if (widget.formController.withOtherAtMeeting) {
-      wereAtMeeting.add(widget.formController.othersAtMeetingController.text);
     }
 
     final internships = InternshipsProvider.of(context, listen: false);
@@ -342,37 +333,12 @@ class _EvaluationDateState extends State<_EvaluationDate> {
   }
 }
 
-class _PersonAtMeeting extends StatefulWidget {
+class _PersonAtMeeting extends StatelessWidget {
   const _PersonAtMeeting(
       {required this.formController, required this.editMode});
 
   final AttitudeEvaluationFormController formController;
   final bool editMode;
-
-  @override
-  State<_PersonAtMeeting> createState() => _PersonAtMeetingState();
-}
-
-class _PersonAtMeetingState extends State<_PersonAtMeeting> {
-  Widget _buildCheckTile(
-      {required String title,
-      required bool value,
-      required Function(bool?) onChanged}) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 3 / 4,
-      child: CheckboxListTile(
-        enabled: widget.editMode,
-        visualDensity: VisualDensity.compact,
-        controlAffinity: ListTileControlAffinity.leading,
-        value: value,
-        onChanged: onChanged,
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -381,46 +347,12 @@ class _PersonAtMeetingState extends State<_PersonAtMeeting> {
       children: [
         const SubTitle('Personnes présentes lors de l\'évaluation'),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...widget.formController.wereAtMeeting.keys
-                  .map((person) => _buildCheckTile(
-                      title: person,
-                      value: widget.formController.wereAtMeeting[person]!,
-                      onChanged: (newValue) => setState(() => widget
-                          .formController.wereAtMeeting[person] = newValue!)))
-                  .toList(),
-              _buildCheckTile(
-                  title: 'Autre',
-                  value: widget.formController.withOtherAtMeeting,
-                  onChanged: (newValue) => setState(() =>
-                      widget.formController.withOtherAtMeeting = newValue!)),
-              Visibility(
-                visible: widget.formController.withOtherAtMeeting,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Préciser\u00a0: ',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      TextFormField(
-                        controller:
-                            widget.formController.othersAtMeetingController,
-                        maxLines: null,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+          padding: const EdgeInsets.only(left: 24.0),
+          child: CheckboxWithOther(
+            key: formController.wereAtMeetingKey,
+            elements: formController.wereAtMeetingOptions,
+            initialValues: formController.wereAtMeetingInitialValues,
+            enabled: editMode,
           ),
         ),
       ],

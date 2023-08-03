@@ -3,6 +3,7 @@ import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart'
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -139,7 +140,7 @@ class _EvaluationDateState extends State<_EvaluationDate> {
   }
 }
 
-class _PersonAtMeeting extends StatefulWidget {
+class _PersonAtMeeting extends StatelessWidget {
   const _PersonAtMeeting(
       {required this.formController, required this.editMode});
 
@@ -147,79 +148,18 @@ class _PersonAtMeeting extends StatefulWidget {
   final bool editMode;
 
   @override
-  State<_PersonAtMeeting> createState() => _PersonAtMeetingState();
-}
-
-class _PersonAtMeetingState extends State<_PersonAtMeeting> {
-  Widget _buildCheckTile(
-      {required String title,
-      required bool value,
-      required Function(bool?) onChanged}) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 3 / 4,
-      child: CheckboxListTile(
-        controlAffinity: ListTileControlAffinity.leading,
-        visualDensity: VisualDensity.compact,
-        dense: true,
-        value: value,
-        onChanged: onChanged,
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        enabled: widget.editMode,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Personnes présentes lors de l\'évaluation'),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...widget.formController.wereAtMeeting.keys
-                  .map((person) => _buildCheckTile(
-                      title: person,
-                      value: widget.formController.wereAtMeeting[person]!,
-                      onChanged: (newValue) => setState(() => widget
-                          .formController.wereAtMeeting[person] = newValue!)))
-                  .toList(),
-              _buildCheckTile(
-                  title: 'Autre',
-                  value: widget.formController.withOtherAtMeeting,
-                  onChanged: (newValue) => setState(() =>
-                      widget.formController.withOtherAtMeeting = newValue!)),
-              Visibility(
-                visible: widget.formController.withOtherAtMeeting,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Préciser\u00a0: ',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      TextFormField(
-                        controller:
-                            widget.formController.othersAtMeetingController,
-                        maxLines: null,
-                        enabled: widget.editMode,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+          padding: const EdgeInsets.only(left: 24.0),
+          child: CheckboxWithOther(
+            key: formController.wereAtMeetingKey,
+            elements: formController.wereAtMeetingOptions,
+            initialValues: formController.wereAtMeetingInitialValues,
+            enabled: editMode,
           ),
         ),
       ],
