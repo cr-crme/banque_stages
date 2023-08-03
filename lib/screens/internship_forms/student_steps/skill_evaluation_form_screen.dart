@@ -70,6 +70,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
                 children: [
                   const Text(
                       'Les informations pour cette évaluation ne seront plus modifiables.'),
+                  // TODO late changes made this always false.
                   if (!widget.formController.allAppreciationsAreDone)
                     const Text(
                       '\n\n**Attention, toutes les compétences n\'ont pas été évaluées**',

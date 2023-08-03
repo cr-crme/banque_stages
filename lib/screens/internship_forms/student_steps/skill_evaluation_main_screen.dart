@@ -105,43 +105,46 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
     final evaluations =
         _formController.internship(context, listen: false).skillEvaluations;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Options de remplissage'),
-        Padding(
-          padding: const EdgeInsets.only(left: 24.0),
-          child: Row(
+    return evaluations.isEmpty
+        ? Container()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Préremplir avec les résultats de\u00a0: ',
-              ),
-              DropdownButton<int?>(
-                value: _currentEvaluationIndex,
-                onChanged: (value) {
-                  _currentEvaluationIndex = value!;
-                  _currentEvaluationIndex >= evaluations.length
-                      ? _formController.clearForm(context)
-                      : _formController.fillFromPreviousEvaluation(
-                          context, _currentEvaluationIndex);
-                  setState(() {});
-                },
-                items: evaluations
-                    .asMap()
-                    .keys
-                    .map((index) => DropdownMenuItem(
-                        value: index,
-                        child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
-                            .format(evaluations[index].date))))
-                    .toList()
-                  ..add(DropdownMenuItem(
-                      value: evaluations.length, child: const Text('Vide'))),
+              const SubTitle('Options de remplissage'),
+              Padding(
+                padding: const EdgeInsets.only(left: 24.0),
+                child: Row(
+                  children: [
+                    const Text(
+                      'Préremplir avec les résultats de\u00a0: ',
+                    ),
+                    DropdownButton<int?>(
+                      value: _currentEvaluationIndex,
+                      onChanged: (value) {
+                        _currentEvaluationIndex = value!;
+                        _currentEvaluationIndex >= evaluations.length
+                            ? _formController.clearForm(context)
+                            : _formController.fillFromPreviousEvaluation(
+                                context, _currentEvaluationIndex);
+                        setState(() {});
+                      },
+                      items: evaluations
+                          .asMap()
+                          .keys
+                          .map((index) => DropdownMenuItem(
+                              value: index,
+                              child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
+                                  .format(evaluations[index].date))))
+                          .toList()
+                        ..add(DropdownMenuItem(
+                            value: evaluations.length,
+                            child: const Text('Vide'))),
+                    ),
+                  ],
+                ),
               ),
             ],
-          ),
-        ),
-      ],
-    );
+          );
   }
 }
 
