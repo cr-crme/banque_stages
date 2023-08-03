@@ -27,9 +27,8 @@ class AttitudeEvaluationFormController {
 
     controller.evaluationDate = evaluation.date;
 
-    controller.wereAtMeetingInitialValues.clear();
-    controller.wereAtMeetingInitialValues
-        .addAll(evaluation.presentAtEvaluation);
+    controller.wereAtMeeting.clear();
+    controller.wereAtMeeting.addAll(evaluation.presentAtEvaluation);
 
     controller.responses[Inattendance] =
         Inattendance.values[evaluation.attitude.inattendance];
@@ -87,8 +86,11 @@ class AttitudeEvaluationFormController {
     'Stagiaire',
     'Responsable en milieu de stage',
   ];
-  final List<String> wereAtMeetingInitialValues = [];
-  List<String> get wereAtMeeting => wereAtMeetingKey.currentState!.values;
+  final List<String> wereAtMeeting = [];
+  void setWereAtMeeting() {
+    wereAtMeeting.clear();
+    wereAtMeeting.addAll(wereAtMeetingKey.currentState!.values);
+  }
 
   Map<Type, AttitudeCategoryEnum?> responses = {};
 

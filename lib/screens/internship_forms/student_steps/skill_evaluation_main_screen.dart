@@ -26,8 +26,8 @@ class SkillEvaluationMainScreen extends StatefulWidget {
 }
 
 class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
-  late final _formController =
-      SkillEvaluationFormController(internshipId: widget.internshipId);
+  late final _formController = SkillEvaluationFormController(context,
+      internshipId: widget.internshipId, canModify: true);
 
   void _cancel() async {
     final answer = await ConfirmExitDialog.show(context,
@@ -158,7 +158,7 @@ class _PersonAtMeeting extends StatelessWidget {
           child: CheckboxWithOther(
             key: formController.wereAtMeetingKey,
             elements: formController.wereAtMeetingOptions,
-            initialValues: formController.wereAtMeetingInitialValues,
+            initialValues: formController.wereAtMeeting,
             enabled: editMode,
           ),
         ),
@@ -198,11 +198,6 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
             ActivitySectorsService.specialization(specializationId))
         .toList();
 
-    for (final skill in _specialization.skills) {
-      widget.formController.skillsAreFromSpecializationId[skill] =
-          _specialization.id;
-      widget.formController.skillsToEvaluate[skill] = true;
-    }
     for (final specialization in _extraSpecialization) {
       for (final skill in specialization.skills) {
         if (!widget.formController.skillsAreFromSpecializationId
@@ -310,6 +305,7 @@ class _StartEvaluation extends StatelessWidget {
         padding: const EdgeInsets.only(top: 24, right: 24.0),
         child: TextButton(
             onPressed: () {
+              formController.setWereAtMeeting();
               formController.initializeController();
               GoRouter.of(context).pushReplacementNamed(
                 Screens.skillEvaluationFormScreen,

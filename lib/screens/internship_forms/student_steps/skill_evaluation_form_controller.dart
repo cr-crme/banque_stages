@@ -9,66 +9,64 @@ import 'package:flutter/widgets.dart';
 class SkillEvaluationFormController {
   static const _formVersion = '1.0.0';
 
-  SkillEvaluationFormController({required this.internshipId});
+  SkillEvaluationFormController(BuildContext context,
+      {required this.internshipId, required this.canModify}) {
+    clearForm(context);
+  }
+  final bool canModify;
   final String internshipId;
   Internship internship(context, {listen = true}) =>
       InternshipsProvider.of(context, listen: listen)[internshipId];
 
-  factory SkillEvaluationFormController.fromInternshipId(
-    context, {
-    required String internshipId,
-    required int evaluationIndex,
-  }) {
-    Internship internship =
-        InternshipsProvider.of(context, listen: false)[internshipId];
-    InternshipEvaluationSkill evaluation =
-        internship.skillEvaluations[evaluationIndex];
+  factory SkillEvaluationFormController.fromInternshipId(context,
+      {required String internshipId,
+      required int evaluationIndex,
+      required bool canModify}) {
+    final controller = SkillEvaluationFormController(context,
+        internshipId: internshipId, canModify: canModify);
+    controller.fillFromPreviousEvaluation(context, evaluationIndex);
+    return controller;
+  }
 
-    final controller =
-        SkillEvaluationFormController(internshipId: internshipId);
+  void clearForm(context) {
+    wereAtMeeting.clear();
+    _initializeSkills(context);
+    commentsController.text = '';
+  }
 
-    controller.evaluationDate = evaluation.date;
+  void fillFromPreviousEvaluation(context, int? previousEvaluationIndex) {
+    final internshipTp = internship(context, listen: false);
+    if (internshipTp.skillEvaluations.isEmpty) return;
 
-    controller.wereAtMeetingInitialValues.clear();
-    controller.wereAtMeetingInitialValues
-        .addAll(evaluation.presentAtEvaluation);
+    final evaluation = previousEvaluationIndex == null
+        ? internshipTp.skillEvaluations.last
+        : internshipTp.skillEvaluations[previousEvaluationIndex];
 
-    // Fill skill to evaluated as if it was none
-    final enterprise =
-        EnterprisesProvider.of(context, listen: false)[internship.enterpriseId];
-    final specialization = enterprise.jobs[internship.jobId].specialization;
-    for (final skill in specialization.skills) {
-      controller.skillsToEvaluate[skill] = false;
-    }
-    for (final extraSpecializationId in internship.extraSpecializationsId) {
-      for (final skill
-          in ActivitySectorsService.specialization(extraSpecializationId)
-              .skills) {
-        controller.skillsToEvaluate[skill] = false;
-        controller.skillsAreFromSpecializationId[skill] = extraSpecializationId;
-      }
-    }
+    if (!canModify) evaluationDate = evaluation.date;
 
-    // Now fill the structures
+    wereAtMeeting.clear();
+    wereAtMeeting.addAll(evaluation.presentAtEvaluation);
+
+    // Fill skill to evaluated as if it was all false
+    _initializeSkills(context, forceFalse: true);
+
+    // Now fill the structures from the evaluation
     for (final skillEvaluation in evaluation.skills) {
-      final skill = controller.skillsToEvaluate.keys.firstWhere(
+      final skill = skillsToEvaluate.keys.firstWhere(
           (element) => element.idWithName == skillEvaluation.skillName);
-      controller.skillsToEvaluate[skill] = true;
+      skillsToEvaluate[skill] = true;
 
-      controller.taskCompleted[skill] = {};
+      taskCompleted[skill] = {};
       for (final task in skill.tasks) {
-        controller.taskCompleted[skill]![task] =
-            skillEvaluation.tasks.contains(task);
+        taskCompleted[skill]![task] = skillEvaluation.tasks.contains(task);
       }
 
-      controller.appreciations[skill] = skillEvaluation.appreciation;
-      controller.skillCommentsControllers[skill] =
+      appreciations[skill] = skillEvaluation.appreciation;
+      skillCommentsControllers[skill] =
           TextEditingController(text: skillEvaluation.comment);
     }
 
-    controller.commentsController.text = evaluation.comments;
-
-    return controller;
+    commentsController.text = evaluation.comments;
   }
 
   InternshipEvaluationSkill toInternshipEvaluation() {
@@ -105,11 +103,36 @@ class SkillEvaluationFormController {
     'Stagiaire',
     'Responsable en milieu de stage',
   ];
-  final List<String> wereAtMeetingInitialValues = [];
-  List<String> get wereAtMeeting => wereAtMeetingKey.currentState!.values;
+  final List<String> wereAtMeeting = [];
+  void setWereAtMeeting() {
+    wereAtMeeting.clear();
+    wereAtMeeting.addAll(wereAtMeetingKey.currentState!.values);
+  }
 
   Map<Skill, bool> skillsToEvaluate = {};
   final Map<Skill, String> skillsAreFromSpecializationId = {};
+  void _initializeSkills(context, {bool forceFalse = false}) {
+    final internshipTp = internship(context, listen: false);
+    final enterprise = EnterprisesProvider.of(context,
+        listen: false)[internshipTp.enterpriseId];
+
+    // Do the extra first as they should be overriden by the principal when they duplicate
+    for (final extraSpecializationId in internshipTp.extraSpecializationsId) {
+      for (final skill
+          in ActivitySectorsService.specialization(extraSpecializationId)
+              .skills) {
+        skillsToEvaluate[skill] = false;
+        skillsAreFromSpecializationId[skill] = extraSpecializationId;
+      }
+    }
+
+    final specialization = enterprise.jobs[internshipTp.jobId].specialization;
+    for (final skill in specialization.skills) {
+      skillsToEvaluate[skill] = !forceFalse;
+      skillsAreFromSpecializationId[skill] = specialization.id;
+    }
+  }
+
   Map<Skill, Map<String, bool>> taskCompleted = {};
   void _initializeTaskCompleted() {
     taskCompleted.clear();

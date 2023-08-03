@@ -265,6 +265,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
                     context,
                     internshipId: widget.internship.id,
                     evaluationIndex: _currentEvaluationIndex,
+                    canModify: false,
                   ));
             },
             child: const Text('Voir l\'évaluation détaillée')),

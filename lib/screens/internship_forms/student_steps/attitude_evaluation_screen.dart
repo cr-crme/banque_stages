@@ -75,6 +75,8 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
       return;
     }
 
+    widget.formController.setWereAtMeeting();
+
     final internships = InternshipsProvider.of(context, listen: false);
     final internship = internships.fromId(widget.formController.internshipId);
 
@@ -351,7 +353,7 @@ class _PersonAtMeeting extends StatelessWidget {
           child: CheckboxWithOther(
             key: formController.wereAtMeetingKey,
             elements: formController.wereAtMeetingOptions,
-            initialValues: formController.wereAtMeetingInitialValues,
+            initialValues: formController.wereAtMeeting,
             enabled: editMode,
           ),
         ),
