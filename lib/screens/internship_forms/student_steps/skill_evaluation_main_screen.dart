@@ -28,6 +28,21 @@ class SkillEvaluationMainScreen extends StatefulWidget {
 class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   late final _formController = SkillEvaluationFormController(context,
       internshipId: widget.internshipId, canModify: true);
+  late int _currentEvaluationIndex = _formController
+          .internship(context, listen: false)
+          .skillEvaluations
+          .length -
+      1;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (_currentEvaluationIndex >= 0) {
+      _formController.fillFromPreviousEvaluation(
+          context, _currentEvaluationIndex);
+    }
+  }
 
   void _cancel() async {
     final answer = await ConfirmExitDialog.show(context,
@@ -69,6 +84,7 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
                             formController: _formController,
                             editMode: widget.editMode,
                           ),
+                          _buildAutofillChooser(),
                           _JobToEvaluate(
                             formController: _formController,
                             editMode: widget.editMode,
@@ -83,6 +99,49 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
                   ),
           );
         });
+  }
+
+  Widget _buildAutofillChooser() {
+    final evaluations =
+        _formController.internship(context, listen: false).skillEvaluations;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Options de remplissage'),
+        Padding(
+          padding: const EdgeInsets.only(left: 24.0),
+          child: Row(
+            children: [
+              const Text(
+                'Préremplir avec les résultats de\u00a0: ',
+              ),
+              DropdownButton<int?>(
+                value: _currentEvaluationIndex,
+                onChanged: (value) {
+                  _currentEvaluationIndex = value!;
+                  _currentEvaluationIndex >= evaluations.length
+                      ? _formController.clearForm(context)
+                      : _formController.fillFromPreviousEvaluation(
+                          context, _currentEvaluationIndex);
+                  setState(() {});
+                },
+                items: evaluations
+                    .asMap()
+                    .keys
+                    .map((index) => DropdownMenuItem(
+                        value: index,
+                        child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
+                            .format(evaluations[index].date))))
+                    .toList()
+                  ..add(DropdownMenuItem(
+                      value: evaluations.length, child: const Text('Vide'))),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -178,32 +237,34 @@ class _JobToEvaluate extends StatefulWidget {
 }
 
 class _JobToEvaluateState extends State<_JobToEvaluate> {
-  late Specialization _specialization;
-  late List<Specialization> _extraSpecialization;
-
   // Duplicate skills deals with common skills in different jobs. Only allows for
   // modification of the first occurence (and tie them)
   final Map<Skill, bool> _usedDuplicateSkills = {};
+
+  Specialization get specialization {
+    final internship = widget.formController.internship(context, listen: false);
+    final enterprise =
+        EnterprisesProvider.of(context, listen: false)[internship.enterpriseId];
+    return enterprise.jobs[internship.jobId].specialization;
+  }
+
+  List<Specialization> get extraSpecializations {
+    final internship = widget.formController.internship(context, listen: false);
+    return internship.extraSpecializationsId
+        .map((specializationId) =>
+            ActivitySectorsService.specialization(specializationId))
+        .toList();
+  }
 
   @override
   void initState() {
     super.initState();
 
-    final internship = widget.formController.internship(context, listen: false);
-    final enterprise =
-        EnterprisesProvider.of(context, listen: false)[internship.enterpriseId];
-    _specialization = enterprise.jobs[internship.jobId].specialization;
-    _extraSpecialization = internship.extraSpecializationsId
-        .map((specializationId) =>
-            ActivitySectorsService.specialization(specializationId))
-        .toList();
-
-    for (final specialization in _extraSpecialization) {
-      for (final skill in specialization.skills) {
+    for (final extra in extraSpecializations) {
+      for (final skill in extra.skills) {
         if (!widget.formController.skillsAreFromSpecializationId
             .containsKey(skill)) {
-          widget.formController.skillsAreFromSpecializationId[skill] =
-              specialization.id;
+          widget.formController.skillsAreFromSpecializationId[skill] = extra.id;
         }
         if (widget.formController.skillsToEvaluate.containsKey(skill)) {
           _usedDuplicateSkills[skill] = false;
@@ -269,6 +330,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
     for (final skill in _usedDuplicateSkills.keys) {
       _usedDuplicateSkills[skill] = false;
     }
+    final extra = extraSpecializations;
 
     // If there is more than one job, the user must select which skills are evaluated
     return Column(
@@ -276,13 +338,13 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
       children: [
         _buildJobTile(
           title: 'Métier principal',
-          specialization: _specialization,
+          specialization: specialization,
         ),
-        ..._extraSpecialization.asMap().keys.map(
+        ...extra.asMap().keys.map(
               (i) => _buildJobTile(
                 title:
-                    'Métier supplémentaire${_extraSpecialization.length > 1 ? ' (${i + 1})' : ''}',
-                specialization: _extraSpecialization[i],
+                    'Métier supplémentaire${extra.length > 1 ? ' (${i + 1})' : ''}',
+                specialization: extra[i],
               ),
             ),
       ],
