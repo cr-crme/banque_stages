@@ -132,7 +132,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
     }
   }
 
-  Widget _buildLastEvaluation() {
+  Widget _buildSelectEvaluationFromDate() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
       child: Row(
@@ -156,79 +156,90 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
     );
   }
 
-  Widget _buillSkillSection(String specializationId) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSkill(
-            title: 'Compétences réussies',
-            skills: widget.evaluation[_currentEvaluationIndex].skills
-                .map<SkillEvaluation?>((e) =>
-                    e.specializationId == specializationId &&
-                            e.appreciation == SkillAppreciation.acquired
-                        ? e
-                        : null)
-                .where((e) => e != null)
-                .cast<SkillEvaluation>()
-                .toList()),
-        _buildSkill(
-            title: 'Compétences à poursuivre',
-            skills: widget.evaluation[_currentEvaluationIndex].skills
-                .map<SkillEvaluation?>((e) =>
-                    e.specializationId == specializationId &&
-                            e.appreciation == SkillAppreciation.toPursuit
-                        ? e
-                        : null)
-                .where((e) => e != null)
-                .cast<SkillEvaluation>()
-                .toList()),
-        _buildSkill(
-            title: 'Compétences non réussies',
-            skills: widget.evaluation[_currentEvaluationIndex].skills
-                .map<SkillEvaluation?>((e) =>
-                    e.specializationId == specializationId &&
-                            e.appreciation == SkillAppreciation.failed
-                        ? e
-                        : null)
-                .where((e) => e != null)
-                .cast<SkillEvaluation>()
-                .toList()),
-        _buildSkill(
-            title: 'Compétences non évaluées',
-            skills: widget.evaluation[_currentEvaluationIndex].skills
-                .map<SkillEvaluation?>((e) =>
-                    e.specializationId == specializationId &&
-                            e.appreciation == SkillAppreciation.notEvaluated
-                        ? e
-                        : null)
-                .where((e) => e != null)
-                .cast<SkillEvaluation>()
-                .toList()),
-      ],
-    );
-  }
-
-  Widget _buildSkill({
-    required String title,
-    required List<SkillEvaluation> skills,
-  }) {
+  Widget _buildPresentAtMeeting() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            'Personnes présentes',
+            style: Theme.of(context).textTheme.titleSmall,
           ),
+          // TODO What to do when teacher did it alone?
           Padding(
-              padding: const EdgeInsets.only(left: 12.0),
-              child: skills.isEmpty
-                  ? const ItemizedText(['Aucune'])
-                  : ItemizedText(skills.map((e) => e.skillName).toList())),
+            padding: const EdgeInsets.only(left: 12.0),
+            child: ItemizedText(
+                widget.evaluation[_currentEvaluationIndex].presentAtEvaluation),
+          ),
         ],
       ),
     );
+  }
+
+  Widget _buillSkillSection(Specialization specialization) {
+    return widget.evaluation[_currentEvaluationIndex].skills
+            .where((e) => e.specializationId == specialization.id)
+            .isEmpty
+        ? Container()
+        : Padding(
+            padding: const EdgeInsets.only(bottom: _interline),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  specialization.idWithName,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                _buildSkill(
+                    title: 'Compétences réussies',
+                    skills: widget.evaluation[_currentEvaluationIndex].skills
+                        .where((e) =>
+                            e.specializationId == specialization.id &&
+                            e.appreciation == SkillAppreciation.acquired)
+                        .toList()),
+                _buildSkill(
+                  title: 'Compétences à poursuivre',
+                  skills: widget.evaluation[_currentEvaluationIndex].skills
+                      .where((e) =>
+                          e.specializationId == specialization.id &&
+                          e.appreciation == SkillAppreciation.toPursuit)
+                      .toList(),
+                ),
+                _buildSkill(
+                    title: 'Compétences non réussies',
+                    skills: widget.evaluation[_currentEvaluationIndex].skills
+                        .where((e) =>
+                            e.specializationId == specialization.id &&
+                            e.appreciation == SkillAppreciation.failed)
+                        .toList()),
+              ],
+            ),
+          );
+  }
+
+  Widget _buildSkill({
+    required String title,
+    required List<SkillEvaluation> skills,
+  }) {
+    return skills.isEmpty
+        ? const SizedBox()
+        : Padding(
+            padding: const EdgeInsets.only(bottom: _interline),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child:
+                        ItemizedText(skills.map((e) => e.skillName).toList())),
+              ],
+            ),
+          );
   }
 
   Widget _buildComment() {
@@ -291,44 +302,24 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildLastEvaluation(),
-              if (widget.internship.extraSpecializationsId.isNotEmpty)
-                Text(
-                  EnterprisesProvider.of(context, listen: false)
-                      .fromId(widget.internship.enterpriseId)
-                      .jobs
-                      .fromId(widget.internship.jobId)
-                      .specialization
-                      .idWithName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+              _buildSelectEvaluationFromDate(),
+              _buildPresentAtMeeting(),
               _buillSkillSection(EnterprisesProvider.of(context)
                   .fromId(widget.internship.enterpriseId)
                   .jobs
                   .fromId(widget.internship.jobId)
-                  .specialization
-                  .id),
+                  .specialization),
               if (widget.internship.extraSpecializationsId.isNotEmpty)
                 ...widget.internship.extraSpecializationsId
                     .asMap()
                     .keys
-                    .map((index) => Padding(
-                          padding: const EdgeInsets.only(bottom: _interline),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
+                    .map((index) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buillSkillSection(
                                 ActivitySectorsService.specialization(widget
-                                        .internship
-                                        .extraSpecializationsId[index])
-                                    .idWithName,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              _buillSkillSection(widget
-                                  .internship.extraSpecializationsId[index]),
-                            ],
-                          ),
+                                    .internship.extraSpecializationsId[index])),
+                          ],
                         )),
               _buildComment(),
               _buildShowOtherDate(),
