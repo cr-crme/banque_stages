@@ -243,6 +243,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
   // Duplicate skills deals with common skills in different jobs. Only allows for
   // modification of the first occurence (and tie them)
   final Map<Skill, bool> _usedDuplicateSkills = {};
+  // TODO Verify that duplicate skill works
 
   Specialization get specialization {
     final internship = widget.formController.internship(context, listen: false);

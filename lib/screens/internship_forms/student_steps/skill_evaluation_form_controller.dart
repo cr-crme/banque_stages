@@ -13,6 +13,7 @@ class SkillEvaluationFormController {
       {required this.internshipId, required this.canModify}) {
     clearForm(context);
   }
+  int? _previousEvaluationIndex; // -1 is the last, null is not from evaluation
   final bool canModify;
   final String internshipId;
   Internship internship(context, {listen = true}) =>
@@ -28,8 +29,16 @@ class SkillEvaluationFormController {
     return controller;
   }
 
+  void dispose() {
+    // TODO Call the dispose
+    for (final skill in skillCommentsControllers.keys) {
+      skillCommentsControllers[skill]!.dispose();
+    }
+    commentsController.dispose();
+  }
+
   void addSkill(Skill skill) {
-    _skillsToEvaluate[skill] = true;
+    _evaluatedSkills[skill] = 1;
 
     appreciations[skill] = SkillAppreciation.notEvaluated;
     skillCommentsControllers[skill] = TextEditingController();
@@ -41,9 +50,16 @@ class SkillEvaluationFormController {
   }
 
   void removeSkill(Skill skill) {
-    _skillsToEvaluate[skill] = false;
+    if (_previousEvaluationIndex != null) {
+      _evaluatedSkills[skill] = -1;
+      // Do not remove the values though (even though they won't appear)
+      return;
+    }
+
+    _evaluatedSkills[skill] = 0;
 
     appreciations.remove(skill);
+    skillCommentsControllers[skill]!.dispose();
     skillCommentsControllers.remove(skill);
     taskCompleted.remove(skill);
   }
@@ -61,25 +77,33 @@ class SkillEvaluationFormController {
     }
   }
 
-  void fillFromPreviousEvaluation(context, int? previousEvaluationIndex) {
-    final internshipTp = internship(context, listen: false);
-    if (internshipTp.skillEvaluations.isEmpty) return;
+  InternshipEvaluationSkill? _previousEvaluation(context) {
+    if (_previousEvaluationIndex == null) return null;
 
-    final evaluation = previousEvaluationIndex == null
+    final internshipTp = internship(context, listen: false);
+    if (internshipTp.skillEvaluations.isEmpty) return null;
+
+    return _previousEvaluationIndex! < 0
         ? internshipTp.skillEvaluations.last
-        : internshipTp.skillEvaluations[previousEvaluationIndex];
+        : internshipTp.skillEvaluations[_previousEvaluationIndex!];
+  }
+
+  void fillFromPreviousEvaluation(context, int previousEvaluationIndex) {
+    // Reset the form to fresh
+    _resetForm(context);
+    _previousEvaluationIndex = previousEvaluationIndex;
+
+    final evaluation = _previousEvaluation(context);
+    if (evaluation == null) return;
 
     if (!canModify) evaluationDate = evaluation.date;
-
-    // Create a valid, yet empty structure
-    _resetForm(context);
 
     // Fill skill to evaluated as if it was all false
     wereAtMeeting.addAll(evaluation.presentAtEvaluation);
 
     // Now fill the structures from the evaluation
     for (final skillEvaluation in evaluation.skills) {
-      final skill = _skillsToEvaluate.keys.firstWhere(
+      final skill = _evaluatedSkills.keys.firstWhere(
           (element) => element.idWithName == skillEvaluation.skillName);
 
       addSkill(skill);
@@ -135,12 +159,27 @@ class SkillEvaluationFormController {
     wereAtMeeting.addAll(wereAtMeetingKey.currentState!.values);
   }
 
-  final Map<Skill, bool> _skillsToEvaluate = {};
-  bool isSkillToEvaluate(Skill skill) => _skillsToEvaluate[skill] ?? false;
-  List<Skill> get skillsToEvaluate {
+  ///
+  /// _evaluatedSkill is set to 1 if it is evaluated, 0 or -1 if it is not
+  /// evaluated. The negative value indicateds that it is not evaluated, but it
+  /// should still be added to the results as it is a previous result from a
+  /// previous evaluation
+  final Map<Skill, int> _evaluatedSkills = {};
+  bool isSkillToEvaluate(Skill skill) => (_evaluatedSkills[skill] ?? 0) > 0;
+
+  ///
+  /// This returns the values for all results, if [activeOnly] is set to false
+  /// then it also include the one from previous evaluation which are not
+  /// currently evaluated
+  List<Skill> skillResults({bool activeOnly = false}) {
     List<Skill> out = [];
-    for (final skill in _skillsToEvaluate.keys) {
-      if (_skillsToEvaluate[skill]!) {
+    for (final skill in _evaluatedSkills.keys) {
+      if (_evaluatedSkills[skill]! > 0) {
+        out.add(skill);
+      }
+      // If the skill was not evaluated, but the evaluation continues a previous
+      // one, we must keep the previous values
+      if (!activeOnly && _evaluatedSkills[skill]! < 0) {
         out.add(skill);
       }
     }
@@ -156,7 +195,7 @@ class SkillEvaluationFormController {
 
     final specialization = enterprise.jobs[internshipTp.jobId].specialization;
     for (final skill in specialization.skills) {
-      _skillsToEvaluate[skill] = false;
+      _evaluatedSkills[skill] = 0;
       _skillsAreFromSpecializationId[skill] = specialization.id;
     }
 
@@ -164,7 +203,7 @@ class SkillEvaluationFormController {
       for (final skill
           in ActivitySectorsService.specialization(extraSpecializationId)
               .skills) {
-        _skillsToEvaluate[skill] = false;
+        _evaluatedSkills[skill] = 0;
         _skillsAreFromSpecializationId[skill] = extraSpecializationId;
       }
     }
@@ -173,8 +212,8 @@ class SkillEvaluationFormController {
   Map<Skill, Map<String, bool>> taskCompleted = {};
   void _initializeTaskCompleted() {
     taskCompleted.clear();
-    for (final skill in _skillsToEvaluate.keys) {
-      if (!_skillsToEvaluate[skill]!) continue;
+    for (final skill in _evaluatedSkills.keys) {
+      if (_evaluatedSkills[skill] == 0) continue;
       Map<String, bool> tp = {};
       for (final task in skill.tasks) {
         tp[task] = false;
@@ -193,8 +232,8 @@ class SkillEvaluationFormController {
 
   void _initializeAppreciation() {
     appreciations.clear();
-    for (final skill in _skillsToEvaluate.keys) {
-      if (!_skillsToEvaluate[skill]!) continue;
+    for (final skill in _evaluatedSkills.keys) {
+      if (_evaluatedSkills[skill] == 0) continue;
       appreciations[skill] = SkillAppreciation.notEvaluated;
     }
   }
@@ -202,13 +241,16 @@ class SkillEvaluationFormController {
   Map<Skill, TextEditingController> skillCommentsControllers = {};
   void _initializeSkillCommentControllers() {
     skillCommentsControllers.clear();
-    for (final skill in _skillsToEvaluate.keys) {
-      if (!_skillsToEvaluate[skill]!) continue;
+    for (final skill in _evaluatedSkills.keys) {
+      if (_evaluatedSkills[skill] == 0) continue;
       skillCommentsControllers[skill] = TextEditingController();
     }
   }
 
   void _resetForm(context) {
+    evaluationDate = DateTime.now();
+    _previousEvaluationIndex = null;
+
     wereAtMeeting.clear();
 
     _initializeSkills(context);

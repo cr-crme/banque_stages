@@ -31,7 +31,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
   SkillList _extractSkills(BuildContext context,
       {required Internship internship}) {
     final out = SkillList.empty();
-    for (final skill in widget.formController.skillsToEvaluate) {
+    for (final skill in widget.formController.skillResults(activeOnly: true)) {
       out.add(skill);
     }
     return out;

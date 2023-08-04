@@ -87,7 +87,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
   InternshipEvaluationSkill.fromSerialized(map)
       : date = DateTime.fromMillisecondsSinceEpoch(map['date']),
         presentAtEvaluation =
-            (map['present'] as List).map((e) => e as String).toList(),
+            (map['present'] as List?)?.map((e) => e as String).toList() ?? [],
         skills = (map['skills'] as List)
             .map((e) => SkillEvaluation.fromSerialized(e))
             .toList(),
