@@ -159,21 +159,24 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
   Widget _buildPresentAtMeeting() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Personnes présentes',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          // TODO What to do when teacher did it alone?
-          Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: ItemizedText(
-                widget.evaluation[_currentEvaluationIndex].presentAtEvaluation),
-          ),
-        ],
-      ),
+      child:
+          widget.evaluation[_currentEvaluationIndex].presentAtEvaluation.isEmpty
+              ? Container()
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Personnes présentes',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: ItemizedText(widget
+                          .evaluation[_currentEvaluationIndex]
+                          .presentAtEvaluation),
+                    ),
+                  ],
+                ),
     );
   }
 
