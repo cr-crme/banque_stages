@@ -265,14 +265,8 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
 
     for (final extra in extraSpecializations) {
       for (final skill in extra.skills) {
-        if (!widget.formController.skillsAreFromSpecializationId
-            .containsKey(skill)) {
-          widget.formController.skillsAreFromSpecializationId[skill] = extra.id;
-        }
-        if (widget.formController.skillsToEvaluate.containsKey(skill)) {
+        if (widget.formController.isSkillToEvaluate(skill)) {
           _usedDuplicateSkills[skill] = false;
-        } else {
-          widget.formController.skillsToEvaluate[skill] = false;
         }
       }
     }
@@ -304,9 +298,15 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
                   controlAffinity: ListTileControlAffinity.leading,
                   dense: true,
                   visualDensity: VisualDensity.compact,
-                  onChanged: (value) => setState(() =>
-                      widget.formController.skillsToEvaluate[skill] = value!),
-                  value: widget.formController.skillsToEvaluate[skill],
+                  onChanged: (value) {
+                    if (value!) {
+                      widget.formController.addSkill(skill);
+                    } else {
+                      widget.formController.removeSkill(skill);
+                    }
+                    setState(() {});
+                  },
+                  value: widget.formController.isSkillToEvaluate(skill),
                   title: Text(
                     skill.idWithName,
                     style: Theme.of(context).textTheme.bodyMedium,
