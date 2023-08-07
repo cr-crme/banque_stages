@@ -258,6 +258,38 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
         .toList();
   }
 
+  void _showHelpOnJobSelection() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text('Alert Dialog'),
+              content: Text.rich(TextSpan(children: [
+                const TextSpan(text: 'Sélectionner '),
+                WidgetSpan(
+                    child: SizedBox(
+                  height: 19,
+                  width: 22,
+                  child: Checkbox(
+                      tristate: true,
+                      value: null,
+                      onChanged: null,
+                      fillColor: MaterialStateProperty.resolveWith(
+                          (states) => Theme.of(context).primaryColor)),
+                )),
+                const TextSpan(
+                  text:
+                      ' pour masquer les compétences précédemment évaluées pour '
+                      'cette évaluation-ci (les résultats sont conservés).',
+                ),
+              ])),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'))
+              ],
+            ));
+  }
+
   Widget _buildJobTile({
     required String title,
     required Specialization specialization,
@@ -271,59 +303,81 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
         SubTitle(title),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              Text(
-                specialization.idWithName,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                '* Compétences à évaluer :',
-              ),
-              ...specialization.skills.map((skill) {
-                final out = CheckboxListTile(
-                  tristate: true,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  dense: true,
-                  visualDensity: VisualDensity.compact,
-                  onChanged: (value) {
-                    // Make sure false is only possible for non previously
-                    // evaluated values and null is only possible for previously
-                    // evaluted values
-                    if (value == null &&
-                        !widget.formController
-                            .isNotEvaluatedButWasPreviously(skill.id)) {
-                      // If it comes from true (so it is null now)
-                      // Change it to false if it was not previously evaluated
-                      value = false;
-                    } else if (!value!) {
-                      // If it comes from null, then it was previously evaluated
-                      // and the user wants it to true
-                      value = true;
-                    }
-
-                    if (value) {
-                      widget.formController.addSkill(skill.id);
-                    } else {
-                      widget.formController.removeSkill(context, skill.id);
-                    }
-                    setState(() {});
-                  },
-                  value: widget.formController
-                          .isNotEvaluatedButWasPreviously(skill.id)
-                      ? null
-                      : widget.formController.isSkillToEvaluate(skill.id),
-                  title: Text(
-                    skill.idWithName,
-                    style: Theme.of(context).textTheme.bodyMedium,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    specialization.idWithName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  enabled: widget.editMode &&
-                      (isMainSpecialization || !duplicatedSkills[skill.id]!),
-                );
-                return out;
-              }),
+                  const SizedBox(height: 4),
+                  const Text(
+                    '* Compétences à évaluer :',
+                  ),
+                  ...specialization.skills.map((skill) {
+                    final out = CheckboxListTile(
+                      tristate: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      onChanged: (value) {
+                        // Make sure false is only possible for non previously
+                        // evaluated values and null is only possible for previously
+                        // evaluted values
+                        if (value == null &&
+                            !widget.formController
+                                .isNotEvaluatedButWasPreviously(skill.id)) {
+                          // If it comes from true (so it is null now)
+                          // Change it to false if it was not previously evaluated
+                          value = false;
+                        } else if (!value!) {
+                          // If it comes from null, then it was previously evaluated
+                          // and the user wants it to true
+                          value = true;
+                        }
+
+                        if (value) {
+                          widget.formController.addSkill(skill.id);
+                        } else {
+                          widget.formController.removeSkill(context, skill.id);
+                        }
+                        setState(() {});
+                      },
+                      value: widget.formController
+                              .isNotEvaluatedButWasPreviously(skill.id)
+                          ? null
+                          : widget.formController.isSkillToEvaluate(skill.id),
+                      title: Text(
+                        skill.idWithName,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      enabled: widget.editMode &&
+                          (isMainSpecialization ||
+                              !duplicatedSkills[skill.id]!),
+                    );
+                    return out;
+                  }),
+                ],
+              ),
+              if (widget.formController.isFilledUsingPreviousEvaluation)
+                Align(
+                  alignment: Alignment.topRight,
+                  child: SizedBox(
+                    height: 45,
+                    width: 45,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(25),
+                      onTap: _showHelpOnJobSelection,
+                      child: Icon(
+                        Icons.info,
+                        size: 30,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

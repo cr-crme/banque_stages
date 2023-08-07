@@ -14,6 +14,8 @@ class SkillEvaluationFormController {
     clearForm(context);
   }
   int? _previousEvaluationIndex; // -1 is the last, null is not from evaluation
+  bool get isFilledUsingPreviousEvaluation => _previousEvaluationIndex != null;
+
   final bool canModify;
   final String internshipId;
   Internship internship(context, {listen = true}) =>
@@ -53,7 +55,7 @@ class SkillEvaluationFormController {
 
   void removeSkill(context, String skillId) {
     _evaluatedSkills[skillId] = 0;
-    if (_previousEvaluationIndex != null) {
+    if (isFilledUsingPreviousEvaluation) {
       final evaluation = _previousEvaluation(context);
       final skill = _idToSkill[skillId]!;
       if (evaluation!.skills.any((e) => e.skillName == skill.idWithName)) {
@@ -83,7 +85,7 @@ class SkillEvaluationFormController {
   }
 
   InternshipEvaluationSkill? _previousEvaluation(context) {
-    if (_previousEvaluationIndex == null) return null;
+    if (!isFilledUsingPreviousEvaluation) return null;
 
     final internshipTp = internship(context, listen: false);
     if (internshipTp.skillEvaluations.isEmpty) return null;
