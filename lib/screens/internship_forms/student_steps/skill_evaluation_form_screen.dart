@@ -348,6 +348,29 @@ class _TaskEvaluationDetailed extends StatelessWidget {
   final SkillEvaluationFormController formController;
   final bool editMode;
 
+  void _showHelpOnTask(context) {
+    List<String> texts = [];
+    for (final task in byTaskAppreciationLevel) {
+      texts.add('${task.abbreviation()}: $task\n');
+    }
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text('Explication des boutons'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: texts.map((e) => Text(e)).toList(),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'))
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -355,7 +378,27 @@ class _TaskEvaluationDetailed extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Tâche\u00a0:', style: Theme.of(context).textTheme.titleSmall),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text('Tâche\u00a0:',
+                    style: Theme.of(context).textTheme.titleSmall),
+                SizedBox(
+                  height: 45,
+                  width: 45,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(25),
+                    onTap: () => _showHelpOnTask(context),
+                    child: Icon(
+                      Icons.info,
+                      size: 30,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             ...formController.taskCompleted[skill.id]!.keys
                 .map((task) => Padding(
                       padding: const EdgeInsets.only(top: 8.0),

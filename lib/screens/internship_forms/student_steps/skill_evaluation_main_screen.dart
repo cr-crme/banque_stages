@@ -311,7 +311,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: const Text('Alert Dialog'),
+              title: const Text('Explication des sélections'),
               content: Text.rich(TextSpan(children: [
                 const TextSpan(text: 'Sélectionner '),
                 WidgetSpan(
