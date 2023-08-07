@@ -49,19 +49,21 @@ class SkillEvaluationFormController {
     }
   }
 
-  void removeSkill(Skill skill) {
+  void removeSkill(context, Skill skill) {
+    _evaluatedSkills[skill] = 0;
     if (_previousEvaluationIndex != null) {
-      _evaluatedSkills[skill] = -1;
-      // Do not remove the values though (even though they won't appear)
-      return;
+      final evaluation = _previousEvaluation(context);
+      if (evaluation!.skills.any((e) => e.skillName == skill.idWithName)) {
+        _evaluatedSkills[skill] = -1;
+      }
     }
 
-    _evaluatedSkills[skill] = 0;
-
-    appreciations.remove(skill);
-    skillCommentsControllers[skill]!.dispose();
-    skillCommentsControllers.remove(skill);
-    taskCompleted.remove(skill);
+    if (_evaluatedSkills[skill] == 0) {
+      appreciations.remove(skill);
+      skillCommentsControllers[skill]!.dispose();
+      skillCommentsControllers.remove(skill);
+      taskCompleted.remove(skill);
+    }
   }
 
   void clearForm(context) {
@@ -166,6 +168,8 @@ class SkillEvaluationFormController {
   /// previous evaluation
   final Map<Skill, int> _evaluatedSkills = {};
   bool isSkillToEvaluate(Skill skill) => (_evaluatedSkills[skill] ?? 0) > 0;
+  bool isNotEvaluatedButWasPreviously(Skill skill) =>
+      (_evaluatedSkills[skill] ?? 0) < 0;
 
   ///
   /// This returns the values for all results, if [activeOnly] is set to false
@@ -225,7 +229,8 @@ class SkillEvaluationFormController {
   Map<Skill, SkillAppreciation> appreciations = {};
   bool get allAppreciationsAreDone {
     for (final skill in appreciations.keys) {
-      if (appreciations[skill] == SkillAppreciation.notEvaluated) return false;
+      if (isSkillToEvaluate(skill) &&
+          appreciations[skill] == SkillAppreciation.notEvaluated) return false;
     }
     return true;
   }

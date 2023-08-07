@@ -266,7 +266,8 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
 
     for (final extra in extraSpecializations) {
       for (final skill in extra.skills) {
-        if (widget.formController.isSkillToEvaluate(skill)) {
+        if (widget.formController.isSkillToEvaluate(skill) ||
+            widget.formController.isNotEvaluatedButWasPreviously(skill)) {
           _usedDuplicateSkills[skill] = false;
         }
       }
@@ -296,18 +297,37 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
               ),
               ...specialization.skills.map((skill) {
                 final out = CheckboxListTile(
+                  tristate: true,
                   controlAffinity: ListTileControlAffinity.leading,
                   dense: true,
                   visualDensity: VisualDensity.compact,
                   onChanged: (value) {
-                    if (value!) {
+                    // Make sure false is only possible for non previously
+                    // evaluated values and null is only possible for previously
+                    // evaluted values
+                    if (value == null &&
+                        !widget.formController
+                            .isNotEvaluatedButWasPreviously(skill)) {
+                      // If it comes from true (so it is null now)
+                      // Change it to false if it was not previously evaluated
+                      value = false;
+                    } else if (!value!) {
+                      // If it comes from null, then it was previously evaluated
+                      // and the user wants it to true
+                      value = true;
+                    }
+
+                    if (value) {
                       widget.formController.addSkill(skill);
                     } else {
-                      widget.formController.removeSkill(skill);
+                      widget.formController.removeSkill(context, skill);
                     }
                     setState(() {});
                   },
-                  value: widget.formController.isSkillToEvaluate(skill),
+                  value: widget.formController
+                          .isNotEvaluatedButWasPreviously(skill)
+                      ? null
+                      : widget.formController.isSkillToEvaluate(skill),
                   title: Text(
                     skill.idWithName,
                     style: Theme.of(context).textTheme.bodyMedium,
