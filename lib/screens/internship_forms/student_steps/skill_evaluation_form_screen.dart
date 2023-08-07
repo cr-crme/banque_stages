@@ -178,12 +178,15 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
                     steps: [
                       ...skills.map((skill) => Step(
                             isActive: true,
-                            state: widget.formController
-                                        .appreciations[skill.id]! ==
-                                    SkillAppreciation.notEvaluated
-                                ? StepState.indexed
-                                : StepState.complete,
-                            title: SubTitle(skill.id, top: 0, bottom: 0),
+                            state:
+                                widget.formController.appreciations[skill.id] ==
+                                        SkillAppreciation.notSelected
+                                    ? StepState.indexed
+                                    : StepState.complete,
+                            title: SubTitle(
+                                '${skill.id}${skill.isOptional ? ' (Facultative)' : ''}',
+                                top: 0,
+                                bottom: 0),
                             content: _EvaluateSkill(
                               formController: widget.formController,
                               skill: skill,
@@ -269,16 +272,17 @@ class _EvaluateSkill extends StatelessWidget {
             skill: skill,
             formController: formController,
             editMode: editMode),
-        _AppreciationEvaluation(
-            spacing: spacing,
-            skill: skill,
-            formController: formController,
-            editMode: editMode),
         TextFormField(
           decoration: const InputDecoration(label: Text('Commentaires')),
           controller: formController.skillCommentsControllers[skill.id]!,
           enabled: editMode,
         ),
+        const SizedBox(height: 24),
+        _AppreciationEvaluation(
+            spacing: spacing,
+            skill: skill,
+            formController: formController,
+            editMode: editMode),
       ],
     );
   }
@@ -366,6 +370,7 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           ...SkillAppreciation.values
+              .where((e) => e != SkillAppreciation.notSelected)
               .map((e) => RadioListTile<SkillAppreciation>(
                     controlAffinity: ListTileControlAffinity.leading,
                     dense: true,

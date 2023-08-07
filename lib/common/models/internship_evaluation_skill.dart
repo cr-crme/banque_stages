@@ -4,10 +4,9 @@ enum SkillAppreciation {
   acquired,
   toPursuit,
   failed,
-  notEvaluated,
-}
+  notApplicable,
+  notSelected;
 
-extension SkillAppreciationNamed on SkillAppreciation {
   String get name {
     switch (this) {
       case SkillAppreciation.acquired:
@@ -16,8 +15,10 @@ extension SkillAppreciationNamed on SkillAppreciation {
         return 'À poursuivre';
       case SkillAppreciation.failed:
         return 'Non réussie';
-      case SkillAppreciation.notEvaluated:
-        return 'Non évaluée';
+      case SkillAppreciation.notApplicable:
+        return 'Non applicable';
+      case SkillAppreciation.notSelected:
+        return '';
     }
   }
 }

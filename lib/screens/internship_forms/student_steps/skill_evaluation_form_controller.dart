@@ -43,7 +43,7 @@ class SkillEvaluationFormController {
   void addSkill(String skillId) {
     _evaluatedSkills[skillId] = 1;
 
-    appreciations[skillId] = SkillAppreciation.notEvaluated;
+    appreciations[skillId] = SkillAppreciation.notSelected;
     skillCommentsControllers[skillId] = TextEditingController();
 
     taskCompleted[skillId] = {};
@@ -249,7 +249,8 @@ class SkillEvaluationFormController {
   bool get allAppreciationsAreDone {
     for (final skillId in appreciations.keys) {
       if (isSkillToEvaluate(skillId) &&
-          appreciations[skillId] == SkillAppreciation.notEvaluated) {
+          (appreciations[skillId] == SkillAppreciation.notSelected ||
+              appreciations[skillId] == SkillAppreciation.notApplicable)) {
         return false;
       }
     }
@@ -260,7 +261,7 @@ class SkillEvaluationFormController {
     appreciations.clear();
     for (final skillId in _evaluatedSkills.keys) {
       if (_evaluatedSkills[skillId] == 0) continue;
-      appreciations[skillId] = SkillAppreciation.notEvaluated;
+      appreciations[skillId] = SkillAppreciation.notSelected;
     }
   }
 
