@@ -243,11 +243,6 @@ class _JobToEvaluate extends StatefulWidget {
 }
 
 class _JobToEvaluateState extends State<_JobToEvaluate> {
-  // Duplicate skills deals with common skills in different jobs. Only allows for
-  // modification of the first occurence (and tie them)
-  final Map<Skill, bool> _usedDuplicateSkills = {};
-  // TODO Verify that duplicate skill works
-
   Specialization get specialization {
     final internship = widget.formController.internship(context, listen: false);
     final enterprise =
@@ -263,24 +258,13 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
         .toList();
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    for (final extra in extraSpecializations) {
-      for (final skill in extra.skills) {
-        if (widget.formController.isSkillToEvaluate(skill) ||
-            widget.formController.isNotEvaluatedButWasPreviously(skill)) {
-          _usedDuplicateSkills[skill] = false;
-        }
-      }
-    }
-  }
-
   Widget _buildJobTile({
     required String title,
     required Specialization specialization,
+    Map<String, bool>? duplicatedSkills,
   }) {
+    final isMainSpecialization = duplicatedSkills == null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -310,7 +294,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
                     // evaluted values
                     if (value == null &&
                         !widget.formController
-                            .isNotEvaluatedButWasPreviously(skill)) {
+                            .isNotEvaluatedButWasPreviously(skill.id)) {
                       // If it comes from true (so it is null now)
                       // Change it to false if it was not previously evaluated
                       value = false;
@@ -321,27 +305,25 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
                     }
 
                     if (value) {
-                      widget.formController.addSkill(skill);
+                      widget.formController.addSkill(skill.id);
                     } else {
-                      widget.formController.removeSkill(context, skill);
+                      widget.formController.removeSkill(context, skill.id);
                     }
                     setState(() {});
                   },
-                  value: widget.formController
-                          .isNotEvaluatedButWasPreviously(skill)
-                      ? null
-                      : widget.formController.isSkillToEvaluate(skill),
+                  value: isMainSpecialization
+                      ? widget.formController
+                              .isNotEvaluatedButWasPreviously(skill.id)
+                          ? null
+                          : widget.formController.isSkillToEvaluate(skill.id)
+                      : false,
                   title: Text(
                     skill.idWithName,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   enabled: widget.editMode &&
-                      (!_usedDuplicateSkills.containsKey(skill) ||
-                          !_usedDuplicateSkills[skill]!),
+                      (isMainSpecialization || duplicatedSkills[skill.id]!),
                 );
-                if (_usedDuplicateSkills.containsKey(skill)) {
-                  _usedDuplicateSkills[skill] = true;
-                }
                 return out;
               }),
             ],
@@ -351,12 +333,28 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
     );
   }
 
+  Map<String, bool> _setDuplicateFlag() {
+    // Duplicate skills deals with common skills in different jobs. Only allows for
+    // modification of the first occurence (and tie them)
+    final Map<String, bool> usedDuplicateSkills = {};
+
+    final internship = widget.formController.internship(context, listen: false);
+    final enterprise =
+        EnterprisesProvider.of(context, listen: false)[internship.enterpriseId];
+    final mainSkills = enterprise.jobs[internship.jobId].specialization.skills;
+
+    for (final extra in extraSpecializations) {
+      for (final skill in extra.skills) {
+        usedDuplicateSkills[skill.id] = mainSkills.any((e) => e.id == skill.id);
+      }
+    }
+
+    return usedDuplicateSkills;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Reset the duplacte skill flag
-    for (final skill in _usedDuplicateSkills.keys) {
-      _usedDuplicateSkills[skill] = false;
-    }
+    final usedDuplicateSkills = _setDuplicateFlag();
     final extra = extraSpecializations;
 
     // If there is more than one job, the user must select which skills are evaluated
@@ -372,6 +370,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
                 title:
                     'Métier supplémentaire${extra.length > 1 ? ' (${i + 1})' : ''}',
                 specialization: extra[i],
+                duplicatedSkills: usedDuplicateSkills,
               ),
             ),
       ],

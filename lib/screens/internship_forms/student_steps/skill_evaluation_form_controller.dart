@@ -19,6 +19,8 @@ class SkillEvaluationFormController {
   Internship internship(context, {listen = true}) =>
       InternshipsProvider.of(context, listen: listen)[internshipId];
 
+  final Map<String, Skill> _idToSkill = {};
+
   factory SkillEvaluationFormController.fromInternshipId(context,
       {required String internshipId,
       required int evaluationIndex,
@@ -30,38 +32,40 @@ class SkillEvaluationFormController {
   }
 
   void dispose() {
-    for (final skill in skillCommentsControllers.keys) {
-      skillCommentsControllers[skill]!.dispose();
+    for (final skillId in skillCommentsControllers.keys) {
+      skillCommentsControllers[skillId]!.dispose();
     }
     commentsController.dispose();
   }
 
-  void addSkill(Skill skill) {
-    _evaluatedSkills[skill] = 1;
+  void addSkill(String skillId) {
+    _evaluatedSkills[skillId] = 1;
 
-    appreciations[skill] = SkillAppreciation.notEvaluated;
-    skillCommentsControllers[skill] = TextEditingController();
+    appreciations[skillId] = SkillAppreciation.notEvaluated;
+    skillCommentsControllers[skillId] = TextEditingController();
 
-    taskCompleted[skill] = {};
+    taskCompleted[skillId] = {};
+    final skill = _idToSkill[skillId]!;
     for (final task in skill.tasks) {
-      taskCompleted[skill]![task] = false;
+      taskCompleted[skillId]![task] = false;
     }
   }
 
-  void removeSkill(context, Skill skill) {
-    _evaluatedSkills[skill] = 0;
+  void removeSkill(context, String skillId) {
+    _evaluatedSkills[skillId] = 0;
     if (_previousEvaluationIndex != null) {
       final evaluation = _previousEvaluation(context);
+      final skill = _idToSkill[skillId]!;
       if (evaluation!.skills.any((e) => e.skillName == skill.idWithName)) {
-        _evaluatedSkills[skill] = -1;
+        _evaluatedSkills[skillId] = -1;
       }
     }
 
-    if (_evaluatedSkills[skill] == 0) {
-      appreciations.remove(skill);
-      skillCommentsControllers[skill]!.dispose();
-      skillCommentsControllers.remove(skill);
-      taskCompleted.remove(skill);
+    if (_evaluatedSkills[skillId] == 0) {
+      appreciations.remove(skillId);
+      skillCommentsControllers[skillId]!.dispose();
+      skillCommentsControllers.remove(skillId);
+      taskCompleted.remove(skillId);
     }
   }
 
@@ -74,7 +78,7 @@ class SkillEvaluationFormController {
     final specialization = enterprise.jobs[internshipTp.jobId].specialization;
 
     for (final skill in specialization.skills) {
-      addSkill(skill);
+      addSkill(skill.id);
     }
   }
 
@@ -104,16 +108,19 @@ class SkillEvaluationFormController {
 
     // Now fill the structures from the evaluation
     for (final skillEvaluation in evaluation.skills) {
-      final skill = _evaluatedSkills.keys.firstWhere(
-          (element) => element.idWithName == skillEvaluation.skillName);
+      final skillId = _evaluatedSkills.keys.firstWhere((skillId) {
+        final skill = _idToSkill[skillId]!;
+        return skill.idWithName == skillEvaluation.skillName;
+      });
 
-      addSkill(skill);
+      addSkill(skillId);
       // Set the actual values to add (but empty) skill
-      appreciations[skill] = skillEvaluation.appreciation;
-      skillCommentsControllers[skill]!.text = skillEvaluation.comment;
+      appreciations[skillId] = skillEvaluation.appreciation;
+      skillCommentsControllers[skillId]!.text = skillEvaluation.comment;
 
+      final skill = _idToSkill[skillId]!;
       for (final task in skill.tasks) {
-        taskCompleted[skill]![task] = skillEvaluation.tasks.contains(task);
+        taskCompleted[skillId]![task] = skillEvaluation.tasks.contains(task);
       }
     }
 
@@ -122,20 +129,21 @@ class SkillEvaluationFormController {
 
   InternshipEvaluationSkill toInternshipEvaluation() {
     final List<SkillEvaluation> skillEvaluation = [];
-    for (final skill in taskCompleted.keys) {
+    for (final skillId in taskCompleted.keys) {
       final List<String> tasks = [];
-      for (final task in taskCompleted[skill]!.keys) {
-        if (taskCompleted[skill]![task]!) {
+      for (final task in taskCompleted[skillId]!.keys) {
+        if (taskCompleted[skillId]![task]!) {
           tasks.add(task);
         }
       }
 
+      final skill = _idToSkill[skillId]!;
       skillEvaluation.add(SkillEvaluation(
-        specializationId: _skillsAreFromSpecializationId[skill]!,
+        specializationId: _skillsAreFromSpecializationId[skillId]!,
         skillName: skill.idWithName,
         tasks: tasks,
-        appreciation: appreciations[skill]!,
-        comment: skillCommentsControllers[skill]!.text,
+        appreciation: appreciations[skillId]!,
+        comment: skillCommentsControllers[skillId]!.text,
       ));
     }
     return InternshipEvaluationSkill(
@@ -165,10 +173,11 @@ class SkillEvaluationFormController {
   /// evaluated. The negative value indicateds that it is not evaluated, but it
   /// should still be added to the results as it is a previous result from a
   /// previous evaluation
-  final Map<Skill, int> _evaluatedSkills = {};
-  bool isSkillToEvaluate(Skill skill) => (_evaluatedSkills[skill] ?? 0) > 0;
-  bool isNotEvaluatedButWasPreviously(Skill skill) =>
-      (_evaluatedSkills[skill] ?? 0) < 0;
+  final Map<String, int> _evaluatedSkills = {};
+  bool isSkillToEvaluate(String skillId) =>
+      (_evaluatedSkills[skillId] ?? 0) > 0;
+  bool isNotEvaluatedButWasPreviously(String skillId) =>
+      (_evaluatedSkills[skillId] ?? 0) < 0;
 
   ///
   /// This returns the values for all results, if [activeOnly] is set to false
@@ -176,78 +185,89 @@ class SkillEvaluationFormController {
   /// currently evaluated
   List<Skill> skillResults({bool activeOnly = false}) {
     List<Skill> out = [];
-    for (final skill in _evaluatedSkills.keys) {
-      if (_evaluatedSkills[skill]! > 0) {
+    for (final skillId in _evaluatedSkills.keys) {
+      if (_evaluatedSkills[skillId]! > 0) {
+        final skill = _idToSkill[skillId]!;
         out.add(skill);
       }
       // If the skill was not evaluated, but the evaluation continues a previous
       // one, we must keep the previous values
-      if (!activeOnly && _evaluatedSkills[skill]! < 0) {
+      if (!activeOnly && _evaluatedSkills[skillId]! < 0) {
+        final skill = _idToSkill[skillId]!;
         out.add(skill);
       }
     }
     return out;
   }
 
-  final Map<Skill, String> _skillsAreFromSpecializationId = {};
+  final Map<String, String> _skillsAreFromSpecializationId = {};
 
   void _initializeSkills(context) {
+    _idToSkill.clear();
+
     final internshipTp = internship(context, listen: false);
     final enterprise = EnterprisesProvider.of(context,
         listen: false)[internshipTp.enterpriseId];
 
     final specialization = enterprise.jobs[internshipTp.jobId].specialization;
     for (final skill in specialization.skills) {
-      _evaluatedSkills[skill] = 0;
-      _skillsAreFromSpecializationId[skill] = specialization.id;
+      _idToSkill[skill.id] = skill;
+      _evaluatedSkills[skill.id] = 0;
+      _skillsAreFromSpecializationId[skill.id] = specialization.id;
     }
 
     for (final extraSpecializationId in internshipTp.extraSpecializationsId) {
       for (final skill
           in ActivitySectorsService.specialization(extraSpecializationId)
               .skills) {
-        _evaluatedSkills[skill] = 0;
-        _skillsAreFromSpecializationId[skill] = extraSpecializationId;
+        // Do not override main specializations
+        if (!_idToSkill.containsKey(skill.id)) _idToSkill[skill.id] = skill;
+        _evaluatedSkills[skill.id] = 0;
+        _skillsAreFromSpecializationId[skill.id] = extraSpecializationId;
       }
     }
   }
 
-  Map<Skill, Map<String, bool>> taskCompleted = {};
+  Map<String, Map<String, bool>> taskCompleted = {};
   void _initializeTaskCompleted() {
     taskCompleted.clear();
-    for (final skill in _evaluatedSkills.keys) {
-      if (_evaluatedSkills[skill] == 0) continue;
+    for (final skillId in _evaluatedSkills.keys) {
+      if (_evaluatedSkills[skillId]! == 0) continue;
+
+      final skill = _idToSkill[skillId]!;
       Map<String, bool> tp = {};
       for (final task in skill.tasks) {
         tp[task] = false;
       }
-      taskCompleted[skill] = tp;
+      taskCompleted[skillId] = tp;
     }
   }
 
-  Map<Skill, SkillAppreciation> appreciations = {};
+  Map<String, SkillAppreciation> appreciations = {};
   bool get allAppreciationsAreDone {
-    for (final skill in appreciations.keys) {
-      if (isSkillToEvaluate(skill) &&
-          appreciations[skill] == SkillAppreciation.notEvaluated) return false;
+    for (final skillId in appreciations.keys) {
+      if (isSkillToEvaluate(skillId) &&
+          appreciations[skillId] == SkillAppreciation.notEvaluated) {
+        return false;
+      }
     }
     return true;
   }
 
   void _initializeAppreciation() {
     appreciations.clear();
-    for (final skill in _evaluatedSkills.keys) {
-      if (_evaluatedSkills[skill] == 0) continue;
-      appreciations[skill] = SkillAppreciation.notEvaluated;
+    for (final skillId in _evaluatedSkills.keys) {
+      if (_evaluatedSkills[skillId] == 0) continue;
+      appreciations[skillId] = SkillAppreciation.notEvaluated;
     }
   }
 
-  Map<Skill, TextEditingController> skillCommentsControllers = {};
+  Map<String, TextEditingController> skillCommentsControllers = {};
   void _initializeSkillCommentControllers() {
     skillCommentsControllers.clear();
-    for (final skill in _evaluatedSkills.keys) {
-      if (_evaluatedSkills[skill] == 0) continue;
-      skillCommentsControllers[skill] = TextEditingController();
+    for (final skillId in _evaluatedSkills.keys) {
+      if (_evaluatedSkills[skillId] == 0) continue;
+      skillCommentsControllers[skillId] = TextEditingController();
     }
   }
 

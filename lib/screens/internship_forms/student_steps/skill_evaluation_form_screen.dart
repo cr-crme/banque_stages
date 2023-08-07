@@ -28,6 +28,10 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
   final double _tabHeight = 74.0;
   int _currentStep = 0;
 
+  // This is to ensure the frame that call build after everything is disposed
+  // does not block the app
+  bool _isDisposed = false;
+
   SkillList _extractSkills(BuildContext context,
       {required Internship internship}) {
     final out = SkillList.empty();
@@ -96,6 +100,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     // Pass the evaluation data to the rest of the app
     InternshipsProvider.of(context, listen: false).replace(internship);
 
+    _isDisposed = true;
     widget.formController.dispose();
     Navigator.of(context).pop();
   }
@@ -139,6 +144,8 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isDisposed) return Container();
+
     final internship = widget.formController.internship(context);
     final skills = _extractSkills(context, internship: internship);
 
@@ -171,11 +178,11 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
                     steps: [
                       ...skills.map((skill) => Step(
                             isActive: true,
-                            state:
-                                widget.formController.appreciations[skill]! ==
-                                        SkillAppreciation.notEvaluated
-                                    ? StepState.indexed
-                                    : StepState.complete,
+                            state: widget.formController
+                                        .appreciations[skill.id]! ==
+                                    SkillAppreciation.notEvaluated
+                                ? StepState.indexed
+                                : StepState.complete,
                             title: SubTitle(skill.id, top: 0, bottom: 0),
                             content: _EvaluateSkill(
                               formController: widget.formController,
@@ -269,7 +276,7 @@ class _EvaluateSkill extends StatelessWidget {
             editMode: editMode),
         TextFormField(
           decoration: const InputDecoration(label: Text('Commentaires')),
-          controller: formController.skillCommentsControllers[skill]!,
+          controller: formController.skillCommentsControllers[skill.id]!,
           enabled: editMode,
         ),
       ],
@@ -311,10 +318,10 @@ class _TaskEvaluationState extends State<_TaskEvaluation> {
                     controlAffinity: ListTileControlAffinity.leading,
                     dense: true,
                     onChanged: (value) => setState(() => widget.formController
-                        .taskCompleted[widget.skill]![e] = value!),
+                        .taskCompleted[widget.skill.id]![e] = value!),
                     enabled: widget.editMode,
-                    value:
-                        widget.formController.taskCompleted[widget.skill]![e]!,
+                    value: widget
+                        .formController.taskCompleted[widget.skill.id]![e]!,
                     title: Text(e,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: Colors.black,
@@ -365,10 +372,10 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
                     visualDensity: VisualDensity.compact,
                     onChanged: widget.editMode
                         ? (value) => setState(() => widget.formController
-                            .appreciations[widget.skill] = value!)
+                            .appreciations[widget.skill.id] = value!)
                         : null,
                     groupValue:
-                        widget.formController.appreciations[widget.skill],
+                        widget.formController.appreciations[widget.skill.id],
                     value: e,
                     title: Text(e.name,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
