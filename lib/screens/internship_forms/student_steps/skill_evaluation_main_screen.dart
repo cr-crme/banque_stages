@@ -311,18 +311,16 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
                     }
                     setState(() {});
                   },
-                  value: isMainSpecialization
-                      ? widget.formController
-                              .isNotEvaluatedButWasPreviously(skill.id)
-                          ? null
-                          : widget.formController.isSkillToEvaluate(skill.id)
-                      : false,
+                  value: widget.formController
+                          .isNotEvaluatedButWasPreviously(skill.id)
+                      ? null
+                      : widget.formController.isSkillToEvaluate(skill.id),
                   title: Text(
                     skill.idWithName,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   enabled: widget.editMode &&
-                      (isMainSpecialization || duplicatedSkills[skill.id]!),
+                      (isMainSpecialization || !duplicatedSkills[skill.id]!),
                 );
                 return out;
               }),
