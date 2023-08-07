@@ -1,9 +1,11 @@
+import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -89,6 +91,10 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
                           ),
                           _buildAutofillChooser(),
                           _JobToEvaluate(
+                            formController: _formController,
+                            editMode: widget.editMode,
+                          ),
+                          _EvaluationTypeChoser(
                             formController: _formController,
                             editMode: widget.editMode,
                           ),
@@ -225,6 +231,49 @@ class _PersonAtMeeting extends StatelessWidget {
             elements: formController.wereAtMeetingOptions,
             initialValues: formController.wereAtMeeting,
             enabled: editMode,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EvaluationTypeChoser extends StatefulWidget {
+  const _EvaluationTypeChoser(
+      {required this.formController, required this.editMode});
+
+  final SkillEvaluationFormController formController;
+  final bool editMode;
+
+  @override
+  State<_EvaluationTypeChoser> createState() => _EvaluationTypeChoserState();
+}
+
+class _EvaluationTypeChoserState extends State<_EvaluationTypeChoser> {
+  final _key = GlobalKey<RadioWithFollowUpState<SkillEvaluationGranularity>>();
+
+  @override
+  Widget build(context) {
+    if (_key.currentState != null) {
+      _key.currentState!
+          .forceValue(widget.formController.evaluationGranularity);
+    }
+
+    debugPrint(widget.formController.evaluationGranularity.toString());
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Type d\'évaluation'),
+        Padding(
+          padding: const EdgeInsets.only(left: 24.0),
+          child: RadioWithFollowUp<SkillEvaluationGranularity>(
+            key: _key,
+            elements: SkillEvaluationGranularity.values,
+            initialValue: widget.formController.evaluationGranularity,
+            onChanged: (value) {
+              widget.formController.evaluationGranularity = value!;
+            },
+            enabled: !widget.formController.isFilledUsingPreviousEvaluation,
           ),
         ),
       ],

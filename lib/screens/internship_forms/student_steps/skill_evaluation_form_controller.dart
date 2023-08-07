@@ -17,6 +17,9 @@ class SkillEvaluationFormController {
   bool get isFilledUsingPreviousEvaluation => _previousEvaluationIndex != null;
 
   final bool canModify;
+  SkillEvaluationGranularity evaluationGranularity =
+      SkillEvaluationGranularity.global;
+
   final String internshipId;
   Internship internship(context, {listen = true}) =>
       InternshipsProvider.of(context, listen: listen)[internshipId];
@@ -105,6 +108,8 @@ class SkillEvaluationFormController {
 
     if (!canModify) evaluationDate = evaluation.date;
 
+    evaluationGranularity = evaluation.skillGranularity;
+
     // Fill skill to evaluated as if it was all false
     wereAtMeeting.addAll(evaluation.presentAtEvaluation);
 
@@ -151,6 +156,7 @@ class SkillEvaluationFormController {
     return InternshipEvaluationSkill(
       date: evaluationDate,
       presentAtEvaluation: wereAtMeeting,
+      skillGranularity: evaluationGranularity,
       skills: skillEvaluation,
       comments: commentsController.text,
       formVersion: _formVersion,
@@ -277,6 +283,7 @@ class SkillEvaluationFormController {
   void _resetForm(context) {
     evaluationDate = DateTime.now();
     _previousEvaluationIndex = null;
+    evaluationGranularity = SkillEvaluationGranularity.global;
 
     wereAtMeeting.clear();
 

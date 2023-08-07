@@ -9,6 +9,7 @@ class RadioWithFollowUp<T> extends StatefulWidget {
     this.elementsThatShowChild,
     this.followUpChild,
     this.onChanged,
+    this.enabled = true,
   });
 
   final String? title;
@@ -17,6 +18,7 @@ class RadioWithFollowUp<T> extends StatefulWidget {
   final List<T>? elementsThatShowChild;
   final Widget? followUpChild;
   final Function(T? values)? onChanged;
+  final bool enabled;
 
   @override
   State<RadioWithFollowUp<T>> createState() => RadioWithFollowUpState<T>();
@@ -24,6 +26,9 @@ class RadioWithFollowUp<T> extends StatefulWidget {
 
 class RadioWithFollowUpState<T> extends State<RadioWithFollowUp<T>> {
   late T? _current = widget.initialValue;
+
+  /// This is a callback that can be called using the global key
+  void forceValue(T value) => setState(() => _current = value);
 
   bool get hasFollowUp => _hasFollowUp;
   bool _hasFollowUp = false;
@@ -70,13 +75,18 @@ class RadioWithFollowUpState<T> extends State<RadioWithFollowUp<T>> {
         element.toString(),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
+      fillColor: MaterialStateColor.resolveWith((state) {
+        return widget.enabled ? Theme.of(context).primaryColor : Colors.grey;
+      }),
       value: element,
-      onChanged: (newValue) {
-        _current = newValue;
-        _checkShowFollowUp();
-        setState(() {});
-        if (widget.onChanged != null) widget.onChanged!(value);
-      },
+      onChanged: widget.enabled
+          ? (newValue) {
+              _current = newValue;
+              _checkShowFollowUp();
+              setState(() {});
+              if (widget.onChanged != null) widget.onChanged!(value);
+            }
+          : null,
     );
   }
 }

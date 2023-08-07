@@ -23,6 +23,21 @@ enum SkillAppreciation {
   }
 }
 
+enum SkillEvaluationGranularity {
+  global,
+  byTask;
+
+  @override
+  String toString() {
+    switch (this) {
+      case SkillEvaluationGranularity.global:
+        return 'Évaluation globale de la compétence';
+      case SkillEvaluationGranularity.byTask:
+        return 'Évaluation tâche par tâche';
+    }
+  }
+}
+
 class SkillEvaluation extends ItemSerializable {
   final String specializationId;
   final String skillName;
@@ -73,6 +88,7 @@ class SkillEvaluation extends ItemSerializable {
 class InternshipEvaluationSkill extends ItemSerializable {
   DateTime date;
   List<String> presentAtEvaluation;
+  final SkillEvaluationGranularity skillGranularity;
   List<SkillEvaluation> skills;
   String comments;
   String
@@ -81,6 +97,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
   InternshipEvaluationSkill({
     required this.date,
     required this.presentAtEvaluation,
+    required this.skillGranularity,
     required this.skills,
     required this.comments,
     required this.formVersion,
@@ -89,6 +106,8 @@ class InternshipEvaluationSkill extends ItemSerializable {
       : date = DateTime.fromMillisecondsSinceEpoch(map['date']),
         presentAtEvaluation =
             (map['present'] as List?)?.map((e) => e as String).toList() ?? [],
+        skillGranularity =
+            SkillEvaluationGranularity.values[map['skillGranularity']],
         skills = (map['skills'] as List)
             .map((e) => SkillEvaluation.fromSerialized(e))
             .toList(),
@@ -102,6 +121,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
       'id': id,
       'date': date.millisecondsSinceEpoch,
       'present': presentAtEvaluation,
+      'skillGranularity': skillGranularity.index,
       'skills': skills.map((e) => e.serialize()).toList(),
       'comments': comments,
       'formVersion': formVersion,
@@ -112,6 +132,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
     return InternshipEvaluationSkill(
       date: DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch),
       presentAtEvaluation: presentAtEvaluation.map((e) => e).toList(),
+      skillGranularity: skillGranularity,
       skills: skills.map((e) => e.deepCopy()).toList(),
       comments: comments,
       formVersion: formVersion,

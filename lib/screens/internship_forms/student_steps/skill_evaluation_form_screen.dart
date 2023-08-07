@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
-
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:flutter/material.dart';
+
 import 'skill_evaluation_form_controller.dart';
 
 class SkillEvaluationFormScreen extends StatefulWidget {
@@ -267,11 +268,18 @@ class _EvaluateSkill extends StatelessWidget {
             ],
           ),
         ),
-        _TaskEvaluation(
-            spacing: spacing,
-            skill: skill,
-            formController: formController,
-            editMode: editMode),
+        formController.evaluationGranularity ==
+                SkillEvaluationGranularity.global
+            ? _TaskEvaluation(
+                spacing: spacing,
+                skill: skill,
+                formController: formController,
+                editMode: editMode)
+            : _TaskEvaluationDetailed(
+                spacing: spacing,
+                skill: skill,
+                formController: formController,
+                editMode: editMode),
         TextFormField(
           decoration: const InputDecoration(label: Text('Commentaires')),
           controller: formController.skillCommentsControllers[skill.id]!,
@@ -288,7 +296,7 @@ class _EvaluateSkill extends StatelessWidget {
   }
 }
 
-class _TaskEvaluation extends StatefulWidget {
+class _TaskEvaluation extends StatelessWidget {
   const _TaskEvaluation(
       {required this.spacing,
       required this.skill,
@@ -301,38 +309,58 @@ class _TaskEvaluation extends StatefulWidget {
   final bool editMode;
 
   @override
-  State<_TaskEvaluation> createState() => _TaskEvaluationState();
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: spacing),
+      child: CheckboxWithOther(
+        title: 'La ou le stagiaire a réussi les tâches suivantes\u00a0:',
+        elements: skill.tasks,
+        onOptionWasSelected: (values) {
+          for (final task in formController.taskCompleted[skill.id]!.keys) {
+            formController.taskCompleted[skill.id]![task] =
+                values.contains(task);
+          }
+        },
+        enabled: editMode,
+        initialValues: formController.taskCompleted[skill.id]!.keys
+            .where((e) => formController.taskCompleted[skill.id]![e]!)
+            .toList(),
+        showOtherOption: false,
+      ),
+    );
+  }
 }
 
-class _TaskEvaluationState extends State<_TaskEvaluation> {
+class _TaskEvaluationDetailed extends StatelessWidget {
+  const _TaskEvaluationDetailed(
+      {required this.spacing,
+      required this.skill,
+      required this.formController,
+      required this.editMode});
+
+  final double spacing;
+  final Skill skill;
+  final SkillEvaluationFormController formController;
+  final bool editMode;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: widget.spacing),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            'La ou le stagiaire a réussi les tâches suivantes\u00a0:',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          ...widget.skill.tasks
-              .map((e) => CheckboxListTile(
-                    controlAffinity: ListTileControlAffinity.leading,
-                    dense: true,
-                    onChanged: (value) => setState(() => widget.formController
-                        .taskCompleted[widget.skill.id]![e] = value!),
-                    enabled: widget.editMode,
-                    value: widget
-                        .formController.taskCompleted[widget.skill.id]![e]!,
-                    title: Text(e,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.black,
-                            )),
-                  ))
-              .toList(),
-        ],
+      padding: EdgeInsets.only(bottom: spacing),
+      child: CheckboxWithOther(
+        title: 'La ou le stagiaire a réussi les tâches suivantes\u00a0:',
+        elements: skill.tasks,
+        onOptionWasSelected: (values) {
+          for (final task in formController.taskCompleted[skill.id]!.keys) {
+            formController.taskCompleted[skill.id]![task] =
+                values.contains(task);
+          }
+        },
+        enabled: editMode,
+        initialValues: formController.taskCompleted[skill.id]!.keys
+            .where((e) => formController.taskCompleted[skill.id]![e]!)
+            .toList(),
+        showOtherOption: false,
       ),
     );
   }
