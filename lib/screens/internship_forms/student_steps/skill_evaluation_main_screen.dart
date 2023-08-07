@@ -399,7 +399,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
                           ? null
                           : widget.formController.isSkillToEvaluate(skill.id),
                       title: Text(
-                        skill.idWithName,
+                        '${skill.idWithName}${skill.isOptional ? ' (Facultative)' : ''}',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       enabled: widget.editMode &&
