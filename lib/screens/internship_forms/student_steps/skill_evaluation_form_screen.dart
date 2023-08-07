@@ -54,6 +54,8 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
         message: 'Toutes les modifications seront perdues.',
         isEditing: widget.editMode);
     if (!mounted || !answer) return;
+
+    widget.formController.dispose();
     Navigator.of(context).pop();
   }
 
@@ -94,6 +96,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     // Pass the evaluation data to the rest of the app
     InternshipsProvider.of(context, listen: false).replace(internship);
 
+    widget.formController.dispose();
     Navigator.of(context).pop();
   }
 
@@ -148,7 +151,8 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                  '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\nC1. Compétences spécifiques'),
+                  '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\n'
+                  'C1. Compétences spécifiques'),
               leading: IconButton(
                   onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
             ),

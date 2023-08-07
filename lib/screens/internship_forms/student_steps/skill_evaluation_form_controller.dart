@@ -30,7 +30,6 @@ class SkillEvaluationFormController {
   }
 
   void dispose() {
-    // TODO Call the dispose
     for (final skill in skillCommentsControllers.keys) {
       skillCommentsControllers[skill]!.dispose();
     }

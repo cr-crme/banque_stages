@@ -49,6 +49,8 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
         message: 'Toutes les modifications seront perdues.',
         isEditing: widget.editMode);
     if (!mounted || !answer) return;
+
+    _formController.dispose();
     Navigator.of(context).pop();
   }
 
@@ -65,7 +67,8 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                  '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\nC1. Compétences spécifiques'),
+                  '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\n'
+                  'C1. Compétences spécifiques'),
               leading: IconButton(
                   onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
             ),
