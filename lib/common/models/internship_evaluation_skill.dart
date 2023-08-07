@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 
 enum SkillAppreciation {
@@ -41,7 +42,8 @@ enum SkillEvaluationGranularity {
 class SkillEvaluation extends ItemSerializable {
   final String specializationId;
   final String skillName;
-  final List<String> tasks;
+  final List<TaskAppreciation> tasks;
+
   final SkillAppreciation appreciation;
   final String comment;
 
@@ -57,7 +59,9 @@ class SkillEvaluation extends ItemSerializable {
         skillName = map['skill'],
         tasks = map['tasks'] == null
             ? []
-            : (map['tasks'] as List).map((e) => e as String).toList(),
+            : (map['tasks'] as List)
+                .map((e) => TaskAppreciation.fromSerialized(e))
+                .toList(),
         appreciation = SkillAppreciation.values[map['appreciation']],
         comment = map['comment'],
         super.fromSerialized(map);
@@ -68,7 +72,7 @@ class SkillEvaluation extends ItemSerializable {
       'id': id,
       'jobId': specializationId,
       'skill': skillName,
-      'tasks': tasks,
+      'tasks': tasks.map((e) => e.serialize()).toList(),
       'appreciation': appreciation.index,
       'comment': comment,
     };

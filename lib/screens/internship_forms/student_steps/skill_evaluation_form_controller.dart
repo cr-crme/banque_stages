@@ -1,5 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
+import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
@@ -52,7 +54,7 @@ class SkillEvaluationFormController {
     taskCompleted[skillId] = {};
     final skill = _idToSkill[skillId]!;
     for (final task in skill.tasks) {
-      taskCompleted[skillId]![task] = false;
+      taskCompleted[skillId]![task] = TaskAppreciationLevel.notEvaluated;
     }
   }
 
@@ -127,7 +129,10 @@ class SkillEvaluationFormController {
 
       final skill = _idToSkill[skillId]!;
       for (final task in skill.tasks) {
-        taskCompleted[skillId]![task] = skillEvaluation.tasks.contains(task);
+        taskCompleted[skillId]![task] = skillEvaluation.tasks
+                .firstWhereOrNull((e) => e.title == task)
+                ?.level ??
+            TaskAppreciationLevel.notEvaluated;
       }
     }
 
@@ -137,12 +142,11 @@ class SkillEvaluationFormController {
   InternshipEvaluationSkill toInternshipEvaluation() {
     final List<SkillEvaluation> skillEvaluation = [];
     for (final skillId in taskCompleted.keys) {
-      final List<String> tasks = [];
-      for (final task in taskCompleted[skillId]!.keys) {
-        if (taskCompleted[skillId]![task]!) {
-          tasks.add(task);
-        }
-      }
+      final List<TaskAppreciation> tasks = taskCompleted[skillId]!
+          .keys
+          .map((task) => TaskAppreciation(
+              title: task, level: taskCompleted[skillId]![task]!))
+          .toList();
 
       final skill = _idToSkill[skillId]!;
       skillEvaluation.add(SkillEvaluation(
@@ -236,16 +240,16 @@ class SkillEvaluationFormController {
     }
   }
 
-  Map<String, Map<String, bool>> taskCompleted = {};
+  Map<String, Map<String, TaskAppreciationLevel>> taskCompleted = {};
   void _initializeTaskCompleted() {
     taskCompleted.clear();
     for (final skillId in _evaluatedSkills.keys) {
       if (_evaluatedSkills[skillId]! == 0) continue;
 
       final skill = _idToSkill[skillId]!;
-      Map<String, bool> tp = {};
+      Map<String, TaskAppreciationLevel> tp = {};
       for (final task in skill.tasks) {
-        tp[task] = false;
+        tp[task] = TaskAppreciationLevel.notEvaluated;
       }
       taskCompleted[skillId] = tp;
     }

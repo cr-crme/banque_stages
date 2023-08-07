@@ -1,6 +1,7 @@
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
@@ -318,12 +319,16 @@ class _TaskEvaluation extends StatelessWidget {
         onOptionWasSelected: (values) {
           for (final task in formController.taskCompleted[skill.id]!.keys) {
             formController.taskCompleted[skill.id]![task] =
-                values.contains(task);
+                values.contains(task)
+                    ? TaskAppreciationLevel.evaluated
+                    : TaskAppreciationLevel.notEvaluated;
           }
         },
         enabled: editMode,
         initialValues: formController.taskCompleted[skill.id]!.keys
-            .where((e) => formController.taskCompleted[skill.id]![e]!)
+            .where((e) =>
+                formController.taskCompleted[skill.id]![e]! !=
+                TaskAppreciationLevel.notEvaluated)
             .toList(),
         showOtherOption: false,
       ),
@@ -346,22 +351,85 @@ class _TaskEvaluationDetailed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: spacing),
-      child: CheckboxWithOther(
-        title: 'La ou le stagiaire a réussi les tâches suivantes\u00a0:',
-        elements: skill.tasks,
-        onOptionWasSelected: (values) {
-          for (final task in formController.taskCompleted[skill.id]!.keys) {
-            formController.taskCompleted[skill.id]![task] =
-                values.contains(task);
-          }
-        },
-        enabled: editMode,
-        initialValues: formController.taskCompleted[skill.id]!.keys
-            .where((e) => formController.taskCompleted[skill.id]![e]!)
-            .toList(),
-        showOtherOption: false,
-      ),
+        padding: EdgeInsets.only(bottom: spacing),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Tâche\u00a0:', style: Theme.of(context).textTheme.titleSmall),
+            ...formController.taskCompleted[skill.id]!.keys
+                .map((task) => Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: _TaskAppreciationSelection(
+                        formController: formController,
+                        skillId: skill.id,
+                        task: task,
+                        enabled: editMode,
+                      ),
+                    )),
+          ],
+        ));
+  }
+}
+
+class _TaskAppreciationSelection extends StatefulWidget {
+  const _TaskAppreciationSelection({
+    required this.formController,
+    required this.skillId,
+    required this.task,
+    required this.enabled,
+  });
+
+  final String skillId;
+  final SkillEvaluationFormController formController;
+  final String task;
+  final bool enabled;
+
+  @override
+  State<_TaskAppreciationSelection> createState() =>
+      _TaskAppreciationSelectionState();
+}
+
+class _TaskAppreciationSelectionState
+    extends State<_TaskAppreciationSelection> {
+  late TaskAppreciationLevel _current =
+      widget.formController.taskCompleted[widget.skillId]![widget.task]!;
+
+  void _select(value) {
+    _current = value;
+    widget.formController.taskCompleted[widget.skillId]![widget.task] = value;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(widget.task),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: byTaskAppreciationLevel
+              .map((e) => InkWell(
+                    onTap: widget.enabled ? () => _select(e) : null,
+                    child: Row(
+                      children: [
+                        Radio(
+                          onChanged: widget.enabled ? _select : null,
+                          fillColor: MaterialStateColor.resolveWith((state) {
+                            return widget.enabled
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey;
+                          }),
+                          value: e,
+                          groupValue: _current,
+                        ),
+                        Text(e.abbreviation()),
+                      ],
+                    ),
+                  ))
+              .toList(),
+        )
+      ],
     );
   }
 }
@@ -410,6 +478,11 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
                     groupValue:
                         widget.formController.appreciations[widget.skill.id],
                     value: e,
+                    fillColor: MaterialStateColor.resolveWith((state) {
+                      return widget.editMode
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey;
+                    }),
                     title: Text(e.name,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: Colors.black,
