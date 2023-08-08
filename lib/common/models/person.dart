@@ -26,6 +26,16 @@ class Person extends ItemSerializable {
     this.address,
   }) : dateBirth = dateBirth ?? DateTime(0);
 
+  static Person get empty => Person(
+      firstName: '',
+      middleName: null,
+      lastName: '',
+      address: null,
+      dateBirth: null,
+      email: null,
+      id: null,
+      phone: PhoneNumber.empty);
+
   Person.fromSerialized(map)
       : firstName = map['firstName'],
         middleName = map['middleName'],

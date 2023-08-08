@@ -85,6 +85,20 @@ class Student extends Person {
       });
   }
 
+  Student get limitedInfo => Student(
+        id: id,
+        firstName: firstName,
+        group: group,
+        program: program,
+        teacherId: teacherId,
+        lastName: lastName,
+        address: null,
+        contact: Person.empty,
+        contactLink: '',
+        dateBirth: null,
+        email: null,
+      );
+
   @override
   Student copyWith({
     String? firstName,

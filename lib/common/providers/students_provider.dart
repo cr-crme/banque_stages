@@ -70,16 +70,17 @@ class StudentsProvider extends FirebaseListProvided<Student> {
   }
 
   ///
-  /// This is an instance to the Provider, 99% of the time this should not be called
+  /// This is an instance to the Provider, 99% of the time this should not be called.
+  /// Using this can lead to a potential security breach as it access all the students
+  /// info without restriction
   static StudentsProvider instance(context, {bool listen = true}) {
     return _of(context, listen: listen);
   }
 
   ///
-  /// This retunrs all the students from the database. This should be a limited
-  /// access!
-  static List<Student> allStudents(context) {
-    return [..._of(context, listen: false)];
+  /// This returns all the students from the database but with very limited info
+  static List<Student> allStudentsLimited(context) {
+    return _of(context, listen: false).map((e) => e.limitedInfo).toList();
   }
 
   ///

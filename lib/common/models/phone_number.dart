@@ -12,6 +12,8 @@ class PhoneNumber {
   const PhoneNumber(
       {this.areaCode, this.cityCode, this.number, this.extension});
 
+  static PhoneNumber get empty => const PhoneNumber();
+
   factory PhoneNumber.fromString(number) {
     final reg = RegExp(_regExp);
     if (!reg.hasMatch(number)) return const PhoneNumber();

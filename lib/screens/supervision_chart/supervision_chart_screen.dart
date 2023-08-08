@@ -174,6 +174,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
                 .firstWhereOrNull((e) => e.id == internship.studentId);
         if (student == null) continue;
 
+        // Wait for at least one frame
+        await Future.delayed(const Duration(milliseconds: 1));
         if (!mounted) return;
         final acceptTransfer = await showDialog<bool>(
             barrierDismissible: false,

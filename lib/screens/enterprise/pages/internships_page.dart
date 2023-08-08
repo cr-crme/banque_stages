@@ -176,7 +176,7 @@ class _InternshipListState extends State<_InternshipList> {
                 specialization =
                     widget.enterprise.jobs[internship.jobId].specialization;
                 teacher = teachers.fromId(internship.teacherId);
-                student = StudentsProvider.studentsInMyGroup(context)
+                student = StudentsProvider.allStudentsLimited(context)
                     .firstWhereOrNull((e) => e.id == internship.studentId);
                 canControl = teachers.canControlInternship(context,
                     internshipId: internship.id);

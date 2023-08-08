@@ -30,7 +30,7 @@ bool hasDummyData(context) {
   final teachers = TeachersProvider.of(context, listen: false);
   final enterprises = EnterprisesProvider.of(context, listen: false);
   final internships = InternshipsProvider.of(context, listen: false);
-  final students = StudentsProvider.allStudents(context);
+  final students = StudentsProvider.allStudentsLimited(context);
 
   return teachers.isNotEmpty ||
       enterprises.isNotEmpty ||
