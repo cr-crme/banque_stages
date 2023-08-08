@@ -80,7 +80,7 @@ class _StudentScreenState extends State<StudentScreen>
                     children: [
                       Text(student.fullName),
                       Text(
-                        '${student.program.title} - groupe ${student.group}',
+                        '${student.program} - groupe ${student.group}',
                         style: const TextStyle(fontSize: 14),
                       )
                     ],

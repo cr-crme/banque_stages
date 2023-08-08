@@ -9,11 +9,10 @@ import 'package:crcrme_banque_stages/common/providers/internships_provider.dart'
 
 enum Program {
   fpt,
-  fms,
-}
+  fms;
 
-extension ProgramNamed on Program {
-  String get title {
+  @override
+  String toString() {
     switch (this) {
       case Program.fpt:
         return 'FPT';

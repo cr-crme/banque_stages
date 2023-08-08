@@ -244,7 +244,7 @@ class _InternshipListState extends State<_InternshipList> {
                                         decoration: TextDecoration.underline),
                                   ),
                                 ),
-                                Text(' (${student.program.title})'),
+                                Text(' (${student.program})'),
                               ],
                             ),
                             Padding(
