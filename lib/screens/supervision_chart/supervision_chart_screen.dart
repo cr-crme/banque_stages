@@ -426,7 +426,7 @@ class _StudentTile extends StatelessWidget {
                         onPressed: onAlreadyEndedInternship,
                         iconSize: 35,
                         alignment: Alignment.center,
-                        icon: Icon(Icons.priority_high,
+                        icon: Icon(Icons.task_alt,
                             color: Theme.of(context).primaryColor)),
               )
             : null,

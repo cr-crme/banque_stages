@@ -139,30 +139,32 @@ class _SstRisk extends StatelessWidget {
     jobs.sort(
         (a, b) => a.internship!.date.start.compareTo(b.internship!.date.start));
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Repérer les risques SST'),
-        ...jobs.map(
-          (e) {
-            final enterprise = e.enterprise!;
-            final job = e.job!;
-            final internship = e.internship!;
+    return jobs.isEmpty
+        ? Container()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SubTitle('Repérer les risques SST'),
+              ...jobs.map(
+                (e) {
+                  final enterprise = e.enterprise!;
+                  final job = e.job!;
+                  final internship = e.internship!;
 
-            return _TaskTile(
-                title: enterprise.name,
-                subtitle: job.specialization.name,
-                icon: Icons.warning,
-                date: internship.date.start,
-                buttonTitle: 'Remplir le\nquestionnaire SST',
-                onTap: () => GoRouter.of(context).pushNamed(
-                      Screens.jobSstForm,
-                      params: Screens.params(enterprise, jobId: job),
-                    ));
-          },
-        ),
-      ],
-    );
+                  return _TaskTile(
+                      title: enterprise.name,
+                      subtitle: job.specialization.name,
+                      icon: Icons.warning,
+                      date: internship.date.start,
+                      buttonTitle: 'Remplir le\nquestionnaire SST',
+                      onTap: () => GoRouter.of(context).pushNamed(
+                            Screens.jobSstForm,
+                            params: Screens.params(enterprise, jobId: job),
+                          ));
+                },
+              ),
+            ],
+          );
   }
 }
 
@@ -176,32 +178,34 @@ class _EndingInternship extends StatelessWidget {
     internships.sort(
         (a, b) => a.internship!.date.end.compareTo(b.internship!.date.end));
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Terminer les stages'),
-        ...internships.map(
-          (e) {
-            final internship = e.internship!;
-            final student = e.student!;
-            final enterprise = e.enterprise!;
+    return internships.isEmpty
+        ? Container()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SubTitle('Terminer les stages'),
+              ...internships.map(
+                (e) {
+                  final internship = e.internship!;
+                  final student = e.student!;
+                  final enterprise = e.enterprise!;
 
-            return _TaskTile(
-              title: student.fullName,
-              subtitle: enterprise.name,
-              icon: Icons.task_alt,
-              date: internship.date.end,
-              buttonTitle: 'Aller au stage',
-              onTap: () => GoRouter.of(context).pushNamed(
-                Screens.student,
-                params: Screens.params(student),
-                queryParams: Screens.queryParams(pageIndex: '1'),
+                  return _TaskTile(
+                    title: student.fullName,
+                    subtitle: enterprise.name,
+                    icon: Icons.task_alt,
+                    date: internship.date.end,
+                    buttonTitle: 'Aller au stage',
+                    onTap: () => GoRouter.of(context).pushNamed(
+                      Screens.student,
+                      params: Screens.params(student),
+                      queryParams: Screens.queryParams(pageIndex: '1'),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-      ],
-    );
+            ],
+          );
   }
 }
 
@@ -215,31 +219,33 @@ class _PostInternshipEvaluation extends StatelessWidget {
     internships.sort(
         (a, b) => a.internship!.endDate!.compareTo(b.internship!.endDate!));
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Faire les évaluations post-stage'),
-        ...internships.map(
-          (e) {
-            final internship = e.internship!;
-            final student = e.student!;
-            final enterprise = e.enterprise!;
+    return internships.isEmpty
+        ? Container()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SubTitle('Faire les évaluations post-stage'),
+              ...internships.map(
+                (e) {
+                  final internship = e.internship!;
+                  final student = e.student!;
+                  final enterprise = e.enterprise!;
 
-            return _TaskTile(
-              title: student.fullName,
-              subtitle: enterprise.name,
-              icon: Icons.rate_review,
-              date: internship.endDate!,
-              buttonTitle: 'Évaluer l\'entreprise',
-              onTap: () => GoRouter.of(context).pushNamed(
-                Screens.enterpriseEvaluationScreen,
-                params: Screens.params(internship.id),
+                  return _TaskTile(
+                    title: student.fullName,
+                    subtitle: enterprise.name,
+                    icon: Icons.rate_review,
+                    date: internship.endDate!,
+                    buttonTitle: 'Évaluer l\'entreprise',
+                    onTap: () => GoRouter.of(context).pushNamed(
+                      Screens.enterpriseEvaluationScreen,
+                      params: Screens.params(internship.id),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-      ],
-    );
+            ],
+          );
   }
 }
 
