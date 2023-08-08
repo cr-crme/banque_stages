@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,16 +30,15 @@ class TeachersProvider extends FirebaseListProvided<Teacher> {
 
   /// Returns if the current teacher can control the internship that has the
   /// id [internshipId].
-  Future<bool> canControlInternship(context,
-      {bool listen = true, required String internshipId}) async {
+  bool canControlInternship(context,
+      {bool listen = true, required String internshipId}) {
     final internship =
         InternshipsProvider.of(context, listen: listen)[internshipId];
-    final student = await StudentsProvider.fromLimitedId(context,
-        studentId: internship.studentId);
-    if (student == null) return false;
+    final student = StudentsProvider.studentsInMyGroup(context)
+        .firstWhereOrNull((e) => e.id == internship.studentId);
 
-    return student.teacherId == _currentId ||
-        internship.teacherId == _currentId;
+    return student != null &&
+        (student.teacherId == _currentId || internship.teacherId == _currentId);
   }
 
   void initializeAuth(AuthProvider auth) {

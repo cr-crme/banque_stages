@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
@@ -168,15 +169,15 @@ class _InternshipListState extends State<_InternshipList> {
             (internship) {
               late Specialization specialization;
               late Teacher teacher;
-              late Future<Student?> student;
-              late Future<bool> canControl;
+              late Student? student;
+              late bool canControl;
 
               try {
                 specialization =
                     widget.enterprise.jobs[internship.jobId].specialization;
                 teacher = teachers.fromId(internship.teacherId);
-                student = StudentsProvider.fromLimitedId(context,
-                    studentId: internship.studentId);
+                student = StudentsProvider.studentsInMyGroup(context)
+                    .firstWhereOrNull((e) => e.id == internship.studentId);
                 canControl = teachers.canControlInternship(context,
                     internshipId: internship.id);
               } catch (e) {
@@ -207,16 +208,9 @@ class _InternshipListState extends State<_InternshipList> {
                     ],
                   ),
                 ),
-                body: FutureBuilder<List>(
-                    future: Future.wait([student, canControl]),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) return Container();
-
-                      final student = snapshot.data?[0] as Student?;
-                      if (student == null) return Container();
-                      final canControlStudent = snapshot.data?[1] as bool;
-
-                      return Padding(
+                body: student == null
+                    ? Container()
+                    : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +219,7 @@ class _InternshipListState extends State<_InternshipList> {
                               children: [
                                 const Text('Stagiaire\u00a0: '),
                                 GestureDetector(
-                                  onTap: canControlStudent
+                                  onTap: canControl
                                       ? () => GoRouter.of(context).pushNamed(
                                             Screens.student,
                                             params: Screens.params(student),
@@ -236,9 +230,7 @@ class _InternshipListState extends State<_InternshipList> {
                                   child: Text(
                                     student.fullName,
                                     style: TextStyle(
-                                        color: canControlStudent
-                                            ? Colors.blue
-                                            : null,
+                                        color: canControl ? Colors.blue : null,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                         decoration: TextDecoration.underline),
@@ -290,8 +282,7 @@ class _InternshipListState extends State<_InternshipList> {
                               ),
                           ],
                         ),
-                      );
-                    }),
+                      ),
               );
             },
           ).toList(),

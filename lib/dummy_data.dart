@@ -30,7 +30,7 @@ bool hasDummyData(context) {
   final teachers = TeachersProvider.of(context, listen: false);
   final enterprises = EnterprisesProvider.of(context, listen: false);
   final internships = InternshipsProvider.of(context, listen: false);
-  final students = StudentsProvider.of(context, listen: false);
+  final students = StudentsProvider.allStudents(context);
 
   return teachers.isNotEmpty ||
       enterprises.isNotEmpty ||
@@ -43,7 +43,7 @@ Future<void> addAllDummyData(BuildContext context) async {
   final teachers = TeachersProvider.of(context, listen: false);
   final enterprises = EnterprisesProvider.of(context, listen: false);
   final internships = InternshipsProvider.of(context, listen: false);
-  final students = StudentsProvider.of(context, listen: false);
+  final students = StudentsProvider.instance(context, listen: false);
 
   if (schools.isEmpty) await addDummySchools(schools);
   if (teachers.isEmpty) await addDummyTeachers(teachers, schools);
@@ -69,6 +69,7 @@ Future<void> addDummyTeachers(
       id: '42',
       firstName: 'Roméo',
       lastName: 'Montaigu',
+      groups: ['550', '551'],
       schoolId: schools[0].id,
       email: 'romeo.montaigu@shakespeare.qc'));
 
@@ -77,18 +78,21 @@ Future<void> addDummyTeachers(
       firstName: 'Juliette',
       lastName: 'Capulet',
       schoolId: schools[0].id,
+      groups: ['550', '551'],
       email: 'juliette.capulet@shakespeare.qc'));
 
   teachers.add(Teacher(
       firstName: 'Tybalt',
       lastName: 'Capulet',
       schoolId: schools[0].id,
+      groups: ['550', '551'],
       email: 'tybalt.capulet@shakespeare.qc'));
 
   teachers.add(Teacher(
       firstName: 'Benvolio',
       lastName: 'Montaigu',
       schoolId: schools[0].id,
+      groups: ['552'],
       email: 'benvolio.montaigu@shakespeare.qc'));
   await _waitForDatabaseUpdate(teachers, 4);
 }
@@ -680,7 +684,7 @@ Future<void> addDummyStudents(
       email: 't.caron@email.com',
       teacherId: teachers.currentTeacherId,
       program: Program.fpt,
-      group: '885',
+      group: '550',
       contact: Person(
           firstName: 'Jean-Pierre',
           lastName: 'Caron Mathieu',
@@ -701,7 +705,7 @@ Future<void> addDummyStudents(
       email: 'm.boucher@email.com',
       teacherId: teachers.currentTeacherId,
       program: Program.fpt,
-      group: '885',
+      group: '550',
       contact: Person(
           firstName: 'Nicole',
           lastName: 'Lefranc',
@@ -742,7 +746,7 @@ Future<void> addDummyStudents(
       email: 's.gingras@email.com',
       teacherId: '42', // This is a Roméo Montaigu's student
       program: Program.fms,
-      group: '789',
+      group: '552',
       contact: Person(
           firstName: 'Raoul',
           lastName: 'Gingras',
@@ -763,7 +767,7 @@ Future<void> addDummyStudents(
       email: 'd.vargas@email.com',
       teacherId: '42', // This is a Roméo Montaigu's student
       program: Program.fpt,
-      group: '789',
+      group: '550',
       contact: Person(
           firstName: 'Laura',
           lastName: 'Vargas',
@@ -784,7 +788,7 @@ Future<void> addDummyStudents(
       email: 'g.tremblay@email.com',
       teacherId: teachers.currentTeacherId,
       program: Program.fpt,
-      group: '885',
+      group: '550',
       contact: Person(
           firstName: 'Vincent',
           lastName: 'Tremblay',
@@ -805,7 +809,7 @@ Future<void> addDummyStudents(
       email: 'v.picard@email.com',
       teacherId: teachers.currentTeacherId,
       program: Program.fms,
-      group: '789',
+      group: '550',
       contact: Person(
           firstName: 'Jean-François',
           lastName: 'Picard',
@@ -826,7 +830,7 @@ Future<void> addDummyStudents(
       email: 'v.monette@email.com',
       teacherId: teachers.currentTeacherId,
       program: Program.fms,
-      group: '789',
+      group: '551',
       contact: Person(
           firstName: 'Stéphane',
           lastName: 'Monette',
@@ -847,7 +851,7 @@ Future<void> addDummyStudents(
       email: 'm.poulain@email.com',
       teacherId: teachers.currentTeacherId,
       program: Program.fms,
-      group: '789',
+      group: '550',
       contact: Person(
           firstName: 'Mathieu',
           lastName: 'Poulain',

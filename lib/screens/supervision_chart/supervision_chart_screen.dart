@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -143,9 +144,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
   void _transferStudent() async {
     final internships = InternshipsProvider.of(context, listen: false);
     final students =
-        StudentsProvider.of(context, listen: false).map((e) => e).toList();
-    final teachers =
-        TeachersProvider.of(context, listen: false).map((e) => e).toList();
+        StudentsProvider.mySupervizedStudents(context, listen: false);
+    final teachers = [...TeachersProvider.of(context, listen: false)];
 
     students.sort(
         (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
@@ -169,8 +169,9 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
     for (final internship in internships) {
       if (internship.isTransfering && internship.teacherId == myId) {
-        final student = await StudentsProvider.fromLimitedId(context,
-            studentId: internship.studentId);
+        final student =
+            StudentsProvider.studentsInMyGroup(context, listen: false)
+                .firstWhereOrNull((e) => e.id == internship.studentId);
         if (student == null) continue;
 
         if (!mounted) return;
@@ -198,8 +199,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     await _showTransferedStudent(listenInternships: true);
     if (!mounted) return [];
 
-    var out =
-        await StudentsProvider.getMySupervizedStudents(context, listen: false);
+    var out = StudentsProvider.mySupervizedStudents(context, listen: false);
     out.sort(
       (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
     );

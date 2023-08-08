@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/screens/student/pages/skills_page.dart';
 import 'package:flutter/material.dart';
@@ -58,18 +58,12 @@ class _StudentScreenState extends State<StudentScreen>
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Student?>(
-        future: StudentsProvider.fromLimitedId(context, studentId: widget.id),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final student = snapshot.data;
-          if (student == null) {
-            return Container();
-          }
+    final student = StudentsProvider.studentsInMyGroup(context)
+        .firstWhereOrNull((e) => e.id == widget.id);
 
-          return Scaffold(
+    return student == null
+        ? Container()
+        : Scaffold(
             appBar: AppBar(
               title: Row(
                 children: [
@@ -120,6 +114,5 @@ class _StudentScreenState extends State<StudentScreen>
               ],
             ),
           );
-        });
   }
 }

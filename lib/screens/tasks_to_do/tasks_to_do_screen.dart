@@ -51,7 +51,7 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
   // We should terminate an internship if the end date is passed for more that
   // one day
   final internships = InternshipsProvider.of(context);
-  final students = StudentsProvider.of(context);
+  final students = StudentsProvider.studentsInMyGroup(context);
   final enterprises = EnterprisesProvider.of(context);
 
   // This happens sometimes, so we need to wait a frame
@@ -60,9 +60,9 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
   List<_JobEnterpriseInternshipStudent> out = [];
 
   for (final internship in internships) {
-    // TODO check if not supervized students should appear here
-    if (internship.shouldTerminate && students.hasId(internship.studentId)) {
-      final student = students.fromId(internship.studentId);
+    if (internship.shouldTerminate &&
+        students.any((e) => e.id == internship.studentId)) {
+      final student = students.firstWhere((e) => e.id == internship.studentId);
       final enterprise = enterprises.fromId(internship.enterpriseId);
 
       out.add(_JobEnterpriseInternshipStudent(
@@ -79,7 +79,7 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
 List<_JobEnterpriseInternshipStudent> _postInternshipEvaluationToDo(context) {
   // We should evaluate an internship as soon as it is terminated
   final internships = InternshipsProvider.of(context);
-  final students = StudentsProvider.of(context);
+  final students = StudentsProvider.studentsInMyGroup(context);
   final enterprises = EnterprisesProvider.of(context);
 
   // This happens sometimes, so we need to wait a frame
@@ -88,10 +88,9 @@ List<_JobEnterpriseInternshipStudent> _postInternshipEvaluationToDo(context) {
   List<_JobEnterpriseInternshipStudent> out = [];
 
   for (final internship in internships) {
-    // TODO check if not supervized students should appear here
     if (internship.isEnterpriseEvaluationPending &&
-        students.hasId(internship.studentId)) {
-      final student = students.fromId(internship.studentId);
+        students.any((e) => e.id == internship.studentId)) {
+      final student = students.firstWhere((e) => e.id == internship.studentId);
       final enterprise = enterprises.fromId(internship.enterpriseId);
 
       out.add(_JobEnterpriseInternshipStudent(

@@ -2,8 +2,12 @@ import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 
+List<String> _stringListFromSerialized(List? list) =>
+    (list ?? []).map<String>((e) => e).toList();
+
 class Teacher extends Person {
   final String schoolId;
+  final List<String> groups;
 
   Teacher({
     super.id,
@@ -11,6 +15,7 @@ class Teacher extends Person {
     super.middleName,
     required super.lastName,
     required this.schoolId,
+    required this.groups,
     super.dateBirth,
     super.phone,
     required super.email,
@@ -18,6 +23,7 @@ class Teacher extends Person {
 
   Teacher.fromSerialized(map)
       : schoolId = map['schoolId'],
+        groups = _stringListFromSerialized(map['groups']),
         super.fromSerialized(map);
 
   @override
@@ -25,6 +31,7 @@ class Teacher extends Person {
     return super.serializedMap()
       ..addAll({
         'schoolId': schoolId,
+        'groups': groups,
       });
   }
 
@@ -36,6 +43,7 @@ class Teacher extends Person {
           String? lastName,
           DateTime? dateBirth,
           String? schoolId,
+          List<String>? groups,
           String? email,
           PhoneNumber? phone,
           Address? address}) =>
@@ -46,6 +54,7 @@ class Teacher extends Person {
         lastName: lastName ?? this.lastName,
         dateBirth: dateBirth ?? this.dateBirth,
         schoolId: schoolId ?? this.schoolId,
+        groups: groups ?? this.groups,
         phone: phone ?? this.phone,
         email: email ?? this.email,
       );

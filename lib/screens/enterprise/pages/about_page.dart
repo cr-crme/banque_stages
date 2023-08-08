@@ -173,7 +173,7 @@ class _AvailablePlace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final jobs = enterprise.jobs.map((e) => e).toList();
+    final jobs = [...enterprise.jobs];
     jobs.sort(
       (a, b) => a.specialization.name
           .toLowerCase()

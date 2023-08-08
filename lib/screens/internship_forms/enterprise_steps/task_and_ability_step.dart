@@ -63,20 +63,12 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
     // Sometimes for some reason the build is called this with these
     // provider empty on the first call
     if (enterprise == null) return Container();
+    final student = StudentsProvider.studentsInMyGroup(context)
+        .firstWhereOrNull((e) => e.id == widget.internship.studentId);
 
-    return FutureBuilder<Student?>(
-        future: StudentsProvider.fromLimitedId(context,
-            studentId: widget.internship.studentId),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final student = snapshot.data;
-          if (student == null) return Container();
-
-          return Form(
+    return student == null
+        ? Container()
+        : Form(
             key: _formKey,
             child: SingleChildScrollView(
               child: Column(
@@ -96,7 +88,6 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
               ),
             ),
           );
-        });
   }
 
   Widget _buildSkillsRequired(BuildContext context) {

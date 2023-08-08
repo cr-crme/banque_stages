@@ -1,5 +1,4 @@
 import 'package:crcrme_banque_stages/common/models/itinerary.dart';
-import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
@@ -47,9 +46,9 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
     final internships = InternshipsProvider.of(context, listen: false);
     if (!mounted) return false;
 
-    final students =
-        (await StudentsProvider.getMySupervizedStudents(context, listen: false))
-            .map<Student>((e) => e);
+    final students = {
+      ...StudentsProvider.mySupervizedStudents(context, listen: false)
+    }.map((e) => e);
     if (!mounted) return false;
 
     // Add the school as the first waypoint

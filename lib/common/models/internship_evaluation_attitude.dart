@@ -134,7 +134,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
   InternshipEvaluationAttitude deepCopy() {
     return InternshipEvaluationAttitude(
       date: DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch),
-      presentAtEvaluation: presentAtEvaluation.map((e) => e).toList(),
+      presentAtEvaluation: [...presentAtEvaluation],
       attitude: attitude.deepCopy(),
       comments: comments,
       formVersion: formVersion,

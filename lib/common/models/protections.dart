@@ -69,7 +69,6 @@ class Protections extends ItemSerializable {
       };
 
   Protections deepCopy() {
-    return Protections(
-        status: status, protections: protections.map((e) => e).toList());
+    return Protections(status: status, protections: [...protections]);
   }
 }

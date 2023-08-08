@@ -175,7 +175,7 @@ class JobsPageState extends State<JobsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final jobs = widget.enterprise.jobs.map((e) => e).toList();
+    final jobs = [...widget.enterprise.jobs];
     jobs.sort(
       (a, b) => a.specialization.name
           .toLowerCase()

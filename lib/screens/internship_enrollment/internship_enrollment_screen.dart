@@ -109,8 +109,8 @@ class _InternshipEnrollmentScreenState
 
     InternshipsProvider.of(context, listen: false).add(internship);
 
-    final student = StudentsProvider.of(context,
-        listen: false)[_generalInfoKey.currentState!.student!.id];
+    final student = StudentsProvider.studentsInMyGroup(context, listen: false)
+        .firstWhere((e) => e.id == _generalInfoKey.currentState!.student!.id);
     await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(

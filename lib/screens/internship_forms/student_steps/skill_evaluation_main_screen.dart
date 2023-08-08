@@ -1,5 +1,5 @@
+import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
-import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
@@ -60,54 +60,50 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   Widget build(BuildContext context) {
     final internship = InternshipsProvider.of(context)[widget.internshipId];
 
-    return FutureBuilder<Student?>(
-        future: StudentsProvider.fromLimitedId(context,
-            studentId: internship.studentId),
-        builder: (context, snapshot) {
-          final student = snapshot.hasData ? snapshot.data : null;
+    final student = StudentsProvider.studentsInMyGroup(context)
+        .firstWhereOrNull((e) => e.id == internship.studentId);
 
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                  '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\n'
-                  'C1. Compétences spécifiques'),
-              leading: IconButton(
-                  onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+            '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\n'
+            'C1. Compétences spécifiques'),
+        leading:
+            IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
+      ),
+      body: student == null
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Builder(builder: (context) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _EvaluationDate(
+                      formController: _formController,
+                      editMode: widget.editMode,
+                    ),
+                    _PersonAtMeeting(
+                      formController: _formController,
+                      editMode: widget.editMode,
+                    ),
+                    _buildAutofillChooser(),
+                    _JobToEvaluate(
+                      formController: _formController,
+                      editMode: widget.editMode,
+                    ),
+                    _EvaluationTypeChoser(
+                      formController: _formController,
+                      editMode: widget.editMode,
+                    ),
+                    _StartEvaluation(
+                      formController: _formController,
+                      editMode: widget.editMode,
+                    ),
+                  ],
+                );
+              }),
             ),
-            body: student == null
-                ? const Center(child: CircularProgressIndicator())
-                : SingleChildScrollView(
-                    child: Builder(builder: (context) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _EvaluationDate(
-                            formController: _formController,
-                            editMode: widget.editMode,
-                          ),
-                          _PersonAtMeeting(
-                            formController: _formController,
-                            editMode: widget.editMode,
-                          ),
-                          _buildAutofillChooser(),
-                          _JobToEvaluate(
-                            formController: _formController,
-                            editMode: widget.editMode,
-                          ),
-                          _EvaluationTypeChoser(
-                            formController: _formController,
-                            editMode: widget.editMode,
-                          ),
-                          _StartEvaluation(
-                            formController: _formController,
-                            editMode: widget.editMode,
-                          ),
-                        ],
-                      );
-                    }),
-                  ),
-          );
-        });
+    );
   }
 
   Widget _buildAutofillChooser() {

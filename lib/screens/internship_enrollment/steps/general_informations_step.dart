@@ -89,7 +89,7 @@ class _GeneralInformations extends StatelessWidget {
   final Student? student;
   final Function(Student?) onSelectStudent;
 
-  List<Student> _studentsWithoutInternship(context, StudentsProvider students) {
+  List<Student> _studentsWithoutInternship(context, List<Student> students) {
     final List<Student> out = [];
     for (final student in students) {
       if (!student.hasActiveInternship(context)) out.add(student);
@@ -100,7 +100,7 @@ class _GeneralInformations extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final students = StudentsProvider.of(context);
+    final students = StudentsProvider.studentsInMyGroup(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

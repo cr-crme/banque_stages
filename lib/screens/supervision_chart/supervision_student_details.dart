@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
@@ -24,11 +25,11 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
 
   void _transferStudent(BuildContext context) async {
     final internships = InternshipsProvider.of(context, listen: false);
-    final teachers =
-        TeachersProvider.of(context, listen: false).map((e) => e).toList();
+    final teachers = [...TeachersProvider.of(context, listen: false)];
     teachers.sort(
         (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
-    final student = StudentsProvider.of(context, listen: false)[studentId];
+    final student = StudentsProvider.studentsInMyGroup(context, listen: false)
+        .firstWhere((e) => e.id == studentId);
 
     final answer = await showDialog<List<String>>(
       context: context,
@@ -61,72 +62,67 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
         : null;
     final job = enterprise?.jobs[internship?.jobId];
 
-    return FutureBuilder<Student?>(
-        future: StudentsProvider.fromLimitedId(context, studentId: studentId),
-        builder: (context, snapshot) {
-          final student = snapshot.hasData ? snapshot.data : null;
+    final student = StudentsProvider.studentsInMyGroup(context)
+        .firstWhereOrNull((e) => e.id == studentId);
 
-          return Scaffold(
-            appBar: AppBar(
-              title: student == null
-                  ? const Text('En attente des données')
-                  : Row(children: [
-                      student.avatar,
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(student.fullName),
-                          Text(
-                            enterprise?.name ?? 'Aucun stage',
-                            style: const TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                    ]),
-              actions: [
-                IconButton(
-                    onPressed: () => _transferStudent(context),
-                    icon: const Icon(Icons.transfer_within_a_station)),
-              ],
-            ),
-            body: SingleChildScrollView(
-              child: student == null
-                  ? const Center(child: CircularProgressIndicator())
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (internship == null)
-                          const Padding(
-                            padding: EdgeInsets.only(top: 10.0),
-                            child: Center(
-                                child: Text('Aucun stage pour l\'élève')),
-                          ),
-                        if (internship != null)
-                          _VisitingPriority(
-                            studentId: studentId,
-                            onTapGoToInternship: () =>
-                                _navigateToStudentIntership(context),
-                          ),
-                        if (internship != null)
-                          _Contact(
-                              student: student,
-                              enterprise: enterprise!,
-                              internship: internship),
-                        if (internship != null)
-                          _PersonalNotes(internship: internship),
-                        if (internship != null)
-                          _Schedule(internship: internship),
-                        if (internship != null) _buildUniform(job!),
-                        _MoreInfoButton(
-                          studentId: studentId,
-                          onTap: () => _navigateToStudentIntership(context),
-                        ),
-                      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: student == null
+            ? const Text('En attente des données')
+            : Row(children: [
+                student.avatar,
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(student.fullName),
+                    Text(
+                      enterprise?.name ?? 'Aucun stage',
+                      style: const TextStyle(fontSize: 14),
+                    )
+                  ],
+                ),
+              ]),
+        actions: [
+          IconButton(
+              onPressed: () => _transferStudent(context),
+              icon: const Icon(Icons.transfer_within_a_station)),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: student == null
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (internship == null)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: Center(child: Text('Aucun stage pour l\'élève')),
                     ),
-            ),
-          );
-        });
+                  if (internship != null)
+                    _VisitingPriority(
+                      studentId: studentId,
+                      onTapGoToInternship: () =>
+                          _navigateToStudentIntership(context),
+                    ),
+                  if (internship != null)
+                    _Contact(
+                        student: student,
+                        enterprise: enterprise!,
+                        internship: internship),
+                  if (internship != null)
+                    _PersonalNotes(internship: internship),
+                  if (internship != null) _Schedule(internship: internship),
+                  if (internship != null) _buildUniform(job!),
+                  _MoreInfoButton(
+                    studentId: studentId,
+                    onTap: () => _navigateToStudentIntership(context),
+                  ),
+                ],
+              ),
+      ),
+    );
   }
 
   Widget _buildUniform(Job job) {

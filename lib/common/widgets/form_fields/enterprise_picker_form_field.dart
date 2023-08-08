@@ -36,8 +36,7 @@ class EnterprisePickerFormField extends StatelessWidget {
             displayStringForOption: (enterprise) => enterprise.name,
             initialValue: TextEditingValue(text: initialValue?.name ?? ''),
             optionsBuilder: (input) {
-              return enterprises
-                  .map((e) => e)
+              return {...enterprises}
                   .sorted((a, b) => a.name.compareTo(b.name))
                   .where(
                     (s) =>

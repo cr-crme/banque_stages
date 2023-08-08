@@ -36,8 +36,7 @@ class StudentPickerFormField extends StatelessWidget {
             displayStringForOption: (student) => student.fullName,
             initialValue: TextEditingValue(text: initialValue?.fullName ?? ''),
             optionsBuilder: (input) {
-              return students
-                  .map((e) => e)
+              return {...students}
                   .sorted((a, b) => a.lastName.compareTo(b.lastName))
                   .where(
                     (s) => s.fullName

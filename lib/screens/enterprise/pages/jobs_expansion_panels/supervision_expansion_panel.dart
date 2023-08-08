@@ -92,7 +92,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
 
   List<PostIntershipEnterpriseEvaluation> _getFilteredEvaluations() {
     final internships = InternshipsProvider.of(context);
-    final students = StudentsProvider.of(context);
+    final students = StudentsProvider.studentsInMyGroup(context);
     var evaluations = widget.job.postInternshipEnterpriseEvaluations(context);
 
     // Only keep evaluations from the requested students

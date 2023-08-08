@@ -274,8 +274,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
 
   Widget _buildQuestions() {
     // Sort the question by "id"
-    final questionIds =
-        widget.job.specialization.questions.map((e) => e).toList();
+    final questionIds = [...widget.job.specialization.questions];
     questionIds.sort((a, b) => int.parse(a) - int.parse(b));
     final questions =
         questionIds.map((e) => QuestionFileService.fromId(e)).toList();

@@ -116,7 +116,7 @@ class SpecializationListScreen extends StatelessWidget {
         skillsAssociatedToRisks[b]!.length -
         skillsAssociatedToRisks[a]!.length);
 
-    final skills = specialization.skills.map((e) => e).toList();
+    final skills = [...specialization.skills];
     final risksAssociatedToSkill = <Skill, List<Risk>>{};
     for (final skill in skills) {
       risksAssociatedToSkill[skill] = _risksSkillHas(skill, risks).toList();

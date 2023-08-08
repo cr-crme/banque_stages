@@ -38,8 +38,7 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
   }
 
   Map<Specialization, IncidentsByEnterprise> _fetchAllIncidents(context) {
-    final enterprises = EnterprisesProvider.of(context).map((e) => e).toList()
-      ..sort(
+    final enterprises = [...EnterprisesProvider.of(context)]..sort(
         (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
       );
     final textToSearch = _searchController.text.toLowerCase().trim();

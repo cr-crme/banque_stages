@@ -75,7 +75,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   List<Specialization> get _availableSpecialization {
     // Make a copy of the available specializations
     List<Specialization> out = widget.specializations?.keys.toList() ??
-        ActivitySectorsService.allSpecializations.map((e) => e).toList();
+        [...ActivitySectorsService.allSpecializations];
 
     // Sort them by name
     out.sort((a, b) => a.name.compareTo(b.name));

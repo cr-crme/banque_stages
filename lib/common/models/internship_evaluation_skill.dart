@@ -82,7 +82,7 @@ class SkillEvaluation extends ItemSerializable {
     return SkillEvaluation(
       specializationId: specializationId,
       skillName: skillName,
-      tasks: tasks.map((e) => e).toList(),
+      tasks: [...tasks],
       appreciation: appreciation,
       comment: comment,
     );
@@ -135,7 +135,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
   InternshipEvaluationSkill deepCopy() {
     return InternshipEvaluationSkill(
       date: DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch),
-      presentAtEvaluation: presentAtEvaluation.map((e) => e).toList(),
+      presentAtEvaluation: [...presentAtEvaluation],
       skillGranularity: skillGranularity,
       skills: skills.map((e) => e.deepCopy()).toList(),
       comments: comments,

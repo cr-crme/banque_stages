@@ -32,6 +32,6 @@ class PreInternshipRequest extends ItemSerializable {
       };
 
   PreInternshipRequest deepCopy() {
-    return PreInternshipRequest(requests: requests.map((e) => e).toList());
+    return PreInternshipRequest(requests: [...requests]);
   }
 }
