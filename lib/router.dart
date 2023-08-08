@@ -1,36 +1,39 @@
+import 'package:crcrme_banque_stages/dummy_data.dart';
+import 'package:crcrme_banque_stages/main.dart';
+import 'package:crcrme_banque_stages/screens/add_enterprise/add_enterprise_screen.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/enterprise_screen.dart';
+import 'package:crcrme_banque_stages/screens/enterprises_list/enterprises_list_screen.dart';
+import 'package:crcrme_banque_stages/screens/generate_debug_data_screen.dart';
+import 'package:crcrme_banque_stages/screens/internship_enrollment/internship_enrollment_screen.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_screen.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
+import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.dart';
+import 'package:crcrme_banque_stages/screens/login_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
+import 'package:crcrme_banque_stages/screens/student/student_screen.dart';
+import 'package:crcrme_banque_stages/screens/students_list/students_list_screen.dart';
+import 'package:crcrme_banque_stages/screens/supervision_chart/supervision_chart_screen.dart';
+import 'package:crcrme_banque_stages/screens/supervision_chart/supervision_student_details.dart';
+import 'package:crcrme_banque_stages/screens/tasks_to_do/tasks_to_do_screen.dart';
+import 'package:crcrme_banque_stages/screens/visiting_students/itinerary_screen.dart';
 import 'package:enhanced_containers/item_serializable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'common/providers/auth_provider.dart';
-import 'dummy_data.dart';
-import 'main.dart';
-import 'screens/add_enterprise/add_enterprise_screen.dart';
-import 'screens/enterprise/enterprise_screen.dart';
-import 'screens/enterprises_list/enterprises_list_screen.dart';
-import 'screens/generate_debug_data_screen.dart';
-import 'screens/internship_enrollment/internship_enrollment_screen.dart';
-import 'screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
-import 'screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
-import 'screens/internship_forms/student_steps/attitude_evaluation_screen.dart';
-import 'screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
-import 'screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
-import 'screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
-import 'screens/job_sst_form/job_sst_form_screen.dart';
-import 'screens/login_screen.dart';
-import 'screens/ref_sst/home_sst/home_sst_screen.dart';
-import 'screens/ref_sst/risks_list/risks_list_screen.dart';
-import 'screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
-import 'screens/student/student_screen.dart';
-import 'screens/students_list/students_list_screen.dart';
-import 'screens/supervision_chart/supervision_chart_screen.dart';
-import 'screens/supervision_chart/supervision_student_details.dart';
-import 'screens/visiting_students/itinerary_screen.dart';
 
 abstract class Screens {
   static const populateWithDebugData = 'populate-with-debug-data';
   static const login = 'login';
   static const itinerary = 'itinerary';
+
+  static const tasksToDo = 'tasksToDo';
 
   static const enterprisesList = 'enterprises-list';
   static const enterprise = 'enterprise';
@@ -181,6 +184,11 @@ final router = GoRouter(
       path: '/itinerary',
       name: Screens.itinerary,
       builder: (context, state) => const ItineraryMainScreen(),
+    ),
+    GoRoute(
+      path: '/tasks-to-do',
+      name: Screens.tasksToDo,
+      builder: (context, state) => const TasksToDoScreen(),
     ),
     GoRoute(
       path: '/skill-evaluation-main/:id',

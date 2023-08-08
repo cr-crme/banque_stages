@@ -27,6 +27,11 @@ class MainDrawer extends StatelessWidget {
                   route: Screens.supervisionChart,
                 ),
                 const _DrawerItem(
+                  titleText: 'Tâches à réaliser',
+                  icon: Icon(Icons.task),
+                  route: Screens.tasksToDo,
+                ),
+                const _DrawerItem(
                   titleText: 'Mes élèves',
                   icon: Icon(Icons.school_rounded),
                   route: Screens.studentsList,

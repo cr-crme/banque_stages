@@ -23,7 +23,8 @@ class JobSstEvaluation extends ItemSerializable {
     required Map<String, dynamic> questions,
   }) {
     this.questions.clear();
-    this.questions.addAll(questions);
+    this.questions.addAll({...questions});
+    this.questions.removeWhere((key, value) => value == null);
 
     date = DateTime.now();
   }
