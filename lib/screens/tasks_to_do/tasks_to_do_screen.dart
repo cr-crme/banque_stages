@@ -35,7 +35,6 @@ List<JobEnterpriseInternshipStudent> enterprisesToEvaluate(context) {
     }
   }
 
-  out.sort((a, b) => a.enterprise!.name.compareTo(b.enterprise!.name));
   return out;
 }
 
@@ -128,6 +127,9 @@ class _SstRisk extends StatelessWidget {
   Widget build(BuildContext context) {
     final jobs = enterprisesToEvaluate(context);
 
+    jobs.sort(
+        (a, b) => a.internship!.date.start.compareTo(b.internship!.date.start));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -161,6 +163,9 @@ class _EndingInternship extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final internships = internshipsToTerminate(context);
+
+    internships.sort(
+        (a, b) => a.internship!.date.end.compareTo(b.internship!.date.end));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,6 +202,9 @@ class _PostInternshipEvaluation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final internships = postInternshipEvaluationToDo(context);
+
+    internships.sort(
+        (a, b) => a.internship!.endDate!.compareTo(b.internship!.endDate!));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
