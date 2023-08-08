@@ -10,7 +10,6 @@ import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class GeneralInformationsStep extends StatefulWidget {
   const GeneralInformationsStep({super.key, required this.enterprise});
@@ -101,6 +100,8 @@ class _GeneralInformations extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final students = StudentsProvider.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -110,12 +111,10 @@ class _GeneralInformations extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Consumer<StudentsProvider>(
-                builder: (context, students, _) => StudentPickerFormField(
-                  students: _studentsWithoutInternship(context, students),
-                  onSaved: onSelectStudent,
-                  onSelect: onSelectStudent,
-                ),
+              StudentPickerFormField(
+                students: _studentsWithoutInternship(context, students),
+                onSaved: onSelectStudent,
+                onSelect: onSelectStudent,
               ),
             ],
           ),

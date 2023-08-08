@@ -47,8 +47,8 @@ Future<void> addAllDummyData(BuildContext context) async {
 
   if (schools.isEmpty) await addDummySchools(schools);
   if (teachers.isEmpty) await addDummyTeachers(teachers, schools);
-  if (enterprises.isEmpty) await addDummyEnterprises(enterprises, teachers);
   if (students.isEmpty) await addDummyStudents(students, teachers);
+  if (enterprises.isEmpty) await addDummyEnterprises(enterprises, teachers);
   if (internships.isEmpty) {
     await addDummyInterships(internships, students, enterprises, teachers);
   }
@@ -863,31 +863,33 @@ Future<void> addDummyStudents(
   await _waitForDatabaseUpdate(students, 10);
 
   // Simulate that some of the students were actually added by someone else
-  {
-    final student =
-        students.firstWhere((student) => student.fullName == 'Diego Vargas');
-    FirebaseDatabase.instance
-        .ref('/students-ids/42/')
-        .child(student.id)
-        .set(true);
-    FirebaseDatabase.instance
-        .ref(students.pathToAvailableDataIds)
-        .child(student.id)
-        .remove();
+  if (!students.pathToAvailableDataIds.contains('/all/')) {
+    {
+      final student =
+          students.firstWhere((student) => student.fullName == 'Diego Vargas');
+      FirebaseDatabase.instance
+          .ref('/students-ids/42/')
+          .child(student.id)
+          .set(true);
+      FirebaseDatabase.instance
+          .ref(students.pathToAvailableDataIds)
+          .child(student.id)
+          .remove();
+    }
+    {
+      final student =
+          students.firstWhere((student) => student.fullName == 'Simon Gingras');
+      FirebaseDatabase.instance
+          .ref('/students-ids/42/')
+          .child(student.id)
+          .set(true);
+      FirebaseDatabase.instance
+          .ref(students.pathToAvailableDataIds)
+          .child(student.id)
+          .remove();
+      await _waitForDatabaseUpdate(students, 8);
+    }
   }
-  {
-    final student =
-        students.firstWhere((student) => student.fullName == 'Simon Gingras');
-    FirebaseDatabase.instance
-        .ref('/students-ids/42/')
-        .child(student.id)
-        .set(true);
-    FirebaseDatabase.instance
-        .ref(students.pathToAvailableDataIds)
-        .child(student.id)
-        .remove();
-  }
-  await _waitForDatabaseUpdate(students, 8);
 }
 
 Future<void> addDummyInterships(

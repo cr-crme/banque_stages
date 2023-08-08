@@ -25,9 +25,14 @@ class StudentsProvider extends FirebaseListProvided<Student> {
   }
 
   void initializeAuth(AuthProvider auth) {
-    pathToAvailableDataIds = auth.currentUser == null
-        ? ''
-        : '/students-ids/${auth.currentUser!.uid}/';
+    // This makes each student separated by teacher
+    // pathToAvailableDataIds = auth.currentUser == null
+    //     ? ''
+    //     : '/students-ids/${auth.currentUser!.uid}/';
+
+    // This makes all students available for all teachers
+    pathToAvailableDataIds = '/students-ids/all/';
+
     initializeFetchingData();
   }
 

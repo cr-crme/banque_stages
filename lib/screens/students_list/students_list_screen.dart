@@ -6,7 +6,6 @@ import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 import 'widgets/student_card.dart';
 
@@ -48,6 +47,9 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final studentsProvided = StudentsProvider.of(context);
+    final students = _filterSelectedStudents(studentsProvided.toList());
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mes élèves'),
@@ -62,26 +64,22 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
       drawer: const MainDrawer(),
       body: Column(
         children: [
-          Selector<StudentsProvider, List<Student>>(
-            builder: (context, students, child) => Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: students.length,
-                itemBuilder: (context, index) => StudentCard(
-                  student: students.elementAt(index),
-                  onTap: (student) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    GoRouter.of(context).goNamed(
-                      Screens.student,
-                      params: Screens.params(student),
-                      queryParams: Screens.queryParams(pageIndex: '0'),
-                    );
-                  },
-                ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: students.length,
+              itemBuilder: (context, index) => StudentCard(
+                student: students.elementAt(index),
+                onTap: (student) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  GoRouter.of(context).goNamed(
+                    Screens.student,
+                    params: Screens.params(student),
+                    queryParams: Screens.queryParams(pageIndex: '0'),
+                  );
+                },
               ),
             ),
-            selector: (context, students) =>
-                _filterSelectedStudents(students.toList()),
           ),
         ],
       ),
