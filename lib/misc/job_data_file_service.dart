@@ -108,7 +108,7 @@ class Skill extends NamedItemSerializable {
   Skill.fromSerialized(map)
       : complexity = map['x'],
         criteria = List.from(map['c'], growable: false),
-        tasks = List.from(map['t'], growable: false),
+        tasks = (map['t'] as List).map((e) => Task.fromSerialized(e)).toList(),
         risks = List.from(map['r'], growable: false),
         isOptional = map['o'],
         super.fromSerialized(map);
@@ -118,16 +118,32 @@ class Skill extends NamedItemSerializable {
     ..addAll({
       'x': complexity,
       'c': criteria,
-      't': tasks,
+      't': tasks.map((e) => e.serialize()).toList(),
       'r': risks,
       'o': isOptional
     });
 
   final String complexity;
   final List<String> criteria;
-  final List<String> tasks;
+  final List<Task> tasks;
   final List<String> risks;
   final bool isOptional;
+}
+
+class Task extends ItemSerializable {
+  Task.fromSerialized(map)
+      : title = map['t'],
+        isOptional = map['o'],
+        super.fromSerialized(map);
+
+  @override
+  Map<String, dynamic> serializedMap() => {'t': title, 'o': isOptional};
+
+  final String title;
+  final bool isOptional;
+
+  @override
+  String toString() => '$title${isOptional ? ' (Facultative)' : ''}';
 }
 
 class SkillList extends _NamedItemSerializableList<Skill> {

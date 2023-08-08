@@ -314,7 +314,7 @@ class _TaskEvaluation extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: spacing),
       child: CheckboxWithOther(
-        title: 'La ou le stagiaire a réussi les tâches suivantes\u00a0:',
+        title: 'L\'élève a réussi les tâches suivantes\u00a0:',
         elements: skill.tasks,
         onOptionWasSelected: (values) {
           for (final task in formController.taskCompleted[skill.id]!.keys) {

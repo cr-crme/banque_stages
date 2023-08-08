@@ -54,7 +54,7 @@ class SkillEvaluationFormController {
     taskCompleted[skillId] = {};
     final skill = _idToSkill[skillId]!;
     for (final task in skill.tasks) {
-      taskCompleted[skillId]![task] = TaskAppreciationLevel.notEvaluated;
+      taskCompleted[skillId]![task.title] = TaskAppreciationLevel.notEvaluated;
     }
   }
 
@@ -129,8 +129,8 @@ class SkillEvaluationFormController {
 
       final skill = _idToSkill[skillId]!;
       for (final task in skill.tasks) {
-        taskCompleted[skillId]![task] = skillEvaluation.tasks
-                .firstWhereOrNull((e) => e.title == task)
+        taskCompleted[skillId]![task.title] = skillEvaluation.tasks
+                .firstWhereOrNull((e) => e.title == task.title)
                 ?.level ??
             TaskAppreciationLevel.notEvaluated;
       }
@@ -249,7 +249,7 @@ class SkillEvaluationFormController {
       final skill = _idToSkill[skillId]!;
       Map<String, TaskAppreciationLevel> tp = {};
       for (final task in skill.tasks) {
-        tp[task] = TaskAppreciationLevel.notEvaluated;
+        tp[task.title] = TaskAppreciationLevel.notEvaluated;
       }
       taskCompleted[skillId] = tp;
     }

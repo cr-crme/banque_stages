@@ -17,6 +17,8 @@ EXCEL_SECTOR_HEADER = "N° secteur"
 EXCEL_SPECIALIZATION_HEADER = "N° métiers"
 EXCEL_SKILL_HEADER = "Numéro de compétences"
 
+IS_OPTIONAL_REGEX = re.compile(r"images/ico_opt.gif")
+
 # Data to change
 EXCEL_SST_RISKS_HEADERS = {
     # json : excel
@@ -245,7 +247,6 @@ def fetchSpecializationURLsOfSector(sectorId: str):
 def fetchSpecialization(specializationURL: str):
     '''Returns a detailed specialization.'''
     titleRegex = re.compile(r"(\d+) - ([^\t\r\n]*)")
-    optionalRegex = re.compile(r"images/ico_opt.gif")
 
     page = requests.get(
         f"http://www1.education.gouv.qc.ca/sections/metiers/index.asp?page=fiche&id={specializationURL}"
@@ -268,7 +269,7 @@ def fetchSpecialization(specializationURL: str):
 
         # Extract id and name from the title
         titleSearch = titleRegex.search(headerSections[0].text)
-        is_optional = optionalRegex.search(str(header)) is not None
+        is_optional = IS_OPTIONAL_REGEX.search(str(header)) is not None
         if titleSearch is None:
             setMessage(
                 f"Missing data ! The title of skill {header.find('th').text} (specialization: {specializationURL}) could not be found")
@@ -291,7 +292,8 @@ def fetchSpecialization(specializationURL: str):
         tasks = []
         # Tasks are situated on the second list
         for task in lists[1].find_all("li"):
-            tasks.append(task.text)
+            is_task_optional = IS_OPTIONAL_REGEX.search(str(task)) is not None
+            tasks.append({"t": task.text, "o": is_task_optional})
 
         result["s"].append(
             {"id": skillID, "n": skillName, "x": complexity, "c": criteria, "t": tasks, "o": is_optional})

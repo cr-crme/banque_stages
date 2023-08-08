@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
@@ -10,6 +7,8 @@ import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
@@ -156,6 +155,7 @@ class _InternshipListState extends State<_InternshipList> {
   @override
   Widget build(BuildContext context) {
     _prepareExpander(widget.internships);
+    final teachers = TeachersProvider.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,10 +166,10 @@ class _InternshipListState extends State<_InternshipList> {
               () => _expanded[widget.internships[panelIndex].id] = !isExpanded),
           children: widget.internships.map(
             (internship) {
-              final teachers = TeachersProvider.of(context);
               late Specialization specialization;
               late Teacher teacher;
               late Future<Student?> student;
+              late Future<bool> canControl;
 
               try {
                 specialization =
@@ -177,6 +177,8 @@ class _InternshipListState extends State<_InternshipList> {
                 teacher = teachers.fromId(internship.teacherId);
                 student = StudentsProvider.fromLimitedId(context,
                     studentId: internship.studentId);
+                canControl = teachers.canControlInternship(context,
+                    internshipId: internship.id);
               } catch (e) {
                 return ExpansionPanel(
                     headerBuilder: ((context, isExpanded) => Container()),
@@ -205,12 +207,14 @@ class _InternshipListState extends State<_InternshipList> {
                     ],
                   ),
                 ),
-                body: FutureBuilder<Student?>(
-                    future: student,
+                body: FutureBuilder<List>(
+                    future: Future.wait([student, canControl]),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) return Container();
-                      final student = snapshot.data;
+
+                      final student = snapshot.data?[0] as Student?;
                       if (student == null) return Container();
+                      final canControlStudent = snapshot.data?[1] as bool;
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -221,16 +225,20 @@ class _InternshipListState extends State<_InternshipList> {
                               children: [
                                 const Text('Stagiaire\u00a0: '),
                                 GestureDetector(
-                                  onTap: () => GoRouter.of(context).pushNamed(
-                                    Screens.student,
-                                    params: Screens.params(student),
-                                    queryParams:
-                                        Screens.queryParams(pageIndex: '1'),
-                                  ),
+                                  onTap: canControlStudent
+                                      ? () => GoRouter.of(context).pushNamed(
+                                            Screens.student,
+                                            params: Screens.params(student),
+                                            queryParams: Screens.queryParams(
+                                                pageIndex: '1'),
+                                          )
+                                      : null,
                                   child: Text(
                                     student.fullName,
-                                    style: const TextStyle(
-                                        color: Colors.blue,
+                                    style: TextStyle(
+                                        color: canControlStudent
+                                            ? Colors.blue
+                                            : null,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                         decoration: TextDecoration.underline),
