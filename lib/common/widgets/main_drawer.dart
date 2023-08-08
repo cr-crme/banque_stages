@@ -1,9 +1,10 @@
+import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/numbered_tablet.dart';
+import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/tasks_to_do/tasks_to_do_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
-import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
-import 'package:crcrme_banque_stages/router.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -26,10 +27,14 @@ class MainDrawer extends StatelessWidget {
                   icon: Icon(Icons.table_chart_rounded),
                   route: Screens.supervisionChart,
                 ),
-                const _DrawerItem(
+                _DrawerItem(
                   titleText: 'Tâches à réaliser',
-                  icon: Icon(Icons.task),
+                  icon: const Icon(Icons.checklist),
                   route: Screens.tasksToDo,
+                  trailing: NumberedTablet(
+                    number: numberOfTasksToDo(context),
+                    hideIfEmpty: true,
+                  ),
                 ),
                 const _DrawerItem(
                   titleText: 'Mes élèves',
@@ -72,6 +77,7 @@ class _DrawerItem extends StatelessWidget {
     this.icon,
     this.route,
     this.onTap,
+    this.trailing,
   }) : assert(
           (route != null || onTap != null) && (route == null || onTap == null),
           'One parameter has to be null while the other one is not.',
@@ -81,6 +87,7 @@ class _DrawerItem extends StatelessWidget {
   final Icon? icon;
   final String titleText;
   final void Function()? onTap;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +105,7 @@ class _DrawerItem extends StatelessWidget {
           titleText,
           style: Theme.of(context).textTheme.titleMedium,
         ),
+        trailing: trailing,
       ),
     );
   }
