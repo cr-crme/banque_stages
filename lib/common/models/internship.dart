@@ -221,6 +221,8 @@ class Internship extends ItemSerializable {
       isNotActive && enterpriseEvaluation == null;
   bool get isActive => endDate == null;
   bool get isNotActive => !isActive;
+  bool get shouldTerminate =>
+      isActive && date.end.difference(DateTime.now()).inDays >= 1;
 
   Internship._({
     required super.id,

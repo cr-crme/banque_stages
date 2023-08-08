@@ -1,6 +1,7 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
@@ -11,96 +12,214 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+List<JobEnterpriseInternshipStudent> enterprisesToEvaluate(context) {
+  // We should evaluate a job of an enterprise if there is at least one
+  // intership in this job and the no evaluation was ever performed
+  final enterprises = EnterprisesProvider.of(context);
+  final internships = InternshipsProvider.of(context);
+
+  // This happens sometimes, so we need to wait a frame
+  if (internships.isEmpty || enterprises.isEmpty) return [];
+
+  List<JobEnterpriseInternshipStudent> out = [];
+
+  for (final enterprise in enterprises) {
+    for (final job in enterprise.jobs) {
+      if (!job.sstEvaluation.isFilled &&
+          internships.any((e) => e.jobId == job.id)) {
+        final interns = internships.where((e) => e.jobId == job.id).toList();
+        interns.sort((a, b) => a.date.start.compareTo(b.date.start));
+        out.add(JobEnterpriseInternshipStudent(
+            enterprise: enterprise, job: job, internship: interns[0]));
+      }
+    }
+  }
+
+  out.sort((a, b) => a.enterprise!.name.compareTo(b.enterprise!.name));
+  return out;
+}
+
+List<JobEnterpriseInternshipStudent> internshipsToTerminate(context) {
+  // We should terminate an internship if the end date is passed for more that
+  // one day
+  final internships = InternshipsProvider.of(context);
+  final students = StudentsProvider.of(context);
+  final enterprises = EnterprisesProvider.of(context);
+
+  // This happens sometimes, so we need to wait a frame
+  if (internships.isEmpty || students.isEmpty || enterprises.isEmpty) return [];
+
+  List<JobEnterpriseInternshipStudent> out = [];
+
+  for (final internship in internships) {
+    // TODO check if not supervized students should appear here
+    if (internship.shouldTerminate && students.hasId(internship.studentId)) {
+      final student = students.fromId(internship.studentId);
+      final enterprise = enterprises.fromId(internship.enterpriseId);
+
+      out.add(JobEnterpriseInternshipStudent(
+        internship: internship,
+        student: student,
+        enterprise: enterprise,
+      ));
+    }
+  }
+
+  return out;
+}
+
+List<JobEnterpriseInternshipStudent> postInternshipEvaluationToDo(context) {
+  // We should evaluate an internship as soon as it is terminated
+  final internships = InternshipsProvider.of(context);
+  final students = StudentsProvider.of(context);
+  final enterprises = EnterprisesProvider.of(context);
+
+  // This happens sometimes, so we need to wait a frame
+  if (internships.isEmpty || students.isEmpty || enterprises.isEmpty) return [];
+
+  List<JobEnterpriseInternshipStudent> out = [];
+
+  for (final internship in internships) {
+    // TODO check if not supervized students should appear here
+    if (internship.isEnterpriseEvaluationPending &&
+        students.hasId(internship.studentId)) {
+      final student = students.fromId(internship.studentId);
+      final enterprise = enterprises.fromId(internship.enterpriseId);
+
+      out.add(JobEnterpriseInternshipStudent(
+        internship: internship,
+        student: student,
+        enterprise: enterprise,
+      ));
+    }
+  }
+
+  return out;
+}
+
 class TasksToDoScreen extends StatelessWidget {
   const TasksToDoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final students = StudentsProvider.of(context);
-    final internships = InternshipsProvider.of(context);
-
     return Scaffold(
       drawer: const MainDrawer(),
       appBar: AppBar(
         title: const Text('Tâches à réaliser'),
       ),
-      body: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _SstRisk(),
-        ],
+      body: const SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _SstRisk(),
+            _EndingInternship(),
+            _PostInternshipEvaluation(),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _JobInEnterprise {
-  final Enterprise enterprise;
-  final Job job;
-  final Internship internship;
-
-  _JobInEnterprise({
-    required this.enterprise,
-    required this.job,
-    required this.internship,
-  });
-}
-
 class _SstRisk extends StatelessWidget {
   const _SstRisk();
 
-  List<_JobInEnterprise> _extractWithTaskToDo(context) {
-    // We should evaluate a job of an enterprise if there is at least one
-    // intership in this job and the no evaluation was ever performed
-    final entreprises = EnterprisesProvider.of(context);
-    final internships = InternshipsProvider.of(context);
-
-    List<_JobInEnterprise> out = [];
-
-    for (final enterprise in entreprises) {
-      for (final job in enterprise.jobs) {
-        if (!job.sstEvaluation.isFilled &&
-            internships.any((e) => e.jobId == job.id)) {
-          final interns = internships.where((e) => e.jobId == job.id).toList();
-          interns.sort((a, b) => a.date.start.compareTo(b.date.start));
-          out.add(_JobInEnterprise(
-              enterprise: enterprise, job: job, internship: interns[0]));
-        }
-      }
-    }
-
-    return out;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final jobs = _extractWithTaskToDo(context);
+    final jobs = enterprisesToEvaluate(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Repérer les risques SST'),
-        SizedBox(
-          height: 200,
-          child: ListView.builder(
-            itemCount: jobs.length,
-            itemBuilder: (context, index) {
-              final enterprise = jobs[index].enterprise;
-              final job = jobs[index].job;
-              final internship = jobs[index].internship;
+        ...jobs.map(
+          (e) {
+            final enterprise = e.enterprise!;
+            final job = e.job!;
+            final internship = e.internship!;
 
-              return _TaskTile(
-                  title: enterprise.name,
-                  subtitle: job.specialization.name,
-                  icon: Icons.warning,
-                  date: internship.date.start,
-                  buttonTitle: 'Remplir le\nquestionnaire SST',
-                  onTap: () => GoRouter.of(context).pushNamed(
-                        Screens.jobSstForm,
-                        params: Screens.params(enterprise, jobId: job),
-                      ));
-            },
-          ),
+            return _TaskTile(
+                title: enterprise.name,
+                subtitle: job.specialization.name,
+                icon: Icons.warning,
+                date: internship.date.start,
+                buttonTitle: 'Remplir le\nquestionnaire SST',
+                onTap: () => GoRouter.of(context).pushNamed(
+                      Screens.jobSstForm,
+                      params: Screens.params(enterprise, jobId: job),
+                    ));
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _EndingInternship extends StatelessWidget {
+  const _EndingInternship();
+
+  @override
+  Widget build(BuildContext context) {
+    final internships = internshipsToTerminate(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Terminer les stages'),
+        ...internships.map(
+          (e) {
+            final internship = e.internship!;
+            final student = e.student!;
+            final enterprise = e.enterprise!;
+
+            return _TaskTile(
+              title: student.fullName,
+              subtitle: enterprise.name,
+              icon: Icons.task_alt,
+              date: internship.date.end,
+              buttonTitle: 'Aller au stage',
+              onTap: () => GoRouter.of(context).pushNamed(
+                Screens.student,
+                params: Screens.params(student),
+                queryParams: Screens.queryParams(pageIndex: '1'),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _PostInternshipEvaluation extends StatelessWidget {
+  const _PostInternshipEvaluation();
+
+  @override
+  Widget build(BuildContext context) {
+    final internships = postInternshipEvaluationToDo(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Faire les évaluations post-stage'),
+        ...internships.map(
+          (e) {
+            final internship = e.internship!;
+            final student = e.student!;
+            final enterprise = e.enterprise!;
+
+            return _TaskTile(
+              title: student.fullName,
+              subtitle: enterprise.name,
+              icon: Icons.rate_review,
+              date: internship.endDate!,
+              buttonTitle: 'Évaluer l\'entreprise',
+              onTap: () => GoRouter.of(context).pushNamed(
+                Screens.enterpriseEvaluationScreen,
+                params: Screens.params(internship.id),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -171,4 +290,18 @@ class _TaskTile extends StatelessWidget {
       ),
     );
   }
+}
+
+class JobEnterpriseInternshipStudent {
+  final Enterprise? enterprise;
+  final Job? job;
+  final Internship? internship;
+  final Student? student;
+
+  JobEnterpriseInternshipStudent({
+    this.enterprise,
+    this.job,
+    this.internship,
+    this.student,
+  });
 }
