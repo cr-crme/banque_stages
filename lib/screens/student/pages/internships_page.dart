@@ -1,16 +1,17 @@
-import 'package:crcrme_material_theme/crcrme_material_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:crcrme_material_theme/crcrme_material_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import 'widgets/internship_details.dart';
 import 'widgets/internship_documents.dart';
-import 'widgets/internship_skills.dart';
 import 'widgets/internship_quick_access.dart';
+import 'widgets/internship_skills.dart';
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({super.key, required this.student});
@@ -128,12 +129,16 @@ class _StudentInternshipListViewState
     }
   }
 
-  bool _isInCharge = true;
-  bool _canChangeInCharge = false;
+  bool _isSupervisingInternship(internship) {
+    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    return internship.supervisingTeacherIds.contains(myId);
+  }
 
   @override
   Widget build(BuildContext context) {
     _prepareExpander(widget.internships);
+
+    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,6 +150,9 @@ class _StudentInternshipListViewState
                     _expanded[widget.internships[panelIndex].id] = !isExpanded),
             children: widget.internships.asMap().keys.map((index) {
               final internship = widget.internships[index];
+              final canChangeSupervisingStatus =
+                  internship.signatoryTeacherId != myId;
+
               final endDate = internship.endDate == null
                   ? DateFormat.yMMMd('fr_CA').format(internship.date.end)
                   : DateFormat.yMMMd('fr_CA').format(internship.endDate!);
@@ -170,19 +178,24 @@ class _StudentInternshipListViewState
                         'de supervision',
                     child: InkWell(
                       borderRadius: BorderRadius.circular(25),
-                      // TODO finish the taking in charge logic
-                      onTap: _canChangeInCharge
-                          ? () => setState(() {
-                                _isInCharge = !_isInCharge;
-                              })
+                      onTap: canChangeSupervisingStatus
+                          ? () {
+                              if (_isSupervisingInternship(internship)) {
+                                internship.removeSupervisingTeacher(myId);
+                              } else {
+                                internship.addSupervisingTeacher(myId);
+                              }
+                              InternshipsProvider.of(context, listen: false)
+                                  .replace(internship);
+                            }
                           : null,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Icon(
-                            _isInCharge
+                            _isSupervisingInternship(internship)
                                 ? Icons.person_add
                                 : Icons.person_remove,
-                            color: _canChangeInCharge
+                            color: canChangeSupervisingStatus
                                 ? Theme.of(context).primaryColor
                                 : disabled),
                       ),
@@ -195,8 +208,8 @@ class _StudentInternshipListViewState
                       InternshipQuickAccess(internshipId: internship.id),
                       InternshipDetails(
                           key: detailKeys[internship.id],
-                          internship: internship),
-                      InternshipSkills(internship: internship),
+                          internshipId: internship.id),
+                      InternshipSkills(internshipId: internship.id),
                       InternshipDocuments(internship: internship),
                     ]),
               );

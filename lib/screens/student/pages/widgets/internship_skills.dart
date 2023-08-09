@@ -2,6 +2,8 @@ import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -12,9 +14,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class InternshipSkills extends StatefulWidget {
-  const InternshipSkills({super.key, required this.internship});
+  const InternshipSkills({super.key, required this.internshipId});
 
-  final Internship internship;
+  final String internshipId;
 
   @override
   State<InternshipSkills> createState() => _InternshipSkillsState();
@@ -25,6 +27,10 @@ class _InternshipSkillsState extends State<InternshipSkills> {
 
   @override
   Widget build(BuildContext context) {
+    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final internship =
+        InternshipsProvider.of(context).fromId(widget.internshipId);
+
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 24),
       child: ExpansionPanelList(
@@ -49,23 +55,26 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                     Align(
                         alignment: Alignment.centerLeft,
                         child: _SpecificSkillBody(
-                            internship: widget.internship,
-                            evaluation: widget.internship.skillEvaluations)),
-                    Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 3),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(18))),
-                      child: IconButton(
-                        onPressed: () => GoRouter.of(context).pushNamed(
-                          Screens.skillEvaluationMainScreen,
-                          params: Screens.params(widget.internship.id),
-                          queryParams: Screens.queryParams(editMode: '1'),
+                            internship: internship,
+                            evaluation: internship.skillEvaluations)),
+                    Visibility(
+                      visible: internship.supervisingTeacherIds.contains(myId),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 3),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18))),
+                        child: IconButton(
+                          onPressed: () => GoRouter.of(context).pushNamed(
+                            Screens.skillEvaluationMainScreen,
+                            params: Screens.params(internship.id),
+                            queryParams: Screens.queryParams(editMode: '1'),
+                          ),
+                          icon: const Icon(Icons.add_chart_rounded),
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        icon: const Icon(Icons.add_chart_rounded),
-                        color: Theme.of(context).colorScheme.primary,
                       ),
                     )
                   ],
@@ -77,23 +86,26 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                     Align(
                         alignment: Alignment.centerLeft,
                         child: _AttitudeBody(
-                            internship: widget.internship,
-                            evaluation: widget.internship.attitudeEvaluations)),
-                    Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 3),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(18))),
-                      child: IconButton(
-                        onPressed: () => GoRouter.of(context).pushNamed(
-                            Screens.attitudeEvaluationScreen,
-                            queryParams: Screens.queryParams(editMode: '1'),
-                            extra: AttitudeEvaluationFormController(
-                                internshipId: widget.internship.id)),
-                        icon: const Icon(Icons.playlist_add_sharp),
-                        color: Theme.of(context).colorScheme.primary,
+                            internship: internship,
+                            evaluation: internship.attitudeEvaluations)),
+                    Visibility(
+                      visible: internship.supervisingTeacherIds.contains(myId),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 3),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18))),
+                        child: IconButton(
+                          onPressed: () => GoRouter.of(context).pushNamed(
+                              Screens.attitudeEvaluationScreen,
+                              queryParams: Screens.queryParams(editMode: '1'),
+                              extra: AttitudeEvaluationFormController(
+                                  internshipId: internship.id)),
+                          icon: const Icon(Icons.playlist_add_sharp),
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                       ),
                     )
                   ],

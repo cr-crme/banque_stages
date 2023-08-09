@@ -7,6 +7,7 @@ import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart'
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
 import 'package:flutter/material.dart';
@@ -66,9 +67,9 @@ class _InternshipController {
 }
 
 class InternshipDetails extends StatefulWidget {
-  const InternshipDetails({super.key, required this.internship});
+  const InternshipDetails({super.key, required this.internshipId});
 
-  final Internship internship;
+  final String internshipId;
 
   @override
   State<InternshipDetails> createState() => InternshipDetailsState();
@@ -78,7 +79,18 @@ class InternshipDetailsState extends State<InternshipDetails> {
   bool _isExpanded = false;
   bool _editMode = false;
   bool get editMode => _editMode;
-  late var _internshipController = _InternshipController(widget.internship);
+
+  late Internship _internship;
+  late _InternshipController _internshipController;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _internship = InternshipsProvider.of(context)
+        .firstWhere((e) => e.id == widget.internshipId);
+
+    _internshipController = _InternshipController(_internship);
+  }
 
   void _toggleEditMode({bool save = true}) {
     if (_editMode) {
@@ -89,7 +101,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
       }
     } else {
       _editMode = true;
-      _internshipController = _InternshipController(widget.internship);
+      _internshipController = _InternshipController(_internship);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setState(() {});
       });
@@ -112,15 +124,15 @@ class InternshipDetailsState extends State<InternshipDetails> {
 
     // Saving the values that do not require an extra version
     if (_internshipController.achievedLengthChanged) {
-      InternshipsProvider.of(context, listen: false).replace(widget.internship
+      InternshipsProvider.of(context, listen: false).replace(_internship
           .copyWith(achievedLength: _internshipController._achievedLength));
     }
 
     // Saving the values that require an extra version
     if (_internshipController.hasChanged) {
-      widget.internship.addVersion(
+      _internship.addVersion(
           versionDate: DateTime.now(),
-          supervisor: widget.internship.supervisor.copyWith(
+          supervisor: _internship.supervisor.copyWith(
               firstName:
                   _internshipController.supervisorFirstNameController.text,
               lastName: _internshipController.supervisorLastNameController.text,
@@ -131,7 +143,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
           weeklySchedules:
               _internshipController.scheduleController.weeklySchedules);
 
-      InternshipsProvider.of(context, listen: false).replace(widget.internship);
+      InternshipsProvider.of(context, listen: false).replace(_internship);
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -166,6 +178,8 @@ class InternshipDetailsState extends State<InternshipDetails> {
 
   @override
   Widget build(BuildContext context) {
+    final myId = TeachersProvider.of(context).currentTeacherId;
+
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 24),
       child: ExpansionPanelList(
@@ -189,7 +203,9 @@ class InternshipDetailsState extends State<InternshipDetails> {
                         .textTheme
                         .titleLarge!
                         .copyWith(color: Colors.black)),
-                if (_isExpanded && widget.internship.isActive)
+                if (_isExpanded &&
+                    _internship.isActive &&
+                    _internship.supervisingTeacherIds.contains(myId))
                   IconButton(
                       onPressed: _toggleEditMode,
                       icon: Icon(
@@ -199,7 +215,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
               ],
             ),
             body: _InternshipBody(
-              internship: widget.internship,
+              internship: _internship,
               editMode: _editMode,
               onRequestChangedDates: _promptDateRange,
               internshipController: _internshipController,
@@ -228,19 +244,21 @@ class _InternshipBody extends StatelessWidget {
   static const TextStyle _titleStyle = TextStyle(fontWeight: FontWeight.bold);
   static const _interline = 12.0;
 
-  Widget _buildTeacher({required String text}) {
+  Widget _buildTeachers(
+      {required List<String> supervisors, required String signatoryTeacher}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // TODO Put all the supervisors
         const Text(
-            'Enseignant\u00b7e\u00b7s superviseur\u00b7e\u00b7s de stage',
+            'Enseignant\u00b7e\u00b7s superviseur\u00b7e\u00b7s de stage\u00a0:',
             style: _titleStyle),
+        ItemizedText(supervisors),
+        const SizedBox(height: 12),
+        const Text('Signataire du contrat de stage\u00a0:', style: _titleStyle),
         Padding(
           padding: const EdgeInsets.only(top: 2, bottom: _interline),
-          child: Text(text),
+          child: Text(signatoryTeacher),
         )
-        // TODO add "Signataire du stage"
       ],
     );
   }
@@ -448,10 +466,17 @@ class _InternshipBody extends StatelessWidget {
     final enterprises = EnterprisesProvider.of(context);
     final job = enterprises[internship.enterpriseId].jobs[internship.jobId];
 
+    final supervisors =
+        teachers.where((e) => internship.supervisingTeacherIds.contains(e.id));
+    final signatoryTeacher =
+        teachers.firstWhere((e) => e.id == internship.signatoryTeacherId);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTeacher(text: teachers[internship.teacherId].fullName),
+        _buildTeachers(
+            supervisors: supervisors.map((e) => e.fullName).toList(),
+            signatoryTeacher: signatoryTeacher.fullName),
         _buildJob(
             'Métier${internship.extraSpecializationsId.isNotEmpty ? ' principal' : ''}',
             specialization: job.specialization),

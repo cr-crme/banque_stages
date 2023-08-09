@@ -83,7 +83,9 @@ class _InternshipEnrollmentScreenState
     final internship = Internship(
       versionDate: DateTime.now(),
       studentId: _generalInfoKey.currentState!.student!.id,
-      teacherId: TeachersProvider.of(context, listen: false).currentTeacherId,
+      signatoryTeacherId:
+          TeachersProvider.of(context, listen: false).currentTeacherId,
+      extraSupervisingTeacherIds: [],
       enterpriseId: _generalInfoKey.currentState!.enterprise!.id,
       jobId: enterprise.jobs
           .firstWhere((job) =>

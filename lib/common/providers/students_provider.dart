@@ -42,7 +42,7 @@ class StudentsProvider extends FirebaseListProvided<Student> {
     // Add them those that were transfered to me
     for (final internship in internships) {
       // If I am not in charge of this internship
-      if (internship.teacherId != myTeacherId) continue;
+      if (!internship.supervisingTeacherIds.contains(myTeacherId)) continue;
 
       // If it is not active (or that we should keep the inactive)
       if (activeOnly && internship.isNotActive) continue;

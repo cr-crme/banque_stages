@@ -181,7 +181,16 @@ class _MutableElements extends ItemSerializable {
 class Internship extends ItemSerializable {
   // Elements fixed across versions of the same stage
   final String studentId;
-  final String teacherId;
+  final String signatoryTeacherId;
+  final List<String> _extraSupervisingTeacherIds;
+  List<String> get supervisingTeacherIds =>
+      [signatoryTeacherId, ..._extraSupervisingTeacherIds];
+  void addSupervisingTeacher(String id) {
+    if (id != signatoryTeacherId) _extraSupervisingTeacherIds.add(id);
+  }
+
+  void removeSupervisingTeacher(String id) =>
+      _extraSupervisingTeacherIds.remove(id);
 
   final String enterpriseId;
   final String jobId; // Main job attached to the enterprise
@@ -225,7 +234,8 @@ class Internship extends ItemSerializable {
   Internship._({
     required super.id,
     required this.studentId,
-    required this.teacherId,
+    required this.signatoryTeacherId,
+    required List<String> extraSupervisingTeacherIds,
     required this.enterpriseId,
     required this.jobId,
     required this.extraSpecializationsId,
@@ -238,12 +248,16 @@ class Internship extends ItemSerializable {
     required this.skillEvaluations,
     required this.attitudeEvaluations,
     required this.enterpriseEvaluation,
-  }) : _mutables = mutables;
+  })  : _mutables = mutables,
+        _extraSupervisingTeacherIds = extraSupervisingTeacherIds {
+    _extraSupervisingTeacherIds.remove(signatoryTeacherId);
+  }
 
   Internship({
     super.id,
     required this.studentId,
-    required this.teacherId,
+    required this.signatoryTeacherId,
+    required List<String> extraSupervisingTeacherIds,
     required this.enterpriseId,
     required this.jobId,
     required this.extraSpecializationsId,
@@ -259,18 +273,23 @@ class Internship extends ItemSerializable {
     this.skillEvaluations = const [],
     this.attitudeEvaluations = const [],
     this.enterpriseEvaluation,
-  }) : _mutables = [
+  })  : _extraSupervisingTeacherIds = extraSupervisingTeacherIds,
+        _mutables = [
           _MutableElements(
             versionDate: versionDate,
             supervisor: supervisor,
             date: date,
             weeklySchedules: weeklySchedules,
           )
-        ];
+        ] {
+    _extraSupervisingTeacherIds.remove(signatoryTeacherId);
+  }
 
   Internship.fromSerialized(map)
       : studentId = map['student'],
-        teacherId = map['teacherId'],
+        signatoryTeacherId = map['signatoryTeacherId'],
+        _extraSupervisingTeacherIds =
+            _stringListFromSerialized(map['extraSupervisingTeacherIds']),
         enterpriseId = map['enterprise'],
         jobId = map['jobId'],
         extraSpecializationsId = map['extraSpecializationsId'] == -1
@@ -308,7 +327,8 @@ class Internship extends ItemSerializable {
   Map<String, dynamic> serializedMap() {
     return {
       'student': studentId,
-      'teacherId': teacherId,
+      'signatoryTeacherId': signatoryTeacherId,
+      'extraSupervisingTeacherIds': _extraSupervisingTeacherIds,
       'enterprise': enterpriseId,
       'jobId': jobId,
       'extraSpecializationsId':
@@ -343,7 +363,8 @@ class Internship extends ItemSerializable {
   Internship copyWith({
     String? id,
     String? studentId,
-    String? teacherId,
+    String? signatoryTeacherId,
+    List<String>? extraSupervisingTeacherIds,
     String? enterpriseId,
     String? jobId,
     List<String>? extraSpecializationsId,
@@ -371,7 +392,9 @@ class Internship extends ItemSerializable {
     return Internship._(
       id: id ?? this.id,
       studentId: studentId ?? this.studentId,
-      teacherId: teacherId ?? this.teacherId,
+      signatoryTeacherId: signatoryTeacherId ?? this.signatoryTeacherId,
+      extraSupervisingTeacherIds:
+          extraSupervisingTeacherIds ?? _extraSupervisingTeacherIds,
       enterpriseId: enterpriseId ?? this.enterpriseId,
       jobId: jobId ?? this.jobId,
       extraSpecializationsId:
@@ -392,7 +415,8 @@ class Internship extends ItemSerializable {
     return Internship._(
       id: id,
       studentId: studentId,
-      teacherId: teacherId,
+      signatoryTeacherId: signatoryTeacherId,
+      extraSupervisingTeacherIds: [..._extraSupervisingTeacherIds],
       enterpriseId: enterpriseId,
       jobId: jobId,
       extraSpecializationsId: [...extraSpecializationsId],

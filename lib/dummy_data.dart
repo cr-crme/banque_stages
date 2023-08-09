@@ -900,7 +900,8 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Cedric Masson').id,
-    teacherId: teachers.currentTeacherId,
+    signatoryTeacherId: teachers.currentTeacherId,
+    extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Care').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Auto Care').jobs[0].id,
     extraSpecializationsId: [
@@ -957,7 +958,8 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Thomas Caron').id,
-    teacherId: teachers.currentTeacherId,
+    signatoryTeacherId: teachers.currentTeacherId,
+    extraSupervisingTeacherIds: [],
     enterpriseId:
         enterprises.firstWhere((e) => e.name == 'Boucherie Marien').id,
     jobId:
@@ -1008,7 +1010,8 @@ Future<void> addDummyInterships(
   var internship = Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
-    teacherId: teachers.currentTeacherId,
+    signatoryTeacherId: teachers.currentTeacherId,
+    extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
     extraSpecializationsId: [],
@@ -1075,7 +1078,8 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Vincent Picard').id,
-    teacherId: teachers.currentTeacherId,
+    signatoryTeacherId: teachers.currentTeacherId,
+    extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'IGA').id,
     jobId: enterprises.firstWhere((e) => e.name == 'IGA').jobs[0].id,
     extraSpecializationsId: [],
@@ -1114,7 +1118,8 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
-    teacherId: '42', // This is a Roméo Montaigu's student
+    signatoryTeacherId: '42', // This is a Roméo Montaigu's student
+    extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
     extraSpecializationsId: [],
@@ -1154,7 +1159,8 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
-    teacherId: '42',
+    signatoryTeacherId: '42',
+    extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
     extraSpecializationsId: [],
@@ -1203,7 +1209,8 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
-    teacherId: teachers.currentTeacherId,
+    signatoryTeacherId: '42',
+    extraSupervisingTeacherIds: [teachers.currentTeacherId],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
     extraSpecializationsId: [],
@@ -1254,7 +1261,8 @@ Future<void> addDummyInterships(
     Internship(
       versionDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
-      teacherId: teachers.currentTeacherId,
+      signatoryTeacherId: teachers.currentTeacherId,
+      extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').jobs[0].id,
       extraSpecializationsId: [],
@@ -1291,7 +1299,8 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
-    teacherId: teachers.currentTeacherId,
+    signatoryTeacherId: teachers.currentTeacherId,
+    extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,
     extraSpecializationsId: [],
