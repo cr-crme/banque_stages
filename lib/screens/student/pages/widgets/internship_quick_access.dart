@@ -33,93 +33,83 @@ class InternshipQuickAccess extends StatelessWidget {
   }
 
   Widget _buildQuickAccessButton(context, {required Internship internship}) {
+    // TODO remove if not my supervized
+    // TODO Add button taking charge of internship (if not my supervized student)
     return Padding(
       padding: const EdgeInsets.only(left: 24.0, right: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(bottom: 8.0),
-            child: Text(
-              'Actions à réaliser',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
+              Column(
                 children: [
-                  Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 3),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18))),
-                        child: IconButton(
-                          onPressed: () => GoRouter.of(context).pushNamed(
-                            Screens.skillEvaluationMainScreen,
-                            params: Screens.params(internshipId),
-                            queryParams: Screens.queryParams(editMode: '1'),
-                          ),
-                          icon: const Icon(Icons.add_chart_rounded),
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                      Text(
-                        'Évaluer C1',
-                        style: TextStyle(
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
                             color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.w600),
+                            width: 3),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(18))),
+                    child: IconButton(
+                      onPressed: () => GoRouter.of(context).pushNamed(
+                        Screens.skillEvaluationMainScreen,
+                        params: Screens.params(internshipId),
+                        queryParams: Screens.queryParams(editMode: '1'),
                       ),
-                    ],
+                      icon: const Icon(Icons.add_chart_rounded),
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
-                  const SizedBox(width: 12),
-                  Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 3),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18))),
-                        child: IconButton(
-                          onPressed: () => GoRouter.of(context).pushNamed(
-                              Screens.attitudeEvaluationScreen,
-                              queryParams: Screens.queryParams(editMode: '1'),
-                              extra: AttitudeEvaluationFormController(
-                                  internshipId: internshipId)),
-                          icon: const Icon(Icons.playlist_add_sharp),
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                      Text(
-                        'Évaluer C2',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ],
+                  Text(
+                    'Évaluer C1',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
-              if (internship.isActive)
-                TextButton(
-                    onPressed: () => showDialog(
-                        context: context,
-                        builder: (context) => FinalizeInternshipDialog(
-                            internshipId: internshipId)),
-                    child: const Text('Terminer le stage')),
-              if (internship.isEnterpriseEvaluationPending)
-                TextButton(
-                    onPressed: () => _evaluateEnterprise(context, internship),
-                    child: const Text('Évaluer l\'entreprise')),
+              const SizedBox(width: 12),
+              Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 3),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(18))),
+                    child: IconButton(
+                      onPressed: () => GoRouter.of(context).pushNamed(
+                          Screens.attitudeEvaluationScreen,
+                          queryParams: Screens.queryParams(editMode: '1'),
+                          extra: AttitudeEvaluationFormController(
+                              internshipId: internshipId)),
+                      icon: const Icon(Icons.playlist_add_sharp),
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  Text(
+                    'Évaluer C2',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
             ],
-          )
+          ),
+          if (internship.isActive)
+            TextButton(
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) =>
+                        FinalizeInternshipDialog(internshipId: internshipId)),
+                child: const Text('Terminer le stage')),
+          if (internship.isEnterpriseEvaluationPending)
+            TextButton(
+                onPressed: () => _evaluateEnterprise(context, internship),
+                child: const Text('Évaluer l\'entreprise')),
         ],
       ),
     );
@@ -127,21 +117,40 @@ class InternshipQuickAccess extends StatelessWidget {
 
   Widget _buildEnterprise(context, {required Enterprise enterprise}) {
     return Padding(
-      padding: const EdgeInsets.only(left: 24, bottom: 12),
-      child: GestureDetector(
-        onTap: () => GoRouter.of(context).pushNamed(
-          Screens.enterprise,
-          params: Screens.params(enterprise),
-          queryParams: Screens.queryParams(pageIndex: '3'),
-        ),
-        child: Text(
-          enterprise.name,
-          style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              decoration: TextDecoration.underline,
-              color: Colors.blue),
-        ),
+      padding: const EdgeInsets.only(left: 24, bottom: 12, right: 24),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                enterprise.name,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: InkWell(
+                  onTap: () => GoRouter.of(context).pushNamed(
+                    Screens.enterprise,
+                    params: Screens.params(enterprise),
+                    queryParams: Screens.queryParams(pageIndex: '3'),
+                  ),
+                  borderRadius: BorderRadius.circular(25),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      Icons.open_in_new,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

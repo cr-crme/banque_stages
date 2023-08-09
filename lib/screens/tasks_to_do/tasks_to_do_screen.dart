@@ -28,17 +28,21 @@ List<_JobEnterpriseInternshipStudent> _enterprisesToEvaluate(context) {
   final enterprises = EnterprisesProvider.of(context);
   final internships = InternshipsProvider.of(context);
 
+  // TODO limit to my supervized
+
   // This happens sometimes, so we need to wait a frame
   if (internships.isEmpty || enterprises.isEmpty) return [];
 
   List<_JobEnterpriseInternshipStudent> out = [];
-
   for (final enterprise in enterprises) {
     for (final job in enterprise.jobs) {
-      if (!job.sstEvaluation.isFilled &&
-          internships.any((e) => e.jobId == job.id)) {
-        final interns = internships.where((e) => e.jobId == job.id).toList();
+      if (!job.sstEvaluation.isFilled) {
+        final interns =
+            internships.where((e) => e.isActive && e.jobId == job.id).toList();
+        if (interns.isEmpty) continue;
+
         interns.sort((a, b) => a.date.start.compareTo(b.date.start));
+
         out.add(_JobEnterpriseInternshipStudent(
             enterprise: enterprise, job: job, internship: interns[0]));
       }
@@ -159,7 +163,9 @@ class _SstRisk extends StatelessWidget {
                       title: enterprise.name,
                       subtitle: job.specialization.name,
                       icon: Icons.warning,
+                      iconColor: Theme.of(context).colorScheme.secondary,
                       date: internship.date.start,
+                      // TODO still have a bug when only answering one question
                       buttonTitle: 'Remplir le\nquestionnaire SST',
                       onTap: () => GoRouter.of(context).pushNamed(
                             Screens.jobSstForm,
@@ -198,6 +204,7 @@ class _EndingInternship extends StatelessWidget {
                     title: student.fullName,
                     subtitle: enterprise.name,
                     icon: Icons.task_alt,
+                    iconColor: const Color.fromARGB(255, 12, 128, 24),
                     date: internship.date.end,
                     buttonTitle: 'Aller au stage',
                     onTap: () => GoRouter.of(context).pushNamed(
@@ -239,6 +246,7 @@ class _PostInternshipEvaluation extends StatelessWidget {
                     title: student.fullName,
                     subtitle: enterprise.name,
                     icon: Icons.rate_review,
+                    iconColor: Colors.blueGrey,
                     date: internship.endDate!,
                     buttonTitle: 'Évaluer l\'entreprise',
                     onTap: () => GoRouter.of(context).pushNamed(
@@ -258,6 +266,7 @@ class _TaskTile extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.icon,
+    required this.iconColor,
     required this.date,
     required this.buttonTitle,
     required this.onTap,
@@ -266,6 +275,7 @@ class _TaskTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData icon;
+  final Color iconColor;
   final DateTime date;
   final String buttonTitle;
   final Function() onTap;
@@ -278,20 +288,23 @@ class _TaskTile extends StatelessWidget {
         children: [
           const SizedBox(height: 8),
           Row(children: [
-            SizedBox(width: 60, child: Icon(icon, color: Colors.grey)),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 8),
-              ],
+            SizedBox(width: 60, child: Icon(icon, color: iconColor)),
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 72,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
             )
           ]),
           Row(

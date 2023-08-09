@@ -146,14 +146,6 @@ class _InternshipListState extends State<_InternshipList> {
     );
   }
 
-  void _evaluateEnterprise(Internship internship) async {
-    GoRouter.of(context).pushNamed(
-      Screens.enterpriseEvaluationScreen,
-      params: Screens.params(internship.id),
-    );
-    setState(() {});
-  }
-
   void _sendEmail(Teacher teacher) {
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
@@ -242,7 +234,7 @@ class _InternshipListState extends State<_InternshipList> {
                                             ? null
                                             : Theme.of(context)
                                                 .textTheme
-                                                .titleMedium!
+                                                .titleSmall!
                                                 .copyWith(
                                                   decoration:
                                                       TextDecoration.underline,
@@ -262,39 +254,22 @@ class _InternshipListState extends State<_InternshipList> {
                                   const EdgeInsets.only(top: 10.0, bottom: 15),
                               child: _dateBuild(internship),
                             ),
-                            if (canControl &&
-                                (internship.isActive ||
-                                    internship.isEnterpriseEvaluationPending))
+                            if (canControl)
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  padding: const EdgeInsets.only(
+                                      bottom: 8.0, right: 12),
                                   child: TextButton(
-                                    onPressed: () => internship.isActive
-                                        ? GoRouter.of(context).pushNamed(
-                                            Screens.student,
-                                            params: Screens.params(student),
-                                            queryParams: Screens.queryParams(
-                                                pageIndex: '1'),
-                                          )
-                                        : _evaluateEnterprise(internship),
-                                    style: Theme.of(context)
-                                        .textButtonTheme
-                                        .style!
-                                        .copyWith(
-                                          minimumSize:
-                                              MaterialStateProperty.all(
-                                                  const Size(0, 50)),
-                                          maximumSize:
-                                              MaterialStateProperty.all(
-                                                  const Size(200, 50)),
-                                        ),
-                                    child: Text(
-                                      internship.isActive
-                                          ? 'Détails du stage'
-                                          : 'Évaluer l\'entreprise \npour ce stage',
-                                      textAlign: TextAlign.center,
+                                    onPressed: () =>
+                                        GoRouter.of(context).pushNamed(
+                                      Screens.student,
+                                      params: Screens.params(student),
+                                      queryParams:
+                                          Screens.queryParams(pageIndex: '1'),
                                     ),
+                                    child: const Text('Détails du stage',
+                                        textAlign: TextAlign.center),
                                   ),
                                 ),
                               ),

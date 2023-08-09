@@ -184,6 +184,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
             isExpanded: _isExpanded,
             canTapOnHeader: true,
             headerBuilder: (context, isExpanded) => Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Détails du stage',

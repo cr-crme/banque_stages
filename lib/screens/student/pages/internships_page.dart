@@ -1,3 +1,4 @@
+import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -127,6 +128,9 @@ class _StudentInternshipListViewState
     }
   }
 
+  bool _isInCharge = true;
+  bool _canChangeInCharge = false;
+
   @override
   Widget build(BuildContext context) {
     _prepareExpander(widget.internships);
@@ -161,6 +165,29 @@ class _StudentInternshipListViewState
                       .fromId(internship.jobId)
                       .specialization
                       .idWithName),
+                  trailing: Tooltip(
+                    message: 'Ajouter ou retirer l\'élève à votre tableau '
+                        'de supervision',
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(25),
+                      // TODO finish the taking in charge logic
+                      onTap: _canChangeInCharge
+                          ? () => setState(() {
+                                _isInCharge = !_isInCharge;
+                              })
+                          : null,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                            _isInCharge
+                                ? Icons.person_add
+                                : Icons.person_remove,
+                            color: _canChangeInCharge
+                                ? Theme.of(context).primaryColor
+                                : disabled),
+                      ),
+                    ),
+                  ),
                 ),
                 body: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
