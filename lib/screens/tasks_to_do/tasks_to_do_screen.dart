@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
@@ -51,7 +52,7 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
   // We should terminate an internship if the end date is passed for more that
   // one day
   final internships = InternshipsProvider.of(context);
-  final students = StudentsProvider.studentsInMyGroup(context);
+  final students = StudentsProvider.mySupervizedStudents(context);
   final enterprises = EnterprisesProvider.of(context);
 
   // This happens sometimes, so we need to wait a frame
@@ -60,9 +61,11 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
   List<_JobEnterpriseInternshipStudent> out = [];
 
   for (final internship in internships) {
-    if (internship.shouldTerminate &&
-        students.any((e) => e.id == internship.studentId)) {
-      final student = students.firstWhere((e) => e.id == internship.studentId);
+    if (internship.shouldTerminate) {
+      final student =
+          students.firstWhereOrNull((e) => e.id == internship.studentId);
+      if (student == null) continue;
+
       final enterprise = enterprises.fromId(internship.enterpriseId);
 
       out.add(_JobEnterpriseInternshipStudent(
@@ -79,7 +82,7 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
 List<_JobEnterpriseInternshipStudent> _postInternshipEvaluationToDo(context) {
   // We should evaluate an internship as soon as it is terminated
   final internships = InternshipsProvider.of(context);
-  final students = StudentsProvider.studentsInMyGroup(context);
+  final students = StudentsProvider.mySupervizedStudents(context);
   final enterprises = EnterprisesProvider.of(context);
 
   // This happens sometimes, so we need to wait a frame
@@ -88,9 +91,11 @@ List<_JobEnterpriseInternshipStudent> _postInternshipEvaluationToDo(context) {
   List<_JobEnterpriseInternshipStudent> out = [];
 
   for (final internship in internships) {
-    if (internship.isEnterpriseEvaluationPending &&
-        students.any((e) => e.id == internship.studentId)) {
-      final student = students.firstWhere((e) => e.id == internship.studentId);
+    if (internship.isEnterpriseEvaluationPending) {
+      final student =
+          students.firstWhereOrNull((e) => e.id == internship.studentId);
+      if (student == null) continue;
+
       final enterprise = enterprises.fromId(internship.enterpriseId);
 
       out.add(_JobEnterpriseInternshipStudent(

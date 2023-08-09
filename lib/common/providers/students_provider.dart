@@ -28,41 +28,51 @@ class StudentsProvider extends FirebaseListProvided<Student> {
   }
 
   ///
-  /// Get the subset of students who the current teacher is assigned to, meaning
-  /// they supervise this student for their internship.
-  /// If [onlyActiveInternship] is set to true, then the student must have an
-  /// active internship to be added. Otherwise all students from the teachers
-  /// are returned (even though they are not assigned to a particular
-  /// internship)
-  ///
-  static List<Student> mySupervizedStudents(BuildContext context,
-      {listen = true, bool onlyActiveInternship = false}) {
+  /// Get the subset of students who the current teacher is assigned to.
+  static List<Student> myAssignedStudents(BuildContext context,
+      {listen = true}) {
     final myTeacherId =
         TeachersProvider.of(context, listen: false).currentTeacherId;
 
     // Get all the student in my group, but only keep those I supervise
-    var students = studentsInMyGroup(context, listen: false);
-    students = students.where((e) => e.teacherId == myTeacherId).toList();
+    return studentsInMyGroup(context, listen: false)
+        .where((e) => e.teacherId == myTeacherId)
+        .toList();
+  }
 
-    // If we don't need the active interships, we are done
-    if (!onlyActiveInternship) return students;
-
+  ///
+  /// Get all the supervized students, that is the assigned students, plus
+  /// those from another teacher that transfered them. This does not include
+  /// the transfered internships that have ended, unless
+  /// [includeFinishedFromTransfered] is set to true.
+  static List<Student> mySupervizedStudents(BuildContext context,
+      {listen = true, bool includeFinishedFromTransfered = false}) {
+    final allStudents = studentsInMyGroup(context, listen: listen);
     final internships = InternshipsProvider.of(context, listen: false);
-    final List<Student> out = [];
+    final myTeacherId =
+        TeachersProvider.of(context, listen: false).currentTeacherId;
+
+    // Get the student I supervise by default
+    final out = myAssignedStudents(context);
+    // Add them those that were transfered to me
     for (final internship in internships) {
-      // If it is not active or an internship I am in charge
-      if (internship.isNotActive || internship.teacherId != myTeacherId) {
-        continue;
-      }
+      // If I am not in charge of this internship
+      if (internship.teacherId != myTeacherId) continue;
 
-      // If none of my students is assigned to that internship
-      if (!students.any((e) => e.id == internship.studentId)) continue;
+      // If it is not active (or that we should keep the inactive)
+      if (internship.isNotActive || includeFinishedFromTransfered) continue;
 
-      // If the student assigned to that internship was already added
+      // Get the student from that internship
       final student =
-          students.firstWhereOrNull((e) => e.id == internship.studentId);
+          allStudents.firstWhereOrNull((e) => e.id == internship.studentId);
+
+      // If none of the students I can access is assigned to that internship
       if (student == null) continue;
 
+      // If the student assigned to that internship was already added
+      if (out.any((e) => e.id == student.id)) continue;
+
+      // Otherwise all this, add it to the pool
       out.add(student);
     }
 
@@ -72,19 +82,20 @@ class StudentsProvider extends FirebaseListProvided<Student> {
   ///
   /// This is an instance to the Provider, 99% of the time this should not be called.
   /// Using this can lead to a potential security breach as it access all the students
-  /// info without restriction
+  /// info without restriction. It is used for debug purposes.
   static StudentsProvider instance(context, {bool listen = true}) {
     return _of(context, listen: listen);
   }
 
   ///
   /// This returns all the students from the database but with very limited info
-  static List<Student> allStudentsLimited(context) {
+  static List<Student> allStudentsLimitedInfo(context) {
     return _of(context, listen: false).map((e) => e.limitedInfo).toList();
   }
 
   ///
-  /// Internal accessor to the provider
+  /// Internal accessor to the provider. This holds ALL the students, including
+  /// those that the teacher should not have access to.
   static StudentsProvider _of(BuildContext context, {listen = true}) {
     return Provider.of<StudentsProvider>(context, listen: listen);
   }
@@ -105,27 +116,4 @@ class StudentsProvider extends FirebaseListProvided<Student> {
 
     initializeFetchingData();
   }
-
-  // /// This allows to get access in read only to a student of id [studentId]
-  // /// outside of the available ones, so all the student can be shown if needed
-  // ///
-  // static Future<Student?> fromLimitedId(context,
-  //     {required String studentId}) async {
-  //   final students = StudentsProvider.of(context, listen: false);
-  //   // In case this is a student we happen to already have access, we can
-  //   // return this one already instead of fetching it from the database
-  //   if (students.hasId(studentId)) {
-  //     return students.deserializeItem(students[studentId].serialize());
-  //   }
-
-  //   final snapshot = await FirebaseDatabase.instance
-  //       .ref(students.pathToData)
-  //       .child(studentId)
-  //       .get();
-  //   if (!snapshot.exists) {
-  //     return null;
-  //   }
-
-  //   return students.deserializeItem(snapshot.value);
-  // }
 }

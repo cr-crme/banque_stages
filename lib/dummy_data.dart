@@ -30,7 +30,7 @@ bool hasDummyData(context) {
   final teachers = TeachersProvider.of(context, listen: false);
   final enterprises = EnterprisesProvider.of(context, listen: false);
   final internships = InternshipsProvider.of(context, listen: false);
-  final students = StudentsProvider.allStudentsLimited(context);
+  final students = StudentsProvider.allStudentsLimitedInfo(context);
 
   return teachers.isNotEmpty ||
       enterprises.isNotEmpty ||
@@ -703,7 +703,7 @@ Future<void> addDummyStudents(
       lastName: 'Boucher',
       dateBirth: DateTime.now(),
       email: 'm.boucher@email.com',
-      teacherId: teachers.currentTeacherId,
+      teacherId: '42',
       program: Program.fpt,
       group: '550',
       contact: Person(
@@ -786,7 +786,7 @@ Future<void> addDummyStudents(
       lastName: 'Tremblay',
       dateBirth: DateTime.now(),
       email: 'g.tremblay@email.com',
-      teacherId: teachers.currentTeacherId,
+      teacherId: '42', // This is a Roméo Montaigu's student
       program: Program.fpt,
       group: '550',
       contact: Person(
@@ -1156,9 +1156,10 @@ Future<void> addDummyInterships(
     ],
   ));
 
+  startingPeriod = DateTime.now().subtract(const Duration(days: 100));
   period = DateTimeRange(
-      start: DateTime.now(),
-      end: DateTime.now().add(Duration(days: rng.nextInt(90))));
+      start: startingPeriod,
+      end: startingPeriod.add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,

@@ -32,6 +32,12 @@ class _SupervisionChartState extends State<SupervisionChart> {
     VisitingPriority.notApplicable: true,
   };
 
+  @override
+  void initState() {
+    super.initState();
+    _showTransferedStudent(listenInternships: true);
+  }
+
   void _toggleSearchBar() {
     _isFlagFilterExpanded = false;
     _isSearchBarExpanded = !_isSearchBarExpanded;
@@ -195,22 +201,6 @@ class _SupervisionChartState extends State<SupervisionChart> {
     GoRouter.of(context).pushNamed(Screens.itinerary);
   }
 
-  Future<List<Student>> _fetchSupervizedStudents() async {
-    // Check if a student was transfered to the teacher, if so, show a dialog
-    // box to accept or refuse
-    await _showTransferedStudent(listenInternships: true);
-    if (!mounted) return [];
-
-    var out = StudentsProvider.mySupervizedStudents(context, listen: false);
-    out.sort(
-      (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
-    );
-    out = _filterByName(out);
-    out = _filterByFlag(out);
-
-    return out;
-  }
-
   void _navigateToStudentInfo(Student student) {
     GoRouter.of(context).goNamed(
       Screens.supervisionStudentDetails,
@@ -222,6 +212,13 @@ class _SupervisionChartState extends State<SupervisionChart> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final iconSize = screenSize.width / 16;
+
+    var students = StudentsProvider.mySupervizedStudents(context);
+    students.sort(
+      (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
+    );
+    students = _filterByName(students);
+    students = _filterByFlag(students);
 
     return Scaffold(
       appBar: AppBar(
@@ -258,46 +255,34 @@ class _SupervisionChartState extends State<SupervisionChart> {
                       icon: Icons.filter_alt_sharp),
                 ])),
       ),
-      body: FutureBuilder<List<Student>>(
-          future: _fetchSupervizedStudents(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+      body: Column(
+        children: [
+          if (_isSearchBarExpanded) _searchBarBuilder(),
+          if (_isFlagFilterExpanded) _flagFilterBuilder(),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: students.length,
+              itemBuilder: ((ctx, i) {
+                final student = students[i];
+                final internships =
+                    InternshipsProvider.of(context, listen: true)
+                        .byStudentId(student.id);
 
-            final students = snapshot.data!;
-            return Column(
-              children: [
-                if (_isSearchBarExpanded) _searchBarBuilder(),
-                if (_isFlagFilterExpanded) _flagFilterBuilder(),
-                Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: students.length,
-                    itemBuilder: ((ctx, i) {
-                      final student = students[i];
-                      final internships =
-                          InternshipsProvider.of(context, listen: true)
-                              .byStudentId(student.id);
-
-                      return _StudentTile(
-                        key: Key(student.id),
-                        student: student,
-                        internship:
-                            internships.isNotEmpty ? internships.last : null,
-                        onTap: () => _navigateToStudentInfo(student),
-                        onUpdatePriority: () => _updatePriority(student.id),
-                        onAlreadyEndedInternship: () =>
-                            _navigateToStudentInfo(student),
-                      );
-                    }),
-                  ),
-                ),
-              ],
-            );
-          }),
+                return _StudentTile(
+                  key: Key(student.id),
+                  student: student,
+                  internship: internships.isNotEmpty ? internships.last : null,
+                  onTap: () => _navigateToStudentInfo(student),
+                  onUpdatePriority: () => _updatePriority(student.id),
+                  onAlreadyEndedInternship: () =>
+                      _navigateToStudentInfo(student),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
       drawer: const MainDrawer(),
     );
   }
