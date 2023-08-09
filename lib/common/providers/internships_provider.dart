@@ -21,28 +21,6 @@ class InternshipsProvider extends FirebaseListProvided<Internship> {
     replace(byStudentId(studentId).last.copyWith(visitingPriority: priority));
   }
 
-  void transferStudent(
-      {required String studentId, required String newTeacherId}) {
-    final internship = byStudentId(studentId);
-    if (internship.isEmpty || internship.last.isTransfering) return;
-
-    replace(internship.last.copyWith(
-        teacherId: newTeacherId,
-        previousTeacherId: internship.last.teacherId,
-        isTransfering: true));
-  }
-
-  void acceptTransfer({required String studentId}) {
-    final internship = byStudentId(studentId);
-    replace(internship.last.copyWith(isTransfering: false));
-  }
-
-  void refuseTransfer({required String studentId}) {
-    final internship = byStudentId(studentId);
-    replace(internship.last.copyWith(
-        teacherId: internship.last.previousTeacherId, isTransfering: false));
-  }
-
   List<Internship> byStudentId(String studentId) {
     return where((internship) => internship.studentId == studentId).toList();
   }

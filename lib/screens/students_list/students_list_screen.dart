@@ -48,7 +48,7 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
   @override
   Widget build(BuildContext context) {
     final students =
-        _filterSelectedStudents(StudentsProvider.studentsInMyGroup(context));
+        _filterSelectedStudents(StudentsProvider.studentsInMyGroups(context));
 
     return Scaffold(
       appBar: AppBar(

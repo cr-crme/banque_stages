@@ -9,11 +9,9 @@ import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
-import 'package:crcrme_banque_stages/screens/supervision_chart/widgets/transfer_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,24 +20,6 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
   const SupervisionStudentDetailsScreen({super.key, required this.studentId});
 
   final String studentId;
-
-  void _transferStudent(BuildContext context) async {
-    final internships = InternshipsProvider.of(context, listen: false);
-    final teachers = [...TeachersProvider.of(context, listen: false)];
-    teachers.sort(
-        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
-    final student = StudentsProvider.studentsInMyGroup(context, listen: false)
-        .firstWhere((e) => e.id == studentId);
-
-    final answer = await showDialog<List<String>>(
-      context: context,
-      builder: (BuildContext context) =>
-          TransferDialog(students: [student], teachers: teachers),
-    );
-
-    if (answer == null) return;
-    internships.transferStudent(studentId: answer[0], newTeacherId: answer[1]);
-  }
 
   void _navigateToStudentIntership(BuildContext context) {
     GoRouter.of(context).pushNamed(
@@ -62,7 +42,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
         : null;
     final job = enterprise?.jobs[internship?.jobId];
 
-    final student = StudentsProvider.studentsInMyGroup(context)
+    final student = StudentsProvider.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == studentId);
 
     return Scaffold(
@@ -83,11 +63,6 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                   ],
                 ),
               ]),
-        actions: [
-          IconButton(
-              onPressed: () => _transferStudent(context),
-              icon: const Icon(Icons.transfer_within_a_station)),
-        ],
       ),
       body: SingleChildScrollView(
         child: student == null
@@ -200,16 +175,13 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: _visibilityFilters.map<Widget>((priority) {
             return InkWell(
-              onTap: isOver ? null : () => _updatePriority(priority),
+              onTap: () => _updatePriority(priority),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Checkbox(
-                    value: isOver
-                        ? false
-                        : priority == internship.visitingPriority,
-                    onChanged:
-                        isOver ? null : (value) => _updatePriority(priority),
+                    value: priority == internship.visitingPriority,
+                    onChanged: (value) => _updatePriority(priority),
                     fillColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                       if (states.contains(MaterialState.disabled)) {

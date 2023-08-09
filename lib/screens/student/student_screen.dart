@@ -58,7 +58,7 @@ class _StudentScreenState extends State<StudentScreen>
 
   @override
   Widget build(BuildContext context) {
-    final student = StudentsProvider.studentsInMyGroup(context)
+    final student = StudentsProvider.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == widget.id);
 
     return student == null

@@ -60,7 +60,7 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   Widget build(BuildContext context) {
     final internship = InternshipsProvider.of(context)[widget.internshipId];
 
-    final student = StudentsProvider.studentsInMyGroup(context)
+    final student = StudentsProvider.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
     return Scaffold(

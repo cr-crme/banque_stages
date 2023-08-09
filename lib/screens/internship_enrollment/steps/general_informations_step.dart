@@ -100,7 +100,7 @@ class _GeneralInformations extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final students = StudentsProvider.studentsInMyGroup(context);
+    final students = StudentsProvider.studentsInMyGroups(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

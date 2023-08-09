@@ -34,11 +34,10 @@ class TeachersProvider extends FirebaseListProvided<Teacher> {
       {bool listen = true, required String internshipId}) {
     final internship =
         InternshipsProvider.of(context, listen: listen)[internshipId];
-    final student = StudentsProvider.studentsInMyGroup(context)
+    final student = StudentsProvider.mySupervizedStudents(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
-    return student != null &&
-        (student.teacherId == _currentId || internship.teacherId == _currentId);
+    return student != null;
   }
 
   void initializeAuth(AuthProvider auth) {

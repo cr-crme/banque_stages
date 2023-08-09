@@ -661,7 +661,6 @@ Future<void> addDummyStudents(
       lastName: 'Masson',
       dateBirth: DateTime(2005, 5, 20),
       email: 'c.masson@email.com',
-      teacherId: teachers.currentTeacherId,
       program: Program.fpt,
       group: '550',
       address: await Address.fromAddress(
@@ -682,7 +681,6 @@ Future<void> addDummyStudents(
       lastName: 'Caron',
       dateBirth: DateTime.now(),
       email: 't.caron@email.com',
-      teacherId: teachers.currentTeacherId,
       program: Program.fpt,
       group: '550',
       contact: Person(
@@ -703,7 +701,6 @@ Future<void> addDummyStudents(
       lastName: 'Boucher',
       dateBirth: DateTime.now(),
       email: 'm.boucher@email.com',
-      teacherId: '42',
       program: Program.fpt,
       group: '550',
       contact: Person(
@@ -723,7 +720,6 @@ Future<void> addDummyStudents(
       lastName: 'Leblanc',
       dateBirth: DateTime.now(),
       email: 'k.leblanc@email.com',
-      teacherId: teachers.currentTeacherId,
       program: Program.fpt,
       group: '550',
       contact: Person(
@@ -744,7 +740,6 @@ Future<void> addDummyStudents(
       lastName: 'Gingras',
       dateBirth: DateTime.now(),
       email: 's.gingras@email.com',
-      teacherId: '42', // This is a Roméo Montaigu's student
       program: Program.fms,
       group: '552',
       contact: Person(
@@ -765,7 +760,6 @@ Future<void> addDummyStudents(
       lastName: 'Vargas',
       dateBirth: DateTime.now(),
       email: 'd.vargas@email.com',
-      teacherId: '42', // This is a Roméo Montaigu's student
       program: Program.fpt,
       group: '550',
       contact: Person(
@@ -786,7 +780,6 @@ Future<void> addDummyStudents(
       lastName: 'Tremblay',
       dateBirth: DateTime.now(),
       email: 'g.tremblay@email.com',
-      teacherId: '42', // This is a Roméo Montaigu's student
       program: Program.fpt,
       group: '550',
       contact: Person(
@@ -807,7 +800,6 @@ Future<void> addDummyStudents(
       lastName: 'Picard',
       dateBirth: DateTime.now(),
       email: 'v.picard@email.com',
-      teacherId: teachers.currentTeacherId,
       program: Program.fms,
       group: '550',
       contact: Person(
@@ -828,7 +820,6 @@ Future<void> addDummyStudents(
       lastName: 'Monette',
       dateBirth: DateTime.now(),
       email: 'v.monette@email.com',
-      teacherId: teachers.currentTeacherId,
       program: Program.fms,
       group: '551',
       contact: Person(
@@ -849,7 +840,6 @@ Future<void> addDummyStudents(
       lastName: 'Poulain',
       dateBirth: DateTime.now(),
       email: 'm.poulain@email.com',
-      teacherId: teachers.currentTeacherId,
       program: Program.fms,
       group: '550',
       contact: Person(
@@ -1164,8 +1154,7 @@ Future<void> addDummyInterships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
-    teacherId: '42', // Transfered to Roméo Montaigu
-    isTransfering: false,
+    teacherId: '42',
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
     extraSpecializationsId: [],
@@ -1215,8 +1204,6 @@ Future<void> addDummyInterships(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
     teacherId: teachers.currentTeacherId,
-    previousTeacherId: '42', // Was transfered from Roméo Montaigu
-    isTransfering: true,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
     extraSpecializationsId: [],
@@ -1268,7 +1255,6 @@ Future<void> addDummyInterships(
       versionDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
       teacherId: teachers.currentTeacherId,
-      isTransfering: false,
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').jobs[0].id,
       extraSpecializationsId: [],
@@ -1306,7 +1292,6 @@ Future<void> addDummyInterships(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
     teacherId: teachers.currentTeacherId,
-    isTransfering: false,
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,
     extraSpecializationsId: [],

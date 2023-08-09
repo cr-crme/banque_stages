@@ -117,7 +117,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
   Widget build(BuildContext context) {
     final internship =
         InternshipsProvider.of(context)[widget.formController.internshipId];
-    final student = StudentsProvider.studentsInMyGroup(context)
+    final student = StudentsProvider.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
     return Scaffold(

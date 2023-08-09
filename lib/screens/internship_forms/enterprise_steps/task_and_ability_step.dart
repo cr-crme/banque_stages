@@ -63,7 +63,7 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
     // Sometimes for some reason the build is called this with these
     // provider empty on the first call
     if (enterprise == null) return Container();
-    final student = StudentsProvider.studentsInMyGroup(context)
+    final student = StudentsProvider.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == widget.internship.studentId);
 
     return student == null

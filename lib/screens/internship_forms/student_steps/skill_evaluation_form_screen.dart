@@ -151,7 +151,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     final internship = widget.formController.internship(context);
     final skills = _extractSkills(context, internship: internship);
 
-    final student = StudentsProvider.studentsInMyGroup(context)
+    final student = StudentsProvider.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
     return Scaffold(

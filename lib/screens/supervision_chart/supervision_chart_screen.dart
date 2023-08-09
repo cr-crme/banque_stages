@@ -1,18 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/router.dart';
-import 'widgets/transfer_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SupervisionChart extends StatefulWidget {
   const SupervisionChart({super.key});
@@ -24,12 +20,11 @@ class SupervisionChart extends StatefulWidget {
 class _SupervisionChartState extends State<SupervisionChart> {
   bool _isSearchBarExpanded = false;
   final _searchTextController = TextEditingController();
-  bool _isFlagFilterExpanded = true;
+  bool _isFlagFilterExpanded = false;
   final _visibilityFilters = {
     VisitingPriority.high: true,
     VisitingPriority.mid: true,
     VisitingPriority.low: true,
-    VisitingPriority.notApplicable: true,
   };
 
   void _toggleSearchBar() {
@@ -141,56 +136,6 @@ class _SupervisionChartState extends State<SupervisionChart> {
     setState(() {});
   }
 
-  void _transferStudent() async {
-    final internships = InternshipsProvider.of(context, listen: false);
-    final students =
-        StudentsProvider.mySupervizedStudents(context, listen: false);
-    final teachers = [...TeachersProvider.of(context, listen: false)];
-
-    students.sort(
-        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
-    teachers.sort(
-        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()));
-
-    final answer = await showDialog<List<String>>(
-      context: context,
-      builder: (BuildContext context) =>
-          TransferDialog(students: students, teachers: teachers),
-    );
-
-    if (answer == null) return;
-    internships.transferStudent(studentId: answer[0], newTeacherId: answer[1]);
-  }
-
-  Future<void> _showTransferedStudent({listenInternships = false}) async {
-    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
-    final internships =
-        InternshipsProvider.of(context, listen: listenInternships);
-
-    for (final internship in internships) {
-      if (internship.isTransfering && internship.teacherId == myId) {
-        final student =
-            StudentsProvider.studentsInMyGroup(context, listen: false)
-                .firstWhereOrNull((e) => e.id == internship.studentId);
-        if (student == null) continue;
-
-        // Wait for at least one frame
-        await Future.delayed(const Duration(milliseconds: 1));
-        if (!mounted) return;
-        final acceptTransfer = await showDialog<bool>(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) =>
-                AcceptTransferDialog(student: student));
-        if (acceptTransfer!) {
-          internships.acceptTransfer(studentId: internship.studentId);
-        } else {
-          internships.refuseTransfer(studentId: internship.studentId);
-        }
-      }
-    }
-  }
-
   void _goToItinerary() {
     GoRouter.of(context).pushNamed(Screens.itinerary);
   }
@@ -207,9 +152,9 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final screenSize = MediaQuery.of(context).size;
     final iconSize = screenSize.width / 16;
 
-    _showTransferedStudent(listenInternships: true);
+    var students =
+        StudentsProvider.mySupervizedStudents(context, activeOnly: true);
 
-    var students = StudentsProvider.mySupervizedStudents(context);
     students.sort(
       (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
     );
@@ -231,12 +176,17 @@ class _SupervisionChartState extends State<SupervisionChart> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  // TODO This becomes a 'managing' tab
+                  // TODO If managing, a Text appears at the top 'Sélectionner les ...'
+                  // TODO If managing, the numbers changes in person_add/remove
+                  // TODO If managing, clicking on the card swap person_add/remove
+                  // TODO We cannot remove if we are the creator of the internship
                   _TabIcon(
-                      title: 'Transfert',
+                      title: 'Gestion',
                       screenSize: screenSize,
                       iconSize: iconSize,
-                      onTap: _transferStudent,
-                      icon: Icons.transfer_within_a_station),
+                      onTap: () {},
+                      icon: Icons.group),
                   _TabIcon(
                       title: 'Recherche',
                       screenSize: screenSize,
@@ -244,6 +194,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
                       onTap: _toggleSearchBar,
                       icon: Icons.search),
                   _TabIcon(
+                      // TODO This disapear when we are in managing mode
                       title: 'Priorité',
                       screenSize: screenSize,
                       iconSize: iconSize,
@@ -258,6 +209,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
+              // TODO change the for loop from students to internships so all the internships of a single student appear
               itemCount: students.length,
               itemBuilder: ((ctx, i) {
                 final student = students[i];
@@ -391,26 +343,18 @@ class _StudentTile extends StatelessWidget {
                       width: 2.5),
                   shape: BoxShape.circle,
                 ),
-                child: internship!.date.end.compareTo(DateTime.now()) > 0
-                    ? Tooltip(
-                        message:
-                            'Niveau de priorité pour les visites de supervision',
-                        child: IconButton(
-                          onPressed: onUpdatePriority,
-                          alignment: Alignment.center,
-                          icon: Icon(
-                            internship!.visitingPriority.icon,
-                            color: internship!.visitingPriority.color,
-                            size: 30,
-                          ),
-                        ),
-                      )
-                    : IconButton(
-                        onPressed: onAlreadyEndedInternship,
-                        iconSize: 35,
-                        alignment: Alignment.center,
-                        icon: Icon(Icons.task_alt,
-                            color: Theme.of(context).primaryColor)),
+                child: Tooltip(
+                  message: 'Niveau de priorité pour les visites de supervision',
+                  child: IconButton(
+                    onPressed: onUpdatePriority,
+                    alignment: Alignment.center,
+                    icon: Icon(
+                      internship!.visitingPriority.icon,
+                      color: internship!.visitingPriority.color,
+                      size: 30,
+                    ),
+                  ),
+                ),
               )
             : null,
       ),

@@ -19,7 +19,7 @@ class StudentsProvider extends FirebaseListProvided<Student> {
   /// This returns the students the teacher should have read/write access too.
   /// These are the students from the group the teacher teaches too (even though
   /// they are not supervising them personnally)
-  static List<Student> studentsInMyGroup(context, {listen = true}) {
+  static List<Student> studentsInMyGroups(context, {listen = true}) {
     final acceptedGroups =
         TeachersProvider.of(context, listen: false).currentTeacher.groups;
     return _of(context, listen: listen)
@@ -28,39 +28,24 @@ class StudentsProvider extends FirebaseListProvided<Student> {
   }
 
   ///
-  /// Get the subset of students who the current teacher is assigned to.
-  static List<Student> myAssignedStudents(BuildContext context,
-      {listen = true}) {
-    final myTeacherId =
-        TeachersProvider.of(context, listen: false).currentTeacherId;
-
-    // Get all the student in my group, but only keep those I supervise
-    return studentsInMyGroup(context, listen: false)
-        .where((e) => e.teacherId == myTeacherId)
-        .toList();
-  }
-
-  ///
-  /// Get all the supervized students, that is the assigned students, plus
-  /// those from another teacher that transfered them. This does not include
-  /// the transfered internships that have ended, unless
-  /// [includeFinishedFromTransfered] is set to true.
+  /// Get all the supervized students. If [activeOnly], the students without an
+  /// active internship are ignored
   static List<Student> mySupervizedStudents(BuildContext context,
-      {listen = true, bool includeFinishedFromTransfered = false}) {
-    final allStudents = studentsInMyGroup(context, listen: listen);
+      {listen = true, bool activeOnly = false}) {
+    final allStudents = studentsInMyGroups(context, listen: listen);
     final internships = InternshipsProvider.of(context, listen: false);
     final myTeacherId =
         TeachersProvider.of(context, listen: false).currentTeacherId;
 
     // Get the student I supervise by default
-    final out = myAssignedStudents(context);
+    final List<Student> out = [];
     // Add them those that were transfered to me
     for (final internship in internships) {
       // If I am not in charge of this internship
       if (internship.teacherId != myTeacherId) continue;
 
       // If it is not active (or that we should keep the inactive)
-      if (internship.isNotActive || includeFinishedFromTransfered) continue;
+      if (activeOnly && internship.isNotActive) continue;
 
       // Get the student from that internship
       final student =

@@ -26,7 +26,6 @@ class Student extends Person {
   final String photo;
   late final Widget avatar;
 
-  final String teacherId;
   final Program program;
   final String group;
 
@@ -43,7 +42,6 @@ class Student extends Person {
     required super.email,
     required super.address,
     String? photo,
-    required this.teacherId,
     required this.program,
     required this.group,
     required this.contact,
@@ -65,7 +63,6 @@ class Student extends Person {
       : photo = map['photo'],
         avatar = CircleAvatar(
             backgroundColor: Color(int.parse(map['photo'])).withAlpha(255)),
-        teacherId = map['teacherId'],
         program = Program.values[map['program']],
         group = map['group'],
         contact = Person.fromSerialized(map['contact']),
@@ -77,7 +74,6 @@ class Student extends Person {
     return super.serializedMap()
       ..addAll({
         'photo': photo,
-        'teacherId': teacherId,
         'program': program.index,
         'group': group,
         'contact': contact.serialize(),
@@ -90,7 +86,6 @@ class Student extends Person {
         firstName: firstName,
         group: group,
         program: program,
-        teacherId: teacherId,
         lastName: lastName,
         address: null,
         contact: Person.empty,
@@ -124,7 +119,6 @@ class Student extends Person {
         phone: phone ?? this.phone,
         email: email ?? this.email,
         address: address ?? this.address,
-        teacherId: teacherId ?? this.teacherId,
         program: program ?? this.program,
         group: group ?? this.group,
         contact: contact ?? this.contact,
@@ -147,7 +141,6 @@ class Student extends Person {
       contactLink: contactLink,
       group: group,
       program: program,
-      teacherId: teacherId,
     );
   }
 }

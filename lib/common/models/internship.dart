@@ -206,8 +206,6 @@ class Internship extends ItemSerializable {
   // Elements that are parts of the inner working of the internship (can be
   // modify, but won't generate a new version)
   final int achievedLength;
-  final String previousTeacherId; // Keep track of teacherId while transfering
-  final bool isTransfering;
   final VisitingPriority visitingPriority;
   final String teacherNotes;
   final DateTime? endDate;
@@ -228,8 +226,6 @@ class Internship extends ItemSerializable {
     required super.id,
     required this.studentId,
     required this.teacherId,
-    required this.previousTeacherId,
-    required this.isTransfering,
     required this.enterpriseId,
     required this.jobId,
     required this.extraSpecializationsId,
@@ -248,8 +244,6 @@ class Internship extends ItemSerializable {
     super.id,
     required this.studentId,
     required this.teacherId,
-    String? previousTeacherId,
-    this.isTransfering = false,
     required this.enterpriseId,
     required this.jobId,
     required this.extraSpecializationsId,
@@ -265,8 +259,7 @@ class Internship extends ItemSerializable {
     this.skillEvaluations = const [],
     this.attitudeEvaluations = const [],
     this.enterpriseEvaluation,
-  })  : previousTeacherId = previousTeacherId ?? teacherId,
-        _mutables = [
+  }) : _mutables = [
           _MutableElements(
             versionDate: versionDate,
             supervisor: supervisor,
@@ -278,8 +271,6 @@ class Internship extends ItemSerializable {
   Internship.fromSerialized(map)
       : studentId = map['student'],
         teacherId = map['teacherId'],
-        previousTeacherId = map['previousTeacherId'],
-        isTransfering = map['isTransfering'],
         enterpriseId = map['enterprise'],
         jobId = map['jobId'],
         extraSpecializationsId = map['extraSpecializationsId'] == -1
@@ -318,8 +309,6 @@ class Internship extends ItemSerializable {
     return {
       'student': studentId,
       'teacherId': teacherId,
-      'previousTeacherId': previousTeacherId,
-      'isTransfering': isTransfering,
       'enterprise': enterpriseId,
       'jobId': jobId,
       'extraSpecializationsId':
@@ -355,8 +344,6 @@ class Internship extends ItemSerializable {
     String? id,
     String? studentId,
     String? teacherId,
-    String? previousTeacherId,
-    bool? isTransfering,
     String? enterpriseId,
     String? jobId,
     List<String>? extraSpecializationsId,
@@ -385,8 +372,6 @@ class Internship extends ItemSerializable {
       id: id ?? this.id,
       studentId: studentId ?? this.studentId,
       teacherId: teacherId ?? this.teacherId,
-      previousTeacherId: previousTeacherId ?? this.previousTeacherId,
-      isTransfering: isTransfering ?? this.isTransfering,
       enterpriseId: enterpriseId ?? this.enterpriseId,
       jobId: jobId ?? this.jobId,
       extraSpecializationsId:
@@ -408,8 +393,6 @@ class Internship extends ItemSerializable {
       id: id,
       studentId: studentId,
       teacherId: teacherId,
-      previousTeacherId: previousTeacherId,
-      isTransfering: isTransfering,
       enterpriseId: enterpriseId,
       jobId: jobId,
       extraSpecializationsId: [...extraSpecializationsId],
