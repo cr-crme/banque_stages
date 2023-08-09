@@ -23,43 +23,44 @@ class MainDrawer extends StatelessWidget {
             child: Column(
               children: [
                 const _DrawerItem(
+                  titleText: 'Mes élèves',
+                  icon: Icons.school_rounded,
+                  route: Screens.studentsList,
+                ),
+                const _DrawerItem(
                   titleText: 'Tableau des supervisions',
-                  icon: Icon(Icons.table_chart_rounded),
+                  icon: Icons.table_chart_rounded,
                   route: Screens.supervisionChart,
                 ),
                 _DrawerItem(
                   titleText: 'Tâches à réaliser',
-                  icon: const Icon(Icons.checklist),
+                  icon: Icons.checklist,
                   route: Screens.tasksToDo,
                   trailing: NumberedTablet(
                     number: numberOfTasksToDo(context),
                     hideIfEmpty: true,
+                    color: const Color.fromARGB(255, 33, 86, 176),
                   ),
                 ),
                 const _DrawerItem(
-                  titleText: 'Mes élèves',
-                  icon: Icon(Icons.school_rounded),
-                  route: Screens.studentsList,
-                ),
-                const _DrawerItem(
                   titleText: 'Entreprises',
-                  icon: Icon(Icons.location_city_rounded),
+                  icon: Icons.location_city_rounded,
                   route: Screens.enterprisesList,
-                ),
-                _DrawerItem(
-                  titleText: 'Documents',
-                  icon: const Icon(Icons.document_scanner_rounded),
-                  // route: Screens.enterprisesList,
-                  onTap: () {},
                 ),
                 const _DrawerItem(
                   titleText: 'Santé et Sécurité au PFAE',
-                  icon: Icon(Icons.security),
+                  icon: Icons.security,
                   route: Screens.homeSst,
                 ),
+                // _DrawerItem(
+                //   titleText: 'Documents',
+                //   icon: const Icon(Icons.document_scanner_rounded),
+                //   route: Screens...,
+                //   onTap: () {},
+                // ),
                 _DrawerItem(
                   titleText: 'Se déconnecter',
-                  icon: const Icon(Icons.logout),
+                  icon: Icons.logout,
                   onTap: () => provider.signOut(),
                 ),
               ],
@@ -84,23 +85,33 @@ class _DrawerItem extends StatelessWidget {
         );
 
   final String? route;
-  final Icon? icon;
+  final IconData? icon;
   final String titleText;
   final void Function()? onTap;
   final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
+    final isCurrentlySelectedTile =
+        ModalRoute.of(context)!.settings.name == route;
     return Card(
       child: ListTile(
         onTap: onTap ??
             () {
-              if (ModalRoute.of(context)!.settings.name == route!) {
-                Navigator.pop(context);
-              }
+              if (isCurrentlySelectedTile) Navigator.pop(context);
               GoRouter.of(context).goNamed(route!);
             },
-        leading: icon,
+        tileColor: isCurrentlySelectedTile
+            ? Theme.of(context).primaryColor.withAlpha(40)
+            : null,
+        leading: icon == null
+            ? null
+            : Icon(
+                icon,
+                color: isCurrentlySelectedTile
+                    ? Theme.of(context).primaryColor
+                    : null,
+              ),
         title: Text(
           titleText,
           style: Theme.of(context).textTheme.titleMedium,
