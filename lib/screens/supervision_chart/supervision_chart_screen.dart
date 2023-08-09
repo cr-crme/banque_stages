@@ -43,6 +43,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   Widget _searchBarBuilder() {
+    // TODO fix the search bar for both modes
     return Container(
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.only(left: 15, right: 15),
