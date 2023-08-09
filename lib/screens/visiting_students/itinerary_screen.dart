@@ -85,6 +85,7 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // TODO only show those selected in the previous screen
       appBar: AppBar(title: const Text('Itinéraire des visites')),
       body: RawScrollbar(
         thumbVisibility: true,

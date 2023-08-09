@@ -8,6 +8,7 @@ import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -133,6 +134,17 @@ class _SupervisionChartState extends State<SupervisionChart> {
     );
   }
 
+  void _swapSupervisionStatus(Internship internship) {
+    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+
+    if (internship.supervisingTeacherIds.contains(myId)) {
+      internship.removeSupervisingTeacher(myId);
+    } else {
+      internship.addSupervisingTeacher(myId);
+    }
+    InternshipsProvider.of(context, listen: false).replace(internship);
+  }
+
   List<Internship> _getInternshipsByStudents() {
     final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
     var allMyStudents =
@@ -142,7 +154,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
     internships = internships
         .where((internship) =>
             internship.isActive &&
-            internship.supervisingTeacherIds.contains(myId) &&
+            (_inManagingMode ||
+                internship.supervisingTeacherIds.contains(myId)) &&
             allMyStudents.any((student) => student.id == internship.studentId))
         .toList();
 
@@ -164,12 +177,19 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
   @override
   Widget build(BuildContext context) {
+    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
     final screenSize = MediaQuery.of(context).size;
     final iconSize = screenSize.width / 16;
-    final students =
-        StudentsProvider.studentsInMyGroups(context, listen: false);
-
     final internships = _getInternshipsByStudents();
+
+    final studentsInMyGroups =
+        StudentsProvider.studentsInMyGroups(context, listen: false);
+    final studentsISignedIntenships = internships
+        .where((internship) => internship.signatoryTeacherId == myId)
+        .map((internship) => studentsInMyGroups
+            .firstWhere((student) => student.id == internship.studentId));
+    final studentsISupervize =
+        StudentsProvider.mySupervizedStudents(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -186,13 +206,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // TODO This becomes a 'managing' tab
-                  // TODO If managing, a Text appears at the top 'Sélectionner les ...'
-                  // TODO If managing, the numbers changes in person_add/remove
-                  // TODO If managing, clicking on the card swap person_add/remove
-                  // TODO We cannot remove if we are the creator of the internship
                   _TabIcon(
-                      title: 'Gestion',
+                      title: _inManagingMode ? 'Quitter gestion' : 'Gestion',
                       screenSize: screenSize,
                       iconSize: iconSize,
                       onTap: () {
@@ -222,23 +237,39 @@ class _SupervisionChartState extends State<SupervisionChart> {
         children: [
           if (_isSearchBarExpanded) _searchBarBuilder(),
           if (_isFlagFilterExpanded) _flagFilterBuilder(),
+          if (_inManagingMode)
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0, bottom: 12),
+              child: Text(
+                'Sélectionner les étudiants à supervisier',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: internships.length,
               itemBuilder: ((ctx, i) {
                 final internship = internships[i];
-                final student = students.firstWhere(
+                final student = studentsInMyGroups.firstWhere(
                     (student) => student.id == internship.studentId);
 
                 return _StudentTile(
                   key: Key(student.id),
                   student: student,
                   internship: internship,
-                  onTap: () => _navigateToStudentInfo(student),
+                  onTap: _inManagingMode
+                      ? (studentsISignedIntenships
+                              .any((e) => e.id == student.id)
+                          ? null
+                          : () => _swapSupervisionStatus(internship))
+                      : () => _navigateToStudentInfo(student),
                   onUpdatePriority: () => _updatePriority(student.id),
                   onAlreadyEndedInternship: () =>
                       _navigateToStudentInfo(student),
+                  isManagingStudents: _inManagingMode,
+                  isInternshipSupervised:
+                      studentsISupervize.any((e) => e.id == student.id),
                 );
               }),
             ),
@@ -298,23 +329,24 @@ class _StudentTile extends StatelessWidget {
     required this.onTap,
     required this.onUpdatePriority,
     required this.onAlreadyEndedInternship,
+    required this.isManagingStudents,
+    required this.isInternshipSupervised,
   });
 
   final Student student;
-  final Internship? internship;
-  final Function() onTap;
+  final Internship internship;
+  final Function()? onTap;
   final Function() onUpdatePriority;
   final Function() onAlreadyEndedInternship;
+  final bool isManagingStudents;
+  final bool isInternshipSupervised;
 
   @override
   Widget build(BuildContext context) {
-    final enterprise = internship?.isActive ?? false
-        ? EnterprisesProvider.of(context, listen: false)
-            .fromId(internship!.enterpriseId)
-        : null;
-    final specialization = internship?.isActive ?? false
-        ? enterprise?.jobs.fromId(internship!.jobId).specialization
-        : null;
+    final enterprise = EnterprisesProvider.of(context, listen: false)
+        .fromId(internship.enterpriseId);
+    final specialization =
+        enterprise.jobs.fromId(internship.jobId).specialization;
 
     return Card(
       elevation: 10,
@@ -324,24 +356,39 @@ class _StudentTile extends StatelessWidget {
           height: double.infinity, // This centers the avatar
           child: student.avatar,
         ),
+        tileColor: onTap == null ? disabled.withAlpha(50) : null,
         title: Text(student.fullName),
         isThreeLine: true,
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              enterprise?.name ?? 'Aucun stage',
+              enterprise.name,
               style: const TextStyle(color: Colors.black87),
             ),
             AutoSizeText(
-              specialization?.name ?? '',
+              specialization.name,
               maxLines: 2,
               style: const TextStyle(color: Colors.black87),
             ),
           ],
         ),
-        trailing: internship?.isActive ?? false
-            ? Ink(
+        trailing: isManagingStudents
+            ? InkWell(
+                borderRadius: BorderRadius.circular(25),
+                onTap: onTap,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                      isInternshipSupervised
+                          ? Icons.person_add
+                          : Icons.person_remove,
+                      color: onTap == null
+                          ? disabled
+                          : Theme.of(context).primaryColor),
+                ),
+              )
+            : Ink(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: const [
@@ -363,14 +410,13 @@ class _StudentTile extends StatelessWidget {
                     onPressed: onUpdatePriority,
                     alignment: Alignment.center,
                     icon: Icon(
-                      internship!.visitingPriority.icon,
-                      color: internship!.visitingPriority.color,
+                      internship.visitingPriority.icon,
+                      color: internship.visitingPriority.color,
                       size: 30,
                     ),
                   ),
                 ),
-              )
-            : null,
+              ),
       ),
     );
   }
