@@ -1,15 +1,12 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
-import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
 import 'package:flutter/material.dart';
@@ -235,11 +232,15 @@ class _InternshipBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Enseignant.e superviseur.e de stage', style: _titleStyle),
+        // TODO Put all the supervisors
+        const Text(
+            'Enseignant\u00b7e\u00b7s superviseur\u00b7e\u00b7s de stage',
+            style: _titleStyle),
         Padding(
           padding: const EdgeInsets.only(top: 2, bottom: _interline),
           child: Text(text),
         )
+        // TODO add "Signataire du stage"
       ],
     );
   }
@@ -260,7 +261,7 @@ class _InternshipBody extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 2),
-            child: Text(specialization.sector.idWithName),
+            child: Text('Secteur ${specialization.sector.idWithName}'),
           ),
         ],
       ),
@@ -441,34 +442,6 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
-  Widget _buildUniform(Job job) {
-    // Workaround for job.uniforms
-    final uniforms = job.uniform;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Tenue de travail',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (uniforms.status == UniformStatus.none)
-              const Text('Aucune consigne de l\'entreprise'),
-            if (uniforms.status == UniformStatus.suppliedByEnterprise)
-              const Text('Fournie par l\'entreprise\u00a0:'),
-            if (uniforms.status == UniformStatus.suppliedByStudent)
-              const Text('Fournie par l\'étudiant\u00a0:'),
-            ItemizedText(uniforms.uniforms),
-            const SizedBox(height: 12),
-          ],
-        )
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final teachers = TeachersProvider.of(context);
@@ -502,7 +475,6 @@ class _InternshipBody extends StatelessWidget {
         _buildDates(),
         _buildTime(),
         _buildSchedule(),
-        _buildUniform(job)
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
@@ -90,6 +91,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                     _PersonalNotes(internship: internship),
                   if (internship != null) _Schedule(internship: internship),
                   if (internship != null) _buildUniform(job!),
+                  if (internship != null) _buildProtections(job!),
                   _MoreInfoButton(
                     studentId: studentId,
                     onTap: () => _navigateToStudentIntership(context),
@@ -127,6 +129,32 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
       ],
     );
   }
+}
+
+Widget _buildProtections(Job job) {
+  final protections = job.protections;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const SubTitle('Équipements de protection individuelle'),
+      Padding(
+        padding: const EdgeInsets.only(left: 32.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (protections.status == ProtectionsStatus.none)
+              const Text('Aucun équipement requis'),
+            if (protections.status == ProtectionsStatus.suppliedByEnterprise)
+              const Text('Fournis par l\'entreprise\u00a0:'),
+            if (protections.status == ProtectionsStatus.suppliedBySchool)
+              const Text('Fournis par l\'école\u00a0:'),
+            ItemizedText(protections.protections),
+          ],
+        ),
+      )
+    ],
+  );
 }
 
 class _VisitingPriority extends StatefulWidget {
