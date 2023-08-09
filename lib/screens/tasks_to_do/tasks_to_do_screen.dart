@@ -6,6 +6,7 @@ import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -25,10 +26,9 @@ int numberOfTasksToDo(context) {
 List<_JobEnterpriseInternshipStudent> _enterprisesToEvaluate(context) {
   // We should evaluate a job of an enterprise if there is at least one
   // intership in this job and the no evaluation was ever performed
+  final myId = TeachersProvider.of(context).currentTeacherId;
   final enterprises = EnterprisesProvider.of(context);
   final internships = InternshipsProvider.of(context);
-
-  // TODO limit to my supervized
 
   // This happens sometimes, so we need to wait a frame
   if (internships.isEmpty || enterprises.isEmpty) return [];
@@ -37,8 +37,12 @@ List<_JobEnterpriseInternshipStudent> _enterprisesToEvaluate(context) {
   for (final enterprise in enterprises) {
     for (final job in enterprise.jobs) {
       if (!job.sstEvaluation.isFilled) {
-        final interns =
-            internships.where((e) => e.isActive && e.jobId == job.id).toList();
+        final interns = internships
+            .where((e) =>
+                e.isActive &&
+                e.jobId == job.id &&
+                e.supervisingTeacherIds.contains(myId))
+            .toList();
         if (interns.isEmpty) continue;
 
         interns.sort((a, b) => a.date.start.compareTo(b.date.start));

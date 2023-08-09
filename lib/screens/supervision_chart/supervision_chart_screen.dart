@@ -5,6 +5,7 @@ import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class SupervisionChart extends StatefulWidget {
 }
 
 class _SupervisionChartState extends State<SupervisionChart> {
+  bool _inManagingMode = false;
   bool _isSearchBarExpanded = false;
   final _searchTextController = TextEditingController();
   bool _isFlagFilterExpanded = false;
@@ -94,36 +96,20 @@ class _SupervisionChartState extends State<SupervisionChart> {
     );
   }
 
-  List<Student> _filterByName(List<Student> students) {
-    return students
-        .map<Student?>((e) => e.fullName
-                .toLowerCase()
-                .contains(_searchTextController.text.toLowerCase())
-            ? e
-            : null)
-        .where((e) => e != null)
-        .toList()
-        .cast<Student>();
+  List<Internship> _filterByName(List<Internship> internships) {
+    final students =
+        StudentsProvider.studentsInMyGroups(context, listen: false);
+    return internships
+        .where((internship) =>
+            students.any((student) => student.id == internship.studentId))
+        .toList();
   }
 
-  List<Student> _filterByFlag(List<Student> students) {
-    final allInterships = InternshipsProvider.of(context, listen: false);
-
-    return students
-        .map<Student?>((e) {
-          final interships = allInterships.byStudentId(e.id);
-          if (interships.isEmpty || !interships.last.isActive) {
-            return _visibilityFilters[VisitingPriority.notApplicable]!
-                ? e
-                : null;
-          }
-          return _visibilityFilters[interships.last.visitingPriority]!
-              ? e
-              : null;
-        })
-        .where((e) => e != null)
-        .toList()
-        .cast<Student>();
+  List<Internship> _filterByFlag(List<Internship> internships) {
+    return internships
+        .where((internship) => _visibilityFilters.keys.any((key) =>
+            _visibilityFilters[key]! && key == internship.visitingPriority))
+        .toList();
   }
 
   void _updatePriority(String studentId) {
@@ -147,19 +133,43 @@ class _SupervisionChartState extends State<SupervisionChart> {
     );
   }
 
+  List<Internship> _getInternshipsByStudents() {
+    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    var allMyStudents =
+        StudentsProvider.studentsInMyGroups(context, listen: false);
+
+    var internships = [...InternshipsProvider.of(context)];
+    internships = internships
+        .where((internship) =>
+            internship.isActive &&
+            internship.supervisingTeacherIds.contains(myId) &&
+            allMyStudents.any((student) => student.id == internship.studentId))
+        .toList();
+
+    internships.sort(
+      (a, b) => allMyStudents
+          .firstWhere((student) => student.id == a.studentId)
+          .lastName
+          .toLowerCase()
+          .compareTo(allMyStudents
+              .firstWhere((student) => student.id == b.studentId)
+              .lastName
+              .toLowerCase()),
+    );
+    internships = _filterByName(internships);
+    internships = _filterByFlag(internships);
+
+    return internships;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final iconSize = screenSize.width / 16;
+    final students =
+        StudentsProvider.studentsInMyGroups(context, listen: false);
 
-    var students =
-        StudentsProvider.mySupervizedStudents(context, activeOnly: true);
-
-    students.sort(
-      (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
-    );
-    students = _filterByName(students);
-    students = _filterByFlag(students);
+    final internships = _getInternshipsByStudents();
 
     return Scaffold(
       appBar: AppBar(
@@ -185,7 +195,11 @@ class _SupervisionChartState extends State<SupervisionChart> {
                       title: 'Gestion',
                       screenSize: screenSize,
                       iconSize: iconSize,
-                      onTap: () {},
+                      onTap: () {
+                        _inManagingMode = !_inManagingMode;
+                        if (_inManagingMode) _isFlagFilterExpanded = false;
+                        setState(() {});
+                      },
                       icon: Icons.group),
                   _TabIcon(
                       title: 'Recherche',
@@ -193,13 +207,15 @@ class _SupervisionChartState extends State<SupervisionChart> {
                       iconSize: iconSize,
                       onTap: _toggleSearchBar,
                       icon: Icons.search),
-                  _TabIcon(
-                      // TODO This disapear when we are in managing mode
-                      title: 'Priorité',
-                      screenSize: screenSize,
-                      iconSize: iconSize,
-                      onTap: _toggleFlagFilter,
-                      icon: Icons.filter_alt_sharp),
+                  Visibility(
+                    visible: !_inManagingMode,
+                    child: _TabIcon(
+                        title: 'Priorité',
+                        screenSize: screenSize,
+                        iconSize: iconSize,
+                        onTap: _toggleFlagFilter,
+                        icon: Icons.filter_alt_sharp),
+                  ),
                 ])),
       ),
       body: Column(
@@ -209,18 +225,16 @@ class _SupervisionChartState extends State<SupervisionChart> {
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
-              // TODO change the for loop from students to internships so all the internships of a single student appear
-              itemCount: students.length,
+              itemCount: internships.length,
               itemBuilder: ((ctx, i) {
-                final student = students[i];
-                final internships =
-                    InternshipsProvider.of(context, listen: true)
-                        .byStudentId(student.id);
+                final internship = internships[i];
+                final student = students.firstWhere(
+                    (student) => student.id == internship.studentId);
 
                 return _StudentTile(
                   key: Key(student.id),
                   student: student,
-                  internship: internships.isNotEmpty ? internships.last : null,
+                  internship: internship,
                   onTap: () => _navigateToStudentInfo(student),
                   onUpdatePriority: () => _updatePriority(student.id),
                   onAlreadyEndedInternship: () =>
