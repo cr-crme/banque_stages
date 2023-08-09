@@ -10,6 +10,7 @@ import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
@@ -153,6 +154,14 @@ class _InternshipListState extends State<_InternshipList> {
     setState(() {});
   }
 
+  void _sendEmail(Teacher teacher) {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: teacher.email!,
+    );
+    launchUrl(emailLaunchUri);
+  }
+
   @override
   Widget build(BuildContext context) {
     _prepareExpander(widget.internships);
@@ -215,34 +224,33 @@ class _InternshipListState extends State<_InternshipList> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                const Text('Stagiaire\u00a0: '),
-                                GestureDetector(
-                                  onTap: canControl
-                                      ? () => GoRouter.of(context).pushNamed(
-                                            Screens.student,
-                                            params: Screens.params(student),
-                                            queryParams: Screens.queryParams(
-                                                pageIndex: '1'),
-                                          )
-                                      : null,
-                                  child: Text(
-                                    student.fullName,
-                                    style: TextStyle(
-                                        color: canControl ? Colors.blue : null,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        decoration: TextDecoration.underline),
-                                  ),
-                                ),
-                                Text(' (${student.program})'),
-                              ],
-                            ),
+                            Text(
+                                'Stagiaire\u00a0: ${student.fullName} (${student.program})'),
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                  'Enseignant\u00b7e superviseur\u00b7e\u00a0: ${teacher.fullName}'),
+                              child: Row(
+                                children: [
+                                  const Text(
+                                      'Enseignant\u00b7e superviseur\u00b7e\u00a0: '),
+                                  GestureDetector(
+                                      onTap: teacher.email == null
+                                          ? null
+                                          : () => _sendEmail(teacher),
+                                      child: Text(
+                                        teacher.fullName,
+                                        style: teacher.email == null
+                                            ? null
+                                            : Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!
+                                                .copyWith(
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  color: Colors.blue,
+                                                ),
+                                      ))
+                                ],
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
@@ -254,14 +262,22 @@ class _InternshipListState extends State<_InternshipList> {
                                   const EdgeInsets.only(top: 10.0, bottom: 15),
                               child: _dateBuild(internship),
                             ),
-                            if (internship.isEnterpriseEvaluationPending)
+                            if (canControl &&
+                                (internship.isActive ||
+                                    internship.isEnterpriseEvaluationPending))
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: TextButton(
-                                    onPressed: () =>
-                                        _evaluateEnterprise(internship),
+                                    onPressed: () => internship.isActive
+                                        ? GoRouter.of(context).pushNamed(
+                                            Screens.student,
+                                            params: Screens.params(student),
+                                            queryParams: Screens.queryParams(
+                                                pageIndex: '1'),
+                                          )
+                                        : _evaluateEnterprise(internship),
                                     style: Theme.of(context)
                                         .textButtonTheme
                                         .style!
@@ -273,8 +289,10 @@ class _InternshipListState extends State<_InternshipList> {
                                               MaterialStateProperty.all(
                                                   const Size(200, 50)),
                                         ),
-                                    child: const Text(
-                                      'Évaluer l\'entreprise \npour ce stage',
+                                    child: Text(
+                                      internship.isActive
+                                          ? 'Détails du stage'
+                                          : 'Évaluer l\'entreprise \npour ce stage',
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
