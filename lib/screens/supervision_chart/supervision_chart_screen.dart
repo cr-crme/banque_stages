@@ -32,12 +32,6 @@ class _SupervisionChartState extends State<SupervisionChart> {
     VisitingPriority.notApplicable: true,
   };
 
-  @override
-  void initState() {
-    super.initState();
-    _showTransferedStudent(listenInternships: true);
-  }
-
   void _toggleSearchBar() {
     _isFlagFilterExpanded = false;
     _isSearchBarExpanded = !_isSearchBarExpanded;
@@ -212,6 +206,8 @@ class _SupervisionChartState extends State<SupervisionChart> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final iconSize = screenSize.width / 16;
+
+    _showTransferedStudent(listenInternships: true);
 
     var students = StudentsProvider.mySupervizedStudents(context);
     students.sort(

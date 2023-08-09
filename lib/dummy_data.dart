@@ -959,7 +959,8 @@ Future<void> addDummyInterships(
     ],
   ));
 
-  var startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(90)));
+  var startingPeriod =
+      DateTime.now().subtract(Duration(days: rng.nextInt(50) + 60));
   period = DateTimeRange(
       start: startingPeriod,
       end: startingPeriod.add(Duration(days: rng.nextInt(50))));
