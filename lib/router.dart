@@ -29,6 +29,8 @@ import 'package:provider/provider.dart';
 import 'common/providers/auth_provider.dart';
 
 abstract class Screens {
+  static const home = enterprisesList;
+
   static const populateWithDebugData = 'populate-with-debug-data';
   static const login = 'login';
   static const itinerary = 'itinerary';
@@ -40,7 +42,6 @@ abstract class Screens {
   static const addEnterprise = 'add-enterprise';
   static const jobSstForm = 'job-sst-form';
 
-  static const home = supervisionChart;
   static const supervisionChart = 'supervision';
   static const supervisionStudentDetails = 'supervision-student-details';
 
