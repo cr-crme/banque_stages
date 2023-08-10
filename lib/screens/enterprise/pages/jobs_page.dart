@@ -199,8 +199,9 @@ class JobsPageState extends State<JobsPage> {
                           if (!await ConfirmExitDialog.show(
                             context,
                             message:
-                                'Enregistrer vos modifications en cliquant sur '
-                                'la disquette, sinon, elles seront perdues.',
+                                '** Attention, vous quittez la page sans avoir '
+                                'cliqué sur Enregistrer (disquette). **\n\n'
+                                'Toutes vos modifications seront perdues.',
                           )) return;
                           cancelEditing();
                         }

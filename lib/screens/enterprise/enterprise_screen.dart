@@ -78,8 +78,9 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
         } else if (_tabController.index == 2) {
           if (_jobsPageKey.currentState!.isEditing) {
             if (!await ConfirmExitDialog.show(context,
-                message: 'Enregistrer vos modifications en cliquant sur la '
-                    'disquette, sinon, elles seront perdues.')) return;
+                message: '** Attention, vous quittez la page sans avoir '
+                    'cliqué sur Enregistrer (disquette). **\n\n'
+                    'Toutes vos modifications seront perdues.')) return;
             cancelEditing();
           }
           await _jobsPageKey.currentState?.addJob();
@@ -134,8 +135,9 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
 
               _tabController.index = _tabController.previousIndex;
               if (await ConfirmExitDialog.show(context,
-                  message: 'Enregistrer vos modifications en cliquant sur la '
-                      'disquette, sinon, elles seront perdues.')) {
+                  message: '** Attention, vous quittez la page sans avoir '
+                      'cliqué sur Enregistrer (disquette). **\n\n'
+                      'Toutes vos modifications seront perdues.')) {
                 cancelEditing();
                 _tabController.animateTo(index);
               }

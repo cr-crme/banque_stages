@@ -35,7 +35,7 @@ class _ConfirmExitDialog extends StatelessWidget {
                 child: const Text('Non')),
             TextButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('Oui'))
+                child: const Text('Quitter'))
           ],
         ));
   }

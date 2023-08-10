@@ -112,9 +112,9 @@ class ContactPageState extends State<ContactPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () => ConfirmExitDialog.show(context,
-          message:
-              'Enregistrer vos modifications en cliquant sur la disquette, '
-              'sinon, elles seront perdues.',
+          message: '** Attention, vous quittez la page sans avoir '
+              'cliqué sur Enregistrer (disquette). **\n\n'
+              'Toutes vos modifications seront perdues.',
           isEditing: editing),
       child: SingleChildScrollView(
         child: Form(
