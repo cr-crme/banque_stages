@@ -240,7 +240,8 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
                       ProtectionsStatus.suppliedByEnterprise)
                     const Text('Fournis par l\'entreprise\u00a0:'),
                   if (protections.status == ProtectionsStatus.suppliedBySchool)
-                    const Text('Fournis par l\'école\u00a0:'),
+                    const Text(
+                        'Non fournis par l\'entreprise.\n L\'élève devra porter\u00a0:'),
                   ItemizedText(protections.protections),
                 ],
               )
