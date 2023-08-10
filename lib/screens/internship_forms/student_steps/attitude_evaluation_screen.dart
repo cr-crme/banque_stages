@@ -56,7 +56,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
 
   void _cancel() async {
     final answer = await ConfirmExitDialog.show(context,
-        message: 'Toutes les modifications seront perdues.',
+        content: const Text('Toutes les modifications seront perdues.'),
         isEditing: widget.editMode);
     if (!mounted || !answer) return;
 

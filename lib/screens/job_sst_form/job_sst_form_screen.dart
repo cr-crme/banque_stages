@@ -52,7 +52,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
 
   void _cancel() async {
     final answer = await ConfirmExitDialog.show(context,
-        message: 'Toutes les modifications seront perdues.');
+        content: const Text('Toutes les modifications seront perdues.'));
     if (!mounted || !answer) return;
 
     if (!answer || !mounted) return;

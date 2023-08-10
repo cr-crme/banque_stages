@@ -170,7 +170,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
 
   Future<bool> preventClosingIfEditing() async {
     final prevent = await ConfirmExitDialog.show(context,
-        message: 'Toutes les modifications seront perdues.',
+        content: const Text('Toutes les modifications seront perdues.'),
         isEditing: editMode);
     if (!prevent) _toggleEditMode(save: false);
     return prevent;

@@ -198,10 +198,24 @@ class JobsPageState extends State<JobsPage> {
                         if (isEditing) {
                           if (!await ConfirmExitDialog.show(
                             context,
-                            message:
-                                '** Attention, vous quittez la page sans avoir '
-                                'cliqué sur Enregistrer (disquette). **\n\n'
-                                'Toutes vos modifications seront perdues.',
+                            content: Text.rich(TextSpan(children: [
+                              const TextSpan(
+                                  text: '** Vous quittez la page sans avoir '
+                                      'cliqué sur Enregistrer '),
+                              WidgetSpan(
+                                  child: SizedBox(
+                                height: 22,
+                                width: 22,
+                                child: Icon(
+                                  Icons.save,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              )),
+                              const TextSpan(
+                                text:
+                                    '. **\n\nToutes vos modifications seront perdues.',
+                              ),
+                            ])),
                           )) return;
                           cancelEditing();
                         }

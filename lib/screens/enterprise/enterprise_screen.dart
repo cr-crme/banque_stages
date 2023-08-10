@@ -78,9 +78,23 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
         } else if (_tabController.index == 2) {
           if (_jobsPageKey.currentState!.isEditing) {
             if (!await ConfirmExitDialog.show(context,
-                message: '** Attention, vous quittez la page sans avoir '
-                    'cliqué sur Enregistrer (disquette). **\n\n'
-                    'Toutes vos modifications seront perdues.')) return;
+                content: Text.rich(TextSpan(children: [
+                  const TextSpan(
+                      text: '** Vous quittez la page sans avoir '
+                          'cliqué sur Enregistrer '),
+                  WidgetSpan(
+                      child: SizedBox(
+                    height: 22,
+                    width: 22,
+                    child: Icon(
+                      Icons.save,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  )),
+                  const TextSpan(
+                    text: '. **\n\nToutes vos modifications seront perdues.',
+                  ),
+                ])))) return;
             cancelEditing();
           }
           await _jobsPageKey.currentState?.addJob();
@@ -135,9 +149,23 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
 
               _tabController.index = _tabController.previousIndex;
               if (await ConfirmExitDialog.show(context,
-                  message: '** Attention, vous quittez la page sans avoir '
-                      'cliqué sur Enregistrer (disquette). **\n\n'
-                      'Toutes vos modifications seront perdues.')) {
+                  content: Text.rich(TextSpan(children: [
+                    const TextSpan(
+                        text: '** Vous quittez la page sans avoir '
+                            'cliqué sur Enregistrer '),
+                    WidgetSpan(
+                        child: SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: Icon(
+                        Icons.save,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    )),
+                    const TextSpan(
+                      text: '. **\n\nToutes vos modifications seront perdues.',
+                    ),
+                  ])))) {
                 cancelEditing();
                 _tabController.animateTo(index);
               }
