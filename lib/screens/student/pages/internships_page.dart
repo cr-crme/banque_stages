@@ -190,7 +190,7 @@ class _StudentInternshipListViewState
                             }
                           : null,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(4.0),
                         child: Icon(
                             _isSupervisingInternship(internship)
                                 ? Icons.person_add
