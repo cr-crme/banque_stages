@@ -274,6 +274,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
+          'Plan de formation\n'
           'Tâches et compétences prévues dans le plan ont été faites par l\'élève',
           style: Theme.of(context).textTheme.titleSmall,
         ),

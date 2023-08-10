@@ -121,7 +121,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
                       const [
                         'C\'est elle qui connait le mieux le poste de travail de l\'élève',
                         'Il sera plus facile d\'aborder avec elle qu\'avec l\'employeur '
-                            'les questions relatives aux dangers et aux accident',
+                            'les questions relatives aux dangers et aux accidents',
                       ],
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),

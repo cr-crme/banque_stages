@@ -129,7 +129,7 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
                     .contains(_Disabilities.autismSpectrumDisorder))
                   _RatingBarForm(
                     key: const Key('acceptanceTSA'),
-                    title: 'Son trouble du spectre de l\'autisme\u00a0?',
+                    title: 'Son trouble du spectre de l\'autisme (TSA)\u00a0?',
                     initialValue: _acceptanceTsa,
                     validator: (value) =>
                         value! <= 0 ? 'Sélectionner une valeur' : null,

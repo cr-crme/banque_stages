@@ -61,7 +61,7 @@ class _SstBody extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Text(
                     job.sstEvaluation.isFilled
-                        ? 'Afficher le détail\ndes risques et moyens\nde prévention'
+                        ? 'Afficher le détail\ndes risques et\nmoyens de prévention'
                         : 'Remplir le\nquestionnaire SST',
                     textAlign: TextAlign.center,
                   ),
