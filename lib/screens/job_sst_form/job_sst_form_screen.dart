@@ -383,6 +383,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
           decoration: const InputDecoration(
               labelText: 'Nom de l\'entreprise', border: InputBorder.none),
           controller: TextEditingController(text: widget.enterprise.name),
+          maxLines: null,
           enabled: false,
         ),
         TextField(
@@ -390,6 +391,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
               labelText: 'Métier semi-spécialisé', border: InputBorder.none),
           controller:
               TextEditingController(text: widget.job.specialization.name),
+          maxLines: null,
           enabled: false,
         ),
       ],
