@@ -207,8 +207,8 @@ class _EndingInternship extends StatelessWidget {
                   return _TaskTile(
                     title: student.fullName,
                     subtitle: enterprise.name,
-                    icon: Icons.task_alt,
-                    iconColor: const Color.fromARGB(255, 12, 128, 24),
+                    icon: Icons.flag,
+                    iconColor: Colors.yellow.shade700,
                     date: internship.date.end,
                     buttonTitle: 'Aller au stage',
                     onTap: () => GoRouter.of(context).pushNamed(
