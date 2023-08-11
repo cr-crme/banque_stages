@@ -259,8 +259,7 @@ class SkillEvaluationFormController {
   bool get allAppreciationsAreDone {
     for (final skillId in appreciations.keys) {
       if (isSkillToEvaluate(skillId) &&
-          (appreciations[skillId] == SkillAppreciation.notSelected ||
-              appreciations[skillId] == SkillAppreciation.notApplicable)) {
+          appreciations[skillId] == SkillAppreciation.notSelected) {
         return false;
       }
     }
