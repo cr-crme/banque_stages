@@ -84,8 +84,8 @@ class _SstBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: questions.map((q) {
-        final answer = job.sstEvaluation.questions[q.id];
-        final answerT = job.sstEvaluation.questions['${q.id}+t'];
+        final answer = job.sstEvaluation.questions['Q${q.id}'];
+        final answerT = job.sstEvaluation.questions['Q${q.id}+t'];
         if ((q.questionSummary == null && q.followUpQuestionSummary == null) ||
             (answer == null && answerT == null)) {
           return Container();

@@ -169,7 +169,6 @@ class _SstRisk extends StatelessWidget {
                       icon: Icons.warning,
                       iconColor: Theme.of(context).colorScheme.secondary,
                       date: internship.date.start,
-                      // TODO still have a bug when only answering one question
                       buttonTitle: 'Remplir le\nquestionnaire SST',
                       onTap: () => GoRouter.of(context).pushNamed(
                             Screens.jobSstForm,

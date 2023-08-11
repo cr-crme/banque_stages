@@ -291,10 +291,10 @@ class _QuestionsStepState extends State<QuestionsStep> {
             final question = questions[index];
 
             // Fill the initial answer
-            answer[question.id] =
-                widget.job.sstEvaluation.questions[question.id];
-            answer['${question.id}+t'] =
-                widget.job.sstEvaluation.questions['${question.id}+t'];
+            answer['Q${question.id}'] =
+                widget.job.sstEvaluation.questions['Q${question.id}'];
+            answer['Q${question.id}+t'] =
+                widget.job.sstEvaluation.questions['Q${question.id}+t'];
 
             switch (question.type) {
               case Type.radio:
@@ -303,14 +303,14 @@ class _QuestionsStepState extends State<QuestionsStep> {
                   child: RadioWithFollowUp(
                     title: '${index + 1}. ${question.question}',
                     initialValue:
-                        widget.job.sstEvaluation.questions[question.id],
+                        widget.job.sstEvaluation.questions['Q${question.id}'],
                     elements: question.choices!.toList(),
                     elementsThatShowChild: [question.choices!.first],
                     onChanged: (value) {
-                      answer[question.id] = value.toString();
-                      _followUpController['${question.id}+t']!.text = '';
+                      answer['Q${question.id}'] = value.toString();
+                      _followUpController['Q${question.id}+t']!.text = '';
                       if (question.choices!.first != value) {
-                        answer['${question.id}+t'] = null;
+                        answer['Q${question.id}+t'] = null;
                       }
                     },
                     followUpChild: question.followUpQuestion == null
@@ -326,15 +326,15 @@ class _QuestionsStepState extends State<QuestionsStep> {
                     title: '${index + 1}. ${question.question}',
                     elements: question.choices!.toList(),
                     hasNotApplicableOption: true,
-                    initialValues: (widget
-                            .job.sstEvaluation.questions[question.id] as List?)
+                    initialValues: (widget.job.sstEvaluation
+                            .questions['Q${question.id}'] as List?)
                         ?.map((e) => e as String)
                         .toList(),
                     onOptionWasSelected: (values) {
-                      answer[question.id] = values;
+                      answer['Q${question.id}'] = values;
                       if (!question.choices!.any((q) => values.contains(q))) {
-                        answer['${question.id}+t'] = null;
-                        _followUpController['${question.id}+t']!.text = '';
+                        answer['Q${question.id}+t'] = null;
+                        _followUpController['Q${question.id}+t']!.text = '';
                       }
                     },
                     followUpChild: question.followUpQuestion == null
@@ -349,8 +349,9 @@ class _QuestionsStepState extends State<QuestionsStep> {
                   child: TextWithForm(
                     title: '${index + 1}. ${question.question}',
                     initialValue:
-                        widget.job.sstEvaluation.questions[question.id] ?? '',
-                    onChanged: (text) => answer[question.id] = text,
+                        widget.job.sstEvaluation.questions['Q${question.id}'] ??
+                            '',
+                    onChanged: (text) => answer['Q${question.id}'] = text,
                   ),
                 );
             }
@@ -361,15 +362,15 @@ class _QuestionsStepState extends State<QuestionsStep> {
   }
 
   Padding _buildFollowUpQuestion(Question question, BuildContext context) {
-    _followUpController['${question.id}+t'] = TextEditingController(
-        text: widget.job.sstEvaluation.questions['${question.id}+t'] ?? '');
+    _followUpController['Q${question.id}+t'] = TextEditingController(
+        text: widget.job.sstEvaluation.questions['Q${question.id}+t'] ?? '');
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: TextWithForm(
-        controller: _followUpController['${question.id}+t'],
+        controller: _followUpController['Q${question.id}+t'],
         title: question.followUpQuestion!,
         titleStyle: Theme.of(context).textTheme.bodyMedium,
-        onChanged: (text) => answer['${question.id}+t'] = text,
+        onChanged: (text) => answer['Q${question.id}+t'] = text,
       ),
     );
   }
