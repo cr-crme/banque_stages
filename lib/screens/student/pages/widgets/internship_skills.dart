@@ -194,7 +194,11 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
 
   Widget _buillSkillSection(Specialization specialization) {
     return widget.evaluation[_currentEvaluationIndex].skills
-            .where((e) => e.specializationId == specialization.id)
+            .where((e) =>
+                e.specializationId == specialization.id &&
+                (e.appreciation == SkillAppreciation.acquired ||
+                    e.appreciation == SkillAppreciation.toPursuit ||
+                    e.appreciation == SkillAppreciation.failed))
             .isEmpty
         ? Container()
         : Padding(
