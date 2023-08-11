@@ -26,29 +26,30 @@ class ContactPage extends StatefulWidget {
 class ContactPageState extends State<ContactPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String? _contactFirstName;
-  String? _contactLastName;
-  String? _contactFunction;
-  String? _contactPhone;
-  String? _contactEmail;
-
-  final _addressController = AddressController();
-  String? _phone;
-  String? _fax;
-  String? _website;
-
-  late bool _useSameAddress = widget.enterprise.address.toString() ==
-      widget.enterprise.headquartersAddress.toString();
-  final _headquartersAddressController = AddressController();
-  String? _neq;
+  late final _contactInfoController =
+      _ContactInfoController(enterprise: widget.enterprise);
+  late final _enterpriseInfoController = _EnterpriseInfoController(
+      enterprise: widget.enterprise,
+      onAddressChanged: (address) {
+        if (!mounted) return;
+        if (_taxesInfoController.useSameAddress) {
+          _taxesInfoController.address.address = address;
+        }
+        setState(() {});
+      });
+  late final _taxesInfoController =
+      _TaxesInfoController(enterprise: widget.enterprise);
 
   bool _editing = false;
   bool get editing => _editing;
 
   Future<void> toggleEdit({bool save = true}) async {
     if (_editing) {
-      _editing = false;
       if (!save) {
+        _editing = false;
+        _contactInfoController.reset();
+        _enterpriseInfoController.reset();
+        _taxesInfoController.reset();
         setState(() {});
         return;
       }
@@ -59,17 +60,18 @@ class ContactPageState extends State<ContactPage> {
     }
 
     // Validate address
-    final status = await _addressController.requestValidation();
+    final status = await _enterpriseInfoController.address.requestValidation();
     if (!mounted) return;
     if (status != null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(status)));
       return;
     }
+    _editing = false;
 
-    if (!_useSameAddress) {
+    if (!_taxesInfoController.useSameAddress) {
       // Validate headquarter address
-      final status = await _headquartersAddressController.requestValidation();
+      final status = await _taxesInfoController.address.requestValidation();
       if (!mounted) return;
       if (status != null) {
         ScaffoldMessenger.of(context)
@@ -81,27 +83,36 @@ class ContactPageState extends State<ContactPage> {
     if (!mounted) return;
     if (!FormService.validateForm(_formKey, save: true)) return;
 
-    _editing = !_editing;
-
     EnterprisesProvider.of(context).replace(
       widget.enterprise.copyWith(
         contact: widget.enterprise.contact.copyWith(
-          firstName: _contactFirstName,
-          lastName: _contactLastName,
-          phone: _contactPhone == null
+          firstName: _contactInfoController.firstName.text,
+          lastName: _contactInfoController.lastName.text,
+          phone: _contactInfoController.contactPhone.text == ''
               ? null
-              : PhoneNumber.fromString(_contactPhone),
-          email: _contactEmail,
+              : PhoneNumber.fromString(
+                  _contactInfoController.contactPhone.text),
+          email: _contactInfoController.contactEmail.text,
         ),
-        contactFunction: _contactFunction,
-        address: _addressController.address,
-        phone: _phone == null ? null : PhoneNumber.fromString(_phone),
-        fax: _fax == null ? null : PhoneNumber.fromString(_fax),
-        website: _website,
-        headquartersAddress: _useSameAddress
-            ? _addressController.address
-            : _headquartersAddressController.address,
-        neq: _neq,
+        contactFunction: _contactInfoController.contactFunction.text == ''
+            ? null
+            : _contactInfoController.contactFunction.text,
+        address: _enterpriseInfoController.address.address,
+        phone: _enterpriseInfoController.phone.text == ''
+            ? null
+            : PhoneNumber.fromString(_enterpriseInfoController.phone.text),
+        fax: _enterpriseInfoController.fax.text == ''
+            ? null
+            : PhoneNumber.fromString(_enterpriseInfoController.fax.text),
+        website: _enterpriseInfoController.website.text == ''
+            ? null
+            : _enterpriseInfoController.website.text,
+        headquartersAddress: _taxesInfoController.useSameAddress
+            ? _enterpriseInfoController.address.address
+            : _taxesInfoController.address.address,
+        neq: _taxesInfoController.neq.text == ''
+            ? null
+            : _taxesInfoController.neq.text,
       ),
     );
 
@@ -136,37 +147,26 @@ class ContactPageState extends State<ContactPage> {
           child: Column(
             children: [
               _ContactInfo(
-                enterprise: widget.enterprise,
+                controller: _contactInfoController,
                 editMode: _editing,
-                onSavedFirstName: (name) => _contactFirstName = name!,
-                onSavedLastName: (name) => _contactLastName = name!,
-                onSavedJob: (function) => _contactFunction = function!,
-                onSavedPhone: (phone) => _contactPhone = phone!,
-                onSavedEmail: (email) => _contactEmail = email!,
               ),
               _EnterpriseInfo(
-                enterprise: widget.enterprise,
+                controller: _enterpriseInfoController,
                 editMode: _editing,
-                addressController: _addressController,
-                onSavedPhone: (phone) => _phone = phone,
-                onSavedFax: (fax) => _fax = fax,
-                onSavedWebsite: (website) => _website = website!,
               ),
               _TaxesInfo(
-                enterprise: widget.enterprise,
+                controller: _taxesInfoController,
                 editMode: _editing,
-                useSameAddress: _useSameAddress,
+                useSameAddress: _taxesInfoController.useSameAddress,
                 onChangedUseSame: (newValue) => setState(() {
-                  _useSameAddress = newValue!;
-                  if (_useSameAddress) {
-                    _headquartersAddressController.address =
-                        _addressController.address;
+                  _taxesInfoController.useSameAddress = newValue!;
+                  if (_taxesInfoController.useSameAddress) {
+                    _taxesInfoController.address.address =
+                        _enterpriseInfoController.address.address;
                   } else {
-                    _headquartersAddressController.address = Address();
+                    _taxesInfoController.address.address = Address();
                   }
                 }),
-                addressController: _headquartersAddressController,
-                onSavedNeq: (neq) => _neq = neq,
               ),
               const SizedBox(height: 12),
             ],
@@ -177,24 +177,35 @@ class ContactPageState extends State<ContactPage> {
   }
 }
 
+class _ContactInfoController {
+  Enterprise enterprise;
+  final firstName = TextEditingController();
+  final lastName = TextEditingController();
+  final contactFunction = TextEditingController();
+  final contactPhone = TextEditingController();
+  final contactEmail = TextEditingController();
+
+  _ContactInfoController({required this.enterprise}) {
+    reset();
+  }
+
+  void reset() {
+    firstName.text = enterprise.contact.firstName;
+    lastName.text = enterprise.contact.lastName;
+    contactFunction.text = enterprise.contactFunction;
+    contactPhone.text = enterprise.contact.phone.toString();
+    contactEmail.text = enterprise.contact.email ?? '';
+  }
+}
+
 class _ContactInfo extends StatelessWidget {
   const _ContactInfo({
-    required this.enterprise,
+    required this.controller,
     required this.editMode,
-    required this.onSavedFirstName,
-    required this.onSavedLastName,
-    required this.onSavedJob,
-    required this.onSavedPhone,
-    required this.onSavedEmail,
   });
 
-  final Enterprise enterprise;
   final bool editMode;
-  final Function(String?) onSavedFirstName;
-  final Function(String?) onSavedLastName;
-  final Function(String?) onSavedJob;
-  final Function(String?) onSavedPhone;
-  final Function(String?) onSavedEmail;
+  final _ContactInfoController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +218,7 @@ class _ContactInfo extends StatelessWidget {
           child: Column(
             children: [
               TextFormField(
-                initialValue: enterprise.contact.firstName,
+                controller: controller.firstName,
                 decoration: const InputDecoration(
                   labelText: '* Prénom',
                   disabledBorder: InputBorder.none,
@@ -217,10 +228,9 @@ class _ContactInfo extends StatelessWidget {
                     ? 'Ajouter le nom de la personne représentant l\'entreprise.'
                     : null,
                 maxLines: null,
-                onSaved: onSavedFirstName,
               ),
               TextFormField(
-                initialValue: enterprise.contact.lastName,
+                controller: controller.lastName,
                 decoration: const InputDecoration(
                   labelText: '* Nom',
                   disabledBorder: InputBorder.none,
@@ -230,11 +240,10 @@ class _ContactInfo extends StatelessWidget {
                     ? 'Ajouter le nom de la personne représentant l\'entreprise.'
                     : null,
                 maxLines: null,
-                onSaved: onSavedLastName,
               ),
               const SizedBox(height: 8),
               TextFormField(
-                initialValue: enterprise.contactFunction,
+                controller: controller.contactFunction,
                 decoration: const InputDecoration(
                   labelText: '* Fonction',
                   disabledBorder: InputBorder.none,
@@ -243,20 +252,17 @@ class _ContactInfo extends StatelessWidget {
                 validator: (text) => text!.isEmpty
                     ? 'Ajouter la fonction de cette personne.'
                     : null,
-                onSaved: onSavedJob,
               ),
               const SizedBox(height: 8),
               PhoneListTile(
-                initialValue: enterprise.contact.phone,
-                onSaved: onSavedPhone,
+                controller: controller.contactPhone,
                 isMandatory: true,
                 enabled: editMode,
               ),
               const SizedBox(height: 8),
               EmailListTile(
-                initialValue: enterprise.contact.email,
+                controller: controller.contactEmail,
                 enabled: editMode,
-                onSaved: onSavedEmail,
                 isMandatory: true,
               ),
             ],
@@ -267,22 +273,38 @@ class _ContactInfo extends StatelessWidget {
   }
 }
 
+class _EnterpriseInfoController {
+  Enterprise enterprise;
+  Function(Address?) onAddressChanged;
+
+  final address = AddressController();
+  final phone = TextEditingController();
+  final fax = TextEditingController();
+  final website = TextEditingController();
+
+  _EnterpriseInfoController(
+      {required this.enterprise, required this.onAddressChanged}) {
+    reset();
+    address.initialValue = enterprise.address;
+    address.onAddressChangedCallback = () => onAddressChanged(address.address);
+  }
+
+  void reset() {
+    address.address = enterprise.address;
+    phone.text = enterprise.phone.toString();
+    fax.text = enterprise.fax.toString();
+    website.text = enterprise.website;
+  }
+}
+
 class _EnterpriseInfo extends StatelessWidget {
   const _EnterpriseInfo({
-    required this.enterprise,
+    required this.controller,
     required this.editMode,
-    required this.addressController,
-    required this.onSavedPhone,
-    required this.onSavedFax,
-    required this.onSavedWebsite,
   });
 
-  final Enterprise enterprise;
+  final _EnterpriseInfoController controller;
   final bool editMode;
-  final AddressController addressController;
-  final Function(String?) onSavedWebsite;
-  final Function(String?) onSavedPhone;
-  final Function(String?) onSavedFax;
 
   @override
   Widget build(BuildContext context) {
@@ -296,30 +318,26 @@ class _EnterpriseInfo extends StatelessWidget {
             children: [
               AddressListTile(
                 title: 'Adresse de l\'établissement',
-                addressController: addressController,
+                addressController: controller.address,
                 isMandatory: true,
                 enabled: editMode,
-                initialValue: enterprise.address,
               ),
               const SizedBox(height: 8),
               PhoneListTile(
-                  initialValue: enterprise.phone,
-                  onSaved: onSavedPhone,
+                  controller: controller.phone,
                   isMandatory: false,
                   enabled: editMode),
               const SizedBox(height: 8),
               PhoneListTile(
                   title: 'Télécopieur',
-                  initialValue: enterprise.fax,
+                  controller: controller.fax,
                   icon: Icons.fax,
-                  onSaved: onSavedFax,
                   isMandatory: false,
                   enabled: editMode),
               const SizedBox(height: 8),
               WebSiteListTile(
-                initialValue: enterprise.website,
+                controller: controller.website,
                 enabled: editMode,
-                onSaved: onSavedWebsite,
               ),
             ],
           ),
@@ -329,23 +347,43 @@ class _EnterpriseInfo extends StatelessWidget {
   }
 }
 
-class _TaxesInfo extends StatelessWidget {
+class _TaxesInfoController {
+  Enterprise enterprise;
+  bool useSameAddress = false;
+  final address = AddressController();
+  final neq = TextEditingController();
+
+  _TaxesInfoController({required this.enterprise}) {
+    reset();
+    address.initialValue = enterprise.address;
+  }
+
+  void reset() {
+    address.address = enterprise.headquartersAddress;
+    neq.text = enterprise.neq ?? '';
+    useSameAddress = enterprise.address.toString() ==
+        enterprise.headquartersAddress.toString();
+  }
+}
+
+class _TaxesInfo extends StatefulWidget {
   const _TaxesInfo({
-    required this.enterprise,
+    required this.controller,
     required this.editMode,
     required this.useSameAddress,
     required this.onChangedUseSame,
-    required this.addressController,
-    required this.onSavedNeq,
   });
 
-  final Enterprise enterprise;
+  final _TaxesInfoController controller;
   final bool editMode;
   final bool useSameAddress;
   final Function(bool?) onChangedUseSame;
-  final AddressController addressController;
-  final Function(String?) onSavedNeq;
 
+  @override
+  State<_TaxesInfo> createState() => _TaxesInfoState();
+}
+
+class _TaxesInfoState extends State<_TaxesInfo> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -355,7 +393,7 @@ class _TaxesInfo extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(children: [
-            if (editMode)
+            if (widget.editMode)
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Flexible(
                   child: Text(
@@ -364,29 +402,26 @@ class _TaxesInfo extends StatelessWidget {
                   ),
                 ),
                 Switch(
-                  value: useSameAddress,
-                  onChanged: onChangedUseSame,
+                  value: widget.useSameAddress,
+                  onChanged: widget.onChangedUseSame,
                 )
               ]),
             AddressListTile(
-              initialValue: useSameAddress
-                  ? enterprise.address
-                  : enterprise.headquartersAddress,
+              initialValue: widget.controller.address.address,
               title: 'Adresse du siège social',
-              addressController: addressController,
+              addressController: widget.controller.address,
               isMandatory: false,
-              enabled: editMode && !useSameAddress,
+              enabled: widget.editMode && !widget.useSameAddress,
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: enterprise.neq,
+              controller: widget.controller.neq,
               decoration: const InputDecoration(
                 labelText: 'Numéro d\'entreprise du Québec (NEQ)',
                 disabledBorder: InputBorder.none,
               ),
-              enabled: editMode,
+              enabled: widget.editMode,
               validator: null,
-              onSaved: onSavedNeq,
               keyboardType: TextInputType.number,
             ),
           ]),

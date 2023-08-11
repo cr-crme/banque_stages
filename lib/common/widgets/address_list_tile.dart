@@ -4,22 +4,26 @@ import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/screens/enterprise/pages/widgets/show_address_dialog.dart';
 
 class AddressController {
-  late Future<String?> Function() _validationFunction;
-  late Address? Function() _getAddress;
-  late Address? Function(Address) _setAddress;
+  Function()? onAddressChangedCallback;
+  AddressController({this.onAddressChangedCallback});
+
+  Future<String?> Function()? _validationFunction;
+  Address? Function()? _getAddress;
+  Address? Function(Address)? _setAddress;
+  Address? initialValue;
   final TextEditingController _textController = TextEditingController();
 
   // Interface to expose to the user
-  Address? get address => _getAddress();
+  Address? get address => _getAddress == null ? null : _getAddress!();
   set address(Address? value) {
-    if (value != null) _setAddress(value);
+    if (value != null && _setAddress != null) _setAddress!(value);
 
     _textController.text = address?.toString() ?? '';
-    _validationFunction();
+    if (_validationFunction != null) _validationFunction!();
   }
 
   Future<String?> requestValidation() async {
-    return _validationFunction();
+    return _validationFunction == null ? null : _validationFunction!();
   }
 }
 
@@ -57,8 +61,17 @@ class _AddressListTileState extends State<AddressListTile> {
       widget.addressController!._setAddress = setAddress;
     }
 
-    if (widget.initialValue != null) {
+    if (widget.addressController!.initialValue != null &&
+        widget.initialValue != null) {
+      throw 'Initial values for the address controller can only be set via one '
+          'of the methods';
+    } else if (widget.addressController!.initialValue != null) {
+      _address = widget.addressController!.initialValue;
+    } else if (widget.initialValue != null) {
       _address = widget.initialValue;
+    }
+
+    if (_address != null) {
       widget.addressController!._textController.text = _address.toString();
     }
   }
@@ -90,7 +103,7 @@ class _AddressListTileState extends State<AddressListTile> {
     }
 
     if (newAddress.toString() == _address.toString()) {
-      // Don't don anything if the address did not change
+      // Don't do anything if the address did not change
       _address = newAddress;
       widget.addressController!._textController.text = _address.toString();
       isValidating = false;
@@ -136,9 +149,16 @@ class _AddressListTileState extends State<AddressListTile> {
     }
 
     _address = newAddress;
+
     widget.addressController!._textController.text = _address.toString();
+    if (widget.addressController!.onAddressChangedCallback != null) {
+      widget.addressController!.onAddressChangedCallback!();
+    }
+
     isValidating = false;
     addressHasChanged = false;
+    if (!mounted) return null;
+
     setState(() {});
     return null;
   }
