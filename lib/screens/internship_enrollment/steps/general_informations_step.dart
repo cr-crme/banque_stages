@@ -271,7 +271,13 @@ class _SupervisonInformation extends StatefulWidget {
 }
 
 class _SupervisonInformationState extends State<_SupervisonInformation> {
-  bool _useContactInfo = false;
+  bool _useContactInfo = false; // Start at false, but call toggle on init
+
+  @override
+  void initState() {
+    super.initState();
+    _toggleUseContactInfo();
+  }
 
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
