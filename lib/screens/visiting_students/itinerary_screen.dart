@@ -47,8 +47,9 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
     if (!mounted) return false;
 
     final students = {
-      ...StudentsProvider.mySupervizedStudents(context, listen: false)
-    }.map((e) => e);
+      ...StudentsProvider.mySupervizedStudents(context,
+          listen: false, activeOnly: true)
+    };
     if (!mounted) return false;
 
     // Add the school as the first waypoint
@@ -85,7 +86,6 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // TODO only show those selected in the previous screen
       appBar: AppBar(title: const Text('Itinéraire des visites')),
       body: RawScrollbar(
         thumbVisibility: true,
