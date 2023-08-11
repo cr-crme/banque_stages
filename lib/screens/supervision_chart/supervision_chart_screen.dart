@@ -43,7 +43,6 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   Widget _searchBarBuilder() {
-    // TODO fix the search bar for both modes
     return Container(
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.only(left: 15, right: 15),
@@ -101,9 +100,13 @@ class _SupervisionChartState extends State<SupervisionChart> {
   List<Internship> _filterByName(List<Internship> internships) {
     final students =
         StudentsProvider.studentsInMyGroups(context, listen: false);
+
     return internships
-        .where((internship) =>
-            students.any((student) => student.id == internship.studentId))
+        .where((internship) => students.any((student) =>
+            student.id == internship.studentId &&
+            student.fullName
+                .toLowerCase()
+                .contains(_searchTextController.text.toLowerCase())))
         .toList();
   }
 
