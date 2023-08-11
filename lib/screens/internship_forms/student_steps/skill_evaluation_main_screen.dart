@@ -71,38 +71,44 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
         leading:
             IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
       ),
-      body: student == null
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Builder(builder: (context) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _EvaluationDate(
-                      formController: _formController,
-                      editMode: widget.editMode,
-                    ),
-                    _PersonAtMeeting(
-                      formController: _formController,
-                      editMode: widget.editMode,
-                    ),
-                    _buildAutofillChooser(),
-                    _JobToEvaluate(
-                      formController: _formController,
-                      editMode: widget.editMode,
-                    ),
-                    _EvaluationTypeChoser(
-                      formController: _formController,
-                      editMode: widget.editMode,
-                    ),
-                    _StartEvaluation(
-                      formController: _formController,
-                      editMode: widget.editMode,
-                    ),
-                  ],
-                );
-              }),
-            ),
+      body: WillPopScope(
+        onWillPop: () async {
+          _cancel();
+          return false;
+        },
+        child: student == null
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Builder(builder: (context) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _EvaluationDate(
+                        formController: _formController,
+                        editMode: widget.editMode,
+                      ),
+                      _PersonAtMeeting(
+                        formController: _formController,
+                        editMode: widget.editMode,
+                      ),
+                      _buildAutofillChooser(),
+                      _JobToEvaluate(
+                        formController: _formController,
+                        editMode: widget.editMode,
+                      ),
+                      _EvaluationTypeChoser(
+                        formController: _formController,
+                        editMode: widget.editMode,
+                      ),
+                      _StartEvaluation(
+                        formController: _formController,
+                        editMode: widget.editMode,
+                      ),
+                    ],
+                  );
+                }),
+              ),
+      ),
     );
   }
 

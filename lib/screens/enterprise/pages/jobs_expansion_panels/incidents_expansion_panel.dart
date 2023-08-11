@@ -56,15 +56,19 @@ class _IncidentsBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildIncidents(context,
-                title: 'Blessures graves d\'élèves',
+                titleIfNotHasIncidents: 'Aucune blessure grave d\'élève',
+                titleIfHasIncidents: 'Blessures graves d\'élèves',
                 incidents: job.incidents.severeInjuries),
             const SizedBox(height: 16),
             _buildIncidents(context,
-                title: 'Cas d\'agression ou de harcèlement',
+                titleIfNotHasIncidents:
+                    'Aucun cas d\'agression ou de harcèlement',
+                titleIfHasIncidents: 'Cas d\'agression ou de harcèlement',
                 incidents: job.incidents.verbalAbuses),
             const SizedBox(height: 16),
             _buildIncidents(context,
-                title: 'Blessures mineures d\'élèves',
+                titleIfNotHasIncidents: 'Aucune blessure mineure',
+                titleIfHasIncidents: 'Blessures mineures d\'élèves',
                 incidents: job.incidents.minorInjuries),
             const SizedBox(height: 24),
             Center(
@@ -80,18 +84,21 @@ class _IncidentsBody extends StatelessWidget {
     );
   }
 
-  Widget _buildIncidents(BuildContext context,
-      {required String title, required List<Incident> incidents}) {
+  Widget _buildIncidents(
+    BuildContext context, {
+    required String titleIfNotHasIncidents,
+    required String titleIfHasIncidents,
+    required List<Incident> incidents,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title,
+          incidents.isEmpty ? titleIfNotHasIncidents : titleIfHasIncidents,
           style: Theme.of(context).textTheme.titleSmall,
         ),
-        incidents.isEmpty
-            ? const Text('Aucun incident rapporté')
-            : ItemizedText(incidents.map((e) => e.toString()).toList()),
+        if (incidents.isNotEmpty)
+          ItemizedText(incidents.map((e) => e.toString()).toList()),
       ],
     );
   }

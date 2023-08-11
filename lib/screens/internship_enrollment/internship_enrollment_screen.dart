@@ -159,34 +159,40 @@ class _InternshipEnrollmentScreenState
         leading:
             IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
       ),
-      body: ScrollableStepper(
-        type: StepperType.horizontal,
-        scrollController: _scrollController,
-        currentStep: _currentStep,
-        onStepContinue: _nextStep,
-        onStepTapped: (int tapped) {
-          setState(() {
-            _currentStep = tapped;
-            _scrollController.jumpTo(0);
-          });
+      body: WillPopScope(
+        onWillPop: () async {
+          _cancel();
+          return false;
         },
-        onStepCancel: _cancel,
-        steps: [
-          Step(
-            state: _stepStatus[0],
-            isActive: _currentStep == 0,
-            title: const Text('Général'),
-            content: GeneralInformationsStep(
-                key: _generalInfoKey, enterprise: enterprise),
-          ),
-          Step(
-            state: _stepStatus[1],
-            isActive: _currentStep == 1,
-            title: const Text('Horaire'),
-            content: ScheduleStep(key: _scheduleKey),
-          ),
-        ],
-        controlsBuilder: _controlBuilder,
+        child: ScrollableStepper(
+          type: StepperType.horizontal,
+          scrollController: _scrollController,
+          currentStep: _currentStep,
+          onStepContinue: _nextStep,
+          onStepTapped: (int tapped) {
+            setState(() {
+              _currentStep = tapped;
+              _scrollController.jumpTo(0);
+            });
+          },
+          onStepCancel: _cancel,
+          steps: [
+            Step(
+              state: _stepStatus[0],
+              isActive: _currentStep == 0,
+              title: const Text('Général'),
+              content: GeneralInformationsStep(
+                  key: _generalInfoKey, enterprise: enterprise),
+            ),
+            Step(
+              state: _stepStatus[1],
+              isActive: _currentStep == 1,
+              title: const Text('Horaire'),
+              content: ScheduleStep(key: _scheduleKey),
+            ),
+          ],
+          controlsBuilder: _controlBuilder,
+        ),
       ),
     );
   }

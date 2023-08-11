@@ -163,50 +163,56 @@ class _EnterpriseEvaluationScreenState
           title: const Text('Évaluation post-stage'),
           leading: IconButton(
               onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
-      body: Selector<EnterprisesProvider, Job>(
-        builder: (context, job, _) => ScrollableStepper(
-          type: StepperType.horizontal,
-          scrollController: _scrollController,
-          currentStep: _currentStep,
-          onStepContinue: _nextStep,
-          onStepTapped: (int tapped) => setState(() {
-            _scrollController.jumpTo(0);
-            _currentStep = tapped;
-          }),
-          onStepCancel: () => Navigator.pop(context),
-          steps: [
-            Step(
-              state: _stepStatus[0],
-              isActive: _currentStep == 0,
-              title: const Text(
-                'Tâches et\nhabiletés',
-                textAlign: TextAlign.center,
+      body: WillPopScope(
+        onWillPop: () async {
+          _cancel();
+          return false;
+        },
+        child: Selector<EnterprisesProvider, Job>(
+          builder: (context, job, _) => ScrollableStepper(
+            type: StepperType.horizontal,
+            scrollController: _scrollController,
+            currentStep: _currentStep,
+            onStepContinue: _nextStep,
+            onStepTapped: (int tapped) => setState(() {
+              _scrollController.jumpTo(0);
+              _currentStep = tapped;
+            }),
+            onStepCancel: () => Navigator.pop(context),
+            steps: [
+              Step(
+                state: _stepStatus[0],
+                isActive: _currentStep == 0,
+                title: const Text(
+                  'Tâches et\nhabiletés',
+                  textAlign: TextAlign.center,
+                ),
+                content: TaskAndAbilityStep(
+                  key: _taskAndAbilityKey,
+                  internship: internship,
+                ),
               ),
-              content: TaskAndAbilityStep(
-                key: _taskAndAbilityKey,
-                internship: internship,
+              Step(
+                state: _stepStatus[1],
+                isActive: _currentStep == 1,
+                title: const Text('Encadrement'),
+                content: SupervisionStep(
+                  key: _supervisionKey,
+                  job: job,
+                ),
               ),
-            ),
-            Step(
-              state: _stepStatus[1],
-              isActive: _currentStep == 1,
-              title: const Text('Encadrement'),
-              content: SupervisionStep(
-                key: _supervisionKey,
-                job: job,
+              Step(
+                state: _stepStatus[2],
+                isActive: _currentStep == 2,
+                title: const Text('Clientèle\nspécialisée'),
+                content: SpecializedStudentsStep(key: _specializedStudentsKey),
               ),
-            ),
-            Step(
-              state: _stepStatus[2],
-              isActive: _currentStep == 2,
-              title: const Text('Clientèle\nspécialisée'),
-              content: SpecializedStudentsStep(key: _specializedStudentsKey),
-            ),
-          ],
-          controlsBuilder: _controlBuilder,
+            ],
+            controlsBuilder: _controlBuilder,
+          ),
+          selector: (context, enterprises) =>
+              enterprises[internship.enterpriseId].jobs[internship.jobId],
         ),
-        selector: (context, enterprises) =>
-            enterprises[internship.enterpriseId].jobs[internship.jobId],
       ),
     );
   }

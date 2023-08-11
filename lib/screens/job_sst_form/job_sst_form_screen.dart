@@ -197,19 +197,25 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
               ),
             )
           ]),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              QuestionsStep(
-                key: _questionsKey,
-                enterprise: enterprise,
-                job: enterprise.jobs[widget.jobId],
-              ),
-              _controlBuilder(),
-            ],
+      body: WillPopScope(
+        onWillPop: () async {
+          _cancel();
+          return false;
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                QuestionsStep(
+                  key: _questionsKey,
+                  enterprise: enterprise,
+                  job: enterprise.jobs[widget.jobId],
+                ),
+                _controlBuilder(),
+              ],
+            ),
           ),
         ),
       ),

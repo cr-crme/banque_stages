@@ -12,6 +12,7 @@ class ConfirmExitDialog {
 
     return await showDialog<bool>(
             context: context,
+            barrierDismissible: false,
             builder: (context) => _ConfirmExitDialog(content: content)) ??
         false;
   }

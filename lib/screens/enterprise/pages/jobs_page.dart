@@ -91,6 +91,7 @@ class JobsPageState extends State<JobsPage> {
 
     final result = await showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => const AddSstEventDialog(),
     );
     if (result == null) return;
@@ -113,6 +114,7 @@ class JobsPageState extends State<JobsPage> {
   void _addComment(Job job) async {
     final provider = EnterprisesProvider.of(context, listen: false);
     final newComment = await showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) => const AddTextDialog(
         title: 'Ajouter un commentaire',
