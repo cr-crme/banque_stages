@@ -67,33 +67,28 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
 
   void _submit() async {
     // Confirm the user is really ready to submit
-    final result = await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-              title: const Text('Soumettre l\'évaluation?'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                      'Les informations pour cette évaluation ne seront plus modifiables.'),
-                  if (!widget.formController.allAppreciationsAreDone)
-                    const Text(
-                      '\n\n**Attention, toutes les compétences n\'ont pas été évaluées**',
-                      style: TextStyle(color: Colors.red),
-                    ),
+    if (!widget.formController.allAppreciationsAreDone) {
+      final result = await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+                title: const Text('Soumettre l\'évaluation?'),
+                content: const Text(
+                  '**Attention, toutes les compétences n\'ont pas été évaluées**',
+                  style: TextStyle(color: Colors.black),
+                ),
+                actions: [
+                  OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('Non')),
+                  TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text('Oui')),
                 ],
-              ),
-              actions: [
-                OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('Non')),
-                TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('Oui')),
-              ],
-            ));
-    if (!mounted || result == null || !result) return;
+              ));
+      if (result == null || !result) return;
+    }
+    if (!mounted) return;
 
     // Fetch the data from the form controller
     final internship = widget.formController.internship(context, listen: false);
