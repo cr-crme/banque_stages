@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/address.dart';
@@ -55,16 +56,21 @@ Future<void> addAllDummyData(BuildContext context) async {
 }
 
 Future<void> addDummySchools(SchoolsProvider schools) async {
+  dev.log("Adding dummy schools");
   schools.add(School(
-    name: 'École',
-    address:
-        (await Address.fromAddress('9105 Rue Verville, Montréal, QC H2N 1Y5'))!,
-  ));
+      name: 'École',
+      address: Address(
+          civicNumber: 9105,
+          street: 'Rue Verville',
+          city: 'Montréal',
+          postalCode: 'H2N 1Y5')));
   await _waitForDatabaseUpdate(schools, 1);
 }
 
 Future<void> addDummyTeachers(
     TeachersProvider teachers, SchoolsProvider schools) async {
+  dev.log("Adding dummy teachers");
+
   teachers.add(Teacher(
       id: '42',
       firstName: 'Roméo',
@@ -99,6 +105,8 @@ Future<void> addDummyTeachers(
 
 Future<void> addDummyEnterprises(
     EnterprisesProvider enterprises, TeachersProvider teachers) async {
+  dev.log("Adding dummy enterprises");
+
   JobList jobs = JobList();
   jobs.add(
     Job(
@@ -656,6 +664,8 @@ Future<void> addDummyEnterprises(
 
 Future<void> addDummyStudents(
     StudentsProvider students, TeachersProvider teachers) async {
+  dev.log("Adding dummy students");
+
   students.add(
     Student(
       firstName: 'Cedric',
@@ -664,8 +674,11 @@ Future<void> addDummyStudents(
       email: 'c.masson@email.com',
       program: Program.fpt,
       group: '550',
-      address: await Address.fromAddress(
-          '7248 Rue D\'Iberville, Montréal, QC H2E 2Y6'),
+      address: Address(
+          civicNumber: 7248,
+          street: 'Rue D\'Iberville',
+          city: 'Montréal',
+          postalCode: 'H2E 2Y6'),
       phone: PhoneNumber.fromString('514 321 8888'),
       contact: Person(
           firstName: 'Paul',
@@ -690,8 +703,11 @@ Future<void> addDummyStudents(
           phone: PhoneNumber.fromString('514 321 9876'),
           email: 'j.caron@email.com'),
       contactLink: 'Père',
-      address: await Address.fromAddress(
-          '202 Boulevard Saint-Joseph Est, Montréal, QC H1X 2T2'),
+      address: Address(
+          civicNumber: 202,
+          street: 'Boulevard Saint-Joseph Est',
+          city: 'Montréal',
+          postalCode: 'H1X 2T2'),
       phone: PhoneNumber.fromString('514 222 3344'),
     ),
   );
@@ -710,7 +726,11 @@ Future<void> addDummyStudents(
           phone: PhoneNumber.fromString('514 321 9876'),
           email: 'n.lefranc@email.com'),
       contactLink: 'Mère',
-      address: await Address.fromAddress('6723 25e Ave, Montréal, QC H1T 3M1'),
+      address: Address(
+          civicNumber: 6723,
+          street: '25e Ave',
+          city: 'Montréal',
+          postalCode: 'H1T 3M1'),
       phone: PhoneNumber.fromString('514 333 4455'),
     ),
   );
@@ -729,8 +749,11 @@ Future<void> addDummyStudents(
           phone: PhoneNumber.fromString('514 321 9876'),
           email: 'm.gagnon@email.com'),
       contactLink: 'Mère',
-      address:
-          await Address.fromAddress('9277 Rue Meunier, Montréal, QC H2N 1W4'),
+      address: Address(
+          civicNumber: 9277,
+          street: 'Rue Meunier',
+          city: 'Montréal',
+          postalCode: 'H2N 1W4'),
       phone: PhoneNumber.fromString('514 999 8877'),
     ),
   );
@@ -749,8 +772,11 @@ Future<void> addDummyStudents(
           email: 'r.gingras@email.com',
           phone: PhoneNumber.fromString('514 321 9876')),
       contactLink: 'Père',
-      address: await Address.fromAddress(
-          '4517 Rue d\'Assise, Saint-Léonard, QC H1R 1W2'),
+      address: Address(
+          civicNumber: 4517,
+          street: 'Rue d\'Assise',
+          city: 'Saint-Léonard',
+          postalCode: 'H1R 1W2'),
       phone: PhoneNumber.fromString('514 888 7766'),
     ),
   );
@@ -769,8 +795,11 @@ Future<void> addDummyStudents(
           phone: PhoneNumber.fromString('514 321 9876'),
           email: 'l.vargas@email.com'),
       contactLink: 'Mère',
-      address: await Address.fromAddress(
-          '8204 Rue de Blois, Saint-Léonard, QC H1R 2X1'),
+      address: Address(
+          civicNumber: 8204,
+          street: 'Rue de Blois',
+          city: 'Saint-Léonard',
+          postalCode: 'H1R 2X1'),
       phone: PhoneNumber.fromString('514 444 5566'),
     ),
   );
@@ -789,8 +818,11 @@ Future<void> addDummyStudents(
           phone: PhoneNumber.fromString('514 321 9876'),
           email: 'v.tremblay@email.com'),
       contactLink: 'Père',
-      address: await Address.fromAddress(
-          '8358 Rue Jean-Nicolet, Saint-Léonard, QC H1R 2R2'),
+      address: Address(
+          civicNumber: 8358,
+          street: 'Rue Jean-Nicolet',
+          city: 'Saint-Léonard',
+          postalCode: 'H1R 2R2'),
       phone: PhoneNumber.fromString('514 555 9988'),
     ),
   );
@@ -809,8 +841,11 @@ Future<void> addDummyStudents(
           phone: PhoneNumber.fromString('514 321 9876'),
           email: 'jp.picard@email.com'),
       contactLink: 'Père',
-      address: await Address.fromAddress(
-          '8382 Rue du Laus, Saint-Léonard, QC H1R 2P4'),
+      address: Address(
+          civicNumber: 8382,
+          street: 'Rue du Laus',
+          city: 'Saint-Léonard',
+          postalCode: 'H1R 2P4'),
       phone: PhoneNumber.fromString('514 778 8899'),
     ),
   );
@@ -829,8 +864,11 @@ Future<void> addDummyStudents(
           phone: PhoneNumber.fromString('514 321 9876'),
           email: 's.monette@email.com'),
       contactLink: 'Père',
-      address: await Address.fromAddress(
-          '6865 Rue Chaillot, Saint-Léonard, QC H1T 3R5'),
+      address: Address(
+          civicNumber: 6865,
+          street: 'Rue Chaillot',
+          city: 'Saint-Léonard',
+          postalCode: 'H1T 3R5'),
       phone: PhoneNumber.fromString('514 321 6655'),
     ),
   );
@@ -849,8 +887,11 @@ Future<void> addDummyStudents(
           phone: PhoneNumber.fromString('514 321 9876'),
           email: 'm.poulain@email.com'),
       contactLink: 'Père',
-      address:
-          await Address.fromAddress('6585 Rue Lemay, Montréal, QC H1T 2L8'),
+      address: Address(
+          civicNumber: 6585,
+          street: 'Rue Lemay',
+          city: 'Montréal',
+          postalCode: 'H1T 2L8'),
       phone: PhoneNumber.fromString('514 567 9999'),
     ),
   );
@@ -893,6 +934,7 @@ Future<void> addDummyInterships(
   EnterprisesProvider enterprises,
   TeachersProvider teachers,
 ) async {
+  dev.log("Adding dummy internships");
   final rng = Random();
 
   var period = DateTimeRange(
