@@ -122,19 +122,40 @@ class TasksToDoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int nbTasksToDo = numberOfTasksToDo(context);
+
     return Scaffold(
       drawer: const MainDrawer(),
       appBar: AppBar(
         title: const Text('Tâches à réaliser'),
       ),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _SstRisk(),
-            _EndingInternship(),
-            _PostInternshipEvaluation(),
+            if (nbTasksToDo == 0) const _AllTasksDoneTitle(),
+            const _SstRisk(),
+            const _EndingInternship(),
+            const _PostInternshipEvaluation(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AllTasksDoneTitle extends StatelessWidget {
+  const _AllTasksDoneTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 24.0),
+        child: Text(
+          'Bravo!\nToutes les tâches ont été réalisées!',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
       ),
     );
@@ -151,13 +172,13 @@ class _SstRisk extends StatelessWidget {
     jobs.sort(
         (a, b) => a.internship!.date.start.compareTo(b.internship!.date.start));
 
-    return jobs.isEmpty
-        ? Container()
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SubTitle('Repérer les risques SST'),
-              ...jobs.map(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Repérer les risques SST'),
+        ...(jobs.isEmpty
+            ? [const _AllTasksDone()]
+            : jobs.map(
                 (e) {
                   final enterprise = e.enterprise!;
                   final job = e.job!;
@@ -175,9 +196,9 @@ class _SstRisk extends StatelessWidget {
                             params: Screens.params(enterprise, jobId: job),
                           ));
                 },
-              ),
-            ],
-          );
+              )),
+      ],
+    );
   }
 }
 
@@ -191,13 +212,13 @@ class _EndingInternship extends StatelessWidget {
     internships.sort(
         (a, b) => a.internship!.date.end.compareTo(b.internship!.date.end));
 
-    return internships.isEmpty
-        ? Container()
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SubTitle('Terminer les stages'),
-              ...internships.map(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Terminer les stages'),
+        ...(internships.isEmpty
+            ? [const _AllTasksDone()]
+            : internships.map(
                 (e) {
                   final internship = e.internship!;
                   final student = e.student!;
@@ -217,9 +238,9 @@ class _EndingInternship extends StatelessWidget {
                     ),
                   );
                 },
-              ),
-            ],
-          );
+              )),
+      ],
+    );
   }
 }
 
@@ -233,13 +254,13 @@ class _PostInternshipEvaluation extends StatelessWidget {
     internships.sort(
         (a, b) => a.internship!.endDate!.compareTo(b.internship!.endDate!));
 
-    return internships.isEmpty
-        ? Container()
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SubTitle('Faire les évaluations post-stage'),
-              ...internships.map(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Faire les évaluations post-stage'),
+        ...(internships.isEmpty
+            ? [const _AllTasksDone()]
+            : internships.map(
                 (e) {
                   final internship = e.internship!;
                   final student = e.student!;
@@ -258,9 +279,9 @@ class _PostInternshipEvaluation extends StatelessWidget {
                     ),
                   );
                 },
-              ),
-            ],
-          );
+              )),
+      ],
+    );
   }
 }
 
@@ -347,4 +368,22 @@ class _JobEnterpriseInternshipStudent {
     this.internship,
     this.student,
   });
+}
+
+class _AllTasksDone extends StatelessWidget {
+  const _AllTasksDone();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.only(left: 24.0),
+      child: Row(
+        children: [
+          Icon(Icons.check_circle_outline, color: Colors.grey),
+          SizedBox(width: 4),
+          Text('Aucune tâche à faire'),
+        ],
+      ),
+    );
+  }
 }
