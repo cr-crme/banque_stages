@@ -116,7 +116,8 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
                 editingMode: _editing,
                 onPressed: () async =>
                     await widget.onAddInternshipRequest(widget.enterprise),
-              )
+              ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
