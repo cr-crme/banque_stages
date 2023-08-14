@@ -32,6 +32,7 @@ class JobsPage extends StatefulWidget {
 }
 
 class JobsPageState extends State<JobsPage> {
+  final Map<String, UniqueKey> _cardKey = {};
   final Map<String, List> _expandedSections = {};
   final Map<String, GlobalKey<PrerequisitesBodyState>> _prerequisitesFormKeys =
       {};
@@ -47,6 +48,7 @@ class JobsPageState extends State<JobsPage> {
 
   Future<void> addJob() async {
     final enterprises = EnterprisesProvider.of(context, listen: false);
+
     final newJob = await showDialog(
         context: context,
         builder: (context) => JobCreatorDialog(
@@ -111,7 +113,8 @@ class JobsPageState extends State<JobsPage> {
   }
 
   void _addComment(Job job) async {
-    final provider = EnterprisesProvider.of(context, listen: false);
+    final enterprises = EnterprisesProvider.of(context, listen: false);
+
     final newComment = await showDialog(
       barrierDismissible: false,
       context: context,
@@ -122,18 +125,18 @@ class JobsPageState extends State<JobsPage> {
 
     if (newComment == null) return;
     job.comments.add(newComment);
-    provider.replace(widget.enterprise);
+    enterprises.replace(widget.enterprise);
   }
 
   void _updateSectionsIfNeeded() {
     for (Job job in widget.enterprise.jobs) {
+      _cardKey.putIfAbsent(job.id, () => UniqueKey());
       _expandedSections.putIfAbsent(
           job.id, () => [false, false, false, false, false, false]);
       _prerequisitesFormKeys.putIfAbsent(
           job.id, () => GlobalKey<PrerequisitesBodyState>());
       _isEditingPrerequisites.putIfAbsent(job.id, () => false);
     }
-    setState(() {});
   }
 
   void _onClickPrerequisiteEdit(Job job) {
@@ -173,87 +176,171 @@ class JobsPageState extends State<JobsPage> {
           .compareTo(b.specialization.name.toLowerCase()),
     );
 
-    return SingleChildScrollView(
-      child: ExpansionPanelList.radio(
-        initialOpenPanelValue: jobs.length == 1 ? jobs.first.id : null,
-        children: jobs
-            .map((job) => ExpansionPanelRadio(
-                canTapOnHeader: true,
-                value: job.id,
-                headerBuilder: (context, isExpanded) =>
-                    SubTitle(job.specialization.name, top: 12),
-                body: Column(
-                  children: [
-                    ExpansionPanelList(
-                      expansionCallback: (panelIndex, isExpanded) async {
-                        if (isEditing) {
-                          if (!await ConfirmExitDialog.show(
-                            context,
-                            content: Text.rich(TextSpan(children: [
-                              const TextSpan(
-                                  text: '** Vous quittez la page sans avoir '
-                                      'cliqué sur Enregistrer '),
-                              WidgetSpan(
-                                  child: SizedBox(
-                                height: 22,
-                                width: 22,
-                                child: Icon(
-                                  Icons.save,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              )),
-                              const TextSpan(
-                                text:
-                                    '. **\n\nToutes vos modifications seront perdues.',
-                              ),
-                            ])),
-                          )) return;
-                          cancelEditing();
-                        }
-                        _expandedSections[job.id]![panelIndex] = !isExpanded;
-                        setState(() {});
-                      },
-                      children: [
-                        PrerequisitesExpansionPanel(
-                          key: _prerequisitesFormKeys[job.id]!,
-                          isExpanded: _expandedSections[job.id]![0],
-                          isEditing: _isEditingPrerequisites[job.id]!,
-                          enterprise: widget.enterprise,
-                          job: job,
-                          onClickEdit: () => _onClickPrerequisiteEdit(job),
-                        ),
-                        SstExpansionPanel(
-                          isExpanded: _expandedSections[job.id]![1],
-                          enterprise: widget.enterprise,
-                          job: job,
-                          addSstEvent: _addSstEvent,
-                        ),
-                        IncidentsExpansionPanel(
-                          isExpanded: _expandedSections[job.id]![2],
-                          enterprise: widget.enterprise,
-                          job: job,
-                          addSstEvent: _addSstEvent,
-                        ),
-                        SupervisionExpansionPanel(
-                          isExpanded: _expandedSections[job.id]![3],
-                          job: job,
-                        ),
-                        PhotoExpansionPanel(
-                          isExpanded: _expandedSections[job.id]![4],
-                          job: job,
-                          addImage: _addImage,
-                          removeImage: _removeImage,
-                        ),
-                        CommentsExpansionPanel(
-                          isExpanded: _expandedSections[job.id]![5],
-                          job: job,
-                          addComment: _addComment,
-                        ),
-                      ],
-                    )
-                  ],
-                )))
-            .toList(),
+    return ListView.builder(
+      itemCount: jobs.length,
+      itemBuilder: (context, index) {
+        final job = jobs[index];
+
+        return AnimatedExpandingCard(
+          key: _cardKey[job.id],
+          header: SubTitle(
+            job.specialization.name,
+            top: 12,
+            bottom: 12,
+          ),
+          onTapHeader: (newValue) {
+            setState(() {});
+          },
+          initialExpandedState: jobs.length == 1,
+          child: ExpansionPanelList(
+            expansionCallback: (panelIndex, isExpanded) async {
+              if (isEditing) {
+                if (!await ConfirmExitDialog.show(
+                  context,
+                  content: Text.rich(TextSpan(children: [
+                    const TextSpan(
+                        text: '** Vous quittez la page sans avoir '
+                            'cliqué sur Enregistrer '),
+                    WidgetSpan(
+                        child: SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: Icon(
+                        Icons.save,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    )),
+                    const TextSpan(
+                      text: '. **\n\nToutes vos modifications seront perdues.',
+                    ),
+                  ])),
+                )) return;
+                cancelEditing();
+              }
+              _expandedSections[job.id]![panelIndex] = !isExpanded;
+              setState(() {});
+            },
+            children: [
+              PrerequisitesExpansionPanel(
+                key: _prerequisitesFormKeys[job.id]!,
+                isExpanded: _expandedSections[job.id]![0],
+                isEditing: _isEditingPrerequisites[job.id]!,
+                enterprise: widget.enterprise,
+                job: job,
+                onClickEdit: () => _onClickPrerequisiteEdit(job),
+              ),
+              SstExpansionPanel(
+                isExpanded: _expandedSections[job.id]![1],
+                enterprise: widget.enterprise,
+                job: job,
+                addSstEvent: _addSstEvent,
+              ),
+              IncidentsExpansionPanel(
+                isExpanded: _expandedSections[job.id]![2],
+                enterprise: widget.enterprise,
+                job: job,
+                addSstEvent: _addSstEvent,
+              ),
+              SupervisionExpansionPanel(
+                isExpanded: _expandedSections[job.id]![3],
+                job: job,
+              ),
+              PhotoExpansionPanel(
+                isExpanded: _expandedSections[job.id]![4],
+                job: job,
+                addImage: _addImage,
+                removeImage: _removeImage,
+              ),
+              CommentsExpansionPanel(
+                isExpanded: _expandedSections[job.id]![5],
+                job: job,
+                addComment: _addComment,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class AnimatedExpandingCard extends StatefulWidget {
+  const AnimatedExpandingCard({
+    super.key,
+    required this.header,
+    required this.onTapHeader,
+    required this.child,
+    required this.initialExpandedState,
+  });
+
+  final Widget header;
+  final Function(bool newState) onTapHeader;
+  final Widget child;
+  final bool initialExpandedState;
+
+  @override
+  State<AnimatedExpandingCard> createState() => _AnimatedExpandingCardState();
+}
+
+class _AnimatedExpandingCardState extends State<AnimatedExpandingCard>
+    with TickerProviderStateMixin {
+  late bool _isExpanded = widget.initialExpandedState;
+
+  late final AnimationController _expandingAnimationController =
+      AnimationController(
+          vsync: this, duration: const Duration(milliseconds: 150));
+  late final Animation<double> _expandingAnimation = CurvedAnimation(
+    parent: _expandingAnimationController,
+    curve: Curves.fastOutSlowIn,
+  );
+  late final Tween<double> _expandingTween = Tween(begin: 0, end: 1);
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialExpandedState) {
+      _expandingAnimationController.animateTo(1);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            onTap: () {
+              _isExpanded = !_isExpanded;
+              _isExpanded
+                  ? _expandingAnimationController.forward()
+                  : _expandingAnimationController.reverse();
+              widget.onTapHeader(_isExpanded);
+              setState(() {});
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Flexible(child: widget.header),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 16.0),
+                  child: Icon(
+                    _isExpanded ? Icons.expand_less : Icons.expand_more,
+                    size: 30,
+                    color: Colors.grey[700],
+                  ),
+                )
+              ],
+            ),
+          ),
+          SizeTransition(
+            sizeFactor: _expandingTween.animate(_expandingAnimation),
+            child: widget.child,
+          ),
+        ],
       ),
     );
   }
