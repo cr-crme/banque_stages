@@ -130,9 +130,11 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
           if (!widget.specializationOnly)
             Column(
               children: [
+                const SizedBox(height: 12),
                 _buildAvailability(state),
+                const SizedBox(height: 12),
                 _buildMinimumAge(),
-                const SizedBox(height: 8),
+                const SizedBox(height: 16),
                 BuildPrerequisitesCheckboxes(
                     checkBoxKey: _preInternshipRequestKey),
                 const SizedBox(height: 8),

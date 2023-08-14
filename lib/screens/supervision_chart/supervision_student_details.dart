@@ -90,8 +90,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                   if (internship != null)
                     _PersonalNotes(internship: internship),
                   if (internship != null) _Schedule(internship: internship),
-                  if (internship != null) _buildUniform(job!),
-                  if (internship != null) _buildProtections(job!),
+                  if (internship != null) _buildUniformAndEpi(context, job!),
                   _MoreInfoButton(
                     studentId: studentId,
                     onTap: () => _navigateToStudentIntership(context),
@@ -102,58 +101,58 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildUniform(Job job) {
+  Widget _buildUniformAndEpi(BuildContext context, Job job) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Exigences de l\'entreprise'),
+        Padding(
+          padding: const EdgeInsets.only(left: 32.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildUniform(context, job),
+              const SizedBox(height: 24),
+              _buildProtections(context, job),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUniform(BuildContext context, Job job) {
     // Workaround for job.uniforms
     final uniforms = job.uniform;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Tenue de travail'),
-        Padding(
-          padding: const EdgeInsets.only(left: 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (uniforms.status == UniformStatus.none)
-                const Text('Aucune consigne de l\'entreprise'),
-              if (uniforms.status == UniformStatus.suppliedByEnterprise)
-                const Text('Fournie par l\'entreprise\u00a0:'),
-              if (uniforms.status == UniformStatus.suppliedByStudent)
-                const Text('Fournie par l\'étudiant\u00a0:'),
-              ItemizedText(uniforms.uniforms),
-              const SizedBox(height: 12),
-            ],
-          ),
-        )
+        Text(
+          'Tenue de travail',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        uniforms.status == UniformStatus.none
+            ? const Text('Aucune consigne de l\'entreprise')
+            : ItemizedText(uniforms.uniforms),
       ],
     );
   }
 }
 
-Widget _buildProtections(Job job) {
+Widget _buildProtections(BuildContext context, Job job) {
   final protections = job.protections;
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const SubTitle('Équipements de protection individuelle'),
-      Padding(
-        padding: const EdgeInsets.only(left: 32.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (protections.status == ProtectionsStatus.none)
-              const Text('Aucun équipement requis'),
-            if (protections.status == ProtectionsStatus.suppliedByEnterprise)
-              const Text('Fournis par l\'entreprise\u00a0:'),
-            if (protections.status == ProtectionsStatus.suppliedBySchool)
-              const Text(
-                  'Non fournis par l\'entreprise\n L\'élève devra porter\u00a0:'),
-            ItemizedText(protections.protections),
-          ],
-        ),
-      )
+      Text(
+        'Équipements de protection individuelle',
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
+      protections.status == ProtectionsStatus.none
+          ? const Text('Aucun équipement requis')
+          : ItemizedText(protections.protections)
     ],
   );
 }
