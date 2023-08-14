@@ -410,13 +410,17 @@ class _StudentTile extends StatelessWidget {
                 ),
                 child: Tooltip(
                   message: 'Niveau de priorité pour les visites de supervision',
-                  child: IconButton(
-                    onPressed: onUpdatePriority,
-                    alignment: Alignment.center,
-                    icon: Icon(
-                      internship.visitingPriority.icon,
-                      color: internship.visitingPriority.color,
-                      size: 30,
+                  child: InkWell(
+                    onTap: onUpdatePriority,
+                    borderRadius: BorderRadius.circular(25),
+                    child: SizedBox(
+                      width: 45,
+                      height: 45,
+                      child: Icon(
+                        internship.visitingPriority.icon,
+                        color: internship.visitingPriority.color,
+                        size: 30,
+                      ),
                     ),
                   ),
                 ),
