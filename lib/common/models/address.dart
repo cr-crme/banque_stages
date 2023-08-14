@@ -16,8 +16,6 @@ class Address extends ItemSerializable {
   final String? city;
   final String? postalCode;
 
-  // TODO Change geocoding for something web complient
-  // For instance (https://pub.dev/packages/flutter_osm_plugin)
   static Future<Address?> fromAddress(String address) async {
     final location = await locationFromAddress(address);
     if (location.isEmpty) return null;
