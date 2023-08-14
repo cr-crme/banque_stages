@@ -3,6 +3,7 @@ import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/animated_expanding_card.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_sst_event_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_text_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
@@ -183,14 +184,7 @@ class JobsPageState extends State<JobsPage> {
 
         return AnimatedExpandingCard(
           key: _cardKey[job.id],
-          header: SubTitle(
-            job.specialization.name,
-            top: 12,
-            bottom: 12,
-          ),
-          onTapHeader: (newValue) {
-            setState(() {});
-          },
+          header: SubTitle(job.specialization.name, top: 12, bottom: 12),
           initialExpandedState: jobs.length == 1,
           child: ExpansionPanelList(
             expansionCallback: (panelIndex, isExpanded) async {
@@ -260,88 +254,6 @@ class JobsPageState extends State<JobsPage> {
           ),
         );
       },
-    );
-  }
-}
-
-class AnimatedExpandingCard extends StatefulWidget {
-  const AnimatedExpandingCard({
-    super.key,
-    required this.header,
-    required this.onTapHeader,
-    required this.child,
-    required this.initialExpandedState,
-  });
-
-  final Widget header;
-  final Function(bool newState) onTapHeader;
-  final Widget child;
-  final bool initialExpandedState;
-
-  @override
-  State<AnimatedExpandingCard> createState() => _AnimatedExpandingCardState();
-}
-
-class _AnimatedExpandingCardState extends State<AnimatedExpandingCard>
-    with TickerProviderStateMixin {
-  late bool _isExpanded = widget.initialExpandedState;
-
-  late final AnimationController _expandingAnimationController =
-      AnimationController(
-          vsync: this, duration: const Duration(milliseconds: 150));
-  late final Animation<double> _expandingAnimation = CurvedAnimation(
-    parent: _expandingAnimationController,
-    curve: Curves.fastOutSlowIn,
-  );
-  late final Tween<double> _expandingTween = Tween(begin: 0, end: 1);
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialExpandedState) {
-      _expandingAnimationController.animateTo(1);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 10,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InkWell(
-            onTap: () {
-              _isExpanded = !_isExpanded;
-              _isExpanded
-                  ? _expandingAnimationController.forward()
-                  : _expandingAnimationController.reverse();
-              widget.onTapHeader(_isExpanded);
-              setState(() {});
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Flexible(child: widget.header),
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0, right: 16.0),
-                  child: Icon(
-                    _isExpanded ? Icons.expand_less : Icons.expand_more,
-                    size: 30,
-                    color: Colors.grey[700],
-                  ),
-                )
-              ],
-            ),
-          ),
-          SizeTransition(
-            sizeFactor: _expandingTween.animate(_expandingAnimation),
-            child: widget.child,
-          ),
-        ],
-      ),
     );
   }
 }
