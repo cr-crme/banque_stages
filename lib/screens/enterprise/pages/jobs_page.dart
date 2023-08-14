@@ -12,7 +12,6 @@ import 'package:crcrme_banque_stages/misc/storage_service.dart';
 import 'package:crcrme_banque_stages/screens/enterprise/pages/jobs_expansion_panels/incidents_expansion_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
 import 'jobs_expansion_panels/comments_expansion_panel.dart';
 import 'jobs_expansion_panels/photo_expansion_panel.dart';
@@ -126,7 +125,7 @@ class JobsPageState extends State<JobsPage> {
     provider.replace(widget.enterprise);
   }
 
-  void _updateSections() {
+  void _updateSectionsIfNeeded() {
     for (Job job in widget.enterprise.jobs) {
       _expandedSections.putIfAbsent(
           job.id, () => [false, false, false, false, false, false]);
@@ -135,18 +134,6 @@ class JobsPageState extends State<JobsPage> {
       _isEditingPrerequisites.putIfAbsent(job.id, () => false);
     }
     setState(() {});
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _updateSections();
-    context.read<EnterprisesProvider>().addListener(() {
-      if (mounted) {
-        _updateSections();
-      }
-    });
   }
 
   void _onClickPrerequisiteEdit(Job job) {
@@ -177,6 +164,8 @@ class JobsPageState extends State<JobsPage> {
 
   @override
   Widget build(BuildContext context) {
+    _updateSectionsIfNeeded();
+
     final jobs = [...widget.enterprise.jobs];
     jobs.sort(
       (a, b) => a.specialization.name
