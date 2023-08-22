@@ -164,7 +164,7 @@ class _StudentInternshipListViewState
                     '${DateFormat.yMMMd('fr_CA').format(internship.date.start)} - $endDate',
                     style: Theme.of(context)
                         .textTheme
-                        .titleMedium!
+                        .titleLarge!
                         .copyWith(color: Colors.black),
                   ),
                   subtitle: Text(EnterprisesProvider.of(context)
