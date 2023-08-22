@@ -123,10 +123,7 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
       children: [
         Text(
           '* Tâches données à l\'élève',
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall!
-              .copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleSmall!,
         ),
         Row(
           children: [
@@ -170,10 +167,7 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
       children: [
         Text(
           '* Respect du plan de formation',
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall!
-              .copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleSmall!,
         ),
         Text(
           'Tâches et compétences prévues dans le plan de formation ont été '

@@ -92,10 +92,7 @@ class SupervisionStepState extends State<SupervisionStep> {
       children: [
         Text(
           '* Tolérance du milieu à l\'égard des retards et absences de l\'élève',
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall!
-              .copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleSmall!,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -115,10 +112,7 @@ class SupervisionStepState extends State<SupervisionStep> {
       children: [
         Text(
           '* Communication avec l\'entreprise',
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall!
-              .copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleSmall!,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -138,10 +132,7 @@ class SupervisionStepState extends State<SupervisionStep> {
       children: [
         Text(
           '* Type d\'encadrement',
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall!
-              .copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleSmall!,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -161,10 +152,7 @@ class SupervisionStepState extends State<SupervisionStep> {
       children: [
         Text(
           '* Rendement de l\'élève',
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall!
-              .copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleSmall!,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -184,10 +172,7 @@ class SupervisionStepState extends State<SupervisionStep> {
       children: [
         Text(
           '* Niveau d\'autonomie de l\'élève souhaité',
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall!
-              .copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleSmall!,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -215,11 +200,11 @@ class _Comments extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: spacing),
+        Padding(
+          padding: const EdgeInsets.only(bottom: spacing),
           child: Text(
             'Autres commentaires sur l\'encadrement\u00a0:',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleSmall!,
           ),
         ),
         TextFormField(
