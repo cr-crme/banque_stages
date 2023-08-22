@@ -280,6 +280,7 @@ class _EvaluateSkill extends StatelessWidget {
         TextFormField(
           decoration: const InputDecoration(label: Text('Commentaires')),
           controller: formController.skillCommentsControllers[skill.id]!,
+          maxLines: null,
           enabled: editMode,
         ),
         const SizedBox(height: 24),
