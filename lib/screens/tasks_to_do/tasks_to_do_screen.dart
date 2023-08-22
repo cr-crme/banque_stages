@@ -228,7 +228,7 @@ class _EndingInternship extends StatelessWidget {
                     title: student.fullName,
                     subtitle: enterprise.name,
                     icon: Icons.flag,
-                    iconColor: Colors.green,
+                    iconColor: Colors.yellow.shade700,
                     date: internship.date.end,
                     buttonTitle: 'Aller au stage',
                     onTap: () => GoRouter.of(context).pushNamed(
@@ -379,7 +379,7 @@ class _AllTasksDone extends StatelessWidget {
       padding: EdgeInsets.only(left: 24.0),
       child: Row(
         children: [
-          Icon(Icons.check_circle_outline, color: Colors.grey),
+          Icon(Icons.check_circle_outline, color: Colors.green),
           SizedBox(width: 4),
           Text('Aucune tâche à faire'),
         ],
