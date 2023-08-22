@@ -49,7 +49,7 @@ class AddressListTile extends StatefulWidget {
 
 class _AddressListTileState extends State<AddressListTile> {
   bool isValidating = false;
-  late bool addressHasChanged = widget.initialValue == null;
+  late bool addressHasChanged;
 
   @override
   void initState() {
@@ -71,7 +71,11 @@ class _AddressListTileState extends State<AddressListTile> {
       _address = widget.initialValue;
     }
 
-    if (_address != null) {
+    if (_address == null) {
+      // Add the search icon if address is empty
+      addressHasChanged = true;
+    } else {
+      addressHasChanged = false;
       widget.addressController!._textController.text = _address.toString();
     }
   }
