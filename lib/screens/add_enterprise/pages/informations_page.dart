@@ -38,32 +38,34 @@ class InformationsPageState extends State<InformationsPage> {
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              decoration:
-                  const InputDecoration(labelText: '* Nom de l\'entreprise'),
-              validator: (text) =>
-                  text!.isEmpty ? 'Ajouter le nom de l\'entreprise.' : null,
-              onSaved: (name) => this.name = name,
-            ),
-            ActivityTypesPickerFormField(
-              onSaved: (Set<String>? activityTypes) =>
-                  setState(() => this.activityTypes = activityTypes!),
-              activityTabAtTop: false,
-            ),
-            AddressListTile(
-              title: 'Adresse',
-              isMandatory: true,
-              enabled: true,
-              addressController: addressController,
-            ),
-            ShareWithPickerFormField(
-              onSaved: (String? shareWith) =>
-                  setState(() => this.shareWith = shareWith),
-            ),
-          ],
+        child: FocusScope(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                decoration:
+                    const InputDecoration(labelText: '* Nom de l\'entreprise'),
+                validator: (text) =>
+                    text!.isEmpty ? 'Ajouter le nom de l\'entreprise.' : null,
+                onSaved: (name) => this.name = name,
+              ),
+              ActivityTypesPickerFormField(
+                onSaved: (Set<String>? activityTypes) =>
+                    setState(() => this.activityTypes = activityTypes!),
+                activityTabAtTop: false,
+              ),
+              AddressListTile(
+                title: 'Adresse',
+                isMandatory: true,
+                enabled: true,
+                addressController: addressController,
+              ),
+              ShareWithPickerFormField(
+                onSaved: (String? shareWith) =>
+                    setState(() => this.shareWith = shareWith),
+              ),
+            ],
+          ),
         ),
       ),
     );

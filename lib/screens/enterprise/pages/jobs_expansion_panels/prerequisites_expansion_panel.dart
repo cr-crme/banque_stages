@@ -97,24 +97,26 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: SizedBox(
-        width: Size.infinite.width,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 24, right: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMinimumAge(),
-              const SizedBox(height: 12),
-              _buildEntepriseRequests(),
-              const SizedBox(height: 12),
-              _buildUniform(),
-              const SizedBox(height: 12),
-              _buildProtections(),
-              const SizedBox(height: 12),
-            ],
+    return FocusScope(
+      child: Form(
+        key: formKey,
+        child: SizedBox(
+          width: Size.infinite.width,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 24, right: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildMinimumAge(),
+                const SizedBox(height: 12),
+                _buildEntepriseRequests(),
+                const SizedBox(height: 12),
+                _buildUniform(),
+                const SizedBox(height: 12),
+                _buildProtections(),
+                const SizedBox(height: 12),
+              ],
+            ),
           ),
         ),
       ),
@@ -132,6 +134,7 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
                 children: [
                   SizedBox(
                     width: 100,
+                    height: 35,
                     child: TextFormField(
                       controller: _ageController,
                       keyboardType: TextInputType.number,

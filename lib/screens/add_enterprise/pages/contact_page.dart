@@ -37,44 +37,47 @@ class ContactPageState extends State<ContactPage> {
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SubTitle('Entreprise représentée par', left: 0, top: 0),
-            TextFormField(
-              decoration: const InputDecoration(labelText: '* Prénom'),
-              validator: (text) => text!.isEmpty
-                  ? 'Ajouter le nom de la personne représentant l\'entreprise.'
-                  : null,
-              onSaved: (name) => contactFirstName = name!,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: '* Nom de famille'),
-              validator: (text) => text!.isEmpty
-                  ? 'Ajouter le nom de la personne représentant l\'entreprise.'
-                  : null,
-              onSaved: (name) => contactLastName = name!,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: '* Fonction'),
-              validator: (text) => text!.isEmpty
-                  ? 'Ajouter la fonction de cette personne.'
-                  : null,
-              onSaved: (function) => contactFunction = function!,
-            ),
-            PhoneListTile(
-              onSaved: (phone) => contactPhone = phone!,
-              isMandatory: true,
-              canCall: false,
-              enabled: true,
-            ),
-            EmailListTile(
-              onSaved: (email) => contactEmail = email!,
-              isMandatory: true,
-              canMail: false,
-            ),
-            const SizedBox(height: 20),
-          ],
+        child: FocusScope(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SubTitle('Entreprise représentée par', left: 0, top: 0),
+              TextFormField(
+                decoration: const InputDecoration(labelText: '* Prénom'),
+                validator: (text) => text!.isEmpty
+                    ? 'Ajouter le nom de la personne représentant l\'entreprise.'
+                    : null,
+                onSaved: (name) => contactFirstName = name!,
+              ),
+              TextFormField(
+                decoration:
+                    const InputDecoration(labelText: '* Nom de famille'),
+                validator: (text) => text!.isEmpty
+                    ? 'Ajouter le nom de la personne représentant l\'entreprise.'
+                    : null,
+                onSaved: (name) => contactLastName = name!,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: '* Fonction'),
+                validator: (text) => text!.isEmpty
+                    ? 'Ajouter la fonction de cette personne.'
+                    : null,
+                onSaved: (function) => contactFunction = function!,
+              ),
+              PhoneListTile(
+                onSaved: (phone) => contactPhone = phone!,
+                isMandatory: true,
+                canCall: false,
+                enabled: true,
+              ),
+              EmailListTile(
+                onSaved: (email) => contactEmail = email!,
+                isMandatory: true,
+                canMail: false,
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

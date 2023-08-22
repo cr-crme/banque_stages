@@ -41,14 +41,16 @@ class JobsPageState extends State<JobsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: _jobsForm.length,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (BuildContext context, int index) =>
-            _buildNewJobsForm(index),
+    return FocusScope(
+      child: Form(
+        key: _formKey,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: _jobsForm.length,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) =>
+              _buildNewJobsForm(index),
+        ),
       ),
     );
   }

@@ -37,40 +37,42 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _GeneralInformations(
-            enterprise: enterprise,
-            onSelectEnterprise: (e) => setState(() => enterprise = e),
-            student: student,
-            onSelectStudent: (s) => setState(() => student = s),
-          ),
-          const SizedBox(height: 10),
-          _MainJob(
+    return FocusScope(
+      child: Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _GeneralInformations(
               enterprise: enterprise,
-              onSaved: (job) => setState(() => primaryJob = job),
-              extraSpecializations: extraSpecializations),
-          if (student != null && student!.program == Program.fpt)
-            _ExtraSpecialization(
-              extraSpecializations: extraSpecializations,
-              onAddSpecialization: () =>
-                  setState(() => extraSpecializations.add(null)),
-              onSetSpecialization: (specialization, i) =>
-                  setState(() => extraSpecializations[i] = specialization),
-              onDeleteSpecialization: (i) =>
-                  setState(() => extraSpecializations.removeAt(i)),
+              onSelectEnterprise: (e) => setState(() => enterprise = e),
+              student: student,
+              onSelectStudent: (s) => setState(() => student = s),
             ),
-          _SupervisonInformation(
-            enterprise: enterprise,
-            onSavedFirstName: (name) => supervisorFirstName = name!,
-            onSavedLastName: (name) => supervisorLastName = name!,
-            onSavedPhone: (phone) => supervisorPhone = phone!,
-            onSavedEmail: (email) => supervisorEmail = email!,
-          ),
-        ],
+            const SizedBox(height: 10),
+            _MainJob(
+                enterprise: enterprise,
+                onSaved: (job) => setState(() => primaryJob = job),
+                extraSpecializations: extraSpecializations),
+            if (student != null && student!.program == Program.fpt)
+              _ExtraSpecialization(
+                extraSpecializations: extraSpecializations,
+                onAddSpecialization: () =>
+                    setState(() => extraSpecializations.add(null)),
+                onSetSpecialization: (specialization, i) =>
+                    setState(() => extraSpecializations[i] = specialization),
+                onDeleteSpecialization: (i) =>
+                    setState(() => extraSpecializations.removeAt(i)),
+              ),
+            _SupervisonInformation(
+              enterprise: enterprise,
+              onSavedFirstName: (name) => supervisorFirstName = name!,
+              onSavedLastName: (name) => supervisorLastName = name!,
+              onSavedPhone: (phone) => supervisorPhone = phone!,
+              onSavedEmail: (email) => supervisorEmail = email!,
+            ),
+          ],
+        ),
       ),
     );
   }

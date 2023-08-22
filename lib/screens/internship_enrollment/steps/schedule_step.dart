@@ -101,30 +101,33 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _DateRange(
-            scheduleController: scheduleController,
-            onScheduleChanged: onScheduleChanged,
-          ),
-          Visibility(
-              visible: scheduleController.dateRange != null,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ScheduleSelector(
-                    scheduleController: scheduleController,
-                    editMode: true,
-                    withTitle: true,
-                  ),
-                  _Hours(
-                      onSaved: (value) => intershipLength = int.parse(value!)),
-                ],
-              )),
-        ],
+    return FocusScope(
+      child: Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _DateRange(
+              scheduleController: scheduleController,
+              onScheduleChanged: onScheduleChanged,
+            ),
+            Visibility(
+                visible: scheduleController.dateRange != null,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ScheduleSelector(
+                      scheduleController: scheduleController,
+                      editMode: true,
+                      withTitle: true,
+                    ),
+                    _Hours(
+                        onSaved: (value) =>
+                            intershipLength = int.parse(value!)),
+                  ],
+                )),
+          ],
+        ),
       ),
     );
   }

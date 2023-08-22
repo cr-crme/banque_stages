@@ -487,36 +487,38 @@ class _InternshipBody extends StatelessWidget {
     final signatoryTeacher =
         teachers.firstWhere((e) => e.id == internship.signatoryTeacherId);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildTeachers(
-            supervisors: supervisors.map((e) => e.fullName).toList(),
-            signatoryTeacher: signatoryTeacher.fullName),
-        _buildJob(
-            'Métier${internship.extraSpecializationsId.isNotEmpty ? ' principal' : ''}',
-            specialization: job.specialization),
-        if (internship.extraSpecializationsId.isNotEmpty)
-          ...internship.extraSpecializationsId
-              .asMap()
-              .keys
-              .map((indexExtra) => _buildJob(
-                    'Métier supplémentaire${internship.extraSpecializationsId.length > 1 ? ' (${indexExtra + 1})' : ''}',
-                    specialization: ActivitySectorsService.specialization(
-                        internship.extraSpecializationsId[indexExtra]),
-                  )),
-        _buildAddress(enterprise: enterprises[internship.enterpriseId]),
-        Stack(
-          alignment: Alignment.topLeft,
-          children: [
-            SizedBox(width: MediaQuery.of(context).size.width),
-            _buildSupervisorInfo(),
-          ],
-        ),
-        _buildDates(),
-        _buildTime(),
-        _buildSchedule(),
-      ],
+    return FocusScope(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTeachers(
+              supervisors: supervisors.map((e) => e.fullName).toList(),
+              signatoryTeacher: signatoryTeacher.fullName),
+          _buildJob(
+              'Métier${internship.extraSpecializationsId.isNotEmpty ? ' principal' : ''}',
+              specialization: job.specialization),
+          if (internship.extraSpecializationsId.isNotEmpty)
+            ...internship.extraSpecializationsId
+                .asMap()
+                .keys
+                .map((indexExtra) => _buildJob(
+                      'Métier supplémentaire${internship.extraSpecializationsId.length > 1 ? ' (${indexExtra + 1})' : ''}',
+                      specialization: ActivitySectorsService.specialization(
+                          internship.extraSpecializationsId[indexExtra]),
+                    )),
+          _buildAddress(enterprise: enterprises[internship.enterpriseId]),
+          Stack(
+            alignment: Alignment.topLeft,
+            children: [
+              SizedBox(width: MediaQuery.of(context).size.width),
+              _buildSupervisorInfo(),
+            ],
+          ),
+          _buildDates(),
+          _buildTime(),
+          _buildSchedule(),
+        ],
+      ),
     );
   }
 }
