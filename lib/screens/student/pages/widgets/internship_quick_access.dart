@@ -35,7 +35,8 @@ class InternshipQuickAccess extends StatelessWidget {
     final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
     final isSupervising = internship.supervisingTeacherIds.contains(myId);
 
-    return isSupervising
+    return isSupervising &&
+            (internship.isActive || internship.isEnterpriseEvaluationPending)
         ? Padding(
             padding: const EdgeInsets.only(left: 24.0, right: 24),
             child: Row(
