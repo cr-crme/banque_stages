@@ -36,7 +36,7 @@ class _AnimatedExpandingCardState extends State<AnimatedExpandingCard>
   void initState() {
     super.initState();
     if (widget.initialExpandedState) {
-      _expandingAnimationController.animateTo(1);
+      _expandingAnimationController.animateTo(1, duration: const Duration());
     }
   }
 
