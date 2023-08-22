@@ -50,11 +50,15 @@ class JobsPageState extends State<JobsPage> {
   Future<void> addJob() async {
     final enterprises = EnterprisesProvider.of(context, listen: false);
 
+    // Building the dialog in a Scaffold allows for the Snackbar to be shown
+    // over the dialog box
     final newJob = await showDialog(
-        context: context,
-        builder: (context) => JobCreatorDialog(
-              enterprise: widget.enterprise,
-            ));
+      context: context,
+      builder: (context) => Scaffold(
+        backgroundColor: Colors.transparent,
+        body: JobCreatorDialog(enterprise: widget.enterprise),
+      ),
+    );
 
     if (newJob == null) return;
     widget.enterprise.jobs.add(newJob);

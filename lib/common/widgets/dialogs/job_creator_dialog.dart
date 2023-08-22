@@ -24,7 +24,7 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
 
   void _onConfirm() {
     if (FormService.validateForm(_formKey,
-        save: true, showSnackbarError: false)) {
+        save: true, showSnackbarError: true)) {
       Navigator.pop(context, _job);
     }
   }
