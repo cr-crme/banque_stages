@@ -156,7 +156,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Metro Gagnon',
-      activityTypes: {activityTypes[3], activityTypes[6], activityTypes[12]},
+      activityTypes: {activityTypes[4], activityTypes[7], activityTypes[15]},
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolire',
       jobs: jobs,
@@ -198,7 +198,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Jean Coutu',
-      activityTypes: {activityTypes[6], activityTypes[24]},
+      activityTypes: {activityTypes[7], activityTypes[29]},
       recrutedBy: teachers[1].id,
       shareWith: 'Aucun partage',
       jobs: jobs,
@@ -256,7 +256,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Auto Care',
-      activityTypes: {activityTypes[15]},
+      activityTypes: {activityTypes[19]},
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
@@ -299,7 +299,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Auto Repair',
-      activityTypes: {activityTypes[15], activityTypes[22]},
+      activityTypes: {activityTypes[19], activityTypes[27]},
       recrutedBy: teachers[2].id,
       shareWith: 'Enseignants FPT de l\'école',
       jobs: jobs,
@@ -344,7 +344,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Boucherie Marien',
-      activityTypes: {activityTypes[3], activityTypes[6]},
+      activityTypes: {activityTypes[4], activityTypes[7]},
       recrutedBy: teachers[0].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
@@ -389,7 +389,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'IGA',
-      activityTypes: {activityTypes[12], activityTypes[35]},
+      activityTypes: {activityTypes[15], activityTypes[41]},
       recrutedBy: teachers[0].id,
       shareWith: 'Enseignants FPT de l\'école',
       jobs: jobs,
@@ -434,7 +434,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Pharmaprix',
-      activityTypes: {activityTypes[19], activityTypes[24]},
+      activityTypes: {activityTypes[7], activityTypes[29]},
       recrutedBy: teachers[3].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
@@ -479,7 +479,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Subway',
-      activityTypes: {activityTypes[30], activityTypes[33]},
+      activityTypes: {activityTypes[35], activityTypes[38]},
       recrutedBy: teachers[3].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
@@ -519,7 +519,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Walmart',
-      activityTypes: {activityTypes[6], activityTypes[19], activityTypes[35]},
+      activityTypes: {activityTypes[7], activityTypes[23], activityTypes[41]},
       recrutedBy: teachers[0].id,
       shareWith: 'Enseignants PFAE de l\'école',
       jobs: jobs,
@@ -577,7 +577,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Le jardin de Joanie',
-      activityTypes: {activityTypes[6], activityTypes[14]},
+      activityTypes: {activityTypes[7], activityTypes[18]},
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
@@ -633,7 +633,7 @@ Future<void> addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Fleuriste Joli',
-      activityTypes: {activityTypes[6], activityTypes[14]},
+      activityTypes: {activityTypes[18], activityTypes[23]},
       recrutedBy: teachers[0].id,
       shareWith: 'Mon centre de services scolaire',
       jobs: jobs,
@@ -1163,12 +1163,13 @@ Future<void> addDummyInterships(
     studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
     signatoryTeacherId: '42', // This is a Roméo Montaigu's student
     extraSupervisingTeacherIds: [],
-    enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
-    jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Repair').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Auto Repair').jobs[0].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
     date: period,
+    endDate: DateTime.now().add(const Duration(days: 10)),
     expectedLength: 135,
     achievedLength: 0,
     weeklySchedules: [
