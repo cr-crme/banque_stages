@@ -1,8 +1,8 @@
+import 'package:crcrme_banque_stages/common/models/schedule.dart';
+import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'package:crcrme_banque_stages/common/models/schedule.dart';
-import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 
 class WeeklyScheduleController {
   List<WeeklySchedule> weeklySchedules = [];
@@ -148,8 +148,9 @@ class _DateRangeState extends State<_DateRange> {
   bool _isValid = true;
 
   Future<void> _promptDateRange(context) async {
-    final range = await showDateRangePicker(
+    final range = await showCustomDateRangePicker(
       helpText: 'Sélectionner les dates',
+      saveText: 'Enregistrer',
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,
