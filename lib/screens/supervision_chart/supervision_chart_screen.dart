@@ -199,11 +199,12 @@ class _SupervisionChartState extends State<SupervisionChart> {
       appBar: AppBar(
         title: const Text('Tableau des supervisions'),
         actions: [
-          IconButton(
-            onPressed: _goToItinerary,
-            icon: const Icon(Icons.directions),
-            iconSize: 35,
-          )
+          if (!_inManagingMode)
+            IconButton(
+              onPressed: _goToItinerary,
+              icon: const Icon(Icons.directions),
+              iconSize: 35,
+            )
         ],
         bottom: PreferredSize(
             preferredSize: Size(screenSize.width, iconSize * 1.5),
