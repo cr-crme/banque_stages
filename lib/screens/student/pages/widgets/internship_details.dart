@@ -6,6 +6,7 @@ import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
@@ -152,12 +153,13 @@ class InternshipDetailsState extends State<InternshipDetails> {
   }
 
   void _promptDateRange() async {
-    final range = await showDateRangePicker(
+    final range = await showCustomDateRangePicker(
       helpText: 'Sélectionner les dates',
+      saveText: 'Enregistrer',
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,
-      initialEntryMode: DatePickerEntryMode.input,
+      initialEntryMode: DatePickerEntryMode.calendar,
       initialDateRange: _internshipController.date,
       firstDate: DateTime(DateTime.now().year),
       lastDate: DateTime(DateTime.now().year + 2),

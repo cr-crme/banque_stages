@@ -1,5 +1,6 @@
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
+import 'package:crcrme_banque_stages/common/widgets/custom_time_picker.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -359,9 +360,10 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
 
   Future<TimeOfDay?> _promptTime(BuildContext context,
       {required TimeOfDay initial, String? title}) async {
-    final time = await showTimePicker(
+    final time = await showCustomTimePicker(
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
+      hourLabelText: 'Heure',
       helpText: title,
       context: context,
       initialTime: initial,
@@ -374,12 +376,13 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
   }
 
   void _promptChangeWeek(weeklyIndex) async {
-    final range = await showDateRangePicker(
+    final range = await showCustomDateRangePicker(
       helpText: 'Sélectionner les dates',
+      saveText: 'Enregistrer',
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,
-      initialEntryMode: DatePickerEntryMode.input,
+      initialEntryMode: DatePickerEntryMode.calendar,
       initialDateRange:
           widget.scheduleController.weeklySchedules[weeklyIndex].period,
       firstDate:
