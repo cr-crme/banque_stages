@@ -153,9 +153,14 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   }
 
   Row _buildAvailability(FormFieldState<Job> state) {
+    debugPrint('ici');
     return Row(
       children: [
-        const Expanded(child: Text('* Places de stages disponibles')),
+        Expanded(
+            child: Text(
+          '* Places de stages disponibles',
+          style: Theme.of(context).textTheme.bodyLarge,
+        )),
         SizedBox(
           width: 112,
           child: SpinBox(
@@ -246,9 +251,14 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Expanded(child: Text('* Âge minimum des stagiaires (ans)')),
+        Expanded(
+            child: Text(
+          '* Âge minimum des stagiaires (ans)',
+          style: Theme.of(context).textTheme.bodyLarge,
+        )),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.24,
+          height: 25,
           child: TextFormField(
             validator: (value) {
               final current = int.tryParse(value!);
@@ -293,6 +303,7 @@ class BuildProtectionsRadio extends StatelessWidget {
           ? null
           : '*Est-ce que l\'élève devra porter des équipements de protection '
               'individuelle (EPI)\u00a0?',
+      titleStyle: Theme.of(context).textTheme.bodyLarge,
       elements: ProtectionsStatus.values,
       elementsThatShowChild: const [
         ProtectionsStatus.suppliedByEnterprise,
@@ -332,6 +343,7 @@ class BuildUniformRadio extends StatelessWidget {
           ? null
           : '* Est-ce qu\'une tenue de travail spécifique est exigée pour '
               'ce poste\u00a0?',
+      titleStyle: Theme.of(context).textTheme.bodyLarge,
       elements: UniformStatus.values,
       elementsThatShowChild: const [
         UniformStatus.suppliedByEnterprise,
@@ -339,7 +351,8 @@ class BuildUniformRadio extends StatelessWidget {
       ],
       initialValue: initialSelection,
       followUpChild: Padding(
-        padding: const EdgeInsets.only(left: 32.0, right: 8, top: 8),
+        padding:
+            const EdgeInsets.only(left: 16.0, right: 8, top: 4, bottom: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -350,6 +363,7 @@ class BuildUniformRadio extends StatelessWidget {
             ),
             TextFormField(
               controller: uniformTextController,
+              decoration: const InputDecoration(border: OutlineInputBorder()),
               minLines: 1,
               maxLines: null,
               keyboardType: TextInputType.multiline,
@@ -384,6 +398,7 @@ class BuildPrerequisitesCheckboxes extends StatelessWidget {
       title: hideTitle
           ? null
           : '* Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
+      titleStyle: Theme.of(context).textTheme.bodyLarge,
       elements: PreInternshipRequestType.values,
       initialValues: initialValues,
     );

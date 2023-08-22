@@ -4,6 +4,7 @@ class RadioWithFollowUp<T> extends StatefulWidget {
   const RadioWithFollowUp({
     super.key,
     this.title,
+    this.titleStyle,
     this.initialValue,
     required this.elements,
     this.elementsThatShowChild,
@@ -13,6 +14,7 @@ class RadioWithFollowUp<T> extends StatefulWidget {
   });
 
   final String? title;
+  final TextStyle? titleStyle;
   final T? initialValue;
   final List<T> elements;
   final List<T>? elementsThatShowChild;
@@ -55,7 +57,7 @@ class RadioWithFollowUpState<T> extends State<RadioWithFollowUp<T>> {
         if (widget.title != null)
           Text(
             widget.title!,
-            style: Theme.of(context).textTheme.titleSmall,
+            style: widget.titleStyle ?? Theme.of(context).textTheme.titleSmall,
           ),
         ...widget.elements
             .map((element) => _buildElementTile(element))
