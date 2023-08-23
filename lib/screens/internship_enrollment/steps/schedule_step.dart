@@ -151,7 +151,7 @@ class _DateRangeState extends State<_DateRange> {
   Future<void> _promptDateRange(context) async {
     final range = await showCustomDateRangePicker(
       helpText: 'Sélectionner les dates',
-      saveText: 'Enregistrer',
+      saveText: 'Confirmer',
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,
@@ -378,7 +378,7 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
   void _promptChangeWeek(weeklyIndex) async {
     final range = await showCustomDateRangePicker(
       helpText: 'Sélectionner les dates',
-      saveText: 'Enregistrer',
+      saveText: 'Confirmer',
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,

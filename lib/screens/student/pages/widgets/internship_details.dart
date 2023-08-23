@@ -155,7 +155,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
   void _promptDateRange() async {
     final range = await showCustomDateRangePicker(
       helpText: 'Sélectionner les dates',
-      saveText: 'Enregistrer',
+      saveText: 'Confirmer',
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,

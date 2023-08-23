@@ -1612,16 +1612,21 @@ class _CalendarRangePickerDialog extends StatelessWidget {
           actions: <Widget>[
             if (orientation == Orientation.landscape && entryModeButton != null)
               entryModeButton!,
-            Padding(
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(10),
+              ),
               padding: const EdgeInsets.only(top: 4.0),
               child: TextButton(
-                style: Theme.of(context).textButtonTheme.style!.copyWith(
-                    backgroundColor: Theme.of(context)
-                        .elevatedButtonTheme
-                        .style!
-                        .backgroundColor),
                 onPressed: onConfirm,
-                child: Text(confirmText),
+                child: Text(
+                  confirmText,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(width: 8),
