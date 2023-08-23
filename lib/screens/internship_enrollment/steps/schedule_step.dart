@@ -363,7 +363,6 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
     final time = await showCustomTimePicker(
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
-      hourLabelText: 'Heure',
       helpText: title,
       context: context,
       initialTime: initial,
