@@ -186,7 +186,7 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
                   if (uniforms.status == UniformStatus.suppliedByEnterprise)
                     const Text('Fournie par l\'entreprise\u00a0:'),
                   if (uniforms.status == UniformStatus.suppliedByStudent)
-                    const Text('Fournie par l\'étudiant\u00a0:'),
+                    const Text('Fournie par l\'élève\u00a0:'),
                   ItemizedText(uniforms.uniforms),
                 ],
               )

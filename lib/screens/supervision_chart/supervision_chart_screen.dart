@@ -246,7 +246,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
             Padding(
               padding: const EdgeInsets.only(top: 12.0, bottom: 12),
               child: Text(
-                'Sélectionner les étudiants à supervisier',
+                'Sélectionner les élèves à superviser',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
