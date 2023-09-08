@@ -114,7 +114,7 @@ const double _inputFormLandscapeHeight = 108.0;
 ///    [DisplayFeature]s can split the screen into sub-screens.
 ///  * [showTimePicker], which shows a dialog that contains a Material Design time picker.
 ///
-Future<DateTime?> showDatePicker(
+Future<DateTime?> showCustomDatePicker(
     {required BuildContext context,
     required DateTime initialDate,
     required DateTime firstDate,
@@ -567,7 +567,8 @@ class _DatePickerDialogState extends State<DatePickerDialog>
       case DatePickerEntryMode.calendar:
         picker = calendarDatePicker();
         entryModeButton = IconButton(
-          icon: Icon(useMaterial3 ? Icons.edit_outlined : Icons.edit),
+          icon: Icon(
+              useMaterial3 ? Icons.keyboard_outlined : Icons.keyboard_outlined),
           color: headerForegroundColor,
           tooltip: localizations.inputDateModeButtonLabel,
           onPressed: _handleEntryModeToggle,
@@ -1651,7 +1652,7 @@ class _CalendarRangePickerDialog extends StatelessWidget {
                       Row(
                         children: <Widget>[
                           Text(
-                            startDateText,
+                            "Début",
                             style: startDateStyle,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -1662,7 +1663,7 @@ class _CalendarRangePickerDialog extends StatelessWidget {
                           ),
                           Flexible(
                             child: Text(
-                              endDateText,
+                              "Fin",
                               style: endDateStyle,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

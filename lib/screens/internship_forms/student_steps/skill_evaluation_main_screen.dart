@@ -3,6 +3,7 @@ import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.d
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
@@ -171,7 +172,7 @@ class _EvaluationDate extends StatefulWidget {
 
 class _EvaluationDateState extends State<_EvaluationDate> {
   void _promptDate(context) async {
-    final newDate = await showDatePicker(
+    final newDate = await showCustomDatePicker(
       helpText: 'Sélectionner les dates',
       cancelText: 'Annuler',
       confirmText: 'Confirmer',

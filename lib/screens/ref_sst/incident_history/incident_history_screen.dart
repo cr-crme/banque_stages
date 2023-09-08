@@ -129,17 +129,30 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
               ),
             ],
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: incidents.length,
-              itemBuilder: (context, index) {
-                final specialization = sortedSpecializationId[index];
-                return IncidentListTile(
-                    specializationId: specialization.id,
-                    incidents: incidents[specialization]!);
-              },
+          if (incidents.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12.0, left: 36, right: 36),
+                child: Text(
+                  'Aucun incident ou blessure d\'élève n\'a été rapporté '
+                  'par le personnel enseignant',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
             ),
-          ),
+          if (incidents.isNotEmpty)
+            Expanded(
+              child: ListView.builder(
+                itemCount: incidents.length,
+                itemBuilder: (context, index) {
+                  final specialization = sortedSpecializationId[index];
+                  return IncidentListTile(
+                      specializationId: specialization.id,
+                      incidents: incidents[specialization]!);
+                },
+              ),
+            ),
         ],
       ),
     );

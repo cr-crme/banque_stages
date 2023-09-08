@@ -250,35 +250,47 @@ class _SupervisionChartState extends State<SupervisionChart> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: internships.length,
-              itemBuilder: ((ctx, i) {
-                final internship = internships[i];
-                final student = studentsInMyGroups.firstWhere(
-                    (student) => student.id == internship.studentId);
-
-                return _StudentTile(
-                  key: Key(student.id),
-                  student: student,
-                  internship: internship,
-                  onTap: _inManagingMode
-                      ? (studentsISignedIntenships
-                              .any((e) => e.id == student.id)
-                          ? null
-                          : () => _swapSupervisionStatus(internship))
-                      : () => _navigateToStudentInfo(student),
-                  onUpdatePriority: () => _updatePriority(student.id),
-                  onAlreadyEndedInternship: () =>
-                      _navigateToStudentInfo(student),
-                  isManagingStudents: _inManagingMode,
-                  isInternshipSupervised:
-                      studentsISupervize.any((e) => e.id == student.id),
-                );
-              }),
+          if (internships.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12.0, left: 36, right: 36),
+                child: Text(
+                  'Aucun élève en stage',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
             ),
-          ),
+          if (internships.isNotEmpty)
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: internships.length,
+                itemBuilder: ((ctx, i) {
+                  final internship = internships[i];
+                  final student = studentsInMyGroups.firstWhere(
+                      (student) => student.id == internship.studentId);
+
+                  return _StudentTile(
+                    key: Key(student.id),
+                    student: student,
+                    internship: internship,
+                    onTap: _inManagingMode
+                        ? (studentsISignedIntenships
+                                .any((e) => e.id == student.id)
+                            ? null
+                            : () => _swapSupervisionStatus(internship))
+                        : () => _navigateToStudentInfo(student),
+                    onUpdatePriority: () => _updatePriority(student.id),
+                    onAlreadyEndedInternship: () =>
+                        _navigateToStudentInfo(student),
+                    isManagingStudents: _inManagingMode,
+                    isInternshipSupervised:
+                        studentsISupervize.any((e) => e.id == student.id),
+                  );
+                }),
+              ),
+            ),
         ],
       ),
       drawer: const MainDrawer(),

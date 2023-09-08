@@ -7,6 +7,7 @@ import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart'
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/routing_map.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/waypoint_card.dart';
 import 'package:flutter/material.dart';
@@ -199,14 +200,11 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   void _showDatePicker() async {
     final itineraries = ItinerariesProvider.of(context, listen: false);
 
-    final newDate = await showDialog(
+    final newDate = await showCustomDatePicker(
         context: context,
-        builder: (context) {
-          return DatePickerDialog(
-              initialDate: _currentDate,
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(const Duration(days: 31)));
-        });
+        initialDate: _currentDate,
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(const Duration(days: 31)));
 
     if (newDate == null || !mounted) return;
 
