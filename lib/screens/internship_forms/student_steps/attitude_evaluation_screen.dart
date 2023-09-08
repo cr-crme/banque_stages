@@ -44,11 +44,28 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
   }
 
   void _nextStep() {
+    _stepStatus[0] = StepState.complete;
+    if (_currentStep >= 1) {
+      _stepStatus[1] = widget.formController.isAttitudeCompleted
+          ? StepState.complete
+          : StepState.error;
+    }
+    if (_currentStep >= 2) {
+      _stepStatus[2] = widget.formController.isSkillCompleted
+          ? StepState.complete
+          : StepState.error;
+    }
+    if (_currentStep >= 3) {
+      _stepStatus[3] = widget.formController.isGeneralAppreciationCompleted
+          ? StepState.complete
+          : StepState.error;
+    }
+    setState(() {});
+
     if (_currentStep == 3) {
       _submit();
       return;
     }
-    _stepStatus[_currentStep] = StepState.complete;
 
     _currentStep += 1;
     _scrollController.jumpTo(0);

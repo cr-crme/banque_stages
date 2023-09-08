@@ -96,16 +96,23 @@ class AttitudeEvaluationFormController {
 
   final commentsController = TextEditingController();
 
-  bool get isCompleted =>
+  bool get isAttitudeCompleted =>
       responses[Inattendance] != null &&
       responses[Ponctuality] != null &&
       responses[Sociability] != null &&
       responses[Politeness] != null &&
       responses[Motivation] != null &&
-      responses[DressCode] != null &&
+      responses[DressCode] != null;
+
+  bool get isSkillCompleted =>
       responses[QualityOfWork] != null &&
       responses[Productivity] != null &&
       responses[Autonomy] != null &&
-      responses[Cautiousness] != null &&
+      responses[Cautiousness] != null;
+
+  bool get isGeneralAppreciationCompleted =>
       responses[GeneralAppreciation] != null;
+
+  bool get isCompleted =>
+      isAttitudeCompleted && isSkillCompleted && isGeneralAppreciationCompleted;
 }
