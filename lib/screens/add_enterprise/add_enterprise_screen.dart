@@ -142,11 +142,12 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   }
 
   void _cancel() async {
+    final navigator = Navigator.of(context);
     final result = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'));
     if (!mounted || !result) return;
 
-    Navigator.of(context).pop();
+    navigator.pop();
   }
 
   @override

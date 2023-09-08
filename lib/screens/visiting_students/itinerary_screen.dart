@@ -35,6 +35,8 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
 
   Future<bool> _fillAllWaypoints() async {
     final teacher = TeachersProvider.of(context, listen: false).currentTeacher;
+    final internships = InternshipsProvider.of(context, listen: false);
+
     var school = (await _waitFor<SchoolsProvider>(SchoolsProvider.of))
         ?.fromId(teacher.schoolId);
     if (!mounted || school == null) return false;
@@ -43,7 +45,6 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
         await _waitFor<EnterprisesProvider>(EnterprisesProvider.of);
     if (!mounted || enterprises == null) return false;
 
-    final internships = InternshipsProvider.of(context, listen: false);
     if (!mounted) return false;
 
     final students = {
@@ -196,6 +197,8 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   }
 
   void _showDatePicker() async {
+    final itineraries = ItinerariesProvider.of(context, listen: false);
+
     final newDate = await showDialog(
         context: context,
         builder: (context) {
@@ -210,7 +213,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     _currentDate = newDate;
 
     // Force update of all widgets
-    final itineraries = ItinerariesProvider.of(context, listen: false);
     itineraries.forceNotify();
     setState(() {});
   }

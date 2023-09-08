@@ -303,13 +303,18 @@ class ScheduleSelector extends StatefulWidget {
 
 class _ScheduleSelectorState extends State<ScheduleSelector> {
   void _promptNewDayToDailySchedule(weeklyIndex) async {
+    Future<TimeOfDay?> promptTime(
+            {required TimeOfDay initial, String? title}) async =>
+        _promptTime(context, initial: initial, title: title);
+
     final day = await _promptDay(context);
     if (day == null || !mounted) return;
-    final start = await _promptTime(context,
-        title: 'Heure de début', initial: _defaultStart);
+
+    final start =
+        await promptTime(title: 'Heure de début', initial: _defaultStart);
     if (start == null || !mounted) return;
-    final end =
-        await _promptTime(context, title: 'Heure de fin', initial: _defaultEnd);
+
+    final end = await promptTime(title: 'Heure de fin', initial: _defaultEnd);
     if (end == null) return;
 
     widget.scheduleController.addToDailySchedule(
@@ -318,12 +323,17 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
   }
 
   void _promptUpdateToDailySchedule(int weeklyIndex, int dailyIndex) async {
+    Future<TimeOfDay?> promptTime(
+            {required TimeOfDay initial, String? title}) async =>
+        _promptTime(context, initial: initial, title: title);
+
     final start = await _promptTime(context,
         title: 'Heure de début',
         initial: widget.scheduleController.weeklySchedules[weeklyIndex]
             .schedule[dailyIndex].start);
     if (start == null || !mounted) return;
-    final end = await _promptTime(context,
+
+    final end = await promptTime(
         title: 'Heure de fin',
         initial: widget.scheduleController.weeklySchedules[weeklyIndex]
             .schedule[dailyIndex].end);

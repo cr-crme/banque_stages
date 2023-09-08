@@ -47,13 +47,14 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   }
 
   void _cancel() async {
+    final navigator = Navigator.of(context);
     final answer = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'),
         isEditing: widget.editMode);
     if (!mounted || !answer) return;
 
     _formController.dispose();
-    Navigator.of(context).pop();
+    navigator.pop();
   }
 
   @override

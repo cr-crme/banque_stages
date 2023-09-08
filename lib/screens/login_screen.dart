@@ -20,6 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _password;
 
   void _signIn() async {
+    final scaffold = ScaffoldMessenger.of(context);
+
     if (!FormService.validateForm(_formKey, save: true)) {
       return;
     }
@@ -44,9 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           errorMessage = 'Erreur non reconnue lors de la connexion';
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(errorMessage),
-      ));
+      scaffold.showSnackBar(SnackBar(content: Text(errorMessage)));
     }
   }
 
