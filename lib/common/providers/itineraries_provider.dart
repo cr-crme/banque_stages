@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,7 @@ class ItinerariesProvider extends FirebaseListProvided<Itinerary> {
   void initializeAuth(AuthProvider auth) {
     pathToAvailableDataIds = auth.currentUser == null
         ? ''
-        : '/itineraries-ids/${auth.currentUser!.uid}/';
+        : '/itineraries-ids/${auth.currentUser?.uid ?? (kDebugMode ? 'default' : '')}/';
     initializeFetchingData();
   }
 

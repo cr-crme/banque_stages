@@ -13,7 +13,6 @@ import 'package:crcrme_banque_stages/common/widgets/form_fields/share_with_picke
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EnterpriseAboutPage extends StatefulWidget {
@@ -56,13 +55,13 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
       return;
     }
 
-    context.read<EnterprisesProvider>().replace(
-          widget.enterprise.copyWith(
-            name: _name,
-            activityTypes: _activityTypes,
-            shareWith: _shareWith,
-          ),
-        );
+    EnterprisesProvider.of(context, listen: false).replace(
+      widget.enterprise.copyWith(
+        name: _name,
+        activityTypes: _activityTypes,
+        shareWith: _shareWith,
+      ),
+    );
 
     setState(() => _editing = false);
   }

@@ -24,7 +24,6 @@ import 'package:crcrme_banque_stages/screens/tasks_to_do/tasks_to_do_screen.dart
 import 'package:crcrme_banque_stages/screens/visiting_students/itinerary_screen.dart';
 import 'package:enhanced_containers/item_serializable.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 import 'common/providers/auth_provider.dart';
 
@@ -91,7 +90,7 @@ abstract class Screens {
 
 final router = GoRouter(
   redirect: (context, state) {
-    if (context.read<AuthProvider>().isSignedIn()) {
+    if (AuthProvider.of(context, listen: false).isSignedIn()) {
       return (populateWithDebugData && !hasDummyData(context))
           ? '/debug-data'
           : null;
@@ -109,7 +108,7 @@ final router = GoRouter(
       name: Screens.login,
       builder: (context, state) => const LoginScreen(),
       redirect: (context, state) =>
-          context.read<AuthProvider>().isSignedIn() ? '/' : null,
+          AuthProvider.of(context, listen: false).isSignedIn() ? '/' : null,
     ),
     GoRoute(
       path: '/enterprises',

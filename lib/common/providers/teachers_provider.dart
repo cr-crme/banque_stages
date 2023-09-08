@@ -1,5 +1,6 @@
 import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +27,7 @@ class TeachersProvider extends FirebaseListProvided<Teacher> {
   Teacher get currentTeacher => this[_currentId];
 
   void initializeAuth(AuthProvider auth) {
-    currentTeacherId = auth.currentUser?.uid ?? '';
+    currentTeacherId = auth.currentUser?.uid ?? (kDebugMode ? 'default' : '');
     initializeFetchingData();
   }
 }

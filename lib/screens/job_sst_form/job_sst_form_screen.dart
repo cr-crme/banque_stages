@@ -10,7 +10,6 @@ import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class JobSstFormScreen extends StatefulWidget {
@@ -38,7 +37,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
 
     _questionsKey.currentState!.formKey.currentState!.save();
 
-    final enterprises = context.read<EnterprisesProvider>();
+    final enterprises = EnterprisesProvider.of(context, listen: false);
     enterprises[widget.enterpriseId]
         .jobs[widget.jobId]
         .sstEvaluation

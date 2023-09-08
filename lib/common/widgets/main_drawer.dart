@@ -4,67 +4,65 @@ import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/tasks_to_do/tasks_to_do_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (context.watch<AuthProvider>().currentUser == null) {
+    final auth = AuthProvider.of(context, listen: false);
+    if (!auth.isSignedIn()) {
       Future.microtask(() => GoRouter.of(context).goNamed(Screens.login));
     }
 
-    return Consumer<AuthProvider>(
-      builder: (context, provider, _) => Drawer(
-        child: Scaffold(
-          appBar: AppBar(title: const Text('Banque de Stages')),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                const _DrawerItem(
-                  titleText: 'Mes élèves',
-                  icon: Icons.school_rounded,
-                  route: Screens.studentsList,
+    return Drawer(
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Banque de Stages')),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const _DrawerItem(
+                titleText: 'Mes élèves',
+                icon: Icons.school_rounded,
+                route: Screens.studentsList,
+              ),
+              const _DrawerItem(
+                titleText: 'Tableau des supervisions',
+                icon: Icons.table_chart_rounded,
+                route: Screens.supervisionChart,
+              ),
+              _DrawerItem(
+                titleText: 'Tâches à réaliser',
+                icon: Icons.checklist,
+                route: Screens.tasksToDo,
+                trailing: NumberedTablet(
+                  number: numberOfTasksToDo(context),
+                  hideIfEmpty: true,
+                  color: const Color.fromARGB(255, 33, 86, 176),
                 ),
-                const _DrawerItem(
-                  titleText: 'Tableau des supervisions',
-                  icon: Icons.table_chart_rounded,
-                  route: Screens.supervisionChart,
-                ),
-                _DrawerItem(
-                  titleText: 'Tâches à réaliser',
-                  icon: Icons.checklist,
-                  route: Screens.tasksToDo,
-                  trailing: NumberedTablet(
-                    number: numberOfTasksToDo(context),
-                    hideIfEmpty: true,
-                    color: const Color.fromARGB(255, 33, 86, 176),
-                  ),
-                ),
-                const _DrawerItem(
-                  titleText: 'Entreprises',
-                  icon: Icons.location_city_rounded,
-                  route: Screens.enterprisesList,
-                ),
-                const _DrawerItem(
-                  titleText: 'Santé et Sécurité au PFAE',
-                  icon: Icons.security,
-                  route: Screens.homeSst,
-                ),
-                // _DrawerItem(
-                //   titleText: 'Documents',
-                //   icon: const Icon(Icons.document_scanner_rounded),
-                //   route: Screens...,
-                //   onTap: () {},
-                // ),
-                _DrawerItem(
-                  titleText: 'Se déconnecter',
-                  icon: Icons.logout,
-                  onTap: () => provider.signOut(),
-                ),
-              ],
-            ),
+              ),
+              const _DrawerItem(
+                titleText: 'Entreprises',
+                icon: Icons.location_city_rounded,
+                route: Screens.enterprisesList,
+              ),
+              const _DrawerItem(
+                titleText: 'Santé et Sécurité au PFAE',
+                icon: Icons.security,
+                route: Screens.homeSst,
+              ),
+              // _DrawerItem(
+              //   titleText: 'Documents',
+              //   icon: const Icon(Icons.document_scanner_rounded),
+              //   route: Screens...,
+              //   onTap: () {},
+              // ),
+              // _DrawerItem(
+              //   titleText: 'Se déconnecter',
+              //   icon: Icons.logout,
+              //   onTap: () => auth.signOut(),
+              // ),
+            ],
           ),
         ),
       ),
