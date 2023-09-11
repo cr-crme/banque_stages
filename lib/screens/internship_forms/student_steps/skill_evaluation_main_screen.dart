@@ -126,7 +126,7 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
               const SubTitle('Options de remplissage'),
               Padding(
                 padding: const EdgeInsets.only(left: 24.0),
-                child: Row(
+                child: Column(
                   children: [
                     const Text(
                       'Préremplir avec les résultats de\u00a0: ',

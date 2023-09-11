@@ -497,7 +497,7 @@ class _DatePickerDialogState extends State<DatePickerDialog>
       child: OverflowBar(
         spacing: 8,
         children: <Widget>[
-          TextButton(
+          OutlinedButton(
             onPressed: _handleCancel,
             child: Text(widget.cancelText ??
                 (useMaterial3

@@ -210,13 +210,6 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
                   Checkbox(
                     value: priority == internship.visitingPriority,
                     onChanged: (value) => _updatePriority(priority),
-                    fillColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled)) {
-                        return Theme.of(context).primaryColor.withOpacity(.32);
-                      }
-                      return Theme.of(context).primaryColor;
-                    }),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 25),

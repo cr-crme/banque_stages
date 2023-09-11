@@ -147,7 +147,7 @@ class _StudentInternshipListViewState
         ExpansionPanelList(
             expansionCallback: (int panelIndex, bool isExpanded) => setState(
                 () =>
-                    _expanded[widget.internships[panelIndex].id] = !isExpanded),
+                    _expanded[widget.internships[panelIndex].id] = isExpanded),
             children: widget.internships.asMap().keys.map((index) {
               final internship = widget.internships[index];
               final canChangeSupervisingStatus =

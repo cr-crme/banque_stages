@@ -215,7 +215,7 @@ class JobsPageState extends State<JobsPage> {
                 )) return;
                 cancelEditing();
               }
-              _expandedSections[job.id]![panelIndex] = !isExpanded;
+              _expandedSections[job.id]![panelIndex] = isExpanded;
               setState(() {});
             },
             children: [

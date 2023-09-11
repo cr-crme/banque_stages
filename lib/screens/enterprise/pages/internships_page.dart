@@ -176,7 +176,7 @@ class _InternshipListState extends State<_InternshipList> {
         SubTitle(widget.title),
         ExpansionPanelList(
           expansionCallback: (panelIndex, isExpanded) => setState(
-              () => _expanded[widget.internships[panelIndex].id] = !isExpanded),
+              () => _expanded[widget.internships[panelIndex].id] = isExpanded),
           children: widget.internships.map(
             (internship) {
               Specialization specialization =
