@@ -125,16 +125,36 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
       padding: const EdgeInsets.only(bottom: 12.0),
       child: GestureDetector(
         onTap: () => showDialog(
-            context: context,
-            builder: (ctx) => PdfPreview(
-                  allowPrinting: true,
-                  allowSharing: true,
-                  canChangeOrientation: false,
-                  canChangePageFormat: false,
-                  canDebug: false,
-                  build: (format) => pdfGeneratorCallback(format,
-                      internship: widget.internship),
-                )),
+          context: context,
+          builder: (ctx) => Dialog(
+              child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned(
+                child: Center(
+                  child: PdfPreview(
+                    allowPrinting: true,
+                    allowSharing: true,
+                    canChangeOrientation: false,
+                    canChangePageFormat: false,
+                    canDebug: false,
+                    build: (format) => pdfGeneratorCallback(format,
+                        internship: widget.internship),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  color: Colors.blue, // todo: change to theme color
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              )
+            ],
+          )),
+        ),
         child: Text(
           title,
           style: const TextStyle(
