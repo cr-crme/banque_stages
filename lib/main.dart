@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
@@ -7,49 +5,16 @@ import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart'
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/firebase_options.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
-import 'package:crcrme_banque_stages/misc/question_file_service.dart';
-import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
+import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
-import 'package:url_strategy/url_strategy.dart';
-
-bool useDatabaseEmulator = kDebugMode;
-bool populateWithDebugData = kDebugMode;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  initializeDateFormatting('fr_CA');
-
-  await Future.wait([
-    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
-    ActivitySectorsService.initializeActivitySectorSingleton(),
-    RiskDataFileService.loadData(),
-    QuestionFileService.loadData(),
-  ]);
-
-  // Connect Firebase to local emulators
-  assert(() {
-    if (useDatabaseEmulator) {
-      final host = !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost';
-      FirebaseAuth.instance.useAuthEmulator(host, 9099);
-      FirebaseDatabase.instance.useDatabaseEmulator(host, 9000);
-      FirebaseStorage.instance.useStorageEmulator(host, 9199);
-    }
-    return true;
-  }());
-
-  setPathUrlStrategy();
+  await initializeProgram();
   runApp(const BanqueStagesApp());
 }
 

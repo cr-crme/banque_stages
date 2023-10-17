@@ -24,7 +24,14 @@ class TeachersProvider extends FirebaseListProvided<Teacher> {
     notifyListeners();
   }
 
-  Teacher get currentTeacher => this[_currentId];
+  Teacher get currentTeacher => isEmpty
+      ? Teacher(
+          firstName: 'Error',
+          lastName: 'Error',
+          email: 'error@error.error',
+          schoolId: '-1',
+          groups: [])
+      : this[_currentId];
 
   void initializeAuth(AuthProvider auth) {
     currentTeacherId = auth.currentUser?.uid ?? (kDebugMode ? 'default' : '');

@@ -1652,7 +1652,7 @@ class _CalendarRangePickerDialog extends StatelessWidget {
                       Row(
                         children: <Widget>[
                           Text(
-                            "Début",
+                            'Début',
                             style: startDateStyle,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -1663,7 +1663,7 @@ class _CalendarRangePickerDialog extends StatelessWidget {
                           ),
                           Flexible(
                             child: Text(
-                              "Fin",
+                              'Fin',
                               style: endDateStyle,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
