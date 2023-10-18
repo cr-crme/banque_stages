@@ -9,7 +9,7 @@ import 'internships_provider.dart';
 import 'teachers_provider.dart';
 
 class StudentsProvider extends FirebaseListProvided<Student> {
-  StudentsProvider()
+  StudentsProvider({super.mockMe})
       : super(
           pathToData: 'students',
           pathToAvailableDataIds: '',

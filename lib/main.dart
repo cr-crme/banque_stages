@@ -19,26 +19,32 @@ void main() async {
 }
 
 class BanqueStagesApp extends StatelessWidget {
-  const BanqueStagesApp({super.key});
+  const BanqueStagesApp({super.key, this.mockFirebase = false});
+
+  final bool mockFirebase;
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AuthProvider()),
-        ChangeNotifierProvider(create: (context) => SchoolsProvider()),
-        ChangeNotifierProvider(create: (context) => EnterprisesProvider()),
-        ChangeNotifierProvider(create: (context) => InternshipsProvider()),
+        ChangeNotifierProvider(
+            create: (context) => AuthProvider(mockFirebase: mockFirebase)),
+        ChangeNotifierProvider(
+            create: (context) => SchoolsProvider(mockMe: mockFirebase)),
+        ChangeNotifierProvider(
+            create: (context) => EnterprisesProvider(mockMe: mockFirebase)),
+        ChangeNotifierProvider(
+            create: (context) => InternshipsProvider(mockMe: mockFirebase)),
         ChangeNotifierProxyProvider<AuthProvider, ItinerariesProvider>(
-          create: (context) => ItinerariesProvider(),
+          create: (context) => ItinerariesProvider(mockMe: mockFirebase),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
         ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
-          create: (context) => TeachersProvider(),
+          create: (context) => TeachersProvider(mockMe: mockFirebase),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
-          create: (context) => StudentsProvider(),
+          create: (context) => StudentsProvider(mockMe: mockFirebase),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
       ],

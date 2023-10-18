@@ -14,11 +14,12 @@ import 'package:url_strategy/url_strategy.dart';
 
 bool useDatabaseEmulator = kDebugMode;
 
-Future<void> initializeProgram() async {
+Future<void> initializeProgram({bool mockFirebase = false}) async {
   initializeDateFormatting('fr_CA');
 
   await Future.wait([
-    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+    if (!mockFirebase)
+      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
     ActivitySectorsService.initializeActivitySectorSingleton(),
     RiskDataFileService.loadData(),
     QuestionFileService.loadData(),
@@ -26,7 +27,7 @@ Future<void> initializeProgram() async {
 
   // Connect Firebase to local emulators
   assert(() {
-    if (useDatabaseEmulator) {
+    if (useDatabaseEmulator && !mockFirebase) {
       final host = !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost';
       FirebaseAuth.instance.useAuthEmulator(host, 9099);
       FirebaseDatabase.instance.useDatabaseEmulator(host, 9000);

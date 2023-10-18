@@ -1,12 +1,11 @@
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
-
 class EnterprisesProvider extends FirebaseListProvided<Enterprise> {
-  EnterprisesProvider() : super(pathToData: 'enterprises') {
+  EnterprisesProvider({super.mockMe}) : super(pathToData: 'enterprises') {
     initializeFetchingData();
   }
 

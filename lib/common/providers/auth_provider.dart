@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AuthProvider extends ChangeNotifier {
-  AuthProvider() {
-    _currentUser = FirebaseAuth.instance.currentUser;
-    FirebaseAuth.instance.userChanges().listen((user) {
-      _currentUser = user;
-      notifyListeners();
-    });
+  AuthProvider({this.mockFirebase = false}) {
+    if (!mockFirebase) {
+      _currentUser = FirebaseAuth.instance.currentUser;
+      FirebaseAuth.instance.userChanges().listen((user) {
+        _currentUser = user;
+        notifyListeners();
+      });
+    }
   }
+
+  final bool mockFirebase;
 
   static AuthProvider of(BuildContext context, {bool listen = true}) =>
       Provider.of<AuthProvider>(context, listen: listen);
@@ -28,7 +32,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   bool isSignedIn() {
-    return kDebugMode ? true : currentUser != null;
+    return kDebugMode || mockFirebase ? true : currentUser != null;
   }
 
   User? _currentUser;

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../models/itinerary.dart';
 
 class ItinerariesProvider extends FirebaseListProvided<Itinerary> {
-  ItinerariesProvider()
+  ItinerariesProvider({super.mockMe})
       : super(
           pathToData: 'itineraries',
           pathToAvailableDataIds: '',

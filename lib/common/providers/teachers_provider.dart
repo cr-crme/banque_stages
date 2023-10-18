@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'auth_provider.dart';
 
 class TeachersProvider extends FirebaseListProvided<Teacher> {
-  TeachersProvider() : super(pathToData: 'teachers');
+  TeachersProvider({super.mockMe}) : super(pathToData: 'teachers');
 
   static TeachersProvider of(BuildContext context, {listen = false}) =>
       Provider.of<TeachersProvider>(context, listen: listen);
@@ -35,6 +35,7 @@ class TeachersProvider extends FirebaseListProvided<Teacher> {
 
   void initializeAuth(AuthProvider auth) {
     currentTeacherId = auth.currentUser?.uid ?? (kDebugMode ? 'default' : '');
+
     initializeFetchingData();
   }
 }
