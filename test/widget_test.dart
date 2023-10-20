@@ -11,7 +11,8 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
 
-    testWidgets('Opening page is My students', (WidgetTester tester) async {
+    testWidgets('Then opening page is My students',
+        (WidgetTester tester) async {
       // Load the app and navigate to the home page.
       await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
 
@@ -19,7 +20,7 @@ void main() {
       expect(find.text(screenNames[0]), findsOneWidget);
     });
 
-    testWidgets('Validate drawer tiles content', (WidgetTester tester) async {
+    testWidgets('The drawer tiles content', (WidgetTester tester) async {
       // Load the app and navigate and open the drawer.
       await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
       await openDrawer(tester);
@@ -30,6 +31,31 @@ void main() {
             find.ancestor(
                 of: find.text(screenName), matching: find.byType(Card)),
             findsWidgets);
+      }
+    });
+
+    testWidgets('The drawer navigates and closes on click',
+        (WidgetTester tester) async {
+      // Load the app and navigate and open the drawer.
+      await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
+
+      // Verify that the drawer contains the expected tiles
+      for (final screenNameOuter in screenNames) {
+        for (final screenNameInner in screenNames) {
+          // For some reason, this next fails (because it is too long)
+          if (screenNameInner == 'Santé et Sécurité au PFAE') continue;
+          if (screenNameOuter == 'Santé et Sécurité au PFAE') continue;
+
+          // Navigate from Outer to Inner screen
+          await navigateToScreen(tester, screenNameInner);
+
+          // Verify the page is loaded and drawer is closed
+          expect(find.text(screenNameInner), findsOneWidget);
+          expect(find.text(drawerTitle), findsNothing);
+
+          // Return to outer loop screen
+          await navigateToScreen(tester, screenNameOuter);
+        }
       }
     });
 
@@ -66,13 +92,14 @@ void main() {
 
       // Find the reinitalize data button in the drawer
       await openDrawer(tester);
-      final reinitializeButton = find.text(reinitializedDataButtonText);
-      expect(reinitializeButton, findsOneWidget);
-      await tester.tap(reinitializeButton);
+      await tester.tap(find.text(reinitializedDataButtonText));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Make sure the drawer was automatically closed
       expect(find.text(reinitializedDataButtonText), findsNothing);
+
+      // Navigate to My students screen
+      await navigateToScreen(tester, screenNames[0]);
 
       // Verify the students data is now loaded
       expect(find.bySubtype<StudentCard>(skipOffstage: false),

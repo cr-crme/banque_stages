@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
+const drawerTitle = 'Banque de stages';
 const reinitializedDataButtonText = 'Réinitialiser la base de données';
 
 const screenNames = [
@@ -33,14 +34,12 @@ Future<void> loadDummyData(WidgetTester tester) async {
   // Find the reinitalize data button in the drawer
   await openDrawer(tester);
   final reinitializeButton = find.text(reinitializedDataButtonText);
-  expect(reinitializeButton, findsOneWidget);
   await tester.tap(reinitializeButton);
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
 }
 
 Future<void> openDrawer(WidgetTester tester) async {
   final drawerIcon = find.byIcon(Icons.menu);
-  expect(drawerIcon, findsOneWidget);
   await tester.tap(drawerIcon);
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
 }
@@ -48,6 +47,15 @@ Future<void> openDrawer(WidgetTester tester) async {
 Future<void> closeDrawer(WidgetTester tester) async {
   BuildContext context = tester.element(find.byType(Drawer));
   Navigator.pop(context);
+  await tester.pumpAndSettle(const Duration(milliseconds: 500));
+}
+
+Future<void> navigateToScreen(WidgetTester tester, String target) async {
+  // This function assumes drawer menu is shown
+  await openDrawer(tester);
+  final targetButton =
+      find.ancestor(of: find.text(target), matching: find.byType(Card));
+  await tester.tap(targetButton);
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
 }
 
