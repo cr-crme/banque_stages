@@ -3055,6 +3055,18 @@ class _InputDateRangePickerState extends State<_InputDateRangePicker> {
   DateTime? _parseDate(String? text) {
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
+    if (text == null || text.isEmpty) return null;
+
+    // Add the dd-mm-yyyy formatting
+    final re = RegExp(r'^([0-9]{2})-([0-9]{2})-([0-9]{4})$');
+    if (re.hasMatch(text)) {
+      final groups = re.allMatches(text).first;
+      final day = groups[1];
+      final month = groups[2];
+      final year = groups[3];
+      text = '$year-$month-$day';
+    }
+
     return localizations.parseCompactDate(text);
   }
 
