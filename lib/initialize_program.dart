@@ -12,9 +12,12 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-bool useDatabaseEmulator = kDebugMode;
+bool get useDatabaseEmulator => _useDatabaseEmulator;
+bool _useDatabaseEmulator = kDebugMode;
 
-Future<void> initializeProgram({bool mockFirebase = false}) async {
+Future<void> initializeProgram(
+    {bool useDatabaseEmulator = false, bool mockFirebase = false}) async {
+  _useDatabaseEmulator = useDatabaseEmulator;
   initializeDateFormatting('fr_CA');
 
   await Future.wait([

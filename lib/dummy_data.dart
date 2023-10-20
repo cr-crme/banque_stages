@@ -1,9 +1,9 @@
-import 'dart:math';
 import 'dart:developer' as dev;
+import 'dart:math';
 
-import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
@@ -24,7 +24,6 @@ import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 Future<void> resetDummyData(BuildContext context) async {
@@ -902,11 +901,11 @@ Future<void> _addDummyStudents(
     {
       final student =
           students.firstWhere((student) => student.fullName == 'Diego Vargas');
-      FirebaseDatabase.instance
+      students.firebaseInstance
           .ref('/students-ids/42/')
           .child(student.id)
           .set(true);
-      FirebaseDatabase.instance
+      students.firebaseInstance
           .ref(students.pathToAvailableDataIds)
           .child(student.id)
           .remove();
@@ -914,11 +913,11 @@ Future<void> _addDummyStudents(
     {
       final student =
           students.firstWhere((student) => student.fullName == 'Simon Gingras');
-      FirebaseDatabase.instance
+      students.firebaseInstance
           .ref('/students-ids/42/')
           .child(student.id)
           .set(true);
-      FirebaseDatabase.instance
+      students.firebaseInstance
           .ref(students.pathToAvailableDataIds)
           .child(student.id)
           .remove();

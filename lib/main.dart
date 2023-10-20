@@ -8,14 +8,18 @@ import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  const mockFirebase = false;
+
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeProgram();
-  runApp(const BanqueStagesApp());
+  await initializeProgram(
+      useDatabaseEmulator: kDebugMode, mockFirebase: mockFirebase);
+  runApp(const BanqueStagesApp(mockFirebase: mockFirebase));
 }
 
 class BanqueStagesApp extends StatelessWidget {
