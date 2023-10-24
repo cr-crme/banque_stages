@@ -7,29 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-const drawerTitle = 'Banque de stages';
-const reinitializedDataButtonText = 'Réinitialiser la base de données';
-
-const screenNames = [
-  'Mes élèves',
-  'Tableau des supervisions',
-  'Tâches à réaliser',
-  'Entreprises',
-  'Santé et Sécurité au PFAE',
-];
-
-const myStudentNames = [
-  'Cedric Masson',
-  'Thomas Caron',
-  'Mikael Boucher',
-  'Kevin Leblanc',
-  'Diego Vargas',
-  'Jeanne Tremblay',
-  'Vincent Picard',
-  'Vanessa Monette',
-  'Melissa Poulain',
-];
-
 Future<void> loadDummyData(WidgetTester tester) async {
   // Find the reinitalize data button in the drawer
   await openDrawer(tester);
@@ -50,11 +27,11 @@ Future<void> closeDrawer(WidgetTester tester) async {
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
 }
 
-Future<void> navigateToScreen(WidgetTester tester, String target) async {
+Future<void> navigateToScreen(WidgetTester tester, ScreenTest target) async {
   // This function assumes drawer menu is shown
   await openDrawer(tester);
   final targetButton =
-      find.ancestor(of: find.text(target), matching: find.byType(Card));
+      find.ancestor(of: find.text(target.name), matching: find.byType(Card));
   await tester.tap(targetButton);
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
 }
@@ -110,4 +87,231 @@ Future<void> pumpWidgetWithNotifiers(
   );
 
   await tester.pumpWidget(child);
+}
+
+const drawerTitle = 'Banque de stages';
+const reinitializedDataButtonText = 'Réinitialiser la base de données';
+
+enum ScreenTest {
+  myStudents,
+  supervisionTable,
+  tasks,
+  enterprises,
+  healthAndSafetyAtPFAE;
+
+  String get name {
+    switch (this) {
+      case ScreenTest.myStudents:
+        return 'Mes élèves';
+      case ScreenTest.supervisionTable:
+        return 'Tableau des supervisions';
+      case ScreenTest.tasks:
+        return 'Tâches à réaliser';
+      case ScreenTest.enterprises:
+        return 'Entreprises';
+      case ScreenTest.healthAndSafetyAtPFAE:
+        return 'Santé et Sécurité au PFAE';
+    }
+  }
+}
+
+enum StudentTest {
+  cedricMasson,
+  thomasCaron,
+  mikaelBoucher,
+  kevinLeblanc,
+  diegoVargas,
+  jeanneTremblay,
+  vincentPicard,
+  vanessaMonette,
+  melissaPoulain;
+
+  String get name {
+    switch (this) {
+      case StudentTest.cedricMasson:
+        return 'Cedric Masson';
+      case StudentTest.thomasCaron:
+        return 'Thomas Caron';
+      case StudentTest.mikaelBoucher:
+        return 'Mikael Boucher';
+      case StudentTest.kevinLeblanc:
+        return 'Kevin Leblanc';
+      case StudentTest.diegoVargas:
+        return 'Diego Vargas';
+      case StudentTest.jeanneTremblay:
+        return 'Jeanne Tremblay';
+      case StudentTest.vincentPicard:
+        return 'Vincent Picard';
+      case StudentTest.vanessaMonette:
+        return 'Vanessa Monette';
+      case StudentTest.melissaPoulain:
+        return 'Melissa Poulain';
+    }
+  }
+
+  static int get length => StudentTest.values.length;
+}
+
+enum EnterpriseTest {
+  metroGagnon,
+  jeanCoutu,
+  autoCare,
+  autoRepair,
+  boucherieMarien,
+  iga,
+  pharmaprix,
+  subway,
+  walmart,
+  leJardinDeJoanie,
+  fleuristeJoli;
+
+  String get name {
+    switch (this) {
+      case EnterpriseTest.metroGagnon:
+        return 'Metro Gagnon';
+      case EnterpriseTest.jeanCoutu:
+        return 'Jean Coutu';
+      case EnterpriseTest.autoCare:
+        return 'Auto Care';
+      case EnterpriseTest.autoRepair:
+        return 'Auto Repair';
+      case EnterpriseTest.boucherieMarien:
+        return 'Boucherie Marien';
+      case EnterpriseTest.iga:
+        return 'IGA';
+      case EnterpriseTest.pharmaprix:
+        return 'Pharmaprix';
+      case EnterpriseTest.subway:
+        return 'Subway';
+      case EnterpriseTest.walmart:
+        return 'Walmart';
+      case EnterpriseTest.leJardinDeJoanie:
+        return 'Le jardin de Joanie';
+      case EnterpriseTest.fleuristeJoli:
+        return 'Fleuriste Joli';
+    }
+  }
+
+  static int get length => EnterpriseTest.values.length;
+}
+
+enum InternshipsTest {
+  thomasCaronBoucherieMarien,
+  cedaricMassonAutoCare,
+  vincentPicardIga,
+  diegoVargasMetroGagnon;
+
+  String get studentName {
+    switch (this) {
+      case InternshipsTest.thomasCaronBoucherieMarien:
+        return StudentTest.thomasCaron.name;
+      case InternshipsTest.cedaricMassonAutoCare:
+        return StudentTest.cedricMasson.name;
+      case InternshipsTest.vincentPicardIga:
+        return StudentTest.vincentPicard.name;
+      case InternshipsTest.diegoVargasMetroGagnon:
+        return StudentTest.diegoVargas.name;
+    }
+  }
+
+  String get enterpriseName {
+    switch (this) {
+      case InternshipsTest.thomasCaronBoucherieMarien:
+        return EnterpriseTest.boucherieMarien.name;
+      case InternshipsTest.cedaricMassonAutoCare:
+        return EnterpriseTest.autoCare.name;
+      case InternshipsTest.vincentPicardIga:
+        return EnterpriseTest.iga.name;
+      case InternshipsTest.diegoVargasMetroGagnon:
+        return EnterpriseTest.metroGagnon.name;
+    }
+  }
+
+  static int get length => InternshipsTest.values.length;
+}
+
+enum TasksSstTest {
+  boucherieMarien,
+  iga,
+  metroGagnon;
+
+  String get name {
+    switch (this) {
+      case TasksSstTest.boucherieMarien:
+        return EnterpriseTest.boucherieMarien.name;
+      case TasksSstTest.iga:
+        return EnterpriseTest.iga.name;
+      case TasksSstTest.metroGagnon:
+        return EnterpriseTest.metroGagnon.name;
+    }
+  }
+
+  static int get length => TasksSstTest.values.length;
+}
+
+enum TaskEndInternshipTest {
+  thomasCaronBoucherieMarien;
+
+  String get name {
+    switch (this) {
+      case TaskEndInternshipTest.thomasCaronBoucherieMarien:
+        return StudentTest.thomasCaron.name;
+    }
+  }
+
+  String get enterpriseName {
+    switch (this) {
+      case TaskEndInternshipTest.thomasCaronBoucherieMarien:
+        return EnterpriseTest.boucherieMarien.name;
+    }
+  }
+
+  static int get length => TaskEndInternshipTest.values.length;
+}
+
+enum TaskPostEvaluationTest {
+  vanessaMonettePharmaprix,
+  vanessaMonetteJeanCoutu;
+
+  String get studentName {
+    switch (this) {
+      case TaskPostEvaluationTest.vanessaMonettePharmaprix:
+        return StudentTest.vanessaMonette.name;
+      case TaskPostEvaluationTest.vanessaMonetteJeanCoutu:
+        return StudentTest.vanessaMonette.name;
+    }
+  }
+
+  String get enterpriseName {
+    switch (this) {
+      case TaskPostEvaluationTest.vanessaMonettePharmaprix:
+        return EnterpriseTest.pharmaprix.name;
+      case TaskPostEvaluationTest.vanessaMonetteJeanCoutu:
+        return EnterpriseTest.jeanCoutu.name;
+    }
+  }
+
+  static int get length => TaskPostEvaluationTest.values.length;
+}
+
+enum TasksTest {
+  sst,
+  endInternship,
+  postEvaluation;
+
+  String get name {
+    switch (this) {
+      case TasksTest.sst:
+        return 'Repérer les risques SST';
+      case TasksTest.endInternship:
+        return 'Terminer les stages';
+      case TasksTest.postEvaluation:
+        return 'Faire les évaluations post-stage';
+    }
+  }
+
+  static int get length =>
+      TasksSstTest.length +
+      TaskEndInternshipTest.length +
+      TaskPostEvaluationTest.length;
 }

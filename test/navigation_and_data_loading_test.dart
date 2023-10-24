@@ -1,5 +1,6 @@
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:crcrme_banque_stages/main.dart';
+import 'package:crcrme_banque_stages/screens/enterprises_list/widgets/enterprise_card.dart';
 import 'package:crcrme_banque_stages/screens/students_list/widgets/student_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,7 +18,7 @@ void main() {
       await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
 
       // Verify that the home page is "My students"
-      expect(find.text(screenNames[0]), findsOneWidget);
+      expect(find.text(ScreenTest.myStudents.name), findsOneWidget);
     });
 
     testWidgets('The drawer tiles content', (WidgetTester tester) async {
@@ -26,10 +27,10 @@ void main() {
       await openDrawer(tester);
 
       // Verify that the drawer contains the expected tiles
-      for (final screenName in screenNames) {
+      for (final screenName in ScreenTest.values) {
         expect(
             find.ancestor(
-                of: find.text(screenName), matching: find.byType(Card)),
+                of: find.text(screenName.name), matching: find.byType(Card)),
             findsWidgets);
       }
     });
@@ -40,17 +41,17 @@ void main() {
       await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
 
       // Verify that the drawer contains the expected tiles
-      for (final screenNameOuter in screenNames) {
-        for (final screenNameInner in screenNames) {
-          // For some reason, this next fails (because it is too long)
-          if (screenNameInner == 'Santé et Sécurité au PFAE') continue;
-          if (screenNameOuter == 'Santé et Sécurité au PFAE') continue;
+      for (final screenNameOuter in ScreenTest.values) {
+        for (final screenNameInner in ScreenTest.values) {
+          // For some reason, these two next fail (because it is too long)
+          if (screenNameInner == ScreenTest.healthAndSafetyAtPFAE) continue;
+          if (screenNameOuter == ScreenTest.healthAndSafetyAtPFAE) continue;
 
           // Navigate from Outer to Inner screen
           await navigateToScreen(tester, screenNameInner);
 
           // Verify the page is loaded and drawer is closed
-          expect(find.text(screenNameInner), findsOneWidget);
+          expect(find.text(screenNameInner.name), findsOneWidget);
           expect(find.text(drawerTitle), findsNothing);
 
           // Return to outer loop screen
@@ -79,6 +80,11 @@ void main() {
       await openDrawer(tester);
       expect(find.text(reinitializedDataButtonText), findsOneWidget);
     });
+  });
+
+  group('Data loading', () {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
 
     testWidgets('The dummy data are properly loaded',
         (WidgetTester tester) async {
@@ -86,8 +92,8 @@ void main() {
       await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
 
       // Verify the home page is empty
-      for (final studentName in myStudentNames) {
-        expect(find.text(studentName), findsNothing);
+      for (final student in StudentTest.values) {
+        expect(find.text(student.name), findsNothing);
       }
 
       // Find the reinitalize data button in the drawer
@@ -98,15 +104,47 @@ void main() {
       // Make sure the drawer was automatically closed
       expect(find.text(reinitializedDataButtonText), findsNothing);
 
-      // Navigate to My students screen
-      await navigateToScreen(tester, screenNames[0]);
-
       // Verify the students data is now loaded
-      expect(find.bySubtype<StudentCard>(skipOffstage: false),
-          findsNWidgets(myStudentNames.length));
-      for (final studentName in myStudentNames) {
-        expect(find.text(studentName, skipOffstage: false), findsOneWidget);
+      await navigateToScreen(tester, ScreenTest.myStudents);
+      expect(
+        find.bySubtype<StudentCard>(skipOffstage: false),
+        findsNWidgets(StudentTest.length),
+      );
+      for (final student in StudentTest.values) {
+        expect(find.text(student.name, skipOffstage: false), findsOneWidget);
       }
+
+      // Verify the enterprises data is now loaded
+      await navigateToScreen(tester, ScreenTest.enterprises);
+      final sortedEnterprises = [...EnterpriseTest.values]
+        ..sort((a, b) => a.name.compareTo(b.name));
+      for (final i in sortedEnterprises.asMap().keys) {
+        final enterprise = sortedEnterprises[i];
+        if (i == sortedEnterprises.length ~/ 2) {
+          // When getting to half of the enterprises, scroll up
+          await tester.drag(
+              find.byType(EnterpriseCard).first, const Offset(0.0, -1000));
+          await tester.pump();
+        }
+        expect(find.text(enterprise.name, skipOffstage: false), findsOneWidget);
+      }
+
+      // Verify the interships data is now loaded
+      await navigateToScreen(tester, ScreenTest.supervisionTable);
+      expect(
+        find.byType(ListTile, skipOffstage: false),
+        findsNWidgets(InternshipsTest.length),
+      );
+      for (final internship in InternshipsTest.values) {
+        expect(find.text(internship.studentName, skipOffstage: false),
+            findsOneWidget);
+      }
+
+      // Verify the tasks data is now loaded
+      await navigateToScreen(tester, ScreenTest.tasks);
+      expect(find.byType(Card), findsNWidgets(TasksTest.length));
+      // Since there is repeating names in the tasks it is unclear how to test
+      // individual tasks, so we just test the number of tasks
     });
   });
 }
