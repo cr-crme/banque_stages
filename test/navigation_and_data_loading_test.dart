@@ -96,10 +96,8 @@ void main() {
         expect(find.text(student.name), findsNothing);
       }
 
-      // Find the reinitalize data button in the drawer
-      await openDrawer(tester);
-      await tester.tap(find.text(reinitializedDataButtonText));
-      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+      // Load the dummy data
+      await loadDummyData(tester);
 
       // Make sure the drawer was automatically closed
       expect(find.text(reinitializedDataButtonText), findsNothing);

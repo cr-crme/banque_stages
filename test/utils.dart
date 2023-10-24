@@ -10,8 +10,7 @@ import 'package:provider/provider.dart';
 Future<void> loadDummyData(WidgetTester tester) async {
   // Find the reinitalize data button in the drawer
   await openDrawer(tester);
-  final reinitializeButton = find.text(reinitializedDataButtonText);
-  await tester.tap(reinitializeButton);
+  await tester.tap(find.text(reinitializedDataButtonText));
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
 }
 
@@ -34,6 +33,16 @@ Future<void> navigateToScreen(WidgetTester tester, ScreenTest target) async {
       find.ancestor(of: find.text(target.name), matching: find.byType(Card));
   await tester.tap(targetButton);
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
+}
+
+///
+/// Overlay are required for widgets such as Tootip
+Widget addOverlay(Widget child) {
+  return MaterialApp(
+    builder: (context, ch) => Overlay(initialEntries: [
+      OverlayEntry(builder: (context) => child),
+    ]),
+  );
 }
 
 // Add the providers to the widget tree
