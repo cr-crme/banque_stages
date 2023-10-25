@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+// coverage:ignore-start
 void main() async {
   const mockFirebase = false;
 
@@ -21,6 +22,7 @@ void main() async {
       useDatabaseEmulator: kDebugMode, mockFirebase: mockFirebase);
   runApp(const BanqueStagesApp(mockFirebase: mockFirebase));
 }
+// coverage:ignore-end
 
 class BanqueStagesApp extends StatelessWidget {
   const BanqueStagesApp({super.key, this.mockFirebase = false});
@@ -39,10 +41,12 @@ class BanqueStagesApp extends StatelessWidget {
             create: (context) => EnterprisesProvider(mockMe: mockFirebase)),
         ChangeNotifierProvider(
             create: (context) => InternshipsProvider(mockMe: mockFirebase)),
+        // coverage:ignore-start
         ChangeNotifierProxyProvider<AuthProvider, ItinerariesProvider>(
           create: (context) => ItinerariesProvider(mockMe: mockFirebase),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
+        // coverage:ignore-end
         ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
           create: (context) => TeachersProvider(mockMe: mockFirebase),
           update: (context, auth, previous) => previous!..initializeAuth(auth),

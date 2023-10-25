@@ -30,6 +30,7 @@ class JobSstEvaluation extends ItemSerializable {
   }
 
   JobSstEvaluation({
+    super.id,
     required this.questions,
     DateTime? date,
   }) : date = date ?? DateTime.now();
@@ -105,7 +106,6 @@ class Job extends ItemSerializable {
         comments = comments ?? [];
 
   Job copyWith({
-    ActivitySector? activitySector,
     Specialization? specialization,
     int? positionsOffered,
     int? minimumAge,

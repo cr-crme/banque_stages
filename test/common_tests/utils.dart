@@ -51,20 +51,33 @@ JobList dummyJobList() {
   return JobList()..add(dummyJob());
 }
 
-Uniform dummyUniform() => Uniform(
-    status: UniformStatus.suppliedByEnterprise,
-    uniform: 'Un beau chapeu bleu\n'
-        'Une belle chemise rouge\n'
-        'Une cravate jaune peu désirable');
+Uniform dummyUniform({
+  String? id,
+}) =>
+    Uniform(
+        id: id,
+        status: UniformStatus.suppliedByEnterprise,
+        uniform: 'Un beau chapeu bleu\n'
+            'Une belle chemise rouge\n'
+            'Une cravate jaune peu désirable');
 
-Protections dummyProtections() =>
-    Protections(status: ProtectionsStatus.suppliedByEnterprise, protections: [
-      'Une veste de mithril',
-      'Une cotte de maille',
-      'Une drole de bague'
-    ]);
+Protections dummyProtections({
+  String? id,
+}) =>
+    Protections(
+        id: id,
+        status: ProtectionsStatus.suppliedByEnterprise,
+        protections: [
+          'Une veste de mithril',
+          'Une cotte de maille',
+          'Une drole de bague'
+        ]);
 
-Incidents dummyIncidents() => Incidents(
+Incidents dummyIncidents({
+  String? id,
+}) =>
+    Incidents(
+      id: id,
       severeInjuries: [],
       minorInjuries: [
         Incident('Un "petit" truc avec la scie sauteuse'),
@@ -73,7 +86,11 @@ Incidents dummyIncidents() => Incidents(
       verbalAbuses: [Incident('Vaut mieux ne pas détailler...')],
     );
 
-JobSstEvaluation dummyJobSstEvaluation() => JobSstEvaluation(
+JobSstEvaluation dummyJobSstEvaluation({
+  String? id,
+}) =>
+    JobSstEvaluation(
+      id: id,
       questions: {
         'Q1': 'Oui',
         'Q1+t': 'Peu souvent, à la discrétion des employés.',
@@ -88,8 +105,10 @@ JobSstEvaluation dummyJobSstEvaluation() => JobSstEvaluation(
       date: DateTime(2000, 1, 1),
     );
 
-PreInternshipRequest dummyPreInternshipRequest() =>
-    PreInternshipRequest(requests: [
+PreInternshipRequest dummyPreInternshipRequest({
+  String? id,
+}) =>
+    PreInternshipRequest(id: id, requests: [
       PreInternshipRequestType.judiciaryBackgroundCheck.name,
       'Manger de la poutine'
     ]);
@@ -124,12 +143,38 @@ Enterprise dummyEnterprise({bool addJob = false}) {
   );
 }
 
-Internship dummyInternship(
-    {String id = 'internshipId',
-    String studentId = 'studentId',
-    String teacherId = 'teacherId',
-    String enterpriseId = 'enterpriseId',
-    String jobId = 'jobId'}) {
+PostIntershipEnterpriseEvaluation dummyPostIntershipEnterpriseEvaluation({
+  String internshipId = 'internshipId',
+}) =>
+    PostIntershipEnterpriseEvaluation(
+      internshipId: internshipId,
+      skillsRequired: [
+        'Communiquer à l\'écrit',
+        'Interagir avec des clients',
+      ],
+      taskVariety: 0,
+      trainingPlanRespect: 1,
+      autonomyExpected: 4,
+      efficiencyExpected: 2,
+      supervisionStyle: 1,
+      easeOfCommunication: 5,
+      absenceAcceptance: 4,
+      supervisionComments: 'Milieu peu aidant, mais ouvert',
+      acceptanceTsa: -1,
+      acceptanceLanguageDisorder: 4,
+      acceptanceIntellectualDisability: 4,
+      acceptancePhysicalDisability: 4,
+      acceptanceMentalHealthDisorder: 2,
+      acceptanceBehaviorDifficulties: 2,
+    );
+
+Internship dummyInternship({
+  String id = 'internshipId',
+  String studentId = 'studentId',
+  String teacherId = 'teacherId',
+  String enterpriseId = 'enterpriseId',
+  String jobId = 'jobId',
+}) {
   final period = DateTimeRange(
       start: DateTime.now(), end: DateTime.now().add(const Duration(days: 20)));
   return Internship(
@@ -152,6 +197,8 @@ Internship dummyInternship(
     date: period,
     expectedLength: 135,
     achievedLength: 0,
+    enterpriseEvaluation:
+        dummyPostIntershipEnterpriseEvaluation(internshipId: id),
     weeklySchedules: [
       WeeklySchedule(
         schedule: [

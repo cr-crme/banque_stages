@@ -37,6 +37,7 @@ class Incidents extends ItemSerializable {
       [...severeInjuries, ...verbalAbuses, ...minorInjuries];
 
   Incidents({
+    super.id,
     List<Incident>? severeInjuries,
     List<Incident>? verbalAbuses,
     List<Incident>? minorInjuries,

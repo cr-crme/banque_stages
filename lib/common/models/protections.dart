@@ -52,7 +52,7 @@ class Protections extends ItemSerializable {
   ProtectionsStatus status;
   List<String> protections;
 
-  Protections({required this.status, List<String>? protections})
+  Protections({super.id, required this.status, List<String>? protections})
       : protections = protections ?? [];
 
   Protections.fromSerialized(map)

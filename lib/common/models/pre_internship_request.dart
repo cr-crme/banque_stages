@@ -18,7 +18,7 @@ enum PreInternshipRequestType {
 class PreInternshipRequest extends ItemSerializable {
   List<String> requests;
 
-  PreInternshipRequest({required this.requests});
+  PreInternshipRequest({super.id, required this.requests});
 
   PreInternshipRequest.fromSerialized(map)
       : requests =

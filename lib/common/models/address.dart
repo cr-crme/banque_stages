@@ -17,6 +17,7 @@ class Address extends ItemSerializable {
   final String? city;
   final String? postalCode;
 
+  // coverage:ignore-start
   static Future<Address?> fromAddress(String address) async {
     final location = await locationFromAddress(address);
     if (location.isEmpty) return null;
@@ -32,6 +33,7 @@ class Address extends ItemSerializable {
       postalCode: placemark.first.postalCode,
     );
   }
+  // coverage:ignore-end
 
   @override
   Map<String, dynamic> serializedMap() => {

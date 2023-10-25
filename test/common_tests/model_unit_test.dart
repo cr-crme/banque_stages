@@ -10,6 +10,7 @@ import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
+import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';
@@ -195,6 +196,15 @@ void main() {
   });
 
   group('Uniform', () {
+    test('"statuses" are the right label', () {
+      expect(UniformStatus.values.length, 3);
+      expect(UniformStatus.suppliedByEnterprise.toString(),
+          'Oui et l\'entreprise la fournit');
+      expect(UniformStatus.suppliedByStudent.toString(),
+          'Oui mais l\'entreprise ne la fournit pas');
+      expect(UniformStatus.none.toString(), 'Non');
+    });
+
     test('serialization and deserialization works', () {
       final uniform = dummyUniform();
       final serialized = uniform.serialize();
@@ -213,6 +223,28 @@ void main() {
   });
 
   group('Protections', () {
+    test('"statuses" are the right label', () {
+      expect(ProtectionsStatus.values.length, 3);
+      expect(ProtectionsStatus.suppliedByEnterprise.toString(),
+          'Oui et l\'entreprise les fournit');
+      expect(ProtectionsStatus.suppliedBySchool.toString(),
+          'Oui mais l\'entreprise ne les fournit pas');
+      expect(ProtectionsStatus.none.toString(), 'Non');
+    });
+
+    test('"types" are the right lable', () {
+      expect(ProtectionsType.values.length, 7);
+      expect(ProtectionsType.steelToeShoes.toString(),
+          'Chaussures à cap d\'acier');
+      expect(ProtectionsType.nonSlipSoleShoes.toString(),
+          'Chaussures à semelles antidérapantes');
+      expect(ProtectionsType.safetyGlasses.toString(), 'Lunettes de sécurité');
+      expect(ProtectionsType.earProtection.toString(), 'Protections auditives');
+      expect(ProtectionsType.mask.toString(), 'Masque');
+      expect(ProtectionsType.helmet.toString(), 'Casque');
+      expect(ProtectionsType.gloves.toString(), 'Gants');
+    });
+
     test('serialization and deserialization works', () {
       final protections = dummyProtections();
       final serialized = protections.serialize();
@@ -230,6 +262,22 @@ void main() {
   });
 
   group('Incidents', () {
+    test('"isEmpty" behaves properly', () {
+      expect(Incidents().isEmpty, isTrue);
+      expect(Incidents().isNotEmpty, isFalse);
+      expect(Incidents(severeInjuries: [Incident('Not important')]).isEmpty,
+          isFalse);
+      expect(Incidents(verbalAbuses: [Incident('Not important')]).isEmpty,
+          isFalse);
+      expect(Incidents(minorInjuries: [Incident('Not important')]).isEmpty,
+          isFalse);
+    });
+
+    test('can get all', () {
+      final incidents = dummyIncidents();
+      expect(incidents.all.length, 3);
+    });
+
     test('serialization and deserialization works', () {
       final incidents = dummyIncidents();
       final serialized = incidents.serialize();
@@ -248,6 +296,11 @@ void main() {
           incidents.verbalAbuses.toString());
       expect(deserialized.minorInjuries.toString(),
           incidents.minorInjuries.toString());
+
+      final emptyDeserialized = Incidents.fromSerialized({});
+      expect(emptyDeserialized.severeInjuries, []);
+      expect(emptyDeserialized.verbalAbuses, []);
+      expect(emptyDeserialized.minorInjuries, []);
     });
   });
 
@@ -290,6 +343,14 @@ void main() {
   });
 
   group('PreInternshipRequest', () {
+    test('"types" are the right label', () {
+      expect(PreInternshipRequestType.values.length, 2);
+      expect(PreInternshipRequestType.soloInterview.toString(),
+          'Une entrevue de recrutement de l\'élève en solo');
+      expect(PreInternshipRequestType.judiciaryBackgroundCheck.toString(),
+          'Une vérification des antécédents judiciaires pour les élèves majeurs');
+    });
+
     test('serialization and deserialization works', () {
       final preInternshipRequest = dummyPreInternshipRequest();
       final serialized = preInternshipRequest.serialize();
@@ -305,9 +366,66 @@ void main() {
     });
   });
 
-  group('JobList', () {
+  group('Job and JobList', () {
     TestWidgetsFlutterBinding.ensureInitialized();
     initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+
+    testWidgets('can get evaluation of all enterprises', (tester) async {
+      final context = await tester.contextWithNotifiers(withInternships: true);
+      final job = dummyJob();
+
+      // No evaluation yet
+      expect(job.postInternshipEnterpriseEvaluations(context).length, 0);
+
+      // Add an evaluation
+      InternshipsProvider.of(context, listen: false).add(dummyInternship());
+      expect(job.postInternshipEnterpriseEvaluations(context).length, 1);
+    });
+
+    test('"copyWith" behaves properly', () {
+      final job = dummyJob();
+
+      final jobSame = job.copyWith();
+      expect(jobSame.id, job.id);
+      expect(jobSame.specialization, job.specialization);
+      expect(jobSame.positionsOffered, job.positionsOffered);
+      expect(jobSame.minimumAge, job.minimumAge);
+      expect(jobSame.preInternshipRequest, job.preInternshipRequest);
+      expect(jobSame.uniform, job.uniform);
+      expect(jobSame.protections, job.protections);
+      expect(jobSame.photosUrl, job.photosUrl);
+      expect(jobSame.sstEvaluation, job.sstEvaluation);
+      expect(jobSame.incidents, job.incidents);
+      expect(jobSame.comments, job.comments);
+
+      final jobDifferent = job.copyWith(
+        id: 'newId',
+        specialization: ActivitySectorsService.sectors[2].specializations[8],
+        positionsOffered: 2,
+        minimumAge: 12,
+        preInternshipRequest:
+            dummyPreInternshipRequest(id: 'newPreInternshipId'),
+        uniform: dummyUniform(id: 'newUniformId'),
+        protections: dummyProtections(id: 'newProtectionsId'),
+        photosUrl: ['newUrl'],
+        sstEvaluation: dummyJobSstEvaluation(id: 'newSstEvaluationId'),
+        incidents: dummyIncidents(id: 'newIncidentsId'),
+        comments: ['newComment'],
+      );
+
+      expect(jobDifferent.id, 'newId');
+      expect(jobDifferent.specialization.id,
+          ActivitySectorsService.sectors[2].specializations[8].id);
+      expect(jobDifferent.positionsOffered, 2);
+      expect(jobDifferent.minimumAge, 12);
+      expect(jobDifferent.preInternshipRequest.id, 'newPreInternshipId');
+      expect(jobDifferent.uniform.id, 'newUniformId');
+      expect(jobDifferent.protections.id, 'newProtectionsId');
+      expect(jobDifferent.photosUrl, ['newUrl']);
+      expect(jobDifferent.sstEvaluation.id, 'newSstEvaluationId');
+      expect(jobDifferent.incidents.id, 'newIncidentsId');
+      expect(jobDifferent.comments, ['newComment']);
+    });
 
     test('has the rigt amount', () {
       final jobList = dummyJobList();

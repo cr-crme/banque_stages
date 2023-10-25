@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'dart:developer' as dev;
 import 'dart:math';
 

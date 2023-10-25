@@ -24,7 +24,7 @@ class Uniform extends ItemSerializable {
 
   List<String> get uniforms => _uniform.isEmpty ? [] : _uniform.split('\n');
 
-  Uniform({required this.status, String? uniform = ''})
+  Uniform({super.id, required this.status, String? uniform = ''})
       : _uniform = uniform ?? '';
 
   Uniform.fromSerialized(map)

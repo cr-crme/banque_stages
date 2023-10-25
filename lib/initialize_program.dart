@@ -21,8 +21,10 @@ Future<void> initializeProgram(
   initializeDateFormatting('fr_CA');
 
   await Future.wait([
+    // coverage:ignore-start
     if (!mockFirebase)
       Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+    // coverage:ignore-end
     ActivitySectorsService.initializeActivitySectorSingleton(),
     RiskDataFileService.loadData(),
     QuestionFileService.loadData(),
@@ -31,10 +33,12 @@ Future<void> initializeProgram(
   // Connect Firebase to local emulators
   assert(() {
     if (useDatabaseEmulator && !mockFirebase) {
+      // coverage:ignore-start
       final host = !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost';
       FirebaseAuth.instance.useAuthEmulator(host, 9099);
       FirebaseDatabase.instance.useDatabaseEmulator(host, 9000);
       FirebaseStorage.instance.useStorageEmulator(host, 9199);
+      // coverage:ignore-end
     }
     return true;
   }());
