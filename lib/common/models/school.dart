@@ -6,7 +6,7 @@ class School extends ItemSerializable {
   final String name;
   final Address address;
 
-  School({required this.name, required this.address});
+  School({super.id, required this.name, required this.address});
 
   School.fromSerialized(map)
       : name = map['name'],
@@ -18,7 +18,8 @@ class School extends ItemSerializable {
     return {'name': name, 'address': address.serialize()};
   }
 
-  School copyWith({String? name, Address? address}) => School(
+  School copyWith({String? id, String? name, Address? address}) => School(
+        id: id ?? this.id,
         name: name ?? this.name,
         address: address ?? this.address,
       );

@@ -7,6 +7,7 @@ import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
+import 'package:crcrme_banque_stages/common/models/school.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
@@ -17,6 +18,43 @@ import '../utils.dart';
 import 'utils.dart';
 
 void main() {
+  group('School', () {
+    test('"copyWith" changes the requested elements', () {
+      final school = dummySchool();
+
+      final schoolSame = school.copyWith();
+      expect(schoolSame.id, school.id);
+      expect(schoolSame.name, school.name);
+      expect(schoolSame.address, school.address);
+
+      final schoolDifferent = school.copyWith(
+        id: 'newId',
+        name: 'newName',
+        address: dummyAddress().copyWith(id: 'newAddressId'),
+      );
+
+      expect(schoolDifferent.id, 'newId');
+      expect(schoolDifferent.name, 'newName');
+      expect(schoolDifferent.address.id, 'newAddressId');
+    });
+
+    test('serialize and deserialize works', () {
+      final school = dummySchool();
+      final serialized = school.serialize();
+      final deserialized = School.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': school.id,
+        'name': school.name,
+        'address': school.address.serialize(),
+      });
+
+      expect(deserialized.id, school.id);
+      expect(deserialized.name, school.name);
+      expect(deserialized.address.id, school.address.id);
+    });
+  });
+
   group('Person', () {
     test('default is empty', () {
       final person = Person.empty;
