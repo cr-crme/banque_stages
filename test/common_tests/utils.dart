@@ -57,8 +57,8 @@ JobList dummyJobList() {
   return jobList;
 }
 
-Job dummyJob({String withId = 'jobId'}) => Job(
-    id: withId,
+Job dummyJob({String id = 'jobId'}) => Job(
+    id: id,
     specialization: ActivitySectorsService.sectors[2].specializations[9],
     positionsOffered: 2,
     sstEvaluation: JobSstEvaluation.empty,
@@ -96,16 +96,22 @@ Enterprise dummyEnterprise({bool addJob = false}) {
   );
 }
 
-Internship dummyInternship() {
+Internship dummyInternship(
+    {String id = 'internshipId',
+    String studentId = 'studentId',
+    String teacherId = 'teacherId',
+    String enterpriseId = 'enterpriseId',
+    String jobId = 'jobId'}) {
   final period = DateTimeRange(
       start: DateTime.now(), end: DateTime.now().add(const Duration(days: 20)));
   return Internship(
+    id: id,
     versionDate: DateTime.now(),
-    studentId: 'studentId',
-    signatoryTeacherId: 'teacherId',
+    studentId: studentId,
+    signatoryTeacherId: teacherId,
     extraSupervisingTeacherIds: [],
-    enterpriseId: 'enterpriseId',
-    jobId: 'jobId',
+    enterpriseId: enterpriseId,
+    jobId: jobId,
     extraSpecializationsId: [
       ActivitySectorsService.sectors[2].specializations[1].id,
       ActivitySectorsService.sectors[1].specializations[0].id,

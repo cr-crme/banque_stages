@@ -3,6 +3,7 @@ import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -15,14 +16,14 @@ void main() {
   // TODO: Add tests for JobList
 
   group('Address', () {
-    test('Address is shown properly', () {
+    test('is shown properly', () {
       expect(
           dummyAddress().toString(), '100 Wunderbar #A, Wonderland, H0H 0H0');
       expect(dummyAddress(skipAppartment: true).toString(),
           '100 Wunderbar, Wonderland, H0H 0H0');
     });
 
-    test('Address copyWith changes the requested elements', () {
+    test('"copyWith" changes the requested elements', () {
       final address = dummyAddress();
 
       final addressSame = address.copyWith();
@@ -49,12 +50,12 @@ void main() {
       expect(addressDifferent.postalCode, 'H0H 0H1');
     });
 
-    test('Address isEmpty returns true when all fields are null', () {
+    test('"isEmpty" returns true when all fields are null', () {
       expect(Address().isEmpty, isTrue);
       expect(Address(civicNumber: 100).isEmpty, isFalse);
     });
 
-    test('Address isValid if all fields are not null expect appartment', () {
+    test('"isValid" if all fields are not null expect appartment', () {
       expect(dummyAddress().isValid, isTrue);
       expect(dummyAddress(skipCivicNumber: true).isValid, isFalse);
       expect(dummyAddress(skipAppartment: true).isValid, isTrue);
@@ -63,7 +64,7 @@ void main() {
       expect(dummyAddress(skipPostalCode: true).isValid, isFalse);
     });
 
-    test('Address serialization and deserialization works', () {
+    test('serialization and deserialization works', () {
       final address = dummyAddress();
       final serialized = address.serialize();
       final deserialized = Address.fromSerialized(serialized);
@@ -90,7 +91,7 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
 
-    test('Enterprise copyWith changes the requested elements', () {
+    test('"copyWith" changes the requested elements', () {
       final enterprise = dummyEnterprise(addJob: true);
 
       final enterpriseSame = enterprise.copyWith();
@@ -116,7 +117,7 @@ void main() {
         activityTypes: {'newActivity'},
         recrutedBy: 'newRecrutedBy',
         shareWith: 'newShareWith',
-        jobs: JobList()..add(dummyJob(withId: 'newJobId')),
+        jobs: JobList()..add(dummyJob(id: 'newJobId')),
         contact: Person(firstName: 'Pariterre', lastName: 'Nobody'),
         contactFunction: 'newContactFunction',
         address: dummyAddress().copyWith(id: 'newAddressId'),
@@ -145,19 +146,72 @@ void main() {
       expect(enterpriseDifferent.neq, 'newNeq');
     });
 
-    testWidgets('Enterprise get available jobs', (tester) async {
+    testWidgets('"interships" behaves properly', (tester) async {
       final enterprise = dummyEnterprise(addJob: true);
       final context = await tester.contextWithNotifiers(withInternships: true);
+      final internships = InternshipsProvider.of(context, listen: false);
 
+      // Add an internship to another enterprise, which should not be counted
+      internships.add(dummyInternship(
+          id: 'anotherInternshipId',
+          enterpriseId: 'anotherEnterpriseId',
+          jobId: 'anotherJobId'));
+
+      // No internships
+      expect(enterprise.internships(context, listen: false).length, 0);
+
+      // One internship
+      internships.add(dummyInternship(
+          enterpriseId: enterprise.id, jobId: enterprise.jobs[0].id));
+      expect(enterprise.internships(context, listen: false).length, 1);
+
+      // Two internships
+      internships.add(dummyInternship(
+          id: 'anotherInternshipId',
+          enterpriseId: enterprise.id,
+          jobId: enterprise.jobs[0].id));
+      expect(enterprise.internships(context, listen: false).length, 2);
+
+      // One internship is terminated, but still counts as an internship
+      internships.replace(internships[1]
+          .copyWith(endDate: DateTime.now().subtract(const Duration(days: 1))));
+      expect(enterprise.internships(context, listen: false).length, 2);
+    });
+
+    testWidgets('"availableJobs" behaves properly', (tester) async {
+      final enterprise = dummyEnterprise(addJob: true);
+      final context = await tester.contextWithNotifiers(withInternships: true);
+      final internships = InternshipsProvider.of(context, listen: false);
+
+      // Add an internship to another enterprise, which should not be counted
+      internships.add(dummyInternship(
+          id: 'anotherInternshipId',
+          enterpriseId: 'anotherEnterpriseId',
+          jobId: 'anotherJobId'));
+
+      // One job with two positions was created, so it should be available
+      expect(enterprise.availableJobs(context).length, 1);
+
+      // Fill one of that position, so it should still be available
+      internships.add(dummyInternship(
+          enterpriseId: enterprise.id, jobId: enterprise.jobs[0].id));
+      expect(enterprise.availableJobs(context).length, 1);
+
+      // Fill the remainning one, so it should not be available anymore
+      internships.add(dummyInternship(
+          id: 'anotherInternshipId',
+          enterpriseId: enterprise.id,
+          jobId: enterprise.jobs[0].id));
+      expect(enterprise.availableJobs(context).length, 0);
+
+      // Terminate one the of job, so it should be available again
+      internships.replace(internships[1]
+          .copyWith(endDate: DateTime.now().subtract(const Duration(days: 1))));
       expect(enterprise.availableJobs(context).length, 1);
     });
 
-    test('Enterprise get interships', () {
-      // TODO: Write the test
-    });
-
-    test('Enterprise serialization and deserialization works', () {
-      final enterprise = dummyEnterprise();
+    test('serialization and deserialization works', () {
+      final enterprise = dummyEnterprise(addJob: true);
       final serialized = enterprise.serialize();
       final deserialized = Enterprise.fromSerialized(serialized);
 
@@ -183,7 +237,7 @@ void main() {
       expect(deserialized.activityTypes, enterprise.activityTypes);
       expect(deserialized.recrutedBy, enterprise.recrutedBy);
       expect(deserialized.shareWith, enterprise.shareWith);
-      expect(deserialized.jobs, enterprise.jobs);
+      expect(deserialized.jobs[0].id, enterprise.jobs[0].id);
       expect(deserialized.contact.id, enterprise.contact.id);
       expect(deserialized.contactFunction, enterprise.contactFunction);
       expect(deserialized.address?.id, enterprise.address?.id);
