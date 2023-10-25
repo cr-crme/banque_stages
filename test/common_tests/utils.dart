@@ -48,27 +48,7 @@ Address dummyAddress({
     );
 
 JobList dummyJobList() {
-  final jobList = JobList();
-  jobList.add(Job(
-      specialization: ActivitySectorsService.sectors[2].specializations[9],
-      positionsOffered: 2,
-      sstEvaluation: JobSstEvaluation.empty,
-      incidents: Incidents(
-          severeInjuries: [Incident('Vaut mieux ne pas détailler...')]),
-      minimumAge: 12,
-      preInternshipRequest:
-          PreInternshipRequest(requests: ['Manger de la poutine']),
-      uniform: Uniform(
-          status: UniformStatus.suppliedByEnterprise,
-          uniform: 'Un beau chapeu bleu'),
-      protections: Protections(
-          status: ProtectionsStatus.suppliedByEnterprise,
-          protections: [
-            'Une veste de mithril',
-            'Une cotte de maille',
-            'Une drole de bague'
-          ])));
-  return jobList;
+  return JobList()..add(dummyJob());
 }
 
 Job dummyJob({String id = 'jobId'}) => Job(

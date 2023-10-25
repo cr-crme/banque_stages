@@ -11,7 +11,11 @@ import '../utils.dart';
 import 'utils.dart';
 
 void main() {
-  // TODO: Add tests for JobList
+  // TODO: Add tests for preInternshipRequest
+  // TODO: Add tests for uniform
+  // TODO: Add tests for protections
+  // TODO: Add tests for sstEvaluations
+  // TODO: Add tests for incidents
 
   group('Person', () {
     test('default is empty', () {
@@ -188,6 +192,51 @@ void main() {
       expect(deserialized.appartment, address.appartment);
       expect(deserialized.city, address.city);
       expect(deserialized.postalCode, address.postalCode);
+    });
+  });
+
+  group('JobList', () {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+
+    test('has the rigt amount', () {
+      final jobList = dummyJobList();
+      expect(jobList.length, 1);
+    });
+
+    test('serialize and deserialize works', () {
+      final jobList = dummyJobList();
+      jobList.add(dummyJob(id: 'newJobId'));
+      final serialized = jobList.serialize();
+      final deserialized = JobList.fromSerialized(serialized);
+
+      expect(serialized, {
+        for (var e in jobList)
+          e.id: {
+            'id': e.id,
+            'specialization': e.specialization.id,
+            'positionsOffered': e.positionsOffered,
+            'minimumAge': e.minimumAge,
+            'preInternshipRequest': e.preInternshipRequest.serialize(),
+            'uniform': e.uniform.serialize(),
+            'protections': e.protections.serialize(),
+            'photosUrl': e.photosUrl,
+            'sstEvaluations': e.sstEvaluation.serialize(),
+            'incidents': e.incidents.serialize(),
+            'comments': e.comments,
+          }
+      });
+
+      expect(deserialized[0].id, jobList[0].id);
+      expect(deserialized[0].specialization.id, jobList[0].specialization.id);
+      expect(deserialized[0].positionsOffered, jobList[0].positionsOffered);
+      expect(deserialized[0].sstEvaluation.id, jobList[0].sstEvaluation.id);
+      expect(deserialized[0].incidents.id, jobList[0].incidents.id);
+      expect(deserialized[0].minimumAge, jobList[0].minimumAge);
+      expect(deserialized[0].preInternshipRequest.id,
+          jobList[0].preInternshipRequest.id);
+      expect(deserialized[0].uniform.id, jobList[0].uniform.id);
+      expect(deserialized[0].protections.id, jobList[0].protections.id);
     });
   });
 

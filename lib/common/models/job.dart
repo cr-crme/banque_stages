@@ -38,10 +38,12 @@ class JobSstEvaluation extends ItemSerializable {
 
   JobSstEvaluation.fromSerialized(map)
       : questions = _stringMapFromSerialized(map['questions']),
-        date = DateTime.fromMillisecondsSinceEpoch(map['date'] ?? 0);
+        date = DateTime.fromMillisecondsSinceEpoch(map['date'] ?? 0),
+        super.fromSerialized(map);
 
   @override
   Map<String, dynamic> serializedMap() => {
+        'id': id,
         'questions': questions,
         'date': date.millisecondsSinceEpoch,
       };
@@ -131,20 +133,19 @@ class Job extends ItemSerializable {
   }
 
   @override
-  Map<String, dynamic> serializedMap() {
-    return {
-      'specialization': specialization.id,
-      'positionsOffered': positionsOffered,
-      'minimumAge': minimumAge,
-      'preInternshipRequest': preInternshipRequest.serialize(),
-      'uniform': uniform.serialize(),
-      'protections': protections.serialize(),
-      'photosUrl': photosUrl,
-      'sstEvaluations': sstEvaluation.serialize(),
-      'incidents': incidents.serialize(),
-      'comments': comments,
-    };
-  }
+  Map<String, dynamic> serializedMap() => {
+        'id': id,
+        'specialization': specialization.id,
+        'positionsOffered': positionsOffered,
+        'minimumAge': minimumAge,
+        'preInternshipRequest': preInternshipRequest.serialize(),
+        'uniform': uniform.serialize(),
+        'protections': protections.serialize(),
+        'photosUrl': photosUrl,
+        'sstEvaluations': sstEvaluation.serialize(),
+        'incidents': incidents.serialize(),
+        'comments': comments,
+      };
 
   Job.fromSerialized(map)
       : specialization =
