@@ -3,6 +3,7 @@ import 'package:geocoding/geocoding.dart';
 
 class Address extends ItemSerializable {
   Address({
+    super.id,
     this.civicNumber,
     this.street,
     this.appartment,
@@ -43,6 +44,7 @@ class Address extends ItemSerializable {
 
   static Address fromSerialized(map) {
     return Address(
+        id: map != null && map.containsKey('id') ? map['id'] : null,
         civicNumber:
             map != null && map.containsKey('number') ? map['number'] : null,
         street: map != null && map.containsKey('street') ? map['street'] : null,
@@ -55,27 +57,21 @@ class Address extends ItemSerializable {
             : null);
   }
 
-  Address copyWith(
-      {int? civicNumber,
-      String? street,
-      String? appartment,
-      String? city,
-      String? postalCode}) {
+  Address copyWith({
+    String? id,
+    int? civicNumber,
+    String? street,
+    String? appartment,
+    String? city,
+    String? postalCode,
+  }) {
     return Address(
+        id: id ?? this.id,
         civicNumber: civicNumber ?? this.civicNumber,
         street: street ?? this.street,
         appartment: appartment ?? this.appartment,
         city: city ?? this.city,
         postalCode: postalCode ?? this.postalCode);
-  }
-
-  Address deepCopy() {
-    return Address(
-        civicNumber: civicNumber,
-        street: street,
-        appartment: appartment,
-        city: city,
-        postalCode: postalCode);
   }
 
   bool get isEmpty =>
@@ -85,10 +81,16 @@ class Address extends ItemSerializable {
       city == null &&
       postalCode == null;
 
+  bool get isValid =>
+      civicNumber != null &&
+      street != null &&
+      city != null &&
+      postalCode != null;
+
   @override
   String toString() {
-    return isEmpty
-        ? ''
-        : '$civicNumber $street${appartment == null ? '' : ' #$appartment'}, $city, $postalCode';
+    return isValid
+        ? '$civicNumber $street${appartment == null ? '' : ' #$appartment'}, $city, $postalCode'
+        : '';
   }
 }

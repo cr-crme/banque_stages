@@ -23,8 +23,9 @@ class _InternshipController {
         weeklySchedules =
             internship.weeklySchedules.map((week) => week.copyWith()).toList(),
         scheduleController = WeeklyScheduleController(
-          weeklySchedules:
-              internship.weeklySchedules.map((e) => e.deepCopy()).toList(),
+          weeklySchedules: internship.weeklySchedules
+              .map((e) => e.copyWith(schedule: [...e.schedule]))
+              .toList(),
           dateRange: internship.date,
         );
 

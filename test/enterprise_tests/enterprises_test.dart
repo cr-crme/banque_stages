@@ -12,9 +12,9 @@ void main() {
 
     testWidgets('About page', (WidgetTester tester) async {
       await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
-      await loadDummyData(tester);
+      await tester.loadDummyData();
 
-      await navigateToScreen(tester, ScreenTest.enterprises);
+      await tester.navigateToScreen(ScreenTest.enterprises);
 
       // The first enterprise should be Auto Care
       final enterpriseCard = find.byType(EnterpriseCard).first;

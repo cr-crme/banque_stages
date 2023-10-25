@@ -109,27 +109,6 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
         'acceptanceMentalHealthDisorder': acceptanceMentalHealthDisorder,
         'acceptanceBehaviorDifficulties': acceptanceBehaviorDifficulties,
       };
-
-  PostIntershipEnterpriseEvaluation deepCopy() {
-    return PostIntershipEnterpriseEvaluation(
-      internshipId: internshipId,
-      skillsRequired: [for (final skill in skillsRequired) skill],
-      taskVariety: taskVariety,
-      trainingPlanRespect: trainingPlanRespect,
-      autonomyExpected: autonomyExpected,
-      efficiencyExpected: efficiencyExpected,
-      supervisionStyle: supervisionStyle,
-      easeOfCommunication: easeOfCommunication,
-      absenceAcceptance: absenceAcceptance,
-      supervisionComments: supervisionComments,
-      acceptanceTsa: acceptanceTsa,
-      acceptanceLanguageDisorder: acceptanceLanguageDisorder,
-      acceptanceIntellectualDisability: acceptanceIntellectualDisability,
-      acceptancePhysicalDisability: acceptancePhysicalDisability,
-      acceptanceMentalHealthDisorder: acceptanceMentalHealthDisorder,
-      acceptanceBehaviorDifficulties: acceptanceBehaviorDifficulties,
-    );
-  }
 }
 
 class _MutableElements extends ItemSerializable {
@@ -166,16 +145,6 @@ class _MutableElements extends ItemSerializable {
         ],
         'schedule': weeklySchedules.map((e) => e.serialize()).toList(),
       };
-
-  _MutableElements deepCopy() {
-    return _MutableElements(
-      versionDate: DateTime.fromMillisecondsSinceEpoch(
-          versionDate.millisecondsSinceEpoch),
-      supervisor: supervisor.deepCopy(),
-      date: DateTimeRange(start: date.start, end: date.end),
-      weeklySchedules: weeklySchedules.map((e) => e.deepCopy()).toList(),
-    );
-  }
 }
 
 class Internship extends ItemSerializable {
@@ -408,34 +377,6 @@ class Internship extends ItemSerializable {
       skillEvaluations: skillEvaluations ?? this.skillEvaluations,
       attitudeEvaluations: attitudeEvaluations ?? this.attitudeEvaluations,
       enterpriseEvaluation: enterpriseEvaluation ?? this.enterpriseEvaluation,
-    );
-  }
-
-  Internship deepCopy() {
-    return Internship._(
-      id: id,
-      studentId: studentId,
-      signatoryTeacherId: signatoryTeacherId,
-      extraSupervisingTeacherIds: [..._extraSupervisingTeacherIds],
-      enterpriseId: enterpriseId,
-      jobId: jobId,
-      extraSpecializationsId: [...extraSpecializationsId],
-      mutables: [..._mutables],
-      expectedLength: expectedLength,
-      achievedLength: achievedLength,
-      visitingPriority: VisitingPriority.values[visitingPriority.index],
-      teacherNotes: teacherNotes,
-      endDate: endDate == null
-          ? null
-          : DateTime(
-              endDate!.year,
-              endDate!.month,
-              endDate!.day,
-            ),
-      skillEvaluations: skillEvaluations.map((e) => e.deepCopy()).toList(),
-      attitudeEvaluations:
-          attitudeEvaluations.map((e) => e.deepCopy()).toList(),
-      enterpriseEvaluation: enterpriseEvaluation?.deepCopy(),
     );
   }
 }

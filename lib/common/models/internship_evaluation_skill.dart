@@ -77,16 +77,6 @@ class SkillEvaluation extends ItemSerializable {
       'comment': comment,
     };
   }
-
-  SkillEvaluation deepCopy() {
-    return SkillEvaluation(
-      specializationId: specializationId,
-      skillName: skillName,
-      tasks: [...tasks],
-      appreciation: appreciation,
-      comment: comment,
-    );
-  }
 }
 
 class InternshipEvaluationSkill extends ItemSerializable {
@@ -130,16 +120,5 @@ class InternshipEvaluationSkill extends ItemSerializable {
       'comments': comments,
       'formVersion': formVersion,
     };
-  }
-
-  InternshipEvaluationSkill deepCopy() {
-    return InternshipEvaluationSkill(
-      date: DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch),
-      presentAtEvaluation: [...presentAtEvaluation],
-      skillGranularity: skillGranularity,
-      skills: skills.map((e) => e.deepCopy()).toList(),
-      comments: comments,
-      formVersion: formVersion,
-    );
   }
 }

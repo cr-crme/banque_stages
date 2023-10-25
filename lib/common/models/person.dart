@@ -82,18 +82,4 @@ class Person extends ItemSerializable {
         email: email ?? this.email,
         address: address ?? this.address,
       );
-
-  Person deepCopy() {
-    return Person(
-      firstName: firstName,
-      middleName: middleName,
-      lastName: lastName,
-      dateBirth: dateBirth == null
-          ? null
-          : DateTime(dateBirth!.year, dateBirth!.month, dateBirth!.day),
-      phone: phone.deepCopy(),
-      email: email,
-      address: address?.deepCopy(),
-    );
-  }
 }

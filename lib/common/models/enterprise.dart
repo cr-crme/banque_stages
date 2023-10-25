@@ -54,15 +54,6 @@ class Enterprise extends ItemSerializable {
     this.neq = '',
   });
 
-  static Enterprise get empty => Enterprise(
-        name: 'Not named',
-        activityTypes: {},
-        recrutedBy: 'Nobody',
-        shareWith: 'No one',
-        jobs: JobList(),
-        contact: Person.empty,
-      );
-
   Enterprise copyWith({
     String? name,
     Set<String>? activityTypes,
@@ -111,7 +102,7 @@ class Enterprise extends ItemSerializable {
       'phone': phone.toString(),
       'fax': fax.toString(),
       'website': website,
-      'headquartersAddress': headquartersAddress?.serialize() ?? -1,
+      'headquartersAddress': headquartersAddress?.serialize(),
       'neq': neq,
     };
   }
@@ -126,11 +117,13 @@ class Enterprise extends ItemSerializable {
         jobs = JobList.fromSerialized(map['jobs']),
         contact = Person.fromSerialized(map['contact']),
         contactFunction = map['contactFunction'],
-        address = Address.fromSerialized(map['address']),
+        address = map['address'] == null
+            ? null
+            : Address.fromSerialized(map['address']),
         phone = PhoneNumber.fromString(map['phone']),
         fax = PhoneNumber.fromString(map['fax']),
         website = map['website'],
-        headquartersAddress = map['headquartersAddress'] == -1
+        headquartersAddress = map['headquartersAddress'] == null
             ? null
             : Address.fromSerialized(map['headquartersAddress']),
         neq = map['neq'],

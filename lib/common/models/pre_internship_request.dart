@@ -30,8 +30,4 @@ class PreInternshipRequest extends ItemSerializable {
         'id': id,
         'requests': requests,
       };
-
-  PreInternshipRequest deepCopy() {
-    return PreInternshipRequest(requests: [...requests]);
-  }
 }

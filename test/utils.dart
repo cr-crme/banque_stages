@@ -7,34 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-Future<void> loadDummyData(WidgetTester tester) async {
-  // Find the reinitalize data button in the drawer
-  await openDrawer(tester);
-  await tester.tap(find.text(reinitializedDataButtonText));
-  await tester.pumpAndSettle(const Duration(milliseconds: 500));
-}
-
-Future<void> openDrawer(WidgetTester tester) async {
-  final drawerIcon = find.byIcon(Icons.menu);
-  await tester.tap(drawerIcon);
-  await tester.pumpAndSettle(const Duration(milliseconds: 500));
-}
-
-Future<void> closeDrawer(WidgetTester tester) async {
-  BuildContext context = tester.element(find.byType(Drawer));
-  Navigator.pop(context);
-  await tester.pumpAndSettle(const Duration(milliseconds: 500));
-}
-
-Future<void> navigateToScreen(WidgetTester tester, ScreenTest target) async {
-  // This function assumes drawer menu is shown
-  await openDrawer(tester);
-  final targetButton =
-      find.ancestor(of: find.text(target.name), matching: find.byType(Card));
-  await tester.tap(targetButton);
-  await tester.pumpAndSettle(const Duration(milliseconds: 500));
-}
-
 ///
 /// Overlay are required for widgets such as Tootip
 Widget addOverlay(Widget child) {
@@ -45,57 +17,113 @@ Widget addOverlay(Widget child) {
   );
 }
 
+extension BanqueStageWidgetTester on WidgetTester {
+  Future<void> loadDummyData() async {
+    // Find the reinitalize data button in the drawer
+    await openDrawer();
+    await tap(find.text(reinitializedDataButtonText));
+    await pumpAndSettle(const Duration(milliseconds: 500));
+  }
+
+  BuildContext context(Finder finder) => element(finder);
+
+  Future<void> openDrawer() async {
+    final drawerIcon = find.byIcon(Icons.menu);
+    await tap(drawerIcon);
+    await pumpAndSettle(const Duration(milliseconds: 500));
+  }
+
+  Future<void> closeDrawer() async {
+    Navigator.pop(context(find.byType(Drawer)));
+    await pumpAndSettle(const Duration(milliseconds: 500));
+  }
+
+  Future<void> navigateToScreen(ScreenTest target) async {
+    // This function assumes drawer menu is shown
+    await openDrawer();
+    final targetButton =
+        find.ancestor(of: find.text(target.name), matching: find.byType(Card));
+    await tap(targetButton);
+    await pumpAndSettle(const Duration(milliseconds: 500));
+  }
+
+  Future<BuildContext> contextWithNotifiers({
+    bool withSchools = false,
+    bool withTeachers = false,
+    bool withStudents = false,
+    bool withEnterprises = false,
+    bool withInternships = false,
+  }) async {
+    final container = Container();
+    await pumpWidgetWithNotifiers(container,
+        withSchools: withSchools,
+        withTeachers: withTeachers,
+        withStudents: withStudents,
+        withEnterprises: withEnterprises,
+        withInternships: withInternships);
+    return context(find.byWidget(container));
+  }
+
+  Future<void> pumpWidgetWithNotifiers(
+    Widget child, {
+    bool withSchools = false,
+    bool withTeachers = false,
+    bool withStudents = false,
+    bool withEnterprises = false,
+    bool withInternships = false,
+  }) async {
+    // Add the providers to the widget tree
+    if (withSchools) {
+      child = ChangeNotifierProvider<SchoolsProvider>(
+        create: (context) => SchoolsProvider(mockMe: true),
+        child: child,
+      );
+    }
+
+    if (withTeachers) {
+      child = ChangeNotifierProvider<TeachersProvider>(
+        create: (context) => TeachersProvider(mockMe: true),
+        child: child,
+      );
+    }
+
+    if (withStudents) {
+      child = ChangeNotifierProvider<StudentsProvider>(
+        create: (context) => StudentsProvider(mockMe: true),
+        child: child,
+      );
+    }
+
+    if (withEnterprises) {
+      child = ChangeNotifierProvider<EnterprisesProvider>(
+        create: (context) => EnterprisesProvider(mockMe: true),
+        child: child,
+      );
+    }
+
+    if (withInternships) {
+      child = ChangeNotifierProvider<InternshipsProvider>(
+        create: (context) => InternshipsProvider(mockMe: true),
+        child: child,
+      );
+    }
+
+    await pumpWidget(MaterialApp(builder: (ctx, ch) => child));
+  }
+}
+
 // Add the providers to the widget tree
-Future<void> pumpWidgetWithNotifiers(
-  WidgetTester tester,
-  Widget child, {
-  bool withSchools = false,
-  bool withTeachers = false,
-  bool withStudents = false,
-  bool withEnterprises = false,
-  bool withInternships = false,
-}) async {
-  // Add the providers to the widget tree
-  if (withSchools) {
-    child = ChangeNotifierProvider<SchoolsProvider>(
-      create: (context) => SchoolsProvider(),
-      child: child,
-    );
-  }
 
-  if (withTeachers) {
-    child = ChangeNotifierProvider<TeachersProvider>(
-      create: (context) => TeachersProvider(),
-      child: child,
-    );
-  }
-
-  if (withStudents) {
-    child = ChangeNotifierProvider<StudentsProvider>(
-      create: (context) => StudentsProvider(),
-      child: child,
-    );
-  }
-
-  if (withEnterprises) {
-    child = ChangeNotifierProvider<EnterprisesProvider>(
-      create: (context) => EnterprisesProvider(),
-      child: child,
-    );
-  }
-
-  if (withInternships) {
-    child = ChangeNotifierProvider<InternshipsProvider>(
-      create: (context) => InternshipsProvider(),
-      child: child,
-    );
-  }
-
-  child = MaterialApp(
-    builder: (context, ch) => child,
-  );
-
-  await tester.pumpWidget(child);
+void expectStyle({
+  required Text of,
+  required TextStyle comparedTo,
+  bool skipColor = false,
+  bool skipFontWeight = false,
+  bool skipFontSize = false,
+}) {
+  if (!skipColor) expect(of.style!.color, comparedTo.color);
+  if (!skipFontWeight) expect(of.style!.fontWeight, comparedTo.fontWeight);
+  if (!skipFontSize) expect(of.style!.fontSize, comparedTo.fontSize);
 }
 
 const drawerTitle = 'Banque de stages';

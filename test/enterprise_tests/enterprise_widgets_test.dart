@@ -1,14 +1,37 @@
+import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:crcrme_banque_stages/common/widgets/numbered_tablet.dart';
+import 'package:crcrme_banque_stages/screens/enterprises_list/widgets/enterprise_card.dart';
+import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../common_tests/utils.dart';
 import '../utils.dart';
 
 void main() {
+  group('Enterprise card', () {
+    testWidgets('Company name is written as title', (tester) async {
+      final enterprise = dummyEnterprise()
+        ..copyWith(address: Address(civicNumber: 100, street: 'No where'));
+      await tester.pumpWidget(
+          addOverlay(EnterpriseCard(enterprise: enterprise, onTap: (_) {})));
+
+      final title = find.text(enterprise.name);
+      expect(title, findsOneWidget);
+
+      final titleWidget = tester.firstWidget(title) as Text;
+      expectStyle(
+          of: titleWidget,
+          comparedTo: crcrmeMaterialTheme.textTheme.titleMedium!
+              .copyWith(fontWeight: FontWeight.bold),
+          skipFontSize: true);
+    });
+  });
+
   group('Disponibility circle', () {
-    testWidgets('Disponibility circle has tooltip', (widgetTester) async {
-      await widgetTester.pumpWidget(addOverlay(const DisponibilityCircle(
+    testWidgets('Disponibility circle has tooltip', (tester) async {
+      await tester.pumpWidget(addOverlay(const DisponibilityCircle(
           positionsOccupied: 1, positionsOffered: 3)));
 
       final tooltip =

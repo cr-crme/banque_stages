@@ -24,7 +24,7 @@ void main() {
     testWidgets('The drawer tiles content', (WidgetTester tester) async {
       // Load the app and navigate and open the drawer.
       await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
-      await openDrawer(tester);
+      await tester.openDrawer();
 
       // Verify that the drawer contains the expected tiles
       for (final screenName in ScreenTest.values) {
@@ -48,14 +48,14 @@ void main() {
           if (screenNameOuter == ScreenTest.healthAndSafetyAtPFAE) continue;
 
           // Navigate from Outer to Inner screen
-          await navigateToScreen(tester, screenNameInner);
+          await tester.navigateToScreen(screenNameInner);
 
           // Verify the page is loaded and drawer is closed
           expect(find.text(screenNameInner.name), findsOneWidget);
           expect(find.text(drawerTitle), findsNothing);
 
           // Return to outer loop screen
-          await navigateToScreen(tester, screenNameOuter);
+          await tester.navigateToScreen(screenNameOuter);
         }
       }
     });
@@ -69,15 +69,15 @@ void main() {
       await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
 
       // Verify the reinitialized button is hidden (as in production)
-      await openDrawer(tester);
+      await tester.openDrawer();
       expect(find.text(reinitializedDataButtonText), findsNothing);
-      await closeDrawer(tester);
+      await tester.closeDrawer();
 
       // Reinitialized the testing conditions
       initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
 
       // Verify the reinitialized button is present (as in testing)
-      await openDrawer(tester);
+      await tester.openDrawer();
       expect(find.text(reinitializedDataButtonText), findsOneWidget);
     });
   });
@@ -97,13 +97,13 @@ void main() {
       }
 
       // Load the dummy data
-      await loadDummyData(tester);
+      await tester.loadDummyData();
 
       // Make sure the drawer was automatically closed
       expect(find.text(reinitializedDataButtonText), findsNothing);
 
       // Verify the students data is now loaded
-      await navigateToScreen(tester, ScreenTest.myStudents);
+      await tester.navigateToScreen(ScreenTest.myStudents);
       expect(
         find.bySubtype<StudentCard>(skipOffstage: false),
         findsNWidgets(StudentTest.length),
@@ -113,7 +113,7 @@ void main() {
       }
 
       // Verify the enterprises data is now loaded
-      await navigateToScreen(tester, ScreenTest.enterprises);
+      await tester.navigateToScreen(ScreenTest.enterprises);
       final sortedEnterprises = [...EnterpriseTest.values]
         ..sort((a, b) => a.name.compareTo(b.name));
       for (final i in sortedEnterprises.asMap().keys) {
@@ -128,7 +128,7 @@ void main() {
       }
 
       // Verify the interships data is now loaded
-      await navigateToScreen(tester, ScreenTest.supervisionTable);
+      await tester.navigateToScreen(ScreenTest.supervisionTable);
       expect(
         find.byType(ListTile, skipOffstage: false),
         findsNWidgets(InternshipsTest.length),
@@ -139,7 +139,7 @@ void main() {
       }
 
       // Verify the tasks data is now loaded
-      await navigateToScreen(tester, ScreenTest.tasks);
+      await tester.navigateToScreen(ScreenTest.tasks);
       expect(find.byType(Card), findsNWidgets(TasksTest.length));
       // Since there is repeating names in the tasks it is unclear how to test
       // individual tasks, so we just test the number of tasks

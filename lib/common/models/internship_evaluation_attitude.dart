@@ -77,22 +77,6 @@ class AttitudeEvaluation extends ItemSerializable {
       'generalAppreciation': generalAppreciation,
     };
   }
-
-  AttitudeEvaluation deepCopy() {
-    return AttitudeEvaluation(
-      inattendance: inattendance,
-      ponctuality: ponctuality,
-      sociability: sociability,
-      politeness: politeness,
-      motivation: motivation,
-      dressCode: dressCode,
-      qualityOfWork: qualityOfWork,
-      productivity: productivity,
-      autonomy: autonomy,
-      cautiousness: cautiousness,
-      generalAppreciation: generalAppreciation,
-    );
-  }
 }
 
 class InternshipEvaluationAttitude extends ItemSerializable {
@@ -129,16 +113,6 @@ class InternshipEvaluationAttitude extends ItemSerializable {
       'comments': comments,
       'formVersion': formVersion,
     };
-  }
-
-  InternshipEvaluationAttitude deepCopy() {
-    return InternshipEvaluationAttitude(
-      date: DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch),
-      presentAtEvaluation: [...presentAtEvaluation],
-      attitude: attitude.deepCopy(),
-      comments: comments,
-      formVersion: formVersion,
-    );
   }
 }
 

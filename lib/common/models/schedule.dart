@@ -76,14 +76,6 @@ class DailySchedule extends ItemSerializable {
       end: end ?? this.end,
     );
   }
-
-  DailySchedule deepCopy() {
-    return DailySchedule(
-      dayOfWeek: Day.values[dayOfWeek.index],
-      start: TimeOfDay(hour: start.hour, minute: start.minute),
-      end: TimeOfDay(hour: end.hour, minute: end.minute),
-    );
-  }
 }
 
 class WeeklySchedule extends ItemSerializable {
@@ -121,11 +113,5 @@ class WeeklySchedule extends ItemSerializable {
       schedule: schedule ?? this.schedule,
       period: period ?? this.period,
     );
-  }
-
-  WeeklySchedule deepCopy() {
-    return WeeklySchedule(
-        schedule: schedule.map((e) => e.deepCopy()).toList(),
-        period: DateTimeRange(start: period!.start, end: period!.end));
   }
 }

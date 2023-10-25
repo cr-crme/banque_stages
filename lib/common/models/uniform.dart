@@ -38,8 +38,4 @@ class Uniform extends ItemSerializable {
         'status': status.index,
         'uniform': _uniform,
       };
-
-  Uniform deepCopy() {
-    return Uniform(status: status, uniform: _uniform);
-  }
 }

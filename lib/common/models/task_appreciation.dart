@@ -69,6 +69,4 @@ class TaskAppreciation extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() =>
       {'id': id, 'title': title, 'level': level.index};
-
-  TaskAppreciation deepCopy() => TaskAppreciation(title: title, level: level);
 }
