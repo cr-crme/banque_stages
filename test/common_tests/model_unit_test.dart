@@ -3,6 +3,8 @@ import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/models/protections.dart';
+import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,8 +14,6 @@ import 'utils.dart';
 
 void main() {
   // TODO: Add tests for preInternshipRequest
-  // TODO: Add tests for uniform
-  // TODO: Add tests for protections
   // TODO: Add tests for sstEvaluations
   // TODO: Add tests for incidents
 
@@ -192,6 +192,40 @@ void main() {
       expect(deserialized.appartment, address.appartment);
       expect(deserialized.city, address.city);
       expect(deserialized.postalCode, address.postalCode);
+    });
+  });
+
+  group('Uniform', () {
+    test('serialization and deserialization works', () {
+      final uniform = dummyUniform();
+      final serialized = uniform.serialize();
+      final deserialized = Uniform.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': uniform.id,
+        'status': uniform.status.index,
+        'uniform': uniform.uniforms.join('\n'),
+      });
+
+      expect(deserialized.id, uniform.id);
+      expect(deserialized.status, uniform.status);
+      expect(deserialized.uniforms, uniform.uniforms);
+    });
+  });
+
+  group('Protections', () {
+    test('serialization and deserialization works', () {
+      final protections = dummyProtections();
+      final serialized = protections.serialize();
+      final deserialized = Protections.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': protections.id,
+        'protections': protections.protections.join('\n'),
+      });
+
+      expect(deserialized.id, protections.id);
+      expect(deserialized.protections, protections.protections);
     });
   });
 
