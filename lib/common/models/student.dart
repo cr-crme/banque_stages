@@ -84,9 +84,10 @@ class Student extends Person {
   Student get limitedInfo => Student(
         id: id,
         firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
         group: group,
         program: program,
-        lastName: lastName,
         address: null,
         contact: Person.empty,
         contactLink: '',
@@ -96,6 +97,7 @@ class Student extends Person {
 
   @override
   Student copyWith({
+    String? id,
     String? firstName,
     String? middleName,
     String? lastName,
@@ -103,12 +105,11 @@ class Student extends Person {
     PhoneNumber? phone,
     String? email,
     Address? address,
-    String? teacherId,
+    String? photo,
     Program? program,
     String? group,
     Person? contact,
     String? contactLink,
-    String? id,
   }) =>
       Student(
         id: id ?? this.id,
@@ -123,5 +124,6 @@ class Student extends Person {
         group: group ?? this.group,
         contact: contact ?? this.contact,
         contactLink: contactLink ?? this.contactLink,
+        photo: photo ?? this.photo,
       );
 }

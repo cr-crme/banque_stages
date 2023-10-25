@@ -10,12 +10,38 @@ import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
+import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 
-School dummySchool() => School(name: 'Meine Schule', address: Address());
+School dummySchool({
+  String? id,
+}) =>
+    School(id: id, name: 'Meine Schule', address: Address());
+
+Student dummyStudent({
+  String id = 'studentId',
+  Program program = Program.fpt,
+}) {
+  final tp = dummyPerson();
+  return Student(
+    id: id,
+    firstName: tp.firstName,
+    middleName: tp.middleName,
+    lastName: tp.lastName,
+    dateBirth: tp.dateBirth,
+    email: tp.email,
+    phone: tp.phone,
+    address: tp.address,
+    contact: Person(id: 'My mother id', firstName: 'Jeanne', lastName: 'Doe'),
+    photo: '0x00FF00',
+    contactLink: 'Mère',
+    group: '101',
+    program: program,
+  );
+}
 
 Person dummyPerson({
   String id = 'personId',

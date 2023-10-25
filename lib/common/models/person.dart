@@ -38,9 +38,9 @@ class Person extends ItemSerializable {
       : firstName = map['firstName'],
         middleName = map['middleName'],
         lastName = map['lastName'],
-        dateBirth = map['birthDate'] == null
+        dateBirth = map['dateBirth'] == null
             ? null
-            : DateTime.fromMillisecondsSinceEpoch(map['birthDate']),
+            : DateTime.fromMillisecondsSinceEpoch(map['dateBirth']),
         phone = PhoneNumber.fromString(map['phone']),
         email = map['email'],
         address = Address.fromSerialized(map['address']),
@@ -53,7 +53,7 @@ class Person extends ItemSerializable {
       'firstName': firstName,
       'middleName': middleName,
       'lastName': lastName,
-      'birthDate': dateBirth?.millisecondsSinceEpoch,
+      'dateBirth': dateBirth?.millisecondsSinceEpoch,
       'phone': phone.toString(),
       'email': email,
       'address': address?.serialize(),
