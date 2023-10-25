@@ -5,6 +5,7 @@ import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
@@ -15,8 +16,6 @@ import '../utils.dart';
 import 'utils.dart';
 
 void main() {
-  // TODO: Add tests for preInternshipRequest
-
   group('Person', () {
     test('default is empty', () {
       final person = Person.empty;
@@ -221,7 +220,8 @@ void main() {
 
       expect(serialized, {
         'id': protections.id,
-        'protections': protections.protections.join('\n'),
+        'protections': protections.protections,
+        'status': protections.status.index,
       });
 
       expect(deserialized.id, protections.id);
@@ -286,6 +286,22 @@ void main() {
 
       expect(deserialized.id, sstEvaluation.id);
       expect(deserialized.questions, sstEvaluation.questions);
+    });
+  });
+
+  group('PreInternshipRequest', () {
+    test('serialization and deserialization works', () {
+      final preInternshipRequest = dummyPreInternshipRequest();
+      final serialized = preInternshipRequest.serialize();
+      final deserialized = PreInternshipRequest.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': preInternshipRequest.id,
+        'requests': preInternshipRequest.requests,
+      });
+
+      expect(deserialized.id, preInternshipRequest.id);
+      expect(deserialized.requests, preInternshipRequest.requests);
     });
   });
 

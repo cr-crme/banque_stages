@@ -88,6 +88,12 @@ JobSstEvaluation dummyJobSstEvaluation() => JobSstEvaluation(
       date: DateTime(2000, 1, 1),
     );
 
+PreInternshipRequest dummyPreInternshipRequest() =>
+    PreInternshipRequest(requests: [
+      PreInternshipRequestType.judiciaryBackgroundCheck.name,
+      'Manger de la poutine'
+    ]);
+
 Job dummyJob({String id = 'jobId'}) => Job(
       id: id,
       specialization: ActivitySectorsService.sectors[2].specializations[9],
@@ -95,8 +101,7 @@ Job dummyJob({String id = 'jobId'}) => Job(
       sstEvaluation: dummyJobSstEvaluation(),
       incidents: dummyIncidents(),
       minimumAge: 12,
-      preInternshipRequest:
-          PreInternshipRequest(requests: ['Manger de la poutine']),
+      preInternshipRequest: dummyPreInternshipRequest(),
       uniform: dummyUniform(),
       protections: dummyProtections(),
     );
