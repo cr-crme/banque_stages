@@ -13,18 +13,16 @@ class Person extends ItemSerializable {
   final String? email;
   final Address? address;
 
-  String get fullName => '$firstName $lastName';
-
   Person({
     super.id,
     required this.firstName,
     this.middleName,
     required this.lastName,
-    DateTime? dateBirth,
+    this.dateBirth,
     this.phone = const PhoneNumber(),
     this.email,
     this.address,
-  }) : dateBirth = dateBirth ?? DateTime(0);
+  });
 
   static Person get empty => Person(
       firstName: '',
@@ -40,7 +38,7 @@ class Person extends ItemSerializable {
       : firstName = map['firstName'],
         middleName = map['middleName'],
         lastName = map['lastName'],
-        dateBirth = map['birthDate'] == -1
+        dateBirth = map['birthDate'] == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(map['birthDate']),
         phone = PhoneNumber.fromString(map['phone']),
@@ -55,7 +53,7 @@ class Person extends ItemSerializable {
       'firstName': firstName,
       'middleName': middleName,
       'lastName': lastName,
-      'birthDate': dateBirth?.millisecondsSinceEpoch ?? -1,
+      'birthDate': dateBirth?.millisecondsSinceEpoch,
       'phone': phone.toString(),
       'email': email,
       'address': address?.serialize(),
@@ -82,4 +80,12 @@ class Person extends ItemSerializable {
         email: email ?? this.email,
         address: address ?? this.address,
       );
+
+  ///
+  /// Full name without the middle name
+  String get fullName => '$firstName${lastName.isEmpty ? '' : ' $lastName'}';
+
+  @override
+  String toString() =>
+      '$firstName${middleName == null ? '' : ' $middleName'}${lastName.isEmpty ? '' : ' $lastName'}';
 }

@@ -14,7 +14,20 @@ import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 
-Person dummyPerson() => Person(firstName: 'Jeanne', lastName: 'Doe');
+Person dummyPerson({
+  String id = 'personId',
+  String firstName = 'Jeanne',
+  String lastName = 'Doe',
+}) =>
+    Person(
+        id: id,
+        firstName: firstName,
+        middleName: 'Kathlin',
+        lastName: lastName,
+        address: dummyAddress(),
+        dateBirth: DateTime(2000, 1, 1),
+        email: 'jeanne.k.doe@test.com',
+        phone: dummyPhoneNumber());
 
 PhoneNumber dummyPhoneNumber() => PhoneNumber.fromString('800-555-5555');
 
