@@ -1,5 +1,6 @@
 import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
@@ -15,7 +16,6 @@ import 'utils.dart';
 void main() {
   // TODO: Add tests for preInternshipRequest
   // TODO: Add tests for sstEvaluations
-  // TODO: Add tests for incidents
 
   group('Person', () {
     test('default is empty', () {
@@ -226,6 +226,28 @@ void main() {
 
       expect(deserialized.id, protections.id);
       expect(deserialized.protections, protections.protections);
+    });
+  });
+
+  group('Incidents', () {
+    test('serialization and deserialization works', () {
+      final incidents = dummyIncidents();
+      final serialized = incidents.serialize();
+      final deserialized = Incidents.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': incidents.id,
+        'severeInjuries': incidents.severeInjuries.map((e) => e.serialize()),
+        'verbalAbuses': incidents.verbalAbuses.map((e) => e.serialize()),
+        'minorInjuries': incidents.minorInjuries.map((e) => e.serialize()),
+      });
+
+      expect(deserialized.id, incidents.id);
+      expect(deserialized.severeInjuries, incidents.severeInjuries);
+      expect(deserialized.verbalAbuses.toString(),
+          incidents.verbalAbuses.toString());
+      expect(deserialized.minorInjuries.toString(),
+          incidents.minorInjuries.toString());
     });
   });
 

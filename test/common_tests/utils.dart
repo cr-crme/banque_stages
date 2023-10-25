@@ -64,13 +64,21 @@ Protections dummyProtections() =>
       'Une drole de bague'
     ]);
 
+Incidents dummyIncidents() => Incidents(
+      severeInjuries: [],
+      minorInjuries: [
+        Incident('Un "petit" truc avec la scie sauteuse'),
+        Incident('Une "légère" entaille de la main au couteau')
+      ],
+      verbalAbuses: [Incident('Vaut mieux ne pas détailler...')],
+    );
+
 Job dummyJob({String id = 'jobId'}) => Job(
       id: id,
       specialization: ActivitySectorsService.sectors[2].specializations[9],
       positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty,
-      incidents: Incidents(
-          severeInjuries: [Incident('Vaut mieux ne pas détailler...')]),
+      incidents: dummyIncidents(),
       minimumAge: 12,
       preInternshipRequest:
           PreInternshipRequest(requests: ['Manger de la poutine']),
