@@ -1,6 +1,7 @@
 import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
@@ -15,7 +16,6 @@ import 'utils.dart';
 
 void main() {
   // TODO: Add tests for preInternshipRequest
-  // TODO: Add tests for sstEvaluations
 
   group('Person', () {
     test('default is empty', () {
@@ -248,6 +248,44 @@ void main() {
           incidents.verbalAbuses.toString());
       expect(deserialized.minorInjuries.toString(),
           incidents.minorInjuries.toString());
+    });
+  });
+
+  group('SstEvaluation', () {
+    test('empty one is tagged non-filled', () {
+      final sstEvaluation = JobSstEvaluation.empty;
+      expect(sstEvaluation.isFilled, isFalse);
+
+      sstEvaluation.update(questions: {'Q1': 'My answer'});
+      expect(sstEvaluation.isFilled, isTrue);
+    });
+
+    test('"update" erases old answers', () {
+      final sstEvaluation = JobSstEvaluation.empty;
+      sstEvaluation.update(questions: {'Q1': 'My first answer'});
+      expect(sstEvaluation.questions.length, 1);
+
+      sstEvaluation.update(questions: {'Q2': 'My second first answer'});
+      expect(sstEvaluation.questions.length, 1);
+
+      sstEvaluation.update(
+          questions: {'Q1': 'My first answer', 'Q2': 'My true second answer'});
+      expect(sstEvaluation.questions.length, 2);
+    });
+
+    test('serialization and deserialization works', () {
+      final sstEvaluation = dummyJobSstEvaluation();
+      final serialized = sstEvaluation.serialize();
+      final deserialized = JobSstEvaluation.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': sstEvaluation.id,
+        'questions': sstEvaluation.questions,
+        'date': DateTime(2000, 1, 1).millisecondsSinceEpoch,
+      });
+
+      expect(deserialized.id, sstEvaluation.id);
+      expect(deserialized.questions, sstEvaluation.questions);
     });
   });
 

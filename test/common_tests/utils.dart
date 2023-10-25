@@ -73,11 +73,26 @@ Incidents dummyIncidents() => Incidents(
       verbalAbuses: [Incident('Vaut mieux ne pas détailler...')],
     );
 
+JobSstEvaluation dummyJobSstEvaluation() => JobSstEvaluation(
+      questions: {
+        'Q1': 'Oui',
+        'Q1+t': 'Peu souvent, à la discrétion des employés.',
+        'Q3': ['Un diable'],
+        'Q5': ['Des ciseaux'],
+        'Q9': ['Des solvants', 'Des produits de nettoyage'],
+        'Q12': ['Bruyant'],
+        'Q12+t': 'Bouchons a oreilles',
+        'Q15': 'Oui',
+        'Q18': 'Non',
+      },
+      date: DateTime(2000, 1, 1),
+    );
+
 Job dummyJob({String id = 'jobId'}) => Job(
       id: id,
       specialization: ActivitySectorsService.sectors[2].specializations[9],
       positionsOffered: 2,
-      sstEvaluation: JobSstEvaluation.empty,
+      sstEvaluation: dummyJobSstEvaluation(),
       incidents: dummyIncidents(),
       minimumAge: 12,
       preInternshipRequest:
