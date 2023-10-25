@@ -29,7 +29,8 @@ Person dummyPerson({
         email: 'jeanne.k.doe@test.com',
         phone: dummyPhoneNumber());
 
-PhoneNumber dummyPhoneNumber() => PhoneNumber.fromString('800-555-5555');
+PhoneNumber dummyPhoneNumber({int? extension}) => PhoneNumber.fromString(
+    '800-555-5555${extension == null ? '' : ' poste $extension'}}');
 
 Address dummyAddress({
   bool skipCivicNumber = false,
