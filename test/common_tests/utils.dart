@@ -2,6 +2,7 @@ import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/itinerary.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
@@ -14,8 +15,10 @@ import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 
 School dummySchool({
   String? id,
@@ -274,3 +277,24 @@ Internship dummyInternship({
     ],
   );
 }
+
+Waypoint dummyWaypoint({String id = 'waypointId'}) => Waypoint(
+      id: id,
+      title: 'Waypoint',
+      subtitle: 'Subtitle',
+      latitude: 40.0,
+      longitude: 50.0,
+      address: Placemark(
+          street: '123 rue de la rue',
+          locality: 'Ville',
+          postalCode: 'H0H 0H0'),
+    );
+
+Itinerary dummyItinerary({
+  String id = 'itineraryId',
+  String studentId = 'studentId',
+  String teacherId = 'teacherId',
+  String enterpriseId = 'enterpriseId',
+  String jobId = 'jobId',
+}) =>
+    Itinerary(date: DateTime(2000, 1, 1))..add(dummyWaypoint());

@@ -34,14 +34,14 @@ class Itinerary extends ListSerializable<Waypoint>
 
   @override
   Waypoint deserializeItem(data) {
-    return Waypoint.deserialize(data);
+    return Waypoint.fromSerialized(data);
   }
 
   static Itinerary fromSerialized(map) {
     final out = Itinerary(
         id: map['id'], date: DateTime.fromMillisecondsSinceEpoch(map['date']));
     for (final waypoint in map['waypoints']) {
-      out.add(Waypoint.deserialize(waypoint));
+      out.add(Waypoint.fromSerialized(waypoint));
     }
     return out;
   }
