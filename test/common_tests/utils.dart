@@ -11,6 +11,7 @@ import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
@@ -20,6 +21,17 @@ School dummySchool({
   String? id,
 }) =>
     School(id: id, name: 'Meine Schule', address: Address());
+
+Teacher dummyTeacher({String id = 'teacherId'}) => Teacher(
+      id: id,
+      firstName: 'Pierre',
+      middleName: 'Jean',
+      lastName: 'Jacques',
+      schoolId: 'schoolId',
+      groups: ['101', '102'],
+      email: 'peter.john.jakob@test.com',
+      phone: dummyPhoneNumber(),
+    );
 
 Student dummyStudent({
   String id = 'studentId',

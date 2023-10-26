@@ -9,6 +9,8 @@ import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
+import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
@@ -53,6 +55,79 @@ void main() {
       expect(deserialized.id, school.id);
       expect(deserialized.name, school.name);
       expect(deserialized.address.id, school.address.id);
+    });
+  });
+
+  group('Teacher', () {
+    test('"copyWith" changes the requested elements', () {
+      final teacher = dummyTeacher();
+
+      final teacherSame = teacher.copyWith();
+      expect(teacherSame.id, teacher.id);
+      expect(teacherSame.firstName, teacher.firstName);
+      expect(teacherSame.middleName, teacher.middleName);
+      expect(teacherSame.lastName, teacher.lastName);
+      expect(teacherSame.schoolId, teacher.schoolId);
+      expect(teacherSame.groups, teacher.groups);
+      expect(teacherSame.email, teacher.email);
+      expect(teacherSame.phone, teacher.phone);
+
+      expect(teacherSame.address, isNull);
+      expect(teacherSame.dateBirth, isNull);
+
+      final teacherDifferent = teacher.copyWith(
+        id: 'newId',
+        firstName: 'newFirstName',
+        middleName: 'newMiddleName',
+        lastName: 'newLastName',
+        schoolId: 'newSchoolId',
+        groups: ['newGroup'],
+        email: 'newEmail',
+        phone: PhoneNumber.fromString('866-666-6666'),
+      );
+
+      expect(teacherDifferent.id, 'newId');
+      expect(teacherDifferent.firstName, 'newFirstName');
+      expect(teacherDifferent.middleName, 'newMiddleName');
+      expect(teacherDifferent.lastName, 'newLastName');
+      expect(teacherDifferent.schoolId, 'newSchoolId');
+      expect(teacherDifferent.groups, ['newGroup']);
+      expect(teacherDifferent.email, 'newEmail');
+      expect(teacherDifferent.phone.toString(), '(866) 666-6666');
+
+      // Expect throw on changes
+      expect(
+          () => teacher.copyWith(address: dummyAddress()), throwsArgumentError);
+      expect(
+          () => teacher.copyWith(dateBirth: DateTime(0)), throwsArgumentError);
+    });
+
+    test('serialization and deserialization works', () {
+      final teacher = dummyTeacher();
+      final serialized = teacher.serialize();
+      final deserialized = Teacher.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': teacher.id,
+        'firstName': teacher.firstName,
+        'middleName': teacher.middleName,
+        'lastName': teacher.lastName,
+        'schoolId': teacher.schoolId,
+        'groups': teacher.groups,
+        'email': teacher.email,
+        'phone': teacher.phone.toString(),
+        'dateBirth': null,
+        'address': null,
+      });
+
+      expect(deserialized.id, teacher.id);
+      expect(deserialized.firstName, teacher.firstName);
+      expect(deserialized.middleName, teacher.middleName);
+      expect(deserialized.lastName, teacher.lastName);
+      expect(deserialized.schoolId, teacher.schoolId);
+      expect(deserialized.groups, teacher.groups);
+      expect(deserialized.email, teacher.email);
+      expect(deserialized.phone.toString(), teacher.phone.toString());
     });
   });
 
@@ -535,6 +610,49 @@ void main() {
 
       expect(deserialized.id, preInternshipRequest.id);
       expect(deserialized.requests, preInternshipRequest.requests);
+    });
+  });
+
+  group('TaskAppreciation', () {
+    test('"abbreviations" are the right label', () {
+      expect(TaskAppreciationLevel.values.length, 6);
+      expect(TaskAppreciationLevel.autonomous.abbreviation(), 'A');
+      expect(TaskAppreciationLevel.withReminder.abbreviation(), 'B');
+      expect(TaskAppreciationLevel.withHelp.abbreviation(), 'C');
+      expect(TaskAppreciationLevel.withConstantHelp.abbreviation(), 'D');
+      expect(TaskAppreciationLevel.notEvaluated.abbreviation(), 'NF');
+      expect(TaskAppreciationLevel.evaluated.abbreviation(), '');
+    });
+
+    test('is shown properly', () {
+      expect(TaskAppreciationLevel.autonomous.toString(), 'De façon autonome');
+      expect(TaskAppreciationLevel.withReminder.toString(), 'Avec rappel');
+      expect(TaskAppreciationLevel.withHelp.toString(),
+          'Avec de l\'aide occasionnelle');
+      expect(TaskAppreciationLevel.withConstantHelp.toString(),
+          'Avec de l\'aide constante');
+      expect(
+          TaskAppreciationLevel.notEvaluated.toString(),
+          'Non faite (élève ne fait pas encore la tâche ou cette tâche '
+          'n\'est pas offerte dans le milieu)');
+      expect(TaskAppreciationLevel.evaluated.toString(), '');
+    });
+
+    test('serialization and deserialization works', () {
+      final taskAppreciation = TaskAppreciation(
+          title: 'Task title', level: TaskAppreciationLevel.autonomous);
+      final serialized = taskAppreciation.serialize();
+      final deserialized = TaskAppreciation.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': taskAppreciation.id,
+        'title': taskAppreciation.title,
+        'level': taskAppreciation.level.index,
+      });
+
+      expect(deserialized.id, taskAppreciation.id);
+      expect(deserialized.title, taskAppreciation.title);
+      expect(deserialized.level, taskAppreciation.level);
     });
   });
 
