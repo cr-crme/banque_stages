@@ -122,7 +122,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final studentInternships = interships.byStudentId(studentId);
     if (studentInternships.isEmpty) return;
     interships.replacePriority(
-        studentId, studentInternships.last.visitingPriority.next());
+        studentId, studentInternships.last.visitingPriority.next);
 
     setState(() {});
   }

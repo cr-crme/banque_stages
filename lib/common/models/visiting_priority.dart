@@ -19,7 +19,7 @@ extension VisitingPriorityStyled on VisitingPriority {
         return Colors.red;
       case (VisitingPriority.school):
         return Colors.purple;
-      default:
+      case (VisitingPriority.notApplicable):
         return Colors.grey;
     }
   }
@@ -34,12 +34,10 @@ extension VisitingPriorityStyled on VisitingPriority {
         return Icons.looks_one;
       case (VisitingPriority.school):
         return Icons.school;
-      default:
+      case (VisitingPriority.notApplicable):
         return Icons.cancel;
     }
   }
 
-  VisitingPriority next() {
-    return VisitingPriority.values[(index - 1) % 3];
-  }
+  VisitingPriority get next => VisitingPriority.values[(index - 1) % 3];
 }

@@ -12,9 +12,11 @@ import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
 import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
+import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';
@@ -653,6 +655,34 @@ void main() {
       expect(deserialized.id, taskAppreciation.id);
       expect(deserialized.title, taskAppreciation.title);
       expect(deserialized.level, taskAppreciation.level);
+    });
+  });
+
+  group('VisitingPriorities', () {
+    test('"next" behaves properly', () {
+      expect(VisitingPriority.low.next, VisitingPriority.high);
+      expect(VisitingPriority.mid.next, VisitingPriority.low);
+      expect(VisitingPriority.high.next, VisitingPriority.mid);
+
+      // Test the side effects as well
+      expect(VisitingPriority.school.next, VisitingPriority.low);
+      expect(VisitingPriority.notApplicable.next, VisitingPriority.high);
+    });
+
+    test('is the right color', () {
+      expect(VisitingPriority.low.color, Colors.green);
+      expect(VisitingPriority.mid.color, Colors.orange);
+      expect(VisitingPriority.high.color, Colors.red);
+      expect(VisitingPriority.school.color, Colors.purple);
+      expect(VisitingPriority.notApplicable.color, Colors.grey);
+    });
+
+    test('is the right icon', () {
+      expect(VisitingPriority.low.icon, Icons.looks_3);
+      expect(VisitingPriority.mid.icon, Icons.looks_two);
+      expect(VisitingPriority.high.icon, Icons.looks_one);
+      expect(VisitingPriority.school.icon, Icons.school);
+      expect(VisitingPriority.notApplicable.icon, Icons.cancel);
     });
   });
 
