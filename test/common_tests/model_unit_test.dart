@@ -57,6 +57,12 @@ void main() {
       expect(deserialized.id, school.id);
       expect(deserialized.name, school.name);
       expect(deserialized.address.id, school.address.id);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = School.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.name, 'Unnamed school');
+      expect(emptyDeserialized.address.toString(), Address.empty.toString());
     });
   });
 
@@ -130,6 +136,17 @@ void main() {
       expect(deserialized.groups, teacher.groups);
       expect(deserialized.email, teacher.email);
       expect(deserialized.phone.toString(), teacher.phone.toString());
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Teacher.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.firstName, 'Unnamed');
+      expect(emptyDeserialized.middleName, isNull);
+      expect(emptyDeserialized.lastName, 'Unnamed');
+      expect(emptyDeserialized.schoolId, '');
+      expect(emptyDeserialized.groups, []);
+      expect(emptyDeserialized.email, isNull);
+      expect(emptyDeserialized.phone, PhoneNumber.empty);
     });
   });
 
@@ -138,9 +155,10 @@ void main() {
     initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
 
     test('"Program" is shown properly', () {
-      expect(Program.values.length, 2);
+      expect(Program.values.length, 3);
       expect(Program.fpt.toString(), 'FPT');
       expect(Program.fms.toString(), 'FMS');
+      expect(Program.undefined.toString(), 'Undefined');
     });
 
     testWidgets('"asActive" behaves properly', (tester) async {
@@ -173,11 +191,11 @@ void main() {
       expect(limitedInfo.group, student.group);
       expect(limitedInfo.program, student.program);
       expect(limitedInfo.address, isNull);
-      expect(limitedInfo.contact.toString(), '');
+      expect(limitedInfo.contact.toString(), Person.empty.toString());
       expect(limitedInfo.contactLink, '');
       expect(limitedInfo.dateBirth, isNull);
       expect(limitedInfo.email, isNull);
-      expect(limitedInfo.phone.toString(), '');
+      expect(limitedInfo.phone, PhoneNumber.empty);
     });
 
     test('"copyWith" behave properly', () {
@@ -263,22 +281,39 @@ void main() {
       expect(deserialized.group, student.group);
       expect(deserialized.contact.id, student.contact.id);
       expect(deserialized.contactLink, student.contactLink);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Student.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.firstName, 'Unnamed');
+      expect(emptyDeserialized.middleName, isNull);
+      expect(emptyDeserialized.lastName, 'Unnamed');
+      expect(emptyDeserialized.dateBirth, isNull);
+      expect(emptyDeserialized.phone, PhoneNumber.empty);
+      expect(emptyDeserialized.email, isNull);
+      expect(emptyDeserialized.address, isNull);
+      expect(int.parse(emptyDeserialized.photo), greaterThanOrEqualTo(0));
+      expect(int.parse(emptyDeserialized.photo), lessThanOrEqualTo(0xFFFFFF));
+      expect(emptyDeserialized.program, Program.undefined);
+      expect(emptyDeserialized.group, '');
+      expect(emptyDeserialized.contact.toString(), Person.empty.toString());
+      expect(emptyDeserialized.contactLink, '');
     });
   });
 
   group('Person', () {
     test('default is empty', () {
       final person = Person.empty;
-      expect(person.firstName, '');
+      expect(person.firstName, 'Unnamed');
       expect(person.middleName, isNull);
-      expect(person.lastName, '');
+      expect(person.lastName, 'Unnamed');
       expect(person.dateBirth, isNull);
       expect(person.phone, PhoneNumber.empty);
       expect(person.email, isNull);
       expect(person.address, isNull);
 
-      expect(person.toString(), '');
-      expect(person.fullName, '');
+      expect(person.toString(), Person.empty.toString());
+      expect(person.fullName, 'Unnamed Unnamed');
     });
 
     test('is shown properly', () {
@@ -315,7 +350,7 @@ void main() {
       expect(personDifferent.address!.id, 'newAddressId');
     });
 
-    test('serialize and deserialize works', () {
+    test('serialization and deserialization works', () {
       final person = dummyPerson();
       final serialized = person.serialize();
       final deserialized = Person.fromSerialized(serialized);
@@ -339,6 +374,17 @@ void main() {
       expect(deserialized.phone.toString(), person.phone.toString());
       expect(deserialized.email, person.email);
       expect(deserialized.address?.id, person.address?.id);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Person.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.firstName, 'Unnamed');
+      expect(emptyDeserialized.middleName, isNull);
+      expect(emptyDeserialized.lastName, 'Unnamed');
+      expect(emptyDeserialized.dateBirth, isNull);
+      expect(emptyDeserialized.phone, PhoneNumber.empty);
+      expect(emptyDeserialized.email, isNull);
+      expect(emptyDeserialized.address, isNull);
     });
   });
 
@@ -408,7 +454,7 @@ void main() {
     });
 
     test('"isEmpty" returns true when all fields are null', () {
-      expect(Address().isEmpty, isTrue);
+      expect(Address.empty.isEmpty, isTrue);
       expect(Address(civicNumber: 100).isEmpty, isFalse);
     });
 
@@ -441,6 +487,15 @@ void main() {
       expect(deserialized.appartment, address.appartment);
       expect(deserialized.city, address.city);
       expect(deserialized.postalCode, address.postalCode);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Address.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.civicNumber, isNull);
+      expect(emptyDeserialized.street, isNull);
+      expect(emptyDeserialized.appartment, isNull);
+      expect(emptyDeserialized.city, isNull);
+      expect(emptyDeserialized.postalCode, isNull);
     });
   });
 
@@ -468,6 +523,12 @@ void main() {
       expect(deserialized.id, uniform.id);
       expect(deserialized.status, uniform.status);
       expect(deserialized.uniforms, uniform.uniforms);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Uniform.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.status, UniformStatus.none);
+      expect(emptyDeserialized.uniforms, []);
     });
   });
 
@@ -507,6 +568,12 @@ void main() {
 
       expect(deserialized.id, protections.id);
       expect(deserialized.protections, protections.protections);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Protections.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.protections, []);
+      expect(emptyDeserialized.status, ProtectionsStatus.none);
     });
   });
 
@@ -546,10 +613,35 @@ void main() {
       expect(deserialized.minorInjuries.toString(),
           incidents.minorInjuries.toString());
 
-      final emptyDeserialized = Incidents.fromSerialized({});
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Incidents.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.severeInjuries, []);
       expect(emptyDeserialized.verbalAbuses, []);
       expect(emptyDeserialized.minorInjuries, []);
+    });
+
+    test('serialization and deserialization of Incident works', () {
+      final incident =
+          Incident('Je ne désire pas décrire...', date: DateTime(2000));
+      final serialized = incident.serialize();
+      final deserialized = Incident.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': incident.id,
+        'incident': incident.incident,
+        'date': incident.date.millisecondsSinceEpoch,
+      });
+
+      expect(deserialized.id, incident.id);
+      expect(deserialized.incident, incident.incident);
+      expect(deserialized.date, incident.date);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Incident.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.incident, '');
+      expect(emptyDeserialized.date, DateTime(0));
     });
   });
 
@@ -588,6 +680,13 @@ void main() {
 
       expect(deserialized.id, sstEvaluation.id);
       expect(deserialized.questions, sstEvaluation.questions);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized =
+          JobSstEvaluation.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.questions, {});
+      expect(emptyDeserialized.date.millisecondsSinceEpoch, 0);
     });
   });
 
@@ -612,6 +711,12 @@ void main() {
 
       expect(deserialized.id, preInternshipRequest.id);
       expect(deserialized.requests, preInternshipRequest.requests);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized =
+          PreInternshipRequest.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.requests, []);
     });
   });
 
@@ -655,6 +760,13 @@ void main() {
       expect(deserialized.id, taskAppreciation.id);
       expect(deserialized.title, taskAppreciation.title);
       expect(deserialized.level, taskAppreciation.level);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized =
+          TaskAppreciation.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.title, '');
+      expect(emptyDeserialized.level, TaskAppreciationLevel.notEvaluated);
     });
   });
 
@@ -752,7 +864,7 @@ void main() {
       expect(jobList.length, 1);
     });
 
-    test('serialize and deserialize works', () {
+    test('serialization and deserialization works', () {
       final jobList = dummyJobList();
       jobList.add(dummyJob(id: 'newJobId'));
       final serialized = jobList.serialize();
@@ -785,6 +897,10 @@ void main() {
           jobList[0].preInternshipRequest.id);
       expect(deserialized[0].uniform.id, jobList[0].uniform.id);
       expect(deserialized[0].protections.id, jobList[0].protections.id);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = JobList.fromSerialized({});
+      expect(emptyDeserialized.length, 0);
     });
   });
 
@@ -948,6 +1064,23 @@ void main() {
       expect(deserialized.headquartersAddress?.id,
           enterprise.headquartersAddress?.id);
       expect(deserialized.neq, enterprise.neq);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Enterprise.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.name, 'Unnamed enterprise');
+      expect(emptyDeserialized.activityTypes, []);
+      expect(emptyDeserialized.recrutedBy, 'Unnamed recruiter');
+      expect(emptyDeserialized.shareWith, 'Unnamed sharing');
+      expect(emptyDeserialized.jobs.length, 0);
+      expect(emptyDeserialized.contact.firstName, 'Unnamed');
+      expect(emptyDeserialized.contactFunction, '');
+      expect(emptyDeserialized.address, isNull);
+      expect(emptyDeserialized.phone, PhoneNumber.empty);
+      expect(emptyDeserialized.fax, PhoneNumber.empty);
+      expect(emptyDeserialized.website, '');
+      expect(emptyDeserialized.headquartersAddress, isNull);
+      expect(emptyDeserialized.neq, isNull);
     });
   });
 }

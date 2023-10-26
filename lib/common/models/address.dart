@@ -11,6 +11,8 @@ class Address extends ItemSerializable {
     this.postalCode,
   });
 
+  static Address get empty => Address();
+
   final int? civicNumber;
   final String? street;
   final String? appartment;
@@ -44,20 +46,13 @@ class Address extends ItemSerializable {
         'postalCode': postalCode
       };
 
-  static Address fromSerialized(map) {
-    return Address(
-        id: map != null && map.containsKey('id') ? map['id'] : null,
-        civicNumber:
-            map != null && map.containsKey('number') ? map['number'] : null,
-        street: map != null && map.containsKey('street') ? map['street'] : null,
-        appartment: map != null && map.containsKey('appartment')
-            ? map['appartment']
-            : null,
-        city: map != null && map.containsKey('city') ? map['city'] : null,
-        postalCode: map != null && map.containsKey('postalCode')
-            ? map['postalCode']
-            : null);
-  }
+  static Address fromSerialized(map) => Address(
+      id: map['id'],
+      civicNumber: map['number'],
+      street: map['street'],
+      appartment: map['appartment'],
+      city: map['city'],
+      postalCode: map['postalCode']);
 
   Address copyWith({
     String? id,

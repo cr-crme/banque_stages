@@ -9,7 +9,8 @@ import 'package:crcrme_banque_stages/common/providers/internships_provider.dart'
 
 enum Program {
   fpt,
-  fms;
+  fms,
+  undefined;
 
   @override
   String toString() {
@@ -18,13 +19,16 @@ enum Program {
         return 'FPT';
       case Program.fms:
         return 'FMS';
+      case Program.undefined:
+        return 'Undefined';
     }
   }
 }
 
 class Student extends Person {
   final String photo;
-  late final Widget avatar;
+  Widget get avatar =>
+      CircleAvatar(backgroundColor: Color(int.parse(photo)).withAlpha(255));
 
   final Program program;
   final String group;
@@ -46,10 +50,7 @@ class Student extends Person {
     required this.group,
     required this.contact,
     required this.contactLink,
-  }) : photo = photo ?? Random().nextInt(0x00FF00).toString() {
-    avatar = CircleAvatar(
-        backgroundColor: Color(int.parse(this.photo)).withAlpha(255));
-  }
+  }) : photo = photo ?? Random().nextInt(0xFFFFFF).toString();
 
   bool hasActiveInternship(BuildContext context) {
     final internships = InternshipsProvider.of(context, listen: false);
@@ -60,13 +61,13 @@ class Student extends Person {
   }
 
   Student.fromSerialized(map)
-      : photo = map['photo'],
-        avatar = CircleAvatar(
-            backgroundColor: Color(int.parse(map['photo'])).withAlpha(255)),
-        program = Program.values[map['program']],
-        group = map['group'],
-        contact = Person.fromSerialized(map['contact']),
-        contactLink = map['contactLink'],
+      : photo = map['photo'] ?? Random().nextInt(0xFFFFFF).toString(),
+        program = map['program'] == null
+            ? Program.undefined
+            : Program.values[map['program']],
+        group = map['group'] ?? '',
+        contact = Person.fromSerialized(map['contact'] ?? {}),
+        contactLink = map['contactLink'] ?? '',
         super.fromSerialized(map);
 
   @override

@@ -109,20 +109,20 @@ class Enterprise extends ItemSerializable {
 
   @override
   Enterprise.fromSerialized(map)
-      : name = map['name'],
+      : name = map['name'] ?? 'Unnamed enterprise',
         activityTypes =
             (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
-        recrutedBy = map['recrutedBy'],
-        shareWith = map['shareWith'],
-        jobs = JobList.fromSerialized(map['jobs']),
-        contact = Person.fromSerialized(map['contact']),
-        contactFunction = map['contactFunction'],
+        recrutedBy = map['recrutedBy'] ?? 'Unnamed recruiter',
+        shareWith = map['shareWith'] ?? 'Unnamed sharing',
+        jobs = JobList.fromSerialized(map['jobs'] ?? {}),
+        contact = Person.fromSerialized(map['contact'] ?? {}),
+        contactFunction = map['contactFunction'] ?? '',
         address = map['address'] == null
             ? null
             : Address.fromSerialized(map['address']),
-        phone = PhoneNumber.fromString(map['phone']),
-        fax = PhoneNumber.fromString(map['fax']),
-        website = map['website'],
+        phone = PhoneNumber.fromString(map['phone'] ?? ''),
+        fax = PhoneNumber.fromString(map['fax'] ?? ''),
+        website = map['website'] ?? '',
         headquartersAddress = map['headquartersAddress'] == null
             ? null
             : Address.fromSerialized(map['headquartersAddress']),

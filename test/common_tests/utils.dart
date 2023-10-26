@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 School dummySchool({
   String? id,
 }) =>
-    School(id: id, name: 'Meine Schule', address: Address());
+    School(id: id, name: 'Meine Schule', address: Address.empty);
 
 Teacher dummyTeacher({String id = 'teacherId'}) => Teacher(
       id: id,

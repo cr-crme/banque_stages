@@ -21,7 +21,7 @@ class Teacher extends Person {
   });
 
   Teacher.fromSerialized(map)
-      : schoolId = map['schoolId'],
+      : schoolId = map['schoolId'] ?? '',
         groups = _stringListFromSerialized(map['groups']),
         super.fromSerialized(map);
 

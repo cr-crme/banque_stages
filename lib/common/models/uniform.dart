@@ -28,8 +28,10 @@ class Uniform extends ItemSerializable {
       : _uniform = uniform ?? '';
 
   Uniform.fromSerialized(map)
-      : status = UniformStatus.values[map['status']],
-        _uniform = map['uniform'],
+      : status = map['status'] == null
+            ? UniformStatus.none
+            : UniformStatus.values[map['status']],
+        _uniform = map['uniform'] ?? '',
         super.fromSerialized(map);
 
   @override

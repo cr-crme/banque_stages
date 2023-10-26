@@ -9,8 +9,8 @@ class School extends ItemSerializable {
   School({super.id, required this.name, required this.address});
 
   School.fromSerialized(map)
-      : name = map['name'],
-        address = Address.fromSerialized(map['address']),
+      : name = map['name'] ?? 'Unnamed school',
+        address = Address.fromSerialized(map['address'] ?? {}),
         super.fromSerialized(map);
 
   @override

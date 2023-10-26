@@ -164,7 +164,7 @@ class ContactPageState extends State<ContactPage> {
                     _taxesInfoController.address.address =
                         _enterpriseInfoController.address.address;
                   } else {
-                    _taxesInfoController.address.address = Address();
+                    _taxesInfoController.address.address = Address.empty;
                   }
                 }),
               ),

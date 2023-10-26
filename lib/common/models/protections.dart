@@ -56,7 +56,9 @@ class Protections extends ItemSerializable {
       : protections = protections ?? [];
 
   Protections.fromSerialized(map)
-      : status = ProtectionsStatus.values[map['status']],
+      : status = map['status'] == null
+            ? ProtectionsStatus.none
+            : ProtectionsStatus.values[map['status']],
         protections =
             (map['protections'] as List? ?? []).map<String>((e) => e).toList(),
         super.fromSerialized(map);

@@ -25,9 +25,9 @@ class Person extends ItemSerializable {
   });
 
   static Person get empty => Person(
-      firstName: '',
+      firstName: 'Unnamed',
       middleName: null,
-      lastName: '',
+      lastName: 'Unnamed',
       address: null,
       dateBirth: null,
       email: null,
@@ -35,15 +35,19 @@ class Person extends ItemSerializable {
       phone: PhoneNumber.empty);
 
   Person.fromSerialized(map)
-      : firstName = map['firstName'],
+      : firstName = map['firstName'] ?? 'Unnamed',
         middleName = map['middleName'],
-        lastName = map['lastName'],
+        lastName = map['lastName'] ?? 'Unnamed',
         dateBirth = map['dateBirth'] == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(map['dateBirth']),
-        phone = PhoneNumber.fromString(map['phone']),
+        phone = map['phone'] == null
+            ? PhoneNumber.empty
+            : PhoneNumber.fromString(map['phone']),
         email = map['email'],
-        address = Address.fromSerialized(map['address']),
+        address = map['address'] == null
+            ? null
+            : Address.fromSerialized(map['address']),
         super.fromSerialized(map);
 
   @override
