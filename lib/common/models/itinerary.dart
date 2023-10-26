@@ -8,6 +8,16 @@ import 'waypoints.dart';
 
 class Itinerary extends ListSerializable<Waypoint>
     implements Iterator<Waypoint>, ItemSerializable {
+  final String _myId;
+  @override
+  late final String id = _myId;
+
+  // Iterator implementation
+  int _currentIndex = 0;
+
+  @override
+  Waypoint get current => this[_currentIndex];
+
   final DateTime date;
   final String dateAsString;
   static final dateFormat = DateFormat('dd_MM_yyyy');
@@ -33,34 +43,28 @@ class Itinerary extends ListSerializable<Waypoint>
   }
 
   @override
+  bool moveNext() {
+    _currentIndex++;
+    return _currentIndex < length;
+  }
+
+  @override
   Waypoint deserializeItem(data) {
     return Waypoint.fromSerialized(data);
   }
 
   static Itinerary fromSerialized(map) {
     final out = Itinerary(
-        id: map['id'], date: DateTime.fromMillisecondsSinceEpoch(map['date']));
-    for (final waypoint in map['waypoints']) {
+      id: map['id'],
+      date: map['date'] == null
+          ? DateTime(0)
+          : DateTime.fromMillisecondsSinceEpoch(map['date']),
+    );
+    for (final waypoint in map['waypoints'] ?? []) {
       out.add(Waypoint.fromSerialized(waypoint));
     }
     return out;
   }
-
-  // Iterator implementation
-  int _currentIndex = 0;
-
-  @override
-  Waypoint get current => this[_currentIndex];
-
-  @override
-  bool moveNext() {
-    _currentIndex++;
-    return _currentIndex < length;
-  }
-
-  final String _myId;
-  @override
-  late final String id = _myId;
 
   @override
   Map<String, dynamic> serialize() => serializedMap();

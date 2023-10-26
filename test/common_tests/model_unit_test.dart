@@ -1,6 +1,7 @@
 import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
+import 'package:crcrme_banque_stages/common/models/itinerary.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
@@ -1250,4 +1251,59 @@ void main() {
     });
   });
 
+  group('Itinerary', () {
+    test('"moveNext" behaves properly', () {
+      final itinerary = dummyItinerary();
+
+      expect(itinerary.current.id, 'waypointId');
+      expect(itinerary.moveNext(), isTrue);
+      expect(itinerary.current.id, 'waypointId2');
+      expect(itinerary.moveNext(), isFalse);
+    });
+
+    test('"toLatLng" and "toLngLat" behave properly', () {
+      final itinerary = dummyItinerary();
+      final latLng = itinerary.toLatLng();
+      final lngLat = itinerary.toLngLat();
+
+      int i = 0;
+      for (final next in itinerary) {
+        expect(latLng[i].latitude, next.latitude);
+        expect(latLng[i].longitude, next.longitude);
+        expect(lngLat[i].lat, next.latitude);
+        expect(lngLat[i].lng, next.longitude);
+        i++;
+      }
+      expect(i, 2);
+    });
+
+    test('"deserializeItem" behaves properly', () {
+      final itinerary = Itinerary(date: DateTime(0));
+      final waypoint = itinerary.deserializeItem(dummyWaypoint().serialize());
+
+      expect(waypoint.id, 'waypointId');
+    });
+
+    test('serialization and deserialization works', () {
+      final itinerary = dummyItinerary();
+      final serialized = itinerary.serialize();
+      final deserialized = Itinerary.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': itinerary.id,
+        'waypoints': itinerary.map((e) => e.serialize()).toList(),
+        'date': itinerary.date.millisecondsSinceEpoch,
+      });
+
+      expect(deserialized.id, itinerary.id);
+      expect(deserialized.length, itinerary.length);
+      expect(deserialized.date, itinerary.date);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Itinerary.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.length, 0);
+      expect(emptyDeserialized.date, DateTime(0));
+    });
+  });
 }

@@ -278,12 +278,16 @@ Internship dummyInternship({
   );
 }
 
-Waypoint dummyWaypoint({String id = 'waypointId'}) => Waypoint(
+Waypoint dummyWaypoint(
+        {String id = 'waypointId',
+        double latitude = 40.0,
+        double longitude = 50.0}) =>
+    Waypoint(
       id: id,
       title: 'Waypoint',
       subtitle: 'Subtitle',
-      latitude: 40.0,
-      longitude: 50.0,
+      latitude: latitude,
+      longitude: longitude,
       address: Placemark(
           street: '123 rue de la rue',
           locality: 'Ville',
@@ -297,4 +301,6 @@ Itinerary dummyItinerary({
   String enterpriseId = 'enterpriseId',
   String jobId = 'jobId',
 }) =>
-    Itinerary(date: DateTime(2000, 1, 1))..add(dummyWaypoint());
+    Itinerary(date: DateTime(2000, 1, 1))
+      ..add(dummyWaypoint())
+      ..add(dummyWaypoint(id: 'waypointId2', latitude: 30.0, longitude: 30.5));
