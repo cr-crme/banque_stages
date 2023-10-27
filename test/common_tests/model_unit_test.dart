@@ -1,6 +1,7 @@
 import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
+import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/models/itinerary.dart';
@@ -1791,6 +1792,359 @@ void main() {
         expect(emptyEvaluation.comments, '');
         expect(emptyEvaluation.formVersion, '1.0.0');
       });
+    });
+  });
+
+  group('PostIntershipEnterpriseEvaluation', () {
+    test('"hasDisorder" behaves properly', () {
+      final coucou = dummyPostIntershipEnterpriseEvaluation(hasDisorder: false);
+      expect(coucou.hasDisorder, isFalse);
+      expect(
+          dummyPostIntershipEnterpriseEvaluation(hasDisorder: true).hasDisorder,
+          isTrue);
+    });
+
+    test('serialization and deserialization works', () {
+      final evaluation = dummyPostIntershipEnterpriseEvaluation();
+      final serialized = evaluation.serialize();
+      final deserialized =
+          PostIntershipEnterpriseEvaluation.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': evaluation.id,
+        'internshipId': evaluation.internshipId,
+        'skillsRequired': evaluation.skillsRequired,
+        'taskVariety': evaluation.taskVariety,
+        'trainingPlanRespect': evaluation.trainingPlanRespect,
+        'autonomyExpected': evaluation.autonomyExpected,
+        'efficiencyExpected': evaluation.efficiencyExpected,
+        'supervisionStyle': evaluation.supervisionStyle,
+        'easeOfCommunication': evaluation.easeOfCommunication,
+        'absenceAcceptance': evaluation.absenceAcceptance,
+        'supervisionComments': evaluation.supervisionComments,
+        'acceptanceTSA': evaluation.acceptanceTsa,
+        'acceptanceLanguageDisorder': evaluation.acceptanceLanguageDisorder,
+        'acceptanceIntellectualDisability':
+            evaluation.acceptanceIntellectualDisability,
+        'acceptancePhysicalDisability': evaluation.acceptancePhysicalDisability,
+        'acceptanceMentalHealthDisorder':
+            evaluation.acceptanceMentalHealthDisorder,
+        'acceptanceBehaviorDifficulties':
+            evaluation.acceptanceBehaviorDifficulties,
+      });
+
+      expect(deserialized.id, evaluation.id);
+      expect(deserialized.internshipId, evaluation.internshipId);
+      expect(deserialized.skillsRequired, evaluation.skillsRequired);
+      expect(deserialized.taskVariety, evaluation.taskVariety);
+      expect(deserialized.trainingPlanRespect, evaluation.trainingPlanRespect);
+      expect(deserialized.autonomyExpected, evaluation.autonomyExpected);
+      expect(deserialized.efficiencyExpected, evaluation.efficiencyExpected);
+      expect(deserialized.supervisionStyle, evaluation.supervisionStyle);
+      expect(deserialized.easeOfCommunication, evaluation.easeOfCommunication);
+      expect(deserialized.absenceAcceptance, evaluation.absenceAcceptance);
+      expect(deserialized.supervisionComments, evaluation.supervisionComments);
+      expect(deserialized.acceptanceTsa, evaluation.acceptanceTsa);
+      expect(deserialized.acceptanceLanguageDisorder,
+          evaluation.acceptanceLanguageDisorder);
+      expect(deserialized.acceptanceIntellectualDisability,
+          evaluation.acceptanceIntellectualDisability);
+      expect(deserialized.acceptancePhysicalDisability,
+          evaluation.acceptancePhysicalDisability);
+      expect(deserialized.acceptanceMentalHealthDisorder,
+          evaluation.acceptanceMentalHealthDisorder);
+      expect(deserialized.acceptanceBehaviorDifficulties,
+          evaluation.acceptanceBehaviorDifficulties);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized =
+          PostIntershipEnterpriseEvaluation.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.internshipId, '');
+      expect(emptyDeserialized.skillsRequired, []);
+      expect(emptyDeserialized.taskVariety, 0);
+      expect(emptyDeserialized.trainingPlanRespect, 0);
+      expect(emptyDeserialized.autonomyExpected, 0);
+      expect(emptyDeserialized.efficiencyExpected, 0);
+      expect(emptyDeserialized.supervisionStyle, 0);
+      expect(emptyDeserialized.easeOfCommunication, 0);
+      expect(emptyDeserialized.absenceAcceptance, 0);
+      expect(emptyDeserialized.supervisionComments, '');
+      expect(emptyDeserialized.acceptanceTsa, 0);
+      expect(emptyDeserialized.acceptanceLanguageDisorder, 0);
+      expect(emptyDeserialized.acceptanceIntellectualDisability, 0);
+      expect(emptyDeserialized.acceptancePhysicalDisability, 0);
+      expect(emptyDeserialized.acceptanceMentalHealthDisorder, 0);
+      expect(emptyDeserialized.acceptanceBehaviorDifficulties, 0);
+    });
+  });
+
+  group('Intenship', () {
+    test('"isActive" and "isClosed" behave properly', () {
+      final internship = dummyInternship();
+
+      expect(internship.isActive, isTrue);
+      expect(internship.isClosed, isFalse);
+
+      final internshipClosed =
+          internship.copyWith(endDate: DateTime(2020, 2, 4));
+
+      expect(internshipClosed.isActive, isFalse);
+      expect(internshipClosed.isClosed, isTrue);
+    });
+
+    test('can add new version', () {
+      final internship = dummyInternship();
+
+      expect(internship.nbVersions, 1);
+      expect(internship.versionDate.millisecondsSinceEpoch,
+          DateTime(1995, 10, 31).millisecondsSinceEpoch);
+      expect(internship.versionDateFrom(0), internship.versionDate);
+      expect(internship.supervisor.toString(), 'Nobody Forever');
+      expect(internship.supervisorFrom(0), internship.supervisor);
+      expect(internship.date.start.millisecondsSinceEpoch,
+          DateTime(1995, 10, 31).millisecondsSinceEpoch);
+      expect(
+          internship.date.end.millisecondsSinceEpoch,
+          DateTime(1995, 10, 31)
+              .add(const Duration(days: 20))
+              .millisecondsSinceEpoch);
+      expect(internship.dateFrom(0), internship.date);
+      expect(internship.weeklySchedules.length, 1);
+      expect(internship.weeklySchedules[0].id, 'weeklyScheduleId');
+      expect(internship.weeklySchedulesFrom(0), internship.weeklySchedules);
+
+      internship.addVersion(
+        versionDate: DateTime(2020, 2, 4),
+        weeklySchedules: [dummyWeeklySchedule(id: 'newWeeklyScheduleId')],
+        date: DateTimeRange(
+            start: DateTime(2000, 1, 1), end: DateTime(2001, 1, 1)),
+        supervisor: Person(firstName: 'New', lastName: 'Supervisor'),
+      );
+
+      expect(internship.nbVersions, 2);
+      expect(internship.versionDate.millisecondsSinceEpoch,
+          DateTime(2020, 2, 4).millisecondsSinceEpoch);
+      expect(internship.versionDateFrom(1), internship.versionDate);
+      expect(internship.supervisor.toString(), 'New Supervisor');
+      expect(internship.supervisorFrom(1), internship.supervisor);
+      expect(internship.date.start.millisecondsSinceEpoch,
+          DateTime(2000, 1, 1).millisecondsSinceEpoch);
+      expect(internship.date.end.millisecondsSinceEpoch,
+          DateTime(2001, 1, 1).millisecondsSinceEpoch);
+      expect(internship.dateFrom(1), internship.date);
+      expect(internship.weeklySchedules.length, 1);
+      expect(internship.weeklySchedules[0].id, 'newWeeklyScheduleId');
+      expect(internship.weeklySchedulesFrom(1), internship.weeklySchedules);
+    });
+
+    test('can add and remove supervisors', () {
+      final internship = dummyInternship();
+
+      expect(internship.supervisingTeacherIds.length, 1);
+      expect(internship.supervisingTeacherIds, ['teacherId']);
+
+      internship.addSupervisingTeacher('newTeacherId');
+
+      expect(internship.supervisingTeacherIds.length, 2);
+      expect(internship.supervisingTeacherIds, ['teacherId', 'newTeacherId']);
+
+      internship.removeSupervisingTeacher('newTeacherId');
+
+      expect(internship.supervisingTeacherIds.length, 1);
+      expect(internship.supervisingTeacherIds, ['teacherId']);
+    });
+
+    test('"copyWith" behaves properly', () {
+      final internship = dummyInternship();
+
+      final internshipSame = internship.copyWith();
+      expect(internshipSame.id, internship.id);
+      expect(internshipSame.studentId, internship.studentId);
+      expect(internshipSame.signatoryTeacherId, internship.signatoryTeacherId);
+      expect(internshipSame.supervisingTeacherIds,
+          internship.supervisingTeacherIds);
+      expect(internshipSame.enterpriseId, internship.enterpriseId);
+      expect(internshipSame.jobId, internship.jobId);
+      expect(internshipSame.nbVersions, internship.nbVersions);
+      expect(internshipSame.versionDate.toString(),
+          internship.versionDate.toString());
+      expect(internshipSame.supervisor.toString(),
+          internship.supervisor.toString());
+      expect(internshipSame.date.toString(), internship.date.toString());
+      expect(internshipSame.weeklySchedules.length,
+          internship.weeklySchedules.length);
+      expect(internshipSame.expectedLength, internship.expectedLength);
+      expect(internshipSame.achievedLength, internship.achievedLength);
+      expect(internshipSame.visitingPriority, internship.visitingPriority);
+      expect(internshipSame.teacherNotes, internship.teacherNotes);
+      expect(internshipSame.endDate, internship.endDate);
+      expect(internshipSame.skillEvaluations.length,
+          internship.skillEvaluations.length);
+      expect(internshipSame.attitudeEvaluations.length,
+          internship.attitudeEvaluations.length);
+      expect(internshipSame.enterpriseEvaluation!.id,
+          internship.enterpriseEvaluation!.id);
+
+      final internshipDifferent = internship.copyWith(
+        id: 'newId',
+        studentId: 'newStudentId',
+        signatoryTeacherId: 'newTeacherId',
+        extraSupervisingTeacherIds: ['newExtraTeacherId'],
+        enterpriseId: 'newEnterpriseId',
+        jobId: 'newJobId',
+        extraSpecializationsId: ['newSpecializationId'],
+        expectedLength: 135,
+        achievedLength: 130,
+        visitingPriority: VisitingPriority.high,
+        teacherNotes: 'newTeacherNotes',
+        endDate: DateTime(2020, 2, 4),
+        skillEvaluations: [
+          dummyInternshipEvaluationSkill(id: 'newSkillEvaluationId'),
+          dummyInternshipEvaluationSkill(id: 'newSkillEvaluationId2'),
+        ],
+        attitudeEvaluations: [
+          dummyInternshipEvaluationAttitude(id: 'newAttitudeEvaluationId'),
+          dummyInternshipEvaluationAttitude(id: 'newAttitudeEvaluationId2'),
+        ],
+        enterpriseEvaluation: dummyPostIntershipEnterpriseEvaluation(
+            id: 'newEnterpriseEvaluationId'),
+      );
+
+      expect(internshipDifferent.id, 'newId');
+      expect(internshipDifferent.studentId, 'newStudentId');
+      expect(internshipDifferent.signatoryTeacherId, 'newTeacherId');
+      expect(internshipDifferent.supervisingTeacherIds,
+          ['newTeacherId', 'newExtraTeacherId']);
+      expect(internshipDifferent.enterpriseId, 'newEnterpriseId');
+      expect(internshipDifferent.jobId, 'newJobId');
+      expect(internshipDifferent.expectedLength, 135);
+      expect(internshipDifferent.achievedLength, 130);
+      expect(internshipDifferent.visitingPriority, VisitingPriority.high);
+      expect(internshipDifferent.teacherNotes, 'newTeacherNotes');
+      expect(internshipDifferent.endDate, DateTime(2020, 2, 4));
+      expect(internshipDifferent.skillEvaluations.length, 2);
+      expect(
+          internshipDifferent.skillEvaluations[0].id, 'newSkillEvaluationId');
+      expect(
+          internshipDifferent.skillEvaluations[1].id, 'newSkillEvaluationId2');
+      expect(internshipDifferent.attitudeEvaluations.length, 2);
+      expect(internshipDifferent.attitudeEvaluations[0].id,
+          'newAttitudeEvaluationId');
+      expect(internshipDifferent.attitudeEvaluations[1].id,
+          'newAttitudeEvaluationId2');
+      expect(internshipDifferent.enterpriseEvaluation!.id,
+          'newEnterpriseEvaluationId');
+
+      // use copyWith on elements that should not be copiedWith
+      expect(
+          () => internship.copyWith(
+              date: DateTimeRange(
+                  start: DateTime(1999, 12, 31), end: DateTime(2000, 1, 1))),
+          throwsArgumentError);
+      expect(
+          () => internship
+              .copyWith(weeklySchedules: [dummyWeeklySchedule(id: 'newId')]),
+          throwsArgumentError);
+      expect(
+          () => internship.copyWith(
+              supervisor: Person(firstName: 'Impossible', lastName: 'Person'),
+              enterpriseEvaluation:
+                  dummyPostIntershipEnterpriseEvaluation(id: 'newId')),
+          throwsArgumentError);
+    });
+
+    test('"Internship" serialization and deserialization works', () {
+      final internship = dummyInternship(hasEndDate: true);
+      final serialized = internship.serialize();
+      final deserialized = Internship.fromSerialized(serialized);
+
+      final period = DateTimeRange(
+          start: DateTime(1995, 10, 31),
+          end: DateTime(1995, 10, 31).add(const Duration(days: 20)));
+      expect(serialized, {
+        'id': 'internshipId',
+        'student': 'studentId',
+        'signatoryTeacherId': 'teacherId',
+        'extraSupervisingTeacherIds': [],
+        'enterprise': 'enterpriseId',
+        'jobId': 'jobId',
+        'extraSpecializationsId': ['8168', '8134'],
+        'mutables': [
+          {
+            'id': serialized['mutables'][0]['id'],
+            'versionDate': internship.versionDate.millisecondsSinceEpoch,
+            'name': internship.supervisor.serialize(),
+            'date': [
+              internship.date.start.millisecondsSinceEpoch,
+              internship.date.end.millisecondsSinceEpoch
+            ],
+            'schedule': [dummyWeeklySchedule(period: period).serialize()],
+          }
+        ],
+        'expectedLength': 135,
+        'achievedLength': 130,
+        'priority': 0,
+        'teacherNotes': '',
+        'endDate': DateTime(2034, 10, 28).millisecondsSinceEpoch,
+        'skillEvaluation': [dummyInternshipEvaluationSkill().serialize()],
+        'attitudeEvaluation': [dummyInternshipEvaluationAttitude().serialize()],
+        'enterpriseEvaluation':
+            dummyPostIntershipEnterpriseEvaluation().serialize(),
+      });
+
+      expect(deserialized.id, 'internshipId');
+      expect(deserialized.studentId, 'studentId');
+      expect(deserialized.signatoryTeacherId, 'teacherId');
+      expect(deserialized.supervisingTeacherIds, ['teacherId']);
+      expect(deserialized.enterpriseId, 'enterpriseId');
+      expect(deserialized.jobId, 'jobId');
+      expect(deserialized.nbVersions, 1);
+      expect(deserialized.versionDate.toString(),
+          internship.versionDate.toString());
+      expect(
+          deserialized.supervisor.toString(), internship.supervisor.toString());
+      expect(deserialized.date.toString(), internship.date.toString());
+      expect(deserialized.weeklySchedules.length, 1);
+      expect(
+          deserialized.weeklySchedules[0].id, internship.weeklySchedules[0].id);
+      expect(deserialized.expectedLength, 135);
+      expect(deserialized.achievedLength, 130);
+      expect(deserialized.visitingPriority, VisitingPriority.low);
+      expect(deserialized.teacherNotes, '');
+      expect(deserialized.endDate!.millisecondsSinceEpoch,
+          internship.endDate!.millisecondsSinceEpoch);
+      expect(deserialized.skillEvaluations.length, 1);
+      expect(deserialized.skillEvaluations[0].id,
+          internship.skillEvaluations[0].id);
+      expect(deserialized.attitudeEvaluations.length, 1);
+      expect(deserialized.attitudeEvaluations[0].id,
+          internship.attitudeEvaluations[0].id);
+      expect(deserialized.enterpriseEvaluation!.id,
+          internship.enterpriseEvaluation!.id);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Internship.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.studentId, '');
+      expect(emptyDeserialized.signatoryTeacherId, '');
+      expect(emptyDeserialized.supervisingTeacherIds, ['']);
+      expect(emptyDeserialized.enterpriseId, '');
+      expect(emptyDeserialized.jobId, '');
+      expect(emptyDeserialized.nbVersions, 0);
+      expect(emptyDeserialized.expectedLength, -1);
+      expect(emptyDeserialized.achievedLength, -1);
+      expect(
+          emptyDeserialized.visitingPriority, VisitingPriority.notApplicable);
+      expect(emptyDeserialized.teacherNotes, '');
+      expect(emptyDeserialized.endDate, isNull);
+      expect(emptyDeserialized.skillEvaluations.length, 0);
+      expect(emptyDeserialized.attitudeEvaluations.length, 0);
+      expect(emptyDeserialized.enterpriseEvaluation, isNull);
+
+      expect(() => emptyDeserialized.date, throwsStateError);
+      expect(() => emptyDeserialized.weeklySchedules, throwsStateError);
+      expect(() => emptyDeserialized.supervisor, throwsStateError);
     });
   });
 }

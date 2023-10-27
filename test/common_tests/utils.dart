@@ -191,9 +191,12 @@ Enterprise dummyEnterprise({bool addJob = false}) {
 }
 
 PostIntershipEnterpriseEvaluation dummyPostIntershipEnterpriseEvaluation({
+  String id = 'postIntershipEnterpriseEvaluationId',
   String internshipId = 'internshipId',
+  bool hasDisorder = true,
 }) =>
     PostIntershipEnterpriseEvaluation(
+      id: id,
       internshipId: internshipId,
       skillsRequired: [
         'Communiquer à l\'écrit',
@@ -208,25 +211,28 @@ PostIntershipEnterpriseEvaluation dummyPostIntershipEnterpriseEvaluation({
       absenceAcceptance: 4,
       supervisionComments: 'Milieu peu aidant, mais ouvert',
       acceptanceTsa: -1,
-      acceptanceLanguageDisorder: 4,
-      acceptanceIntellectualDisability: 4,
-      acceptancePhysicalDisability: 4,
-      acceptanceMentalHealthDisorder: 2,
-      acceptanceBehaviorDifficulties: 2,
+      acceptanceLanguageDisorder: hasDisorder ? 4 : -1,
+      acceptanceIntellectualDisability: hasDisorder ? 4 : -1,
+      acceptancePhysicalDisability: hasDisorder ? 4 : -1,
+      acceptanceMentalHealthDisorder: hasDisorder ? 2 : -1,
+      acceptanceBehaviorDifficulties: hasDisorder ? 2 : -1,
     );
 
 Internship dummyInternship({
   String id = 'internshipId',
+  DateTime? versionDate,
   String studentId = 'studentId',
   String teacherId = 'teacherId',
   String enterpriseId = 'enterpriseId',
   String jobId = 'jobId',
+  bool hasEndDate = false,
 }) {
   final period = DateTimeRange(
-      start: DateTime.now(), end: DateTime.now().add(const Duration(days: 20)));
+      start: DateTime(1995, 10, 31),
+      end: DateTime(1995, 10, 31).add(const Duration(days: 20)));
   return Internship(
     id: id,
-    versionDate: DateTime.now(),
+    versionDate: versionDate ?? DateTime(1995, 10, 31),
     studentId: studentId,
     signatoryTeacherId: teacherId,
     extraSupervisingTeacherIds: [],
@@ -242,42 +248,14 @@ Internship dummyInternship({
         lastName: 'Forever',
         phone: PhoneNumber.fromString('514-555-1234')),
     date: period,
+    endDate: hasEndDate ? DateTime(2034, 10, 28) : null,
     expectedLength: 135,
-    achievedLength: 0,
+    achievedLength: 130,
     enterpriseEvaluation:
         dummyPostIntershipEnterpriseEvaluation(internshipId: id),
-    weeklySchedules: [
-      WeeklySchedule(
-        schedule: [
-          DailySchedule(
-            dayOfWeek: Day.monday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
-          ),
-          DailySchedule(
-            dayOfWeek: Day.tuesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
-          ),
-          DailySchedule(
-            dayOfWeek: Day.wednesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
-          ),
-          DailySchedule(
-            dayOfWeek: Day.thursday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
-          ),
-          DailySchedule(
-            dayOfWeek: Day.friday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
-          ),
-        ],
-        period: period,
-      ),
-    ],
+    weeklySchedules: [dummyWeeklySchedule(period: period)],
+    skillEvaluations: [dummyInternshipEvaluationSkill()],
+    attitudeEvaluations: [dummyInternshipEvaluationAttitude()],
   );
 }
 
@@ -291,7 +269,8 @@ DailySchedule dummyDailySchedule(
   );
 }
 
-WeeklySchedule dummyWeeklySchedule({String id = 'weeklyScheduleId'}) {
+WeeklySchedule dummyWeeklySchedule(
+    {String id = 'weeklyScheduleId', DateTimeRange? period}) {
   return WeeklySchedule(
     id: id,
     schedule: [
@@ -301,7 +280,7 @@ WeeklySchedule dummyWeeklySchedule({String id = 'weeklyScheduleId'}) {
       dummyDailySchedule(id: 'dailyScheduleId4', dayOfWeek: Day.thursday),
       dummyDailySchedule(id: 'dailyScheduleId5', dayOfWeek: Day.friday),
     ],
-    period:
+    period: period ??
         DateTimeRange(start: DateTime(2026, 1, 2), end: DateTime(2026, 1, 22)),
   );
 }
@@ -362,7 +341,9 @@ InternshipEvaluationAttitude dummyInternshipEvaluationAttitude(
     );
 
 TaskAppreciation dummyTaskAppreciation() => TaskAppreciation(
-    title: 'Task title', level: TaskAppreciationLevel.autonomous);
+    id: 'taskAppreciationId',
+    title: 'Task title',
+    level: TaskAppreciationLevel.autonomous);
 
 SkillEvaluation dummySkillEvaluation({String id = 'skillEvaluationId'}) =>
     SkillEvaluation(
