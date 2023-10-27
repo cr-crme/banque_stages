@@ -29,7 +29,7 @@ class WeeklyScheduleController {
     weeklySchedules[weeklyIndex].schedule.add(newDay);
     weeklySchedules[weeklyIndex]
         .schedule
-        .sort((a, b) => a.dayOfWeek.asInt - b.dayOfWeek.asInt);
+        .sort((a, b) => a.dayOfWeek.index - b.dayOfWeek.index);
     _hasChanged = true;
   }
 

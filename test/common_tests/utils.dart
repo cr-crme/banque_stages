@@ -278,6 +278,31 @@ Internship dummyInternship({
   );
 }
 
+DailySchedule dummyDailySchedule(
+    {String id = 'dailyScheduleId', Day dayOfWeek = Day.monday}) {
+  return DailySchedule(
+    id: id,
+    dayOfWeek: dayOfWeek,
+    start: const TimeOfDay(hour: 9, minute: 00),
+    end: const TimeOfDay(hour: 15, minute: 00),
+  );
+}
+
+WeeklySchedule dummyWeeklySchedule({String id = 'weeklyScheduleId'}) {
+  return WeeklySchedule(
+    id: id,
+    schedule: [
+      dummyDailySchedule(id: 'dailyScheduleId1', dayOfWeek: Day.monday),
+      dummyDailySchedule(id: 'dailyScheduleId2', dayOfWeek: Day.tuesday),
+      dummyDailySchedule(id: 'dailyScheduleId3', dayOfWeek: Day.wednesday),
+      dummyDailySchedule(id: 'dailyScheduleId4', dayOfWeek: Day.thursday),
+      dummyDailySchedule(id: 'dailyScheduleId5', dayOfWeek: Day.friday),
+    ],
+    period:
+        DateTimeRange(start: DateTime(2026, 1, 2), end: DateTime(2026, 1, 22)),
+  );
+}
+
 Waypoint dummyWaypoint(
         {String id = 'waypointId',
         double latitude = 40.0,
