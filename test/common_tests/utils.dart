@@ -2,6 +2,8 @@ import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
+import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/models/itinerary.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
@@ -12,6 +14,7 @@ import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
 import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
@@ -329,3 +332,56 @@ Itinerary dummyItinerary({
     Itinerary(date: DateTime(2000, 1, 1))
       ..add(dummyWaypoint())
       ..add(dummyWaypoint(id: 'waypointId2', latitude: 30.0, longitude: 30.5));
+
+AttitudeEvaluation dummyAttitudeEvaluation(
+        {String id = 'attitudeEvaluationId'}) =>
+    AttitudeEvaluation(
+      id: id,
+      inattendance: 1,
+      ponctuality: 2,
+      sociability: 3,
+      politeness: 1,
+      motivation: 2,
+      dressCode: 3,
+      qualityOfWork: 1,
+      productivity: 2,
+      autonomy: 3,
+      cautiousness: 1,
+      generalAppreciation: 2,
+    );
+
+InternshipEvaluationAttitude dummyInternshipEvaluationAttitude(
+        {String id = 'internshipEvaluationAttitudeId'}) =>
+    InternshipEvaluationAttitude(
+      id: id,
+      date: DateTime(1980, 5, 20),
+      presentAtEvaluation: ['Me', 'You'],
+      attitude: dummyAttitudeEvaluation(),
+      comments: 'No comment',
+      formVersion: '1.0.0',
+    );
+
+TaskAppreciation dummyTaskAppreciation() => TaskAppreciation(
+    title: 'Task title', level: TaskAppreciationLevel.autonomous);
+
+SkillEvaluation dummySkillEvaluation({String id = 'skillEvaluationId'}) =>
+    SkillEvaluation(
+      id: id,
+      specializationId: 'specializationId',
+      skillName: 'skillName',
+      tasks: [dummyTaskAppreciation()],
+      appreciation: SkillAppreciation.failed,
+      comment: 'comment',
+    );
+
+InternshipEvaluationSkill dummyInternshipEvaluationSkill(
+        {String id = 'internshipEvaluationSkillId'}) =>
+    InternshipEvaluationSkill(
+      id: id,
+      date: DateTime(1980, 5, 20),
+      presentAtEvaluation: ['Me', 'You'],
+      skillGranularity: SkillEvaluationGranularity.byTask,
+      skills: [dummySkillEvaluation()],
+      comments: 'No comment',
+      formVersion: '1.0.0',
+    );

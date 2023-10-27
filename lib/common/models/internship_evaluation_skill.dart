@@ -48,6 +48,7 @@ class SkillEvaluation extends ItemSerializable {
   final String comment;
 
   SkillEvaluation({
+    super.id,
     required this.specializationId,
     required this.skillName,
     required this.tasks,
@@ -55,28 +56,28 @@ class SkillEvaluation extends ItemSerializable {
     required this.comment,
   });
   SkillEvaluation.fromSerialized(map)
-      : specializationId = map['jobId'],
-        skillName = map['skill'],
+      : specializationId = map['jobId'] ?? '',
+        skillName = map['skill'] ?? '',
         tasks = map['tasks'] == null
             ? []
             : (map['tasks'] as List)
                 .map((e) => TaskAppreciation.fromSerialized(e))
                 .toList(),
-        appreciation = SkillAppreciation.values[map['appreciation']],
-        comment = map['comment'],
+        appreciation = map['appreciation'] == null
+            ? SkillAppreciation.notSelected
+            : SkillAppreciation.values[map['appreciation']],
+        comment = map['comment'] ?? '',
         super.fromSerialized(map);
 
   @override
-  Map<String, dynamic> serializedMap() {
-    return {
-      'id': id,
-      'jobId': specializationId,
-      'skill': skillName,
-      'tasks': tasks.map((e) => e.serialize()).toList(),
-      'appreciation': appreciation.index,
-      'comment': comment,
-    };
-  }
+  Map<String, dynamic> serializedMap() => {
+        'id': id,
+        'jobId': specializationId,
+        'skill': skillName,
+        'tasks': tasks.map((e) => e.serialize()).toList(),
+        'appreciation': appreciation.index,
+        'comment': comment,
+      };
 }
 
 class InternshipEvaluationSkill extends ItemSerializable {
@@ -89,6 +90,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
       formVersion; // The version of the evaluation form (so data can be parsed properly)
 
   InternshipEvaluationSkill({
+    super.id,
     required this.date,
     required this.presentAtEvaluation,
     required this.skillGranularity,
@@ -97,16 +99,20 @@ class InternshipEvaluationSkill extends ItemSerializable {
     required this.formVersion,
   });
   InternshipEvaluationSkill.fromSerialized(map)
-      : date = DateTime.fromMillisecondsSinceEpoch(map['date']),
+      : date = map['date'] == null
+            ? DateTime(0)
+            : DateTime.fromMillisecondsSinceEpoch(map['date']),
         presentAtEvaluation =
             (map['present'] as List?)?.map((e) => e as String).toList() ?? [],
-        skillGranularity =
-            SkillEvaluationGranularity.values[map['skillGranularity']],
-        skills = (map['skills'] as List)
-            .map((e) => SkillEvaluation.fromSerialized(e))
-            .toList(),
-        comments = map['comments'],
-        formVersion = map['formVersion'],
+        skillGranularity = map['skillGranularity'] == null
+            ? SkillEvaluationGranularity.global
+            : SkillEvaluationGranularity.values[map['skillGranularity']],
+        skills = (map['skills'] as List?)
+                ?.map((e) => SkillEvaluation.fromSerialized(e))
+                .toList() ??
+            [],
+        comments = map['comments'] ?? '',
+        formVersion = map['formVersion'] ?? '1.0.0',
         super.fromSerialized(map);
 
   @override

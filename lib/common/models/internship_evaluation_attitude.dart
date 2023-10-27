@@ -34,6 +34,7 @@ class AttitudeEvaluation extends ItemSerializable {
   List<String> get doesNotMeetRequirements => _fromRequirements(2, 3);
 
   AttitudeEvaluation({
+    super.id,
     required this.inattendance,
     required this.ponctuality,
     required this.sociability,
@@ -47,17 +48,17 @@ class AttitudeEvaluation extends ItemSerializable {
     required this.generalAppreciation,
   });
   AttitudeEvaluation.fromSerialized(map)
-      : inattendance = map['inattendance'],
-        ponctuality = map['ponctuality'],
-        sociability = map['sociability'],
-        politeness = map['politeness'],
-        motivation = map['motivation'],
-        dressCode = map['dressCode'],
-        qualityOfWork = map['qualityOfWork'],
-        productivity = map['productivity'],
-        autonomy = map['autonomy'],
-        cautiousness = map['cautiousness'],
-        generalAppreciation = map['generalAppreciation'],
+      : inattendance = map['inattendance'] ?? 0,
+        ponctuality = map['ponctuality'] ?? 0,
+        sociability = map['sociability'] ?? 0,
+        politeness = map['politeness'] ?? 0,
+        motivation = map['motivation'] ?? 0,
+        dressCode = map['dressCode'] ?? 0,
+        qualityOfWork = map['qualityOfWork'] ?? 0,
+        productivity = map['productivity'] ?? 0,
+        autonomy = map['autonomy'] ?? 0,
+        cautiousness = map['cautiousness'] ?? 0,
+        generalAppreciation = map['generalAppreciation'] ?? 0,
         super.fromSerialized(map);
 
   @override
@@ -88,6 +89,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
       formVersion; // The version of the evaluation form (so data can be parsed properly)
 
   InternshipEvaluationAttitude({
+    super.id,
     required this.date,
     required this.presentAtEvaluation,
     required this.attitude,
@@ -95,12 +97,14 @@ class InternshipEvaluationAttitude extends ItemSerializable {
     required this.formVersion,
   });
   InternshipEvaluationAttitude.fromSerialized(map)
-      : date = DateTime.fromMillisecondsSinceEpoch(map['date']),
+      : date = map['date'] == null
+            ? DateTime(0)
+            : DateTime.fromMillisecondsSinceEpoch(map['date']),
         presentAtEvaluation =
-            (map['present'] as List).map((e) => e as String).toList(),
-        attitude = AttitudeEvaluation.fromSerialized(map['attitude']),
-        comments = map['comments'],
-        formVersion = map['formVersion'],
+            (map['present'] as List?)?.map((e) => e as String).toList() ?? [],
+        attitude = AttitudeEvaluation.fromSerialized(map['attitude'] ?? {}),
+        comments = map['comments'] ?? '',
+        formVersion = map['formVersion'] ?? '1.0.0',
         super.fromSerialized(map);
 
   @override
@@ -139,7 +143,8 @@ class Inattendance implements AttitudeCategoryEnum {
       case 3:
         return 'Absences fréquentes et injustifiées';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 
@@ -175,7 +180,8 @@ class Ponctuality implements AttitudeCategoryEnum {
       case 3:
         return 'Retards fréquents et injustifiés';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 
@@ -211,7 +217,8 @@ class Sociability implements AttitudeCategoryEnum {
       case 3:
         return 'Pas d\'intégration à l\'équipe de travail';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 
@@ -247,7 +254,8 @@ class Politeness implements AttitudeCategoryEnum {
       case 3:
         return 'Langage inapproprié';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 
@@ -283,7 +291,8 @@ class Motivation implements AttitudeCategoryEnum {
       case 3:
         return 'Aucun intérêt';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 
@@ -319,7 +328,8 @@ class DressCode implements AttitudeCategoryEnum {
       case 3:
         return 'Très négligée, malpropre';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 
@@ -355,7 +365,8 @@ class QualityOfWork implements AttitudeCategoryEnum {
       case 3:
         return 'Comment souvent des erreurs et néglige les méthodes de travail';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 
@@ -391,7 +402,8 @@ class Productivity implements AttitudeCategoryEnum {
       case 3:
         return 'Rendement insuffisant';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 
@@ -427,7 +439,8 @@ class Autonomy implements AttitudeCategoryEnum {
       case 3:
         return 'Aucune initiative';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 
@@ -464,7 +477,8 @@ class Cautiousness implements AttitudeCategoryEnum {
       case 3:
         return 'Rarement';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 
@@ -500,7 +514,8 @@ class GeneralAppreciation implements AttitudeCategoryEnum {
       case 3:
         return 'Ne répond pas aux attentes';
       default:
-        throw 'Wrong choice of $title';
+        // This should be unreachable code
+        throw 'Wrong choice of $title'; // coverage:ignore-line
     }
   }
 

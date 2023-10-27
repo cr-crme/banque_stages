@@ -59,7 +59,7 @@ class TaskAppreciation extends ItemSerializable {
   final String title;
   final TaskAppreciationLevel level;
 
-  TaskAppreciation({required this.title, required this.level});
+  TaskAppreciation({super.id, required this.title, required this.level});
 
   TaskAppreciation.fromSerialized(map)
       : title = map['title'] ?? '',
