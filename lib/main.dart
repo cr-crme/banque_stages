@@ -5,6 +5,7 @@ import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart'
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/activity_type_cards.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
@@ -20,7 +21,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeProgram(
       useDatabaseEmulator: kDebugMode, mockFirebase: mockFirebase);
-  runApp(const BanqueStagesApp(mockFirebase: mockFirebase));
+  //runApp(const BanqueStagesApp(mockFirebase: mockFirebase));
+  runApp(const MaterialApp(
+    home: Scaffold(
+      body: ActivityTypeCards(
+        activityTypes: {'running', 'cycling'},
+      ),
+    ),
+  ));
 }
 // coverage:ignore-end
 
