@@ -1,6 +1,7 @@
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
@@ -55,15 +56,19 @@ extension BanqueStageWidgetTester on WidgetTester {
     bool withStudents = false,
     bool withEnterprises = false,
     bool withInternships = false,
+    bool withItineraries = false,
   }) async {
     final container = Container();
-    await pumpWidgetWithNotifiers(container,
-        withAuthentication: withAuthentication,
-        withSchools: withSchools,
-        withTeachers: withTeachers,
-        withStudents: withStudents,
-        withEnterprises: withEnterprises,
-        withInternships: withInternships);
+    await pumpWidgetWithNotifiers(
+      container,
+      withAuthentication: withAuthentication,
+      withSchools: withSchools,
+      withTeachers: withTeachers,
+      withStudents: withStudents,
+      withEnterprises: withEnterprises,
+      withInternships: withInternships,
+      withItineraries: withItineraries,
+    );
     return context(find.byWidget(container));
   }
 
@@ -75,6 +80,7 @@ extension BanqueStageWidgetTester on WidgetTester {
     bool withStudents = false,
     bool withEnterprises = false,
     bool withInternships = false,
+    bool withItineraries = false,
   }) async {
     // Add the providers to the widget tree
     if (withAuthentication) {
@@ -115,6 +121,13 @@ extension BanqueStageWidgetTester on WidgetTester {
     if (withInternships) {
       child = ChangeNotifierProvider<InternshipsProvider>(
         create: (context) => InternshipsProvider(mockMe: true),
+        child: child,
+      );
+    }
+
+    if (withItineraries) {
+      child = ChangeNotifierProvider<ItinerariesProvider>(
+        create: (context) => ItinerariesProvider(mockMe: true),
         child: child,
       );
     }

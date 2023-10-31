@@ -53,6 +53,19 @@ class Itinerary extends ListSerializable<Waypoint>
     return Waypoint.fromSerialized(data);
   }
 
+  Itinerary copyWith({
+    String? id,
+    DateTime? date,
+    List<Waypoint>? waypoints,
+    String? dateAsString,
+  }) {
+    final itinerary = Itinerary(id: id ?? this.id, date: date ?? this.date);
+    for (final waypoint in waypoints ?? this) {
+      itinerary.add(waypoint.copyWith());
+    }
+    return itinerary;
+  }
+
   static Itinerary fromSerialized(map) {
     final out = Itinerary(
       id: map['id'],

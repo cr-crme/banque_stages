@@ -31,7 +31,7 @@ class ItinerariesProvider extends FirebaseListProvided<Itinerary> {
 
   @override
   Map<String, dynamic> serialize() =>
-      {'itinerary': super.map((e) => e.serialize())};
+      {'itinerary': super.map((e) => e.serialize()).toList()};
 
   // Make this list act as a Map<DateTime, Itinerary> using Itinerary.date
   @override
@@ -48,11 +48,9 @@ class ItinerariesProvider extends FirebaseListProvided<Itinerary> {
   void replace(Itinerary item, {bool notify = false}) =>
       add(item, notify: notify);
 
-  bool containsKey(String key) => hasId(key);
-
   bool hasDate(DateTime date) {
     final dateAsString = Itinerary.dateFormat.format(date);
-    return indexWhere((e) => e.dateAsString == dateAsString) >= 0;
+    return any((e) => e.dateAsString == dateAsString);
   }
 
   Itinerary? fromDate(DateTime date) {

@@ -1424,6 +1424,34 @@ void main() {
   });
 
   group('Itinerary', () {
+    test('"copyWith" behaves properly', () {
+      final itinerary = dummyItinerary();
+
+      final itinerarySame = itinerary.copyWith();
+      expect(itinerarySame.id, itinerary.id);
+      expect(itinerarySame.date.toString(), itinerary.date.toString());
+      expect(itinerarySame.length, itinerary.length);
+      expect(itinerarySame[0].id, itinerary[0].id);
+      expect(itinerarySame[1].id, itinerary[1].id);
+
+      final itineraryDifferent = itinerary.copyWith(
+        id: 'newId',
+        date: DateTime(2020, 2, 4),
+        waypoints: [
+          dummyWaypoint(id: 'newWaypointId'),
+          dummyWaypoint(id: 'newWaypointId2'),
+          dummyWaypoint(id: 'newWaypointId3'),
+        ],
+      );
+
+      expect(itineraryDifferent.id, 'newId');
+      expect(itineraryDifferent.date, DateTime(2020, 2, 4));
+      expect(itineraryDifferent.length, 3);
+      expect(itineraryDifferent[0].id, 'newWaypointId');
+      expect(itineraryDifferent[1].id, 'newWaypointId2');
+      expect(itineraryDifferent[2].id, 'newWaypointId3');
+    });
+
     test('"moveNext" behaves properly', () {
       final itinerary = dummyItinerary();
 
@@ -1461,21 +1489,47 @@ void main() {
       final serialized = itinerary.serialize();
       final deserialized = Itinerary.fromSerialized(serialized);
 
+      final serializedWaypoints = [
+        {
+          'id': 'waypointId',
+          'title': 'Waypoint',
+          'subtitle': 'Subtitle',
+          'latitude': 40.0,
+          'longitude': 50.0,
+          'street': '123 rue de la rue',
+          'locality': 'Ville',
+          'postalCode': 'H0H 0H0',
+          'priority': 3
+        },
+        {
+          'id': 'waypointId2',
+          'title': 'Waypoint',
+          'subtitle': 'Subtitle',
+          'latitude': 30.0,
+          'longitude': 30.5,
+          'street': '123 rue de la rue',
+          'locality': 'Ville',
+          'postalCode': 'H0H 0H0',
+          'priority': 3
+        }
+      ];
       expect(serialized, {
-        'id': itinerary.id,
-        'waypoints': itinerary.map((e) => e.serialize()).toList(),
+        'id': 'itineraryId',
         'date': itinerary.date.millisecondsSinceEpoch,
+        'waypoints': serializedWaypoints,
       });
 
-      expect(deserialized.id, itinerary.id);
-      expect(deserialized.length, itinerary.length);
-      expect(deserialized.date, itinerary.date);
+      expect(deserialized.id, 'itineraryId');
+      expect(deserialized.date.toString(), itinerary.date.toString());
+      expect(deserialized.length, 2);
+      expect(deserialized[0].id, 'waypointId');
+      expect(deserialized[1].id, 'waypointId2');
 
       // Test for empty deserialize to make sure it doesn't crash
       final emptyDeserialized = Itinerary.fromSerialized({'id': 'emptyId'});
       expect(emptyDeserialized.id, 'emptyId');
-      expect(emptyDeserialized.length, 0);
       expect(emptyDeserialized.date, DateTime(0));
+      expect(emptyDeserialized.length, 0);
     });
   });
 
