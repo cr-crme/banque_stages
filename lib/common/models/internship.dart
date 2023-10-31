@@ -1,8 +1,10 @@
+import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
-import 'package:crcrme_banque_stages/common/models/person.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'internship_evaluation_attitude.dart';
 import 'internship_evaluation_skill.dart';
 import 'schedule.dart';
@@ -157,8 +159,23 @@ class Internship extends ItemSerializable {
   final List<String> _extraSupervisingTeacherIds;
   List<String> get supervisingTeacherIds =>
       [signatoryTeacherId, ..._extraSupervisingTeacherIds];
-  void addSupervisingTeacher(String id) {
-    if (id != signatoryTeacherId) _extraSupervisingTeacherIds.add(id);
+  void addSupervisingTeacher(context, {required String teacherId}) {
+    if (teacherId == signatoryTeacherId ||
+        _extraSupervisingTeacherIds.contains(teacherId)) {
+      // If the teacher is already assigned, do nothing
+      return;
+    }
+
+    // Make sure the student is in a group supervised by the teacher
+    final students = StudentsProvider.allStudentsLimitedInfo(context);
+    final student = students.firstWhere((e) => e.id == studentId);
+    final teacher = TeachersProvider.of(context, listen: false)[teacherId];
+    if (!teacher.groups.contains(student.group)) {
+      throw Exception(
+          'The teacher ${teacher.fullName} is not assigned to the group ${student.group}');
+    }
+
+    _extraSupervisingTeacherIds.add(teacherId);
   }
 
   void removeSupervisingTeacher(String id) =>

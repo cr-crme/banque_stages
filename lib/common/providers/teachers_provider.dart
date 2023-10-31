@@ -1,6 +1,5 @@
 import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,14 +16,21 @@ class TeachersProvider extends FirebaseListProvided<Teacher> {
     return Teacher.fromSerialized(data);
   }
 
-  String _currentId = '';
-  String get currentTeacherId => _currentId;
-  set currentTeacherId(String id) {
+  String? _currentId;
+  String get currentTeacherId {
+    if (_currentId == null) throw Exception('Teacher is not logged in');
+
+    return _currentId!;
+  }
+
+  set currentTeacherId(String? id) {
     _currentId = id;
     notifyListeners();
   }
 
-  Teacher get currentTeacher => isEmpty
+  Teacher get currentTeacher => isEmpty ||
+          _currentId == null ||
+          !hasId(_currentId!)
       ? Teacher(
           firstName: 'Error',
           lastName: 'Error',
@@ -34,7 +40,7 @@ class TeachersProvider extends FirebaseListProvided<Teacher> {
       : this[_currentId];
 
   void initializeAuth(AuthProvider auth) {
-    currentTeacherId = auth.currentUser?.uid ?? (kDebugMode ? 'default' : '');
+    currentTeacherId = auth.currentUser?.uid;
 
     initializeFetchingData();
   }

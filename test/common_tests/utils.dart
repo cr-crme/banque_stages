@@ -28,13 +28,16 @@ School dummySchool({
 }) =>
     School(id: id, name: 'Meine Schule', address: Address.empty);
 
-Teacher dummyTeacher({String id = 'teacherId'}) => Teacher(
+Teacher dummyTeacher(
+        {String id = 'teacherId',
+        List<String> groups = const ['101', '102']}) =>
+    Teacher(
       id: id,
       firstName: 'Pierre',
       middleName: 'Jean',
       lastName: 'Jacques',
       schoolId: 'schoolId',
-      groups: ['101', '102'],
+      groups: groups,
       email: 'peter.john.jakob@test.com',
       phone: dummyPhoneNumber(),
     );
@@ -42,6 +45,7 @@ Teacher dummyTeacher({String id = 'teacherId'}) => Teacher(
 Student dummyStudent({
   String id = 'studentId',
   Program program = Program.fpt,
+  String group = '101',
 }) {
   final tp = dummyPerson();
   return Student(
@@ -56,7 +60,7 @@ Student dummyStudent({
     contact: Person(id: 'My mother id', firstName: 'Jeanne', lastName: 'Doe'),
     photo: '0x00FF00',
     contactLink: 'Mère',
-    group: '101',
+    group: group,
     program: program,
   );
 }

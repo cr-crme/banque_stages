@@ -144,7 +144,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     if (internship.supervisingTeacherIds.contains(myId)) {
       internship.removeSupervisingTeacher(myId);
     } else {
-      internship.addSupervisingTeacher(myId);
+      internship.addSupervisingTeacher(context, teacherId: myId);
     }
     InternshipsProvider.of(context, listen: false).replace(internship);
   }

@@ -19,7 +19,10 @@ import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
+import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
@@ -2043,19 +2046,38 @@ void main() {
       expect(internship.weeklySchedulesFrom(1), internship.weeklySchedules);
     });
 
-    test('can add and remove supervisors', () {
+    testWidgets('can add and remove supervisors', (tester) async {
+      final context = await tester.contextWithNotifiers(
+          withTeachers: true, withStudents: true, withInternships: true);
+      final auth = AuthProvider(mockMe: true);
+      final teachers = TeachersProvider.of(context, listen: false);
+      teachers.initializeAuth(auth);
+      teachers.add(dummyTeacher(id: 'extraTeacherId'));
+      final students = StudentsProvider.instance(context, listen: false);
+      students.initializeAuth(auth);
+      students.add(dummyStudent());
+
       final internship = dummyInternship();
 
       expect(internship.supervisingTeacherIds.length, 1);
       expect(internship.supervisingTeacherIds, ['teacherId']);
 
-      internship.addSupervisingTeacher('newTeacherId');
+      internship.addSupervisingTeacher(context, teacherId: 'extraTeacherId');
 
       expect(internship.supervisingTeacherIds.length, 2);
-      expect(internship.supervisingTeacherIds, ['teacherId', 'newTeacherId']);
+      expect(internship.supervisingTeacherIds, ['teacherId', 'extraTeacherId']);
 
-      internship.removeSupervisingTeacher('newTeacherId');
+      internship.removeSupervisingTeacher('extraTeacherId');
 
+      expect(internship.supervisingTeacherIds.length, 1);
+      expect(internship.supervisingTeacherIds, ['teacherId']);
+
+      // Prevent from adding a teacher which is not related to a group
+      teachers.add(dummyTeacher(id: 'bannedTeacher', groups: ['103']));
+      expect(
+          () => internship.addSupervisingTeacher(context,
+              teacherId: 'bannedTeacher'),
+          throwsException);
       expect(internship.supervisingTeacherIds.length, 1);
       expect(internship.supervisingTeacherIds, ['teacherId']);
     });
