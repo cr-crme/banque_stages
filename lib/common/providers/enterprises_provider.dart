@@ -9,7 +9,7 @@ class EnterprisesProvider extends FirebaseListProvided<Enterprise> {
     initializeFetchingData();
   }
 
-  static EnterprisesProvider of(BuildContext context, {listen = false}) =>
+  static EnterprisesProvider of(BuildContext context, {listen = true}) =>
       Provider.of<EnterprisesProvider>(context, listen: listen);
 
   @override
