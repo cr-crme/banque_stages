@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
@@ -48,6 +49,7 @@ extension BanqueStageWidgetTester on WidgetTester {
   }
 
   Future<BuildContext> contextWithNotifiers({
+    bool withAuthentication = false,
     bool withSchools = false,
     bool withTeachers = false,
     bool withStudents = false,
@@ -56,6 +58,7 @@ extension BanqueStageWidgetTester on WidgetTester {
   }) async {
     final container = Container();
     await pumpWidgetWithNotifiers(container,
+        withAuthentication: withAuthentication,
         withSchools: withSchools,
         withTeachers: withTeachers,
         withStudents: withStudents,
@@ -66,6 +69,7 @@ extension BanqueStageWidgetTester on WidgetTester {
 
   Future<void> pumpWidgetWithNotifiers(
     Widget child, {
+    bool withAuthentication = false,
     bool withSchools = false,
     bool withTeachers = false,
     bool withStudents = false,
@@ -73,6 +77,13 @@ extension BanqueStageWidgetTester on WidgetTester {
     bool withInternships = false,
   }) async {
     // Add the providers to the widget tree
+    if (withAuthentication) {
+      child = ChangeNotifierProvider<AuthProvider>(
+        create: (context) => AuthProvider(mockMe: true),
+        child: child,
+      );
+    }
+
     if (withSchools) {
       child = ChangeNotifierProvider<SchoolsProvider>(
         create: (context) => SchoolsProvider(mockMe: true),

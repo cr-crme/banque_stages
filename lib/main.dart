@@ -34,7 +34,7 @@ class BanqueStagesApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (context) => AuthProvider(mockFirebase: mockFirebase)),
+            create: (context) => AuthProvider(mockMe: kDebugMode)),
         ChangeNotifierProvider(
             create: (context) => SchoolsProvider(mockMe: mockFirebase)),
         ChangeNotifierProvider(

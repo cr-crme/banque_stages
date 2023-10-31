@@ -1797,8 +1797,9 @@ void main() {
 
   group('PostIntershipEnterpriseEvaluation', () {
     test('"hasDisorder" behaves properly', () {
-      final coucou = dummyPostIntershipEnterpriseEvaluation(hasDisorder: false);
-      expect(coucou.hasDisorder, isFalse);
+      final evaluation =
+          dummyPostIntershipEnterpriseEvaluation(hasDisorder: false);
+      expect(evaluation.hasDisorder, isFalse);
       expect(
           dummyPostIntershipEnterpriseEvaluation(hasDisorder: true).hasDisorder,
           isTrue);
