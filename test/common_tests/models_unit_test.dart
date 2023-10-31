@@ -877,7 +877,57 @@ void main() {
       expect(jobList.length, 1);
     });
 
-    test('serialization and deserialization works', () {
+    test('"specialization" behaves properly', () {
+      expect(dummyJob().specialization, isNotNull);
+      expect(() => Job.fromSerialized({}).specialization, throwsArgumentError);
+    });
+
+    test('serialization and deserialization works for Job', () {
+      final job = dummyJob();
+      final serialized = job.serialize();
+      final deserialized = Job.fromSerialized(serialized);
+
+      expect(serialized, {
+        'id': job.id,
+        'specialization': job.specialization.id,
+        'positionsOffered': job.positionsOffered,
+        'minimumAge': job.minimumAge,
+        'preInternshipRequest': job.preInternshipRequest.serialize(),
+        'uniform': job.uniform.serialize(),
+        'protections': job.protections.serialize(),
+        'photosUrl': job.photosUrl,
+        'sstEvaluations': job.sstEvaluation.serialize(),
+        'incidents': job.incidents.serialize(),
+        'comments': job.comments,
+      });
+
+      expect(deserialized.id, job.id);
+      expect(deserialized.specialization.id, job.specialization.id);
+      expect(deserialized.positionsOffered, job.positionsOffered);
+      expect(deserialized.minimumAge, job.minimumAge);
+      expect(deserialized.preInternshipRequest.id, job.preInternshipRequest.id);
+      expect(deserialized.uniform.id, job.uniform.id);
+      expect(deserialized.protections.id, job.protections.id);
+      expect(deserialized.photosUrl, job.photosUrl);
+      expect(deserialized.sstEvaluation.id, job.sstEvaluation.id);
+      expect(deserialized.incidents.id, job.incidents.id);
+      expect(deserialized.comments, job.comments);
+
+      // Test for empty deserialize to make sure it doesn't crash
+      final emptyDeserialized = Job.fromSerialized({'id': 'emptyId'});
+      expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.positionsOffered, 0);
+      expect(emptyDeserialized.minimumAge, 0);
+      expect(emptyDeserialized.preInternshipRequest.id, isNotNull);
+      expect(emptyDeserialized.uniform.id, isNotNull);
+      expect(emptyDeserialized.protections.id, isNotNull);
+      expect(emptyDeserialized.photosUrl, []);
+      expect(emptyDeserialized.sstEvaluation.id, isNotNull);
+      expect(emptyDeserialized.incidents.id, isNotNull);
+      expect(emptyDeserialized.comments, []);
+    });
+
+    test('serialization and deserialization works for JobList', () {
       final jobList = dummyJobList();
       jobList.add(dummyJob(id: 'newJobId'));
       final serialized = jobList.serialize();

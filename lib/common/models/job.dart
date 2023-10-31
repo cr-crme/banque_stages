@@ -52,7 +52,14 @@ class JobSstEvaluation extends ItemSerializable {
 
 class Job extends ItemSerializable {
 // Details
-  final Specialization specialization;
+  Specialization get specialization {
+    if (_specialization == null) {
+      throw ArgumentError('No specialization found for this job');
+    }
+    return _specialization!;
+  }
+
+  final Specialization? _specialization;
   final int positionsOffered;
   int positionsOccupied(context) =>
       InternshipsProvider.of(context, listen: false)
@@ -92,7 +99,7 @@ class Job extends ItemSerializable {
 
   Job({
     super.id,
-    required this.specialization,
+    required Specialization specialization,
     required this.positionsOffered,
     required this.minimumAge,
     required this.preInternshipRequest,
@@ -102,7 +109,8 @@ class Job extends ItemSerializable {
     required this.sstEvaluation,
     required this.incidents,
     List<String>? comments,
-  })  : photosUrl = photosUrl ?? [],
+  })  : _specialization = specialization,
+        photosUrl = photosUrl ?? [],
         comments = comments ?? [];
 
   Job copyWith({
@@ -119,17 +127,18 @@ class Job extends ItemSerializable {
     String? id,
   }) {
     return Job(
-        specialization: specialization ?? this.specialization,
-        positionsOffered: positionsOffered ?? this.positionsOffered,
-        minimumAge: minimumAge ?? this.minimumAge,
-        preInternshipRequest: preInternshipRequest ?? this.preInternshipRequest,
-        uniform: uniform ?? this.uniform,
-        protections: protections ?? this.protections,
-        photosUrl: photosUrl ?? this.photosUrl,
-        sstEvaluation: sstEvaluation ?? this.sstEvaluation,
-        incidents: incidents ?? this.incidents,
-        comments: comments ?? this.comments,
-        id: id ?? this.id);
+      id: id ?? this.id,
+      specialization: specialization ?? this.specialization,
+      positionsOffered: positionsOffered ?? this.positionsOffered,
+      minimumAge: minimumAge ?? this.minimumAge,
+      preInternshipRequest: preInternshipRequest ?? this.preInternshipRequest,
+      uniform: uniform ?? this.uniform,
+      protections: protections ?? this.protections,
+      photosUrl: photosUrl ?? this.photosUrl,
+      sstEvaluation: sstEvaluation ?? this.sstEvaluation,
+      incidents: incidents ?? this.incidents,
+      comments: comments ?? this.comments,
+    );
   }
 
   @override
@@ -148,17 +157,19 @@ class Job extends ItemSerializable {
       };
 
   Job.fromSerialized(map)
-      : specialization =
-            ActivitySectorsService.specialization(map['specialization']),
-        positionsOffered = map['positionsOffered'],
-        minimumAge = map['minimumAge'],
-        preInternshipRequest =
-            PreInternshipRequest.fromSerialized(map['preInternshipRequest']),
-        uniform = Uniform.fromSerialized(map['uniform']),
-        protections = Protections.fromSerialized(map['protections']),
+      : _specialization = map['specialization'] == null
+            ? null
+            : ActivitySectorsService.specialization(map['specialization']),
+        positionsOffered = map['positionsOffered'] ?? 0,
+        minimumAge = map['minimumAge'] ?? 0,
+        preInternshipRequest = PreInternshipRequest.fromSerialized(
+            map['preInternshipRequest'] ?? {}),
+        uniform = Uniform.fromSerialized(map['uniform'] ?? {}),
+        protections = Protections.fromSerialized(map['protections'] ?? {}),
         photosUrl = _stringListFromSerialized(map['photosUrl']),
-        sstEvaluation = JobSstEvaluation.fromSerialized(map['sstEvaluations']),
-        incidents = Incidents.fromSerialized(map['incidents']),
+        sstEvaluation =
+            JobSstEvaluation.fromSerialized(map['sstEvaluations'] ?? {}),
+        incidents = Incidents.fromSerialized(map['incidents'] ?? {}),
         comments = _stringListFromSerialized(map['comments']),
         super.fromSerialized(map);
 }
