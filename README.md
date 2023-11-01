@@ -35,6 +35,18 @@ Il existe deux façons faciles de les démarrer :
 1. Commencer à debogger avec VS Code (`F5` par défaut).
 2. Via la ligne de commande : `firebase emulators:start`
 
+## Lancer les tests
+
+Dû à l'utilisation de `mockito`, si de nouveaux Mock sont créés, il est nécessaire de lancer la commande :
+```bash
+dart run build_runner build
+```
+Il est possible que cette commande ne fonctionne pas, dans ce cas il faut lancer la commande suivante :
+```bash
+flutter packages pub get
+```
+
+
 ## Before publishing
 
 Please remember `android:usesCleartextTraffic="true"` is set to true for Android while this should not be the case for production

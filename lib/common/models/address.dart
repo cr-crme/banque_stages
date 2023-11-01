@@ -20,7 +20,7 @@ class Address extends ItemSerializable {
   final String? postalCode;
 
   // coverage:ignore-start
-  static Future<Address?> fromAddress(String address) async {
+  static Future<Address?> fromString(String address) async {
     final location = await locationFromAddress(address);
     if (location.isEmpty) return null;
 
