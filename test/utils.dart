@@ -29,8 +29,6 @@ extension BanqueStageWidgetTester on WidgetTester {
 
   BuildContext context(Finder finder) => element(finder);
 
-  T widget<T>(Finder finder) => element(finder.first).widget as T;
-
   T ancestorByType<T>({required Finder of}) {
     final parent = find.ancestor(of: of, matching: find.byType(T));
     return parent.evaluate().first.widget as T;
