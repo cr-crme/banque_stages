@@ -162,7 +162,7 @@ void main() {
           dummyInternshipEvaluationAttitude(id: 'newAttitudeEvaluationId'),
           dummyInternshipEvaluationAttitude(id: 'newAttitudeEvaluationId2'),
         ],
-        enterpriseEvaluation: dummyPostIntershipEnterpriseEvaluation(
+        enterpriseEvaluation: dummyPostInternshipEnterpriseEvaluation(
             id: 'newEnterpriseEvaluationId'),
       );
 
@@ -205,7 +205,7 @@ void main() {
           () => internship.copyWith(
               supervisor: Person(firstName: 'Impossible', lastName: 'Person'),
               enterpriseEvaluation:
-                  dummyPostIntershipEnterpriseEvaluation(id: 'newId')),
+                  dummyPostInternshipEnterpriseEvaluation(id: 'newId')),
           throwsArgumentError);
     });
 
@@ -245,7 +245,7 @@ void main() {
         'skillEvaluation': [dummyInternshipEvaluationSkill().serialize()],
         'attitudeEvaluation': [dummyInternshipEvaluationAttitude().serialize()],
         'enterpriseEvaluation':
-            dummyPostIntershipEnterpriseEvaluation().serialize(),
+            dummyPostInternshipEnterpriseEvaluation().serialize(),
       });
 
       expect(deserialized.id, 'internshipId');

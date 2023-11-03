@@ -372,21 +372,22 @@ void main() {
     });
   });
 
-  group('PostIntershipEnterpriseEvaluation', () {
+  group('PostInternshipEnterpriseEvaluation', () {
     test('"hasDisorder" behaves properly', () {
       final evaluation =
-          dummyPostIntershipEnterpriseEvaluation(hasDisorder: false);
+          dummyPostInternshipEnterpriseEvaluation(hasDisorder: false);
       expect(evaluation.hasDisorder, isFalse);
       expect(
-          dummyPostIntershipEnterpriseEvaluation(hasDisorder: true).hasDisorder,
+          dummyPostInternshipEnterpriseEvaluation(hasDisorder: true)
+              .hasDisorder,
           isTrue);
     });
 
     test('serialization and deserialization works', () {
-      final evaluation = dummyPostIntershipEnterpriseEvaluation();
+      final evaluation = dummyPostInternshipEnterpriseEvaluation();
       final serialized = evaluation.serialize();
       final deserialized =
-          PostIntershipEnterpriseEvaluation.fromSerialized(serialized);
+          PostInternshipEnterpriseEvaluation.fromSerialized(serialized);
 
       expect(serialized, {
         'id': evaluation.id,
@@ -436,7 +437,7 @@ void main() {
 
       // Test for empty deserialize to make sure it doesn't crash
       final emptyDeserialized =
-          PostIntershipEnterpriseEvaluation.fromSerialized({'id': 'emptyId'});
+          PostInternshipEnterpriseEvaluation.fromSerialized({'id': 'emptyId'});
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.internshipId, '');
       expect(emptyDeserialized.skillsRequired, []);

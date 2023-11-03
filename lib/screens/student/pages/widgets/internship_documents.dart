@@ -62,7 +62,7 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                     title: 'Contrat de stage - Version du '
                         '${DateFormat('yMd', 'fr_CA').format(widget.internship.versionDateFrom(index))}',
                     pdfGeneratorCallback: (format, {required internship}) =>
-                        GenerateDocuments.generateIntershipContractPdf(format,
+                        GenerateDocuments.generateInternshipContractPdf(format,
                             internship: internship, versionIndex: index),
                   ),
                 ),

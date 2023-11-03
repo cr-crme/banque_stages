@@ -17,8 +17,8 @@ double _doubleFromSerialized(num? number, {double defaultValue = 0}) {
 List<String> _stringListFromSerialized(List? list) =>
     list?.map<String>((e) => e).toList() ?? [];
 
-class PostIntershipEnterpriseEvaluation extends ItemSerializable {
-  PostIntershipEnterpriseEvaluation({
+class PostInternshipEnterpriseEvaluation extends ItemSerializable {
+  PostInternshipEnterpriseEvaluation({
     super.id,
     required this.internshipId,
     required this.skillsRequired,
@@ -38,7 +38,7 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
     required this.acceptanceBehaviorDifficulties,
   });
 
-  PostIntershipEnterpriseEvaluation.fromSerialized(map)
+  PostInternshipEnterpriseEvaluation.fromSerialized(map)
       : internshipId = map['internshipId'] ?? '',
         skillsRequired = _stringListFromSerialized(map['skillsRequired']),
         taskVariety = _doubleFromSerialized(map['taskVariety']),
@@ -210,7 +210,7 @@ class Internship extends ItemSerializable {
   final List<InternshipEvaluationSkill> skillEvaluations;
   final List<InternshipEvaluationAttitude> attitudeEvaluations;
 
-  PostIntershipEnterpriseEvaluation? enterpriseEvaluation;
+  PostInternshipEnterpriseEvaluation? enterpriseEvaluation;
 
   bool get isClosed => isNotActive && !isEnterpriseEvaluationPending;
   bool get isEnterpriseEvaluationPending =>
@@ -310,7 +310,7 @@ class Internship extends ItemSerializable {
             [],
         enterpriseEvaluation = map['enterpriseEvaluation'] == null
             ? null
-            : PostIntershipEnterpriseEvaluation.fromSerialized(
+            : PostInternshipEnterpriseEvaluation.fromSerialized(
                 map['enterpriseEvaluation']),
         super.fromSerialized(map);
 
@@ -367,7 +367,7 @@ class Internship extends ItemSerializable {
     DateTime? endDate,
     List<InternshipEvaluationSkill>? skillEvaluations,
     List<InternshipEvaluationAttitude>? attitudeEvaluations,
-    PostIntershipEnterpriseEvaluation? enterpriseEvaluation,
+    PostInternshipEnterpriseEvaluation? enterpriseEvaluation,
   }) {
     if (supervisor != null || date != null || weeklySchedules != null) {
       throw ArgumentError('[supervisor], [date] or [weeklySchedules]'

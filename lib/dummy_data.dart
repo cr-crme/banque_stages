@@ -38,7 +38,7 @@ Future<void> resetDummyData(BuildContext context) async {
   await _addDummyTeachers(teachers, schools);
   await _addDummyStudents(students, teachers);
   await _addDummyEnterprises(enterprises, teachers);
-  await _addDummyInterships(internships, students, enterprises, teachers);
+  await _addDummyInternships(internships, students, enterprises, teachers);
 }
 
 Future<void> _addDummySchools(SchoolsProvider schools) async {
@@ -927,7 +927,7 @@ Future<void> _addDummyStudents(
   }
 }
 
-Future<void> _addDummyInterships(
+Future<void> _addDummyInternships(
   InternshipsProvider internships,
   StudentsProvider students,
   EnterprisesProvider enterprises,
@@ -1095,7 +1095,7 @@ Future<void> _addDummyInterships(
       ),
     ],
   );
-  internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
+  internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
     internshipId: internship.id,
     skillsRequired: [
       'Communiquer à l\'écrit',

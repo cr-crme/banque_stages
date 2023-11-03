@@ -78,7 +78,7 @@ class Job extends ItemSerializable {
   final List<String> photosUrl;
 
   // Post-internship evaluations
-  List<PostIntershipEnterpriseEvaluation> postInternshipEnterpriseEvaluations(
+  List<PostInternshipEnterpriseEvaluation> postInternshipEnterpriseEvaluations(
       context) {
     final internships = [
       for (final internship in InternshipsProvider.of(context, listen: false))

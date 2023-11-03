@@ -22,7 +22,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
 
   final String studentId;
 
-  void _navigateToStudentIntership(BuildContext context) {
+  void _navigateToStudentInternship(BuildContext context) {
     GoRouter.of(context).pushNamed(
       Screens.student,
       params: Screens.params(studentId),
@@ -80,7 +80,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                     _VisitingPriority(
                       studentId: studentId,
                       onTapGoToInternship: () =>
-                          _navigateToStudentIntership(context),
+                          _navigateToStudentInternship(context),
                     ),
                   if (internship != null)
                     _Contact(
@@ -93,7 +93,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                   if (internship != null) _buildUniformAndEpi(context, job!),
                   _MoreInfoButton(
                     studentId: studentId,
-                    onTap: () => _navigateToStudentIntership(context),
+                    onTap: () => _navigateToStudentInternship(context),
                   ),
                 ],
               ),

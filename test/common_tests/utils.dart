@@ -194,12 +194,12 @@ Enterprise dummyEnterprise({bool addJob = false}) {
   );
 }
 
-PostIntershipEnterpriseEvaluation dummyPostIntershipEnterpriseEvaluation({
-  String id = 'postIntershipEnterpriseEvaluationId',
+PostInternshipEnterpriseEvaluation dummyPostInternshipEnterpriseEvaluation({
+  String id = 'postInternshipEnterpriseEvaluationId',
   String internshipId = 'internshipId',
   bool hasDisorder = true,
 }) =>
-    PostIntershipEnterpriseEvaluation(
+    PostInternshipEnterpriseEvaluation(
       id: id,
       internshipId: internshipId,
       skillsRequired: [
@@ -256,7 +256,7 @@ Internship dummyInternship({
     expectedLength: 135,
     achievedLength: 130,
     enterpriseEvaluation:
-        dummyPostIntershipEnterpriseEvaluation(internshipId: id),
+        dummyPostInternshipEnterpriseEvaluation(internshipId: id),
     weeklySchedules: [dummyWeeklySchedule(period: period)],
     skillEvaluations: [dummyInternshipEvaluationSkill()],
     attitudeEvaluations: [dummyInternshipEvaluationAttitude()],

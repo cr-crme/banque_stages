@@ -6,7 +6,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 
 class GenerateDocuments {
-  static Future<Uint8List> generateIntershipContractPdf(format,
+  static Future<Uint8List> generateInternshipContractPdf(format,
       {required Internship internship, required int versionIndex}) async {
     final document = pw.Document();
 

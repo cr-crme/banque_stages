@@ -17,11 +17,11 @@ class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
     super.key,
     required this.enterprise,
-    required this.onAddIntershipRequest,
+    required this.onAddInternshipRequest,
   });
 
   final Enterprise enterprise;
-  final Function(Enterprise) onAddIntershipRequest;
+  final Function(Enterprise) onAddInternshipRequest;
 
   @override
   State<InternshipsPage> createState() => InternshipsPageState();
@@ -29,7 +29,7 @@ class InternshipsPage extends StatefulWidget {
 
 class InternshipsPageState extends State<InternshipsPage> {
   Future<void> addStage() async =>
-      widget.onAddIntershipRequest(widget.enterprise);
+      widget.onAddInternshipRequest(widget.enterprise);
 
   List<Internship> _getActiveInternships(List<Internship> internships) {
     final List<Internship> out = [];

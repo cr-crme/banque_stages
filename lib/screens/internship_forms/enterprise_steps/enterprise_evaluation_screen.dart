@@ -116,7 +116,7 @@ class _EnterpriseEvaluationScreenState
     final internships = InternshipsProvider.of(context, listen: false);
     final internship = internships.firstWhere((e) => e.id == widget.id);
 
-    internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
+    internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
       internshipId: internship.id,
       skillsRequired: _taskAndAbilityKey.currentState!.requiredSkills,
       taskVariety: _taskAndAbilityKey.currentState!.taskVariety!,
