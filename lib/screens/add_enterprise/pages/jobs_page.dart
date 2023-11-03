@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
-import 'package:crcrme_banque_stages/common/widgets/delete_button.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
+import 'package:flutter/material.dart';
 
 class JobsPage extends StatefulWidget {
   const JobsPage({super.key});
@@ -67,8 +65,12 @@ class JobsPageState extends State<JobsPage> {
               'Métier ${index + 1}',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            DeleteButton(
+            IconButton(
               onPressed: () => setState(() => _jobsForm.remove(key)),
+              padding: const EdgeInsets.all(8.0),
+              icon: const Icon(Icons.delete_forever),
+              tooltip: 'Supprimer',
+              color: Theme.of(context).colorScheme.error,
             ),
           ],
         ),
