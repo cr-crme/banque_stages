@@ -41,7 +41,9 @@ class _PhoneListTileState extends State<PhoneListTile> {
     }
   }
 
+  // coverage:ignore-start
   _call() async => await launchUrl(Uri.parse('tel:${_phoneController.text}'));
+  // coverage:ignore-end
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +73,7 @@ class _PhoneListTileState extends State<PhoneListTile> {
               validator: (value) {
                 if (!widget.enabled) return null;
 
-                if (!widget.isMandatory && (value == '' || value == null)) {
+                if (!widget.isMandatory && (value == null || value == '')) {
                   return null;
                 }
                 return FormService.phoneValidator(value);
