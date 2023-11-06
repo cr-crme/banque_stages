@@ -169,14 +169,14 @@ class _InternshipEnrollmentScreenState
           type: StepperType.horizontal,
           scrollController: _scrollController,
           currentStep: _currentStep,
-          onStepContinue: _nextStep,
+          onTapContinue: _nextStep,
           onStepTapped: (int tapped) {
             setState(() {
               _currentStep = tapped;
               _scrollController.jumpTo(0);
             });
           },
-          onStepCancel: _cancel,
+          onTapCancel: _cancel,
           steps: [
             Step(
               state: _stepStatus[0],

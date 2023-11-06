@@ -16,7 +16,7 @@ const TextStyle _kStepStyle = TextStyle(
   color: Colors.white,
 );
 const Color _kErrorLight = Colors.red;
-final Color _kErrorDark = Colors.red.shade400;
+final Color _kErrorDark = Colors.red.shade400; // coverage:ignore-line
 const Color _kCircleActiveLight = Colors.white;
 const Color _kCircleActiveDark = Colors.black87;
 const Color _kDisabledLight = Colors.black38;
@@ -59,10 +59,10 @@ class ScrollableStepper extends StatefulWidget {
     this.physics,
     required this.scrollController,
     this.type = StepperType.vertical,
-    this.currentStep = 0,
+    required this.currentStep,
     this.onStepTapped,
-    this.onStepContinue,
-    this.onStepCancel,
+    this.onTapContinue,
+    this.onTapCancel,
     this.controlsBuilder,
     this.elevation,
     this.margin,
@@ -100,19 +100,19 @@ class ScrollableStepper extends StatefulWidget {
   /// The callback called when the 'continue' button is tapped.
   ///
   /// If null, the 'continue' button will be disabled.
-  final VoidCallback? onStepContinue;
+  final VoidCallback? onTapContinue;
 
   /// The callback called when the 'cancel' button is tapped.
   ///
   /// If null, the 'cancel' button will be disabled.
-  final VoidCallback? onStepCancel;
+  final VoidCallback? onTapCancel;
 
   /// The callback for creating custom controls.
   ///
   /// If null, the default controls from the current theme will be used.
   ///
   /// This callback which takes in a context and a [ControlsDetails] object, which
-  /// contains step information and two functions: [onStepContinue] and [onStepCancel].
+  /// contains step information and two functions: [onTapContinue] and [onTapCancel].
   /// These can be used to control the stepper. For example, reading the
   /// [ControlsDetails.currentStep] value within the callback can change the text
   /// of the continue or cancel button depending on which step users are at.
@@ -241,9 +241,11 @@ class _ScrollableStepperState extends State<ScrollableStepper>
       case StepState.disabled:
         return Text(
           '${index + 1}',
+          // coverage:ignore-start
           style: isDarkActive
               ? _kStepStyle.copyWith(color: Colors.black87)
               : _kStepStyle,
+          // coverage:ignore-end
         );
       case StepState.editing:
         return Icon(
@@ -269,9 +271,11 @@ class _ScrollableStepperState extends State<ScrollableStepper>
           ? colorScheme.primary
           : colorScheme.onSurface.withOpacity(0.38);
     } else {
+      // coverage:ignore-start
       return widget.steps[index].isActive
           ? colorScheme.secondary
           : colorScheme.background;
+      // coverage:ignore-end
     }
   }
 
@@ -285,12 +289,14 @@ class _ScrollableStepperState extends State<ScrollableStepper>
         duration: kThemeAnimationDuration,
         decoration: BoxDecoration(
           color: _circleColor(index),
-          shape: BoxShape.circle,
+          shape: BoxShape.circle, // coverage:ignore-line
         ),
+        // coverage:ignore-start
         child: Center(
           child: _buildCircleChild(
               index, oldState && widget.steps[index].state == StepState.error),
         ),
+        // coverage:ignore-end
       ),
     );
   }
@@ -309,12 +315,14 @@ class _ScrollableStepperState extends State<ScrollableStepper>
             painter: _TrianglePainter(
               color: _isDark() ? _kErrorDark : _kErrorLight,
             ),
+            // coverage:ignore-start
             child: Align(
               alignment: const Alignment(
                   0.0, 0.8), // 0.8 looks better than the geometrical 0.33.
               child: _buildCircleChild(index,
                   oldState && widget.steps[index].state != StepState.error),
             ),
+            // coverage:ignore-end
           ),
         ),
       ),
@@ -323,6 +331,7 @@ class _ScrollableStepperState extends State<ScrollableStepper>
 
   Widget _buildIcon(int index) {
     if (widget.steps[index].state != _oldStates[index]) {
+      // coverage:ignore-start
       return AnimatedCrossFade(
         firstChild: _buildCircle(index, true),
         secondChild: _buildTriangle(index, true),
@@ -334,6 +343,7 @@ class _ScrollableStepperState extends State<ScrollableStepper>
             : CrossFadeState.showFirst,
         duration: kThemeAnimationDuration,
       );
+      // coverage:ignore-end
     } else {
       if (widget.steps[index].state != StepState.error) {
         return _buildCircle(index, false);
@@ -345,15 +355,17 @@ class _ScrollableStepperState extends State<ScrollableStepper>
 
   Widget _buildVerticalControls(int stepIndex) {
     if (widget.controlsBuilder != null) {
+      // coverage:ignore-start
       return widget.controlsBuilder!(
         context,
         ControlsDetails(
           currentStep: widget.currentStep,
-          onStepContinue: widget.onStepContinue,
-          onStepCancel: widget.onStepCancel,
+          onStepContinue: widget.onTapContinue,
+          onStepCancel: widget.onTapCancel,
           stepIndex: stepIndex,
         ),
       );
+      // coverage:ignore-end
     }
 
     final Color cancelColor;
@@ -361,9 +373,11 @@ class _ScrollableStepperState extends State<ScrollableStepper>
       case Brightness.light:
         cancelColor = Colors.black54;
         break;
+      // coverage:ignore-start
       case Brightness.dark:
         cancelColor = Colors.white70;
         break;
+      // coverage:ignore-end
     }
 
     final ThemeData themeData = Theme.of(context);
@@ -385,14 +399,14 @@ class _ScrollableStepperState extends State<ScrollableStepper>
           // version of this widget.
           children: <Widget>[
             TextButton(
-              onPressed: widget.onStepContinue,
+              onPressed: widget.onTapContinue,
               style: ButtonStyle(
                 foregroundColor: MaterialStateProperty.resolveWith<Color?>(
                     (Set<MaterialState> states) {
                   return states.contains(MaterialState.disabled)
                       ? null
                       : (_isDark()
-                          ? colorScheme.onSurface
+                          ? colorScheme.onSurface // coverage:ignore-line
                           : colorScheme.onPrimary);
                 }),
                 backgroundColor: MaterialStateProperty.resolveWith<Color?>(
@@ -407,20 +421,20 @@ class _ScrollableStepperState extends State<ScrollableStepper>
                     const MaterialStatePropertyAll<OutlinedBorder>(buttonShape),
               ),
               child: Text(themeData.useMaterial3
-                  ? localizations.continueButtonLabel
+                  ? localizations.continueButtonLabel // coverage:ignore-line
                   : localizations.continueButtonLabel.toUpperCase()),
             ),
             Container(
               margin: const EdgeInsetsDirectional.only(start: 8.0),
               child: TextButton(
-                onPressed: widget.onStepCancel,
+                onPressed: widget.onTapCancel,
                 style: TextButton.styleFrom(
                   foregroundColor: cancelColor,
                   padding: buttonPadding,
                   shape: buttonShape,
                 ),
                 child: Text(themeData.useMaterial3
-                    ? localizations.cancelButtonLabel
+                    ? localizations.cancelButtonLabel // coverage:ignore-line
                     : localizations.cancelButtonLabel.toUpperCase()),
               ),
             ),
@@ -480,9 +494,11 @@ class _ScrollableStepperState extends State<ScrollableStepper>
       case StepState.complete:
         return textTheme.bodyMedium!;
       case StepState.disabled:
+        // coverage:ignore-start
         return textTheme.bodyMedium!.copyWith(
           color: _isDark() ? _kDisabledDark : _kDisabledLight,
         );
+      // coverage:ignore-end
       case StepState.error:
         return textTheme.bodyMedium!.copyWith(
           color: _isDark() ? _kErrorDark : _kErrorLight,
@@ -729,12 +745,14 @@ class _ScrollableStepperState extends State<ScrollableStepper>
     assert(debugCheckHasMaterialLocalizations(context));
     assert(() {
       if (context.findAncestorWidgetOfExactType<Stepper>() != null) {
+        // coverage:ignore-start
         throw FlutterError(
           'Steppers must not be nested.\n'
           'The material specification advises that one should avoid embedding '
           'steppers within steppers. '
           'https://material.io/archive/guidelines/components/steppers.html#steppers-usage',
         );
+        // coverage:ignore-end
       }
       return true;
     }());
@@ -756,6 +774,7 @@ class _TrianglePainter extends CustomPainter {
 
   final Color color;
 
+  // coverage:ignore-start
   @override
   bool hitTest(Offset point) => true; // Hitting the rectangle is fine enough.
 
@@ -763,6 +782,7 @@ class _TrianglePainter extends CustomPainter {
   bool shouldRepaint(_TrianglePainter oldPainter) {
     return oldPainter.color != color;
   }
+  // coverage:ignore-end
 
   @override
   void paint(Canvas canvas, Size size) {

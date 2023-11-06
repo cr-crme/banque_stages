@@ -53,6 +53,7 @@ dependencies:
     printing: ^5.10.3
     intl: ^0.18.0
     shared_preferences: ^2.2.0
+    lorem_ipsum: ^0.0.3
 
 dependency_overrides:
     enhanced_containers:
