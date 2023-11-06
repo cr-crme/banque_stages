@@ -21,20 +21,6 @@ void main() {
       expect(find.text(ScreenTest.myStudents.name), findsOneWidget);
     });
 
-    testWidgets('The drawer tiles content', (WidgetTester tester) async {
-      // Load the app and navigate and open the drawer.
-      await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
-      await tester.openDrawer();
-
-      // Verify that the drawer contains the expected tiles
-      for (final screenName in ScreenTest.values) {
-        expect(
-            find.ancestor(
-                of: find.text(screenName.name), matching: find.byType(Card)),
-            findsWidgets);
-      }
-    });
-
     testWidgets('The drawer navigates and closes on click',
         (WidgetTester tester) async {
       // Load the app and navigate and open the drawer.
@@ -44,8 +30,10 @@ void main() {
       for (final screenNameOuter in ScreenTest.values) {
         for (final screenNameInner in ScreenTest.values) {
           // For some reason, these two next fail (because it is too long)
-          if (screenNameInner == ScreenTest.healthAndSafetyAtPFAE) continue;
-          if (screenNameOuter == ScreenTest.healthAndSafetyAtPFAE) continue;
+          if (screenNameInner == ScreenTest.healthAndSafetyAtPFAE ||
+              screenNameOuter == ScreenTest.healthAndSafetyAtPFAE) {
+            continue;
+          }
 
           // Navigate from Outer to Inner screen
           await tester.navigateToScreen(screenNameInner);

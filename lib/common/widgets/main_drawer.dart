@@ -1,4 +1,3 @@
-import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/numbered_tablet.dart';
 import 'package:crcrme_banque_stages/dummy_data.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
@@ -12,11 +11,6 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = AuthProvider.of(context, listen: false);
-    if (!auth.isSignedIn()) {
-      Future.microtask(() => GoRouter.of(context).goNamed(Screens.login));
-    }
-
     return Drawer(
       child: Scaffold(
         appBar: AppBar(title: const Text('Banque de Stages')),

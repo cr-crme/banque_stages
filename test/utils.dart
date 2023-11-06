@@ -51,6 +51,7 @@ extension BanqueStageWidgetTester on WidgetTester {
     final targetButton =
         find.ancestor(of: find.text(target.name), matching: find.byType(Card));
     await tap(targetButton);
+
     await pumpAndSettle(const Duration(milliseconds: 500));
   }
 
@@ -87,57 +88,62 @@ extension BanqueStageWidgetTester on WidgetTester {
     bool withInternships = false,
     bool withItineraries = false,
   }) async {
-    // Add the providers to the widget tree
-    if (withAuthentication) {
-      child = ChangeNotifierProvider<AuthProvider>(
-        create: (context) => AuthProvider(mockMe: true),
-        child: child,
-      );
+    if (!withAuthentication &&
+        !withSchools &&
+        !withTeachers &&
+        !withStudents &&
+        !withEnterprises &&
+        !withInternships &&
+        !withItineraries) {
+      throw Exception('At least one provider must be required');
     }
 
-    if (withSchools) {
-      child = ChangeNotifierProvider<SchoolsProvider>(
-        create: (context) => SchoolsProvider(mockMe: true),
-        child: child,
-      );
-    }
-
-    if (withTeachers) {
-      child = ChangeNotifierProvider<TeachersProvider>(
-        create: (context) => TeachersProvider(mockMe: true),
-        child: child,
-      );
-    }
-
-    if (withStudents) {
-      child = ChangeNotifierProvider<StudentsProvider>(
-        create: (context) => StudentsProvider(mockMe: true),
-        child: child,
-      );
-    }
-
-    if (withEnterprises) {
-      child = ChangeNotifierProvider<EnterprisesProvider>(
-        create: (context) => EnterprisesProvider(mockMe: true),
-        child: child,
-      );
-    }
-
-    if (withInternships) {
-      child = ChangeNotifierProvider<InternshipsProvider>(
-        create: (context) => InternshipsProvider(mockMe: true),
-        child: child,
-      );
-    }
-
-    if (withItineraries) {
-      child = ChangeNotifierProvider<ItinerariesProvider>(
-        create: (context) => ItinerariesProvider(mockMe: true),
-        child: child,
-      );
-    }
-
-    await pumpWidget(MaterialApp(builder: (ctx, ch) => child));
+    await pumpWidget(
+      MaterialApp(
+        builder: (ctx, ch) => MultiProvider(providers: [
+          if (withAuthentication)
+            ChangeNotifierProvider(
+                create: (context) => AuthProvider(mockMe: true)),
+          if (withSchools)
+            ChangeNotifierProvider(
+                create: (context) => SchoolsProvider(mockMe: true)),
+          if (withEnterprises)
+            ChangeNotifierProvider(
+                create: (context) => EnterprisesProvider(mockMe: true)),
+          if (withInternships)
+            ChangeNotifierProvider(
+                create: (context) => InternshipsProvider(mockMe: true)),
+          if (withItineraries && withAuthentication)
+            ChangeNotifierProxyProvider<AuthProvider, ItinerariesProvider>(
+              create: (context) => ItinerariesProvider(mockMe: true),
+              update: (context, auth, previous) =>
+                  previous!..initializeAuth(auth),
+            ),
+          if (withItineraries && !withAuthentication)
+            ChangeNotifierProvider<ItinerariesProvider>(
+                create: (context) => ItinerariesProvider(mockMe: true)),
+          if (withTeachers && withAuthentication)
+            ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
+              create: (context) => TeachersProvider(mockMe: true),
+              update: (context, auth, previous) =>
+                  previous!..initializeAuth(auth),
+            ),
+          if (withTeachers && !withAuthentication)
+            ChangeNotifierProvider<TeachersProvider>(
+                create: (context) => TeachersProvider(mockMe: true)),
+          if (withStudents && withAuthentication)
+            ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
+              create: (context) => StudentsProvider(mockMe: true),
+              update: (context, auth, previous) =>
+                  previous!..initializeAuth(auth),
+            ),
+          if (withStudents && !withAuthentication)
+            ChangeNotifierProvider<StudentsProvider>(
+              create: (context) => StudentsProvider(mockMe: true),
+            ),
+        ], child: child),
+      ),
+    );
   }
 }
 
