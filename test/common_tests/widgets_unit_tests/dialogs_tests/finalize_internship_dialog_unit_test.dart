@@ -1,0 +1,165 @@
+import 'package:crcrme_banque_stages/common/widgets/dialogs/finalize_internship_dialog.dart';
+import 'package:crcrme_banque_stages/initialize_program.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../../../utils.dart';
+import '../../utils.dart';
+import '../utils.dart';
+
+void main() {
+  group('FinalizeInternshipDialog', () {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+
+    testWidgets('renders a title', (tester) async {
+      await tester.pumpWidgetWithNotifiers(
+          const FinalizeInternshipDialog(internshipId: 'internshipId'),
+          withInternships: true,
+          dummyInternship: dummyInternship());
+
+      expect(find.text('Mettre fin au stage?'), findsOneWidget);
+    });
+
+    testWidgets('renders a text zone', (tester) async {
+      await tester.pumpWidgetWithNotifiers(
+          const FinalizeInternshipDialog(internshipId: 'internshipId'),
+          withInternships: true,
+          dummyInternship: dummyInternship());
+
+      expect(find.text('Nombre d\'heures de stage faites'), findsOneWidget);
+      expect(find.byType(TextFormField), findsOneWidget);
+      expect(find.text('h'), findsOneWidget);
+    });
+
+    testWidgets('text zone has 0 as default if no achievedLength exists',
+        (tester) async {
+      await tester.pumpWidgetWithNotifiers(
+          const FinalizeInternshipDialog(internshipId: 'internshipId'),
+          withInternships: true,
+          dummyInternship: dummyInternship(achievedLength: -1));
+
+      final textFormField =
+          tester.widget<TextFormField>(find.byType(TextFormField));
+
+      expect(textFormField.initialValue, '0');
+    });
+
+    testWidgets('text zone has achievedLength as default value if exists',
+        (tester) async {
+      await tester.pumpWidgetWithNotifiers(
+          const FinalizeInternshipDialog(internshipId: 'internshipId'),
+          withInternships: true,
+          dummyInternship: dummyInternship(achievedLength: 100));
+
+      final textFormField =
+          tester.widget<TextFormField>(find.byType(TextFormField));
+
+      expect(textFormField.initialValue, '100');
+    });
+
+    testWidgets('should display a cancel button', (tester) async {
+      await tester.pumpWidgetWithNotifiers(
+          const FinalizeInternshipDialog(internshipId: 'internshipId'),
+          withInternships: true,
+          dummyInternship: dummyInternship());
+
+      final cancelFinder = find.byType(OutlinedButton);
+      expect(find.byType(OutlinedButton), findsOneWidget);
+
+      final textFinder =
+          find.descendant(of: cancelFinder, matching: find.byType(Text));
+      expect(textFinder, findsOneWidget);
+
+      final text = tester.widget<Text>(textFinder);
+      expect(text.data, 'Non');
+    });
+
+    testWidgets('should display a confirm button', (tester) async {
+      await tester.pumpWidgetWithNotifiers(
+          const FinalizeInternshipDialog(internshipId: 'internshipId'),
+          withInternships: true,
+          dummyInternship: dummyInternship());
+
+      final confirmFinder = find.byType(TextButton);
+      expect(confirmFinder, findsOneWidget);
+
+      final textFinder =
+          find.descendant(of: confirmFinder, matching: find.byType(Text));
+      expect(textFinder, findsOneWidget);
+
+      final text = tester.widget<Text>(textFinder);
+      expect(text.data, 'Oui');
+    });
+
+    testWidgets('can cancel', (tester) async {
+      await tester.pumpWidgetWithNotifiers(
+          declareWidget(
+              const FinalizeInternshipDialog(internshipId: 'internshipId')),
+          withInternships: true,
+          dummyInternship: dummyInternship());
+
+      await tester.tap(find.text('Non'));
+      await tester.pumpAndSettle();
+
+      // The dialog should be closed
+      expect(find.byType(FinalizeInternshipDialog), findsNothing);
+    });
+
+    testWidgets('confirming is refused if no time is entered', (tester) async {
+      await tester.pumpWidgetWithNotifiers(
+          declareWidget(
+              const FinalizeInternshipDialog(internshipId: 'internshipId')),
+          withInternships: true,
+          dummyInternship: dummyInternship(achievedLength: -1));
+
+      await tester.tap(find.text('Oui'));
+      await tester.pumpAndSettle();
+
+      // The dialog should still be open
+      expect(find.byType(FinalizeInternshipDialog), findsOneWidget);
+
+      // An error message should be displayed
+      expect(find.text('Entrer une valeur'), findsOneWidget);
+    });
+
+    testWidgets('confirming is refused if an invalid time is entered',
+        (tester) async {
+      await tester.pumpWidgetWithNotifiers(
+          declareWidget(
+              const FinalizeInternshipDialog(internshipId: 'internshipId')),
+          withInternships: true,
+          dummyInternship: dummyInternship(achievedLength: -1));
+
+      await tester.enterText(find.byType(TextFormField), '100.1');
+      await tester.pump();
+
+      await tester.tap(find.text('Oui'));
+      await tester.pumpAndSettle();
+
+      // The dialog should still be open
+      expect(find.byType(FinalizeInternshipDialog), findsOneWidget);
+
+      // An error message should be displayed
+      expect(find.text('Entrer une valeur'), findsOneWidget);
+    });
+
+    testWidgets('confirming is accepted if a valid time is entered',
+        (tester) async {
+      await tester.pumpWidgetWithNotifiers(
+          declareWidget(
+              const FinalizeInternshipDialog(internshipId: 'internshipId')),
+          withInternships: true,
+          dummyInternship: dummyInternship(achievedLength: -1));
+
+      await tester.enterText(find.byType(TextFormField), '100');
+      await tester.pump();
+
+      await tester.tap(find.text('Oui'));
+      await tester.pumpAndSettle();
+
+      // The dialog should still be open
+      expect(find.byType(FinalizeInternshipDialog), findsNothing);
+    });
+  });
+}

@@ -76,7 +76,7 @@ void main() {
       expect(find.text('Le champ ne peut pas être vide.'), findsOneWidget);
     });
 
-    testWidgets('confirming is accepted if a  description is entered',
+    testWidgets('confirming is accepted if a description is entered',
         (tester) async {
       await tester
           .pumpWidget(declareWidget(const AddTextDialog(title: 'My title')));

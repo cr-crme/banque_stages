@@ -82,6 +82,6 @@ class FinalizeInternshipDialog extends StatelessWidget {
             ),
           ),
         ),
-        onWillPop: () async => false);
+        onWillPop: () async => false); // coverage:ignore-line
   }
 }

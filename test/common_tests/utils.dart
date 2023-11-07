@@ -230,6 +230,7 @@ Internship dummyInternship({
   String enterpriseId = 'enterpriseId',
   String jobId = 'jobId',
   bool hasEndDate = false,
+  int achievedLength = 130,
 }) {
   final period = DateTimeRange(
       start: DateTime(1995, 10, 31),
@@ -254,7 +255,7 @@ Internship dummyInternship({
     date: period,
     endDate: hasEndDate ? DateTime(2034, 10, 28) : null,
     expectedLength: 135,
-    achievedLength: 130,
+    achievedLength: achievedLength,
     enterpriseEvaluation:
         dummyPostInternshipEnterpriseEvaluation(internshipId: id),
     weeklySchedules: [dummyWeeklySchedule(period: period)],
