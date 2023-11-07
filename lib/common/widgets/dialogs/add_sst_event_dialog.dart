@@ -3,6 +3,23 @@ import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 
+enum SstEventType {
+  severe,
+  verbal,
+  minor;
+
+  String get description {
+    switch (this) {
+      case SstEventType.severe:
+        return 'Blessure grave : l\'élève a dû aller à l\'hôpital pour recevoir des soins';
+      case SstEventType.verbal:
+        return 'Agression verbale ou harcèlement par des collègues ou des clients';
+      case SstEventType.minor:
+        return 'Blessure mineure de l\'élève\n(p. ex. brûlure légère)';
+    }
+  }
+}
+
 class AddSstEventDialog extends StatefulWidget {
   const AddSstEventDialog({super.key});
 
@@ -23,19 +40,15 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
   void _onConfirm() {
     if (_eventType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sélectionner un type d\'incident.'),
-        ),
+        const SnackBar(content: Text('Sélectionner un type d\'incident.')),
       );
       return;
     }
 
     if (FormService.validateForm(_formKey,
         save: true, showSnackbarError: true)) {
-      Navigator.pop(context, {
-        'eventType': _eventType,
-        'description': _description,
-      });
+      Navigator.pop(
+          context, {'eventType': _eventType, 'description': _description});
     }
   }
 
@@ -50,7 +63,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
             children: [
               RadioListTile(
                 title: Text(
-                  'Blessure grave : l\'élève a dû aller à l\'hôpital pour recevoir des soins',
+                  SstEventType.severe.description,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 value: SstEventType.severe,
@@ -60,7 +73,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
               ),
               RadioListTile(
                 title: Text(
-                  'Agression verbale ou harcèlement par des collègues ou des clients',
+                  SstEventType.verbal.description,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 value: SstEventType.verbal,
@@ -70,7 +83,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
               ),
               RadioListTile(
                 title: Text(
-                  'Blessure mineure de l\'élève\n(p. ex. brûlure légère)',
+                  SstEventType.minor.description,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 value: SstEventType.minor,
@@ -102,5 +115,3 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
     );
   }
 }
-
-enum SstEventType { severe, verbal, minor }
