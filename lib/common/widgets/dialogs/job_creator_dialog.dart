@@ -33,7 +33,7 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: WillPopScope(
-        onWillPop: () async => false,
+        onWillPop: () async => false, // coverage:ignore-line
         child: AlertDialog(
           title: const Text('Ajouter un nouveau poste'),
           content: Form(

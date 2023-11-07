@@ -153,7 +153,6 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   }
 
   Row _buildAvailability(FormFieldState<Job> state) {
-    debugPrint('ici');
     return Row(
       children: [
         Expanded(

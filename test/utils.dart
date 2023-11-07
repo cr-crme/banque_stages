@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
@@ -93,6 +94,7 @@ extension BanqueStageWidgetTester on WidgetTester {
     bool withEnterprises = false,
     bool withInternships = false,
     bool withItineraries = false,
+    Enterprise? dummyEnterprise,
     Internship? dummyInternship,
   }) async {
     if (!withAuthentication &&
@@ -115,8 +117,11 @@ extension BanqueStageWidgetTester on WidgetTester {
             ChangeNotifierProvider(
                 create: (context) => SchoolsProvider(mockMe: true)),
           if (withEnterprises)
-            ChangeNotifierProvider(
-                create: (context) => EnterprisesProvider(mockMe: true)),
+            ChangeNotifierProvider(create: (context) {
+              final enterprises = EnterprisesProvider(mockMe: true);
+              if (dummyEnterprise != null) enterprises.add(dummyEnterprise);
+              return enterprises;
+            }),
           if (withInternships)
             ChangeNotifierProvider(create: (context) {
               final internships = InternshipsProvider(mockMe: true);
