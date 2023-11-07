@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ConfirmExitDialog {
+class ConfirmExitDialog extends StatelessWidget {
+  const ConfirmExitDialog({super.key, required this.content});
+
+  final Widget content;
+
+  // coverage:ignore-start
   static Future<bool> show(
     BuildContext context, {
     required Widget content,
@@ -13,20 +18,15 @@ class ConfirmExitDialog {
     return await showDialog<bool>(
             context: context,
             barrierDismissible: false,
-            builder: (context) => _ConfirmExitDialog(content: content)) ??
+            builder: (context) => ConfirmExitDialog(content: content)) ??
         false;
   }
-}
-
-class _ConfirmExitDialog extends StatelessWidget {
-  const _ConfirmExitDialog({required this.content});
-
-  final Widget content;
+  // coverage:ignore-end
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async => false,
+        onWillPop: () async => false, // coverage:ignore-line
         child: AlertDialog(
           title: const Text('Voulez-vous quitter?'),
           content: SingleChildScrollView(child: content),

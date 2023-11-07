@@ -4,7 +4,7 @@ import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart'
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
-import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';

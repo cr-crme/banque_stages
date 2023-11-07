@@ -6,7 +6,7 @@ import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart'
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/activity_type_cards.dart';
-import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/share_with_picker_form_field.dart';

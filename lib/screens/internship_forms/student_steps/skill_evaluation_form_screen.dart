@@ -4,7 +4,7 @@ import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.d
 import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';

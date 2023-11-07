@@ -6,7 +6,7 @@ import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart'
 import 'package:crcrme_banque_stages/common/widgets/animated_expanding_card.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_sst_event_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_text_dialog.dart';
-import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_pop_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/job_creator_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/storage_service.dart';
