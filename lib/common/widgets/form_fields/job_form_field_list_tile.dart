@@ -64,8 +64,9 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
 
     if (_uniformKey.currentState!.value == null) return 'invalid_radio_choice';
 
-    if (_protectionsKey.currentState!.hasFollowUp &&
-        _protectionsTypeKey.currentState!.values.isEmpty) {
+    if (_protectionsKey.currentState!.value == null ||
+        (_protectionsKey.currentState!.hasFollowUp &&
+            _protectionsTypeKey.currentState!.values.isEmpty)) {
       return 'invalid_protections_choice';
     }
 
@@ -169,8 +170,9 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
             spacing: 0,
             decoration: const InputDecoration(border: InputBorder.none),
             validator: (value) {
-              final out =
-                  _isValidating && int.parse(value!) == 0 ? 'Combien?' : null;
+              final out = _isValidating && int.parse(value!) == 0
+                  ? 'Combien\u00a0?'
+                  : null;
               _isValidating = false;
               return out;
             },
@@ -219,7 +221,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
           focusNode: focusNode,
           validator: (value) {
             _isValidating = true;
-            return value!.isEmpty ? 'Sélectionner un métier' : null;
+            return value!.isEmpty ? 'Sélectionner un métier.' : null;
           },
           enabled: _availableSpecialization.length != 1,
           decoration: InputDecoration(
@@ -300,7 +302,7 @@ class BuildProtectionsRadio extends StatelessWidget {
       key: protectionsKey,
       title: hideTitle
           ? null
-          : '*Est-ce que l\'élève devra porter des équipements de protection '
+          : '* Est-ce que l\'élève devra porter des équipements de protection '
               'individuelle (EPI)\u00a0?',
       titleStyle: Theme.of(context).textTheme.bodyLarge,
       elements: ProtectionsStatus.values,

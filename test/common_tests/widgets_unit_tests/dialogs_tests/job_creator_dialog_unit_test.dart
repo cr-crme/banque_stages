@@ -1,11 +1,11 @@
 import 'package:crcrme_banque_stages/common/widgets/dialogs/job_creator_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../utils.dart';
+import '../form_fields_tests/job_form_field_list_tile_unit_test.dart';
 import '../utils.dart';
 
 void main() {
@@ -92,40 +92,12 @@ void main() {
       expect(find.byType(SnackBar), findsOneWidget);
     });
 
-    testWidgets('confirming is accepted if a valid values are entered',
+    testWidgets('confirming is accepted if valid values are entered',
         (tester) async {
       await tester.pumpWidget(
           declareWidget(JobCreatorDialog(enterprise: dummyEnterprise())));
 
-      // Enter a specialization
-      final textFinders = find.byType(TextField);
-      await tester.tap(textFinders.at(0));
-      await tester.pump();
-      await tester.tap(find.text(ActivitySectorsService.allSpecializations
-          .where((e) => e.id == '8349')
-          .first
-          .idWithName));
-      await tester.pump();
-
-      // Enter an age
-      await tester.enterText(find.byType(TextField).at(1), '15');
-      await tester.pump();
-
-      // Add at least one position
-      await tester.tap(find.byIcon(Icons.add));
-      await tester.pump();
-
-      // Drag the screen up to reveal the rest of the form
-      await tester.drag(find.byType(JobCreatorDialog), const Offset(0, -500));
-      await tester.pumpAndSettle();
-
-      // Add uniform and equipment
-      final noFinders = find.text('Non');
-      expect(noFinders, findsNWidgets(2));
-      await tester.tap(noFinders.first);
-      await tester.pump();
-      await tester.tap(noFinders.last);
-      await tester.pump();
+      await fillAllJobFormFieldsListTile(tester);
 
       // Validate
       await tester.tap(find.text('Confirmer'));
