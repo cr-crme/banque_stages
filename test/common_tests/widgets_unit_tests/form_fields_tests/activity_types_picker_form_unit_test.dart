@@ -123,6 +123,74 @@ void main() {
       expect(chipFinder, findsOneWidget);
       expect(textOnChip.data, activityTypes[1]);
     });
+
+    testWidgets('can delete a choice when only one choice was made',
+        (tester) async {
+      await tester.pumpWidget(
+          declareWidget(ActivityTypesPickerFormField(activityTabAtTop: false)));
+
+      // Add an activity
+      await tester.tap(find.byType(TextField));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(activityTypes[0]));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Chip), findsOneWidget);
+
+      // Delete the card
+      await tester.tap(find.byIcon(Icons.delete));
+      await tester.pumpAndSettle();
+
+      // The card is no longer present
+      expect(find.byType(Chip), findsNothing);
+    });
+
+    testWidgets('type text to narrow the search in tab', (tester) async {
+      await tester.pumpWidget(
+          declareWidget(ActivityTypesPickerFormField(activityTabAtTop: false)));
+
+      // The choices are Text which also exists in the Picker, so level out
+      final baseNbOfTexts = find.byType(Text).evaluate().length;
+
+      // Open the tab
+      await tester.tap(find.byType(TextField));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Text),
+          findsNWidgets(baseNbOfTexts + activityTypes.length));
+
+      // Type the first letter of the first activity
+      await tester.enterText(find.byType(TextField), 'Agr');
+      await tester.pumpAndSettle();
+      expect(find.byType(Text), findsNWidgets(baseNbOfTexts + 1));
+
+      // Also try not capitalizing the first letter of the activity
+      await tester.enterText(find.byType(TextField), 'agr');
+      await tester.pumpAndSettle();
+      expect(find.byType(Text), findsNWidgets(baseNbOfTexts + 1));
+
+      // Selecting the activity closes the tab and clears the text
+      expect(find.text('agr'), findsOneWidget);
+      await tester.tap(find.text(activityTypes[0]));
+      await tester.pumpAndSettle();
+      expect(find.byType(Chip), findsOneWidget);
+      expect(find.text('agr'), findsNothing);
+    });
+
+    testWidgets('typed text can be erased by the clear button', (tester) async {
+      await tester.pumpWidget(
+          declareWidget(ActivityTypesPickerFormField(activityTabAtTop: false)));
+
+      // Type something
+      await tester.enterText(find.byType(TextField), 'Agr');
+      await tester.pumpAndSettle();
+      expect(find.text('Agr'), findsOneWidget);
+
+      // Clear the text
+      await tester.tap(find.byIcon(Icons.clear));
+      await tester.pumpAndSettle();
+      expect(find.text('Agr'), findsNothing);
+    });
   });
 
   group('ActivityTypesPickerFormField positioning of chips', () {

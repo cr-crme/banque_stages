@@ -71,10 +71,6 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
             return TextField(
               controller: controller,
               focusNode: focusNode,
-              onSubmitted: (_) {
-                onSubmitted();
-                controller.text = '';
-              },
               decoration: InputDecoration(
                   labelText: '* Type d\'activité de l\'entreprise',
                   errorText: state.errorText,
