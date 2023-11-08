@@ -10,7 +10,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
     this.hasNotApplicableOption = false,
     this.showOtherOption = true,
     this.errorMessageOther = 'Préciser au moins un élément',
-    this.onOptionWasSelected,
+    this.onOptionSelected,
     this.followUpChild,
     this.enabled = true,
   });
@@ -22,7 +22,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
   final bool showOtherOption;
   final bool hasNotApplicableOption;
   final String errorMessageOther;
-  final Function(List<String>)? onOptionWasSelected;
+  final Function(List<String>)? onOptionSelected;
   final Widget? followUpChild;
   final bool enabled;
 
@@ -136,8 +136,8 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
                   _elementValues[element] = newValue!;
                   _checkForShowingChild();
                   setState(() {});
-                  if (widget.onOptionWasSelected != null) {
-                    widget.onOptionWasSelected!(values);
+                  if (widget.onOptionSelected != null) {
+                    widget.onOptionSelected!(values);
                   }
                 },
               ),
@@ -165,8 +165,8 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
                 _checkForShowingChild();
               }
               setState(() {});
-              if (widget.onOptionWasSelected != null) {
-                widget.onOptionWasSelected!(values);
+              if (widget.onOptionSelected != null) {
+                widget.onOptionSelected!(values);
               }
             },
           ),
@@ -185,8 +185,8 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
               _hasOther = newValue!;
               _checkForShowingChild();
               setState(() {});
-              if (widget.onOptionWasSelected != null) {
-                widget.onOptionWasSelected!(values);
+              if (widget.onOptionSelected != null) {
+                widget.onOptionSelected!(values);
               }
             },
           ),
@@ -213,10 +213,11 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
                   style: Theme.of(context).textTheme.bodyMedium,
                   keyboardType: TextInputType.multiline,
                   onChanged: (text) {
-                    if (widget.onOptionWasSelected != null) {
-                      widget.onOptionWasSelected!(values);
+                    if (widget.onOptionSelected != null) {
+                      widget.onOptionSelected!(values);
                     }
                   },
+                  enabled: widget.enabled,
                   validator: (value) => _hasOther &&
                           (value == null ||
                               !RegExp('[a-zA-Z0-9]').hasMatch(value))

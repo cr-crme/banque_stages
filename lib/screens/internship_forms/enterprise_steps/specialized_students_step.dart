@@ -111,7 +111,7 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
                 titleStyle: Theme.of(context).textTheme.titleSmall,
                 elements: _Disabilities.values,
                 showOtherOption: false,
-                onOptionWasSelected: (value) => setState(() =>
+                onOptionSelected: (value) => setState(() =>
                     _disabilities = _hasDisabilitiesKey.currentState!.selected),
               ),
             if (_disabilities.isNotEmpty)

@@ -336,7 +336,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
                             .questions['Q${question.id}'] as List?)
                         ?.map((e) => e as String)
                         .toList(),
-                    onOptionWasSelected: (values) {
+                    onOptionSelected: (values) {
                       answer['Q${question.id}'] = values;
                       if (!question.choices!.any((q) => values.contains(q))) {
                         answer['Q${question.id}+t'] = null;

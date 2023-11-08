@@ -314,7 +314,7 @@ class _TaskEvaluation extends StatelessWidget {
       child: CheckboxWithOther(
         title: 'L\'élève a réussi les tâches suivantes\u00a0:',
         elements: skill.tasks,
-        onOptionWasSelected: (values) {
+        onOptionSelected: (values) {
           for (final task in formController.taskCompleted[skill.id]!.keys) {
             formController.taskCompleted[skill.id]![task] =
                 values.contains(task)
