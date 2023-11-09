@@ -82,9 +82,10 @@ abstract class FormService {
     String? confirmPassword,
     String? password,
   ) {
-    if (password == null || password.isEmpty || confirmPassword == null) {
-      return null;
+    if (password == null || password.isEmpty) {
+      return 'Le mot de passe ne peut pas être vide.';
     }
+
     if (confirmPassword != password) {
       return 'Les mots de passe ne correspondent pas.';
     }
