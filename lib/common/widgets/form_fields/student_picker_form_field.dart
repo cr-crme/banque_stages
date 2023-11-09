@@ -53,13 +53,12 @@ class StudentPickerFormField extends StatelessWidget {
             onSelected: (student) {
               FocusManager.instance.primaryFocus?.unfocus();
               state.didChange(student);
-              onSelect == null ? null : onSelect!(student);
+              if (onSelect != null) onSelect!(student);
             },
             fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
               return TextField(
                 controller: controller,
                 focusNode: focusNode,
-                onSubmitted: (_) => onSubmitted(),
                 decoration: InputDecoration(
                     labelText: '* Élève',
                     hintText: 'Saisir le nom de l\'élève',

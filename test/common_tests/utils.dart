@@ -43,11 +43,13 @@ Teacher dummyTeacher(
     );
 
 Student dummyStudent({
+  String firstName = 'Jeanne',
+  String lastName = 'Doe',
   String id = 'studentId',
   Program program = Program.fpt,
   String group = '101',
 }) {
-  final tp = dummyPerson();
+  final tp = dummyPerson(firstName: firstName, lastName: lastName);
   return Student(
     id: id,
     firstName: tp.firstName,

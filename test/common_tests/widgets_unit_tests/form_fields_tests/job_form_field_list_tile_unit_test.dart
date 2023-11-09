@@ -223,7 +223,7 @@ void main() {
           isFalse);
     });
 
-    testWidgets('can clear test by tapping clear icon', (tester) async {
+    testWidgets('can clear text by tapping clear icon', (tester) async {
       await tester.pumpWidget(declareWidget(
           const SingleChildScrollView(child: JobFormFieldListTile())));
 
