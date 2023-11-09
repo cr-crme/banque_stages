@@ -1,7 +1,5 @@
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-
 import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
+import 'package:flutter/material.dart';
 
 const List<String> shareWithSuggestions = [
   'Mon centre de services scolaire',
@@ -49,16 +47,6 @@ class ShareWithPickerFormField extends FormField<String> {
         return TextField(
           controller: controller,
           focusNode: focusNode,
-          onSubmitted: (_) => onSubmitted(),
-          onChanged: (text) {
-            if (!shareWithSuggestions.contains(text)) {
-              if (controller.text != '') state.didChange(null);
-              controller.text = '';
-              return;
-            }
-            state.didChange(shareWithSuggestions
-                .firstWhereOrNull((suggestion) => suggestion == text));
-          },
           readOnly: true,
           decoration: InputDecoration(
               labelText: '* Partager l\'entreprise avec',
