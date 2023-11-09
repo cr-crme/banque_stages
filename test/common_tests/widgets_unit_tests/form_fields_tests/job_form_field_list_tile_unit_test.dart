@@ -190,12 +190,37 @@ void main() {
             ActivitySectorsService.allSpecializations.sublist(0, 10)),
       ))));
 
+      expect(
+          tester
+              .widget<TextFormField>(find.byType(TextFormField).first)
+              .enabled,
+          isTrue);
+
       final nbInkWellBase = find.byType(InkWell).evaluate().length;
 
       await tester.tap(find.byType(TextFormField).first);
       await tester.pumpAndSettle();
 
       expect(find.byType(InkWell), findsNWidgets(nbInkWellBase + 10));
+    });
+
+    testWidgets(
+        'if there is only one choice it should be automatically selected',
+        (tester) async {
+      await tester.pumpWidget(declareWidget(SingleChildScrollView(
+          child: JobFormFieldListTile(
+        specializations: _formattingSpecialization(
+            ActivitySectorsService.allSpecializations.sublist(0, 1)),
+      ))));
+
+      expect(find.text(ActivitySectorsService.allSpecializations[0].idWithName),
+          findsOneWidget);
+
+      expect(
+          tester
+              .widget<TextFormField>(find.byType(TextFormField).first)
+              .enabled,
+          isFalse);
     });
 
     testWidgets('can clear test by tapping clear icon', (tester) async {

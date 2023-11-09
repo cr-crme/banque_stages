@@ -100,17 +100,16 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
         if (widget.onSaved == null || _specialization == null) return;
 
         final preInternshipRequest = PreInternshipRequest(
-            requests: _preInternshipRequestKey.currentState?.values
-                    .map<String>((e) => e.toString())
-                    .toList() ??
-                []);
+            requests: _preInternshipRequestKey.currentState!.values
+                .map<String>((e) => e.toString())
+                .toList());
         final uniform = Uniform(
             status: _uniformKey.currentState?.value ?? UniformStatus.none,
             uniform: _uniformTextController.text);
         final protections = Protections(
             status:
                 _protectionsKey.currentState?.value ?? ProtectionsStatus.none,
-            protections: _protectionsTypeKey.currentState?.values ?? []);
+            protections: _protectionsTypeKey.currentState!.values);
 
         widget.onSaved!(Job(
           specialization: _specialization!,
@@ -185,13 +184,7 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
 
   Autocomplete<Specialization> _buildJobPicker(FormFieldState<Job> state) {
     return Autocomplete<Specialization>(
-      displayStringForOption: (specialization) {
-        final available = widget.specializations == null
-            ? null
-            : widget.specializations![specialization];
-        return '${specialization.idWithName}'
-            '${available == null ? '' : '\n($available stage${available > 1 ? 's' : ''} disponible${available > 1 ? 's' : ''})'}';
-      },
+      displayStringForOption: (specialization) => specialization.idWithName,
       optionsBuilder: (textEditingValue) => _availableSpecialization
           .where((s) => s.idWithName
               .toLowerCase()
