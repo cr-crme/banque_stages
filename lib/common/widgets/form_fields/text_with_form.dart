@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class TextWithForm extends StatelessWidget {
   const TextWithForm({
-    this.visible = true,
     required this.title,
     this.titleStyle,
     this.controller,
@@ -12,8 +11,6 @@ class TextWithForm extends StatelessWidget {
     this.validator,
     super.key,
   });
-
-  final bool visible;
 
   final String title;
   final TextStyle? titleStyle;
