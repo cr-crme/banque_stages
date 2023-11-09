@@ -43,9 +43,8 @@ class LowHighSliderFormField extends FormField<double> {
           Expanded(
             child: Slider(
               value: state.value! * factor,
-              onChanged: (value) {
-                fixed ? null : state.didChange(value / factor);
-              },
+              onChanged: (value) =>
+                  fixed ? null : state.didChange(value / factor),
               min: (min * factor).toDouble(),
               max: (max * factor).toDouble(),
               divisions: (max - min) * factor.toInt(),
