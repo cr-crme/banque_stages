@@ -1,26 +1,23 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:nanoid/nanoid.dart';
 import 'package:path/path.dart';
 
-abstract class StorageService {
-  static Future<String> uploadJobImage(String path) async {
-    return await _uploadFile('enterprises/jobs/', File(path));
-  }
+class StorageService {
+  // Declare a singleton pattern
+  static final StorageService _instance = StorageService._internal();
+  static StorageService get instance => _instance;
+  StorageService._internal();
 
-  static Future<void> removeJobImage(String url) async {
-    final match = RegExp(r'^.*enterprises%2Fjobs%2F(.*)\?.*$').firstMatch(url);
-    if (match == null) return;
+  bool isMocked = false;
 
-    // This is unauthorized
-    // final imageName = match.group(1)!;
-    // await FirebaseStorage.instance.ref('entreprises/jobs/$imageName').delete();
-    return;
-  }
+  Future<String> uploadJobImage(String path) async {
+    final file = File(path);
+    const destination = 'enterprises/jobs/';
 
-  static Future<String> _uploadFile(String destination, File file) async {
-    var ref = FirebaseStorage.instance.ref(destination +
+    var ref = _storage.ref(destination +
         nanoid() +
         file.hashCode.toString() +
         extension(file.path));
@@ -28,4 +25,17 @@ abstract class StorageService {
     await ref.putFile(file);
     return await ref.getDownloadURL();
   }
+
+  Future<bool> removeJobImage(String url) async {
+    final match = RegExp(r'^.*enterprises%2Fjobs%2F(.*)\?.*$').firstMatch(url);
+    if (match == null) return false;
+
+    // This is unauthorized
+    // final imageName = match.group(1)!;
+    // await FirebaseStorage.instance.ref('entreprises/jobs/$imageName').delete();
+    return true;
+  }
+
+  FirebaseStorage get _storage =>
+      isMocked ? MockFirebaseStorage() : FirebaseStorage.instance;
 }

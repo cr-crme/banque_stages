@@ -4,6 +4,7 @@ import 'package:crcrme_banque_stages/firebase_options.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
+import 'package:crcrme_banque_stages/misc/storage_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -29,6 +30,7 @@ Future<void> initializeProgram(
     RiskDataFileService.loadData(),
     QuestionFileService.loadData(),
   ]);
+  StorageService.instance.isMocked = mockFirebase;
 
   // Connect Firebase to local emulators
   assert(() {

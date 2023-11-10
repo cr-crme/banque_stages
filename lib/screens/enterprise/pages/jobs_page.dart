@@ -77,7 +77,7 @@ class JobsPageState extends State<JobsPage> {
 
     for (XFile? file in images) {
       if (file == null) continue;
-      var url = await StorageService.uploadJobImage(file.path);
+      var url = await StorageService.instance.uploadJobImage(file.path);
       job.photosUrl.add(url);
     }
 
@@ -86,7 +86,7 @@ class JobsPageState extends State<JobsPage> {
 
   void _removeImage(Job job, int index) async {
     final enterprises = EnterprisesProvider.of(context, listen: false);
-    await StorageService.removeJobImage(job.photosUrl[index]);
+    await StorageService.instance.removeJobImage(job.photosUrl[index]);
     job.photosUrl.removeAt(index);
 
     enterprises.replace(widget.enterprise);
