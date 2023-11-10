@@ -3,7 +3,7 @@ import 'package:crcrme_banque_stages/main.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/widgets/enterprise_card.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../utils.dart';
+import '../../utils.dart';
 
 void main() {
   group('Enterprise navigation tab', () {

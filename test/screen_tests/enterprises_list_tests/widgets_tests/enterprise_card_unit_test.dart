@@ -6,11 +6,11 @@ import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../common_tests/utils.dart';
-import '../utils.dart';
+import '../../../common_tests/utils.dart';
+import '../../../utils.dart';
 
 void main() {
-  group('Enterprise card', () {
+  group('EnterpriseCard', () {
     testWidgets('Company name is written as title', (tester) async {
       final enterprise = dummyEnterprise()
         ..copyWith(address: Address(civicNumber: 100, street: 'No where'));

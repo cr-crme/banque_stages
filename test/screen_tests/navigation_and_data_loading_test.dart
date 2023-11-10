@@ -5,7 +5,7 @@ import 'package:crcrme_banque_stages/screens/students_list/widgets/student_card.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'utils.dart';
+import '../utils.dart';
 
 void main() {
   group('Navigation', () {
