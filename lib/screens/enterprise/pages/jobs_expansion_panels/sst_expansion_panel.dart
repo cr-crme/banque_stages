@@ -100,13 +100,13 @@ class _SstBody extends StatelessWidget {
           );
 
           switch (q.type) {
-            case Type.radio:
+            case QuestionType.radio:
               answerWidget = Text(
                 answer,
                 style: Theme.of(context).textTheme.bodyMedium,
               );
               break;
-            case Type.checkbox:
+            case QuestionType.checkbox:
               if ((answer as List).isEmpty ||
                   answer[0] == '__NOT_APPLICABLE_INTERNAL__') {
                 return Container();
@@ -114,12 +114,12 @@ class _SstBody extends StatelessWidget {
               answerWidget =
                   ItemizedText(answer.map((e) => e as String).toList());
               break;
-            case Type.text:
+            case QuestionType.text:
               answerWidget = Text(answer);
               break;
           }
         } else {
-          if (q.type == Type.checkbox || q.type == Type.text) {
+          if (q.type == QuestionType.checkbox || q.type == QuestionType.text) {
             throw 'Showing follow up question for Checkbox or Text '
                 'is not implemented yet';
           }

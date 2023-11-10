@@ -303,7 +303,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
                 widget.job.sstEvaluation.questions['Q${question.id}+t'];
 
             switch (question.type) {
-              case Type.radio:
+              case QuestionType.radio:
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 24.0),
                   child: RadioWithFollowUp(
@@ -325,7 +325,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
                   ),
                 );
 
-              case Type.checkbox:
+              case QuestionType.checkbox:
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 24.0),
                   child: CheckboxWithOther(
@@ -349,7 +349,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
                   ),
                 );
 
-              case Type.text:
+              case QuestionType.text:
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 36.0),
                   child: TextWithForm(

@@ -21,13 +21,17 @@ abstract class QuestionFileService {
   static List<Question> get questions => _questions;
 
   static List<Question> _questions = [];
+
+  static List serializeList() {
+    return _questions.map((e) => e.serialize()).toList();
+  }
 }
 
 class Question extends ItemSerializable {
   final String idSummary;
   final String question;
   final String? questionSummary;
-  final Type type;
+  final QuestionType type;
   final bool hasOther;
   final Set<String>? choices;
   final String? followUpQuestion;
@@ -37,7 +41,7 @@ class Question extends ItemSerializable {
       : idSummary = map['idSummary'],
         question = map['question'],
         questionSummary = map['summary'],
-        type = Type.fromSerialized(map['type']),
+        type = QuestionType.fromSerialized(map['type']),
         hasOther = map['hasOther'] == 'Oui',
         choices = map['choices'] == null
             ? null
@@ -48,26 +52,45 @@ class Question extends ItemSerializable {
         super.fromSerialized(map);
 
   @override
-  Map<String, dynamic> serializedMap() {
-    throw 'Question should not be serialized. Store its ID intead.';
-  }
+  Map<String, dynamic> serializedMap() => {
+        'idSummary': idSummary,
+        'question': question,
+        'summary': questionSummary,
+        'type': type.toString(),
+        'hasOther': hasOther ? 'Oui' : 'Non',
+        'choices': choices?.toList(),
+        'followUp': followUpQuestion,
+        'followUpSummary': followUpQuestionSummary,
+      };
 }
 
-enum Type {
+enum QuestionType {
   text,
   radio,
   checkbox;
 
-  static Type fromSerialized(data) {
+  static QuestionType fromSerialized(data) {
     switch (data) {
       case 'Texte':
-        return Type.text;
+        return QuestionType.text;
       case 'Choix de réponse':
-        return Type.checkbox;
+        return QuestionType.checkbox;
       case 'Vrai ou Faux':
-        return Type.radio;
+        return QuestionType.radio;
       default:
         throw 'Wrong format';
+    }
+  }
+
+  @override
+  String toString() {
+    switch (this) {
+      case QuestionType.text:
+        return 'Texte';
+      case QuestionType.checkbox:
+        return 'Choix de réponse';
+      case QuestionType.radio:
+        return 'Vrai ou Faux';
     }
   }
 }
