@@ -19,7 +19,7 @@ abstract class ActivitySectorsService {
         if (specialization.id == id) return specialization;
       }
     }
-    throw 'Specialization not found';
+    throw Exception('Specialization not found');
   }
 
   static List<Specialization> get allSpecializations {
@@ -40,7 +40,7 @@ class ActivitySector extends NamedItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() =>
-      super.serializedMap()..addAll({'s': specializations.serialize()});
+      super.serializedMap()..addAll({'s': specializations.serializeList()});
 
   final SpecializationList specializations;
 }
@@ -57,7 +57,21 @@ class ActivitySectorList extends _NamedItemSerializableList<ActivitySector> {
   }
 
   @override
-  ActivitySector deserializeItem(data) => ActivitySector.fromSerialized(map);
+  Map<String, dynamic> serialize() {
+    throw Exception(
+        'This method is not supported for ActivitySectorList, please use serializeList() instead');
+  }
+
+  List<Map<String, dynamic>> serializeList() {
+    final serialized = super.serialize();
+    // Transform the map into a list to fit how the json is constructed
+    return serialized.keys
+        .map((e) => serialized[e] as Map<String, dynamic>)
+        .toList();
+  }
+
+  @override
+  ActivitySector deserializeItem(data) => ActivitySector.fromSerialized(data);
 }
 
 class Specialization extends NamedItemSerializable {
@@ -73,8 +87,8 @@ class Specialization extends NamedItemSerializable {
         super.fromSerialized(map);
 
   @override
-  Map<String, dynamic> serializedMap() =>
-      super.serializedMap()..addAll({'s': skills.serialize(), 'q': questions});
+  Map<String, dynamic> serializedMap() => super.serializedMap()
+    ..addAll({'s': skills.serializeList(), 'q': questions});
 
   static ActivitySector _findSector(String id) {
     for (final sector in ActivitySectorsService.sectors) {
@@ -82,7 +96,7 @@ class Specialization extends NamedItemSerializable {
         if (specialization.id == id) return sector;
       }
     }
-    throw 'Sector could not be found for current specialization';
+    throw Exception('Sector could not be found for current specialization');
   }
 
   final SkillList skills;
@@ -101,7 +115,21 @@ class SpecializationList extends _NamedItemSerializableList<Specialization> {
   }
 
   @override
-  Specialization deserializeItem(data) => Specialization.fromSerialized(map);
+  Map<String, dynamic> serialize() {
+    throw Exception(
+        'This method is not supported for SpecializationList, please use serializeList() instead');
+  }
+
+  List<Map<String, dynamic>> serializeList() {
+    final serialized = super.serialize();
+    // Transform the map into a list to fit how the json is constructed
+    return serialized.keys
+        .map((e) => serialized[e] as Map<String, dynamic>)
+        .toList();
+  }
+
+  @override
+  Specialization deserializeItem(data) => Specialization.fromSerialized(data);
 }
 
 class Skill extends NamedItemSerializable {
@@ -162,7 +190,21 @@ class SkillList extends _NamedItemSerializableList<Skill> {
   }
 
   @override
-  Skill deserializeItem(data) => Skill.fromSerialized(map);
+  Map<String, dynamic> serialize() {
+    throw Exception(
+        'This method is not supported for SkillList, please use serializeList() instead');
+  }
+
+  List<Map<String, dynamic>> serializeList() {
+    final serialized = super.serialize();
+    // Transform the map into a list to fit how the json is constructed
+    return serialized.keys
+        .map((e) => serialized[e] as Map<String, dynamic>)
+        .toList();
+  }
+
+  @override
+  Skill deserializeItem(data) => Skill.fromSerialized(data);
 }
 
 abstract class NamedItemSerializable extends ItemSerializable {
@@ -179,8 +221,4 @@ abstract class NamedItemSerializable extends ItemSerializable {
 }
 
 abstract class _NamedItemSerializableList<T extends NamedItemSerializable>
-    extends ListSerializable<T> {
-  Iterable<T> whereId({required String id}) => where(
-        (e) => e.idWithName.contains(id),
-      );
-}
+    extends ListSerializable<T> {}
