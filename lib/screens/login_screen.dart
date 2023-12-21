@@ -4,7 +4,6 @@ import 'package:crcrme_banque_stages/router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -27,8 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     try {
-      await context
-          .read<AuthProvider>()
+      await AuthProvider.of(context)
           .signInWithEmailAndPassword(email: _email!, password: _password!);
     } on FirebaseAuthException catch (e) {
       late final String errorMessage;
@@ -48,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       scaffold.showSnackBar(SnackBar(content: Text(errorMessage)));
     }
+    setState(() {});
   }
 
   @override

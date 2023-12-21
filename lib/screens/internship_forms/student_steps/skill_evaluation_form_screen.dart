@@ -170,12 +170,12 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
                 scrollController: _scrollController,
                 type: StepperType.vertical,
                 currentStep: _currentStep,
-                onStepContinue: _nextStep,
+                onTapContinue: _nextStep,
                 onStepTapped: (int tapped) => setState(() {
                   _currentStep = tapped;
                   _scrollToCurrentTab();
                 }),
-                onStepCancel: _cancel,
+                onTapCancel: _cancel,
                 steps: [
                   ...skills.map((skill) => Step(
                         isActive: true,

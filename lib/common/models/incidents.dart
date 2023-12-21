@@ -8,8 +8,10 @@ class Incident extends ItemSerializable {
   Incident(this.incident, {DateTime? date}) : date = date ?? DateTime.now();
 
   Incident.fromSerialized(map)
-      : incident = map['incident'],
-        date = DateTime.fromMillisecondsSinceEpoch(map['date']),
+      : incident = map['incident'] ?? '',
+        date = map['date'] == null
+            ? DateTime(0)
+            : DateTime.fromMillisecondsSinceEpoch(map['date']),
         super.fromSerialized(map);
 
   @override
@@ -37,6 +39,7 @@ class Incidents extends ItemSerializable {
       [...severeInjuries, ...verbalAbuses, ...minorInjuries];
 
   Incidents({
+    super.id,
     List<Incident>? severeInjuries,
     List<Incident>? verbalAbuses,
     List<Incident>? minorInjuries,

@@ -163,12 +163,12 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
           type: StepperType.horizontal,
           scrollController: _scrollController,
           currentStep: _currentStep,
-          onStepContinue: _nextStep,
+          onTapContinue: _nextStep,
           onStepTapped: (int tapped) => setState(() {
             _scrollController.jumpTo(0);
             _currentStep = tapped;
           }),
-          onStepCancel: _cancel,
+          onTapCancel: _cancel,
           steps: [
             Step(
               state: _stepStatus[0],

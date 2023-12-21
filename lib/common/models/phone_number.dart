@@ -1,5 +1,5 @@
 const _regExp =
-    r'^(?:\+\(d{1,3})?\s?\(?(\d{3})(?:[-.\)\s]|\)\s)?(\d{3})[-.\s]?(\d{4,6})(?:\s(?:poste)?\s(\d{1,6}))?$';
+    r'^(?:\+\(d{1,3})?\s?\(?(\d{3})(?:[-.\)\s]|\)\s)?(\d{3})[-.\s]?(\d{4})(?:\s(?:poste)?\s(\d{1,6}))?$';
 
 class PhoneNumber {
   final String? areaCode;
@@ -35,13 +35,5 @@ class PhoneNumber {
     return areaCode == null || cityCode == null || number == null
         ? ''
         : '($areaCode) $cityCode-$number${extension != null ? ' poste $extension' : ''}';
-  }
-
-  PhoneNumber deepCopy() {
-    return PhoneNumber(
-        areaCode: areaCode,
-        cityCode: cityCode,
-        number: number,
-        extension: extension);
   }
 }

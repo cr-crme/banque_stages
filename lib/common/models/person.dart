@@ -13,23 +13,21 @@ class Person extends ItemSerializable {
   final String? email;
   final Address? address;
 
-  String get fullName => '$firstName $lastName';
-
   Person({
     super.id,
     required this.firstName,
     this.middleName,
     required this.lastName,
-    DateTime? dateBirth,
+    this.dateBirth,
     this.phone = const PhoneNumber(),
     this.email,
     this.address,
-  }) : dateBirth = dateBirth ?? DateTime(0);
+  });
 
   static Person get empty => Person(
-      firstName: '',
+      firstName: 'Unnamed',
       middleName: null,
-      lastName: '',
+      lastName: 'Unnamed',
       address: null,
       dateBirth: null,
       email: null,
@@ -37,15 +35,19 @@ class Person extends ItemSerializable {
       phone: PhoneNumber.empty);
 
   Person.fromSerialized(map)
-      : firstName = map['firstName'],
+      : firstName = map['firstName'] ?? 'Unnamed',
         middleName = map['middleName'],
-        lastName = map['lastName'],
-        dateBirth = map['birthDate'] == -1
+        lastName = map['lastName'] ?? 'Unnamed',
+        dateBirth = map['dateBirth'] == null
             ? null
-            : DateTime.fromMillisecondsSinceEpoch(map['birthDate']),
-        phone = PhoneNumber.fromString(map['phone']),
+            : DateTime.fromMillisecondsSinceEpoch(map['dateBirth']),
+        phone = map['phone'] == null
+            ? PhoneNumber.empty
+            : PhoneNumber.fromString(map['phone']),
         email = map['email'],
-        address = Address.fromSerialized(map['address']),
+        address = map['address'] == null
+            ? null
+            : Address.fromSerialized(map['address']),
         super.fromSerialized(map);
 
   @override
@@ -55,7 +57,7 @@ class Person extends ItemSerializable {
       'firstName': firstName,
       'middleName': middleName,
       'lastName': lastName,
-      'birthDate': dateBirth?.millisecondsSinceEpoch ?? -1,
+      'dateBirth': dateBirth?.millisecondsSinceEpoch,
       'phone': phone.toString(),
       'email': email,
       'address': address?.serialize(),
@@ -83,17 +85,11 @@ class Person extends ItemSerializable {
         address: address ?? this.address,
       );
 
-  Person deepCopy() {
-    return Person(
-      firstName: firstName,
-      middleName: middleName,
-      lastName: lastName,
-      dateBirth: dateBirth == null
-          ? null
-          : DateTime(dateBirth!.year, dateBirth!.month, dateBirth!.day),
-      phone: phone.deepCopy(),
-      email: email,
-      address: address?.deepCopy(),
-    );
-  }
+  ///
+  /// Full name without the middle name
+  String get fullName => '$firstName${lastName.isEmpty ? '' : ' $lastName'}';
+
+  @override
+  String toString() =>
+      '$firstName${middleName == null ? '' : ' $middleName'}${lastName.isEmpty ? '' : ' $lastName'}';
 }

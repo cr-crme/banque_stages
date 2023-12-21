@@ -288,7 +288,7 @@ class _EnterprisesByMap extends StatelessWidget {
       recrutedBy: '',
       shareWith: '',
       jobs: JobList(),
-      contact: Person(firstName: '', lastName: ''),
+      contact: Person.empty,
       address: school.address,
     );
     out[schoolAsEnterprise] = await Waypoint.fromAddress(

@@ -183,7 +183,8 @@ class _StudentInternshipListViewState
                               if (_isSupervisingInternship(internship)) {
                                 internship.removeSupervisingTeacher(myId);
                               } else {
-                                internship.addSupervisingTeacher(myId);
+                                internship.addSupervisingTeacher(context,
+                                    teacherId: myId);
                               }
                               InternshipsProvider.of(context, listen: false)
                                   .replace(internship);

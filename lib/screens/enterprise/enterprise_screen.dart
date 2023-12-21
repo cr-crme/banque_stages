@@ -193,7 +193,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
             InternshipsPage(
               key: _stagePageKey,
               enterprise: enterprise,
-              onAddIntershipRequest: addInternship,
+              onAddInternshipRequest: addInternship,
             ),
           ],
         ),

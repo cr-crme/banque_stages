@@ -52,11 +52,13 @@ class Protections extends ItemSerializable {
   ProtectionsStatus status;
   List<String> protections;
 
-  Protections({required this.status, List<String>? protections})
+  Protections({super.id, required this.status, List<String>? protections})
       : protections = protections ?? [];
 
   Protections.fromSerialized(map)
-      : status = ProtectionsStatus.values[map['status']],
+      : status = map['status'] == null
+            ? ProtectionsStatus.none
+            : ProtectionsStatus.values[map['status']],
         protections =
             (map['protections'] as List? ?? []).map<String>((e) => e).toList(),
         super.fromSerialized(map);
@@ -67,8 +69,4 @@ class Protections extends ItemSerializable {
         'status': status.index,
         'protections': protections,
       };
-
-  Protections deepCopy() {
-    return Protections(status: status, protections: [...protections]);
-  }
 }

@@ -1,9 +1,6 @@
-import 'package:crcrme_banque_stages/dummy_data.dart';
-import 'package:crcrme_banque_stages/main.dart';
 import 'package:crcrme_banque_stages/screens/add_enterprise/add_enterprise_screen.dart';
 import 'package:crcrme_banque_stages/screens/enterprise/enterprise_screen.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/enterprises_list_screen.dart';
-import 'package:crcrme_banque_stages/screens/generate_debug_data_screen.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
@@ -30,7 +27,6 @@ import 'common/providers/auth_provider.dart';
 abstract class Screens {
   static const home = enterprisesList;
 
-  static const populateWithDebugData = 'populate-with-debug-data';
   static const login = 'login';
   static const itinerary = 'itinerary';
 
@@ -89,20 +85,14 @@ abstract class Screens {
 }
 
 final router = GoRouter(
+  initialLocation: '/students',
   redirect: (context, state) {
     if (AuthProvider.of(context, listen: false).isSignedIn()) {
-      return (populateWithDebugData && !hasDummyData(context))
-          ? '/debug-data'
-          : null;
+      return null;
     }
     return '/login';
   },
   routes: [
-    GoRoute(
-      path: '/debug-data',
-      name: Screens.populateWithDebugData,
-      builder: (context, state) => const GenerateDebugDataScreen(),
-    ),
     GoRoute(
       path: '/login',
       name: Screens.login,

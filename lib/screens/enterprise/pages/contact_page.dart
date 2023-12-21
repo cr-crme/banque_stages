@@ -83,7 +83,7 @@ class ContactPageState extends State<ContactPage> {
     if (!mounted) return;
     if (!FormService.validateForm(_formKey, save: true)) return;
 
-    EnterprisesProvider.of(context).replace(
+    EnterprisesProvider.of(context, listen: false).replace(
       widget.enterprise.copyWith(
         contact: widget.enterprise.contact.copyWith(
           firstName: _contactInfoController.firstName.text,
@@ -164,7 +164,7 @@ class ContactPageState extends State<ContactPage> {
                     _taxesInfoController.address.address =
                         _enterpriseInfoController.address.address;
                   } else {
-                    _taxesInfoController.address.address = Address();
+                    _taxesInfoController.address.address = Address.empty;
                   }
                 }),
               ),
@@ -407,7 +407,6 @@ class _TaxesInfoState extends State<_TaxesInfo> {
                 )
               ]),
             AddressListTile(
-              initialValue: widget.controller.address.address,
               title: 'Adresse du siège social',
               addressController: widget.controller.address,
               isMandatory: false,

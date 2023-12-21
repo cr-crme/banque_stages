@@ -38,7 +38,7 @@ class Question extends ItemSerializable {
         question = map['question'],
         questionSummary = map['summary'],
         type = Type.fromSerialized(map['type']),
-        hasOther = map['hasOther'] == "Oui",
+        hasOther = map['hasOther'] == 'Oui',
         choices = map['choices'] == null
             ? null
             : Set.from(

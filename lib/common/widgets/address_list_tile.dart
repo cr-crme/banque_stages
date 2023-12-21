@@ -5,7 +5,15 @@ import 'package:crcrme_banque_stages/screens/enterprise/pages/widgets/show_addre
 
 class AddressController {
   Function()? onAddressChangedCallback;
-  AddressController({this.onAddressChangedCallback});
+  AddressController({
+    this.onAddressChangedCallback,
+    this.initialValue,
+    this.fromStringOverrideForDebug,
+    this.confirmAddressForDebug,
+  });
+
+  Future<Address?> Function(String)? fromStringOverrideForDebug;
+  bool Function(Address?)? confirmAddressForDebug;
 
   Future<String?> Function()? _validationFunction;
   Address? Function()? _getAddress;
@@ -31,17 +39,15 @@ class AddressListTile extends StatefulWidget {
   const AddressListTile({
     super.key,
     this.title,
-    this.initialValue,
+    required this.addressController,
     required this.isMandatory,
     required this.enabled,
-    this.addressController,
   });
 
   final String? title;
   final bool enabled;
   final bool isMandatory;
-  final Address? initialValue;
-  final AddressController? addressController;
+  final AddressController addressController;
 
   @override
   State<AddressListTile> createState() => _AddressListTileState();
@@ -55,28 +61,17 @@ class _AddressListTileState extends State<AddressListTile> {
   void initState() {
     super.initState();
 
-    if (widget.addressController != null) {
-      widget.addressController!._validationFunction = validate;
-      widget.addressController!._getAddress = getAddress;
-      widget.addressController!._setAddress = setAddress;
-    }
-
-    if (widget.addressController!.initialValue != null &&
-        widget.initialValue != null) {
-      throw 'Initial values for the address controller can only be set via one '
-          'of the methods';
-    } else if (widget.addressController!.initialValue != null) {
-      _address = widget.addressController!.initialValue;
-    } else if (widget.initialValue != null) {
-      _address = widget.initialValue;
-    }
+    widget.addressController._validationFunction = validate;
+    widget.addressController._getAddress = getAddress;
+    widget.addressController._setAddress = setAddress;
+    _address = widget.addressController.initialValue;
 
     if (_address == null) {
       // Add the search icon if address is empty
       addressHasChanged = true;
     } else {
       addressHasChanged = false;
-      widget.addressController!._textController.text = _address.toString();
+      widget.addressController._textController.text = _address.toString();
     }
   }
 
@@ -87,19 +82,21 @@ class _AddressListTileState extends State<AddressListTile> {
   Future<String?> validate() async {
     if (!addressHasChanged) return null;
 
-    if (widget.addressController!._textController.text == '') {
+    if (widget.addressController._textController.text == '') {
       return widget.isMandatory ? 'Entrer une adresse valide' : null;
     }
 
     while (isValidating) {
-      await Future.delayed(const Duration(milliseconds: 250));
+      await Future.delayed(const Duration(milliseconds: 50));
     }
 
     isValidating = true;
     late Address newAddress;
     try {
-      newAddress = (await Address.fromAddress(
-          widget.addressController!._textController.text))!;
+      final toCall = widget.addressController.fromStringOverrideForDebug ??
+          Address.fromString;
+      newAddress =
+          (await toCall(widget.addressController._textController.text))!;
     } catch (e) {
       _address = null;
       isValidating = false;
@@ -109,7 +106,7 @@ class _AddressListTileState extends State<AddressListTile> {
     if (newAddress.toString() == _address.toString()) {
       // Don't do anything if the address did not change
       _address = newAddress;
-      widget.addressController!._textController.text = _address.toString();
+      widget.addressController._textController.text = _address.toString();
       isValidating = false;
       addressHasChanged = false;
       setState(() {});
@@ -117,35 +114,43 @@ class _AddressListTileState extends State<AddressListTile> {
     }
 
     if (!mounted) {
+      // coverage:ignore-start
       isValidating = false;
       return 'Erreur inconnue';
+      // coverage:ignore-end
     }
 
-    final confirmAddress = await showDialog<bool>(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text('Confimer l\'adresse'),
-              content: SingleChildScrollView(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Text('L\'adresse trouvée est\u00a0:\n$newAddress'),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 1 / 2,
-                    width: MediaQuery.of(context).size.width * 2 / 3,
-                    child: ShowAddressDialog(newAddress),
-                  )
-                ]),
-              ),
-              actions: [
-                OutlinedButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: const Text('Annuler')),
-                TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: const Text('Confirmer'))
-              ],
-            ));
+    // coverage:ignore-start
+    final confirmAddress = widget.addressController.confirmAddressForDebug ==
+            null
+        ? await showDialog<bool>(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Confimer l\'adresse'),
+                  content: SingleChildScrollView(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      Text('L\'adresse trouvée est\u00a0:\n$newAddress'),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 1 / 2,
+                        width: MediaQuery.of(context).size.width * 2 / 3,
+                        child: ShowAddressDialog(newAddress),
+                      )
+                    ]),
+                  ),
+                  actions: [
+                    OutlinedButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Annuler')),
+                    TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text('Confirmer'))
+                  ],
+                ))
+        : widget.addressController.confirmAddressForDebug!(newAddress);
+    // coverage:ignore-end
+
     if (confirmAddress == null || !confirmAddress) {
       _address = null;
       isValidating = false;
@@ -154,9 +159,9 @@ class _AddressListTileState extends State<AddressListTile> {
 
     _address = newAddress;
 
-    widget.addressController!._textController.text = _address.toString();
-    if (widget.addressController!.onAddressChangedCallback != null) {
-      widget.addressController!.onAddressChangedCallback!();
+    widget.addressController._textController.text = _address.toString();
+    if (widget.addressController.onAddressChangedCallback != null) {
+      widget.addressController.onAddressChangedCallback!();
     }
 
     isValidating = false;
@@ -167,6 +172,7 @@ class _AddressListTileState extends State<AddressListTile> {
     return null;
   }
 
+  // coverage:ignore-start
   void _showAddress(context) async {
     if (_address == null) return;
 
@@ -183,9 +189,10 @@ class _AddressListTileState extends State<AddressListTile> {
               ),
             ));
   }
+  // coverage:ignore-end
 
   bool _isValid() {
-    if (widget.addressController!._textController.text == '') {
+    if (widget.addressController._textController.text == '') {
       return !widget.isMandatory;
     }
 
@@ -204,7 +211,7 @@ class _AddressListTileState extends State<AddressListTile> {
           alignment: Alignment.centerRight,
           children: [
             TextFormField(
-              controller: widget.addressController!._textController,
+              controller: widget.addressController._textController,
               decoration: InputDecoration(
                   labelText:
                       '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
@@ -227,7 +234,7 @@ class _AddressListTileState extends State<AddressListTile> {
                   addressHasChanged ? validate : () => _showAddress(context),
               icon: Icon(addressHasChanged ? Icons.search : Icons.map,
                   color: addressHasChanged
-                      ? (widget.addressController!._textController.text == ''
+                      ? (widget.addressController._textController.text == ''
                           ? Colors.grey
                           : Theme.of(context).primaryColor)
                       : Theme.of(context).primaryColor),

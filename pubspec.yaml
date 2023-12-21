@@ -25,33 +25,35 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  provider: ^6.0.3
-  flutter_spinbox: ^0.12.0
-  flutter_rating_bar: ^4.0.1
-  image_picker: ^0.8.5+3
-  firebase_core: ^2.10.0
-  firebase_auth: ^4.4.2
-  firebase_storage: ^11.1.1
-  firebase_database: ^10.1.1
-  path: ^1.8.1
-  nanoid: ^1.0.0
-  collection: ^1.16.0
-  mockito: ^5.3.2
-  build_runner: ^2.3.0
-  latlong2: ^0.8.1
-  flutter_map: ^3.0.0
-  routing_client_dart: ^0.3.1
-  geocoding: ^2.0.5
-  enhanced_containers:
-  crcrme_material_theme:
-  go_router: ^6.0.4
-  url_strategy: ^0.2.0
-  url_launcher: ^6.1.10
-  auto_size_text: ^3.0.0
-  pdf: ^3.10.1
-  printing: ^5.10.3
-  intl: ^0.18.0
-  shared_preferences: ^2.2.0
+    provider: ^6.0.3
+    flutter_spinbox: ^0.12.0
+    flutter_rating_bar: ^4.0.1
+    image_picker: ^0.8.5+3
+    firebase_core: ^2.10.0
+    firebase_auth: ^4.4.2
+    firebase_storage: ^11.1.1
+    firebase_database: ^10.1.1
+    firebase_auth_mocks: ^0.12.0
+    path: ^1.8.1
+    nanoid: ^1.0.0
+    collection: ^1.16.0
+    mockito: ^5.3.2
+    build_runner: ^2.3.0
+    latlong2: ^0.8.1
+    flutter_map: ^3.0.0
+    routing_client_dart: ^0.3.1
+    geocoding: ^2.0.5
+    enhanced_containers:
+    crcrme_material_theme:
+    go_router: ^6.0.4
+    url_strategy: ^0.2.0
+    url_launcher: ^6.1.10
+    auto_size_text: ^3.0.0
+    pdf: ^3.10.1
+    printing: ^5.10.3
+    intl: ^0.18.0
+    shared_preferences: ^2.2.0
+    lorem_ipsum: ^0.0.3
 
 dependency_overrides:
   enhanced_containers:
@@ -63,6 +65,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_gen:
 
 flutter:
   generate: true

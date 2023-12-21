@@ -40,8 +40,10 @@ class _EmailListTileState extends State<EmailListTile> {
     }
   }
 
+  // coverage:ignore-start
   _email() async =>
       await launchUrl(Uri.parse('mailto:${_emailController.text}'));
+  // coverage:ignore-end
 
   @override
   Widget build(BuildContext context) {

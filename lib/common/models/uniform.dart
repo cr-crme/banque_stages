@@ -24,12 +24,14 @@ class Uniform extends ItemSerializable {
 
   List<String> get uniforms => _uniform.isEmpty ? [] : _uniform.split('\n');
 
-  Uniform({required this.status, String? uniform = ''})
+  Uniform({super.id, required this.status, String? uniform = ''})
       : _uniform = uniform ?? '';
 
   Uniform.fromSerialized(map)
-      : status = UniformStatus.values[map['status']],
-        _uniform = map['uniform'],
+      : status = map['status'] == null
+            ? UniformStatus.none
+            : UniformStatus.values[map['status']],
+        _uniform = map['uniform'] ?? '',
         super.fromSerialized(map);
 
   @override
@@ -38,8 +40,4 @@ class Uniform extends ItemSerializable {
         'status': status.index,
         'uniform': _uniform,
       };
-
-  Uniform deepCopy() {
-    return Uniform(status: status, uniform: _uniform);
-  }
 }

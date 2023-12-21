@@ -77,9 +77,12 @@ class SkillsPageState extends State<SkillsPage> {
           for (final skill in evaluation.skills) {
             if (specialization.skills
                 .any((e) => e.idWithName == skill.skillName)) {
-              if (out[specialization]!.contains(skill)) {
-                out[specialization]![out[specialization]!.indexOf(skill)] =
-                    skill;
+              if (out[specialization]!
+                  .any((e) => e.skillName == skill.skillName)) {
+                final index = out[specialization]!
+                    .indexWhere((e) => e.skillName == skill.skillName);
+                out[specialization]![index] = skill;
+                debugPrint('coucou');
               } else {
                 out[specialization]!.add(skill);
               }

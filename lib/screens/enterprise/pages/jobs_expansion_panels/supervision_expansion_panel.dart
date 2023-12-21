@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 double _meanOf(
-    List list, double Function(PostIntershipEnterpriseEvaluation) value) {
+    List list, double Function(PostInternshipEnterpriseEvaluation) value) {
   var runningSum = 0.0;
   var nElements = 0;
   for (final e in list) {
@@ -90,7 +90,7 @@ class _SupervisionBody extends StatefulWidget {
 class _SupervisionBodyState extends State<_SupervisionBody> {
   var _currentProgramToShow = Program.fms;
 
-  List<PostIntershipEnterpriseEvaluation> _getFilteredEvaluations() {
+  List<PostInternshipEnterpriseEvaluation> _getFilteredEvaluations() {
     final internships = InternshipsProvider.of(context);
     final students = StudentsProvider.studentsInMyGroups(context);
     var evaluations = widget.job.postInternshipEnterpriseEvaluations(context);
@@ -188,7 +188,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
   }
 
   Widget _buildAcceptanceTsa(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
+      List<PostInternshipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Un trouble du spectre de l\'autisme (TSA)',
       rating: _meanOf(evaluations, (e) => e.acceptanceTsa),
@@ -196,7 +196,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
   }
 
   Widget _buildAcceptanceLanguageDeficiency(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
+      List<PostInternshipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Un trouble du langage',
       rating: _meanOf(evaluations, (e) => e.acceptanceLanguageDisorder),
@@ -204,7 +204,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
   }
 
   Widget _buildAcceptanceMentalDeficiency(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
+      List<PostInternshipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Une déficience intellectuelle',
       rating: _meanOf(evaluations, (e) => e.acceptanceIntellectualDisability),
@@ -212,7 +212,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
   }
 
   Widget _buildAcceptancePhysicalDeficiency(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
+      List<PostInternshipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Une déficience physique',
       rating: _meanOf(evaluations, (e) => e.acceptancePhysicalDisability),
@@ -220,7 +220,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
   }
 
   Widget _buildAcceptanceMentalHealtyIssue(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
+      List<PostInternshipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Un trouble de santé mentale',
       rating: _meanOf(evaluations, (e) => e.acceptanceMentalHealthDisorder),
@@ -228,7 +228,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
   }
 
   Widget _buildAcceptanceBehaviorIssue(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
+      List<PostInternshipEnterpriseEvaluation> evaluations) {
     return _RatingBar(
       title: 'Des difficultés comportementales',
       rating: _meanOf(evaluations, (e) => e.acceptanceBehaviorDifficulties),
@@ -236,7 +236,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
   }
 
   Widget _buildComments(
-      context, List<PostIntershipEnterpriseEvaluation> evaluations) {
+      context, List<PostInternshipEnterpriseEvaluation> evaluations) {
     final comments = evaluations
         .map((e) => e.supervisionComments)
         .where((e) => e != '')
@@ -263,7 +263,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
           'Tâches données à l\'élève',
           style: Theme.of(context).textTheme.titleSmall,
         ),
-        _printCountedList<PostIntershipEnterpriseEvaluation>(evaluations,
+        _printCountedList<PostInternshipEnterpriseEvaluation>(evaluations,
             (e) => e.taskVariety == 0 ? 'Peu variées' : 'Très variées'),
       ],
     );
@@ -278,14 +278,14 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
           'Tâches et compétences prévues dans le plan ont été faites par l\'élève',
           style: Theme.of(context).textTheme.titleSmall,
         ),
-        _printCountedList<PostIntershipEnterpriseEvaluation>(evaluations,
+        _printCountedList<PostInternshipEnterpriseEvaluation>(evaluations,
             (e) => e.trainingPlanRespect == 0 ? 'En partie' : 'En totalité'),
       ],
     );
   }
 
   Widget _buildSkillsRequired(
-      List<PostIntershipEnterpriseEvaluation> evaluations) {
+      List<PostInternshipEnterpriseEvaluation> evaluations) {
     final List<String> allSkills =
         evaluations.expand((eval) => eval.skillsRequired).toList();
 

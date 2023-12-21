@@ -1,8 +1,10 @@
+import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
-import 'package:crcrme_banque_stages/common/models/person.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'internship_evaluation_attitude.dart';
 import 'internship_evaluation_skill.dart';
 import 'schedule.dart';
@@ -13,10 +15,11 @@ double _doubleFromSerialized(num? number, {double defaultValue = 0}) {
 }
 
 List<String> _stringListFromSerialized(List? list) =>
-    (list ?? []).map<String>((e) => e).toList();
+    list?.map<String>((e) => e).toList() ?? [];
 
-class PostIntershipEnterpriseEvaluation extends ItemSerializable {
-  PostIntershipEnterpriseEvaluation({
+class PostInternshipEnterpriseEvaluation extends ItemSerializable {
+  PostInternshipEnterpriseEvaluation({
+    super.id,
     required this.internshipId,
     required this.skillsRequired,
     required this.taskVariety,
@@ -35,8 +38,8 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
     required this.acceptanceBehaviorDifficulties,
   });
 
-  PostIntershipEnterpriseEvaluation.fromSerialized(map)
-      : internshipId = map['internshipId'],
+  PostInternshipEnterpriseEvaluation.fromSerialized(map)
+      : internshipId = map['internshipId'] ?? '',
         skillsRequired = _stringListFromSerialized(map['skillsRequired']),
         taskVariety = _doubleFromSerialized(map['taskVariety']),
         trainingPlanRespect = _doubleFromSerialized(map['trainingPlanRespect']),
@@ -45,7 +48,7 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
         supervisionStyle = _doubleFromSerialized(map['supervisionStyle']),
         easeOfCommunication = _doubleFromSerialized(map['easeOfCommunication']),
         absenceAcceptance = _doubleFromSerialized(map['absenceAcceptance']),
-        supervisionComments = map['supervisionComments'],
+        supervisionComments = map['supervisionComments'] ?? '',
         acceptanceTsa = _doubleFromSerialized(map['acceptanceTSA']),
         acceptanceLanguageDisorder =
             _doubleFromSerialized(map['acceptanceLanguageDisorder']),
@@ -56,7 +59,8 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
         acceptanceMentalHealthDisorder =
             _doubleFromSerialized(map['acceptanceMentalHealthDisorder']),
         acceptanceBehaviorDifficulties =
-            _doubleFromSerialized(map['acceptanceBehaviorDifficulties']);
+            _doubleFromSerialized(map['acceptanceBehaviorDifficulties']),
+        super.fromSerialized(map);
 
   String internshipId;
 
@@ -92,6 +96,7 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() => {
+        'id': id,
         'internshipId': internshipId,
         'skillsRequired': skillsRequired,
         'taskVariety': taskVariety,
@@ -109,27 +114,6 @@ class PostIntershipEnterpriseEvaluation extends ItemSerializable {
         'acceptanceMentalHealthDisorder': acceptanceMentalHealthDisorder,
         'acceptanceBehaviorDifficulties': acceptanceBehaviorDifficulties,
       };
-
-  PostIntershipEnterpriseEvaluation deepCopy() {
-    return PostIntershipEnterpriseEvaluation(
-      internshipId: internshipId,
-      skillsRequired: [for (final skill in skillsRequired) skill],
-      taskVariety: taskVariety,
-      trainingPlanRespect: trainingPlanRespect,
-      autonomyExpected: autonomyExpected,
-      efficiencyExpected: efficiencyExpected,
-      supervisionStyle: supervisionStyle,
-      easeOfCommunication: easeOfCommunication,
-      absenceAcceptance: absenceAcceptance,
-      supervisionComments: supervisionComments,
-      acceptanceTsa: acceptanceTsa,
-      acceptanceLanguageDisorder: acceptanceLanguageDisorder,
-      acceptanceIntellectualDisability: acceptanceIntellectualDisability,
-      acceptancePhysicalDisability: acceptancePhysicalDisability,
-      acceptanceMentalHealthDisorder: acceptanceMentalHealthDisorder,
-      acceptanceBehaviorDifficulties: acceptanceBehaviorDifficulties,
-    );
-  }
 }
 
 class _MutableElements extends ItemSerializable {
@@ -166,16 +150,6 @@ class _MutableElements extends ItemSerializable {
         ],
         'schedule': weeklySchedules.map((e) => e.serialize()).toList(),
       };
-
-  _MutableElements deepCopy() {
-    return _MutableElements(
-      versionDate: DateTime.fromMillisecondsSinceEpoch(
-          versionDate.millisecondsSinceEpoch),
-      supervisor: supervisor.deepCopy(),
-      date: DateTimeRange(start: date.start, end: date.end),
-      weeklySchedules: weeklySchedules.map((e) => e.deepCopy()).toList(),
-    );
-  }
 }
 
 class Internship extends ItemSerializable {
@@ -185,8 +159,23 @@ class Internship extends ItemSerializable {
   final List<String> _extraSupervisingTeacherIds;
   List<String> get supervisingTeacherIds =>
       [signatoryTeacherId, ..._extraSupervisingTeacherIds];
-  void addSupervisingTeacher(String id) {
-    if (id != signatoryTeacherId) _extraSupervisingTeacherIds.add(id);
+  void addSupervisingTeacher(context, {required String teacherId}) {
+    if (teacherId == signatoryTeacherId ||
+        _extraSupervisingTeacherIds.contains(teacherId)) {
+      // If the teacher is already assigned, do nothing
+      return;
+    }
+
+    // Make sure the student is in a group supervised by the teacher
+    final students = StudentsProvider.allStudentsLimitedInfo(context);
+    final student = students.firstWhere((e) => e.id == studentId);
+    final teacher = TeachersProvider.of(context, listen: false)[teacherId];
+    if (!teacher.groups.contains(student.group)) {
+      throw Exception(
+          'The teacher ${teacher.fullName} is not assigned to the group ${student.group}');
+    }
+
+    _extraSupervisingTeacherIds.add(teacherId);
   }
 
   void removeSupervisingTeacher(String id) =>
@@ -221,7 +210,7 @@ class Internship extends ItemSerializable {
   final List<InternshipEvaluationSkill> skillEvaluations;
   final List<InternshipEvaluationAttitude> attitudeEvaluations;
 
-  PostIntershipEnterpriseEvaluation? enterpriseEvaluation;
+  PostInternshipEnterpriseEvaluation? enterpriseEvaluation;
 
   bool get isClosed => isNotActive && !isEnterpriseEvaluationPending;
   bool get isEnterpriseEvaluationPending =>
@@ -286,65 +275,65 @@ class Internship extends ItemSerializable {
   }
 
   Internship.fromSerialized(map)
-      : studentId = map['student'],
-        signatoryTeacherId = map['signatoryTeacherId'],
+      : studentId = map['student'] ?? '',
+        signatoryTeacherId = map['signatoryTeacherId'] ?? '',
         _extraSupervisingTeacherIds =
             _stringListFromSerialized(map['extraSupervisingTeacherIds']),
-        enterpriseId = map['enterprise'],
-        jobId = map['jobId'],
-        extraSpecializationsId = map['extraSpecializationsId'] == -1
+        enterpriseId = map['enterprise'] ?? '',
+        jobId = map['jobId'] ?? '',
+        extraSpecializationsId = map['extraSpecializationsId'] == null ||
+                map['extraSpecializationsId'] == -1
             ? []
             : (map['extraSpecializationsId'] as List)
                 .map((e) => e as String)
                 .toList(),
-        _mutables = (map['mutables'] as List)
-            .map(((e) => _MutableElements.fromSerialized(e)))
-            .toList(),
-        expectedLength = map['expectedLength'],
-        achievedLength = map['achievedLength'],
-        visitingPriority = VisitingPriority.values[map['priority']],
-        teacherNotes = map['teacherNotes'],
-        endDate = map['endDate'] == -1
+        _mutables = (map['mutables'] as List?)
+                ?.map(((e) => _MutableElements.fromSerialized(e)))
+                .toList() ??
+            [],
+        expectedLength = map['expectedLength'] ?? -1,
+        achievedLength = map['achievedLength'] ?? -1,
+        visitingPriority = map['priority'] == null
+            ? VisitingPriority.notApplicable
+            : VisitingPriority.values[map['priority']],
+        teacherNotes = map['teacherNotes'] ?? '',
+        endDate = map['endDate'] == null || map['endDate'] == -1
             ? null
             : DateTime.fromMillisecondsSinceEpoch(map['endDate']),
-        skillEvaluations = map['skillEvaluation'] == null
-            ? []
-            : (map['skillEvaluation'] as List)
-                .map((e) => InternshipEvaluationSkill.fromSerialized(e))
-                .toList(),
-        attitudeEvaluations = map['attitudeEvaluation'] == null
-            ? []
-            : (map['attitudeEvaluation'] as List)
-                .map((e) => InternshipEvaluationAttitude.fromSerialized(e))
-                .toList(),
+        skillEvaluations = (map['skillEvaluation'] as List?)
+                ?.map((e) => InternshipEvaluationSkill.fromSerialized(e))
+                .toList() ??
+            [],
+        attitudeEvaluations = (map['attitudeEvaluation'] as List?)
+                ?.map((e) => InternshipEvaluationAttitude.fromSerialized(e))
+                .toList() ??
+            [],
         enterpriseEvaluation = map['enterpriseEvaluation'] == null
             ? null
-            : PostIntershipEnterpriseEvaluation.fromSerialized(
+            : PostInternshipEnterpriseEvaluation.fromSerialized(
                 map['enterpriseEvaluation']),
         super.fromSerialized(map);
 
   @override
-  Map<String, dynamic> serializedMap() {
-    return {
-      'student': studentId,
-      'signatoryTeacherId': signatoryTeacherId,
-      'extraSupervisingTeacherIds': _extraSupervisingTeacherIds,
-      'enterprise': enterpriseId,
-      'jobId': jobId,
-      'extraSpecializationsId':
-          extraSpecializationsId.isEmpty ? -1 : extraSpecializationsId,
-      'mutables': _mutables.map((e) => e.serialize()).toList(),
-      'expectedLength': expectedLength,
-      'achievedLength': achievedLength,
-      'priority': visitingPriority.index,
-      'teacherNotes': teacherNotes,
-      'endDate': endDate?.millisecondsSinceEpoch ?? -1,
-      'skillEvaluation': skillEvaluations.map((e) => e.serialize()).toList(),
-      'attitudeEvaluation':
-          attitudeEvaluations.map((e) => e.serialize()).toList(),
-      'enterpriseEvaluation': enterpriseEvaluation?.serialize(),
-    };
-  }
+  Map<String, dynamic> serializedMap() => {
+        'student': studentId,
+        'signatoryTeacherId': signatoryTeacherId,
+        'extraSupervisingTeacherIds': _extraSupervisingTeacherIds,
+        'enterprise': enterpriseId,
+        'jobId': jobId,
+        'extraSpecializationsId':
+            extraSpecializationsId.isEmpty ? -1 : extraSpecializationsId,
+        'mutables': _mutables.map((e) => e.serialize()).toList(),
+        'expectedLength': expectedLength,
+        'achievedLength': achievedLength,
+        'priority': visitingPriority.index,
+        'teacherNotes': teacherNotes,
+        'endDate': endDate?.millisecondsSinceEpoch ?? -1,
+        'skillEvaluation': skillEvaluations.map((e) => e.serialize()).toList(),
+        'attitudeEvaluation':
+            attitudeEvaluations.map((e) => e.serialize()).toList(),
+        'enterpriseEvaluation': enterpriseEvaluation?.serialize(),
+      };
 
   void addVersion({
     required DateTime versionDate,
@@ -368,11 +357,9 @@ class Internship extends ItemSerializable {
     String? enterpriseId,
     String? jobId,
     List<String>? extraSpecializationsId,
-    String? program,
     Person? supervisor,
     DateTimeRange? date,
     List<WeeklySchedule>? weeklySchedules,
-    List<String>? protections,
     int? expectedLength,
     int? achievedLength,
     VisitingPriority? visitingPriority,
@@ -380,14 +367,11 @@ class Internship extends ItemSerializable {
     DateTime? endDate,
     List<InternshipEvaluationSkill>? skillEvaluations,
     List<InternshipEvaluationAttitude>? attitudeEvaluations,
-    PostIntershipEnterpriseEvaluation? enterpriseEvaluation,
+    PostInternshipEnterpriseEvaluation? enterpriseEvaluation,
   }) {
-    if (supervisor != null ||
-        date != null ||
-        weeklySchedules != null ||
-        protections != null) {
-      throw '[supervisor], [date], [weeklySchedules] or [protections] '
-          'should not be changed via [copyWith], but using [addVersion]';
+    if (supervisor != null || date != null || weeklySchedules != null) {
+      throw ArgumentError('[supervisor], [date] or [weeklySchedules]'
+          'should not be changed via [copyWith], but using [addVersion]');
     }
     return Internship._(
       id: id ?? this.id,
@@ -408,34 +392,6 @@ class Internship extends ItemSerializable {
       skillEvaluations: skillEvaluations ?? this.skillEvaluations,
       attitudeEvaluations: attitudeEvaluations ?? this.attitudeEvaluations,
       enterpriseEvaluation: enterpriseEvaluation ?? this.enterpriseEvaluation,
-    );
-  }
-
-  Internship deepCopy() {
-    return Internship._(
-      id: id,
-      studentId: studentId,
-      signatoryTeacherId: signatoryTeacherId,
-      extraSupervisingTeacherIds: [..._extraSupervisingTeacherIds],
-      enterpriseId: enterpriseId,
-      jobId: jobId,
-      extraSpecializationsId: [...extraSpecializationsId],
-      mutables: [..._mutables],
-      expectedLength: expectedLength,
-      achievedLength: achievedLength,
-      visitingPriority: VisitingPriority.values[visitingPriority.index],
-      teacherNotes: teacherNotes,
-      endDate: endDate == null
-          ? null
-          : DateTime(
-              endDate!.year,
-              endDate!.month,
-              endDate!.day,
-            ),
-      skillEvaluations: skillEvaluations.map((e) => e.deepCopy()).toList(),
-      attitudeEvaluations:
-          attitudeEvaluations.map((e) => e.deepCopy()).toList(),
-      enterpriseEvaluation: enterpriseEvaluation?.deepCopy(),
     );
   }
 }

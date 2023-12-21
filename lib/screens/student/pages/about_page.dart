@@ -22,7 +22,8 @@ class AboutPageState extends State<AboutPage> {
   final _formKey = GlobalKey<FormState>();
   final _dateFormat = DateFormat.yMd();
 
-  final _addressController = AddressController();
+  late final _addressController = AddressController()
+    ..initialValue = widget.student.address;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +108,6 @@ class _GeneralInformation extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 12.0),
                   child: AddressListTile(
-                    initialValue: student.address,
                     addressController: addressController,
                     isMandatory: false,
                     enabled: false,

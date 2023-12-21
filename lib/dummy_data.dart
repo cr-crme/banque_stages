@@ -1,9 +1,10 @@
-import 'dart:math';
+// coverage:ignore-file
 import 'dart:developer' as dev;
+import 'dart:math';
 
-import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
@@ -24,39 +25,28 @@ import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-bool hasDummyData(context) {
-  final teachers = TeachersProvider.of(context, listen: false);
-  final enterprises = EnterprisesProvider.of(context, listen: false);
-  final internships = InternshipsProvider.of(context, listen: false);
-  final students = StudentsProvider.allStudentsLimitedInfo(context);
-
-  return teachers.isNotEmpty ||
-      enterprises.isNotEmpty ||
-      internships.isNotEmpty ||
-      students.isNotEmpty;
-}
-
-Future<void> addAllDummyData(BuildContext context) async {
+Future<void> resetDummyData(BuildContext context) async {
   final schools = SchoolsProvider.of(context, listen: false);
   final teachers = TeachersProvider.of(context, listen: false);
   final enterprises = EnterprisesProvider.of(context, listen: false);
   final internships = InternshipsProvider.of(context, listen: false);
   final students = StudentsProvider.instance(context, listen: false);
 
-  if (schools.isEmpty) await addDummySchools(schools);
-  if (teachers.isEmpty) await addDummyTeachers(teachers, schools);
-  if (students.isEmpty) await addDummyStudents(students, teachers);
-  if (enterprises.isEmpty) await addDummyEnterprises(enterprises, teachers);
-  if (internships.isEmpty) {
-    await addDummyInterships(internships, students, enterprises, teachers);
-  }
+  await _addDummySchools(schools);
+  await _addDummyTeachers(teachers, schools);
+  await _addDummyStudents(students, teachers);
+  await _addDummyEnterprises(enterprises, teachers);
+  await _addDummyInternships(internships, students, enterprises, teachers);
 }
 
-Future<void> addDummySchools(SchoolsProvider schools) async {
-  dev.log("Adding dummy schools");
+Future<void> _addDummySchools(SchoolsProvider schools) async {
+  dev.log('Adding dummy schools');
+
+  schools.clear(confirm: true);
+  await _waitForDatabaseUpdate(schools, 0, strictlyEqualToExpected: true);
+
   schools.add(School(
       name: 'École',
       address: Address(
@@ -67,9 +57,12 @@ Future<void> addDummySchools(SchoolsProvider schools) async {
   await _waitForDatabaseUpdate(schools, 1);
 }
 
-Future<void> addDummyTeachers(
+Future<void> _addDummyTeachers(
     TeachersProvider teachers, SchoolsProvider schools) async {
-  dev.log("Adding dummy teachers");
+  dev.log('Adding dummy teachers');
+
+  teachers.clear(confirm: true);
+  await _waitForDatabaseUpdate(teachers, 0, strictlyEqualToExpected: true);
 
   teachers.add(Teacher(
       id: '42',
@@ -103,9 +96,12 @@ Future<void> addDummyTeachers(
   await _waitForDatabaseUpdate(teachers, 4);
 }
 
-Future<void> addDummyEnterprises(
+Future<void> _addDummyEnterprises(
     EnterprisesProvider enterprises, TeachersProvider teachers) async {
-  dev.log("Adding dummy enterprises");
+  dev.log('Adding dummy enterprises');
+
+  enterprises.clear(confirm: true);
+  await _waitForDatabaseUpdate(enterprises, 0, strictlyEqualToExpected: true);
 
   JobList jobs = JobList();
   jobs.add(
@@ -233,15 +229,15 @@ Future<void> addDummyEnterprises(
       positionsOffered: 3,
       sstEvaluation: JobSstEvaluation(
         questions: {
-          'Q1': "Oui",
+          'Q1': 'Oui',
           'Q1+t': 'Peu souvent, à la discrétion des employés.',
           'Q3': ['Un diable'],
           'Q5': ['Des ciseaux'],
           'Q9': ['Des solvants', 'Des produits de nettoyage'],
           'Q12': ['Bruyant'],
           'Q12+t': 'Bouchons a oreilles',
-          'Q15': "Oui",
-          'Q18': "Non",
+          'Q15': 'Oui',
+          'Q18': 'Non',
         },
         date: DateTime.now(),
       ),
@@ -554,14 +550,14 @@ Future<void> addDummyEnterprises(
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation(
         questions: {
-          'Q1': "Oui",
+          'Q1': 'Oui',
           'Q1+t': 'Plusieurs fois par jour, surtout des pots de fleurs.',
           'Q3': ['Un diable'],
           'Q5': ['Un couteau', 'Des ciseaux', 'Un sécateur'],
           'Q7': ['Des pesticides', 'Engrais'],
           'Q12': ['Bruyant'],
-          'Q15': "Non",
-          'Q18': "Oui",
+          'Q15': 'Non',
+          'Q18': 'Oui',
           'Q18+t':
               'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
                   'et il s\'est ouvert profondément la paume en voulant couper une tige.',
@@ -611,16 +607,16 @@ Future<void> addDummyEnterprises(
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation(
         questions: {
-          'Q1': "Oui",
+          'Q1': 'Oui',
           'Q1+t': 'En début et en fin de journée, surtout des pots de fleurs.',
           'Q3': ['Un diable'],
           'Q5': ['Un couteau', 'Des ciseaux'],
           'Q7': ['Des pesticides', 'Engrais'],
           'Q12': ['__NOT_APPLICABLE_INTERNAL__'],
-          'Q15': "Oui",
-          'Q15+t': "Mais pourquoi donc??",
-          'Q16': "Beurk",
-          'Q18': "Non",
+          'Q15': 'Oui',
+          'Q15+t': 'Mais pourquoi donc??',
+          'Q16': 'Beurk',
+          'Q18': 'Non',
         },
       ),
       incidents: Incidents.empty,
@@ -662,9 +658,12 @@ Future<void> addDummyEnterprises(
   await _waitForDatabaseUpdate(enterprises, 11);
 }
 
-Future<void> addDummyStudents(
+Future<void> _addDummyStudents(
     StudentsProvider students, TeachersProvider teachers) async {
-  dev.log("Adding dummy students");
+  dev.log('Adding dummy students');
+
+  students.clear(confirm: true);
+  await _waitForDatabaseUpdate(students, 0, strictlyEqualToExpected: true);
 
   students.add(
     Student(
@@ -903,11 +902,11 @@ Future<void> addDummyStudents(
     {
       final student =
           students.firstWhere((student) => student.fullName == 'Diego Vargas');
-      FirebaseDatabase.instance
+      students.firebaseInstance
           .ref('/students-ids/42/')
           .child(student.id)
           .set(true);
-      FirebaseDatabase.instance
+      students.firebaseInstance
           .ref(students.pathToAvailableDataIds)
           .child(student.id)
           .remove();
@@ -915,11 +914,11 @@ Future<void> addDummyStudents(
     {
       final student =
           students.firstWhere((student) => student.fullName == 'Simon Gingras');
-      FirebaseDatabase.instance
+      students.firebaseInstance
           .ref('/students-ids/42/')
           .child(student.id)
           .set(true);
-      FirebaseDatabase.instance
+      students.firebaseInstance
           .ref(students.pathToAvailableDataIds)
           .child(student.id)
           .remove();
@@ -928,13 +927,17 @@ Future<void> addDummyStudents(
   }
 }
 
-Future<void> addDummyInterships(
+Future<void> _addDummyInternships(
   InternshipsProvider internships,
   StudentsProvider students,
   EnterprisesProvider enterprises,
   TeachersProvider teachers,
 ) async {
-  dev.log("Adding dummy internships");
+  dev.log('Adding dummy internships');
+
+  internships.clear(confirm: true);
+  await _waitForDatabaseUpdate(internships, 0, strictlyEqualToExpected: true);
+
   final rng = Random();
 
   var period = DateTimeRange(
@@ -1092,7 +1095,7 @@ Future<void> addDummyInterships(
       ),
     ],
   );
-  internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
+  internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
     internshipId: internship.id,
     skillsRequired: [
       'Communiquer à l\'écrit',
@@ -1376,9 +1379,12 @@ Future<void> addDummyInterships(
 }
 
 Future<void> _waitForDatabaseUpdate(
-    FirebaseListProvided list, int expectedLength) async {
+    FirebaseListProvided list, int expectedLength,
+    {bool strictlyEqualToExpected = false}) async {
   // Wait for the database to add all the students
-  while (list.length < expectedLength) {
+  while (strictlyEqualToExpected
+      ? list.length != expectedLength
+      : list.length < expectedLength) {
     await Future.delayed(const Duration(milliseconds: 100));
   }
 }

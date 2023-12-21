@@ -8,7 +8,14 @@
             "name": "Banque de Stages",
             "request": "launch",
             "type": "dart",
-            // "preLaunchTask": "Run Firebase Emulator"
+            "program": "lib/main.dart",
+            "preLaunchTask": "Run Firebase Emulator"
+        },
+        {
+            "name": "Banque de Stages (test)",
+            "request": "launch",
+            "type": "dart",
+            "program": "test/widget_test.dart"
         }
     ]
 }

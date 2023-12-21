@@ -157,12 +157,12 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
                   scrollController: _scrollController,
                   type: StepperType.horizontal,
                   currentStep: _currentStep,
-                  onStepContinue: _nextStep,
+                  onTapContinue: _nextStep,
                   onStepTapped: (int tapped) => setState(() {
                     _currentStep = tapped;
                     _scrollController.jumpTo(0);
                   }),
-                  onStepCancel: _cancel,
+                  onTapCancel: _cancel,
                   steps: [
                     Step(
                       label: const Text('Détails'),

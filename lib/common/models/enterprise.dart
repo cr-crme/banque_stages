@@ -102,26 +102,28 @@ class Enterprise extends ItemSerializable {
       'phone': phone.toString(),
       'fax': fax.toString(),
       'website': website,
-      'headquartersAddress': headquartersAddress?.serialize() ?? -1,
+      'headquartersAddress': headquartersAddress?.serialize(),
       'neq': neq,
     };
   }
 
   @override
   Enterprise.fromSerialized(map)
-      : name = map['name'],
+      : name = map['name'] ?? 'Unnamed enterprise',
         activityTypes =
             (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
-        recrutedBy = map['recrutedBy'],
-        shareWith = map['shareWith'],
-        jobs = JobList.fromSerialized(map['jobs']),
-        contact = Person.fromSerialized(map['contact']),
-        contactFunction = map['contactFunction'],
-        address = Address.fromSerialized(map['address']),
-        phone = PhoneNumber.fromString(map['phone']),
-        fax = PhoneNumber.fromString(map['fax']),
-        website = map['website'],
-        headquartersAddress = map['headquartersAddress'] == -1
+        recrutedBy = map['recrutedBy'] ?? 'Unnamed recruiter',
+        shareWith = map['shareWith'] ?? 'Unnamed sharing',
+        jobs = JobList.fromSerialized(map['jobs'] ?? {}),
+        contact = Person.fromSerialized(map['contact'] ?? {}),
+        contactFunction = map['contactFunction'] ?? '',
+        address = map['address'] == null
+            ? null
+            : Address.fromSerialized(map['address']),
+        phone = PhoneNumber.fromString(map['phone'] ?? ''),
+        fax = PhoneNumber.fromString(map['fax'] ?? ''),
+        website = map['website'] ?? '',
+        headquartersAddress = map['headquartersAddress'] == null
             ? null
             : Address.fromSerialized(map['headquartersAddress']),
         neq = map['neq'],

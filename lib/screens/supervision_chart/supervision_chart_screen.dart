@@ -122,7 +122,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final studentInternships = interships.byStudentId(studentId);
     if (studentInternships.isEmpty) return;
     interships.replacePriority(
-        studentId, studentInternships.last.visitingPriority.next());
+        studentId, studentInternships.last.visitingPriority.next);
 
     setState(() {});
   }
@@ -144,7 +144,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
     if (internship.supervisingTeacherIds.contains(myId)) {
       internship.removeSupervisingTeacher(myId);
     } else {
-      internship.addSupervisingTeacher(myId);
+      internship.addSupervisingTeacher(context, teacherId: myId);
     }
     InternshipsProvider.of(context, listen: false).replace(internship);
   }

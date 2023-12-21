@@ -67,9 +67,9 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
     // Get the students from the registered students, but we copy them so
     // we don't mess with them
     for (final student in students) {
-      final studentInterships = internships.byStudentId(student.id);
-      if (studentInterships.isEmpty) continue;
-      final intership = studentInterships.last;
+      final studentInternships = internships.byStudentId(student.id);
+      if (studentInternships.isEmpty) continue;
+      final intership = studentInternships.last;
 
       final enterprise = enterprises.fromId(intership.enterpriseId);
       _waypoints.add(

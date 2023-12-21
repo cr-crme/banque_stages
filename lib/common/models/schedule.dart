@@ -1,9 +1,15 @@
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 
-enum Day { monday, tuesday, wednesday, thursday, friday, saturday, sunday }
+enum Day {
+  monday,
+  tuesday,
+  wednesday,
+  thursday,
+  friday,
+  saturday,
+  sunday;
 
-extension DayAsString on Day {
   String get name {
     switch (this) {
       case (Day.monday):
@@ -22,29 +28,11 @@ extension DayAsString on Day {
         return 'Dimanche';
     }
   }
-
-  int get asInt {
-    switch (this) {
-      case (Day.monday):
-        return 0;
-      case (Day.tuesday):
-        return 1;
-      case (Day.wednesday):
-        return 2;
-      case (Day.thursday):
-        return 3;
-      case (Day.friday):
-        return 4;
-      case (Day.saturday):
-        return 5;
-      case (Day.sunday):
-        return 6;
-    }
-  }
 }
 
 class DailySchedule extends ItemSerializable {
   DailySchedule({
+    super.id,
     required this.dayOfWeek,
     required this.start,
     required this.end,
@@ -55,39 +43,40 @@ class DailySchedule extends ItemSerializable {
   final TimeOfDay end;
 
   DailySchedule.fromSerialized(map)
-      : dayOfWeek = Day.values[map['day']],
-        start = TimeOfDay(hour: map['start'][0], minute: map['start'][1]),
-        end = TimeOfDay(hour: map['end'][0], minute: map['end'][1]),
+      : dayOfWeek = map['day'] == null ? Day.monday : Day.values[map['day']],
+        start = map['start'] == null
+            ? const TimeOfDay(hour: 0, minute: 0)
+            : TimeOfDay(hour: map['start'][0], minute: map['start'][1]),
+        end = map['end'] == null
+            ? const TimeOfDay(hour: 0, minute: 0)
+            : TimeOfDay(hour: map['end'][0], minute: map['end'][1]),
         super.fromSerialized(map);
 
   @override
-  Map<String, dynamic> serializedMap() {
-    return {
-      'day': dayOfWeek.index,
-      'start': [start.hour, start.minute],
-      'end': [end.hour, end.minute],
-    };
-  }
+  Map<String, dynamic> serializedMap() => {
+        'id': id,
+        'day': dayOfWeek.index,
+        'start': [start.hour, start.minute],
+        'end': [end.hour, end.minute],
+      };
 
-  DailySchedule copyWith({Day? dayOfWeek, TimeOfDay? start, TimeOfDay? end}) {
-    return DailySchedule(
-      dayOfWeek: dayOfWeek ?? this.dayOfWeek,
-      start: start ?? this.start,
-      end: end ?? this.end,
-    );
-  }
-
-  DailySchedule deepCopy() {
-    return DailySchedule(
-      dayOfWeek: Day.values[dayOfWeek.index],
-      start: TimeOfDay(hour: start.hour, minute: start.minute),
-      end: TimeOfDay(hour: end.hour, minute: end.minute),
-    );
-  }
+  DailySchedule copyWith({
+    String? id,
+    Day? dayOfWeek,
+    TimeOfDay? start,
+    TimeOfDay? end,
+  }) =>
+      DailySchedule(
+        id: id ?? this.id,
+        dayOfWeek: dayOfWeek ?? this.dayOfWeek,
+        start: start ?? this.start,
+        end: end ?? this.end,
+      );
 }
 
 class WeeklySchedule extends ItemSerializable {
   WeeklySchedule({
+    super.id,
     required this.schedule,
     required this.period,
   });
@@ -96,36 +85,33 @@ class WeeklySchedule extends ItemSerializable {
   final DateTimeRange? period;
 
   WeeklySchedule.fromSerialized(map)
-      : schedule = (map['days'] as List)
-            .map((e) => DailySchedule.fromSerialized(e))
-            .toList(),
-        period = DateTimeRange(
-            start: DateTime.fromMillisecondsSinceEpoch(map['start']),
-            end: DateTime.fromMillisecondsSinceEpoch(map['end'])),
+      : schedule = (map['days'] as List?)
+                ?.map((e) => DailySchedule.fromSerialized(e))
+                .toList() ??
+            [],
+        period = map['start'] == null || map['end'] == null
+            ? null
+            : DateTimeRange(
+                start: DateTime.fromMillisecondsSinceEpoch(map['start']),
+                end: DateTime.fromMillisecondsSinceEpoch(map['end'])),
         super.fromSerialized(map);
 
   @override
-  Map<String, dynamic> serializedMap() {
-    return {
-      'days': schedule.map((e) => e.serialize()).toList(),
-      'start': period!.start.millisecondsSinceEpoch,
-      'end': period!.end.millisecondsSinceEpoch,
-    };
-  }
+  Map<String, dynamic> serializedMap() => {
+        'id': id,
+        'days': schedule.map((e) => e.serialize()).toList(),
+        'start': period!.start.millisecondsSinceEpoch,
+        'end': period!.end.millisecondsSinceEpoch,
+      };
 
   WeeklySchedule copyWith({
+    String? id,
     List<DailySchedule>? schedule,
     DateTimeRange? period,
-  }) {
-    return WeeklySchedule(
-      schedule: schedule ?? this.schedule,
-      period: period ?? this.period,
-    );
-  }
-
-  WeeklySchedule deepCopy() {
-    return WeeklySchedule(
-        schedule: schedule.map((e) => e.deepCopy()).toList(),
-        period: DateTimeRange(start: period!.start, end: period!.end));
-  }
+  }) =>
+      WeeklySchedule(
+        id: id ?? this.id,
+        schedule: schedule ?? this.schedule,
+        period: period ?? this.period,
+      );
 }

@@ -4,6 +4,7 @@ import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_butt
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
+// coverage:ignore-file
 class ShowAddressDialog extends StatelessWidget {
   const ShowAddressDialog(this.address, {super.key});
 

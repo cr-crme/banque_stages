@@ -17,11 +17,11 @@ class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
     super.key,
     required this.enterprise,
-    required this.onAddIntershipRequest,
+    required this.onAddInternshipRequest,
   });
 
   final Enterprise enterprise;
-  final Function(Enterprise) onAddIntershipRequest;
+  final Function(Enterprise) onAddInternshipRequest;
 
   @override
   State<InternshipsPage> createState() => InternshipsPageState();
@@ -29,7 +29,7 @@ class InternshipsPage extends StatefulWidget {
 
 class InternshipsPageState extends State<InternshipsPage> {
   Future<void> addStage() async =>
-      widget.onAddIntershipRequest(widget.enterprise);
+      widget.onAddInternshipRequest(widget.enterprise);
 
   List<Internship> _getActiveInternships(List<Internship> internships) {
     final List<Internship> out = [];
@@ -120,6 +120,9 @@ class _InternshipListState extends State<_InternshipList> {
   }
 
   Widget _dateBuild(Internship internship) {
+    final endDate =
+        internship.isActive ? internship.date.end : internship.endDate!;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -135,11 +138,11 @@ class _InternshipListState extends State<_InternshipList> {
         ),
         Column(
           children: [
-            const Text('Fin\u00a0:'),
+            Text('${internship.isActive ? 'Fin prévue' : 'Fin'}\u00a0:'),
             Text(
-              '${internship.date.end.year.toString().padLeft(4, '0')}-'
-              '${internship.date.end.month.toString().padLeft(2, '0')}-'
-              '${internship.date.end.day.toString().padLeft(2, '0')}',
+              '${endDate.year.toString().padLeft(4, '0')}-'
+              '${endDate.month.toString().padLeft(2, '0')}-'
+              '${endDate.day.toString().padLeft(2, '0')}',
             ),
           ],
         )

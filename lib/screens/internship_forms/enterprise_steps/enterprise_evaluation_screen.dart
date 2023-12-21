@@ -116,7 +116,7 @@ class _EnterpriseEvaluationScreenState
     final internships = InternshipsProvider.of(context, listen: false);
     final internship = internships.firstWhere((e) => e.id == widget.id);
 
-    internship.enterpriseEvaluation = PostIntershipEnterpriseEvaluation(
+    internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
       internshipId: internship.id,
       skillsRequired: _taskAndAbilityKey.currentState!.requiredSkills,
       taskVariety: _taskAndAbilityKey.currentState!.taskVariety!,
@@ -174,12 +174,12 @@ class _EnterpriseEvaluationScreenState
             type: StepperType.horizontal,
             scrollController: _scrollController,
             currentStep: _currentStep,
-            onStepContinue: _nextStep,
+            onTapContinue: _nextStep,
             onStepTapped: (int tapped) => setState(() {
               _scrollController.jumpTo(0);
               _currentStep = tapped;
             }),
-            onStepCancel: () => Navigator.pop(context),
+            onTapCancel: () => Navigator.pop(context),
             steps: [
               Step(
                 state: _stepStatus[0],

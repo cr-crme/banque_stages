@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +10,7 @@ import 'internships_provider.dart';
 import 'teachers_provider.dart';
 
 class StudentsProvider extends FirebaseListProvided<Student> {
-  StudentsProvider()
+  StudentsProvider({super.mockMe})
       : super(
           pathToData: 'students',
           pathToAvailableDataIds: '',
@@ -69,6 +70,7 @@ class StudentsProvider extends FirebaseListProvided<Student> {
   /// Using this can lead to a potential security breach as it access all the students
   /// info without restriction. It is used for debug purposes.
   static StudentsProvider instance(context, {bool listen = true}) {
+    if (!kDebugMode) throw 'This should not be called in production';
     return _of(context, listen: listen);
   }
 

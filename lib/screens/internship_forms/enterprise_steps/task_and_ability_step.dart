@@ -1,13 +1,36 @@
 import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/required_skill.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
+
+enum _RequiredSkills {
+  communicateInWriting,
+  communicateInEnglish,
+  driveTrolley,
+  interactWithCustomers,
+  handleMoney;
+
+  @override
+  String toString() {
+    switch (this) {
+      case _RequiredSkills.communicateInWriting:
+        return 'Communiquer à l\'écrit';
+      case _RequiredSkills.communicateInEnglish:
+        return 'Communiquer en anglais';
+      case _RequiredSkills.driveTrolley:
+        return 'Conduire un chariot (élèves CFER)';
+      case _RequiredSkills.interactWithCustomers:
+        return 'Interagir avec des clients';
+      case _RequiredSkills.handleMoney:
+        return 'Manipuler de l\'argent';
+    }
+  }
+}
 
 enum _TaskVariety { none, low, high }
 
@@ -42,7 +65,7 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
           ? 0.0
           : 1.0;
 
-  final _skillKey = GlobalKey<CheckboxWithOtherState<RequiredSkills>>();
+  final _skillKey = GlobalKey<CheckboxWithOtherState<_RequiredSkills>>();
   List<String> get requiredSkills => _skillKey.currentState!.values;
 
   Future<String?> validate() async {
@@ -94,7 +117,7 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
     return CheckboxWithOther(
       key: _skillKey,
       title: '* Habiletés requises pour le stage\u00a0:',
-      elements: RequiredSkills.values,
+      elements: _RequiredSkills.values,
       errorMessageOther: 'Préciser les autres habiletés requises.',
     );
   }
