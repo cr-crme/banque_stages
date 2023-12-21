@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:crcrme_banque_stages/screens/student/JsonToPdf/package/json_widget.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -12,81 +14,26 @@ class GenerateDocuments {
 
     for (var page in jsonData['pages']) {
       pdf.addPage(
-        pw.Page(
-          build: (pw.Context context) {
-            List<pw.Widget> widgets = [];
-
-            for (var element in page['elements']) {
-              if (element['type'] == 'Container') {
-                widgets.add(_createContainer(element));
-              } else if (element['type'] == 'SizedBox') {
-                widgets.add(pw.SizedBox(height: element['height'].toDouble()));
-              } else if (element['type'] == 'Text') {
-                widgets.add(_createText(element));
-              }
-            }
-            return pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: widgets);
+        pw.MultiPage(
+          build: (pw.Context context) => [
+            for (var element in page['elements'])
+              JSONWidget.createWidget(element),
+          ],
+          footer: (pw.Context context) {
+            final format = DateFormat('yyyy-MM-dd');
+            final date = format.format(DateTime.now());
+            return pw.Container(
+              alignment: pw.Alignment.centerRight,
+              margin: const pw.EdgeInsets.all(10),
+              child: pw.Text(
+                'Page ${context.pageNumber} de ${context.pagesCount} - $date',
+              ),
+            );
           },
         ),
       );
     }
     return pdf;
-  }
-
-  pw.Container _createContainer(element) {
-    List<pw.Widget> children = [];
-    for (var child in element['children']) {
-      if (child['type'] == 'Text') {
-        children.add(_createText(child));
-      }
-    }
-    return pw.Container(
-      alignment: _getAlignment(element['alignment']),
-      padding: pw.EdgeInsets.fromLTRB(
-          element['padding'][0].toDouble(),
-          element['padding'][1].toDouble(),
-          element['padding'][2].toDouble(),
-          element['padding'][3].toDouble()),
-      decoration: _getDecoration(element['decoration']),
-      child: pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start, children: children),
-    );
-  }
-
-  pw.Text _createText(Map<String, dynamic> element) {
-    return pw.Text(element['text'], style: _getTextStyle(element['style']));
-  }
-
-  pw.TextStyle _getTextStyle(Map<String, dynamic>? style) {
-    if (style == null) return const pw.TextStyle();
-    return pw.TextStyle(
-      fontWeight: style['fontWeight'] == 'bold'
-          ? pw.FontWeight.bold
-          : pw.FontWeight.normal,
-    );
-  }
-
-  pw.Alignment _getAlignment(alignment) {
-    switch (alignment) {
-      case 'topLeft':
-        return pw.Alignment.topLeft;
-      default:
-        return pw.Alignment.topLeft;
-    }
-  }
-
-  pw.BoxDecoration _getDecoration(decoration) {
-    switch (decoration) {
-      case 'border':
-        return pw.BoxDecoration(border: pw.Border.all());
-      case 'bottomBorder':
-        return const pw.BoxDecoration(
-            border: pw.Border(bottom: pw.BorderSide()));
-      default:
-        return const pw.BoxDecoration();
-    }
   }
 
   static Future<Uint8List> generateInternshipContractPdf(format,
@@ -105,81 +52,79 @@ class GenerateDocuments {
   }
 
   static Future<Uint8List> generateInternshipAutomotiveCardPdf(format,
-      {required Internship internship}) async {
-    final document = pw.Document();
-
-    document.addPage(
-      pw.Page(
-        build: (pw.Context context) => pw.Center(
-            child: pw.Text(
-                'Carte de stage pour le Club paritaire de l\'automobile')),
-      ),
-    );
+      {required Internship internship,
+      required Future<String> Function(String) preprocessJsonCallback,
+      required BuildContext context}) async {
+    String jsonString = await rootBundle
+        .loadString('assets/documents/internship_automotive_card.json');
+    String processedJsonString = await preprocessJsonCallback(jsonString);
+    final document =
+        await GenerateDocuments().generatePdfFromJson(processedJsonString);
 
     return document.save();
   }
 
   static Future<Uint8List> generateCnesstPdf(format,
-      {required Internship internship}) async {
+      {required Internship internship,
+      required Future<String> Function(String) preprocessJsonCallback,
+      required BuildContext context}) async {
     String jsonString =
         await rootBundle.loadString('assets/documents/cnesst.json');
+    String processedJsonString = await preprocessJsonCallback(jsonString);
+    final document =
+        await GenerateDocuments().generatePdfFromJson(processedJsonString);
 
-    final document = await GenerateDocuments().generatePdfFromJson(jsonString);
     return document.save();
   }
 
   static Future<Uint8List> generateStudentIdentificationPdf(format,
-      {required Internship internship}) async {
-    final document = pw.Document();
-
-    document.addPage(
-      pw.Page(
-        build: (pw.Context context) =>
-            pw.Center(child: pw.Text('Identification du stagiaire')),
-      ),
-    );
+      {required Internship internship,
+      required Future<String> Function(String) preprocessJsonCallback,
+      required BuildContext context}) async {
+    String jsonString = await rootBundle
+        .loadString('assets/documents/student_identification.json');
+    String processedJsonString = await preprocessJsonCallback(jsonString);
+    final document =
+        await GenerateDocuments().generatePdfFromJson(processedJsonString);
 
     return document.save();
   }
 
   static Future<Uint8List> generatePhotoAutorisationPdf(format,
-      {required Internship internship}) async {
-    final document = pw.Document();
-
-    document.addPage(
-      pw.Page(
-        build: (pw.Context context) =>
-            pw.Center(child: pw.Text('Autorisation de prise de photos')),
-      ),
-    );
+      {required Internship internship,
+      required Future<String> Function(String) preprocessJsonCallback,
+      required BuildContext context}) async {
+    String jsonString =
+        await rootBundle.loadString('assets/documents/photo_autorisation.json');
+    String processedJsonString = await preprocessJsonCallback(jsonString);
+    final document =
+        await GenerateDocuments().generatePdfFromJson(processedJsonString);
 
     return document.save();
   }
 
   static Future<Uint8List> generateTaxeCreditFormPdf(format,
-      {required Internship internship}) async {
-    final document = pw.Document();
-
-    document.addPage(
-      pw.Page(
-        build: (pw.Context context) =>
-            pw.Center(child: pw.Text('Crédit d\'impôts')),
-      ),
-    );
+      {required Internship internship,
+      required Future<String> Function(String) preprocessJsonCallback,
+      required BuildContext context}) async {
+    String jsonString =
+        await rootBundle.loadString('assets/documents/taxe_credit_form.json');
+    String processedJsonString = await preprocessJsonCallback(jsonString);
+    final document =
+        await GenerateDocuments().generatePdfFromJson(processedJsonString);
 
     return document.save();
   }
 
   static Future<Uint8List> generateInsurancePdf(format,
-      {required Internship internship}) async {
-    final document = pw.Document();
-
-    document.addPage(
-      pw.Page(
-        build: (pw.Context context) =>
-            pw.Center(child: pw.Text('Contrat d\'assurances')),
-      ),
-    );
+      {required Internship internship,
+      required Future<String> Function(String) preprocessJsonCallback,
+      required BuildContext context}) async {
+    String jsonString =
+        await rootBundle.loadString('assets/documents/insurance.json');
+    String processedJsonString = await preprocessJsonCallback(jsonString);
+    final document =
+        await GenerateDocuments().generatePdfFromJson(processedJsonString);
 
     return document.save();
   }
@@ -210,6 +155,19 @@ class GenerateDocuments {
                 'Évaluation des attitudes et comportements du ${DateFormat('yMd', 'fr_CA').format(internship.attitudeEvaluations[evaluationIndex].date)}')),
       ),
     );
+
+    return document.save();
+  }
+
+  static Future<Uint8List> generateInternshipDescriptionPdf(format,
+      {required Internship internship,
+      required Future<String> Function(String) preprocessJsonCallback,
+      required BuildContext context}) async {
+    String jsonString = await rootBundle
+        .loadString('assets/documents/internship_description.json');
+    String processedJsonString = await preprocessJsonCallback(jsonString);
+    final document =
+        await GenerateDocuments().generatePdfFromJson(processedJsonString);
 
     return document.save();
   }

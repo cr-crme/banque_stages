@@ -3,101 +3,71 @@
     {
       "elements": [
         {
-          "type": "Container",
-          "alignment": "topLeft",
-          "padding": [2, 2, 2, 20],
-          "decoration": "border",
-          "children": [
-            {
-              "type": "Text",
-              "text": "Logo"
-            },
-            {
-              "type": "Text",
-              "text": "Centre de services scolaires"
-            }
-          ]
-        },
-        {
-          "type": "SizedBox",
-          "height": 20
-        },
-        {
-          "type": "Text",
-          "text": "Lieu, date du jour"
-        },
-        {
-          "type": "SizedBox",
-          "height": 40
-        },
-        {
-          "type": "Text",
-          "text": "Responsables de stages",
+          "type": "text",
+          "content": "__SCHOOL_NAME__",
           "style": {
-            "fontWeight": "bold"
+            "fontSize": 10,
+            "fontWeight": "bold",
+            "decoration": "underline"
           }
         },
         {
-          "type": "Text",
-          "text": "Centres et écoles"
-        },
-        {
-          "type": "SizedBox",
-          "height": 20
-        },
-        {
-          "type": "Container",
-          "padding": [0, 0, 0, 5],
-          "decoration": "borderBottom",
-          "children": [
-            {
-              "type": "Text",
-              "text": "Objet : Protection CNESST pour les étudiants stagiaires",
-              "style": {
-                "fontWeight": "bold"
+          "type": "container",
+          "padding": 10,
+          "decoration": {
+            "border": {
+              "left": {
+                "color": "#000000",
+                "width": 1
+              },
+              "right": {
+                "color": "#000000",
+                "width": 1
+              },
+              "top": {
+                "color": "#000000",
+                "width": 1
+              },
+              "bottom": {
+                "color": "#000000",
+                "width": 1
               }
             }
-          ]
-        },
-        {
-          "type": "SizedBox",
-          "height": 20
-        },
-        {
-          "type": "Text",
-          "text": "Cette lettre confirme l'énoncé qui suit et peut être présentée aux employeurs qui reçoivent vos étudiants comme stagiaires dans leur établissement."
-        },
-        {
-          "type": "SizedBox",
-          "height": 20
-        },
-        {
-          "type": "Text",
-          "text": "Un étudiant qui effectue un stage non rémunéré sous la responsabilité de l’institution d’enseignement dans laquelle il poursuit ses études est considéré comme un travailleur à l’emploi de l’institution d’enseignement et, par ce fait, bénéficie des protections prévues par la Loi sur les accidents du travail et des maladies professionnelles. (Art.1 SST)"
-        },
-        {
-          "type": "SizedBox",
-          "height": 30
-        },
-        {
-          "type": "Text",
-          "text": "Signature"
-        },
-        {
-          "type": "SizedBox",
-          "height": 10
-        },
-        {
-          "type": "Text",
-          "text": "Prénom Nom"
-        },
-        {
-          "type": "Text",
-          "text": "Fonction"
-        },
-        {
-          "type": "Text",
-          "text": "Services des ressources humaines"
+          },
+          "child": {
+            "type": "column",
+            "children": [
+              {
+                "type": "text",
+                "content": "Pour le Centre de services scolaire de la Pointe-de-l'Île",
+                "style": {
+                  "fontSize": 10,
+                  "fontWeight": "bold",
+                  "decoration": "underline"
+                }
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "nomEtablissement",
+                    "flex": "expanded",
+                    "defaultValue": "__SCHOOL_NAME__"
+                  }
+                ]
+              }
+            ]
+          }
         }
       ]
     }
