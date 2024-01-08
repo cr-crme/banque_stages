@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:printing/printing.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/generate_documents.dart';
+import 'package:crcrme_banque_stages/screens/student/JsonToPdf/tag_system/tag_handler.dart';
 
 class InternshipDocuments extends StatefulWidget {
   const InternshipDocuments({super.key, required this.internship});
@@ -27,6 +29,15 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
         .jobs[widget.internship.jobId]
         .specialization;
     return int.parse(specialization.sector.id);
+  }
+
+  Future<String> preprocessJSONTags(String jsonString) async {
+    var jsonData = json.decode(jsonString);
+    TagHandler tagsHandler =
+        TagHandler(context: context, internship: widget.internship);
+    jsonData['pages'] = await tagsHandler.processElementsRecursively(
+        jsonData['pages'], tagsHandler);
+    return json.encode(jsonData);
   }
 
   @override
@@ -52,8 +63,12 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                 _buildPdfTile(
                   context,
                   title: 'Formulaire d\'identification du stagiaire',
-                  pdfGeneratorCallback:
-                      GenerateDocuments.generateStudentIdentificationPdf,
+                  pdfGeneratorCallback: ((format,
+                          {required internship, preprocessJsonCallback}) =>
+                      GenerateDocuments.generateStudentIdentificationPdf(format,
+                          internship: internship,
+                          preprocessJsonCallback: preprocessJSONTags,
+                          context: context)),
                 ),
                 ...List.generate(
                   widget.internship.nbVersions,
@@ -61,7 +76,8 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                     context,
                     title: 'Contrat de stage - Version du '
                         '${DateFormat('yMd', 'fr_CA').format(widget.internship.versionDateFrom(index))}',
-                    pdfGeneratorCallback: (format, {required internship}) =>
+                    pdfGeneratorCallback: (format,
+                            {required internship, preprocessJsonCallback}) =>
                         GenerateDocuments.generateInternshipContractPdf(format,
                             internship: internship, versionIndex: index),
                   ),
@@ -69,32 +85,57 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                 _buildPdfTile(
                   context,
                   title: 'Formulaire pour la CNESST',
-                  pdfGeneratorCallback: GenerateDocuments.generateCnesstPdf,
+                  pdfGeneratorCallback: ((format,
+                          {required internship, preprocessJsonCallback}) =>
+                      GenerateDocuments.generateCnesstPdf(format,
+                          internship: internship,
+                          preprocessJsonCallback: preprocessJSONTags,
+                          context: context)),
                 ),
-                _buildPdfTile(
-                  context,
-                  title: 'Formulaire d\'autorisation de prise de photos',
-                  pdfGeneratorCallback:
-                      GenerateDocuments.generatePhotoAutorisationPdf,
-                ),
-                _buildPdfTile(
-                  context,
-                  title: 'Formulaire pour le crédit d\'impôts',
-                  pdfGeneratorCallback:
-                      GenerateDocuments.generateTaxeCreditFormPdf,
-                ),
+                _buildPdfTile(context,
+                    title: "Formulaire pour l'inscription au stage",
+                    pdfGeneratorCallback: (((format,
+                            {required internship, preprocessJsonCallback}) =>
+                        GenerateDocuments.generateInternshipDescriptionPdf(
+                            format,
+                            internship: internship,
+                            preprocessJsonCallback: preprocessJSONTags,
+                            context: context)))),
+                _buildPdfTile(context,
+                    title: 'Formulaire d\'autorisation de prise de photos',
+                    pdfGeneratorCallback: (((format,
+                            {required internship, preprocessJsonCallback}) =>
+                        GenerateDocuments.generatePhotoAutorisationPdf(format,
+                            internship: internship,
+                            preprocessJsonCallback: preprocessJSONTags,
+                            context: context)))),
+                _buildPdfTile(context,
+                    title: 'Formulaire pour le crédit d\'impôts',
+                    pdfGeneratorCallback: (((format,
+                            {required internship, preprocessJsonCallback}) =>
+                        GenerateDocuments.generateTaxeCreditFormPdf(format,
+                            internship: internship,
+                            preprocessJsonCallback: preprocessJSONTags,
+                            context: context)))),
                 if (_getInternshipSectorNumber() == 10)
-                  _buildPdfTile(
-                    context,
-                    title: 'Formulaire de demande de carte de stage au Club '
-                        'paritaire de l\'automobile',
-                    pdfGeneratorCallback:
-                        GenerateDocuments.generateInternshipAutomotiveCardPdf,
-                  ),
+                  _buildPdfTile(context,
+                      title: 'Formulaire de demande de carte de stage au Club ',
+                      pdfGeneratorCallback: (((format,
+                              {required internship, preprocessJsonCallback}) =>
+                          GenerateDocuments.generateInternshipAutomotiveCardPdf(
+                              format,
+                              internship: internship,
+                              preprocessJsonCallback: preprocessJSONTags,
+                              context: context)))),
                 _buildPdfTile(
                   context,
                   title: 'Preuve de couverture d\'assurances',
-                  pdfGeneratorCallback: GenerateDocuments.generateInsurancePdf,
+                  pdfGeneratorCallback: (((format,
+                          {required internship, preprocessJsonCallback}) =>
+                      GenerateDocuments.generateInsurancePdf(format,
+                          internship: internship,
+                          preprocessJsonCallback: preprocessJSONTags,
+                          context: context))),
                 ),
                 _buildEvaluations(
                     title: 'Évaluation des compétences',
@@ -117,24 +158,46 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
   Widget _buildPdfTile(
     BuildContext context, {
     required String title,
-    required Future<Uint8List> Function(PdfPageFormat format,
-            {required Internship internship})
-        pdfGeneratorCallback,
+    required Future<Uint8List> Function(
+      PdfPageFormat format, {
+      required Internship internship,
+      Future<String> Function(String)? preprocessJsonCallback,
+    }) pdfGeneratorCallback,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: GestureDetector(
         onTap: () => showDialog(
-            context: context,
-            builder: (ctx) => PdfPreview(
-                  allowPrinting: true,
-                  allowSharing: true,
-                  canChangeOrientation: false,
-                  canChangePageFormat: false,
-                  canDebug: false,
-                  build: (format) => pdfGeneratorCallback(format,
-                      internship: widget.internship),
-                )),
+          context: context,
+          builder: (ctx) => Dialog(
+              child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned(
+                child: Center(
+                  child: PdfPreview(
+                    allowPrinting: true,
+                    allowSharing: true,
+                    canChangeOrientation: false,
+                    canChangePageFormat: false,
+                    canDebug: false,
+                    build: (format) => pdfGeneratorCallback(format,
+                        internship: widget.internship),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  color: Colors.blue, // todo: change to theme color
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              )
+            ],
+          )),
+        ),
         child: Text(
           title,
           style: const TextStyle(
@@ -169,7 +232,8 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                           title: 'Formulaire du '
                               '${DateFormat('yMd', 'fr_CA').format(evaluations[index].date)}',
                           pdfGeneratorCallback: (format,
-                                  {required internship}) =>
+                                  {required internship,
+                                  preprocessJsonCallback}) =>
                               pdfGeneratorCallback(format,
                                   internship: internship,
                                   evaluationIndex: index),
