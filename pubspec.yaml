@@ -16,88 +16,90 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-    sdk: ">=2.17.5 <3.0.0"
+  sdk: ">=2.17.5 <3.0.0"
 
 dependencies:
-    flutter:
-        sdk: flutter
+  flutter:
+    sdk: flutter
 
-    flutter_localizations:
-        sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
-    provider: ^6.0.3
-    flutter_spinbox: ^0.12.0
-    flutter_rating_bar: ^4.0.1
-    image_picker: ^0.8.5+3
-    firebase_core: ^2.10.0
-    firebase_auth: ^4.4.2
-    firebase_storage: ^11.1.1
-    firebase_database: ^10.1.1
-    firebase_auth_mocks: ^0.12.0
-    path: ^1.8.1
-    nanoid: ^1.0.0
-    collection: ^1.16.0
-    mockito: ^5.3.2
-    build_runner: ^2.3.0
-    latlong2: ^0.8.1
-    flutter_map: ^3.0.0
-    routing_client_dart: ^0.3.1
-    geocoding: ^2.0.5
-    enhanced_containers:
-    crcrme_material_theme:
-    go_router: ^6.0.4
-    url_strategy: ^0.2.0
-    url_launcher: ^6.1.10
-    auto_size_text: ^3.0.0
-    pdf: ^3.10.1
-    printing: ^5.10.3
-    intl: ^0.18.0
-    shared_preferences: ^2.2.0
-    lorem_ipsum: ^0.0.3
+  provider: ^6.0.3
+  flutter_spinbox: ^0.12.0
+  flutter_rating_bar: ^4.0.1
+  image_picker: ^0.8.5+3
+  firebase_core: ^2.10.0
+  firebase_auth: ^4.4.2
+  firebase_storage: ^11.1.1
+  firebase_database: ^10.1.1
+  firebase_auth_mocks: ^0.12.0
+  path: ^1.8.1
+  nanoid: ^1.0.0
+  collection: ^1.16.0
+  mockito: ^5.3.2
+  build_runner: ^2.3.0
+  latlong2: ^0.8.1
+  flutter_map: ^3.0.0
+  routing_client_dart: ^0.3.1
+  geocoding: ^2.0.5
+  enhanced_containers:
+  crcrme_material_theme:
+  go_router: ^6.0.4
+  url_strategy: ^0.2.0
+  url_launcher: ^6.1.10
+  auto_size_text: ^3.0.0
+  pdf: ^3.10.1
+  printing: ^5.10.3
+  intl: ^0.18.0
+  shared_preferences: ^2.2.0
+  lorem_ipsum: ^0.0.3
+  test: ^1.24.9
 
 dependency_overrides:
-    enhanced_containers:
-        path: ./external/enhanced_containers
-    crcrme_material_theme:
-        path: ./external/crcrme_material_theme
+  enhanced_containers:
+    path: ./external/enhanced_containers
+  crcrme_material_theme:
+    path: ./external/crcrme_material_theme
 
 dev_dependencies:
-    flutter_test:
-        sdk: flutter
-    flutter_lints: ^2.0.0
-    flutter_gen:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_gen:
 
 flutter:
-    generate: true
-    uses-material-design: true
+  generate: true
+  uses-material-design: true
 
-    assets:
-        - assets/jobs-data.json
-        - assets/risks-data.json
-        - assets/questions.json
-        - assets/images-sst/1.png
-        - assets/images-sst/2.png
-        - assets/images-sst/3.png
-        - assets/images-sst/4.png
-        - assets/images-sst/5.png
-        - assets/images-sst/6.png
-        - assets/images-sst/7.png
-        - assets/images-sst/8.png
-        - assets/images-sst/9.png
-        - assets/images-sst/10.png
-        - assets/images-sst/11.png
-        - assets/images-sst/12.png
-        - assets/images-sst/13.png
-        - assets/images-sst/14.png
-        - assets/images-sst/15.png
-        - assets/images-sst/16.png
-        - assets/images-sst/17.png
-        - assets/images-sst/18.png
-        - assets/images-sst/19.png
-        - assets/images-sst/20.png
-        - assets/images-sst/21.png
-        - assets/images-sst/22.png
-        - assets/images-sst/23.png
-        - assets/images-sst/24.png
-        - assets/images-sst/25.png
-        - assets/images-sst/26.png
+  assets:
+    - assets/jobs-data.json
+    - assets/risks-data.json
+    - assets/questions.json
+    - assets/documents/cnesst.json
+    - assets/images-sst/1.png
+    - assets/images-sst/2.png
+    - assets/images-sst/3.png
+    - assets/images-sst/4.png
+    - assets/images-sst/5.png
+    - assets/images-sst/6.png
+    - assets/images-sst/7.png
+    - assets/images-sst/8.png
+    - assets/images-sst/9.png
+    - assets/images-sst/10.png
+    - assets/images-sst/11.png
+    - assets/images-sst/12.png
+    - assets/images-sst/13.png
+    - assets/images-sst/14.png
+    - assets/images-sst/15.png
+    - assets/images-sst/16.png
+    - assets/images-sst/17.png
+    - assets/images-sst/18.png
+    - assets/images-sst/19.png
+    - assets/images-sst/20.png
+    - assets/images-sst/21.png
+    - assets/images-sst/22.png
+    - assets/images-sst/23.png
+    - assets/images-sst/24.png
+    - assets/images-sst/25.png
+    - assets/images-sst/26.png

@@ -1,0 +1,16 @@
+{
+  "pages": [
+    {
+      "elements": [
+        {
+          "type": "text",
+          "content": "Formulaire d'autorisation de prise de photos",
+          "alignment": "center",
+          "style": {
+            "fontWeight": "bold"
+          }
+        }
+      ]
+    }
+  ]
+}

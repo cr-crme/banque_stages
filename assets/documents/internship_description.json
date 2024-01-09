@@ -1,0 +1,1035 @@
+{
+  "pages": [
+    {
+      "elements": [
+        {
+          "type": "text",
+          "content": "ANNEXE A",
+          "alignment": "center",
+          "style": {
+            "fontWeight": "bold"
+          }
+        },
+        {
+          "type": "sizedBox",
+          "height": 20
+        },
+        {
+          "type": "text",
+          "content": "DESCRIPTION DE STAGE",
+          "alignment": "center",
+          "style": {
+            "fontWeight": "bold"
+          }
+        },
+        {
+          "type": "sizedBox",
+          "height": 20
+        },
+        {
+          "type": "text",
+          "content": "Nature du stage",
+          "alignment": "left",
+          "style": {
+            "fontWeight": "bold"
+          }
+        },
+        {
+          "type": "row",
+          "children": [
+            {
+              "type": "text",
+              "content": "Formation préparatoire au travail ",
+              "style": {
+                "fontSize": 10
+              }
+            },
+            {
+              "type": "sizedBox",
+              "width": 5
+            },
+            {
+              "type": "checkbox",
+              "value": true,
+              "name": "stage d'observation"
+            },
+            {
+              "type": "sizedBox",
+              "width": 5
+            },
+            {
+              "type": "text",
+              "content": "Formation à l'exercice d'un métier semi-spécialisé",
+              "style": {
+                "fontSize": 10
+              }
+            },
+            {
+              "type": "sizedBox",
+              "width": 5
+            },
+            {
+              "type": "checkbox",
+              "value": true,
+              "name": "Formation à l'exercice d'un métier semi-spécialisé"
+            }
+          ]
+        },
+        {
+          "type": "sizedBox",
+          "height": 20
+        },
+        {
+          "type": "text",
+          "content": "Modalités",
+          "alignment": "left",
+          "style": {
+            "fontWeight": "bold",
+            "fontSize": 10
+          }
+        },
+        {
+          "type": "row",
+          "mainAxisAlignment": "space-between",
+          "flex": "expanded",
+          "children": [
+            {
+              "type": "text",
+              "content": "Durée de stage (en heure):",
+              "style": {
+                "fontWeight": "bold",
+                "fontSize": 10
+              }
+            },
+            {
+              "type": "inputRow",
+              "label": {
+                "content": "heures",
+                "style": {
+                  "fontSize": 10
+                }
+              },
+              "textField": {
+                "name": "texttt",
+                "width": 45
+              }
+            },
+            {
+              "type": "inputRow",
+              "label": {
+                "content": "du",
+                "style": {
+                  "fontSize": 10
+                }
+              },
+              "textField": {
+                "name": "textstt",
+                "width": 45
+              }
+            },
+            {
+              "type": "inputRow",
+              "label": {
+                "content": "au",
+                "style": {
+                  "fontSize": 10
+                }
+              },
+              "textField": {
+                "name": "textstt",
+                "width": 45
+              }
+            }
+          ]
+        },
+        {
+          "type": "sizedBox",
+          "height": 20
+        },
+        {
+          "type": "row",
+          "children": [
+            {
+              "type": "text",
+              "content": "Congé prévus, s'il y a lieu:",
+              "style": {
+                "fontSize": 10,
+                "fontWeight": "bold"
+              }
+            },
+            {
+              "type": "sizedBox",
+              "width": 20
+            },
+            {
+              "type": "inputField",
+              "name": "conge",
+              "width": 337,
+              "multiline": true,
+              "numberOfLines": 5
+            }
+          ]
+        },
+        {
+          "type": "sizedBox",
+          "height": 20
+        },
+        {
+          "type": "column",
+          "children": [
+            {
+              "type": "text",
+              "content": "Modalités de suivi du stage par l'enseignant: ",
+              "style": {
+                "fontSize": 10,
+                "fontWeight": "bold"
+              }
+            },
+            {
+              "type": "inputField",
+              "name": "modalites",
+              "width": 600,
+              "multiline": true,
+              "numberOfLines": 4
+            }
+          ]
+        },
+        {
+          "type": "sizedBox",
+          "height": 20
+        },
+        {
+          "type": "text",
+          "content": "Horaire de travail:",
+          "style": {
+            "fontSize": 10,
+            "fontWeight": "bold"
+          }
+        },
+        {
+          "type": "container",
+          "decoration": {
+            "border": {
+              "left": {
+                "width": 1
+              },
+              "bottom": {
+                "width": 1
+              },
+              "top": {
+                "width": 1
+              }
+            }
+          },
+          "width": null,
+          "child": {
+            "type": "row",
+            "children": [
+              {
+                "type": "container",
+                "decoration": {
+                  "color": "#d3d3d3"
+                },
+                "padding": 7,
+                "child": {
+                  "type": "text",
+                  "content": "Heures\nDe travail",
+                  "alignment": "center",
+                  "style": {
+                    "fontSize": 9,
+                    "fontWeight": "bold"
+                  }
+                }
+              },
+              {
+                "type": "table",
+                "data": [["", "", "", "", "", ""]],
+                "cellHeight": 60,
+                "headerHeight": 12,
+                "headers": [
+                  "Lundi",
+                  "Mardi",
+                  "Mercredi",
+                  "Jeudi",
+                  "Vendredi",
+                  "Samedi",
+                  "Dimanche"
+                ],
+                "headerDecoration": {
+                  "color": "#d3d3d3"
+                },
+                "columnWidths": 64,
+                "border": 1,
+                "headerPadding": 5
+              }
+            ]
+          }
+        },
+        {
+          "type": "sizedBox",
+          "height": 20
+        },
+        {
+          "type": "column",
+          "children": [
+            {
+              "type": "text",
+              "content": "REMARQUES OU PRÉCISIONS: ",
+              "style": {
+                "fontSize": 10,
+                "fontWeight": "bold"
+              }
+            },
+            {
+              "type": "inputField",
+              "name": "remarque",
+              "width": 600,
+              "multiline": true,
+              "numberOfLines": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "elements": [
+        {
+          "type": "text",
+          "content": "Annexe C",
+          "alignment": "center",
+          "style": {
+            "fontWeight": "bold"
+          }
+        },
+        {
+          "type": "sizedBox",
+          "height": 20
+        },
+        {
+          "type": "text",
+          "content": "FICHE DE RENSEIGNEMENTS SUR LES INTERVENANTS",
+          "alignment": "center",
+          "underline": true
+        },
+        {
+          "type": "sizedBox",
+          "height": 40
+        },
+        {
+          "type": "container",
+          "padding": 10,
+          "decoration": {
+            "border": {
+              "left": {
+                "color": "#000000",
+                "width": 1
+              },
+              "right": {
+                "color": "#000000",
+                "width": 1
+              },
+              "top": {
+                "color": "#000000",
+                "width": 1
+              },
+              "bottom": {
+                "color": "#000000",
+                "width": 1
+              }
+            }
+          },
+          "child": {
+            "type": "column",
+            "children": [
+              {
+                "type": "text",
+                "content": "Pour le Centre de services scolaire de la Pointe-de-l'Île",
+                "underline": true,
+                "style": {
+                  "fontSize": 10,
+                  "fontWeight": "bold"
+                }
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "L'établissement d'enseignement:",
+                    "underline": true,
+                    "style": {
+                      "fontSize": 10,
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "nomEtablissement",
+                    "flex": "expanded",
+                    "defaultValue": "__SCHOOL_NAME__"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Représentée par (direction/direction-adjointe) :",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "nomRepresentantEtablissement",
+                    "flex": "expanded"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Adresse de l'établissement:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "adresseEtablissement",
+                    "flex": "expanded",
+                    "defaultValue": "__SCHOOL_ADDRESS__"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Numéro de téléphone:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "numeroTelephoneEtablissement",
+                    "flex": "expanded"
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 15
+                  },
+                  {
+                    "type": "text",
+                    "content": "Numéro de télécopieur:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "telecopieurEtablissement",
+                    "flex": "expanded"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Nom de l'enseignant:",
+                    "underline": true,
+                    "style": {
+                      "fontSize": 10,
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "nomEnseignant",
+                    "flex": "expanded",
+                    "defaultValue": "__TEACHER_NAME__"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Numéro de téléphone pour joindre l'enseignant:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "numeroTelephoneEnseignant",
+                    "flex": "expanded",
+                    "defaultValue": "__TEACHER_PHONE_NUMBER__"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "sizedBox",
+          "height": 20
+        },
+        {
+          "type": "container",
+          "padding": 10,
+          "decoration": {
+            "border": {
+              "left": {
+                "color": "#000000",
+                "width": 1
+              },
+              "right": {
+                "color": "#000000",
+                "width": 1
+              },
+              "top": {
+                "color": "#000000",
+                "width": 1
+              },
+              "bottom": {
+                "color": "#000000",
+                "width": 1
+              }
+            }
+          },
+          "child": {
+            "type": "column",
+            "children": [
+              {
+                "type": "text",
+                "content": "L'élève-stagiaire",
+                "underline": true,
+                "style": {
+                  "fontSize": 10,
+                  "fontWeight": "bold"
+                }
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Nom:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "nomEleveStagiaire",
+                    "flex": "expanded",
+                    "defaultValue": "__STUDENT_NAME__"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Adresse:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "adresseEleveStagiaire",
+                    "flex": "expanded",
+                    "defaultValue": "__STUDENT_ADDRESS__"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "start",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Numéro de téléphone:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "numeroTelephoneEleveStagiaire",
+                    "width": 100,
+                    "defaultValue": "__STUDENT_PHONE_NUMBER__"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "start",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Date de naissance:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "dateNaissanceEleveStagiaire",
+                    "width": 100,
+                    "defaultValue": "__STUDENT_BIRTH_DATE__"
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Personne à contacter en cas d'urgence:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "personneContacterUrgenceEleveStagiaire",
+                    "flex": "expanded",
+                    "defaultValue": "__STUDENT_EMERGENCY_CONTACT_NAME__"
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 15
+                  },
+                  {
+                    "type": "text",
+                    "content": "Lien:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "lienPersonneContacterUrgenceEleveStagiaire",
+                    "flex": "expanded",
+                    "defaultValue": "__STUDENT_EMERGENCY_CONTACT_RELATIONSHIP__"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "sizedBox",
+          "height": 20
+        },
+        {
+          "type": "container",
+          "padding": 10,
+          "decoration": {
+            "border": {
+              "left": {
+                "color": "#000000",
+                "width": 1
+              },
+              "right": {
+                "color": "#000000",
+                "width": 1
+              },
+              "top": {
+                "color": "#000000",
+                "width": 1
+              },
+              "bottom": {
+                "color": "#000000",
+                "width": 1
+              }
+            }
+          },
+          "child": {
+            "type": "column",
+            "children": [
+              {
+                "type": "text",
+                "content": "L'entreprise",
+                "underline": true,
+                "style": {
+                  "fontSize": 10,
+                  "fontWeight": "bold"
+                }
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Nom:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "nomEntreprise",
+                    "flex": "expanded",
+                    "defaultValue": "__ENTERPRISE_NAME__"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Représentée par:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "representantEntreprise",
+                    "flex": "expanded",
+                    "defaultValue": "__ENTERPRISE_CONTACT_NAME__"
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 15
+                  },
+                  {
+                    "type": "text",
+                    "content": "Fonction:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "fonctionRepresentantEntreprise",
+                    "flex": "expanded",
+                    "defaultValue": "__ENTERPRISE_CONTACT_FUNCTION__"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Adresse:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "adresseEntreprise",
+                    "flex": "expanded",
+                    "defaultValue": "__ENTERPRISE_HEADQUARTERS_ADDRESS__"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Numéro de téléphone:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "numeroTelephoneEntreprise",
+                    "flex": "expanded",
+                    "defaultValue": "__ENTERPRISE_PHONE_NUMBER__"
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 15
+                  },
+                  {
+                    "type": "text",
+                    "content": "Numéro de télécopieur:",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "telecopieurEntreprise",
+                    "flex": "expanded"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Lieu du stage: ",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "lieuStage",
+                    "flex": "expanded",
+                    "defaultValue": "__ENTERPRISE_ADDRESS__"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Responsable du stagiaire: ",
+                    "underline": true,
+                    "style": {
+                      "fontSize": 10,
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "responsableStagiaire",
+                    "flex": "expanded",
+                    "defaultValue": "__INTERNSHIP_SUPERVISOR_NAME__"
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 15
+                  },
+                  {
+                    "type": "text",
+                    "content": "Fonction: ",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "fonctionResponsableStagiaire",
+                    "flex": "expanded"
+                  }
+                ]
+              },
+              {
+                "type": "sizedBox",
+                "height": 10
+              },
+              {
+                "type": "row",
+                "mainAxisAlignment": "spaceBetween",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Numéro de téléphone pour joindre le responsable du stagiaire: ",
+                    "style": {
+                      "fontSize": 10
+                    }
+                  },
+                  {
+                    "type": "sizedBox",
+                    "width": 5
+                  },
+                  {
+                    "type": "inputField",
+                    "name": "telephoneResponsableStagiaire",
+                    "flex": "expanded",
+                    "defaultValue": "__INTERNSHIP_SUPERVISOR_PHONE_NUMBER__"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
