@@ -5,6 +5,8 @@ class WebSiteListTile extends StatefulWidget {
   const WebSiteListTile({
     super.key,
     this.title = 'Site web',
+    this.titleStyle,
+    this.contentStyle,
     this.initialValue,
     this.icon = Icons.link,
     this.onSaved,
@@ -15,6 +17,8 @@ class WebSiteListTile extends StatefulWidget {
   });
 
   final String title;
+  final TextStyle? titleStyle;
+  final TextStyle? contentStyle;
   final String? initialValue;
   final IconData icon;
   final Function(String?)? onSaved;
@@ -68,8 +72,10 @@ class _WebSiteListTileState extends State<WebSiteListTile> {
               decoration: InputDecoration(
                 icon: const SizedBox(width: 30),
                 labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
+                labelStyle: widget.titleStyle,
                 disabledBorder: InputBorder.none,
               ),
+              style: widget.contentStyle,
               enabled: widget.enabled,
               onSaved: (value) => _addHttp(value!),
               keyboardType: TextInputType.url,

@@ -39,12 +39,16 @@ class AddressListTile extends StatefulWidget {
   const AddressListTile({
     super.key,
     this.title,
+    this.titleStyle,
+    this.contentStyle,
     required this.addressController,
     required this.isMandatory,
     required this.enabled,
   });
 
   final String? title;
+  final TextStyle? titleStyle;
+  final TextStyle? contentStyle;
   final bool enabled;
   final bool isMandatory;
   final AddressController addressController;
@@ -215,10 +219,12 @@ class _AddressListTileState extends State<AddressListTile> {
               decoration: InputDecoration(
                   labelText:
                       '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
+                  labelStyle: widget.titleStyle,
                   // Add an invisible icon so the text wraps
                   suffixIcon: Icon(addressHasChanged ? Icons.search : Icons.map,
                       color: Colors.white),
                   disabledBorder: InputBorder.none),
+              style: widget.contentStyle,
               enabled: widget.enabled,
               maxLines: null,
               onSaved: (newAddress) => validate(),

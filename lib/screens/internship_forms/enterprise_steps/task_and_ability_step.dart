@@ -123,18 +123,30 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
   }
 
   TextField _buildEnterpriseName(Enterprise enterprise) {
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
+
     return TextField(
       decoration: const InputDecoration(
-          labelText: 'Nom de l\'entreprise', border: InputBorder.none),
+          labelText: 'Nom de l\'entreprise',
+          border: InputBorder.none,
+          labelStyle: styleOverride),
+      style: styleOverride,
       controller: TextEditingController(text: enterprise.name),
       enabled: false,
     );
   }
 
   TextField _buildStudentName(Student student) {
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
+
     return TextField(
       decoration: const InputDecoration(
-          labelText: 'Nom de l\'élève', border: InputBorder.none),
+          labelText: 'Nom de l\'élève',
+          border: InputBorder.none,
+          labelStyle: styleOverride),
+      style: styleOverride,
       controller: TextEditingController(text: student.fullName),
       enabled: false,
     );

@@ -28,6 +28,7 @@ class ActivityTypeCards extends StatelessWidget {
                         color: Colors.black, fontWeight: FontWeight.normal),
                   ),
                   backgroundColor: const Color(0xFFB8D8E6),
+                  side: BorderSide.none,
                   onDeleted: onDeleted != null
                       ? () => onDeleted!(activityType)
                       : null),

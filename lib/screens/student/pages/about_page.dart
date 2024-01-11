@@ -27,19 +27,22 @@ class AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _GeneralInformation(
-              student: widget.student,
-              dateFormat: _dateFormat,
-              addressController: _addressController,
-            ),
-            _EmergencyContact(student: widget.student),
-          ],
+    return Theme(
+      data: Theme.of(context).copyWith(disabledColor: Colors.black),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _GeneralInformation(
+                student: widget.student,
+                dateFormat: _dateFormat,
+                addressController: _addressController,
+              ),
+              _EmergencyContact(student: widget.student),
+            ],
+          ),
         ),
       ),
     );
@@ -59,6 +62,9 @@ class _GeneralInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -79,8 +85,10 @@ class _GeneralInformation extends StatelessWidget {
                       decoration: const InputDecoration(
                         icon: SizedBox(width: 30),
                         labelText: 'Date de naissance',
+                        labelStyle: styleOverride,
                         disabledBorder: InputBorder.none,
                       ),
+                      style: styleOverride,
                       enabled: false,
                     ),
                     InkWell(
@@ -96,12 +104,17 @@ class _GeneralInformation extends StatelessWidget {
                   ],
                 ),
                 PhoneListTile(
-                    initialValue: student.phone,
-                    isMandatory: false,
-                    enabled: false),
+                  titleStyle: styleOverride,
+                  contentStyle: styleOverride,
+                  initialValue: student.phone,
+                  isMandatory: false,
+                  enabled: false,
+                ),
                 const SizedBox(height: 8),
                 EmailListTile(
                   controller: TextEditingController(text: student.email),
+                  titleStyle: styleOverride,
+                  contentStyle: styleOverride,
                   enabled: false,
                 ),
                 const SizedBox(height: 8),
@@ -109,6 +122,8 @@ class _GeneralInformation extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 12.0),
                   child: AddressListTile(
                     addressController: addressController,
+                    titleStyle: styleOverride,
+                    contentStyle: styleOverride,
                     isMandatory: false,
                     enabled: false,
                   ),
@@ -129,6 +144,9 @@ class _EmergencyContact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
+
     return Column(
       children: [
         ListTile(
@@ -146,8 +164,10 @@ class _EmergencyContact extends StatelessWidget {
                     TextEditingController(text: student.contact.firstName),
                 decoration: const InputDecoration(
                   labelText: 'Prénom',
+                  labelStyle: styleOverride,
                   disabledBorder: InputBorder.none,
                 ),
+                style: styleOverride,
                 enabled: false,
               ),
               TextFormField(
@@ -155,8 +175,10 @@ class _EmergencyContact extends StatelessWidget {
                     TextEditingController(text: student.contact.lastName),
                 decoration: const InputDecoration(
                   labelText: 'Nom de famille',
+                  labelStyle: styleOverride,
                   disabledBorder: InputBorder.none,
                 ),
+                style: styleOverride,
                 enabled: false,
               ),
               const SizedBox(height: 8),
@@ -164,18 +186,24 @@ class _EmergencyContact extends StatelessWidget {
                 controller: TextEditingController(text: student.contactLink),
                 decoration: const InputDecoration(
                   labelText: 'Lien avec l\'élève',
+                  labelStyle: styleOverride,
                   disabledBorder: InputBorder.none,
                 ),
+                style: styleOverride,
                 enabled: false,
               ),
               const SizedBox(height: 8),
               PhoneListTile(
+                titleStyle: styleOverride,
+                contentStyle: styleOverride,
                 initialValue: student.contact.phone,
                 enabled: false,
                 isMandatory: false,
               ),
               const SizedBox(height: 8),
               EmailListTile(
+                titleStyle: styleOverride,
+                contentStyle: styleOverride,
                 controller: TextEditingController(text: student.contact.email),
                 enabled: false,
               ),

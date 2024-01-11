@@ -209,6 +209,9 @@ class _ContactInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -221,8 +224,10 @@ class _ContactInfo extends StatelessWidget {
                 controller: controller.firstName,
                 decoration: const InputDecoration(
                   labelText: '* Prénom',
+                  labelStyle: styleOverride,
                   disabledBorder: InputBorder.none,
                 ),
+                style: styleOverride,
                 enabled: editMode,
                 validator: (text) => text!.isEmpty
                     ? 'Ajouter le nom de la personne représentant l\'entreprise.'
@@ -233,8 +238,10 @@ class _ContactInfo extends StatelessWidget {
                 controller: controller.lastName,
                 decoration: const InputDecoration(
                   labelText: '* Nom',
+                  labelStyle: styleOverride,
                   disabledBorder: InputBorder.none,
                 ),
+                style: styleOverride,
                 enabled: editMode,
                 validator: (text) => text!.isEmpty
                     ? 'Ajouter le nom de la personne représentant l\'entreprise.'
@@ -246,8 +253,10 @@ class _ContactInfo extends StatelessWidget {
                 controller: controller.contactFunction,
                 decoration: const InputDecoration(
                   labelText: '* Fonction',
+                  labelStyle: styleOverride,
                   disabledBorder: InputBorder.none,
                 ),
+                style: styleOverride,
                 enabled: editMode,
                 validator: (text) => text!.isEmpty
                     ? 'Ajouter la fonction de cette personne.'
@@ -256,12 +265,16 @@ class _ContactInfo extends StatelessWidget {
               const SizedBox(height: 8),
               PhoneListTile(
                 controller: controller.contactPhone,
+                titleStyle: styleOverride,
+                contentStyle: styleOverride,
                 isMandatory: true,
                 enabled: editMode,
               ),
               const SizedBox(height: 8),
               EmailListTile(
                 controller: controller.contactEmail,
+                titleStyle: styleOverride,
+                contentStyle: styleOverride,
                 enabled: editMode,
                 isMandatory: true,
               ),
@@ -308,6 +321,9 @@ class _EnterpriseInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -318,6 +334,8 @@ class _EnterpriseInfo extends StatelessWidget {
             children: [
               AddressListTile(
                 title: 'Adresse de l\'établissement',
+                titleStyle: styleOverride,
+                contentStyle: styleOverride,
                 addressController: controller.address,
                 isMandatory: true,
                 enabled: editMode,
@@ -325,11 +343,15 @@ class _EnterpriseInfo extends StatelessWidget {
               const SizedBox(height: 8),
               PhoneListTile(
                   controller: controller.phone,
+                  titleStyle: styleOverride,
+                  contentStyle: styleOverride,
                   isMandatory: false,
                   enabled: editMode),
               const SizedBox(height: 8),
               PhoneListTile(
                   title: 'Télécopieur',
+                  titleStyle: styleOverride,
+                  contentStyle: styleOverride,
                   controller: controller.fax,
                   icon: Icons.fax,
                   isMandatory: false,
@@ -337,6 +359,8 @@ class _EnterpriseInfo extends StatelessWidget {
               const SizedBox(height: 8),
               WebSiteListTile(
                 controller: controller.website,
+                titleStyle: styleOverride,
+                contentStyle: styleOverride,
                 enabled: editMode,
               ),
             ],
@@ -386,6 +410,9 @@ class _TaxesInfo extends StatefulWidget {
 class _TaxesInfoState extends State<_TaxesInfo> {
   @override
   Widget build(BuildContext context) {
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -408,6 +435,8 @@ class _TaxesInfoState extends State<_TaxesInfo> {
               ]),
             AddressListTile(
               title: 'Adresse du siège social',
+              titleStyle: styleOverride,
+              contentStyle: styleOverride,
               addressController: widget.controller.address,
               isMandatory: false,
               enabled: widget.editMode && !widget.useSameAddress,
@@ -417,8 +446,10 @@ class _TaxesInfoState extends State<_TaxesInfo> {
               controller: widget.controller.neq,
               decoration: const InputDecoration(
                 labelText: 'Numéro d\'entreprise du Québec (NEQ)',
+                labelStyle: styleOverride,
                 disabledBorder: InputBorder.none,
               ),
+              style: styleOverride,
               enabled: widget.editMode,
               validator: null,
               keyboardType: TextInputType.number,

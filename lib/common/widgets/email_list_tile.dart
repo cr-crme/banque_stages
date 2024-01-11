@@ -7,6 +7,8 @@ class EmailListTile extends StatefulWidget {
   const EmailListTile({
     super.key,
     this.title = 'Courriel',
+    this.titleStyle,
+    this.contentStyle,
     this.initialValue,
     this.icon = Icons.mail,
     this.onSaved,
@@ -17,6 +19,8 @@ class EmailListTile extends StatefulWidget {
   });
 
   final String title;
+  final TextStyle? titleStyle;
+  final TextStyle? contentStyle;
   final String? initialValue;
   final IconData icon;
   final Function(String?)? onSaved;
@@ -57,8 +61,10 @@ class _EmailListTileState extends State<EmailListTile> {
             decoration: InputDecoration(
               icon: const SizedBox(width: 30),
               labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
+              labelStyle: widget.titleStyle,
               disabledBorder: InputBorder.none,
             ),
+            style: widget.contentStyle,
             validator: (value) {
               if (!widget.enabled) return null;
 

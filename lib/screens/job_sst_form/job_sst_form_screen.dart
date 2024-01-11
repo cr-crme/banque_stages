@@ -382,20 +382,30 @@ class _QuestionsStepState extends State<QuestionsStep> {
   }
 
   Widget _buildHeader() {
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Informations générales', top: 0, left: 0),
         TextField(
           decoration: const InputDecoration(
-              labelText: 'Nom de l\'entreprise', border: InputBorder.none),
+            labelText: 'Nom de l\'entreprise',
+            border: InputBorder.none,
+            labelStyle: styleOverride,
+          ),
+          style: styleOverride,
           controller: TextEditingController(text: widget.enterprise.name),
           maxLines: null,
           enabled: false,
         ),
         TextField(
           decoration: const InputDecoration(
-              labelText: 'Métier semi-spécialisé', border: InputBorder.none),
+              labelText: 'Métier semi-spécialisé',
+              border: InputBorder.none,
+              labelStyle: styleOverride),
+          style: styleOverride,
           controller:
               TextEditingController(text: widget.job.specialization.name),
           maxLines: null,

@@ -8,6 +8,8 @@ class PhoneListTile extends StatefulWidget {
   const PhoneListTile({
     super.key,
     this.title = 'Téléphone',
+    this.titleStyle,
+    this.contentStyle,
     this.initialValue,
     this.icon = Icons.phone,
     this.onSaved,
@@ -18,6 +20,8 @@ class PhoneListTile extends StatefulWidget {
   });
 
   final String title;
+  final TextStyle? titleStyle;
+  final TextStyle? contentStyle;
   final PhoneNumber? initialValue;
   final IconData icon;
   final Function(String?)? onSaved;
@@ -68,6 +72,7 @@ class _PhoneListTileState extends State<PhoneListTile> {
               decoration: InputDecoration(
                 icon: const SizedBox(width: 30),
                 labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
+                labelStyle: widget.titleStyle,
                 disabledBorder: InputBorder.none,
               ),
               validator: (value) {
@@ -78,6 +83,7 @@ class _PhoneListTileState extends State<PhoneListTile> {
                 }
                 return FormService.phoneValidator(value);
               },
+              style: widget.contentStyle,
               enabled: widget.enabled,
               onSaved: widget.onSaved,
               keyboardType: TextInputType.phone,
