@@ -69,7 +69,7 @@ class SpecializationListScreen extends StatelessWidget {
 
     if (!shouldShowHelp) return;
 
-    // ignore: use_build_context_synchronously
+    if (!context.mounted) return;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

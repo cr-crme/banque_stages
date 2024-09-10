@@ -134,7 +134,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
   void _navigateToStudentInfo(Student student) {
     GoRouter.of(context).goNamed(
       Screens.supervisionStudentDetails,
-      params: Screens.params(student),
+      pathParameters: Screens.params(student),
     );
   }
 
@@ -186,14 +186,12 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final iconSize = screenSize.width / 16;
     final internships = _getInternshipsByStudents();
 
-    final studentsInMyGroups =
-        StudentsProvider.studentsInMyGroups(context, listen: false);
+    final studentsInMyGroups = StudentsProvider.studentsInMyGroups(context);
     final studentsISignedIntenships = internships
         .where((internship) => internship.signatoryTeacherId == myId)
         .map((internship) => studentsInMyGroups
             .firstWhere((student) => student.id == internship.studentId));
-    final studentsISupervize =
-        StudentsProvider.mySupervizedStudents(context, listen: false);
+    final studentsISupervize = StudentsProvider.mySupervizedStudents(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -300,13 +298,12 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
 class _TabIcon extends StatelessWidget {
   const _TabIcon({
-    Key? key,
     required this.title,
     required this.screenSize,
     required this.iconSize,
     required this.icon,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final String title;
   final Size screenSize;
@@ -320,7 +317,7 @@ class _TabIcon extends StatelessWidget {
       onTap: onTap,
       child: SizedBox(
         width: screenSize.width / 3,
-        height: iconSize * 1.8,
+        height: iconSize * 2,
         child: Column(
           children: [
             Icon(

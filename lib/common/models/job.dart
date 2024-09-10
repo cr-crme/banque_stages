@@ -37,10 +37,10 @@ class JobSstEvaluation extends ItemSerializable {
 
   static JobSstEvaluation get empty => JobSstEvaluation(questions: {});
 
-  JobSstEvaluation.fromSerialized(map)
+  JobSstEvaluation.fromSerialized(super.map)
       : questions = _stringMapFromSerialized(map['questions']),
         date = DateTime.fromMillisecondsSinceEpoch(map['date'] ?? 0),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
@@ -156,7 +156,7 @@ class Job extends ItemSerializable {
         'comments': comments,
       };
 
-  Job.fromSerialized(map)
+  Job.fromSerialized(super.map)
       : _specialization = map['specialization'] == null
             ? null
             : ActivitySectorsService.specialization(map['specialization']),
@@ -171,5 +171,5 @@ class Job extends ItemSerializable {
             JobSstEvaluation.fromSerialized(map['sstEvaluations'] ?? {}),
         incidents = Incidents.fromSerialized(map['incidents'] ?? {}),
         comments = _stringListFromSerialized(map['comments']),
-        super.fromSerialized(map);
+        super.fromSerialized();
 }

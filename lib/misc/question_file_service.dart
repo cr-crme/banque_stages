@@ -37,7 +37,7 @@ class Question extends ItemSerializable {
   final String? followUpQuestion;
   final String? followUpQuestionSummary;
 
-  Question.fromSerialized(map)
+  Question.fromSerialized(super.map)
       : idSummary = map['idSummary'],
         question = map['question'],
         questionSummary = map['summary'],
@@ -49,7 +49,7 @@ class Question extends ItemSerializable {
                 (map['choices'] as List).map((e) => (e as String).trim())),
         followUpQuestion = map['followUp'],
         followUpQuestionSummary = map['followUpSummary'],
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {

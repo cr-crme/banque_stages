@@ -134,7 +134,8 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     final itinerary =
         itineraries.fromDate(_currentDate) ?? Itinerary(date: _currentDate);
 
-    itinerary.add(widget.waypoints[indexInWaypoints].copyWith());
+    itinerary
+        .add(widget.waypoints[indexInWaypoints].copyWith(forceNewId: true));
     itineraries.replace(itinerary, notify: true);
     setState(() {});
   }

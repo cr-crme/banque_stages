@@ -108,7 +108,7 @@ class Enterprise extends ItemSerializable {
   }
 
   @override
-  Enterprise.fromSerialized(map)
+  Enterprise.fromSerialized(super.map)
       : name = map['name'] ?? 'Unnamed enterprise',
         activityTypes =
             (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
@@ -127,7 +127,7 @@ class Enterprise extends ItemSerializable {
             ? null
             : Address.fromSerialized(map['headquartersAddress']),
         neq = map['neq'],
-        super.fromSerialized(map);
+        super.fromSerialized();
 }
 
 const List<String> activityTypes = [

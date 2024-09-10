@@ -156,6 +156,19 @@ class _StudentInternshipListViewState
               final endDate = internship.endDate == null
                   ? DateFormat.yMMMd('fr_CA').format(internship.date.end)
                   : DateFormat.yMMMd('fr_CA').format(internship.endDate!);
+
+              late final String specializationIdWithName;
+              try {
+                specializationIdWithName = EnterprisesProvider.of(context)
+                    .fromId(internship.enterpriseId)
+                    .jobs
+                    .fromId(internship.jobId)
+                    .specialization
+                    .idWithName;
+              } catch (e) {
+                specializationIdWithName = '';
+              }
+
               return ExpansionPanel(
                 canTapOnHeader: true,
                 isExpanded: _expanded[internship.id]!,
@@ -167,12 +180,7 @@ class _StudentInternshipListViewState
                         .titleLarge!
                         .copyWith(color: Colors.black),
                   ),
-                  subtitle: Text(EnterprisesProvider.of(context)
-                      .fromId(internship.enterpriseId)
-                      .jobs
-                      .fromId(internship.jobId)
-                      .specialization
-                      .idWithName),
+                  subtitle: Text(specializationIdWithName),
                   trailing: Tooltip(
                     message: 'Ajouter ou retirer l\'élève à votre tableau '
                         'de supervision',

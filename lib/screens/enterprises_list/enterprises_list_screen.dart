@@ -187,8 +187,8 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
                 enterprise: enterprises.elementAt(index),
                 onTap: (enterprise) => GoRouter.of(context).goNamed(
                   Screens.enterprise,
-                  params: Screens.params(enterprise),
-                  queryParams: Screens.queryParams(pageIndex: '0'),
+                  pathParameters: Screens.params(enterprise),
+                  queryParameters: Screens.queryParams(pageIndex: '0'),
                 ),
               ),
             ),
@@ -231,19 +231,18 @@ class _EnterprisesByMap extends StatelessWidget {
       out.add(
         Marker(
           point: waypoint.toLatLng(),
-          anchorPos: AnchorPos.exactly(
-              Anchor(markerSize / 2 + nameWidth, nameHeight / 2)),
+          alignment: const Alignment(0.8, 0.0), // Centered almost at max right
           width: markerSize + nameWidth,
           height: markerSize + nameHeight,
-          builder: (context) => Row(
+          child: Row(
             children: [
               GestureDetector(
                 onTap: i == 0
                     ? null
                     : () => GoRouter.of(context).goNamed(
                           Screens.enterprise,
-                          params: Screens.params(enterprise),
-                          queryParams: Screens.queryParams(pageIndex: '0'),
+                          pathParameters: Screens.params(enterprise),
+                          queryParameters: Screens.queryParams(pageIndex: '0'),
                         ),
                 child: Container(
                   decoration: BoxDecoration(
@@ -322,9 +321,8 @@ class _EnterprisesByMap extends StatelessWidget {
               height: MediaQuery.of(context).size.height - 150,
               child: FlutterMap(
                 options: MapOptions(
-                    center: locations[locations.keys.first]!.toLatLng(),
-                    zoom: 14),
-                nonRotatedChildren: const [ZoomButtons()],
+                    initialCenter: locations[locations.keys.first]!.toLatLng(),
+                    initialZoom: 14),
                 children: [
                   TileLayer(
                     urlTemplate:
@@ -332,6 +330,7 @@ class _EnterprisesByMap extends StatelessWidget {
                     userAgentPackageName: 'dev.fleaflet.flutter_map.example',
                   ),
                   MarkerLayer(markers: _latlngToMarkers(context, locations)),
+                  const ZoomButtons(),
                 ],
               ),
             );

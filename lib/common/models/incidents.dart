@@ -7,12 +7,12 @@ class Incident extends ItemSerializable {
 
   Incident(this.incident, {DateTime? date}) : date = date ?? DateTime.now();
 
-  Incident.fromSerialized(map)
+  Incident.fromSerialized(super.map)
       : incident = map['incident'] ?? '',
         date = map['date'] == null
             ? DateTime(0)
             : DateTime.fromMillisecondsSinceEpoch(map['date']),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
@@ -49,7 +49,7 @@ class Incidents extends ItemSerializable {
 
   static Incidents get empty => Incidents();
 
-  Incidents.fromSerialized(map)
+  Incidents.fromSerialized(super.map)
       : severeInjuries = (map['severeInjuries'] as List?)
                 ?.map((e) => Incident.fromSerialized(e))
                 .toList() ??
@@ -62,7 +62,7 @@ class Incidents extends ItemSerializable {
                 ?.map((e) => Incident.fromSerialized(e))
                 .toList() ??
             [],
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {

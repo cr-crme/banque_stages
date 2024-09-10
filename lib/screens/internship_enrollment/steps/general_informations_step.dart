@@ -227,14 +227,10 @@ class _ExtraSpecialization extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (extraSpecializations.isNotEmpty)
-            ...extraSpecializations
-                .asMap()
-                .keys
-                .map<Widget>((i) => Padding(
-                      padding: const EdgeInsets.only(bottom: 24.0),
-                      child: _extraJobTileBuilder(context, i),
-                    ))
-                .toList(),
+            ...extraSpecializations.asMap().keys.map<Widget>((i) => Padding(
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  child: _extraJobTileBuilder(context, i),
+                )),
           Text(
               'Besoin d\'ajouter des compétences d\'un autre métier pour ce stage?',
               style: Theme.of(context).textTheme.titleMedium),

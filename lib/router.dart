@@ -113,29 +113,29 @@ final router = GoRouter(
         GoRoute(
           path: 'add-internship-enterprise/:id',
           name: Screens.internshipEnrollementFromEnterprise,
-          builder: (context, state) =>
-              InternshipEnrollmentScreen(enterpriseId: state.params['id']!),
+          builder: (context, state) => InternshipEnrollmentScreen(
+              enterpriseId: state.pathParameters['id']!),
         ),
         GoRoute(
           path: 'enterprise-evaluation/:id',
           name: Screens.enterpriseEvaluationScreen,
           builder: (context, state) =>
-              EnterpriseEvaluationScreen(id: state.params['id']!),
+              EnterpriseEvaluationScreen(id: state.pathParameters['id']!),
         ),
         GoRoute(
           path: ':id',
           name: Screens.enterprise,
           builder: (context, state) => EnterpriseScreen(
-            id: state.params['id']!,
-            pageIndex: int.parse(state.queryParams['pageIndex'] ?? '0'),
+            id: state.pathParameters['id']!,
+            pageIndex: int.parse(state.pathParameters['pageIndex'] ?? '0'),
           ),
           routes: [
             GoRoute(
               path: ':jobId',
               name: Screens.jobSstForm,
               builder: (context, state) => JobSstFormScreen(
-                enterpriseId: state.params['id']!,
-                jobId: state.params['jobId']!,
+                enterpriseId: state.pathParameters['id']!,
+                jobId: state.pathParameters['jobId']!,
               ),
             ),
           ],
@@ -151,8 +151,9 @@ final router = GoRouter(
           path: 'studentScreen/:id',
           name: Screens.student,
           builder: (context, state) => StudentScreen(
-              id: state.params['id']!,
-              initialPage: int.parse(state.queryParams['pageIndex'] ?? '0')),
+              id: state.pathParameters['id']!,
+              initialPage:
+                  int.parse(state.uri.queryParameters['pageIndex'] ?? '0')),
         ),
       ],
     ),
@@ -165,7 +166,7 @@ final router = GoRouter(
           path: 'student-details/:id',
           name: Screens.supervisionStudentDetails,
           builder: (context, state) => SupervisionStudentDetailsScreen(
-            studentId: state.params['id']!,
+            studentId: state.pathParameters['id']!,
           ),
         ),
       ],
@@ -184,8 +185,8 @@ final router = GoRouter(
       path: '/skill-evaluation-main/:id',
       name: Screens.skillEvaluationMainScreen,
       builder: (context, state) => SkillEvaluationMainScreen(
-        internshipId: state.params['id']!,
-        editMode: state.queryParams['editMode']! == '1',
+        internshipId: state.pathParameters['id']!,
+        editMode: state.uri.queryParameters['editMode']! == '1',
       ),
     ),
     GoRoute(
@@ -194,7 +195,7 @@ final router = GoRouter(
       builder: (context, state) {
         return SkillEvaluationFormScreen(
           formController: state.extra as SkillEvaluationFormController,
-          editMode: state.queryParams['editMode']! == '1',
+          editMode: state.uri.queryParameters['editMode']! == '1',
         );
       },
     ),
@@ -203,7 +204,7 @@ final router = GoRouter(
       name: Screens.attitudeEvaluationScreen,
       builder: (context, state) => AttitudeEvaluationScreen(
         formController: state.extra as AttitudeEvaluationFormController,
-        editMode: state.queryParams['editMode']! == '1',
+        editMode: state.uri.queryParameters['editMode'] == '1',
       ),
     ),
     GoRoute(
@@ -215,7 +216,7 @@ final router = GoRouter(
           path: 'jobs/:id',
           name: Screens.jobSst,
           builder: (context, state) =>
-              SpecializationListScreen(id: state.params['id']!),
+              SpecializationListScreen(id: state.uri.queryParameters['id']!),
         ),
         GoRoute(
           name: Screens.cardsSst,

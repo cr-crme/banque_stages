@@ -4,18 +4,19 @@ import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart'
 import 'package:crcrme_banque_stages/screens/visiting_students/models/lng_lat_utils.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
+
 import 'package:provider/provider.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
 class RoutingMap extends StatefulWidget {
   const RoutingMap({
-    Key? key,
+    super.key,
     required this.currentDate,
     required this.waypoints,
     this.onClickWaypointCallback,
     this.onComputedDistancesCallback,
-  }) : super(key: key);
+  });
 
   final List<Waypoint> waypoints;
   final Function(int index)? onClickWaypointCallback;
@@ -59,8 +60,7 @@ class _RoutingMapState extends State<RoutingMap> {
         geometries: Geometries.geojson,
       );
     } catch (e) {
-      out = Road(
-          distance: 0, duration: 0, instructions: [], polylineEncoded: null);
+      out = Road(distance: 0, duration: 0, polylineEncoded: null);
     }
 
     if (widget.onComputedDistancesCallback != null) {
@@ -109,22 +109,23 @@ class _RoutingMapState extends State<RoutingMap> {
 
       double nameWidth = 160;
       double nameHeight = 100;
-      final previous = out.fold<int>(0, (prev, e) {
+
+      final previous = out.fold<double>(0.0, (prev, e) {
         final newLatLng = waypoint.toLatLng();
         return prev +
             (e.point.latitude == newLatLng.latitude &&
                     e.point.longitude == newLatLng.longitude
-                ? 1
-                : 0);
+                ? 1.0
+                : 0.0);
       });
       out.add(
         Marker(
           point: waypoint.toLatLng(),
-          anchorPos: AnchorPos.exactly(Anchor(markerSize / 2 + nameWidth,
-              nameHeight / 2 + previous * nameHeight / 5)),
+          alignment:
+              Alignment(0.8, 0.4 * previous), // Centered almost at max right,
           width: markerSize + nameWidth,
           height: markerSize + nameHeight,
-          builder: (context) => Row(
+          child: Row(
             children: [
               GestureDetector(
                 onTap: widget.onClickWaypointCallback == null
@@ -165,8 +166,8 @@ class _RoutingMapState extends State<RoutingMap> {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: FlutterMap(
-        options: MapOptions(center: widget.waypoints[0].toLatLng(), zoom: 12),
-        nonRotatedChildren: const [ZoomButtons()],
+        options: MapOptions(
+            initialCenter: widget.waypoints[0].toLatLng(), initialZoom: 12),
         children: [
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -180,6 +181,7 @@ class _RoutingMapState extends State<RoutingMap> {
             },
           ),
           MarkerLayer(markers: _waypointsToMarkers()),
+          const ZoomButtons(),
         ],
       ),
     );

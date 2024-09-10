@@ -445,8 +445,7 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
                   promptChangeWeeks: () => _promptChangeWeek(weeklyIndex),
                   editMode: widget.editMode,
                   leftPadding: widget.leftPadding,
-                ))
-            .toList(),
+                )),
         if (widget.editMode)
           TextButton(
             onPressed: () => setState(() => widget

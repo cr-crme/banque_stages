@@ -16,19 +16,30 @@ class InternshipQuickAccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final internship = InternshipsProvider.of(context)[internshipId];
-    final enterprise = EnterprisesProvider.of(context)[internship.enterpriseId];
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildEnterprise(context, enterprise: enterprise),
-          _buildQuickAccessButton(context, internship: internship),
-        ],
-      ),
-    );
+    try {
+      final internship = InternshipsProvider.of(context)[internshipId];
+      final enterprise =
+          EnterprisesProvider.of(context)[internship.enterpriseId];
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildEnterprise(context, enterprise: enterprise),
+            _buildQuickAccessButton(context, internship: internship),
+          ],
+        ),
+      );
+    } catch (e) {
+      return SizedBox(
+        height: 100,
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      );
+    }
   }
 
   Widget _buildQuickAccessButton(context, {required Internship internship}) {
@@ -56,8 +67,9 @@ class InternshipQuickAccess extends StatelessWidget {
                           child: IconButton(
                             onPressed: () => GoRouter.of(context).pushNamed(
                               Screens.skillEvaluationMainScreen,
-                              params: Screens.params(internshipId),
-                              queryParams: Screens.queryParams(editMode: '1'),
+                              pathParameters: Screens.params(internshipId),
+                              queryParameters:
+                                  Screens.queryParams(editMode: '1'),
                             ),
                             icon: const Icon(Icons.add_chart_rounded),
                             color: Theme.of(context).colorScheme.primary,
@@ -84,7 +96,8 @@ class InternshipQuickAccess extends StatelessWidget {
                           child: IconButton(
                             onPressed: () => GoRouter.of(context).pushNamed(
                                 Screens.attitudeEvaluationScreen,
-                                queryParams: Screens.queryParams(editMode: '1'),
+                                queryParameters:
+                                    Screens.queryParams(editMode: '1'),
                                 extra: AttitudeEvaluationFormController(
                                     internshipId: internshipId)),
                             icon: const Icon(Icons.playlist_add_sharp),
@@ -138,8 +151,8 @@ class InternshipQuickAccess extends StatelessWidget {
                 child: InkWell(
                   onTap: () => GoRouter.of(context).pushNamed(
                     Screens.enterprise,
-                    params: Screens.params(enterprise),
-                    queryParams: Screens.queryParams(pageIndex: '3'),
+                    pathParameters: Screens.params(enterprise),
+                    queryParameters: Screens.queryParams(pageIndex: '3'),
                   ),
                   borderRadius: BorderRadius.circular(25),
                   child: Padding(
@@ -161,7 +174,7 @@ class InternshipQuickAccess extends StatelessWidget {
   void _evaluateEnterprise(context, Internship internship) async {
     GoRouter.of(context).pushNamed(
       Screens.enterpriseEvaluationScreen,
-      params: Screens.params(internship.id),
+      pathParameters: Screens.params(internship.id),
     );
   }
 }

@@ -120,29 +120,27 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
             widget.title!,
             style: widget.titleStyle ?? Theme.of(context).textTheme.titleSmall,
           ),
-        ..._elementValues.keys
-            .map(
-              (element) => CheckboxListTile(
-                visualDensity: VisualDensity.compact,
-                dense: true,
-                controlAffinity: ListTileControlAffinity.leading,
-                title: Text(
-                  element.toString(),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                enabled: widget.enabled && !_isNotApplicable,
-                value: _elementValues[element]!,
-                onChanged: (newValue) {
-                  _elementValues[element] = newValue!;
-                  _checkForShowingChild();
-                  setState(() {});
-                  if (widget.onOptionSelected != null) {
-                    widget.onOptionSelected!(values);
-                  }
-                },
-              ),
-            )
-            .toList(),
+        ..._elementValues.keys.map(
+          (element) => CheckboxListTile(
+            visualDensity: VisualDensity.compact,
+            dense: true,
+            controlAffinity: ListTileControlAffinity.leading,
+            title: Text(
+              element.toString(),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            enabled: widget.enabled && !_isNotApplicable,
+            value: _elementValues[element]!,
+            onChanged: (newValue) {
+              _elementValues[element] = newValue!;
+              _checkForShowingChild();
+              setState(() {});
+              if (widget.onOptionSelected != null) {
+                widget.onOptionSelected!(values);
+              }
+            },
+          ),
+        ),
         if (widget.hasNotApplicableOption)
           CheckboxListTile(
             visualDensity: VisualDensity.compact,

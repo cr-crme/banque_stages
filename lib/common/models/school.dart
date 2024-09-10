@@ -8,10 +8,10 @@ class School extends ItemSerializable {
 
   School({super.id, required this.name, required this.address});
 
-  School.fromSerialized(map)
+  School.fromSerialized(super.map)
       : name = map['name'] ?? 'Unnamed school',
         address = Address.fromSerialized(map['address'] ?? {}),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() {

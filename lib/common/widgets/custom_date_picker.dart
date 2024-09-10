@@ -20,6 +20,7 @@ const Size _inputRangeLandscapeDialogSize = Size(496, 164.0);
 const Duration _dialogSizeAnimationDuration = Duration(milliseconds: 200);
 const double _inputFormPortraitHeight = 98.0;
 const double _inputFormLandscapeHeight = 108.0;
+const double _kMaxTextScaleFactor = 1.3;
 
 /// Shows a dialog containing a Material Design date picker.
 ///
@@ -630,8 +631,11 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
 
     // Constrain the textScaleFactor to the largest supported value to prevent
     // layout issues.
-    final double textScaleFactor =
-        math.min(MediaQuery.textScaleFactorOf(context), 1.3);
+    const double fontSizeToScale = 14.0;
+    final double textScaleFactor = MediaQuery.textScalerOf(context)
+            .clamp(maxScaleFactor: _kMaxTextScaleFactor)
+            .scale(fontSizeToScale) /
+        fontSizeToScale;
     final Size dialogSize = _dialogSize(context) * textScaleFactor;
     final DialogTheme dialogTheme = theme.dialogTheme;
     return Dialog(
@@ -656,10 +660,10 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
         height: dialogSize.height,
         duration: _dialogSizeAnimationDuration,
         curve: Curves.easeIn,
-        child: MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaleFactor: textScaleFactor,
-          ),
+        child: MediaQuery.withClampedTextScaling(
+          // Constrain the textScaleFactor to the largest supported value to prevent
+          // layout issues.
+          maxScaleFactor: _kMaxTextScaleFactor,
           // coverage:ignore-start
           child: Builder(builder: (BuildContext context) {
             switch (orientation) {
@@ -1685,8 +1689,6 @@ class _CustomDateRangePickerDialogState
     final ThemeData theme = Theme.of(context);
     final bool useMaterial3 = theme.useMaterial3;
     final Orientation orientation = MediaQuery.orientationOf(context);
-    final double textScaleFactor =
-        math.min(MediaQuery.textScaleFactorOf(context), 1.3);
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
     final DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
@@ -1845,10 +1847,8 @@ class _CustomDateRangePickerDialogState
         height: size.height,
         duration: _dialogSizeAnimationDuration,
         curve: Curves.easeIn,
-        child: MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaleFactor: textScaleFactor,
-          ),
+        child: MediaQuery.withClampedTextScaling(
+          maxScaleFactor: _kMaxTextScaleFactor,
           child: Builder(builder: (BuildContext context) {
             return contents;
           }),
@@ -2778,9 +2778,9 @@ class _MonthItemState extends State<_MonthItem> {
     }
 
     T? resolve<T>(
-        MaterialStateProperty<T>? Function(DatePickerThemeData? theme)
+        WidgetStateProperty<T>? Function(DatePickerThemeData? theme)
             getProperty,
-        Set<MaterialState> states) {
+        Set<WidgetState> states) {
       return effectiveValue(
         (DatePickerThemeData? theme) {
           return getProperty(theme)?.resolve(states);
@@ -2788,9 +2788,9 @@ class _MonthItemState extends State<_MonthItem> {
       );
     }
 
-    final Set<MaterialState> states = <MaterialState>{
-      if (isDisabled) MaterialState.disabled,
-      if (isSelectedDayStart || isSelectedDayEnd) MaterialState.selected,
+    final Set<WidgetState> states = <WidgetState>{
+      if (isDisabled) WidgetState.disabled,
+      if (isSelectedDayStart || isSelectedDayEnd) WidgetState.selected,
     };
 
     // coverage:ignore-start
@@ -2798,9 +2798,9 @@ class _MonthItemState extends State<_MonthItem> {
         (DatePickerThemeData? theme) => theme?.dayForegroundColor, states);
     final Color? dayBackgroundColor = resolve<Color?>(
         (DatePickerThemeData? theme) => theme?.dayBackgroundColor, states);
-    final MaterialStateProperty<Color?> dayOverlayColor =
-        MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) => effectiveValue(
+    final WidgetStateProperty<Color?> dayOverlayColor =
+        WidgetStateProperty.resolveWith<Color?>(
+            (Set<WidgetState> states) => effectiveValue(
                   (DatePickerThemeData? theme) => isInRange
                       ? theme?.rangeSelectionOverlayColor?.resolve(states)
                       : theme?.dayOverlayColor?.resolve(states),
@@ -2894,7 +2894,7 @@ class _MonthItemState extends State<_MonthItem> {
         focusNode: _dayFocusNodes[day - 1],
         onTap: () => widget.onChanged(dayToBuild),
         radius: _monthItemRowHeight / 2 + 4,
-        statesController: MaterialStatesController(states),
+        statesController: WidgetStatesController(states),
         overlayColor: dayOverlayColor,
         onFocusChange: _dayFocusChanged,
         child: dayWidget,

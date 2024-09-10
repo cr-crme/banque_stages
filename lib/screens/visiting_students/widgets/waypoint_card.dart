@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 class WaypointCard extends StatelessWidget {
   const WaypointCard({
-    Key? key,
+    super.key,
     required this.name,
     required this.waypoint,
     this.onTap,
     this.onDelete,
     this.canMove = true,
-  }) : super(key: key);
+  });
 
   final String name;
   final Waypoint waypoint;

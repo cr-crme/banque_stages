@@ -41,22 +41,20 @@ class EnterpriseCard extends StatelessWidget {
                 style: TextStyle(color: Colors.grey[800]),
               ),
             ),
-            ...enterprise.jobs
-                .map((job) => Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Row(children: [
-                      DisponibilityCircle(
-                          positionsOffered: job.positionsOffered,
-                          positionsOccupied: job.positionsOccupied(context)),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          job.specialization.idWithName,
-                          style: TextStyle(color: Colors.grey[800]),
-                        ),
-                      ),
-                    ])))
-                .toList(),
+            ...enterprise.jobs.map((job) => Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(children: [
+                  DisponibilityCircle(
+                      positionsOffered: job.positionsOffered,
+                      positionsOccupied: job.positionsOccupied(context)),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      job.specialization.idWithName,
+                      style: TextStyle(color: Colors.grey[800]),
+                    ),
+                  ),
+                ]))),
           ],
         ),
         trailing: Visibility(

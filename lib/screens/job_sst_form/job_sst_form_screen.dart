@@ -70,7 +70,8 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     if (!shouldShowHelp) return;
 
     final scrollController = ScrollController();
-    // ignore: use_build_context_synchronously
+
+    if (!mounted) return;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -197,11 +198,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
               ),
             )
           ]),
-      body: WillPopScope(
-        onWillPop: () async {
-          _cancel();
-          return false;
-        },
+      body: PopScope(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(12.0),

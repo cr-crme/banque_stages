@@ -193,7 +193,8 @@ class _SstRisk extends StatelessWidget {
                       buttonTitle: 'Remplir le\nquestionnaire SST',
                       onTap: () => GoRouter.of(context).pushNamed(
                             Screens.jobSstForm,
-                            params: Screens.params(enterprise, jobId: job),
+                            pathParameters:
+                                Screens.params(enterprise, jobId: job),
                           ));
                 },
               )),
@@ -233,8 +234,8 @@ class _EndingInternship extends StatelessWidget {
                     buttonTitle: 'Aller au stage',
                     onTap: () => GoRouter.of(context).pushNamed(
                       Screens.student,
-                      params: Screens.params(student),
-                      queryParams: Screens.queryParams(pageIndex: '1'),
+                      pathParameters: Screens.params(student),
+                      queryParameters: Screens.queryParams(pageIndex: '1'),
                     ),
                   );
                 },
@@ -275,7 +276,7 @@ class _PostInternshipEvaluation extends StatelessWidget {
                     buttonTitle: 'Évaluer l\'entreprise',
                     onTap: () => GoRouter.of(context).pushNamed(
                       Screens.enterpriseEvaluationScreen,
-                      params: Screens.params(internship.id),
+                      pathParameters: Screens.params(internship.id),
                     ),
                   );
                 },

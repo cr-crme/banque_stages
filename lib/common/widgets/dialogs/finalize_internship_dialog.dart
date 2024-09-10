@@ -31,57 +31,57 @@ class FinalizeInternshipDialog extends StatelessWidget {
             ? '0'
             : internship.achievedLength.toString());
 
-    return WillPopScope(
-        child: SingleChildScrollView(
-          child: Form(
-            key: formKey,
-            child: AlertDialog(
-              title: const Text('Mettre fin au stage?'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                      'Attention, les informations pour ce stage ne seront plus modifiables.\n\n'
-                      'Bien vous assurer que le nombre d\'heures réalisées est correct\n'),
-                  Row(
-                    children: [
-                      const Flexible(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 24.0),
-                          child: Text('Nombre d\'heures de stage faites'),
-                        ),
+    return PopScope(
+      child: SingleChildScrollView(
+        child: Form(
+          key: formKey,
+          child: AlertDialog(
+            title: const Text('Mettre fin au stage?'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                    'Attention, les informations pour ce stage ne seront plus modifiables.\n\n'
+                    'Bien vous assurer que le nombre d\'heures réalisées est correct\n'),
+                Row(
+                  children: [
+                    const Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 24.0),
+                        child: Text('Nombre d\'heures de stage faites'),
                       ),
-                      SizedBox(
-                        width: 100,
-                        child: TextFormField(
-                          validator: (value) {
-                            return int.tryParse(hourController.text) == null ||
-                                    int.parse(hourController.text) == 0
-                                ? 'Entrer une valeur'
-                                : null;
-                          },
-                          textAlign: TextAlign.right,
-                          controller: hourController,
-                          keyboardType: TextInputType.number,
-                        ),
+                    ),
+                    SizedBox(
+                      width: 100,
+                      child: TextFormField(
+                        validator: (value) {
+                          return int.tryParse(hourController.text) == null ||
+                                  int.parse(hourController.text) == 0
+                              ? 'Entrer une valeur'
+                              : null;
+                        },
+                        textAlign: TextAlign.right,
+                        controller: hourController,
+                        keyboardType: TextInputType.number,
                       ),
-                      const Text('h'),
-                    ],
-                  ),
-                ],
-              ),
-              actions: [
-                OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Non')),
-                TextButton(
-                    onPressed: () =>
-                        _saveInternship(context, formKey, hourController),
-                    child: const Text('Oui')),
+                    ),
+                    const Text('h'),
+                  ],
+                ),
               ],
             ),
+            actions: [
+              OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Non')),
+              TextButton(
+                  onPressed: () =>
+                      _saveInternship(context, formKey, hourController),
+                  child: const Text('Oui')),
+            ],
           ),
         ),
-        onWillPop: () async => false); // coverage:ignore-line
+      ),
+    );
   }
 }

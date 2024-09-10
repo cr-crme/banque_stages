@@ -238,9 +238,9 @@ void main() {
       expect(addressController.address?.toString() ?? '', '');
 
       addressController.address = dummyAddress();
+      expect(addressController.address.toString(), dummyAddress().toString());
       await tester.pumpAndSettle();
       expect(find.text(dummyAddress().toString()), findsOneWidget);
-      expect(addressController.address.toString(), dummyAddress().toString());
     });
 
     testWidgets('can validate the address while not being mandatory',

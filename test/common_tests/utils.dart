@@ -302,7 +302,7 @@ Waypoint dummyWaypoint(
       subtitle: 'Subtitle',
       latitude: latitude,
       longitude: longitude,
-      address: Placemark(
+      address: const Placemark(
           street: '123 rue de la rue',
           locality: 'Ville',
           postalCode: 'H0H 0H0'),

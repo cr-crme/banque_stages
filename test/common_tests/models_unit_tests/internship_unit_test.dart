@@ -217,11 +217,12 @@ void main() {
       final period = DateTimeRange(
           start: DateTime(1995, 10, 31),
           end: DateTime(1995, 10, 31).add(const Duration(days: 20)));
-      expect(serialized, {
+
+      final expected = {
         'id': 'internshipId',
         'student': 'studentId',
         'signatoryTeacherId': 'teacherId',
-        'extraSupervisingTeacherIds': [],
+        'extraSupervisingTeacherIds': ['EMPTY'],
         'enterprise': 'enterpriseId',
         'jobId': 'jobId',
         'extraSpecializationsId': ['8168', '8134'],
@@ -246,7 +247,8 @@ void main() {
         'attitudeEvaluation': [dummyInternshipEvaluationAttitude().serialize()],
         'enterpriseEvaluation':
             dummyPostInternshipEnterpriseEvaluation().serialize(),
-      });
+      };
+      expect(serialized, expected);
 
       expect(deserialized.id, 'internshipId');
       expect(deserialized.studentId, 'studentId');

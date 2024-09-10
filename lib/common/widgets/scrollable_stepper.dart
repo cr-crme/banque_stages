@@ -274,7 +274,7 @@ class _ScrollableStepperState extends State<ScrollableStepper>
       // coverage:ignore-start
       return widget.steps[index].isActive
           ? colorScheme.secondary
-          : colorScheme.background;
+          : colorScheme.surface;
       // coverage:ignore-end
     }
   }
@@ -401,24 +401,24 @@ class _ScrollableStepperState extends State<ScrollableStepper>
             TextButton(
               onPressed: widget.onTapContinue,
               style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                  return states.contains(MaterialState.disabled)
+                foregroundColor: WidgetStateProperty.resolveWith<Color?>(
+                    (Set<WidgetState> states) {
+                  return states.contains(WidgetState.disabled)
                       ? null
                       : (_isDark()
                           ? colorScheme.onSurface // coverage:ignore-line
                           : colorScheme.onPrimary);
                 }),
-                backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                  return _isDark() || states.contains(MaterialState.disabled)
+                backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                    (Set<WidgetState> states) {
+                  return _isDark() || states.contains(WidgetState.disabled)
                       ? null
                       : colorScheme.primary;
                 }),
-                padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(
+                padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(
                     buttonPadding),
                 shape:
-                    const MaterialStatePropertyAll<OutlinedBorder>(buttonShape),
+                    const WidgetStatePropertyAll<OutlinedBorder>(buttonShape),
               ),
               child: Text(themeData.useMaterial3
                   ? localizations.continueButtonLabel // coverage:ignore-line

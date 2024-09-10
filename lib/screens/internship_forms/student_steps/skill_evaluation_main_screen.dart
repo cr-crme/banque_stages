@@ -73,11 +73,7 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
         leading:
             IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
       ),
-      body: WillPopScope(
-        onWillPop: () async {
-          _cancel();
-          return false;
-        },
+      body: PopScope(
         child: student == null
             ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
@@ -326,7 +322,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
                       tristate: true,
                       value: null,
                       onChanged: null,
-                      fillColor: MaterialStateProperty.resolveWith(
+                      fillColor: WidgetStateProperty.resolveWith(
                           (states) => Theme.of(context).primaryColor)),
                 )),
                 const TextSpan(
@@ -501,7 +497,7 @@ class _StartEvaluation extends StatelessWidget {
               formController.setWereAtMeeting();
               GoRouter.of(context).pushReplacementNamed(
                 Screens.skillEvaluationFormScreen,
-                queryParams:
+                queryParameters:
                     Screens.queryParams(editMode: editMode ? '1' : '0'),
                 extra: formController,
               );

@@ -164,11 +164,7 @@ class _EnterpriseEvaluationScreenState
           title: const Text('Évaluation post-stage'),
           leading: IconButton(
               onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
-      body: WillPopScope(
-        onWillPop: () async {
-          _cancel();
-          return false;
-        },
+      body: PopScope(
         child: Selector<EnterprisesProvider, Job>(
           builder: (context, job, _) => ScrollableStepper(
             type: StepperType.horizontal,

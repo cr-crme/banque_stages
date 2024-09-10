@@ -42,7 +42,7 @@ class DailySchedule extends ItemSerializable {
   final TimeOfDay start;
   final TimeOfDay end;
 
-  DailySchedule.fromSerialized(map)
+  DailySchedule.fromSerialized(super.map)
       : dayOfWeek = map['day'] == null ? Day.monday : Day.values[map['day']],
         start = map['start'] == null
             ? const TimeOfDay(hour: 0, minute: 0)
@@ -50,7 +50,7 @@ class DailySchedule extends ItemSerializable {
         end = map['end'] == null
             ? const TimeOfDay(hour: 0, minute: 0)
             : TimeOfDay(hour: map['end'][0], minute: map['end'][1]),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
@@ -84,7 +84,7 @@ class WeeklySchedule extends ItemSerializable {
   final List<DailySchedule> schedule;
   final DateTimeRange? period;
 
-  WeeklySchedule.fromSerialized(map)
+  WeeklySchedule.fromSerialized(super.map)
       : schedule = (map['days'] as List?)
                 ?.map((e) => DailySchedule.fromSerialized(e))
                 .toList() ??
@@ -94,7 +94,7 @@ class WeeklySchedule extends ItemSerializable {
             : DateTimeRange(
                 start: DateTime.fromMillisecondsSinceEpoch(map['start']),
                 end: DateTime.fromMillisecondsSinceEpoch(map['end'])),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {

@@ -34,7 +34,7 @@ class Person extends ItemSerializable {
       id: null,
       phone: PhoneNumber.empty);
 
-  Person.fromSerialized(map)
+  Person.fromSerialized(super.map)
       : firstName = map['firstName'] ?? 'Unnamed',
         middleName = map['middleName'],
         lastName = map['lastName'] ?? 'Unnamed',
@@ -48,7 +48,7 @@ class Person extends ItemSerializable {
         address = map['address'] == null
             ? null
             : Address.fromSerialized(map['address']),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() {

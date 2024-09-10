@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'widgets/sst_search_bar.dart';
 
 class HomeSstScreen extends StatefulWidget {
-  const HomeSstScreen({Key? key}) : super(key: key);
+  const HomeSstScreen({super.key});
 
   static const route = '/home-sst';
 

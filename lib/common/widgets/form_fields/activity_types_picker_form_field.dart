@@ -8,12 +8,11 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
   ActivityTypesPickerFormField({
     super.key,
     Set<String>? initialValue,
-    void Function(Set<String>? activityTypes)? onSaved,
+    super.onSaved,
     String? Function(Set<String>? activityTypes)? validator,
     required this.activityTabAtTop,
   }) : super(
           initialValue: initialValue ?? {},
-          onSaved: onSaved,
           validator: validator ?? _validator,
           builder: _builder,
         );

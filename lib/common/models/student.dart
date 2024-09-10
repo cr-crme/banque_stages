@@ -60,7 +60,7 @@ class Student extends Person {
     return false;
   }
 
-  Student.fromSerialized(map)
+  Student.fromSerialized(super.map)
       : photo = map['photo'] ?? Random().nextInt(0xFFFFFF).toString(),
         program = map['program'] == null
             ? Program.undefined
@@ -68,7 +68,7 @@ class Student extends Person {
         group = map['group'] ?? '',
         contact = Person.fromSerialized(map['contact'] ?? {}),
         contactLink = map['contactLink'] ?? '',
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() {

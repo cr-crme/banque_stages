@@ -74,7 +74,7 @@ class Waypoint extends ItemSerializable {
     try {
       placemark = (await placemarkFromCoordinates(latitude, longitude)).first;
     } catch (e) {
-      placemark = Placemark();
+      placemark = const Placemark();
     }
 
     return Waypoint(
@@ -149,6 +149,7 @@ class Waypoint extends ItemSerializable {
   }
 
   Waypoint copyWith({
+    bool forceNewId = false,
     String? id,
     String? title,
     String? subtitle,
@@ -159,7 +160,7 @@ class Waypoint extends ItemSerializable {
     bool? showTitle,
   }) {
     return Waypoint(
-      id: id ?? this.id,
+      id: forceNewId ? null : id ?? this.id,
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
       latitude: latitude ?? this.latitude,

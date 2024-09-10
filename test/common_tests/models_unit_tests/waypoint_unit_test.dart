@@ -29,7 +29,7 @@ void main() {
       expect(waypoint.subtitle, isNull);
       expect(waypoint.latitude, 1.0);
       expect(waypoint.longitude, 2.0);
-      expect(waypoint.address.toString(), Placemark().toString());
+      expect(waypoint.address.toString(), const Placemark().toString());
       expect(waypoint.priority, VisitingPriority.notApplicable);
       expect(waypoint.showTitle, isTrue);
     });
@@ -46,7 +46,7 @@ void main() {
       expect(waypoint.subtitle, isNull);
       expect(waypoint.latitude, 0.0);
       expect(waypoint.longitude, 0.0);
-      expect(waypoint.address.toString(), Placemark().toString());
+      expect(waypoint.address.toString(), const Placemark().toString());
       expect(waypoint.priority, VisitingPriority.notApplicable);
       expect(waypoint.showTitle, isTrue);
     });
@@ -55,7 +55,7 @@ void main() {
       // This test is expected to build a Waypoint different from the sent dummy
       // because it uses the geocoding service which we can't test so far
       final waypoint = await Waypoint.fromLatLng(
-          title: 'My wonderful place', point: LatLng(1.0, 2.0));
+          title: 'My wonderful place', point: const LatLng(1.0, 2.0));
 
       // Test that the waypoint is the default value for the Placemark (address)
       expect(waypoint.id, isNotEmpty);
@@ -63,7 +63,7 @@ void main() {
       expect(waypoint.subtitle, isNull);
       expect(waypoint.latitude, 1.0);
       expect(waypoint.longitude, 2.0);
-      expect(waypoint.address.toString(), Placemark().toString());
+      expect(waypoint.address.toString(), const Placemark().toString());
       expect(waypoint.priority, VisitingPriority.notApplicable);
       expect(waypoint.showTitle, isTrue);
     });
@@ -80,7 +80,7 @@ void main() {
       expect(waypoint.subtitle, isNull);
       expect(waypoint.latitude, 1.0);
       expect(waypoint.longitude, 2.0);
-      expect(waypoint.address.toString(), Placemark().toString());
+      expect(waypoint.address.toString(), const Placemark().toString());
       expect(waypoint.priority, VisitingPriority.notApplicable);
       expect(waypoint.showTitle, isTrue);
     });
@@ -115,7 +115,7 @@ void main() {
         subtitle: 'newSubtitle',
         latitude: 1.0,
         longitude: 2.0,
-        address: Placemark(street: 'newStreet'),
+        address: const Placemark(street: 'newStreet'),
         priority: VisitingPriority.high,
         showTitle: false,
       );
@@ -126,7 +126,7 @@ void main() {
       expect(waypointDifferent.latitude, 1.0);
       expect(waypointDifferent.longitude, 2.0);
       expect(waypointDifferent.address.toString(),
-          Placemark(street: 'newStreet').toString());
+          const Placemark(street: 'newStreet').toString());
       expect(waypointDifferent.priority, VisitingPriority.high);
       expect(waypointDifferent.showTitle, isFalse);
     });
@@ -164,7 +164,8 @@ void main() {
       expect(emptyDeserialized.subtitle, '');
       expect(emptyDeserialized.latitude, 0);
       expect(emptyDeserialized.longitude, 0);
-      expect(emptyDeserialized.address.toString(), Placemark().toString());
+      expect(
+          emptyDeserialized.address.toString(), const Placemark().toString());
       expect(emptyDeserialized.priority, VisitingPriority.notApplicable);
       expect(emptyDeserialized.showTitle, isTrue);
     });

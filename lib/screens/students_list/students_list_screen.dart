@@ -74,8 +74,8 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
                   FocusManager.instance.primaryFocus?.unfocus();
                   GoRouter.of(context).goNamed(
                     Screens.student,
-                    params: Screens.params(student),
-                    queryParams: Screens.queryParams(pageIndex: '0'),
+                    pathParameters: Screens.params(student),
+                    queryParameters: Screens.queryParams(pageIndex: '0'),
                   );
                 },
               ),

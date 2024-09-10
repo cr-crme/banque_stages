@@ -55,7 +55,7 @@ class _SstBody extends StatelessWidget {
               child: TextButton(
                 onPressed: () => GoRouter.of(context).pushNamed(
                   Screens.jobSstForm,
-                  params: Screens.params(enterprise, jobId: job),
+                  pathParameters: Screens.params(enterprise, jobId: job),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),

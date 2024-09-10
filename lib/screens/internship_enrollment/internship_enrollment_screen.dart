@@ -131,8 +131,8 @@ class _InternshipEnrollmentScreenState
     Navigator.pop(context);
     GoRouter.of(context).pushNamed(
       Screens.student,
-      params: Screens.params(internship.studentId),
-      queryParams: Screens.queryParams(pageIndex: '1'),
+      pathParameters: Screens.params(internship.studentId),
+      queryParameters: Screens.queryParams(pageIndex: '1'),
     );
   }
 
@@ -160,11 +160,7 @@ class _InternshipEnrollmentScreenState
         leading:
             IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
       ),
-      body: WillPopScope(
-        onWillPop: () async {
-          _cancel();
-          return false;
-        },
+      body: PopScope(
         child: ScrollableStepper(
           type: StepperType.horizontal,
           scrollController: _scrollController,

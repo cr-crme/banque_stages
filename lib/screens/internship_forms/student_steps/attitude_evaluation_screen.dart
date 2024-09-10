@@ -146,11 +146,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
           leading: IconButton(
               onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
         ),
-        body: WillPopScope(
-          onWillPop: () async {
-            _cancel();
-            return false;
-          },
+        body: PopScope(
           child: student == null
               ? const Center(child: CircularProgressIndicator())
               : ScrollableStepper(

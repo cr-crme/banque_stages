@@ -55,7 +55,7 @@ class SkillEvaluation extends ItemSerializable {
     required this.appreciation,
     required this.comment,
   });
-  SkillEvaluation.fromSerialized(map)
+  SkillEvaluation.fromSerialized(super.map)
       : specializationId = map['jobId'] ?? '',
         skillName = map['skill'] ?? '',
         tasks = map['tasks'] == null
@@ -67,7 +67,7 @@ class SkillEvaluation extends ItemSerializable {
             ? SkillAppreciation.notSelected
             : SkillAppreciation.values[map['appreciation']],
         comment = map['comment'] ?? '',
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
@@ -98,7 +98,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
     required this.comments,
     required this.formVersion,
   });
-  InternshipEvaluationSkill.fromSerialized(map)
+  InternshipEvaluationSkill.fromSerialized(super.map)
       : date = map['date'] == null
             ? DateTime(0)
             : DateTime.fromMillisecondsSinceEpoch(map['date']),
@@ -113,7 +113,7 @@ class InternshipEvaluationSkill extends ItemSerializable {
             [],
         comments = map['comments'] ?? '',
         formVersion = map['formVersion'] ?? '1.0.0',
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() {

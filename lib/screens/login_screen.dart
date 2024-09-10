@@ -1,7 +1,7 @@
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await AuthProvider.of(context)
           .signInWithEmailAndPassword(email: _email!, password: _password!);
-    } on FirebaseAuthException catch (e) {
+    } on firebase.FirebaseAuthException catch (e) {
       late final String errorMessage;
       switch (e.code) {
         case 'invalid-email':
@@ -55,8 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Future.microtask(() => GoRouter.of(context).goNamed(Screens.home));
     }
 
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Banque de stages'),

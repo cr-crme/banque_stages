@@ -15,29 +15,28 @@ class ConfirmExitDialog extends StatelessWidget {
 
     ScaffoldMessenger.of(context).clearSnackBars();
 
-    return await showDialog<bool>(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => ConfirmExitDialog(content: content)) ??
-        false;
+    final response = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => ConfirmExitDialog(content: content));
+    return response ?? false;
   }
   // coverage:ignore-end
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async => false, // coverage:ignore-line
+    return PopScope(
         child: AlertDialog(
-          title: const Text('Voulez-vous quitter?'),
-          content: SingleChildScrollView(child: content),
-          actions: [
-            OutlinedButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Non')),
-            TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Quitter'))
-          ],
-        ));
+      title: const Text('Voulez-vous quitter?'),
+      content: SingleChildScrollView(child: content),
+      actions: [
+        OutlinedButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Non')),
+        TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Quitter'))
+      ],
+    ));
   }
 }

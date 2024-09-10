@@ -14,8 +14,19 @@ double _doubleFromSerialized(num? number, {double defaultValue = 0}) {
   return (number ?? defaultValue) as double;
 }
 
-List<String> _stringListFromSerialized(List? list) =>
-    list?.map<String>((e) => e).toList() ?? [];
+List<String> _stringListFromSerialized(List? list) {
+  if (list == null ||
+      list.isEmpty ||
+      (list.length == 1 && list[0] == 'EMPTY')) {
+    return [];
+  }
+  return list.map<String>((e) => e).toList();
+}
+
+List _serializeList(List list) {
+  if (list.isEmpty) return ['EMPTY'];
+  return list;
+}
 
 class PostInternshipEnterpriseEvaluation extends ItemSerializable {
   PostInternshipEnterpriseEvaluation({
@@ -38,7 +49,7 @@ class PostInternshipEnterpriseEvaluation extends ItemSerializable {
     required this.acceptanceBehaviorDifficulties,
   });
 
-  PostInternshipEnterpriseEvaluation.fromSerialized(map)
+  PostInternshipEnterpriseEvaluation.fromSerialized(super.map)
       : internshipId = map['internshipId'] ?? '',
         skillsRequired = _stringListFromSerialized(map['skillsRequired']),
         taskVariety = _doubleFromSerialized(map['taskVariety']),
@@ -60,7 +71,7 @@ class PostInternshipEnterpriseEvaluation extends ItemSerializable {
             _doubleFromSerialized(map['acceptanceMentalHealthDisorder']),
         acceptanceBehaviorDifficulties =
             _doubleFromSerialized(map['acceptanceBehaviorDifficulties']),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   String internshipId;
 
@@ -128,7 +139,7 @@ class _MutableElements extends ItemSerializable {
   final DateTimeRange date;
   final List<WeeklySchedule> weeklySchedules;
 
-  _MutableElements.fromSerialized(map)
+  _MutableElements.fromSerialized(super.map)
       : versionDate = DateTime.fromMillisecondsSinceEpoch(map['versionDate']),
         supervisor = Person.fromSerialized(map['name']),
         date = DateTimeRange(
@@ -137,7 +148,7 @@ class _MutableElements extends ItemSerializable {
         weeklySchedules = (map['schedule'] as List)
             .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
@@ -274,19 +285,15 @@ class Internship extends ItemSerializable {
     _extraSupervisingTeacherIds.remove(signatoryTeacherId);
   }
 
-  Internship.fromSerialized(map)
+  Internship.fromSerialized(super.map)
       : studentId = map['student'] ?? '',
         signatoryTeacherId = map['signatoryTeacherId'] ?? '',
         _extraSupervisingTeacherIds =
             _stringListFromSerialized(map['extraSupervisingTeacherIds']),
         enterpriseId = map['enterprise'] ?? '',
         jobId = map['jobId'] ?? '',
-        extraSpecializationsId = map['extraSpecializationsId'] == null ||
-                map['extraSpecializationsId'] == -1
-            ? []
-            : (map['extraSpecializationsId'] as List)
-                .map((e) => e as String)
-                .toList(),
+        extraSpecializationsId =
+            _stringListFromSerialized(map['extraSpecializationsId']),
         _mutables = (map['mutables'] as List?)
                 ?.map(((e) => _MutableElements.fromSerialized(e)))
                 .toList() ??
@@ -308,21 +315,22 @@ class Internship extends ItemSerializable {
                 ?.map((e) => InternshipEvaluationAttitude.fromSerialized(e))
                 .toList() ??
             [],
-        enterpriseEvaluation = map['enterpriseEvaluation'] == null
+        enterpriseEvaluation = map['enterpriseEvaluation'] == null ||
+                map['enterpriseEvaluation'] == -1
             ? null
             : PostInternshipEnterpriseEvaluation.fromSerialized(
                 map['enterpriseEvaluation']),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
         'student': studentId,
         'signatoryTeacherId': signatoryTeacherId,
-        'extraSupervisingTeacherIds': _extraSupervisingTeacherIds,
+        'extraSupervisingTeacherIds':
+            _serializeList(_extraSupervisingTeacherIds),
         'enterprise': enterpriseId,
         'jobId': jobId,
-        'extraSpecializationsId':
-            extraSpecializationsId.isEmpty ? -1 : extraSpecializationsId,
+        'extraSpecializationsId': _serializeList(extraSpecializationsId),
         'mutables': _mutables.map((e) => e.serialize()).toList(),
         'expectedLength': expectedLength,
         'achievedLength': achievedLength,
@@ -332,7 +340,7 @@ class Internship extends ItemSerializable {
         'skillEvaluation': skillEvaluations.map((e) => e.serialize()).toList(),
         'attitudeEvaluation':
             attitudeEvaluations.map((e) => e.serialize()).toList(),
-        'enterpriseEvaluation': enterpriseEvaluation?.serialize(),
+        'enterpriseEvaluation': enterpriseEvaluation?.serialize() ?? -1,
       };
 
   void addVersion({

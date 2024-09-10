@@ -5,7 +5,7 @@ import 'package:crcrme_banque_stages/common/models/job.dart';
 class JobList extends ListSerializable<Job> {
   JobList();
 
-  JobList.fromSerialized(map) : super.fromSerialized(map);
+  JobList.fromSerialized(super.map) : super.fromSerialized();
 
   @override
   Job deserializeItem(data) {

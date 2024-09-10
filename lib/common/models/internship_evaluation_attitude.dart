@@ -47,7 +47,7 @@ class AttitudeEvaluation extends ItemSerializable {
     required this.cautiousness,
     required this.generalAppreciation,
   });
-  AttitudeEvaluation.fromSerialized(map)
+  AttitudeEvaluation.fromSerialized(super.map)
       : inattendance = map['inattendance'] ?? 0,
         ponctuality = map['ponctuality'] ?? 0,
         sociability = map['sociability'] ?? 0,
@@ -59,7 +59,7 @@ class AttitudeEvaluation extends ItemSerializable {
         autonomy = map['autonomy'] ?? 0,
         cautiousness = map['cautiousness'] ?? 0,
         generalAppreciation = map['generalAppreciation'] ?? 0,
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() {
@@ -96,7 +96,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
     required this.comments,
     required this.formVersion,
   });
-  InternshipEvaluationAttitude.fromSerialized(map)
+  InternshipEvaluationAttitude.fromSerialized(super.map)
       : date = map['date'] == null
             ? DateTime(0)
             : DateTime.fromMillisecondsSinceEpoch(map['date']),
@@ -105,7 +105,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
         attitude = AttitudeEvaluation.fromSerialized(map['attitude'] ?? {}),
         comments = map['comments'] ?? '',
         formVersion = map['formVersion'] ?? '1.0.0',
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() {

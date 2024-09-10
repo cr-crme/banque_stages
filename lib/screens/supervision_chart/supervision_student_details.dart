@@ -25,8 +25,8 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
   void _navigateToStudentInternship(BuildContext context) {
     GoRouter.of(context).pushNamed(
       Screens.student,
-      params: Screens.params(studentId),
-      queryParams: Screens.queryParams(pageIndex: '1'),
+      pathParameters: Screens.params(studentId),
+      queryParameters: Screens.queryParams(pageIndex: '1'),
     );
   }
 

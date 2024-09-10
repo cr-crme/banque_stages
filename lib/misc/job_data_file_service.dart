@@ -34,9 +34,9 @@ abstract class ActivitySectorsService {
 }
 
 class ActivitySector extends NamedItemSerializable {
-  ActivitySector.fromSerialized(map)
+  ActivitySector.fromSerialized(super.map)
       : specializations = SpecializationList.fromSerialized(map['s']),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() =>
@@ -81,10 +81,10 @@ class Specialization extends NamedItemSerializable {
     return _sector!;
   }
 
-  Specialization.fromSerialized(map)
+  Specialization.fromSerialized(super.map)
       : skills = SkillList.fromSerialized(map['s']),
         questions = List.from(map['q']),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => super.serializedMap()
@@ -133,13 +133,13 @@ class SpecializationList extends _NamedItemSerializableList<Specialization> {
 }
 
 class Skill extends NamedItemSerializable {
-  Skill.fromSerialized(map)
+  Skill.fromSerialized(super.map)
       : complexity = map['x'],
         criteria = List.from(map['c'], growable: false),
         tasks = (map['t'] as List).map((e) => Task.fromSerialized(e)).toList(),
         risks = List.from(map['r'], growable: false),
         isOptional = map['o'],
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => super.serializedMap()
@@ -159,10 +159,10 @@ class Skill extends NamedItemSerializable {
 }
 
 class Task extends ItemSerializable {
-  Task.fromSerialized(map)
+  Task.fromSerialized(super.map)
       : title = map['t'],
         isOptional = map['o'],
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {'t': title, 'o': isOptional};
@@ -210,9 +210,9 @@ class SkillList extends _NamedItemSerializableList<Skill> {
 abstract class NamedItemSerializable extends ItemSerializable {
   final String name;
 
-  NamedItemSerializable.fromSerialized(map)
+  NamedItemSerializable.fromSerialized(super.map)
       : name = map['n'],
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {'id': id, 'n': name};

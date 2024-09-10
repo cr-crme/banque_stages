@@ -59,9 +59,7 @@ class RadioWithFollowUpState<T> extends State<RadioWithFollowUp<T>> {
             widget.title!,
             style: widget.titleStyle ?? Theme.of(context).textTheme.titleSmall,
           ),
-        ...widget.elements
-            .map((element) => _buildElementTile(element))
-            .toList(),
+        ...widget.elements.map((element) => _buildElementTile(element)),
         if (_showFollowUp) widget.followUpChild!,
       ],
     );
@@ -77,7 +75,7 @@ class RadioWithFollowUpState<T> extends State<RadioWithFollowUp<T>> {
         element.toString(),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
-      fillColor: MaterialStateColor.resolveWith((state) {
+      fillColor: WidgetStateColor.resolveWith((state) {
         return widget.enabled ? Theme.of(context).primaryColor : Colors.grey;
       }),
       value: element,

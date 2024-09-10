@@ -37,7 +37,7 @@ class Risk extends ItemSerializable {
     throw 'Risk should never generate a map, it is read only';
   }
 
-  Risk.fromSerialized(map)
+  Risk.fromSerialized(super.map)
       : number = int.parse(map['number']),
         shortname = map['shortname'],
         abbrv = map['abbrv'],
@@ -45,7 +45,7 @@ class Risk extends ItemSerializable {
         nameHeader = map['nameHeader'],
         links = getLinks(map['links'] as List<dynamic>),
         subrisks = getSubRisks(map['subrisks'] as List<dynamic>),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   static List<RiskLink> getLinks(List<dynamic> links) {
     List<RiskLink> cardLinks = [];

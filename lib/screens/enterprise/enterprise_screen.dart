@@ -125,7 +125,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
 
     GoRouter.of(context).pushNamed(
       Screens.internshipEnrollementFromEnterprise,
-      params: Screens.params(enterprise),
+      pathParameters: Screens.params(enterprise),
     );
   }
 

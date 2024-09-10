@@ -152,9 +152,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => ConfirmExitDialog.show(context,
-          content: const Text('Toutes les modifications seront perdues.')),
+    return PopScope(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Ajouter une entreprise'),

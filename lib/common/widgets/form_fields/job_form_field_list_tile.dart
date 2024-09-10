@@ -100,16 +100,17 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
         if (widget.onSaved == null || _specialization == null) return;
 
         final preInternshipRequest = PreInternshipRequest(
-            requests: _preInternshipRequestKey.currentState!.values
-                .map<String>((e) => e.toString())
-                .toList());
+            requests: _preInternshipRequestKey.currentState?.values
+                    .map<String>((e) => e.toString())
+                    .toList() ??
+                []);
         final uniform = Uniform(
             status: _uniformKey.currentState?.value ?? UniformStatus.none,
             uniform: _uniformTextController.text);
         final protections = Protections(
             status:
                 _protectionsKey.currentState?.value ?? ProtectionsStatus.none,
-            protections: _protectionsTypeKey.currentState!.values);
+            protections: _protectionsTypeKey.currentState?.values);
 
         widget.onSaved!(Job(
           specialization: _specialization!,

@@ -20,10 +20,10 @@ class PreInternshipRequest extends ItemSerializable {
 
   PreInternshipRequest({super.id, required this.requests});
 
-  PreInternshipRequest.fromSerialized(map)
+  PreInternshipRequest.fromSerialized(super.map)
       : requests =
             (map['requests'] as List? ?? []).map<String>((e) => e).toList(),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {

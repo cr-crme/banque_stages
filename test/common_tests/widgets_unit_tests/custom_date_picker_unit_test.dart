@@ -13,7 +13,7 @@ void main() {
         lastDate: DateTime(2022),
       )));
 
-      expect(find.text('SÉLECTIONNER LA DATE'), findsOneWidget);
+      expect(find.text('Sélectionner la date'), findsOneWidget);
       expect(find.text('ven. 1 janv.'), findsOneWidget);
       expect(find.text('ANNULER'), findsOneWidget);
       expect(find.text('OK'), findsOneWidget);

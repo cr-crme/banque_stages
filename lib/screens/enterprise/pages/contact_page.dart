@@ -121,8 +121,9 @@ class ContactPageState extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => ConfirmExitDialog.show(context,
+    return PopScope(
+      // TODO Fix this pop
+      onPopInvoked: (didPop) => ConfirmExitDialog.show(context,
           content: Text.rich(TextSpan(children: [
             const TextSpan(
                 text: '** Vous quittez la page sans avoir '

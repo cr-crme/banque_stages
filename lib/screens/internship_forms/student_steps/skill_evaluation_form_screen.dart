@@ -159,11 +159,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
         leading:
             IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
       ),
-      body: WillPopScope(
-        onWillPop: () async {
-          _cancel();
-          return false;
-        },
+      body: PopScope(
         child: student == null
             ? const Center(child: CircularProgressIndicator())
             : ScrollableStepper(
@@ -248,21 +244,19 @@ class _EvaluateSkill extends StatelessWidget {
                 'Critères de performance:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              ...skill.criteria
-                  .map((e) => Padding(
-                        padding: const EdgeInsets.only(left: 12.0, bottom: 4.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              '\u00b7 ',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Flexible(child: Text(e)),
-                          ],
+              ...skill.criteria.map((e) => Padding(
+                    padding: const EdgeInsets.only(left: 12.0, bottom: 4.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          '\u00b7 ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ))
-                  .toList(),
+                        Flexible(child: Text(e)),
+                      ],
+                    ),
+                  )),
             ],
           ),
         ),
@@ -456,7 +450,7 @@ class _TaskAppreciationSelectionState
                       children: [
                         Radio(
                           onChanged: widget.enabled ? _select : null,
-                          fillColor: MaterialStateColor.resolveWith((state) {
+                          fillColor: WidgetStateColor.resolveWith((state) {
                             return widget.enabled
                                 ? Theme.of(context).primaryColor
                                 : Colors.grey;
@@ -519,7 +513,7 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
                     groupValue:
                         widget.formController.appreciations[widget.skill.id],
                     value: e,
-                    fillColor: MaterialStateColor.resolveWith((state) {
+                    fillColor: WidgetStateColor.resolveWith((state) {
                       return widget.editMode
                           ? Theme.of(context).primaryColor
                           : Colors.grey;
@@ -528,8 +522,7 @@ class _AppreciationEvaluationState extends State<_AppreciationEvaluation> {
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: Colors.black,
                             )),
-                  ))
-              .toList(),
+                  )),
         ],
       ),
     );

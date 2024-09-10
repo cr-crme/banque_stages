@@ -269,8 +269,8 @@ class _InternshipListState extends State<_InternshipList> {
                             child: TextButton(
                               onPressed: () => GoRouter.of(context).pushNamed(
                                 Screens.student,
-                                params: Screens.params(student),
-                                queryParams:
+                                pathParameters: Screens.params(student),
+                                queryParameters:
                                     Screens.queryParams(pageIndex: '1'),
                               ),
                               child: const Text('Détails du stage',

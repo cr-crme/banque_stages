@@ -27,12 +27,12 @@ class Uniform extends ItemSerializable {
   Uniform({super.id, required this.status, String? uniform = ''})
       : _uniform = uniform ?? '';
 
-  Uniform.fromSerialized(map)
+  Uniform.fromSerialized(super.map)
       : status = map['status'] == null
             ? UniformStatus.none
             : UniformStatus.values[map['status']],
         _uniform = map['uniform'] ?? '',
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {

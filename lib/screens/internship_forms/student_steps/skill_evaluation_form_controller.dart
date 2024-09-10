@@ -39,10 +39,14 @@ class SkillEvaluationFormController {
   }
 
   void dispose() {
-    for (final skillId in skillCommentsControllers.keys) {
-      skillCommentsControllers[skillId]!.dispose();
+    try {
+      for (final skillId in skillCommentsControllers.keys) {
+        skillCommentsControllers[skillId]!.dispose();
+      }
+      commentsController.dispose();
+    } catch (e) {
+      // Do nothing
     }
-    commentsController.dispose();
   }
 
   void addSkill(String skillId) {

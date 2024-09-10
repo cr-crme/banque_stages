@@ -20,10 +20,10 @@ class Teacher extends Person {
     super.phone,
   });
 
-  Teacher.fromSerialized(map)
+  Teacher.fromSerialized(super.map)
       : schoolId = map['schoolId'] ?? '',
         groups = _stringListFromSerialized(map['groups']),
-        super.fromSerialized(map);
+        super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() {

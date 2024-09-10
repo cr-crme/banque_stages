@@ -69,8 +69,8 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                         child: IconButton(
                           onPressed: () => GoRouter.of(context).pushNamed(
                             Screens.skillEvaluationMainScreen,
-                            params: Screens.params(internship.id),
-                            queryParams: Screens.queryParams(editMode: '1'),
+                            pathParameters: Screens.params(internship.id),
+                            queryParameters: Screens.queryParams(editMode: '1'),
                           ),
                           icon: const Icon(Icons.add_chart_rounded),
                           color: Theme.of(context).colorScheme.primary,
@@ -100,7 +100,8 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                         child: IconButton(
                           onPressed: () => GoRouter.of(context).pushNamed(
                               Screens.attitudeEvaluationScreen,
-                              queryParams: Screens.queryParams(editMode: '1'),
+                              queryParameters:
+                                  Screens.queryParams(editMode: '1'),
                               extra: AttitudeEvaluationFormController(
                                   internshipId: internship.id)),
                           icon: const Icon(Icons.playlist_add_sharp),
@@ -290,7 +291,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
         child: OutlinedButton(
             onPressed: () {
               GoRouter.of(context).pushNamed(Screens.skillEvaluationFormScreen,
-                  queryParams: Screens.queryParams(editMode: '0'),
+                  queryParameters: Screens.queryParams(editMode: '0'),
                   extra: SkillEvaluationFormController.fromInternshipId(
                     context,
                     internshipId: widget.internship.id,
@@ -489,7 +490,7 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
         child: OutlinedButton(
             onPressed: () {
               GoRouter.of(context).pushNamed(Screens.attitudeEvaluationScreen,
-                  queryParams: Screens.queryParams(editMode: '0'),
+                  queryParameters: Screens.queryParams(editMode: '0'),
                   extra: AttitudeEvaluationFormController.fromInternshipId(
                     context,
                     internshipId: widget.internship.id,

@@ -6,7 +6,7 @@ import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/risk_card_screen.
 import 'widgets/clickable_risk_tile.dart';
 
 class SstCardsScreen extends StatefulWidget {
-  const SstCardsScreen({Key? key}) : super(key: key);
+  const SstCardsScreen({super.key});
 
   static const route = '/sst-cards';
 
@@ -74,8 +74,7 @@ class _SstCardsScreenState extends State<SstCardsScreen>
         children: [
           _MenuRisksFormScreen(navigate: _navigate),
           ...RiskDataFileService.risks
-              .map<Widget>((risk) => RisksCardsScreen(id: risk.id))
-              .toList(),
+              .map<Widget>((risk) => RisksCardsScreen(id: risk.id)),
         ],
       ),
     );
