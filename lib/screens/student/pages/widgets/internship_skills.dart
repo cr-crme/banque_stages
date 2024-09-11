@@ -308,6 +308,22 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
   Widget build(BuildContext context) {
     _resetIndex();
 
+    late final Specialization specialization;
+    try {
+      specialization = EnterprisesProvider.of(context)
+          .fromId(widget.internship.enterpriseId)
+          .jobs
+          .fromId(widget.internship.jobId)
+          .specialization;
+    } catch (e) {
+      return SizedBox(
+        height: 50,
+        child: Center(
+            child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor)),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -324,11 +340,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
             children: [
               _buildSelectEvaluationFromDate(),
               _buildPresentAtMeeting(),
-              _buillSkillSection(EnterprisesProvider.of(context)
-                  .fromId(widget.internship.enterpriseId)
-                  .jobs
-                  .fromId(widget.internship.jobId)
-                  .specialization),
+              _buillSkillSection(specialization),
               if (widget.internship.extraSpecializationsId.isNotEmpty)
                 ...widget.internship.extraSpecializationsId
                     .asMap()

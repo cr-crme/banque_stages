@@ -1,5 +1,6 @@
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
@@ -483,7 +484,18 @@ class _InternshipBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final teachers = TeachersProvider.of(context);
     final enterprises = EnterprisesProvider.of(context);
-    final job = enterprises[internship.enterpriseId].jobs[internship.jobId];
+
+    late final Job job;
+    try {
+      job = enterprises[internship.enterpriseId].jobs[internship.jobId];
+    } catch (e) {
+      return SizedBox(
+        height: 50,
+        child: Center(
+            child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor)),
+      );
+    }
 
     final supervisors =
         teachers.where((e) => internship.supervisingTeacherIds.contains(e.id));

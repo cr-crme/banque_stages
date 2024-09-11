@@ -62,12 +62,15 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
         isEditing: widget.editMode);
     if (!mounted || !answer) return;
 
-    widget.formController.dispose();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      widget.formController.dispose();
+    });
     navigator.pop();
   }
 
   void _submit() async {
     // Confirm the user is really ready to submit
+
     if (!widget.formController.allAppreciationsAreDone) {
       final result = await showDialog(
           context: context,
@@ -100,7 +103,9 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     InternshipsProvider.of(context, listen: false).replace(internship);
 
     _isDisposed = true;
-    widget.formController.dispose();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      widget.formController.dispose();
+    });
     Navigator.of(context).pop();
   }
 

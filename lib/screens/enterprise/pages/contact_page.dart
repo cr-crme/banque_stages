@@ -119,29 +119,38 @@ class ContactPageState extends State<ContactPage> {
     setState(() {});
   }
 
+  bool _canPop = false;
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      // TODO Fix this pop
-      onPopInvoked: (didPop) => ConfirmExitDialog.show(context,
-          content: Text.rich(TextSpan(children: [
-            const TextSpan(
-                text: '** Vous quittez la page sans avoir '
-                    'cliqué sur Enregistrer '),
-            WidgetSpan(
-                child: SizedBox(
-              height: 22,
-              width: 22,
-              child: Icon(
-                Icons.save,
-                color: Theme.of(context).primaryColor,
+      canPop: _canPop,
+      onPopInvoked: (didPop) async {
+        if (_canPop) return;
+
+        _canPop = await ConfirmExitDialog.show(context,
+            content: Text.rich(TextSpan(children: [
+              const TextSpan(
+                  text: '** Vous quittez la page sans avoir '
+                      'cliqué sur Enregistrer '),
+              WidgetSpan(
+                  child: SizedBox(
+                height: 22,
+                width: 22,
+                child: Icon(
+                  Icons.save,
+                  color: Theme.of(context).primaryColor,
+                ),
+              )),
+              const TextSpan(
+                text: '. **\n\nToutes vos modifications seront perdues.',
               ),
-            )),
-            const TextSpan(
-              text: '. **\n\nToutes vos modifications seront perdues.',
-            ),
-          ])),
-          isEditing: editing),
+            ])),
+            isEditing: editing);
+
+        // If the user confirms the exit, redo the pop
+        if (_canPop && context.mounted) Navigator.of(context).pop();
+      },
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
