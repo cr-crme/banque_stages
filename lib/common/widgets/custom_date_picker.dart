@@ -10,11 +10,9 @@ import 'package:flutter/services.dart';
 
 // The M3 sizes are coming from the tokens, but are hand coded,
 // as the current token DB does not contain landscape versions.
-const Size _calendarPortraitDialogSizeM2 = Size(330.0, 518.0);
-const Size _calendarPortraitDialogSizeM3 = Size(328.0, 512.0);
+const Size _calendarPortraitDialogSize = Size(330.0, 518.0);
 const Size _calendarLandscapeDialogSize = Size(496.0, 346.0);
-const Size _inputPortraitDialogSizeM2 = Size(330.0, 270.0);
-const Size _inputPortraitDialogSizeM3 = Size(328.0, 270.0);
+const Size _inputPortraitDialogSize = Size(330.0, 270.0);
 const Size _inputLandscapeDialogSize = Size(496, 160.0);
 const Size _inputRangeLandscapeDialogSize = Size(496, 164.0);
 const Duration _dialogSizeAnimationDuration = Duration(milliseconds: 200);
@@ -435,7 +433,6 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
   }
 
   Size _dialogSize(BuildContext context) {
-    final bool useMaterial3 = Theme.of(context).useMaterial3;
     final Orientation orientation = MediaQuery.orientationOf(context);
 
     switch (_entryMode.value) {
@@ -443,9 +440,7 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
       case DatePickerEntryMode.calendarOnly:
         switch (orientation) {
           case Orientation.portrait:
-            return useMaterial3
-                ? _calendarPortraitDialogSizeM3
-                : _calendarPortraitDialogSizeM2;
+            return _calendarPortraitDialogSize;
           case Orientation.landscape:
             return _calendarLandscapeDialogSize;
         }
@@ -453,9 +448,7 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
       case DatePickerEntryMode.inputOnly: // coverage:ignore-line
         switch (orientation) {
           case Orientation.portrait:
-            return useMaterial3
-                ? _inputPortraitDialogSizeM3
-                : _inputPortraitDialogSizeM2;
+            return _inputPortraitDialogSize;
           case Orientation.landscape:
             return _inputLandscapeDialogSize;
         }
@@ -471,7 +464,6 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final bool useMaterial3 = theme.useMaterial3;
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
     final Orientation orientation = MediaQuery.orientationOf(context);
@@ -484,27 +476,10 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
     // date picker's header fits in landscape mode, we override the M3
     // default here.
     TextStyle? headlineStyle;
-    if (useMaterial3) {
-      // coverage:ignore-start
-      headlineStyle =
-          datePickerTheme.headerHeadlineStyle ?? defaults.headerHeadlineStyle;
-      switch (_entryMode.value) {
-        case DatePickerEntryMode.input:
-        case DatePickerEntryMode.inputOnly:
-          if (orientation == Orientation.landscape) {
-            headlineStyle = textTheme.headlineSmall;
-          }
-          break;
-        case DatePickerEntryMode.calendar:
-        case DatePickerEntryMode.calendarOnly:
-        // M3 default is OK.
-        // coverage:ignore-end
-      }
-    } else {
-      headlineStyle = orientation == Orientation.landscape
-          ? textTheme.headlineSmall
-          : textTheme.headlineMedium; // coverage:ignore-line
-    }
+    headlineStyle = orientation == Orientation.landscape
+        ? textTheme.headlineSmall
+        : textTheme.headlineMedium; // coverage:ignore-line
+
     final Color? headerForegroundColor =
         datePickerTheme.headerForegroundColor ?? defaults.headerForegroundColor;
     headlineStyle = headlineStyle?.copyWith(color: headerForegroundColor);
@@ -512,16 +487,13 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
     final Widget actions = Container(
       alignment: AlignmentDirectional.centerEnd,
       constraints: const BoxConstraints(minHeight: 52.0),
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.only(right: 12.0, bottom: 8.0),
       child: OverflowBar(
         spacing: 8,
         children: <Widget>[
           OutlinedButton(
             onPressed: _handleCancel,
-            child: Text(widget.cancelText ??
-                (useMaterial3
-                    ? localizations.cancelButtonLabel // coverage:ignore-line
-                    : localizations.cancelButtonLabel.toUpperCase())),
+            child: Text(widget.cancelText ?? localizations.cancelButtonLabel),
           ),
           TextButton(
             onPressed: _handleOk,
@@ -587,8 +559,7 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
       case DatePickerEntryMode.calendar:
         picker = calendarDatePicker();
         entryModeButton = IconButton(
-          icon: Icon(
-              useMaterial3 ? Icons.keyboard_outlined : Icons.keyboard_outlined),
+          icon: const Icon(Icons.keyboard_outlined, color: Colors.white),
           color: headerForegroundColor,
           tooltip: localizations.inputDateModeButtonLabel,
           onPressed: _handleEntryModeToggle,
@@ -603,7 +574,7 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
       case DatePickerEntryMode.input:
         picker = inputDatePicker();
         entryModeButton = IconButton(
-          icon: const Icon(Icons.calendar_today),
+          icon: const Icon(Icons.calendar_today, color: Colors.white),
           color: headerForegroundColor,
           tooltip: localizations.calendarModeButtonLabel,
           onPressed: _handleEntryModeToggle,
@@ -618,12 +589,9 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
     }
 
     final Widget header = _DatePickerHeader(
-      helpText: widget.helpText ??
-          (useMaterial3
-              ? localizations.datePickerHelpText // coverage:ignore-line
-              : localizations.datePickerHelpText.toUpperCase()),
+      helpText: widget.helpText ?? localizations.datePickerHelpText,
       titleText: localizations.formatMediumDate(_selectedDate.value),
-      titleStyle: headlineStyle,
+      titleStyle: headlineStyle?.copyWith(color: Colors.white),
       orientation: orientation,
       isShort: orientation == Orientation.landscape,
       entryModeButton: entryModeButton,
@@ -642,16 +610,12 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
       backgroundColor:
           datePickerTheme.backgroundColor ?? defaults.backgroundColor,
       // coverage:ignore-start
-      elevation: useMaterial3
-          ? datePickerTheme.elevation ?? defaults.elevation!
-          : datePickerTheme.elevation ?? dialogTheme.elevation ?? 24,
+      elevation: datePickerTheme.elevation ?? dialogTheme.elevation ?? 24,
       // coverage:ignore-end
       shadowColor: datePickerTheme.shadowColor ?? defaults.shadowColor,
       surfaceTintColor:
           datePickerTheme.surfaceTintColor ?? defaults.surfaceTintColor,
-      shape: useMaterial3
-          ? datePickerTheme.shape ?? defaults.shape // coverage:ignore-line
-          : datePickerTheme.shape ?? dialogTheme.shape ?? defaults.shape,
+      shape: datePickerTheme.shape ?? dialogTheme.shape ?? defaults.shape,
       insetPadding:
           const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       clipBehavior: Clip.antiAlias,
@@ -673,7 +637,6 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     header,
-                    if (useMaterial3) const Divider(),
                     Expanded(child: picker),
                     actions,
                   ],
@@ -684,7 +647,6 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     header,
-                    if (useMaterial3) const VerticalDivider(),
                     Flexible(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -823,10 +785,7 @@ class _DatePickerHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DatePickerThemeData themeData = DatePickerTheme.of(context);
-    final DatePickerThemeData defaults = DatePickerTheme.defaults(context);
-    final Color? backgroundColor =
-        themeData.headerBackgroundColor ?? defaults.headerBackgroundColor;
+    final Color backgroundColor = Theme.of(context).colorScheme.primary;
 
     final Text help = Text(
       helpText,
@@ -840,7 +799,7 @@ class _DatePickerHeader extends StatelessWidget {
     final Text title = Text(
       titleText,
       semanticsLabel: titleSemanticsLabel ?? titleText,
-      style: titleStyle,
+      style: titleStyle?.copyWith(color: Colors.white),
       maxLines: orientation == Orientation.portrait ? 1 : 2,
       overflow: TextOverflow.ellipsis,
     );
@@ -862,7 +821,7 @@ class _DatePickerHeader extends StatelessWidget {
                 children: <Widget>[
                   const SizedBox(height: 16),
                   help,
-                  const Flexible(child: SizedBox(height: 38)),
+                  const Flexible(child: SizedBox(height: 26)),
                   Row(
                     children: <Widget>[
                       Expanded(child: title),
@@ -1165,7 +1124,6 @@ class _CumtomInputDatePickerFormFieldState
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final bool useMaterial3 = theme.useMaterial3;
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
     final DatePickerThemeData datePickerTheme = theme.datePickerTheme;
@@ -1173,9 +1131,7 @@ class _CumtomInputDatePickerFormFieldState
     final InputBorder effectiveInputBorder =
         datePickerTheme.inputDecorationTheme?.border ??
             theme.inputDecorationTheme.border ??
-            (useMaterial3
-                ? const OutlineInputBorder()
-                : const UnderlineInputBorder());
+            const UnderlineInputBorder();
 
     return TextFormField(
       decoration: InputDecoration(
@@ -1687,7 +1643,6 @@ class _CustomDateRangePickerDialogState
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final bool useMaterial3 = theme.useMaterial3;
     final Orientation orientation = MediaQuery.orientationOf(context);
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
@@ -1720,24 +1675,15 @@ class _CustomDateRangePickerDialogState
           onCancel: _handleCancel,
           entryModeButton: showEntryModeButton
               ? IconButton(
-                  icon: Icon(useMaterial3
-                      ? Icons.keyboard_outlined
-                      : Icons.keyboard_outlined),
+                  icon:
+                      const Icon(Icons.keyboard_outlined, color: Colors.white),
                   padding: EdgeInsets.zero,
                   tooltip: localizations.inputDateModeButtonLabel,
                   onPressed: _handleEntryModeToggle,
                 )
               : null,
-          confirmText: widget.saveText ??
-              (useMaterial3
-                  ? localizations.saveButtonLabel // coverage:ignore-line
-                  : localizations.saveButtonLabel.toUpperCase()),
-          helpText: widget.helpText ??
-              (useMaterial3
-                  // coverage:ignore-start
-                  ? localizations.dateRangePickerHelpText
-                  // coverage:ignore-end
-                  : localizations.dateRangePickerHelpText.toUpperCase()),
+          confirmText: widget.saveText ?? localizations.saveButtonLabel,
+          helpText: widget.helpText ?? localizations.dateRangePickerHelpText,
         );
         size = MediaQuery.sizeOf(context);
         insetPadding = EdgeInsets.zero;
@@ -1792,41 +1738,25 @@ class _CustomDateRangePickerDialogState
           onCancel: _handleCancel,
           entryModeButton: showEntryModeButton
               ? IconButton(
-                  icon: const Icon(Icons.calendar_today),
+                  icon: const Icon(Icons.calendar_today, color: Colors.white),
                   padding: EdgeInsets.zero,
                   tooltip: localizations.calendarModeButtonLabel,
                   onPressed: _handleEntryModeToggle,
                 )
               : null,
           confirmText: widget.confirmText ?? localizations.okButtonLabel,
-          cancelText: widget.cancelText ??
-              (useMaterial3
-                  ? localizations.cancelButtonLabel // coverage:ignore-line
-                  : localizations.cancelButtonLabel.toUpperCase()),
-          helpText: widget.helpText ??
-              (useMaterial3
-                  // coverage:ignore-start
-                  ? localizations.dateRangePickerHelpText
-                  // coverage:ignore-end
-                  : localizations.dateRangePickerHelpText.toUpperCase()),
+          cancelText: widget.cancelText ?? localizations.cancelButtonLabel,
+          helpText: widget.helpText ?? localizations.dateRangePickerHelpText,
         );
         final DialogTheme dialogTheme = theme.dialogTheme;
         size = orientation == Orientation.portrait
-            ? (useMaterial3
-                ? _inputPortraitDialogSizeM3
-                : _inputPortraitDialogSizeM2)
+            ? _inputPortraitDialogSize
             : _inputRangeLandscapeDialogSize;
-        elevation = useMaterial3
-            // coverage:ignore-start
-            ? datePickerTheme.elevation ?? defaults.elevation!
-            // coverage:ignore-end
-            : datePickerTheme.elevation ?? dialogTheme.elevation ?? 24;
+        elevation = datePickerTheme.elevation ?? dialogTheme.elevation ?? 24;
         shadowColor = datePickerTheme.shadowColor ?? defaults.shadowColor;
         surfaceTintColor =
             datePickerTheme.surfaceTintColor ?? defaults.surfaceTintColor;
-        shape = useMaterial3
-            ? datePickerTheme.shape ?? defaults.shape // coverage:ignore-line
-            : datePickerTheme.shape ?? dialogTheme.shape ?? defaults.shape;
+        shape = datePickerTheme.shape ?? dialogTheme.shape ?? defaults.shape;
 
         insetPadding =
             const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0);
@@ -1890,8 +1820,6 @@ class _CalendarRangePickerDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final bool useMaterial3 = theme.useMaterial3;
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
     final Orientation orientation = MediaQuery.orientationOf(context);
@@ -1899,10 +1827,8 @@ class _CalendarRangePickerDialog extends StatelessWidget {
     final DatePickerThemeData defaults = DatePickerTheme.defaults(context);
     final Color? dialogBackground = themeData.rangePickerBackgroundColor ??
         defaults.rangePickerBackgroundColor;
-    final Color? headerForeground =
-        themeData.rangePickerHeaderForegroundColor ??
-            defaults.rangePickerHeaderForegroundColor;
-    final Color? headerDisabledForeground = headerForeground?.withOpacity(0.38);
+    const Color headerForeground = Colors.white;
+    final Color headerDisabledForeground = headerForeground.withOpacity(0.38);
     final TextStyle? headlineStyle = themeData.rangePickerHeaderHeadlineStyle ??
         defaults.rangePickerHeaderHeadlineStyle;
     final String startDateText = _formatRangeStartDate(
@@ -1918,7 +1844,7 @@ class _CalendarRangePickerDialog extends StatelessWidget {
       color:
           selectedEndDate != null ? headerForeground : headerDisabledForeground,
     );
-    final IconThemeData iconTheme = IconThemeData(color: headerForeground);
+    const IconThemeData iconTheme = IconThemeData(color: headerForeground);
 
     return SafeArea(
       top: false,
@@ -1928,9 +1854,9 @@ class _CalendarRangePickerDialog extends StatelessWidget {
         appBar: AppBar(
           iconTheme: iconTheme,
           actionsIconTheme: iconTheme,
-          elevation: useMaterial3 ? 0 : null,
-          scrolledUnderElevation: useMaterial3 ? 0 : null,
-          backgroundColor: useMaterial3 ? Colors.transparent : null,
+          elevation: null,
+          scrolledUnderElevation: null,
+          backgroundColor: null,
           leading: CloseButton(
             onPressed: onCancel,
           ),
@@ -3145,7 +3071,6 @@ class _InputDateRangePickerDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool useMaterial3 = Theme.of(context).useMaterial3;
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
     final Orientation orientation = MediaQuery.orientationOf(context);
@@ -3175,10 +3100,7 @@ class _InputDateRangePickerDialog extends StatelessWidget {
 
     final Widget header = _DatePickerHeader(
       // coverage:ignore-start
-      helpText: helpText ??
-          (useMaterial3
-              ? localizations.dateRangePickerHelpText
-              : localizations.dateRangePickerHelpText.toUpperCase()),
+      helpText: helpText ?? localizations.dateRangePickerHelpText,
       // coverage:ignore-end
       titleText: dateText,
       titleSemanticsLabel: semanticDateText,
@@ -3198,10 +3120,7 @@ class _InputDateRangePickerDialog extends StatelessWidget {
           // coverage:ignore-start
           OutlinedButton(
             onPressed: onCancel,
-            child: Text(cancelText ??
-                (useMaterial3
-                    ? localizations.cancelButtonLabel
-                    : localizations.cancelButtonLabel.toUpperCase())),
+            child: Text(cancelText ?? localizations.cancelButtonLabel),
           ),
           // coverage:ignore-end
           TextButton(
@@ -3478,14 +3397,11 @@ class _InputDateRangePickerState extends State<_InputDateRangePicker> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final bool useMaterial3 = theme.useMaterial3;
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
     final InputDecorationTheme inputTheme = theme.inputDecorationTheme;
-    final InputBorder inputBorder = inputTheme.border ??
-        (useMaterial3
-            ? const OutlineInputBorder()
-            : const UnderlineInputBorder());
+    final InputBorder inputBorder =
+        inputTheme.border ?? const UnderlineInputBorder();
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,

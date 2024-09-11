@@ -169,7 +169,7 @@ class _EvaluationDate extends StatefulWidget {
 class _EvaluationDateState extends State<_EvaluationDate> {
   void _promptDate(context) async {
     final newDate = await showCustomDatePicker(
-      helpText: 'Sélectionner les dates',
+      helpText: 'Sélectionner la date',
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,
