@@ -72,7 +72,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: _canPop,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
         if (_canPop) return;
 
         _canPop = await ConfirmExitDialog.show(context,
