@@ -212,7 +212,9 @@ class JobsPageState extends State<JobsPage> {
                       text: '. **\n\nToutes vos modifications seront perdues.',
                     ),
                   ])),
-                )) return;
+                )) {
+                  return;
+                }
                 cancelEditing();
               }
               _expandedSections[job.id]![panelIndex] = isExpanded;

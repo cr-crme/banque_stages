@@ -109,14 +109,14 @@ void main() {
             const Color(0x61000000)); // not selected
 
         expect(find.text('2'), findsOneWidget);
-        expect(
-            ((tester
-                        .widget<AnimatedContainer>(
-                            find.byType(AnimatedContainer).last)
-                        .decoration as BoxDecoration)
-                    .color as MaterialColor)
-                .value,
-            const Color(0xff2196f3).value); // selected
+        final color = (tester
+                .widget<AnimatedContainer>(find.byType(AnimatedContainer).last)
+                .decoration as BoxDecoration)
+            .color as MaterialColor;
+        expect(color.a, const Color(0xff2196f3).a); // selected
+        expect(color.r, const Color(0xff2196f3).r); // selected
+        expect(color.g, const Color(0xff2196f3).g); // selected
+        expect(color.b, const Color(0xff2196f3).b); // selected
       });
 
       testWidgets('can change which tab is selected', (tester) async {
@@ -130,14 +130,14 @@ void main() {
 
         // AnimatedContainer contains the indexed number
         expect(find.text('1'), findsOneWidget);
-        expect(
-            ((tester
-                        .widget<AnimatedContainer>(
-                            find.byType(AnimatedContainer).last)
-                        .decoration as BoxDecoration)
-                    .color as MaterialColor)
-                .value,
-            const Color(0xff2196f3).value); // selected
+        final color = (tester
+                .widget<AnimatedContainer>(find.byType(AnimatedContainer).last)
+                .decoration as BoxDecoration)
+            .color as MaterialColor;
+        expect(color.a, const Color(0xff2196f3).a); // selected
+        expect(color.r, const Color(0xff2196f3).r); // selected
+        expect(color.g, const Color(0xff2196f3).g); // selected
+        expect(color.b, const Color(0xff2196f3).b); // selected
 
         expect(find.text('2'), findsNothing); // offscreen
 
@@ -250,14 +250,14 @@ void main() {
             const Color(0x61000000)); // not selected
 
         expect(find.text('2'), findsOneWidget);
-        expect(
-            ((tester
-                        .widget<AnimatedContainer>(
-                            find.byType(AnimatedContainer).last)
-                        .decoration as BoxDecoration)
-                    .color as MaterialColor)
-                .value,
-            const Color(0xff2196f3).value); // selected
+        final color = (tester
+                .widget<AnimatedContainer>(find.byType(AnimatedContainer).last)
+                .decoration as BoxDecoration)
+            .color as MaterialColor;
+        expect(color.a, const Color(0xff2196f3).a); // selected
+        expect(color.r, const Color(0xff2196f3).r); // selected
+        expect(color.g, const Color(0xff2196f3).g); // selected
+        expect(color.b, const Color(0xff2196f3).b); // selected
       });
 
       testWidgets('can change which tab is selected', (tester) async {
@@ -279,28 +279,35 @@ void main() {
             const Color(0x61000000)); // not selected
 
         expect(find.text('2'), findsOneWidget);
-        expect(
-            ((tester
-                        .widget<AnimatedContainer>(
-                            find.byType(AnimatedContainer).last)
-                        .decoration as BoxDecoration)
-                    .color as MaterialColor)
-                .value,
-            const Color(0xff2196f3).value); // selected
+
+        {
+          final color = (tester
+                  .widget<AnimatedContainer>(
+                      find.byType(AnimatedContainer).last)
+                  .decoration as BoxDecoration)
+              .color as MaterialColor;
+          expect(color.a, const Color(0xff2196f3).a); // selected
+          expect(color.r, const Color(0xff2196f3).r); // selected
+          expect(color.g, const Color(0xff2196f3).g); // selected
+          expect(color.b, const Color(0xff2196f3).b); // selected
+        }
 
         // Tapping on an open tile doest not close it
         await tester.tap(find.text('Title 0'));
         await tester.pumpAndSettle();
 
         expect(find.text('1'), findsOneWidget);
-        expect(
-            ((tester
-                        .widget<AnimatedContainer>(
-                            find.byType(AnimatedContainer).first)
-                        .decoration as BoxDecoration)
-                    .color as MaterialColor)
-                .value,
-            const Color(0xff2196f3).value); // selected
+        {
+          final color = (tester
+                  .widget<AnimatedContainer>(
+                      find.byType(AnimatedContainer).first)
+                  .decoration as BoxDecoration)
+              .color as MaterialColor;
+          expect(color.a, const Color(0xff2196f3).a); // selected
+          expect(color.r, const Color(0xff2196f3).r); // selected
+          expect(color.g, const Color(0xff2196f3).g); // selected
+          expect(color.b, const Color(0xff2196f3).b); // selected
+        }
         expect(find.text('2'), findsOneWidget);
         expect(
             (tester
@@ -315,14 +322,17 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('1'), findsOneWidget);
-        expect(
-            ((tester
-                        .widget<AnimatedContainer>(
-                            find.byType(AnimatedContainer).first)
-                        .decoration as BoxDecoration)
-                    .color as MaterialColor)
-                .value,
-            const Color(0xff2196f3).value); // selected
+        {
+          final color = (tester
+                  .widget<AnimatedContainer>(
+                      find.byType(AnimatedContainer).first)
+                  .decoration as BoxDecoration)
+              .color as MaterialColor;
+          expect(color.a, const Color(0xff2196f3).a); // selected
+          expect(color.r, const Color(0xff2196f3).r); // selected
+          expect(color.g, const Color(0xff2196f3).g); // selected
+          expect(color.b, const Color(0xff2196f3).b); // selected
+        }
       });
 
       testWidgets('callbacks work properly', (tester) async {

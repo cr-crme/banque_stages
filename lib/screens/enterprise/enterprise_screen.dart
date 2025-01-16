@@ -94,7 +94,9 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
                   const TextSpan(
                     text: '. **\n\nToutes vos modifications seront perdues.',
                   ),
-                ])))) return;
+                ])))) {
+              return;
+            }
             cancelEditing();
           }
           await _jobsPageKey.currentState?.addJob();
