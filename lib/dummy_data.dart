@@ -33,7 +33,10 @@ Future<void> resetDummyData(BuildContext context) async {
   final enterprises = EnterprisesProvider.of(context, listen: false);
   final internships = InternshipsProvider.of(context, listen: false);
   final students = StudentsProvider.instance(context, listen: false);
+// TODO Enterprises should store all the teachers that have recruited them and
+// fixed the shareWith field to be a list of teacher ids
 
+// TODO Look for Quebec servers (OVH, Akamai, Vultr, etc.) to host the database
   await _addDummySchools(schools);
   await _addDummyTeachers(teachers, schools);
   await _addDummyStudents(students, teachers);
