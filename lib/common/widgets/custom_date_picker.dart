@@ -605,7 +605,7 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
             .scale(fontSizeToScale) /
         fontSizeToScale;
     final Size dialogSize = _dialogSize(context) * textScaleFactor;
-    final DialogTheme dialogTheme = theme.dialogTheme;
+    final dialogTheme = theme.dialogTheme;
     return Dialog(
       backgroundColor:
           datePickerTheme.backgroundColor ?? defaults.backgroundColor,
@@ -1748,7 +1748,7 @@ class _CustomDateRangePickerDialogState
           cancelText: widget.cancelText ?? localizations.cancelButtonLabel,
           helpText: widget.helpText ?? localizations.dateRangePickerHelpText,
         );
-        final DialogTheme dialogTheme = theme.dialogTheme;
+        final dialogTheme = theme.dialogTheme;
         size = orientation == Orientation.portrait
             ? _inputPortraitDialogSize
             : _inputRangeLandscapeDialogSize;
@@ -1828,7 +1828,8 @@ class _CalendarRangePickerDialog extends StatelessWidget {
     final Color? dialogBackground = themeData.rangePickerBackgroundColor ??
         defaults.rangePickerBackgroundColor;
     const Color headerForeground = Colors.white;
-    final Color headerDisabledForeground = headerForeground.withOpacity(0.38);
+    final Color headerDisabledForeground =
+        headerForeground.withValues(alpha: 0.38);
     final TextStyle? headlineStyle = themeData.rangePickerHeaderHeadlineStyle ??
         defaults.rangePickerHeaderHeadlineStyle;
     final String startDateText = _formatRangeStartDate(
@@ -2764,7 +2765,7 @@ class _MonthItemState extends State<_MonthItem> {
       );
     } else if (isDisabled) {
       itemStyle = textTheme.bodyMedium
-          ?.apply(color: colorScheme.onSurface.withOpacity(0.38));
+          ?.apply(color: colorScheme.onSurface.withValues(alpha: 0.38));
     } else if (DateUtils.isSameDay(widget.currentDate, dayToBuild)) {
       // The current day gets a different text color and a circle stroke
       // border.

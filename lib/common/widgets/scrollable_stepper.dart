@@ -269,7 +269,7 @@ class _ScrollableStepperState extends State<ScrollableStepper>
     if (!_isDark()) {
       return widget.steps[index].isActive
           ? colorScheme.primary
-          : colorScheme.onSurface.withOpacity(0.38);
+          : colorScheme.onSurface.withValues(alpha: 0.38);
     } else {
       // coverage:ignore-start
       return widget.steps[index].isActive

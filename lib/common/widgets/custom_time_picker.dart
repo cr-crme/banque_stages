@@ -3408,7 +3408,7 @@ class _TimePickerDefaultsM2 extends _TimePickerDefaults {
   BorderSide get dayPeriodBorderSide {
     return BorderSide(
       color: Color.alphaBlend(
-          _colors.onSurface.withOpacity(0.38), _colors.surface),
+          _colors.onSurface.withValues(alpha: 0.38), _colors.surface),
     );
   }
   // coverage:ignore-end
@@ -3418,8 +3418,8 @@ class _TimePickerDefaultsM2 extends _TimePickerDefaults {
   Color get dayPeriodColor {
     return WidgetStateColor.resolveWith((Set<WidgetState> states) {
       if (states.contains(WidgetState.selected)) {
-        return _colors.primary
-            .withOpacity(_colors.brightness == Brightness.dark ? 0.24 : 0.12);
+        return _colors.primary.withValues(
+            alpha: _colors.brightness == Brightness.dark ? 0.24 : 0.12);
       }
       // The unselected day period should match the overall picker dialog color.
       // Making it transparent enables that without being redundant and allows
@@ -3461,7 +3461,7 @@ class _TimePickerDefaultsM2 extends _TimePickerDefaults {
     return WidgetStateColor.resolveWith((Set<WidgetState> states) {
       return states.contains(WidgetState.selected)
           ? _colors.primary
-          : _colors.onSurface.withOpacity(0.60);
+          : _colors.onSurface.withValues(alpha: 0.60);
     });
   }
   // coverage:ignore-end
@@ -3476,7 +3476,7 @@ class _TimePickerDefaultsM2 extends _TimePickerDefaults {
   @override
   Color get dialBackgroundColor {
     return _colors.onSurface
-        .withOpacity(_colors.brightness == Brightness.dark ? 0.12 : 0.08);
+        .withValues(alpha: _colors.brightness == Brightness.dark ? 0.12 : 0.08);
   }
 
   @override
@@ -3527,7 +3527,7 @@ class _TimePickerDefaultsM2 extends _TimePickerDefaults {
   @override
   Color get entryModeIconColor {
     return _colors.onSurface
-        .withOpacity(_colors.brightness == Brightness.dark ? 1.0 : 0.6);
+        .withValues(alpha: _colors.brightness == Brightness.dark ? 1.0 : 0.6);
   }
 
   // coverage:ignore-start
@@ -3541,9 +3541,9 @@ class _TimePickerDefaultsM2 extends _TimePickerDefaults {
   Color get hourMinuteColor {
     return WidgetStateColor.resolveWith((Set<WidgetState> states) {
       return states.contains(WidgetState.selected)
-          ? _colors.primary
-              .withOpacity(_colors.brightness == Brightness.dark ? 0.24 : 0.12)
-          : _colors.onSurface.withOpacity(0.12);
+          ? _colors.primary.withValues(
+              alpha: _colors.brightness == Brightness.dark ? 0.24 : 0.12)
+          : _colors.onSurface.withValues(alpha: 0.12);
     });
   }
 
@@ -3592,7 +3592,7 @@ class _TimePickerDefaultsM2 extends _TimePickerDefaults {
     return WidgetStateColor.resolveWith((Set<WidgetState> states) {
       return states.contains(WidgetState.selected)
           ? Colors.transparent
-          : _colors.onSurface.withOpacity(0.12);
+          : _colors.onSurface.withValues(alpha: 0.12);
     });
   }
 
@@ -3616,7 +3616,7 @@ class _TimePickerDefaultsM2 extends _TimePickerDefaults {
         borderSide: BorderSide(color: _colors.error, width: 2),
       ),
       hintStyle: hourMinuteTextStyle.copyWith(
-          color: _colors.onSurface.withOpacity(0.36)),
+          color: _colors.onSurface.withValues(alpha: 0.36)),
       // Prevent the error text from appearing.
       // https://github.com/flutter/flutter/issues/54104
       // is fixed.
