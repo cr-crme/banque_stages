@@ -91,7 +91,7 @@ pw.Widget _dummyLeftPage(pw.Context context) {
                 pw.Text('Profil d\'employabilité',
                     style: pw.Theme.of(context).defaultTextStyle.copyWith(
                         fontWeight: pw.FontWeight.bold,
-                        color: PdfColor.fromHex("#FFFFFF"),
+                        color: PdfColor.fromHex('#FFFFFF'),
                         fontSize: 20)),
                 pw.SizedBox(height: 40),
                 pw.Text(
@@ -136,7 +136,7 @@ pw.Widget _dummyRightPage(pw.Context context) {
                     child: pw.Text('Évaluation',
                         style: pw.Theme.of(context).defaultTextStyle.copyWith(
                             fontWeight: pw.FontWeight.bold,
-                            color: PdfColor.fromHex("#FFFFFF"),
+                            color: PdfColor.fromHex('#FFFFFF'),
                             fontSize: 20))),
                 pw.SizedBox(height: 40),
                 pw.Text(
