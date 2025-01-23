@@ -900,34 +900,35 @@ Future<void> _addDummyStudents(
 
   await _waitForDatabaseUpdate(students, 10);
 
+  // TODO REINSTATE THIS
   // Simulate that some of the students were actually added by someone else
-  if (!students.pathToAvailableDataIds.contains('/all/')) {
-    {
-      final student =
-          students.firstWhere((student) => student.fullName == 'Diego Vargas');
-      students.firebaseInstance
-          .ref('/students-ids/42/')
-          .child(student.id)
-          .set(true);
-      students.firebaseInstance
-          .ref(students.pathToAvailableDataIds)
-          .child(student.id)
-          .remove();
-    }
-    {
-      final student =
-          students.firstWhere((student) => student.fullName == 'Simon Gingras');
-      students.firebaseInstance
-          .ref('/students-ids/42/')
-          .child(student.id)
-          .set(true);
-      students.firebaseInstance
-          .ref(students.pathToAvailableDataIds)
-          .child(student.id)
-          .remove();
-      await _waitForDatabaseUpdate(students, 8);
-    }
-  }
+  // if (!students.pathToAvailableDataIds.contains('/all/')) {
+  //   {
+  //     final student =
+  //         students.firstWhere((student) => student.fullName == 'Diego Vargas');
+  //     students.firebaseInstance
+  //         .ref('/students-ids/42/')
+  //         .child(student.id)
+  //         .set(true);
+  //     students.firebaseInstance
+  //         .ref(students.pathToAvailableDataIds)
+  //         .child(student.id)
+  //         .remove();
+  //   }
+  //   {
+  //     final student =
+  //         students.firstWhere((student) => student.fullName == 'Simon Gingras');
+  //     students.firebaseInstance
+  //         .ref('/students-ids/42/')
+  //         .child(student.id)
+  //         .set(true);
+  //     students.firebaseInstance
+  //         .ref(students.pathToAvailableDataIds)
+  //         .child(student.id)
+  //         .remove();
+  //     await _waitForDatabaseUpdate(students, 8);
+  //   }
+  // }
 }
 
 Future<void> _addDummyInternships(

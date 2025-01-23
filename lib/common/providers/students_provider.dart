@@ -10,11 +10,7 @@ import 'internships_provider.dart';
 import 'teachers_provider.dart';
 
 class StudentsProvider extends FirebaseListProvided<Student> {
-  StudentsProvider({super.mockMe})
-      : super(
-          pathToData: 'students',
-          pathToAvailableDataIds: '',
-        );
+  StudentsProvider({super.mockMe}) : super(pathToData: 'students');
 
   ///
   /// This returns the students the teacher should have read/write access too.
@@ -99,8 +95,9 @@ class StudentsProvider extends FirebaseListProvided<Student> {
     //     : '/students-ids/${auth.currentUser!.uid}/';
 
     // This makes all students available for all teachers
-    pathToAvailableDataIds = '/students-ids/all/';
+    // pathToAvailableDataIds = '/students-ids/all/';
 
+    // TODO CHECK THIS (pathToAvailableDataIds recently removed)
     initializeFetchingData();
   }
 }

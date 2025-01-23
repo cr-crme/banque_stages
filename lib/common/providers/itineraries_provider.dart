@@ -1,24 +1,19 @@
-import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/itinerary.dart';
 
 class ItinerariesProvider extends FirebaseListProvided<Itinerary> {
-  ItinerariesProvider({super.mockMe})
-      : super(
-          pathToData: 'itineraries',
-          pathToAvailableDataIds: '',
-        );
+  ItinerariesProvider({super.mockMe}) : super(pathToData: 'itineraries');
 
-  void initializeAuth(AuthProvider auth) {
-    pathToAvailableDataIds = auth.currentUser == null
-        ? ''
-        : '/itineraries-ids/${auth.currentUser?.uid ?? (kDebugMode ? 'default' : '')}/';
-    initializeFetchingData();
+  Future<void> initializeAuth(AuthProvider auth) async {
+    // TODO CHECK THIS
+    // pathToAvailableDataIds = auth.currentUser == null
+    //     ? ''
+    //     : '/itineraries-ids/${auth.currentUser?.uid ?? (kDebugMode ? 'default' : '')}/';
+    await initializeFetchingData();
   }
 
   static ItinerariesProvider of(BuildContext context, {listen = true}) =>
@@ -45,7 +40,7 @@ class ItinerariesProvider extends FirebaseListProvided<Itinerary> {
   }
 
   @override
-  void replace(Itinerary item, {bool notify = false}) =>
+  Future<void> replace(Itinerary item, {bool notify = false}) async =>
       add(item, notify: notify);
 
   bool hasDate(DateTime date) {
