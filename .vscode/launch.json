@@ -9,6 +9,12 @@
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
+        }, 
+        {
+            "name": "Banque de Stages (Firebase emulator)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
             "preLaunchTask": "Run Firebase Emulator"
         }
     ]

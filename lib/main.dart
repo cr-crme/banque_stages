@@ -8,7 +8,6 @@ import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -16,10 +15,11 @@ import 'package:provider/provider.dart';
 // coverage:ignore-start
 void main() async {
   const mockFirebase = false;
+  const useDatabaseEmulator = false; //kDebugMode;
 
   WidgetsFlutterBinding.ensureInitialized();
   await initializeProgram(
-      useDatabaseEmulator: kDebugMode, mockFirebase: mockFirebase);
+      useDatabaseEmulator: useDatabaseEmulator, mockFirebase: mockFirebase);
   runApp(const BanqueStagesApp(mockFirebase: mockFirebase));
 }
 // coverage:ignore-end
@@ -34,7 +34,7 @@ class BanqueStagesApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (context) => AuthProvider(mockMe: kDebugMode)),
+            create: (context) => AuthProvider(mockMe: useDatabaseEmulator)),
         ChangeNotifierProvider(
             create: (context) => SchoolsProvider(mockMe: mockFirebase)),
         ChangeNotifierProvider(

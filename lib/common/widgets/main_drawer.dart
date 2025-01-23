@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/numbered_tablet.dart';
 import 'package:crcrme_banque_stages/dummy_data.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
@@ -55,11 +56,14 @@ class MainDrawer extends StatelessWidget {
                 //   route: Screens...,
                 //   onTap: () {},
                 // ),
-                // _DrawerItem(
-                //   titleText: 'Se déconnecter',
-                //   icon: Icons.logout,
-                //   onTap: () => auth.signOut(),
-                // ),
+                _DrawerItem(
+                  titleText: 'Se déconnecter',
+                  icon: Icons.logout,
+                  onTap: () {
+                    AuthProvider.of(context).signOut();
+                    GoRouter.of(context).goNamed(Screens.login);
+                  },
+                ),
               ],
             ),
             if (useDatabaseEmulator)
