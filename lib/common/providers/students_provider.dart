@@ -88,7 +88,7 @@ class StudentsProvider extends FirebaseListProvided<Student> {
     return Student.fromSerialized(data);
   }
 
-  void initializeAuth(AuthProvider auth) {
-       initializeFetchingData();
+  Future<void> initializeAuth(AuthProvider auth) async {
+    await initializeFetchingData();
   }
 }

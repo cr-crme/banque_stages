@@ -9,10 +9,6 @@ class ItinerariesProvider extends FirebaseListProvided<Itinerary> {
   ItinerariesProvider({super.mockMe}) : super(pathToData: 'itineraries');
 
   Future<void> initializeAuth(AuthProvider auth) async {
-    // TODO CHECK THIS
-    // pathToAvailableDataIds = auth.currentUser == null
-    //     ? ''
-    //     : '/itineraries-ids/${auth.currentUser?.uid ?? (kDebugMode ? 'default' : '')}/';
     await initializeFetchingData();
   }
 
