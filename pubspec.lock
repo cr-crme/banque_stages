@@ -42,10 +42,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: cb6a278ef2dbb298455e1a713bda08524a175630ec643a242c399c932a0a1f7d
+      sha256: "6199c74e3db4fbfbd04f66d739e72fe11c8a8957d5f219f1f4482dbde6420b5a"
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.1"
+    version: "4.0.2"
   args:
     dependency: transitive
     description:
@@ -74,10 +74,10 @@ packages:
     dependency: transitive
     description:
       name: barcode
-      sha256: ab180ce22c6555d77d45f0178a523669db67f95856e3378259ef2ffeb43e6003
+      sha256: "7b6729c37e3b7f34233e2318d866e8c48ddb46c1f7ad01ff7bb2a8de1da2b9f4"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.8"
+    version: "2.2.9"
   bidi:
     dependency: transitive
     description:
@@ -257,18 +257,18 @@ packages:
     dependency: transitive
     description:
       name: dart_jsonwebtoken
-      sha256: "06e02e18827d047f206e1051c15b493c9c29a2dba0f9b2a905d73748dec4f931"
+      sha256: "00a0812d2aeaeb0d30bcbc4dd3cee57971dbc0ab2216adf4f0247f37793f15ef"
       url: "https://pub.dev"
     source: hosted
-    version: "2.16.0"
+    version: "2.17.0"
   dart_style:
     dependency: transitive
     description:
       name: dart_style
-      sha256: "7856d364b589d1f08986e140938578ed36ed948581fbc3bc9aef1805039ac5ab"
+      sha256: "7306ab8a2359a48d22310ad823521d723acfed60ee1f7e37388e8986853b6820"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.7"
+    version: "2.3.8"
   dartx:
     dependency: transitive
     description:
@@ -281,18 +281,18 @@ packages:
     dependency: transitive
     description:
       name: dio
-      sha256: "5598aa796bbf4699afd5c67c0f5f6e2ed542afc956884b9cd58c306966efc260"
+      sha256: "253a18bbd4851fecba42f7343a1df3a9a4c1d31a2c1b37e221086b4fa8c8dbc9"
       url: "https://pub.dev"
     source: hosted
-    version: "5.7.0"
+    version: "5.8.0+1"
   dio_web_adapter:
     dependency: transitive
     description:
       name: dio_web_adapter
-      sha256: "33259a9276d6cea88774a0000cfae0d861003497755969c92faa223108620dc8"
+      sha256: e485c7a39ff2b384fa1d7e09b4e25f755804de8384358049124830b04fc4f93a
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   ed25519_edwards:
     dependency: transitive
     description:
@@ -584,38 +584,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
-  geocoding:
-    dependency: "direct main"
-    description:
-      name: geocoding
-      sha256: d580c801cba9386b4fac5047c4c785a4e19554f46be42f4f5e5b7deacd088a66
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
-  geocoding_android:
-    dependency: transitive
-    description:
-      name: geocoding_android
-      sha256: "1b13eca79b11c497c434678fed109c2be020b158cec7512c848c102bc7232603"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.3.1"
-  geocoding_ios:
-    dependency: transitive
-    description:
-      name: geocoding_ios
-      sha256: "94ddba60387501bd1c11e18dca7c5a9e8c645d6e3da9c38b9762434941870c24"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.1"
-  geocoding_platform_interface:
-    dependency: transitive
-    description:
-      name: geocoding_platform_interface
-      sha256: "8c2c8226e5c276594c2e18bfe88b19110ed770aeb7c1ab50ede570be8b92229b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.0"
   glob:
     dependency: transitive
     description:
@@ -628,10 +596,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: "7c2d40b59890a929824f30d442e810116caf5088482629c894b9e4478c67472d"
+      sha256: "9b736a9fa879d8ad6df7932cbdcc58237c173ab004ef90d8377923d7ad731eaa"
       url: "https://pub.dev"
     source: hosted
-    version: "14.6.3"
+    version: "14.7.2"
   google_fonts:
     dependency: transitive
     description:
@@ -657,7 +625,7 @@ packages:
     source: hosted
     version: "2.0.0"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: fe7ab022b76f3034adc518fb6ea04a82387620e19977665ea18d30a1cf43442f
@@ -684,10 +652,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: f31d52537dc417fdcde36088fdf11d191026fd5e4fae742491ebd40e5a8bea7d
+      sha256: "8346ad4b5173924b5ddddab782fc7d8a6300178c8b1dc427775405a01701c4a6"
       url: "https://pub.dev"
     source: hosted
-    version: "4.3.0"
+    version: "4.5.2"
   image_picker:
     dependency: "direct main"
     description:
@@ -1020,10 +988,10 @@ packages:
     dependency: "direct main"
     description:
       name: pdf
-      sha256: "05df53f8791587402493ac97b9869d3824eccbc77d97855f4545cf72df3cae07"
+      sha256: adbdec5bc84d20e6c8d67f9c64270aa64d1e9e1ed529f0fef7e7bc7e9400f894
       url: "https://pub.dev"
     source: hosted
-    version: "3.11.1"
+    version: "3.11.2"
   pdf_widget_wrapper:
     dependency: transitive
     description:
@@ -1080,14 +1048,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
+  posix:
+    dependency: transitive
+    description:
+      name: posix
+      sha256: a0117dc2167805aa9125b82eee515cc891819bac2f538c83646d355b16f58b9a
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.1"
   printing:
     dependency: "direct main"
     description:
       name: printing
-      sha256: b535d177fc6e8f8908e19b0ff5c1d4a87e3c4d0bf675e05aa2562af1b7853906
+      sha256: "1de61635e5eb1069d8ac5bfaab2925c400ae88c589ba37e4bc636b228e7f1dd4"
       url: "https://pub.dev"
     source: hosted
-    version: "5.13.4"
+    version: "5.14.0"
   proj4dart:
     dependency: transitive
     description:
@@ -1140,18 +1116,18 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: a752ce92ea7540fc35a0d19722816e04d0e72828a4200e83a98cf1a1eb524c9a
+      sha256: "688ee90fbfb6989c980254a56cb26ebe9bb30a3a2dff439a78894211f73de67a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.5"
+    version: "2.5.1"
   shared_preferences_android:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "138b7bbbc7f59c56236e426c37afb8f78cbc57b094ac64c440e0bb90e380a4f5"
+      sha256: "650584dcc0a39856f369782874e562efd002a9c94aec032412c9eb81419cce1f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.4"
   shared_preferences_foundation:
     dependency: transitive
     description:

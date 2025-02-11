@@ -1,11 +1,10 @@
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart';
-import 'package:crcrme_banque_stages/screens/visiting_students/models/lng_lat_utils.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
 
@@ -51,7 +50,10 @@ class _RoutingMapState extends State<RoutingMap> {
     }
 
     final manager = OSRMManager();
-    final route = itineraries.fromDate(widget.currentDate)!.toLngLat();
+    final route = itineraries
+        .fromDate(widget.currentDate)!
+        .map((e) => LngLat(lat: e.gcs.latitude, lng: e.gcs.longitude))
+        .toList();
 
     late Road out;
     try {
@@ -75,7 +77,7 @@ class _RoutingMapState extends State<RoutingMap> {
 
     return [
       Polyline(
-        points: LngLatUtils.fromLngLatToLatLng(road.polyline!),
+        points: road.polyline!.map((e) => LatLng(e.lat, e.lng)).toList(),
         strokeWidth: 4,
         color: Theme.of(context).primaryColor,
       )
@@ -110,17 +112,17 @@ class _RoutingMapState extends State<RoutingMap> {
       double nameWidth = 160;
       double nameHeight = 100;
 
-      final previous = out.fold<double>(0.0, (prev, e) {
-        final newLatLng = waypoint.toLatLng();
-        return prev +
-            (e.point.latitude == newLatLng.latitude &&
-                    e.point.longitude == newLatLng.longitude
-                ? 1.0
-                : 0.0);
-      });
+      final previous = out.fold<double>(
+          0.0,
+          (prev, e) =>
+              prev +
+              (e.point.latitude == waypoint.gcs.latitude &&
+                      e.point.longitude == waypoint.gcs.longitude
+                  ? 1.0
+                  : 0.0));
       out.add(
         Marker(
-          point: waypoint.toLatLng(),
+          point: LatLng(waypoint.gcs.latitude, waypoint.gcs.longitude),
           alignment:
               Alignment(0.8, 0.4 * previous), // Centered almost at max right,
           width: markerSize + nameWidth,
@@ -163,11 +165,14 @@ class _RoutingMapState extends State<RoutingMap> {
 
   @override
   Widget build(BuildContext context) {
+    final waypoint = widget.waypoints[0];
     return Padding(
       padding: const EdgeInsets.all(8),
       child: FlutterMap(
         options: MapOptions(
-            initialCenter: widget.waypoints[0].toLatLng(), initialZoom: 12),
+            initialCenter:
+                LatLng(waypoint.gcs.latitude, waypoint.gcs.longitude),
+            initialZoom: 12),
         children: [
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',

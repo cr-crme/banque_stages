@@ -1,3 +1,4 @@
+import 'package:crcrme_banque_stages/common/models/geographic_coordinate_system.dart';
 import 'package:crcrme_banque_stages/common/models/itinerary.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -42,17 +43,17 @@ void main() {
       expect(itinerary.moveNext(), isFalse);
     });
 
-    test('"toLatLng" and "toLngLat" behave properly', () {
+    test('"next" behave properly', () {
       final itinerary = dummyItinerary();
-      final latLng = itinerary.toLatLng();
-      final lngLat = itinerary.toLngLat();
+      final gcs = itinerary
+          .map((e) => GeographicCoordinateSystem(
+              latitude: e.gcs.latitude, longitude: e.gcs.longitude))
+          .toList();
 
       int i = 0;
       for (final next in itinerary) {
-        expect(latLng[i].latitude, next.latitude);
-        expect(latLng[i].longitude, next.longitude);
-        expect(lngLat[i].lat, next.latitude);
-        expect(lngLat[i].lng, next.longitude);
+        expect(gcs[i].latitude, next.gcs.latitude);
+        expect(gcs[i].longitude, next.gcs.longitude);
         i++;
       }
       expect(i, 2);

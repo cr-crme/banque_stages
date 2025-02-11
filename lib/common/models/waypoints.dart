@@ -1,28 +1,22 @@
+import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:crcrme_banque_stages/common/models/geographic_coordinate_system.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:routing_client_dart/routing_client_dart.dart';
 
 import 'visiting_priority.dart';
 
 class Waypoint extends ItemSerializable {
   final String title;
   final String? subtitle;
-  final double latitude;
-  final double longitude;
-  final Placemark address;
+  final GeographicCoordinateSystem gcs;
+  final Address address;
   final VisitingPriority priority;
   final bool showTitle;
-
-  LatLng toLatLng() => LatLng(latitude, longitude);
-  LngLat toLngLat() => LngLat(lng: longitude, lat: latitude);
 
   Waypoint({
     super.id,
     required this.title,
     this.subtitle,
-    required this.latitude,
-    required this.longitude,
+    required this.gcs,
     required this.address,
     this.priority = VisitingPriority.notApplicable,
     this.showTitle = true,
@@ -34,55 +28,41 @@ class Waypoint extends ItemSerializable {
       'id': id,
       'title': title,
       'subtitle': subtitle,
-      'latitude': latitude,
-      'longitude': longitude,
-      'street': address.street,
-      'locality': address.locality,
-      'postalCode': address.postalCode,
+      'gcs': gcs.serialize(),
+      'address': address.serialize(),
       'priority': priority.index,
     };
   }
 
-  static Waypoint fromSerialized(data) {
-    final address = Placemark(
-      street: data['street'],
-      locality: data['locality'],
-      postalCode: data['postalCode'],
-    );
-    return Waypoint(
-      id: data['id'],
-      title: data['title'] ?? '',
-      subtitle: data['subtitle'] ?? '',
-      latitude: data['latitude'] ?? 0,
-      longitude: data['longitude'] ?? 0,
-      address: address,
-      priority: data['priority'] == null
-          ? VisitingPriority.notApplicable
-          : VisitingPriority.values[data['priority']],
-    );
-  }
+  static Waypoint fromSerialized(data) => Waypoint(
+        id: data['id'],
+        title: data['title'] ?? '',
+        subtitle: data['subtitle'] ?? '',
+        gcs: data['gcs'] == null
+            ? GeographicCoordinateSystem()
+            : GeographicCoordinateSystem.fromSerialized(data['gcs']),
+        address: data['address'] == null
+            ? Address()
+            : Address.fromSerialized(data['address']),
+        priority: data['priority'] == null
+            ? VisitingPriority.notApplicable
+            : VisitingPriority.values[data['priority']],
+      );
 
   static Future<Waypoint> fromCoordinates({
     required String title,
     String? subtitle,
-    required double latitude,
-    required double longitude,
+    required GeographicCoordinateSystem gcs,
     priority = VisitingPriority.notApplicable,
     showTitle = true,
   }) async {
-    late Placemark placemark;
-    try {
-      placemark = (await placemarkFromCoordinates(latitude, longitude)).first;
-    } catch (e) {
-      placemark = const Placemark();
-    }
+    final address = await Address.fromCoordinates(gcs);
 
     return Waypoint(
       title: title,
       subtitle: subtitle,
-      latitude: latitude,
-      longitude: longitude,
-      address: placemark,
+      gcs: gcs,
+      address: address ?? Address(),
       priority: priority,
       showTitle: showTitle,
     );
@@ -94,68 +74,22 @@ class Waypoint extends ItemSerializable {
     required String address,
     priority = VisitingPriority.notApplicable,
     showTitle = true,
-  }) async {
-    late List<Location> locations;
-    try {
-      locations = await locationFromAddress(address);
-    } catch (e) {
-      locations = [
-        Location(latitude: 0, longitude: 0, timestamp: DateTime.now())
-      ];
-    }
-    var first = locations.first;
-    return Waypoint.fromCoordinates(
-      title: title,
-      subtitle: subtitle,
-      latitude: first.latitude,
-      longitude: first.longitude,
-      priority: priority,
-      showTitle: showTitle,
-    );
-  }
-
-  static Future<Waypoint> fromLatLng({
-    required String title,
-    String? subtitle,
-    required LatLng point,
-    priority = VisitingPriority.notApplicable,
-    showTitle = true,
-  }) async {
-    return Waypoint.fromCoordinates(
-      title: title,
-      subtitle: subtitle,
-      latitude: point.latitude,
-      longitude: point.longitude,
-      priority: priority,
-      showTitle: showTitle,
-    );
-  }
-
-  static Future<Waypoint> fromLngLat({
-    required String title,
-    String? subtitle,
-    required LngLat point,
-    priority = VisitingPriority.notApplicable,
-    showTitle = true,
-  }) {
-    return Waypoint.fromCoordinates(
-      title: title,
-      subtitle: subtitle,
-      latitude: point.lat,
-      longitude: point.lng,
-      priority: priority,
-      showTitle: showTitle,
-    );
-  }
+  }) async =>
+      Waypoint.fromCoordinates(
+        title: title,
+        subtitle: subtitle,
+        gcs: await GeographicCoordinateSystem.fromAddress(address),
+        priority: priority,
+        showTitle: showTitle,
+      );
 
   Waypoint copyWith({
     bool forceNewId = false,
     String? id,
     String? title,
     String? subtitle,
-    double? latitude,
-    double? longitude,
-    Placemark? address,
+    GeographicCoordinateSystem? gcs,
+    Address? address,
     VisitingPriority? priority,
     bool? showTitle,
   }) {
@@ -163,8 +97,7 @@ class Waypoint extends ItemSerializable {
       id: forceNewId ? null : id ?? this.id,
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
+      gcs: gcs ?? this.gcs,
       address: address ?? this.address,
       priority: priority ?? this.priority,
       showTitle: showTitle ?? this.showTitle,
@@ -175,7 +108,7 @@ class Waypoint extends ItemSerializable {
   String toString() {
     String out = '';
     if (subtitle != null) out += '$subtitle\n';
-    out += '${address.street}\n${address.locality} ${address.postalCode}';
+    out += '${address.street}\n${address.city} ${address.postalCode}';
     return out;
   }
 }

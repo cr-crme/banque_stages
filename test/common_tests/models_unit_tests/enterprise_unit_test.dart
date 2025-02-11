@@ -128,7 +128,7 @@ void main() {
       expect(enterprise.availableJobs(context).length, 0);
 
       // Terminate one the of job, so it should be available again
-      internships.replace(internships[1]
+      await internships.replace(internships[1]
           .copyWith(endDate: DateTime.now().subtract(const Duration(days: 1))));
       expect(enterprise.availableJobs(context).length, 1);
     });

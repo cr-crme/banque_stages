@@ -2,6 +2,7 @@ import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 // coverage:ignore-file
 class ShowAddressDialog extends StatelessWidget {
@@ -22,8 +23,10 @@ class ShowAddressDialog extends StatelessWidget {
 
           final waypoint = snapshot.data!;
           return FlutterMap(
-            options:
-                MapOptions(initialCenter: waypoint.toLatLng(), initialZoom: 16),
+            options: MapOptions(
+                initialCenter:
+                    LatLng(waypoint.gcs.latitude, waypoint.gcs.longitude),
+                initialZoom: 16),
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -31,7 +34,8 @@ class ShowAddressDialog extends StatelessWidget {
               ),
               MarkerLayer(markers: [
                 Marker(
-                    point: waypoint.toLatLng(),
+                    point:
+                        LatLng(waypoint.gcs.latitude, waypoint.gcs.longitude),
                     child: const Icon(
                       Icons.location_on_sharp,
                       size: 45,

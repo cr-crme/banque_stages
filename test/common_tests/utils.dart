@@ -1,5 +1,6 @@
 import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/geographic_coordinate_system.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
@@ -21,7 +22,6 @@ import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 
 School dummySchool({
   String? id,
@@ -300,12 +300,9 @@ Waypoint dummyWaypoint(
       id: id,
       title: 'Waypoint',
       subtitle: 'Subtitle',
-      latitude: latitude,
-      longitude: longitude,
-      address: const Placemark(
-          street: '123 rue de la rue',
-          locality: 'Ville',
-          postalCode: 'H0H 0H0'),
+      gcs: GeographicCoordinateSystem(latitude: latitude, longitude: longitude),
+      address: Address(
+          street: '123 rue de la rue', city: 'Ville', postalCode: 'H0H 0H0'),
     );
 
 Itinerary dummyItinerary({

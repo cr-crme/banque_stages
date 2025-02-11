@@ -1,5 +1,8 @@
+import 'dart:convert';
+
+import 'package:crcrme_banque_stages/common/models/geographic_coordinate_system.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:http/http.dart' as http;
 
 class Address extends ItemSerializable {
   Address({
@@ -19,21 +22,28 @@ class Address extends ItemSerializable {
   final String? city;
   final String? postalCode;
 
-  // coverage:ignore-start
-  static Future<Address?> fromString(String address) async {
-    final location = await locationFromAddress(address);
-    if (location.isEmpty) return null;
+  static Future<Address?> fromCoordinates(
+      GeographicCoordinateSystem gcs) async {
+    final String url =
+        'https://nominatim.openstreetmap.org/reverse?format=json&lat=${gcs.latitude}&lon=${gcs.longitude}';
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode != 200) return null;
 
-    final placemark = await placemarkFromCoordinates(
-        location.last.latitude, location.last.longitude);
-    if (placemark.isEmpty) return null;
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    if (data.isEmpty) return null;
 
     return Address(
-      civicNumber: int.tryParse(placemark.first.subThoroughfare!),
-      street: placemark.first.thoroughfare,
-      city: placemark.first.locality,
-      postalCode: placemark.first.postalCode,
+      civicNumber: int.tryParse(data['address']['house_number']),
+      street: data['address']['road'],
+      city: data['address']['city'],
+      postalCode: data['address']['postcode'],
     );
+  }
+
+  // coverage:ignore-start
+  static Future<Address?> fromString(String address) async {
+    final gcs = await GeographicCoordinateSystem.fromAddress(address);
+    return await Address.fromCoordinates(gcs);
   }
   // coverage:ignore-end
 

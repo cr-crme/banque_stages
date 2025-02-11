@@ -12,6 +12,7 @@ import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_butt
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/enterprise_card.dart';
@@ -230,7 +231,7 @@ class _EnterprisesByMap extends StatelessWidget {
 
       out.add(
         Marker(
-          point: waypoint.toLatLng(),
+          point: LatLng(waypoint.gcs.latitude, waypoint.gcs.longitude),
           alignment: const Alignment(0.8, 0.0), // Centered almost at max right
           width: markerSize + nameWidth,
           height: markerSize + nameHeight,
@@ -317,11 +318,13 @@ class _EnterprisesByMap extends StatelessWidget {
             }
 
             Map<Enterprise, Waypoint> locations = snapshot.data!;
+            final waypoint = locations[locations.keys.first]!;
             return SizedBox(
               height: MediaQuery.of(context).size.height - 150,
               child: FlutterMap(
                 options: MapOptions(
-                    initialCenter: locations[locations.keys.first]!.toLatLng(),
+                    initialCenter:
+                        LatLng(waypoint.gcs.latitude, waypoint.gcs.longitude),
                     initialZoom: 14),
                 children: [
                   TileLayer(
