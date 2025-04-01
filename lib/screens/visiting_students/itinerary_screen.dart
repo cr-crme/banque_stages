@@ -22,6 +22,7 @@ class ItineraryMainScreen extends StatefulWidget {
 
 class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
   final List<Waypoint> _waypoints = [];
+  final _scrollController = ScrollController();
 
   Future<T?> _waitFor<T>(
       Function(BuildContext context, {bool listen}) providerOf) async {
@@ -90,12 +91,14 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Itinéraire des visites')),
       body: RawScrollbar(
+        controller: _scrollController,
         thumbVisibility: true,
         thickness: 7,
         minThumbLength: 75,
         thumbColor: Theme.of(context).primaryColor,
         radius: const Radius.circular(20),
         child: SingleChildScrollView(
+          controller: _scrollController,
           physics: const ScrollPhysics(),
           child: FutureBuilder(
             future: _fillAllWaypoints(),

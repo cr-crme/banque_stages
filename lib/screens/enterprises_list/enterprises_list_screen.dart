@@ -11,6 +11,7 @@ import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -331,6 +332,7 @@ class _EnterprisesByMap extends StatelessWidget {
                     urlTemplate:
                         'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                    tileProvider: CancellableNetworkTileProvider(),
                   ),
                   MarkerLayer(markers: _latlngToMarkers(context, locations)),
                   const ZoomButtons(),

@@ -41,7 +41,8 @@ dependencies:
     mockito: ^5.3.2
     build_runner: ^2.3.0
     latlong2: ^0.9.1
-    flutter_map: ^7.0.2
+    flutter_map: ^8.1.1
+    flutter_map_cancellable_tile_provider: ^3.1.0
     routing_client_dart: ^0.5.5
     enhanced_containers:
         path: ./external/enhanced_containers
