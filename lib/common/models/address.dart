@@ -30,14 +30,23 @@ class Address extends ItemSerializable {
     if (response.statusCode != 200) return null;
 
     final data = json.decode(response.body) as Map<String, dynamic>;
-    if (data.isEmpty) return null;
+    if (data.isEmpty || !data.keys.contains('address')) return null;
+    final address = data['address'] as Map<String, dynamic>;
+
+    final civicNumber = address.keys.contains('house_number')
+        ? int.tryParse(data['address']['house_number'])
+        : null;
+    final street =
+        address.keys.contains('road') ? data['address']['road'] : null;
+    final city = address.keys.contains('city') ? data['address']['city'] : null;
+    final postalCode =
+        address.keys.contains('postcode') ? data['address']['postcode'] : null;
 
     return Address(
-      civicNumber: int.tryParse(data['address']['house_number']),
-      street: data['address']['road'],
-      city: data['address']['city'],
-      postalCode: data['address']['postcode'],
-    );
+        civicNumber: civicNumber,
+        street: street,
+        city: city,
+        postalCode: postalCode);
   }
 
   // coverage:ignore-start
