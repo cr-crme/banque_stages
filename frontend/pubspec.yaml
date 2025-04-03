@@ -37,6 +37,9 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   dart_jsonwebtoken: ^2.17.0
   http: ^1.3.0
+  common:
+    path: ../common
+  web_socket_client: ^0.2.0
 
 dev_dependencies:
   flutter_test:
