@@ -11,9 +11,14 @@ final _logger = Logger('Connexions');
 
 class Connexions {
   final Map<WebSocket, dynamic> _clients = {};
+  int get clientCount => _clients.length;
   final DatabaseManager _database = DatabaseManager();
+  final Duration _timeout;
 
-  Future<void> add(WebSocket client) async {
+  Connexions({Duration timeout = const Duration(seconds: 5)})
+      : _timeout = timeout;
+
+  Future<bool> add(WebSocket client) async {
     try {
       _clients[client] = {'is_verified': false};
 
@@ -26,18 +31,19 @@ class Connexions {
       DateTime start = DateTime.now();
       while (!_clients[client]!['is_verified']) {
         await Future.delayed(const Duration(milliseconds: 100));
-        if (DateTime.now().isAfter(start.add(const Duration(seconds: 5)))) {
+        if (DateTime.now().isAfter(start.add(_timeout))) {
           throw HandshakeException('Handshake timeout');
         }
       }
     } catch (e) {
       await _refuseConnexion(client, e.toString());
-      return;
+      return false;
     }
 
     // Send the handshake to the client
     _send(client,
         message: CommunicationProtocol(requestType: RequestType.handshake));
+    return true;
   }
 
   Future<void> _incommingMessage(WebSocket client,
@@ -48,14 +54,14 @@ class Connexions {
 
       switch (protocol.requestType) {
         case RequestType.handshake:
-          _handleHandshake(client, protocol: protocol);
+          await _handleHandshake(client, protocol: protocol);
           break;
 
         case RequestType.get:
           if (protocol.field == null) {
             throw MissingFieldException('Field is required to get data');
           }
-          _send(client,
+          await _send(client,
               message: CommunicationProtocol(
                   requestType: RequestType.response,
                   field: protocol.field,
@@ -65,7 +71,6 @@ class Connexions {
           break;
 
         case RequestType.post:
-        case RequestType.delete:
           if (protocol.field == null) {
             throw MissingFieldException(
                 'Field is required to put or delete data');
@@ -78,13 +83,14 @@ class Connexions {
                       await _database.put(protocol.field!, data: protocol.data),
                   response: Response.success));
           // Notify all clients that the data has been updated
-          _sendAll(CommunicationProtocol(
+          await _sendAll(CommunicationProtocol(
             requestType: RequestType.update,
             field: protocol.field,
             data: await _database.get(protocol.field!, data: protocol.data),
           ));
           break;
 
+        case RequestType.delete:
         case RequestType.response:
         case RequestType.update:
           throw InvalidRequestTypeException(
@@ -93,13 +99,13 @@ class Connexions {
     } on HandshakeException catch (e) {
       await _refuseConnexion(client, e.toString());
     } on DatabaseException catch (e) {
-      _send(client,
+      await _send(client,
           message: CommunicationProtocol(
               requestType: RequestType.response,
               data: {'error': e.toString()},
               response: Response.failure));
     } catch (e) {
-      _send(client,
+      await _send(client,
           message: CommunicationProtocol(
               requestType: RequestType.response,
               data: {'error': 'Invalid message format: $e'},

@@ -3,8 +3,8 @@ import 'package:common/teacher.dart';
 import 'package:mutex/mutex.dart';
 
 final _dummyTeachers = {
-  '1': Teacher(name: 'John Doe', age: 60),
-  '2': Teacher(name: 'Jane Doe', age: 50),
+  '0': Teacher(name: 'John Doe', age: 60),
+  '1': Teacher(name: 'Jane Doe', age: 50),
 };
 
 final _mutex = ReadWriteMutex();
