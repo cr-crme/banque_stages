@@ -90,7 +90,7 @@ class Connexions {
             if (protocol.field == null) {
               throw Exception('Field is required to put or delete data');
             }
-            _send(client,
+            await _send(client,
                 message: CommunicationProtocol(
                     requestType: RequestType.response,
                     field: protocol.field,
@@ -142,7 +142,7 @@ class Connexions {
   }
 
   Future<void> _sendAll(CommunicationProtocol message) async {
-    for (var client in _clients.values) {
+    for (final client in _clients.keys) {
       _send(client, message: message);
     }
   }

@@ -2,9 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:common/communication_protocol.dart';
+import 'package:common/teacher.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_client/web_socket_client.dart';
+
+final Map<String, Teacher> _dummyTeachers = {};
 
 void main() {
   runApp(const MyApp());
@@ -38,6 +41,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _controller = TextEditingController();
   WebSocket? _socket;
   bool _handshakeReceived = false;
   bool get isConnecting => _socket != null && !_handshakeReceived;
@@ -54,17 +58,47 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton(
-                onPressed: isConnecting ? null : _connect,
+                onPressed: isConnecting || isConnected ? null : _connect,
                 child: Text(isConnecting ? 'Connecting...' : 'Connect')),
             SizedBox(height: 20),
             ElevatedButton(
-                onPressed: isConnected ? _putRequest : null,
-                child: Text('Post request')),
+                onPressed: isConnected ? _getTeachers : null,
+                child: Text('Get teacher')),
+            SizedBox(height: 20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                    onPressed: isConnected && _controller.text.isNotEmpty
+                        ? _changeTeacher
+                        : null,
+                    child: Text('Change teacher')),
+                SizedBox(width: 20),
+                SizedBox(
+                  width: 100,
+                  child: TextField(
+                    controller: _controller,
+                    enabled: isConnected,
+                    decoration: InputDecoration(
+                      labelText: 'New age',
+                    ),
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) => setState(() {}),
+                  ),
+                )
+              ],
+            ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: isConnected ? _closeConnexion : null,
               child: Text('Disconnect'),
             ),
+            ..._dummyTeachers.entries.map((entry) {
+              return ListTile(
+                title: Text(entry.key),
+                subtitle: Text(entry.value.toString()),
+              );
+            }),
           ],
         ),
       ),
@@ -92,6 +126,8 @@ class _LoginScreenState extends State<LoginScreen> {
               data: {'token': token}).serialize()));
         } else if (event is Disconnected) {
           debugPrint('Disconnected from server');
+          _handshakeReceived = false;
+          setState(() {});
         }
       });
       _socket!.messages.listen(_incommingMessage);
@@ -118,13 +154,43 @@ class _LoginScreenState extends State<LoginScreen> {
         case RequestType.handshake:
           {
             _handshakeReceived = true;
+            setState(() {});
             debugPrint('Handshake received');
             return;
           }
         case RequestType.response:
         case RequestType.update:
           {
-            debugPrint('Response received: ${protocol.response}');
+            debugPrint('Message received: $message');
+            if (protocol.requestType == RequestType.response &&
+                protocol.data == null) {
+              return;
+            }
+            switch (protocol.field) {
+              case RequestFields.teachers:
+                {
+                  _dummyTeachers.clear();
+                  if (protocol.data == null) throw 'No data received';
+                  for (var entry in protocol.data!.entries) {
+                    _dummyTeachers[entry.key] =
+                        Teacher.deserialize(entry.value);
+                  }
+                  setState(() {});
+                  break;
+                }
+              case RequestFields.teacher:
+                {
+                  if (protocol.data == null) throw 'No data received';
+
+                  final id = protocol.data!['id']?.toString();
+                  if (id == null) throw 'No id received';
+                  _dummyTeachers[id]!.mergeDeserialized(protocol.data!);
+                  setState(() {});
+                  break;
+                }
+              case null:
+                throw Exception('Unsupported request field: ${protocol.field}');
+            }
             return;
           }
         case RequestType.get:
@@ -141,15 +207,33 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _putRequest() async {
+  Future<void> _getTeachers() async {
     if (!isConnected) return;
+
+    // Send a get request to the server
+    try {
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.get,
+        field: RequestFields.teachers,
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
+  Future<void> _changeTeacher() async {
+    if (!isConnected || _controller.text.isEmpty) return;
 
     // Send a post request to the server
     try {
+      // TODO: This if we can get the error message
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
         field: RequestFields.teacher,
-        data: {'id': 1, 'age': 30},
+        data: {'id': 1, 'age': int.parse(_controller.text)},
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');
