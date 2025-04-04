@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:backend/connexions.dart';
+import 'package:backend/exceptions.dart';
 import 'package:backend/utils.dart';
 import 'package:logging/logging.dart';
 
@@ -67,7 +68,7 @@ Future<String?> _getOauthToken(HttpRequest request) async {
 
   try {
     final token = bearer.substring(7);
-    if (!isJwtValid(token)) throw 'Invalid token';
+    if (!isJwtValid(token)) throw InvalidTokenException('Invalid token');
     return token;
   } catch (e) {
     await _sendConnexionRefused(request);

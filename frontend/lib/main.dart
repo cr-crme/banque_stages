@@ -170,7 +170,9 @@ class _LoginScreenState extends State<LoginScreen> {
               case RequestFields.teachers:
                 {
                   _dummyTeachers.clear();
-                  if (protocol.data == null) throw 'No data received';
+                  if (protocol.data == null) {
+                    throw Exception('No data received');
+                  }
                   for (var entry in protocol.data!.entries) {
                     _dummyTeachers[entry.key] =
                         Teacher.deserialize(entry.value);
@@ -180,10 +182,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               case RequestFields.teacher:
                 {
-                  if (protocol.data == null) throw 'No data received';
+                  if (protocol.data == null) {
+                    throw Exception('No data received');
+                  }
 
                   final id = protocol.data!['id']?.toString();
-                  if (id == null) throw 'No id received';
+                  if (id == null) throw Exception('No id received');
                   _dummyTeachers[id]!.mergeDeserialized(protocol.data!);
                   setState(() {});
                   break;

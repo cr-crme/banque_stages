@@ -1,3 +1,5 @@
+import 'package:common/exceptions.dart';
+
 enum RequestFields {
   teacher,
   teachers,
@@ -17,8 +19,10 @@ enum Response {
   failure,
 }
 
+const String _currentVersion = '1.0.0';
+
 class CommunicationProtocol {
-  final String version = '1.0.0';
+  final String version = _currentVersion;
   final RequestType requestType;
   final RequestFields? field;
   final Map<String, dynamic>? data;
@@ -42,8 +46,8 @@ class CommunicationProtocol {
   }
 
   static CommunicationProtocol deserialize(Map<String, dynamic> map) {
-    if (map['version'] != '1.0.0') {
-      throw Exception('Unsupported version: ${map['version']}');
+    if (map['version'] != _currentVersion) {
+      throw WrongVersionException(map['version'], _currentVersion);
     }
     return CommunicationProtocol(
       requestType: RequestType.values[map['type'] as int],
