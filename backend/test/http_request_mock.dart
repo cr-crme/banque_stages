@@ -3,8 +3,18 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'web_socket_mock.dart';
+
 class HttpHeadersMock implements HttpHeaders {
+  bool isConnected = false;
   final Map<String, String> current = {};
+
+  final Map<String, List<String>> _headers = {
+    'connection': ['Upgrade'],
+    'upgrade': ['websocket'],
+    'sec-websocket-version': ['13'],
+    'sec-websocket-key': ['dGhlIHNhbXBsZSBub25jZQ=='], // just a base64 string
+  };
 
   @override
   bool get chunkedTransferEncoding => throw UnimplementedError();
@@ -35,7 +45,7 @@ class HttpHeadersMock implements HttpHeaders {
 
   @override
   List<String>? operator [](String name) {
-    throw UnimplementedError();
+    return _headers[name.toLowerCase()];
   }
 
   @override
@@ -63,7 +73,7 @@ class HttpHeadersMock implements HttpHeaders {
 
   @override
   String? value(String name) {
-    throw UnimplementedError();
+    return _headers[name.toLowerCase()]?.first;
   }
 
   @override
@@ -87,6 +97,7 @@ class HttpHeadersMock implements HttpHeaders {
 
 class HttpResponseMock implements HttpResponse {
   bool isClosed = false;
+  Object? response;
   final _headers = HttpHeadersMock();
 
   @override
@@ -137,8 +148,8 @@ class HttpResponseMock implements HttpResponse {
   List<Cookie> get cookies => throw UnimplementedError();
 
   @override
-  Future<Socket> detachSocket({bool writeHeaders = true}) {
-    throw UnimplementedError();
+  Future<Socket> detachSocket({bool writeHeaders = true}) async {
+    return SocketMock();
   }
 
   @override
@@ -158,7 +169,9 @@ class HttpResponseMock implements HttpResponse {
   }
 
   @override
-  void write(Object? object) {}
+  void write(Object? object) {
+    response = object;
+  }
 
   @override
   void writeAll(Iterable objects, [String separator = ""]) {}
@@ -193,10 +206,14 @@ class HttpResponseMock implements HttpResponse {
 
 class HttpRequestMock implements HttpRequest {
   final String _method;
+  final Uri _uri;
+
   final _response = HttpResponseMock();
   final _headers = HttpHeadersMock();
 
-  HttpRequestMock({required String method}) : _method = method;
+  HttpRequestMock({required String method, required Uri uri})
+      : _method = method,
+        _uri = uri;
 
   @override
   Future<bool> any(bool Function(Uint8List element) test) {
@@ -411,7 +428,7 @@ class HttpRequestMock implements HttpRequest {
   }
 
   @override
-  Uri get uri => throw UnimplementedError();
+  Uri get uri => _uri;
 
   @override
   Stream<Uint8List> where(bool Function(Uint8List event) test) {
