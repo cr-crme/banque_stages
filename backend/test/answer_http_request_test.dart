@@ -1,13 +1,18 @@
+import 'package:backend/connexions.dart';
+import 'package:backend/database_manager.dart';
+import 'package:backend/database_teachers.dart';
 import 'package:backend/http_request_handler.dart';
 import 'package:test/test.dart';
 
 import 'http_request_mock.dart';
 
+Connexions get _mockedConnexions => Connexions(
+    database: DatabaseManager(teacherDatabase: DatabaseTeachersMock()));
+
 void main() {
   test('Send an a preflight request', () async {
     final request = HttpRequestMock(method: 'OPTIONS', uri: Uri.parse('/'));
-    final requestHandler =
-        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
@@ -22,8 +27,7 @@ void main() {
 
   test('Send a POST request', () async {
     final request = HttpRequestMock(method: 'POST', uri: Uri.parse('/'));
-    final requestHandler =
-        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
@@ -32,8 +36,7 @@ void main() {
 
   test('Send a GET resquest to an invalid endpoit', () async {
     final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/'));
-    final requestHandler =
-        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
@@ -45,8 +48,7 @@ void main() {
         method: 'GET',
         uri: Uri.parse('/connect'),
         forceFailToUpgradeToWebSocket: true);
-    final requestHandler =
-        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
@@ -55,8 +57,7 @@ void main() {
 
   test('Send a GET request to the /connect endpoint', () async {
     final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/connect'));
-    final requestHandler =
-        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     // This test creates a true WebSocket connection (as opposed to a mock)
@@ -70,8 +71,7 @@ void main() {
       'Send a GET request to the /admin endpoint (refused as not implemented yet)',
       () async {
     final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/admin'));
-    final requestHandler =
-        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;

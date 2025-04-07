@@ -2,6 +2,7 @@ import 'package:backend/database_interface_abstract.dart';
 import 'package:backend/exceptions.dart';
 import 'package:common/teacher.dart';
 import 'package:mutex/mutex.dart';
+import 'package:mysql1/mysql1.dart';
 
 abstract class DatabaseTeachers implements DatabaseInterfaceAbstract {
   @override
@@ -10,6 +11,9 @@ abstract class DatabaseTeachers implements DatabaseInterfaceAbstract {
 }
 
 class MySqlDatabaseTeacher extends DatabaseTeachers {
+  final ConnectionSettings connexion;
+  MySqlDatabaseTeacher({required this.connexion});
+
   // coverage:ignore-start
   @override
   Future<Map<String, dynamic>> getAll() async => throw UnimplementedError(

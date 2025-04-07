@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:backend/connexions.dart';
-import 'package:backend/database_manager.dart';
-import 'package:backend/database_teachers.dart';
 import 'package:backend/exceptions.dart';
 import 'package:logging/logging.dart';
 
@@ -10,19 +8,11 @@ final _logger = Logger('AnswerHttpRequest');
 
 // TODO: What happens if two persons modify the same data at the same time?
 
-enum DatabaseBackend { mysql, mock }
-
 class HttpRequestHandler {
-  final DatabaseBackend databaseBackend;
-  late final _connexions = Connexions(
-      database: DatabaseManager(
-    teacherDatabase: switch (databaseBackend) {
-      DatabaseBackend.mysql => MySqlDatabaseTeacher(),
-      DatabaseBackend.mock => DatabaseTeachersMock()
-    },
-  ));
+  final Connexions _connexions;
 
-  HttpRequestHandler({this.databaseBackend = DatabaseBackend.mysql});
+  HttpRequestHandler({required Connexions connexions})
+      : _connexions = connexions;
 
   Future<void> answer(HttpRequest request) async {
     try {

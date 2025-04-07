@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:backend/database_manager.dart';
-import 'package:backend/database_teachers.dart';
 import 'package:backend/exceptions.dart';
 import 'package:backend/utils.dart';
 import 'package:common/communication_protocol.dart';
@@ -20,10 +19,9 @@ class Connexions {
   // coverage:ignore-start
   Connexions({
     Duration timeout = const Duration(seconds: 5),
-    DatabaseManager? database,
+    required DatabaseManager database,
   })  : _timeout = timeout,
-        _database = database ??
-            DatabaseManager(teacherDatabase: MySqlDatabaseTeacher());
+        _database = database;
   // coverage:ignore-end
 
   Future<bool> add(WebSocket client) async {
