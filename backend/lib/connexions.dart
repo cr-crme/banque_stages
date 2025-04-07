@@ -28,11 +28,14 @@ class Connexions {
           onError: (error) =>
               _onConnexionClosed(client, message: 'Connexion error $error'));
 
-      DateTime start = DateTime.now();
+      final startTime = DateTime.now();
       while (!_clients[client]!['is_verified']) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        if (DateTime.now().isAfter(start.add(_timeout))) {
-          throw HandshakeException('Handshake timeout');
+        await Future.delayed(Duration(milliseconds: 100));
+
+        // If client disconnected before the handshake was completed
+        if (!_clients.containsKey(client)) return false;
+        if (startTime.add(_timeout).isBefore(DateTime.now())) {
+          throw ConnexionRefusedException('Handshake timeout');
         }
       }
     } catch (e) {
@@ -42,7 +45,8 @@ class Connexions {
 
     // Send the handshake to the client
     _send(client,
-        message: CommunicationProtocol(requestType: RequestType.handshake));
+        message: CommunicationProtocol(
+            requestType: RequestType.handshake, response: Response.success));
     return true;
   }
 
@@ -51,6 +55,12 @@ class Connexions {
     try {
       final map = jsonDecode(message);
       final protocol = CommunicationProtocol.deserialize(map);
+
+      // Prevent unauthorized access to the database
+      if (!(_clients[client]?['is_verified'] ?? false) &&
+          protocol.requestType != RequestType.handshake) {
+        throw ConnexionRefusedException('Client not verified');
+      }
 
       switch (protocol.requestType) {
         case RequestType.handshake:
@@ -96,8 +106,12 @@ class Connexions {
           throw InvalidRequestTypeException(
               'Invalid request type: ${protocol.requestType}');
       }
-    } on HandshakeException catch (e) {
-      await _refuseConnexion(client, e.toString());
+    } on ConnexionRefusedException catch (e) {
+      await _send(client,
+          message: CommunicationProtocol(
+              requestType: RequestType.response,
+              data: {'error': e.toString()},
+              response: Response.failure));
     } on DatabaseException catch (e) {
       await _send(client,
           message: CommunicationProtocol(
@@ -132,14 +146,16 @@ class Connexions {
   Future<void> _handleHandshake(WebSocket client,
       {required CommunicationProtocol protocol}) async {
     if (protocol.data == null) {
-      throw HandshakeException('Data is required to validate the handshake');
+      throw ConnexionRefusedException(
+          'Data is required to validate the handshake');
     }
     if (protocol.data!['token'] == null) {
-      throw HandshakeException('Token is required to validate the handshake');
+      throw ConnexionRefusedException(
+          'Token is required to validate the handshake');
     }
     final token = protocol.data!['token'];
     if (!isJwtValid(token)) {
-      throw HandshakeException('Invalid token');
+      throw ConnexionRefusedException('Invalid token');
     }
     _clients[client]!['is_verified'] = true;
   }

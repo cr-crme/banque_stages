@@ -18,7 +18,9 @@ void main() {
   test('Set all teachers to DatabaseTeachers', () async {
     expect(
       () async => await putTeachers(data: {'1': 'John Doe'}),
-      throwsA(isA<InvalidRequestException>()),
+      throwsA(predicate((e) =>
+          e is InvalidRequestException &&
+          e.toString() == 'Teachers must be created individually')),
     );
   });
 
@@ -32,7 +34,8 @@ void main() {
   test('Get teacher from DatabaseTeachers with invalid id', () async {
     expect(
       () async => await getTeacher(id: '2'),
-      throwsA(isA<MissingDataException>()),
+      throwsA(predicate((e) =>
+          e is MissingDataException && e.toString() == 'Teacher not found')),
     );
   });
 

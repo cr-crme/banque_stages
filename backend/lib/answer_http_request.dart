@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:backend/connexions.dart';
 import 'package:backend/exceptions.dart';
-import 'package:backend/utils.dart';
 import 'package:logging/logging.dart';
 
 final _logger = Logger('HttpResponse');
@@ -13,21 +12,29 @@ final _connexions = Connexions();
 Future<void> answerHttpRequest(HttpRequest request) async {
   try {
     if (request.method == 'OPTIONS') {
-      await _answerOptionsRequest(request);
-      return;
+      return await _answerOptionsRequest(request);
     } else if (request.method == 'GET') {
-      await _answerGetRequest(request);
-      return;
+      return await _answerGetRequest(request);
     } else {
       // Handle other HTTP methods
-      await _sendConnexionRefused(request);
-      return;
+      return await _sendConnexionRefused(request);
     }
+  } on ConnexionRefusedException catch (e) {
+    _logger.severe('Connexion refused: $e');
+    request.response.statusCode = HttpStatus.unauthorized;
+    request.response.write('Unauthorized: ${e.message}');
+    await request.response.close();
   } catch (e) {
+    // This is a catch-all for any exceptions so the server doesn't crash on an
+    // unhandled/unexpected exception. This should never actually happens
+
+    // Remove from test coverage (the next four lines)
+    // coverage:ignore-start
     _logger.severe('Error processing request: $e');
     request.response.statusCode = HttpStatus.internalServerError;
     request.response.write('Internal Server Error');
     await request.response.close();
+    // coverage:ignore-end
   }
 }
 
@@ -45,34 +52,17 @@ Future<void> _answerOptionsRequest(HttpRequest request) async {
 Future<void> _answerGetRequest(HttpRequest request) async {
   if (request.uri.path == '/connect') {
     _logger.info('Received a connection request');
-    _connexions.add(await WebSocketTransformer.upgrade(request));
-    return;
+    try {
+      _connexions.add(await WebSocketTransformer.upgrade(request));
+      return;
+    } catch (e) {
+      _logger.severe('Error during WebSocket upgrade: $e');
+      throw ConnexionRefusedException('WebSocket upgrade failed');
+    }
   } else if (request.uri.path == '/admin') {
-    final token = await _getOauthToken(request);
-    if (token == null) return;
-    // TODO: Check the token if user is admin, otherwise refuse the connexion
-    await _sendConnexionRefused(request);
-    return;
+    throw ConnexionRefusedException('Invalid endpoint');
   } else {
-    await _sendConnexionRefused(request);
-    return;
-  }
-}
-
-Future<String?> _getOauthToken(HttpRequest request) async {
-  final bearer = request.headers['Authorization']?.first;
-  if (bearer == null || !bearer.startsWith('Bearer ')) {
-    await _sendConnexionRefused(request);
-    return null;
-  }
-
-  try {
-    final token = bearer.substring(7);
-    if (!isJwtValid(token)) throw InvalidTokenException('Invalid token');
-    return token;
-  } catch (e) {
-    await _sendConnexionRefused(request);
-    return null;
+    throw ConnexionRefusedException('Invalid endpoint');
   }
 }
 

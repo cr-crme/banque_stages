@@ -9,12 +9,19 @@ class HttpHeadersMock implements HttpHeaders {
   bool isConnected = false;
   final Map<String, String> current = {};
 
-  final Map<String, List<String>> _headers = {
-    'connection': ['Upgrade'],
-    'upgrade': ['websocket'],
-    'sec-websocket-version': ['13'],
-    'sec-websocket-key': ['dGhlIHNhbXBsZSBub25jZQ=='], // just a base64 string
-  };
+  HttpHeadersMock({required this.forceFailToUpgradeToWebSocket});
+
+  bool forceFailToUpgradeToWebSocket;
+  late final Map<String, List<String>> _headers = forceFailToUpgradeToWebSocket
+      ? {}
+      : {
+          'connection': ['Upgrade'],
+          'upgrade': ['websocket'],
+          'sec-websocket-version': ['13'],
+          'sec-websocket-key': [
+            'dGhlIHNhbXBsZSBub25jZQ=='
+          ], // just a base64 string
+        };
 
   @override
   bool get chunkedTransferEncoding => throw UnimplementedError();
@@ -98,7 +105,11 @@ class HttpHeadersMock implements HttpHeaders {
 class HttpResponseMock implements HttpResponse {
   bool isClosed = false;
   Object? response;
-  final _headers = HttpHeadersMock();
+  bool forceFailToUpgradeToWebSocket = false;
+
+  HttpResponseMock({this.forceFailToUpgradeToWebSocket = false});
+  late final _headers = HttpHeadersMock(
+      forceFailToUpgradeToWebSocket: forceFailToUpgradeToWebSocket);
 
   @override
   bool get bufferOutput => throw UnimplementedError();
@@ -208,10 +219,16 @@ class HttpRequestMock implements HttpRequest {
   final String _method;
   final Uri _uri;
 
-  final _response = HttpResponseMock();
-  final _headers = HttpHeadersMock();
+  final bool forceFailToUpgradeToWebSocket;
+  late final _response = HttpResponseMock(
+      forceFailToUpgradeToWebSocket: forceFailToUpgradeToWebSocket);
+  late final _headers = HttpHeadersMock(
+      forceFailToUpgradeToWebSocket: forceFailToUpgradeToWebSocket);
 
-  HttpRequestMock({required String method, required Uri uri})
+  HttpRequestMock(
+      {required String method,
+      required Uri uri,
+      this.forceFailToUpgradeToWebSocket = false})
       : _method = method,
         _uri = uri;
 

@@ -31,7 +31,18 @@ void main() {
     await answerHttpRequest(request);
 
     final response = request.response as HttpResponseMock;
-    expect(response.response, 'Unauthorized');
+    expect(response.response, 'Unauthorized: Invalid endpoint');
+  });
+
+  test('Simulate internal error while connecting', () async {
+    final request = HttpRequestMock(
+        method: 'GET',
+        uri: Uri.parse('/connect'),
+        forceFailToUpgradeToWebSocket: true);
+    await answerHttpRequest(request);
+
+    final response = request.response as HttpResponseMock;
+    expect(response.response, 'Unauthorized: WebSocket upgrade failed');
   });
 
   test('Send a GET request to the /connect endpoint', () async {
@@ -45,11 +56,13 @@ void main() {
     expect(response.response, null);
   });
 
-  test('Send a GET request to the /admin endpoint', () async {
+  test(
+      'Send a GET request to the /admin endpoint (refused as not implemented yet)',
+      () async {
     final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/admin'));
     await answerHttpRequest(request);
 
     final response = request.response as HttpResponseMock;
-    expect(response.response, 'Unauthorized');
+    expect(response.response, 'Unauthorized: Invalid endpoint');
   });
 }

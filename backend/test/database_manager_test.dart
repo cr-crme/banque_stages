@@ -30,7 +30,8 @@ void main() {
     final database = DatabaseManager();
     expect(
       () async => await database.get(RequestFields.teacher, data: {'id': '2'}),
-      throwsA(isA<MissingDataException>()),
+      throwsA(predicate((e) =>
+          e is MissingDataException && e.toString() == 'Teacher not found')),
     );
   });
 
@@ -38,7 +39,19 @@ void main() {
     final database = DatabaseManager();
     expect(
       () async => await database.get(RequestFields.teacher, data: null),
-      throwsA(isA<MissingFieldException>()),
+      throwsA(predicate((e) =>
+          e is MissingFieldException &&
+          e.toString() == 'An "id" is required to get a teacher')),
+    );
+  });
+
+  test('Put without data in DatabaseManagers', () async {
+    final database = DatabaseManager();
+    expect(
+      () async => await database.put(RequestFields.teachers, data: null),
+      throwsA(predicate((e) =>
+          e is MissingDataException &&
+          e.toString() == 'Data is required to put something')),
     );
   });
 
@@ -47,7 +60,9 @@ void main() {
     expect(
       () async =>
           await database.put(RequestFields.teachers, data: {'0': 'John Doe'}),
-      throwsA(isA<InvalidRequestException>()),
+      throwsA(predicate((e) =>
+          e is InvalidRequestException &&
+          e.toString() == 'Teachers must be created individually')),
     );
   });
 
@@ -80,7 +95,9 @@ void main() {
         'name': 'John Smith',
         'age': 45,
       }),
-      throwsA(isA<MissingFieldException>()),
+      throwsA(predicate((e) =>
+          e is MissingFieldException &&
+          e.toString() == 'An "id" is required to put a teacher')),
     );
   });
 }

@@ -1,23 +1,5 @@
 abstract class DatabaseException implements Exception {}
 
-class InvalidTokenException implements DatabaseException {
-  final String message;
-
-  InvalidTokenException(this.message);
-
-  @override
-  String toString() => message;
-}
-
-class HandshakeException implements DatabaseException {
-  final String message;
-
-  HandshakeException(this.message);
-
-  @override
-  String toString() => message;
-}
-
 class ConnexionRefusedException implements DatabaseException {
   final String message;
 
