@@ -29,8 +29,8 @@ class Connexions {
       _clients[client] = {'is_verified': false};
 
       client.listen((message) => _incommingMessage(client, message: message),
-          onDone: () =>
-              _onConnexionClosed(client, message: 'Client disconnected'),
+          onDone: () => _onConnexionClosed(client,
+              message: 'Client ${client.hashCode} disconnected'),
           onError: (error) =>
               _onConnexionClosed(client, message: 'Connexion error $error'));
 
@@ -65,7 +65,8 @@ class Connexions {
       // Prevent unauthorized access to the database
       if (!(_clients[client]?['is_verified'] ?? false) &&
           protocol.requestType != RequestType.handshake) {
-        throw ConnexionRefusedException('Client not verified');
+        throw ConnexionRefusedException(
+            'Client ${client.hashCode} not verified');
       }
 
       switch (protocol.requestType) {
@@ -77,6 +78,8 @@ class Connexions {
           if (protocol.field == null) {
             throw MissingFieldException('Field is required to get data');
           }
+          _logger.info(
+              'Getting data from field: ${protocol.field} for client ${client.hashCode}');
           await _send(client,
               message: CommunicationProtocol(
                   requestType: RequestType.response,
@@ -91,6 +94,8 @@ class Connexions {
             throw MissingFieldException(
                 'Field is required to put or delete data');
           }
+          _logger.info(
+              'Putting data to field: ${protocol.field} for client ${client.hashCode}');
           await _database.put(protocol.field!, data: protocol.data);
           await _send(client,
               message: CommunicationProtocol(
@@ -109,22 +114,28 @@ class Connexions {
         case RequestType.delete:
         case RequestType.response:
         case RequestType.update:
+          _logger.info(
+              'Invalid request type: ${protocol.requestType} for client ${client.hashCode}');
           throw InvalidRequestTypeException(
               'Invalid request type: ${protocol.requestType}');
       }
     } on ConnexionRefusedException catch (e) {
+      _logger.severe('Connexion refused for client ${client.hashCode}');
       await _send(client,
           message: CommunicationProtocol(
               requestType: RequestType.response,
               data: {'error': e.toString()},
               response: Response.failure));
     } on IntershipBankException catch (e) {
+      _logger
+          .severe('Error processing request: $e for client ${client.hashCode}');
       await _send(client,
           message: CommunicationProtocol(
               requestType: RequestType.response,
               data: {'error': e.toString()},
               response: Response.failure));
     } catch (e) {
+      _logger.severe('Unrecognized error: $e for client ${client.hashCode}');
       await _send(client,
           message: CommunicationProtocol(
               requestType: RequestType.response,

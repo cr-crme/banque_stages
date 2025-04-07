@@ -11,18 +11,26 @@ abstract class DatabaseTeachers implements DatabaseInterfaceAbstract {
 }
 
 class MySqlDatabaseTeacher extends DatabaseTeachers {
-  final ConnectionSettings connexion;
-  MySqlDatabaseTeacher({required this.connexion});
-
   // coverage:ignore-start
+  final MySqlConnection connection;
+  MySqlDatabaseTeacher({required this.connection});
+
   @override
   Future<Map<String, dynamic>> getAll() async => throw UnimplementedError(
       'getAll() is not implemented in MySqlDatabaseTeacher');
 
   @override
-  Future<Map<String, dynamic>> getById({required String id}) async =>
-      throw UnimplementedError(
-          'getById() is not implemented in MySqlDatabaseTeacher');
+  Future<Map<String, dynamic>> getById({required String id}) async {
+    final results =
+        await connection.query('SELECT * FROM teachers WHERE id = ?', [id]);
+
+    if (results.isEmpty) throw MissingDataException('Teacher not found');
+
+    final row = results.first;
+    return Teacher(
+            id: row[0] as String, name: row[1] as String, age: row[2] as int)
+        .serialize();
+  }
 
   @override
   Future<void> putById(

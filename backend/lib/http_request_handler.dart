@@ -27,7 +27,7 @@ class HttpRequestHandler {
     } on ConnexionRefusedException catch (e) {
       _logger.severe('Connexion refused: $e');
       request.response.statusCode = HttpStatus.unauthorized;
-      request.response.write('Unauthorized: ${e.message}');
+      request.response.write('Unauthorized: $e');
       await request.response.close();
     } catch (e) {
       // This is a catch-all for any exceptions so the server doesn't crash on an
@@ -35,7 +35,7 @@ class HttpRequestHandler {
 
       // Remove from test coverage (the next four lines)
       // coverage:ignore-start
-      _logger.severe('Error processing request: $e');
+      _logger.severe('Internal error: $e');
       request.response.statusCode = HttpStatus.internalServerError;
       request.response.write('Internal Server Error');
       await request.response.close();

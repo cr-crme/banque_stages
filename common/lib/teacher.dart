@@ -40,7 +40,7 @@ class Teacher {
     }
 
     return Teacher(
-      id: data['id'] ?? id,
+      id: data['id']?.toString() ?? id,
       name: data['name'] ?? name,
       age: data['age'] ?? age,
     );

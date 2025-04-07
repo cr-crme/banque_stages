@@ -109,7 +109,11 @@ void main() {
     expect(protocolNotVerified.field, isNull);
     expect(protocolNotVerified.data, isA<Map<String, dynamic>>());
     expect(protocolNotVerified.data!['error'], isA<String>());
-    expect(protocolNotVerified.data!['error'], 'Client not verified');
+    expect((protocolNotVerified.data!['error'] as String).startsWith('Client'),
+        true);
+    expect(
+        (protocolNotVerified.data!['error'] as String).endsWith('not verified'),
+        true);
     expect(protocolNotVerified.response, Response.failure);
 
     expect(await isConnectedFuture, false);

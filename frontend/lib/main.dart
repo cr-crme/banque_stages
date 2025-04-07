@@ -9,12 +9,22 @@ import 'package:web_socket_client/web_socket_client.dart';
 
 final Map<String, Teacher> _dummyTeachers = {};
 Future<void> _updateTeachers(Map<String, dynamic> data) async {
-  for (final entry in data.entries) {
-    final id = entry.key;
-    final teacherData = entry.value;
+  if (data.containsKey("id")) {
+    // Update a single teacher
+    final id = data["id"];
+    final teacherData = data;
     _dummyTeachers[id] = _dummyTeachers.containsKey(id)
         ? _dummyTeachers[id]!.copyWithData(teacherData)
         : Teacher.deserialize(teacherData);
+  } else {
+    // Update all teachers
+    for (final entry in data.entries) {
+      final id = entry.key;
+      final teacherData = entry.value;
+      _dummyTeachers[id] = _dummyTeachers.containsKey(id)
+          ? _dummyTeachers[id]!.copyWithData(teacherData)
+          : Teacher.deserialize(teacherData);
+    }
   }
 }
 

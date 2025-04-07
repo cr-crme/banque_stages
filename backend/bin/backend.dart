@@ -21,7 +21,7 @@ void main() async {
   // Create an HTTP server listening on localhost:3456
   var server = await HttpServer.bind(InternetAddress.loopbackIPv4, 3456);
   _logger.info('Server running on http://localhost:3456');
-  final databaseBackend = DatabaseBackend.mysql;
+  final databaseBackend = DatabaseBackend.mock;
 
   _logger.info('Using database backend: ${databaseBackend.name}');
   final requestHandler = HttpRequestHandler(
@@ -29,13 +29,13 @@ void main() async {
           database: DatabaseManager(
     teacherDatabase: switch (databaseBackend) {
       DatabaseBackend.mysql => MySqlDatabaseTeacher(
-            connexion: ConnectionSettings(
+            connection: await MySqlConnection.connect(ConnectionSettings(
           host: 'localhost',
           port: 3306,
           user: 'user_to_be_defined',
           password: 'password_to_be_defined',
           db: 'database_to_be_defined',
-        )),
+        ))),
       DatabaseBackend.mock => DatabaseTeachersMock()
     },
   )));
