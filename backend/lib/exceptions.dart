@@ -1,6 +1,6 @@
-abstract class DatabaseException implements Exception {}
+import 'package:common/exceptions.dart';
 
-class ConnexionRefusedException implements DatabaseException {
+class ConnexionRefusedException implements IntershipBankException {
   final String message;
 
   ConnexionRefusedException(this.message);
@@ -9,7 +9,7 @@ class ConnexionRefusedException implements DatabaseException {
   String toString() => message;
 }
 
-class InvalidRequestTypeException implements DatabaseException {
+class InvalidRequestTypeException implements IntershipBankException {
   final String message;
 
   InvalidRequestTypeException(this.message);
@@ -18,7 +18,7 @@ class InvalidRequestTypeException implements DatabaseException {
   String toString() => message;
 }
 
-class MissingFieldException implements DatabaseException {
+class MissingFieldException implements IntershipBankException {
   final String message;
 
   MissingFieldException(this.message);
@@ -27,7 +27,7 @@ class MissingFieldException implements DatabaseException {
   String toString() => message;
 }
 
-class MissingDataException implements DatabaseException {
+class MissingDataException implements IntershipBankException {
   final String message;
 
   MissingDataException(this.message);
@@ -36,7 +36,7 @@ class MissingDataException implements DatabaseException {
   String toString() => message;
 }
 
-class InvalidRequestException implements DatabaseException {
+class InvalidRequestException implements IntershipBankException {
   final String message;
 
   InvalidRequestException(this.message);

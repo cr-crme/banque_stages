@@ -9,23 +9,25 @@ String _getId(Map<String, dynamic>? data, {required String messageOnNull}) {
 }
 
 class DatabaseManager {
-  DatabaseManager() {
+  DatabaseManager({required this.teacherDatabase}) {
     // TODO: Initialize the database connexion here
   }
+
+  final DatabaseTeachers teacherDatabase;
 
   Future<Map<String, dynamic>> get(RequestFields field,
       {required Map<String, dynamic>? data}) async {
     switch (field) {
       case RequestFields.teachers:
-        return await getTeachers();
+        return await teacherDatabase.getAll();
       case RequestFields.teacher:
-        return await getTeacher(
+        return await teacherDatabase.getById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to get a teacher'));
     }
   }
 
-  Future<Map<String, dynamic>?> put(RequestFields field,
+  Future<void> put(RequestFields field,
       {required Map<String, dynamic>? data}) async {
     if (data == null) {
       throw MissingDataException('Data is required to put something');
@@ -33,9 +35,9 @@ class DatabaseManager {
 
     switch (field) {
       case RequestFields.teachers:
-        return await putTeachers(data: data);
+        return await teacherDatabase.putAll(data: data);
       case RequestFields.teacher:
-        return await putTeacher(
+        return await teacherDatabase.putById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to put a teacher'),
             data: data);

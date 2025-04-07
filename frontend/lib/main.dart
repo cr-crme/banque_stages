@@ -8,6 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 final Map<String, Teacher> _dummyTeachers = {};
+Future<void> _updateTeachers(Map<String, dynamic> data) async {
+  for (final entry in data.entries) {
+    final id = entry.key;
+    final teacherData = entry.value;
+    _dummyTeachers[id] = _dummyTeachers.containsKey(id)
+        ? _dummyTeachers[id]!.copyWithData(teacherData)
+        : Teacher.deserialize(teacherData);
+  }
+}
 
 void main() {
   runApp(const MyApp());
@@ -168,30 +177,11 @@ class _LoginScreenState extends State<LoginScreen> {
             }
             switch (protocol.field) {
               case RequestFields.teachers:
-                {
-                  _dummyTeachers.clear();
-                  if (protocol.data == null) {
-                    throw Exception('No data received');
-                  }
-                  for (var entry in protocol.data!.entries) {
-                    _dummyTeachers[entry.key] =
-                        Teacher.deserialize(entry.value);
-                  }
-                  setState(() {});
-                  break;
-                }
               case RequestFields.teacher:
-                {
-                  if (protocol.data == null) {
-                    throw Exception('No data received');
-                  }
-
-                  final id = protocol.data!['id']?.toString();
-                  if (id == null) throw Exception('No id received');
-                  _dummyTeachers[id]!.mergeDeserialized(protocol.data!);
-                  setState(() {});
-                  break;
-                }
+                if (protocol.data == null) throw Exception('No data received');
+                _updateTeachers(protocol.data!);
+                setState(() {});
+                break;
               case null:
                 throw Exception('Unsupported request field: ${protocol.field}');
             }
@@ -200,10 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
         case RequestType.get:
         case RequestType.post:
         case RequestType.delete:
-          {
-            throw Exception(
-                'Unsupported request type: ${protocol.requestType}');
-          }
+          throw Exception('Unsupported request type: ${protocol.requestType}');
       }
     } catch (e) {
       debugPrint('Error: $e');

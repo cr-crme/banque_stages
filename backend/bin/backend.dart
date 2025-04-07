@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:backend/answer_http_request.dart';
+import 'package:backend/http_request_handler.dart';
 import 'package:logging/logging.dart';
 
 final _logger = Logger('BackendServer');
@@ -16,7 +16,10 @@ void main() async {
   var server = await HttpServer.bind(InternetAddress.loopbackIPv4, 3456);
   _logger.info('Server running on http://localhost:3456');
 
+  final requestHandler =
+      HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+  _logger.info('Waiting for requests...');
   await for (HttpRequest request in server) {
-    answerHttpRequest(request);
+    requestHandler.answer(request);
   }
 }

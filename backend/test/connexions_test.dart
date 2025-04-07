@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:backend/connexions.dart';
+import 'package:backend/database_manager.dart';
+import 'package:backend/database_teachers.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:test/test.dart';
@@ -16,8 +18,11 @@ String _prepareHandshake() {
   }).serialize());
 }
 
+DatabaseManager get _mockedDatabase =>
+    DatabaseManager(teacherDatabase: DatabaseTeachersMock());
+
 Future<CommunicationProtocol> _sendAndReceive({required String toSend}) async {
-  final connexions = Connexions();
+  final connexions = Connexions(database: _mockedDatabase);
   final client = WebSocketMock();
   connexions.add(client);
   client.streamController.add(_prepareHandshake());
@@ -40,7 +45,8 @@ Future<CommunicationProtocol> _sendAndReceive({required String toSend}) async {
 
 void main() {
   test('Add new client with handshake timeout', () async {
-    final connexions = Connexions(timeout: Duration(milliseconds: 200));
+    final connexions = Connexions(
+        timeout: Duration(milliseconds: 200), database: _mockedDatabase);
     final client = WebSocketMock();
     final isConnectedFuture = connexions.add(client);
 
@@ -68,7 +74,8 @@ void main() {
   });
 
   test('Request something without sending handshake', () async {
-    final connexions = Connexions(timeout: Duration(milliseconds: 200));
+    final connexions = Connexions(
+        timeout: Duration(milliseconds: 200), database: _mockedDatabase);
     final client = WebSocketMock();
     final isConnectedFuture = connexions.add(client);
 
@@ -121,7 +128,8 @@ void main() {
   });
 
   test('Add new client with missing handshake data request', () async {
-    final connexions = Connexions(timeout: Duration(milliseconds: 200));
+    final connexions = Connexions(
+        timeout: Duration(milliseconds: 200), database: _mockedDatabase);
     final client = WebSocketMock();
     final isConnectedFuture = connexions.add(client);
 
@@ -175,7 +183,8 @@ void main() {
   });
 
   test('Add new client with missing token', () async {
-    final connexions = Connexions(timeout: Duration(milliseconds: 200));
+    final connexions = Connexions(
+        timeout: Duration(milliseconds: 200), database: _mockedDatabase);
     final client = WebSocketMock();
     final isConnectedFuture = connexions.add(client);
 
@@ -230,7 +239,8 @@ void main() {
   });
 
   test('Add new client with invalid token', () async {
-    final connexions = Connexions(timeout: Duration(milliseconds: 200));
+    final connexions = Connexions(
+        timeout: Duration(milliseconds: 200), database: _mockedDatabase);
     final client = WebSocketMock();
     final isConnectedFuture = connexions.add(client);
 
@@ -285,7 +295,7 @@ void main() {
   });
 
   test('Add a new client to Connexions and disconnect', () async {
-    final connexions = Connexions();
+    final connexions = Connexions(database: _mockedDatabase);
     final client = WebSocketMock();
 
     // Listen to incoming messages from connexions
@@ -319,7 +329,7 @@ void main() {
   });
 
   test('Add a new client to Connexions and experience error', () async {
-    final connexions = Connexions();
+    final connexions = Connexions(database: _mockedDatabase);
     final client = WebSocketMock();
     connexions.add(client);
 
@@ -334,7 +344,7 @@ void main() {
   });
 
   test('New client disconnect during handshake', () async {
-    final connexions = Connexions();
+    final connexions = Connexions(database: _mockedDatabase);
     final client = WebSocketMock();
     connexions.add(client);
 
@@ -397,7 +407,7 @@ void main() {
   });
 
   test('Send a POST teacher request and receive the update', () async {
-    final connexions = Connexions();
+    final connexions = Connexions(database: _mockedDatabase);
     final client1 = WebSocketMock();
     connexions.add(client1);
     client1.streamController.add(_prepareHandshake());
@@ -491,7 +501,7 @@ void main() {
     expect(protocol.response, Response.failure);
   });
   test('Send invalid UPDATE request', () async {
-    final connexions = Connexions();
+    final connexions = Connexions(database: _mockedDatabase);
     final client = WebSocketMock();
     connexions.add(client);
     client.streamController.add(_prepareHandshake());
@@ -522,7 +532,7 @@ void main() {
   });
 
   test('Send a message to a disconnected client', () async {
-    final connexions = Connexions();
+    final connexions = Connexions(database: _mockedDatabase);
     final client = WebSocketMock();
     connexions.add(client);
     client.streamController.add(_prepareHandshake());

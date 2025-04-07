@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:backend/database_manager.dart';
+import 'package:backend/database_teachers.dart';
 import 'package:backend/exceptions.dart';
 import 'package:backend/utils.dart';
 import 'package:common/communication_protocol.dart';
+import 'package:common/exceptions.dart';
 import 'package:logging/logging.dart';
 
 final _logger = Logger('Connexions');
@@ -12,11 +14,17 @@ final _logger = Logger('Connexions');
 class Connexions {
   final Map<WebSocket, dynamic> _clients = {};
   int get clientCount => _clients.length;
-  final DatabaseManager _database = DatabaseManager();
+  final DatabaseManager _database;
   final Duration _timeout;
 
-  Connexions({Duration timeout = const Duration(seconds: 5)})
-      : _timeout = timeout;
+  // coverage:ignore-start
+  Connexions({
+    Duration timeout = const Duration(seconds: 5),
+    DatabaseManager? database,
+  })  : _timeout = timeout,
+        _database = database ??
+            DatabaseManager(teacherDatabase: MySqlDatabaseTeacher());
+  // coverage:ignore-end
 
   Future<bool> add(WebSocket client) async {
     try {
@@ -85,13 +93,13 @@ class Connexions {
             throw MissingFieldException(
                 'Field is required to put or delete data');
           }
+          await _database.put(protocol.field!, data: protocol.data);
           await _send(client,
               message: CommunicationProtocol(
                   requestType: RequestType.response,
                   field: protocol.field,
-                  data:
-                      await _database.put(protocol.field!, data: protocol.data),
                   response: Response.success));
+
           // Notify all clients that the data has been updated
           await _sendAll(CommunicationProtocol(
             requestType: RequestType.update,
@@ -112,7 +120,7 @@ class Connexions {
               requestType: RequestType.response,
               data: {'error': e.toString()},
               response: Response.failure));
-    } on DatabaseException catch (e) {
+    } on IntershipBankException catch (e) {
       await _send(client,
           message: CommunicationProtocol(
               requestType: RequestType.response,

@@ -1,14 +1,25 @@
-class Teacher {
-  String name;
-  int age;
+import 'package:common/exceptions.dart';
+import 'package:uuid/uuid.dart';
 
-  Teacher({required this.name, required this.age});
+String get _id => Uuid().v1().toString();
+
+class Teacher {
+  final String id;
+  final String name;
+  final int age;
+
+  Teacher({String? id, required this.name, required this.age}) : id = id ?? _id;
+  Teacher.zero()
+      : id = _id,
+        name = '',
+        age = 0;
 
   Teacher copyWith({
     String? name,
     int? age,
   }) {
     return Teacher(
+      id: id,
       name: name ?? this.name,
       age: age ?? this.age,
     );
@@ -16,26 +27,27 @@ class Teacher {
 
   Map<String, dynamic> serialize() {
     return {
+      'id': id,
       'name': name,
       'age': age,
     };
   }
 
-  void mergeDeserialized(Map<String, dynamic> data) {
-    if (data['name'] != null) {
-      name = data['name'];
+  Teacher copyWithData(Map<String, dynamic> data) {
+    // Make sure data does not contain unrecognized fields
+    if (data.keys.any((key) => !['id', 'name', 'age'].contains(key))) {
+      throw InvalidFieldException('Invalid field data detected');
     }
-    if (data['age'] != null) {
-      age = data['age'];
-    }
-  }
 
-  static Teacher deserialize(Map<String, dynamic> data) {
     return Teacher(
-      name: data['name'] ?? '',
-      age: data['age'] ?? 0,
+      id: data['id'] ?? id,
+      name: data['name'] ?? name,
+      age: data['age'] ?? age,
     );
   }
+
+  static Teacher deserialize(Map<String, dynamic> data) =>
+      Teacher.zero().copyWithData(data);
 
   @override
   String toString() {

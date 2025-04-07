@@ -1,4 +1,4 @@
-import 'package:backend/answer_http_request.dart';
+import 'package:backend/http_request_handler.dart';
 import 'package:test/test.dart';
 
 import 'http_request_mock.dart';
@@ -6,7 +6,9 @@ import 'http_request_mock.dart';
 void main() {
   test('Send an a preflight request', () async {
     final request = HttpRequestMock(method: 'OPTIONS', uri: Uri.parse('/'));
-    await answerHttpRequest(request);
+    final requestHandler =
+        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
     final responseHeaders = response.headers as HttpHeadersMock;
@@ -20,7 +22,9 @@ void main() {
 
   test('Send a POST request', () async {
     final request = HttpRequestMock(method: 'POST', uri: Uri.parse('/'));
-    await answerHttpRequest(request);
+    final requestHandler =
+        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
     expect(response.response, 'Unauthorized');
@@ -28,7 +32,9 @@ void main() {
 
   test('Send a GET resquest to an invalid endpoit', () async {
     final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/'));
-    await answerHttpRequest(request);
+    final requestHandler =
+        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
     expect(response.response, 'Unauthorized: Invalid endpoint');
@@ -39,7 +45,9 @@ void main() {
         method: 'GET',
         uri: Uri.parse('/connect'),
         forceFailToUpgradeToWebSocket: true);
-    await answerHttpRequest(request);
+    final requestHandler =
+        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
     expect(response.response, 'Unauthorized: WebSocket upgrade failed');
@@ -47,7 +55,9 @@ void main() {
 
   test('Send a GET request to the /connect endpoint', () async {
     final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/connect'));
-    await answerHttpRequest(request);
+    final requestHandler =
+        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    await requestHandler.answer(request);
 
     // This test creates a true WebSocket connection (as opposed to a mock)
     // so we cannot check if the response is correct. But returning a null
@@ -60,7 +70,9 @@ void main() {
       'Send a GET request to the /admin endpoint (refused as not implemented yet)',
       () async {
     final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/admin'));
-    await answerHttpRequest(request);
+    final requestHandler =
+        HttpRequestHandler(databaseBackend: DatabaseBackend.mock);
+    await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
     expect(response.response, 'Unauthorized: Invalid endpoint');

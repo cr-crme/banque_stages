@@ -1,11 +1,14 @@
 import 'package:backend/database_manager.dart';
+import 'package:backend/database_teachers.dart';
 import 'package:backend/exceptions.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:test/test.dart';
 
+DatabaseTeachers get _mockedDatabaseTeachers => DatabaseTeachersMock();
+
 void main() {
   test('Get teachers from DatabaseManagers', () async {
-    final database = DatabaseManager();
+    final database = DatabaseManager(teacherDatabase: _mockedDatabaseTeachers);
     final teachers = await database.get(RequestFields.teachers, data: null);
     expect(teachers, isA<Map<String, dynamic>>());
     expect(teachers.length, 2);
@@ -18,7 +21,7 @@ void main() {
   });
 
   test('Get teacher from DatabaseManagers', () async {
-    final database = DatabaseManager();
+    final database = DatabaseManager(teacherDatabase: _mockedDatabaseTeachers);
     final teacher =
         await database.get(RequestFields.teacher, data: {'id': '0'});
     expect(teacher, isA<Map<String, dynamic>>());
@@ -27,7 +30,7 @@ void main() {
   });
 
   test('Get teacher from DatabaseManagers with invalid id', () async {
-    final database = DatabaseManager();
+    final database = DatabaseManager(teacherDatabase: _mockedDatabaseTeachers);
     expect(
       () async => await database.get(RequestFields.teacher, data: {'id': '2'}),
       throwsA(predicate((e) =>
@@ -36,7 +39,7 @@ void main() {
   });
 
   test('Get teacher from DatabaseManagers without id', () async {
-    final database = DatabaseManager();
+    final database = DatabaseManager(teacherDatabase: _mockedDatabaseTeachers);
     expect(
       () async => await database.get(RequestFields.teacher, data: null),
       throwsA(predicate((e) =>
@@ -46,7 +49,7 @@ void main() {
   });
 
   test('Put without data in DatabaseManagers', () async {
-    final database = DatabaseManager();
+    final database = DatabaseManager(teacherDatabase: _mockedDatabaseTeachers);
     expect(
       () async => await database.put(RequestFields.teachers, data: null),
       throwsA(predicate((e) =>
@@ -56,7 +59,7 @@ void main() {
   });
 
   test('Set all teachers to DatabaseManagers', () async {
-    final database = DatabaseManager();
+    final database = DatabaseManager(teacherDatabase: _mockedDatabaseTeachers);
     expect(
       () async =>
           await database.put(RequestFields.teachers, data: {'0': 'John Doe'}),
@@ -67,10 +70,9 @@ void main() {
   });
 
   test('Set teacher to DatabaseManagers', () async {
-    final database = DatabaseManager();
-    final teacher = await database.put(RequestFields.teacher,
+    final database = DatabaseManager(teacherDatabase: _mockedDatabaseTeachers);
+    await database.put(RequestFields.teacher,
         data: {'id': '0', 'name': 'John Smith', 'age': 45});
-    expect(teacher, isNull);
     final updatedTeacher =
         await database.get(RequestFields.teacher, data: {'id': '0'});
     expect(updatedTeacher['name'], 'John Smith');
@@ -78,10 +80,9 @@ void main() {
   });
 
   test('Set new teacher to DatabaseManagers', () async {
-    final database = DatabaseManager();
-    final teacher = await database.put(RequestFields.teacher,
+    final database = DatabaseManager(teacherDatabase: _mockedDatabaseTeachers);
+    await database.put(RequestFields.teacher,
         data: {'id': '2', 'name': 'John Smith', 'age': 45});
-    expect(teacher, isNull);
     final newTeacher =
         await database.get(RequestFields.teacher, data: {'id': '2'});
     expect(newTeacher['name'], 'John Smith');
@@ -89,7 +90,7 @@ void main() {
   });
 
   test('Set teacher to DatabaseManagers without id', () async {
-    final database = DatabaseManager();
+    final database = DatabaseManager(teacherDatabase: _mockedDatabaseTeachers);
     expect(
       () async => await database.put(RequestFields.teacher, data: {
         'name': 'John Smith',
