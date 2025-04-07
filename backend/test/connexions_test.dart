@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:backend/connexions.dart';
@@ -33,6 +34,7 @@ void main() {
 
     // Simulate a missing handshake
     client.streamController.add('');
+
     expect(await isConnectedFuture, false);
     expect(client.isConnected, false);
   });
@@ -45,6 +47,7 @@ void main() {
     // Simulate an invalid handshake
     client.streamController.add(jsonEncode(
         CommunicationProtocol(requestType: RequestType.handshake).serialize()));
+
     expect(await isConnectedFuture, false);
     expect(client.isConnected, false);
   });
@@ -59,6 +62,7 @@ void main() {
         CommunicationProtocol(requestType: RequestType.handshake, data: {
       'token': JWT({'app_secret': 'invalid'}).sign(SecretKey('invalid'))
     }).serialize()));
+
     expect(await isConnectedFuture, false);
     expect(client.isConnected, false);
   });
@@ -68,17 +72,25 @@ void main() {
     final client = WebSocketMock();
 
     // Listen to incoming messages from connexions
+    final protocolCompleter = Completer<CommunicationProtocol>();
     client.incommingStreamController.stream.listen((message) {
-      final protocol = CommunicationProtocol.deserialize(jsonDecode(message));
-      expect(protocol.requestType, RequestType.handshake);
+      protocolCompleter
+          .complete(CommunicationProtocol.deserialize(jsonDecode(message)));
     });
-    final isConnectedFuture = connexions.add(client);
+    addTearDown(() => client.incommingStreamController.close());
 
     // Send the handshake message
+    final isConnectedFuture = connexions.add(client);
     client.streamController.add(_prepareHandshake());
+
     expect(await isConnectedFuture, true);
     expect(client.isConnected, true);
     expect(connexions.clientCount, 1);
+    final protocol = await protocolCompleter.future
+        .timeout(Duration(seconds: 1), onTimeout: () {
+      fail('Timeout waiting for protocol update');
+    });
+    expect(protocol.requestType, RequestType.handshake);
 
     // Simulate a client disconnect
     await client.close();
@@ -108,23 +120,12 @@ void main() {
     client.streamController.add(_prepareHandshake());
 
     // Listen to incoming messages from connexions
+    final protocolCompleter = Completer<CommunicationProtocol>();
     client.incommingStreamController.stream.listen((message) {
-      final protocol = CommunicationProtocol.deserialize(jsonDecode(message));
-      expect(protocol.requestType, RequestType.response);
-      expect(protocol.field, RequestFields.teachers);
-      expect(protocol.data, isA<Map<String, dynamic>>());
-      expect(protocol.data!['0'], isA<Map<String, dynamic>>());
-      expect(protocol.data!['0']['name'], isA<String>());
-      expect(protocol.data!['0']['name'], 'John Doe');
-      expect(protocol.data!['0']['age'], isA<int>());
-      expect(protocol.data!['0']['age'], 60);
-      expect(protocol.data!['1'], isA<Map<String, dynamic>>());
-      expect(protocol.data!['1']['name'], isA<String>());
-      expect(protocol.data!['1']['name'], 'Jane Doe');
-      expect(protocol.data!['1']['age'], isA<int>());
-      expect(protocol.data!['1']['age'], 50);
-      expect(protocol.response, Response.success);
+      protocolCompleter
+          .complete(CommunicationProtocol.deserialize(jsonDecode(message)));
     });
+    addTearDown(() => client.incommingStreamController.close());
 
     // Simulate a GET request
     client.streamController.add(
@@ -132,6 +133,25 @@ void main() {
               requestType: RequestType.get, field: RequestFields.teachers)
           .serialize()),
     );
+
+    final protocol = await protocolCompleter.future
+        .timeout(Duration(seconds: 1), onTimeout: () {
+      fail('Timeout waiting for protocol update');
+    });
+    expect(protocol.requestType, RequestType.response);
+    expect(protocol.field, RequestFields.teachers);
+    expect(protocol.data, isA<Map<String, dynamic>>());
+    expect(protocol.data!['0'], isA<Map<String, dynamic>>());
+    expect(protocol.data!['0']['name'], isA<String>());
+    expect(protocol.data!['0']['name'], 'John Doe');
+    expect(protocol.data!['0']['age'], isA<int>());
+    expect(protocol.data!['0']['age'], 60);
+    expect(protocol.data!['1'], isA<Map<String, dynamic>>());
+    expect(protocol.data!['1']['name'], isA<String>());
+    expect(protocol.data!['1']['name'], 'Jane Doe');
+    expect(protocol.data!['1']['age'], isA<int>());
+    expect(protocol.data!['1']['age'], 50);
+    expect(protocol.response, Response.success);
   });
 
   test('Send a POST teacher request and receive the update', () async {
@@ -143,31 +163,22 @@ void main() {
     connexions.add(client2);
     client2.streamController.add(_prepareHandshake());
 
-    int updateCount = 0;
-
     // Listen to incoming messages from connexions
+    final protocolCompleter1 = Completer<CommunicationProtocol>();
     client1.incommingStreamController.stream.listen((message) {
-      final protocol = CommunicationProtocol.deserialize(jsonDecode(message));
-      if (protocol.requestType != RequestType.update) return;
-      expect(protocol.requestType, RequestType.update);
-      expect(protocol.field, RequestFields.teacher);
-      expect(protocol.data, isA<Map<String, dynamic>>());
-      expect(protocol.data!['name'], 'John Smith');
-      expect(protocol.data!['age'], 45);
-      expect(protocol.response, isNull);
-      updateCount++;
+      final protocol1 = CommunicationProtocol.deserialize(jsonDecode(message));
+      if (protocol1.requestType != RequestType.update) return;
+      protocolCompleter1.complete(protocol1);
     });
+    addTearDown(() => client1.incommingStreamController.close());
+
+    final protocolCompleter2 = Completer<CommunicationProtocol>();
     client2.incommingStreamController.stream.listen((message) {
-      final protocol = CommunicationProtocol.deserialize(jsonDecode(message));
-      if (protocol.requestType != RequestType.update) return;
-      expect(protocol.requestType, RequestType.update);
-      expect(protocol.field, RequestFields.teacher);
-      expect(protocol.data, isA<Map<String, dynamic>>());
-      expect(protocol.data!['name'], 'John Smith');
-      expect(protocol.data!['age'], 45);
-      expect(protocol.response, isNull);
-      updateCount++;
+      final protocol2 = CommunicationProtocol.deserialize(jsonDecode(message));
+      if (protocol2.requestType != RequestType.update) return;
+      protocolCompleter2.complete(protocol2);
     });
+    addTearDown(() => client2.incommingStreamController.close());
 
     // Simulate a POST request
     client1.streamController.add(
@@ -178,9 +189,28 @@ void main() {
     );
 
     // Wait for the update to be sent to both clients
-    await Future.delayed(Duration(milliseconds: 200));
-    expect(updateCount, 2);
+    final protocol1 = await protocolCompleter1.future
+        .timeout(Duration(seconds: 1), onTimeout: () {
+      fail('Timeout waiting for protocol1 update');
+    });
+    final protocol2 = await protocolCompleter2.future
+        .timeout(Duration(seconds: 1), onTimeout: () {
+      fail('Timeout waiting for protocol2 update');
+    });
     expect(connexions.clientCount, 2);
+
+    expect(protocol1.requestType, RequestType.update);
+    expect(protocol1.field, RequestFields.teacher);
+    expect(protocol1.data, isA<Map<String, dynamic>>());
+    expect(protocol1.data!['name'], 'John Smith');
+    expect(protocol1.data!['age'], 45);
+    expect(protocol1.response, isNull);
+    expect(protocol2.requestType, RequestType.update);
+    expect(protocol2.field, RequestFields.teacher);
+    expect(protocol2.data, isA<Map<String, dynamic>>());
+    expect(protocol2.data!['name'], 'John Smith');
+    expect(protocol2.data!['age'], 45);
+    expect(protocol2.response, isNull);
   });
 
   test('Send an ill-formed message', () async {
@@ -190,15 +220,24 @@ void main() {
     client.streamController.add(_prepareHandshake());
 
     // Listen to incoming messages from connexions
+    final protocolCompleter = Completer<CommunicationProtocol>();
     client.incommingStreamController.stream.listen((message) {
-      final protocol = CommunicationProtocol.deserialize(jsonDecode(message));
-      expect(protocol.requestType, RequestType.response);
-      expect(protocol.field, isNull);
-      expect(protocol.data, isA<Map<String, dynamic>>());
-      expect(protocol.response, Response.failure);
+      protocolCompleter
+          .complete(CommunicationProtocol.deserialize(jsonDecode(message)));
     });
+    addTearDown(() => client.incommingStreamController.close());
 
     // Simulate an ill-formed message
     client.streamController.add('An ill-formed message');
+
+    // Wait for the response to be sent to the client
+    final protocol = await protocolCompleter.future
+        .timeout(Duration(seconds: 1), onTimeout: () {
+      fail('Timeout waiting for protocol update');
+    });
+    expect(protocol.requestType, RequestType.response);
+    expect(protocol.field, isNull);
+    expect(protocol.data, isA<Map<String, dynamic>>());
+    expect(protocol.response, Response.failure);
   });
 }
