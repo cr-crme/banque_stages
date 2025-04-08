@@ -1,12 +1,13 @@
-version: '3.8'
-
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql_dev
+    container_name: banque_stage_container
     restart: always
-    env_file:
-      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=dev_db
+      - MYSQL_USER=devuser
+      - MYSQL_PASSWORD=devpassword
     ports:
       - "3306:3306"
     volumes:

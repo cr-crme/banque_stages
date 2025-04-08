@@ -6,8 +6,6 @@ import 'package:logging/logging.dart';
 
 final _logger = Logger('AnswerHttpRequest');
 
-// TODO: What happens if two persons modify the same data at the same time?
-
 class HttpRequestHandler {
   final Connexions _connexions;
 

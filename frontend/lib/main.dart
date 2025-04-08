@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:common/communication_protocol.dart';
-import 'package:common/teacher.dart';
+import 'package:common/models/phone_number.dart';
+import 'package:common/models/teacher.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -15,7 +17,7 @@ Future<void> _updateTeachers(Map<String, dynamic> data) async {
     final teacherData = data;
     _dummyTeachers[id] = _dummyTeachers.containsKey(id)
         ? _dummyTeachers[id]!.copyWithData(teacherData)
-        : Teacher.deserialize(teacherData);
+        : Teacher.fromSerialized(teacherData);
   } else {
     // Update all teachers
     for (final entry in data.entries) {
@@ -23,7 +25,7 @@ Future<void> _updateTeachers(Map<String, dynamic> data) async {
       final teacherData = entry.value;
       _dummyTeachers[id] = _dummyTeachers.containsKey(id)
           ? _dummyTeachers[id]!.copyWithData(teacherData)
-          : Teacher.deserialize(teacherData);
+          : Teacher.fromSerialized(teacherData);
     }
   }
 }
@@ -79,6 +81,10 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
                 onPressed: isConnecting || isConnected ? null : _connect,
                 child: Text(isConnecting ? 'Connecting...' : 'Connect')),
+            SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: isConnected ? _addRandomTeacher : null,
+                child: Text('Add random teacher')),
             SizedBox(height: 20),
             ElevatedButton(
                 onPressed: isConnected ? _getTeachers : null,
@@ -202,6 +208,38 @@ class _LoginScreenState extends State<LoginScreen> {
         case RequestType.delete:
           throw Exception('Unsupported request type: ${protocol.requestType}');
       }
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
+  Future<void> _addRandomTeacher() async {
+    if (!isConnected) return;
+
+    // Send a post request to the server
+    try {
+      final random = Random();
+      final firstName =
+          ['John', 'Jane', 'Alice', 'Bob', 'Charlie'][random.nextInt(5)];
+      final lastName =
+          ['Doe', 'Smith', 'Johnson', 'Williams', 'Brown'][random.nextInt(5)];
+
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.post,
+        field: RequestFields.teacher,
+        data: Teacher(
+          firstName: firstName,
+          lastName: lastName,
+          schoolId: random.nextInt(100).toString(),
+          groups: ['100', '200', '300'],
+          email:
+              '${firstName.toLowerCase()}.${lastName.toLowerCase()}@banque_stage.org',
+          phone: PhoneNumber.fromString(random.nextInt(1000000000).toString()),
+        ).serialize(),
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
     } catch (e) {
       debugPrint('Error: $e');
       return;

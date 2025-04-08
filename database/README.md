@@ -13,27 +13,26 @@ Then you have to run the service:
 # Debug
 
 If you are developping, you may want to run your own version of the database. 
-To do so, use the `docker-compose.yml` file provide. 
+To do so, use the `docker-compose.yml` file provide by running the following command from the ROOT/database directory:
+`docker-compose up -d`
 
-You will need to copy-paste the `.env.default` file and fill it with the appropriate values. 
-If you don't know the values, please ask your administrator. 
+To stop the database, you can run the following command:
+`docker-compose down`
 
 To interact with the database, you can run the following command: 
-`sudo docker exec -it mysql_dev mysql -u devuser -p`
+`docker exec -it banque_stage_container mysql -u devuser -p`
 
 
 # Database structure
 
-USE dev_db;
-
 ## Tables 
 
-### Teachers
+The see the database structure, please refer to `reset_database.sql` file.
+This file contains the SQL commands to create the database and all the tables.
 
-CREATE TABLE Teachers (
-    ID int NOT NULL,
-    Name varchar(255) NOT NULL,
-    Age int
-);
-ALTER TABLE Teachers
-    ADD PRIMARY KEY (ID);
+## Reset the database
+
+To reset the database, you can run the following command:
+`docker exec -i banque_stage_container mysql -u root -proot < reset_database.sql`
+Make sure not to put space between the `-p` and the password.
+This will drop the database and create it again with the tables defined in the `reset_database.sql` file.
