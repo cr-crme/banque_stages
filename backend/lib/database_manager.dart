@@ -9,9 +9,7 @@ String _getId(Map<String, dynamic>? data, {required String messageOnNull}) {
 }
 
 class DatabaseManager {
-  DatabaseManager({required this.teacherDatabase}) {
-    // TODO: Initialize the database connexion here
-  }
+  DatabaseManager({required this.teacherDatabase});
 
   final DatabaseTeachers teacherDatabase;
 

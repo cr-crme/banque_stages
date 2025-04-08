@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 20),
             ElevatedButton(
                 onPressed: isConnected ? _getTeachers : null,
-                child: Text('Get teacher')),
+                child: Text('Get teachers')),
             SizedBox(height: 20),
             Row(
               mainAxisSize: MainAxisSize.min,
