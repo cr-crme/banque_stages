@@ -36,7 +36,7 @@ class PhoneNumber extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {'phone_number': toString()};
 
-  static PhoneNumber fromSerialized(Map<String, dynamic> map) =>
+  static PhoneNumber fromSerialized(map) =>
       PhoneNumber.fromString(map['phone_number'], id: map['id']);
 
   @override

@@ -49,7 +49,7 @@ class Address extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() => {
-        'number': civicNumber,
+        'civic': civicNumber,
         'street': street,
         'appartment': appartment,
         'city': city,
@@ -58,7 +58,7 @@ class Address extends ItemSerializable {
 
   static Address fromSerialized(map) => Address(
       id: map['id'],
-      civicNumber: map['number'],
+      civicNumber: map['civic'],
       street: map['street'],
       appartment: map['appartment'],
       city: map['city'],

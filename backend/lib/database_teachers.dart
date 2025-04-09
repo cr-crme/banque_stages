@@ -68,6 +68,21 @@ class MySqlDatabaseTeacher extends DatabaseTeachers {
         JOIN phone_numbers p ON p.id = pt.phone_number_id
         WHERE pt.teacher_id = t.id
       ) AS phone_numbers,
+      (
+        SELECT JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'id', a.id,
+                'civic', a.civic,
+                'street', a.street,
+                'appartment', a.appartment,
+                'city', a.city,
+                'postal_code', a.postal_code
+            )
+        )
+        FROM addresses_teachers at
+        JOIN addresses a ON a.id = at.address_id
+        WHERE at.teacher_id = t.id
+      ) AS addresses,
       IFNULL((
           SELECT JSON_ARRAYAGG(
               JSON_OBJECT('group_name', tg.group_name)
@@ -90,11 +105,11 @@ class MySqlDatabaseTeacher extends DatabaseTeachers {
                   .toList() ??
               [],
           email: teacher['email'] as String?,
-          phone: PhoneNumber.fromString(
-              (jsonDecode(teacher['phone_numbers']) as List?)
-                      ?.first['phone_number'] as String? ??
-                  ''),
-          address: Address.empty,
+          phone: PhoneNumber.fromSerialized(
+              (jsonDecode(teacher['phone_numbers']) as List?)?.first as Map? ??
+                  {}),
+          address: Address.fromSerialized(
+              (jsonDecode(teacher['addresses']) as List?)?.first as Map? ?? {}),
           dateBirth: null,
         )
     };
@@ -141,12 +156,28 @@ class MySqlDatabaseTeacher extends DatabaseTeachers {
         connection,
         'INSERT INTO phone_numbers_teachers (teacher_id, phone_number_id) VALUES (?, ?)',
         [teacher.id, teacher.phone.id]);
+
+    // Insert the address
+    await tryQuery(
+        connection,
+        'INSERT INTO addresses (id, civic, street, appartment, city, postal_code) VALUES (?, ?, ?, ?, ?, ?)',
+        [
+          teacher.address.id,
+          teacher.address.civicNumber,
+          teacher.address.street,
+          teacher.address.appartment,
+          teacher.address.city,
+          teacher.address.postalCode
+        ]);
+    await tryQuery(
+        connection,
+        'INSERT INTO addresses_teachers (teacher_id, address_id) VALUES (?, ?)',
+        [teacher.id, teacher.address.id]);
   }
 
   Future<void> _putExistingTeacher(Teacher teacher, Teacher previous) async {
     String query = 'UPDATE teachers SET ';
     final List params = [];
-    // TODO Is this useful to only update the fields that are different?
     if (teacher.firstName != previous.firstName) {
       query += 'first_name = ?, ';
       params.add(teacher.firstName);

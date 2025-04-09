@@ -4,12 +4,12 @@ USE dev_db;
 /* Clear the database */
 SET FOREIGN_KEY_CHECKS = 0;
 
-/*DROP TABLE IF EXISTS phone_numbers_students;*/
 DROP TABLE IF EXISTS phone_numbers_teachers;
+/*DROP TABLE IF EXISTS phone_numbers_students;*/
 DROP TABLE IF EXISTS phone_numbers;
 
-/*DROP TABLE IF EXISTS addresses_students;*/
 DROP TABLE IF EXISTS addresses_teachers;
+/*DROP TABLE IF EXISTS addresses_students;*/
 DROP TABLE IF EXISTS addresses;
 
 DROP TABLE IF EXISTS teaching_groups;
@@ -54,6 +54,14 @@ CREATE TABLE addresses (
     appartment VARCHAR(20),
     city VARCHAR(50),
     postal_code VARCHAR(10)
+);
+
+CREATE TABLE addresses_teachers (
+    teacher_id VARCHAR(36) NOT NULL,
+    address_id VARCHAR(36) NOT NULL,
+    PRIMARY KEY (teacher_id, address_id),
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id),
+    FOREIGN KEY (address_id) REFERENCES addresses(id)
 );
 
 /* TO ADD WHEN STUDENTS TABLE IS ADDED
