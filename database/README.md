@@ -10,6 +10,11 @@ You can install docker using snap:
 Then you have to run the service:
 `sudo snap start docker`
 
+### Windows
+
+You can install docker using the installer provided by Docker, then you restart your computer.
+The service will be started automatically.
+
 # Debug
 
 If you are developping, you may want to run your own version of the database. 
@@ -36,3 +41,16 @@ To reset the database, you can run the following command:
 `docker exec -i banque_stage_container mysql -u root -proot < reset_database.sql`
 Make sure not to put space between the `-p` and the password.
 This will drop the database and create it again with the tables defined in the `reset_database.sql` file.
+
+# Expected error messages
+
+## Error 1054
+`Database failure: Unknown column 'COLUMN_NAME' in 'field list' (1054).`
+
+This is pretty self explanatory. This probably means the backend was updated, but not the database.
+
+## Error 1156
+`Database failure: Got packets out of order (1156). This should not happen, please contact the administrator of the database.`
+
+It seems that this can happen when the database has not created the tables yet.
+

@@ -13,13 +13,22 @@ class Teacher extends Person {
   Teacher({
     super.id,
     required super.firstName,
-    super.middleName,
+    required super.middleName,
     required super.lastName,
     required this.schoolId,
     required this.groups,
     required super.email,
-    super.phone,
-  });
+    required super.phone,
+    required super.address,
+    required super.dateBirth,
+  }) {
+    if (address.isNotEmpty) {
+      throw ArgumentError('Address should not be set for a teacher');
+    }
+    if (dateBirth != null) {
+      throw ArgumentError('Date of birth should not be set for a teacher');
+    }
+  }
 
   Teacher.fromSerialized(super.map)
       : schoolId = map['schoolId'] ?? '',
@@ -27,13 +36,11 @@ class Teacher extends Person {
         super.fromSerialized();
 
   @override
-  Map<String, dynamic> serializedMap() {
-    return super.serializedMap()
-      ..addAll({
-        'schoolId': schoolId,
-        'groups': groups,
-      });
-  }
+  Map<String, dynamic> serializedMap() => super.serializedMap()
+    ..addAll({
+      'schoolId': schoolId,
+      'groups': groups,
+    });
 
   @override
   Teacher copyWith({
@@ -47,26 +54,19 @@ class Teacher extends Person {
     PhoneNumber? phone,
     Address? address,
     DateTime? dateBirth,
-  }) {
-    // Address and dateBirth should not be set
-    if (address != null) {
-      throw ArgumentError('Address should not be set for a teacher');
-    }
-    if (dateBirth != null) {
-      throw ArgumentError('Date of birth should not be set for a teacher');
-    }
-
-    return Teacher(
-      id: id ?? this.id,
-      firstName: firstName ?? this.firstName,
-      middleName: middleName ?? this.middleName,
-      lastName: lastName ?? this.lastName,
-      schoolId: schoolId ?? this.schoolId,
-      groups: groups ?? this.groups,
-      phone: phone ?? this.phone,
-      email: email ?? this.email,
-    );
-  }
+  }) =>
+      Teacher(
+        id: id ?? this.id,
+        firstName: firstName ?? this.firstName,
+        middleName: middleName ?? this.middleName,
+        lastName: lastName ?? this.lastName,
+        schoolId: schoolId ?? this.schoolId,
+        groups: groups ?? this.groups,
+        phone: phone ?? this.phone,
+        email: email ?? this.email,
+        dateBirth: dateBirth ?? this.dateBirth,
+        address: address ?? this.address,
+      );
 
   Teacher copyWithData(Map<String, dynamic> data) {
     final availableFields = [
@@ -77,24 +77,31 @@ class Teacher extends Person {
       'schoolId',
       'groups',
       'phone',
-      'email'
+      'email',
+      'dateBirth',
+      'address',
     ];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
       throw InvalidFieldException('Invalid field data detected');
     }
-
     return Teacher(
       id: data['id']?.toString() ?? id,
       firstName: data['firstName'] ?? firstName,
       middleName: data['middleName'] ?? middleName,
       lastName: data['lastName'] ?? lastName,
       schoolId: data['schoolId'] ?? schoolId,
-      groups: _stringListFromSerialized(data['groups']),
+      groups: data['groups'] == null
+          ? groups
+          : _stringListFromSerialized(data['groups']),
       phone: data['phone'] == null
-          ? PhoneNumber.empty
-          : PhoneNumber.fromString(data['phone']),
+          ? phone
+          : PhoneNumber.fromSerialized(data['phone']),
       email: data['email'] ?? email,
+      dateBirth: null,
+      address: data['address'] == null
+          ? address
+          : Address.fromSerialized(data['address']),
     );
   }
 }

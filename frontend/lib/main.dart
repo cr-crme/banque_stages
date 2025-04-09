@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:common/communication_protocol.dart';
+import 'package:common/models/address.dart';
 import 'package:common/models/phone_number.dart';
 import 'package:common/models/teacher.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
@@ -20,6 +21,7 @@ Future<void> _updateTeachers(Map<String, dynamic> data) async {
         : Teacher.fromSerialized(teacherData);
   } else {
     // Update all teachers
+    _dummyTeachers.clear();
     for (final entry in data.entries) {
       final id = entry.key;
       final teacherData = entry.value;
@@ -105,9 +107,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _controller,
                     enabled: isConnected,
                     decoration: InputDecoration(
-                      labelText: 'New age',
+                      labelText: 'New first name',
                     ),
-                    keyboardType: TextInputType.number,
                     onChanged: (value) => setState(() {}),
                   ),
                 )
@@ -119,10 +120,8 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text('Disconnect'),
             ),
             ..._dummyTeachers.entries.map((entry) {
-              return ListTile(
-                title: Text(entry.key),
-                subtitle: Text(entry.value.toString()),
-              );
+              final teacher = entry.value;
+              return TeacherTile(teacher: teacher);
             }),
           ],
         ),
@@ -224,18 +223,27 @@ class _LoginScreenState extends State<LoginScreen> {
           ['John', 'Jane', 'Alice', 'Bob', 'Charlie'][random.nextInt(5)];
       final lastName =
           ['Doe', 'Smith', 'Johnson', 'Williams', 'Brown'][random.nextInt(5)];
+      final phone = PhoneNumber.fromString(
+          '${random.nextInt(900) + 100}-${random.nextInt(900) + 100}-${random.nextInt(9000) + 1000}');
+      final groups = <String>[];
+      for (int i = 0; i < random.nextInt(5); i++) {
+        groups.add(random.nextInt(100).toString());
+      }
 
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
         field: RequestFields.teacher,
         data: Teacher(
           firstName: firstName,
+          middleName: null,
           lastName: lastName,
           schoolId: random.nextInt(100).toString(),
-          groups: ['100', '200', '300'],
+          groups: groups,
           email:
               '${firstName.toLowerCase()}.${lastName.toLowerCase()}@banque_stage.org',
-          phone: PhoneNumber.fromString(random.nextInt(1000000000).toString()),
+          phone: phone,
+          address: Address.empty,
+          dateBirth: null,
         ).serialize(),
       ).serialize());
       _socket?.send(message);
@@ -272,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
         field: RequestFields.teacher,
-        data: {'id': 1, 'age': int.parse(_controller.text)},
+        data: {'id': _dummyTeachers.keys.first, 'firstName': _controller.text},
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');
@@ -296,6 +304,22 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     setState(() {});
+  }
+}
+
+class TeacherTile extends StatelessWidget {
+  const TeacherTile({
+    super.key,
+    required this.teacher,
+  });
+
+  final Teacher teacher;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('${teacher.toString()} '
+        '(${teacher.phone}) '
+        '[${teacher.groups.join(', ')}]');
   }
 }
 

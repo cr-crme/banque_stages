@@ -10,24 +10,24 @@ class Person extends ItemSerializable {
 
   final PhoneNumber phone;
   final String? email;
-  final Address? address;
+  final Address address;
 
   Person({
     super.id,
     required this.firstName,
-    this.middleName,
+    required this.middleName,
     required this.lastName,
-    this.dateBirth,
-    this.phone = const PhoneNumber(),
-    this.email,
-    this.address,
+    required this.dateBirth,
+    required this.phone,
+    required this.email,
+    required this.address,
   });
 
   static Person get empty => Person(
       firstName: 'Unnamed',
       middleName: null,
       lastName: 'Unnamed',
-      address: null,
+      address: Address.empty,
       dateBirth: null,
       email: null,
       id: null,
@@ -42,26 +42,23 @@ class Person extends ItemSerializable {
             : DateTime.fromMillisecondsSinceEpoch(map['dateBirth']),
         phone = map['phone'] == null
             ? PhoneNumber.empty
-            : PhoneNumber.fromString(map['phone']),
+            : PhoneNumber.fromSerialized(map['phone']),
         email = map['email'],
         address = map['address'] == null
-            ? null
+            ? Address.empty
             : Address.fromSerialized(map['address']),
         super.fromSerialized();
 
   @override
-  Map<String, dynamic> serializedMap() {
-    return {
-      'id': id,
-      'firstName': firstName,
-      'middleName': middleName,
-      'lastName': lastName,
-      'dateBirth': dateBirth?.millisecondsSinceEpoch,
-      'phone': phone.toString(),
-      'email': email,
-      'address': address?.serialize(),
-    };
-  }
+  Map<String, dynamic> serializedMap() => {
+        'firstName': firstName,
+        'middleName': middleName,
+        'lastName': lastName,
+        'dateBirth': dateBirth?.millisecondsSinceEpoch,
+        'phone': phone.serialize(),
+        'email': email,
+        'address': address.serialize(),
+      };
 
   Person copyWith({
     String? id,

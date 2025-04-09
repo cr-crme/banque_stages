@@ -128,14 +128,14 @@ class Connexions {
               response: Response.failure));
     } on IntershipBankException catch (e) {
       _logger
-          .severe('Error processing request: $e for client ${client.hashCode}');
+          .severe('Error processing request for client ${client.hashCode}: $e');
       await _send(client,
           message: CommunicationProtocol(
               requestType: RequestType.response,
               data: {'error': e.toString()},
               response: Response.failure));
     } catch (e) {
-      _logger.severe('Unrecognized error: $e for client ${client.hashCode}');
+      _logger.severe('Unrecognized error for client ${client.hashCode}: $e ');
       await _send(client,
           message: CommunicationProtocol(
               requestType: RequestType.response,

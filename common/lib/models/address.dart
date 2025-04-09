@@ -87,6 +87,7 @@ class Address extends ItemSerializable {
       appartment == null &&
       city == null &&
       postalCode == null;
+  bool get isNotEmpty => !isEmpty;
 
   bool get isValid =>
       civicNumber != null &&

@@ -22,10 +22,10 @@ SET FOREIGN_KEY_CHECKS = 1;
 /* People related tables */
 /*************************/
 
-/* Teachers */
+/**** Teachers ****/
 
 CREATE TABLE teachers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     middle_name VARCHAR(50),
     last_name VARCHAR(50) NOT NULL,
@@ -34,22 +34,21 @@ CREATE TABLE teachers (
 );
 
 CREATE TABLE teaching_groups (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    teacher_id INT NOT NULL,
-    group_name VARCHAR(20),
+    teacher_id VARCHAR(36) NOT NULL,
+    group_name VARCHAR(20) NOT NULL,
     FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
 );
 
 
-/* Students */
+/**** Students ****/
 /* TODO */
 
 
 
-/* Addresses */
+/**** Addresses ****/
 
 CREATE TABLE addresses (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
     civic INT,
     street VARCHAR(100),
     appartment VARCHAR(20),
@@ -59,8 +58,8 @@ CREATE TABLE addresses (
 
 /* TO ADD WHEN STUDENTS TABLE IS ADDED
 CREATE TABLE addresses_students (
-    student_id INT,
-    address_id INT,
+    student_id VARCHAR(36) NOT NULL,
+    address_id VARCHAR(36) NOT NULL,
     PRIMARY KEY (student_id, address_id),
     FOREIGN KEY (student_id) REFERENCES students(id),
     FOREIGN KEY (address_id) REFERENCES addresses(id)
@@ -68,27 +67,27 @@ CREATE TABLE addresses_students (
 */
 
 
-/* Phone numbers */
+/**** Phone numbers ****/
 
 CREATE TABLE phone_numbers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    number VARCHAR(20) NOT NULL
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    phone_number VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE phone_numbers_teachers (
-    teacher_id INT,
-    phone_number_id INT,
+    teacher_id VARCHAR(36) NOT NULL,
+    phone_number_id VARCHAR(36) NOT NULL,
     PRIMARY KEY (teacher_id, phone_number_id),
-    FOREIGN KEY (teacher_id) REFERENCES teachers(id),
-    FOREIGN KEY (phone_number_id) REFERENCES phone_numbers(id)
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
+    FOREIGN KEY (phone_number_id) REFERENCES phone_numbers(id) ON DELETE CASCADE
 );
 
 /* TO ADD WHEN STUDENTS TABLE IS ADDED
 CREATE TABLE phone_numbers_students (
-    student_id INT,
-    phone_number_id INT,
+    student_id VARCHAR(36) NOT NULL,
+    phone_number_id VARCHAR(36) NOT NULL,
     PRIMARY KEY (student_id, phone_number_id),
-    FOREIGN KEY (student_id) REFERENCES students(id),
-    FOREIGN KEY (phone_number_id) REFERENCES phone_numbers(id)
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (phone_number_id) REFERENCES phone_numbers(id) ON DELETE CASCADE
 );
 */

@@ -44,3 +44,12 @@ class InvalidRequestException implements IntershipBankException {
   @override
   String toString() => _message;
 }
+
+class DatabaseFailureException implements IntershipBankException {
+  final String _message;
+
+  DatabaseFailureException(String message) : _message = message;
+
+  @override
+  String toString() => _message;
+}
