@@ -11,11 +11,11 @@ void main() {
     expect(teachers, isA<Map<String, dynamic>>());
     expect(teachers.length, 2);
     expect(teachers['0'], isA<Map<String, dynamic>>());
-    expect(teachers['0']['name'], 'John Doe');
-    expect(teachers['0']['age'], 60);
+    expect(teachers['0']['firstName'], 'John');
+    expect(teachers['0']['lastName'], 'Doe');
     expect(teachers['1'], isA<Map<String, dynamic>>());
-    expect(teachers['1']['name'], 'Jane Doe');
-    expect(teachers['1']['age'], 50);
+    expect(teachers['1']['firstName'], 'Jane');
+    expect(teachers['1']['lastName'], 'Doe');
   });
 
   test('Set all teachers to DatabaseTeachers', () async {
@@ -30,8 +30,8 @@ void main() {
   test('Get teacher from DatabaseTeachers', () async {
     final teacher = await _mockedDatabaseTeachers.getById(id: '0');
     expect(teacher, isA<Map<String, dynamic>>());
-    expect(teacher['name'], 'John Doe');
-    expect(teacher['age'], 60);
+    expect(teacher['firstName'], 'John');
+    expect(teacher['lastName'], 'Doe');
   });
 
   test('Get teacher from DatabaseTeachers with invalid id', () async {
@@ -58,21 +58,21 @@ void main() {
     final mockedDatabase = _mockedDatabaseTeachers;
     await mockedDatabase.putById(
       id: '0',
-      data: {'name': 'John Smith', 'age': 45},
+      data: {'firstName': 'John', 'lastName': 'Smith'},
     );
     final updatedTeacher = await mockedDatabase.getById(id: '0');
-    expect(updatedTeacher['name'], 'John Smith');
-    expect(updatedTeacher['age'], 45);
+    expect(updatedTeacher['firstName'], 'John');
+    expect(updatedTeacher['lastName'], 'Smith');
   });
 
   test('Set new teacher to DatabaseTeachers', () async {
     final mockedDatabase = _mockedDatabaseTeachers;
     await mockedDatabase.putById(
       id: '2',
-      data: {'name': 'John Smith', 'age': 45},
+      data: {'firstName': 'Agent', 'lastName': 'Smith'},
     );
     final newTeacher = await mockedDatabase.getById(id: '2');
-    expect(newTeacher['name'], 'John Smith');
-    expect(newTeacher['age'], 45);
+    expect(newTeacher['firstName'], 'Agent');
+    expect(newTeacher['lastName'], 'Smith');
   });
 }

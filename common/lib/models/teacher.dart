@@ -69,8 +69,18 @@ class Teacher extends Person {
   }
 
   Teacher copyWithData(Map<String, dynamic> data) {
+    final availableFields = [
+      'id',
+      'firstName',
+      'middleName',
+      'lastName',
+      'schoolId',
+      'groups',
+      'phone',
+      'email'
+    ];
     // Make sure data does not contain unrecognized fields
-    if (data.keys.any((key) => !['id', 'name', 'age'].contains(key))) {
+    if (data.keys.any((key) => !availableFields.contains(key))) {
       throw InvalidFieldException('Invalid field data detected');
     }
 

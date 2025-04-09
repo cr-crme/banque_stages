@@ -181,7 +181,7 @@ class DatabaseTeachersMock extends DatabaseTeachers {
         lastName: 'Doe',
         schoolId: '10',
         groups: ['100', '101'],
-        phone: PhoneNumber.fromString('+1-234-567-8901'),
+        phone: PhoneNumber.fromString('098-765-4321'),
         email: 'john.doe@email.com'),
     '1': Teacher(
         id: '1',
@@ -189,7 +189,7 @@ class DatabaseTeachersMock extends DatabaseTeachers {
         lastName: 'Doe',
         schoolId: '10',
         groups: ['100', '101'],
-        phone: PhoneNumber.fromString('+1-234-567-8901'),
+        phone: PhoneNumber.fromString('123-456-7890'),
         email: 'john.doe@email.com'),
   };
 
