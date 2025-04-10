@@ -55,43 +55,39 @@ class MySqlDatabaseTeacher extends DatabaseTeachers {
 
   @override
   Future<Map<String, Teacher>> _getAllTeachers({String? teacherId}) async {
-    final results = await tryQuery(connection, '''
-      SELECT t.*, 
-      (
-        SELECT JSON_ARRAYAGG(
-            JSON_OBJECT(
-                'id', p.id,
-                'phone_number', p.phone_number
-            )
-        )
-        FROM phone_numbers_teachers pt
-        JOIN phone_numbers p ON p.id = pt.phone_number_id
-        WHERE pt.teacher_id = t.id
-      ) AS phone_numbers,
-      (
-        SELECT JSON_ARRAYAGG(
-            JSON_OBJECT(
-                'id', a.id,
-                'civic', a.civic,
-                'street', a.street,
-                'appartment', a.appartment,
-                'city', a.city,
-                'postal_code', a.postal_code
-            )
-        )
-        FROM addresses_teachers at
-        JOIN addresses a ON a.id = at.address_id
-        WHERE at.teacher_id = t.id
-      ) AS addresses,
-      IFNULL((
-          SELECT JSON_ARRAYAGG(
-              JSON_OBJECT('group_name', tg.group_name)
+    final results = await tryQuery(
+        connection,
+        craftQuery(tableName: 'teachers', id: teacherId, sublists: [
+          MySqlNormalizedTable(
+            mainTableName: 'phone_numbers',
+            subtableName: 'phone_numbers_teachers',
+            fieldsToFetch: ['id', 'phone_number'],
+            tableId: 'id',
+            subTableId: 'phone_number_id',
+            foreignId: 'teacher_id',
+          ),
+          MySqlNormalizedTable(
+            mainTableName: 'addresses',
+            subtableName: 'addresses_teachers',
+            fieldsToFetch: [
+              'id',
+              'civic',
+              'street',
+              'appartment',
+              'city',
+              'postal_code'
+            ],
+            tableId: 'id',
+            subTableId: 'address_id',
+            foreignId: 'teacher_id',
+          ),
+          MySqlTable(
+            tableName: 'teaching_groups',
+            fieldsToFetch: ['group_name'],
+            tableId: 'teacher_id',
           )
-          FROM teaching_groups tg
-          WHERE tg.teacher_id = t.id
-      ), JSON_ARRAY()) AS group_names
-      FROM teachers t ${teacherId == null ? '' : 'WHERE t.id="$teacherId"'};
-    ''');
+        ]));
+
     return {
       for (final teacher in results)
         teacher['id'].toString(): Teacher(
@@ -100,7 +96,7 @@ class MySqlDatabaseTeacher extends DatabaseTeachers {
           middleName: teacher['middle_name'] as String?,
           lastName: teacher['last_name'] as String,
           schoolId: teacher['school_id'] as String,
-          groups: (jsonDecode(teacher['group_names']) as List?)
+          groups: (jsonDecode(teacher['teaching_groups']) as List?)
                   ?.map((map) => map['group_name'] as String)
                   .toList() ??
               [],
