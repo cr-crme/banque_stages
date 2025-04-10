@@ -1,9 +1,9 @@
-import 'package:backend/database_teachers.dart';
-import 'package:backend/exceptions.dart';
+import 'package:backend/repositories/teachers_repository.dart';
+import 'package:backend/utils/exceptions.dart';
 import 'package:common/exceptions.dart';
 import 'package:test/test.dart';
 
-DatabaseTeachers get _mockedDatabaseTeachers => DatabaseTeachersMock();
+TeachersRepository get _mockedDatabaseTeachers => DatabaseTeachersMock();
 
 void main() {
   test('Get teachers from DatabaseTeachers', () async {

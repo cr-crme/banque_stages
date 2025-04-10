@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:backend/connexions.dart';
-import 'package:backend/database_manager.dart';
-import 'package:backend/database_teachers.dart';
-import 'package:backend/http_request_handler.dart';
+import 'package:backend/repositories/teachers_repository.dart';
+import 'package:backend/server/connexions.dart';
+import 'package:backend/server/database_manager.dart';
+import 'package:backend/server/http_request_handler.dart';
 import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -41,7 +41,7 @@ void main() async {
   final connexions = Connexions(
       database: DatabaseManager(
     teacherDatabase: switch (databaseBackend) {
-      DatabaseBackend.mysql => MySqlDatabaseTeacher(connection: connection!),
+      DatabaseBackend.mysql => MySqlTeachersRepository(connection: connection!),
       DatabaseBackend.mock => DatabaseTeachersMock()
     },
   ));

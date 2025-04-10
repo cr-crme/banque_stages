@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:backend/connexions.dart';
-import 'package:backend/exceptions.dart';
+import 'package:backend/server/connexions.dart';
+import 'package:backend/utils/exceptions.dart';
 import 'package:logging/logging.dart';
 
 final _logger = Logger('AnswerHttpRequest');

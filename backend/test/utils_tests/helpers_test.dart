@@ -1,4 +1,4 @@
-import 'package:backend/helpers.dart';
+import 'package:backend/utils/helpers.dart';
 import 'package:test/test.dart';
 
 void main() {

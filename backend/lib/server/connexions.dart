@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:backend/database_manager.dart';
-import 'package:backend/exceptions.dart';
-import 'package:backend/utils.dart';
+import 'package:backend/server/database_manager.dart';
+import 'package:backend/utils/exceptions.dart';
+import 'package:backend/utils/helpers.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:common/exceptions.dart';
 import 'package:logging/logging.dart';

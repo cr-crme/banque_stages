@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:backend/connexions.dart';
-import 'package:backend/database_manager.dart';
-import 'package:backend/database_teachers.dart';
+import 'package:backend/repositories/teachers_repository.dart';
+import 'package:backend/server/connexions.dart';
+import 'package:backend/server/database_manager.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:test/test.dart';
 
-import 'web_socket_mock.dart';
+import '../mockers/web_socket_mock.dart';
 
 String _prepareHandshake() {
   return jsonEncode(

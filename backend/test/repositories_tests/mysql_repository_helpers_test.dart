@@ -1,4 +1,4 @@
-import 'package:backend/mysql_helpers.dart';
+import 'package:backend/repositories/mysql_repository_helpers.dart';
 import 'package:test/test.dart';
 
 String _cleanQuery(String query) {

@@ -1,5 +1,5 @@
-import 'package:backend/database_teachers.dart';
-import 'package:backend/exceptions.dart';
+import 'package:backend/repositories/teachers_repository.dart';
+import 'package:backend/utils/exceptions.dart';
 import 'package:common/communication_protocol.dart';
 
 String _getId(Map<String, dynamic>? data, {required String messageOnNull}) {
@@ -11,7 +11,7 @@ String _getId(Map<String, dynamic>? data, {required String messageOnNull}) {
 class DatabaseManager {
   DatabaseManager({required this.teacherDatabase});
 
-  final DatabaseTeachers teacherDatabase;
+  final TeachersRepository teacherDatabase;
 
   Future<Map<String, dynamic>> get(RequestFields field,
       {required Map<String, dynamic>? data}) async {

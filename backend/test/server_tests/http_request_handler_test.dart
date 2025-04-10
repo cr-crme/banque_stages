@@ -1,10 +1,10 @@
-import 'package:backend/connexions.dart';
-import 'package:backend/database_manager.dart';
-import 'package:backend/database_teachers.dart';
-import 'package:backend/http_request_handler.dart';
+import 'package:backend/repositories/teachers_repository.dart';
+import 'package:backend/server/connexions.dart';
+import 'package:backend/server/database_manager.dart';
+import 'package:backend/server/http_request_handler.dart';
 import 'package:test/test.dart';
 
-import 'http_request_mock.dart';
+import '../mockers/http_request_mock.dart';
 
 Connexions get _mockedConnexions => Connexions(
     database: DatabaseManager(teacherDatabase: DatabaseTeachersMock()));

@@ -1,15 +1,15 @@
 import 'dart:convert';
 
-import 'package:backend/database_interface_abstract.dart';
-import 'package:backend/exceptions.dart';
-import 'package:backend/helpers.dart';
-import 'package:backend/mysql_helpers.dart';
+import 'package:backend/repositories/mysql_repository_helpers.dart';
+import 'package:backend/repositories/repository_abstract.dart';
+import 'package:backend/utils/exceptions.dart';
+import 'package:backend/utils/helpers.dart';
 import 'package:common/models/address.dart';
 import 'package:common/models/phone_number.dart';
 import 'package:common/models/teacher.dart';
 import 'package:mysql1/mysql1.dart';
 
-abstract class DatabaseTeachers implements DatabaseInterfaceAbstract {
+abstract class TeachersRepository implements RepositoryAbstract {
   @override
   Future<Map<String, dynamic>> getAll() async {
     final teachers = await _getAllTeachers();
@@ -48,10 +48,10 @@ abstract class DatabaseTeachers implements DatabaseInterfaceAbstract {
       {required Teacher teacher, required Teacher? previous});
 }
 
-class MySqlDatabaseTeacher extends DatabaseTeachers {
+class MySqlTeachersRepository extends TeachersRepository {
   // coverage:ignore-start
   final MySqlConnection connection;
-  MySqlDatabaseTeacher({required this.connection});
+  MySqlTeachersRepository({required this.connection});
 
   @override
   Future<Map<String, Teacher>> _getAllTeachers({String? teacherId}) async {
@@ -228,7 +228,7 @@ class MySqlDatabaseTeacher extends DatabaseTeachers {
   // coverage:ignore-end
 }
 
-class DatabaseTeachersMock extends DatabaseTeachers {
+class DatabaseTeachersMock extends TeachersRepository {
   // Simulate a database with a map
   final _dummyDatabase = {
     '0': Teacher(

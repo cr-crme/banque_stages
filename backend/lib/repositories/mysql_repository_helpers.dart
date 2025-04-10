@@ -1,4 +1,4 @@
-import 'package:backend/exceptions.dart';
+import 'package:backend/utils/exceptions.dart';
 import 'package:mysql1/mysql1.dart';
 
 // coverage:ignore-start
