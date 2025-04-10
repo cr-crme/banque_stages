@@ -1,6 +1,7 @@
 import 'package:backend/exceptions.dart';
 import 'package:mysql1/mysql1.dart';
 
+// coverage:ignore-start
 Future<Results> tryQuery(MySqlConnection connection, String query,
     [List<Object?>? values]) async {
   try {
@@ -14,23 +15,39 @@ Future<Results> tryQuery(MySqlConnection connection, String query,
         'This should not happen, please contact the administrator of the database.');
   }
 }
+// coverage:ignore-end
 
-String craftQuery({
+String craftSelectQuery({
   required String tableName,
-  String? id,
+  String? elementId,
   List<MySqlTableAccessor>? sublists,
 }) {
   String query = '''
     SELECT t.*, 
       ${sublists?.map((e) => e._craft(tableElementAlias: 't')).join(',') ?? ''}
     FROM $tableName t
-    ${id == null ? '' : 'WHERE t.id="$id"'}''';
+    ${elementId == null ? '' : 'WHERE t.id="$elementId"'}''';
 
   return query;
 }
 
 abstract class MySqlTableAccessor {
   String _craft({required String tableElementAlias});
+
+  static String _dispatchFieldsToFetch(
+      {required List<String> fieldsToFetch,
+      required String tableElementAlias}) {
+    if (fieldsToFetch.isEmpty) throw 'Fields cannot be empty';
+
+    String fieldsInMainList = '';
+    for (final field in fieldsToFetch) {
+      fieldsInMainList += '\'$field\', $tableElementAlias.$field, ';
+    }
+    fieldsInMainList =
+        fieldsInMainList.substring(0, fieldsInMainList.length - 2);
+
+    return fieldsInMainList;
+  }
 }
 
 class MySqlNormalizedTable implements MySqlTableAccessor {
@@ -52,19 +69,10 @@ class MySqlNormalizedTable implements MySqlTableAccessor {
 
   @override
   String _craft({required String tableElementAlias}) {
-    if (fieldsToFetch.isEmpty) throw 'Fields cannot be empty';
-
-    String fieldsInMainList = '';
-    for (final field in fieldsToFetch) {
-      fieldsInMainList += '\'$field\', mt.$field,';
-    }
-    fieldsInMainList =
-        fieldsInMainList.substring(0, fieldsInMainList.length - 1);
-
     return '''(
         SELECT JSON_ARRAYAGG(
             JSON_OBJECT(
-              $fieldsInMainList
+              ${MySqlTableAccessor._dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'mt')}
             )
         )
         FROM $subtableName st
@@ -87,20 +95,11 @@ class MySqlTable implements MySqlTableAccessor {
 
   @override
   String _craft({required String tableElementAlias}) {
-    if (fieldsToFetch.isEmpty) throw 'Fields cannot be empty';
-
-    String fieldsInMainList = '';
-    for (final field in fieldsToFetch) {
-      fieldsInMainList += '\'$field\', ml.$field,';
-    }
-    fieldsInMainList =
-        fieldsInMainList.substring(0, fieldsInMainList.length - 1);
-
     return '''
       IFNULL((
         SELECT JSON_ARRAYAGG(
             JSON_OBJECT(
-              $fieldsInMainList
+              ${MySqlTableAccessor._dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'ml')}
             )
         )
         FROM $tableName ml

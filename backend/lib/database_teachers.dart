@@ -57,36 +57,39 @@ class MySqlDatabaseTeacher extends DatabaseTeachers {
   Future<Map<String, Teacher>> _getAllTeachers({String? teacherId}) async {
     final results = await tryQuery(
         connection,
-        craftQuery(tableName: 'teachers', id: teacherId, sublists: [
-          MySqlNormalizedTable(
-            mainTableName: 'phone_numbers',
-            subtableName: 'phone_numbers_teachers',
-            fieldsToFetch: ['id', 'phone_number'],
-            tableId: 'id',
-            subTableId: 'phone_number_id',
-            foreignId: 'teacher_id',
-          ),
-          MySqlNormalizedTable(
-            mainTableName: 'addresses',
-            subtableName: 'addresses_teachers',
-            fieldsToFetch: [
-              'id',
-              'civic',
-              'street',
-              'appartment',
-              'city',
-              'postal_code'
-            ],
-            tableId: 'id',
-            subTableId: 'address_id',
-            foreignId: 'teacher_id',
-          ),
-          MySqlTable(
-            tableName: 'teaching_groups',
-            fieldsToFetch: ['group_name'],
-            tableId: 'teacher_id',
-          )
-        ]));
+        craftSelectQuery(
+            tableName: 'teachers',
+            elementId: teacherId,
+            sublists: [
+              MySqlNormalizedTable(
+                mainTableName: 'phone_numbers',
+                subtableName: 'phone_numbers_teachers',
+                fieldsToFetch: ['id', 'phone_number'],
+                tableId: 'id',
+                subTableId: 'phone_number_id',
+                foreignId: 'teacher_id',
+              ),
+              MySqlNormalizedTable(
+                mainTableName: 'addresses',
+                subtableName: 'addresses_teachers',
+                fieldsToFetch: [
+                  'id',
+                  'civic',
+                  'street',
+                  'appartment',
+                  'city',
+                  'postal_code'
+                ],
+                tableId: 'id',
+                subTableId: 'address_id',
+                foreignId: 'teacher_id',
+              ),
+              MySqlTable(
+                tableName: 'teaching_groups',
+                fieldsToFetch: ['group_name'],
+                tableId: 'teacher_id',
+              )
+            ]));
 
     return {
       for (final teacher in results)

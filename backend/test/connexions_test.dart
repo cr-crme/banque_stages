@@ -395,8 +395,8 @@ void main() {
     expect(protocol.data!['0']['schoolId'], '10');
     expect(protocol.data!['0']['groups'], isA<List>());
     expect(protocol.data!['0']['groups'], ['100', '101']);
-    expect(protocol.data!['0']['phone'], isA<String>());
-    expect(protocol.data!['0']['phone'], '(098) 765-4321');
+    expect(protocol.data!['0']['phone'], isA<Map>());
+    expect(protocol.data!['0']['phone']['phone_number'], '(098) 765-4321');
     expect(protocol.data!['1']['firstName'], isA<String>());
     expect(protocol.data!['1']['firstName'], 'Jane');
     expect(protocol.data!['1']['lastName'], isA<String>());

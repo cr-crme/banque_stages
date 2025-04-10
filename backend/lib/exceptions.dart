@@ -47,9 +47,10 @@ class InvalidRequestException implements IntershipBankException {
 
 class DatabaseFailureException implements IntershipBankException {
   final String _message;
-
+// coverage:ignore-start
   DatabaseFailureException(String message) : _message = message;
 
   @override
   String toString() => _message;
+// coverage:ignore-end
 }
