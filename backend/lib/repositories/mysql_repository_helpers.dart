@@ -17,19 +17,29 @@ Future<Results> tryQuery(MySqlConnection connection, String query,
 }
 // coverage:ignore-end
 
+// coverage:ignore-start
+Future<Results> performSelectQuery({
+  required MySqlConnection connection,
+  required String tableName,
+  String? elementId,
+  List<MySqlTableAccessor>? sublists,
+}) async =>
+    await tryQuery(
+        connection,
+        craftSelectQuery(
+            tableName: tableName, elementId: elementId, sublists: sublists));
+// coverage:ignore-end
+
 String craftSelectQuery({
   required String tableName,
   String? elementId,
   List<MySqlTableAccessor>? sublists,
-}) {
-  String query = '''
+}) =>
+    '''
     SELECT t.*, 
       ${sublists?.map((e) => e._craft(tableElementAlias: 't')).join(',') ?? ''}
     FROM $tableName t
     ${elementId == null ? '' : 'WHERE t.id="$elementId"'}''';
-
-  return query;
-}
 
 abstract class MySqlTableAccessor {
   String _craft({required String tableElementAlias});
@@ -107,3 +117,79 @@ class MySqlTable implements MySqlTableAccessor {
       ), JSON_ARRAY()) AS $tableName''';
   }
 }
+
+// coverage:ignore-start
+Future<Results> performInsertQuery({
+  required MySqlConnection connection,
+  required String tableName,
+  required Map<String, dynamic> data,
+}) async =>
+    await tryQuery(connection,
+        craftInsertQuery(tableName: tableName, data: data), [...data.values]);
+
+Future<void> performInsertNormalizedQuery({
+  required MySqlConnection connection,
+  required String tableName,
+  required Map<String, dynamic> data,
+  required String normalizedTableName,
+  required Map<String, dynamic> normalizedKeys,
+}) async {
+  await tryQuery(connection, craftInsertQuery(tableName: tableName, data: data),
+      [...data.values]);
+
+  await tryQuery(
+      connection,
+      craftInsertQuery(tableName: normalizedTableName, data: normalizedKeys),
+      [...normalizedKeys.values]);
+}
+// coverage:ignore-end
+
+// TODO Add test to craft Insert Query
+String craftInsertQuery({
+  required String tableName,
+  required Map<String, dynamic> data,
+}) =>
+    '''
+    INSERT INTO $tableName (${data.keys.join(',')})
+    VALUES (${data.keys.map((e) => '?').join(',')})''';
+
+// coverage:ignore-start
+Future<Results> performUpdateQuery({
+  required MySqlConnection connection,
+  required String tableName,
+  required MapEntry<String, String> id,
+  required Map<String, dynamic> data,
+}) async =>
+    await tryQuery(
+        connection,
+        craftUpdateQuery(tableName: tableName, id: id, data: data),
+        [...data.values, id.value]);
+// coverage:ignore-end
+
+// TODO Add test to craft update Query
+String craftUpdateQuery({
+  required String tableName,
+  required MapEntry<String, String> id,
+  required Map<String, dynamic> data,
+}) =>
+    '''
+    UPDATE $tableName SET ${data.keys.join('= ?,')} = ?
+    WHERE ${id.key} = ?''';
+
+// coverage:ignore-start
+Future<Results> performDeleteQuery({
+  required MySqlConnection connection,
+  required String tableName,
+  required MapEntry<String, String> id,
+}) async =>
+    await tryQuery(
+        connection, craftDeleteQuery(tableName: tableName, id: id), [id.value]);
+// coverage:ignore-end
+
+// TODO Add test to craft delete Query
+String craftDeleteQuery({
+  required String tableName,
+  required MapEntry<String, String> id,
+}) =>
+    '''
+    DELETE FROM $tableName WHERE ${id.key} = ?''';

@@ -55,41 +55,40 @@ class MySqlTeachersRepository extends TeachersRepository {
 
   @override
   Future<Map<String, Teacher>> _getAllTeachers({String? teacherId}) async {
-    final results = await tryQuery(
-        connection,
-        craftSelectQuery(
-            tableName: 'teachers',
-            elementId: teacherId,
-            sublists: [
-              MySqlNormalizedTable(
-                mainTableName: 'phone_numbers',
-                subtableName: 'phone_numbers_teachers',
-                fieldsToFetch: ['id', 'phone_number'],
-                tableId: 'id',
-                subTableId: 'phone_number_id',
-                foreignId: 'teacher_id',
-              ),
-              MySqlNormalizedTable(
-                mainTableName: 'addresses',
-                subtableName: 'addresses_teachers',
-                fieldsToFetch: [
-                  'id',
-                  'civic',
-                  'street',
-                  'appartment',
-                  'city',
-                  'postal_code'
-                ],
-                tableId: 'id',
-                subTableId: 'address_id',
-                foreignId: 'teacher_id',
-              ),
-              MySqlTable(
-                tableName: 'teaching_groups',
-                fieldsToFetch: ['group_name'],
-                tableId: 'teacher_id',
-              )
-            ]));
+    final results = await performSelectQuery(
+        connection: connection,
+        tableName: 'teachers',
+        elementId: teacherId,
+        sublists: [
+          MySqlNormalizedTable(
+            mainTableName: 'phone_numbers',
+            subtableName: 'phone_numbers_teachers',
+            fieldsToFetch: ['id', 'phone_number'],
+            tableId: 'id',
+            subTableId: 'phone_number_id',
+            foreignId: 'teacher_id',
+          ),
+          MySqlNormalizedTable(
+            mainTableName: 'addresses',
+            subtableName: 'addresses_teachers',
+            fieldsToFetch: [
+              'id',
+              'civic',
+              'street',
+              'appartment',
+              'city',
+              'postal_code'
+            ],
+            tableId: 'id',
+            subTableId: 'address_id',
+            foreignId: 'teacher_id',
+          ),
+          MySqlTable(
+            tableName: 'teaching_groups',
+            fieldsToFetch: ['group_name'],
+            tableId: 'teacher_id',
+          )
+        ]);
 
     return {
       for (final teacher in results)
@@ -127,102 +126,106 @@ class MySqlTeachersRepository extends TeachersRepository {
 
   Future<void> _putNewTeacher(Teacher teacher) async {
     // Insert the teacher
-    await tryQuery(
-        connection,
-        'INSERT INTO teachers (id, first_name, middle_name, last_name, school_id, email) VALUES (?, ?, ?, ?, ?, ?)',
-        [
-          teacher.id,
-          teacher.firstName,
-          teacher.middleName,
-          teacher.lastName,
-          teacher.schoolId,
-          teacher.email,
-        ]);
+    await performInsertQuery(
+        connection: connection,
+        tableName: 'teachers',
+        data: {
+          'id': teacher.id,
+          'first_name': teacher.firstName,
+          'middle_name': teacher.middleName,
+          'last_name': teacher.lastName,
+          'school_id': teacher.schoolId,
+          'email': teacher.email
+        });
     // Insert the groups
     for (final group in teacher.groups) {
-      await tryQuery(
-          connection,
-          'INSERT INTO teaching_groups (teacher_id, group_name) VALUES (?, ?)',
-          [teacher.id, group]);
+      await performInsertQuery(
+          connection: connection,
+          tableName: 'teaching_groups',
+          data: {'teacher_id': teacher.id, 'group_name': group});
     }
 
     // Insert the phone number
-    await tryQuery(
-        connection,
-        'INSERT INTO phone_numbers (id, phone_number) VALUES (?, ?)',
-        [teacher.phone.id, teacher.phone.toString()]);
-    await tryQuery(
-        connection,
-        'INSERT INTO phone_numbers_teachers (teacher_id, phone_number_id) VALUES (?, ?)',
-        [teacher.id, teacher.phone.id]);
+    await performInsertNormalizedQuery(
+        connection: connection,
+        tableName: 'phone_numbers',
+        data: {
+          'id': teacher.phone.id,
+          'phone_number': teacher.phone.toString()
+        },
+        normalizedTableName: 'phone_numbers_teachers',
+        normalizedKeys: {
+          'teacher_id': teacher.id,
+          'phone_number_id': teacher.phone.id
+        });
 
     // Insert the address
-    await tryQuery(
-        connection,
-        'INSERT INTO addresses (id, civic, street, appartment, city, postal_code) VALUES (?, ?, ?, ?, ?, ?)',
-        [
-          teacher.address.id,
-          teacher.address.civicNumber,
-          teacher.address.street,
-          teacher.address.appartment,
-          teacher.address.city,
-          teacher.address.postalCode
-        ]);
-    await tryQuery(
-        connection,
-        'INSERT INTO addresses_teachers (teacher_id, address_id) VALUES (?, ?)',
-        [teacher.id, teacher.address.id]);
+    await performInsertNormalizedQuery(
+        connection: connection,
+        tableName: 'addresses',
+        data: {
+          'id': teacher.address.id,
+          'civic': teacher.address.civicNumber,
+          'street': teacher.address.street,
+          'appartment': teacher.address.appartment,
+          'city': teacher.address.city,
+          'postal_code': teacher.address.postalCode
+        },
+        normalizedTableName: 'addresses_teachers',
+        normalizedKeys: {
+          'teacher_id': teacher.id,
+          'address_id': teacher.address.id
+        });
   }
 
   Future<void> _putExistingTeacher(Teacher teacher, Teacher previous) async {
-    String query = 'UPDATE teachers SET ';
-    final List params = [];
+    final toUpdate = <String, dynamic>{};
     if (teacher.firstName != previous.firstName) {
-      query += 'first_name = ?, ';
-      params.add(teacher.firstName);
+      toUpdate['first_name'] = teacher.firstName;
     }
     if (teacher.middleName != previous.middleName) {
-      query += 'middle_name = ?, ';
-      params.add(teacher.middleName);
+      toUpdate['middle_name'] = teacher.middleName;
     }
     if (teacher.lastName != previous.lastName) {
-      query += 'last_name = ?, ';
-      params.add(teacher.lastName);
+      toUpdate['last_name'] = teacher.lastName;
     }
     if (teacher.schoolId != previous.schoolId) {
-      query += 'school_id = ?, ';
-      params.add(teacher.schoolId);
+      toUpdate['school_id'] = teacher.schoolId;
     }
     if (teacher.email != previous.email) {
-      query += 'email = ?, ';
-      params.add(teacher.email);
+      toUpdate['email'] = teacher.email;
     }
 
     // Update the teacher
-    if (params.isNotEmpty) {
-      params.add(teacher.id);
-      await tryQuery(connection,
-          '${query.substring(0, query.length - 2)} WHERE id = ?', params);
+    if (toUpdate.isNotEmpty) {
+      await performUpdateQuery(
+          connection: connection,
+          tableName: 'teachers',
+          id: MapEntry('id', teacher.id),
+          data: toUpdate);
     }
 
     // Update teaching groups
     if (isNotListEqual(teacher.groups, previous.groups)) {
-      await tryQuery(connection,
-          'DELETE FROM teaching_groups WHERE teacher_id = ?', [teacher.id]);
-      for (var group in teacher.groups) {
-        await tryQuery(
-            connection,
-            'INSERT INTO teaching_groups (teacher_id, group_id) VALUES (?, ?)',
-            [teacher.id, group]);
+      await performDeleteQuery(
+          connection: connection,
+          tableName: 'teaching_groups',
+          id: MapEntry('teacher_id', teacher.id));
+      for (final group in teacher.groups) {
+        await performInsertQuery(
+            connection: connection,
+            tableName: 'teaching_groups',
+            data: {'teacher_id': teacher.id, 'group_name': group});
       }
     }
 
     // Update the phone number
     if (teacher.phone != previous.phone) {
-      await tryQuery(
-          connection,
-          'UPDATE phone_numbers SET phone_number = ? WHERE teacher_id = ?',
-          [teacher.phone.toString(), teacher.id]);
+      await performUpdateQuery(
+          connection: connection,
+          tableName: 'phone_numbers',
+          id: MapEntry('teacher_id', teacher.id),
+          data: {'phone_number': teacher.phone.toString()});
     }
   }
   // coverage:ignore-end

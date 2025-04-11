@@ -15,6 +15,8 @@ DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS teaching_groups;
 DROP TABLE IF EXISTS teachers;
 
+DROP TABLE IF EXISTS enterprises;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 
@@ -99,3 +101,15 @@ CREATE TABLE phone_numbers_students (
     FOREIGN KEY (phone_number_id) REFERENCES phone_numbers(id) ON DELETE CASCADE
 );
 */
+
+
+
+/*************************/
+/* People related tables */
+/*************************/
+
+
+CREATE TABLE enterprises (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);

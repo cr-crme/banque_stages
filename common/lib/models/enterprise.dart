@@ -1,3 +1,4 @@
+import 'package:common/exceptions.dart';
 import 'package:common/models/address.dart';
 import 'package:common/models/job_list.dart';
 import 'package:common/models/person.dart';
@@ -6,53 +7,54 @@ import 'package:enhanced_containers_foundation/enhanced_containers_foundation.da
 
 class Enterprise extends ItemSerializable {
   final String name;
-  final Set<String> activityTypes;
-  final String recrutedBy;
-  final String shareWith;
+  // final Set<String> activityTypes;
+  // final String recrutedBy;
+  // final String shareWith;
 
-  final JobList jobs;
+  // final JobList jobs;
 
-  final Person contact;
-  final String contactFunction;
+  // final Person contact;
+  // final String contactFunction;
 
-  final Address? address;
-  final PhoneNumber phone;
-  final PhoneNumber fax;
-  final String website;
+  // final Address? address;
+  // final PhoneNumber phone;
+  // final PhoneNumber fax;
+  // final String website;
 
-  final Address? headquartersAddress;
-  final String? neq;
+  // final Address? headquartersAddress;
+  // final String? neq;
 
-  // TODO: Implement this on app side with an extension on
-  // List<Internship> internships(context, {listen = true}) =>
-  //     InternshipsProvider.of(context, listen: listen)
-  //         .mapRemoveNull<Internship>(
-  //             (Internship e) => e.enterpriseId == id ? e : null)
-  //         .toList();
+  // // TODO: Implement this on app side with an extension on
+  // // List<Internship> internships(context, {listen = true}) =>
+  // //     InternshipsProvider.of(context, listen: listen)
+  // //         .mapRemoveNull<Internship>(
+  // //             (Internship e) => e.enterpriseId == id ? e : null)
+  // //         .toList();
 
-  // TODO Implement this on app side with an extension on
-  // Iterable<Job> availableJobs(context) {
-  //   return jobs.where(
-  //       (job) => job.positionsOffered - job.positionsOccupied(context) > 0);
-  // }
+  // // TODO Implement this on app side with an extension on
+  // // Iterable<Job> availableJobs(context) {
+  // //   return jobs.where(
+  // //       (job) => job.positionsOffered - job.positionsOccupied(context) > 0);
+  // // }
 
   Enterprise({
     super.id,
     required this.name,
-    required this.activityTypes,
-    required this.recrutedBy,
-    required this.shareWith,
-    required this.jobs,
-    required this.contact,
-    this.contactFunction = '',
-    this.address,
-    PhoneNumber? phone,
-    PhoneNumber? fax,
-    this.website = '',
-    this.headquartersAddress,
-    this.neq = '',
-  })  : phone = phone ?? PhoneNumber.empty,
-        fax = fax ?? PhoneNumber.empty;
+    // required this.activityTypes,
+    // required this.recrutedBy,
+    // required this.shareWith,
+    // required this.jobs,
+    // required this.contact,
+    // this.contactFunction = '',
+    // this.address,
+    // PhoneNumber? phone,
+    // PhoneNumber? fax,
+    // this.website = '',
+    // this.headquartersAddress,
+    // this.neq = '',
+  });
+  // : phone = phone ?? PhoneNumber.empty,
+  //     fax = fax ?? PhoneNumber.empty;
 
   Enterprise copyWith({
     String? name,
@@ -71,20 +73,47 @@ class Enterprise extends ItemSerializable {
     String? id,
   }) {
     return Enterprise(
-      name: name ?? this.name,
-      activityTypes: activityTypes ?? this.activityTypes,
-      recrutedBy: recrutedBy ?? this.recrutedBy,
-      shareWith: shareWith ?? this.shareWith,
-      jobs: jobs ?? this.jobs,
-      contact: contact ?? this.contact,
-      contactFunction: contactFunction ?? this.contactFunction,
-      address: address ?? this.address,
-      phone: phone ?? this.phone,
-      fax: fax ?? this.fax,
-      website: website ?? this.website,
-      headquartersAddress: headquartersAddress ?? this.headquartersAddress,
-      neq: neq ?? this.neq,
       id: id ?? this.id,
+      name: name ?? this.name,
+      // activityTypes: activityTypes ?? this.activityTypes,
+      // recrutedBy: recrutedBy ?? this.recrutedBy,
+      // shareWith: shareWith ?? this.shareWith,
+      // jobs: jobs ?? this.jobs,
+      // contact: contact ?? this.contact,
+      // contactFunction: contactFunction ?? this.contactFunction,
+      // address: address ?? this.address,
+      // phone: phone ?? this.phone,
+      // fax: fax ?? this.fax,
+      // website: website ?? this.website,
+      // headquartersAddress: headquartersAddress ?? this.headquartersAddress,
+      // neq: neq ?? this.neq,
+    );
+  }
+
+  Enterprise copyWithData(Map<String, dynamic> data) {
+    final availableFields = [
+      'id',
+      'name',
+    ];
+    // Make sure data does not contain unrecognized fields
+    if (data.keys.any((key) => !availableFields.contains(key))) {
+      throw InvalidFieldException('Invalid field data detected');
+    }
+    return Enterprise(
+      id: data['id']?.toString() ?? id,
+      name: data['name'] ?? name,
+      // activityTypes: activityTypes ?? this.activityTypes,
+      // recrutedBy: recrutedBy ?? this.recrutedBy,
+      // shareWith: shareWith ?? this.shareWith,
+      // jobs: jobs ?? this.jobs,
+      // contact: contact ?? this.contact,
+      // contactFunction: contactFunction ?? this.contactFunction,
+      // address: address ?? this.address,
+      // phone: phone ?? this.phone,
+      // fax: fax ?? this.fax,
+      // website: website ?? this.website,
+      // headquartersAddress: headquartersAddress ?? this.headquartersAddress,
+      // neq: neq ?? this.neq,
     );
   }
 
@@ -92,42 +121,41 @@ class Enterprise extends ItemSerializable {
   Map<String, dynamic> serializedMap() {
     return {
       'name': name,
-      'activityTypes': activityTypes.toList(),
-      'recrutedBy': recrutedBy,
-      'shareWith': shareWith,
-      'jobs': jobs.serialize(),
-      'contact': contact.serialize(),
-      'contactFunction': contactFunction,
-      'address': address?.serialize(),
-      'phone': phone.toString(),
-      'fax': fax.toString(),
-      'website': website,
-      'headquartersAddress': headquartersAddress?.serialize(),
-      'neq': neq,
+      // 'activityTypes': activityTypes.toList(),
+      // 'recrutedBy': recrutedBy,
+      // 'shareWith': shareWith,
+      // 'jobs': jobs.serialize(),
+      // 'contact': contact.serialize(),
+      // 'contactFunction': contactFunction,
+      // 'address': address?.serialize(),
+      // 'phone': phone.toString(),
+      // 'fax': fax.toString(),
+      // 'website': website,
+      // 'headquartersAddress': headquartersAddress?.serialize(),
+      // 'neq': neq,
     };
   }
 
   @override
-  Enterprise.fromSerialized(super.map)
-      : name = map['name'] ?? 'Unnamed enterprise',
-        activityTypes =
-            (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
-        recrutedBy = map['recrutedBy'] ?? 'Unnamed recruiter',
-        shareWith = map['shareWith'] ?? 'Unnamed sharing',
-        jobs = JobList.fromSerialized(map['jobs'] ?? {}),
-        contact = Person.fromSerialized(map['contact'] ?? {}),
-        contactFunction = map['contactFunction'] ?? '',
-        address = map['address'] == null
-            ? null
-            : Address.fromSerialized(map['address']),
-        phone = PhoneNumber.fromString(map['phone'] ?? ''),
-        fax = PhoneNumber.fromString(map['fax'] ?? ''),
-        website = map['website'] ?? '',
-        headquartersAddress = map['headquartersAddress'] == null
-            ? null
-            : Address.fromSerialized(map['headquartersAddress']),
-        neq = map['neq'],
-        super.fromSerialized();
+  Enterprise.fromSerialized(map) : name = map['name'] ?? 'Unnamed enterprise';
+  // activityTypes =
+  //     (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
+  // recrutedBy = map['recrutedBy'] ?? 'Unnamed recruiter',
+  // shareWith = map['shareWith'] ?? 'Unnamed sharing',
+  // jobs = JobList.fromSerialized(map['jobs'] ?? {}),
+  // contact = Person.fromSerialized(map['contact'] ?? {}),
+  // contactFunction = map['contactFunction'] ?? '',
+  // address = map['address'] == null
+  //     ? null
+  //     : Address.fromSerialized(map['address']),
+  // phone = PhoneNumber.fromString(map['phone'] ?? ''),
+  // fax = PhoneNumber.fromString(map['fax'] ?? ''),
+  // website = map['website'] ?? '',
+  // headquartersAddress = map['headquartersAddress'] == null
+  //     ? null
+  //     : Address.fromSerialized(map['headquartersAddress']),
+  // neq = map['neq'],
+  // super.fromSerialized();
 }
 
 const List<String> activityTypes = [

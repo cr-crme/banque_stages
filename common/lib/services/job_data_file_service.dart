@@ -1,18 +1,16 @@
+import 'package:common/assets/jobs_data.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 abstract class ActivitySectorsService {
-  // TODO Implement this on app side with an extension on
-  // static Future<void> initializeActivitySectorSingleton() async {
-  //   final file = await rootBundle.loadString('assets/jobs-data.json');
-  //   final json = jsonDecode(file) as List;
-
-  //   sectors = ActivitySectorList.fromSerialized(json);
-  // }
-
-  static late ActivitySectorList sectors; // Holder of the singleton
+  static ActivitySectorList? _activitySectors =
+      ActivitySectorList.fromSerialized(jobData);
+  static ActivitySectorList get activitySectors {
+    _activitySectors ??= ActivitySectorList.fromSerialized(jobData);
+    return _activitySectors!;
+  }
 
   static Specialization specialization(String id) {
-    for (final sector in sectors) {
+    for (final sector in activitySectors) {
       for (final specialization in sector.specializations) {
         if (specialization.id == id) return specialization;
       }
@@ -22,7 +20,7 @@ abstract class ActivitySectorsService {
 
   static List<Specialization> get allSpecializations {
     final List<Specialization> out = [];
-    for (final sector in sectors) {
+    for (final sector in activitySectors) {
       for (final specialization in sector.specializations) {
         out.add(specialization);
       }
@@ -89,7 +87,7 @@ class Specialization extends NamedItemSerializable {
     ..addAll({'s': skills.serializeList(), 'q': questions});
 
   static ActivitySector _findSector(String id) {
-    for (final sector in ActivitySectorsService.sectors) {
+    for (final sector in ActivitySectorsService.activitySectors) {
       for (final specialization in sector.specializations) {
         if (specialization.id == id) return sector;
       }
