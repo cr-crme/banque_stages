@@ -35,8 +35,7 @@ String craftSelectQuery({
   String? elementId,
   List<MySqlTableAccessor>? sublists,
 }) =>
-    '''
-    SELECT t.*, 
+    '''SELECT t.*, 
       ${sublists?.map((e) => e._craft(tableElementAlias: 't')).join(',') ?? ''}
     FROM $tableName t
     ${elementId == null ? '' : 'WHERE t.id="$elementId"'}''';
@@ -105,8 +104,7 @@ class MySqlTable implements MySqlTableAccessor {
 
   @override
   String _craft({required String tableElementAlias}) {
-    return '''
-      IFNULL((
+    return '''IFNULL((
         SELECT JSON_ARRAYAGG(
             JSON_OBJECT(
               ${MySqlTableAccessor._dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'ml')}
@@ -144,14 +142,12 @@ Future<void> performInsertNormalizedQuery({
 }
 // coverage:ignore-end
 
-// TODO Add test to craft Insert Query
 String craftInsertQuery({
   required String tableName,
   required Map<String, dynamic> data,
 }) =>
-    '''
-    INSERT INTO $tableName (${data.keys.join(',')})
-    VALUES (${data.keys.map((e) => '?').join(',')})''';
+    '''INSERT INTO $tableName (${data.keys.join(', ')})
+       VALUES (${data.keys.map((e) => '?').join(', ')})''';
 
 // coverage:ignore-start
 Future<Results> performUpdateQuery({
@@ -166,15 +162,13 @@ Future<Results> performUpdateQuery({
         [...data.values, id.value]);
 // coverage:ignore-end
 
-// TODO Add test to craft update Query
 String craftUpdateQuery({
   required String tableName,
   required MapEntry<String, String> id,
   required Map<String, dynamic> data,
 }) =>
-    '''
-    UPDATE $tableName SET ${data.keys.join('= ?,')} = ?
-    WHERE ${id.key} = ?''';
+    '''UPDATE $tableName SET ${data.keys.join(' = ?, ')} = ?
+       WHERE ${id.key} = ?''';
 
 // coverage:ignore-start
 Future<Results> performDeleteQuery({
@@ -186,10 +180,8 @@ Future<Results> performDeleteQuery({
         connection, craftDeleteQuery(tableName: tableName, id: id), [id.value]);
 // coverage:ignore-end
 
-// TODO Add test to craft delete Query
 String craftDeleteQuery({
   required String tableName,
   required MapEntry<String, String> id,
 }) =>
-    '''
-    DELETE FROM $tableName WHERE ${id.key} = ?''';
+    '''DELETE FROM $tableName WHERE ${id.key} = ?''';
