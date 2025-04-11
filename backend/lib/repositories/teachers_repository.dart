@@ -231,7 +231,7 @@ class MySqlTeachersRepository extends TeachersRepository {
   // coverage:ignore-end
 }
 
-class DatabaseTeachersMock extends TeachersRepository {
+class TeachersRepositoryMock extends TeachersRepository {
   // Simulate a database with a map
   final _dummyDatabase = {
     '0': Teacher(

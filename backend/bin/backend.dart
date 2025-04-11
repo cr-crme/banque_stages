@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:backend/repositories/teachers_repository.dart';
+import 'package:backend/repositories/enterprises_repository.dart';
 import 'package:backend/server/connexions.dart';
 import 'package:backend/server/database_manager.dart';
 import 'package:backend/server/http_request_handler.dart';
@@ -42,7 +43,12 @@ void main() async {
       database: DatabaseManager(
     teacherDatabase: switch (databaseBackend) {
       DatabaseBackend.mysql => MySqlTeachersRepository(connection: connection!),
-      DatabaseBackend.mock => DatabaseTeachersMock()
+      DatabaseBackend.mock => TeachersRepositoryMock()
+    },
+    enterpriseDatabase: switch (databaseBackend) {
+      DatabaseBackend.mysql =>
+        MySqlEnterprisesRepository(connection: connection!),
+      DatabaseBackend.mock => EnterprisesRepositoryMock()
     },
   ));
   final requestHandler = HttpRequestHandler(connexions: connexions);

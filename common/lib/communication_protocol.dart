@@ -3,6 +3,8 @@ import 'package:common/exceptions.dart';
 enum RequestFields {
   teacher,
   teachers,
+  enterprise,
+  enterprises,
 }
 
 enum RequestType {

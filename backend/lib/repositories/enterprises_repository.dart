@@ -104,7 +104,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   // coverage:ignore-end
 }
 
-class DatabaseEnterprisesMock extends EnterprisesRepository {
+class EnterprisesRepositoryMock extends EnterprisesRepository {
   // Simulate a database with a map
   final _dummyDatabase = {
     '0': Enterprise(

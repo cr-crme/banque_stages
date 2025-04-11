@@ -3,7 +3,7 @@ import 'package:backend/utils/exceptions.dart';
 import 'package:common/exceptions.dart';
 import 'package:test/test.dart';
 
-TeachersRepository get _mockedDatabaseTeachers => DatabaseTeachersMock();
+TeachersRepository get _mockedDatabaseTeachers => TeachersRepositoryMock();
 
 void main() {
   test('Get teachers from DatabaseTeachers', () async {

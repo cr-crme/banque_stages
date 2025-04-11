@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/address.dart';
+import 'package:common/models/enterprise.dart';
 import 'package:common/models/phone_number.dart';
 import 'package:common/models/teacher.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
@@ -28,6 +29,28 @@ Future<void> _updateTeachers(Map<String, dynamic> data) async {
       _dummyTeachers[id] = _dummyTeachers.containsKey(id)
           ? _dummyTeachers[id]!.copyWithData(teacherData)
           : Teacher.fromSerialized(teacherData);
+    }
+  }
+}
+
+final Map<String, Enterprise> _dummyEnterprises = {};
+Future<void> _updateEnterprises(Map<String, dynamic> data) async {
+  if (data.containsKey("id")) {
+    // Update a single enterprise
+    final id = data["id"];
+    final enterpriseData = data;
+    _dummyEnterprises[id] = _dummyEnterprises.containsKey(id)
+        ? _dummyEnterprises[id]!.copyWithData(enterpriseData)
+        : Enterprise.fromSerialized(enterpriseData);
+  } else {
+    // Update all enterprises
+    _dummyEnterprises.clear();
+    for (final entry in data.entries) {
+      final id = entry.key;
+      final enterpriseData = entry.value;
+      _dummyEnterprises[id] = _dummyEnterprises.containsKey(id)
+          ? _dummyEnterprises[id]!.copyWithData(enterpriseData)
+          : Enterprise.fromSerialized(enterpriseData);
     }
   }
 }
@@ -116,6 +139,14 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
+                onPressed: isConnected ? _addRandomEnterprise : null,
+                child: Text('Add random Enterprise')),
+            SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: isConnected ? _getEnterprises : null,
+                child: Text('Get enterprises')),
+            SizedBox(height: 20),
+            ElevatedButton(
               onPressed: isConnected ? _closeConnexion : null,
               child: Text('Disconnect'),
             ),
@@ -197,6 +228,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 _updateTeachers(protocol.data!);
                 setState(() {});
                 break;
+              case RequestFields.enterprises:
+              case RequestFields.enterprise:
+                if (protocol.data == null) throw Exception('No data received');
+                _updateEnterprises(protocol.data!);
+                setState(() {});
+                break;
               case null:
                 throw Exception('Unsupported request field: ${protocol.field}');
             }
@@ -254,6 +291,36 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _addRandomEnterprise() async {
+    if (!isConnected) return;
+
+    // Send a post request to the server
+    try {
+      final random = Random();
+      final name = ['The', 'Best', 'The', 'Great', 'The'][random.nextInt(5)] +
+          [
+            'Company',
+            'Enterprise',
+            'Business',
+            'Corporation',
+            'Firm'
+          ][random.nextInt(5)];
+
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.post,
+        field: RequestFields.enterprise,
+        data: Enterprise(
+          name: name,
+        ).serialize(),
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
   Future<void> _getTeachers() async {
     if (!isConnected) return;
 
@@ -262,6 +329,23 @@ class _LoginScreenState extends State<LoginScreen> {
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.get,
         field: RequestFields.teachers,
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
+  Future<void> _getEnterprises() async {
+    if (!isConnected) return;
+
+    // Send a get request to the server
+    try {
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.get,
+        field: RequestFields.enterprises,
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');
