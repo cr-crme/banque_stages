@@ -8,7 +8,7 @@ import 'package:enhanced_containers_foundation/enhanced_containers_foundation.da
 class Enterprise extends ItemSerializable {
   final String name;
   // final Set<String> activityTypes;
-  // final String recrutedBy;
+  final String recrutedBy;
   // final String shareWith;
 
   // final JobList jobs;
@@ -41,7 +41,7 @@ class Enterprise extends ItemSerializable {
     super.id,
     required this.name,
     // required this.activityTypes,
-    // required this.recrutedBy,
+    required this.recrutedBy,
     // required this.shareWith,
     // required this.jobs,
     // required this.contact,
@@ -76,7 +76,7 @@ class Enterprise extends ItemSerializable {
       id: id ?? this.id,
       name: name ?? this.name,
       // activityTypes: activityTypes ?? this.activityTypes,
-      // recrutedBy: recrutedBy ?? this.recrutedBy,
+      recrutedBy: recrutedBy ?? this.recrutedBy,
       // shareWith: shareWith ?? this.shareWith,
       // jobs: jobs ?? this.jobs,
       // contact: contact ?? this.contact,
@@ -91,10 +91,7 @@ class Enterprise extends ItemSerializable {
   }
 
   Enterprise copyWithData(Map<String, dynamic> data) {
-    final availableFields = [
-      'id',
-      'name',
-    ];
+    final availableFields = ['id', 'name', 'recruted_by'];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
       throw InvalidFieldException('Invalid field data detected');
@@ -103,7 +100,7 @@ class Enterprise extends ItemSerializable {
       id: data['id']?.toString() ?? id,
       name: data['name'] ?? name,
       // activityTypes: activityTypes ?? this.activityTypes,
-      // recrutedBy: recrutedBy ?? this.recrutedBy,
+      recrutedBy: data['recruted_by'] ?? recrutedBy,
       // shareWith: shareWith ?? this.shareWith,
       // jobs: jobs ?? this.jobs,
       // contact: contact ?? this.contact,
@@ -122,7 +119,7 @@ class Enterprise extends ItemSerializable {
     return {
       'name': name,
       // 'activityTypes': activityTypes.toList(),
-      // 'recrutedBy': recrutedBy,
+      'recruted_by': recrutedBy,
       // 'shareWith': shareWith,
       // 'jobs': jobs.serialize(),
       // 'contact': contact.serialize(),
@@ -139,10 +136,10 @@ class Enterprise extends ItemSerializable {
   @override
   Enterprise.fromSerialized(super.map)
       : name = map['name'] ?? 'Unnamed enterprise',
+        recrutedBy = map['recruted_by'] ?? 'Unnamed recruiter',
         super.fromSerialized();
   // activityTypes =
   //     (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
-  // recrutedBy = map['recrutedBy'] ?? 'Unnamed recruiter',
   // shareWith = map['shareWith'] ?? 'Unnamed sharing',
   // jobs = JobList.fromSerialized(map['jobs'] ?? {}),
   // contact = Person.fromSerialized(map['contact'] ?? {}),

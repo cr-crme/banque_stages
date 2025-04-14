@@ -139,7 +139,9 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-                onPressed: isConnected ? _addRandomEnterprise : null,
+                onPressed: _dummyTeachers.isNotEmpty && isConnected
+                    ? _addRandomEnterprise
+                    : null,
                 child: Text('Add random Enterprise')),
             SizedBox(height: 20),
             ElevatedButton(
@@ -316,6 +318,7 @@ class _LoginScreenState extends State<LoginScreen> {
         field: RequestFields.enterprise,
         data: Enterprise(
           name: name,
+          recrutedBy: _dummyTeachers.keys.first,
         ).serialize(),
       ).serialize());
       _socket?.send(message);
@@ -422,7 +425,8 @@ class EnterpriseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(enterprise.name.toString());
+    return Text(
+        '${enterprise.name} (recruted by ${_dummyTeachers[enterprise.recrutedBy]})');
   }
 }
 

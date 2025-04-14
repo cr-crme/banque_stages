@@ -62,6 +62,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         enterprise['id'].toString(): Enterprise(
           id: enterprise['id'].toString(),
           name: enterprise['name'],
+          recrutedBy: enterprise['recruted_by'],
         )
     };
   }
@@ -83,7 +84,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     await performInsertQuery(
         connection: connection,
         tableName: 'enterprises',
-        data: {'id': enterprise.id, 'name': enterprise.name});
+        data: {
+          'id': enterprise.id,
+          'name': enterprise.name,
+          'recruted_by': enterprise.recrutedBy
+        });
   }
 
   Future<void> _putExistingEnterprise(
@@ -109,10 +114,12 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
     '0': Enterprise(
       id: '0',
       name: 'My First Enterprise',
+      recrutedBy: 'Recruiter 1',
     ),
     '1': Enterprise(
       id: '1',
       name: 'My Second Enterprise',
+      recrutedBy: 'Recruiter 2',
     )
   };
 

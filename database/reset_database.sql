@@ -111,5 +111,6 @@ CREATE TABLE phone_numbers_students (
 
 CREATE TABLE enterprises (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR(50) NOT NULL,
+    recruted_by VARCHAR(36) NOT NULL
 );
