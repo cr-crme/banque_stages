@@ -13,14 +13,14 @@ void main() {
     // Remove spaces and new lines for comparison
     final query = _cleanQuery(craftSelectQuery(tableName: 'my_table'));
 
-    expect(query, 'SELECT t.*, FROM my_table t');
+    expect(query, 'SELECT t.* FROM my_table t');
   });
 
   test('MySql query crafter element in table', () {
     final query = _cleanQuery(
         craftSelectQuery(tableName: 'my_table', elementId: 'my_id'));
 
-    expect(query, 'SELECT t.*, FROM my_table t WHERE t.id="my_id"');
+    expect(query, 'SELECT t.* FROM my_table t WHERE t.id="my_id"');
   });
 
   test('MySql query crafter with table', () {

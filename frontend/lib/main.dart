@@ -154,6 +154,11 @@ class _LoginScreenState extends State<LoginScreen> {
               final teacher = entry.value;
               return TeacherTile(teacher: teacher);
             }),
+            SizedBox(height: 20),
+            ..._dummyEnterprises.entries.map((entry) {
+              final enterprise = entry.value;
+              return EnterpriseTile(enterprise: enterprise);
+            }),
           ],
         ),
       ),
@@ -404,6 +409,20 @@ class TeacherTile extends StatelessWidget {
     return Text('${teacher.toString()} '
         '(${teacher.phone}) '
         '[${teacher.groups.join(', ')}]');
+  }
+}
+
+class EnterpriseTile extends StatelessWidget {
+  const EnterpriseTile({
+    super.key,
+    required this.enterprise,
+  });
+
+  final Enterprise enterprise;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(enterprise.name.toString());
   }
 }
 

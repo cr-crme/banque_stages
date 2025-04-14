@@ -57,6 +57,7 @@ class Enterprise extends ItemSerializable {
   //     fax = fax ?? PhoneNumber.empty;
 
   Enterprise copyWith({
+    String? id,
     String? name,
     Set<String>? activityTypes,
     String? recrutedBy,
@@ -70,7 +71,6 @@ class Enterprise extends ItemSerializable {
     String? website,
     Address? headquartersAddress,
     String? neq,
-    String? id,
   }) {
     return Enterprise(
       id: id ?? this.id,
@@ -137,7 +137,9 @@ class Enterprise extends ItemSerializable {
   }
 
   @override
-  Enterprise.fromSerialized(map) : name = map['name'] ?? 'Unnamed enterprise';
+  Enterprise.fromSerialized(super.map)
+      : name = map['name'] ?? 'Unnamed enterprise',
+        super.fromSerialized();
   // activityTypes =
   //     (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
   // recrutedBy = map['recrutedBy'] ?? 'Unnamed recruiter',

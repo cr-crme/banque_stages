@@ -51,12 +51,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   @override
   Future<Map<String, Enterprise>> _getAllEnterprises(
       {String? enterpriseId}) async {
-    final results = await tryQuery(
-        connection,
-        craftSelectQuery(
-          tableName: 'enterprises',
-          elementId: enterpriseId,
-        ));
+    final results = await performSelectQuery(
+      connection: connection,
+      tableName: 'enterprises',
+      elementId: enterpriseId,
+    );
 
     return {
       for (final enterprise in results)

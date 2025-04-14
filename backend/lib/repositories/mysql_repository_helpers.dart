@@ -35,7 +35,7 @@ String craftSelectQuery({
   String? elementId,
   List<MySqlTableAccessor>? sublists,
 }) =>
-    '''SELECT t.*, 
+    '''SELECT t.*${sublists == null || sublists.isEmpty ? '' : ','} 
       ${sublists?.map((e) => e._craft(tableElementAlias: 't')).join(',') ?? ''}
     FROM $tableName t
     ${elementId == null ? '' : 'WHERE t.id="$elementId"'}''';
