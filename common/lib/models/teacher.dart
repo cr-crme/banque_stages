@@ -68,21 +68,23 @@ class Teacher extends Person {
         address: address ?? this.address,
       );
 
+  // TODO : Add to protocol
+  List<String> get serializedFields => [
+        'id',
+        'firstName',
+        'middleName',
+        'lastName',
+        'schoolId',
+        'groups',
+        'phone',
+        'email',
+        'dateBirth',
+        'address',
+      ];
+
   Teacher copyWithData(Map<String, dynamic> data) {
-    final availableFields = [
-      'id',
-      'firstName',
-      'middleName',
-      'lastName',
-      'schoolId',
-      'groups',
-      'phone',
-      'email',
-      'dateBirth',
-      'address',
-    ];
     // Make sure data does not contain unrecognized fields
-    if (data.keys.any((key) => !availableFields.contains(key))) {
+    if (data.keys.any((key) => !serializedFields.contains(key))) {
       throw InvalidFieldException('Invalid field data detected');
     }
     return Teacher(

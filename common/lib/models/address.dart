@@ -9,7 +9,7 @@ class Address extends ItemSerializable {
     super.id,
     this.civicNumber,
     this.street,
-    this.appartment,
+    this.apartment,
     this.city,
     this.postalCode,
   });
@@ -18,7 +18,7 @@ class Address extends ItemSerializable {
 
   final int? civicNumber;
   final String? street;
-  final String? appartment;
+  final String? apartment;
   final String? city;
   final String? postalCode;
 
@@ -51,24 +51,27 @@ class Address extends ItemSerializable {
   Map<String, dynamic> serializedMap() => {
         'civic': civicNumber,
         'street': street,
-        'appartment': appartment,
+        'apartment': apartment,
         'city': city,
-        'postalCode': postalCode
+        'postal_code': postalCode
       };
 
   static Address fromSerialized(map) => Address(
       id: map['id'],
       civicNumber: map['civic'],
       street: map['street'],
-      appartment: map['appartment'],
+      apartment: map['apartment'],
       city: map['city'],
-      postalCode: map['postalCode']);
+      postalCode: map['postal_code']);
+
+  static List<String> get serializedFields =>
+      ['id', 'civic', 'street', 'apartment', 'city', 'postal_code'];
 
   Address copyWith({
     String? id,
     int? civicNumber,
     String? street,
-    String? appartment,
+    String? apartment,
     String? city,
     String? postalCode,
   }) {
@@ -76,7 +79,7 @@ class Address extends ItemSerializable {
         id: id ?? this.id,
         civicNumber: civicNumber ?? this.civicNumber,
         street: street ?? this.street,
-        appartment: appartment ?? this.appartment,
+        apartment: apartment ?? this.apartment,
         city: city ?? this.city,
         postalCode: postalCode ?? this.postalCode);
   }
@@ -84,7 +87,7 @@ class Address extends ItemSerializable {
   bool get isEmpty =>
       civicNumber == null &&
       street == null &&
-      appartment == null &&
+      apartment == null &&
       city == null &&
       postalCode == null;
   bool get isNotEmpty => !isEmpty;
@@ -98,7 +101,7 @@ class Address extends ItemSerializable {
   @override
   String toString() {
     return isValid
-        ? '$civicNumber $street${appartment == null ? '' : ' #$appartment'}, $city, $postalCode'
+        ? '$civicNumber $street${apartment == null ? '' : ' #$apartment'}, $city, $postalCode'
         : '';
   }
 }

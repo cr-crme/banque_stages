@@ -60,33 +60,14 @@ class MySqlTeachersRepository extends TeachersRepository {
         tableName: 'teachers',
         elementId: teacherId,
         sublists: [
-          MySqlNormalizedTable(
-            mainTableName: 'phone_numbers',
-            subtableName: 'phone_numbers_teachers',
-            fieldsToFetch: ['id', 'phone_number'],
-            tableId: 'id',
-            subTableId: 'phone_number_id',
-            foreignId: 'teacher_id',
-          ),
-          MySqlNormalizedTable(
-            mainTableName: 'addresses',
-            subtableName: 'addresses_teachers',
-            fieldsToFetch: [
-              'id',
-              'civic',
-              'street',
-              'appartment',
-              'city',
-              'postal_code'
-            ],
-            tableId: 'id',
-            subTableId: 'address_id',
-            foreignId: 'teacher_id',
-          ),
+          MySqlReferencedTable(
+              tableName: 'phone_numbers',
+              fieldsToFetch: PhoneNumber.serializedFields),
+          MySqlReferencedTable(
+              tableName: 'addresses', fieldsToFetch: Address.serializedFields),
           MySqlTable(
             tableName: 'teaching_groups',
             fieldsToFetch: ['group_name'],
-            tableId: 'teacher_id',
           )
         ]);
 
@@ -134,47 +115,39 @@ class MySqlTeachersRepository extends TeachersRepository {
           'first_name': teacher.firstName,
           'middle_name': teacher.middleName,
           'last_name': teacher.lastName,
+          'phone_number_id': teacher.phone.id,
+          'email': teacher.email,
+          'address_id': teacher.address.id,
           'school_id': teacher.schoolId,
-          'email': teacher.email
         });
     // Insert the groups
     for (final group in teacher.groups) {
       await performInsertQuery(
           connection: connection,
           tableName: 'teaching_groups',
-          data: {'teacher_id': teacher.id, 'group_name': group});
+          data: {'id': teacher.id, 'group_name': group});
     }
 
     // Insert the phone number
-    await performInsertNormalizedQuery(
+    await performInsertQuery(
         connection: connection,
         tableName: 'phone_numbers',
         data: {
           'id': teacher.phone.id,
           'phone_number': teacher.phone.toString()
-        },
-        normalizedTableName: 'phone_numbers_teachers',
-        normalizedKeys: {
-          'teacher_id': teacher.id,
-          'phone_number_id': teacher.phone.id
         });
 
     // Insert the address
-    await performInsertNormalizedQuery(
+    await performInsertQuery(
         connection: connection,
         tableName: 'addresses',
         data: {
           'id': teacher.address.id,
           'civic': teacher.address.civicNumber,
           'street': teacher.address.street,
-          'appartment': teacher.address.appartment,
+          'apartment': teacher.address.apartment,
           'city': teacher.address.city,
           'postal_code': teacher.address.postalCode
-        },
-        normalizedTableName: 'addresses_teachers',
-        normalizedKeys: {
-          'teacher_id': teacher.id,
-          'address_id': teacher.address.id
         });
   }
 

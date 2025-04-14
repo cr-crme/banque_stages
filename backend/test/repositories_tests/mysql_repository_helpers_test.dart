@@ -41,8 +41,8 @@ void main() {
   test('MySql query crafter with normalized table', () {
     final query = _cleanQuery(
         craftSelectQuery(tableName: 'my_table', elementId: 'my_id', sublists: [
-      MySqlNormalizedTable(
-        mainTableName: 'main_table_name',
+      MySqlReferencedTable(
+        tableName: 'main_table_name',
         subtableName: 'subtable_name',
         fieldsToFetch: ['field1', 'field2'],
         tableId: 'table_id',

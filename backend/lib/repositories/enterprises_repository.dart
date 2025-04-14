@@ -2,6 +2,7 @@ import 'package:backend/repositories/mysql_repository_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/enterprise.dart';
+import 'package:common/models/person.dart';
 import 'package:mysql1/mysql1.dart';
 
 abstract class EnterprisesRepository implements RepositoryAbstract {
@@ -63,6 +64,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           id: enterprise['id'].toString(),
           name: enterprise['name'],
           recrutedBy: enterprise['recruted_by'],
+          contact: Person.fromSerialized(enterprise['contact'] ?? {}),
         )
     };
   }
@@ -87,7 +89,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         data: {
           'id': enterprise.id,
           'name': enterprise.name,
-          'recruted_by': enterprise.recrutedBy
+          'recruted_by': enterprise.recrutedBy,
         });
   }
 
@@ -115,11 +117,13 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       id: '0',
       name: 'My First Enterprise',
       recrutedBy: 'Recruiter 1',
+      contact: Person.empty,
     ),
     '1': Enterprise(
       id: '1',
       name: 'My Second Enterprise',
       recrutedBy: 'Recruiter 2',
+      contact: Person.empty,
     )
   };
 

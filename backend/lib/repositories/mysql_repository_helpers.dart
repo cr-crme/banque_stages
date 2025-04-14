@@ -36,12 +36,13 @@ String craftSelectQuery({
   List<MySqlTableAccessor>? sublists,
 }) =>
     '''SELECT t.*${sublists == null || sublists.isEmpty ? '' : ','} 
-      ${sublists?.map((e) => e._craft(tableElementAlias: 't')).join(',') ?? ''}
+      ${sublists?.map((e) => e._craft(mainTableName: tableName, tableElementAlias: 't')).join(',') ?? ''}
     FROM $tableName t
     ${elementId == null ? '' : 'WHERE t.id="$elementId"'}''';
 
 abstract class MySqlTableAccessor {
-  String _craft({required String tableElementAlias});
+  String _craft(
+      {required String mainTableName, required String tableElementAlias});
 
   static String _dispatchFieldsToFetch(
       {required List<String> fieldsToFetch,
@@ -59,51 +60,42 @@ abstract class MySqlTableAccessor {
   }
 }
 
-class MySqlNormalizedTable implements MySqlTableAccessor {
-  final String mainTableName;
-  final String subtableName;
+class MySqlReferencedTable implements MySqlTableAccessor {
+  final String tableName;
   final List<String> fieldsToFetch;
-  final String tableId;
-  final String subTableId;
-  final String foreignId;
 
-  MySqlNormalizedTable({
-    required this.mainTableName,
-    required this.subtableName,
-    required this.fieldsToFetch,
-    required this.tableId,
-    required this.subTableId,
-    required this.foreignId,
-  });
+  MySqlReferencedTable({
+    required this.tableName,
+    List<String>? fieldsToFetch,
+  }) : fieldsToFetch = fieldsToFetch ?? ['*'];
 
   @override
-  String _craft({required String tableElementAlias}) {
+  String _craft(
+      {required String mainTableName, required String tableElementAlias}) {
     return '''(
         SELECT JSON_ARRAYAGG(
             JSON_OBJECT(
-              ${MySqlTableAccessor._dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'mt')}
+              ${MySqlTableAccessor._dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'st')}
             )
         )
-        FROM $subtableName st
-        JOIN $mainTableName mt ON mt.$tableId = st.$subTableId
-        WHERE st.$foreignId = $tableElementAlias.$tableId
-      ) AS $mainTableName''';
+        FROM $tableName st
+        WHERE st.id = $tableElementAlias.id
+      ) AS $tableName''';
   }
 }
 
 class MySqlTable implements MySqlTableAccessor {
   final String tableName;
   final List<String> fieldsToFetch;
-  final String tableId;
 
   MySqlTable({
     required this.tableName,
     required this.fieldsToFetch,
-    required this.tableId,
   });
 
   @override
-  String _craft({required String tableElementAlias}) {
+  String _craft(
+      {required String mainTableName, required String tableElementAlias}) {
     return '''IFNULL((
         SELECT JSON_ARRAYAGG(
             JSON_OBJECT(
@@ -111,7 +103,7 @@ class MySqlTable implements MySqlTableAccessor {
             )
         )
         FROM $tableName ml
-        WHERE ml.$tableId = $tableElementAlias.id
+        WHERE ml.id = $tableElementAlias.id
       ), JSON_ARRAY()) AS $tableName''';
   }
 }
@@ -124,22 +116,6 @@ Future<Results> performInsertQuery({
 }) async =>
     await tryQuery(connection,
         craftInsertQuery(tableName: tableName, data: data), [...data.values]);
-
-Future<void> performInsertNormalizedQuery({
-  required MySqlConnection connection,
-  required String tableName,
-  required Map<String, dynamic> data,
-  required String normalizedTableName,
-  required Map<String, dynamic> normalizedKeys,
-}) async {
-  await tryQuery(connection, craftInsertQuery(tableName: tableName, data: data),
-      [...data.values]);
-
-  await tryQuery(
-      connection,
-      craftInsertQuery(tableName: normalizedTableName, data: normalizedKeys),
-      [...normalizedKeys.values]);
-}
 // coverage:ignore-end
 
 String craftInsertQuery({

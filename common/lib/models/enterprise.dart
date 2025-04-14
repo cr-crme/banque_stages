@@ -13,7 +13,7 @@ class Enterprise extends ItemSerializable {
 
   // final JobList jobs;
 
-  // final Person contact;
+  final Person contact;
   // final String contactFunction;
 
   // final Address? address;
@@ -44,7 +44,7 @@ class Enterprise extends ItemSerializable {
     required this.recrutedBy,
     // required this.shareWith,
     // required this.jobs,
-    // required this.contact,
+    required this.contact,
     // this.contactFunction = '',
     // this.address,
     // PhoneNumber? phone,
@@ -79,7 +79,7 @@ class Enterprise extends ItemSerializable {
       recrutedBy: recrutedBy ?? this.recrutedBy,
       // shareWith: shareWith ?? this.shareWith,
       // jobs: jobs ?? this.jobs,
-      // contact: contact ?? this.contact,
+      contact: contact ?? this.contact,
       // contactFunction: contactFunction ?? this.contactFunction,
       // address: address ?? this.address,
       // phone: phone ?? this.phone,
@@ -91,7 +91,7 @@ class Enterprise extends ItemSerializable {
   }
 
   Enterprise copyWithData(Map<String, dynamic> data) {
-    final availableFields = ['id', 'name', 'recruted_by'];
+    final availableFields = ['id', 'name', 'recruted_by', 'contact'];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
       throw InvalidFieldException('Invalid field data detected');
@@ -103,7 +103,7 @@ class Enterprise extends ItemSerializable {
       recrutedBy: data['recruted_by'] ?? recrutedBy,
       // shareWith: shareWith ?? this.shareWith,
       // jobs: jobs ?? this.jobs,
-      // contact: contact ?? this.contact,
+      contact: data['contact'] ?? contact,
       // contactFunction: contactFunction ?? this.contactFunction,
       // address: address ?? this.address,
       // phone: phone ?? this.phone,
@@ -122,7 +122,7 @@ class Enterprise extends ItemSerializable {
       'recruted_by': recrutedBy,
       // 'shareWith': shareWith,
       // 'jobs': jobs.serialize(),
-      // 'contact': contact.serialize(),
+      'contact': contact.serialize(),
       // 'contactFunction': contactFunction,
       // 'address': address?.serialize(),
       // 'phone': phone.toString(),
@@ -136,13 +136,13 @@ class Enterprise extends ItemSerializable {
   @override
   Enterprise.fromSerialized(super.map)
       : name = map['name'] ?? 'Unnamed enterprise',
-        recrutedBy = map['recruted_by'] ?? 'Unnamed recruiter',
+        recrutedBy = map['recruted_by'] ?? 'UnknownId',
+        contact = Person.fromSerialized(map['contact'] ?? {}),
         super.fromSerialized();
   // activityTypes =
   //     (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
   // shareWith = map['shareWith'] ?? 'Unnamed sharing',
   // jobs = JobList.fromSerialized(map['jobs'] ?? {}),
-  // contact = Person.fromSerialized(map['contact'] ?? {}),
   // contactFunction = map['contactFunction'] ?? '',
   // address = map['address'] == null
   //     ? null

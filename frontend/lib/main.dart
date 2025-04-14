@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/address.dart';
 import 'package:common/models/enterprise.dart';
+import 'package:common/models/person.dart';
 import 'package:common/models/phone_number.dart';
 import 'package:common/models/teacher.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
@@ -319,6 +320,7 @@ class _LoginScreenState extends State<LoginScreen> {
         data: Enterprise(
           name: name,
           recrutedBy: _dummyTeachers.keys.first,
+          contact: Person.empty,
         ).serialize(),
       ).serialize());
       _socket?.send(message);
