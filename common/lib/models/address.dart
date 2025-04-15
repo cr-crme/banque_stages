@@ -64,9 +64,6 @@ class Address extends ItemSerializable {
       city: map['city'],
       postalCode: map['postal_code']);
 
-  static List<String> get serializedFields =>
-      ['id', 'civic', 'street', 'apartment', 'city', 'postal_code'];
-
   Address copyWith({
     String? id,
     int? civicNumber,

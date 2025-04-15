@@ -18,11 +18,11 @@ void main() {
     expect(teachers, isA<Map<String, dynamic>>());
     expect(teachers.length, 2);
     expect(teachers['0'], isA<Map<String, dynamic>>());
-    expect(teachers['0']['firstName'], 'John');
-    expect(teachers['0']['lastName'], 'Doe');
+    expect(teachers['0']['first_name'], 'John');
+    expect(teachers['0']['last_name'], 'Doe');
     expect(teachers['1'], isA<Map<String, dynamic>>());
-    expect(teachers['1']['firstName'], 'Jane');
-    expect(teachers['1']['lastName'], 'Doe');
+    expect(teachers['1']['first_name'], 'Jane');
+    expect(teachers['1']['last_name'], 'Doe');
   });
 
   test('Get teacher from DatabaseManagers', () async {
@@ -32,8 +32,8 @@ void main() {
     final teacher =
         await database.get(RequestFields.teacher, data: {'id': '0'});
     expect(teacher, isA<Map<String, dynamic>>());
-    expect(teacher['firstName'], 'John');
-    expect(teacher['lastName'], 'Doe');
+    expect(teacher['first_name'], 'John');
+    expect(teacher['last_name'], 'Doe');
   });
 
   test('Get teacher from DatabaseManagers with invalid id', () async {
@@ -89,11 +89,11 @@ void main() {
         teacherDatabase: _mockedDatabaseTeachers,
         enterpriseDatabase: _mockedDatabaseEnterprises);
     await database.put(RequestFields.teacher,
-        data: {'id': '0', 'firstName': 'John', 'lastName': 'Smith'});
+        data: {'id': '0', 'first_name': 'John', 'last_name': 'Smith'});
     final updatedTeacher =
         await database.get(RequestFields.teacher, data: {'id': '0'});
-    expect(updatedTeacher['firstName'], 'John');
-    expect(updatedTeacher['lastName'], 'Smith');
+    expect(updatedTeacher['first_name'], 'John');
+    expect(updatedTeacher['last_name'], 'Smith');
   });
 
   test('Set new teacher to DatabaseManagers', () async {
@@ -101,11 +101,11 @@ void main() {
         teacherDatabase: _mockedDatabaseTeachers,
         enterpriseDatabase: _mockedDatabaseEnterprises);
     await database.put(RequestFields.teacher,
-        data: {'id': '2', 'firstName': 'Agent', 'lastName': 'Smith'});
+        data: {'id': '2', 'first_name': 'Agent', 'last_name': 'Smith'});
     final newTeacher =
         await database.get(RequestFields.teacher, data: {'id': '2'});
-    expect(newTeacher['firstName'], 'Agent');
-    expect(newTeacher['lastName'], 'Smith');
+    expect(newTeacher['first_name'], 'Agent');
+    expect(newTeacher['last_name'], 'Smith');
   });
 
   test('Set teacher to DatabaseManagers without id', () async {

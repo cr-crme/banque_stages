@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:backend/utils/exceptions.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -18,29 +20,50 @@ Future<Results> tryQuery(MySqlConnection connection, String query,
 // coverage:ignore-end
 
 // coverage:ignore-start
-Future<Results> performSelectQuery({
+Future<List<Map<String, dynamic>>> performSelectQuery({
   required MySqlConnection connection,
   required String tableName,
-  String? elementId,
+  String idName = 'id',
+  String? id,
   List<MySqlTableAccessor>? sublists,
-}) async =>
-    await tryQuery(
-        connection,
-        craftSelectQuery(
-            tableName: tableName, elementId: elementId, sublists: sublists));
+}) async {
+  final results = await tryQuery(
+      connection,
+      craftSelectQuery(
+          tableName: tableName, idName: idName, id: id, sublists: sublists));
+
+  final List<Map<String, dynamic>> list = [];
+  for (final row in results) {
+    final Map<String, dynamic> map = row.fields;
+    if (sublists == null || sublists.isEmpty) {
+      list.add(map);
+      continue;
+    }
+    for (final sublist in sublists) {
+      map[sublist.tableName] = jsonDecode(row[sublist.tableName]);
+    }
+    list.add(map);
+  }
+
+  return list;
+}
 // coverage:ignore-end
 
 String craftSelectQuery({
   required String tableName,
-  String? elementId,
+  String idName = 'id',
+  String? id,
   List<MySqlTableAccessor>? sublists,
 }) =>
     '''SELECT t.*${sublists == null || sublists.isEmpty ? '' : ','} 
       ${sublists?.map((e) => e._craft(mainTableName: tableName, tableElementAlias: 't')).join(',') ?? ''}
     FROM $tableName t
-    ${elementId == null ? '' : 'WHERE t.id="$elementId"'}''';
+    ${id == null ? '' : 'WHERE t.$idName = "$id"'}''';
 
 abstract class MySqlTableAccessor {
+  String get tableName;
+  String get tableIdName;
+
   String _craft(
       {required String mainTableName, required String tableElementAlias});
 
@@ -61,11 +84,17 @@ abstract class MySqlTableAccessor {
 }
 
 class MySqlReferencedTable implements MySqlTableAccessor {
+  @override
   final String tableName;
+  final String referenceIdName;
+  @override
+  final String tableIdName;
   final List<String> fieldsToFetch;
 
   MySqlReferencedTable({
     required this.tableName,
+    this.referenceIdName = 'id',
+    this.tableIdName = 'id',
     List<String>? fieldsToFetch,
   }) : fieldsToFetch = fieldsToFetch ?? ['*'];
 
@@ -79,17 +108,23 @@ class MySqlReferencedTable implements MySqlTableAccessor {
             )
         )
         FROM $tableName st
-        WHERE st.id = $tableElementAlias.id
+        WHERE st.$referenceIdName = $tableElementAlias.$tableIdName
       ) AS $tableName''';
   }
 }
 
 class MySqlTable implements MySqlTableAccessor {
+  @override
   final String tableName;
+  final String referenceIdName;
+  @override
+  final String tableIdName;
   final List<String> fieldsToFetch;
 
   MySqlTable({
     required this.tableName,
+    this.referenceIdName = 'id',
+    this.tableIdName = 'id',
     required this.fieldsToFetch,
   });
 
@@ -103,7 +138,7 @@ class MySqlTable implements MySqlTableAccessor {
             )
         )
         FROM $tableName ml
-        WHERE ml.id = $tableElementAlias.id
+        WHERE ml.$referenceIdName = $tableElementAlias.$tableIdName
       ), JSON_ARRAY()) AS $tableName''';
   }
 }
@@ -129,35 +164,37 @@ String craftInsertQuery({
 Future<Results> performUpdateQuery({
   required MySqlConnection connection,
   required String tableName,
-  required MapEntry<String, String> id,
+  String idName = 'id',
+  required String id,
   required Map<String, dynamic> data,
 }) async =>
     await tryQuery(
         connection,
-        craftUpdateQuery(tableName: tableName, id: id, data: data),
-        [...data.values, id.value]);
+        craftUpdateQuery(tableName: tableName, idName: idName, data: data),
+        [...data.values, id]);
 // coverage:ignore-end
 
 String craftUpdateQuery({
   required String tableName,
-  required MapEntry<String, String> id,
+  required String idName,
   required Map<String, dynamic> data,
 }) =>
     '''UPDATE $tableName SET ${data.keys.join(' = ?, ')} = ?
-       WHERE ${id.key} = ?''';
+       WHERE $idName = ?''';
 
 // coverage:ignore-start
 Future<Results> performDeleteQuery({
   required MySqlConnection connection,
   required String tableName,
-  required MapEntry<String, String> id,
+  String idName = 'id',
+  required String id,
 }) async =>
-    await tryQuery(
-        connection, craftDeleteQuery(tableName: tableName, id: id), [id.value]);
+    await tryQuery(connection,
+        craftDeleteQuery(tableName: tableName, idName: idName), [id]);
 // coverage:ignore-end
 
 String craftDeleteQuery({
   required String tableName,
-  required MapEntry<String, String> id,
+  String idName = 'id',
 }) =>
-    '''DELETE FROM $tableName WHERE ${id.key} = ?''';
+    '''DELETE FROM $tableName WHERE $idName = ?''';

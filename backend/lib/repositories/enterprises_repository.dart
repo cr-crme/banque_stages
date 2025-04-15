@@ -55,7 +55,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     final results = await performSelectQuery(
       connection: connection,
       tableName: 'enterprises',
-      elementId: enterpriseId,
+      id: enterpriseId,
     );
 
     return {
@@ -103,7 +103,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       await performUpdateQuery(
           connection: connection,
           tableName: 'enterprises',
-          id: MapEntry('id', enterprise.id),
+          id: enterprise.id,
           data: toUpdate);
     }
   }

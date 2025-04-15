@@ -14,9 +14,9 @@ import 'package:web_socket_client/web_socket_client.dart';
 
 final Map<String, Teacher> _dummyTeachers = {};
 Future<void> _updateTeachers(Map<String, dynamic> data) async {
-  if (data.containsKey("id")) {
+  if (data.containsKey('id')) {
     // Update a single teacher
-    final id = data["id"];
+    final id = data['id'];
     final teacherData = data;
     _dummyTeachers[id] = _dummyTeachers.containsKey(id)
         ? _dummyTeachers[id]!.copyWithData(teacherData)
@@ -36,9 +36,9 @@ Future<void> _updateTeachers(Map<String, dynamic> data) async {
 
 final Map<String, Enterprise> _dummyEnterprises = {};
 Future<void> _updateEnterprises(Map<String, dynamic> data) async {
-  if (data.containsKey("id")) {
+  if (data.containsKey('id')) {
     // Update a single enterprise
-    final id = data["id"];
+    final id = data['id'];
     final enterpriseData = data;
     _dummyEnterprises[id] = _dummyEnterprises.containsKey(id)
         ? _dummyEnterprises[id]!.copyWithData(enterpriseData)
@@ -374,7 +374,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
         field: RequestFields.teacher,
-        data: {'id': _dummyTeachers.keys.first, 'firstName': _controller.text},
+        data: {'id': _dummyTeachers.keys.first, 'first_name': _controller.text},
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');

@@ -34,12 +34,12 @@ class Person extends ItemSerializable {
       phone: PhoneNumber.empty);
 
   Person.fromSerialized(super.map)
-      : firstName = map['firstName'] ?? 'Unnamed',
-        middleName = map['middleName'],
-        lastName = map['lastName'] ?? 'Unnamed',
-        dateBirth = map['dateBirth'] == null
+      : firstName = map['first_name'] ?? 'Unnamed',
+        middleName = map['middle_name'],
+        lastName = map['last_name'] ?? 'Unnamed',
+        dateBirth = map['date_birth'] == null
             ? null
-            : DateTime.fromMillisecondsSinceEpoch(map['dateBirth']),
+            : DateTime.fromMillisecondsSinceEpoch(map['date_birth']),
         phone = map['phone'] == null
             ? PhoneNumber.empty
             : PhoneNumber.fromSerialized(map['phone']),
@@ -51,10 +51,10 @@ class Person extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() => {
-        'firstName': firstName,
-        'middleName': middleName,
-        'lastName': lastName,
-        'dateBirth': dateBirth?.millisecondsSinceEpoch,
+        'first_name': firstName,
+        'middle_name': middleName,
+        'last_name': lastName,
+        'date_birth': dateBirth?.millisecondsSinceEpoch,
         'phone': phone.serialize(),
         'email': email,
         'address': address.serialize(),

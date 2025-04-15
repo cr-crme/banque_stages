@@ -39,8 +39,6 @@ class PhoneNumber extends ItemSerializable {
   static PhoneNumber fromSerialized(map) =>
       PhoneNumber.fromString(map['phone_number'], id: map['id']);
 
-  static List<String> get serializedFields => ['id', 'phone_number'];
-
   @override
   String toString() {
     return areaCode == null || cityCode == null || number == null

@@ -389,20 +389,20 @@ void main() {
     expect(protocol.field, RequestFields.teachers);
     expect(protocol.data, isA<Map<String, dynamic>>());
     expect(protocol.data!['0'], isA<Map<String, dynamic>>());
-    expect(protocol.data!['0']['firstName'], isA<String>());
-    expect(protocol.data!['0']['firstName'], 'John');
-    expect(protocol.data!['0']['lastName'], isA<String>());
-    expect(protocol.data!['0']['lastName'], 'Doe');
-    expect(protocol.data!['0']['schoolId'], isA<String>());
-    expect(protocol.data!['0']['schoolId'], '10');
+    expect(protocol.data!['0']['first_name'], isA<String>());
+    expect(protocol.data!['0']['first_name'], 'John');
+    expect(protocol.data!['0']['last_name'], isA<String>());
+    expect(protocol.data!['0']['last_name'], 'Doe');
+    expect(protocol.data!['0']['school_id'], isA<String>());
+    expect(protocol.data!['0']['school_id'], '10');
     expect(protocol.data!['0']['groups'], isA<List>());
     expect(protocol.data!['0']['groups'], ['100', '101']);
     expect(protocol.data!['0']['phone'], isA<Map>());
     expect(protocol.data!['0']['phone']['phone_number'], '(098) 765-4321');
-    expect(protocol.data!['1']['firstName'], isA<String>());
-    expect(protocol.data!['1']['firstName'], 'Jane');
-    expect(protocol.data!['1']['lastName'], isA<String>());
-    expect(protocol.data!['1']['lastName'], 'Doe');
+    expect(protocol.data!['1']['first_name'], isA<String>());
+    expect(protocol.data!['1']['first_name'], 'Jane');
+    expect(protocol.data!['1']['last_name'], isA<String>());
+    expect(protocol.data!['1']['last_name'], 'Doe');
     expect(protocol.response, Response.success);
   });
 
@@ -448,7 +448,7 @@ void main() {
       jsonEncode(CommunicationProtocol(
               requestType: RequestType.post,
               field: RequestFields.teacher,
-              data: {'id': '1', 'firstName': 'John', 'lastName': 'Smith'})
+              data: {'id': '1', 'first_name': 'John', 'last_name': 'Smith'})
           .serialize()),
     );
 
@@ -466,14 +466,14 @@ void main() {
     expect(protocol1.requestType, RequestType.update);
     expect(protocol1.field, RequestFields.teacher);
     expect(protocol1.data, isA<Map<String, dynamic>>());
-    expect(protocol1.data!['firstName'], 'John');
-    expect(protocol1.data!['lastName'], 'Smith');
+    expect(protocol1.data!['first_name'], 'John');
+    expect(protocol1.data!['last_name'], 'Smith');
     expect(protocol1.response, isNull);
     expect(protocol2.requestType, RequestType.update);
     expect(protocol2.field, RequestFields.teacher);
     expect(protocol2.data, isA<Map<String, dynamic>>());
-    expect(protocol2.data!['firstName'], 'John');
-    expect(protocol2.data!['lastName'], 'Smith');
+    expect(protocol2.data!['first_name'], 'John');
+    expect(protocol2.data!['last_name'], 'Smith');
     expect(protocol2.response, isNull);
   });
 

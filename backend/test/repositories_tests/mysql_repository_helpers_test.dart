@@ -17,10 +17,17 @@ void main() {
   });
 
   test('MySql query crafter element in table', () {
-    final query = _cleanQuery(
-        craftSelectQuery(tableName: 'my_table', elementId: 'my_id'));
+    final query =
+        _cleanQuery(craftSelectQuery(tableName: 'my_table', id: 'my_id'));
 
-    expect(query, 'SELECT t.* FROM my_table t WHERE t.id="my_id"');
+    expect(query, 'SELECT t.* FROM my_table t WHERE t.id = "my_id"');
+  });
+
+  test('MySql query crafter element in table with specific id', () {
+    final query = _cleanQuery(craftSelectQuery(
+        tableName: 'my_table', idName: 'my_named_id', id: 'my_id'));
+
+    expect(query, 'SELECT t.* FROM my_table t WHERE t.my_named_id = "my_id"');
   });
 
   test('MySql query crafter with table', () {
@@ -28,34 +35,36 @@ void main() {
         _cleanQuery(craftSelectQuery(tableName: 'my_table', sublists: [
       MySqlTable(
           tableName: 'table_name',
+          referenceIdName: 'table_id',
           fieldsToFetch: ['field1', 'field2'],
-          tableId: 'table_id'),
+          tableIdName: 'subtable_id'),
     ]));
 
     expect(
         query,
         'SELECT t.*, IFNULL(( SELECT JSON_ARRAYAGG( JSON_OBJECT( \'field1\', ml.field1, \'field2\', ml.field2 ) ) '
-        'FROM table_name ml WHERE ml.table_id = t.id ), JSON_ARRAY()) AS table_name FROM my_table t');
+        'FROM table_name ml WHERE ml.table_id = t.subtable_id ), JSON_ARRAY()) AS table_name FROM my_table t');
   });
 
   test('MySql query crafter with normalized table', () {
-    final query = _cleanQuery(
-        craftSelectQuery(tableName: 'my_table', elementId: 'my_id', sublists: [
-      MySqlReferencedTable(
-        tableName: 'main_table_name',
-        subtableName: 'subtable_name',
-        fieldsToFetch: ['field1', 'field2'],
-        tableId: 'table_id',
-        subTableId: 'subtable_id',
-        foreignId: 'foreign_id',
-      ),
-    ]));
+    final query = _cleanQuery(craftSelectQuery(
+        tableName: 'my_table',
+        idName: 'my_named_id',
+        id: 'my_id',
+        sublists: [
+          MySqlReferencedTable(
+            tableName: 'subtable_name',
+            fieldsToFetch: ['field1', 'field2'],
+            referenceIdName: 'table_id',
+            tableIdName: 'subtable_id',
+          ),
+        ]));
 
     expect(
         query,
-        'SELECT t.*, ( SELECT JSON_ARRAYAGG( JSON_OBJECT( \'field1\', mt.field1, \'field2\', mt.field2 ) ) '
-        'FROM subtable_name st JOIN main_table_name mt ON mt.table_id = st.subtable_id WHERE st.foreign_id = t.table_id ) AS main_table_name '
-        'FROM my_table t WHERE t.id="my_id"');
+        'SELECT t.*, ( SELECT JSON_ARRAYAGG( JSON_OBJECT( \'field1\', st.field1, \'field2\', st.field2 ) ) '
+        'FROM subtable_name st WHERE st.table_id = t.subtable_id ) AS subtable_name '
+        'FROM my_table t WHERE t.my_named_id = "my_id"');
   });
 
   test('MySql query crafter insert element', () {
@@ -68,15 +77,15 @@ void main() {
   test('MySql query crafter update element', () {
     final query = _cleanQuery(craftUpdateQuery(
         tableName: 'my_table',
-        id: MapEntry('my_id', 'id_value'),
+        idName: 'my_id',
         data: {'field1': 'value1', 'field2': 'value2'}));
 
     expect(query, 'UPDATE my_table SET field1 = ?, field2 = ? WHERE my_id = ?');
   });
 
   test('MySql query crafter delete element', () {
-    final query = _cleanQuery(craftDeleteQuery(
-        tableName: 'my_table', id: MapEntry('my_id', 'id_value')));
+    final query =
+        _cleanQuery(craftDeleteQuery(tableName: 'my_table', idName: 'my_id'));
 
     expect(query, 'DELETE FROM my_table WHERE my_id = ?');
   });

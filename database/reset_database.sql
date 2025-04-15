@@ -67,22 +67,24 @@ CREATE TABLE teaching_groups (
 /**** Addresses ****/
 
 CREATE TABLE addresses (
-    id VARCHAR(36) NOT NULL,
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    entity_id VARCHAR(36) NOT NULL,
     civic INT,
     street VARCHAR(100),
     apartment VARCHAR(20),
     city VARCHAR(50),
     postal_code VARCHAR(10),
-    FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
+    FOREIGN KEY (entity_id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 
 
 /**** Phone numbers ****/
 
 CREATE TABLE phone_numbers (
-    id VARCHAR(36) NOT NULL,
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    entity_id VARCHAR(36) NOT NULL,
     phone_number VARCHAR(20) NOT NULL, 
-    FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
+    FOREIGN KEY (entity_id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 
 

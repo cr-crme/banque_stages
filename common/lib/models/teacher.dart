@@ -31,14 +31,14 @@ class Teacher extends Person {
   }
 
   Teacher.fromSerialized(super.map)
-      : schoolId = map['schoolId'] ?? '',
+      : schoolId = map['school_id'] ?? '',
         groups = _stringListFromSerialized(map['groups']),
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => super.serializedMap()
     ..addAll({
-      'schoolId': schoolId,
+      'school_id': schoolId,
       'groups': groups,
     });
 
@@ -68,31 +68,28 @@ class Teacher extends Person {
         address: address ?? this.address,
       );
 
-  // TODO : Add to protocol
-  List<String> get serializedFields => [
-        'id',
-        'firstName',
-        'middleName',
-        'lastName',
-        'schoolId',
-        'groups',
-        'phone',
-        'email',
-        'dateBirth',
-        'address',
-      ];
-
   Teacher copyWithData(Map<String, dynamic> data) {
     // Make sure data does not contain unrecognized fields
-    if (data.keys.any((key) => !serializedFields.contains(key))) {
+    if (data.keys.any((key) => ![
+          'id',
+          'first_name',
+          'middle_name',
+          'last_name',
+          'school_id',
+          'groups',
+          'phone',
+          'email',
+          'date_birth',
+          'address',
+        ].contains(key))) {
       throw InvalidFieldException('Invalid field data detected');
     }
     return Teacher(
       id: data['id']?.toString() ?? id,
-      firstName: data['firstName'] ?? firstName,
-      middleName: data['middleName'] ?? middleName,
-      lastName: data['lastName'] ?? lastName,
-      schoolId: data['schoolId'] ?? schoolId,
+      firstName: data['first_name'] ?? firstName,
+      middleName: data['middle_name'] ?? middleName,
+      lastName: data['last_name'] ?? lastName,
+      schoolId: data['school_id'] ?? schoolId,
       groups: data['groups'] == null
           ? groups
           : _stringListFromSerialized(data['groups']),

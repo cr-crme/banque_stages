@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:backend/repositories/mysql_repository_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
@@ -58,40 +56,58 @@ class MySqlTeachersRepository extends TeachersRepository {
     final results = await performSelectQuery(
         connection: connection,
         tableName: 'teachers',
-        elementId: teacherId,
+        id: teacherId,
         sublists: [
+          MySqlReferencedTable(tableName: 'persons', fieldsToFetch: [
+            'first_name',
+            'middle_name',
+            'last_name',
+            'email'
+          ]),
           MySqlReferencedTable(
               tableName: 'phone_numbers',
-              fieldsToFetch: PhoneNumber.serializedFields),
+              referenceIdName: 'entity_id',
+              fieldsToFetch: ['id', 'phone_number']),
           MySqlReferencedTable(
-              tableName: 'addresses', fieldsToFetch: Address.serializedFields),
+              tableName: 'addresses',
+              referenceIdName: 'entity_id',
+              fieldsToFetch: [
+                'id',
+                'civic',
+                'street',
+                'apartment',
+                'city',
+                'postal_code'
+              ]),
           MySqlTable(
             tableName: 'teaching_groups',
             fieldsToFetch: ['group_name'],
           )
         ]);
 
-    return {
-      for (final teacher in results)
-        teacher['id'].toString(): Teacher(
-          id: teacher['id'].toString(),
-          firstName: teacher['first_name'] as String,
-          middleName: teacher['middle_name'] as String?,
-          lastName: teacher['last_name'] as String,
-          schoolId: teacher['school_id'] as String,
-          groups: (jsonDecode(teacher['teaching_groups']) as List?)
-                  ?.map((map) => map['group_name'] as String)
-                  .toList() ??
-              [],
-          email: teacher['email'] as String?,
-          phone: PhoneNumber.fromSerialized(
-              (jsonDecode(teacher['phone_numbers']) as List?)?.first as Map? ??
-                  {}),
-          address: Address.fromSerialized(
-              (jsonDecode(teacher['addresses']) as List?)?.first as Map? ?? {}),
-          dateBirth: null,
-        )
-    };
+    final map = <String, Teacher>{};
+    for (final teacher in results) {
+      final id = teacher['id'].toString();
+      final person = (teacher['persons'] as List).first;
+      final teachingGroups = teacher['teaching_groups'] as List? ?? [];
+      final phoneNumbers = teacher['phone_numbers'] as List? ?? [];
+      final addresses = teacher['addresses'] as List? ?? [];
+
+      map[id] = Teacher(
+        id: id,
+        firstName: person['first_name'] as String,
+        middleName: person['middle_name'] as String?,
+        lastName: person['last_name'] as String,
+        schoolId: teacher['school_id'] as String,
+        groups:
+            teachingGroups.map((map) => map['group_name'] as String).toList(),
+        email: teacher['email'] as String?,
+        phone: PhoneNumber.fromSerialized(phoneNumbers.first as Map? ?? {}),
+        address: Address.fromSerialized(addresses.first as Map? ?? {}),
+        dateBirth: null,
+      );
+    }
+    return map;
   }
 
   @override
@@ -106,52 +122,71 @@ class MySqlTeachersRepository extends TeachersRepository {
           : await _putExistingTeacher(teacher, previous);
 
   Future<void> _putNewTeacher(Teacher teacher) async {
-    // Insert the teacher
-    await performInsertQuery(
-        connection: connection,
-        tableName: 'teachers',
-        data: {
-          'id': teacher.id,
-          'first_name': teacher.firstName,
-          'middle_name': teacher.middleName,
-          'last_name': teacher.lastName,
-          'phone_number_id': teacher.phone.id,
-          'email': teacher.email,
-          'address_id': teacher.address.id,
-          'school_id': teacher.schoolId,
-        });
-    // Insert the groups
-    for (final group in teacher.groups) {
+    try {
+      // Insert the teacher
       await performInsertQuery(
           connection: connection,
-          tableName: 'teaching_groups',
-          data: {'id': teacher.id, 'group_name': group});
+          tableName: 'entities',
+          data: {'shared_id': teacher.id});
+      await performInsertQuery(
+          connection: connection,
+          tableName: 'persons',
+          data: {
+            'id': teacher.id,
+            'first_name': teacher.firstName,
+            'middle_name': teacher.middleName,
+            'last_name': teacher.lastName,
+            'email': teacher.email,
+          });
+      await performInsertQuery(
+          connection: connection,
+          tableName: 'teachers',
+          data: {'id': teacher.id, 'school_id': teacher.schoolId});
+      await performInsertQuery(
+          connection: connection,
+          tableName: 'phone_numbers',
+          data: {
+            'id': teacher.phone.id,
+            'entity_id': teacher.id,
+            'phone_number': teacher.phone.toString()
+          });
+      await performInsertQuery(
+          connection: connection,
+          tableName: 'addresses',
+          data: {
+            'id': teacher.address.id,
+            'entity_id': teacher.id,
+            'civic': teacher.address.civicNumber,
+            'street': teacher.address.street,
+            'apartment': teacher.address.apartment,
+            'city': teacher.address.city,
+            'postal_code': teacher.address.postalCode
+          });
+
+      // Insert the teaching groups
+      for (final group in teacher.groups) {
+        await performInsertQuery(
+            connection: connection,
+            tableName: 'teaching_groups',
+            data: {'id': teacher.id, 'group_name': group});
+      }
+    } catch (e) {
+      try {
+        // Try to delete the inserted data in case of error (everything is ON CASCADE DELETE)
+        await performDeleteQuery(
+            connection: connection,
+            tableName: 'entities',
+            idName: 'shared_id',
+            id: teacher.id);
+      } catch (e) {
+        // Do nothing
+      }
+      rethrow;
     }
-
-    // Insert the phone number
-    await performInsertQuery(
-        connection: connection,
-        tableName: 'phone_numbers',
-        data: {
-          'id': teacher.phone.id,
-          'phone_number': teacher.phone.toString()
-        });
-
-    // Insert the address
-    await performInsertQuery(
-        connection: connection,
-        tableName: 'addresses',
-        data: {
-          'id': teacher.address.id,
-          'civic': teacher.address.civicNumber,
-          'street': teacher.address.street,
-          'apartment': teacher.address.apartment,
-          'city': teacher.address.city,
-          'postal_code': teacher.address.postalCode
-        });
   }
 
   Future<void> _putExistingTeacher(Teacher teacher, Teacher previous) async {
+    // Update the persons table if needed
     final toUpdate = <String, dynamic>{};
     if (teacher.firstName != previous.firstName) {
       toUpdate['first_name'] = teacher.firstName;
@@ -162,33 +197,39 @@ class MySqlTeachersRepository extends TeachersRepository {
     if (teacher.lastName != previous.lastName) {
       toUpdate['last_name'] = teacher.lastName;
     }
-    if (teacher.schoolId != previous.schoolId) {
-      toUpdate['school_id'] = teacher.schoolId;
-    }
     if (teacher.email != previous.email) {
       toUpdate['email'] = teacher.email;
     }
+    if (toUpdate.isNotEmpty) {
+      await performUpdateQuery(
+          connection: connection,
+          tableName: 'persons',
+          id: teacher.id,
+          data: toUpdate);
+    }
 
-    // Update the teacher
+    // Update the teachers table if needed
+    toUpdate.clear();
+    if (teacher.schoolId != previous.schoolId) {
+      toUpdate['school_id'] = teacher.schoolId;
+    }
     if (toUpdate.isNotEmpty) {
       await performUpdateQuery(
           connection: connection,
           tableName: 'teachers',
-          id: MapEntry('id', teacher.id),
+          id: teacher.id,
           data: toUpdate);
     }
 
     // Update teaching groups
     if (isNotListEqual(teacher.groups, previous.groups)) {
       await performDeleteQuery(
-          connection: connection,
-          tableName: 'teaching_groups',
-          id: MapEntry('teacher_id', teacher.id));
+          connection: connection, tableName: 'teaching_groups', id: teacher.id);
       for (final group in teacher.groups) {
         await performInsertQuery(
             connection: connection,
             tableName: 'teaching_groups',
-            data: {'teacher_id': teacher.id, 'group_name': group});
+            data: {'id': teacher.id, 'group_name': group});
       }
     }
 
@@ -197,7 +238,7 @@ class MySqlTeachersRepository extends TeachersRepository {
       await performUpdateQuery(
           connection: connection,
           tableName: 'phone_numbers',
-          id: MapEntry('teacher_id', teacher.id),
+          id: teacher.phone.id,
           data: {'phone_number': teacher.phone.toString()});
     }
   }
