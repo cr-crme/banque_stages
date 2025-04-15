@@ -8,7 +8,7 @@ import 'package:enhanced_containers_foundation/enhanced_containers_foundation.da
 class Enterprise extends ItemSerializable {
   final String name;
   // final Set<String> activityTypes;
-  final String recrutedBy;
+  final String recruiterId;
   // final String shareWith;
 
   // final JobList jobs;
@@ -41,7 +41,7 @@ class Enterprise extends ItemSerializable {
     super.id,
     required this.name,
     // required this.activityTypes,
-    required this.recrutedBy,
+    required this.recruiterId,
     // required this.shareWith,
     // required this.jobs,
     required this.contact,
@@ -60,7 +60,7 @@ class Enterprise extends ItemSerializable {
     String? id,
     String? name,
     Set<String>? activityTypes,
-    String? recrutedBy,
+    String? recruiterId,
     String? shareWith,
     JobList? jobs,
     Person? contact,
@@ -76,7 +76,7 @@ class Enterprise extends ItemSerializable {
       id: id ?? this.id,
       name: name ?? this.name,
       // activityTypes: activityTypes ?? this.activityTypes,
-      recrutedBy: recrutedBy ?? this.recrutedBy,
+      recruiterId: recruiterId ?? this.recruiterId,
       // shareWith: shareWith ?? this.shareWith,
       // jobs: jobs ?? this.jobs,
       contact: contact ?? this.contact,
@@ -100,7 +100,7 @@ class Enterprise extends ItemSerializable {
       id: data['id']?.toString() ?? id,
       name: data['name'] ?? name,
       // activityTypes: activityTypes ?? this.activityTypes,
-      recrutedBy: data['recruted_by'] ?? recrutedBy,
+      recruiterId: data['recruiter_id'] ?? recruiterId,
       // shareWith: shareWith ?? this.shareWith,
       // jobs: jobs ?? this.jobs,
       contact: data['contact'] ?? contact,
@@ -119,7 +119,7 @@ class Enterprise extends ItemSerializable {
     return {
       'name': name,
       // 'activityTypes': activityTypes.toList(),
-      'recruted_by': recrutedBy,
+      'recruiter_id': recruiterId,
       // 'shareWith': shareWith,
       // 'jobs': jobs.serialize(),
       'contact': contact.serialize(),
@@ -136,7 +136,7 @@ class Enterprise extends ItemSerializable {
   @override
   Enterprise.fromSerialized(super.map)
       : name = map['name'] ?? 'Unnamed enterprise',
-        recrutedBy = map['recruted_by'] ?? 'UnknownId',
+        recruiterId = map['recruiter_id'] ?? 'UnknownId',
         contact = Person.fromSerialized(map['contact'] ?? {}),
         super.fromSerialized();
   // activityTypes =

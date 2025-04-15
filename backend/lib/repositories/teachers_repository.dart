@@ -127,44 +127,11 @@ class MySqlTeachersRepository extends TeachersRepository {
   Future<void> _putNewTeacher(Teacher teacher) async {
     try {
       // Insert the teacher
-      await performInsertQuery(
-          connection: connection,
-          tableName: 'entities',
-          data: {'shared_id': teacher.id});
-      await performInsertQuery(
-          connection: connection,
-          tableName: 'persons',
-          data: {
-            'id': teacher.id,
-            'first_name': teacher.firstName,
-            'middle_name': teacher.middleName,
-            'last_name': teacher.lastName,
-            'email': teacher.email,
-          });
+      await performInsertPerson(connection: connection, person: teacher);
       await performInsertQuery(
           connection: connection,
           tableName: 'teachers',
           data: {'id': teacher.id, 'school_id': teacher.schoolId});
-      await performInsertQuery(
-          connection: connection,
-          tableName: 'phone_numbers',
-          data: {
-            'id': teacher.phone.id,
-            'entity_id': teacher.id,
-            'phone_number': teacher.phone.toString()
-          });
-      await performInsertQuery(
-          connection: connection,
-          tableName: 'addresses',
-          data: {
-            'id': teacher.address.id,
-            'entity_id': teacher.id,
-            'civic': teacher.address.civicNumber,
-            'street': teacher.address.street,
-            'apartment': teacher.address.apartment,
-            'city': teacher.address.city,
-            'postal_code': teacher.address.postalCode
-          });
 
       // Insert the teaching groups
       for (final group in teacher.groups) {

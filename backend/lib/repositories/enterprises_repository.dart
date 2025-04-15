@@ -63,7 +63,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         enterprise['id'].toString(): Enterprise(
           id: enterprise['id'].toString(),
           name: enterprise['name'],
-          recrutedBy: enterprise['recruted_by'],
+          recruiterId: enterprise['recruiter_id'],
           contact: Person.fromSerialized(enterprise['contact'] ?? {}),
         )
     };
@@ -82,15 +82,39 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           : await _putExistingEnterprise(enterprise, previous);
 
   Future<void> _putNewEnterprise(Enterprise enterprise) async {
-    // Insert the enterprise
-    await performInsertQuery(
-        connection: connection,
-        tableName: 'enterprises',
-        data: {
-          'id': enterprise.id,
-          'name': enterprise.name,
-          'recruted_by': enterprise.recrutedBy,
-        });
+    try {
+      // Insert the enterprise
+      await performInsertQuery(
+          connection: connection,
+          tableName: 'entities',
+          data: {'shared_id': enterprise.id});
+      await performInsertQuery(
+          connection: connection,
+          tableName: 'enterprises',
+          data: {
+            'id': enterprise.id,
+            'name': enterprise.name,
+            'recruiter_id': enterprise.recruiterId,
+          });
+      await performInsertPerson(
+          connection: connection, person: enterprise.contact);
+      await performInsertQuery(
+          connection: connection,
+          tableName: 'enterprise_contacts',
+          data: {
+            'enterprise_id': enterprise.id,
+            'contact_id': enterprise.contact.id
+          });
+    } catch (e) {
+      try {
+        await performDeleteQuery(
+            connection: connection, tableName: 'entities', id: enterprise.id);
+      } catch (e) {
+        // Do nothing
+      }
+
+      rethrow;
+    }
   }
 
   Future<void> _putExistingEnterprise(
@@ -116,13 +140,13 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
     '0': Enterprise(
       id: '0',
       name: 'My First Enterprise',
-      recrutedBy: 'Recruiter 1',
+      recruiterId: 'Recruiter 1',
       contact: Person.empty,
     ),
     '1': Enterprise(
       id: '1',
       name: 'My Second Enterprise',
-      recrutedBy: 'Recruiter 2',
+      recruiterId: 'Recruiter 2',
       contact: Person.empty,
     )
   };

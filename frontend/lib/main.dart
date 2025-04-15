@@ -319,7 +319,7 @@ class _LoginScreenState extends State<LoginScreen> {
         field: RequestFields.enterprise,
         data: Enterprise(
           name: name,
-          recrutedBy: _dummyTeachers.keys.first,
+          recruiterId: _dummyTeachers.keys.first,
           contact: Person.empty,
         ).serialize(),
       ).serialize());
@@ -428,7 +428,7 @@ class EnterpriseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-        '${enterprise.name} (recruted by ${_dummyTeachers[enterprise.recrutedBy]})');
+        '${enterprise.name} (recruted by ${_dummyTeachers[enterprise.recruiterId]})');
   }
 }
 

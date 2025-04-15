@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/models/address.dart';
+import 'package:common/models/person.dart';
+import 'package:common/models/phone_number.dart';
 import 'package:mysql1/mysql1.dart';
 
 // coverage:ignore-start
@@ -200,3 +203,54 @@ String craftDeleteQuery({
   String idName = 'id',
 }) =>
     '''DELETE FROM $tableName WHERE $idName = ?''';
+
+// coverage:ignore-start
+///
+/// Specific helpers
+Future<void> performInsertPerson(
+    {required MySqlConnection connection, required Person person}) async {
+  await performInsertQuery(
+      connection: connection,
+      tableName: 'entities',
+      data: {'shared_id': person.id});
+  await performInsertQuery(connection: connection, tableName: 'persons', data: {
+    'id': person.id,
+    'first_name': person.firstName,
+    'middle_name': person.middleName,
+    'last_name': person.lastName,
+    'email': person.email,
+  });
+  await performInsertPhoneNumber(connection,
+      phoneNumber: person.phone, entityId: person.id);
+  await performInsertAddress(connection,
+      address: person.address, entityId: person.id);
+}
+
+Future<void> performInsertPhoneNumber(MySqlConnection connection,
+    {required PhoneNumber phoneNumber, required String entityId}) async {
+  await performInsertQuery(
+      connection: connection,
+      tableName: 'phone_numbers',
+      data: {
+        'id': phoneNumber.id,
+        'entity_id': entityId,
+        'phone_number': phoneNumber.toString()
+      });
+}
+
+Future<void> performInsertAddress(MySqlConnection connection,
+    {required Address address, required String entityId}) async {
+  await performInsertQuery(
+      connection: connection,
+      tableName: 'addresses',
+      data: {
+        'id': address.id,
+        'entity_id': entityId,
+        'civic': address.civicNumber,
+        'street': address.street,
+        'apartment': address.apartment,
+        'city': address.city,
+        'postal_code': address.postalCode
+      });
+}
+// coverage:ignore-end

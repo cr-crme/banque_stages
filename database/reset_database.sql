@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS teaching_groups;
 DROP TABLE IF EXISTS teachers;
 
+DROP TABLE IF EXISTS enterprise_contacts;
 DROP TABLE IF EXISTS enterprises;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -39,7 +40,7 @@ CREATE TABLE persons (
     middle_name VARCHAR(50),
     last_name VARCHAR(50) NOT NULL,
     date_birthday DATE,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
     FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 
@@ -95,7 +96,14 @@ CREATE TABLE phone_numbers (
 CREATE TABLE enterprises (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    recruted_by VARCHAR(36) NOT NULL, 
+    recruiter_id VARCHAR(36) NOT NULL, 
     FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
+
+CREATE TABLE enterprise_contacts(
+    enterprise_id VARCHAR(36) NOT NULL,
+    contact_id VARCHAR(36) NOT NULL,
+    FOREIGN KEY (contact_id) REFERENCES persons(id),
+    FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE
+)
 
