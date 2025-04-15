@@ -14,15 +14,15 @@ class Enterprise extends ItemSerializable {
   // final JobList jobs;
 
   final Person contact;
-  // final String contactFunction;
+  final String contactFunction;
 
   final Address? address;
   final PhoneNumber phone;
   final PhoneNumber fax;
-  // final String website;
+  final String website;
 
   final Address? headquartersAddress;
-  // final String? neq;
+  final String? neq;
 
   // // TODO: Implement this on app side with an extension on
   // // List<Internship> internships(context, {listen = true}) =>
@@ -45,16 +45,15 @@ class Enterprise extends ItemSerializable {
     // required this.shareWith,
     // required this.jobs,
     required this.contact,
-    // this.contactFunction = '',
+    this.contactFunction = '',
     this.address,
-    required this.phone,
-    required this.fax,
-    // this.website = '',
+    PhoneNumber? phone,
+    PhoneNumber? fax,
+    this.website = '',
     this.headquartersAddress,
-    // this.neq = '',
-  });
-  // : phone = phone ?? PhoneNumber.empty,
-  //     fax = fax ?? PhoneNumber.empty;
+    this.neq = '',
+  })  : phone = phone ?? PhoneNumber.empty,
+        fax = fax ?? PhoneNumber.empty;
 
   Enterprise copyWith({
     String? id,
@@ -80,13 +79,13 @@ class Enterprise extends ItemSerializable {
       // shareWith: shareWith ?? this.shareWith,
       // jobs: jobs ?? this.jobs,
       contact: contact ?? this.contact,
-      // contactFunction: contactFunction ?? this.contactFunction,
+      contactFunction: contactFunction ?? this.contactFunction,
       address: address ?? this.address,
       phone: phone ?? this.phone,
       fax: fax ?? this.fax,
-      // website: website ?? this.website,
+      website: website ?? this.website,
       headquartersAddress: headquartersAddress ?? this.headquartersAddress,
-      // neq: neq ?? this.neq,
+      neq: neq ?? this.neq,
     );
   }
 
@@ -96,10 +95,13 @@ class Enterprise extends ItemSerializable {
       'name',
       'recruted_by',
       'contact',
+      'contact_function',
       'address',
       'phone',
       'fax',
+      'website',
       'headquarters_address',
+      'neq',
     ];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
@@ -113,13 +115,13 @@ class Enterprise extends ItemSerializable {
       // shareWith: shareWith ?? this.shareWith,
       // jobs: jobs ?? this.jobs,
       contact: data['contact'] ?? contact,
-      // contactFunction: contactFunction ?? this.contactFunction,
+      contactFunction: data['contact_function'] ?? contactFunction,
       address: data['address'] ?? address,
       phone: data['phone'] ?? phone,
       fax: data['fax'] ?? fax,
-      // website: website ?? this.website,
+      website: data['website'] ?? website,
       headquartersAddress: data['headquarters_address'] ?? headquartersAddress,
-      // neq: neq ?? this.neq,
+      neq: data['neq'] ?? neq,
     );
   }
 
@@ -132,13 +134,13 @@ class Enterprise extends ItemSerializable {
       // 'shareWith': shareWith,
       // 'jobs': jobs.serialize(),
       'contact': contact.serialize(),
-      // 'contactFunction': contactFunction,
+      'contact_function': contactFunction,
       'address': address?.serialize(),
       'phone': phone.serialize(),
       'fax': fax.serialize(),
-      // 'website': website,
+      'website': website,
       'headquarters_address': headquartersAddress?.serialize(),
-      // 'neq': neq,
+      'neq': neq,
     };
   }
 
@@ -147,25 +149,22 @@ class Enterprise extends ItemSerializable {
       : name = map['name'] ?? 'Unnamed enterprise',
         recruiterId = map['recruiter_id'] ?? 'UnknownId',
         contact = Person.fromSerialized(map['contact'] ?? {}),
+        contactFunction = map['contact_function'] ?? '',
         address = map['address'] == null
             ? null
             : Address.fromSerialized(map['address']),
         phone = PhoneNumber.fromSerialized(map['phone'] ?? {}),
         fax = PhoneNumber.fromSerialized(map['fax'] ?? {}),
+        website = map['website'] ?? '',
         headquartersAddress = map['headquarters_address'] == null
             ? null
             : Address.fromSerialized(map['headquarters_address']),
+        neq = map['neq'] ?? '',
         super.fromSerialized();
   // activityTypes =
   //     (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
   // shareWith = map['shareWith'] ?? 'Unnamed sharing',
   // jobs = JobList.fromSerialized(map['jobs'] ?? {}),
-  // contactFunction = map['contactFunction'] ?? '',
-  // phone = PhoneNumber.fromString(map['phone'] ?? ''),
-  // fax = PhoneNumber.fromString(map['fax'] ?? ''),
-  // website = map['website'] ?? '',
-  // neq = map['neq'],
-  // super.fromSerialized();
 }
 
 const List<String> activityTypes = [

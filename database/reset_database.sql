@@ -98,6 +98,9 @@ CREATE TABLE enterprises (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     recruiter_id VARCHAR(36) NOT NULL, 
+    contact_function VARCHAR(255) NOT NULL,
+    website VARCHAR(255) NOT NULL,
+    neq VARCHAR(50) NOT NULL,
     FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 

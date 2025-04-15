@@ -288,6 +288,20 @@ class _LoginScreenState extends State<LoginScreen> {
         postalCode: 'H0H 0H0',
       );
 
+  String _randomWebsite() {
+    final name = [
+      ['The', 'A', 'Your', 'Our'][Random().nextInt(4)],
+      ['Company', 'Business', 'Enterprise', 'Corporation'][Random().nextInt(4)],
+    ].join('');
+    final domain = [
+      'example.com',
+      'example.org',
+      'example.net',
+      'example.edu',
+    ][Random().nextInt(4)];
+    return 'https://$name.$domain';
+  }
+
   Future<void> _addRandomTeacher() async {
     if (!isConnected) return;
 
@@ -342,10 +356,13 @@ class _LoginScreenState extends State<LoginScreen> {
           recruiterId: _dummyTeachers.keys
               .toList()[random.nextInt(_dummyTeachers.length)],
           contact: _randomPerson(),
+          contactFunction: 'Looking',
           address: _randomAddress(),
           phone: _randomPhoneNumber(),
           fax: _randomPhoneNumber(),
+          website: _randomWebsite(),
           headquartersAddress: _randomAddress(),
+          neq: (_random.nextInt(1000000) + 1000000).toString(),
         ).serialize(),
       ).serialize());
       _socket?.send(message);
@@ -454,7 +471,8 @@ class EnterpriseTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
         '${enterprise.name}, ${enterprise.address} [${enterprise.headquartersAddress}].\n'
-        'Contact: ${enterprise.contact}, phone: ${enterprise.phone}, recruted by ${_dummyTeachers[enterprise.recruiterId]}\n');
+        'Contact: ${enterprise.contact}, phone: ${enterprise.phone}, recruted by ${_dummyTeachers[enterprise.recruiterId]}\n'
+        'Website: ${enterprise.website}, fax: ${enterprise.fax}, neq: ${enterprise.neq}');
   }
 }
 

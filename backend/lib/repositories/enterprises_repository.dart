@@ -140,6 +140,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         recruiterId: enterprise['recruiter_id'],
         contact: Person.fromSerialized(
             (contacts?.isEmpty ?? true) ? {} : contacts!.first),
+        contactFunction: enterprise['contact_function'],
         address: enterprise['address'] == null || enterprise['address'].isEmpty
             ? null
             : Address.fromSerialized(enterprise['address'].first),
@@ -153,10 +154,12 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                 ? PhoneNumber.empty
                 : PhoneNumber.fromSerialized(
                     enterprise['fax_number']?.first as Map? ?? {}),
+        website: enterprise['website'],
         headquartersAddress: enterprise['headquarter_address'] == null ||
                 enterprise['headquarter_address'].isEmpty
             ? null
             : Address.fromSerialized(enterprise['headquarter_address'].first),
+        neq: enterprise['neq'],
       );
     }
 
@@ -189,6 +192,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             'id': enterprise.id,
             'name': enterprise.name,
             'recruiter_id': enterprise.recruiterId,
+            'contact_function': enterprise.contactFunction,
+            'website': enterprise.website,
+            'neq': enterprise.neq,
           });
 
       // Insert the contact
