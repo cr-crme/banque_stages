@@ -103,4 +103,3 @@ CREATE TABLE enterprise_contacts(
     FOREIGN KEY (contact_id) REFERENCES persons(id),
     FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE
 )
-

@@ -1,6 +1,7 @@
-import 'package:backend/repositories/mysql_repository_helpers.dart';
+import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/models/address.dart';
 import 'package:common/models/enterprise.dart';
 import 'package:common/models/person.dart';
 import 'package:mysql1/mysql1.dart';
@@ -52,21 +53,68 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   @override
   Future<Map<String, Enterprise>> _getAllEnterprises(
       {String? enterpriseId}) async {
-    final results = await performSelectQuery(
+    final enterprises = await MySqlHelpers.performSelectQuery(
       connection: connection,
       tableName: 'enterprises',
       id: enterpriseId,
+      subqueries: [
+        MySqlJoinSubQuery(
+            dataTableName: 'persons',
+            asName: 'contact',
+            idNameToDataTable: 'contact_id',
+            idNameToMainTable: 'enterprise_id',
+            relationTableName: 'enterprise_contacts',
+            fieldsToFetch: ['id']),
+        MySqlSelectSubQuery(
+            dataTableName: 'addresses',
+            idNameToDataTable: 'entity_id',
+            fieldsToFetch: [
+              'id',
+              'civic',
+              'street',
+              'apartment',
+              'city',
+              'postal_code'
+            ]),
+      ],
     );
 
-    return {
-      for (final enterprise in results)
-        enterprise['id'].toString(): Enterprise(
-          id: enterprise['id'].toString(),
-          name: enterprise['name'],
-          recruiterId: enterprise['recruiter_id'],
-          contact: Person.fromSerialized(enterprise['contact'] ?? {}),
-        )
-    };
+    final map = <String, Enterprise>{};
+    for (final enterprise in enterprises) {
+      final contactId = (enterprise['contact'] as List?)?.first['id'];
+      final contacts = contactId == null
+          ? null
+          : await MySqlHelpers.performSelectQuery(
+              connection: connection,
+              tableName: 'persons',
+              id: contactId,
+              subqueries: [
+                  MySqlSelectSubQuery(
+                      dataTableName: 'addresses',
+                      idNameToDataTable: 'entity_id',
+                      fieldsToFetch: [
+                        'id',
+                        'civic',
+                        'street',
+                        'apartment',
+                        'city',
+                        'postal_code'
+                      ]),
+                ]);
+
+      map[enterprise['id'].toString()] = Enterprise(
+        id: enterprise['id'].toString(),
+        name: enterprise['name'],
+        recruiterId: enterprise['recruiter_id'],
+        contact: Person.fromSerialized(
+            (contacts?.isEmpty ?? true) ? {} : contacts!.first),
+        address: enterprise['addresses'] == null
+            ? null
+            : Address.fromSerialized(enterprise['addresses'].first),
+      );
+    }
+
+    return map;
   }
 
   @override
@@ -84,11 +132,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   Future<void> _putNewEnterprise(Enterprise enterprise) async {
     try {
       // Insert the enterprise
-      await performInsertQuery(
+      await MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'entities',
           data: {'shared_id': enterprise.id});
-      await performInsertQuery(
+      await MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'enterprises',
           data: {
@@ -96,18 +144,24 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             'name': enterprise.name,
             'recruiter_id': enterprise.recruiterId,
           });
-      await performInsertPerson(
+      await MySqlHelpers.performInsertPerson(
           connection: connection, person: enterprise.contact);
-      await performInsertQuery(
+      await MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'enterprise_contacts',
           data: {
             'enterprise_id': enterprise.id,
             'contact_id': enterprise.contact.id
           });
+      if (enterprise.address != null) {
+        await MySqlHelpers.performInsertAddress(
+            connection: connection,
+            address: enterprise.address!,
+            entityId: enterprise.id);
+      }
     } catch (e) {
       try {
-        await performDeleteQuery(
+        await MySqlHelpers.performDeleteQuery(
             connection: connection, tableName: 'entities', id: enterprise.id);
       } catch (e) {
         // Do nothing
@@ -124,7 +178,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
     // Update if required
     if (toUpdate.isNotEmpty) {
-      await performUpdateQuery(
+      await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'enterprises',
           id: enterprise.id,

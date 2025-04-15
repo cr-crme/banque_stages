@@ -1,4 +1,4 @@
-import 'package:backend/repositories/mysql_repository_helpers.dart';
+import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:backend/utils/helpers.dart';
@@ -53,24 +53,22 @@ class MySqlTeachersRepository extends TeachersRepository {
 
   @override
   Future<Map<String, Teacher>> _getAllTeachers({String? teacherId}) async {
-    final results = await performSelectQuery(
+    final teachers = await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'teachers',
         id: teacherId,
-        sublists: [
-          MySqlReferencedTable(tableName: 'persons', fieldsToFetch: [
-            'first_name',
-            'middle_name',
-            'last_name',
-            'email'
-          ]),
-          MySqlReferencedTable(
-              tableName: 'phone_numbers',
-              referenceIdName: 'entity_id',
+        subqueries: [
+          MySqlSelectSubQuery(
+            dataTableName: 'persons',
+            fieldsToFetch: ['first_name', 'middle_name', 'last_name', 'email'],
+          ),
+          MySqlSelectSubQuery(
+              dataTableName: 'phone_numbers',
+              idNameToDataTable: 'entity_id',
               fieldsToFetch: ['id', 'phone_number']),
-          MySqlReferencedTable(
-              tableName: 'addresses',
-              referenceIdName: 'entity_id',
+          MySqlSelectSubQuery(
+              dataTableName: 'addresses',
+              idNameToDataTable: 'entity_id',
               fieldsToFetch: [
                 'id',
                 'civic',
@@ -79,15 +77,15 @@ class MySqlTeachersRepository extends TeachersRepository {
                 'city',
                 'postal_code'
               ]),
-          MySqlTable(
-            tableName: 'teaching_groups',
-            tableIdName: 'teacher_id',
+          MySqlSelectSubQuery(
+            dataTableName: 'teaching_groups',
+            idNameToDataTable: 'teacher_id',
             fieldsToFetch: ['group_name'],
           )
         ]);
 
     final map = <String, Teacher>{};
-    for (final teacher in results) {
+    for (final teacher in teachers) {
       final id = teacher['id'].toString();
       final person = (teacher['persons'] as List).first;
       final teachingGroups = teacher['teaching_groups'] as List?;
@@ -127,15 +125,16 @@ class MySqlTeachersRepository extends TeachersRepository {
   Future<void> _putNewTeacher(Teacher teacher) async {
     try {
       // Insert the teacher
-      await performInsertPerson(connection: connection, person: teacher);
-      await performInsertQuery(
+      await MySqlHelpers.performInsertPerson(
+          connection: connection, person: teacher);
+      await MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'teachers',
           data: {'id': teacher.id, 'school_id': teacher.schoolId});
 
       // Insert the teaching groups
       for (final group in teacher.groups) {
-        await performInsertQuery(
+        await MySqlHelpers.performInsertQuery(
             connection: connection,
             tableName: 'teaching_groups',
             data: {'teacher_id': teacher.id, 'group_name': group});
@@ -143,7 +142,7 @@ class MySqlTeachersRepository extends TeachersRepository {
     } catch (e) {
       try {
         // Try to delete the inserted data in case of error (everything is ON CASCADE DELETE)
-        await performDeleteQuery(
+        await MySqlHelpers.performDeleteQuery(
             connection: connection,
             tableName: 'entities',
             idName: 'shared_id',
@@ -171,7 +170,7 @@ class MySqlTeachersRepository extends TeachersRepository {
       toUpdate['email'] = teacher.email;
     }
     if (toUpdate.isNotEmpty) {
-      await performUpdateQuery(
+      await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'persons',
           id: teacher.id,
@@ -184,7 +183,7 @@ class MySqlTeachersRepository extends TeachersRepository {
       toUpdate['school_id'] = teacher.schoolId;
     }
     if (toUpdate.isNotEmpty) {
-      await performUpdateQuery(
+      await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'teachers',
           id: teacher.id,
@@ -193,10 +192,10 @@ class MySqlTeachersRepository extends TeachersRepository {
 
     // Update teaching groups
     if (isNotListEqual(teacher.groups, previous.groups)) {
-      await performDeleteQuery(
+      await MySqlHelpers.performDeleteQuery(
           connection: connection, tableName: 'teaching_groups', id: teacher.id);
       for (final group in teacher.groups) {
-        await performInsertQuery(
+        await MySqlHelpers.performInsertQuery(
             connection: connection,
             tableName: 'teaching_groups',
             data: {'id': teacher.id, 'group_name': group});
@@ -205,7 +204,7 @@ class MySqlTeachersRepository extends TeachersRepository {
 
     // Update the phone number
     if (teacher.phone != previous.phone) {
-      await performUpdateQuery(
+      await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'phone_numbers',
           id: teacher.phone.id,

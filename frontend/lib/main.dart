@@ -258,35 +258,58 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  final _random = Random();
+
+  Person _randomPerson() {
+    final firstName =
+        ['John', 'Jane', 'Alice', 'Bob', 'Charlie'][_random.nextInt(5)];
+    final lastName =
+        ['Doe', 'Smith', 'Johnson', 'Williams', 'Brown'][_random.nextInt(5)];
+
+    return Person(
+        firstName: firstName,
+        middleName: null,
+        lastName: lastName,
+        dateBirth: DateTime(_random.nextInt(50) + 1970, _random.nextInt(12) + 1,
+            _random.nextInt(28) + 1),
+        email:
+            '${firstName.toLowerCase()}.${lastName.toLowerCase()}@banque_stage.org',
+        phone: _randomPhoneNumber(),
+        address: _randomAddress());
+  }
+
+  PhoneNumber _randomPhoneNumber() => PhoneNumber.fromString(
+      '${_random.nextInt(900) + 100}-${_random.nextInt(900) + 100}-${_random.nextInt(9000) + 1000}');
+
+  Address _randomAddress() => Address(
+        civicNumber: _random.nextInt(100),
+        street: ['Street', 'Boulevard', 'Avenue'][_random.nextInt(3)],
+        city: ['Montreal', 'Quebec', 'Laval'][_random.nextInt(3)],
+        postalCode: 'H0H 0H0',
+      );
+
   Future<void> _addRandomTeacher() async {
     if (!isConnected) return;
 
     // Send a post request to the server
     try {
-      final random = Random();
-      final firstName =
-          ['John', 'Jane', 'Alice', 'Bob', 'Charlie'][random.nextInt(5)];
-      final lastName =
-          ['Doe', 'Smith', 'Johnson', 'Williams', 'Brown'][random.nextInt(5)];
-      final phone = PhoneNumber.fromString(
-          '${random.nextInt(900) + 100}-${random.nextInt(900) + 100}-${random.nextInt(9000) + 1000}');
       final groups = <String>[];
-      for (int i = 0; i < random.nextInt(5); i++) {
-        groups.add(random.nextInt(100).toString());
+      for (int i = 0; i < _random.nextInt(5); i++) {
+        groups.add(_random.nextInt(100).toString());
       }
 
+      final teacher = _randomPerson();
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
         field: RequestFields.teacher,
         data: Teacher(
-          firstName: firstName,
+          firstName: teacher.firstName,
           middleName: null,
-          lastName: lastName,
-          schoolId: random.nextInt(100).toString(),
+          lastName: teacher.lastName,
+          schoolId: _random.nextInt(100).toString(),
           groups: groups,
-          email:
-              '${firstName.toLowerCase()}.${lastName.toLowerCase()}@banque_stage.org',
-          phone: phone,
+          email: teacher.email,
+          phone: teacher.phone,
           address: Address.empty,
           dateBirth: null,
         ).serialize(),
@@ -305,22 +328,21 @@ class _LoginScreenState extends State<LoginScreen> {
     // Send a post request to the server
     try {
       final random = Random();
-      final name = ['The', 'Best', 'The', 'Great', 'The'][random.nextInt(5)] +
-          [
-            'Company',
-            'Enterprise',
-            'Business',
-            'Corporation',
-            'Firm'
-          ][random.nextInt(5)];
+      final name = [
+        ['The ', 'A ', 'Your ', 'Our '][random.nextInt(4)],
+        ['Company', 'Business', 'Enterprise', 'Corporation'][random.nextInt(4)],
+        ['Inc.', 'LLC', 'Ltd.', 'Co.'][random.nextInt(4)]
+      ].join(' ');
 
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
         field: RequestFields.enterprise,
         data: Enterprise(
           name: name,
-          recruiterId: _dummyTeachers.keys.first,
-          contact: Person.empty,
+          recruiterId: _dummyTeachers.keys
+              .toList()[random.nextInt(_dummyTeachers.length)],
+          contact: _randomPerson(),
+          address: _randomAddress(),
         ).serialize(),
       ).serialize());
       _socket?.send(message);
@@ -428,7 +450,7 @@ class EnterpriseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-        '${enterprise.name} (recruted by ${_dummyTeachers[enterprise.recruiterId]})');
+        '${enterprise.name}, ${enterprise.address} (contact: ${enterprise.contact}, recruted by ${_dummyTeachers[enterprise.recruiterId]})');
   }
 }
 
