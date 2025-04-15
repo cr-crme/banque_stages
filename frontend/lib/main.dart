@@ -343,6 +343,8 @@ class _LoginScreenState extends State<LoginScreen> {
               .toList()[random.nextInt(_dummyTeachers.length)],
           contact: _randomPerson(),
           address: _randomAddress(),
+          phone: _randomPhoneNumber(),
+          fax: _randomPhoneNumber(),
         ).serialize(),
       ).serialize());
       _socket?.send(message);
@@ -450,7 +452,7 @@ class EnterpriseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-        '${enterprise.name}, ${enterprise.address} (contact: ${enterprise.contact}, recruted by ${_dummyTeachers[enterprise.recruiterId]})');
+        '${enterprise.name}, ${enterprise.address} (contact: ${enterprise.contact}, phone: ${enterprise.phone}, recruted by ${_dummyTeachers[enterprise.recruiterId]})');
   }
 }
 

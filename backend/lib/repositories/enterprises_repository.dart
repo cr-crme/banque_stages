@@ -4,6 +4,7 @@ import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/address.dart';
 import 'package:common/models/enterprise.dart';
 import 'package:common/models/person.dart';
+import 'package:common/models/phone_number.dart';
 import 'package:mysql1/mysql1.dart';
 
 abstract class EnterprisesRepository implements RepositoryAbstract {
@@ -76,6 +77,20 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               'city',
               'postal_code'
             ]),
+        MySqlJoinSubQuery(
+            dataTableName: 'phone_numbers',
+            asName: 'phone_number',
+            idNameToDataTable: 'phone_number_id',
+            idNameToMainTable: 'enterprise_id',
+            relationTableName: 'enterprise_phone_numbers',
+            fieldsToFetch: ['id', 'phone_number']),
+        MySqlJoinSubQuery(
+            dataTableName: 'phone_numbers',
+            asName: 'fax_number',
+            idNameToDataTable: 'fax_number_id',
+            idNameToMainTable: 'enterprise_id',
+            relationTableName: 'enterprise_fax_numbers',
+            fieldsToFetch: ['id', 'phone_number']),
       ],
     );
 
@@ -111,6 +126,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         address: enterprise['addresses'] == null
             ? null
             : Address.fromSerialized(enterprise['addresses'].first),
+        phone: PhoneNumber.fromSerialized(
+            enterprise['phone_number']?.first as Map? ?? {}),
+        fax: PhoneNumber.fromSerialized(
+            enterprise['fax_number']?.first as Map? ?? {}),
       );
     }
 
@@ -144,6 +163,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             'name': enterprise.name,
             'recruiter_id': enterprise.recruiterId,
           });
+
+      // Insert the contact
       await MySqlHelpers.performInsertPerson(
           connection: connection, person: enterprise.contact);
       await MySqlHelpers.performInsertQuery(
@@ -153,12 +174,38 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             'enterprise_id': enterprise.id,
             'contact_id': enterprise.contact.id
           });
+
+      // Insert the addresses
       if (enterprise.address != null) {
         await MySqlHelpers.performInsertAddress(
             connection: connection,
             address: enterprise.address!,
             entityId: enterprise.id);
       }
+
+      // Insert the phone numbers
+      await MySqlHelpers.performInsertPhoneNumber(
+          connection: connection,
+          phoneNumber: enterprise.phone,
+          entityId: enterprise.id);
+      await MySqlHelpers.performInsertQuery(
+          connection: connection,
+          tableName: 'enterprise_phone_numbers',
+          data: {
+            'enterprise_id': enterprise.id,
+            'phone_number_id': enterprise.phone.id
+          });
+      await MySqlHelpers.performInsertPhoneNumber(
+          connection: connection,
+          phoneNumber: enterprise.fax,
+          entityId: enterprise.id);
+      await MySqlHelpers.performInsertQuery(
+          connection: connection,
+          tableName: 'enterprise_fax_numbers',
+          data: {
+            'enterprise_id': enterprise.id,
+            'fax_number_id': enterprise.fax.id
+          });
     } catch (e) {
       try {
         await MySqlHelpers.performDeleteQuery(
@@ -196,12 +243,18 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       name: 'My First Enterprise',
       recruiterId: 'Recruiter 1',
       contact: Person.empty,
+      address: Address.empty,
+      phone: PhoneNumber.fromString('123-456-7890'),
+      fax: PhoneNumber.fromString('098-765-4321'),
     ),
     '1': Enterprise(
       id: '1',
       name: 'My Second Enterprise',
       recruiterId: 'Recruiter 2',
       contact: Person.empty,
+      address: Address.empty,
+      phone: PhoneNumber.fromString('123-456-7890'),
+      fax: PhoneNumber.fromString('098-765-4321'),
     )
   };
 
