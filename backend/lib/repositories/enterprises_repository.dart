@@ -66,9 +66,26 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             idNameToMainTable: 'enterprise_id',
             relationTableName: 'enterprise_contacts',
             fieldsToFetch: ['id']),
-        MySqlSelectSubQuery(
+        MySqlJoinSubQuery(
             dataTableName: 'addresses',
-            idNameToDataTable: 'entity_id',
+            asName: 'address',
+            idNameToDataTable: 'address_id',
+            idNameToMainTable: 'enterprise_id',
+            relationTableName: 'enterprise_addresses',
+            fieldsToFetch: [
+              'id',
+              'civic',
+              'street',
+              'apartment',
+              'city',
+              'postal_code'
+            ]),
+        MySqlJoinSubQuery(
+            dataTableName: 'addresses',
+            asName: 'headquarter_address',
+            idNameToDataTable: 'address_id',
+            idNameToMainTable: 'enterprise_id',
+            relationTableName: 'enterprise_headquarter_addresses',
             fieldsToFetch: [
               'id',
               'civic',
@@ -123,13 +140,23 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         recruiterId: enterprise['recruiter_id'],
         contact: Person.fromSerialized(
             (contacts?.isEmpty ?? true) ? {} : contacts!.first),
-        address: enterprise['addresses'] == null
+        address: enterprise['address'] == null || enterprise['address'].isEmpty
             ? null
-            : Address.fromSerialized(enterprise['addresses'].first),
-        phone: PhoneNumber.fromSerialized(
-            enterprise['phone_number']?.first as Map? ?? {}),
-        fax: PhoneNumber.fromSerialized(
-            enterprise['fax_number']?.first as Map? ?? {}),
+            : Address.fromSerialized(enterprise['address'].first),
+        phone: enterprise['phone_number'] == null ||
+                enterprise['phone_number'].isEmpty
+            ? PhoneNumber.empty
+            : PhoneNumber.fromSerialized(
+                enterprise['phone_number'].first as Map? ?? {}),
+        fax:
+            enterprise['fax_number'] == null || enterprise['fax_number'].isEmpty
+                ? PhoneNumber.empty
+                : PhoneNumber.fromSerialized(
+                    enterprise['fax_number']?.first as Map? ?? {}),
+        headquartersAddress: enterprise['headquarter_address'] == null ||
+                enterprise['headquarter_address'].isEmpty
+            ? null
+            : Address.fromSerialized(enterprise['headquarter_address'].first),
       );
     }
 
@@ -181,6 +208,26 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             connection: connection,
             address: enterprise.address!,
             entityId: enterprise.id);
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'enterprise_addresses',
+            data: {
+              'enterprise_id': enterprise.id,
+              'address_id': enterprise.address!.id
+            });
+      }
+      if (enterprise.headquartersAddress != null) {
+        await MySqlHelpers.performInsertAddress(
+            connection: connection,
+            address: enterprise.headquartersAddress!,
+            entityId: enterprise.id);
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'enterprise_headquarter_addresses',
+            data: {
+              'enterprise_id': enterprise.id,
+              'address_id': enterprise.headquartersAddress!.id
+            });
       }
 
       // Insert the phone numbers

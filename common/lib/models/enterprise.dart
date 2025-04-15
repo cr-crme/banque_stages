@@ -21,7 +21,7 @@ class Enterprise extends ItemSerializable {
   final PhoneNumber fax;
   // final String website;
 
-  // final Address? headquartersAddress;
+  final Address? headquartersAddress;
   // final String? neq;
 
   // // TODO: Implement this on app side with an extension on
@@ -50,7 +50,7 @@ class Enterprise extends ItemSerializable {
     required this.phone,
     required this.fax,
     // this.website = '',
-    // this.headquartersAddress,
+    this.headquartersAddress,
     // this.neq = '',
   });
   // : phone = phone ?? PhoneNumber.empty,
@@ -85,7 +85,7 @@ class Enterprise extends ItemSerializable {
       phone: phone ?? this.phone,
       fax: fax ?? this.fax,
       // website: website ?? this.website,
-      // headquartersAddress: headquartersAddress ?? this.headquartersAddress,
+      headquartersAddress: headquartersAddress ?? this.headquartersAddress,
       // neq: neq ?? this.neq,
     );
   }
@@ -98,7 +98,8 @@ class Enterprise extends ItemSerializable {
       'contact',
       'address',
       'phone',
-      'fax'
+      'fax',
+      'headquarters_address',
     ];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
@@ -117,7 +118,7 @@ class Enterprise extends ItemSerializable {
       phone: data['phone'] ?? phone,
       fax: data['fax'] ?? fax,
       // website: website ?? this.website,
-      // headquartersAddress: headquartersAddress ?? this.headquartersAddress,
+      headquartersAddress: data['headquarters_address'] ?? headquartersAddress,
       // neq: neq ?? this.neq,
     );
   }
@@ -136,7 +137,7 @@ class Enterprise extends ItemSerializable {
       'phone': phone.serialize(),
       'fax': fax.serialize(),
       // 'website': website,
-      // 'headquartersAddress': headquartersAddress?.serialize(),
+      'headquarters_address': headquartersAddress?.serialize(),
       // 'neq': neq,
     };
   }
@@ -151,6 +152,9 @@ class Enterprise extends ItemSerializable {
             : Address.fromSerialized(map['address']),
         phone = PhoneNumber.fromSerialized(map['phone'] ?? {}),
         fax = PhoneNumber.fromSerialized(map['fax'] ?? {}),
+        headquartersAddress = map['headquarters_address'] == null
+            ? null
+            : Address.fromSerialized(map['headquarters_address']),
         super.fromSerialized();
   // activityTypes =
   //     (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
@@ -160,9 +164,6 @@ class Enterprise extends ItemSerializable {
   // phone = PhoneNumber.fromString(map['phone'] ?? ''),
   // fax = PhoneNumber.fromString(map['fax'] ?? ''),
   // website = map['website'] ?? '',
-  // headquartersAddress = map['headquartersAddress'] == null
-  //     ? null
-  //     : Address.fromSerialized(map['headquartersAddress']),
   // neq = map['neq'],
   // super.fromSerialized();
 }

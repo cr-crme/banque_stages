@@ -345,6 +345,7 @@ class _LoginScreenState extends State<LoginScreen> {
           address: _randomAddress(),
           phone: _randomPhoneNumber(),
           fax: _randomPhoneNumber(),
+          headquartersAddress: _randomAddress(),
         ).serialize(),
       ).serialize());
       _socket?.send(message);
@@ -452,7 +453,8 @@ class EnterpriseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-        '${enterprise.name}, ${enterprise.address} (contact: ${enterprise.contact}, phone: ${enterprise.phone}, recruted by ${_dummyTeachers[enterprise.recruiterId]})');
+        '${enterprise.name}, ${enterprise.address} [${enterprise.headquartersAddress}].\n'
+        'Contact: ${enterprise.contact}, phone: ${enterprise.phone}, recruted by ${_dummyTeachers[enterprise.recruiterId]}\n');
   }
 }
 

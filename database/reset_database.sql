@@ -13,6 +13,8 @@ DROP TABLE IF EXISTS persons;
 DROP TABLE IF EXISTS teaching_groups;
 DROP TABLE IF EXISTS teachers;
 
+DROP TABLE IF EXISTS enterprise_addresses;
+DROP TABLE IF EXISTS enterprise_headquarter_addresses;
 DROP TABLE IF EXISTS enterprise_phone_numbers;
 DROP TABLE IF EXISTS enterprise_fax_numbers;
 DROP TABLE IF EXISTS enterprise_contacts;
@@ -103,6 +105,20 @@ CREATE TABLE enterprise_contacts(
     enterprise_id VARCHAR(36) NOT NULL,
     contact_id VARCHAR(36) NOT NULL,
     FOREIGN KEY (contact_id) REFERENCES persons(id),
+    FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE
+);
+
+CREATE TABLE enterprise_addresses(
+    enterprise_id VARCHAR(36) NOT NULL,
+    address_id VARCHAR(36) NOT NULL,
+    FOREIGN KEY (address_id) REFERENCES addresses(id),
+    FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE
+);
+
+CREATE TABLE enterprise_headquarter_addresses(
+    enterprise_id VARCHAR(36) NOT NULL,
+    address_id VARCHAR(36) NOT NULL,
+    FOREIGN KEY (address_id) REFERENCES addresses(id),
     FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE
 );
 
