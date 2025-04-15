@@ -81,6 +81,7 @@ class MySqlTeachersRepository extends TeachersRepository {
               ]),
           MySqlTable(
             tableName: 'teaching_groups',
+            tableIdName: 'teacher_id',
             fieldsToFetch: ['group_name'],
           )
         ]);
@@ -89,9 +90,9 @@ class MySqlTeachersRepository extends TeachersRepository {
     for (final teacher in results) {
       final id = teacher['id'].toString();
       final person = (teacher['persons'] as List).first;
-      final teachingGroups = teacher['teaching_groups'] as List? ?? [];
-      final phoneNumbers = teacher['phone_numbers'] as List? ?? [];
-      final addresses = teacher['addresses'] as List? ?? [];
+      final teachingGroups = teacher['teaching_groups'] as List?;
+      final phoneNumbers = teacher['phone_numbers'] as List?;
+      final addresses = teacher['addresses'] as List?;
 
       map[id] = Teacher(
         id: id,
@@ -99,11 +100,13 @@ class MySqlTeachersRepository extends TeachersRepository {
         middleName: person['middle_name'] as String?,
         lastName: person['last_name'] as String,
         schoolId: teacher['school_id'] as String,
-        groups:
-            teachingGroups.map((map) => map['group_name'] as String).toList(),
+        groups: teachingGroups
+                ?.map((map) => map['group_name'] as String)
+                .toList() ??
+            [],
         email: teacher['email'] as String?,
-        phone: PhoneNumber.fromSerialized(phoneNumbers.first as Map? ?? {}),
-        address: Address.fromSerialized(addresses.first as Map? ?? {}),
+        phone: PhoneNumber.fromSerialized(phoneNumbers?.first as Map? ?? {}),
+        address: Address.fromSerialized(addresses?.first as Map? ?? {}),
         dateBirth: null,
       );
     }
@@ -168,7 +171,7 @@ class MySqlTeachersRepository extends TeachersRepository {
         await performInsertQuery(
             connection: connection,
             tableName: 'teaching_groups',
-            data: {'id': teacher.id, 'group_name': group});
+            data: {'teacher_id': teacher.id, 'group_name': group});
       }
     } catch (e) {
       try {

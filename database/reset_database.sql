@@ -53,9 +53,9 @@ CREATE TABLE teachers (
 );
 
 CREATE TABLE teaching_groups (
-    id VARCHAR(36) NOT NULL,
+    teacher_id VARCHAR(36) NOT NULL,
     group_name VARCHAR(20) NOT NULL, 
-    FOREIGN KEY (id) REFERENCES teachers(id) ON DELETE CASCADE
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
 );
 
 

@@ -40,7 +40,9 @@ Future<List<Map<String, dynamic>>> performSelectQuery({
       continue;
     }
     for (final sublist in sublists) {
-      map[sublist.tableName] = jsonDecode(row[sublist.tableName]);
+      final tableRow = map[sublist.tableName];
+      if (tableRow == null) continue;
+      map[sublist.tableName] = jsonDecode(tableRow);
     }
     list.add(map);
   }
@@ -134,11 +136,11 @@ class MySqlTable implements MySqlTableAccessor {
     return '''IFNULL((
         SELECT JSON_ARRAYAGG(
             JSON_OBJECT(
-              ${MySqlTableAccessor._dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'ml')}
+              ${MySqlTableAccessor._dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'sl')}
             )
         )
-        FROM $tableName ml
-        WHERE ml.$referenceIdName = $tableElementAlias.$tableIdName
+        FROM $tableName sl
+        WHERE sl.$tableIdName = $tableElementAlias.$referenceIdName
       ), JSON_ARRAY()) AS $tableName''';
   }
 }
