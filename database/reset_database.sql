@@ -5,9 +5,10 @@ USE dev_db;
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS entities;
-DROP TABLE IF EXISTS persons;
 DROP TABLE IF EXISTS phone_numbers;
 DROP TABLE IF EXISTS addresses;
+
+DROP TABLE IF EXISTS persons;
 
 DROP TABLE IF EXISTS teaching_groups;
 DROP TABLE IF EXISTS teachers;
@@ -26,6 +27,24 @@ CREATE TABLE entities (
     shared_id VARCHAR(36) NOT NULL PRIMARY KEY
 );
 
+
+CREATE TABLE addresses (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    entity_id VARCHAR(36) NOT NULL,
+    civic INT,
+    street VARCHAR(100),
+    apartment VARCHAR(20),
+    city VARCHAR(50),
+    postal_code VARCHAR(10),
+    FOREIGN KEY (entity_id) REFERENCES entities(shared_id) ON DELETE CASCADE
+);
+
+CREATE TABLE phone_numbers (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    entity_id VARCHAR(36) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL, 
+    FOREIGN KEY (entity_id) REFERENCES entities(shared_id) ON DELETE CASCADE
+);
 
 
 /*************************/
@@ -65,28 +84,6 @@ CREATE TABLE teaching_groups (
 
 
 
-/**** Addresses ****/
-
-CREATE TABLE addresses (
-    id VARCHAR(36) NOT NULL PRIMARY KEY,
-    entity_id VARCHAR(36) NOT NULL,
-    civic INT,
-    street VARCHAR(100),
-    apartment VARCHAR(20),
-    city VARCHAR(50),
-    postal_code VARCHAR(10),
-    FOREIGN KEY (entity_id) REFERENCES entities(shared_id) ON DELETE CASCADE
-);
-
-
-/**** Phone numbers ****/
-
-CREATE TABLE phone_numbers (
-    id VARCHAR(36) NOT NULL PRIMARY KEY,
-    entity_id VARCHAR(36) NOT NULL,
-    phone_number VARCHAR(20) NOT NULL, 
-    FOREIGN KEY (entity_id) REFERENCES entities(shared_id) ON DELETE CASCADE
-);
 
 
 /*************************/

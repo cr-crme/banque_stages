@@ -42,8 +42,8 @@ void main() {
 
     expect(
         query,
-        'SELECT t.*, IFNULL(( SELECT JSON_ARRAYAGG( JSON_OBJECT( \'field1\', ml.field1, \'field2\', ml.field2 ) ) '
-        'FROM table_name ml WHERE ml.table_id = t.subtable_id ), JSON_ARRAY()) AS table_name FROM my_table t');
+        'SELECT t.*, IFNULL(( SELECT JSON_ARRAYAGG( JSON_OBJECT( \'field1\', sl.field1, \'field2\', sl.field2 ) ) '
+        'FROM table_name sl WHERE sl.subtable_id = t.table_id ), JSON_ARRAY()) AS table_name FROM my_table t');
   });
 
   test('MySql query crafter with normalized table', () {
