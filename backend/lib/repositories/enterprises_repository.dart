@@ -176,6 +176,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                     ?.map((e) => e['request'])
                     .toList() ??
                 [];
+        jobs[job['id']]['uniforms'] = (job['uniforms'] as List?)
+            ?.map((e) => e['uniform'])
+            .toList()
+            .join('\n');
       }
 
       map[enterprise['id'].toString()] = Enterprise(
@@ -298,6 +302,18 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               data: {
                 'job_id': job.id,
                 'request': request.name,
+              });
+        }
+
+        // Insert uniforms
+        for (final uniform in job.uniforms.uniforms) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'enterprise_job_uniforms',
+              data: {
+                'job_id': job.id,
+                'status': job.uniforms.status.name,
+                'uniform': uniform,
               });
         }
       }

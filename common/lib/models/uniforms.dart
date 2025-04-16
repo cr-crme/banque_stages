@@ -5,6 +5,13 @@ enum UniformStatus {
   suppliedByStudent,
   none;
 
+  static UniformStatus fromName(String name) {
+    return UniformStatus.values.firstWhere(
+      (element) => element.name == name,
+      orElse: () => UniformStatus.none,
+    );
+  }
+
   @override
   String toString() {
     switch (this) {
@@ -18,16 +25,16 @@ enum UniformStatus {
   }
 }
 
-class Uniform extends ItemSerializable {
+class Uniforms extends ItemSerializable {
   final UniformStatus status;
   final String _uniform;
 
   List<String> get uniforms => _uniform.isEmpty ? [] : _uniform.split('\n');
 
-  Uniform({super.id, required this.status, String? uniform = ''})
+  Uniforms({super.id, required this.status, String? uniform = ''})
       : _uniform = uniform ?? '';
 
-  Uniform.fromSerialized(super.map)
+  Uniforms.fromSerialized(super.map)
       : status = map['status'] == null
             ? UniformStatus.none
             : UniformStatus.values[map['status']],

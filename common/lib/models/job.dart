@@ -1,7 +1,7 @@
 import 'package:common/models/incidents.dart';
 import 'package:common/models/pre_internship_request.dart';
 import 'package:common/models/protections.dart';
-import 'package:common/models/uniform.dart';
+import 'package:common/models/uniforms.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
@@ -71,7 +71,7 @@ class Job extends ItemSerializable {
   // Prerequisites for an internship
   final int minimumAge;
   final List<PreInternshipRequest> preInternshipRequests;
-  // final Uniform uniform;
+  final Uniforms uniforms;
   // final Protections protections;
 
   // Photos
@@ -104,7 +104,7 @@ class Job extends ItemSerializable {
     required this.positionsOffered,
     required this.minimumAge,
     required this.preInternshipRequests,
-    // required this.uniform,
+    required this.uniforms,
     // required this.protections,
     List<String>? photosUrl,
     // required this.sstEvaluation,
@@ -119,7 +119,7 @@ class Job extends ItemSerializable {
     int? positionsOffered,
     int? minimumAge,
     List<PreInternshipRequest>? preInternshipRequests,
-    Uniform? uniform,
+    Uniforms? uniforms,
     Protections? protections,
     List<String>? photosUrl,
     JobSstEvaluation? sstEvaluation,
@@ -134,7 +134,7 @@ class Job extends ItemSerializable {
       minimumAge: minimumAge ?? this.minimumAge,
       preInternshipRequests:
           preInternshipRequests ?? this.preInternshipRequests,
-      // uniform: uniform ?? this.uniform,
+      uniforms: uniforms ?? this.uniforms,
       // protections: protections ?? this.protections,
       photosUrl: photosUrl ?? this.photosUrl,
       // sstEvaluation: sstEvaluation ?? this.sstEvaluation,
@@ -151,7 +151,7 @@ class Job extends ItemSerializable {
         'minimum_age': minimumAge,
         'pre_internship_requests':
             preInternshipRequests.map((e) => e.name).toList(),
-        // 'uniform': uniform.serialize(),
+        'uniforms': uniforms.serialize(),
         // 'protections': protections.serialize(),
         'photos_url': photosUrl,
         // 'sstEvaluations': sstEvaluation.serialize(),
@@ -168,7 +168,7 @@ class Job extends ItemSerializable {
         preInternshipRequests = (map['pre_internship_requests'] as List? ?? [])
             .map((e) => PreInternshipRequest.fromString(e as String))
             .toList(),
-        // uniform = Uniform.fromSerialized(map['uniform'] ?? {}),
+        uniforms = Uniforms.fromSerialized(map['uniforms'] ?? {}),
         // protections = Protections.fromSerialized(map['protections'] ?? {}),
         photosUrl = _stringListFromSerialized(map['photos_url']),
         // sstEvaluation =
