@@ -108,6 +108,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             idNameToMainTable: 'enterprise_id',
             relationTableName: 'enterprise_fax_numbers',
             fieldsToFetch: ['id', 'phone_number']),
+        MySqlSelectSubQuery(
+            dataTableName: 'enterprise_activity_types',
+            asName: 'activity_types',
+            idNameToDataTable: 'enterprise_id',
+            fieldsToFetch: ['activity_type']),
       ],
     );
 
@@ -137,6 +142,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       map[enterprise['id'].toString()] = Enterprise(
         id: enterprise['id'].toString(),
         name: enterprise['name'],
+        activityTypes: (enterprise['activity_types'] as List? ?? [])
+            .map<String>((e) => e['activity_type'].toString())
+            .toSet(),
         recruiterId: enterprise['recruiter_id'],
         contact: Person.fromSerialized(
             (contacts?.isEmpty ?? true) ? {} : contacts!.first),
@@ -196,6 +204,17 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             'website': enterprise.website,
             'neq': enterprise.neq,
           });
+
+      // Insert the activity types
+      for (final activityType in enterprise.activityTypes) {
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'enterprise_activity_types',
+            data: {
+              'enterprise_id': enterprise.id,
+              'activity_type': activityType
+            });
+      }
 
       // Insert the contact
       await MySqlHelpers.performInsertPerson(
@@ -294,6 +313,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
     '0': Enterprise(
       id: '0',
       name: 'My First Enterprise',
+      activityTypes: {'Magasin', 'Quincaillerie'},
       recruiterId: 'Recruiter 1',
       contact: Person.empty,
       address: Address.empty,
@@ -303,6 +323,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
     '1': Enterprise(
       id: '1',
       name: 'My Second Enterprise',
+      activityTypes: {'Magasin', 'Entreposage', 'Ébénisterie'},
       recruiterId: 'Recruiter 2',
       contact: Person.empty,
       address: Address.empty,

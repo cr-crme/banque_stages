@@ -347,12 +347,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ['Company', 'Business', 'Enterprise', 'Corporation'][random.nextInt(4)],
         ['Inc.', 'LLC', 'Ltd.', 'Co.'][random.nextInt(4)]
       ].join(' ');
+      final activities = {
+        for (int i = 0; i < _random.nextInt(5); i++)
+          activityTypes[random.nextInt(activityTypes.length)]
+      };
 
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
         field: RequestFields.enterprise,
         data: Enterprise(
           name: name,
+          activityTypes: activities,
           recruiterId: _dummyTeachers.keys
               .toList()[random.nextInt(_dummyTeachers.length)],
           contact: _randomPerson(),
@@ -471,6 +476,7 @@ class EnterpriseTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
         '${enterprise.name}, ${enterprise.address} [${enterprise.headquartersAddress}].\n'
+        'Activities: ${enterprise.activityTypes.join(', ')}\n'
         'Contact: ${enterprise.contact}, phone: ${enterprise.phone}, recruted by ${_dummyTeachers[enterprise.recruiterId]}\n'
         'Website: ${enterprise.website}, fax: ${enterprise.fax}, neq: ${enterprise.neq}');
   }

@@ -7,9 +7,8 @@ import 'package:enhanced_containers_foundation/enhanced_containers_foundation.da
 
 class Enterprise extends ItemSerializable {
   final String name;
-  // final Set<String> activityTypes;
+  final Set<String> activityTypes;
   final String recruiterId;
-  // final String shareWith;
 
   // final JobList jobs;
 
@@ -40,9 +39,8 @@ class Enterprise extends ItemSerializable {
   Enterprise({
     super.id,
     required this.name,
-    // required this.activityTypes,
+    required this.activityTypes,
     required this.recruiterId,
-    // required this.shareWith,
     // required this.jobs,
     required this.contact,
     this.contactFunction = '',
@@ -60,7 +58,6 @@ class Enterprise extends ItemSerializable {
     String? name,
     Set<String>? activityTypes,
     String? recruiterId,
-    String? shareWith,
     JobList? jobs,
     Person? contact,
     String? contactFunction,
@@ -74,9 +71,8 @@ class Enterprise extends ItemSerializable {
     return Enterprise(
       id: id ?? this.id,
       name: name ?? this.name,
-      // activityTypes: activityTypes ?? this.activityTypes,
+      activityTypes: activityTypes ?? this.activityTypes,
       recruiterId: recruiterId ?? this.recruiterId,
-      // shareWith: shareWith ?? this.shareWith,
       // jobs: jobs ?? this.jobs,
       contact: contact ?? this.contact,
       contactFunction: contactFunction ?? this.contactFunction,
@@ -93,7 +89,8 @@ class Enterprise extends ItemSerializable {
     final availableFields = [
       'id',
       'name',
-      'recruted_by',
+      'activity_types',
+      'recruiter_id',
       'contact',
       'contact_function',
       'address',
@@ -110,9 +107,10 @@ class Enterprise extends ItemSerializable {
     return Enterprise(
       id: data['id']?.toString() ?? id,
       name: data['name'] ?? name,
-      // activityTypes: activityTypes ?? this.activityTypes,
+      activityTypes: (data['activity_types'] as List? ?? [])
+          .map<String>((e) => e.toString())
+          .toSet(),
       recruiterId: data['recruiter_id'] ?? recruiterId,
-      // shareWith: shareWith ?? this.shareWith,
       // jobs: jobs ?? this.jobs,
       contact: data['contact'] ?? contact,
       contactFunction: data['contact_function'] ?? contactFunction,
@@ -129,9 +127,8 @@ class Enterprise extends ItemSerializable {
   Map<String, dynamic> serializedMap() {
     return {
       'name': name,
-      // 'activityTypes': activityTypes.toList(),
+      'activity_types': activityTypes.toList(),
       'recruiter_id': recruiterId,
-      // 'shareWith': shareWith,
       // 'jobs': jobs.serialize(),
       'contact': contact.serialize(),
       'contact_function': contactFunction,
@@ -147,6 +144,9 @@ class Enterprise extends ItemSerializable {
   @override
   Enterprise.fromSerialized(super.map)
       : name = map['name'] ?? 'Unnamed enterprise',
+        activityTypes = (map['activity_types'] as List? ?? [])
+            .map<String>((e) => e.toString())
+            .toSet(),
         recruiterId = map['recruiter_id'] ?? 'UnknownId',
         contact = Person.fromSerialized(map['contact'] ?? {}),
         contactFunction = map['contact_function'] ?? '',
@@ -161,9 +161,6 @@ class Enterprise extends ItemSerializable {
             : Address.fromSerialized(map['headquarters_address']),
         neq = map['neq'] ?? '',
         super.fromSerialized();
-  // activityTypes =
-  //     (map['activityTypes'] as List? ?? []).map<String>((e) => e).toSet(),
-  // shareWith = map['shareWith'] ?? 'Unnamed sharing',
   // jobs = JobList.fromSerialized(map['jobs'] ?? {}),
 }
 

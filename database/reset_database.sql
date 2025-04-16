@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS enterprise_addresses;
 DROP TABLE IF EXISTS enterprise_headquarter_addresses;
 DROP TABLE IF EXISTS enterprise_phone_numbers;
 DROP TABLE IF EXISTS enterprise_fax_numbers;
+DROP TABLE IF EXISTS enterprise_activity_types;
 DROP TABLE IF EXISTS enterprise_contacts;
 DROP TABLE IF EXISTS enterprises;
 
@@ -136,5 +137,11 @@ CREATE TABLE enterprise_fax_numbers(
     enterprise_id VARCHAR(36) NOT NULL,
     fax_number_id VARCHAR(36) NOT NULL,
     FOREIGN KEY (fax_number_id) REFERENCES phone_numbers(id),
+    FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE
+);
+
+CREATE TABLE enterprise_activity_types(
+    enterprise_id VARCHAR(36) NOT NULL,
+    activity_type VARCHAR(50) NOT NULL,
     FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE
 );
