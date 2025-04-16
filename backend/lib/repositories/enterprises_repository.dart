@@ -3,6 +3,7 @@ import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/address.dart';
 import 'package:common/models/enterprise.dart';
+import 'package:common/models/job_list.dart';
 import 'package:common/models/person.dart';
 import 'package:common/models/phone_number.dart';
 import 'package:mysql1/mysql1.dart';
@@ -139,9 +140,38 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                       ]),
                 ]);
 
+      final jobsTp = await MySqlHelpers.performSelectQuery(
+        connection: connection,
+        tableName: 'enterprise_jobs',
+        idName: 'enterprise_id',
+        id: enterprise['id'],
+        subqueries: [
+          MySqlSelectSubQuery(
+              dataTableName: 'enterprise_job_photo_urls',
+              asName: 'photo_url',
+              idNameToDataTable: 'job_id',
+              fieldsToFetch: ['photo_url']),
+          MySqlSelectSubQuery(
+              dataTableName: 'enterprise_job_comments',
+              asName: 'comments',
+              idNameToDataTable: 'job_id',
+              fieldsToFetch: ['comment']),
+        ],
+      );
+      final jobs = <String, dynamic>{};
+      for (final job in jobsTp) {
+        jobs[job['id']] = job;
+        jobs[job['id']]['photos_url'] =
+            (job['photo_url'] as List?)?.map((e) => e['photo_url']).toList() ??
+                [];
+        jobs[job['id']]['comments'] =
+            (job['comments'] as List?)?.map((e) => e['comment']).toList() ?? [];
+      }
+
       map[enterprise['id'].toString()] = Enterprise(
         id: enterprise['id'].toString(),
         name: enterprise['name'],
+        jobs: JobList.fromSerialized(jobs),
         activityTypes: (enterprise['activity_types'] as List? ?? [])
             .map<String>((e) => e['activity_type'].toString())
             .toSet(),
@@ -214,6 +244,41 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               'enterprise_id': enterprise.id,
               'activity_type': activityType
             });
+      }
+
+      // Insert jobs
+      for (final job in enterprise.jobs) {
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'enterprise_jobs',
+            data: {
+              'id': job.id,
+              'enterprise_id': enterprise.id,
+              'positions_offered': job.positionsOffered,
+              'minimum_age': job.minimumAge,
+            });
+
+        // Insert photo urls of the job
+        for (final photoUrl in job.photosUrl) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'enterprise_job_photo_urls',
+              data: {
+                'job_id': job.id,
+                'photo_url': photoUrl,
+              });
+        }
+
+        // Insert the comments for the job
+        for (final comment in job.comments) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'enterprise_job_comments',
+              data: {
+                'job_id': job.id,
+                'comment': comment,
+              });
+        }
       }
 
       // Insert the contact
@@ -313,6 +378,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
     '0': Enterprise(
       id: '0',
       name: 'My First Enterprise',
+      jobs: JobList(),
       activityTypes: {'Magasin', 'Quincaillerie'},
       recruiterId: 'Recruiter 1',
       contact: Person.empty,
@@ -323,6 +389,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
     '1': Enterprise(
       id: '1',
       name: 'My Second Enterprise',
+      jobs: JobList(),
       activityTypes: {'Magasin', 'Entreposage', 'Ébénisterie'},
       recruiterId: 'Recruiter 2',
       contact: Person.empty,

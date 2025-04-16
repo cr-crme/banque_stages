@@ -10,7 +10,7 @@ class Enterprise extends ItemSerializable {
   final Set<String> activityTypes;
   final String recruiterId;
 
-  // final JobList jobs;
+  final JobList jobs;
 
   final Person contact;
   final String contactFunction;
@@ -41,7 +41,7 @@ class Enterprise extends ItemSerializable {
     required this.name,
     required this.activityTypes,
     required this.recruiterId,
-    // required this.jobs,
+    required this.jobs,
     required this.contact,
     this.contactFunction = '',
     this.address,
@@ -73,7 +73,7 @@ class Enterprise extends ItemSerializable {
       name: name ?? this.name,
       activityTypes: activityTypes ?? this.activityTypes,
       recruiterId: recruiterId ?? this.recruiterId,
-      // jobs: jobs ?? this.jobs,
+      jobs: jobs ?? this.jobs,
       contact: contact ?? this.contact,
       contactFunction: contactFunction ?? this.contactFunction,
       address: address ?? this.address,
@@ -91,6 +91,7 @@ class Enterprise extends ItemSerializable {
       'name',
       'activity_types',
       'recruiter_id',
+      'jobs',
       'contact',
       'contact_function',
       'address',
@@ -111,7 +112,7 @@ class Enterprise extends ItemSerializable {
           .map<String>((e) => e.toString())
           .toSet(),
       recruiterId: data['recruiter_id'] ?? recruiterId,
-      // jobs: jobs ?? this.jobs,
+      jobs: data['jobs'] ?? jobs,
       contact: data['contact'] ?? contact,
       contactFunction: data['contact_function'] ?? contactFunction,
       address: data['address'] ?? address,
@@ -129,7 +130,7 @@ class Enterprise extends ItemSerializable {
       'name': name,
       'activity_types': activityTypes.toList(),
       'recruiter_id': recruiterId,
-      // 'jobs': jobs.serialize(),
+      'jobs': jobs.serialize(),
       'contact': contact.serialize(),
       'contact_function': contactFunction,
       'address': address?.serialize(),
@@ -148,6 +149,7 @@ class Enterprise extends ItemSerializable {
             .map<String>((e) => e.toString())
             .toSet(),
         recruiterId = map['recruiter_id'] ?? 'UnknownId',
+        jobs = JobList.fromSerialized(map['jobs'] ?? {}),
         contact = Person.fromSerialized(map['contact'] ?? {}),
         contactFunction = map['contact_function'] ?? '',
         address = map['address'] == null
@@ -161,7 +163,6 @@ class Enterprise extends ItemSerializable {
             : Address.fromSerialized(map['headquarters_address']),
         neq = map['neq'] ?? '',
         super.fromSerialized();
-  // jobs = JobList.fromSerialized(map['jobs'] ?? {}),
 }
 
 const List<String> activityTypes = [

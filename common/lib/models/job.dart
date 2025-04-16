@@ -50,14 +50,14 @@ class JobSstEvaluation extends ItemSerializable {
 
 class Job extends ItemSerializable {
 // Details
-  Specialization get specialization {
-    if (_specialization == null) {
-      throw ArgumentError('No specialization found for this job');
-    }
-    return _specialization;
-  }
+  // Specialization get specialization {
+  //   if (_specialization == null) {
+  //     throw ArgumentError('No specialization found for this job');
+  //   }
+  //   return _specialization;
+  // }
 
-  final Specialization? _specialization;
+  // final Specialization? _specialization;
   final int positionsOffered;
   // TODO Implement this App side with an extension on
   // int positionsOccupied(context) =>
@@ -70,9 +70,9 @@ class Job extends ItemSerializable {
 
   // Prerequisites for an internship
   final int minimumAge;
-  final PreInternshipRequest preInternshipRequest;
-  final Uniform uniform;
-  final Protections protections;
+  // final PreInternshipRequest preInternshipRequest;
+  // final Uniform uniform;
+  // final Protections protections;
 
   // Photos
   final List<String> photosUrl;
@@ -92,25 +92,25 @@ class Job extends ItemSerializable {
   // }
 
   // SST
-  final JobSstEvaluation sstEvaluation;
-  final Incidents incidents;
+  // final JobSstEvaluation sstEvaluation;
+  // final Incidents incidents;
 
   // Comments
   final List<String> comments;
 
   Job({
     super.id,
-    required Specialization specialization,
+    // required Specialization specialization,
     required this.positionsOffered,
     required this.minimumAge,
-    required this.preInternshipRequest,
-    required this.uniform,
-    required this.protections,
+    // required this.preInternshipRequest,
+    // required this.uniform,
+    // required this.protections,
     List<String>? photosUrl,
-    required this.sstEvaluation,
-    required this.incidents,
+    // required this.sstEvaluation,
+    // required this.incidents,
     List<String>? comments,
-  })  : _specialization = specialization,
+  })  : // _specialization = specialization,
         photosUrl = photosUrl ?? [],
         comments = comments ?? [];
 
@@ -129,15 +129,15 @@ class Job extends ItemSerializable {
   }) {
     return Job(
       id: id ?? this.id,
-      specialization: specialization ?? this.specialization,
+      // specialization: specialization ?? this.specialization,
       positionsOffered: positionsOffered ?? this.positionsOffered,
       minimumAge: minimumAge ?? this.minimumAge,
-      preInternshipRequest: preInternshipRequest ?? this.preInternshipRequest,
-      uniform: uniform ?? this.uniform,
-      protections: protections ?? this.protections,
+      // preInternshipRequest: preInternshipRequest ?? this.preInternshipRequest,
+      // uniform: uniform ?? this.uniform,
+      // protections: protections ?? this.protections,
       photosUrl: photosUrl ?? this.photosUrl,
-      sstEvaluation: sstEvaluation ?? this.sstEvaluation,
-      incidents: incidents ?? this.incidents,
+      // sstEvaluation: sstEvaluation ?? this.sstEvaluation,
+      // incidents: incidents ?? this.incidents,
       comments: comments ?? this.comments,
     );
   }
@@ -145,32 +145,32 @@ class Job extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'specialization': specialization.id,
+        // 'specialization': specialization.id,
         'positionsOffered': positionsOffered,
         'minimumAge': minimumAge,
-        'preInternshipRequest': preInternshipRequest.serialize(),
-        'uniform': uniform.serialize(),
-        'protections': protections.serialize(),
+        // 'preInternshipRequest': preInternshipRequest.serialize(),
+        // 'uniform': uniform.serialize(),
+        // 'protections': protections.serialize(),
         'photosUrl': photosUrl,
-        'sstEvaluations': sstEvaluation.serialize(),
-        'incidents': incidents.serialize(),
+        // 'sstEvaluations': sstEvaluation.serialize(),
+        // 'incidents': incidents.serialize(),
         'comments': comments,
       };
 
   Job.fromSerialized(super.map)
-      : _specialization = map['specialization'] == null
-            ? null
-            : ActivitySectorsService.specialization(map['specialization']),
-        positionsOffered = map['positionsOffered'] ?? 0,
-        minimumAge = map['minimumAge'] ?? 0,
-        preInternshipRequest = PreInternshipRequest.fromSerialized(
-            map['preInternshipRequest'] ?? {}),
-        uniform = Uniform.fromSerialized(map['uniform'] ?? {}),
-        protections = Protections.fromSerialized(map['protections'] ?? {}),
-        photosUrl = _stringListFromSerialized(map['photosUrl']),
-        sstEvaluation =
-            JobSstEvaluation.fromSerialized(map['sstEvaluations'] ?? {}),
-        incidents = Incidents.fromSerialized(map['incidents'] ?? {}),
+      : // _specialization = map['specialization'] == null
+        //     ? null
+        //     : ActivitySectorsService.specialization(map['specialization']),
+        positionsOffered = map['positions_offered'] ?? 0,
+        minimumAge = map['minimum_age'] ?? 0,
+        // preInternshipRequest = PreInternshipRequest.fromSerialized(
+        //     map['preInternshipRequest'] ?? {}),
+        // uniform = Uniform.fromSerialized(map['uniform'] ?? {}),
+        // protections = Protections.fromSerialized(map['protections'] ?? {}),
+        photosUrl = _stringListFromSerialized(map['photos_url']),
+        // sstEvaluation =
+        //     JobSstEvaluation.fromSerialized(map['sstEvaluations'] ?? {}),
+        // incidents = Incidents.fromSerialized(map['incidents'] ?? {}),
         comments = _stringListFromSerialized(map['comments']),
         super.fromSerialized();
 }

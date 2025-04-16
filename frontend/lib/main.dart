@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/address.dart';
 import 'package:common/models/enterprise.dart';
+import 'package:common/models/job.dart';
+import 'package:common/models/job_list.dart';
 import 'package:common/models/person.dart';
 import 'package:common/models/phone_number.dart';
 import 'package:common/models/teacher.dart';
@@ -351,6 +353,18 @@ class _LoginScreenState extends State<LoginScreen> {
         for (int i = 0; i < _random.nextInt(5); i++)
           activityTypes[random.nextInt(activityTypes.length)]
       };
+      final jobs = JobList();
+      for (int i = 0; i < _random.nextInt(5); i++) {
+        jobs.add(Job(
+          positionsOffered: _random.nextInt(10),
+          minimumAge: random.nextInt(5) + 13,
+          photosUrl: ['https://example.com/photo${_random.nextInt(100)}.jpg'],
+          comments: [
+            'Comment ${_random.nextInt(100)}',
+            'Comment ${_random.nextInt(100)}'
+          ],
+        ));
+      }
 
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
@@ -358,6 +372,7 @@ class _LoginScreenState extends State<LoginScreen> {
         data: Enterprise(
           name: name,
           activityTypes: activities,
+          jobs: jobs,
           recruiterId: _dummyTeachers.keys
               .toList()[random.nextInt(_dummyTeachers.length)],
           contact: _randomPerson(),
@@ -476,7 +491,7 @@ class EnterpriseTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
         '${enterprise.name}, ${enterprise.address} [${enterprise.headquartersAddress}].\n'
-        'Activities: ${enterprise.activityTypes.join(', ')}\n'
+        'Activities: ${enterprise.activityTypes.join(', ')}, Comments: ${enterprise.jobs.first.comments}\n'
         'Contact: ${enterprise.contact}, phone: ${enterprise.phone}, recruted by ${_dummyTeachers[enterprise.recruiterId]}\n'
         'Website: ${enterprise.website}, fax: ${enterprise.fax}, neq: ${enterprise.neq}');
   }
