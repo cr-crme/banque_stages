@@ -156,6 +156,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               asName: 'comments',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['comment']),
+          MySqlSelectSubQuery(
+              dataTableName: 'enterprise_job_pre_internship_requests',
+              asName: 'pre_internship_requests',
+              idNameToDataTable: 'job_id',
+              fieldsToFetch: ['request']),
         ],
       );
       final jobs = <String, dynamic>{};
@@ -166,6 +171,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                 [];
         jobs[job['id']]['comments'] =
             (job['comments'] as List?)?.map((e) => e['comment']).toList() ?? [];
+        jobs[job['id']]['pre_internship_requests'] =
+            (job['pre_internship_requests'] as List?)
+                    ?.map((e) => e['request'])
+                    .toList() ??
+                [];
       }
 
       map[enterprise['id'].toString()] = Enterprise(
@@ -173,7 +183,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         name: enterprise['name'],
         jobs: JobList.fromSerialized(jobs),
         activityTypes: (enterprise['activity_types'] as List? ?? [])
-            .map<String>((e) => e['activity_type'].toString())
+            .map((e) => ActivityTypes.fromName(e['activity_type'] as String))
             .toSet(),
         recruiterId: enterprise['recruiter_id'],
         contact: Person.fromSerialized(
@@ -242,7 +252,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             tableName: 'enterprise_activity_types',
             data: {
               'enterprise_id': enterprise.id,
-              'activity_type': activityType
+              'activity_type': activityType.name
             });
       }
 
@@ -277,6 +287,17 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               data: {
                 'job_id': job.id,
                 'comment': comment,
+              });
+        }
+
+        // Insert pre-internship requests for the job
+        for (final request in job.preInternshipRequests) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'enterprise_job_pre_internship_requests',
+              data: {
+                'job_id': job.id,
+                'request': request.name,
               });
         }
       }
@@ -379,7 +400,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       id: '0',
       name: 'My First Enterprise',
       jobs: JobList(),
-      activityTypes: {'Magasin', 'Quincaillerie'},
+      activityTypes: {ActivityTypes.magasin, ActivityTypes.entreposage},
       recruiterId: 'Recruiter 1',
       contact: Person.empty,
       address: Address.empty,
@@ -390,7 +411,11 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       id: '1',
       name: 'My Second Enterprise',
       jobs: JobList(),
-      activityTypes: {'Magasin', 'Entreposage', 'Ébénisterie'},
+      activityTypes: {
+        ActivityTypes.magasin,
+        ActivityTypes.entreposage,
+        ActivityTypes.ebenisterie
+      },
       recruiterId: 'Recruiter 2',
       contact: Person.empty,
       address: Address.empty,

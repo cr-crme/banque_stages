@@ -9,6 +9,7 @@ import 'package:common/models/job.dart';
 import 'package:common/models/job_list.dart';
 import 'package:common/models/person.dart';
 import 'package:common/models/phone_number.dart';
+import 'package:common/models/pre_internship_request.dart';
 import 'package:common/models/teacher.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
@@ -351,7 +352,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ].join(' ');
       final activities = {
         for (int i = 0; i < _random.nextInt(5); i++)
-          activityTypes[random.nextInt(activityTypes.length)]
+          ActivityTypes.values[random.nextInt(ActivityTypes.values.length)]
       };
       final jobs = JobList();
       for (int i = 0; i < _random.nextInt(5); i++) {
@@ -359,6 +360,10 @@ class _LoginScreenState extends State<LoginScreen> {
           positionsOffered: _random.nextInt(10),
           minimumAge: random.nextInt(5) + 13,
           photosUrl: ['https://example.com/photo${_random.nextInt(100)}.jpg'],
+          preInternshipRequests: [
+            PreInternshipRequest
+                .values[random.nextInt(PreInternshipRequest.values.length)]
+          ],
           comments: [
             'Comment ${_random.nextInt(100)}',
             'Comment ${_random.nextInt(100)}'
@@ -491,7 +496,8 @@ class EnterpriseTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
         '${enterprise.name}, ${enterprise.address} [${enterprise.headquartersAddress}].\n'
-        'Activities: ${enterprise.activityTypes.join(', ')}, Comments: ${enterprise.jobs.first.comments}\n'
+        'Activities: ${enterprise.activityTypes.join(', ')},\n'
+        'First job: ${enterprise.jobs.first}\n'
         'Contact: ${enterprise.contact}, phone: ${enterprise.phone}, recruted by ${_dummyTeachers[enterprise.recruiterId]}\n'
         'Website: ${enterprise.website}, fax: ${enterprise.fax}, neq: ${enterprise.neq}');
   }

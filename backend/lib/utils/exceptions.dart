@@ -1,6 +1,6 @@
 import 'package:common/exceptions.dart';
 
-class ConnexionRefusedException implements IntershipBankException {
+class ConnexionRefusedException implements InternshipBankException {
   final String _message;
 
   ConnexionRefusedException(String message) : _message = message;
@@ -9,7 +9,7 @@ class ConnexionRefusedException implements IntershipBankException {
   String toString() => _message;
 }
 
-class InvalidRequestTypeException implements IntershipBankException {
+class InvalidRequestTypeException implements InternshipBankException {
   final String _message;
 
   InvalidRequestTypeException(String message) : _message = message;
@@ -18,7 +18,7 @@ class InvalidRequestTypeException implements IntershipBankException {
   String toString() => _message;
 }
 
-class MissingFieldException implements IntershipBankException {
+class MissingFieldException implements InternshipBankException {
   final String _message;
 
   MissingFieldException(String message) : _message = message;
@@ -27,7 +27,7 @@ class MissingFieldException implements IntershipBankException {
   String toString() => _message;
 }
 
-class MissingDataException implements IntershipBankException {
+class MissingDataException implements InternshipBankException {
   final String _message;
 
   MissingDataException(String message) : _message = message;
@@ -36,7 +36,7 @@ class MissingDataException implements IntershipBankException {
   String toString() => _message;
 }
 
-class InvalidRequestException implements IntershipBankException {
+class InvalidRequestException implements InternshipBankException {
   final String _message;
 
   InvalidRequestException(String message) : _message = message;
@@ -45,7 +45,7 @@ class InvalidRequestException implements IntershipBankException {
   String toString() => _message;
 }
 
-class DatabaseFailureException implements IntershipBankException {
+class DatabaseFailureException implements InternshipBankException {
   final String _message;
 // coverage:ignore-start
   DatabaseFailureException(String message) : _message = message;

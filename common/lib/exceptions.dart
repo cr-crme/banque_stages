@@ -1,6 +1,6 @@
-abstract class IntershipBankException implements Exception {}
+abstract class InternshipBankException implements Exception {}
 
-class WrongVersionException implements IntershipBankException {
+class WrongVersionException implements InternshipBankException {
   final String? version;
   final String expectedVersion;
 
@@ -12,7 +12,7 @@ class WrongVersionException implements IntershipBankException {
   }
 }
 
-class InvalidFieldException implements IntershipBankException {
+class InvalidFieldException implements InternshipBankException {
   final String message;
 
   InvalidFieldException(this.message);

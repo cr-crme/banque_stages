@@ -70,7 +70,7 @@ class Job extends ItemSerializable {
 
   // Prerequisites for an internship
   final int minimumAge;
-  // final PreInternshipRequest preInternshipRequest;
+  final List<PreInternshipRequest> preInternshipRequests;
   // final Uniform uniform;
   // final Protections protections;
 
@@ -103,7 +103,7 @@ class Job extends ItemSerializable {
     // required Specialization specialization,
     required this.positionsOffered,
     required this.minimumAge,
-    // required this.preInternshipRequest,
+    required this.preInternshipRequests,
     // required this.uniform,
     // required this.protections,
     List<String>? photosUrl,
@@ -118,7 +118,7 @@ class Job extends ItemSerializable {
     Specialization? specialization,
     int? positionsOffered,
     int? minimumAge,
-    PreInternshipRequest? preInternshipRequest,
+    List<PreInternshipRequest>? preInternshipRequests,
     Uniform? uniform,
     Protections? protections,
     List<String>? photosUrl,
@@ -132,7 +132,8 @@ class Job extends ItemSerializable {
       // specialization: specialization ?? this.specialization,
       positionsOffered: positionsOffered ?? this.positionsOffered,
       minimumAge: minimumAge ?? this.minimumAge,
-      // preInternshipRequest: preInternshipRequest ?? this.preInternshipRequest,
+      preInternshipRequests:
+          preInternshipRequests ?? this.preInternshipRequests,
       // uniform: uniform ?? this.uniform,
       // protections: protections ?? this.protections,
       photosUrl: photosUrl ?? this.photosUrl,
@@ -146,12 +147,13 @@ class Job extends ItemSerializable {
   Map<String, dynamic> serializedMap() => {
         'id': id,
         // 'specialization': specialization.id,
-        'positionsOffered': positionsOffered,
-        'minimumAge': minimumAge,
-        // 'preInternshipRequest': preInternshipRequest.serialize(),
+        'positions_offered': positionsOffered,
+        'minimum_age': minimumAge,
+        'pre_internship_requests':
+            preInternshipRequests.map((e) => e.name).toList(),
         // 'uniform': uniform.serialize(),
         // 'protections': protections.serialize(),
-        'photosUrl': photosUrl,
+        'photos_url': photosUrl,
         // 'sstEvaluations': sstEvaluation.serialize(),
         // 'incidents': incidents.serialize(),
         'comments': comments,
@@ -163,8 +165,9 @@ class Job extends ItemSerializable {
         //     : ActivitySectorsService.specialization(map['specialization']),
         positionsOffered = map['positions_offered'] ?? 0,
         minimumAge = map['minimum_age'] ?? 0,
-        // preInternshipRequest = PreInternshipRequest.fromSerialized(
-        //     map['preInternshipRequest'] ?? {}),
+        preInternshipRequests = (map['pre_internship_requests'] as List? ?? [])
+            .map((e) => PreInternshipRequest.fromString(e as String))
+            .toList(),
         // uniform = Uniform.fromSerialized(map['uniform'] ?? {}),
         // protections = Protections.fromSerialized(map['protections'] ?? {}),
         photosUrl = _stringListFromSerialized(map['photos_url']),
@@ -173,4 +176,9 @@ class Job extends ItemSerializable {
         // incidents = Incidents.fromSerialized(map['incidents'] ?? {}),
         comments = _stringListFromSerialized(map['comments']),
         super.fromSerialized();
+
+  @override
+  String toString() {
+    return 'Job(id: $id, positionsOffered: $positionsOffered, minimumAge: $minimumAge, preInternshipRequests: $preInternshipRequests, photosUrl: $photosUrl, comments: $comments)';
+  }
 }

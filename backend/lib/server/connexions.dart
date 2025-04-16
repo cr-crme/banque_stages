@@ -126,7 +126,7 @@ class Connexions {
               requestType: RequestType.response,
               data: {'error': e.toString()},
               response: Response.failure));
-    } on IntershipBankException catch (e) {
+    } on InternshipBankException catch (e) {
       _logger
           .severe('Error processing request for client ${client.hashCode}: $e');
       await _send(client,

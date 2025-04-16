@@ -22,6 +22,7 @@ DROP TABLE IF EXISTS enterprise_contacts;
 DROP TABLE IF EXISTS enterprise_jobs;
 DROP TABLE IF EXISTS enterprise_job_photo_urls;
 DROP TABLE IF EXISTS enterprise_job_comments;
+DROP TABLE IF EXISTS enterprise_job_pre_internship_requests;
 DROP TABLE IF EXISTS enterprises;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -166,5 +167,11 @@ CREATE TABLE enterprise_job_photo_urls(
 CREATE TABLE enterprise_job_comments(
     job_id VARCHAR(36) NOT NULL,
     comment VARCHAR(255) NOT NULL,
+    FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
+);
+
+CREATE TABLE enterprise_job_pre_internship_requests(
+    job_id VARCHAR(36) NOT NULL,
+    request VARCHAR(50) NOT NULL,
     FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
 );

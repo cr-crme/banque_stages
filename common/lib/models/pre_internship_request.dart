@@ -1,33 +1,20 @@
-import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
-
-enum PreInternshipRequestType {
+// TODO PreInternshipRequest was an actual class, but was changed to an enum. The holder of the list is not Job
+enum PreInternshipRequest {
   soloInterview,
   judiciaryBackgroundCheck;
+
+  static PreInternshipRequest fromString(String name) {
+    return PreInternshipRequest.values
+        .firstWhere((element) => element.name == name);
+  }
 
   @override
   String toString() {
     switch (this) {
-      case PreInternshipRequestType.soloInterview:
+      case PreInternshipRequest.soloInterview:
         return 'Une entrevue de recrutement de l\'élève en solo';
-      case PreInternshipRequestType.judiciaryBackgroundCheck:
+      case PreInternshipRequest.judiciaryBackgroundCheck:
         return 'Une vérification des antécédents judiciaires pour les élèves majeurs';
     }
   }
-}
-
-class PreInternshipRequest extends ItemSerializable {
-  List<String> requests;
-
-  PreInternshipRequest({super.id, required this.requests});
-
-  PreInternshipRequest.fromSerialized(super.map)
-      : requests =
-            (map['requests'] as List? ?? []).map<String>((e) => e).toList(),
-        super.fromSerialized();
-
-  @override
-  Map<String, dynamic> serializedMap() => {
-        'id': id,
-        'requests': requests,
-      };
 }
