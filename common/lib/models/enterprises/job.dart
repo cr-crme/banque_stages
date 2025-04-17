@@ -3,6 +3,7 @@ import 'package:common/services/job_data_file_service.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 part 'package:common/models/enterprises/incidents.dart';
+part 'package:common/models/enterprises/job_sst_evaluation.dart';
 part 'package:common/models/enterprises/pre_internship_request.dart';
 part 'package:common/models/enterprises/protections.dart';
 part 'package:common/models/enterprises/uniforms.dart';
@@ -12,43 +13,6 @@ List<String> _stringListFromSerialized(List? list) =>
 
 Map<String, dynamic> _stringMapFromSerialized(Map? list) =>
     (list ?? {}).map((k, v) => MapEntry(k.toString(), v));
-
-class JobSstEvaluation extends ItemSerializable {
-  final Map<String, dynamic> questions;
-  DateTime date;
-
-  bool get isFilled => questions.isNotEmpty;
-
-  void update({
-    required Map<String, dynamic> questions,
-  }) {
-    this.questions.clear();
-    this.questions.addAll({...questions});
-    this.questions.removeWhere((key, value) => value == null);
-
-    date = DateTime.now();
-  }
-
-  JobSstEvaluation({
-    super.id,
-    required this.questions,
-    DateTime? date,
-  }) : date = date ?? DateTime.now();
-
-  static JobSstEvaluation get empty => JobSstEvaluation(questions: {});
-
-  JobSstEvaluation.fromSerialized(super.map)
-      : questions = _stringMapFromSerialized(map['questions']),
-        date = DateTime.fromMillisecondsSinceEpoch(map['date'] ?? 0),
-        super.fromSerialized();
-
-  @override
-  Map<String, dynamic> serializedMap() => {
-        'id': id,
-        'questions': questions,
-        'date': date.millisecondsSinceEpoch,
-      };
-}
 
 class Job extends ItemSerializable {
   static final String _currentVersion = '1.0.0';
@@ -76,7 +40,7 @@ class Job extends ItemSerializable {
   final int minimumAge;
   final List<PreInternshipRequest> preInternshipRequests;
   final Uniforms uniforms;
-  // final Protections protections;
+  final Protections protections;
 
   // Photos
   final List<String> photosUrl;
@@ -109,7 +73,7 @@ class Job extends ItemSerializable {
     required this.minimumAge,
     required this.preInternshipRequests,
     required this.uniforms,
-    // required this.protections,
+    required this.protections,
     List<String>? photosUrl,
     // required this.sstEvaluation,
     // required this.incidents,
@@ -139,7 +103,7 @@ class Job extends ItemSerializable {
       preInternshipRequests:
           preInternshipRequests ?? this.preInternshipRequests,
       uniforms: uniforms ?? this.uniforms,
-      // protections: protections ?? this.protections,
+      protections: protections ?? this.protections,
       photosUrl: photosUrl ?? this.photosUrl,
       // sstEvaluation: sstEvaluation ?? this.sstEvaluation,
       // incidents: incidents ?? this.incidents,
@@ -158,7 +122,7 @@ class Job extends ItemSerializable {
             .map((e) => e._toInt(_currentVersion))
             .toList(),
         'uniforms': uniforms.serialize(),
-        // 'protections': protections.serialize(),
+        'protections': protections.serialize(),
         'photos_url': photosUrl,
         // 'sstEvaluations': sstEvaluation.serialize(),
         // 'incidents': incidents.serialize(),
@@ -176,7 +140,7 @@ class Job extends ItemSerializable {
             .toList(),
         uniforms =
             Uniforms.fromSerialized(map['uniforms'] ?? {}, map['version']),
-        // protections = Protections.fromSerialized(map['protections'] ?? {}),
+        protections = Protections.fromSerialized(map['protections'] ?? {}),
         photosUrl = _stringListFromSerialized(map['photos_url']),
         // sstEvaluation =
         //     JobSstEvaluation.fromSerialized(map['sstEvaluations'] ?? {}),
@@ -191,6 +155,7 @@ class Job extends ItemSerializable {
         'preInternshipRequests: $preInternshipRequests, '
         'photosUrl: $photosUrl, '
         'comments: $comments, '
-        'uniforms: $uniforms)';
+        'uniforms: $uniforms, '
+        'protections: $protections)';
   }
 }

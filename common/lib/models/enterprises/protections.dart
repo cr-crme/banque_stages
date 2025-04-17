@@ -5,6 +5,20 @@ enum ProtectionsStatus {
   suppliedBySchool,
   none;
 
+  int _toInt(String version) {
+    if (version == '1.0.0') {
+      return index;
+    }
+    throw WrongVersionException(version, '1.0.0');
+  }
+
+  static ProtectionsStatus _fromInt(int index, String version) {
+    if (version == '1.0.0') {
+      return ProtectionsStatus.values[index];
+    }
+    throw WrongVersionException(version, '1.0.0');
+  }
+
   @override
   String toString() {
     switch (this) {
@@ -58,7 +72,8 @@ class Protections extends ItemSerializable {
   Protections.fromSerialized(super.map)
       : status = map['status'] == null
             ? ProtectionsStatus.none
-            : ProtectionsStatus.values[map['status']],
+            : ProtectionsStatus._fromInt(
+                map['status'] as int, map['version'] ?? Job._currentVersion),
         protections =
             (map['protections'] as List? ?? []).map<String>((e) => e).toList(),
         super.fromSerialized();
@@ -66,7 +81,12 @@ class Protections extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'status': status.index,
+        'status': status._toInt(Job._currentVersion),
         'protections': protections,
       };
+
+  @override
+  String toString() {
+    return 'Protections{status: ${status.name}, protections: $protections}';
+  }
 }

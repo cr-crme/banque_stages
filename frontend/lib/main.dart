@@ -102,7 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: Text('Login'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
+          child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -166,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
             }),
           ],
         ),
-      ),
+      )),
     );
   }
 
@@ -373,6 +374,17 @@ class _LoginScreenState extends State<LoginScreen> {
               uniforms: [
                 ['Shirt', 'Pants', 'Shoes'][random.nextInt(3)],
                 ['Hat', 'Gloves'][random.nextInt(2)]
+              ]),
+          protections: Protections(
+              status: ProtectionsStatus
+                  .values[random.nextInt(ProtectionsStatus.values.length)],
+              protections: [
+                ProtectionsType
+                    .values[random.nextInt(ProtectionsType.values.length)]
+                    .toString(),
+                ProtectionsType
+                    .values[random.nextInt(ProtectionsType.values.length)]
+                    .toString()
               ]),
         ));
       }

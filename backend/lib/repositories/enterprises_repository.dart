@@ -186,6 +186,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               asName: 'uniforms',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['status', 'uniform']),
+          MySqlSelectSubQuery(
+              dataTableName: 'enterprise_job_protections',
+              asName: 'protections',
+              idNameToDataTable: 'job_id',
+              fieldsToFetch: ['status', 'protection']),
         ],
       );
       final jobs = <String, dynamic>{};
@@ -206,6 +211,14 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               UniformStatus.none.index,
           'uniforms':
               (job['uniforms'] as List?)?.map((e) => e['uniform']).toList()
+        };
+        jobs[job['id']]['protections'] = {
+          'status':
+              (job['protections'] as List?)?.map((e) => e['status']).first ??
+                  ProtectionsStatus.none.index,
+          'protections': (job['protections'] as List?)
+              ?.map((e) => e['protection'])
+              .toList()
         };
       }
       enterprise['jobs'] = jobs;
@@ -319,6 +332,18 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                 'job_id': job['id'],
                 'status': job['uniforms']['status'],
                 'uniform': uniform,
+              });
+        }
+
+        // Insert protections
+        for (final protection in job['protections']['protections'] ?? []) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'enterprise_job_protections',
+              data: {
+                'job_id': job['id'],
+                'status': job['protections']['status'],
+                'protection': protection,
               });
         }
       }
