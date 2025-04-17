@@ -142,12 +142,70 @@ class MySqlHelpers {
           'first_name': person.firstName,
           'middle_name': person.middleName,
           'last_name': person.lastName,
+          'date_birthday': person.dateBirth?.toIso8601String().substring(0, 10),
           'email': person.email,
         });
     await performInsertPhoneNumber(
         connection: connection, phoneNumber: person.phone, entityId: person.id);
     await performInsertAddress(
         connection: connection, address: person.address, entityId: person.id);
+  }
+
+  static Future<void> performUpdatePerson(
+      {required MySqlConnection connection,
+      required Person person,
+      required Person previous}) async {
+    // Update the person if needed
+    final toUpdate = <String, dynamic>{};
+    if (person.firstName != previous.firstName) {
+      toUpdate['first_name'] = person.firstName;
+    }
+    if (person.middleName != previous.middleName) {
+      toUpdate['middle_name'] = person.middleName;
+    }
+    if (person.lastName != previous.lastName) {
+      toUpdate['last_name'] = person.lastName;
+    }
+    if (person.dateBirth != previous.dateBirth) {
+      toUpdate['date_birthday'] =
+          person.dateBirth?.toIso8601String().substring(0, 10);
+    }
+    if (person.email != previous.email) {
+      toUpdate['email'] = person.email;
+    }
+    if (toUpdate.isNotEmpty) {
+      await MySqlHelpers.performUpdateQuery(
+          connection: connection,
+          tableName: 'persons',
+          id: person.id,
+          data: toUpdate);
+    }
+
+    // Update the phone number if needed
+    if (person.phone != previous.phone) {
+      // Update the phone number
+      await MySqlHelpers.performUpdateQuery(
+          connection: connection,
+          tableName: 'phone_numbers',
+          id: person.phone.id,
+          data: {'phone_number': person.phone.toString()});
+    }
+
+    // Update the address if needed
+    if (person.address != previous.address) {
+      // Update the address
+      await MySqlHelpers.performUpdateQuery(
+          connection: connection,
+          tableName: 'addresses',
+          id: person.address.id,
+          data: {
+            'civic': person.address.civicNumber,
+            'street': person.address.street,
+            'apartment': person.address.apartment,
+            'city': person.address.city,
+            'postal_code': person.address.postalCode
+          });
+    }
   }
 
   static Future<void> performInsertPhoneNumber(

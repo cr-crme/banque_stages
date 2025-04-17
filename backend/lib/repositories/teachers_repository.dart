@@ -146,30 +146,11 @@ class MySqlTeachersRepository extends TeachersRepository {
   }
 
   Future<void> _putExistingTeacher(Teacher teacher, Teacher previous) async {
-    // Update the persons table if needed
-    final toUpdate = <String, dynamic>{};
-    if (teacher.firstName != previous.firstName) {
-      toUpdate['first_name'] = teacher.firstName;
-    }
-    if (teacher.middleName != previous.middleName) {
-      toUpdate['middle_name'] = teacher.middleName;
-    }
-    if (teacher.lastName != previous.lastName) {
-      toUpdate['last_name'] = teacher.lastName;
-    }
-    if (teacher.email != previous.email) {
-      toUpdate['email'] = teacher.email;
-    }
-    if (toUpdate.isNotEmpty) {
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'persons',
-          id: teacher.id,
-          data: toUpdate);
-    }
+    await MySqlHelpers.performUpdatePerson(
+        connection: connection, person: teacher, previous: previous);
 
     // Update the teachers table if needed
-    toUpdate.clear();
+    final toUpdate = <String, dynamic>{};
     if (teacher.schoolId != previous.schoolId) {
       toUpdate['school_id'] = teacher.schoolId;
     }
@@ -191,15 +172,6 @@ class MySqlTeachersRepository extends TeachersRepository {
             tableName: 'teaching_groups',
             data: {'id': teacher.id, 'group_name': group});
       }
-    }
-
-    // Update the phone number
-    if (teacher.phone != previous.phone) {
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'phone_numbers',
-          id: teacher.phone.id,
-          data: {'phone_number': teacher.phone.toString()});
     }
   }
   // coverage:ignore-end

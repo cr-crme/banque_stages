@@ -3,12 +3,13 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:common/communication_protocol.dart';
-import 'package:common/models/generic/address.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
-import 'package:common/models/persons/person.dart';
+import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/person.dart';
+import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
@@ -33,6 +34,28 @@ Future<void> _updateTeachers(Map<String, dynamic> data) async {
       _dummyTeachers[id] = _dummyTeachers.containsKey(id)
           ? _dummyTeachers[id]!.copyWithData(teacherData)
           : Teacher.fromSerialized(teacherData);
+    }
+  }
+}
+
+final Map<String, Student> _dummyStudents = {};
+Future<void> _updateStudents(Map<String, dynamic> data) async {
+  if (data.containsKey('id')) {
+    // Update a single student
+    final id = data['id'];
+    final studentData = data;
+    _dummyStudents[id] = _dummyStudents.containsKey(id)
+        ? _dummyStudents[id]!.copyWithData(studentData)
+        : Student.fromSerialized(studentData);
+  } else {
+    // Update all students
+    _dummyStudents.clear();
+    for (final entry in data.entries) {
+      final id = entry.key;
+      final studentData = entry.value;
+      _dummyStudents[id] = _dummyStudents.containsKey(id)
+          ? _dummyStudents[id]!.copyWithData(studentData)
+          : Student.fromSerialized(studentData);
     }
   }
 }
@@ -91,7 +114,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _controller = TextEditingController();
+  final _teacherController = TextEditingController();
+  final _studentController = TextEditingController();
   WebSocket? _socket;
   bool _handshakeReceived = false;
   bool get isConnecting => _socket != null && !_handshakeReceived;
@@ -124,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ElevatedButton(
-                    onPressed: isConnected && _controller.text.isNotEmpty
+                    onPressed: isConnected && _teacherController.text.isNotEmpty
                         ? _changeTeacher
                         : null,
                     child: Text('Change teacher')),
@@ -132,7 +156,38 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   width: 100,
                   child: TextField(
-                    controller: _controller,
+                    controller: _teacherController,
+                    enabled: isConnected,
+                    decoration: InputDecoration(
+                      labelText: 'New first name',
+                    ),
+                    onChanged: (value) => setState(() {}),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: isConnected ? _addRandomStudent : null,
+                child: Text('Add random student')),
+            SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: isConnected ? _getStudents : null,
+                child: Text('Get students')),
+            SizedBox(height: 20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                    onPressed: isConnected && _studentController.text.isNotEmpty
+                        ? _changeStudent
+                        : null,
+                    child: Text('Change student')),
+                SizedBox(width: 20),
+                SizedBox(
+                  width: 100,
+                  child: TextField(
+                    controller: _studentController,
                     enabled: isConnected,
                     decoration: InputDecoration(
                       labelText: 'New first name',
@@ -160,6 +215,11 @@ class _LoginScreenState extends State<LoginScreen> {
             ..._dummyTeachers.entries.map((entry) {
               final teacher = entry.value;
               return TeacherTile(teacher: teacher);
+            }),
+            SizedBox(height: 20),
+            ..._dummyStudents.entries.map((entry) {
+              final student = entry.value;
+              return StudentTile(student: student);
             }),
             SizedBox(height: 20),
             ..._dummyEnterprises.entries.map((entry) {
@@ -238,6 +298,12 @@ class _LoginScreenState extends State<LoginScreen> {
               case RequestFields.teacher:
                 if (protocol.data == null) throw Exception('No data received');
                 _updateTeachers(protocol.data!);
+                setState(() {});
+                break;
+              case RequestFields.students:
+              case RequestFields.student:
+                if (protocol.data == null) throw Exception('No data received');
+                _updateStudents(protocol.data!);
                 setState(() {});
                 break;
               case RequestFields.enterprises:
@@ -330,6 +396,43 @@ class _LoginScreenState extends State<LoginScreen> {
           phone: teacher.phone,
           address: Address.empty,
           dateBirth: null,
+        ).serialize(),
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
+  Future<void> _addRandomStudent() async {
+    if (!isConnected) return;
+
+    // Send a post request to the server
+    try {
+      final groups = <String>[];
+      for (int i = 0; i < _random.nextInt(5); i++) {
+        groups.add(_random.nextInt(100).toString());
+      }
+
+      final student = _randomPerson();
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.post,
+        field: RequestFields.student,
+        data: Student(
+          firstName: student.firstName,
+          middleName: null,
+          lastName: student.lastName,
+          email: student.email,
+          phone: student.phone,
+          address: student.address,
+          dateBirth: student.dateBirth,
+          group: '${_random.nextInt(100) + 100}',
+          program: Program.values[_random.nextInt(Program.values.length)],
+          contact: _randomPerson(),
+          contactLink: ['Mother', 'Father', 'Guardian'][_random.nextInt(3)],
+          photo: '${_random.nextInt(0xEFFFFF) + 0x1000000}',
         ).serialize(),
       ).serialize());
       _socket?.send(message);
@@ -452,6 +555,23 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _getStudents() async {
+    if (!isConnected) return;
+
+    // Send a get request to the server
+    try {
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.get,
+        field: RequestFields.students,
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
   Future<void> _getEnterprises() async {
     if (!isConnected) return;
 
@@ -470,7 +590,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _changeTeacher() async {
-    if (!isConnected || _controller.text.isEmpty) return;
+    if (!isConnected || _teacherController.text.isEmpty) return;
 
     // Send a post request to the server
     try {
@@ -478,7 +598,32 @@ class _LoginScreenState extends State<LoginScreen> {
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
         field: RequestFields.teacher,
-        data: {'id': _dummyTeachers.keys.first, 'first_name': _controller.text},
+        data: {
+          'id': _dummyTeachers.keys.first,
+          'first_name': _teacherController.text
+        },
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
+  Future<void> _changeStudent() async {
+    if (!isConnected || _studentController.text.isEmpty) return;
+
+    // Send a post request to the server
+    try {
+      // TODO: This if we can get the error message
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.post,
+        field: RequestFields.student,
+        data: {
+          'id': _dummyStudents.keys.first,
+          'first_name': _studentController.text
+        },
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');
@@ -515,9 +660,21 @@ class TeacherTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('${teacher.toString()} '
-        '(${teacher.phone}) '
-        '[${teacher.groups.join(', ')}]');
+    return Text(teacher.toString());
+  }
+}
+
+class StudentTile extends StatelessWidget {
+  const StudentTile({
+    super.key,
+    required this.student,
+  });
+
+  final Student student;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(student.toString());
   }
 }
 

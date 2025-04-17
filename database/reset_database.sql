@@ -10,6 +10,9 @@ DROP TABLE IF EXISTS addresses;
 
 DROP TABLE IF EXISTS persons;
 
+DROP TABLE IF EXISTS student_contacts;
+DROP TABLE IF EXISTS students;
+
 DROP TABLE IF EXISTS teaching_groups;
 DROP TABLE IF EXISTS teachers;
 
@@ -77,6 +80,26 @@ CREATE TABLE persons (
 );
 
 
+/**** Students ****/
+
+CREATE TABLE students (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    version VARCHAR(36) NOT NULL,
+    photo VARCHAR(255) NOT NULL,
+    program INT NOT NULL,
+    group_name VARCHAR(20) NOT NULL,
+    contact_link VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id) REFERENCES persons(id) ON DELETE CASCADE
+);
+
+CREATE TABLE student_contacts (
+    student_id VARCHAR(36) NOT NULL,
+    contact_id VARCHAR(36) NOT NULL,
+    FOREIGN KEY (contact_id) REFERENCES persons(id),
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
+
 /**** Teachers ****/
 
 CREATE TABLE teachers (
@@ -90,13 +113,6 @@ CREATE TABLE teaching_groups (
     group_name VARCHAR(20) NOT NULL, 
     FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
 );
-
-
-/**** Students ****/
-/* TODO */
-
-
-
 
 
 /*************************/

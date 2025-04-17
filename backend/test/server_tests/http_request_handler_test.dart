@@ -1,4 +1,5 @@
 import 'package:backend/repositories/enterprises_repository.dart';
+import 'package:backend/repositories/students_repository.dart';
 import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/server/connexions.dart';
 import 'package:backend/server/database_manager.dart';
@@ -9,8 +10,9 @@ import '../mockers/http_request_mock.dart';
 
 Connexions get _mockedConnexions => Connexions(
     database: DatabaseManager(
-        teacherDatabase: TeachersRepositoryMock(),
-        enterpriseDatabase: EnterprisesRepositoryMock()));
+        teachersDatabase: TeachersRepositoryMock(),
+        studentsDatabase: StudentsRepositoryMock(),
+        enterprisesDatabase: EnterprisesRepositoryMock()));
 
 void main() {
   test('Send an a preflight request', () async {

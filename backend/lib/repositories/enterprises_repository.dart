@@ -141,12 +141,12 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                         'postal_code'
                       ]),
                 ]);
+      enterprise['contact'] =
+          (contacts?.isEmpty ?? true) ? {} : contacts!.first;
       enterprise['activity_types'] =
           (enterprise['activity_types'] as List? ?? [])
               .map((e) => e['activity_type'])
               .toList();
-      enterprise['contact'] =
-          (contacts?.isEmpty ?? true) ? {} : contacts!.first;
       enterprise['phone'] = (enterprise['phone_number'] as List? ?? []).isEmpty
           ? {}
           : (enterprise['phone_number'] as List).first;
@@ -494,14 +494,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     final Map<String, dynamic> toUpdate = {};
     if (enterprise.name != previous.name) toUpdate['name'] = enterprise.name;
 
-    // Update if required
-    if (toUpdate.isNotEmpty) {
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'enterprises',
-          id: enterprise.id,
-          data: toUpdate);
-    }
+    // TODO: Implement updating enterprise
+    throw 'Not implemented yet';
   }
   // coverage:ignore-end
 }

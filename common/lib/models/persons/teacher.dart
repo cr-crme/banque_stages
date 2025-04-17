@@ -103,4 +103,9 @@ class Teacher extends Person {
           : Address.fromSerialized(data['address']),
     );
   }
+
+  @override
+  String toString() {
+    return 'Teacher{${super.toString()}, schoolId: $schoolId, groups: $groups}';
+  }
 }
