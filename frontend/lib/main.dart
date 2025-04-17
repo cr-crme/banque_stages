@@ -386,6 +386,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     .values[random.nextInt(ProtectionsType.values.length)]
                     .toString()
               ]),
+          incidents: Incidents(severeInjuries: [
+            Incident('Knee capped', date: DateTime.now()),
+            Incident('Burnt', date: DateTime.now())
+          ], minorInjuries: [
+            Incident('Scratched', date: DateTime.now()),
+            Incident('Fell', date: DateTime.now())
+          ]),
         ));
       }
 

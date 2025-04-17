@@ -50,15 +50,15 @@ class Incidents extends ItemSerializable {
   static Incidents get empty => Incidents();
 
   Incidents.fromSerialized(super.map)
-      : severeInjuries = (map['severeInjuries'] as List?)
+      : severeInjuries = (map['severe_injuries'] as List?)
                 ?.map((e) => Incident.fromSerialized(e))
                 .toList() ??
             [],
-        verbalAbuses = (map['verbalAbuses'] as List?)
+        verbalAbuses = (map['verbal_abuses'] as List?)
                 ?.map((e) => Incident.fromSerialized(e))
                 .toList() ??
             [],
-        minorInjuries = (map['minorInjuries'] as List?)
+        minorInjuries = (map['minor_injuries'] as List?)
                 ?.map((e) => Incident.fromSerialized(e))
                 .toList() ??
             [],
@@ -67,8 +67,8 @@ class Incidents extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'severeInjuries': severeInjuries.map((e) => e.serialize()).toList(),
-        'verbalAbuses': verbalAbuses.map((e) => e.serialize()).toList(),
-        'minorInjuries': minorInjuries.map((e) => e.serialize()).toList(),
+        'severe_injuries': severeInjuries.map((e) => e.serialize()).toList(),
+        'verbal_abuses': verbalAbuses.map((e) => e.serialize()).toList(),
+        'minor_injuries': minorInjuries.map((e) => e.serialize()).toList(),
       };
 }

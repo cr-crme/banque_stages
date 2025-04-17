@@ -61,7 +61,7 @@ class Job extends ItemSerializable {
 
   // SST
   // final JobSstEvaluation sstEvaluation;
-  // final Incidents incidents;
+  final Incidents incidents;
 
   // Comments
   final List<String> comments;
@@ -76,13 +76,14 @@ class Job extends ItemSerializable {
     required this.protections,
     List<String>? photosUrl,
     // required this.sstEvaluation,
-    // required this.incidents,
+    required this.incidents,
     List<String>? comments,
   })  : // _specialization = specialization,
         photosUrl = photosUrl ?? [],
         comments = comments ?? [];
 
   Job copyWith({
+    String? id,
     Specialization? specialization,
     int? positionsOffered,
     int? minimumAge,
@@ -93,7 +94,6 @@ class Job extends ItemSerializable {
     JobSstEvaluation? sstEvaluation,
     Incidents? incidents,
     List<String>? comments,
-    String? id,
   }) {
     return Job(
       id: id ?? this.id,
@@ -106,7 +106,7 @@ class Job extends ItemSerializable {
       protections: protections ?? this.protections,
       photosUrl: photosUrl ?? this.photosUrl,
       // sstEvaluation: sstEvaluation ?? this.sstEvaluation,
-      // incidents: incidents ?? this.incidents,
+      incidents: incidents ?? this.incidents,
       comments: comments ?? this.comments,
     );
   }
@@ -125,7 +125,7 @@ class Job extends ItemSerializable {
         'protections': protections.serialize(),
         'photos_url': photosUrl,
         // 'sstEvaluations': sstEvaluation.serialize(),
-        // 'incidents': incidents.serialize(),
+        'incidents': incidents.serialize(),
         'comments': comments,
       };
 
@@ -144,7 +144,7 @@ class Job extends ItemSerializable {
         photosUrl = _stringListFromSerialized(map['photos_url']),
         // sstEvaluation =
         //     JobSstEvaluation.fromSerialized(map['sstEvaluations'] ?? {}),
-        // incidents = Incidents.fromSerialized(map['incidents'] ?? {}),
+        incidents = Incidents.fromSerialized(map['incidents'] ?? {}),
         comments = _stringListFromSerialized(map['comments']),
         super.fromSerialized();
 
@@ -156,6 +156,7 @@ class Job extends ItemSerializable {
         'photosUrl: $photosUrl, '
         'comments: $comments, '
         'uniforms: $uniforms, '
-        'protections: $protections)';
+        'protections: $protections, '
+        'incidents: $incidents)';
   }
 }

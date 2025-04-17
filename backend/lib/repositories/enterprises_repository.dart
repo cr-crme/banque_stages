@@ -191,6 +191,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               asName: 'protections',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['status', 'protection']),
+          MySqlSelectSubQuery(
+              dataTableName: 'enterprise_job_incidents',
+              asName: 'incidents',
+              idNameToDataTable: 'job_id',
+              fieldsToFetch: ['incident_type', 'incident', 'date']),
         ],
       );
       final jobs = <String, dynamic>{};
@@ -219,6 +224,20 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           'protections': (job['protections'] as List?)
               ?.map((e) => e['protection'])
               .toList()
+        };
+        jobs[job['id']]['incidents'] = {
+          'severe_injuries': (job['incidents'] as List?)
+                  ?.where((e) => e['incident_type'] == 'severe_injuries')
+                  .toList() ??
+              [],
+          'verbal_abuses': (job['incidents'] as List?)
+                  ?.where((e) => e['incident_type'] == 'verbal_abuses')
+                  .toList() ??
+              [],
+          'minor_injuries': (job['incidents'] as List?)
+                  ?.where((e) => e['incident_type'] == 'minor_injuries')
+                  .toList() ??
+              [],
         };
       }
       enterprise['jobs'] = jobs;
@@ -345,6 +364,22 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                 'status': job['protections']['status'],
                 'protection': protection,
               });
+        }
+
+        // Insert incidents
+        for (final incidentType in (job['incidents'] as Map).keys) {
+          if (incidentType == 'id') continue;
+          for (final incident in job['incidents'][incidentType]) {
+            await MySqlHelpers.performInsertQuery(
+                connection: connection,
+                tableName: 'enterprise_job_incidents',
+                data: {
+                  'job_id': job['id'],
+                  'incident_type': incidentType,
+                  'incident': incident['incident'],
+                  'date': incident['date'],
+                });
+          }
         }
       }
 
