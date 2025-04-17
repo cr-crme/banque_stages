@@ -1,13 +1,13 @@
 part of 'package:common/models/enterprises/job.dart';
 
 class JobSstEvaluation extends ItemSerializable {
-  final Map<String, dynamic> questions;
+  final Map<String, List<String>?> questions;
   DateTime date;
 
   bool get isFilled => questions.isNotEmpty;
 
   void update({
-    required Map<String, dynamic> questions,
+    required Map<String, List<String>?> questions,
   }) {
     this.questions.clear();
     this.questions.addAll({...questions});
@@ -25,7 +25,10 @@ class JobSstEvaluation extends ItemSerializable {
   static JobSstEvaluation get empty => JobSstEvaluation(questions: {});
 
   JobSstEvaluation.fromSerialized(super.map)
-      : questions = _stringMapFromSerialized(map['questions']),
+      : questions = {
+          for (final entry in (map['questions'] as Map? ?? {}).entries)
+            entry.key: (entry.value as List?)?.map((e) => e as String).toList()
+        },
         date = DateTime.fromMillisecondsSinceEpoch(map['date'] ?? 0),
         super.fromSerialized();
 
@@ -35,4 +38,7 @@ class JobSstEvaluation extends ItemSerializable {
         'questions': questions,
         'date': date.millisecondsSinceEpoch,
       };
+
+  @override
+  String toString() => 'JobSstEvaluation($questions, $date)';
 }

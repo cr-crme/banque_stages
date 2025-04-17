@@ -357,43 +357,53 @@ class _LoginScreenState extends State<LoginScreen> {
       final jobs = JobList();
       for (int i = 0; i < _random.nextInt(5) + 1; i++) {
         jobs.add(Job(
-          positionsOffered: _random.nextInt(10),
-          minimumAge: random.nextInt(5) + 13,
-          photosUrl: ['https://example.com/photo${_random.nextInt(100)}.jpg'],
-          preInternshipRequests: [
-            PreInternshipRequest
-                .values[random.nextInt(PreInternshipRequest.values.length)]
-          ],
-          comments: [
-            'Comment ${_random.nextInt(100)}',
-            'Comment ${_random.nextInt(100)}'
-          ],
-          uniforms: Uniforms(
-              status: UniformStatus
-                  .values[random.nextInt(UniformStatus.values.length)],
-              uniforms: [
-                ['Shirt', 'Pants', 'Shoes'][random.nextInt(3)],
-                ['Hat', 'Gloves'][random.nextInt(2)]
-              ]),
-          protections: Protections(
-              status: ProtectionsStatus
-                  .values[random.nextInt(ProtectionsStatus.values.length)],
-              protections: [
-                ProtectionsType
-                    .values[random.nextInt(ProtectionsType.values.length)]
-                    .toString(),
-                ProtectionsType
-                    .values[random.nextInt(ProtectionsType.values.length)]
-                    .toString()
-              ]),
-          incidents: Incidents(severeInjuries: [
-            Incident('Knee capped', date: DateTime.now()),
-            Incident('Burnt', date: DateTime.now())
-          ], minorInjuries: [
-            Incident('Scratched', date: DateTime.now()),
-            Incident('Fell', date: DateTime.now())
-          ]),
-        ));
+            positionsOffered: _random.nextInt(10),
+            minimumAge: random.nextInt(5) + 13,
+            photosUrl: ['https://example.com/photo${_random.nextInt(100)}.jpg'],
+            preInternshipRequests: [
+              PreInternshipRequest
+                  .values[random.nextInt(PreInternshipRequest.values.length)]
+            ],
+            comments: [
+              'Comment ${_random.nextInt(100)}',
+              'Comment ${_random.nextInt(100)}'
+            ],
+            uniforms: Uniforms(
+                status: UniformStatus
+                    .values[random.nextInt(UniformStatus.values.length)],
+                uniforms: [
+                  ['Shirt', 'Pants', 'Shoes'][random.nextInt(3)],
+                  ['Hat', 'Gloves'][random.nextInt(2)]
+                ]),
+            protections: Protections(
+                status: ProtectionsStatus
+                    .values[random.nextInt(ProtectionsStatus.values.length)],
+                protections: [
+                  ProtectionsType
+                      .values[random.nextInt(ProtectionsType.values.length)]
+                      .toString(),
+                  ProtectionsType
+                      .values[random.nextInt(ProtectionsType.values.length)]
+                      .toString()
+                ]),
+            incidents: Incidents(severeInjuries: [
+              Incident('Knee capped', date: DateTime.now()),
+              Incident('Burnt', date: DateTime.now())
+            ], minorInjuries: [
+              Incident('Scratched', date: DateTime.now()),
+              Incident('Fell', date: DateTime.now())
+            ]),
+            sstEvaluation: JobSstEvaluation(questions: {
+              'Q1': ['Oui'],
+              'Q1+t': ['Peu souvent, à la discrétion des employés.'],
+              'Q3': ['Un diable'],
+              'Q5': ['Des ciseaux'],
+              'Q9': ['Des solvants', 'Des produits de nettoyage'],
+              'Q12': ['Bruyant'],
+              'Q12+t': ['Bouchons a oreilles'],
+              'Q15': ['Oui'],
+              'Q18': ['Non'],
+            })));
       }
 
       final message = jsonEncode(CommunicationProtocol(

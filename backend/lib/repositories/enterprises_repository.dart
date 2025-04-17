@@ -120,7 +120,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
     final map = <String, Enterprise>{};
     for (final enterprise in enterprises) {
-      final contactId = (enterprise['contact'] as List?)?.first['id'];
+      final contactIds = (enterprise['contact'] as List?)?.map((e) => e['id']);
+      final contactId = contactIds?.isEmpty ?? true ? null : contactIds!.first;
       final contacts = contactId == null
           ? null
           : await MySqlHelpers.performSelectQuery(
@@ -196,6 +197,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               asName: 'incidents',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['incident_type', 'incident', 'date']),
+          MySqlSelectSubQuery(
+              dataTableName: 'enterprise_job_sst_evaluation_questions',
+              asName: 'sst_evaluations',
+              idNameToDataTable: 'job_id',
+              fieldsToFetch: ['question', 'answers', 'date']),
         ],
       );
       final jobs = <String, dynamic>{};
@@ -211,19 +217,20 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                     ?.map((e) => e['request'])
                     .toList() ??
                 [];
+        final uniforms = job['uniforms'] as List? ?? [];
         jobs[job['id']]['uniforms'] = {
-          'status': (job['uniforms'] as List?)?.map((e) => e['status']).first ??
-              UniformStatus.none.index,
+          'status': uniforms.isEmpty
+              ? UniformStatus.none.index
+              : uniforms.first['status'],
           'uniforms':
               (job['uniforms'] as List?)?.map((e) => e['uniform']).toList()
         };
+        final protections = job['protections'] as List? ?? [];
         jobs[job['id']]['protections'] = {
-          'status':
-              (job['protections'] as List?)?.map((e) => e['status']).first ??
-                  ProtectionsStatus.none.index,
-          'protections': (job['protections'] as List?)
-              ?.map((e) => e['protection'])
-              .toList()
+          'status': protections.isEmpty
+              ? ProtectionsStatus.none.index
+              : protections.first['status'],
+          'protections': protections.map((e) => e['protection']).toList()
         };
         jobs[job['id']]['incidents'] = {
           'severe_injuries': (job['incidents'] as List?)
@@ -238,6 +245,16 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                   ?.where((e) => e['incident_type'] == 'minor_injuries')
                   .toList() ??
               [],
+        };
+        jobs[job['id']]['sst_evaluations'] = {
+          'questions': {
+            for (final Map question in (job['sst_evaluations'] as List? ?? []))
+              question['question']:
+                  (question['answers'] as String?)?.split('\n') ?? []
+          },
+          'date': (job['sst_evaluations'] as List?)?.isEmpty ?? true
+              ? 0
+              : (job['sst_evaluations'] as List?)?.first['date']
         };
       }
       enterprise['jobs'] = jobs;
@@ -380,6 +397,20 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                   'date': incident['date'],
                 });
           }
+        }
+
+        // Insert the SST evaluation
+        for (final question
+            in (job['sst_evaluations']['questions'] as Map).entries) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'enterprise_job_sst_evaluation_questions',
+              data: {
+                'job_id': job['id'],
+                'question': question.key,
+                'answers': (question.value as List?)?.join('\n'),
+                'date': job['sst_evaluations']['date'],
+              });
         }
       }
 

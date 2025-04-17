@@ -11,9 +11,6 @@ part 'package:common/models/enterprises/uniforms.dart';
 List<String> _stringListFromSerialized(List? list) =>
     (list ?? []).map<String>((e) => e).toList();
 
-Map<String, dynamic> _stringMapFromSerialized(Map? list) =>
-    (list ?? {}).map((k, v) => MapEntry(k.toString(), v));
-
 class Job extends ItemSerializable {
   static final String _currentVersion = '1.0.0';
 
@@ -60,7 +57,7 @@ class Job extends ItemSerializable {
   // }
 
   // SST
-  // final JobSstEvaluation sstEvaluation;
+  final JobSstEvaluation sstEvaluation;
   final Incidents incidents;
 
   // Comments
@@ -75,7 +72,7 @@ class Job extends ItemSerializable {
     required this.uniforms,
     required this.protections,
     List<String>? photosUrl,
-    // required this.sstEvaluation,
+    required this.sstEvaluation,
     required this.incidents,
     List<String>? comments,
   })  : // _specialization = specialization,
@@ -105,7 +102,7 @@ class Job extends ItemSerializable {
       uniforms: uniforms ?? this.uniforms,
       protections: protections ?? this.protections,
       photosUrl: photosUrl ?? this.photosUrl,
-      // sstEvaluation: sstEvaluation ?? this.sstEvaluation,
+      sstEvaluation: sstEvaluation ?? this.sstEvaluation,
       incidents: incidents ?? this.incidents,
       comments: comments ?? this.comments,
     );
@@ -124,7 +121,7 @@ class Job extends ItemSerializable {
         'uniforms': uniforms.serialize(),
         'protections': protections.serialize(),
         'photos_url': photosUrl,
-        // 'sstEvaluations': sstEvaluation.serialize(),
+        'sst_evaluations': sstEvaluation.serialize(),
         'incidents': incidents.serialize(),
         'comments': comments,
       };
@@ -142,8 +139,8 @@ class Job extends ItemSerializable {
             Uniforms.fromSerialized(map['uniforms'] ?? {}, map['version']),
         protections = Protections.fromSerialized(map['protections'] ?? {}),
         photosUrl = _stringListFromSerialized(map['photos_url']),
-        // sstEvaluation =
-        //     JobSstEvaluation.fromSerialized(map['sstEvaluations'] ?? {}),
+        sstEvaluation =
+            JobSstEvaluation.fromSerialized(map['sst_evaluations'] ?? {}),
         incidents = Incidents.fromSerialized(map['incidents'] ?? {}),
         comments = _stringListFromSerialized(map['comments']),
         super.fromSerialized();
@@ -157,6 +154,7 @@ class Job extends ItemSerializable {
         'comments: $comments, '
         'uniforms: $uniforms, '
         'protections: $protections, '
-        'incidents: $incidents)';
+        'incidents: $incidents, '
+        'sstEvaluation: $sstEvaluation)';
   }
 }
