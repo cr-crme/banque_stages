@@ -1,7 +1,7 @@
 import 'package:common/exceptions.dart';
-import 'package:common/models/address.dart';
-import 'package:common/models/person.dart';
-import 'package:common/models/phone_number.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/person.dart';
 
 List<String> _stringListFromSerialized(List? list) =>
     (list ?? []).map<String>((e) => e).toList();

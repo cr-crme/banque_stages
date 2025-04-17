@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:backend/utils/exceptions.dart';
-import 'package:common/models/address.dart';
-import 'package:common/models/person.dart';
-import 'package:common/models/phone_number.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:mysql1/mysql1.dart';
 
 class MySqlHelpers {

@@ -1,11 +1,12 @@
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
-import 'package:common/models/address.dart';
-import 'package:common/models/enterprise.dart';
-import 'package:common/models/job_list.dart';
-import 'package:common/models/person.dart';
-import 'package:common/models/phone_number.dart';
+import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job_list.dart';
+import 'package:common/models/persons/person.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:mysql1/mysql1.dart';
 
 abstract class EnterprisesRepository implements RepositoryAbstract {
@@ -139,6 +140,25 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                         'postal_code'
                       ]),
                 ]);
+      enterprise['activity_types'] =
+          (enterprise['activity_types'] as List? ?? [])
+              .map((e) => e['activity_type'])
+              .toList();
+      enterprise['contact'] =
+          (contacts?.isEmpty ?? true) ? {} : contacts!.first;
+      enterprise['phone'] = (enterprise['phone_number'] as List? ?? []).isEmpty
+          ? {}
+          : (enterprise['phone_number'] as List).first;
+      enterprise['fax'] = (enterprise['fax_number'] as List? ?? []).isEmpty
+          ? {}
+          : (enterprise['fax_number'] as List).first;
+      enterprise['address'] = (enterprise['address'] as List? ?? []).isEmpty
+          ? {}
+          : (enterprise['address'] as List).first;
+      enterprise['headquarter_address'] =
+          (enterprise['headquarter_address'] as List? ?? []).isEmpty
+              ? {}
+              : (enterprise['headquarter_address'] as List).first;
 
       final jobsTp = await MySqlHelpers.performSelectQuery(
         connection: connection,
@@ -161,6 +181,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               asName: 'pre_internship_requests',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['request']),
+          MySqlSelectSubQuery(
+              dataTableName: 'enterprise_job_uniforms',
+              asName: 'uniforms',
+              idNameToDataTable: 'job_id',
+              fieldsToFetch: ['status', 'uniform']),
         ],
       );
       final jobs = <String, dynamic>{};
@@ -176,43 +201,16 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                     ?.map((e) => e['request'])
                     .toList() ??
                 [];
-        jobs[job['id']]['uniforms'] = (job['uniforms'] as List?)
-            ?.map((e) => e['uniform'])
-            .toList()
-            .join('\n');
+        jobs[job['id']]['uniforms'] = {
+          'status': (job['uniforms'] as List?)?.map((e) => e['status']).first ??
+              UniformStatus.none.index,
+          'uniforms':
+              (job['uniforms'] as List?)?.map((e) => e['uniform']).toList()
+        };
       }
+      enterprise['jobs'] = jobs;
 
-      map[enterprise['id'].toString()] = Enterprise(
-        id: enterprise['id'].toString(),
-        name: enterprise['name'],
-        jobs: JobList.fromSerialized(jobs),
-        activityTypes: (enterprise['activity_types'] as List? ?? [])
-            .map((e) => ActivityTypes.fromName(e['activity_type'] as String))
-            .toSet(),
-        recruiterId: enterprise['recruiter_id'],
-        contact: Person.fromSerialized(
-            (contacts?.isEmpty ?? true) ? {} : contacts!.first),
-        contactFunction: enterprise['contact_function'],
-        address: enterprise['address'] == null || enterprise['address'].isEmpty
-            ? null
-            : Address.fromSerialized(enterprise['address'].first),
-        phone: enterprise['phone_number'] == null ||
-                enterprise['phone_number'].isEmpty
-            ? PhoneNumber.empty
-            : PhoneNumber.fromSerialized(
-                enterprise['phone_number'].first as Map? ?? {}),
-        fax:
-            enterprise['fax_number'] == null || enterprise['fax_number'].isEmpty
-                ? PhoneNumber.empty
-                : PhoneNumber.fromSerialized(
-                    enterprise['fax_number']?.first as Map? ?? {}),
-        website: enterprise['website'],
-        headquartersAddress: enterprise['headquarter_address'] == null ||
-                enterprise['headquarter_address'].isEmpty
-            ? null
-            : Address.fromSerialized(enterprise['headquarter_address'].first),
-        neq: enterprise['neq'],
-      );
+      map[enterprise['id'].toString()] = Enterprise.fromSerialized(enterprise);
     }
 
     return map;
@@ -231,88 +229,95 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           : await _putExistingEnterprise(enterprise, previous);
 
   Future<void> _putNewEnterprise(Enterprise enterprise) async {
+    final serialized = enterprise.serialize();
+
     try {
       // Insert the enterprise
       await MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'entities',
-          data: {'shared_id': enterprise.id});
+          data: {'shared_id': serialized['id']});
       await MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'enterprises',
           data: {
-            'id': enterprise.id,
-            'name': enterprise.name,
-            'recruiter_id': enterprise.recruiterId,
-            'contact_function': enterprise.contactFunction,
-            'website': enterprise.website,
-            'neq': enterprise.neq,
+            'id': serialized['id'],
+            'version': serialized['version'],
+            'name': serialized['name'],
+            'recruiter_id': serialized['recruiter_id'],
+            'contact_function': serialized['contact_function'],
+            'website': serialized['website'],
+            'neq': serialized['neq'],
           });
 
       // Insert the activity types
-      for (final activityType in enterprise.activityTypes) {
+      for (final activityType in serialized['activity_types']) {
         await MySqlHelpers.performInsertQuery(
             connection: connection,
             tableName: 'enterprise_activity_types',
             data: {
-              'enterprise_id': enterprise.id,
-              'activity_type': activityType.name
+              'enterprise_id': serialized['id'],
+              'activity_type': activityType,
             });
       }
 
       // Insert jobs
-      for (final job in enterprise.jobs) {
+      for (final jobId
+          in (serialized['jobs'] as Map<String, dynamic>?)?.keys ?? []) {
+        final job = serialized['jobs'][jobId];
+
         await MySqlHelpers.performInsertQuery(
             connection: connection,
             tableName: 'enterprise_jobs',
             data: {
-              'id': job.id,
-              'enterprise_id': enterprise.id,
-              'positions_offered': job.positionsOffered,
-              'minimum_age': job.minimumAge,
+              'id': job['id'],
+              'version': job['version'],
+              'enterprise_id': serialized['id'],
+              'positions_offered': job['positions_offered'],
+              'minimum_age': job['minimum_age'],
             });
 
         // Insert photo urls of the job
-        for (final photoUrl in job.photosUrl) {
+        for (final photoUrl in job['photos_url']) {
           await MySqlHelpers.performInsertQuery(
               connection: connection,
               tableName: 'enterprise_job_photo_urls',
               data: {
-                'job_id': job.id,
+                'job_id': job['id'],
                 'photo_url': photoUrl,
               });
         }
 
         // Insert the comments for the job
-        for (final comment in job.comments) {
+        for (final comment in job['comments']) {
           await MySqlHelpers.performInsertQuery(
               connection: connection,
               tableName: 'enterprise_job_comments',
               data: {
-                'job_id': job.id,
+                'job_id': job['id'],
                 'comment': comment,
               });
         }
 
         // Insert pre-internship requests for the job
-        for (final request in job.preInternshipRequests) {
+        for (final request in job['pre_internship_requests']) {
           await MySqlHelpers.performInsertQuery(
               connection: connection,
               tableName: 'enterprise_job_pre_internship_requests',
               data: {
-                'job_id': job.id,
-                'request': request.name,
+                'job_id': job['id'],
+                'request': request,
               });
         }
 
         // Insert uniforms
-        for (final uniform in job.uniforms.uniforms) {
+        for (final uniform in job['uniforms']['uniforms'] ?? []) {
           await MySqlHelpers.performInsertQuery(
               connection: connection,
               tableName: 'enterprise_job_uniforms',
               data: {
-                'job_id': job.id,
-                'status': job.uniforms.status.name,
+                'job_id': job['id'],
+                'status': job['uniforms']['status'],
                 'uniform': uniform,
               });
         }

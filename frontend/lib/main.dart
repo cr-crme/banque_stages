@@ -3,14 +3,13 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:common/communication_protocol.dart';
-import 'package:common/models/address.dart';
-import 'package:common/models/enterprise.dart';
-import 'package:common/models/job.dart';
-import 'package:common/models/job_list.dart';
-import 'package:common/models/person.dart';
-import 'package:common/models/phone_number.dart';
-import 'package:common/models/pre_internship_request.dart';
-import 'package:common/models/teacher.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/enterprises/job_list.dart';
+import 'package:common/models/persons/person.dart';
+import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/teacher.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -355,7 +354,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ActivityTypes.values[random.nextInt(ActivityTypes.values.length)]
       };
       final jobs = JobList();
-      for (int i = 0; i < _random.nextInt(5); i++) {
+      for (int i = 0; i < _random.nextInt(5) + 1; i++) {
         jobs.add(Job(
           positionsOffered: _random.nextInt(10),
           minimumAge: random.nextInt(5) + 13,
@@ -368,6 +367,13 @@ class _LoginScreenState extends State<LoginScreen> {
             'Comment ${_random.nextInt(100)}',
             'Comment ${_random.nextInt(100)}'
           ],
+          uniforms: Uniforms(
+              status: UniformStatus
+                  .values[random.nextInt(UniformStatus.values.length)],
+              uniforms: [
+                ['Shirt', 'Pants', 'Shoes'][random.nextInt(3)],
+                ['Hat', 'Gloves'][random.nextInt(2)]
+              ]),
         ));
       }
 

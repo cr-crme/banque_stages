@@ -1,5 +1,5 @@
-import 'package:common/models/address.dart';
-import 'package:common/models/phone_number.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 class Person extends ItemSerializable {

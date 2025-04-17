@@ -1,11 +1,15 @@
 import 'package:common/exceptions.dart';
-import 'package:common/models/address.dart';
-import 'package:common/models/job_list.dart';
-import 'package:common/models/person.dart';
-import 'package:common/models/phone_number.dart';
+import 'package:common/models/enterprises/job_list.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
+part 'package:common/models/enterprises/activity_types.dart';
+
 class Enterprise extends ItemSerializable {
+  final String _currentVersion = '1.0.0';
+
   final String name;
   final Set<ActivityTypes> activityTypes;
   final String recruiterId;
@@ -88,6 +92,7 @@ class Enterprise extends ItemSerializable {
   Enterprise copyWithData(Map<String, dynamic> data) {
     final availableFields = [
       'id',
+      'version',
       'name',
       'activity_types',
       'recruiter_id',
@@ -105,11 +110,19 @@ class Enterprise extends ItemSerializable {
     if (data.keys.any((key) => !availableFields.contains(key))) {
       throw InvalidFieldException('Invalid field data detected');
     }
+
+    final version = data['version'];
+    if (version == null) {
+      throw InvalidFieldException('Version field is required');
+    } else if (version != '1.0.0') {
+      throw WrongVersionException(version, _currentVersion);
+    }
+
     return Enterprise(
       id: data['id']?.toString() ?? id,
       name: data['name'] ?? name,
       activityTypes: (data['activity_types'] as List? ?? [])
-          .map((e) => ActivityTypes.fromName(e as String))
+          .map((e) => ActivityTypes._fromInt(e as int, version))
           .toSet(),
       recruiterId: data['recruiter_id'] ?? recruiterId,
       jobs: data['jobs'] ?? jobs,
@@ -128,7 +141,9 @@ class Enterprise extends ItemSerializable {
   Map<String, dynamic> serializedMap() {
     return {
       'name': name,
-      'activity_types': activityTypes.map((e) => e.name).toList(),
+      'version': _currentVersion,
+      'activity_types':
+          activityTypes.map((e) => e._toInt(_currentVersion)).toList(),
       'recruiter_id': recruiterId,
       'jobs': jobs.serialize(),
       'contact': contact.serialize(),
@@ -146,7 +161,7 @@ class Enterprise extends ItemSerializable {
   Enterprise.fromSerialized(super.map)
       : name = map['name'] ?? 'Unnamed enterprise',
         activityTypes = (map['activity_types'] as List? ?? [])
-            .map((e) => ActivityTypes.fromName(e as String))
+            .map((e) => ActivityTypes._fromInt(e, map['version']))
             .toSet(),
         recruiterId = map['recruiter_id'] ?? 'UnknownId',
         jobs = JobList.fromSerialized(map['jobs'] ?? {}),
@@ -163,155 +178,4 @@ class Enterprise extends ItemSerializable {
             : Address.fromSerialized(map['headquarters_address']),
         neq = map['neq'] ?? '',
         super.fromSerialized();
-}
-
-enum ActivityTypes {
-  agricole,
-  animalerie,
-  barbier,
-  batiment,
-  boucherie,
-  boulangerie,
-  coiffeur,
-  commerce,
-  cpe,
-  cuisine,
-  depanneur,
-  ebenisterie,
-  ecole,
-  entreposage,
-  entretien,
-  epicerie,
-  esthetique,
-  ferme,
-  fleuriste,
-  garage,
-  garderie,
-  industrie,
-  loisirs,
-  magasin,
-  magasinDeVetements,
-  magasinEntrepot,
-  maisonDeRetraite,
-  mecanique,
-  menuiserie,
-  pharmacie,
-  preparationDeCommandes,
-  quincaillerie,
-  recyclage,
-  reparation,
-  restaurant,
-  restaurationRapide,
-  salonDeCoiffure,
-  salonDeToilettage,
-  sandwicherie,
-  soins,
-  stationService,
-  supermarche,
-  transformationAlimentaire,
-  travauxPublics,
-  usine,
-  autre;
-
-  static ActivityTypes fromName(String name) {
-    return ActivityTypes.values.firstWhere((element) => element.name == name);
-  }
-
-  @override
-  String toString() {
-    switch (this) {
-      case ActivityTypes.agricole:
-        return 'Agricole';
-      case ActivityTypes.animalerie:
-        return 'Animalerie';
-      case ActivityTypes.barbier:
-        return 'Barbier';
-      case ActivityTypes.batiment:
-        return 'Bâtiment';
-      case ActivityTypes.boucherie:
-        return 'Boucherie';
-      case ActivityTypes.boulangerie:
-        return 'Boulangerie';
-      case ActivityTypes.coiffeur:
-        return 'Coiffeur';
-      case ActivityTypes.commerce:
-        return 'Commerce';
-      case ActivityTypes.cpe:
-        return 'CPE';
-      case ActivityTypes.cuisine:
-        return 'Cuisine';
-      case ActivityTypes.depanneur:
-        return 'Dépanneur';
-      case ActivityTypes.ebenisterie:
-        return 'Ébénisterie';
-      case ActivityTypes.ecole:
-        return 'École';
-      case ActivityTypes.entreposage:
-        return 'Entreposage';
-      case ActivityTypes.entretien:
-        return 'Entretien';
-      case ActivityTypes.epicerie:
-        return 'Épicerie';
-      case ActivityTypes.esthetique:
-        return 'Esthétique';
-      case ActivityTypes.ferme:
-        return 'Ferme';
-      case ActivityTypes.fleuriste:
-        return 'Fleuriste';
-      case ActivityTypes.garage:
-        return 'Garage';
-      case ActivityTypes.garderie:
-        return 'Garderie';
-      case ActivityTypes.industrie:
-        return 'Industrie';
-      case ActivityTypes.loisirs:
-        return 'Loisirs';
-      case ActivityTypes.magasin:
-        return 'Magasin';
-      case ActivityTypes.magasinDeVetements:
-        return 'Magasin de vêtements';
-      case ActivityTypes.magasinEntrepot:
-        return 'Magasin entrepôt';
-      case ActivityTypes.maisonDeRetraite:
-        return 'Maison de retraite';
-      case ActivityTypes.mecanique:
-        return 'Mécanique';
-      case ActivityTypes.menuiserie:
-        return 'Menuiserie';
-      case ActivityTypes.pharmacie:
-        return 'Pharmacie';
-      case ActivityTypes.preparationDeCommandes:
-        return 'Préparation de commandes';
-      case ActivityTypes.quincaillerie:
-        return 'Quincaillerie';
-      case ActivityTypes.recyclage:
-        return 'Recyclage';
-      case ActivityTypes.reparation:
-        return 'Réparation';
-      case ActivityTypes.restaurant:
-        return 'Restaurant';
-      case ActivityTypes.restaurationRapide:
-        return 'Restauration rapide';
-      case ActivityTypes.salonDeCoiffure:
-        return 'Salon de coiffure';
-      case ActivityTypes.salonDeToilettage:
-        return 'Salon de toilettage';
-      case ActivityTypes.sandwicherie:
-        return 'Sandwicherie';
-      case ActivityTypes.soins:
-        return 'Soins';
-      case ActivityTypes.stationService:
-        return 'Station-service';
-      case ActivityTypes.supermarche:
-        return 'Supermarché';
-      case ActivityTypes.transformationAlimentaire:
-        return 'Transformation alimentaire';
-      case ActivityTypes.travauxPublics:
-        return 'Travaux publics';
-      case ActivityTypes.usine:
-        return 'Usine';
-      case ActivityTypes.autre:
-        return 'Autre';
-    }
-  }
 }

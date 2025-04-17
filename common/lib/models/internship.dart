@@ -1,7 +1,7 @@
 import 'package:common/models/flutter_mocker.dart';
 import 'package:common/models/internship_evaluation_attitude.dart';
 import 'package:common/models/internship_evaluation_skill.dart';
-import 'package:common/models/person.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:common/models/schedule.dart';
 import 'package:common/models/visiting_priority.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';

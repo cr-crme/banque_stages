@@ -2,9 +2,9 @@ import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:backend/utils/helpers.dart';
-import 'package:common/models/address.dart';
-import 'package:common/models/phone_number.dart';
-import 'package:common/models/teacher.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/teacher.dart';
 import 'package:mysql1/mysql1.dart';
 
 abstract class TeachersRepository implements RepositoryAbstract {
@@ -87,26 +87,17 @@ class MySqlTeachersRepository extends TeachersRepository {
     final map = <String, Teacher>{};
     for (final teacher in teachers) {
       final id = teacher['id'].toString();
-      final person = (teacher['persons'] as List).first;
+      teacher
+          .addAll((teacher['persons'] as List).first as Map<String, dynamic>);
       final teachingGroups = teacher['teaching_groups'] as List?;
-      final phoneNumbers = teacher['phone_numbers'] as List?;
-      final addresses = teacher['addresses'] as List?;
+      teacher['groups'] =
+          teachingGroups?.map((map) => map['group_name'] as String).toList();
 
-      map[id] = Teacher(
-        id: id,
-        firstName: person['first_name'] as String,
-        middleName: person['middle_name'] as String?,
-        lastName: person['last_name'] as String,
-        schoolId: teacher['school_id'] as String,
-        groups: teachingGroups
-                ?.map((map) => map['group_name'] as String)
-                .toList() ??
-            [],
-        email: teacher['email'] as String?,
-        phone: PhoneNumber.fromSerialized(phoneNumbers?.first as Map? ?? {}),
-        address: Address.fromSerialized(addresses?.first as Map? ?? {}),
-        dateBirth: null,
-      );
+      teacher['phone'] =
+          (teacher['phone_numbers'] as List?)?.first as Map? ?? {};
+      teacher['address'] = (teacher['addresses'] as List?)?.first as Map? ?? {};
+
+      map[id] = Teacher.fromSerialized(teacher);
     }
     return map;
   }

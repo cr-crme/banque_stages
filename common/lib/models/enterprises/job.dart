@@ -1,9 +1,11 @@
-import 'package:common/models/incidents.dart';
-import 'package:common/models/pre_internship_request.dart';
-import 'package:common/models/protections.dart';
-import 'package:common/models/uniforms.dart';
+import 'package:common/exceptions.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
+
+part 'package:common/models/enterprises/incidents.dart';
+part 'package:common/models/enterprises/pre_internship_request.dart';
+part 'package:common/models/enterprises/protections.dart';
+part 'package:common/models/enterprises/uniforms.dart';
 
 List<String> _stringListFromSerialized(List? list) =>
     (list ?? []).map<String>((e) => e).toList();
@@ -49,6 +51,8 @@ class JobSstEvaluation extends ItemSerializable {
 }
 
 class Job extends ItemSerializable {
+  static final String _currentVersion = '1.0.0';
+
 // Details
   // Specialization get specialization {
   //   if (_specialization == null) {
@@ -146,11 +150,13 @@ class Job extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
+        'version': _currentVersion,
         // 'specialization': specialization.id,
         'positions_offered': positionsOffered,
         'minimum_age': minimumAge,
-        'pre_internship_requests':
-            preInternshipRequests.map((e) => e.name).toList(),
+        'pre_internship_requests': preInternshipRequests
+            .map((e) => e._toInt(_currentVersion))
+            .toList(),
         'uniforms': uniforms.serialize(),
         // 'protections': protections.serialize(),
         'photos_url': photosUrl,
@@ -166,9 +172,10 @@ class Job extends ItemSerializable {
         positionsOffered = map['positions_offered'] ?? 0,
         minimumAge = map['minimum_age'] ?? 0,
         preInternshipRequests = (map['pre_internship_requests'] as List? ?? [])
-            .map((e) => PreInternshipRequest.fromString(e as String))
+            .map((e) => PreInternshipRequest._fromInt(e, map['version']))
             .toList(),
-        uniforms = Uniforms.fromSerialized(map['uniforms'] ?? {}),
+        uniforms =
+            Uniforms.fromSerialized(map['uniforms'] ?? {}, map['version']),
         // protections = Protections.fromSerialized(map['protections'] ?? {}),
         photosUrl = _stringListFromSerialized(map['photos_url']),
         // sstEvaluation =
@@ -179,6 +186,11 @@ class Job extends ItemSerializable {
 
   @override
   String toString() {
-    return 'Job(id: $id, positionsOffered: $positionsOffered, minimumAge: $minimumAge, preInternshipRequests: $preInternshipRequests, photosUrl: $photosUrl, comments: $comments)';
+    return 'Job(positionsOffered: $positionsOffered, '
+        'minimumAge: $minimumAge, '
+        'preInternshipRequests: $preInternshipRequests, '
+        'photosUrl: $photosUrl, '
+        'comments: $comments, '
+        'uniforms: $uniforms)';
   }
 }

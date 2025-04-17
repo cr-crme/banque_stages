@@ -1,4 +1,4 @@
-import 'package:common/models/job.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 class JobList extends ListSerializable<Job> {

@@ -23,6 +23,7 @@ DROP TABLE IF EXISTS enterprise_jobs;
 DROP TABLE IF EXISTS enterprise_job_photo_urls;
 DROP TABLE IF EXISTS enterprise_job_comments;
 DROP TABLE IF EXISTS enterprise_job_pre_internship_requests;
+DROP TABLE IF EXISTS enterprise_job_uniforms;
 DROP TABLE IF EXISTS enterprises;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -101,6 +102,7 @@ CREATE TABLE teaching_groups (
 
 CREATE TABLE enterprises (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
+    version VARCHAR(36) NOT NULL,
     name VARCHAR(50) NOT NULL,
     recruiter_id VARCHAR(36) NOT NULL, 
     contact_function VARCHAR(255) NOT NULL,
@@ -146,12 +148,13 @@ CREATE TABLE enterprise_fax_numbers(
 
 CREATE TABLE enterprise_activity_types(
     enterprise_id VARCHAR(36) NOT NULL,
-    activity_type VARCHAR(50) NOT NULL,
+    activity_type INT NOT NULL,
     FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE
 );
 
 CREATE TABLE enterprise_jobs(
     id VARCHAR(36) NOT NULL PRIMARY KEY,
+    version VARCHAR(36) NOT NULL,
     enterprise_id VARCHAR(36) NOT NULL,
     positions_offered INT NOT NULL,
     minimum_age INT NOT NULL,
@@ -172,6 +175,13 @@ CREATE TABLE enterprise_job_comments(
 
 CREATE TABLE enterprise_job_pre_internship_requests(
     job_id VARCHAR(36) NOT NULL,
-    request VARCHAR(50) NOT NULL,
+    request INT NOT NULL,
+    FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
+);
+
+CREATE TABLE enterprise_job_uniforms(
+    job_id VARCHAR(36) NOT NULL,
+    status INT NOT NULL,
+    uniform VARCHAR(255) NOT NULL,
     FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
 );

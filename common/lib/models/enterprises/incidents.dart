@@ -1,4 +1,4 @@
-import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
+part of 'package:common/models/enterprises/job.dart';
 
 class Incident extends ItemSerializable {
   String incident;
