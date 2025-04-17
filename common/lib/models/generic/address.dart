@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:common/models/geographic_coordinate_system.dart';
+import 'package:common/models/generic/geographic_coordinate_system.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 import 'package:http/http.dart' as http;
 

@@ -8,6 +8,8 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/itineraries/itinerary.dart';
+import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
@@ -396,6 +398,18 @@ class _LoginScreenState extends State<LoginScreen> {
           phone: teacher.phone,
           address: Address.empty,
           dateBirth: null,
+          itineraries: [
+            Itinerary(
+              date: DateTime.now(),
+              waypoints: [
+                Waypoint(
+                    title: 'School',
+                    latitude: _random.nextDouble() * 90,
+                    longitude: _random.nextDouble() * 180,
+                    address: _randomAddress()),
+              ],
+            )
+          ],
         ).serialize(),
       ).serialize());
       _socket?.send(message);

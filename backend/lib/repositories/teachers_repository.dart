@@ -130,6 +130,8 @@ class MySqlTeachersRepository extends TeachersRepository {
             tableName: 'teaching_groups',
             data: {'teacher_id': teacher.id, 'group_name': group});
       }
+
+      // TODO: Add itinerary here
     } catch (e) {
       try {
         // Try to delete the inserted data in case of error (everything is ON CASCADE DELETE)
@@ -190,7 +192,8 @@ class TeachersRepositoryMock extends TeachersRepository {
         phone: PhoneNumber.fromString('098-765-4321'),
         email: 'john.doe@email.com',
         dateBirth: null,
-        address: Address.empty),
+        address: Address.empty,
+        itineraries: []),
     '1': Teacher(
         id: '1',
         firstName: 'Jane',
@@ -201,7 +204,8 @@ class TeachersRepositoryMock extends TeachersRepository {
         phone: PhoneNumber.fromString('123-456-7890'),
         email: 'john.doe@email.com',
         dateBirth: null,
-        address: Address.empty),
+        address: Address.empty,
+        itineraries: []),
   };
 
   @override

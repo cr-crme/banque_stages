@@ -1,6 +1,7 @@
 import 'package:common/exceptions.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/persons/person.dart';
 
 List<String> _stringListFromSerialized(List? list) =>
@@ -9,6 +10,7 @@ List<String> _stringListFromSerialized(List? list) =>
 class Teacher extends Person {
   final String schoolId;
   final List<String> groups;
+  final List<Itinerary> itineraries;
 
   Teacher({
     super.id,
@@ -21,6 +23,7 @@ class Teacher extends Person {
     required super.phone,
     required super.address,
     required super.dateBirth,
+    required this.itineraries,
   }) {
     if (address.isNotEmpty) {
       throw ArgumentError('Address should not be set for a teacher');
@@ -33,6 +36,11 @@ class Teacher extends Person {
   Teacher.fromSerialized(super.map)
       : schoolId = map['school_id'] ?? '',
         groups = _stringListFromSerialized(map['groups']),
+        itineraries = map['itineraries'] == null
+            ? []
+            : (map['itineraries'] as List)
+                .map<Itinerary>((e) => Itinerary.fromSerialized(e))
+                .toList(),
         super.fromSerialized();
 
   @override
@@ -40,6 +48,7 @@ class Teacher extends Person {
     ..addAll({
       'school_id': schoolId,
       'groups': groups,
+      'itineraries': itineraries.map((e) => e.serializedMap()).toList(),
     });
 
   @override
@@ -54,6 +63,7 @@ class Teacher extends Person {
     PhoneNumber? phone,
     Address? address,
     DateTime? dateBirth,
+    List<Itinerary>? itineraries,
   }) =>
       Teacher(
         id: id ?? this.id,
@@ -66,6 +76,7 @@ class Teacher extends Person {
         email: email ?? this.email,
         dateBirth: dateBirth ?? this.dateBirth,
         address: address ?? this.address,
+        itineraries: itineraries ?? this.itineraries,
       );
 
   Teacher copyWithData(Map<String, dynamic> data) {
@@ -81,6 +92,7 @@ class Teacher extends Person {
           'email',
           'date_birth',
           'address',
+          'itineraries',
         ].contains(key))) {
       throw InvalidFieldException('Invalid field data detected');
     }
@@ -101,6 +113,11 @@ class Teacher extends Person {
       address: data['address'] == null
           ? address
           : Address.fromSerialized(data['address']),
+      itineraries: data['itineraries'] == null
+          ? itineraries
+          : (data['itineraries'] as List)
+              .map<Itinerary>((e) => Itinerary.fromSerialized(e))
+              .toList(),
     );
   }
 
