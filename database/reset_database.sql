@@ -159,6 +159,7 @@ CREATE TABLE enterprise_jobs(
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     version VARCHAR(36) NOT NULL,
     enterprise_id VARCHAR(36) NOT NULL,
+    specialization_id VARCHAR(36) NOT NULL,
     positions_offered INT NOT NULL,
     minimum_age INT NOT NULL,
     FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE

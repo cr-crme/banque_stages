@@ -15,14 +15,14 @@ class Job extends ItemSerializable {
   static final String _currentVersion = '1.0.0';
 
 // Details
-  // Specialization get specialization {
-  //   if (_specialization == null) {
-  //     throw ArgumentError('No specialization found for this job');
-  //   }
-  //   return _specialization;
-  // }
+  final Specialization? _specialization;
+  Specialization get specialization {
+    if (_specialization == null) {
+      throw ArgumentError('No specialization found for this job');
+    }
+    return _specialization;
+  }
 
-  // final Specialization? _specialization;
   final int positionsOffered;
   // TODO Implement this App side with an extension on
   // int positionsOccupied(context) =>
@@ -65,7 +65,7 @@ class Job extends ItemSerializable {
 
   Job({
     super.id,
-    // required Specialization specialization,
+    required Specialization specialization,
     required this.positionsOffered,
     required this.minimumAge,
     required this.preInternshipRequests,
@@ -75,7 +75,7 @@ class Job extends ItemSerializable {
     required this.sstEvaluation,
     required this.incidents,
     List<String>? comments,
-  })  : // _specialization = specialization,
+  })  : _specialization = specialization,
         photosUrl = photosUrl ?? [],
         comments = comments ?? [];
 
@@ -94,7 +94,7 @@ class Job extends ItemSerializable {
   }) {
     return Job(
       id: id ?? this.id,
-      // specialization: specialization ?? this.specialization,
+      specialization: specialization ?? this.specialization,
       positionsOffered: positionsOffered ?? this.positionsOffered,
       minimumAge: minimumAge ?? this.minimumAge,
       preInternshipRequests:
@@ -112,7 +112,7 @@ class Job extends ItemSerializable {
   Map<String, dynamic> serializedMap() => {
         'id': id,
         'version': _currentVersion,
-        // 'specialization': specialization.id,
+        'specialization_id': specialization.id,
         'positions_offered': positionsOffered,
         'minimum_age': minimumAge,
         'pre_internship_requests': preInternshipRequests
@@ -127,9 +127,9 @@ class Job extends ItemSerializable {
       };
 
   Job.fromSerialized(super.map)
-      : // _specialization = map['specialization'] == null
-        //     ? null
-        //     : ActivitySectorsService.specialization(map['specialization']),
+      : _specialization = map['specialization_id'] == null
+            ? null
+            : ActivitySectorsService.specialization(map['specialization_id']),
         positionsOffered = map['positions_offered'] ?? 0,
         minimumAge = map['minimum_age'] ?? 0,
         preInternshipRequests = (map['pre_internship_requests'] as List? ?? [])
@@ -148,6 +148,7 @@ class Job extends ItemSerializable {
   @override
   String toString() {
     return 'Job(positionsOffered: $positionsOffered, '
+        'specialization: $specialization, '
         'minimumAge: $minimumAge, '
         'preInternshipRequests: $preInternshipRequests, '
         'photosUrl: $photosUrl, '

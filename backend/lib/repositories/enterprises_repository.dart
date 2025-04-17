@@ -322,6 +322,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               'id': job['id'],
               'version': job['version'],
               'enterprise_id': serialized['id'],
+              'specialization_id': job['specialization_id'],
               'positions_offered': job['positions_offered'],
               'minimum_age': job['minimum_age'],
             });

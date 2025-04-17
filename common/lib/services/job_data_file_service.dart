@@ -97,6 +97,11 @@ class Specialization extends NamedItemSerializable {
 
   final SkillList skills;
   final List<String> questions;
+
+  @override
+  String toString() {
+    return 'Specialization{id: $id, name: $name, sector: ${sector.name}, skills: $skills, questions: $questions}';
+  }
 }
 
 class SpecializationList extends _NamedItemSerializableList<Specialization> {
@@ -201,6 +206,11 @@ class SkillList extends _NamedItemSerializableList<Skill> {
 
   @override
   Skill deserializeItem(data) => Skill.fromSerialized(data);
+
+  @override
+  String toString() {
+    return 'SkillList{skills: ${serializeList()}}';
+  }
 }
 
 abstract class NamedItemSerializable extends ItemSerializable {

@@ -10,6 +10,7 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -357,6 +358,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final jobs = JobList();
       for (int i = 0; i < _random.nextInt(5) + 1; i++) {
         jobs.add(Job(
+            specialization: ActivitySectorsService.specialization('8192'),
             positionsOffered: _random.nextInt(10),
             minimumAge: random.nextInt(5) + 13,
             photosUrl: ['https://example.com/photo${_random.nextInt(100)}.jpg'],
@@ -534,7 +536,7 @@ class EnterpriseTile extends StatelessWidget {
         'Activities: ${enterprise.activityTypes.join(', ')},\n'
         'First job: ${enterprise.jobs.first}\n'
         'Contact: ${enterprise.contact}, phone: ${enterprise.phone}, recruted by ${_dummyTeachers[enterprise.recruiterId]}\n'
-        'Website: ${enterprise.website}, fax: ${enterprise.fax}, neq: ${enterprise.neq}');
+        'Website: ${enterprise.website}, fax: ${enterprise.fax}, neq: ${enterprise.neq}\n\n');
   }
 }
 
