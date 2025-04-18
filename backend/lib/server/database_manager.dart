@@ -1,4 +1,5 @@
 import 'package:backend/repositories/enterprises_repository.dart';
+import 'package:backend/repositories/internships_repository.dart';
 import 'package:backend/repositories/students_repository.dart';
 import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/utils/exceptions.dart';
@@ -15,12 +16,14 @@ class DatabaseManager {
     required this.teachersDatabase,
     required this.studentsDatabase,
     required this.enterprisesDatabase,
+    required this.internshipsDatabase,
   });
 
   // TODO: Add a SchoolBoardRepository that will be used to limit teachers/students/enterprises
   final TeachersRepository teachersDatabase;
   final StudentsRepository studentsDatabase;
   final EnterprisesRepository enterprisesDatabase;
+  final InternshipsRepository internshipsDatabase;
 
   Future<Map<String, dynamic>> get(RequestFields field,
       {required Map<String, dynamic>? data}) async {
@@ -43,6 +46,12 @@ class DatabaseManager {
         return await enterprisesDatabase.getById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to get an enterprise'));
+      case RequestFields.internships:
+        return await internshipsDatabase.getAll();
+      case RequestFields.internship:
+        return await internshipsDatabase.getById(
+            id: _getId(data,
+                messageOnNull: 'An "id" is required to get an internship'));
     }
   }
 
@@ -73,6 +82,13 @@ class DatabaseManager {
         return await enterprisesDatabase.putById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to put an enterprise'),
+            data: data);
+      case RequestFields.internships:
+        return await internshipsDatabase.putAll(data: data);
+      case RequestFields.internship:
+        return await internshipsDatabase.putById(
+            id: _getId(data,
+                messageOnNull: 'An "id" is required to put an internship'),
             data: data);
     }
   }

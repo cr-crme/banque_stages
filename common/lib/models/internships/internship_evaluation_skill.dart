@@ -1,4 +1,4 @@
-import 'package:common/models/task_appreciation.dart';
+import 'package:common/models/internships/task_appreciation.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 enum SkillAppreciation {

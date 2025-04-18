@@ -8,6 +8,7 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/internships/internship.dart';
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/itineraries/waypoint.dart';
@@ -59,6 +60,28 @@ Future<void> _updateStudents(Map<String, dynamic> data) async {
       _dummyStudents[id] = _dummyStudents.containsKey(id)
           ? _dummyStudents[id]!.copyWithData(studentData)
           : Student.fromSerialized(studentData);
+    }
+  }
+}
+
+final Map<String, Internship> _dummyInternships = {};
+Future<void> _updateInternships(Map<String, dynamic> data) async {
+  if (data.containsKey('id')) {
+    // Update a single internship
+    final id = data['id'];
+    final internshipData = data;
+    _dummyInternships[id] = _dummyInternships.containsKey(id)
+        ? _dummyInternships[id]!.copyWithData(internshipData)
+        : Internship.fromSerialized(internshipData);
+  } else {
+    // Update all internships
+    _dummyInternships.clear();
+    for (final entry in data.entries) {
+      final id = entry.key;
+      final internshipData = entry.value;
+      _dummyInternships[id] = _dummyInternships.containsKey(id)
+          ? _dummyInternships[id]!.copyWithData(internshipData)
+          : Internship.fromSerialized(internshipData);
     }
   }
 }
@@ -206,6 +229,18 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
+                onPressed: isConnected &&
+                        _dummyStudents.isNotEmpty &&
+                        _dummyEnterprises.isNotEmpty
+                    ? _addRandomInternship
+                    : null,
+                child: Text('Add internship')),
+            SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: isConnected ? _getInternships : null,
+                child: Text('Get internships')),
+            SizedBox(height: 20),
+            ElevatedButton(
                 onPressed: _dummyTeachers.isNotEmpty && isConnected
                     ? _addRandomEnterprise
                     : null,
@@ -219,20 +254,17 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: isConnected ? _closeConnexion : null,
               child: Text('Disconnect'),
             ),
-            ..._dummyTeachers.entries.map((entry) {
-              final teacher = entry.value;
-              return TeacherTile(teacher: teacher);
-            }),
+            ..._dummyTeachers.entries
+                .map((entry) => TeacherTile(teacher: entry.value)),
             SizedBox(height: 20),
-            ..._dummyStudents.entries.map((entry) {
-              final student = entry.value;
-              return StudentTile(student: student);
-            }),
+            ..._dummyStudents.entries
+                .map((entry) => StudentTile(student: entry.value)),
             SizedBox(height: 20),
-            ..._dummyEnterprises.entries.map((entry) {
-              final enterprise = entry.value;
-              return EnterpriseTile(enterprise: enterprise);
-            }),
+            ..._dummyInternships.entries
+                .map((entry) => InternshipTile(internship: entry.value)),
+            SizedBox(height: 20),
+            ..._dummyEnterprises.entries
+                .map((entry) => EnterpriseTile(enterprise: entry.value)),
           ],
         ),
       )),
@@ -319,6 +351,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 _updateEnterprises(protocol.data!);
                 setState(() {});
                 break;
+              case RequestFields.internships:
+              case RequestFields.internship:
+                if (protocol.data == null) throw Exception('No data received');
+                _updateInternships(protocol.data!);
+                setState(() {});
+                break;
+
               case null:
                 throw Exception('Unsupported request field: ${protocol.field}');
             }
@@ -491,6 +530,29 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _addRandomInternship() async {
+    if (!isConnected) return;
+
+    // Send a post request to the server
+    try {
+      final student = _dummyStudents[_dummyStudents.keys
+          .toList()[_random.nextInt(_dummyStudents.length)]]!;
+
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.post,
+        field: RequestFields.internship,
+        data: Internship(
+          studentId: student.id,
+        ).serialize(),
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
   Future<void> _addRandomEnterprise() async {
     if (!isConnected) return;
 
@@ -637,6 +699,23 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _getInternships() async {
+    if (!isConnected) return;
+
+    // Send a get request to the server
+    try {
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.get,
+        field: RequestFields.internships,
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
   Future<void> _changeTeacher() async {
     if (!isConnected || _teacherController.text.isEmpty) return;
 
@@ -745,6 +824,20 @@ class EnterpriseTile extends StatelessWidget {
         'First job: ${enterprise.jobs.first}\n'
         'Contact: ${enterprise.contact}, phone: ${enterprise.phone}, recruted by ${_dummyTeachers[enterprise.recruiterId]}\n'
         'Website: ${enterprise.website}, fax: ${enterprise.fax}, neq: ${enterprise.neq}\n\n');
+  }
+}
+
+class InternshipTile extends StatelessWidget {
+  const InternshipTile({
+    super.key,
+    required this.internship,
+  });
+
+  final Internship internship;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(internship.toString());
   }
 }
 

@@ -7,6 +7,8 @@ enum RequestFields {
   students,
   enterprise,
   enterprises,
+  internships,
+  internship,
 }
 
 enum RequestType {

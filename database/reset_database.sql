@@ -34,6 +34,8 @@ DROP TABLE IF EXISTS enterprise_job_incidents;
 DROP TABLE IF EXISTS enterprise_job_sst_evaluation_questions;
 DROP TABLE IF EXISTS enterprises;
 
+DROP TABLE IF EXISTS internships;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 
@@ -140,9 +142,9 @@ CREATE TABLE teacher_itinerary_waypoints (
 );
 
 
-/*************************/
-/* People related tables */
-/*************************/
+/******************************/
+/* Enterprises related tables */
+/******************************/
 
 CREATE TABLE enterprises (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
@@ -252,4 +254,15 @@ CREATE TABLE enterprise_job_sst_evaluation_questions(
     answers VARCHAR(1000) NOT NULL,
     date BIGINT NOT NULL,
     FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
+);
+
+
+/******************************/
+/* Internships related tables */
+/******************************/
+
+CREATE TABLE internships (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    student_id VARCHAR(36) NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
 );

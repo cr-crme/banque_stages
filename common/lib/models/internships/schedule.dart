@@ -1,4 +1,4 @@
-import 'package:common/models/flutter_mocker.dart';
+import 'package:common/models/internships/time_utils.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 enum Day {
