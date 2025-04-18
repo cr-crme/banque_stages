@@ -9,6 +9,7 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/itineraries/itinerary.dart';
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
@@ -168,6 +169,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 )
               ],
             ),
+            SizedBox(width: 20),
+            ElevatedButton(
+                onPressed: isConnected ? _addRandomItinerary : null,
+                child: Text('Add random itinerary')),
             SizedBox(height: 20),
             ElevatedButton(
                 onPressed: isConnected ? _addRandomStudent : null,
@@ -398,22 +403,51 @@ class _LoginScreenState extends State<LoginScreen> {
           phone: teacher.phone,
           address: Address.empty,
           dateBirth: null,
-          itineraries: [
-            Itinerary(
-              date: DateTime.now(),
-              waypoints: [
-                Waypoint(
-                    title: 'School',
-                    latitude: _random.nextDouble() * 90,
-                    longitude: _random.nextDouble() * 180,
-                    address: _randomAddress()),
-              ],
-            )
-          ],
+          itineraries: [],
         ).serialize(),
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
+  Future<void> _addRandomItinerary() async {
+    if (!isConnected) return;
+
+    final teacherId = _dummyTeachers.keys.firstOrNull;
+    if (teacherId == null) {
+      debugPrint('No teacher available');
+      return;
+    }
+    final teacher = _dummyTeachers[teacherId]!;
+
+    if (teacher.itineraries.isEmpty) {
+      teacher.itineraries.add(Itinerary(
+        id: 'itinerary-${_random.nextInt(100)}',
+        date: DateTime.now(),
+      ));
+    }
+    final itinerary = teacher.itineraries.first;
+    itinerary.add(Waypoint(
+      title: 'Waypoint ${itinerary.length + 1}',
+      latitude: _random.nextDouble() * 90,
+      longitude: _random.nextDouble() * 180,
+      address: _randomAddress(),
+      priority: VisitingPriority
+          .values[_random.nextInt(VisitingPriority.values.length)],
+    ));
+
+    // Send a post request to the server
+    try {
+      final message = jsonEncode(CommunicationProtocol(
+              requestType: RequestType.post,
+              field: RequestFields.teacher,
+              data: teacher.serialize())
+          .serialize());
+      _socket?.send(message);
     } catch (e) {
       debugPrint('Error: $e');
       return;
@@ -674,7 +708,10 @@ class TeacherTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(teacher.toString());
+    return Text('$teacher, ${teacher.groups.join(', ')}\n'
+        'Itineraries: ${teacher.itineraries}\n'
+        'Phone: ${teacher.phone}, email: ${teacher.email}, address: ${teacher.address}\n'
+        'groups: ${teacher.groups.join(', ')}\n\n');
   }
 }
 

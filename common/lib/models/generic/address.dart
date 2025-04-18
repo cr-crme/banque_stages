@@ -96,9 +96,28 @@ class Address extends ItemSerializable {
       postalCode != null;
 
   @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! Address) return false;
+    return civicNumber == other.civicNumber &&
+        street == other.street &&
+        apartment == other.apartment &&
+        city == other.city &&
+        postalCode == other.postalCode;
+  }
+
+  @override
   String toString() {
     return isValid
         ? '$civicNumber $street${apartment == null ? '' : ' #$apartment'}, $city, $postalCode'
         : '';
   }
+
+  @override
+  int get hashCode =>
+      civicNumber.hashCode ^
+      street.hashCode ^
+      apartment.hashCode ^
+      city.hashCode ^
+      postalCode.hashCode;
 }

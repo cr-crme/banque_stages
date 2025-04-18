@@ -1,10 +1,11 @@
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
-import 'package:backend/utils/helpers.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/utils.dart';
 import 'package:mysql1/mysql1.dart';
 
 abstract class TeachersRepository implements RepositoryAbstract {
@@ -81,7 +82,13 @@ class MySqlTeachersRepository extends TeachersRepository {
             dataTableName: 'teaching_groups',
             idNameToDataTable: 'teacher_id',
             fieldsToFetch: ['group_name'],
-          )
+          ),
+          MySqlSelectSubQuery(
+            dataTableName: 'teacher_itineraries',
+            asName: 'itineraries',
+            idNameToDataTable: 'teacher_id',
+            fieldsToFetch: ['id', 'date'],
+          ),
         ]);
 
     final map = <String, Teacher>{};
@@ -94,8 +101,38 @@ class MySqlTeachersRepository extends TeachersRepository {
           teachingGroups?.map((map) => map['group_name'] as String).toList();
 
       teacher['phone'] =
-          (teacher['phone_numbers'] as List?)?.first as Map? ?? {};
-      teacher['address'] = (teacher['addresses'] as List?)?.first as Map? ?? {};
+          (teacher['phone_numbers'] as List?)?.firstOrNull as Map? ?? {};
+      teacher['address'] =
+          (teacher['addresses'] as List?)?.firstOrNull as Map? ?? {};
+
+      if (teacher['itineraries'] != null) {
+        final itineraries = teacher['itineraries'] as List;
+        for (final itinerary in itineraries) {
+          final waypoints = await MySqlHelpers.performSelectQuery(
+              connection: connection,
+              tableName: 'teacher_itinerary_waypoints',
+              idName: 'itinerary_id',
+              id: itinerary['id']);
+          itinerary['waypoints'] = [
+            for (final waypoint in waypoints)
+              {
+                'id': waypoint['step_index']?.toString(),
+                'title': waypoint['title'],
+                'subtitle': waypoint['subtitle'],
+                'latitude': waypoint['latitude'],
+                'longitude': waypoint['longitude'],
+                'address': {
+                  'civic': waypoint['address_civic'],
+                  'street': waypoint['address_street'],
+                  'apartment': waypoint['address_apartment'],
+                  'city': waypoint['address_city'],
+                  'postal_code': waypoint['address_postal_code']
+                },
+                'priority': waypoint['visiting_priority'],
+              }
+          ]..sort((a, b) => a['id'].compareTo(b['id']));
+        }
+      }
 
       map[id] = Teacher.fromSerialized(teacher);
     }
@@ -131,7 +168,10 @@ class MySqlTeachersRepository extends TeachersRepository {
             data: {'teacher_id': teacher.id, 'group_name': group});
       }
 
-      // TODO: Add itinerary here
+      // Insert itineraries
+      for (final itinerary in teacher.itineraries) {
+        await _sendItineraries(connection, teacher, itinerary);
+      }
     } catch (e) {
       try {
         // Try to delete the inserted data in case of error (everything is ON CASCADE DELETE)
@@ -175,7 +215,61 @@ class MySqlTeachersRepository extends TeachersRepository {
             data: {'id': teacher.id, 'group_name': group});
       }
     }
+
+    // Update itineraries
+    for (final itinerary in teacher.itineraries) {
+      // Check if the itinerary already exists
+      final previousItinerary =
+          previous.itineraries.firstWhereOrNull((e) => e.id == itinerary.id);
+
+      if (previousItinerary == null || itinerary != previousItinerary) {
+        if (previousItinerary != null) {
+          // Delete the old itinerary if it exists
+          await MySqlHelpers.performDeleteQuery(
+              connection: connection,
+              tableName: 'teacher_itineraries',
+              idName: 'id',
+              id: previousItinerary.id);
+        }
+        await _sendItineraries(connection, teacher, itinerary);
+      }
+    }
   }
+}
+
+Future<void> _sendItineraries(
+    MySqlConnection connection, Teacher teacher, Itinerary itinerary) async {
+  final serialized = itinerary.serialize();
+  await MySqlHelpers.performInsertQuery(
+      connection: connection,
+      tableName: 'teacher_itineraries',
+      data: {
+        'id': serialized['id'],
+        'teacher_id': teacher.id,
+        'date': serialized['date'],
+      });
+
+  for (int i = 0; i < serialized['waypoints'].length; i++) {
+    final waypoint = serialized['waypoints'][i];
+    await MySqlHelpers.performInsertQuery(
+        connection: connection,
+        tableName: 'teacher_itinerary_waypoints',
+        data: {
+          'step_index': i,
+          'itinerary_id': serialized['id'],
+          'title': waypoint['title'],
+          'subtitle': waypoint['subtitle'],
+          'latitude': waypoint['latitude'],
+          'longitude': waypoint['longitude'],
+          'address_civic': waypoint['address']['civic'],
+          'address_street': waypoint['address']['street'],
+          'address_apartment': waypoint['address']['apartment'],
+          'address_city': waypoint['address']['city'],
+          'address_postal_code': waypoint['address']['postal_code'],
+          'visiting_priority': waypoint['priority'],
+        });
+  }
+
   // coverage:ignore-end
 }
 

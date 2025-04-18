@@ -1,4 +1,5 @@
 import 'package:common/models/itineraries/waypoint.dart';
+import 'package:common/utils.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart';
@@ -91,4 +92,23 @@ class Itinerary extends ListSerializable<Waypoint>
         'date': date.millisecondsSinceEpoch,
         'waypoints': super.map((e) => e.serialize()).toList()
       };
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! Itinerary) return false;
+    return id == other.id &&
+        date == other.date &&
+        isListEqual(toList(), other.toList());
+  }
+
+  @override
+  String toString() {
+    return 'Itinerary{id: $id, date: $date, waypoints: ${[
+      for (final e in this) e
+    ]}}';
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ date.hashCode;
 }

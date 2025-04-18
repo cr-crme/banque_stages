@@ -120,8 +120,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
     final map = <String, Enterprise>{};
     for (final enterprise in enterprises) {
-      final contactIds = (enterprise['contact'] as List?)?.map((e) => e['id']);
-      final contactId = contactIds?.isEmpty ?? true ? null : contactIds!.first;
+      final contactId =
+          (enterprise['contact'] as List?)?.map((e) => e['id']).firstOrNull;
       final contacts = contactId == null
           ? null
           : await MySqlHelpers.performSelectQuery(
@@ -141,25 +141,19 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                         'postal_code'
                       ]),
                 ]);
-      enterprise['contact'] =
-          (contacts?.isEmpty ?? true) ? {} : contacts!.first;
+      enterprise['contact'] = contacts?.firstOrNull ?? {};
       enterprise['activity_types'] =
           (enterprise['activity_types'] as List? ?? [])
               .map((e) => e['activity_type'])
               .toList();
-      enterprise['phone'] = (enterprise['phone_number'] as List? ?? []).isEmpty
-          ? {}
-          : (enterprise['phone_number'] as List).first;
-      enterprise['fax'] = (enterprise['fax_number'] as List? ?? []).isEmpty
-          ? {}
-          : (enterprise['fax_number'] as List).first;
-      enterprise['address'] = (enterprise['address'] as List? ?? []).isEmpty
-          ? {}
-          : (enterprise['address'] as List).first;
+      enterprise['phone'] =
+          (enterprise['phone_number'] as List?)?.firstOrNull ?? {};
+      enterprise['fax'] =
+          (enterprise['fax_number'] as List?)?.firstOrNull ?? {};
+      enterprise['address'] =
+          (enterprise['address'] as List?)?.firstOrNull ?? {};
       enterprise['headquarter_address'] =
-          (enterprise['headquarter_address'] as List? ?? []).isEmpty
-              ? {}
-              : (enterprise['headquarter_address'] as List).first;
+          (enterprise['headquarter_address'] as List?)?.firstOrNull ?? {};
 
       final jobsTp = await MySqlHelpers.performSelectQuery(
         connection: connection,
@@ -252,9 +246,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               question['question']:
                   (question['answers'] as String?)?.split('\n') ?? []
           },
-          'date': (job['sst_evaluations'] as List?)?.isEmpty ?? true
-              ? 0
-              : (job['sst_evaluations'] as List?)?.first['date']
+          'date': (job['sst_evaluations'] as List?)?.firstOrNull?['date'] ?? 0
         };
       }
       enterprise['jobs'] = jobs;

@@ -49,10 +49,7 @@ class Waypoint extends ItemSerializable {
       'subtitle': subtitle,
       'latitude': latitude,
       'longitude': longitude,
-      'civic': address.civicNumber,
-      'street': address.street,
-      'city': address.city,
-      'postalCode': address.postalCode,
+      'address': address.serialize(),
       'priority': priority.index,
     };
   }
@@ -64,13 +61,7 @@ class Waypoint extends ItemSerializable {
       subtitle: data['subtitle'] ?? '',
       latitude: data['latitude'] ?? 0,
       longitude: data['longitude'] ?? 0,
-      address: Address(
-        civicNumber: data['civic'],
-        street: data['street'],
-        apartment: data['apartment'],
-        city: data['city'],
-        postalCode: data['postalCode'],
-      ),
+      address: Address.fromSerialized(data['address'] ?? {}),
       priority: data['priority'] == null
           ? VisitingPriority.notApplicable
           : VisitingPriority.values[data['priority']],
@@ -187,10 +178,31 @@ class Waypoint extends ItemSerializable {
   }
 
   @override
-  String toString() {
-    String out = '';
-    if (subtitle != null) out += '$subtitle\n';
-    out += '${address.street}\n${address.city} ${address.postalCode}';
-    return out;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! Waypoint) return false;
+
+    return other.title == title &&
+        other.subtitle == subtitle &&
+        other.latitude == latitude &&
+        other.longitude == longitude &&
+        other.address == address &&
+        other.priority == priority;
   }
+
+  @override
+  String toString() {
+    return '$title ${subtitle != null ? '($subtitle)' : ''}, '
+        '$address (${latitude.toStringAsFixed(6)}, ${longitude.toStringAsFixed(6)}), $priority';
+  }
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      title.hashCode ^
+      subtitle.hashCode ^
+      latitude.hashCode ^
+      longitude.hashCode ^
+      address.hashCode ^
+      priority.hashCode;
 }

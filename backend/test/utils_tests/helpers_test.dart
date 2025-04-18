@@ -1,4 +1,4 @@
-import 'package:backend/utils/helpers.dart';
+import 'package:common/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -14,5 +14,13 @@ void main() {
     expect(isNotListEqual([1, 2, 3], [1, 2, 3, 4]), true);
     expect(isNotListEqual([1, 2, 3], [1, 2, 4]), true);
     expect(isNotListEqual([1, 2, 3], [3, 2, 1]), true);
+  });
+
+  test('List accessors', () {
+    expect([1, 2, 3].firstOrNull, 1);
+    expect([].firstOrNull, null);
+    expect([1, 2, 3].firstWhereOrNull((e) => e == 2), 2);
+    expect([1, 2, 3].firstWhereOrNull((e) => e == 4), null);
+    expect([].firstWhereOrNull((e) => e == 4), null);
   });
 }

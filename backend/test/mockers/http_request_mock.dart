@@ -80,7 +80,7 @@ class HttpHeadersMock implements HttpHeaders {
 
   @override
   String? value(String name) {
-    return _headers[name.toLowerCase()]?.first;
+    return _headers[name.toLowerCase()]?.firstOrNull;
   }
 
   @override

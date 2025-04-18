@@ -14,6 +14,8 @@ DROP TABLE IF EXISTS student_contacts;
 DROP TABLE IF EXISTS students;
 
 DROP TABLE IF EXISTS teaching_groups;
+DROP TABLE IF EXISTS teacher_itineraries;
+DROP TABLE IF EXISTS teacher_itinerary_waypoints;
 DROP TABLE IF EXISTS teachers;
 
 DROP TABLE IF EXISTS enterprise_addresses;
@@ -112,6 +114,29 @@ CREATE TABLE teaching_groups (
     teacher_id VARCHAR(36) NOT NULL,
     group_name VARCHAR(20) NOT NULL, 
     FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
+);
+
+CREATE TABLE teacher_itineraries (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    teacher_id VARCHAR(36) NOT NULL,
+    date BIGINT NOT NULL,
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
+);
+
+CREATE TABLE teacher_itinerary_waypoints (
+    step_index INT NOT NULL,
+    itinerary_id VARCHAR(36) NOT NULL,
+    title VARCHAR(50) NOT NULL,
+    subtitle VARCHAR(50) NOT NULL,
+    latitude FLOAT NOT NULL,
+    longitude FLOAT NOT NULL,
+    address_civic INT,
+    address_street VARCHAR(100),
+    address_apartment VARCHAR(20),
+    address_city VARCHAR(50),
+    address_postal_code VARCHAR(10),
+    visiting_priority INT NOT NULL,
+    FOREIGN KEY (itinerary_id) REFERENCES teacher_itineraries(id) ON DELETE CASCADE
 );
 
 

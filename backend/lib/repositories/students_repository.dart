@@ -97,8 +97,8 @@ class MySqlStudentsRepository extends StudentsRepository {
       final id = student['id'].toString();
       student['group'] = student['group_name'];
 
-      final contactIds = (student['contact'] as List?)?.map((e) => e['id']);
-      final contactId = contactIds?.isEmpty ?? true ? null : contactIds!.first;
+      final contactId =
+          (student['contact'] as List?)?.map((e) => e['id']).firstOrNull;
       final contacts = contactId == null
           ? null
           : await MySqlHelpers.performSelectQuery(
@@ -118,7 +118,7 @@ class MySqlStudentsRepository extends StudentsRepository {
                         'postal_code'
                       ]),
                 ]);
-      student['contact'] = (contacts?.isEmpty ?? true) ? {} : contacts!.first;
+      student['contact'] = contacts?.firstOrNull ?? {};
 
       student
           .addAll((student['persons'] as List).first as Map<String, dynamic>);
@@ -127,8 +127,9 @@ class MySqlStudentsRepository extends StudentsRepository {
           : DateTime.parse(student['date_birthday']).millisecondsSinceEpoch;
 
       student['phone'] =
-          (student['phone_numbers'] as List?)?.first as Map? ?? {};
-      student['address'] = (student['addresses'] as List?)?.first as Map? ?? {};
+          (student['phone_numbers'] as List?)?.firstOrNull as Map? ?? {};
+      student['address'] =
+          (student['addresses'] as List?)?.firstOrNull as Map? ?? {};
 
       map[id] = Student.fromSerialized(student);
     }
