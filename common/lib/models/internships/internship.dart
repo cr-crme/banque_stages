@@ -166,10 +166,10 @@ class Internship extends ItemSerializable {
 
   // Elements fixed across versions of the same stage
   final String studentId;
-  // final String signatoryTeacherId;
-  // final List<String> _extraSupervisingTeacherIds;
-  // List<String> get supervisingTeacherIds =>
-  //     [signatoryTeacherId, ..._extraSupervisingTeacherIds];
+  final String signatoryTeacherId;
+  final List<String> _extraSupervisingTeacherIds;
+  List<String> get supervisingTeacherIds =>
+      [signatoryTeacherId, ..._extraSupervisingTeacherIds];
 
   // void addSupervisingTeacher(context, {required String teacherId}) {
   //   // TODO Implement this method with an extension on App side
@@ -237,8 +237,8 @@ class Internship extends ItemSerializable {
   Internship._({
     required super.id,
     required this.studentId,
-    // required this.signatoryTeacherId,
-    // required List<String> extraSupervisingTeacherIds,
+    required this.signatoryTeacherId,
+    required List<String> extraSupervisingTeacherIds,
     // required this.enterpriseId,
     // required this.jobId,
     // required this.extraSpecializationsId,
@@ -251,17 +251,17 @@ class Internship extends ItemSerializable {
     // required this.skillEvaluations,
     // required this.attitudeEvaluations,
     // required this.enterpriseEvaluation,
-  });
-  //  : _mutables = mutables,
-  //       _extraSupervisingTeacherIds = extraSupervisingTeacherIds {
-  //   _extraSupervisingTeacherIds.remove(signatoryTeacherId);
-  // }
+  }) :
+        //  _mutables = mutables,
+        _extraSupervisingTeacherIds = extraSupervisingTeacherIds {
+    _extraSupervisingTeacherIds.remove(signatoryTeacherId);
+  }
 
   Internship({
     super.id,
     required this.studentId,
-    // required this.signatoryTeacherId,
-    // required List<String> extraSupervisingTeacherIds,
+    required this.signatoryTeacherId,
+    required List<String> extraSupervisingTeacherIds,
     // required this.enterpriseId,
     // required this.jobId,
     // required this.extraSpecializationsId,
@@ -277,24 +277,24 @@ class Internship extends ItemSerializable {
     // this.skillEvaluations = const [],
     // this.attitudeEvaluations = const [],
     // this.enterpriseEvaluation,
-  });
-  //   : _extraSupervisingTeacherIds = extraSupervisingTeacherIds,
-  //       _mutables = [
-  //         _MutableElements(
-  //           versionDate: versionDate,
-  //           supervisor: supervisor,
-  //           date: date,
-  //           weeklySchedules: weeklySchedules,
-  //         )
-  //       ] {
-  //   _extraSupervisingTeacherIds.remove(signatoryTeacherId);
-  // }
+  }) : _extraSupervisingTeacherIds = extraSupervisingTeacherIds
+  // _mutables = [
+  //   _MutableElements(
+  //     versionDate: versionDate,
+  //     supervisor: supervisor,
+  //     date: date,
+  //     weeklySchedules: weeklySchedules,
+  //   )
+  // ]
+  {
+    _extraSupervisingTeacherIds.remove(signatoryTeacherId);
+  }
 
   Internship.fromSerialized(super.map)
       : studentId = map['student_id'] ?? '',
-        // signatoryTeacherId = map['signatoryTeacherId'] ?? '',
-        // _extraSupervisingTeacherIds =
-        //     _stringListFromSerialized(map['extraSupervisingTeacherIds']),
+        signatoryTeacherId = map['signatory_teacher_id'] ?? '',
+        _extraSupervisingTeacherIds =
+            _stringListFromSerialized(map['extra_supervising_teacher_ids']),
         // enterpriseId = map['enterprise'] ?? '',
         // jobId = map['jobId'] ?? '',
         // extraSpecializationsId =
@@ -325,15 +325,21 @@ class Internship extends ItemSerializable {
         //     ? null
         //     : PostInternshipEnterpriseEvaluation.fromSerialized(
         //         map['enterpriseEvaluation']),
-        super.fromSerialized();
+        super.fromSerialized() {
+    _extraSupervisingTeacherIds.remove(signatoryTeacherId);
+    // _mutables.sort((a, b) => a.versionDate.compareTo(b.versionDate));
+    // if (_mutables.isNotEmpty) {
+    //   _mutables.last.weeklySchedules.sort((a, b) => a.start.compareTo(b.start));
+    // }
+  }
 
   @override
   Map<String, dynamic> serializedMap() => {
         'version': _currentVersion,
         'student_id': studentId,
-        // 'signatoryTeacherId': signatoryTeacherId,
-        // 'extraSupervisingTeacherIds':
-        //     _serializeList(_extraSupervisingTeacherIds),
+        'signatory_teacher_id': signatoryTeacherId,
+        'extra_supervising_teacher_ids':
+            _serializeList(_extraSupervisingTeacherIds),
         // 'enterprise': enterpriseId,
         // 'jobId': jobId,
         // 'extraSpecializationsId': _serializeList(extraSpecializationsId),
@@ -390,9 +396,9 @@ class Internship extends ItemSerializable {
     return Internship._(
       id: id ?? this.id,
       studentId: studentId ?? this.studentId,
-      // signatoryTeacherId: signatoryTeacherId ?? this.signatoryTeacherId,
-      // extraSupervisingTeacherIds:
-      //     extraSupervisingTeacherIds ?? _extraSupervisingTeacherIds,
+      signatoryTeacherId: signatoryTeacherId ?? this.signatoryTeacherId,
+      extraSupervisingTeacherIds:
+          extraSupervisingTeacherIds ?? _extraSupervisingTeacherIds,
       // enterpriseId: enterpriseId ?? this.enterpriseId,
       // jobId: jobId ?? this.jobId,
       // extraSpecializationsId:
@@ -414,6 +420,8 @@ class Internship extends ItemSerializable {
       'version',
       'id',
       'student_id',
+      'signatory_teacher_id',
+      'extra_supervising_teacher_ids',
     ];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
@@ -430,14 +438,17 @@ class Internship extends ItemSerializable {
     return Internship(
       id: data['id']?.toString() ?? id,
       studentId: data['student_id'] ?? studentId,
+      signatoryTeacherId: data['signatory_teacher_id'] ?? signatoryTeacherId,
+      extraSupervisingTeacherIds:
+          _stringListFromSerialized(data['extra_supervising_teacher_ids']),
     );
   }
 
   @override
   String toString() {
     return 'Internship{studentId: $studentId, '
-        // 'signatoryTeacherId: $signatoryTeacherId, '
-        // 'extraSupervisingTeacherIds: $_extraSupervisingTeacherIds, '
+        'signatoryTeacherId: $signatoryTeacherId, '
+        'extraSupervisingTeacherIds: $_extraSupervisingTeacherIds, '
         // 'enterpriseId: $enterpriseId, '
         // 'jobId: $jobId, '
         // 'extraSpecializationsId: $extraSpecializationsId, '

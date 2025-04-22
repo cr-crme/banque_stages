@@ -34,6 +34,7 @@ DROP TABLE IF EXISTS enterprise_job_incidents;
 DROP TABLE IF EXISTS enterprise_job_sst_evaluation_questions;
 DROP TABLE IF EXISTS enterprises;
 
+DROP TABLE IF EXISTS internships_supervising_teachers;
 DROP TABLE IF EXISTS internships;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -265,4 +266,12 @@ CREATE TABLE internships (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     student_id VARCHAR(36) NOT NULL,
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
+CREATE TABLE internships_supervising_teachers (
+    internship_id VARCHAR(36) NOT NULL,
+    teacher_id VARCHAR(36) NOT NULL,
+    is_signatory_teacher BOOLEAN NOT NULL,
+    FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE,
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
 );

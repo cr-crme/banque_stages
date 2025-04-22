@@ -543,6 +543,11 @@ class _LoginScreenState extends State<LoginScreen> {
         field: RequestFields.internship,
         data: Internship(
           studentId: student.id,
+          signatoryTeacherId: _dummyTeachers.keys
+              .toList()[_random.nextInt(_dummyTeachers.length)],
+          extraSupervisingTeacherIds: [
+            _dummyTeachers.keys.toList()[_random.nextInt(_dummyTeachers.length)]
+          ],
         ).serialize(),
       ).serialize());
       _socket?.send(message);

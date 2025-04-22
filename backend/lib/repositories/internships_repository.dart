@@ -2,6 +2,7 @@ import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/utils.dart';
 import 'package:mysql1/mysql1.dart';
 
 abstract class InternshipsRepository implements RepositoryAbstract {
@@ -55,11 +56,30 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         connection: connection,
         tableName: 'internships',
         id: internshipId,
-        subqueries: []);
+        subqueries: [
+          MySqlSelectSubQuery(
+            dataTableName: 'internships_supervising_teachers',
+            asName: 'supervising_teachers',
+            fieldsToFetch: ['teacher_id', 'is_signatory_teacher'],
+            idNameToDataTable: 'internship_id',
+          )
+        ]);
 
     final map = <String, Internship>{};
     for (final internship in internships) {
       final id = internship['id'].toString();
+
+      internship['signatory_teacher_id'] =
+          (internship['supervising_teachers'] as List?)?.firstWhereOrNull(
+              (e) => e['is_signatory_teacher'] as int == 1)?['teacher_id'];
+      if (internship['signatory_teacher_id'] == null) {
+        throw MissingDataException('Internship $id has no signatory teacher');
+      }
+      internship['extra_supervising_teacher_ids'] =
+          (internship['supervising_teachers'] as List?)
+                  ?.map((e) => e['teacher_id'].toString())
+                  .toList() ??
+              [];
 
       map[id] = Internship.fromSerialized(internship);
     }
@@ -88,6 +108,18 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             'id': internship.id,
             'student_id': internship.studentId,
           });
+
+      // Insert the signatory teacher
+      for (final teacherId in internship.supervisingTeacherIds) {
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'internships_supervising_teachers',
+            data: {
+              'internship_id': internship.id,
+              'teacher_id': teacherId,
+              'is_signatory_teacher': teacherId == internship.signatoryTeacherId
+            });
+      }
     } catch (e) {
       try {
         // Try to delete the inserted data in case of error (everything is ON CASCADE DELETE)
@@ -114,8 +146,16 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 class InternshipsRepositoryMock extends InternshipsRepository {
   // Simulate a database with a map
   final _dummyDatabase = {
-    '0': Internship(id: '0', studentId: '12345'),
-    '1': Internship(id: '1', studentId: '54321'),
+    '0': Internship(
+        id: '0',
+        studentId: '12345',
+        signatoryTeacherId: '67890',
+        extraSupervisingTeacherIds: []),
+    '1': Internship(
+        id: '1',
+        studentId: '54321',
+        signatoryTeacherId: '09876',
+        extraSupervisingTeacherIds: ['54321']),
   };
 
   @override
