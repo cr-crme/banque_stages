@@ -565,10 +565,11 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
   Future<void> _putExistingInternship(
       Internship internship, Internship previous) async {
-    if (internship != previous) {
-      // TODO: Implement updating enterprise
-      throw 'Not implemented yet';
-    }
+    // TODO: Implement a better updating of the internships
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection, tableName: 'internships', id: previous.id);
+
+    await _putNewInternship(internship);
   }
 }
 

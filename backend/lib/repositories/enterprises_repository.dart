@@ -483,11 +483,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
   Future<void> _putExistingEnterprise(
       Enterprise enterprise, Enterprise previous) async {
-    final Map<String, dynamic> toUpdate = {};
-    if (enterprise.name != previous.name) toUpdate['name'] = enterprise.name;
+    // TODO: Implement a better updating of the enterprises
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection, tableName: 'enterprises', id: previous.id);
 
-    // TODO: Implement updating enterprise
-    throw 'Not implemented yet';
+    await _putNewEnterprise(enterprise);
   }
   // coverage:ignore-end
 }
