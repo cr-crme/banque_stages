@@ -8,7 +8,7 @@ import 'package:enhanced_containers_foundation/enhanced_containers_foundation.da
 
 double _doubleFromSerialized(num? number, {double defaultValue = 0}) {
   if (number is int) return number.toDouble();
-  return (number ?? defaultValue) as double;
+  return double.parse(((number ?? defaultValue) as double).toStringAsFixed(5));
 }
 
 List<String> _stringListFromSerialized(List? list) {
@@ -47,27 +47,29 @@ class PostInternshipEnterpriseEvaluation extends ItemSerializable {
   });
 
   PostInternshipEnterpriseEvaluation.fromSerialized(super.map)
-      : internshipId = map['internshipId'] ?? '',
-        skillsRequired = _stringListFromSerialized(map['skillsRequired']),
-        taskVariety = _doubleFromSerialized(map['taskVariety']),
-        trainingPlanRespect = _doubleFromSerialized(map['trainingPlanRespect']),
-        autonomyExpected = _doubleFromSerialized(map['autonomyExpected']),
-        efficiencyExpected = _doubleFromSerialized(map['efficiencyExpected']),
-        supervisionStyle = _doubleFromSerialized(map['supervisionStyle']),
-        easeOfCommunication = _doubleFromSerialized(map['easeOfCommunication']),
-        absenceAcceptance = _doubleFromSerialized(map['absenceAcceptance']),
-        supervisionComments = map['supervisionComments'] ?? '',
-        acceptanceTsa = _doubleFromSerialized(map['acceptanceTSA']),
+      : internshipId = map['internship_id'] ?? '',
+        skillsRequired = _stringListFromSerialized(map['skills_required']),
+        taskVariety = _doubleFromSerialized(map['task_variety']),
+        trainingPlanRespect =
+            _doubleFromSerialized(map['training_plan_respect']),
+        autonomyExpected = _doubleFromSerialized(map['autonomy_expected']),
+        efficiencyExpected = _doubleFromSerialized(map['efficiency_expected']),
+        supervisionStyle = _doubleFromSerialized(map['supervision_style']),
+        easeOfCommunication =
+            _doubleFromSerialized(map['ease_of_communication']),
+        absenceAcceptance = _doubleFromSerialized(map['absence_acceptance']),
+        supervisionComments = map['supervision_comments'] ?? '',
+        acceptanceTsa = _doubleFromSerialized(map['acceptance_tsa']),
         acceptanceLanguageDisorder =
-            _doubleFromSerialized(map['acceptanceLanguageDisorder']),
+            _doubleFromSerialized(map['acceptance_language_disorder']),
         acceptanceIntellectualDisability =
-            _doubleFromSerialized(map['acceptanceIntellectualDisability']),
+            _doubleFromSerialized(map['acceptance_intellectual_disability']),
         acceptancePhysicalDisability =
-            _doubleFromSerialized(map['acceptancePhysicalDisability']),
+            _doubleFromSerialized(map['acceptance_physical_disability']),
         acceptanceMentalHealthDisorder =
-            _doubleFromSerialized(map['acceptanceMentalHealthDisorder']),
+            _doubleFromSerialized(map['acceptance_mental_health_disorder']),
         acceptanceBehaviorDifficulties =
-            _doubleFromSerialized(map['acceptanceBehaviorDifficulties']),
+            _doubleFromSerialized(map['acceptance_behavior_difficulties']),
         super.fromSerialized();
 
   String internshipId;
@@ -105,23 +107,44 @@ class PostInternshipEnterpriseEvaluation extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'internshipId': internshipId,
-        'skillsRequired': skillsRequired,
-        'taskVariety': taskVariety,
-        'trainingPlanRespect': trainingPlanRespect,
-        'autonomyExpected': autonomyExpected,
-        'efficiencyExpected': efficiencyExpected,
-        'supervisionStyle': supervisionStyle,
-        'easeOfCommunication': easeOfCommunication,
-        'absenceAcceptance': absenceAcceptance,
-        'supervisionComments': supervisionComments,
-        'acceptanceTSA': acceptanceTsa,
-        'acceptanceLanguageDisorder': acceptanceLanguageDisorder,
-        'acceptanceIntellectualDisability': acceptanceIntellectualDisability,
-        'acceptancePhysicalDisability': acceptancePhysicalDisability,
-        'acceptanceMentalHealthDisorder': acceptanceMentalHealthDisorder,
-        'acceptanceBehaviorDifficulties': acceptanceBehaviorDifficulties,
+        'internship_id': internshipId,
+        'skills_required': skillsRequired,
+        'task_variety': taskVariety,
+        'training_plan_respect': trainingPlanRespect,
+        'autonomy_expected': autonomyExpected,
+        'efficiency_expected': efficiencyExpected,
+        'supervision_style': supervisionStyle,
+        'ease_of_communication': easeOfCommunication,
+        'absence_acceptance': absenceAcceptance,
+        'supervision_comments': supervisionComments,
+        'acceptance_tsa': acceptanceTsa,
+        'acceptance_language_disorder': acceptanceLanguageDisorder,
+        'acceptance_intellectual_disability': acceptanceIntellectualDisability,
+        'acceptance_physical_disability': acceptancePhysicalDisability,
+        'acceptance_mental_health_disorder': acceptanceMentalHealthDisorder,
+        'acceptance_behavior_difficulties': acceptanceBehaviorDifficulties,
       };
+
+  @override
+  String toString() {
+    return 'PostInternshipEnterpriseEvaluation{'
+        'internshipId: $internshipId, '
+        'skillsRequired: $skillsRequired, '
+        'taskVariety: $taskVariety, '
+        'trainingPlanRespect: $trainingPlanRespect, '
+        'autonomyExpected: $autonomyExpected, '
+        'efficiencyExpected: $efficiencyExpected, '
+        'supervisionStyle: $supervisionStyle, '
+        'easeOfCommunication: $easeOfCommunication, '
+        'absenceAcceptance: $absenceAcceptance, '
+        'supervisionComments: $supervisionComments, '
+        'acceptanceTsa: $acceptanceTsa, '
+        'acceptanceLanguageDisorder: $acceptanceLanguageDisorder, '
+        'acceptanceIntellectualDisability: $acceptanceIntellectualDisability, '
+        'acceptancePhysicalDisability: $acceptancePhysicalDisability, '
+        'acceptanceMentalHealthDisorder: $acceptanceMentalHealthDisorder, '
+        'acceptanceBehaviorDifficulties: $acceptanceBehaviorDifficulties}';
+  }
 }
 
 class _MutableElements extends ItemSerializable {
@@ -245,11 +268,20 @@ class Internship extends ItemSerializable {
     _attitudeEvaluations.add(evaluation);
   }
 
-  // PostInternshipEnterpriseEvaluation? enterpriseEvaluation;
+  PostInternshipEnterpriseEvaluation? _enterpriseEvaluation;
+  PostInternshipEnterpriseEvaluation? get enterpriseEvaluation =>
+      _enterpriseEvaluation;
+  void addEnterpriseEvaluation(PostInternshipEnterpriseEvaluation evaluation) {
+    if (_enterpriseEvaluation != null) {
+      throw Exception('Enterprise evaluation already exists');
+    }
+    // TODO Add a call to the database?
+    _enterpriseEvaluation = evaluation;
+  }
 
-  // bool get isClosed => isNotActive && !isEnterpriseEvaluationPending;
-  // bool get isEnterpriseEvaluationPending =>
-  //     isNotActive && enterpriseEvaluation == null;
+  bool get isClosed => isNotActive && !isEnterpriseEvaluationPending;
+  bool get isEnterpriseEvaluationPending =>
+      isNotActive && _enterpriseEvaluation == null;
   bool get isActive => endDate == null;
   bool get isNotActive => !isActive;
   bool get shouldTerminate =>
@@ -271,11 +303,12 @@ class Internship extends ItemSerializable {
     required this.endDate,
     required List<InternshipEvaluationSkill> skillEvaluations,
     required List<InternshipEvaluationAttitude> attitudeEvaluations,
-    // required this.enterpriseEvaluation,
+    required PostInternshipEnterpriseEvaluation? enterpriseEvaluation,
   })  : _mutables = mutables,
         _extraSupervisingTeacherIds = extraSupervisingTeacherIds,
         _skillEvaluations = skillEvaluations,
-        _attitudeEvaluations = attitudeEvaluations {
+        _attitudeEvaluations = attitudeEvaluations,
+        _enterpriseEvaluation = enterpriseEvaluation {
     _extraSupervisingTeacherIds.remove(signatoryTeacherId);
   }
 
@@ -298,7 +331,7 @@ class Internship extends ItemSerializable {
     this.endDate,
     List<InternshipEvaluationSkill> skillEvaluations = const [],
     List<InternshipEvaluationAttitude> attitudeEvaluations = const [],
-    // this.enterpriseEvaluation,
+    PostInternshipEnterpriseEvaluation? enterpriseEvaluation,
   })  : _extraSupervisingTeacherIds = extraSupervisingTeacherIds,
         _mutables = [
           _MutableElements(
@@ -309,7 +342,8 @@ class Internship extends ItemSerializable {
           )
         ],
         _skillEvaluations = [...skillEvaluations],
-        _attitudeEvaluations = [...attitudeEvaluations] {
+        _attitudeEvaluations = [...attitudeEvaluations],
+        _enterpriseEvaluation = enterpriseEvaluation {
     _extraSupervisingTeacherIds.remove(signatoryTeacherId);
   }
 
@@ -343,11 +377,11 @@ class Internship extends ItemSerializable {
                 ?.map((e) => InternshipEvaluationAttitude.fromSerialized(e))
                 .toList() ??
             [],
-        // enterpriseEvaluation = map['enterpriseEvaluation'] == null ||
-        //         map['enterpriseEvaluation'] == -1
-        //     ? null
-        //     : PostInternshipEnterpriseEvaluation.fromSerialized(
-        //         map['enterpriseEvaluation']),
+        _enterpriseEvaluation = map['enterprise_evaluation'] == null ||
+                map['enterprise_evaluation'] == -1
+            ? null
+            : PostInternshipEnterpriseEvaluation.fromSerialized(
+                map['enterprise_evaluation']),
         super.fromSerialized() {
     _extraSupervisingTeacherIds.remove(signatoryTeacherId);
   }
@@ -372,7 +406,7 @@ class Internship extends ItemSerializable {
             _skillEvaluations.map((e) => e.serialize()).toList(),
         'attitude_evaluations':
             _attitudeEvaluations.map((e) => e.serialize()).toList(),
-        // 'enterpriseEvaluation': enterpriseEvaluation?.serialize() ?? -1,
+        'enterprise_evaluation': _enterpriseEvaluation?.serialize() ?? -1,
       };
 
   void addVersion({
@@ -425,7 +459,7 @@ class Internship extends ItemSerializable {
       skillEvaluations: skillEvaluations?.toList() ?? this.skillEvaluations,
       attitudeEvaluations:
           attitudeEvaluations?.toList() ?? this.attitudeEvaluations,
-      // enterpriseEvaluation: enterpriseEvaluation ?? this.enterpriseEvaluation,
+      enterpriseEvaluation: enterpriseEvaluation ?? _enterpriseEvaluation,
     );
   }
 
@@ -447,6 +481,7 @@ class Internship extends ItemSerializable {
       'end_date',
       'skill_evaluations',
       'attitude_evaluations',
+      'enterprise_evaluation',
     ];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
@@ -491,6 +526,11 @@ class Internship extends ItemSerializable {
               ?.map((e) => InternshipEvaluationAttitude.fromSerialized(e))
               .toList() ??
           attitudeEvaluations,
+      enterpriseEvaluation: data['enterprise_evaluation'] == null ||
+              data['enterprise_evaluation'] == -1
+          ? null
+          : PostInternshipEnterpriseEvaluation.fromSerialized(
+              data['enterprise_evaluation']),
     );
   }
 
@@ -510,7 +550,7 @@ class Internship extends ItemSerializable {
         'endDate: $endDate, '
         'skillEvaluations: $skillEvaluations, '
         'attitudeEvaluations: $attitudeEvaluations, '
-        // 'enterpriseEvaluation: $enterpriseEvaluation'
+        'enterpriseEvaluation: $_enterpriseEvaluation'
         '}';
   }
 }

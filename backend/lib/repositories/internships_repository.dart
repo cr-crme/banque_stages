@@ -102,6 +102,29 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             fieldsToFetch: ['id', 'date', 'comments', 'form_version'],
             idNameToDataTable: 'internship_id',
           ),
+          MySqlSelectSubQuery(
+            dataTableName: 'post_internship_enterprise_evaluations',
+            asName: 'enterprise_evaluation',
+            fieldsToFetch: [
+              'id',
+              'internship_id',
+              'task_variety',
+              'training_plan_respect',
+              'autonomy_expected',
+              'efficiency_expected',
+              'supervision_style',
+              'ease_of_communication',
+              'absence_acceptance',
+              'supervision_comments',
+              'acceptance_tsa',
+              'acceptance_language_disorder',
+              'acceptance_intellectual_disability',
+              'acceptance_physical_disability',
+              'acceptance_mental_health_disorder',
+              'acceptance_behavior_difficulties'
+            ],
+            idNameToDataTable: 'internship_id',
+          ),
         ]);
 
     final map = <String, Internship>{};
@@ -268,6 +291,19 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         attitudeEvaluations.add(evaluation);
       }
       internship['attitude_evaluations'] = attitudeEvaluations;
+
+      internship['enterprise_evaluation'] =
+          (internship['enterprise_evaluation'] as List?)?.firstOrNull;
+      if (internship['enterprise_evaluation'] != null) {
+        final skills = await MySqlHelpers.performSelectQuery(
+            connection: connection,
+            tableName: 'post_internship_enterprise_evaluation_skills',
+            idName: 'post_evaluation_id',
+            id: internship['enterprise_evaluation']!['id']);
+        internship['enterprise_evaluation']['skills_required'] = [
+          for (final skill in (skills as List? ?? [])) skill['skill_name']
+        ];
+      }
 
       map[id] = Internship.fromSerialized(internship);
     }
@@ -470,6 +506,48 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               'general_appreciation': evaluation['attitude']
                   ['general_appreciation']
             });
+      }
+
+      // Insert the post internship enterprise evaluations
+      if (serialized['enterprise_evaluation'] != null &&
+          serialized['enterprise_evaluation'] != -1) {
+        final evaluation = serialized['enterprise_evaluation'];
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'post_internship_enterprise_evaluations',
+            data: {
+              'id': evaluation['id'],
+              'internship_id': internship.id,
+              'task_variety': evaluation['task_variety'],
+              'training_plan_respect': evaluation['training_plan_respect'],
+              'autonomy_expected': evaluation['autonomy_expected'],
+              'efficiency_expected': evaluation['efficiency_expected'],
+              'supervision_style': evaluation['supervision_style'],
+              'ease_of_communication': evaluation['ease_of_communication'],
+              'absence_acceptance': evaluation['absence_acceptance'],
+              'supervision_comments': evaluation['supervision_comments'],
+              'acceptance_tsa': evaluation['acceptance_tsa'],
+              'acceptance_language_disorder':
+                  evaluation['acceptance_language_disorder'],
+              'acceptance_intellectual_disability':
+                  evaluation['acceptance_intellectual_disability'],
+              'acceptance_physical_disability':
+                  evaluation['acceptance_physical_disability'],
+              'acceptance_mental_health_disorder':
+                  evaluation['acceptance_mental_health_disorder'],
+              'acceptance_behavior_difficulties':
+                  evaluation['acceptance_behavior_difficulties'],
+            });
+
+        for (final skill in evaluation['skills_required'] as List) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'post_internship_enterprise_evaluation_skills',
+              data: {
+                'post_evaluation_id': evaluation['id'],
+                'skill_name': skill
+              });
+        }
       }
     } catch (e) {
       try {

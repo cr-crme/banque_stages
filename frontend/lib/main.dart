@@ -695,6 +695,23 @@ class _LoginScreenState extends State<LoginScreen> {
               generalAppreciation: GeneralAppreciation.passable),
           comments: 'Very good',
           formVersion: InternshipEvaluationAttitude.currentVersion));
+      internship.addEnterpriseEvaluation(PostInternshipEnterpriseEvaluation(
+          skillsRequired: ['skill1', 'skill2', 'skill3'],
+          internshipId: 'internshipId',
+          taskVariety: 2.1,
+          trainingPlanRespect: 3.1,
+          autonomyExpected: 1.0,
+          efficiencyExpected: 1.3,
+          supervisionStyle: 3.9,
+          easeOfCommunication: 3.4,
+          absenceAcceptance: 2.0,
+          supervisionComments: 'Could be better...',
+          acceptanceTsa: 0.1,
+          acceptanceLanguageDisorder: 2.1,
+          acceptanceIntellectualDisability: 2.4,
+          acceptancePhysicalDisability: 2.8,
+          acceptanceMentalHealthDisorder: 3.5,
+          acceptanceBehaviorDifficulties: 3.1));
 
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
