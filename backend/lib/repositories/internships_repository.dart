@@ -2,6 +2,8 @@ import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/schedule.dart';
+import 'package:common/models/internships/time_utils.dart';
 import 'package:common/utils.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -69,6 +71,18 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             fieldsToFetch: ['specialization_id'],
             idNameToDataTable: 'internship_id',
           ),
+          MySqlSelectSubQuery(
+            dataTableName: 'internships_mutable_data',
+            asName: 'mutables',
+            fieldsToFetch: [
+              'id',
+              'creation_date',
+              'supervisor_id',
+              'starting_date',
+              'ending_date',
+            ],
+            idNameToDataTable: 'internship_id',
+          ),
         ]);
 
     final map = <String, Internship>{};
@@ -93,7 +107,44 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                   .toList() ??
               [];
 
-      map[id] = Internship.fromSerialized(internship);
+      for (final mutable in (internship['mutables'] as List? ?? [])) {
+        final schedules = await MySqlHelpers.performSelectQuery(
+            connection: connection,
+            tableName: 'internships_weekly_schedules',
+            idName: 'mutable_data_id',
+            id: mutable['id'],
+            subqueries: [
+              MySqlSelectSubQuery(
+                dataTableName: 'internships_daily_schedules',
+                asName: 'daily_schedules',
+                fieldsToFetch: [
+                  'day',
+                  'starting_hour',
+                  'starting_minute',
+                  'ending_hour',
+                  'ending_minute'
+                ],
+                idNameToDataTable: 'weekly_schedule_id',
+              ),
+            ]);
+
+        for (final schedule in schedules) {
+          schedule['start'] = schedule['starting_date'];
+          schedule['end'] = schedule['ending_date'];
+          schedule['days'] = [
+            for (final day in (schedule['daily_schedules'] as List? ?? []))
+              {
+                'id': day['id'],
+                'day': day['day'],
+                'start': [day['starting_hour'], day['starting_minute']],
+                'end': [day['ending_hour'], day['ending_minute']]
+              }
+          ];
+        }
+        mutable['schedules'] = schedules;
+      }
+      internship['weekly_schedules'] =
+          map[id] = Internship.fromSerialized(internship);
     }
     return map;
   }
@@ -112,6 +163,8 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
   Future<void> _putNewInternship(Internship internship) async {
     try {
+      final serialized = internship.serialize();
+
       // Insert the internship
       await MySqlHelpers.performInsertQuery(
           connection: connection,
@@ -134,16 +187,60 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               'teacher_id': teacherId,
               'is_signatory_teacher': teacherId == internship.signatoryTeacherId
             });
+      }
 
-        // Insert the extra specializations
-        for (final specializationId in internship.extraSpecializationIds) {
+      // Insert the extra specializations
+      for (final specializationId in internship.extraSpecializationIds) {
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'internships_extra_specializations',
+            data: {
+              'internship_id': internship.id,
+              'specialization_id': specializationId
+            });
+      }
+
+      // Insert the mutable data
+      for (final mutable in serialized['mutables'] as List) {
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'internships_mutable_data',
+            data: {
+              'id': mutable['id'],
+              'internship_id': internship.id,
+              'creation_date': mutable['creation_date'],
+              'supervisor_id': mutable['supervisor_id'],
+              'starting_date': mutable['starting_date'],
+              'ending_date': mutable['ending_date'],
+            });
+
+        // Insert the weekly schedules
+        for (final schedule in mutable['schedules'] as List) {
           await MySqlHelpers.performInsertQuery(
               connection: connection,
-              tableName: 'internships_extra_specializations',
+              tableName: 'internships_weekly_schedules',
               data: {
-                'internship_id': internship.id,
-                'specialization_id': specializationId
+                'id': schedule['id'],
+                'mutable_data_id': mutable['id'],
+                'starting_date': schedule['start'],
+                'ending_date': schedule['end'],
               });
+
+          // Insert the daily schedules
+          for (final day in schedule['days'] as List) {
+            await MySqlHelpers.performInsertQuery(
+                connection: connection,
+                tableName: 'internships_daily_schedules',
+                data: {
+                  'id': day['id'],
+                  'weekly_schedule_id': schedule['id'],
+                  'day': day['day'],
+                  'starting_hour': day['start'][0],
+                  'starting_minute': day['start'][1],
+                  'ending_hour': day['end'][0],
+                  'ending_minute': day['end'][1],
+                });
+          }
         }
       }
     } catch (e) {
@@ -180,6 +277,29 @@ class InternshipsRepositoryMock extends InternshipsRepository {
         enterpriseId: '12345',
         jobId: '67890',
         extraSpecializationIds: ['12345'],
+        dates: DateTimeRange(
+            start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)),
+        supervisorId: '12345',
+        creationDate: DateTime(2000, 1, 1),
+        weeklySchedules: [
+          WeeklySchedule(
+              schedule: [
+                DailySchedule(
+                    dayOfWeek: Day.monday,
+                    start: TimeOfDay(hour: 8, minute: 0),
+                    end: TimeOfDay(hour: 16, minute: 0)),
+                DailySchedule(
+                    dayOfWeek: Day.wednesday,
+                    start: TimeOfDay(hour: 8, minute: 0),
+                    end: TimeOfDay(hour: 16, minute: 0)),
+                DailySchedule(
+                    dayOfWeek: Day.friday,
+                    start: TimeOfDay(hour: 8, minute: 0),
+                    end: TimeOfDay(hour: 12, minute: 0)),
+              ],
+              period: DateTimeRange(
+                  start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)))
+        ],
         expectedDuration: 10),
     '1': Internship(
         id: '1',
@@ -189,6 +309,25 @@ class InternshipsRepositoryMock extends InternshipsRepository {
         enterpriseId: '54321',
         jobId: '09876',
         extraSpecializationIds: ['54321', '09876'],
+        dates: DateTimeRange(
+            start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)),
+        supervisorId: '54321',
+        creationDate: DateTime(2000, 2, 1),
+        weeklySchedules: [
+          WeeklySchedule(
+              schedule: [
+                DailySchedule(
+                    dayOfWeek: Day.tuesday,
+                    start: TimeOfDay(hour: 9, minute: 0),
+                    end: TimeOfDay(hour: 17, minute: 0)),
+                DailySchedule(
+                    dayOfWeek: Day.thursday,
+                    start: TimeOfDay(hour: 9, minute: 0),
+                    end: TimeOfDay(hour: 17, minute: 0)),
+              ],
+              period: DateTimeRange(
+                  start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)))
+        ],
         expectedDuration: 20),
   };
 

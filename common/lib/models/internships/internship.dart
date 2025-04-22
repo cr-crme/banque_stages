@@ -4,7 +4,6 @@ import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
-import 'package:common/models/persons/person.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 double _doubleFromSerialized(num? number, {double defaultValue = 0}) {
@@ -127,23 +126,24 @@ class PostInternshipEnterpriseEvaluation extends ItemSerializable {
 
 class _MutableElements extends ItemSerializable {
   _MutableElements({
-    required this.versionDate,
-    required this.supervisor,
-    required this.date,
+    required this.creationDate,
+    required this.supervisorId,
+    required this.dates,
     required this.weeklySchedules,
   });
-  final DateTime versionDate;
-  final Person supervisor;
-  final DateTimeRange date;
+  final DateTime creationDate;
+  final String supervisorId;
+  final DateTimeRange dates;
   final List<WeeklySchedule> weeklySchedules;
 
   _MutableElements.fromSerialized(super.map)
-      : versionDate = DateTime.fromMillisecondsSinceEpoch(map['versionDate']),
-        supervisor = Person.fromSerialized(map['name']),
-        date = DateTimeRange(
-            start: DateTime.fromMillisecondsSinceEpoch(map['date'][0]),
-            end: DateTime.fromMillisecondsSinceEpoch(map['date'][1])),
-        weeklySchedules = (map['schedule'] as List)
+      : creationDate =
+            DateTime.fromMillisecondsSinceEpoch(map['creation_date']),
+        supervisorId = map['supervisor_id'] ?? -1,
+        dates = DateTimeRange(
+            start: DateTime.fromMillisecondsSinceEpoch(map['starting_date']),
+            end: DateTime.fromMillisecondsSinceEpoch(map['ending_date'])),
+        weeklySchedules = (map['schedules'] as List)
             .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
         super.fromSerialized();
@@ -151,14 +151,20 @@ class _MutableElements extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'versionDate': versionDate.millisecondsSinceEpoch,
-        'name': supervisor.serialize(),
-        'date': [
-          date.start.millisecondsSinceEpoch,
-          date.end.millisecondsSinceEpoch
-        ],
-        'schedule': weeklySchedules.map((e) => e.serialize()).toList(),
+        'creation_date': creationDate.millisecondsSinceEpoch,
+        'supervisor_id': supervisorId,
+        'starting_date': dates.start.millisecondsSinceEpoch,
+        'ending_date': dates.end.millisecondsSinceEpoch,
+        'schedules': weeklySchedules.map((e) => e.serialize()).toList(),
       };
+
+  @override
+  String toString() {
+    return 'MutableElements{creationDate: $creationDate, '
+        'supervisor_id: $supervisorId, '
+        'dates: $dates, '
+        'weeklySchedules: $weeklySchedules}';
+  }
 }
 
 class Internship extends ItemSerializable {
@@ -202,19 +208,19 @@ class Internship extends ItemSerializable {
       extraSpecializationIds; // Any extra jobs added to the internship
   final int expectedDuration;
 
-  // // Elements that can be modified (which increase the version number, but
-  // // do not require a completely new internship contract)
-  // final List<_MutableElements> _mutables;
-  // int get nbVersions => _mutables.length;
-  // DateTime get versionDate => _mutables.last.versionDate;
-  // DateTime versionDateFrom(int version) => _mutables[version].versionDate;
-  // Person get supervisor => _mutables.last.supervisor;
-  // Person supervisorFrom(int version) => _mutables[version].supervisor;
-  // DateTimeRange get date => _mutables.last.date;
-  // DateTimeRange dateFrom(int version) => _mutables[version].date;
-  // List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
-  // List<WeeklySchedule> weeklySchedulesFrom(int version) =>
-  //     _mutables[version].weeklySchedules;
+  // Elements that can be modified (which increase the version number, but
+  // do not require a completely new internship contract)
+  final List<_MutableElements> _mutables;
+  int get nbVersions => _mutables.length;
+  DateTime get creationDate => _mutables.last.creationDate;
+  DateTime creationDateFrom(int version) => _mutables[version].creationDate;
+  String get supervisorId => _mutables.last.supervisorId;
+  String supervisorFrom(int version) => _mutables[version].supervisorId;
+  DateTimeRange get date => _mutables.last.dates;
+  DateTimeRange dateFrom(int version) => _mutables[version].dates;
+  List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
+  List<WeeklySchedule> weeklySchedulesFrom(int version) =>
+      _mutables[version].weeklySchedules;
 
   // // Elements that are parts of the inner working of the internship (can be
   // // modify, but won't generate a new version)
@@ -243,7 +249,7 @@ class Internship extends ItemSerializable {
     required this.enterpriseId,
     required this.jobId,
     required this.extraSpecializationIds,
-    // required List<_MutableElements> mutables,
+    required List<_MutableElements> mutables,
     required this.expectedDuration,
     // required this.achievedLength,
     // required this.visitingPriority,
@@ -252,8 +258,7 @@ class Internship extends ItemSerializable {
     // required this.skillEvaluations,
     // required this.attitudeEvaluations,
     // required this.enterpriseEvaluation,
-  }) :
-        //  _mutables = mutables,
+  })  : _mutables = mutables,
         _extraSupervisingTeacherIds = extraSupervisingTeacherIds {
     _extraSupervisingTeacherIds.remove(signatoryTeacherId);
   }
@@ -266,10 +271,10 @@ class Internship extends ItemSerializable {
     required this.enterpriseId,
     required this.jobId,
     required this.extraSpecializationIds,
-    // required DateTime versionDate,
-    // required Person supervisor,
-    // required DateTimeRange date,
-    // required List<WeeklySchedule> weeklySchedules,
+    required DateTime creationDate,
+    required String supervisorId,
+    required DateTimeRange dates,
+    required List<WeeklySchedule> weeklySchedules,
     required this.expectedDuration,
     // required this.achievedLength,
     // required this.visitingPriority,
@@ -278,16 +283,15 @@ class Internship extends ItemSerializable {
     // this.skillEvaluations = const [],
     // this.attitudeEvaluations = const [],
     // this.enterpriseEvaluation,
-  }) : _extraSupervisingTeacherIds = extraSupervisingTeacherIds
-  // _mutables = [
-  //   _MutableElements(
-  //     versionDate: versionDate,
-  //     supervisor: supervisor,
-  //     date: date,
-  //     weeklySchedules: weeklySchedules,
-  //   )
-  // ]
-  {
+  })  : _extraSupervisingTeacherIds = extraSupervisingTeacherIds,
+        _mutables = [
+          _MutableElements(
+            creationDate: creationDate,
+            supervisorId: supervisorId,
+            dates: dates,
+            weeklySchedules: weeklySchedules,
+          )
+        ] {
     _extraSupervisingTeacherIds.remove(signatoryTeacherId);
   }
 
@@ -300,10 +304,10 @@ class Internship extends ItemSerializable {
         jobId = map['job_id'] ?? '',
         extraSpecializationIds =
             _stringListFromSerialized(map['extra_specialization_ids']),
-        // _mutables = (map['mutables'] as List?)
-        //         ?.map(((e) => _MutableElements.fromSerialized(e)))
-        //         .toList() ??
-        //     [],
+        _mutables = (map['mutables'] as List?)
+                ?.map(((e) => _MutableElements.fromSerialized(e)))
+                .toList() ??
+            [],
         expectedDuration = map['expected_duration'] ?? -1,
         // achievedLength = map['achievedLength'] ?? -1,
         // visitingPriority = map['priority'] == null
@@ -328,10 +332,6 @@ class Internship extends ItemSerializable {
         //         map['enterpriseEvaluation']),
         super.fromSerialized() {
     _extraSupervisingTeacherIds.remove(signatoryTeacherId);
-    // _mutables.sort((a, b) => a.versionDate.compareTo(b.versionDate));
-    // if (_mutables.isNotEmpty) {
-    //   _mutables.last.weeklySchedules.sort((a, b) => a.start.compareTo(b.start));
-    // }
   }
 
   @override
@@ -344,7 +344,7 @@ class Internship extends ItemSerializable {
         'enterprise_id': enterpriseId,
         'job_id': jobId,
         'extra_specialization_ids': _serializeList(extraSpecializationIds),
-        // 'mutables': _mutables.map((e) => e.serialize()).toList(),
+        'mutables': _mutables.map((e) => e.serialize()).toList(),
         'expected_duration': expectedDuration,
         // 'achievedLength': achievedLength,
         // 'priority': visitingPriority.index,
@@ -357,17 +357,17 @@ class Internship extends ItemSerializable {
       };
 
   void addVersion({
-    required DateTime versionDate,
-    required Person supervisor,
-    required DateTimeRange date,
+    required DateTime creationDate,
+    required String supervisorId,
+    required DateTimeRange dates,
     required List<WeeklySchedule> weeklySchedules,
   }) {
-    // _mutables.add(_MutableElements(
-    //   versionDate: versionDate,
-    //   supervisor: supervisor,
-    //   date: date,
-    //   weeklySchedules: weeklySchedules,
-    // ));
+    _mutables.add(_MutableElements(
+      creationDate: creationDate,
+      supervisorId: supervisorId,
+      dates: dates,
+      weeklySchedules: weeklySchedules,
+    ));
   }
 
   Internship copyWith({
@@ -378,9 +378,6 @@ class Internship extends ItemSerializable {
     String? enterpriseId,
     String? jobId,
     List<String>? extraSpecializationIds,
-    Person? supervisor,
-    DateTimeRange? date,
-    List<WeeklySchedule>? weeklySchedules,
     int? expectedDuration,
     int? achievedLength,
     VisitingPriority? visitingPriority,
@@ -390,10 +387,6 @@ class Internship extends ItemSerializable {
     List<InternshipEvaluationAttitude>? attitudeEvaluations,
     PostInternshipEnterpriseEvaluation? enterpriseEvaluation,
   }) {
-    if (supervisor != null || date != null || weeklySchedules != null) {
-      throw ArgumentError('[supervisor], [date] or [weeklySchedules]'
-          'should not be changed via [copyWith], but using [addVersion]');
-    }
     return Internship._(
       id: id ?? this.id,
       studentId: studentId ?? this.studentId,
@@ -404,7 +397,7 @@ class Internship extends ItemSerializable {
       jobId: jobId ?? this.jobId,
       extraSpecializationIds:
           extraSpecializationIds ?? this.extraSpecializationIds,
-      // mutables: _mutables,
+      mutables: _mutables,
       expectedDuration: expectedDuration ?? this.expectedDuration,
       // achievedLength: achievedLength ?? this.achievedLength,
       // visitingPriority: visitingPriority ?? this.visitingPriority,
@@ -426,6 +419,7 @@ class Internship extends ItemSerializable {
       'enterprise_id',
       'job_id',
       'extra_specialization_ids',
+      'mutables',
       'expected_duration',
     ];
     // Make sure data does not contain unrecognized fields
@@ -440,7 +434,7 @@ class Internship extends ItemSerializable {
       throw WrongVersionException(version, _currentVersion);
     }
 
-    return Internship(
+    return Internship._(
       id: data['id']?.toString() ?? id,
       studentId: data['student_id'] ?? studentId,
       signatoryTeacherId: data['signatory_teacher_id'] ?? signatoryTeacherId,
@@ -450,6 +444,10 @@ class Internship extends ItemSerializable {
       jobId: data['job_id'] ?? jobId,
       extraSpecializationIds:
           _stringListFromSerialized(data['extra_specialization_ids']),
+      mutables: (data['mutables'] as List?)
+              ?.map(((e) => _MutableElements.fromSerialized(e)))
+              .toList() ??
+          _mutables,
       expectedDuration: data['expected_duration'] ?? expectedDuration,
     );
   }
@@ -462,7 +460,7 @@ class Internship extends ItemSerializable {
         'enterpriseId: $enterpriseId, '
         'jobId: $jobId, '
         'extraSpecializationIds: $extraSpecializationIds, '
-        // 'mutables: $_mutables, '
+        'mutables: $_mutables, '
         'expectedDuration: $expectedDuration days, '
         // 'achievedLength: $achievedLength, '
         // 'visitingPriority: $visitingPriority, '

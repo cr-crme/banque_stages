@@ -72,6 +72,11 @@ class DailySchedule extends ItemSerializable {
         start: start ?? this.start,
         end: end ?? this.end,
       );
+
+  @override
+  String toString() {
+    return 'DailySchedule(id: $id, dayOfWeek: ${dayOfWeek.name}, start: $start, end: $end)';
+  }
 }
 
 class WeeklySchedule extends ItemSerializable {
@@ -114,4 +119,9 @@ class WeeklySchedule extends ItemSerializable {
         schedule: schedule ?? this.schedule,
         period: period ?? this.period,
       );
+
+  @override
+  String toString() {
+    return 'WeeklySchedule(id: $id, schedule: $schedule, period: $period)';
+  }
 }

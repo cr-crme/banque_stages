@@ -9,6 +9,8 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/schedule.dart';
+import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/itineraries/waypoint.dart';
@@ -538,37 +540,87 @@ class _LoginScreenState extends State<LoginScreen> {
       final student = _dummyStudents[_dummyStudents.keys
           .toList()[_random.nextInt(_dummyStudents.length)]]!;
 
-      final message = jsonEncode(CommunicationProtocol(
-        requestType: RequestType.post,
-        field: RequestFields.internship,
-        data: Internship(
-          studentId: student.id,
-          signatoryTeacherId: _dummyTeachers.keys
-              .toList()[_random.nextInt(_dummyTeachers.length)],
-          extraSupervisingTeacherIds: [
-            _dummyTeachers.keys.toList()[_random.nextInt(_dummyTeachers.length)]
-          ],
-          enterpriseId: _dummyEnterprises.keys
-              .toList()[_random.nextInt(_dummyEnterprises.length)],
-          jobId: _dummyEnterprises.values
+      final internship = Internship(
+        studentId: student.id,
+        signatoryTeacherId: _dummyTeachers.keys
+            .toList()[_random.nextInt(_dummyTeachers.length)],
+        extraSupervisingTeacherIds: [
+          _dummyTeachers.keys.toList()[_random.nextInt(_dummyTeachers.length)]
+        ],
+        enterpriseId: _dummyEnterprises.keys
+            .toList()[_random.nextInt(_dummyEnterprises.length)],
+        jobId: _dummyEnterprises.values
+            .toList()[_random.nextInt(_dummyEnterprises.length)]
+            .jobs
+            .map((e) => e.id)
+            .toList()[_random.nextInt(_dummyEnterprises.length)],
+        extraSpecializationIds: [
+          _dummyEnterprises.values
               .toList()[_random.nextInt(_dummyEnterprises.length)]
               .jobs
               .map((e) => e.id)
               .toList()[_random.nextInt(_dummyEnterprises.length)],
-          extraSpecializationIds: [
-            _dummyEnterprises.values
-                .toList()[_random.nextInt(_dummyEnterprises.length)]
-                .jobs
-                .map((e) => e.id)
-                .toList()[_random.nextInt(_dummyEnterprises.length)],
-            _dummyEnterprises.values
-                .toList()[_random.nextInt(_dummyEnterprises.length)]
-                .jobs
-                .map((e) => e.id)
-                .toList()[_random.nextInt(_dummyEnterprises.length)],
-          ],
-          expectedDuration: 30,
-        ).serialize(),
+          _dummyEnterprises.values
+              .toList()[_random.nextInt(_dummyEnterprises.length)]
+              .jobs
+              .map((e) => e.id)
+              .toList()[_random.nextInt(_dummyEnterprises.length)],
+        ],
+        creationDate: DateTime(2020, 1, 1),
+        dates: time_utils.DateTimeRange(
+            start: DateTime(2020, 1, 1), end: DateTime(2020, 1, 31)),
+        supervisorId: _dummyTeachers.keys
+            .toList()[_random.nextInt(_dummyTeachers.length)],
+        weeklySchedules: [
+          WeeklySchedule(
+              schedule: [
+                DailySchedule(
+                    dayOfWeek: Day.monday,
+                    start: time_utils.TimeOfDay(hour: 8, minute: 0),
+                    end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                DailySchedule(
+                    dayOfWeek: Day.wednesday,
+                    start: time_utils.TimeOfDay(hour: 8, minute: 0),
+                    end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                DailySchedule(
+                    dayOfWeek: Day.friday,
+                    start: time_utils.TimeOfDay(hour: 8, minute: 0),
+                    end: time_utils.TimeOfDay(hour: 12, minute: 0)),
+              ],
+              period: time_utils.DateTimeRange(
+                  start: DateTime(2020, 1, 1), end: DateTime(2020, 1, 31))),
+        ],
+        expectedDuration: 30,
+      );
+      internship.addVersion(
+          creationDate: DateTime(2020, 1, 15),
+          dates: time_utils.DateTimeRange(
+              start: DateTime(2020, 1, 2), end: DateTime(2020, 2, 1)),
+          supervisorId: internship.supervisorId,
+          weeklySchedules: [
+            WeeklySchedule(
+                schedule: [
+                  DailySchedule(
+                      dayOfWeek: Day.monday,
+                      start: time_utils.TimeOfDay(hour: 8, minute: 0),
+                      end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  DailySchedule(
+                      dayOfWeek: Day.wednesday,
+                      start: time_utils.TimeOfDay(hour: 8, minute: 0),
+                      end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  DailySchedule(
+                      dayOfWeek: Day.friday,
+                      start: time_utils.TimeOfDay(hour: 8, minute: 0),
+                      end: time_utils.TimeOfDay(hour: 12, minute: 0)),
+                ],
+                period: time_utils.DateTimeRange(
+                    start: DateTime(2020, 1, 2), end: DateTime(2020, 2, 1))),
+          ]);
+
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.post,
+        field: RequestFields.internship,
+        data: internship.serialize(),
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');

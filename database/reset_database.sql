@@ -36,6 +36,9 @@ DROP TABLE IF EXISTS enterprises;
 
 DROP TABLE IF EXISTS internships_supervising_teachers;
 DROP TABLE IF EXISTS internships_extra_specializations;
+DROP TABLE IF EXISTS internships_mutable_data;
+DROP TABLE IF EXISTS internships_weekly_schedules;
+DROP TABLE IF EXISTS internships_daily_schedules;
 DROP TABLE IF EXISTS internships;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -284,4 +287,34 @@ CREATE TABLE internships_extra_specializations (
     internship_id VARCHAR(36) NOT NULL,
     specialization_id VARCHAR(36) NOT NULL,
     FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE
+);
+
+CREATE TABLE internships_mutable_data (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    internship_id VARCHAR(36) NOT NULL,
+    creation_date BIGINT NOT NULL,
+    supervisor_id VARCHAR(36) NOT NULL,
+    starting_date BIGINT NOT NULL,
+    ending_date BIGINT NOT NULL,
+    FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE,
+    FOREIGN KEY (supervisor_id) REFERENCES persons(id) ON DELETE CASCADE
+);
+
+CREATE TABLE internships_weekly_schedules (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    mutable_data_id VARCHAR(36) NOT NULL,
+    starting_date BIGINT NOT NULL,
+    ending_date BIGINT NOT NULL,
+    FOREIGN KEY (mutable_data_id) REFERENCES internships_mutable_data(id) ON DELETE CASCADE
+);
+
+CREATE TABLE internships_daily_schedules (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    weekly_schedule_id VARCHAR(36) NOT NULL,
+    day INT NOT NULL,
+    starting_hour INT NOT NULL,
+    starting_minute INT NOT NULL,
+    ending_hour INT NOT NULL,
+    ending_minute INT NOT NULL,
+    FOREIGN KEY (weekly_schedule_id) REFERENCES internships_weekly_schedules(id) ON DELETE CASCADE
 );
