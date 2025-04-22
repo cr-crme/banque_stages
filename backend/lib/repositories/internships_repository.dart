@@ -61,19 +61,19 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         id: internshipId,
         subqueries: [
           MySqlSelectSubQuery(
-            dataTableName: 'internships_supervising_teachers',
+            dataTableName: 'internship_supervising_teachers',
             asName: 'supervising_teachers',
             fieldsToFetch: ['teacher_id', 'is_signatory_teacher'],
             idNameToDataTable: 'internship_id',
           ),
           MySqlSelectSubQuery(
-            dataTableName: 'internships_extra_specializations',
+            dataTableName: 'internship_extra_specializations',
             asName: 'extra_specializations',
             fieldsToFetch: ['specialization_id'],
             idNameToDataTable: 'internship_id',
           ),
           MySqlSelectSubQuery(
-            dataTableName: 'internships_mutable_data',
+            dataTableName: 'internship_mutable_data',
             asName: 'mutables',
             fieldsToFetch: [
               'id',
@@ -81,6 +81,18 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               'supervisor_id',
               'starting_date',
               'ending_date',
+            ],
+            idNameToDataTable: 'internship_id',
+          ),
+          MySqlSelectSubQuery(
+            dataTableName: 'internship_skill_evaluations',
+            asName: 'skill_evaluations',
+            fieldsToFetch: [
+              'id',
+              'date',
+              'skill_granularity',
+              'comments',
+              'form_version'
             ],
             idNameToDataTable: 'internship_id',
           ),
@@ -113,12 +125,12 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       for (final mutable in (internship['mutables'] as List? ?? [])) {
         final schedules = await MySqlHelpers.performSelectQuery(
             connection: connection,
-            tableName: 'internships_weekly_schedules',
+            tableName: 'internship_weekly_schedules',
             idName: 'mutable_data_id',
             id: mutable['id'],
             subqueries: [
               MySqlSelectSubQuery(
-                dataTableName: 'internships_daily_schedules',
+                dataTableName: 'internship_daily_schedules',
                 asName: 'daily_schedules',
                 fieldsToFetch: [
                   'day',
@@ -146,6 +158,64 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         }
         mutable['schedules'] = schedules;
       }
+
+      final skillEvaluations = [];
+      for (final Map<String, dynamic> evaluation
+          in (internship['skill_evaluations'] as List? ?? [])) {
+        final evaluationSubquery = (await MySqlHelpers.performSelectQuery(
+                connection: connection,
+                tableName: 'internship_skill_evaluations',
+                id: evaluation['id'],
+                subqueries: [
+              MySqlSelectSubQuery(
+                dataTableName: 'internship_skill_evaluation_persons',
+                asName: 'present',
+                fieldsToFetch: ['person_name'],
+                idNameToDataTable: 'evaluation_id',
+              ),
+              MySqlSelectSubQuery(
+                dataTableName: 'internship_skill_evaluation_items',
+                asName: 'skills',
+                fieldsToFetch: [
+                  'job_id',
+                  'skill_name',
+                  'appreciation',
+                  'comments'
+                ],
+                idNameToDataTable: 'evaluation_id',
+              ),
+            ]))
+            .first;
+
+        evaluation['skills'] = [];
+        for (final skill in (evaluationSubquery['skills'] as List? ?? [])) {
+          final tasks = await MySqlHelpers.performSelectQuery(
+              connection: connection,
+              tableName: 'internship_skill_evaluation_item_tasks',
+              id: skill['id']);
+          evaluation['skills'].add({
+            'job_id': skill['job_id'],
+            'skill': skill['skill_name'],
+            'appreciation': skill['appreciation'],
+            'comments': skill['comments'],
+            'tasks': [
+              for (final task in (tasks as List? ?? []))
+                {
+                  'id': task['id'],
+                  'title': task['title'],
+                  'level': task['level']
+                }
+            ],
+          });
+        }
+
+        evaluation['present'] = [
+          for (final person in (evaluationSubquery['present'] as List? ?? []))
+            person['person_name']
+        ];
+        skillEvaluations.add(evaluation);
+      }
+      internship['skill_evaluations'] = skillEvaluations;
       map[id] = Internship.fromSerialized(internship);
     }
     return map;
@@ -187,7 +257,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       for (final teacherId in internship.supervisingTeacherIds) {
         await MySqlHelpers.performInsertQuery(
             connection: connection,
-            tableName: 'internships_supervising_teachers',
+            tableName: 'internship_supervising_teachers',
             data: {
               'internship_id': internship.id,
               'teacher_id': teacherId,
@@ -199,7 +269,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       for (final specializationId in internship.extraSpecializationIds) {
         await MySqlHelpers.performInsertQuery(
             connection: connection,
-            tableName: 'internships_extra_specializations',
+            tableName: 'internship_extra_specializations',
             data: {
               'internship_id': internship.id,
               'specialization_id': specializationId
@@ -210,7 +280,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       for (final mutable in serialized['mutables'] as List) {
         await MySqlHelpers.performInsertQuery(
             connection: connection,
-            tableName: 'internships_mutable_data',
+            tableName: 'internship_mutable_data',
             data: {
               'id': mutable['id'],
               'internship_id': internship.id,
@@ -224,7 +294,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         for (final schedule in mutable['schedules'] as List) {
           await MySqlHelpers.performInsertQuery(
               connection: connection,
-              tableName: 'internships_weekly_schedules',
+              tableName: 'internship_weekly_schedules',
               data: {
                 'id': schedule['id'],
                 'mutable_data_id': mutable['id'],
@@ -236,7 +306,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           for (final day in schedule['days'] as List) {
             await MySqlHelpers.performInsertQuery(
                 connection: connection,
-                tableName: 'internships_daily_schedules',
+                tableName: 'internship_daily_schedules',
                 data: {
                   'id': day['id'],
                   'weekly_schedule_id': schedule['id'],
@@ -245,6 +315,59 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                   'starting_minute': day['start'][1],
                   'ending_hour': day['end'][0],
                   'ending_minute': day['end'][1],
+                });
+          }
+        }
+      }
+      // Insert skill evaluations
+      for (final evaluation in serialized['skill_evaluations'] as List) {
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'internship_skill_evaluations',
+            data: {
+              'id': evaluation['id'],
+              'internship_id': internship.id,
+              'date': evaluation['date'],
+              'skill_granularity': evaluation['skill_granularity'],
+              'comments': evaluation['comments'],
+              'form_version': evaluation['form_version'],
+            });
+
+        // Insert the persons present at the evaluation
+        for (final name in evaluation['present'] as List) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'internship_skill_evaluation_persons',
+              data: {
+                'evaluation_id': evaluation['id'],
+                'person_name': name,
+              });
+        }
+
+        // Insert the skills
+        for (final skill in evaluation['skills'] as List) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'internship_skill_evaluation_items',
+              data: {
+                'id': skill['id'],
+                'evaluation_id': evaluation['id'],
+                'job_id': skill['job_id'],
+                'skill_name': skill['skill'],
+                'appreciation': skill['appreciation'],
+                'comments': skill['comments'],
+              });
+
+          // Insert the tasks
+          for (final task in skill['tasks'] as List) {
+            await MySqlHelpers.performInsertQuery(
+                connection: connection,
+                tableName: 'internship_skill_evaluation_item_tasks',
+                data: {
+                  'id': task['id'],
+                  'evaluation_item_id': skill['id'],
+                  'title': task['title'],
+                  'level': task['level'],
                 });
           }
         }

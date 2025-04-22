@@ -9,7 +9,9 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/schedule.dart';
+import 'package:common/models/internships/task_appreciation.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
@@ -619,6 +621,44 @@ class _LoginScreenState extends State<LoginScreen> {
                 period: time_utils.DateTimeRange(
                     start: DateTime(2020, 1, 2), end: DateTime(2020, 2, 1))),
           ]);
+
+      internship.addSkillEvaluation(InternshipEvaluationSkill(
+          date: DateTime(2024, 2, 29),
+          presentAtEvaluation: ['Me', 'Myself', 'I'],
+          skillGranularity: SkillEvaluationGranularity.byTask,
+          skills: [
+            SkillEvaluation(
+                specializationId: 'specializationId',
+                skillName: 'Your skill',
+                tasks: [
+                  TaskAppreciation(
+                      title: 'First task',
+                      level: TaskAppreciationLevel.autonomous),
+                  TaskAppreciation(
+                      title: 'Second task',
+                      level: TaskAppreciationLevel.notEvaluated),
+                  TaskAppreciation(
+                      title: 'Third task',
+                      level: TaskAppreciationLevel.withConstantHelp),
+                ],
+                appreciation: SkillAppreciation.acquired,
+                comments: 'Acquired but no good'),
+            SkillEvaluation(
+                specializationId: 'specializationId',
+                skillName: 'Your skill again',
+                tasks: [],
+                appreciation: SkillAppreciation.failed,
+                comments: 'Very not good'),
+          ],
+          comments: 'No comments',
+          formVersion: InternshipEvaluationSkill.currentVersion));
+      internship.addSkillEvaluation(InternshipEvaluationSkill(
+          date: DateTime(2024, 3, 29),
+          presentAtEvaluation: ['You', 'Yourself', 'Truly yours'],
+          skillGranularity: SkillEvaluationGranularity.byTask,
+          comments: 'Still no comments',
+          skills: [],
+          formVersion: InternshipEvaluationSkill.currentVersion));
 
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,

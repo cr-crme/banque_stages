@@ -45,7 +45,7 @@ class SkillEvaluation extends ItemSerializable {
   final List<TaskAppreciation> tasks;
 
   final SkillAppreciation appreciation;
-  final String comment;
+  final String comments;
 
   SkillEvaluation({
     super.id,
@@ -53,10 +53,10 @@ class SkillEvaluation extends ItemSerializable {
     required this.skillName,
     required this.tasks,
     required this.appreciation,
-    required this.comment,
+    required this.comments,
   });
   SkillEvaluation.fromSerialized(super.map)
-      : specializationId = map['jobId'] ?? '',
+      : specializationId = map['job_id'] ?? '',
         skillName = map['skill'] ?? '',
         tasks = map['tasks'] == null
             ? []
@@ -66,21 +66,32 @@ class SkillEvaluation extends ItemSerializable {
         appreciation = map['appreciation'] == null
             ? SkillAppreciation.notSelected
             : SkillAppreciation.values[map['appreciation']],
-        comment = map['comment'] ?? '',
+        comments = map['comments'] ?? '',
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'jobId': specializationId,
+        'job_id': specializationId,
         'skill': skillName,
         'tasks': tasks.map((e) => e.serialize()).toList(),
         'appreciation': appreciation.index,
-        'comment': comment,
+        'comments': comments,
       };
+
+  @override
+  String toString() {
+    return 'SkillEvaluation(specializationId: $specializationId, '
+        'skillName: $skillName, '
+        'tasks: $tasks, '
+        'appreciation: $appreciation, '
+        'comments: $comments)';
+  }
 }
 
 class InternshipEvaluationSkill extends ItemSerializable {
+  static const String currentVersion = '1.0.0';
+
   DateTime date;
   List<String> presentAtEvaluation;
   final SkillEvaluationGranularity skillGranularity;
@@ -104,15 +115,15 @@ class InternshipEvaluationSkill extends ItemSerializable {
             : DateTime.fromMillisecondsSinceEpoch(map['date']),
         presentAtEvaluation =
             (map['present'] as List?)?.map((e) => e as String).toList() ?? [],
-        skillGranularity = map['skillGranularity'] == null
+        skillGranularity = map['skill_granularity'] == null
             ? SkillEvaluationGranularity.global
-            : SkillEvaluationGranularity.values[map['skillGranularity']],
+            : SkillEvaluationGranularity.values[map['skill_granularity']],
         skills = (map['skills'] as List?)
                 ?.map((e) => SkillEvaluation.fromSerialized(e))
                 .toList() ??
             [],
         comments = map['comments'] ?? '',
-        formVersion = map['formVersion'] ?? '1.0.0',
+        formVersion = map['form_version'] ?? currentVersion,
         super.fromSerialized();
 
   @override
@@ -121,10 +132,20 @@ class InternshipEvaluationSkill extends ItemSerializable {
       'id': id,
       'date': date.millisecondsSinceEpoch,
       'present': presentAtEvaluation,
-      'skillGranularity': skillGranularity.index,
+      'skill_granularity': skillGranularity.index,
       'skills': skills.map((e) => e.serialize()).toList(),
       'comments': comments,
-      'formVersion': formVersion,
+      'form_version': formVersion,
     };
+  }
+
+  @override
+  String toString() {
+    return 'InternshipEvaluationSkill(date: $date, '
+        'presentAtEvaluation: $presentAtEvaluation, '
+        'skillGranularity: $skillGranularity, '
+        'skills: $skills, '
+        'comments: $comments, '
+        'form_version: $formVersion)';
   }
 }

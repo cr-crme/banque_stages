@@ -71,4 +71,8 @@ class TaskAppreciation extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() =>
       {'id': id, 'title': title, 'level': level.index};
+
+  @override
+  String toString() =>
+      'TaskAppreciation { id: $id, title: $title, level: $level }';
 }

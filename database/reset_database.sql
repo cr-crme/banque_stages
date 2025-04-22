@@ -34,11 +34,15 @@ DROP TABLE IF EXISTS enterprise_job_incidents;
 DROP TABLE IF EXISTS enterprise_job_sst_evaluation_questions;
 DROP TABLE IF EXISTS enterprises;
 
-DROP TABLE IF EXISTS internships_supervising_teachers;
-DROP TABLE IF EXISTS internships_extra_specializations;
-DROP TABLE IF EXISTS internships_mutable_data;
-DROP TABLE IF EXISTS internships_weekly_schedules;
-DROP TABLE IF EXISTS internships_daily_schedules;
+DROP TABLE IF EXISTS internship_supervising_teachers;
+DROP TABLE IF EXISTS internship_extra_specializations;
+DROP TABLE IF EXISTS internship_mutable_data;
+DROP TABLE IF EXISTS internship_weekly_schedules;
+DROP TABLE IF EXISTS internship_daily_schedules;
+DROP TABLE IF EXISTS internship_skill_evaluations;
+DROP TABLE IF EXISTS internship_skill_evaluation_persons;
+DROP TABLE IF EXISTS internship_skill_evaluation_items;
+DROP TABLE IF EXISTS internship_skill_evaluation_item_tasks;
 DROP TABLE IF EXISTS internships;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -248,7 +252,7 @@ CREATE TABLE enterprise_job_protections(
 CREATE TABLE enterprise_job_incidents(
     job_id VARCHAR(36) NOT NULL,
     incident_type VARCHAR(20) NOT NULL,
-    incident VARCHAR(1000) NOT NULL,
+    incident VARCHAR(2000) NOT NULL,
     date BIGINT NOT NULL,
     FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
 );
@@ -256,7 +260,7 @@ CREATE TABLE enterprise_job_incidents(
 CREATE TABLE enterprise_job_sst_evaluation_questions(
     job_id VARCHAR(36) NOT NULL,
     question VARCHAR(255) NOT NULL,
-    answers VARCHAR(1000) NOT NULL,
+    answers VARCHAR(2000) NOT NULL,
     date BIGINT NOT NULL,
     FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
 );
@@ -279,7 +283,7 @@ CREATE TABLE internships (
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
 );
 
-CREATE TABLE internships_supervising_teachers (
+CREATE TABLE internship_supervising_teachers (
     internship_id VARCHAR(36) NOT NULL,
     teacher_id VARCHAR(36) NOT NULL,
     is_signatory_teacher BOOLEAN NOT NULL,
@@ -287,13 +291,13 @@ CREATE TABLE internships_supervising_teachers (
     FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
 );
 
-CREATE TABLE internships_extra_specializations (
+CREATE TABLE internship_extra_specializations (
     internship_id VARCHAR(36) NOT NULL,
     specialization_id VARCHAR(36) NOT NULL,
     FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE
 );
 
-CREATE TABLE internships_mutable_data (
+CREATE TABLE internship_mutable_data (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     internship_id VARCHAR(36) NOT NULL,
     creation_date BIGINT NOT NULL,
@@ -304,15 +308,15 @@ CREATE TABLE internships_mutable_data (
     FOREIGN KEY (supervisor_id) REFERENCES persons(id) ON DELETE CASCADE
 );
 
-CREATE TABLE internships_weekly_schedules (
+CREATE TABLE internship_weekly_schedules (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     mutable_data_id VARCHAR(36) NOT NULL,
     starting_date BIGINT NOT NULL,
     ending_date BIGINT NOT NULL,
-    FOREIGN KEY (mutable_data_id) REFERENCES internships_mutable_data(id) ON DELETE CASCADE
+    FOREIGN KEY (mutable_data_id) REFERENCES internship_mutable_data(id) ON DELETE CASCADE
 );
 
-CREATE TABLE internships_daily_schedules (
+CREATE TABLE internship_daily_schedules (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     weekly_schedule_id VARCHAR(36) NOT NULL,
     day INT NOT NULL,
@@ -320,5 +324,39 @@ CREATE TABLE internships_daily_schedules (
     starting_minute INT NOT NULL,
     ending_hour INT NOT NULL,
     ending_minute INT NOT NULL,
-    FOREIGN KEY (weekly_schedule_id) REFERENCES internships_weekly_schedules(id) ON DELETE CASCADE
+    FOREIGN KEY (weekly_schedule_id) REFERENCES internship_weekly_schedules(id) ON DELETE CASCADE
 );
+
+CREATE TABLE internship_skill_evaluations (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    internship_id VARCHAR(36) NOT NULL,
+    date BIGINT NOT NULL,
+    skill_granularity INT NOT NULL,
+    comments VARCHAR(2000) NOT NULL,
+    form_version VARCHAR(36) NOT NULL,
+    FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE
+);
+
+CREATE TABLE internship_skill_evaluation_persons (
+    evaluation_id VARCHAR(36) NOT NULL,
+    person_name VARCHAR(100) NOT NULL,
+    FOREIGN KEY (evaluation_id) REFERENCES internship_skill_evaluations(id) ON DELETE CASCADE
+);
+
+CREATE TABLE internship_skill_evaluation_items (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    evaluation_id VARCHAR(36) NOT NULL,
+    job_id VARCHAR(36) NOT NULL,
+    skill_name VARCHAR(100) NOT NULL,
+    appreciation INT NOT NULL,
+    comments VARCHAR(2000),
+    FOREIGN KEY (evaluation_id) REFERENCES internship_skill_evaluations(id) ON DELETE CASCADE
+);
+
+CREATE TABLE internship_skill_evaluation_item_tasks (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    evaluation_item_id VARCHAR(36) NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    level INT NOT NULL,
+    FOREIGN KEY (evaluation_item_id) REFERENCES internship_skill_evaluation_items(id) ON DELETE CASCADE
+)
