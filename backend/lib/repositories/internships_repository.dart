@@ -4,6 +4,7 @@ import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart';
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/utils.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -89,6 +90,8 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     for (final internship in internships) {
       final id = internship['id'].toString();
 
+      internship['priority'] = internship['visiting_priority'];
+
       internship['signatory_teacher_id'] =
           (internship['supervising_teachers'] as List?)?.firstWhereOrNull(
               (e) => e['is_signatory_teacher'] as int == 1)?['teacher_id'];
@@ -143,8 +146,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         }
         mutable['schedules'] = schedules;
       }
-      internship['weekly_schedules'] =
-          map[id] = Internship.fromSerialized(internship);
+      map[id] = Internship.fromSerialized(internship);
     }
     return map;
   }
@@ -175,6 +177,10 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             'enterprise_id': internship.enterpriseId,
             'job_id': internship.jobId,
             'expected_duration': internship.expectedDuration,
+            'achieved_duration': internship.achievedDuration,
+            'visiting_priority': internship.visitingPriority.index,
+            'teacher_notes': internship.teacherNotes,
+            'end_date': serialized['end_date'],
           });
 
       // Insert the signatory teacher
@@ -300,7 +306,11 @@ class InternshipsRepositoryMock extends InternshipsRepository {
               period: DateTimeRange(
                   start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)))
         ],
-        expectedDuration: 10),
+        expectedDuration: 30,
+        achievedDuration: -1,
+        visitingPriority: VisitingPriority.low,
+        endDate: null,
+        teacherNotes: 'Nope'),
     '1': Internship(
         id: '1',
         studentId: '54321',
@@ -328,7 +338,11 @@ class InternshipsRepositoryMock extends InternshipsRepository {
               period: DateTimeRange(
                   start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)))
         ],
-        expectedDuration: 20),
+        expectedDuration: 20,
+        achievedDuration: -1,
+        visitingPriority: VisitingPriority.mid,
+        endDate: null,
+        teacherNotes: 'Yes'),
   };
 
   @override

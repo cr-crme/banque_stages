@@ -222,12 +222,12 @@ class Internship extends ItemSerializable {
   List<WeeklySchedule> weeklySchedulesFrom(int version) =>
       _mutables[version].weeklySchedules;
 
-  // // Elements that are parts of the inner working of the internship (can be
-  // // modify, but won't generate a new version)
-  // final int achievedLength;
-  // final VisitingPriority visitingPriority;
-  // final String teacherNotes;
-  // final DateTime? endDate;
+  // Elements that are parts of the inner working of the internship (can be
+  // modify, but won't generate a new version)
+  final int achievedDuration;
+  final VisitingPriority visitingPriority;
+  final String teacherNotes;
+  final DateTime? endDate;
   // final List<InternshipEvaluationSkill> skillEvaluations;
   // final List<InternshipEvaluationAttitude> attitudeEvaluations;
 
@@ -236,10 +236,10 @@ class Internship extends ItemSerializable {
   // bool get isClosed => isNotActive && !isEnterpriseEvaluationPending;
   // bool get isEnterpriseEvaluationPending =>
   //     isNotActive && enterpriseEvaluation == null;
-  // bool get isActive => endDate == null;
-  // bool get isNotActive => !isActive;
-  // bool get shouldTerminate =>
-  //     isActive && date.end.difference(DateTime.now()).inDays <= -1;
+  bool get isActive => endDate == null;
+  bool get isNotActive => !isActive;
+  bool get shouldTerminate =>
+      isActive && date.end.difference(DateTime.now()).inDays <= -1;
 
   Internship._({
     required super.id,
@@ -251,10 +251,10 @@ class Internship extends ItemSerializable {
     required this.extraSpecializationIds,
     required List<_MutableElements> mutables,
     required this.expectedDuration,
-    // required this.achievedLength,
-    // required this.visitingPriority,
-    // required this.teacherNotes,
-    // required this.endDate,
+    required this.achievedDuration,
+    required this.visitingPriority,
+    required this.teacherNotes,
+    required this.endDate,
     // required this.skillEvaluations,
     // required this.attitudeEvaluations,
     // required this.enterpriseEvaluation,
@@ -276,10 +276,10 @@ class Internship extends ItemSerializable {
     required DateTimeRange dates,
     required List<WeeklySchedule> weeklySchedules,
     required this.expectedDuration,
-    // required this.achievedLength,
-    // required this.visitingPriority,
-    // this.teacherNotes = '',
-    // this.endDate,
+    required this.achievedDuration,
+    required this.visitingPriority,
+    this.teacherNotes = '',
+    this.endDate,
     // this.skillEvaluations = const [],
     // this.attitudeEvaluations = const [],
     // this.enterpriseEvaluation,
@@ -309,14 +309,14 @@ class Internship extends ItemSerializable {
                 .toList() ??
             [],
         expectedDuration = map['expected_duration'] ?? -1,
-        // achievedLength = map['achievedLength'] ?? -1,
-        // visitingPriority = map['priority'] == null
-        //     ? VisitingPriority.notApplicable
-        //     : VisitingPriority.values[map['priority']],
-        // teacherNotes = map['teacherNotes'] ?? '',
-        // endDate = map['endDate'] == null || map['endDate'] == -1
-        //     ? null
-        //     : DateTime.fromMillisecondsSinceEpoch(map['endDate']),
+        achievedDuration = map['achieved_duration'] ?? -1,
+        visitingPriority = map['priority'] == null
+            ? VisitingPriority.notApplicable
+            : VisitingPriority.values[map['priority']],
+        teacherNotes = map['teacher_notes'] ?? '',
+        endDate = map['end_date'] == null || map['end_date'] == -1
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(map['end_date']),
         // skillEvaluations = (map['skillEvaluation'] as List?)
         //         ?.map((e) => InternshipEvaluationSkill.fromSerialized(e))
         //         .toList() ??
@@ -346,10 +346,10 @@ class Internship extends ItemSerializable {
         'extra_specialization_ids': _serializeList(extraSpecializationIds),
         'mutables': _mutables.map((e) => e.serialize()).toList(),
         'expected_duration': expectedDuration,
-        // 'achievedLength': achievedLength,
-        // 'priority': visitingPriority.index,
-        // 'teacherNotes': teacherNotes,
-        // 'endDate': endDate?.millisecondsSinceEpoch ?? -1,
+        'achieved_duration': achievedDuration,
+        'priority': visitingPriority.index,
+        'teacher_notes': teacherNotes,
+        'end_date': endDate?.millisecondsSinceEpoch ?? -1,
         // 'skillEvaluation': skillEvaluations.map((e) => e.serialize()).toList(),
         // 'attitudeEvaluation':
         //     attitudeEvaluations.map((e) => e.serialize()).toList(),
@@ -379,7 +379,7 @@ class Internship extends ItemSerializable {
     String? jobId,
     List<String>? extraSpecializationIds,
     int? expectedDuration,
-    int? achievedLength,
+    int? achievedDuration,
     VisitingPriority? visitingPriority,
     String? teacherNotes,
     DateTime? endDate,
@@ -399,10 +399,10 @@ class Internship extends ItemSerializable {
           extraSpecializationIds ?? this.extraSpecializationIds,
       mutables: _mutables,
       expectedDuration: expectedDuration ?? this.expectedDuration,
-      // achievedLength: achievedLength ?? this.achievedLength,
-      // visitingPriority: visitingPriority ?? this.visitingPriority,
-      // teacherNotes: teacherNotes ?? this.teacherNotes,
-      // endDate: endDate ?? this.endDate,
+      achievedDuration: achievedDuration ?? this.achievedDuration,
+      visitingPriority: visitingPriority ?? this.visitingPriority,
+      teacherNotes: teacherNotes ?? this.teacherNotes,
+      endDate: endDate ?? this.endDate,
       // skillEvaluations: skillEvaluations ?? this.skillEvaluations,
       // attitudeEvaluations: attitudeEvaluations ?? this.attitudeEvaluations,
       // enterpriseEvaluation: enterpriseEvaluation ?? this.enterpriseEvaluation,
@@ -421,6 +421,10 @@ class Internship extends ItemSerializable {
       'extra_specialization_ids',
       'mutables',
       'expected_duration',
+      'achieved_duration',
+      'priority',
+      'teacher_notes',
+      'end_date',
     ];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
@@ -449,6 +453,14 @@ class Internship extends ItemSerializable {
               .toList() ??
           _mutables,
       expectedDuration: data['expected_duration'] ?? expectedDuration,
+      achievedDuration: data['achieved_duration'] ?? achievedDuration,
+      visitingPriority: data['priority'] == null
+          ? visitingPriority
+          : VisitingPriority.values[data['priority']],
+      teacherNotes: data['teacher_notes'] ?? teacherNotes,
+      endDate: data['end_date'] == null || data['end_date'] == -1
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(data['end_date']),
     );
   }
 
@@ -462,10 +474,10 @@ class Internship extends ItemSerializable {
         'extraSpecializationIds: $extraSpecializationIds, '
         'mutables: $_mutables, '
         'expectedDuration: $expectedDuration days, '
-        // 'achievedLength: $achievedLength, '
-        // 'visitingPriority: $visitingPriority, '
-        // 'teacherNotes: $teacherNotes, '
-        // 'endDate: $endDate, '
+        'achievedDuration: $achievedDuration, '
+        'visitingPriority: $visitingPriority, '
+        'teacherNotes: $teacherNotes, '
+        'endDate: $endDate, '
         // 'skillEvaluations: $skillEvaluations, '
         // 'attitudeEvaluations: $attitudeEvaluations, '
         // 'enterpriseEvaluation: $enterpriseEvaluation'

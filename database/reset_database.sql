@@ -271,7 +271,11 @@ CREATE TABLE internships (
     student_id VARCHAR(36) NOT NULL,
     enterprise_id VARCHAR(36) NOT NULL,
     job_id VARCHAR(36) NOT NULL,
-    expected_duration INT NOT NULL,
+    expected_duration BIGINT NOT NULL,
+    achieved_duration BIGINT NOT NULL,
+    visiting_priority INT NOT NULL,
+    teacher_notes VARCHAR(2000) NOT NULL,
+    end_date BIGINT NOT NULL,
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
 );
 

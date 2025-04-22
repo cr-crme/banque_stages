@@ -541,57 +541,60 @@ class _LoginScreenState extends State<LoginScreen> {
           .toList()[_random.nextInt(_dummyStudents.length)]]!;
 
       final internship = Internship(
-        studentId: student.id,
-        signatoryTeacherId: _dummyTeachers.keys
-            .toList()[_random.nextInt(_dummyTeachers.length)],
-        extraSupervisingTeacherIds: [
-          _dummyTeachers.keys.toList()[_random.nextInt(_dummyTeachers.length)]
-        ],
-        enterpriseId: _dummyEnterprises.keys
-            .toList()[_random.nextInt(_dummyEnterprises.length)],
-        jobId: _dummyEnterprises.values
-            .toList()[_random.nextInt(_dummyEnterprises.length)]
-            .jobs
-            .map((e) => e.id)
-            .toList()[_random.nextInt(_dummyEnterprises.length)],
-        extraSpecializationIds: [
-          _dummyEnterprises.values
+          studentId: student.id,
+          signatoryTeacherId: _dummyTeachers.keys
+              .toList()[_random.nextInt(_dummyTeachers.length)],
+          extraSupervisingTeacherIds: [
+            _dummyTeachers.keys.toList()[_random.nextInt(_dummyTeachers.length)]
+          ],
+          enterpriseId: _dummyEnterprises.keys
+              .toList()[_random.nextInt(_dummyEnterprises.length)],
+          jobId: _dummyEnterprises.values
               .toList()[_random.nextInt(_dummyEnterprises.length)]
               .jobs
               .map((e) => e.id)
               .toList()[_random.nextInt(_dummyEnterprises.length)],
-          _dummyEnterprises.values
-              .toList()[_random.nextInt(_dummyEnterprises.length)]
-              .jobs
-              .map((e) => e.id)
-              .toList()[_random.nextInt(_dummyEnterprises.length)],
-        ],
-        creationDate: DateTime(2020, 1, 1),
-        dates: time_utils.DateTimeRange(
-            start: DateTime(2020, 1, 1), end: DateTime(2020, 1, 31)),
-        supervisorId: _dummyTeachers.keys
-            .toList()[_random.nextInt(_dummyTeachers.length)],
-        weeklySchedules: [
-          WeeklySchedule(
-              schedule: [
-                DailySchedule(
-                    dayOfWeek: Day.monday,
-                    start: time_utils.TimeOfDay(hour: 8, minute: 0),
-                    end: time_utils.TimeOfDay(hour: 16, minute: 0)),
-                DailySchedule(
-                    dayOfWeek: Day.wednesday,
-                    start: time_utils.TimeOfDay(hour: 8, minute: 0),
-                    end: time_utils.TimeOfDay(hour: 16, minute: 0)),
-                DailySchedule(
-                    dayOfWeek: Day.friday,
-                    start: time_utils.TimeOfDay(hour: 8, minute: 0),
-                    end: time_utils.TimeOfDay(hour: 12, minute: 0)),
-              ],
-              period: time_utils.DateTimeRange(
-                  start: DateTime(2020, 1, 1), end: DateTime(2020, 1, 31))),
-        ],
-        expectedDuration: 30,
-      );
+          extraSpecializationIds: [
+            _dummyEnterprises.values
+                .toList()[_random.nextInt(_dummyEnterprises.length)]
+                .jobs
+                .map((e) => e.id)
+                .toList()[_random.nextInt(_dummyEnterprises.length)],
+            _dummyEnterprises.values
+                .toList()[_random.nextInt(_dummyEnterprises.length)]
+                .jobs
+                .map((e) => e.id)
+                .toList()[_random.nextInt(_dummyEnterprises.length)],
+          ],
+          creationDate: DateTime(2020, 1, 1),
+          dates: time_utils.DateTimeRange(
+              start: DateTime(2020, 1, 1), end: DateTime(2020, 1, 31)),
+          supervisorId: _dummyTeachers.keys
+              .toList()[_random.nextInt(_dummyTeachers.length)],
+          weeklySchedules: [
+            WeeklySchedule(
+                schedule: [
+                  DailySchedule(
+                      dayOfWeek: Day.monday,
+                      start: time_utils.TimeOfDay(hour: 8, minute: 0),
+                      end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  DailySchedule(
+                      dayOfWeek: Day.wednesday,
+                      start: time_utils.TimeOfDay(hour: 8, minute: 0),
+                      end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  DailySchedule(
+                      dayOfWeek: Day.friday,
+                      start: time_utils.TimeOfDay(hour: 8, minute: 0),
+                      end: time_utils.TimeOfDay(hour: 12, minute: 0)),
+                ],
+                period: time_utils.DateTimeRange(
+                    start: DateTime(2020, 1, 1), end: DateTime(2020, 1, 31))),
+          ],
+          expectedDuration: 30,
+          achievedDuration: -1,
+          visitingPriority: VisitingPriority.high,
+          endDate: null,
+          teacherNotes: 'No notes');
       internship.addVersion(
           creationDate: DateTime(2020, 1, 15),
           dates: time_utils.DateTimeRange(
