@@ -62,7 +62,13 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             asName: 'supervising_teachers',
             fieldsToFetch: ['teacher_id', 'is_signatory_teacher'],
             idNameToDataTable: 'internship_id',
-          )
+          ),
+          MySqlSelectSubQuery(
+            dataTableName: 'internships_extra_specializations',
+            asName: 'extra_specializations',
+            fieldsToFetch: ['specialization_id'],
+            idNameToDataTable: 'internship_id',
+          ),
         ]);
 
     final map = <String, Internship>{};
@@ -78,6 +84,12 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       internship['extra_supervising_teacher_ids'] =
           (internship['supervising_teachers'] as List?)
                   ?.map((e) => e['teacher_id'].toString())
+                  .toList() ??
+              [];
+
+      internship['extra_specialization_ids'] =
+          (internship['extra_specializations'] as List?)
+                  ?.map((e) => e['specialization_id'].toString())
                   .toList() ??
               [];
 
@@ -107,6 +119,9 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           data: {
             'id': internship.id,
             'student_id': internship.studentId,
+            'enterprise_id': internship.enterpriseId,
+            'job_id': internship.jobId,
+            'expected_duration': internship.expectedDuration,
           });
 
       // Insert the signatory teacher
@@ -119,6 +134,17 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               'teacher_id': teacherId,
               'is_signatory_teacher': teacherId == internship.signatoryTeacherId
             });
+
+        // Insert the extra specializations
+        for (final specializationId in internship.extraSpecializationIds) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'internships_extra_specializations',
+              data: {
+                'internship_id': internship.id,
+                'specialization_id': specializationId
+              });
+        }
       }
     } catch (e) {
       try {
@@ -150,12 +176,20 @@ class InternshipsRepositoryMock extends InternshipsRepository {
         id: '0',
         studentId: '12345',
         signatoryTeacherId: '67890',
-        extraSupervisingTeacherIds: []),
+        extraSupervisingTeacherIds: [],
+        enterpriseId: '12345',
+        jobId: '67890',
+        extraSpecializationIds: ['12345'],
+        expectedDuration: 10),
     '1': Internship(
         id: '1',
         studentId: '54321',
         signatoryTeacherId: '09876',
-        extraSupervisingTeacherIds: ['54321']),
+        extraSupervisingTeacherIds: ['54321'],
+        enterpriseId: '54321',
+        jobId: '09876',
+        extraSpecializationIds: ['54321', '09876'],
+        expectedDuration: 20),
   };
 
   @override

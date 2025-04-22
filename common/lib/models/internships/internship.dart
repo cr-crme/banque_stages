@@ -192,14 +192,15 @@ class Internship extends ItemSerializable {
   //   _extraSupervisingTeacherIds.add(teacherId);
   // }
 
-  // void removeSupervisingTeacher(String id) =>
-  //     _extraSupervisingTeacherIds.remove(id);
+  // TODO Add a call to the database?
+  void removeSupervisingTeacher(String id) =>
+      _extraSupervisingTeacherIds.remove(id);
 
-  // final String enterpriseId;
-  // final String jobId; // Main job attached to the enterprise
-  // final List<String>
-  //     extraSpecializationsId; // Any extra jobs added to the internship
-  // final int expectedLength;
+  final String enterpriseId;
+  final String jobId; // Main job attached to the enterprise
+  final List<String>
+      extraSpecializationIds; // Any extra jobs added to the internship
+  final int expectedDuration;
 
   // // Elements that can be modified (which increase the version number, but
   // // do not require a completely new internship contract)
@@ -239,11 +240,11 @@ class Internship extends ItemSerializable {
     required this.studentId,
     required this.signatoryTeacherId,
     required List<String> extraSupervisingTeacherIds,
-    // required this.enterpriseId,
-    // required this.jobId,
-    // required this.extraSpecializationsId,
+    required this.enterpriseId,
+    required this.jobId,
+    required this.extraSpecializationIds,
     // required List<_MutableElements> mutables,
-    // required this.expectedLength,
+    required this.expectedDuration,
     // required this.achievedLength,
     // required this.visitingPriority,
     // required this.teacherNotes,
@@ -262,14 +263,14 @@ class Internship extends ItemSerializable {
     required this.studentId,
     required this.signatoryTeacherId,
     required List<String> extraSupervisingTeacherIds,
-    // required this.enterpriseId,
-    // required this.jobId,
-    // required this.extraSpecializationsId,
+    required this.enterpriseId,
+    required this.jobId,
+    required this.extraSpecializationIds,
     // required DateTime versionDate,
     // required Person supervisor,
     // required DateTimeRange date,
     // required List<WeeklySchedule> weeklySchedules,
-    // required this.expectedLength,
+    required this.expectedDuration,
     // required this.achievedLength,
     // required this.visitingPriority,
     // this.teacherNotes = '',
@@ -295,15 +296,15 @@ class Internship extends ItemSerializable {
         signatoryTeacherId = map['signatory_teacher_id'] ?? '',
         _extraSupervisingTeacherIds =
             _stringListFromSerialized(map['extra_supervising_teacher_ids']),
-        // enterpriseId = map['enterprise'] ?? '',
-        // jobId = map['jobId'] ?? '',
-        // extraSpecializationsId =
-        //     _stringListFromSerialized(map['extraSpecializationsId']),
+        enterpriseId = map['enterprise_id'] ?? '',
+        jobId = map['job_id'] ?? '',
+        extraSpecializationIds =
+            _stringListFromSerialized(map['extra_specialization_ids']),
         // _mutables = (map['mutables'] as List?)
         //         ?.map(((e) => _MutableElements.fromSerialized(e)))
         //         .toList() ??
         //     [],
-        // expectedLength = map['expectedLength'] ?? -1,
+        expectedDuration = map['expected_duration'] ?? -1,
         // achievedLength = map['achievedLength'] ?? -1,
         // visitingPriority = map['priority'] == null
         //     ? VisitingPriority.notApplicable
@@ -340,11 +341,11 @@ class Internship extends ItemSerializable {
         'signatory_teacher_id': signatoryTeacherId,
         'extra_supervising_teacher_ids':
             _serializeList(_extraSupervisingTeacherIds),
-        // 'enterprise': enterpriseId,
-        // 'jobId': jobId,
-        // 'extraSpecializationsId': _serializeList(extraSpecializationsId),
+        'enterprise_id': enterpriseId,
+        'job_id': jobId,
+        'extra_specialization_ids': _serializeList(extraSpecializationIds),
         // 'mutables': _mutables.map((e) => e.serialize()).toList(),
-        // 'expectedLength': expectedLength,
+        'expected_duration': expectedDuration,
         // 'achievedLength': achievedLength,
         // 'priority': visitingPriority.index,
         // 'teacherNotes': teacherNotes,
@@ -376,11 +377,11 @@ class Internship extends ItemSerializable {
     List<String>? extraSupervisingTeacherIds,
     String? enterpriseId,
     String? jobId,
-    List<String>? extraSpecializationsId,
+    List<String>? extraSpecializationIds,
     Person? supervisor,
     DateTimeRange? date,
     List<WeeklySchedule>? weeklySchedules,
-    int? expectedLength,
+    int? expectedDuration,
     int? achievedLength,
     VisitingPriority? visitingPriority,
     String? teacherNotes,
@@ -399,12 +400,12 @@ class Internship extends ItemSerializable {
       signatoryTeacherId: signatoryTeacherId ?? this.signatoryTeacherId,
       extraSupervisingTeacherIds:
           extraSupervisingTeacherIds ?? _extraSupervisingTeacherIds,
-      // enterpriseId: enterpriseId ?? this.enterpriseId,
-      // jobId: jobId ?? this.jobId,
-      // extraSpecializationsId:
-      //     extraSpecializationsId ?? this.extraSpecializationsId,
+      enterpriseId: enterpriseId ?? this.enterpriseId,
+      jobId: jobId ?? this.jobId,
+      extraSpecializationIds:
+          extraSpecializationIds ?? this.extraSpecializationIds,
       // mutables: _mutables,
-      // expectedLength: expectedLength ?? this.expectedLength,
+      expectedDuration: expectedDuration ?? this.expectedDuration,
       // achievedLength: achievedLength ?? this.achievedLength,
       // visitingPriority: visitingPriority ?? this.visitingPriority,
       // teacherNotes: teacherNotes ?? this.teacherNotes,
@@ -422,6 +423,10 @@ class Internship extends ItemSerializable {
       'student_id',
       'signatory_teacher_id',
       'extra_supervising_teacher_ids',
+      'enterprise_id',
+      'job_id',
+      'extra_specialization_ids',
+      'expected_duration',
     ];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
@@ -441,6 +446,11 @@ class Internship extends ItemSerializable {
       signatoryTeacherId: data['signatory_teacher_id'] ?? signatoryTeacherId,
       extraSupervisingTeacherIds:
           _stringListFromSerialized(data['extra_supervising_teacher_ids']),
+      enterpriseId: data['enterprise_id'] ?? enterpriseId,
+      jobId: data['job_id'] ?? jobId,
+      extraSpecializationIds:
+          _stringListFromSerialized(data['extra_specialization_ids']),
+      expectedDuration: data['expected_duration'] ?? expectedDuration,
     );
   }
 
@@ -449,11 +459,11 @@ class Internship extends ItemSerializable {
     return 'Internship{studentId: $studentId, '
         'signatoryTeacherId: $signatoryTeacherId, '
         'extraSupervisingTeacherIds: $_extraSupervisingTeacherIds, '
-        // 'enterpriseId: $enterpriseId, '
-        // 'jobId: $jobId, '
-        // 'extraSpecializationsId: $extraSpecializationsId, '
+        'enterpriseId: $enterpriseId, '
+        'jobId: $jobId, '
+        'extraSpecializationIds: $extraSpecializationIds, '
         // 'mutables: $_mutables, '
-        // 'expectedLength: $expectedLength, '
+        'expectedDuration: $expectedDuration days, '
         // 'achievedLength: $achievedLength, '
         // 'visitingPriority: $visitingPriority, '
         // 'teacherNotes: $teacherNotes, '

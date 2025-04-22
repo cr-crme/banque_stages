@@ -548,6 +548,26 @@ class _LoginScreenState extends State<LoginScreen> {
           extraSupervisingTeacherIds: [
             _dummyTeachers.keys.toList()[_random.nextInt(_dummyTeachers.length)]
           ],
+          enterpriseId: _dummyEnterprises.keys
+              .toList()[_random.nextInt(_dummyEnterprises.length)],
+          jobId: _dummyEnterprises.values
+              .toList()[_random.nextInt(_dummyEnterprises.length)]
+              .jobs
+              .map((e) => e.id)
+              .toList()[_random.nextInt(_dummyEnterprises.length)],
+          extraSpecializationIds: [
+            _dummyEnterprises.values
+                .toList()[_random.nextInt(_dummyEnterprises.length)]
+                .jobs
+                .map((e) => e.id)
+                .toList()[_random.nextInt(_dummyEnterprises.length)],
+            _dummyEnterprises.values
+                .toList()[_random.nextInt(_dummyEnterprises.length)]
+                .jobs
+                .map((e) => e.id)
+                .toList()[_random.nextInt(_dummyEnterprises.length)],
+          ],
+          expectedDuration: 30,
         ).serialize(),
       ).serialize());
       _socket?.send(message);
