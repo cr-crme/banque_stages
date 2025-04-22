@@ -97,8 +97,8 @@ class InternshipEvaluationSkill extends ItemSerializable {
   final SkillEvaluationGranularity skillGranularity;
   List<SkillEvaluation> skills;
   String comments;
-  String
-      formVersion; // The version of the evaluation form (so data can be parsed properly)
+  // The version of the evaluation form (so data can be parsed properly)
+  String formVersion;
 
   InternshipEvaluationSkill({
     super.id,

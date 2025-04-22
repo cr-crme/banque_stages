@@ -96,6 +96,12 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             ],
             idNameToDataTable: 'internship_id',
           ),
+          MySqlSelectSubQuery(
+            dataTableName: 'internship_attitude_evaluations',
+            asName: 'attitude_evaluations',
+            fieldsToFetch: ['id', 'date', 'comments', 'form_version'],
+            idNameToDataTable: 'internship_id',
+          ),
         ]);
 
     final map = <String, Internship>{};
@@ -216,6 +222,53 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         skillEvaluations.add(evaluation);
       }
       internship['skill_evaluations'] = skillEvaluations;
+
+      final attitudeEvaluations = [];
+      for (final Map<String, dynamic> evaluation
+          in (internship['attitude_evaluations'] as List? ?? [])) {
+        final evaluationSubquery = (await MySqlHelpers.performSelectQuery(
+                connection: connection,
+                tableName: 'internship_attitude_evaluations',
+                id: evaluation['id'],
+                subqueries: [
+              MySqlSelectSubQuery(
+                dataTableName: 'internship_attitude_evaluation_persons',
+                asName: 'present',
+                fieldsToFetch: ['person_name'],
+                idNameToDataTable: 'evaluation_id',
+              ),
+              MySqlSelectSubQuery(
+                dataTableName: 'internship_attitude_evaluation_items',
+                asName: 'attitude',
+                fieldsToFetch: [
+                  'id',
+                  'evaluation_id',
+                  'inattendance',
+                  'ponctuality',
+                  'sociability',
+                  'politeness',
+                  'motivation',
+                  'dressCode',
+                  'quality_of_work',
+                  'productivity',
+                  'autonomy',
+                  'cautiousness',
+                  'general_appreciation',
+                ],
+                idNameToDataTable: 'evaluation_id',
+              ),
+            ]))
+            .first;
+
+        evaluation['attitude'] = (evaluationSubquery['attitude'] as List).first;
+        evaluation['present'] = [
+          for (final person in (evaluationSubquery['present'] as List? ?? []))
+            person['person_name']
+        ];
+        attitudeEvaluations.add(evaluation);
+      }
+      internship['attitude_evaluations'] = attitudeEvaluations;
+
       map[id] = Internship.fromSerialized(internship);
     }
     return map;
@@ -371,6 +424,52 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                 });
           }
         }
+      }
+
+      // Insert attitude evaluations
+      for (final evaluation in serialized['attitude_evaluations'] as List) {
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'internship_attitude_evaluations',
+            data: {
+              'id': evaluation['id'],
+              'internship_id': internship.id,
+              'date': evaluation['date'],
+              'comments': evaluation['comments'],
+              'form_version': evaluation['form_version'],
+            });
+
+        // Insert the persons present at the evaluation
+        for (final name in evaluation['present'] as List) {
+          await MySqlHelpers.performInsertQuery(
+              connection: connection,
+              tableName: 'internship_attitude_evaluation_persons',
+              data: {
+                'evaluation_id': evaluation['id'],
+                'person_name': name,
+              });
+        }
+
+        // Insert the attitude
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'internship_attitude_evaluation_items',
+            data: {
+              'id': evaluation['attitude']['id'],
+              'evaluation_id': evaluation['id'],
+              'inattendance': evaluation['attitude']['inattendance'],
+              'ponctuality': evaluation['attitude']['ponctuality'],
+              'sociability': evaluation['attitude']['sociability'],
+              'politeness': evaluation['attitude']['politeness'],
+              'motivation': evaluation['attitude']['motivation'],
+              'dressCode': evaluation['attitude']['dressCode'],
+              'quality_of_work': evaluation['attitude']['quality_of_work'],
+              'productivity': evaluation['attitude']['productivity'],
+              'autonomy': evaluation['attitude']['autonomy'],
+              'cautiousness': evaluation['attitude']['cautiousness'],
+              'general_appreciation': evaluation['attitude']
+                  ['general_appreciation']
+            });
       }
     } catch (e) {
       try {

@@ -1,32 +1,30 @@
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 class AttitudeEvaluation extends ItemSerializable {
-  int inattendance;
-  int ponctuality;
-  int sociability;
-  int politeness;
-  int motivation;
-  int dressCode;
-  int qualityOfWork;
-  int productivity;
-  int autonomy;
-  int cautiousness;
-  int generalAppreciation;
+  Inattendance inattendance;
+  Ponctuality ponctuality;
+  Sociability sociability;
+  Politeness politeness;
+  Motivation motivation;
+  DressCode dressCode;
+  QualityOfWork qualityOfWork;
+  Productivity productivity;
+  Autonomy autonomy;
+  Cautiousness cautiousness;
+  GeneralAppreciation generalAppreciation;
 
   List<String> _fromRequirements(int min, int max) {
     List<String> out = [];
-    if (inattendance >= min && inattendance <= max) out.add(Inattendance.title);
-    if (ponctuality >= min && ponctuality <= max) out.add(Ponctuality.title);
-    if (sociability >= min && sociability <= max) out.add(Sociability.title);
-    if (politeness >= min && politeness <= max) out.add(Politeness.title);
-    if (motivation >= min && motivation <= max) out.add(Motivation.title);
-    if (dressCode >= min && dressCode <= max) out.add(DressCode.title);
-    if (qualityOfWork >= min && qualityOfWork <= max) {
-      out.add(QualityOfWork.title);
-    }
-    if (productivity >= min && productivity <= max) out.add(Productivity.title);
-    if (autonomy >= min && autonomy <= max) out.add(Autonomy.title);
-    if (cautiousness >= min && cautiousness <= max) out.add(Cautiousness.title);
+    if (isBetween(inattendance, min, max)) out.add(Inattendance.title);
+    if (isBetween(ponctuality, min, max)) out.add(Ponctuality.title);
+    if (isBetween(sociability, min, max)) out.add(Sociability.title);
+    if (isBetween(politeness, min, max)) out.add(Politeness.title);
+    if (isBetween(motivation, min, max)) out.add(Motivation.title);
+    if (isBetween(dressCode, min, max)) out.add(DressCode.title);
+    if (isBetween(qualityOfWork, min, max)) out.add(QualityOfWork.title);
+    if (isBetween(productivity, min, max)) out.add(Productivity.title);
+    if (isBetween(autonomy, min, max)) out.add(Autonomy.title);
+    if (isBetween(cautiousness, min, max)) out.add(Cautiousness.title);
     return out;
   }
 
@@ -48,39 +46,57 @@ class AttitudeEvaluation extends ItemSerializable {
     required this.generalAppreciation,
   });
   AttitudeEvaluation.fromSerialized(super.map)
-      : inattendance = map['inattendance'] ?? 0,
-        ponctuality = map['ponctuality'] ?? 0,
-        sociability = map['sociability'] ?? 0,
-        politeness = map['politeness'] ?? 0,
-        motivation = map['motivation'] ?? 0,
-        dressCode = map['dressCode'] ?? 0,
-        qualityOfWork = map['qualityOfWork'] ?? 0,
-        productivity = map['productivity'] ?? 0,
-        autonomy = map['autonomy'] ?? 0,
-        cautiousness = map['cautiousness'] ?? 0,
-        generalAppreciation = map['generalAppreciation'] ?? 0,
+      : inattendance = Inattendance.fromIndex(map['inattendance'] ?? -1),
+        ponctuality = Ponctuality.fromIndex(map['ponctuality'] ?? -1),
+        sociability = Sociability.fromIndex(map['sociability'] ?? -1),
+        politeness = Politeness.fromIndex(map['politeness'] ?? -1),
+        motivation = Motivation.fromIndex(map['motivation'] ?? -1),
+        dressCode = DressCode.fromIndex(map['dressCode'] ?? -1),
+        qualityOfWork = QualityOfWork.fromIndex(map['quality_of_work'] ?? -1),
+        productivity = Productivity.fromIndex(map['productivity'] ?? -1),
+        autonomy = Autonomy.fromIndex(map['autonomy'] ?? -1),
+        cautiousness = Cautiousness.fromIndex(map['cautiousness'] ?? -1),
+        generalAppreciation =
+            GeneralAppreciation.fromIndex(map['general_appreciation'] ?? -1),
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() {
     return {
       'id': id,
-      'inattendance': inattendance,
-      'ponctuality': ponctuality,
-      'sociability': sociability,
-      'politeness': politeness,
-      'motivation': motivation,
-      'dressCode': dressCode,
-      'qualityOfWork': qualityOfWork,
-      'productivity': productivity,
-      'autonomy': autonomy,
-      'cautiousness': cautiousness,
-      'generalAppreciation': generalAppreciation,
+      'inattendance': inattendance.index,
+      'ponctuality': ponctuality.index,
+      'sociability': sociability.index,
+      'politeness': politeness.index,
+      'motivation': motivation.index,
+      'dressCode': dressCode.index,
+      'quality_of_work': qualityOfWork.index,
+      'productivity': productivity.index,
+      'autonomy': autonomy.index,
+      'cautiousness': cautiousness.index,
+      'general_appreciation': generalAppreciation.index,
     };
+  }
+
+  @override
+  String toString() {
+    return 'AttitudeEvaluation{inattendance: ${inattendance.name}, '
+        'ponctuality: ${ponctuality.name}, '
+        'sociability: ${sociability.name}, '
+        'politeness: ${politeness.name}, '
+        'motivation: ${motivation.name}, '
+        'dressCode: ${dressCode.name}, '
+        'qualityOfWork: ${qualityOfWork.name}, '
+        'productivity: ${productivity.name}, '
+        'autonomy: ${autonomy.name}, '
+        'cautiousness: ${cautiousness.name}, '
+        'generalAppreciation: ${generalAppreciation.name}}';
   }
 }
 
 class InternshipEvaluationAttitude extends ItemSerializable {
+  static const String currentVersion = '1.0.0';
+
   DateTime date;
   List<String> presentAtEvaluation;
   AttitudeEvaluation attitude;
@@ -104,7 +120,7 @@ class InternshipEvaluationAttitude extends ItemSerializable {
             (map['present'] as List?)?.map((e) => e as String).toList() ?? [],
         attitude = AttitudeEvaluation.fromSerialized(map['attitude'] ?? {}),
         comments = map['comments'] ?? '',
-        formVersion = map['formVersion'] ?? '1.0.0',
+        formVersion = map['form_version'] ?? currentVersion,
         super.fromSerialized();
 
   @override
@@ -115,14 +131,26 @@ class InternshipEvaluationAttitude extends ItemSerializable {
       'present': presentAtEvaluation,
       'attitude': attitude.serialize(),
       'comments': comments,
-      'formVersion': formVersion,
+      'form_version': formVersion,
     };
+  }
+
+  @override
+  String toString() {
+    return 'InternshipEvaluationAttitude(date: $date, '
+        'presentAtEvaluation: $presentAtEvaluation, '
+        'attitude: $attitude, '
+        'comments: $comments)';
   }
 }
 
 abstract class AttitudeCategoryEnum {
   String get name;
   int get index;
+}
+
+bool isBetween(AttitudeCategoryEnum category, int min, int max) {
+  return category.index >= min && category.index <= max;
 }
 
 class Inattendance implements AttitudeCategoryEnum {
@@ -134,6 +162,8 @@ class Inattendance implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'Aucune absence';
       case 1:
@@ -149,10 +179,14 @@ class Inattendance implements AttitudeCategoryEnum {
   }
 
   const Inattendance._(this.index);
+  static Inattendance get notEvaluated => const Inattendance._(-1);
   static Inattendance get never => const Inattendance._(0);
   static Inattendance get rarely => const Inattendance._(1);
   static Inattendance get sometime => const Inattendance._(2);
   static Inattendance get frequently => const Inattendance._(3);
+
+  static Inattendance fromIndex(int index) =>
+      index < 0 ? Inattendance.notEvaluated : Inattendance.values[index];
 
   static List<Inattendance> get values => [
         Inattendance.never,
@@ -171,6 +205,8 @@ class Ponctuality implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'Toujours à l\'heure';
       case 1:
@@ -186,10 +222,14 @@ class Ponctuality implements AttitudeCategoryEnum {
   }
 
   const Ponctuality._(this.index);
+  static Ponctuality get notEvaluated => const Ponctuality._(-1);
   static Ponctuality get highly => const Ponctuality._(0);
   static Ponctuality get mostly => const Ponctuality._(1);
   static Ponctuality get sometimeLate => const Ponctuality._(2);
   static Ponctuality get frequentlyLate => const Ponctuality._(3);
+
+  static Ponctuality fromIndex(int index) =>
+      index < 0 ? Ponctuality.notEvaluated : Ponctuality.values[index];
 
   static List<Ponctuality> get values => [
         Ponctuality.highly,
@@ -208,6 +248,8 @@ class Sociability implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'Très sociable';
       case 1:
@@ -223,10 +265,14 @@ class Sociability implements AttitudeCategoryEnum {
   }
 
   const Sociability._(this.index);
+  static Sociability get notEvaluated => const Sociability._(-1);
   static Sociability get veryHigh => const Sociability._(0);
   static Sociability get high => const Sociability._(1);
   static Sociability get low => const Sociability._(2);
   static Sociability get veryLow => const Sociability._(3);
+
+  static Sociability fromIndex(int index) =>
+      index < 0 ? Sociability.notEvaluated : Sociability.values[index];
 
   static List<Sociability> get values => [
         Sociability.veryHigh,
@@ -245,6 +291,8 @@ class Politeness implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'Langage exemplaire en tout temps';
       case 1:
@@ -260,10 +308,14 @@ class Politeness implements AttitudeCategoryEnum {
   }
 
   const Politeness._(this.index);
+  static Politeness get notEvaluated => const Politeness._(-1);
   static Politeness get exemplary => const Politeness._(0);
   static Politeness get alwaysSuitable => const Politeness._(1);
   static Politeness get mostlySuitable => const Politeness._(2);
   static Politeness get inappropriate => const Politeness._(3);
+
+  static Politeness fromIndex(int index) =>
+      index < 0 ? Politeness.notEvaluated : Politeness.values[index];
 
   static List<Politeness> get values => [
         Politeness.exemplary,
@@ -282,6 +334,8 @@ class Motivation implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'Très grand intérêt pour son travail';
       case 1:
@@ -297,10 +351,14 @@ class Motivation implements AttitudeCategoryEnum {
   }
 
   const Motivation._(this.index);
+  static Motivation get notEvaluated => const Motivation._(-1);
   static Motivation get veryHigh => const Motivation._(0);
   static Motivation get high => const Motivation._(1);
   static Motivation get low => const Motivation._(2);
   static Motivation get none => const Motivation._(3);
+
+  static Motivation fromIndex(int index) =>
+      index < 0 ? Motivation.notEvaluated : Motivation.values[index];
 
   static List<Motivation> get values => [
         Motivation.veryHigh,
@@ -319,6 +377,8 @@ class DressCode implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'Très soignée, très propre';
       case 1:
@@ -334,10 +394,14 @@ class DressCode implements AttitudeCategoryEnum {
   }
 
   const DressCode._(this.index);
+  static DressCode get notEvaluated => const DressCode._(-1);
   static DressCode get highlyAppropriate => const DressCode._(0);
   static DressCode get appropriate => const DressCode._(1);
   static DressCode get poorlyAppropriate => const DressCode._(2);
   static DressCode get notAppropriate => const DressCode._(3);
+
+  static DressCode fromIndex(int index) =>
+      index < 0 ? DressCode.notEvaluated : DressCode.values[index];
 
   static List<DressCode> get values => [
         DressCode.highlyAppropriate,
@@ -356,6 +420,8 @@ class QualityOfWork implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'S\'applique et travail avec précision';
       case 1:
@@ -371,10 +437,14 @@ class QualityOfWork implements AttitudeCategoryEnum {
   }
 
   const QualityOfWork._(this.index);
+  static QualityOfWork get notEvaluated => const QualityOfWork._(-1);
   static QualityOfWork get veryHigh => const QualityOfWork._(0);
   static QualityOfWork get high => const QualityOfWork._(1);
   static QualityOfWork get low => const QualityOfWork._(2);
   static QualityOfWork get negligent => const QualityOfWork._(3);
+
+  static QualityOfWork fromIndex(int index) =>
+      index < 0 ? QualityOfWork.notEvaluated : QualityOfWork.values[index];
 
   static List<QualityOfWork> get values => [
         QualityOfWork.veryHigh,
@@ -393,6 +463,8 @@ class Productivity implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'Rendement et rythme de travail excellents';
       case 1:
@@ -408,10 +480,14 @@ class Productivity implements AttitudeCategoryEnum {
   }
 
   const Productivity._(this.index);
+  static Productivity get notEvaluated => const Productivity._(-1);
   static Productivity get veryHigh => const Productivity._(0);
   static Productivity get high => const Productivity._(1);
   static Productivity get low => const Productivity._(2);
   static Productivity get insufficient => const Productivity._(3);
+
+  static Productivity fromIndex(int index) =>
+      index < 0 ? Productivity.notEvaluated : Productivity.values[index];
 
   static List<Productivity> get values => [
         Productivity.veryHigh,
@@ -430,6 +506,8 @@ class Autonomy implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'Prend très souvent de bonnes initiatives';
       case 1:
@@ -445,10 +523,14 @@ class Autonomy implements AttitudeCategoryEnum {
   }
 
   const Autonomy._(this.index);
+  static Autonomy get notEvaluated => const Autonomy._(-1);
   static Autonomy get veryHigh => const Autonomy._(0);
   static Autonomy get high => const Autonomy._(1);
   static Autonomy get low => const Autonomy._(2);
   static Autonomy get none => const Autonomy._(3);
+
+  static Autonomy fromIndex(int index) =>
+      index < 0 ? Autonomy.notEvaluated : Autonomy.values[index];
 
   static List<Autonomy> get values => [
         Autonomy.veryHigh,
@@ -468,6 +550,8 @@ class Cautiousness implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'Toujours';
       case 1:
@@ -483,10 +567,14 @@ class Cautiousness implements AttitudeCategoryEnum {
   }
 
   const Cautiousness._(this.index);
+  static Cautiousness get notEvaluated => const Cautiousness._(-1);
   static Cautiousness get always => const Cautiousness._(0);
   static Cautiousness get mostly => const Cautiousness._(1);
   static Cautiousness get sometime => const Cautiousness._(2);
   static Cautiousness get rarely => const Cautiousness._(3);
+
+  static Cautiousness fromIndex(int index) =>
+      index < 0 ? Cautiousness.notEvaluated : Cautiousness.values[index];
 
   static List<Cautiousness> get values => [
         Cautiousness.always,
@@ -505,6 +593,8 @@ class GeneralAppreciation implements AttitudeCategoryEnum {
   @override
   String get name {
     switch (index) {
+      case -1:
+        return 'Non évalué';
       case 0:
         return 'Dépasse les attentes';
       case 1:
@@ -520,10 +610,16 @@ class GeneralAppreciation implements AttitudeCategoryEnum {
   }
 
   const GeneralAppreciation._(this.index);
+  static GeneralAppreciation get notEvaluated =>
+      const GeneralAppreciation._(-1);
   static GeneralAppreciation get veryHigh => const GeneralAppreciation._(0);
   static GeneralAppreciation get good => const GeneralAppreciation._(1);
   static GeneralAppreciation get passable => const GeneralAppreciation._(2);
   static GeneralAppreciation get failed => const GeneralAppreciation._(3);
+
+  static GeneralAppreciation fromIndex(int index) => index < 0
+      ? GeneralAppreciation.notEvaluated
+      : GeneralAppreciation.values[index];
 
   static List<GeneralAppreciation> get values => [
         GeneralAppreciation.veryHigh,

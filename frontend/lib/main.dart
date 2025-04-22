@@ -9,6 +9,7 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/task_appreciation.dart';
@@ -659,6 +660,41 @@ class _LoginScreenState extends State<LoginScreen> {
           comments: 'Still no comments',
           skills: [],
           formVersion: InternshipEvaluationSkill.currentVersion));
+
+      internship.addAttitudeEvaluation(InternshipEvaluationAttitude(
+          date: DateTime(2024, 2, 29),
+          presentAtEvaluation: ['Me', 'Myself', 'I'],
+          attitude: AttitudeEvaluation(
+              inattendance: Inattendance.frequently,
+              ponctuality: Ponctuality.highly,
+              sociability: Sociability.high,
+              politeness: Politeness.inappropriate,
+              motivation: Motivation.high,
+              dressCode: DressCode.notEvaluated,
+              qualityOfWork: QualityOfWork.negligent,
+              productivity: Productivity.low,
+              autonomy: Autonomy.none,
+              cautiousness: Cautiousness.mostly,
+              generalAppreciation: GeneralAppreciation.good),
+          comments: 'Very good',
+          formVersion: InternshipEvaluationAttitude.currentVersion));
+      internship.addAttitudeEvaluation(InternshipEvaluationAttitude(
+          date: DateTime(2024, 2, 29),
+          presentAtEvaluation: ['Me', 'Myself', 'I'],
+          attitude: AttitudeEvaluation(
+              inattendance: Inattendance.never,
+              ponctuality: Ponctuality.highly,
+              sociability: Sociability.low,
+              politeness: Politeness.inappropriate,
+              motivation: Motivation.none,
+              dressCode: DressCode.highlyAppropriate,
+              qualityOfWork: QualityOfWork.high,
+              productivity: Productivity.high,
+              autonomy: Autonomy.high,
+              cautiousness: Cautiousness.mostly,
+              generalAppreciation: GeneralAppreciation.passable),
+          comments: 'Very good',
+          formVersion: InternshipEvaluationAttitude.currentVersion));
 
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,

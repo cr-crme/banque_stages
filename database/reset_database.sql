@@ -43,6 +43,9 @@ DROP TABLE IF EXISTS internship_skill_evaluations;
 DROP TABLE IF EXISTS internship_skill_evaluation_persons;
 DROP TABLE IF EXISTS internship_skill_evaluation_items;
 DROP TABLE IF EXISTS internship_skill_evaluation_item_tasks;
+DROP TABLE IF EXISTS internship_attitude_evaluations;
+DROP TABLE IF EXISTS internship_attitude_evaluation_persons;
+DROP TABLE IF EXISTS internship_attitude_evaluation_items;
 DROP TABLE IF EXISTS internships;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -359,4 +362,36 @@ CREATE TABLE internship_skill_evaluation_item_tasks (
     title VARCHAR(100) NOT NULL,
     level INT NOT NULL,
     FOREIGN KEY (evaluation_item_id) REFERENCES internship_skill_evaluation_items(id) ON DELETE CASCADE
-)
+);
+
+CREATE TABLE internship_attitude_evaluations (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    internship_id VARCHAR(36) NOT NULL,
+    date BIGINT NOT NULL,
+    comments VARCHAR(2000) NOT NULL,
+    form_version VARCHAR(36) NOT NULL,
+    FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE   
+);
+
+CREATE TABLE internship_attitude_evaluation_persons (
+    evaluation_id VARCHAR(36) NOT NULL,
+    person_name VARCHAR(100) NOT NULL,
+    FOREIGN KEY (evaluation_id) REFERENCES internship_attitude_evaluations(id) ON DELETE CASCADE
+);
+
+CREATE TABLE internship_attitude_evaluation_items (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    evaluation_id VARCHAR(36) NOT NULL,
+    inattendance INT NOT NULL,
+    ponctuality INT NOT NULL,
+    sociability INT NOT NULL,
+    politeness INT NOT NULL,
+    motivation INT NOT NULL,
+    dressCode INT NOT NULL,
+    quality_of_work INT NOT NULL,
+    productivity INT NOT NULL,
+    autonomy INT NOT NULL,
+    cautiousness INT NOT NULL,
+    general_appreciation INT NOT NULL,
+    FOREIGN KEY (evaluation_id) REFERENCES internship_attitude_evaluations(id) ON DELETE CASCADE
+);
