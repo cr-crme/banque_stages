@@ -500,12 +500,14 @@ class Internship extends ItemSerializable {
       id: data['id']?.toString() ?? id,
       studentId: data['student_id'] ?? studentId,
       signatoryTeacherId: data['signatory_teacher_id'] ?? signatoryTeacherId,
-      extraSupervisingTeacherIds:
-          _stringListFromSerialized(data['extra_supervising_teacher_ids']),
+      extraSupervisingTeacherIds: data['extra_supervising_teacher_ids'] == null
+          ? _extraSupervisingTeacherIds
+          : _stringListFromSerialized(data['extra_supervising_teacher_ids']),
       enterpriseId: data['enterprise_id'] ?? enterpriseId,
       jobId: data['job_id'] ?? jobId,
-      extraSpecializationIds:
-          _stringListFromSerialized(data['extra_specialization_ids']),
+      extraSpecializationIds: data['extra_specialization_ids'] == null
+          ? extraSpecializationIds
+          : _stringListFromSerialized(data['extra_specialization_ids']),
       mutables: (data['mutables'] as List?)
               ?.map(((e) => _MutableElements.fromSerialized(e)))
               .toList() ??
@@ -517,19 +519,19 @@ class Internship extends ItemSerializable {
           : VisitingPriority.values[data['priority']],
       teacherNotes: data['teacher_notes'] ?? teacherNotes,
       endDate: data['end_date'] == null || data['end_date'] == -1
-          ? null
+          ? endDate
           : DateTime.fromMillisecondsSinceEpoch(data['end_date']),
       skillEvaluations: (data['skill_evaluations'] as List?)
               ?.map((e) => InternshipEvaluationSkill.fromSerialized(e))
               .toList() ??
-          skillEvaluations,
+          _skillEvaluations,
       attitudeEvaluations: (data['attitude_evaluations'] as List?)
               ?.map((e) => InternshipEvaluationAttitude.fromSerialized(e))
               .toList() ??
-          attitudeEvaluations,
+          _attitudeEvaluations,
       enterpriseEvaluation: data['enterprise_evaluation'] == null ||
               data['enterprise_evaluation'] == -1
-          ? null
+          ? _enterpriseEvaluation
           : PostInternshipEnterpriseEvaluation.fromSerialized(
               data['enterprise_evaluation']),
     );

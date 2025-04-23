@@ -604,6 +604,9 @@ class _LoginScreenState extends State<LoginScreen> {
       final student = _dummyStudents[_dummyStudents.keys
           .toList()[_random.nextInt(_dummyStudents.length)]]!;
 
+      final enterprise = _dummyEnterprises.values
+          .toList()[_random.nextInt(_dummyEnterprises.length)];
+
       final internship = Internship(
           studentId: student.id,
           signatoryTeacherId: _dummyTeachers.keys
@@ -611,24 +614,17 @@ class _LoginScreenState extends State<LoginScreen> {
           extraSupervisingTeacherIds: [
             _dummyTeachers.keys.toList()[_random.nextInt(_dummyTeachers.length)]
           ],
-          enterpriseId: _dummyEnterprises.keys
-              .toList()[_random.nextInt(_dummyEnterprises.length)],
-          jobId: _dummyEnterprises.values
-              .toList()[_random.nextInt(_dummyEnterprises.length)]
-              .jobs
+          enterpriseId: enterprise.id,
+          jobId: enterprise.jobs
               .map((e) => e.id)
-              .toList()[_random.nextInt(_dummyEnterprises.length)],
+              .toList()[_random.nextInt(enterprise.jobs.length)],
           extraSpecializationIds: [
-            _dummyEnterprises.values
-                .toList()[_random.nextInt(_dummyEnterprises.length)]
-                .jobs
+            enterprise.jobs
                 .map((e) => e.id)
-                .toList()[_random.nextInt(_dummyEnterprises.length)],
-            _dummyEnterprises.values
-                .toList()[_random.nextInt(_dummyEnterprises.length)]
-                .jobs
+                .toList()[_random.nextInt(enterprise.jobs.length)],
+            enterprise.jobs
                 .map((e) => e.id)
-                .toList()[_random.nextInt(_dummyEnterprises.length)],
+                .toList()[_random.nextInt(enterprise.jobs.length)],
           ],
           creationDate: DateTime(2020, 1, 1),
           dates: time_utils.DateTimeRange(
