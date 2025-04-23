@@ -961,7 +961,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Send a post request to the server
     try {
-      // TODO: This if we can get the error message
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
         field: RequestFields.teacher,
