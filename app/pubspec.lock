@@ -217,7 +217,7 @@ packages:
   crcrme_material_theme:
     dependency: "direct main"
     description:
-      path: "external/crcrme_material_theme"
+      path: "../external/crcrme_material_theme"
       relative: true
     source: path
     version: "1.0.0+1"
@@ -304,7 +304,7 @@ packages:
   enhanced_containers:
     dependency: "direct main"
     description:
-      path: "external/enhanced_containers"
+      path: "../external/enhanced_containers"
       relative: true
     source: path
     version: "0.1.0"
