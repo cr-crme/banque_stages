@@ -52,7 +52,7 @@ packages:
   common:
     dependency: "direct main"
     description:
-      path: "../common"
+      path: "../../../common"
       relative: true
     source: path
     version: "1.0.0"
@@ -115,7 +115,7 @@ packages:
   enhanced_containers_foundation:
     dependency: transitive
     description:
-      path: "../external/enhanced_containers/plugins/enhanced_containers_foundation"
+      path: "../../../external/enhanced_containers/plugins/enhanced_containers_foundation"
       relative: true
     source: path
     version: "1.0.0"

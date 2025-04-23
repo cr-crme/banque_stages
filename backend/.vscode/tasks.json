@@ -5,7 +5,7 @@
         "label": "Run Backend Server",
         "type": "shell",
         "command": "dart",
-        "args": ["backend/bin/backend.dart"],
+        "args": ["bin/backend.dart"],
         "problemMatcher": [],
         "isBackground": true,
         "group": {
