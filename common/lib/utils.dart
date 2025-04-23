@@ -96,8 +96,8 @@ extension ItemSerializableExtension on ItemSerializable {
   Map<String, dynamic> serializeWithFields(List<String>? fields) {
     final serialized = serialize();
     if (fields != null) {
-      serialized
-          .removeWhere((key, value) => key != 'id' && !fields.contains(key));
+      serialized.removeWhere((key, value) =>
+          key != 'id' && key != 'version' && !fields.contains(key));
     }
 
     return serialized;

@@ -148,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _teacherController = TextEditingController();
   final _studentController = TextEditingController();
   final _enterpriseController = TextEditingController();
+
   WebSocket? _socket;
   bool _handshakeReceived = false;
   bool get isConnecting => _socket != null && !_handshakeReceived;
@@ -245,6 +246,14 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
                 onPressed: isConnected ? _getInternships : null,
                 child: Text('Get internships')),
+            SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: isConnected &&
+                        _dummyInternships.isNotEmpty &&
+                        _dummyStudents.length >= 2
+                    ? _changeInternship
+                    : null,
+                child: Text('Change internship')),
             SizedBox(height: 20),
             ElevatedButton(
                 onPressed: _dummyTeachers.isNotEmpty && isConnected
@@ -1000,6 +1009,33 @@ class _LoginScreenState extends State<LoginScreen> {
           'id': _dummyEnterprises.keys.first,
           'name': _enterpriseController.text,
           'version': Enterprise.currentVersion,
+        },
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
+  Future<void> _changeInternship() async {
+    if (!isConnected) return;
+
+    // Send a post request to the server
+    try {
+      final internship = _dummyInternships[_dummyInternships.keys.toList()[0]]!
+          .copyWith(
+              studentId: _dummyStudents.keys
+                  .toList()[_random.nextInt(_dummyStudents.length)]);
+
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.post,
+        field: RequestFields.internship,
+        data: {
+          'id': internship.id,
+          'student_id': internship.studentId,
+          'version': Internship.currentVersion
         },
       ).serialize());
       _socket?.send(message);

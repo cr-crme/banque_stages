@@ -191,7 +191,8 @@ class _MutableElements extends ItemSerializable {
 }
 
 class Internship extends ItemSerializable {
-  final String _currentVersion = '1.0.0';
+  static final String _currentVersion = '1.0.0';
+  static String get currentVersion => _currentVersion;
 
   // Elements fixed across versions of the same stage
   final String studentId;

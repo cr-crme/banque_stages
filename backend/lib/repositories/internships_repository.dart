@@ -209,6 +209,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                 dataTableName: 'internship_skill_evaluation_items',
                 asName: 'skills',
                 fieldsToFetch: [
+                  'id',
                   'job_id',
                   'skill_name',
                   'appreciation',
@@ -224,8 +225,10 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           final tasks = await MySqlHelpers.performSelectQuery(
               connection: connection,
               tableName: 'internship_skill_evaluation_item_tasks',
+              idName: 'evaluation_item_id',
               id: skill['id']);
           evaluation['skills'].add({
+            'id': skill['id'],
             'job_id': skill['job_id'],
             'skill': skill['skill_name'],
             'appreciation': skill['appreciation'],
@@ -330,6 +333,10 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       final serialized = internship.serialize();
 
       // Insert the internship
+      await MySqlHelpers.performInsertQuery(
+          connection: connection,
+          tableName: 'entities',
+          data: {'shared_id': internship.id});
       await MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'internships',
@@ -555,10 +562,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     } catch (e) {
       try {
         // Try to delete the inserted data in case of error (everything is ON CASCADE DELETE)
-        await MySqlHelpers.performDeleteQuery(
-            connection: connection,
-            tableName: 'internships',
-            id: internship.id);
+        await _deleteInternship(internship);
       } catch (e) {
         // Do nothing
       }
@@ -569,10 +573,16 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   Future<void> _putExistingInternship(
       Internship internship, Internship previous) async {
     // TODO: Implement a better updating of the internships
-    await MySqlHelpers.performDeleteQuery(
-        connection: connection, tableName: 'internships', id: previous.id);
-
+    await _deleteInternship(previous);
     await _putNewInternship(internship);
+  }
+
+  Future<void> _deleteInternship(Internship internship) async {
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'entities',
+        idName: 'shared_id',
+        id: internship.id);
   }
 }
 
