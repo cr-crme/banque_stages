@@ -8,7 +8,8 @@ import 'package:enhanced_containers_foundation/enhanced_containers_foundation.da
 part 'package:common/models/enterprises/activity_types.dart';
 
 class Enterprise extends ItemSerializable {
-  final String _currentVersion = '1.0.0';
+  static final String _currentVersion = '1.0.0';
+  static String get currentVersion => _currentVersion;
 
   final String name;
   final Set<ActivityTypes> activityTypes;
@@ -111,7 +112,7 @@ class Enterprise extends ItemSerializable {
       throw InvalidFieldException('Invalid field data detected');
     }
 
-    final version = data['version'];
+    final version = data['version'] ?? _currentVersion;
     if (version == null) {
       throw InvalidFieldException('Version field is required');
     } else if (version != '1.0.0') {
@@ -121,9 +122,11 @@ class Enterprise extends ItemSerializable {
     return Enterprise(
       id: data['id']?.toString() ?? id,
       name: data['name'] ?? name,
-      activityTypes: (data['activity_types'] as List? ?? [])
-          .map((e) => ActivityTypes._fromInt(e as int, version))
-          .toSet(),
+      activityTypes: data['activity_types'] == null
+          ? activityTypes
+          : (data['activity_types'] as List)
+              .map((e) => ActivityTypes._fromInt(e as int, version))
+              .toSet(),
       recruiterId: data['recruiter_id'] ?? recruiterId,
       jobs: data['jobs'] ?? jobs,
       contact: data['contact'] ?? contact,

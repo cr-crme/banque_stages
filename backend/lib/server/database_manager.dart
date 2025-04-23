@@ -40,19 +40,22 @@ class DatabaseManager {
       case RequestFields.student:
         return await studentsDatabase.getById(
             id: _getId(data,
-                messageOnNull: 'An "id" is required to get a student'));
+                messageOnNull: 'An "id" is required to get a student'),
+            fields: (data?['fields'] as List?)?.cast<String>());
       case RequestFields.enterprises:
         return await enterprisesDatabase.getAll();
       case RequestFields.enterprise:
         return await enterprisesDatabase.getById(
             id: _getId(data,
-                messageOnNull: 'An "id" is required to get an enterprise'));
+                messageOnNull: 'An "id" is required to get an enterprise'),
+            fields: (data?['fields'] as List?)?.cast<String>());
       case RequestFields.internships:
         return await internshipsDatabase.getAll();
       case RequestFields.internship:
         return await internshipsDatabase.getById(
             id: _getId(data,
-                messageOnNull: 'An "id" is required to get an internship'));
+                messageOnNull: 'An "id" is required to get an internship'),
+            fields: (data?['fields'] as List?)?.cast<String>());
     }
   }
 

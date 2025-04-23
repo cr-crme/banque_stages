@@ -475,8 +475,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           });
     } catch (e) {
       try {
-        await MySqlHelpers.performDeleteQuery(
-            connection: connection, tableName: 'entities', id: enterprise.id);
+        await _deleteEnterprise(enterprise);
       } catch (e) {
         // Do nothing
       }
@@ -488,10 +487,51 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   Future<void> _putExistingEnterprise(
       Enterprise enterprise, Enterprise previous) async {
     // TODO: Implement a better updating of the enterprises
-    await MySqlHelpers.performDeleteQuery(
-        connection: connection, tableName: 'enterprises', id: previous.id);
-
+    await _deleteEnterprise(previous);
     await _putNewEnterprise(enterprise);
+  }
+
+  Future<void> _deleteEnterprise(Enterprise enterprise) async {
+    await MySqlHelpers.performDeleteQuery(
+      connection: connection,
+      tableName: 'enterprise_contacts',
+      idName: 'enterprise_id',
+      id: enterprise.id,
+    );
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'entities',
+        idName: 'shared_id',
+        id: enterprise.contact.id);
+    await MySqlHelpers.performDeleteQuery(
+      connection: connection,
+      tableName: 'enterprise_addresses',
+      idName: 'enterprise_id',
+      id: enterprise.id,
+    );
+    await MySqlHelpers.performDeleteQuery(
+      connection: connection,
+      tableName: 'enterprise_headquarter_addresses',
+      idName: 'enterprise_id',
+      id: enterprise.id,
+    );
+    await MySqlHelpers.performDeleteQuery(
+      connection: connection,
+      tableName: 'enterprise_phone_numbers',
+      idName: 'enterprise_id',
+      id: enterprise.id,
+    );
+    await MySqlHelpers.performDeleteQuery(
+      connection: connection,
+      tableName: 'enterprise_fax_numbers',
+      idName: 'enterprise_id',
+      id: enterprise.id,
+    );
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'entities',
+        idName: 'shared_id',
+        id: enterprise.id);
   }
   // coverage:ignore-end
 }

@@ -1,5 +1,3 @@
-// TODO Move all of these to a proper file
-
 class TimeOfDay {
   final int hour;
   final int minute;

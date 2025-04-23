@@ -4,7 +4,13 @@ bool areListsEqual<T>(List<T> list1, List<T> list2) {
   if (list1.length != list2.length) return false;
 
   for (int i = 0; i < list1.length; i++) {
-    if (list1[i] != list2[i]) return false;
+    if (list1[i] is List) {
+      if (areListsNotEqual(list1[i] as List, list2[i] as List)) return false;
+    } else if (list1[i] is Map) {
+      if (areMapsNotEqual(list1[i] as Map, list2[i] as Map)) return false;
+    } else {
+      if (list1[i] != list2[i]) return false;
+    }
   }
 
   return true;
@@ -25,7 +31,12 @@ bool areMapsEqual<T, U>(Map<T, U>? a, Map<T, U>? b) {
     return true;
   }
   for (final T key in a.keys) {
-    if (!b.containsKey(key) || b[key] != a[key]) {
+    if (!b.containsKey(key)) return false;
+    if (a[key] is List) {
+      if (areListsNotEqual(a[key] as List, b[key] as List)) return false;
+    } else if (a[key] is Map) {
+      if (areMapsNotEqual(a[key] as Map, b[key] as Map)) return false;
+    } else if (a[key] != b[key]) {
       return false;
     }
   }
@@ -60,19 +71,21 @@ extension ItemSerializableExtension on ItemSerializable {
     // If there is no other object, all the keys are necessarily different
     if (other == null) return keys.toList();
 
+    final serializedThis = serializedMap();
+    final serializedOther = other.serializedMap();
+
     final diff = <String>[];
-    for (var key in serializedMap().keys) {
-      if (serializedMap()[key] is List) {
-        if (areListsNotEqual(
-            serializedMap()[key], other.serializedMap()[key])) {
+    for (var key in serializedThis.keys) {
+      if (serializedThis[key] is List) {
+        if (areListsNotEqual(serializedThis[key], serializedOther[key])) {
           diff.add(key);
         }
-      } else if (serializedMap()[key] is Map) {
-        if (areMapsNotEqual(serializedMap()[key], other.serializedMap()[key])) {
+      } else if (serializedThis[key] is Map) {
+        if (areMapsNotEqual(serializedThis[key], serializedOther[key])) {
           diff.add(key);
         }
       } else {
-        if (serializedMap()[key] != other.serializedMap()[key]) {
+        if (serializedThis[key] != serializedOther[key]) {
           diff.add(key);
         }
       }

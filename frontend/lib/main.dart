@@ -147,6 +147,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _teacherController = TextEditingController();
   final _studentController = TextEditingController();
+  final _enterpriseController = TextEditingController();
   WebSocket? _socket;
   bool _handshakeReceived = false;
   bool get isConnecting => _socket != null && !_handshakeReceived;
@@ -250,6 +251,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     ? _addRandomEnterprise
                     : null,
                 child: Text('Add random Enterprise')),
+            SizedBox(height: 20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                    onPressed: isConnected && _dummyEnterprises.isNotEmpty
+                        ? _changeEnterprise
+                        : null,
+                    child: Text('Change name')),
+                SizedBox(width: 20),
+                SizedBox(
+                  width: 100,
+                  child: TextField(
+                    controller: _enterpriseController,
+                    enabled: isConnected,
+                    decoration: InputDecoration(
+                      labelText: 'New name',
+                    ),
+                    onChanged: (value) => setState(() {}),
+                  ),
+                )
+              ],
+            ),
             SizedBox(height: 20),
             ElevatedButton(
                 onPressed: isConnected ? _getEnterprises : null,
@@ -948,13 +972,34 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Send a post request to the server
     try {
-      // TODO: This if we can get the error message
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,
         field: RequestFields.student,
         data: {
           'id': _dummyStudents.keys.first,
           'first_name': _studentController.text
+        },
+      ).serialize());
+      _socket?.send(message);
+      debugPrint('Message sent: $message');
+    } catch (e) {
+      debugPrint('Error: $e');
+      return;
+    }
+  }
+
+  Future<void> _changeEnterprise() async {
+    if (!isConnected || _enterpriseController.text.isEmpty) return;
+
+    // Send a post request to the server
+    try {
+      final message = jsonEncode(CommunicationProtocol(
+        requestType: RequestType.post,
+        field: RequestFields.enterprise,
+        data: {
+          'id': _dummyEnterprises.keys.first,
+          'name': _enterpriseController.text,
+          'version': Enterprise.currentVersion,
         },
       ).serialize());
       _socket?.send(message);
