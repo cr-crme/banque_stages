@@ -285,15 +285,18 @@ CREATE TABLE internships (
     visiting_priority INT NOT NULL,
     teacher_notes VARCHAR(2000) NOT NULL,
     end_date BIGINT NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+    FOREIGN KEY (student_id) REFERENCES students(id), 
+    FOREIGN KEY (enterprise_id) REFERENCES enterprises(id),
+    FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id),
+    FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 
 CREATE TABLE internship_supervising_teachers (
     internship_id VARCHAR(36) NOT NULL,
     teacher_id VARCHAR(36) NOT NULL,
     is_signatory_teacher BOOLEAN NOT NULL,
-    FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE,
-    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id),
+    FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE
 );
 
 CREATE TABLE internship_extra_specializations (
@@ -309,8 +312,8 @@ CREATE TABLE internship_mutable_data (
     supervisor_id VARCHAR(36) NOT NULL,
     starting_date BIGINT NOT NULL,
     ending_date BIGINT NOT NULL,
-    FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE,
-    FOREIGN KEY (supervisor_id) REFERENCES persons(id) ON DELETE CASCADE
+    FOREIGN KEY (supervisor_id) REFERENCES persons(id),
+    FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE
 );
 
 CREATE TABLE internship_weekly_schedules (
