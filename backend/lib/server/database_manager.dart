@@ -33,7 +33,8 @@ class DatabaseManager {
       case RequestFields.teacher:
         return await teachersDatabase.getById(
             id: _getId(data,
-                messageOnNull: 'An "id" is required to get a teacher'));
+                messageOnNull: 'An "id" is required to get a teacher'),
+            fields: (data?['fields'] as List?)?.cast<String>());
       case RequestFields.students:
         return await studentsDatabase.getAll();
       case RequestFields.student:
@@ -55,7 +56,7 @@ class DatabaseManager {
     }
   }
 
-  Future<void> put(RequestFields field,
+  Future<List<String>?> put(RequestFields field,
       {required Map<String, dynamic>? data}) async {
     if (data == null) {
       throw MissingDataException('Data is required to put something');
@@ -63,28 +64,32 @@ class DatabaseManager {
 
     switch (field) {
       case RequestFields.teachers:
-        return await teachersDatabase.putAll(data: data);
+        await teachersDatabase.putAll(data: data);
+        return null;
       case RequestFields.teacher:
         return await teachersDatabase.putById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to put a teacher'),
             data: data);
       case RequestFields.students:
-        return await studentsDatabase.putAll(data: data);
+        await studentsDatabase.putAll(data: data);
+        return null;
       case RequestFields.student:
         return await studentsDatabase.putById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to put a student'),
             data: data);
       case RequestFields.enterprises:
-        return await enterprisesDatabase.putAll(data: data);
+        await enterprisesDatabase.putAll(data: data);
+        return null;
       case RequestFields.enterprise:
         return await enterprisesDatabase.putById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to put an enterprise'),
             data: data);
       case RequestFields.internships:
-        return await internshipsDatabase.putAll(data: data);
+        await internshipsDatabase.putAll(data: data);
+        return null;
       case RequestFields.internship:
         return await internshipsDatabase.putById(
             id: _getId(data,

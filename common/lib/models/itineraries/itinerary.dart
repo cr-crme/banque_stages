@@ -99,7 +99,7 @@ class Itinerary extends ListSerializable<Waypoint>
     if (other is! Itinerary) return false;
     return id == other.id &&
         date == other.date &&
-        isListEqual(toList(), other.toList());
+        areListsEqual(toList(), other.toList());
   }
 
   @override

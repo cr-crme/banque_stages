@@ -7,21 +7,24 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/utils.dart';
 import 'package:mysql1/mysql1.dart';
 
 abstract class EnterprisesRepository implements RepositoryAbstract {
   @override
-  Future<Map<String, dynamic>> getAll() async {
+  Future<Map<String, dynamic>> getAll({List<String>? fields}) async {
     final enterprises = await _getAllEnterprises();
-    return enterprises.map((key, value) => MapEntry(key, value.serialize()));
+    return enterprises
+        .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
   }
 
   @override
-  Future<Map<String, dynamic>> getById({required String id}) async {
+  Future<Map<String, dynamic>> getById(
+      {required String id, List<String>? fields}) async {
     final enterprise = await _getEnterpriseById(id: id);
     if (enterprise == null) throw MissingDataException('Enterprise not found');
 
-    return enterprise.serialize();
+    return enterprise.serializeWithFields(fields);
   }
 
   @override
@@ -29,7 +32,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
       throw InvalidRequestException('Enterprises must be created individually');
 
   @override
-  Future<void> putById(
+  Future<List<String>> putById(
       {required String id, required Map<String, dynamic> data}) async {
     // Update if exists, insert if not
     final previous = await _getEnterpriseById(id: id);
@@ -38,6 +41,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
         Enterprise.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
     await _putEnterprise(enterprise: newEnterprise, previous: previous);
+    return newEnterprise.getDifference(previous);
   }
 
   Future<Map<String, Enterprise>> _getAllEnterprises();

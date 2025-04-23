@@ -96,19 +96,26 @@ class Connexions {
           }
           _logger.info(
               'Putting data to field: ${protocol.field} for client ${client.hashCode}');
-          await _database.put(protocol.field!, data: protocol.data);
+          final updatedFields =
+              await _database.put(protocol.field!, data: protocol.data);
           await _send(client,
               message: CommunicationProtocol(
                   requestType: RequestType.response,
                   field: protocol.field,
                   response: Response.success));
 
-          // Notify all clients that the data has been updated
-          await _sendAll(CommunicationProtocol(
-            requestType: RequestType.update,
-            field: protocol.field,
-            data: await _database.get(protocol.field!, data: protocol.data),
-          ));
+          // Notify all clients that the data has been updated (but do not send
+          // the actual new data. The client must request it for security reasons)
+          if (updatedFields != null) {
+            await _sendAll(CommunicationProtocol(
+              requestType: RequestType.update,
+              field: protocol.field,
+              data: {
+                'id': protocol.data?['id'],
+                'updated_fields': updatedFields
+              },
+            ));
+          }
           break;
 
         case RequestType.delete:

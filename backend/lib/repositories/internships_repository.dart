@@ -10,17 +10,19 @@ import 'package:mysql1/mysql1.dart';
 
 abstract class InternshipsRepository implements RepositoryAbstract {
   @override
-  Future<Map<String, dynamic>> getAll() async {
+  Future<Map<String, dynamic>> getAll({List<String>? fields}) async {
     final internships = await _getAllInternships();
-    return internships.map((key, value) => MapEntry(key, value.serialize()));
+    return internships
+        .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
   }
 
   @override
-  Future<Map<String, dynamic>> getById({required String id}) async {
+  Future<Map<String, dynamic>> getById(
+      {required String id, List<String>? fields}) async {
     final internship = await _getInternshipById(id: id);
     if (internship == null) throw MissingDataException('Internship not found');
 
-    return internship.serialize();
+    return internship.serializeWithFields(fields);
   }
 
   @override
@@ -28,7 +30,7 @@ abstract class InternshipsRepository implements RepositoryAbstract {
       throw InvalidRequestException('Internships must be created individually');
 
   @override
-  Future<void> putById(
+  Future<List<String>> putById(
       {required String id, required Map<String, dynamic> data}) async {
     // Update if exists, insert if not
     final previous = await _getInternshipById(id: id);
@@ -37,6 +39,7 @@ abstract class InternshipsRepository implements RepositoryAbstract {
         Internship.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
     await _putInternship(internship: newInternship, previous: previous);
+    return newInternship.getDifference(previous);
   }
 
   Future<Map<String, Internship>> _getAllInternships();

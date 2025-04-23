@@ -290,6 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
         timeout: const Duration(seconds: 5),
       );
       setState(() {});
+
       _socket!.connection.listen((event) {
         if (event is Connected || event is Reconnected) {
           _socket!.send(jsonEncode(CommunicationProtocol(
@@ -311,7 +312,9 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       }
     } catch (e) {
+      _socket?.close();
       _socket = null;
+      _handshakeReceived = false;
       debugPrint('Error: $e');
     }
     setState(() {});
@@ -330,37 +333,60 @@ class _LoginScreenState extends State<LoginScreen> {
             return;
           }
         case RequestType.response:
-        case RequestType.update:
           {
-            debugPrint('Message received: $message');
-            if (protocol.requestType == RequestType.response &&
-                protocol.data == null) {
-              return;
-            }
-            switch (protocol.field) {
+            if (protocol.data == null || protocol.field == null) return;
+
+            switch (protocol.field!) {
               case RequestFields.teachers:
               case RequestFields.teacher:
-                if (protocol.data == null) throw Exception('No data received');
                 _updateTeachers(protocol.data!);
-                setState(() {});
                 break;
               case RequestFields.students:
               case RequestFields.student:
-                if (protocol.data == null) throw Exception('No data received');
                 _updateStudents(protocol.data!);
-                setState(() {});
                 break;
               case RequestFields.enterprises:
               case RequestFields.enterprise:
-                if (protocol.data == null) throw Exception('No data received');
                 _updateEnterprises(protocol.data!);
-                setState(() {});
                 break;
               case RequestFields.internships:
               case RequestFields.internship:
-                if (protocol.data == null) throw Exception('No data received');
                 _updateInternships(protocol.data!);
-                setState(() {});
+                break;
+            }
+            setState(() {});
+          }
+        case RequestType.update:
+          {
+            debugPrint('Message received: $message');
+            switch (protocol.field) {
+              case RequestFields.teachers:
+              case RequestFields.teacher:
+                _getTeachers(
+                    id: protocol.data!['id'],
+                    fields: (protocol.data!['updated_fields'] as List?)
+                        ?.cast<String>());
+                break;
+              case RequestFields.students:
+              case RequestFields.student:
+                _getStudents(
+                    id: protocol.data!['id'],
+                    fields: (protocol.data!['updated_fields'] as List?)
+                        ?.cast<String>());
+                break;
+              case RequestFields.enterprises:
+              case RequestFields.enterprise:
+                _getEnterprises(
+                    id: protocol.data!['id'],
+                    fields: (protocol.data!['updated_fields'] as List?)
+                        ?.cast<String>());
+                break;
+              case RequestFields.internships:
+              case RequestFields.internship:
+                _getInternships(
+                    id: protocol.data!['id'],
+                    fields: (protocol.data!['updated_fields'] as List?)
+                        ?.cast<String>());
                 break;
 
               case null:
@@ -821,14 +847,15 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _getTeachers() async {
+  Future<void> _getTeachers({String? id, List<String>? fields}) async {
     if (!isConnected) return;
 
     // Send a get request to the server
     try {
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.get,
-        field: RequestFields.teachers,
+        field: id == null ? RequestFields.teachers : RequestFields.teacher,
+        data: id == null ? null : {'id': id, 'fields': fields},
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');
@@ -838,14 +865,15 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _getStudents() async {
+  Future<void> _getStudents({String? id, List<String>? fields}) async {
     if (!isConnected) return;
 
     // Send a get request to the server
     try {
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.get,
-        field: RequestFields.students,
+        field: id == null ? RequestFields.students : RequestFields.student,
+        data: id == null ? null : {'id': id, 'fields': fields},
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');
@@ -855,14 +883,16 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _getEnterprises() async {
+  Future<void> _getEnterprises({String? id, List<String>? fields}) async {
     if (!isConnected) return;
 
     // Send a get request to the server
     try {
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.get,
-        field: RequestFields.enterprises,
+        field:
+            id == null ? RequestFields.enterprises : RequestFields.enterprise,
+        data: id == null ? null : {'id': id, 'fields': fields},
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');
@@ -872,14 +902,16 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _getInternships() async {
+  Future<void> _getInternships({String? id, List<String>? fields}) async {
     if (!isConnected) return;
 
     // Send a get request to the server
     try {
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.get,
-        field: RequestFields.internships,
+        field:
+            id == null ? RequestFields.internships : RequestFields.internship,
+        data: id == null ? null : {'id': id, 'fields': fields},
       ).serialize());
       _socket?.send(message);
       debugPrint('Message sent: $message');

@@ -10,17 +10,19 @@ import 'package:mysql1/mysql1.dart';
 
 abstract class TeachersRepository implements RepositoryAbstract {
   @override
-  Future<Map<String, dynamic>> getAll() async {
+  Future<Map<String, dynamic>> getAll({List<String>? fields}) async {
     final teachers = await _getAllTeachers();
-    return teachers.map((key, value) => MapEntry(key, value.serialize()));
+    return teachers
+        .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
   }
 
   @override
-  Future<Map<String, dynamic>> getById({required String id}) async {
+  Future<Map<String, dynamic>> getById(
+      {required String id, List<String>? fields}) async {
     final teacher = await _getTeacherById(id: id);
     if (teacher == null) throw MissingDataException('Teacher not found');
 
-    return teacher.serialize();
+    return teacher.serializeWithFields(fields);
   }
 
   @override
@@ -28,7 +30,7 @@ abstract class TeachersRepository implements RepositoryAbstract {
       throw InvalidRequestException('Teachers must be created individually');
 
   @override
-  Future<void> putById(
+  Future<List<String>> putById(
       {required String id, required Map<String, dynamic> data}) async {
     // Update if exists, insert if not
     final previous = await _getTeacherById(id: id);
@@ -37,6 +39,7 @@ abstract class TeachersRepository implements RepositoryAbstract {
         Teacher.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
     await _putTeacher(teacher: newTeacher, previous: previous);
+    return newTeacher.getDifference(previous);
   }
 
   Future<Map<String, Teacher>> _getAllTeachers();
@@ -205,7 +208,7 @@ class MySqlTeachersRepository extends TeachersRepository {
     }
 
     // Update teaching groups
-    if (isNotListEqual(teacher.groups, previous.groups)) {
+    if (areListsNotEqual(teacher.groups, previous.groups)) {
       await MySqlHelpers.performDeleteQuery(
           connection: connection, tableName: 'teaching_groups', id: teacher.id);
       for (final group in teacher.groups) {

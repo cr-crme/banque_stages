@@ -5,21 +5,24 @@ import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
+import 'package:common/utils.dart';
 import 'package:mysql1/mysql1.dart';
 
 abstract class StudentsRepository implements RepositoryAbstract {
   @override
-  Future<Map<String, dynamic>> getAll() async {
+  Future<Map<String, dynamic>> getAll({List<String>? fields}) async {
     final students = await _getAllStudents();
-    return students.map((key, value) => MapEntry(key, value.serialize()));
+    return students
+        .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
   }
 
   @override
-  Future<Map<String, dynamic>> getById({required String id}) async {
+  Future<Map<String, dynamic>> getById(
+      {required String id, List<String>? fields}) async {
     final student = await _getStudentById(id: id);
     if (student == null) throw MissingDataException('Student not found');
 
-    return student.serialize();
+    return student.serializeWithFields(fields);
   }
 
   @override
@@ -27,7 +30,7 @@ abstract class StudentsRepository implements RepositoryAbstract {
       throw InvalidRequestException('Students must be created individually');
 
   @override
-  Future<void> putById(
+  Future<List<String>> putById(
       {required String id, required Map<String, dynamic> data}) async {
     // Update if exists, insert if not
     final previous = await _getStudentById(id: id);
@@ -36,6 +39,7 @@ abstract class StudentsRepository implements RepositoryAbstract {
         Student.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
     await _putStudent(student: newStudent, previous: previous);
+    return newStudent.getDifference(previous);
   }
 
   Future<Map<String, Student>> _getAllStudents();
