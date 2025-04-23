@@ -216,7 +216,9 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ElevatedButton(
-                    onPressed: isConnected && _studentController.text.isNotEmpty
+                    onPressed: isConnected &&
+                            _studentController.text.isNotEmpty &&
+                            _dummyStudents.isNotEmpty
                         ? _changeStudent
                         : null,
                     child: Text('Change student')),

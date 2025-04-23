@@ -179,12 +179,8 @@ class MySqlStudentsRepository extends StudentsRepository {
           data: {'student_id': student.id, 'contact_id': student.contact.id});
     } catch (e) {
       try {
-        // Try to delete the inserted data in case of error (everything is ON CASCADE DELETE)
-        await MySqlHelpers.performDeleteQuery(
-            connection: connection,
-            tableName: 'entities',
-            idName: 'shared_id',
-            id: student.id);
+        // Try to delete the inserted data in case of error
+        await _deleteStudent(student);
       } catch (e) {
         // Do nothing
       }
@@ -226,6 +222,29 @@ class MySqlStudentsRepository extends StudentsRepository {
           person: student.contact,
           previous: previous.contact);
     }
+  }
+
+  Future<void> _deleteStudent(Student student) async {
+    // Note: This will fail if the student was involved in an internship. The
+    // data from the internship needs to be deleted first.
+
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'student_contacts',
+        idName: 'student_id',
+        id: student.id);
+
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'entities',
+        idName: 'shared_id',
+        id: student.contact.id);
+
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'entities',
+        idName: 'shared_id',
+        id: student.id);
   }
   // coverage:ignore-end
 }
