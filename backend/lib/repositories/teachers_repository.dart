@@ -177,12 +177,10 @@ class MySqlTeachersRepository extends TeachersRepository {
       }
     } catch (e) {
       try {
-        // Try to delete the inserted data in case of error (everything is ON CASCADE DELETE)
-        await MySqlHelpers.performDeleteQuery(
-            connection: connection,
-            tableName: 'entities',
-            idName: 'shared_id',
-            id: teacher.id);
+        // Try to delete the inserted data in case of error. Since they by
+        // design cannot have already be involved in any internships,
+        // we can safely delete them
+        _deleteTeacher(teacher);
       } catch (e) {
         // Do nothing
       }
@@ -237,6 +235,18 @@ class MySqlTeachersRepository extends TeachersRepository {
         await _sendItineraries(connection, teacher, itinerary);
       }
     }
+  }
+
+  Future<void> _deleteTeacher(Teacher teacher) async {
+    // Note, the deletion of the teacher will fail if they were involved in any
+    // interships which therefore needs to be reassigned first
+
+    // Delete the teacher from the database
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'entities',
+        idName: 'shared_id',
+        id: teacher.id);
   }
 }
 
