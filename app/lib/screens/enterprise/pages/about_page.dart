@@ -1,7 +1,7 @@
+import 'package:common/models/persons/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
-import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';

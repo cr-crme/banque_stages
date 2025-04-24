@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:common/models/generic/address.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';
@@ -8,7 +8,7 @@ void main() {
     test('is shown properly', () {
       expect(
           dummyAddress().toString(), '100 Wunderbar #A, Wonderland, H0H 0H0');
-      expect(dummyAddress(skipAppartment: true).toString(),
+      expect(dummyAddress(skipApartment: true).toString(),
           '100 Wunderbar, Wonderland, H0H 0H0');
     });
 
@@ -19,7 +19,7 @@ void main() {
       expect(addressSame.id, address.id);
       expect(addressSame.civicNumber, address.civicNumber);
       expect(addressSame.street, address.street);
-      expect(addressSame.appartment, address.appartment);
+      expect(addressSame.apartment, address.apartment);
       expect(addressSame.city, address.city);
       expect(addressSame.postalCode, address.postalCode);
 
@@ -27,14 +27,14 @@ void main() {
         id: 'newId',
         civicNumber: 200,
         street: 'Wonderbar',
-        appartment: 'B',
+        apartment: 'B',
         city: 'Wunderland',
         postalCode: 'H0H 0H1',
       );
       expect(addressDifferent.id, 'newId');
       expect(addressDifferent.civicNumber, 200);
       expect(addressDifferent.street, 'Wonderbar');
-      expect(addressDifferent.appartment, 'B');
+      expect(addressDifferent.apartment, 'B');
       expect(addressDifferent.city, 'Wunderland');
       expect(addressDifferent.postalCode, 'H0H 0H1');
     });
@@ -44,10 +44,10 @@ void main() {
       expect(Address(civicNumber: 100).isEmpty, isFalse);
     });
 
-    test('"isValid" if all fields are not null expect appartment', () {
+    test('"isValid" if all fields are not null expect apartment', () {
       expect(dummyAddress().isValid, isTrue);
       expect(dummyAddress(skipCivicNumber: true).isValid, isFalse);
-      expect(dummyAddress(skipAppartment: true).isValid, isTrue);
+      expect(dummyAddress(skipApartment: true).isValid, isTrue);
       expect(dummyAddress(skipStreet: true).isValid, isFalse);
       expect(dummyAddress(skipCity: true).isValid, isFalse);
       expect(dummyAddress(skipPostalCode: true).isValid, isFalse);
@@ -62,7 +62,7 @@ void main() {
         'id': address.id,
         'number': address.civicNumber,
         'street': address.street,
-        'appartment': address.appartment,
+        'apartment': address.apartment,
         'city': address.city,
         'postalCode': address.postalCode
       });
@@ -70,7 +70,7 @@ void main() {
       expect(deserialized.id, address.id);
       expect(deserialized.civicNumber, address.civicNumber);
       expect(deserialized.street, address.street);
-      expect(deserialized.appartment, address.appartment);
+      expect(deserialized.apartment, address.apartment);
       expect(deserialized.city, address.city);
       expect(deserialized.postalCode, address.postalCode);
 
@@ -79,7 +79,7 @@ void main() {
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.civicNumber, isNull);
       expect(emptyDeserialized.street, isNull);
-      expect(emptyDeserialized.appartment, isNull);
+      expect(emptyDeserialized.apartment, isNull);
       expect(emptyDeserialized.city, isNull);
       expect(emptyDeserialized.postalCode, isNull);
     });

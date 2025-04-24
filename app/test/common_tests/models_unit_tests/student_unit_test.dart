@@ -1,5 +1,5 @@
+import 'package:common/models/generic/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
-import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';

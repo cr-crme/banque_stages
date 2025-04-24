@@ -139,13 +139,15 @@ extension BanqueStageWidgetTester on WidgetTester {
                 create: (context) => ItinerariesProvider(mockMe: true)),
           if (withTeachers && withAuthentication)
             ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
-              create: (context) => TeachersProvider(mockMe: true),
+              create: (context) => TeachersProvider(
+                  uri: Uri.parse('ws://localhost'), mockMe: true),
               update: (context, auth, previous) =>
                   previous!..initializeAuth(auth),
             ),
           if (withTeachers && !withAuthentication)
             ChangeNotifierProvider<TeachersProvider>(
-                create: (context) => TeachersProvider(mockMe: true)),
+                create: (context) => TeachersProvider(
+                    uri: Uri.parse('ws://localhost'), mockMe: true)),
           if (withStudents && withAuthentication)
             ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
               create: (context) => StudentsProvider(mockMe: true),

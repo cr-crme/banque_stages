@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:common/models/generic/address.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';

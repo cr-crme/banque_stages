@@ -2,20 +2,20 @@
 import 'dart:developer' as dev;
 import 'dart:math';
 
-import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
-import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
-import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
@@ -68,34 +68,58 @@ Future<void> _addDummyTeachers(
   await _waitForDatabaseUpdate(teachers, 0, strictlyEqualToExpected: true);
 
   teachers.add(Teacher(
-      id: '42',
-      firstName: 'Roméo',
-      lastName: 'Montaigu',
-      groups: ['550', '551'],
-      schoolId: schools[0].id,
-      email: 'romeo.montaigu@shakespeare.qc'));
+    id: '42',
+    firstName: 'Roméo',
+    middleName: null,
+    lastName: 'Montaigu',
+    schoolId: schools[0].id,
+    groups: ['550', '551'],
+    email: 'romeo.montaigu@shakespeare.qc',
+    phone: PhoneNumber.empty,
+    address: Address.empty,
+    dateBirth: null,
+    itineraries: [],
+  ));
 
   teachers.add(Teacher(
-      id: teachers.currentTeacherId,
-      firstName: 'Juliette',
-      lastName: 'Capulet',
-      schoolId: schools[0].id,
-      groups: ['550', '551'],
-      email: 'juliette.capulet@shakespeare.qc'));
+    id: teachers.currentTeacherId,
+    firstName: 'Juliette',
+    middleName: null,
+    lastName: 'Capulet',
+    schoolId: schools[0].id,
+    groups: ['550', '551'],
+    email: 'juliette.capulet@shakespeare.qc',
+    phone: PhoneNumber.empty,
+    address: Address.empty,
+    dateBirth: null,
+    itineraries: [],
+  ));
 
   teachers.add(Teacher(
-      firstName: 'Tybalt',
-      lastName: 'Capulet',
-      schoolId: schools[0].id,
-      groups: ['550', '551'],
-      email: 'tybalt.capulet@shakespeare.qc'));
+    firstName: 'Tybalt',
+    middleName: null,
+    lastName: 'Capulet',
+    schoolId: schools[0].id,
+    groups: ['550', '551'],
+    email: 'tybalt.capulet@shakespeare.qc',
+    phone: PhoneNumber.empty,
+    address: Address.empty,
+    dateBirth: null,
+    itineraries: [],
+  ));
 
   teachers.add(Teacher(
-      firstName: 'Benvolio',
-      lastName: 'Montaigu',
-      schoolId: schools[0].id,
-      groups: ['552'],
-      email: 'benvolio.montaigu@shakespeare.qc'));
+    firstName: 'Benvolio',
+    middleName: null,
+    lastName: 'Montaigu',
+    schoolId: schools[0].id,
+    groups: ['552'],
+    email: 'benvolio.montaigu@shakespeare.qc',
+    phone: PhoneNumber.empty,
+    address: Address.empty,
+    dateBirth: null,
+    itineraries: [],
+  ));
   await _waitForDatabaseUpdate(teachers, 4);
 }
 
@@ -1353,7 +1377,7 @@ Future<void> _addDummyInternships(
 }
 
 Future<void> _waitForDatabaseUpdate(
-    FirebaseListProvided list, int expectedLength,
+    DatabaseListProvided list, int expectedLength,
     {bool strictlyEqualToExpected = false}) async {
   // Wait for the database to add all the students
   while (strictlyEqualToExpected

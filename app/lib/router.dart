@@ -19,7 +19,7 @@ import 'package:crcrme_banque_stages/screens/supervision_chart/supervision_chart
 import 'package:crcrme_banque_stages/screens/supervision_chart/supervision_student_details.dart';
 import 'package:crcrme_banque_stages/screens/tasks_to_do/tasks_to_do_screen.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/itinerary_screen.dart';
-import 'package:enhanced_containers/item_serializable.dart';
+import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:go_router/go_router.dart';
 
 import 'common/providers/auth_provider.dart';

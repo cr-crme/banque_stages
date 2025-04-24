@@ -43,9 +43,9 @@ dependencies:
     latlong2: ^0.9.1
     flutter_map: ^8.1.1
     flutter_map_cancellable_tile_provider: ^3.1.0
-    routing_client_dart: ^0.5.5
+    routing_client_dart: ^1.0.7
+    enhanced_containers_foundation:
     enhanced_containers:
-        path: ../external/enhanced_containers
     crcrme_material_theme:
         path: ../external/crcrme_material_theme
     go_router: ^14.2.7
@@ -58,10 +58,16 @@ dependencies:
     shared_preferences: ^2.2.0
     lorem_ipsum: ^0.0.3
     http: ^1.3.0
+    dart_jsonwebtoken: ^2.17.0
+    web_socket_client: ^0.2.0
+    common:
+        path: ../common
 
 dependency_overrides:
-  enhanced_containers_foundation:
-    path: ../external/enhanced_containers/plugins/enhanced_containers_foundation
+    enhanced_containers_foundation:
+        path: ../external/enhanced_containers/plugins/enhanced_containers_foundation
+    enhanced_containers:
+        path: ../external/enhanced_containers/
 
 dev_dependencies:
     flutter_test:

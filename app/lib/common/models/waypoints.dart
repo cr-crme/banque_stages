@@ -1,5 +1,5 @@
-import 'package:crcrme_banque_stages/common/models/address.dart';
-import 'package:crcrme_banque_stages/common/models/geographic_coordinate_system.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/geographic_coordinate_system.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 
 import 'visiting_priority.dart';

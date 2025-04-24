@@ -1,9 +1,9 @@
-import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
-import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 
@@ -47,12 +47,13 @@ class Enterprise extends ItemSerializable {
     required this.contact,
     this.contactFunction = '',
     this.address,
-    this.phone = const PhoneNumber(),
-    this.fax = const PhoneNumber(),
+    PhoneNumber? phone,
+    PhoneNumber? fax,
     this.website = '',
     this.headquartersAddress,
     this.neq = '',
-  });
+  })  : phone = phone ?? PhoneNumber.empty,
+        fax = fax ?? PhoneNumber.empty;
 
   Enterprise copyWith({
     String? name,

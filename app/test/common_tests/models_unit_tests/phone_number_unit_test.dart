@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
+import 'package:common/models/generic/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
-import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
@@ -13,6 +10,9 @@ import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 import 'steps/general_informations_step.dart';
 import 'steps/schedule_step.dart';
 

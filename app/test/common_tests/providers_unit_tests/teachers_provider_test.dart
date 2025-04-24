@@ -12,7 +12,8 @@ void main() {
     initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
 
     test('"currentTeacherId" works', () {
-      final teachers = TeachersProvider(mockMe: true);
+      final teachers =
+          TeachersProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       expect(() => teachers.currentTeacherId, throwsException);
 
       teachers.initializeAuth(AuthProvider(mockMe: true));
@@ -20,7 +21,8 @@ void main() {
     });
 
     test('"getCurrentTeacher" works', () {
-      final teachers = TeachersProvider(mockMe: true);
+      final teachers =
+          TeachersProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       expect(teachers.currentTeacher.firstName, 'Error');
 
       final auth = AuthProvider(mockMe: true);
@@ -33,7 +35,8 @@ void main() {
     });
 
     test('"deserializeItem" works', () {
-      final teachers = TeachersProvider(mockMe: true);
+      final teachers =
+          TeachersProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       final teacher = teachers.deserializeItem(dummyTeacher().serialize());
 
       expect(teacher.firstName, 'Pierre');

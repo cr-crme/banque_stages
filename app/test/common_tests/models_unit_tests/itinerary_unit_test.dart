@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/geographic_coordinate_system.dart';
+import 'package:common/models/generic/geographic_coordinate_system.dart';
 import 'package:crcrme_banque_stages/common/models/itinerary.dart';
 import 'package:flutter_test/flutter_test.dart';
 

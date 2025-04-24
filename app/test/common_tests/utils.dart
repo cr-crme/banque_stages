@@ -1,6 +1,8 @@
-import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/geographic_coordinate_system.dart';
+import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/geographic_coordinate_system.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
@@ -9,14 +11,12 @@ import 'package:crcrme_banque_stages/common/models/itinerary.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/person.dart';
-import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
 import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
-import 'package:crcrme_banque_stages/common/models/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
@@ -40,6 +40,9 @@ Teacher dummyTeacher(
       groups: groups,
       email: 'peter.john.jakob@test.com',
       phone: dummyPhoneNumber(),
+      address: Address.empty,
+      dateBirth: null,
+      itineraries: [],
     );
 
 Student dummyStudent({
@@ -88,14 +91,14 @@ PhoneNumber dummyPhoneNumber({int? extension}) => PhoneNumber.fromString(
 Address dummyAddress({
   bool skipCivicNumber = false,
   bool skipStreet = false,
-  bool skipAppartment = false,
+  bool skipApartment = false,
   bool skipCity = false,
   bool skipPostalCode = false,
 }) =>
     Address(
       civicNumber: skipCivicNumber ? null : 100,
       street: skipStreet ? null : 'Wunderbar',
-      appartment: skipAppartment ? null : 'A',
+      apartment: skipApartment ? null : 'A',
       city: skipCity ? null : 'Wonderland',
       postalCode: skipPostalCode ? null : 'H0H 0H0',
     );

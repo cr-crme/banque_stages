@@ -28,74 +28,74 @@ class RoutingMap extends StatefulWidget {
 }
 
 class _RoutingMapState extends State<RoutingMap> {
-  Future<Road?> _road = Future<Road?>.value();
+  // Future<Road?> _road = Future<Road?>.value();
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    computeRoute();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   computeRoute();
+  // }
 
-  void computeRoute() {
-    final itineraries = Provider.of<ItinerariesProvider>(context);
-    _road = _getActivatedRoute(itineraries);
-    setState(() {});
-  }
+  // void computeRoute() {
+  //   final itineraries = Provider.of<ItinerariesProvider>(context);
+  //   _road = _getActivatedRoute(itineraries);
+  //   setState(() {});
+  // }
 
-  Future<Road?> _getActivatedRoute(ItinerariesProvider itineraries) async {
-    if (itineraries.isEmpty || !itineraries.hasDate(widget.currentDate)) {
-      if (widget.onComputedDistancesCallback != null) {
-        widget.onComputedDistancesCallback!([]);
-      }
-      return null;
-    }
+  // Future<Road?> _getActivatedRoute(ItinerariesProvider itineraries) async {
+  //   if (itineraries.isEmpty || !itineraries.hasDate(widget.currentDate)) {
+  //     if (widget.onComputedDistancesCallback != null) {
+  //       widget.onComputedDistancesCallback!([]);
+  //     }
+  //     return null;
+  //   }
 
-    final manager = OSRMManager();
-    final route = itineraries
-        .fromDate(widget.currentDate)!
-        .map((e) => LngLat(lat: e.gcs.latitude, lng: e.gcs.longitude))
-        .toList();
+  //   final manager = OSRMManager();
+  //   final route = itineraries
+  //       .fromDate(widget.currentDate)!
+  //       .map((e) => LngLat(lat: e.gcs.latitude, lng: e.gcs.longitude))
+  //       .toList();
 
-    late Road out;
-    try {
-      out = await manager.getRoad(
-        waypoints: route,
-        geometries: Geometries.geojson,
-      );
-    } catch (e) {
-      out = Road(distance: 0, duration: 0, polylineEncoded: null);
-    }
+  //   late Road out;
+  //   try {
+  //     out = await manager.getRoad(
+  //       waypoints: route,
+  //       geometries: Geometries.geojson,
+  //     );
+  //   } catch (e) {
+  //     out = Road(distance: 0, duration: 0, polylineEncoded: null);
+  //   }
 
-    if (widget.onComputedDistancesCallback != null) {
-      widget.onComputedDistancesCallback!(_roadToDistances(out));
-    }
+  //   if (widget.onComputedDistancesCallback != null) {
+  //     widget.onComputedDistancesCallback!(_roadToDistances(out));
+  //   }
 
-    return out;
-  }
+  //   return out;
+  // }
 
-  List<Polyline> _roadToPolyline(Road? road) {
-    if (road == null || road.polyline == null) return [Polyline(points: [])];
+  // List<Polyline> _roadToPolyline(Road? road) {
+  //   if (road == null || road.polyline == null) return [Polyline(points: [])];
 
-    return [
-      Polyline(
-        points: road.polyline!.map((e) => LatLng(e.lat, e.lng)).toList(),
-        strokeWidth: 4,
-        color: Theme.of(context).primaryColor,
-      )
-    ];
-  }
+  //   return [
+  //     Polyline(
+  //       points: road.polyline!.map((e) => LatLng(e.lat, e.lng)).toList(),
+  //       strokeWidth: 4,
+  //       color: Theme.of(context).primaryColor,
+  //     )
+  //   ];
+  // }
 
-  List<double> _roadToDistances(Road? road) {
-    List<double> distances = [];
+  // List<double> _roadToDistances(Road? road) {
+  //   List<double> distances = [];
 
-    if (road != null) {
-      for (final leg in road.details.roadLegs) {
-        distances.add(leg.distance);
-      }
-    }
+  //   if (road != null) {
+  //     for (final leg in road.details.roadLegs) {
+  //       distances.add(leg.distance);
+  //     }
+  //   }
 
-    return distances;
-  }
+  //   return distances;
+  // }
 
   void _toggleName(index) {
     widget.waypoints[index] = widget.waypoints[index]
@@ -180,13 +180,13 @@ class _RoutingMapState extends State<RoutingMap> {
             userAgentPackageName: 'dev.fleaflet.flutter_map.example',
             tileProvider: CancellableNetworkTileProvider(),
           ),
-          FutureBuilder<Road?>(
-            future: _road,
-            builder: (context, road) {
-              if (!road.hasData || widget.waypoints.isEmpty) return Container();
-              return PolylineLayer(polylines: _roadToPolyline(road.data));
-            },
-          ),
+          // FutureBuilder<Road?>(
+          //   future: _road,
+          //   builder: (context, road) {
+          //     if (!road.hasData || widget.waypoints.isEmpty) return Container();
+          //     return PolylineLayer(polylines: _roadToPolyline(road.data));
+          //   },
+          // ),
           MarkerLayer(markers: _waypointsToMarkers()),
           const ZoomButtons(),
         ],

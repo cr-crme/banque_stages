@@ -1,6 +1,6 @@
+import 'package:common/models/generic/address.dart';
 import 'package:flutter/material.dart';
 
-import 'package:crcrme_banque_stages/common/models/address.dart';
 import 'package:crcrme_banque_stages/screens/enterprise/pages/widgets/show_address_dialog.dart';
 
 class AddressController {

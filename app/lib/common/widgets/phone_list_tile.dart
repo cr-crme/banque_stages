@@ -1,6 +1,6 @@
+import 'package:common/models/generic/phone_number.dart';
 import 'package:flutter/material.dart';
 
-import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 

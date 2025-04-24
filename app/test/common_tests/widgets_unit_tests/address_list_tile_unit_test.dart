@@ -84,7 +84,7 @@ void main() {
       final controller = AddressController(
         onAddressChangedCallback: () => isValidated = true,
         fromStringOverrideForDebug: (_) async {
-          final out = dummyAddress(skipAppartment: first);
+          final out = dummyAddress(skipApartment: first);
           first = false;
           return out;
         },
@@ -123,7 +123,7 @@ void main() {
       final controller = AddressController(
         onAddressChangedCallback: () => isValidated = true,
         fromStringOverrideForDebug: (_) async {
-          final out = dummyAddress(skipAppartment: first);
+          final out = dummyAddress(skipApartment: first);
           first = false;
           return out;
         },
@@ -269,7 +269,7 @@ void main() {
         // validation request. But also call it manually so they collide,
         // effectively testing the mutex
         addressHasChanged = false;
-        addressController.address = dummyAddress(skipAppartment: true);
+        addressController.address = dummyAddress(skipApartment: true);
         expect(await addressController.requestValidation(), null);
         expect(addressHasChanged, isTrue);
       });
@@ -305,7 +305,7 @@ void main() {
           ),
         ));
         // Address is valid, even though it is empty
-        addressController.address = dummyAddress(skipAppartment: true);
+        addressController.address = dummyAddress(skipApartment: true);
         await Future.delayed(const Duration(milliseconds: 5));
         expect(await addressController.requestValidation(),
             'L\'adresse n\'a pu être trouvée');
@@ -327,7 +327,7 @@ void main() {
           ),
         ));
         // Address is valid, even though it is empty
-        addressController.address = dummyAddress(skipAppartment: true);
+        addressController.address = dummyAddress(skipApartment: true);
         await Future.delayed(const Duration(milliseconds: 5));
         expect(await addressController.requestValidation(),
             'Essayer une nouvelle adresse');

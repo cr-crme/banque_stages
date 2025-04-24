@@ -33,6 +33,19 @@ class Teacher extends Person {
     }
   }
 
+  static Teacher get empty => Teacher(
+        firstName: 'Error',
+        middleName: null,
+        lastName: 'Error',
+        schoolId: '-1',
+        groups: [],
+        email: 'error.error@error.err',
+        phone: PhoneNumber.empty,
+        address: Address.empty,
+        dateBirth: null,
+        itineraries: [],
+      );
+
   Teacher.fromSerialized(super.map)
       : schoolId = map['school_id'] ?? '',
         groups = _stringListFromSerialized(map['groups']),

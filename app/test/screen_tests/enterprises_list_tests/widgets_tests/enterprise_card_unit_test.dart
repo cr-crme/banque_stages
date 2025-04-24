@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/address.dart';
+import 'package:common/models/generic/address.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:crcrme_banque_stages/common/widgets/numbered_tablet.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/widgets/enterprise_card.dart';

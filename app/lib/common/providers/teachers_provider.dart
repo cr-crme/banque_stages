@@ -1,15 +1,21 @@
-import 'package:crcrme_banque_stages/common/models/teacher.dart';
-import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:common/communication_protocol.dart';
+import 'package:common/models/persons/teacher.dart';
+import 'package:crcrme_banque_stages/common/models/backend_list_provided.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'auth_provider.dart';
 
-class TeachersProvider extends FirebaseListProvided<Teacher> {
-  TeachersProvider({super.mockMe}) : super(pathToData: 'teachers');
+class TeachersProvider extends BackendListProvided<Teacher> {
+  TeachersProvider({required super.uri, super.mockMe});
 
   static TeachersProvider of(BuildContext context, {listen = false}) =>
       Provider.of<TeachersProvider>(context, listen: listen);
+
+  @override
+  RequestFields getField([bool asList = false]) {
+    return asList ? RequestFields.teachers : RequestFields.teacher;
+  }
 
   @override
   Teacher deserializeItem(data) {
@@ -28,16 +34,10 @@ class TeachersProvider extends FirebaseListProvided<Teacher> {
     notifyListeners();
   }
 
-  Teacher get currentTeacher => isEmpty ||
-          _currentId == null ||
-          !hasId(_currentId!)
-      ? Teacher(
-          firstName: 'Error',
-          lastName: 'Error',
-          email: 'error@error.error',
-          schoolId: '-1',
-          groups: [])
-      : this[_currentId];
+  Teacher get currentTeacher =>
+      isEmpty || _currentId == null || !hasId(_currentId!)
+          ? Teacher.empty
+          : this[_currentId];
 
   void initializeAuth(AuthProvider auth) {
     currentTeacherId = auth.currentUser?.uid;

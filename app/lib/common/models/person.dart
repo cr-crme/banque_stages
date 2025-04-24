@@ -1,7 +1,6 @@
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
-
-import 'package:crcrme_banque_stages/common/models/address.dart';
-import 'package:crcrme_banque_stages/common/models/phone_number.dart';
 
 class Person extends ItemSerializable {
   final String firstName;
@@ -19,10 +18,10 @@ class Person extends ItemSerializable {
     this.middleName,
     required this.lastName,
     this.dateBirth,
-    this.phone = const PhoneNumber(),
+    PhoneNumber? phone,
     this.email,
     this.address,
-  });
+  }) : phone = phone ?? PhoneNumber.empty;
 
   static Person get empty => Person(
       firstName: 'Unnamed',

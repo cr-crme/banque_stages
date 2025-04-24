@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/phone_number.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:flutter/material.dart';
 
 abstract class FormService {
