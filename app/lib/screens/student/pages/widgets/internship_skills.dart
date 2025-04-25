@@ -1,6 +1,6 @@
-import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/internship_evaluation_attitude.dart';
+import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
@@ -341,8 +341,8 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
               _buildSelectEvaluationFromDate(),
               _buildPresentAtMeeting(),
               _buillSkillSection(specialization),
-              if (widget.internship.extraSpecializationsId.isNotEmpty)
-                ...widget.internship.extraSpecializationsId
+              if (widget.internship.extraSpecializationIds.isNotEmpty)
+                ...widget.internship.extraSpecializationIds
                     .asMap()
                     .keys
                     .map((index) => Column(
@@ -350,7 +350,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
                           children: [
                             _buillSkillSection(
                                 ActivitySectorsService.specialization(widget
-                                    .internship.extraSpecializationsId[index])),
+                                    .internship.extraSpecializationIds[index])),
                           ],
                         )),
               _buildComment(),
@@ -465,7 +465,7 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
             padding: const EdgeInsets.only(left: 12.0),
             child: Text(GeneralAppreciation
                 .values[widget.evaluation[_currentEvaluationIndex].attitude
-                    .generalAppreciation]
+                    .generalAppreciation.index]
                 .name),
           ),
         ],

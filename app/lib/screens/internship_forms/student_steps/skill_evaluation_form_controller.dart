@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
-import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/internship_evaluation_skill.dart';
+import 'package:common/models/internships/task_appreciation.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
@@ -129,7 +129,7 @@ class SkillEvaluationFormController {
       addSkill(skillId);
       // Set the actual values to add (but empty) skill
       appreciations[skillId] = skillEvaluation.appreciation;
-      skillCommentsControllers[skillId]!.text = skillEvaluation.comment;
+      skillCommentsControllers[skillId]!.text = skillEvaluation.comments;
 
       final skill = _idToSkill[skillId]!;
       for (final task in skill.tasks) {
@@ -158,7 +158,7 @@ class SkillEvaluationFormController {
         skillName: skill.idWithName,
         tasks: tasks,
         appreciation: appreciations[skillId]!,
-        comment: skillCommentsControllers[skillId]!.text,
+        comments: skillCommentsControllers[skillId]!.text,
       ));
     }
     return InternshipEvaluationSkill(
@@ -232,7 +232,7 @@ class SkillEvaluationFormController {
       _skillsAreFromSpecializationId[skill.id] = specialization.id;
     }
 
-    for (final extraSpecializationId in internshipTp.extraSpecializationsId) {
+    for (final extraSpecializationId in internshipTp.extraSpecializationIds) {
       for (final skill
           in ActivitySectorsService.specialization(extraSpecializationId)
               .skills) {

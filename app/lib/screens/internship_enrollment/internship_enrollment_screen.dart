@@ -1,8 +1,8 @@
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
@@ -82,7 +82,7 @@ class _InternshipEnrollmentScreenState
         .fromId(_generalInfoKey.currentState!.enterprise!.id);
 
     final internship = Internship(
-      versionDate: DateTime.now(),
+      creationDate: DateTime.now(),
       studentId: _generalInfoKey.currentState!.student!.id,
       signatoryTeacherId:
           TeachersProvider.of(context, listen: false).currentTeacherId,
@@ -93,7 +93,7 @@ class _InternshipEnrollmentScreenState
               job.specialization ==
               _generalInfoKey.currentState!.primaryJob!.specialization)
           .id,
-      extraSpecializationsId: _generalInfoKey.currentState!.extraSpecializations
+      extraSpecializationIds: _generalInfoKey.currentState!.extraSpecializations
           .map<String>((e) => e!.id)
           .toList(),
       supervisor: Person(
@@ -105,9 +105,9 @@ class _InternshipEnrollmentScreenState
           address: Address.empty,
           phone: PhoneNumber.fromString(
               _generalInfoKey.currentState!.supervisorPhone)),
-      date: _scheduleKey.currentState!.scheduleController.dateRange!,
-      expectedLength: _scheduleKey.currentState!.intershipLength,
-      achievedLength: 0,
+      dates: _scheduleKey.currentState!.scheduleController.dateRange!,
+      expectedDuration: _scheduleKey.currentState!.intershipLength,
+      achievedDuration: 0,
       weeklySchedules:
           _scheduleKey.currentState!.scheduleController.weeklySchedules,
       visitingPriority: VisitingPriority.low,

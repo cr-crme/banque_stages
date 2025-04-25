@@ -629,8 +629,8 @@ class _LoginScreenState extends State<LoginScreen> {
           creationDate: DateTime(2020, 1, 1),
           dates: time_utils.DateTimeRange(
               start: DateTime(2020, 1, 1), end: DateTime(2020, 1, 31)),
-          supervisorId: _dummyTeachers.keys
-              .toList()[_random.nextInt(_dummyTeachers.length)],
+          supervisor: _dummyTeachers[_dummyTeachers.keys
+              .toList()[_random.nextInt(_dummyTeachers.length)]]!,
           weeklySchedules: [
             WeeklySchedule(
                 schedule: [
@@ -659,7 +659,7 @@ class _LoginScreenState extends State<LoginScreen> {
           creationDate: DateTime(2020, 1, 15),
           dates: time_utils.DateTimeRange(
               start: DateTime(2020, 1, 2), end: DateTime(2020, 2, 1)),
-          supervisorId: internship.supervisorId,
+          supervisor: internship.supervisor,
           weeklySchedules: [
             WeeklySchedule(
                 schedule: [

@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:common/models/internships/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
@@ -116,7 +116,7 @@ class _EnterpriseEvaluationScreenState
     final internships = InternshipsProvider.of(context, listen: false);
     final internship = internships.firstWhere((e) => e.id == widget.id);
 
-    internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
+    internship.addEnterpriseEvaluation(PostInternshipEnterpriseEvaluation(
       internshipId: internship.id,
       skillsRequired: _taskAndAbilityKey.currentState!.requiredSkills,
       taskVariety: _taskAndAbilityKey.currentState!.taskVariety!,
@@ -138,7 +138,7 @@ class _EnterpriseEvaluationScreenState
           _specializedStudentsKey.currentState!.acceptanceMentalHealthDisorder,
       acceptanceBehaviorDifficulties:
           _specializedStudentsKey.currentState!.acceptanceBehaviorDifficulties,
-    );
+    ));
 
     // Pass the evaluation data to the rest of the app
     internships.replace(internship);

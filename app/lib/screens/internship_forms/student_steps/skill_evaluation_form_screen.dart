@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
-import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/internship_evaluation_skill.dart';
+import 'package:common/models/internships/task_appreciation.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';

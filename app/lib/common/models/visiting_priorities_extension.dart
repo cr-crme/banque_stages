@@ -1,14 +1,7 @@
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:flutter/material.dart';
 
-enum VisitingPriority {
-  low,
-  mid,
-  high,
-  notApplicable,
-  school,
-}
-
-extension VisitingPriorityStyled on VisitingPriority {
+extension VisitingPrioritiesExtension on VisitingPriority {
   MaterialColor get color {
     switch (this) {
       case (VisitingPriority.low):
@@ -38,6 +31,4 @@ extension VisitingPriorityStyled on VisitingPriority {
         return Icons.cancel;
     }
   }
-
-  VisitingPriority get next => VisitingPriority.values[(index - 1) % 3];
 }

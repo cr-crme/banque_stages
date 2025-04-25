@@ -4,20 +4,21 @@ import 'dart:math';
 
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/schedule.dart';
+import 'package:common/models/internships/time_utils.dart' as time_utils;
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
-import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
@@ -1017,17 +1018,17 @@ Future<void> _addDummyInternships(
 
   final rng = Random();
 
-  var period = DateTimeRange(
+  var period = time_utils.DateTimeRange(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    versionDate: DateTime.now(),
+    creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Cedric Masson').id,
     signatoryTeacherId: teachers.currentTeacherId,
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Care').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Auto Care').jobs[0].id,
-    extraSpecializationsId: [
+    extraSpecializationIds: [
       ActivitySectorsService.sectors[2].specializations[1].id,
       ActivitySectorsService.sectors[1].specializations[0].id,
     ],
@@ -1041,36 +1042,36 @@ Future<void> _addDummyInternships(
       address: Address.empty,
       email: null,
     ),
-    date: period,
-    expectedLength: 135,
-    achievedLength: 0,
+    dates: period,
+    expectedDuration: 135,
+    achievedDuration: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
           DailySchedule(
             dayOfWeek: Day.monday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.tuesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.wednesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.thursday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.friday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
         ],
         period: period,
@@ -1080,11 +1081,11 @@ Future<void> _addDummyInternships(
 
   var startingPeriod =
       DateTime.now().subtract(Duration(days: rng.nextInt(50) + 60));
-  period = DateTimeRange(
+  period = time_utils.DateTimeRange(
       start: startingPeriod,
       end: startingPeriod.add(Duration(days: rng.nextInt(50))));
   internships.add(Internship(
-    versionDate: DateTime.now(),
+    creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Thomas Caron').id,
     signatoryTeacherId: teachers.currentTeacherId,
     extraSupervisingTeacherIds: [],
@@ -1092,7 +1093,7 @@ Future<void> _addDummyInternships(
         enterprises.firstWhere((e) => e.name == 'Boucherie Marien').id,
     jobId:
         enterprises.firstWhere((e) => e.name == 'Boucherie Marien').jobs[0].id,
-    extraSpecializationsId: [],
+    extraSpecializationIds: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(
       firstName: 'Nobody',
@@ -1103,36 +1104,36 @@ Future<void> _addDummyInternships(
       address: Address.empty,
       email: null,
     ),
-    date: period,
-    expectedLength: 135,
-    achievedLength: 0,
+    dates: period,
+    expectedDuration: 135,
+    achievedDuration: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
           DailySchedule(
             dayOfWeek: Day.monday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.tuesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.wednesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.thursday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.friday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
         ],
         period: period,
@@ -1140,17 +1141,17 @@ Future<void> _addDummyInternships(
     ],
   ));
 
-  period = DateTimeRange(
+  period = time_utils.DateTimeRange(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   var internship = Internship(
-    versionDate: DateTime.now(),
+    creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
     signatoryTeacherId: teachers.currentTeacherId,
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
-    extraSpecializationsId: [],
+    extraSpecializationIds: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(
       firstName: 'Nobody',
@@ -1161,39 +1162,39 @@ Future<void> _addDummyInternships(
       address: Address.empty,
       email: null,
     ),
-    date: period,
+    dates: period,
     endDate: DateTime.now().add(const Duration(days: 10)),
-    expectedLength: 135,
-    achievedLength: 125,
+    expectedDuration: 135,
+    achievedDuration: 125,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
           DailySchedule(
             dayOfWeek: Day.monday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.tuesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.wednesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.thursday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
         ],
         period: period,
       ),
     ],
   );
-  internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
+  internship.addEnterpriseEvaluation(PostInternshipEnterpriseEvaluation(
     internshipId: internship.id,
     skillsRequired: [
       'Communiquer à l\'écrit',
@@ -1213,20 +1214,20 @@ Future<void> _addDummyInternships(
     acceptancePhysicalDisability: 4,
     acceptanceMentalHealthDisorder: 2,
     acceptanceBehaviorDifficulties: 2,
-  );
+  ));
   internships.add(internship);
 
-  period = DateTimeRange(
+  period = time_utils.DateTimeRange(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    versionDate: DateTime.now(),
+    creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Vincent Picard').id,
     signatoryTeacherId: teachers.currentTeacherId,
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'IGA').id,
     jobId: enterprises.firstWhere((e) => e.name == 'IGA').jobs[0].id,
-    extraSpecializationsId: [],
+    extraSpecializationIds: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(
       firstName: 'Nobody',
@@ -1237,26 +1238,26 @@ Future<void> _addDummyInternships(
       address: Address.empty,
       email: null,
     ),
-    date: period,
-    expectedLength: 135,
-    achievedLength: 0,
+    dates: period,
+    expectedDuration: 135,
+    achievedDuration: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
           DailySchedule(
             dayOfWeek: Day.monday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.tuesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.wednesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
         ],
         period: period,
@@ -1264,17 +1265,17 @@ Future<void> _addDummyInternships(
     ],
   ));
 
-  period = DateTimeRange(
+  period = time_utils.DateTimeRange(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    versionDate: DateTime.now(),
+    creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
     signatoryTeacherId: _partnerTeacherId, // This is a Roméo Montaigu's student
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Repair').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Auto Repair').jobs[0].id,
-    extraSpecializationsId: [],
+    extraSpecializationIds: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(
       firstName: 'Nobody',
@@ -1285,27 +1286,27 @@ Future<void> _addDummyInternships(
       address: Address.empty,
       email: null,
     ),
-    date: period,
+    dates: period,
     endDate: DateTime.now().add(const Duration(days: 10)),
-    expectedLength: 135,
-    achievedLength: 0,
+    expectedDuration: 135,
+    achievedDuration: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
           DailySchedule(
             dayOfWeek: Day.monday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.wednesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.friday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
         ],
         period: period,
@@ -1314,17 +1315,17 @@ Future<void> _addDummyInternships(
   ));
 
   startingPeriod = DateTime.now().subtract(const Duration(days: 100));
-  period = DateTimeRange(
+  period = time_utils.DateTimeRange(
       start: startingPeriod,
       end: startingPeriod.add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    versionDate: DateTime.now(),
+    creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
     signatoryTeacherId: _partnerTeacherId,
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
-    extraSpecializationsId: [],
+    extraSpecializationIds: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(
       firstName: 'Nobody',
@@ -1335,36 +1336,36 @@ Future<void> _addDummyInternships(
       address: Address.empty,
       email: null,
     ),
-    date: period,
-    expectedLength: 135,
-    achievedLength: 0,
+    dates: period,
+    expectedDuration: 135,
+    achievedDuration: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
           DailySchedule(
             dayOfWeek: Day.monday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.tuesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.wednesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.thursday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.friday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
         ],
         period: period,
@@ -1372,17 +1373,17 @@ Future<void> _addDummyInternships(
     ],
   ));
 
-  period = DateTimeRange(
+  period = time_utils.DateTimeRange(
       start: DateTime.now(),
       end: DateTime.now().add(Duration(days: rng.nextInt(90))));
   internships.add(Internship(
-    versionDate: DateTime.now(),
+    creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
     signatoryTeacherId: _partnerTeacherId,
     extraSupervisingTeacherIds: [teachers.currentTeacherId],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
-    extraSpecializationsId: [],
+    extraSpecializationIds: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(
       firstName: 'Nobody',
@@ -1393,36 +1394,36 @@ Future<void> _addDummyInternships(
       address: Address.empty,
       email: null,
     ),
-    date: period,
-    expectedLength: 135,
-    achievedLength: 0,
+    dates: period,
+    expectedDuration: 135,
+    achievedDuration: 0,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
           DailySchedule(
             dayOfWeek: Day.monday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.tuesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.wednesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.thursday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.friday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
         ],
         period: period,
@@ -1431,18 +1432,18 @@ Future<void> _addDummyInternships(
   ));
 
   startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(250)));
-  period = DateTimeRange(
+  period = time_utils.DateTimeRange(
       start: startingPeriod,
       end: startingPeriod.add(Duration(days: rng.nextInt(50))));
   internships.add(
     Internship(
-      versionDate: DateTime.now(),
+      creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
       signatoryTeacherId: teachers.currentTeacherId,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').jobs[0].id,
-      extraSpecializationsId: [],
+      extraSpecializationIds: [],
       visitingPriority: VisitingPriority.values[0],
       supervisor: Person(
         firstName: 'Un',
@@ -1453,22 +1454,22 @@ Future<void> _addDummyInternships(
         address: Address.empty,
         email: null,
       ),
-      date: period,
+      dates: period,
       endDate: period.end,
-      expectedLength: 135,
-      achievedLength: 100,
+      expectedDuration: 135,
+      achievedDuration: 100,
       weeklySchedules: [
         WeeklySchedule(
           schedule: [
             DailySchedule(
               dayOfWeek: Day.monday,
-              start: const TimeOfDay(hour: 9, minute: 00),
-              end: const TimeOfDay(hour: 15, minute: 00),
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
             ),
             DailySchedule(
               dayOfWeek: Day.tuesday,
-              start: const TimeOfDay(hour: 9, minute: 00),
-              end: const TimeOfDay(hour: 15, minute: 00),
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
             ),
           ],
           period: period,
@@ -1478,17 +1479,17 @@ Future<void> _addDummyInternships(
   );
 
   startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(200)));
-  period = DateTimeRange(
+  period = time_utils.DateTimeRange(
       start: startingPeriod,
       end: startingPeriod.add(Duration(days: rng.nextInt(50))));
   internships.add(Internship(
-    versionDate: DateTime.now(),
+    creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
     signatoryTeacherId: teachers.currentTeacherId,
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,
-    extraSpecializationsId: [],
+    extraSpecializationIds: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(
       firstName: 'Deux',
@@ -1499,22 +1500,22 @@ Future<void> _addDummyInternships(
       address: Address.empty,
       email: null,
     ),
-    date: period,
+    dates: period,
     endDate: period.end,
-    expectedLength: 135,
-    achievedLength: 100,
+    expectedDuration: 135,
+    achievedDuration: 100,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
           DailySchedule(
             dayOfWeek: Day.monday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
           DailySchedule(
             dayOfWeek: Day.tuesday,
-            start: const TimeOfDay(hour: 9, minute: 00),
-            end: const TimeOfDay(hour: 15, minute: 00),
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
           ),
         ],
         period: period,
@@ -1525,12 +1526,12 @@ Future<void> _addDummyInternships(
 }
 
 Future<void> _waitForDatabaseUpdate(
-    DatabaseListProvided list, int expectedLength,
+    DatabaseListProvided list, int expectedDuration,
     {bool strictlyEqualToExpected = false}) async {
   // Wait for the database to add all the students
   while (strictlyEqualToExpected
-      ? list.length != expectedLength
-      : list.length < expectedLength) {
+      ? list.length != expectedDuration
+      : list.length < expectedDuration) {
     await Future.delayed(const Duration(milliseconds: 100));
   }
 }

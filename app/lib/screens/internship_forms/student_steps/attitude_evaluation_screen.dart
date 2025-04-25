@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
+import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';

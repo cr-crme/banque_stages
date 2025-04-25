@@ -1,5 +1,5 @@
+import 'package:common/models/internships/internship.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';

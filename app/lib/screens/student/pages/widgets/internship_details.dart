@@ -1,9 +1,10 @@
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/schedule.dart';
+import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
@@ -18,16 +19,16 @@ import 'package:intl/intl.dart';
 class _InternshipController {
   _InternshipController(Internship internship)
       : supervisor = internship.supervisor.copyWith(),
-        _date = DateTimeRange(
-            start: internship.date.start, end: internship.date.end),
-        _achievedLength = internship.achievedLength,
+        _dates = time_utils.DateTimeRange(
+            start: internship.dates.start, end: internship.dates.end),
+        _achievedLength = internship.achievedDuration,
         weeklySchedules =
             internship.weeklySchedules.map((week) => week.copyWith()).toList(),
         scheduleController = WeeklyScheduleController(
           weeklySchedules: internship.weeklySchedules
               .map((e) => e.copyWith(schedule: [...e.schedule]))
               .toList(),
-          dateRange: internship.date,
+          dateRange: internship.dates,
         );
 
   bool get hasChanged =>
@@ -49,11 +50,11 @@ class _InternshipController {
   late final supervisorEmailController =
       TextEditingController(text: supervisor.email ?? '');
 
-  DateTimeRange _date;
+  time_utils.DateTimeRange _dates;
   bool dateHasChanged = false;
-  DateTimeRange get date => _date;
-  set date(DateTimeRange newDate) {
-    _date = newDate;
+  time_utils.DateTimeRange get dates => _dates;
+  set date(time_utils.DateTimeRange newDates) {
+    _dates = newDates;
     dateHasChanged = true;
   }
 
@@ -128,13 +129,13 @@ class InternshipDetailsState extends State<InternshipDetails> {
     // Saving the values that do not require an extra version
     if (_internshipController.achievedLengthChanged) {
       InternshipsProvider.of(context, listen: false).replace(_internship
-          .copyWith(achievedLength: _internshipController._achievedLength));
+          .copyWith(achievedDuration: _internshipController._achievedLength));
     }
 
     // Saving the values that require an extra version
     if (_internshipController.hasChanged) {
       _internship.addVersion(
-          versionDate: DateTime.now(),
+          creationDate: DateTime.now(),
           supervisor: _internship.supervisor.copyWith(
               firstName:
                   _internshipController.supervisorFirstNameController.text,
@@ -142,7 +143,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
               phone: PhoneNumber.fromString(
                   _internshipController.supervisorPhoneController.text),
               email: _internshipController.supervisorEmailController.text),
-          date: _internshipController.date,
+          dates: _internshipController.dates,
           weeklySchedules:
               _internshipController.scheduleController.weeklySchedules);
 
@@ -162,7 +163,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
       confirmText: 'Confirmer',
       context: context,
       initialEntryMode: DatePickerEntryMode.calendar,
-      initialDateRange: _internshipController.date,
+      initialDateRange: _internshipController.dates,
       firstDate: DateTime(DateTime.now().year),
       lastDate: DateTime(DateTime.now().year + 2),
     );
@@ -399,9 +400,9 @@ class _InternshipBody extends StatelessWidget {
                   ]),
                   TableRow(children: [
                     Text(DateFormat.yMMMEd('fr_CA')
-                        .format(internshipController.date.start)),
+                        .format(internshipController.dates.start)),
                     Text(DateFormat.yMMMEd('fr_CA')
-                        .format(internshipController.date.end)),
+                        .format(internshipController.dates.end)),
                   ]),
                 ],
               ),
@@ -430,7 +431,7 @@ class _InternshipBody extends StatelessWidget {
           child: Table(
             children: [
               TableRow(children: [
-                Text('Total prévu : ${internship.expectedLength}h'),
+                Text('Total prévu : ${internship.expectedDuration}h'),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -449,7 +450,7 @@ class _InternshipBody extends StatelessWidget {
                                   const TextInputType.numberWithOptions(),
                             ),
                           )
-                        : Text(internship.achievedLength.toString()),
+                        : Text(internship.achievedDuration.toString()),
                     const Text('h'),
                   ],
                 ),
@@ -510,16 +511,16 @@ class _InternshipBody extends StatelessWidget {
               supervisors: supervisors.map((e) => e.fullName).toList(),
               signatoryTeacher: signatoryTeacher.fullName),
           _buildJob(
-              'Métier${internship.extraSpecializationsId.isNotEmpty ? ' principal' : ''}',
+              'Métier${internship.extraSpecializationIds.isNotEmpty ? ' principal' : ''}',
               specialization: job.specialization),
-          if (internship.extraSpecializationsId.isNotEmpty)
-            ...internship.extraSpecializationsId
+          if (internship.extraSpecializationIds.isNotEmpty)
+            ...internship.extraSpecializationIds
                 .asMap()
                 .keys
                 .map((indexExtra) => _buildJob(
-                      'Métier supplémentaire${internship.extraSpecializationsId.length > 1 ? ' (${indexExtra + 1})' : ''}',
+                      'Métier supplémentaire${internship.extraSpecializationIds.length > 1 ? ' (${indexExtra + 1})' : ''}',
                       specialization: ActivitySectorsService.specialization(
-                          internship.extraSpecializationsId[indexExtra]),
+                          internship.extraSpecializationIds[indexExtra]),
                     )),
           _buildAddress(enterprise: enterprises[internship.enterpriseId]),
           Stack(

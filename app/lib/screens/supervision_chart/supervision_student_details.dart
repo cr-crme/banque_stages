@@ -1,13 +1,14 @@
 import 'package:collection/collection.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/schedule.dart';
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
-import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
@@ -194,7 +195,7 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
     if (internships.isEmpty) return Container();
 
     final internship = internships.last;
-    final isOver = internship.date.end.compareTo(DateTime.now()) < 1;
+    final isOver = internship.dates.end.compareTo(DateTime.now()) < 1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

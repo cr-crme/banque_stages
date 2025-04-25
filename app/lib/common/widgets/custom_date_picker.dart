@@ -4,6 +4,7 @@
 
 import 'dart:math' as math;
 
+import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -1156,7 +1157,7 @@ class _CumtomInputDatePickerFormFieldState
 /// Shows a full screen modal dialog containing a Material Design date range
 /// picker.
 ///
-/// The returned [Future] resolves to the [DateTimeRange] selected by the user
+/// The returned [Future] resolves to the [time_utils.DateTimeRange] selected by the user
 /// when the user saves their selection. If the user cancels the dialog, null is
 /// returned.
 ///
@@ -1244,12 +1245,12 @@ class _CumtomInputDatePickerFormFieldState
 ///
 ///  * [showDatePicker], which shows a Material Design date picker used to
 ///    select a single date.
-///  * [DateTimeRange], which is used to describe a date range.
+///  * [time_utils.DateTimeRange], which is used to describe a date range.
 ///  * [DisplayFeatureSubScreen], which documents the specifics of how
 ///    [DisplayFeature]s can split the screen into sub-screens.
-Future<DateTimeRange?> showCustomDateRangePicker({
+Future<time_utils.DateTimeRange?> showCustomDateRangePicker({
   required BuildContext context,
-  DateTimeRange? initialDateRange,
+  time_utils.DateTimeRange? initialDateRange,
   required DateTime firstDate,
   required DateTime lastDate,
   DateTime? currentDate,
@@ -1279,8 +1280,14 @@ Future<DateTimeRange?> showCustomDateRangePicker({
         !initialDateRange.start.isAfter(initialDateRange.end),
     "initialDateRange's start date must not be after it's end date.",
   );
-  initialDateRange =
-      initialDateRange == null ? null : DateUtils.datesOnly(initialDateRange);
+  final initialDateRangeTp = initialDateRange == null
+      ? null
+      : DateUtils.datesOnly(DateTimeRange(
+          start: initialDateRange.start, end: initialDateRange.end));
+  initialDateRange = initialDateRangeTp == null
+      ? null
+      : time_utils.DateTimeRange(
+          start: initialDateRangeTp.start, end: initialDateRangeTp.end);
   firstDate = DateUtils.dateOnly(firstDate);
   lastDate = DateUtils.dateOnly(lastDate);
   assert(
@@ -1340,7 +1347,7 @@ Future<DateTimeRange?> showCustomDateRangePicker({
     );
   }
 
-  return showDialog<DateTimeRange>(
+  return showDialog<time_utils.DateTimeRange>(
     context: context,
     useRootNavigator: useRootNavigator,
     routeSettings: routeSettings,
@@ -1428,7 +1435,7 @@ class CustomDateRangePickerDialog extends StatefulWidget {
   /// If [initialDateRange] is non-null, then it will be used as the initially
   /// selected date range. If it is provided, `initialDateRange.start` must be
   /// before or on `initialDateRange.end`.
-  final DateTimeRange? initialDateRange;
+  final time_utils.DateTimeRange? initialDateRange;
 
   /// The earliest allowable date on the date range.
   final DateTime firstDate;
@@ -1578,8 +1585,9 @@ class _CustomDateRangePickerDialogState
         return;
       }
     }
-    final DateTimeRange? selectedRange = _hasSelectedDateRange
-        ? DateTimeRange(start: _selectedStart.value!, end: _selectedEnd.value!)
+    final time_utils.DateTimeRange? selectedRange = _hasSelectedDateRange
+        ? time_utils.DateTimeRange(
+            start: _selectedStart.value!, end: _selectedEnd.value!)
         : null;
 
     Navigator.pop(context, selectedRange);

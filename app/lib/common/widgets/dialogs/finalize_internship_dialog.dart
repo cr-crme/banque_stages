@@ -16,7 +16,7 @@ class FinalizeInternshipDialog extends StatelessWidget {
     final internships = InternshipsProvider.of(context, listen: false);
     internships.replace(internship.copyWith(
         endDate: DateTime.now(),
-        achievedLength: int.parse(textController.text)));
+        achievedDuration: int.parse(textController.text)));
 
     Navigator.of(context).pop();
   }
@@ -27,9 +27,9 @@ class FinalizeInternshipDialog extends StatelessWidget {
     final internship =
         InternshipsProvider.of(context, listen: false)[internshipId];
     final hourController = TextEditingController(
-        text: internship.achievedLength < 0
+        text: internship.achievedDuration < 0
             ? '0'
-            : internship.achievedLength.toString());
+            : internship.achievedDuration.toString());
 
     return PopScope(
       child: SingleChildScrollView(

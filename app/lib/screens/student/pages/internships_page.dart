@@ -1,5 +1,6 @@
+import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/internship_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
@@ -55,7 +56,7 @@ class InternshipsPageState extends State<InternshipsPage> {
   }
 
   void _sortByDate(List<Internship> internships) {
-    internships.sort((a, b) => a.date.start.compareTo(b.date.start));
+    internships.sort((a, b) => a.dates.start.compareTo(b.dates.start));
   }
 
   @override
@@ -154,7 +155,7 @@ class _StudentInternshipListViewState
                   internship.signatoryTeacherId != myId;
 
               final endDate = internship.endDate == null
-                  ? DateFormat.yMMMd('fr_CA').format(internship.date.end)
+                  ? DateFormat.yMMMd('fr_CA').format(internship.dates.end)
                   : DateFormat.yMMMd('fr_CA').format(internship.endDate!);
 
               late final String specializationIdWithName;
@@ -174,7 +175,7 @@ class _StudentInternshipListViewState
                 isExpanded: _expanded[internship.id]!,
                 headerBuilder: (context, isExpanded) => ListTile(
                   title: Text(
-                    '${DateFormat.yMMMd('fr_CA').format(internship.date.start)} - $endDate',
+                    '${DateFormat.yMMMd('fr_CA').format(internship.dates.start)} - $endDate',
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge!

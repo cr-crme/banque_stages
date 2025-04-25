@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:flutter_test/flutter_test.dart';

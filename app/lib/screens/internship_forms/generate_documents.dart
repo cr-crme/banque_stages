@@ -1,9 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:common/models/internships/internship.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
-
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 
 class GenerateDocuments {
   static Future<Uint8List> generateInternshipContractPdf(format,
@@ -14,7 +13,7 @@ class GenerateDocuments {
       pw.Page(
         build: (pw.Context context) => pw.Center(
             child: pw.Text('Contrat de stage pour le stage de '
-                '${DateFormat('yMd', 'fr_CA').format(internship.versionDateFrom(versionIndex))}')),
+                '${DateFormat('yMd', 'fr_CA').format(internship.creationDateFrom(versionIndex))}')),
       ),
     );
 

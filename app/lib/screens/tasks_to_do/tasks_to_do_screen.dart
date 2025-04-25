@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
@@ -45,7 +45,7 @@ List<_JobEnterpriseInternshipStudent> _enterprisesToEvaluate(context) {
             .toList();
         if (interns.isEmpty) continue;
 
-        interns.sort((a, b) => a.date.start.compareTo(b.date.start));
+        interns.sort((a, b) => a.dates.start.compareTo(b.dates.start));
 
         out.add(_JobEnterpriseInternshipStudent(
             enterprise: enterprise, job: job, internship: interns[0]));
@@ -169,8 +169,8 @@ class _SstRisk extends StatelessWidget {
   Widget build(BuildContext context) {
     final jobs = _enterprisesToEvaluate(context);
 
-    jobs.sort(
-        (a, b) => a.internship!.date.start.compareTo(b.internship!.date.start));
+    jobs.sort((a, b) =>
+        a.internship!.dates.start.compareTo(b.internship!.dates.start));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +189,7 @@ class _SstRisk extends StatelessWidget {
                       subtitle: job.specialization.name,
                       icon: Icons.warning,
                       iconColor: Theme.of(context).colorScheme.secondary,
-                      date: internship.date.start,
+                      date: internship.dates.start,
                       buttonTitle: 'Remplir le\nquestionnaire SST',
                       onTap: () => GoRouter.of(context).pushNamed(
                             Screens.jobSstForm,
@@ -211,7 +211,7 @@ class _EndingInternship extends StatelessWidget {
     final internships = _internshipsToTerminate(context);
 
     internships.sort(
-        (a, b) => a.internship!.date.end.compareTo(b.internship!.date.end));
+        (a, b) => a.internship!.dates.end.compareTo(b.internship!.dates.end));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,7 +230,7 @@ class _EndingInternship extends StatelessWidget {
                     subtitle: enterprise.name,
                     icon: Icons.flag,
                     iconColor: Colors.yellow.shade700,
-                    date: internship.date.end,
+                    date: internship.dates.end,
                     buttonTitle: 'Aller au stage',
                     onTap: () => GoRouter.of(context).pushNamed(
                       Screens.student,

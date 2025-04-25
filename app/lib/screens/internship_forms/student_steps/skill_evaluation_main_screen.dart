@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
+import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
@@ -301,7 +301,7 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
 
   List<Specialization> get extraSpecializations {
     final internship = widget.formController.internship(context, listen: false);
-    return internship.extraSpecializationsId
+    return internship.extraSpecializationIds
         .map((specializationId) =>
             ActivitySectorsService.specialization(specializationId))
         .toList();

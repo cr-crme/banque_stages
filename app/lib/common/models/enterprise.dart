@@ -1,7 +1,7 @@
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/person.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';

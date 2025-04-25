@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:common/models/internships/internship.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/generate_documents.dart';
 
@@ -61,7 +61,7 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                     (index) => _buildPdfTile(
                       context,
                       title: 'Contrat de stage - Version du '
-                          '${DateFormat('yMd', 'fr_CA').format(widget.internship.versionDateFrom(index))}',
+                          '${DateFormat('yMd', 'fr_CA').format(widget.internship.creationDateFrom(index))}',
                       pdfGeneratorCallback: (format, {required internship}) =>
                           GenerateDocuments.generateInternshipContractPdf(
                               format,

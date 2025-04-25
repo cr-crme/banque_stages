@@ -1,6 +1,6 @@
-import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/internship_evaluation_attitude.dart';
+import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';
@@ -310,7 +310,7 @@ void main() {
           'skill': 'skillName',
           'tasks': skill.tasks.map((e) => e.serialize()).toList(),
           'appreciation': skill.appreciation.index,
-          'comment': skill.comment,
+          'comments': skill.comments,
         });
 
         expect(deserialized.id, 'skillEvaluationId');
@@ -318,7 +318,7 @@ void main() {
         expect(deserialized.skillName, 'skillName');
         expect(deserialized.tasks.length, skill.tasks.length);
         expect(deserialized.appreciation, skill.appreciation);
-        expect(deserialized.comment, skill.comment);
+        expect(deserialized.comments, skill.comments);
 
         // Test for empty deserialize to make sure it doesn't crash
         final emptyDeserialized =
@@ -328,7 +328,7 @@ void main() {
         expect(emptyDeserialized.skillName, '');
         expect(emptyDeserialized.tasks.length, 0);
         expect(emptyDeserialized.appreciation, SkillAppreciation.notSelected);
-        expect(emptyDeserialized.comment, '');
+        expect(emptyDeserialized.comments, '');
       });
 
       test(

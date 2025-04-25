@@ -1,5 +1,5 @@
-import 'package:crcrme_banque_stages/common/models/schedule.dart';
-import 'package:flutter/material.dart';
+import 'package:common/models/internships/schedule.dart';
+import 'package:common/models/internships/time_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';

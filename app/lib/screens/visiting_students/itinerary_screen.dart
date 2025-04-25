@@ -1,5 +1,5 @@
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/models/itinerary.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';

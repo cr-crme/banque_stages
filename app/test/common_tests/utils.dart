@@ -1,27 +1,27 @@
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/geographic_coordinate_system.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/time_utils.dart';
+import 'package:common/models/internships/internship_evaluation_attitude.dart';
+import 'package:common/models/internships/internship_evaluation_skill.dart';
+import 'package:common/models/internships/schedule.dart';
+import 'package:common/models/internships/task_appreciation.dart';
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
 import 'package:crcrme_banque_stages/common/models/itinerary.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
-import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
-import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
-import 'package:flutter/material.dart';
 
 School dummySchool({
   String? id,
@@ -251,13 +251,13 @@ Internship dummyInternship({
       end: DateTime(1995, 10, 31).add(const Duration(days: 20)));
   return Internship(
     id: id,
-    versionDate: versionDate ?? DateTime(1995, 10, 31),
+    creationDate: versionDate ?? DateTime(1995, 10, 31),
     studentId: studentId,
     signatoryTeacherId: teacherId,
     extraSupervisingTeacherIds: [],
     enterpriseId: enterpriseId,
     jobId: jobId,
-    extraSpecializationsId: [
+    extraSpecializationIds: [
       ActivitySectorsService.sectors[2].specializations[1].id,
       ActivitySectorsService.sectors[1].specializations[0].id,
     ],
@@ -271,10 +271,10 @@ Internship dummyInternship({
       address: Address.empty,
       email: null,
     ),
-    date: period,
+    dates: period,
     endDate: hasEndDate ? DateTime(2034, 10, 28) : null,
-    expectedLength: 135,
-    achievedLength: achievedLength,
+    expectedDuration: 135,
+    achievedDuration: achievedLength,
     enterpriseEvaluation:
         dummyPostInternshipEnterpriseEvaluation(internshipId: id),
     weeklySchedules: [dummyWeeklySchedule(period: period)],
@@ -338,17 +338,17 @@ AttitudeEvaluation dummyAttitudeEvaluation(
         {String id = 'attitudeEvaluationId'}) =>
     AttitudeEvaluation(
       id: id,
-      inattendance: 1,
-      ponctuality: 2,
-      sociability: 3,
-      politeness: 1,
-      motivation: 2,
-      dressCode: 3,
-      qualityOfWork: 1,
-      productivity: 2,
-      autonomy: 3,
-      cautiousness: 1,
-      generalAppreciation: 2,
+      inattendance: Inattendance.rarely,
+      ponctuality: Ponctuality.sometimeLate,
+      sociability: Sociability.veryLow,
+      politeness: Politeness.alwaysSuitable,
+      motivation: Motivation.low,
+      dressCode: DressCode.notAppropriate,
+      qualityOfWork: QualityOfWork.high,
+      productivity: Productivity.low,
+      autonomy: Autonomy.none,
+      cautiousness: Cautiousness.mostly,
+      generalAppreciation: GeneralAppreciation.passable,
     );
 
 InternshipEvaluationAttitude dummyInternshipEvaluationAttitude(
@@ -374,7 +374,7 @@ SkillEvaluation dummySkillEvaluation({String id = 'skillEvaluationId'}) =>
       skillName: 'skillName',
       tasks: [dummyTaskAppreciation()],
       appreciation: SkillAppreciation.failed,
-      comment: 'comment',
+      comments: 'comment',
     );
 
 InternshipEvaluationSkill dummyInternshipEvaluationSkill(

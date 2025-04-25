@@ -1,5 +1,5 @@
-import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

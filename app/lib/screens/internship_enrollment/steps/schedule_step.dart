@@ -1,13 +1,15 @@
-import 'package:crcrme_banque_stages/common/models/schedule.dart';
+import 'package:common/models/internships/schedule.dart';
+import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/common/widgets/custom_time_picker.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
 
 class WeeklyScheduleController {
   List<WeeklySchedule> weeklySchedules = [];
-  DateTimeRange? dateRange;
+  time_utils.DateTimeRange? dateRange;
   bool _hasChanged = false;
   bool get hasChanged => _hasChanged;
 
@@ -15,7 +17,7 @@ class WeeklyScheduleController {
       {List<WeeklySchedule>? weeklySchedules, this.dateRange})
       : weeklySchedules = weeklySchedules ?? [];
 
-  void updateDateRange(DateTimeRange newRange) {
+  void updateDateRange(time_utils.DateTimeRange newRange) {
     dateRange = newRange;
     _hasChanged = true;
   }
@@ -33,8 +35,8 @@ class WeeklyScheduleController {
     _hasChanged = true;
   }
 
-  void updateDailyScheduleTime(
-      int weeklyIndex, int dailyIndex, TimeOfDay start, TimeOfDay end) {
+  void updateDailyScheduleTime(int weeklyIndex, int dailyIndex,
+      time_utils.TimeOfDay start, time_utils.TimeOfDay end) {
     weeklySchedules[weeklyIndex].schedule[dailyIndex] =
         weeklySchedules[weeklyIndex]
             .schedule[dailyIndex]
@@ -53,17 +55,20 @@ class WeeklyScheduleController {
     _hasChanged = true;
   }
 
-  void updateDailyScheduleRange(int weeklyIndex, DateTimeRange newRange) {
+  void updateDailyScheduleRange(
+      int weeklyIndex, time_utils.DateTimeRange newRange) {
     weeklySchedules[weeklyIndex] =
         weeklySchedules[weeklyIndex].copyWith(period: newRange);
     _hasChanged = true;
   }
 }
 
-const TimeOfDay _defaultStart = TimeOfDay(hour: 9, minute: 0);
-const TimeOfDay _defaultEnd = TimeOfDay(hour: 15, minute: 0);
+const time_utils.TimeOfDay _defaultStart =
+    time_utils.TimeOfDay(hour: 9, minute: 0);
+const time_utils.TimeOfDay _defaultEnd =
+    time_utils.TimeOfDay(hour: 15, minute: 0);
 
-WeeklySchedule _fillNewScheduleList(DateTimeRange dateRange) {
+WeeklySchedule _fillNewScheduleList(time_utils.DateTimeRange dateRange) {
   return WeeklySchedule(schedule: [
     DailySchedule(
         dayOfWeek: Day.monday, start: _defaultStart, end: _defaultEnd),
@@ -303,8 +308,8 @@ class ScheduleSelector extends StatefulWidget {
 
 class _ScheduleSelectorState extends State<ScheduleSelector> {
   void _promptNewDayToDailySchedule(weeklyIndex) async {
-    Future<TimeOfDay?> promptTime(
-            {required TimeOfDay initial, String? title}) async =>
+    Future<time_utils.TimeOfDay?> promptTime(
+            {required time_utils.TimeOfDay initial, String? title}) async =>
         _promptTime(context, initial: initial, title: title);
 
     final day = await _promptDay(context);
@@ -323,8 +328,8 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
   }
 
   void _promptUpdateToDailySchedule(int weeklyIndex, int dailyIndex) async {
-    Future<TimeOfDay?> promptTime(
-            {required TimeOfDay initial, String? title}) async =>
+    Future<time_utils.TimeOfDay?> promptTime(
+            {required time_utils.TimeOfDay initial, String? title}) async =>
         _promptTime(context, initial: initial, title: title);
 
     final start = await _promptTime(context,
@@ -368,20 +373,22 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
     return choice;
   }
 
-  Future<TimeOfDay?> _promptTime(BuildContext context,
-      {required TimeOfDay initial, String? title}) async {
+  Future<time_utils.TimeOfDay?> _promptTime(BuildContext context,
+      {required time_utils.TimeOfDay initial, String? title}) async {
     final time = await showCustomTimePicker(
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       helpText: title,
       context: context,
-      initialTime: initial,
+      initialTime: TimeOfDay(hour: initial.hour, minute: initial.minute),
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
         child: child ?? Container(),
       ),
     );
-    return time;
+
+    if (time == null) return null;
+    return time_utils.TimeOfDay(hour: time.hour, minute: time.minute);
   }
 
   void _promptChangeWeek(weeklyIndex) async {

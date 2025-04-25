@@ -1,10 +1,13 @@
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:common/utils.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -619,7 +622,14 @@ class InternshipsRepositoryMock extends InternshipsRepository {
         extraSpecializationIds: ['12345'],
         dates: DateTimeRange(
             start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)),
-        supervisorId: '12345',
+        supervisor: Person(
+            firstName: 'Mine',
+            middleName: null,
+            lastName: 'Yours',
+            dateBirth: null,
+            address: Address.empty,
+            phone: PhoneNumber.empty,
+            email: null),
         creationDate: DateTime(2000, 1, 1),
         weeklySchedules: [
           WeeklySchedule(
@@ -655,7 +665,14 @@ class InternshipsRepositoryMock extends InternshipsRepository {
         extraSpecializationIds: ['54321', '09876'],
         dates: DateTimeRange(
             start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)),
-        supervisorId: '54321',
+        supervisor: Person(
+            firstName: 'Mine',
+            middleName: null,
+            lastName: 'Yours',
+            dateBirth: null,
+            address: Address.empty,
+            phone: PhoneNumber.empty,
+            email: null),
         creationDate: DateTime(2000, 2, 1),
         weeklySchedules: [
           WeeklySchedule(

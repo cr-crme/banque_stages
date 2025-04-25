@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
+import 'package:crcrme_banque_stages/common/models/internship_extension.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';

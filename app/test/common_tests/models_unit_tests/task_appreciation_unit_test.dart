@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
+import 'package:common/models/internships/task_appreciation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';

@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
+import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
@@ -121,7 +121,7 @@ class _InternshipListState extends State<_InternshipList> {
 
   Widget _dateBuild(Internship internship) {
     final endDate =
-        internship.isActive ? internship.date.end : internship.endDate!;
+        internship.isActive ? internship.dates.end : internship.endDate!;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -130,9 +130,9 @@ class _InternshipListState extends State<_InternshipList> {
           children: [
             const Text('Début\u00a0:'),
             Text(
-              '${internship.date.start.year.toString().padLeft(4, '0')}-'
-              '${internship.date.start.month.toString().padLeft(2, '0')}-'
-              '${internship.date.start.day.toString().padLeft(2, '0')}',
+              '${internship.dates.start.year.toString().padLeft(4, '0')}-'
+              '${internship.dates.start.month.toString().padLeft(2, '0')}-'
+              '${internship.dates.start.day.toString().padLeft(2, '0')}',
             )
           ],
         ),
@@ -205,7 +205,7 @@ class _InternshipListState extends State<_InternshipList> {
                   child: Row(
                     children: [
                       Text(
-                        internship.date.start.year.toString(),
+                        internship.dates.start.year.toString(),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       const SizedBox(width: 24),

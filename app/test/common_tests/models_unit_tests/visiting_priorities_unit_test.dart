@@ -1,4 +1,5 @@
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:common/models/itineraries/visiting_priority.dart';
+import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

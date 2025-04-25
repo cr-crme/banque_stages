@@ -1,3 +1,4 @@
+import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -457,7 +458,7 @@ void main() {
 
   group('CustomDateRangePickerDialog return', () {
     testWidgets('The returned date is correct', (tester) async {
-      DateTimeRange? result;
+      time_utils.DateTimeRange? result;
 
       final myButton = ElevatedButton(
           onPressed: () async {
@@ -488,7 +489,7 @@ void main() {
     });
 
     testWidgets('the cancel icon works in calendar view', (tester) async {
-      DateTimeRange? result;
+      time_utils.DateTimeRange? result;
 
       final myButton = ElevatedButton(
           onPressed: () async {
@@ -516,7 +517,7 @@ void main() {
     });
 
     testWidgets('the cancel button works', (tester) async {
-      DateTimeRange? result;
+      time_utils.DateTimeRange? result;
 
       final myButton = ElevatedButton(
           onPressed: () async {

@@ -1,6 +1,6 @@
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/geographic_coordinate_system.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -1,5 +1,5 @@
-import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/internship_evaluation_attitude.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:flutter/widgets.dart';
@@ -30,28 +30,18 @@ class AttitudeEvaluationFormController {
     controller.wereAtMeeting.clear();
     controller.wereAtMeeting.addAll(evaluation.presentAtEvaluation);
 
-    controller.responses[Inattendance] =
-        Inattendance.values[evaluation.attitude.inattendance];
-    controller.responses[Ponctuality] =
-        Ponctuality.values[evaluation.attitude.ponctuality];
-    controller.responses[Sociability] =
-        Sociability.values[evaluation.attitude.sociability];
-    controller.responses[Politeness] =
-        Politeness.values[evaluation.attitude.politeness];
-    controller.responses[Motivation] =
-        Motivation.values[evaluation.attitude.motivation];
-    controller.responses[DressCode] =
-        DressCode.values[evaluation.attitude.dressCode];
-    controller.responses[QualityOfWork] =
-        QualityOfWork.values[evaluation.attitude.qualityOfWork];
-    controller.responses[Productivity] =
-        Productivity.values[evaluation.attitude.productivity];
-    controller.responses[Autonomy] =
-        Autonomy.values[evaluation.attitude.autonomy];
-    controller.responses[Cautiousness] =
-        Cautiousness.values[evaluation.attitude.cautiousness];
+    controller.responses[Inattendance] = evaluation.attitude.inattendance;
+    controller.responses[Ponctuality] = evaluation.attitude.ponctuality;
+    controller.responses[Sociability] = evaluation.attitude.sociability;
+    controller.responses[Politeness] = evaluation.attitude.politeness;
+    controller.responses[Motivation] = evaluation.attitude.motivation;
+    controller.responses[DressCode] = evaluation.attitude.dressCode;
+    controller.responses[QualityOfWork] = evaluation.attitude.qualityOfWork;
+    controller.responses[Productivity] = evaluation.attitude.productivity;
+    controller.responses[Autonomy] = evaluation.attitude.autonomy;
+    controller.responses[Cautiousness] = evaluation.attitude.cautiousness;
     controller.responses[GeneralAppreciation] =
-        GeneralAppreciation.values[evaluation.attitude.generalAppreciation];
+        evaluation.attitude.generalAppreciation;
 
     controller.commentsController.text = evaluation.comments;
 
@@ -63,17 +53,18 @@ class AttitudeEvaluationFormController {
       date: DateTime.now(),
       presentAtEvaluation: wereAtMeeting,
       attitude: AttitudeEvaluation(
-          inattendance: responses[Inattendance]!.index,
-          ponctuality: responses[Ponctuality]!.index,
-          sociability: responses[Sociability]!.index,
-          politeness: responses[Politeness]!.index,
-          motivation: responses[Motivation]!.index,
-          dressCode: responses[DressCode]!.index,
-          qualityOfWork: responses[QualityOfWork]!.index,
-          productivity: responses[Productivity]!.index,
-          autonomy: responses[Autonomy]!.index,
-          cautiousness: responses[Cautiousness]!.index,
-          generalAppreciation: responses[GeneralAppreciation]!.index),
+          inattendance: responses[Inattendance]! as Inattendance,
+          ponctuality: responses[Ponctuality]! as Ponctuality,
+          sociability: responses[Sociability]! as Sociability,
+          politeness: responses[Politeness]! as Politeness,
+          motivation: responses[Motivation]! as Motivation,
+          dressCode: responses[DressCode]! as DressCode,
+          qualityOfWork: responses[QualityOfWork]! as QualityOfWork,
+          productivity: responses[Productivity]! as Productivity,
+          autonomy: responses[Autonomy]! as Autonomy,
+          cautiousness: responses[Cautiousness]! as Cautiousness,
+          generalAppreciation:
+              responses[GeneralAppreciation]! as GeneralAppreciation),
       comments: commentsController.text,
       formVersion: _formVersion,
     );

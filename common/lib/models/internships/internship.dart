@@ -4,6 +4,7 @@ import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 double _doubleFromSerialized(num? number, {double defaultValue = 0}) {
@@ -150,19 +151,19 @@ class PostInternshipEnterpriseEvaluation extends ItemSerializable {
 class _MutableElements extends ItemSerializable {
   _MutableElements({
     required this.creationDate,
-    required this.supervisorId,
+    required this.supervisor,
     required this.dates,
     required this.weeklySchedules,
   });
   final DateTime creationDate;
-  final String supervisorId;
+  final Person supervisor;
   final DateTimeRange dates;
   final List<WeeklySchedule> weeklySchedules;
 
   _MutableElements.fromSerialized(super.map)
       : creationDate =
             DateTime.fromMillisecondsSinceEpoch(map['creation_date']),
-        supervisorId = map['supervisor_id'] ?? -1,
+        supervisor = Person.fromSerialized(['supervisor']),
         dates = DateTimeRange(
             start: DateTime.fromMillisecondsSinceEpoch(map['starting_date']),
             end: DateTime.fromMillisecondsSinceEpoch(map['ending_date'])),
@@ -175,7 +176,7 @@ class _MutableElements extends ItemSerializable {
   Map<String, dynamic> serializedMap() => {
         'id': id,
         'creation_date': creationDate.millisecondsSinceEpoch,
-        'supervisor_id': supervisorId,
+        'supervisor': supervisor.serialize(),
         'starting_date': dates.start.millisecondsSinceEpoch,
         'ending_date': dates.end.millisecondsSinceEpoch,
         'schedules': weeklySchedules.map((e) => e.serialize()).toList(),
@@ -184,7 +185,7 @@ class _MutableElements extends ItemSerializable {
   @override
   String toString() {
     return 'MutableElements{creationDate: $creationDate, '
-        'supervisor_id: $supervisorId, '
+        'supervisor_id: $supervisor, '
         'dates: $dates, '
         'weeklySchedules: $weeklySchedules}';
   }
@@ -198,29 +199,15 @@ class Internship extends ItemSerializable {
   final String studentId;
   final String signatoryTeacherId;
   final List<String> _extraSupervisingTeacherIds;
+  void addSupervisingTeacherInternal(String id) {
+    if (_extraSupervisingTeacherIds.contains(id)) {
+      throw Exception('Teacher already added');
+    }
+    _extraSupervisingTeacherIds.add(id);
+  }
+
   List<String> get supervisingTeacherIds =>
       [signatoryTeacherId, ..._extraSupervisingTeacherIds];
-
-  // void addSupervisingTeacher(context, {required String teacherId}) {
-  //   // TODO Implement this method with an extension on App side
-
-  //   if (teacherId == signatoryTeacherId ||
-  //       _extraSupervisingTeacherIds.contains(teacherId)) {
-  //     // If the teacher is already assigned, do nothing
-  //     return;
-  //   }
-
-  //   // Make sure the student is in a group supervised by the teacher
-  //   final students = StudentsProvider.allStudentsLimitedInfo(context);
-  //   final student = students.firstWhere((e) => e.id == studentId);
-  //   final teacher = TeachersProvider.of(context, listen: false)[teacherId];
-  //   if (!teacher.groups.contains(student.group)) {
-  //     throw Exception(
-  //         'The teacher ${teacher.fullName} is not assigned to the group ${student.group}');
-  //   }
-
-  //   _extraSupervisingTeacherIds.add(teacherId);
-  // }
 
   // TODO Add a call to the database?
   void removeSupervisingTeacher(String id) =>
@@ -238,9 +225,9 @@ class Internship extends ItemSerializable {
   int get nbVersions => _mutables.length;
   DateTime get creationDate => _mutables.last.creationDate;
   DateTime creationDateFrom(int version) => _mutables[version].creationDate;
-  String get supervisorId => _mutables.last.supervisorId;
-  String supervisorFrom(int version) => _mutables[version].supervisorId;
-  DateTimeRange get date => _mutables.last.dates;
+  Person get supervisor => _mutables.last.supervisor;
+  Person supervisorFrom(int version) => _mutables[version].supervisor;
+  DateTimeRange get dates => _mutables.last.dates;
   DateTimeRange dateFrom(int version) => _mutables[version].dates;
   List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
   List<WeeklySchedule> weeklySchedulesFrom(int version) =>
@@ -286,7 +273,7 @@ class Internship extends ItemSerializable {
   bool get isActive => endDate == null;
   bool get isNotActive => !isActive;
   bool get shouldTerminate =>
-      isActive && date.end.difference(DateTime.now()).inDays <= -1;
+      isActive && dates.end.difference(DateTime.now()).inDays <= -1;
 
   Internship._({
     required super.id,
@@ -322,7 +309,7 @@ class Internship extends ItemSerializable {
     required this.jobId,
     required this.extraSpecializationIds,
     required DateTime creationDate,
-    required String supervisorId,
+    required Person supervisor,
     required DateTimeRange dates,
     required List<WeeklySchedule> weeklySchedules,
     required this.expectedDuration,
@@ -337,7 +324,7 @@ class Internship extends ItemSerializable {
         _mutables = [
           _MutableElements(
             creationDate: creationDate,
-            supervisorId: supervisorId,
+            supervisor: supervisor,
             dates: dates,
             weeklySchedules: weeklySchedules,
           )
@@ -412,13 +399,13 @@ class Internship extends ItemSerializable {
 
   void addVersion({
     required DateTime creationDate,
-    required String supervisorId,
+    required Person supervisor,
     required DateTimeRange dates,
     required List<WeeklySchedule> weeklySchedules,
   }) {
     _mutables.add(_MutableElements(
       creationDate: creationDate,
-      supervisorId: supervisorId,
+      supervisor: supervisor,
       dates: dates,
       weeklySchedules: weeklySchedules,
     ));
