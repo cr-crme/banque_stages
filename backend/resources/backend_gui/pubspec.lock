@@ -113,7 +113,7 @@ packages:
     source: hosted
     version: "0.3.1"
   enhanced_containers_foundation:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       path: "../../../external/enhanced_containers/plugins/enhanced_containers_foundation"
       relative: true

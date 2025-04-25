@@ -15,6 +15,11 @@ dependencies:
   common:
     path: ../common
   mysql1: ^0.20.0
+
+dependency_overrides:
+  enhanced_containers_foundation:
+    path: ../external/enhanced_containers/plugins/enhanced_containers_foundation
+
   
 dev_dependencies:
   lints: ^5.0.0

@@ -41,6 +41,10 @@ dependencies:
     path: ../../../common
   web_socket_client: ^0.2.0
 
+dependency_overrides:
+    enhanced_containers_foundation:
+        path: ../../../external/enhanced_containers/plugins/enhanced_containers_foundation
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
