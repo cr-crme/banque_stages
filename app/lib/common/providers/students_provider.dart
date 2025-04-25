@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:common/communication_protocol.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:crcrme_banque_stages/common/providers/backend_list_provided.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,8 +10,13 @@ import 'auth_provider.dart';
 import 'internships_provider.dart';
 import 'teachers_provider.dart';
 
-class StudentsProvider extends FirebaseListProvided<Student> {
-  StudentsProvider({super.mockMe}) : super(pathToData: 'students');
+class StudentsProvider extends BackendListProvided<Student> {
+  StudentsProvider({required super.uri, super.mockMe});
+
+  @override
+  RequestFields getField([bool asList = false]) {
+    return asList ? RequestFields.students : RequestFields.student;
+  }
 
   ///
   /// This returns the students the teacher should have read/write access too.
@@ -88,7 +94,12 @@ class StudentsProvider extends FirebaseListProvided<Student> {
     return Student.fromSerialized(data);
   }
 
+  @override
+  List<Student> deserializeItemCollection(data) {
+    return (data as Map).values.map((e) => Student.fromSerialized(e)).toList();
+  }
+
   Future<void> initializeAuth(AuthProvider auth) async {
-    await initializeFetchingData();
+    await initializeFetchingData(authProvider: auth);
   }
 }

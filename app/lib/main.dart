@@ -26,6 +26,8 @@ void main() async {
 }
 // coverage:ignore-end
 
+final Uri _backendUri = Uri.parse('ws://localhost:3456/connect');
+
 class BanqueStagesApp extends StatelessWidget {
   const BanqueStagesApp({super.key, this.mockFirebase = false});
 
@@ -50,13 +52,13 @@ class BanqueStagesApp extends StatelessWidget {
         ),
         // coverage:ignore-end
         ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
-          create: (context) => TeachersProvider(
-              uri: Uri.parse('ws://localhost:3456/connect'),
-              mockMe: mockFirebase),
+          create: (context) =>
+              TeachersProvider(uri: _backendUri, mockMe: mockFirebase),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
-          create: (context) => StudentsProvider(mockMe: mockFirebase),
+          create: (context) =>
+              StudentsProvider(uri: _backendUri, mockMe: mockFirebase),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
       ],

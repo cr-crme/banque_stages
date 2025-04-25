@@ -107,7 +107,8 @@ void main() {
     });
 
     test('deserializeItem works', () {
-      final students = StudentsProvider(mockMe: true);
+      final students =
+          StudentsProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       final student = students.deserializeItem({
         'firstName': 'NotPierre',
         'middleName': 'NotJean',

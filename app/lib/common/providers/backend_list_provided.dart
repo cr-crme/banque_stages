@@ -9,6 +9,20 @@ import 'package:enhanced_containers/database_list_provided.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
+class _Selector {
+  final Function(Map<String, dynamic>) deserialize;
+  final Function(dynamic item, {bool notify}) addItem;
+  final Function(dynamic item, {bool notify}) removeItem;
+  final Function() notify;
+
+  const _Selector({
+    required this.deserialize,
+    required this.addItem,
+    required this.removeItem,
+    required this.notify,
+  });
+}
+
 /// A [BackendListProvided] that automagically saves all of its into the backend
 /// implemented in $ROOT/backend,
 ///
@@ -16,14 +30,10 @@ import 'package:web_socket_client/web_socket_client.dart';
 abstract class BackendListProvided<T extends ItemSerializable>
     extends DatabaseListProvided<T> {
   final Uri uri;
-  static bool _handshakeReceived = false;
   bool get isConnected =>
-      _deserializers[getField()] != null &&
+      _providerSelector[getField()] != null &&
       _socket != null &&
       _handshakeReceived;
-  static WebSocket? _socket;
-
-  final Map<RequestFields, Function(Map<String, dynamic>)> _deserializers = {};
 
   /// Creates a [BackendListProvided] with the specified data path and ids path.
   BackendListProvided({required this.uri, this.mockMe = false});
@@ -60,7 +70,7 @@ abstract class BackendListProvided<T extends ItemSerializable>
             notifyListeners();
           }
         });
-        _socket!.messages.listen(_incommingMessage);
+        _socket!.messages.listen((data) => _incommingMessage(data));
 
         final started = DateTime.now();
         while (!_handshakeReceived) {
@@ -77,8 +87,18 @@ abstract class BackendListProvided<T extends ItemSerializable>
     }
 
     // Keep a reference to the deserializer function
-    _deserializers[getField()] = deserializeItem;
-    _deserializers[getField(true)] = deserializeItemCollection;
+    _providerSelector[getField()] = _Selector(
+      deserialize: deserializeItem,
+      addItem: _addToSelf,
+      removeItem: _removeFromSelf,
+      notify: notifyListeners,
+    );
+    _providerSelector[getField(true)] = _Selector(
+      deserialize: deserializeItemCollection,
+      addItem: _addToSelf,
+      removeItem: _removeFromSelf,
+      notify: notifyListeners,
+    );
 
     // Send a get request to the server for the list of items
     while (!_handshakeReceived) {
@@ -87,7 +107,7 @@ abstract class BackendListProvided<T extends ItemSerializable>
         throw Exception('Connection to the server failed');
       }
     }
-    _get();
+    _getFromBackend(getField());
   }
 
   /// Returns a new [T] from the provided serialized data.
@@ -98,8 +118,8 @@ abstract class BackendListProvided<T extends ItemSerializable>
     _socket?.close();
     _socket = null;
 
-    _deserializers.remove(getField());
-    _deserializers.remove(getField(true));
+    _providerSelector.remove(getField());
+    _providerSelector.remove(getField(true));
     _handshakeReceived = false;
 
     super.clear();
@@ -114,85 +134,9 @@ abstract class BackendListProvided<T extends ItemSerializable>
 
   RequestFields getField([bool asList = false]);
 
-  Function(Map<String, dynamic>) _getDeserializer(RequestFields field) {
-    final deserializer = _deserializers[field];
-    if (deserializer == null) {
-      throw Exception(
-          'No deserializer found for field $field, please call initializeFetchingData()');
-    }
-    return deserializer;
-  }
-
-  Future<void> _incommingMessage(message) async {
-    try {
-      final map = jsonDecode(message);
-      final protocol = CommunicationProtocol.deserialize(map);
-      switch (protocol.requestType) {
-        case RequestType.handshake:
-          {
-            _handshakeReceived = true;
-            notifyListeners();
-            return;
-          }
-        case RequestType.response:
-          {
-            if (protocol.data == null || protocol.field == null) return;
-            if (isNotOfCorrectRequestFields(protocol.field!)) return;
-
-            final values = _getDeserializer(protocol.field!)(protocol.data!);
-            if (values is List) {
-              for (final item in values) {
-                super.add(item, notify: false);
-              }
-            } else {
-              super.add(values, notify: false);
-            }
-            notifyListeners();
-            return;
-          }
-        case RequestType.update:
-          {
-            _get(
-                id: protocol.data!['id'],
-                fields: (protocol.data!['updated_fields'] as List?)
-                    ?.cast<String>());
-            return;
-          }
-        case RequestType.delete:
-          {
-            if (protocol.data == null || protocol.field == null) return;
-            if (isNotOfCorrectRequestFields(protocol.field!)) return;
-
-            final deletedIds =
-                (protocol.data!['deleted_ids'] as List).cast<String>();
-            for (final id in deletedIds) {
-              super.remove(id, notify: false);
-            }
-            notifyListeners();
-            return;
-          }
-        case RequestType.get:
-        case RequestType.post:
-          throw Exception('Unsupported request type: ${protocol.requestType}');
-      }
-    } catch (e) {
-      dev.log(e.toString(), error: e, stackTrace: StackTrace.current);
-      return;
-    }
-  }
-
   void _sanityChecks({required bool notify}) {
     assert(notify, 'Notify has no effect here and should not be used.');
     assert(isConnected, 'Please call \'initializeFetchingData\' at least once');
-  }
-
-  void _get({String? id, List<String>? fields}) {
-    final message = jsonEncode(CommunicationProtocol(
-      requestType: RequestType.get,
-      field: getField(id == null), // Id is not null for item of the list
-      data: id == null ? null : {'id': id, 'fields': fields},
-    ).serialize());
-    _socket?.send(message);
   }
 
   /// Adds an item to the Realtime Database.
@@ -217,6 +161,12 @@ abstract class BackendListProvided<T extends ItemSerializable>
     if (mockMe) {
       super.add(item, notify: true);
     }
+  }
+
+  ///
+  /// Actually performs the add to the self list
+  void _addToSelf(item, {bool notify = true}) {
+    super.add(item, notify: notify);
   }
 
   /// Inserts elements in a list of a logged user
@@ -256,7 +206,7 @@ abstract class BackendListProvided<T extends ItemSerializable>
     }
   }
 
-  /// You can't not use this function with [FirebaseListProvided] in case the ids of the provided values dont match.
+  /// You can't not use this function with [BackendListProvided] in case the ids of the provided values dont match.
   /// Use the function [replace] intead.
   @override
   operator []=(value, T item) {
@@ -288,6 +238,12 @@ abstract class BackendListProvided<T extends ItemSerializable>
     }
   }
 
+  ///
+  /// Actually performs the remove from the self list
+  void _removeFromSelf(value, {bool notify = true}) {
+    super.remove(value, notify: notify);
+  }
+
   /// Removes all objects from this list and from the Realtime Database; the length of the list becomes zero.
   /// Setting [confirm] to true is required in order to call this function as a 'security' mesure.
   ///
@@ -303,5 +259,102 @@ abstract class BackendListProvided<T extends ItemSerializable>
     for (final item in this) {
       remove(item);
     }
+  }
+}
+
+///
+/// These resources are shared accross all the backend providers
+/// Another way we could have done this would have been to allow for multiple
+/// connections to the backend, dropping the communications which are related
+/// to other providers.
+WebSocket? _socket;
+bool _handshakeReceived = false;
+Map<RequestFields, _Selector> _providerSelector = {};
+
+_Selector _getSelector(RequestFields field) {
+  final deserializer = _providerSelector[field];
+  if (deserializer == null) {
+    throw Exception(
+        'No deserializer found for field $field, please call initializeFetchingData()');
+  }
+  return deserializer;
+}
+
+void _getFromBackend(RequestFields requestField,
+    {String? id, List<String>? fields}) {
+  final message = jsonEncode(CommunicationProtocol(
+    requestType: RequestType.get,
+    field: requestField, // Id is not null for item of the list
+    data: id == null ? null : {'id': id, 'fields': fields},
+  ).serialize());
+  _socket?.send(message);
+}
+
+Future<void> _incommingMessage(message) async {
+  try {
+    final map = jsonDecode(message);
+    final protocol = CommunicationProtocol.deserialize(map);
+
+    // If no data are provided
+    if (protocol.requestType != RequestType.handshake &&
+        (protocol.data == null || protocol.field == null)) {
+      return;
+    }
+
+    switch (protocol.requestType) {
+      case RequestType.handshake:
+        {
+          _handshakeReceived = true;
+          for (final selector in _providerSelector.values) {
+            selector.notify();
+          }
+          return;
+        }
+      case RequestType.response:
+        {
+          if (protocol.data == null || protocol.field == null) return;
+
+          final requestField = protocol.field!;
+          final selector = _getSelector(requestField);
+          final values = selector.deserialize(protocol.data!);
+          if (values is List) {
+            for (final item in values) {
+              selector.addItem(item, notify: false);
+            }
+          } else {
+            selector.addItem(values, notify: false);
+          }
+          selector.notify();
+          return;
+        }
+      case RequestType.update:
+        {
+          final requestField = protocol.field!;
+          _getFromBackend(requestField,
+              id: protocol.data!['id'],
+              fields:
+                  (protocol.data!['updated_fields'] as List?)?.cast<String>());
+          return;
+        }
+      case RequestType.delete:
+        {
+          final requestField = protocol.field!;
+          final selector = _getSelector(requestField);
+
+          final deletedIds =
+              (protocol.data!['deleted_ids'] as List).cast<String>();
+          for (final id in deletedIds) {
+            selector.removeItem(id, notify: false);
+          }
+          selector.notify();
+          return;
+        }
+      case RequestType.get:
+      case RequestType.post:
+        throw Exception('Unsupported request type: ${protocol.requestType}');
+    }
+  } catch (e) {
+    dev.log(e.toString(), error: e, stackTrace: StackTrace.current);
+    return;
   }
 }
