@@ -1,8 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:common/models/persons/student.dart';
 import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
+import 'package:flutter/material.dart';
 
 class StudentPickerFormField extends StatelessWidget {
   const StudentPickerFormField({

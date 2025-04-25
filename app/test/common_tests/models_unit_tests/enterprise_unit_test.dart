@@ -1,7 +1,8 @@
+import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
-import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,7 +42,15 @@ void main() {
         recrutedBy: 'newRecrutedBy',
         shareWith: 'newShareWith',
         jobs: JobList()..add(dummyJob(id: 'newJobId')),
-        contact: Person(firstName: 'Pariterre', lastName: 'Nobody'),
+        contact: Person(
+          firstName: 'Pariterre',
+          middleName: null,
+          lastName: 'Nobody',
+          dateBirth: null,
+          phone: PhoneNumber.empty,
+          address: Address.empty,
+          email: null,
+        ),
         contactFunction: 'newContactFunction',
         address: dummyAddress().copyWith(id: 'newAddressId'),
         phone: PhoneNumber.fromString('866-666-6666'),

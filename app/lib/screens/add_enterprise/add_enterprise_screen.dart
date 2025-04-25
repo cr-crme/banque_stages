@@ -1,13 +1,14 @@
+import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
-import 'package:flutter/material.dart';
-
+import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
+import 'package:flutter/material.dart';
+
 import 'pages/contact_page.dart';
 import 'pages/informations_page.dart';
 import 'pages/jobs_page.dart';
@@ -113,8 +114,11 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       jobs: _jobsKey.currentState!.jobs,
       contact: Person(
         firstName: _contactKey.currentState!.contactFirstName!,
+        middleName: null,
         lastName: _contactKey.currentState!.contactLastName!,
+        dateBirth: null,
         phone: PhoneNumber.fromString(_contactKey.currentState!.contactPhone!),
+        address: Address.empty,
         email: _contactKey.currentState!.contactEmail!,
       ),
       contactFunction: _contactKey.currentState!.contactFunction!,

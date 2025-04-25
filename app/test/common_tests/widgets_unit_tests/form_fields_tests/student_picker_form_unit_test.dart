@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:common/models/persons/student.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/student_picker_form_field.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:flutter/material.dart';

@@ -42,10 +42,6 @@ class Student extends Person {
 
   final String photo;
 
-  // TODO: Add an extension on client side
-  // Widget get avatar =>
-  //     CircleAvatar(backgroundColor: Color(int.parse(photo)).withAlpha(255));
-
   final Program program;
   final String group;
 
@@ -67,15 +63,6 @@ class Student extends Person {
     required this.contact,
     required this.contactLink,
   }) : photo = photo ?? Random().nextInt(0xFFFFFF).toString();
-
-  // TODO Add an extension on client side
-  // bool hasActiveInternship(BuildContext context) {
-  //   final internships = InternshipsProvider.of(context, listen: false);
-  //   for (final internship in internships) {
-  //     if (internship.isActive && internship.studentId == id) return true;
-  //   }
-  //   return false;
-  // }
 
   Student.fromSerialized(super.map)
       : photo = map['photo'] ?? Random().nextInt(0xFFFFFF).toString(),

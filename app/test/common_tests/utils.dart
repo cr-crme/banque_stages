@@ -1,6 +1,8 @@
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/geographic_coordinate_system.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/person.dart';
+import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
@@ -10,12 +12,10 @@ import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.d
 import 'package:crcrme_banque_stages/common/models/itinerary.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
-import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
-import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/models/task_appreciation.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
@@ -62,7 +62,16 @@ Student dummyStudent({
     email: tp.email,
     phone: tp.phone,
     address: tp.address,
-    contact: Person(id: 'My mother id', firstName: 'Jeanne', lastName: 'Doe'),
+    contact: Person(
+      id: 'My mother id',
+      firstName: 'Jeanne',
+      middleName: null,
+      lastName: 'Doe',
+      dateBirth: null,
+      phone: PhoneNumber.empty,
+      address: Address.empty,
+      email: null,
+    ),
     photo: '0x00FF00',
     contactLink: 'Mère',
     group: group,
@@ -254,9 +263,14 @@ Internship dummyInternship({
     ],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(
-        firstName: 'Nobody',
-        lastName: 'Forever',
-        phone: PhoneNumber.fromString('514-555-1234')),
+      firstName: 'Nobody',
+      middleName: null,
+      lastName: 'Forever',
+      dateBirth: null,
+      phone: PhoneNumber.fromString('514-555-1234'),
+      address: Address.empty,
+      email: null,
+    ),
     date: period,
     endDate: hasEndDate ? DateTime(2034, 10, 28) : null,
     expectedLength: 135,

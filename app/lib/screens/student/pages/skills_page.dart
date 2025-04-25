@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
+import 'package:common/models/persons/student.dart';
 import 'package:crcrme_banque_stages/common/models/internship_evaluation_skill.dart';
-import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';

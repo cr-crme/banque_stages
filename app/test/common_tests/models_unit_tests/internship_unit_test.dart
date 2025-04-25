@@ -1,5 +1,7 @@
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
@@ -55,7 +57,15 @@ void main() {
         weeklySchedules: [dummyWeeklySchedule(id: 'newWeeklyScheduleId')],
         date: DateTimeRange(
             start: DateTime(2000, 1, 1), end: DateTime(2001, 1, 1)),
-        supervisor: Person(firstName: 'New', lastName: 'Supervisor'),
+        supervisor: Person(
+          firstName: 'New',
+          middleName: null,
+          lastName: 'Supervisor',
+          dateBirth: null,
+          phone: PhoneNumber.empty,
+          address: Address.empty,
+          email: null,
+        ),
       );
 
       expect(internship.nbVersions, 2);
@@ -203,7 +213,15 @@ void main() {
           throwsArgumentError);
       expect(
           () => internship.copyWith(
-              supervisor: Person(firstName: 'Impossible', lastName: 'Person'),
+              supervisor: Person(
+                firstName: 'Impossible',
+                middleName: null,
+                lastName: 'Person',
+                dateBirth: null,
+                phone: PhoneNumber.empty,
+                address: Address.empty,
+                email: null,
+              ),
               enterpriseEvaluation:
                   dummyPostInternshipEnterpriseEvaluation(id: 'newId')),
           throwsArgumentError);

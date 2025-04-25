@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';

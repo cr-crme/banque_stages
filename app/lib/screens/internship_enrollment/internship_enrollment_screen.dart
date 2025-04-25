@@ -1,6 +1,7 @@
+import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
-import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
@@ -97,8 +98,11 @@ class _InternshipEnrollmentScreenState
           .toList(),
       supervisor: Person(
           firstName: _generalInfoKey.currentState!.supervisorFirstName!,
+          middleName: null,
           lastName: _generalInfoKey.currentState!.supervisorLastName!,
+          dateBirth: null,
           email: _generalInfoKey.currentState!.supervisorEmail ?? '',
+          address: Address.empty,
           phone: PhoneNumber.fromString(
               _generalInfoKey.currentState!.supervisorPhone)),
       date: _scheduleKey.currentState!.scheduleController.dateRange!,

@@ -1,5 +1,5 @@
 import 'package:common/models/generic/phone_number.dart';
-import 'package:crcrme_banque_stages/common/models/person.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';
@@ -51,7 +51,7 @@ void main() {
       expect(personDifferent.lastName, 'newLastName');
       expect(personDifferent.email, 'newEmail');
       expect(personDifferent.phone.toString(), '(866) 666-6666');
-      expect(personDifferent.address!.id, 'newAddressId');
+      expect(personDifferent.address.id, 'newAddressId');
     });
 
     test('serialization and deserialization works', () {
@@ -67,7 +67,7 @@ void main() {
         'dateBirth': person.dateBirth?.millisecondsSinceEpoch ?? -1,
         'phone': person.phone.toString(),
         'email': person.email,
-        'address': person.address?.serialize(),
+        'address': person.address.serialize(),
       });
 
       expect(deserialized.id, person.id);
@@ -77,7 +77,7 @@ void main() {
       expect(deserialized.dateBirth, person.dateBirth);
       expect(deserialized.phone.toString(), person.phone.toString());
       expect(deserialized.email, person.email);
-      expect(deserialized.address?.id, person.address?.id);
+      expect(deserialized.address.id, person.address.id);
 
       // Test for empty deserialize to make sure it doesn't crash
       final emptyDeserialized = Person.fromSerialized({'id': 'emptyId'});

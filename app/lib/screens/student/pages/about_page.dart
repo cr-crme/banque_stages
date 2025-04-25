@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:common/models/persons/student.dart';
 import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/email_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';

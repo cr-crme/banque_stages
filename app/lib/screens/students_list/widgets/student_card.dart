@@ -1,4 +1,5 @@
-import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:common/models/persons/student.dart';
+import 'package:crcrme_banque_stages/common/models/students_extension.dart';
 import 'package:flutter/material.dart';
 
 class StudentCard extends StatelessWidget {

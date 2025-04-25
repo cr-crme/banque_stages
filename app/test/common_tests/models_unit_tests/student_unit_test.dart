@@ -1,6 +1,7 @@
 import 'package:common/models/generic/phone_number.dart';
-import 'package:crcrme_banque_stages/common/models/person.dart';
-import 'package:crcrme_banque_stages/common/models/student.dart';
+import 'package:common/models/persons/person.dart';
+import 'package:common/models/persons/student.dart';
+import 'package:crcrme_banque_stages/common/models/students_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -98,7 +99,7 @@ void main() {
       expect(studentDifferent.dateBirth, DateTime(2001, 1, 1));
       expect(studentDifferent.phone.toString(), '(866) 666-6666');
       expect(studentDifferent.email, 'newEmail');
-      expect(studentDifferent.address!.id, 'newAddressId');
+      expect(studentDifferent.address.id, 'newAddressId');
       expect(studentDifferent.photo.toString(), '0xFF0000');
       expect(studentDifferent.program, Program.fms);
       expect(studentDifferent.group, 'newGroup');
@@ -119,7 +120,7 @@ void main() {
         'dateBirth': student.dateBirth!.millisecondsSinceEpoch,
         'phone': student.phone.toString(),
         'email': student.email,
-        'address': student.address?.serialize(),
+        'address': student.address.serialize(),
         'photo': student.photo,
         'program': student.program.index,
         'group': student.group,
@@ -134,7 +135,7 @@ void main() {
       expect(deserialized.dateBirth, student.dateBirth);
       expect(deserialized.phone.toString(), student.phone.toString());
       expect(deserialized.email, student.email);
-      expect(deserialized.address?.id, student.address?.id);
+      expect(deserialized.address.id, student.address.id);
       expect(deserialized.photo, student.photo);
       expect(deserialized.program, student.program);
       expect(deserialized.group, student.group);

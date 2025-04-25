@@ -4,18 +4,18 @@ import 'dart:math';
 
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/person.dart';
+import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/models/incidents.dart';
 import 'package:crcrme_banque_stages/common/models/internship.dart';
 import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:crcrme_banque_stages/common/models/job_list.dart';
-import 'package:crcrme_banque_stages/common/models/person.dart';
 import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
 import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/schedule.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
-import 'package:crcrme_banque_stages/common/models/student.dart';
 import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priority.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
@@ -207,8 +207,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
           firstName: 'Marc',
+          middleName: null,
           lastName: 'Arcand',
+          dateBirth: null,
           phone: PhoneNumber.fromString('514 999 6655'),
+          address: Address.empty,
           email: 'm.arcand@email.com'),
       contactFunction: 'Directeur',
       address: Address(
@@ -249,8 +252,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
         firstName: 'Caroline',
+        middleName: null,
         lastName: 'Mercier',
+        dateBirth: null,
         phone: PhoneNumber.fromString('514 123 4567 poste 123'),
+        address: Address.empty,
         email: 'c.mercier@email.com',
       ),
       contactFunction: 'Assistante-gérante',
@@ -307,8 +313,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
         firstName: 'Denis',
+        middleName: null,
         lastName: 'Rondeau',
+        dateBirth: null,
         phone: PhoneNumber.fromString('438 987 6543'),
+        address: Address.empty,
         email: 'd.rondeau@email.com',
       ),
       contactFunction: 'Propriétaire',
@@ -350,8 +359,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
         firstName: 'Claudio',
+        middleName: null,
         lastName: 'Brodeur',
+        dateBirth: null,
         phone: PhoneNumber.fromString('514 235 6789'),
+        address: Address.empty,
         email: 'c.brodeur@email.com',
       ),
       contactFunction: 'Propriétaire',
@@ -395,8 +407,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
         firstName: 'Brigitte',
+        middleName: null,
         lastName: 'Samson',
+        dateBirth: null,
         phone: PhoneNumber.fromString('438 888 2222'),
+        address: Address.empty,
         email: 'b.samson@email.com',
       ),
       contactFunction: 'Gérante',
@@ -440,8 +455,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
         firstName: 'Gabrielle',
+        middleName: null,
         lastName: 'Fortin',
+        dateBirth: null,
         phone: PhoneNumber.fromString('514 111 2222'),
+        address: Address.empty,
         email: 'g.fortin@email.com',
       ),
       contactFunction: 'Gérante',
@@ -485,8 +503,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
         firstName: 'Jessica',
+        middleName: null,
         lastName: 'Marcotte',
+        dateBirth: null,
         phone: PhoneNumber.fromString('514 111 2222'),
+        address: Address.empty,
         email: 'g.fortin@email.com',
       ),
       contactFunction: 'Pharmacienne',
@@ -530,8 +551,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
         firstName: 'Carlos',
+        middleName: null,
         lastName: 'Rodriguez',
+        dateBirth: null,
         phone: PhoneNumber.fromString('514 555 3333'),
+        address: Address.empty,
         email: 'c.rodriguez@email.com',
       ),
       contactFunction: 'Gérant',
@@ -570,8 +594,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
         firstName: 'France',
+        middleName: null,
         lastName: 'Boissonneau',
+        dateBirth: null,
         phone: PhoneNumber.fromString('514 879 8654 poste 1112'),
+        address: Address.empty,
         email: 'f.boissonneau@email.com',
       ),
       contactFunction: 'Directrice des Ressources Humaines',
@@ -628,8 +655,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
         firstName: 'Joanie',
+        middleName: null,
         lastName: 'Lemieux',
+        dateBirth: null,
         phone: PhoneNumber.fromString('438 789 6543'),
+        address: Address.empty,
         email: 'j.lemieux@email.com',
       ),
       contactFunction: 'Propriétaire',
@@ -684,8 +714,11 @@ Future<void> _addDummyEnterprises(
       jobs: jobs,
       contact: Person(
         firstName: 'Gaëtan',
+        middleName: null,
         lastName: 'Munger',
+        dateBirth: null,
         phone: PhoneNumber.fromString('514 987 6543'),
+        address: Address.empty,
         email: 'g.munger@email.com',
       ),
       contactFunction: 'Gérant',
@@ -727,8 +760,11 @@ Future<void> _addDummyStudents(
       phone: PhoneNumber.fromString('514 321 8888'),
       contact: Person(
           firstName: 'Paul',
+          middleName: null,
           lastName: 'Masson',
+          dateBirth: null,
           phone: PhoneNumber.fromString('514 321 9876'),
+          address: Address.empty,
           email: 'p.masson@email.com'),
       contactLink: 'Père',
     ),
@@ -744,8 +780,11 @@ Future<void> _addDummyStudents(
       group: '550',
       contact: Person(
           firstName: 'Jean-Pierre',
+          middleName: null,
           lastName: 'Caron Mathieu',
+          dateBirth: null,
           phone: PhoneNumber.fromString('514 321 9876'),
+          address: Address.empty,
           email: 'j.caron@email.com'),
       contactLink: 'Père',
       address: Address(
@@ -767,8 +806,11 @@ Future<void> _addDummyStudents(
       group: '550',
       contact: Person(
           firstName: 'Nicole',
+          middleName: null,
           lastName: 'Lefranc',
+          dateBirth: null,
           phone: PhoneNumber.fromString('514 321 9876'),
+          address: Address.empty,
           email: 'n.lefranc@email.com'),
       contactLink: 'Mère',
       address: Address(
@@ -790,8 +832,11 @@ Future<void> _addDummyStudents(
       group: '550',
       contact: Person(
           firstName: 'Martine',
+          middleName: null,
           lastName: 'Gagnon',
+          dateBirth: null,
           phone: PhoneNumber.fromString('514 321 9876'),
+          address: Address.empty,
           email: 'm.gagnon@email.com'),
       contactLink: 'Mère',
       address: Address(
@@ -813,9 +858,12 @@ Future<void> _addDummyStudents(
       group: '552',
       contact: Person(
           firstName: 'Raoul',
+          middleName: null,
           lastName: 'Gingras',
           email: 'r.gingras@email.com',
-          phone: PhoneNumber.fromString('514 321 9876')),
+          dateBirth: null,
+          phone: PhoneNumber.fromString('514 321 9876'),
+          address: Address.empty),
       contactLink: 'Père',
       address: Address(
           civicNumber: 4517,
@@ -836,8 +884,11 @@ Future<void> _addDummyStudents(
       group: '550',
       contact: Person(
           firstName: 'Laura',
+          middleName: null,
           lastName: 'Vargas',
+          dateBirth: null,
           phone: PhoneNumber.fromString('514 321 9876'),
+          address: Address.empty,
           email: 'l.vargas@email.com'),
       contactLink: 'Mère',
       address: Address(
@@ -859,8 +910,11 @@ Future<void> _addDummyStudents(
       group: '550',
       contact: Person(
           firstName: 'Vincent',
+          middleName: null,
           lastName: 'Tremblay',
+          dateBirth: null,
           phone: PhoneNumber.fromString('514 321 9876'),
+          address: Address.empty,
           email: 'v.tremblay@email.com'),
       contactLink: 'Père',
       address: Address(
@@ -882,8 +936,11 @@ Future<void> _addDummyStudents(
       group: '550',
       contact: Person(
           firstName: 'Jean-François',
+          middleName: null,
           lastName: 'Picard',
+          dateBirth: null,
           phone: PhoneNumber.fromString('514 321 9876'),
+          address: Address.empty,
           email: 'jp.picard@email.com'),
       contactLink: 'Père',
       address: Address(
@@ -905,8 +962,11 @@ Future<void> _addDummyStudents(
       group: '551',
       contact: Person(
           firstName: 'Stéphane',
+          middleName: null,
           lastName: 'Monette',
+          dateBirth: null,
           phone: PhoneNumber.fromString('514 321 9876'),
+          address: Address.empty,
           email: 's.monette@email.com'),
       contactLink: 'Père',
       address: Address(
@@ -928,8 +988,11 @@ Future<void> _addDummyStudents(
       group: '550',
       contact: Person(
           firstName: 'Mathieu',
+          middleName: null,
           lastName: 'Poulain',
+          dateBirth: null,
           phone: PhoneNumber.fromString('514 321 9876'),
+          address: Address.empty,
           email: 'm.poulain@email.com'),
       contactLink: 'Père',
       address: Address(
@@ -970,9 +1033,14 @@ Future<void> _addDummyInternships(
     ],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(
-        firstName: 'Nobody',
-        lastName: 'Forever',
-        phone: PhoneNumber.fromString('514-555-1234')),
+      firstName: 'Nobody',
+      middleName: null,
+      lastName: 'Forever',
+      dateBirth: null,
+      phone: PhoneNumber.fromString('514-555-1234'),
+      address: Address.empty,
+      email: null,
+    ),
     date: period,
     expectedLength: 135,
     achievedLength: 0,
@@ -1026,7 +1094,15 @@ Future<void> _addDummyInternships(
         enterprises.firstWhere((e) => e.name == 'Boucherie Marien').jobs[0].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    supervisor: Person(
+      firstName: 'Nobody',
+      middleName: null,
+      lastName: 'Forever',
+      dateBirth: null,
+      phone: PhoneNumber.empty,
+      address: Address.empty,
+      email: null,
+    ),
     date: period,
     expectedLength: 135,
     achievedLength: 0,
@@ -1076,7 +1152,15 @@ Future<void> _addDummyInternships(
     jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    supervisor: Person(
+      firstName: 'Nobody',
+      middleName: null,
+      lastName: 'Forever',
+      dateBirth: null,
+      phone: PhoneNumber.empty,
+      address: Address.empty,
+      email: null,
+    ),
     date: period,
     endDate: DateTime.now().add(const Duration(days: 10)),
     expectedLength: 135,
@@ -1144,7 +1228,15 @@ Future<void> _addDummyInternships(
     jobId: enterprises.firstWhere((e) => e.name == 'IGA').jobs[0].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    supervisor: Person(
+      firstName: 'Nobody',
+      middleName: null,
+      lastName: 'Forever',
+      dateBirth: null,
+      phone: PhoneNumber.empty,
+      address: Address.empty,
+      email: null,
+    ),
     date: period,
     expectedLength: 135,
     achievedLength: 0,
@@ -1184,7 +1276,15 @@ Future<void> _addDummyInternships(
     jobId: enterprises.firstWhere((e) => e.name == 'Auto Repair').jobs[0].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    supervisor: Person(
+      firstName: 'Nobody',
+      middleName: null,
+      lastName: 'Forever',
+      dateBirth: null,
+      phone: PhoneNumber.empty,
+      address: Address.empty,
+      email: null,
+    ),
     date: period,
     endDate: DateTime.now().add(const Duration(days: 10)),
     expectedLength: 135,
@@ -1226,7 +1326,15 @@ Future<void> _addDummyInternships(
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    supervisor: Person(
+      firstName: 'Nobody',
+      middleName: null,
+      lastName: 'Forever',
+      dateBirth: null,
+      phone: PhoneNumber.empty,
+      address: Address.empty,
+      email: null,
+    ),
     date: period,
     expectedLength: 135,
     achievedLength: 0,
@@ -1276,7 +1384,15 @@ Future<void> _addDummyInternships(
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
-    supervisor: Person(firstName: 'Nobody', lastName: 'Forever'),
+    supervisor: Person(
+      firstName: 'Nobody',
+      middleName: null,
+      lastName: 'Forever',
+      dateBirth: null,
+      phone: PhoneNumber.empty,
+      address: Address.empty,
+      email: null,
+    ),
     date: period,
     expectedLength: 135,
     achievedLength: 0,
@@ -1328,7 +1444,15 @@ Future<void> _addDummyInternships(
       jobId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').jobs[0].id,
       extraSpecializationsId: [],
       visitingPriority: VisitingPriority.values[0],
-      supervisor: Person(firstName: 'Un', lastName: 'Ami'),
+      supervisor: Person(
+        firstName: 'Un',
+        middleName: null,
+        lastName: 'Ami',
+        dateBirth: null,
+        phone: PhoneNumber.empty,
+        address: Address.empty,
+        email: null,
+      ),
       date: period,
       endDate: period.end,
       expectedLength: 135,
@@ -1366,7 +1490,15 @@ Future<void> _addDummyInternships(
     jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,
     extraSpecializationsId: [],
     visitingPriority: VisitingPriority.values[0],
-    supervisor: Person(firstName: 'Deux', lastName: 'Ami'),
+    supervisor: Person(
+      firstName: 'Deux',
+      middleName: null,
+      lastName: 'Amis',
+      dateBirth: null,
+      phone: PhoneNumber.empty,
+      address: Address.empty,
+      email: null,
+    ),
     date: period,
     endDate: period.end,
     expectedLength: 135,
