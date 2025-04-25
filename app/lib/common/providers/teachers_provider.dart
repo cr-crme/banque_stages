@@ -1,8 +1,9 @@
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/persons/teacher.dart';
-import 'package:crcrme_banque_stages/common/models/backend_list_provided.dart';
+import 'package:crcrme_banque_stages/common/providers/backend_list_provided.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 import 'auth_provider.dart';
 
@@ -22,6 +23,11 @@ class TeachersProvider extends BackendListProvided<Teacher> {
     return Teacher.fromSerialized(data);
   }
 
+  @override
+  List<Teacher> deserializeItemCollection(data) {
+    return (data as Map).values.map((e) => Teacher.fromSerialized(e)).toList();
+  }
+
   String? _currentId;
   String get currentTeacherId {
     if (_currentId == null) throw Exception('Teacher is not logged in');
@@ -30,7 +36,9 @@ class TeachersProvider extends BackendListProvided<Teacher> {
   }
 
   set currentTeacherId(String? id) {
-    _currentId = id;
+    var uuid = Uuid();
+    final namespace = UuidValue.fromNamespace(Namespace.dns);
+    _currentId = uuid.v5(namespace.toString(), id!);
     notifyListeners();
   }
 
@@ -42,6 +50,6 @@ class TeachersProvider extends BackendListProvided<Teacher> {
   void initializeAuth(AuthProvider auth) {
     currentTeacherId = auth.currentUser?.uid;
 
-    initializeFetchingData();
+    initializeFetchingData(authProvider: auth);
   }
 }

@@ -26,6 +26,7 @@ import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 Future<void> resetDummyData(BuildContext context) async {
   final schools = SchoolsProvider.of(context, listen: false);
@@ -36,6 +37,8 @@ Future<void> resetDummyData(BuildContext context) async {
 // TODO Enterprises should store all the teachers that have recruited them and
 // fixed the shareWith field to be a list of teacher ids
 
+  await _removeAll(internships, enterprises, students, teachers, schools);
+
 // TODO Look for Quebec servers (OVH, Akamai, Vultr, etc.) to host the database
   await _addDummySchools(schools);
   await _addDummyTeachers(teachers, schools);
@@ -44,11 +47,30 @@ Future<void> resetDummyData(BuildContext context) async {
   await _addDummyInternships(internships, students, enterprises, teachers);
 }
 
+Future<void> _removeAll(
+  InternshipsProvider internships,
+  EnterprisesProvider enterprises,
+  StudentsProvider students,
+  TeachersProvider teachers,
+  SchoolsProvider schools,
+) async {
+  // To properly remove the data, we need to start by the internships
+  internships.clear(confirm: true);
+  enterprises.clear(confirm: true);
+  students.clear(confirm: true);
+  teachers.clear(confirm: true);
+  schools.clear(confirm: true);
+  await Future.wait([
+    _waitForDatabaseUpdate(internships, 0),
+    _waitForDatabaseUpdate(enterprises, 0),
+    _waitForDatabaseUpdate(students, 0),
+    _waitForDatabaseUpdate(teachers, 0),
+    _waitForDatabaseUpdate(schools, 0)
+  ]);
+}
+
 Future<void> _addDummySchools(SchoolsProvider schools) async {
   dev.log('Adding dummy schools');
-
-  schools.clear(confirm: true);
-  await _waitForDatabaseUpdate(schools, 0, strictlyEqualToExpected: true);
 
   schools.add(School(
       name: 'École',
@@ -60,15 +82,18 @@ Future<void> _addDummySchools(SchoolsProvider schools) async {
   await _waitForDatabaseUpdate(schools, 1);
 }
 
+String get _partnerTeacherId {
+  var uuid = Uuid();
+  final namespace = UuidValue.fromNamespace(Namespace.dns);
+  return uuid.v5(namespace.toString(), '42');
+}
+
 Future<void> _addDummyTeachers(
     TeachersProvider teachers, SchoolsProvider schools) async {
   dev.log('Adding dummy teachers');
 
-  teachers.clear(confirm: true);
-  await _waitForDatabaseUpdate(teachers, 0, strictlyEqualToExpected: true);
-
   teachers.add(Teacher(
-    id: '42',
+    id: _partnerTeacherId,
     firstName: 'Roméo',
     middleName: null,
     lastName: 'Montaigu',
@@ -126,9 +151,6 @@ Future<void> _addDummyTeachers(
 Future<void> _addDummyEnterprises(
     EnterprisesProvider enterprises, TeachersProvider teachers) async {
   dev.log('Adding dummy enterprises');
-
-  enterprises.clear(confirm: true);
-  await _waitForDatabaseUpdate(enterprises, 0, strictlyEqualToExpected: true);
 
   JobList jobs = JobList();
   jobs.add(
@@ -689,9 +711,6 @@ Future<void> _addDummyStudents(
     StudentsProvider students, TeachersProvider teachers) async {
   dev.log('Adding dummy students');
 
-  students.clear(confirm: true);
-  await _waitForDatabaseUpdate(students, 0, strictlyEqualToExpected: true);
-
   students.add(
     Student(
       firstName: 'Cedric',
@@ -933,9 +952,6 @@ Future<void> _addDummyInternships(
 ) async {
   dev.log('Adding dummy internships');
 
-  internships.clear(confirm: true);
-  await _waitForDatabaseUpdate(internships, 0, strictlyEqualToExpected: true);
-
   final rng = Random();
 
   var period = DateTimeRange(
@@ -1162,7 +1178,7 @@ Future<void> _addDummyInternships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
-    signatoryTeacherId: '42', // This is a Roméo Montaigu's student
+    signatoryTeacherId: _partnerTeacherId, // This is a Roméo Montaigu's student
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Repair').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Auto Repair').jobs[0].id,
@@ -1204,7 +1220,7 @@ Future<void> _addDummyInternships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
-    signatoryTeacherId: '42',
+    signatoryTeacherId: _partnerTeacherId,
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
@@ -1254,7 +1270,7 @@ Future<void> _addDummyInternships(
   internships.add(Internship(
     versionDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
-    signatoryTeacherId: '42',
+    signatoryTeacherId: _partnerTeacherId,
     extraSupervisingTeacherIds: [teachers.currentTeacherId],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,

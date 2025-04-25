@@ -119,6 +119,30 @@ class Connexions {
           break;
 
         case RequestType.delete:
+          if (protocol.field == null) {
+            throw MissingFieldException('Field is required to get data');
+          }
+          _logger.info(
+              'Deleting data from field: ${protocol.field} for client ${client.hashCode}');
+          final deletedIds =
+              await _database.delete(protocol.field!, data: protocol.data);
+          await _send(client,
+              message: CommunicationProtocol(
+                  requestType: RequestType.response,
+                  field: protocol.field,
+                  response: Response.success));
+
+          // Notify all clients that the data has been deleted
+          if (deletedIds.isNotEmpty) {
+            await _sendAll(CommunicationProtocol(
+              requestType: RequestType.delete,
+              field: protocol.field,
+              data: {'deleted_ids': deletedIds},
+            ));
+          }
+
+          break;
+
         case RequestType.response:
         case RequestType.update:
           _logger.info(

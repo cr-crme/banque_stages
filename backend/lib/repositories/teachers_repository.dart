@@ -42,12 +42,26 @@ abstract class TeachersRepository implements RepositoryAbstract {
     return newTeacher.getDifference(previous);
   }
 
+  @override
+  Future<List<String>> deleteAll() async {
+    throw InvalidRequestException('Teachers must be deleted individually');
+  }
+
+  @override
+  Future<String> deleteById({required String id}) async {
+    final removedId = await _deleteTeacher(id: id);
+    if (removedId == null) throw MissingDataException('Teacher not found');
+    return removedId;
+  }
+
   Future<Map<String, Teacher>> _getAllTeachers();
 
   Future<Teacher?> _getTeacherById({required String id});
 
   Future<void> _putTeacher(
       {required Teacher teacher, required Teacher? previous});
+
+  Future<String?> _deleteTeacher({required String id});
 }
 
 class MySqlTeachersRepository extends TeachersRepository {
@@ -180,7 +194,7 @@ class MySqlTeachersRepository extends TeachersRepository {
         // Try to delete the inserted data in case of error. Since they by
         // design cannot have already be involved in any internships,
         // we can safely delete them
-        _deleteTeacher(teacher);
+        _deleteTeacher(id: teacher.id);
       } catch (e) {
         // Do nothing
       }
@@ -237,16 +251,22 @@ class MySqlTeachersRepository extends TeachersRepository {
     }
   }
 
-  Future<void> _deleteTeacher(Teacher teacher) async {
+  @override
+  Future<String?> _deleteTeacher({required String id}) async {
     // Note, the deletion of the teacher will fail if they were involved in any
     // interships which therefore needs to be reassigned first
 
     // Delete the teacher from the database
-    await MySqlHelpers.performDeleteQuery(
-        connection: connection,
-        tableName: 'entities',
-        idName: 'shared_id',
-        id: teacher.id);
+    try {
+      await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'entities',
+          idName: 'shared_id',
+          id: id);
+      return id;
+    } catch (e) {
+      return null;
+    }
   }
 }
 
@@ -326,4 +346,13 @@ class TeachersRepositoryMock extends TeachersRepository {
   Future<void> _putTeacher(
           {required Teacher teacher, required Teacher? previous}) async =>
       _dummyDatabase[teacher.id] = teacher;
+
+  @override
+  Future<String?> _deleteTeacher({required String id}) async {
+    if (_dummyDatabase.containsKey(id)) {
+      _dummyDatabase.remove(id);
+      return id;
+    }
+    return null;
+  }
 }

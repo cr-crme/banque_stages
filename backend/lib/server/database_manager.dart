@@ -100,4 +100,43 @@ class DatabaseManager {
             data: data);
     }
   }
+
+  Future<List<String>> delete(RequestFields field,
+      {required Map<String, dynamic>? data}) async {
+    switch (field) {
+      case RequestFields.teachers:
+        return await teachersDatabase.deleteAll();
+      case RequestFields.teacher:
+        return [
+          await teachersDatabase.deleteById(
+              id: _getId(data,
+                  messageOnNull: 'An "id" is required to delete a teacher'))
+        ];
+      case RequestFields.students:
+        return await studentsDatabase.deleteAll();
+      case RequestFields.student:
+        return [
+          await studentsDatabase.deleteById(
+              id: _getId(data,
+                  messageOnNull: 'An "id" is required to delete a student'))
+        ];
+      case RequestFields.enterprises:
+        return await enterprisesDatabase.deleteAll();
+      case RequestFields.enterprise:
+        return [
+          await enterprisesDatabase.deleteById(
+              id: _getId(data,
+                  messageOnNull: 'An "id" is required to delete an enterprise'))
+        ];
+      case RequestFields.internships:
+        return await internshipsDatabase.deleteAll();
+      case RequestFields.internship:
+        return [
+          await internshipsDatabase.deleteById(
+            id: _getId(data,
+                messageOnNull: 'An "id" is required to delete an internship'),
+          )
+        ];
+    }
+  }
 }

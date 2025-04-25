@@ -44,12 +44,26 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     return newEnterprise.getDifference(previous);
   }
 
+  @override
+  Future<List<String>> deleteAll() async {
+    throw InvalidRequestException('Enterprises must be deleted individually');
+  }
+
+  @override
+  Future<String> deleteById({required String id}) async {
+    final removedId = await _deleteEnterprise(id: id);
+    if (removedId == null) throw MissingDataException('Enterprise not found');
+    return removedId;
+  }
+
   Future<Map<String, Enterprise>> _getAllEnterprises();
 
   Future<Enterprise?> _getEnterpriseById({required String id});
 
   Future<void> _putEnterprise(
       {required Enterprise enterprise, required Enterprise? previous});
+
+  Future<String?> _deleteEnterprise({required String id});
 }
 
 class MySqlEnterprisesRepository extends EnterprisesRepository {
@@ -475,7 +489,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           });
     } catch (e) {
       try {
-        await _deleteEnterprise(enterprise);
+        await _deleteEnterprise(id: enterprise.id);
       } catch (e) {
         // Do nothing
       }
@@ -487,51 +501,65 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   Future<void> _putExistingEnterprise(
       Enterprise enterprise, Enterprise previous) async {
     // TODO: Implement a better updating of the enterprises
-    await _deleteEnterprise(previous);
+    await _deleteEnterprise(id: previous.id);
     await _putNewEnterprise(enterprise);
   }
 
-  Future<void> _deleteEnterprise(Enterprise enterprise) async {
-    await MySqlHelpers.performDeleteQuery(
-      connection: connection,
-      tableName: 'enterprise_contacts',
-      idName: 'enterprise_id',
-      id: enterprise.id,
-    );
-    await MySqlHelpers.performDeleteQuery(
+  @override
+  Future<String?> _deleteEnterprise({required String id}) async {
+    try {
+      final contact = (await MySqlHelpers.performSelectQuery(
         connection: connection,
-        tableName: 'entities',
-        idName: 'shared_id',
-        id: enterprise.contact.id);
-    await MySqlHelpers.performDeleteQuery(
-      connection: connection,
-      tableName: 'enterprise_addresses',
-      idName: 'enterprise_id',
-      id: enterprise.id,
-    );
-    await MySqlHelpers.performDeleteQuery(
-      connection: connection,
-      tableName: 'enterprise_headquarter_addresses',
-      idName: 'enterprise_id',
-      id: enterprise.id,
-    );
-    await MySqlHelpers.performDeleteQuery(
-      connection: connection,
-      tableName: 'enterprise_phone_numbers',
-      idName: 'enterprise_id',
-      id: enterprise.id,
-    );
-    await MySqlHelpers.performDeleteQuery(
-      connection: connection,
-      tableName: 'enterprise_fax_numbers',
-      idName: 'enterprise_id',
-      id: enterprise.id,
-    );
-    await MySqlHelpers.performDeleteQuery(
+        tableName: 'enterprise_contacts',
+        idName: 'enterprise_id',
+        id: id,
+      ))
+          .first;
+
+      await MySqlHelpers.performDeleteQuery(
         connection: connection,
-        tableName: 'entities',
-        idName: 'shared_id',
-        id: enterprise.id);
+        tableName: 'enterprise_contacts',
+        idName: 'enterprise_id',
+        id: id,
+      );
+      await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'entities',
+          idName: 'shared_id',
+          id: contact['id']);
+      await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'enterprise_addresses',
+        idName: 'enterprise_id',
+        id: id,
+      );
+      await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'enterprise_headquarter_addresses',
+        idName: 'enterprise_id',
+        id: id,
+      );
+      await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'enterprise_phone_numbers',
+        idName: 'enterprise_id',
+        id: id,
+      );
+      await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'enterprise_fax_numbers',
+        idName: 'enterprise_id',
+        id: id,
+      );
+      await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'entities',
+          idName: 'shared_id',
+          id: id);
+      return id;
+    } catch (e) {
+      return null;
+    }
   }
   // coverage:ignore-end
 }
@@ -579,4 +607,13 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
           {required Enterprise enterprise,
           required Enterprise? previous}) async =>
       _dummyDatabase[enterprise.id] = enterprise;
+
+  @override
+  Future<String?> _deleteEnterprise({required String id}) async {
+    if (_dummyDatabase.containsKey(id)) {
+      _dummyDatabase.remove(id);
+      return id;
+    }
+    return null;
+  }
 }

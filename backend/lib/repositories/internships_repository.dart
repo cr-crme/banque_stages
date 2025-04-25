@@ -42,12 +42,26 @@ abstract class InternshipsRepository implements RepositoryAbstract {
     return newInternship.getDifference(previous);
   }
 
+  @override
+  Future<List<String>> deleteAll() async {
+    throw InvalidRequestException('Internships must be deleted individually');
+  }
+
+  @override
+  Future<String> deleteById({required String id}) async {
+    final removedId = await _deleteInternship(id: id);
+    if (removedId == null) throw MissingDataException('Internship not found');
+    return removedId;
+  }
+
   Future<Map<String, Internship>> _getAllInternships();
 
   Future<Internship?> _getInternshipById({required String id});
 
   Future<void> _putInternship(
       {required Internship internship, required Internship? previous});
+
+  Future<String?> _deleteInternship({required String id});
 }
 
 class MySqlInternshipsRepository extends InternshipsRepository {
@@ -562,7 +576,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     } catch (e) {
       try {
         // Try to delete the inserted data in case of error (everything is ON CASCADE DELETE)
-        await _deleteInternship(internship);
+        await _deleteInternship(id: internship.id);
       } catch (e) {
         // Do nothing
       }
@@ -573,16 +587,22 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   Future<void> _putExistingInternship(
       Internship internship, Internship previous) async {
     // TODO: Implement a better updating of the internships
-    await _deleteInternship(previous);
+    await _deleteInternship(id: previous.id);
     await _putNewInternship(internship);
   }
 
-  Future<void> _deleteInternship(Internship internship) async {
-    await MySqlHelpers.performDeleteQuery(
-        connection: connection,
-        tableName: 'entities',
-        idName: 'shared_id',
-        id: internship.id);
+  @override
+  Future<String?> _deleteInternship({required String id}) async {
+    try {
+      await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'entities',
+          idName: 'shared_id',
+          id: id);
+      return id;
+    } catch (e) {
+      return null;
+    }
   }
 }
 
@@ -671,4 +691,13 @@ class InternshipsRepositoryMock extends InternshipsRepository {
           {required Internship internship,
           required Internship? previous}) async =>
       _dummyDatabase[internship.id] = internship;
+
+  @override
+  Future<String?> _deleteInternship({required String id}) async {
+    if (_dummyDatabase.containsKey(id)) {
+      _dummyDatabase.remove(id);
+      return id;
+    }
+    return null;
+  }
 }

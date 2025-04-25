@@ -23,4 +23,13 @@ abstract class RepositoryAbstract {
   /// Returns all the fields if the entry was created (no fields were existing).
   Future<List<String>> putById(
       {required String id, required Map<String, dynamic> data});
+
+  ///
+  /// Delete all data from the repository related to the given field.
+  Future<List<String>> deleteAll();
+
+  ///
+  /// Delete data from the repository related to the given field and [id].
+  /// If the data doesn't exist, a [MissingDataException] will be thrown.
+  Future<String> deleteById({required String id});
 }

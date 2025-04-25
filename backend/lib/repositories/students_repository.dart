@@ -42,12 +42,26 @@ abstract class StudentsRepository implements RepositoryAbstract {
     return newStudent.getDifference(previous);
   }
 
+  @override
+  Future<List<String>> deleteAll() async {
+    throw InvalidRequestException('Students must be deleted individually');
+  }
+
+  @override
+  Future<String> deleteById({required String id}) async {
+    final removedId = await _deleteStudent(id: id);
+    if (removedId == null) throw MissingDataException('Student not found');
+    return removedId;
+  }
+
   Future<Map<String, Student>> _getAllStudents();
 
   Future<Student?> _getStudentById({required String id});
 
   Future<void> _putStudent(
       {required Student student, required Student? previous});
+
+  Future<String?> _deleteStudent({required String id});
 }
 
 class MySqlStudentsRepository extends StudentsRepository {
@@ -180,7 +194,7 @@ class MySqlStudentsRepository extends StudentsRepository {
     } catch (e) {
       try {
         // Try to delete the inserted data in case of error
-        await _deleteStudent(student);
+        await _deleteStudent(id: student.id);
       } catch (e) {
         // Do nothing
       }
@@ -224,27 +238,40 @@ class MySqlStudentsRepository extends StudentsRepository {
     }
   }
 
-  Future<void> _deleteStudent(Student student) async {
+  @override
+  Future<String?> _deleteStudent({required String id}) async {
     // Note: This will fail if the student was involved in an internship. The
     // data from the internship needs to be deleted first.
-
-    await MySqlHelpers.performDeleteQuery(
+    try {
+      final contact = (await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'student_contacts',
         idName: 'student_id',
-        id: student.id);
+        id: id,
+      ))
+          .first;
 
-    await MySqlHelpers.performDeleteQuery(
-        connection: connection,
-        tableName: 'entities',
-        idName: 'shared_id',
-        id: student.contact.id);
+      await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'student_contacts',
+          idName: 'student_id',
+          id: id);
 
-    await MySqlHelpers.performDeleteQuery(
-        connection: connection,
-        tableName: 'entities',
-        idName: 'shared_id',
-        id: student.id);
+      await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'entities',
+          idName: 'shared_id',
+          id: contact['id']);
+
+      await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'entities',
+          idName: 'shared_id',
+          id: id);
+      return id;
+    } catch (e) {
+      return null;
+    }
   }
   // coverage:ignore-end
 }
@@ -307,4 +334,13 @@ class StudentsRepositoryMock extends StudentsRepository {
   Future<void> _putStudent(
           {required Student student, required Student? previous}) async =>
       _dummyDatabase[student.id] = student;
+
+  @override
+  Future<String?> _deleteStudent({required String id}) async {
+    if (_dummyDatabase.containsKey(id)) {
+      _dummyDatabase.remove(id);
+      return id;
+    }
+    return null;
+  }
 }

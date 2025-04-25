@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -15,10 +16,14 @@ import 'package:web_socket_client/web_socket_client.dart';
 abstract class BackendListProvided<T extends ItemSerializable>
     extends DatabaseListProvided<T> {
   final Uri uri;
-  bool _isConnected = false;
-  bool _handshakeReceived = false;
-  bool get isConnected => _isConnected && _handshakeReceived;
-  WebSocket? _socket;
+  static bool _handshakeReceived = false;
+  bool get isConnected =>
+      _deserializers[getField()] != null &&
+      _socket != null &&
+      _handshakeReceived;
+  static WebSocket? _socket;
+
+  final Map<RequestFields, Function(Map<String, dynamic>)> _deserializers = {};
 
   /// Creates a [BackendListProvided] with the specified data path and ids path.
   BackendListProvided({required this.uri, this.mockMe = false});
@@ -26,7 +31,7 @@ abstract class BackendListProvided<T extends ItemSerializable>
   /// This method should be called after the user has logged on
   @override
   Future<void> initializeFetchingData({AuthProvider? authProvider}) async {
-    if (_isConnected) return;
+    if (isConnected) return;
     if (authProvider == null) {
       throw Exception('AuthProvider is required to initialize the connection');
     }
@@ -34,48 +39,67 @@ abstract class BackendListProvided<T extends ItemSerializable>
     // Get the JWT token
     String token = authProvider.jwt;
 
-    // Send a get request to the server
-    try {
-      _socket = WebSocket(
-        uri,
-        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-        timeout: const Duration(seconds: 5),
-      );
-      notifyListeners();
+    // If the socket is already connected, it means another provider is already connected
+    // Simply return now after having kept the reference to the deserializer function
+    if (_socket == null) {
+      try {
+        // Send a connexion request to the server
+        _socket = WebSocket(
+          uri,
+          headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+          timeout: const Duration(seconds: 5),
+        );
 
-      _socket!.connection.listen((event) {
-        if (event is Connected || event is Reconnected) {
-          _socket!.send(jsonEncode(CommunicationProtocol(
-              requestType: RequestType.handshake,
-              data: {'token': token}).serialize()));
-        } else if (event is Disconnected) {
-          _handshakeReceived = false;
-          notifyListeners();
-        }
-      });
-      _socket!.messages.listen(_incommingMessage);
+        _socket!.connection.listen((event) {
+          if (event is Connected || event is Reconnected) {
+            _socket!.send(jsonEncode(CommunicationProtocol(
+                requestType: RequestType.handshake,
+                data: {'token': token}).serialize()));
+          } else if (event is Disconnected) {
+            _handshakeReceived = false;
+            notifyListeners();
+          }
+        });
+        _socket!.messages.listen(_incommingMessage);
 
-      final started = DateTime.now();
-      while (!_handshakeReceived) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        if (DateTime.now().isAfter(started.add(const Duration(seconds: 5)))) {
-          throw Exception('Handshake timeout');
+        final started = DateTime.now();
+        while (!_handshakeReceived) {
+          await Future.delayed(const Duration(milliseconds: 100));
+          if (DateTime.now().isAfter(started.add(const Duration(seconds: 5)))) {
+            throw Exception('Handshake timeout');
+          }
         }
+      } catch (e) {
+        dev.log('Error while connecting to the server: $e',
+            error: e, stackTrace: StackTrace.current);
+        stopFetchingData();
       }
-    } catch (e) {
-      _socket?.close();
-      _socket = null;
-      _handshakeReceived = false;
     }
-    notifyListeners();
+
+    // Keep a reference to the deserializer function
+    _deserializers[getField()] = deserializeItem;
+    _deserializers[getField(true)] = deserializeItemCollection;
+
+    // Send a get request to the server for the list of items
+    while (!_handshakeReceived) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (_socket == null) {
+        throw Exception('Connection to the server failed');
+      }
+    }
+    _get();
   }
+
+  /// Returns a new [T] from the provided serialized data.
+  List<T> deserializeItemCollection(data);
 
   @override
   Future<void> stopFetchingData() async {
     _socket?.close();
     _socket = null;
 
-    _isConnected = false;
+    _deserializers.remove(getField());
+    _deserializers.remove(getField(true));
     _handshakeReceived = false;
 
     super.clear();
@@ -89,6 +113,15 @@ abstract class BackendListProvided<T extends ItemSerializable>
       !isOfCorrectRequestFields(field);
 
   RequestFields getField([bool asList = false]);
+
+  Function(Map<String, dynamic>) _getDeserializer(RequestFields field) {
+    final deserializer = _deserializers[field];
+    if (deserializer == null) {
+      throw Exception(
+          'No deserializer found for field $field, please call initializeFetchingData()');
+    }
+    return deserializer;
+  }
 
   Future<void> _incommingMessage(message) async {
     try {
@@ -106,7 +139,15 @@ abstract class BackendListProvided<T extends ItemSerializable>
             if (protocol.data == null || protocol.field == null) return;
             if (isNotOfCorrectRequestFields(protocol.field!)) return;
 
-            super.add(deserializeItem(protocol.data!), notify: true);
+            final values = _getDeserializer(protocol.field!)(protocol.data!);
+            if (values is List) {
+              for (final item in values) {
+                super.add(item, notify: false);
+              }
+            } else {
+              super.add(values, notify: false);
+            }
+            notifyListeners();
             return;
           }
         case RequestType.update:
@@ -117,20 +158,32 @@ abstract class BackendListProvided<T extends ItemSerializable>
                     ?.cast<String>());
             return;
           }
+        case RequestType.delete:
+          {
+            if (protocol.data == null || protocol.field == null) return;
+            if (isNotOfCorrectRequestFields(protocol.field!)) return;
+
+            final deletedIds =
+                (protocol.data!['deleted_ids'] as List).cast<String>();
+            for (final id in deletedIds) {
+              super.remove(id, notify: false);
+            }
+            notifyListeners();
+            return;
+          }
         case RequestType.get:
         case RequestType.post:
-        case RequestType.delete:
           throw Exception('Unsupported request type: ${protocol.requestType}');
       }
     } catch (e) {
+      dev.log(e.toString(), error: e, stackTrace: StackTrace.current);
       return;
     }
   }
 
   void _sanityChecks({required bool notify}) {
     assert(notify, 'Notify has no effect here and should not be used.');
-    assert(
-        _isConnected, 'Please call \'initializeFetchingData\' at least once');
+    assert(isConnected, 'Please call \'initializeFetchingData\' at least once');
   }
 
   void _get({String? id, List<String>? fields}) {
