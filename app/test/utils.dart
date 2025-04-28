@@ -118,7 +118,8 @@ extension BanqueStageWidgetTester on WidgetTester {
                 create: (context) => SchoolsProvider(mockMe: true)),
           if (withEnterprises)
             ChangeNotifierProvider(create: (context) {
-              final enterprises = EnterprisesProvider(mockMe: true);
+              final enterprises = EnterprisesProvider(
+                  uri: Uri.parse('ws://localhost'), mockMe: true);
               if (dummyEnterprise != null) enterprises.add(dummyEnterprise);
               return enterprises;
             }),

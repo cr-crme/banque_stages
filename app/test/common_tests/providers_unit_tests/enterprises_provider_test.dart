@@ -16,7 +16,8 @@ void main() {
     initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
 
     test('"replaceJob" works', () {
-      final enterprises = EnterprisesProvider(mockMe: true);
+      final enterprises =
+          EnterprisesProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       enterprises.add(Enterprise(
         name: 'Test Enterprise',
         activityTypes: {},
@@ -42,7 +43,8 @@ void main() {
     });
 
     test('"deserializeItem" works', () {
-      final enterprises = EnterprisesProvider(mockMe: true);
+      final enterprises =
+          EnterprisesProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       final enterprise =
           enterprises.deserializeItem({'name': 'Test Enterprise'});
       expect(enterprise.name, 'Test Enterprise');

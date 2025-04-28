@@ -13,9 +13,8 @@ class TeachersProvider extends BackendListProvided<Teacher> {
       Provider.of<TeachersProvider>(context, listen: listen);
 
   @override
-  RequestFields getField([bool asList = false]) {
-    return asList ? RequestFields.teachers : RequestFields.teacher;
-  }
+  RequestFields getField([bool asList = false]) =>
+      asList ? RequestFields.teachers : RequestFields.teacher;
 
   @override
   Teacher deserializeItem(data) {

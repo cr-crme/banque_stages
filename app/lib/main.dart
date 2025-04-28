@@ -41,8 +41,11 @@ class BanqueStagesApp extends StatelessWidget {
             create: (context) => AuthProvider(mockMe: useDatabaseEmulator)),
         ChangeNotifierProvider(
             create: (context) => SchoolsProvider(mockMe: mockFirebase)),
-        ChangeNotifierProvider(
-            create: (context) => EnterprisesProvider(mockMe: mockFirebase)),
+        ChangeNotifierProxyProvider<AuthProvider, EnterprisesProvider>(
+          create: (context) =>
+              EnterprisesProvider(uri: _backendUri, mockMe: mockFirebase),
+          update: (context, auth, previous) => previous!..initializeAuth(auth),
+        ),
         ChangeNotifierProxyProvider<AuthProvider, InternshipsProvider>(
           create: (context) =>
               InternshipsProvider(uri: _backendUri, mockMe: mockFirebase),
