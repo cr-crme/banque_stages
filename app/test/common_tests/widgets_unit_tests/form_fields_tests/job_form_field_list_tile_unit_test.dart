@@ -1,11 +1,9 @@
-import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
-import 'package:crcrme_banque_stages/common/models/protections.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
+import 'package:common/models/enterprises/job.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -71,7 +69,7 @@ Future<void> fillAllJobFormFieldsListTile(
   // Add prerequisites
   if (!skipPrerequisites) {
     await tester
-        .tap(find.text(PreInternshipRequestType.soloInterview.toString()));
+        .tap(find.text(PreInternshipRequestTypes.soloInterview.toString()));
     await tester.pump();
     await tester.tap(find.text('Autre').at(0));
     await tester.pump();
@@ -443,7 +441,8 @@ void main() {
     });
 
     testWidgets('can hide the title', (tester) async {
-      final key = GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>>();
+      final key =
+          GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>();
       await tester.pumpWidget(declareWidget(
           BuildPrerequisitesCheckboxes(checkBoxKey: key, hideTitle: true)));
 
@@ -454,16 +453,19 @@ void main() {
     });
 
     testWidgets('can initialize values', (tester) async {
-      final key = GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>>();
+      final key =
+          GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>();
       await tester.pumpWidget(declareWidget(BuildPrerequisitesCheckboxes(
           checkBoxKey: key,
           hideTitle: true,
-          initialValues: [PreInternshipRequestType.soloInterview.toString()])));
+          initialValues: [
+            PreInternshipRequestTypes.soloInterview.toString()
+          ])));
 
       for (final checkbox in tester
           .widgetList<CheckboxListTile>(find.byType(CheckboxListTile))) {
         if ((checkbox.title as Text).data ==
-            PreInternshipRequestType.soloInterview.toString()) {
+            PreInternshipRequestTypes.soloInterview.toString()) {
           expect(checkbox.value, isTrue);
         } else {
           expect(checkbox.value, isFalse);

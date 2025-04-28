@@ -1,13 +1,12 @@
 import 'package:collection/collection.dart';
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/internships/internship.dart';
-import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -182,14 +181,13 @@ class _InternshipListState extends State<_InternshipList> {
               () => _expanded[widget.internships[panelIndex].id] = isExpanded),
           children: widget.internships.map(
             (internship) {
-              Specialization specialization =
+              final specialization =
                   widget.enterprise.jobs[internship.jobId].specialization;
-              Student? student =
-                  StudentsProvider.allStudentsLimitedInfo(context)
-                      .firstWhereOrNull((e) => e.id == internship.studentId);
-              Teacher signatoryTeacher = teachers
+              final student = StudentsProvider.allStudentsLimitedInfo(context)
+                  .firstWhereOrNull((e) => e.id == internship.studentId);
+              final signatoryTeacher = teachers
                   .firstWhere((e) => e.id == internship.signatoryTeacherId);
-              bool canSeeDetails = _canSeeDetails(internshipId: internship.id);
+              final canSeeDetails = _canSeeDetails(internshipId: internship.id);
 
               if (student == null) {
                 return ExpansionPanel(

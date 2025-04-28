@@ -1,3 +1,4 @@
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:crcrme_banque_stages/common/widgets/activity_type_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,14 +9,14 @@ import 'utils.dart';
 void main() {
   group('ActivityTypeCards', () {
     testWidgets('renders a list of activity types', (tester) async {
-      await tester.pumpWidget(declareWidget(
-          const ActivityTypeCards(activityTypes: {'running', 'cycling'})));
+      await tester.pumpWidget(declareWidget(const ActivityTypeCards(
+          activityTypes: {ActivityTypes.restaurant, ActivityTypes.commerce})));
 
-      expect(find.text('running'), findsOneWidget);
-      expect(find.text('cycling'), findsOneWidget);
+      expect(find.text(ActivityTypes.restaurant.name), findsOneWidget);
+      expect(find.text(ActivityTypes.commerce.name), findsOneWidget);
 
       // Make sure the appareance is correct
-      final textFinder = find.text('running');
+      final textFinder = find.text(ActivityTypes.restaurant.name);
       final text = tester.widget<Text>(textFinder);
       final chip = tester.ancestorByType<Chip>(of: textFinder);
 
@@ -26,8 +27,8 @@ void main() {
 
     testWidgets('The delete icon does not appear when no callback',
         (tester) async {
-      await tester.pumpWidget(declareWidget(
-          const ActivityTypeCards(activityTypes: {'running', 'cycling'})));
+      await tester.pumpWidget(declareWidget(const ActivityTypeCards(
+          activityTypes: {ActivityTypes.restaurant, ActivityTypes.commerce})));
 
       expect(find.byIcon(Icons.delete), findsNothing);
     });
@@ -36,7 +37,10 @@ void main() {
         (tester) async {
       bool wasClicked = false;
       await tester.pumpWidget(declareWidget(ActivityTypeCards(
-          activityTypes: const {'running', 'cycling'},
+          activityTypes: const {
+            ActivityTypes.restaurant,
+            ActivityTypes.commerce
+          },
           onDeleted: (activityType) {
             wasClicked = true;
           })));

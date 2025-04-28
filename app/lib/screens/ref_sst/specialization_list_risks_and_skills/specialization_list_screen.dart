@@ -1,11 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/specialization_list_risks_and_skills/widgets/tile_job_risk.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'widgets/tile_job_risk.dart';
 
 class SpecializationListScreen extends StatelessWidget {
   final String id;
@@ -13,7 +12,7 @@ class SpecializationListScreen extends StatelessWidget {
 
   List<Specialization> filledList(BuildContext context) {
     List<Specialization> out = [];
-    for (final sector in ActivitySectorsService.sectors) {
+    for (final sector in ActivitySectorsService.activitySectors) {
       for (final specialization in sector.specializations) {
         // If there is no risk, it does not mean this specialization
         // is risk-free, it means it was not evaluated

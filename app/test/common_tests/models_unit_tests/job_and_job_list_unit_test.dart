@@ -1,8 +1,9 @@
-import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/models/job_list.dart';
+import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/enterprises/job_list.dart';
+import 'package:common/services/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../utils.dart';
@@ -33,8 +34,8 @@ void main() {
       expect(jobSame.specialization, job.specialization);
       expect(jobSame.positionsOffered, job.positionsOffered);
       expect(jobSame.minimumAge, job.minimumAge);
-      expect(jobSame.preInternshipRequest, job.preInternshipRequest);
-      expect(jobSame.uniform, job.uniform);
+      expect(jobSame.preInternshipRequests, job.preInternshipRequests);
+      expect(jobSame.uniforms, job.uniforms);
       expect(jobSame.protections, job.protections);
       expect(jobSame.photosUrl, job.photosUrl);
       expect(jobSame.sstEvaluation, job.sstEvaluation);
@@ -43,12 +44,13 @@ void main() {
 
       final jobDifferent = job.copyWith(
         id: 'newId',
-        specialization: ActivitySectorsService.sectors[2].specializations[8],
+        specialization:
+            ActivitySectorsService.activitySectors[2].specializations[8],
         positionsOffered: 2,
         minimumAge: 12,
-        preInternshipRequest:
-            dummyPreInternshipRequest(id: 'newPreInternshipId'),
-        uniform: dummyUniform(id: 'newUniformId'),
+        preInternshipRequests:
+            dummyPreInternshipRequests(id: 'newPreInternshipId'),
+        uniforms: dummyUniforms(id: 'newUniformId'),
         protections: dummyProtections(id: 'newProtectionsId'),
         photosUrl: ['newUrl'],
         sstEvaluation: dummyJobSstEvaluation(id: 'newSstEvaluationId'),
@@ -58,11 +60,11 @@ void main() {
 
       expect(jobDifferent.id, 'newId');
       expect(jobDifferent.specialization.id,
-          ActivitySectorsService.sectors[2].specializations[8].id);
+          ActivitySectorsService.activitySectors[2].specializations[8].id);
       expect(jobDifferent.positionsOffered, 2);
       expect(jobDifferent.minimumAge, 12);
-      expect(jobDifferent.preInternshipRequest.id, 'newPreInternshipId');
-      expect(jobDifferent.uniform.id, 'newUniformId');
+      expect(jobDifferent.preInternshipRequests.id, 'newPreInternshipId');
+      expect(jobDifferent.uniforms.id, 'newUniformId');
       expect(jobDifferent.protections.id, 'newProtectionsId');
       expect(jobDifferent.photosUrl, ['newUrl']);
       expect(jobDifferent.sstEvaluation.id, 'newSstEvaluationId');
@@ -90,8 +92,8 @@ void main() {
         'specialization': job.specialization.id,
         'positionsOffered': job.positionsOffered,
         'minimumAge': job.minimumAge,
-        'preInternshipRequest': job.preInternshipRequest.serialize(),
-        'uniform': job.uniform.serialize(),
+        'preInternshipRequest': job.preInternshipRequests.serialize(),
+        'uniform': job.uniforms.serialize(),
         'protections': job.protections.serialize(),
         'photosUrl': job.photosUrl,
         'sstEvaluations': job.sstEvaluation.serialize(),
@@ -103,8 +105,9 @@ void main() {
       expect(deserialized.specialization.id, job.specialization.id);
       expect(deserialized.positionsOffered, job.positionsOffered);
       expect(deserialized.minimumAge, job.minimumAge);
-      expect(deserialized.preInternshipRequest.id, job.preInternshipRequest.id);
-      expect(deserialized.uniform.id, job.uniform.id);
+      expect(
+          deserialized.preInternshipRequests.id, job.preInternshipRequests.id);
+      expect(deserialized.uniforms.id, job.uniforms.id);
       expect(deserialized.protections.id, job.protections.id);
       expect(deserialized.photosUrl, job.photosUrl);
       expect(deserialized.sstEvaluation.id, job.sstEvaluation.id);
@@ -116,8 +119,8 @@ void main() {
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.positionsOffered, 0);
       expect(emptyDeserialized.minimumAge, 0);
-      expect(emptyDeserialized.preInternshipRequest.id, isNotNull);
-      expect(emptyDeserialized.uniform.id, isNotNull);
+      expect(emptyDeserialized.preInternshipRequests.id, isNotNull);
+      expect(emptyDeserialized.uniforms.id, isNotNull);
       expect(emptyDeserialized.protections.id, isNotNull);
       expect(emptyDeserialized.photosUrl, []);
       expect(emptyDeserialized.sstEvaluation.id, isNotNull);
@@ -138,8 +141,8 @@ void main() {
             'specialization': e.specialization.id,
             'positionsOffered': e.positionsOffered,
             'minimumAge': e.minimumAge,
-            'preInternshipRequest': e.preInternshipRequest.serialize(),
-            'uniform': e.uniform.serialize(),
+            'preInternshipRequest': e.preInternshipRequests.serialize(),
+            'uniform': e.uniforms.serialize(),
             'protections': e.protections.serialize(),
             'photosUrl': e.photosUrl,
             'sstEvaluations': e.sstEvaluation.serialize(),
@@ -154,9 +157,9 @@ void main() {
       expect(deserialized[0].sstEvaluation.id, jobList[0].sstEvaluation.id);
       expect(deserialized[0].incidents.id, jobList[0].incidents.id);
       expect(deserialized[0].minimumAge, jobList[0].minimumAge);
-      expect(deserialized[0].preInternshipRequest.id,
-          jobList[0].preInternshipRequest.id);
-      expect(deserialized[0].uniform.id, jobList[0].uniform.id);
+      expect(deserialized[0].preInternshipRequests.id,
+          jobList[0].preInternshipRequests.id);
+      expect(deserialized[0].uniforms.id, jobList[0].uniforms.id);
       expect(deserialized[0].protections.id, jobList[0].protections.id);
 
       // Test for empty deserialize to make sure it doesn't crash

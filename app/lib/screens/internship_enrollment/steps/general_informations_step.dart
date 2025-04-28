@@ -1,6 +1,9 @@
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:common/services/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
+import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
@@ -9,7 +12,6 @@ import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_l
 import 'package:crcrme_banque_stages/common/widgets/form_fields/student_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 
 class GeneralInformationsStep extends StatefulWidget {

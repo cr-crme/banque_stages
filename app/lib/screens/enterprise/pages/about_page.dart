@@ -1,7 +1,8 @@
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/persons/teacher.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/models/job_list.dart';
+import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
@@ -9,7 +10,6 @@ import 'package:crcrme_banque_stages/common/widgets/activity_type_cards.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/share_with_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +33,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
   final _formKey = GlobalKey<FormState>();
 
   String? _name;
-  Set<String> _activityTypes = {};
-  String? _shareWith;
+  Set<ActivityTypes> _activityTypes = {};
 
   bool _editing = false;
   bool get editing => _editing;
@@ -56,11 +55,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
     }
 
     EnterprisesProvider.of(context, listen: false).replace(
-      widget.enterprise.copyWith(
-        name: _name,
-        activityTypes: _activityTypes,
-        shareWith: _shareWith,
-      ),
+      widget.enterprise.copyWith(name: _name, activityTypes: _activityTypes),
     );
 
     setState(() => _editing = false);
@@ -117,10 +112,6 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
                   editMode: _editing,
                   onSaved: (activityTypes) => _activityTypes = activityTypes!),
               _RecrutedBy(enterprise: widget.enterprise),
-              _SharingLevel(
-                  enterprise: widget.enterprise,
-                  editingMode: _editing,
-                  onSaved: (shareWith) => _shareWith = shareWith),
               _AddInternshipButton(
                 editingMode: _editing,
                 onPressed: () async =>
@@ -261,7 +252,7 @@ class _ActivityType extends StatelessWidget {
 
   final Enterprise enterprise;
   final bool editMode;
-  final Function(Set<String>?) onSaved;
+  final Function(Set<ActivityTypes>?) onSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -315,7 +306,7 @@ class _RecrutedBy extends StatelessWidget {
     final schools = SchoolsProvider.of(context);
     final teachers = TeachersProvider.of(context);
 
-    final teacher = teachers.fromId(enterprise.recrutedBy);
+    final teacher = teachers.fromId(enterprise.recruiterId);
     final schoolName = schools.hasId(teacher.schoolId)
         ? schools.fromId(teacher.schoolId).name
         : '';
@@ -347,50 +338,6 @@ class _RecrutedBy extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class _SharingLevel extends StatelessWidget {
-  const _SharingLevel(
-      {required this.enterprise,
-      required this.editingMode,
-      required this.onSaved});
-
-  final Enterprise enterprise;
-  final bool editingMode;
-  final Function(String?) onSaved;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Partage de l\'entreprise'),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Visibility(
-                visible: !editingMode,
-                child: Text(
-                  enterprise.shareWith,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              Visibility(
-                visible: editingMode,
-                child: ShareWithPickerFormField(
-                  initialValue: enterprise.shareWith,
-                  onSaved: onSaved,
-                ),
-              ),
-              if (editingMode) const SizedBox(height: 200)
-            ],
           ),
         )
       ],

@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';

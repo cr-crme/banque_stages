@@ -1,7 +1,5 @@
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/incidents.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/animated_expanding_card.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_sst_event_dialog.dart';
@@ -157,10 +155,9 @@ class JobsPageState extends State<JobsPage> {
 
       widget.enterprise.jobs.replace(job.copyWith(
         minimumAge: _prerequisitesFormKeys[job.id]!.currentState!.minimumAge,
-        preInternshipRequest: PreInternshipRequest(
-            requests:
-                _prerequisitesFormKeys[job.id]!.currentState!.prerequisites),
-        uniform: _prerequisitesFormKeys[job.id]!.currentState!.uniforms,
+        preInternshipRequests: PreInternshipRequests.fromStrings(
+            _prerequisitesFormKeys[job.id]!.currentState!.prerequisites),
+        uniforms: _prerequisitesFormKeys[job.id]!.currentState!.uniforms,
         protections: _prerequisitesFormKeys[job.id]!.currentState!.protections,
       ));
       enterprises.replace(widget.enterprise);

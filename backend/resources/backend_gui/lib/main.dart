@@ -805,10 +805,14 @@ class _LoginScreenState extends State<LoginScreen> {
             positionsOffered: _random.nextInt(10),
             minimumAge: random.nextInt(5) + 13,
             photosUrl: ['https://example.com/photo${_random.nextInt(100)}.jpg'],
-            preInternshipRequests: [
-              PreInternshipRequest
-                  .values[random.nextInt(PreInternshipRequest.values.length)]
-            ],
+            preInternshipRequests: PreInternshipRequests(
+              requests: [
+                PreInternshipRequestTypes.values[
+                    random.nextInt(PreInternshipRequestTypes.values.length)]
+              ],
+              other: null,
+              isApplicable: true,
+            ),
             comments: [
               'Comment ${_random.nextInt(100)}',
               'Comment ${_random.nextInt(100)}'

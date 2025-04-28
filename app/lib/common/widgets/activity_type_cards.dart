@@ -1,3 +1,4 @@
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:flutter/material.dart';
 
 class ActivityTypeCards extends StatelessWidget {
@@ -7,8 +8,8 @@ class ActivityTypeCards extends StatelessWidget {
     this.onDeleted,
   });
 
-  final Set<String> activityTypes;
-  final void Function(String activityType)? onDeleted;
+  final Set<ActivityTypes> activityTypes;
+  final void Function(ActivityTypes activityType)? onDeleted;
 
   @override
   Widget build(BuildContext context) {

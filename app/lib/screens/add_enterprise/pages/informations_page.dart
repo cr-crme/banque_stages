@@ -1,6 +1,6 @@
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/share_with_picker_form_field.dart';
 import 'package:flutter/material.dart';
 
 class InformationsPage extends StatefulWidget {
@@ -17,9 +17,7 @@ class InformationsPageState extends State<InformationsPage> {
   final addressController = AddressController();
   String? neq;
 
-  Set<String> activityTypes = {};
-
-  String? shareWith;
+  Set<ActivityTypes> activityTypes = {};
 
   Future<String?> validate() async {
     await addressController.requestValidation();
@@ -50,7 +48,7 @@ class InformationsPageState extends State<InformationsPage> {
                 onSaved: (name) => this.name = name,
               ),
               ActivityTypesPickerFormField(
-                onSaved: (Set<String>? activityTypes) =>
+                onSaved: (Set<ActivityTypes>? activityTypes) =>
                     setState(() => this.activityTypes = activityTypes!),
                 activityTabAtTop: false,
               ),
@@ -59,10 +57,6 @@ class InformationsPageState extends State<InformationsPage> {
                 isMandatory: true,
                 enabled: true,
                 addressController: addressController,
-              ),
-              ShareWithPickerFormField(
-                onSaved: (String? shareWith) =>
-                    setState(() => this.shareWith = shareWith),
               ),
             ],
           ),

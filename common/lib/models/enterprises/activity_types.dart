@@ -159,4 +159,12 @@ enum ActivityTypes {
         return 'Autre';
     }
   }
+
+  static ActivityTypes fromString(String activityType) {
+    activityType = activityType.toLowerCase();
+    return ActivityTypes.values.firstWhere(
+      (e) => e.name.toLowerCase() == activityType,
+      orElse: () => ActivityTypes.autre,
+    );
+  }
 }

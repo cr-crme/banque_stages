@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
 

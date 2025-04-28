@@ -4,7 +4,7 @@ import 'package:enhanced_containers_foundation/enhanced_containers_foundation.da
 
 part 'package:common/models/enterprises/incidents.dart';
 part 'package:common/models/enterprises/job_sst_evaluation.dart';
-part 'package:common/models/enterprises/pre_internship_request.dart';
+part 'package:common/models/enterprises/pre_internship_requests.dart';
 part 'package:common/models/enterprises/protections.dart';
 part 'package:common/models/enterprises/uniforms.dart';
 
@@ -24,37 +24,15 @@ class Job extends ItemSerializable {
   }
 
   final int positionsOffered;
-  // TODO Implement this App side with an extension on
-  // int positionsOccupied(context) =>
-  //     InternshipsProvider.of(context, listen: false)
-  //         .where((e) => e.jobId == id && e.isActive)
-  //         .length;
-  // TODO Implement this App side with an extension on
-  // int positionsRemaining(context) =>
-  //     positionsOffered - positionsOccupied(context);
 
   // Prerequisites for an internship
   final int minimumAge;
-  final List<PreInternshipRequest> preInternshipRequests;
+  final PreInternshipRequests preInternshipRequests;
   final Uniforms uniforms;
   final Protections protections;
 
   // Photos
   final List<String> photosUrl;
-
-  // Post-internship evaluations
-  // TODO Implement this App side with an extension on
-  // List<PostInternshipEnterpriseEvaluation> postInternshipEnterpriseEvaluations(
-  //     context) {
-  //   final internships = [
-  //     for (final internship in InternshipsProvider.of(context, listen: false))
-  //       if (internship.jobId == id) internship
-  //   ];
-  //   return [
-  //     for (final evaluation in internships.map((e) => e.enterpriseEvaluation))
-  //       if (evaluation != null) evaluation
-  //   ];
-  // }
 
   // SST
   final JobSstEvaluation sstEvaluation;
@@ -84,7 +62,7 @@ class Job extends ItemSerializable {
     Specialization? specialization,
     int? positionsOffered,
     int? minimumAge,
-    List<PreInternshipRequest>? preInternshipRequests,
+    PreInternshipRequests? preInternshipRequests,
     Uniforms? uniforms,
     Protections? protections,
     List<String>? photosUrl,
@@ -115,9 +93,7 @@ class Job extends ItemSerializable {
         'specialization_id': specialization.id,
         'positions_offered': positionsOffered,
         'minimum_age': minimumAge,
-        'pre_internship_requests': preInternshipRequests
-            .map((e) => e._toInt(_currentVersion))
-            .toList(),
+        'pre_internship_requests': preInternshipRequests.serialize(),
         'uniforms': uniforms.serialize(),
         'protections': protections.serialize(),
         'photos_url': photosUrl,
@@ -132,9 +108,8 @@ class Job extends ItemSerializable {
             : ActivitySectorsService.specialization(map['specialization_id']),
         positionsOffered = map['positions_offered'] ?? 0,
         minimumAge = map['minimum_age'] ?? 0,
-        preInternshipRequests = (map['pre_internship_requests'] as List? ?? [])
-            .map((e) => PreInternshipRequest._fromInt(e, map['version']))
-            .toList(),
+        preInternshipRequests = PreInternshipRequests.fromSerialized(
+            map['pre_internship_requests'] ?? {}, map['version']),
         uniforms =
             Uniforms.fromSerialized(map['uniforms'] ?? {}, map['version']),
         protections = Protections.fromSerialized(map['protections'] ?? {}),

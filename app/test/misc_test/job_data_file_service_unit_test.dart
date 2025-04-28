@@ -1,5 +1,5 @@
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -8,17 +8,17 @@ void main() {
     initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
 
     test('sectors are loaded properly', () async {
-      await ActivitySectorsService.initializeActivitySectorSingleton();
-      expect(ActivitySectorsService.sectors, isNotEmpty);
+      await ActivitySectorsService.initialize();
+      expect(ActivitySectorsService.activitySectors, isNotEmpty);
     });
 
     test('specializations are loaded properly', () async {
-      await ActivitySectorsService.initializeActivitySectorSingleton();
+      await ActivitySectorsService.initialize();
       expect(ActivitySectorsService.allSpecializations, isNotEmpty);
     });
 
     test('can get a sector back from a specialization', () async {
-      await ActivitySectorsService.initializeActivitySectorSingleton();
+      await ActivitySectorsService.initialize();
 
       final specialization = ActivitySectorsService.allSpecializations[10];
       expect(() => specialization.sector, returnsNormally);
@@ -31,7 +31,7 @@ void main() {
     });
 
     test('can get all or specified specialization', () async {
-      await ActivitySectorsService.initializeActivitySectorSingleton();
+      await ActivitySectorsService.initialize();
 
       final specialization = ActivitySectorsService.allSpecializations[10];
 
@@ -51,9 +51,9 @@ void main() {
     test('ActivitySectorList can serialize and deserialize', () async {
       // This test effectively tests the full serialization and deserialization chain
 
-      await ActivitySectorsService.initializeActivitySectorSingleton();
+      await ActivitySectorsService.initialize();
 
-      final sectors = ActivitySectorsService.sectors;
+      final sectors = ActivitySectorsService.activitySectors;
       final serializedSectors = sectors.serializeList();
       expect(
           () => sectors.deserializeItem(serializedSectors[0]), returnsNormally);
@@ -71,12 +71,14 @@ void main() {
     });
 
     test('Lists on which serialize should not be called', () async {
-      await ActivitySectorsService.initializeActivitySectorSingleton();
+      await ActivitySectorsService.initialize();
 
-      expect(() => ActivitySectorsService.sectors.serialize(), throwsException);
+      expect(() => ActivitySectorsService.activitySectors.serialize(),
+          throwsException);
 
       expect(
-          () => ActivitySectorsService.sectors[0].specializations.serialize(),
+          () => ActivitySectorsService.activitySectors[0].specializations
+              .serialize(),
           throwsException);
 
       expect(

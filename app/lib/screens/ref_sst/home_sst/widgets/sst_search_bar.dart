@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
-import '../../specialization_list_risks_and_skills/specialization_list_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
+import 'package:flutter/material.dart';
 
 class SstSearchBar extends StatelessWidget {
   const SstSearchBar({super.key});
@@ -84,7 +83,7 @@ class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
 
   List<Specialization> _evaluatedSpecializations() {
     List<Specialization> out = [];
-    for (final sector in ActivitySectorsService.sectors) {
+    for (final sector in ActivitySectorsService.activitySectors) {
       for (final specialization in sector.specializations) {
         // If there is no risk, it does not mean this specialization
         // is risk-free, it means it was not evaluated

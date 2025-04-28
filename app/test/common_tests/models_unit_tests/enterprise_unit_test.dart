@@ -1,8 +1,9 @@
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job_list.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -22,8 +23,7 @@ void main() {
       expect(enterpriseSame.id, enterprise.id);
       expect(enterpriseSame.name, enterprise.name);
       expect(enterpriseSame.activityTypes, enterprise.activityTypes);
-      expect(enterpriseSame.recrutedBy, enterprise.recrutedBy);
-      expect(enterpriseSame.shareWith, enterprise.shareWith);
+      expect(enterpriseSame.recruiterId, enterprise.recruiterId);
       expect(enterpriseSame.jobs, enterprise.jobs);
       expect(enterpriseSame.contact, enterprise.contact);
       expect(enterpriseSame.contactFunction, enterprise.contactFunction);
@@ -38,9 +38,8 @@ void main() {
       final enterpriseDifferent = enterprise.copyWith(
         id: 'newId',
         name: 'newName',
-        activityTypes: {'newActivity'},
-        recrutedBy: 'newRecrutedBy',
-        shareWith: 'newShareWith',
+        activityTypes: {ActivityTypes.autre},
+        recruiterId: 'newRecrutedBy',
         jobs: JobList()..add(dummyJob(id: 'newJobId')),
         contact: Person(
           firstName: 'Pariterre',
@@ -64,8 +63,7 @@ void main() {
       expect(enterpriseDifferent.id, 'newId');
       expect(enterpriseDifferent.name, 'newName');
       expect(enterpriseDifferent.activityTypes, {'newActivity'});
-      expect(enterpriseDifferent.recrutedBy, 'newRecrutedBy');
-      expect(enterpriseDifferent.shareWith, 'newShareWith');
+      expect(enterpriseDifferent.recruiterId, 'newRecrutedBy');
       expect(enterpriseDifferent.jobs[0].id, 'newJobId');
       expect(enterpriseDifferent.contact.fullName, 'Pariterre Nobody');
       expect(enterpriseDifferent.contactFunction, 'newContactFunction');
@@ -151,8 +149,7 @@ void main() {
         'id': enterprise.id,
         'name': enterprise.name,
         'activityTypes': enterprise.activityTypes.toList(),
-        'recrutedBy': enterprise.recrutedBy,
-        'shareWith': enterprise.shareWith,
+        'recrutedBy': enterprise.recruiterId,
         'jobs': enterprise.jobs.serialize(),
         'contact': enterprise.contact.serialize(),
         'contactFunction': enterprise.contactFunction,
@@ -167,8 +164,7 @@ void main() {
       expect(deserialized.id, enterprise.id);
       expect(deserialized.name, enterprise.name);
       expect(deserialized.activityTypes, enterprise.activityTypes);
-      expect(deserialized.recrutedBy, enterprise.recrutedBy);
-      expect(deserialized.shareWith, enterprise.shareWith);
+      expect(deserialized.recruiterId, enterprise.recruiterId);
       expect(deserialized.jobs[0].id, enterprise.jobs[0].id);
       expect(deserialized.contact.id, enterprise.contact.id);
       expect(deserialized.contactFunction, enterprise.contactFunction);
@@ -185,8 +181,7 @@ void main() {
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.name, 'Unnamed enterprise');
       expect(emptyDeserialized.activityTypes, []);
-      expect(emptyDeserialized.recrutedBy, 'Unnamed recruiter');
-      expect(emptyDeserialized.shareWith, 'Unnamed sharing');
+      expect(emptyDeserialized.recruiterId, 'Unnamed recruiter');
       expect(emptyDeserialized.jobs.length, 0);
       expect(emptyDeserialized.contact.firstName, 'Unnamed');
       expect(emptyDeserialized.contactFunction, '');

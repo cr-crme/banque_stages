@@ -1,27 +1,23 @@
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/geographic_coordinate_system.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
-import 'package:common/models/internships/time_utils.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/task_appreciation.dart';
+import 'package:common/models/internships/time_utils.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/incidents.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/models/itinerary.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/models/job_list.dart';
-import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
-import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 
 School dummySchool({
   String? id,
@@ -116,15 +112,14 @@ JobList dummyJobList() {
   return JobList()..add(dummyJob());
 }
 
-Uniform dummyUniform({
+Uniforms dummyUniforms({
   String? id,
 }) =>
-    Uniform(
-        id: id,
-        status: UniformStatus.suppliedByEnterprise,
-        uniform: 'Un beau chapeu bleu\n'
-            'Une belle chemise rouge\n'
-            'Une cravate jaune peu désirable');
+    Uniforms(id: id, status: UniformStatus.suppliedByEnterprise, uniforms: [
+      'Un beau chapeu bleu',
+      'Une belle chemise rouge',
+      'Une cravate jaune peu désirable'
+    ]);
 
 Protections dummyProtections({
   String? id,
@@ -157,36 +152,39 @@ JobSstEvaluation dummyJobSstEvaluation({
     JobSstEvaluation(
       id: id,
       questions: {
-        'Q1': 'Oui',
-        'Q1+t': 'Peu souvent, à la discrétion des employés.',
+        'Q1': ['Oui'],
+        'Q1+t': ['Peu souvent, à la discrétion des employés.'],
         'Q3': ['Un diable'],
         'Q5': ['Des ciseaux'],
         'Q9': ['Des solvants', 'Des produits de nettoyage'],
         'Q12': ['Bruyant'],
-        'Q12+t': 'Bouchons a oreilles',
-        'Q15': 'Oui',
-        'Q18': 'Non',
+        'Q12+t': ['Bouchons a oreilles'],
+        'Q15': ['Oui'],
+        'Q18': ['Non'],
       },
       date: DateTime(2000, 1, 1),
     );
 
-PreInternshipRequest dummyPreInternshipRequest({
+PreInternshipRequests dummyPreInternshipRequests({
   String? id,
 }) =>
-    PreInternshipRequest(id: id, requests: [
-      PreInternshipRequestType.judiciaryBackgroundCheck.name,
-      'Manger de la poutine'
-    ]);
+    PreInternshipRequests(
+      id: id,
+      requests: [PreInternshipRequestTypes.judiciaryBackgroundCheck],
+      other: 'Manger de la poutine',
+      isApplicable: true,
+    );
 
 Job dummyJob({String id = 'jobId'}) => Job(
       id: id,
-      specialization: ActivitySectorsService.sectors[2].specializations[9],
+      specialization:
+          ActivitySectorsService.activitySectors[2].specializations[9],
       positionsOffered: 2,
       sstEvaluation: dummyJobSstEvaluation(),
       incidents: dummyIncidents(),
       minimumAge: 12,
-      preInternshipRequest: dummyPreInternshipRequest(),
-      uniform: dummyUniform(),
+      preInternshipRequests: dummyPreInternshipRequests(),
+      uniforms: dummyUniforms(),
       protections: dummyProtections(),
     );
 
@@ -199,8 +197,7 @@ Enterprise dummyEnterprise({bool addJob = false}) {
     id: 'enterpriseId',
     name: 'Not named',
     activityTypes: {},
-    recrutedBy: 'Nobody',
-    shareWith: 'No one',
+    recruiterId: 'Nobody',
     jobs: jobs,
     contact: dummyPerson(),
     address: dummyAddress(),
@@ -258,8 +255,8 @@ Internship dummyInternship({
     enterpriseId: enterpriseId,
     jobId: jobId,
     extraSpecializationIds: [
-      ActivitySectorsService.sectors[2].specializations[1].id,
-      ActivitySectorsService.sectors[1].specializations[0].id,
+      ActivitySectorsService.activitySectors[2].specializations[1].id,
+      ActivitySectorsService.activitySectors[1].specializations[0].id,
     ],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(

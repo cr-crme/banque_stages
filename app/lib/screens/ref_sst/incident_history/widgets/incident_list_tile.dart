@@ -1,5 +1,5 @@
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/models/incidents_by_enterprise.dart';
 import 'package:flutter/material.dart';
 

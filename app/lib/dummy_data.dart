@@ -2,6 +2,7 @@
 import 'dart:developer' as dev;
 import 'dart:math';
 
+import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
@@ -11,20 +12,15 @@ import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/incidents.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/models/job_list.dart';
-import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
-import 'package:crcrme_banque_stages/common/models/protections.dart';
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job_list.dart';
 import 'package:crcrme_banque_stages/common/models/school.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -156,17 +152,20 @@ Future<void> _addDummyEnterprises(
   JobList jobs = JobList();
   jobs.add(
     Job(
-        specialization: ActivitySectorsService.sectors[2].specializations[9],
+        specialization:
+            ActivitySectorsService.activitySectors[2].specializations[9],
         positionsOffered: 2,
         sstEvaluation: JobSstEvaluation.empty,
         incidents: Incidents(
             severeInjuries: [Incident('Vaut mieux ne pas détailler...')]),
         minimumAge: 12,
-        preInternshipRequest:
-            PreInternshipRequest(requests: ['Manger de la poutine']),
-        uniform: Uniform(
+        preInternshipRequests: PreInternshipRequests.fromStrings([
+          'Manger de la poutine',
+          PreInternshipRequestTypes.soloInterview.index.toString()
+        ]),
+        uniforms: Uniforms(
             status: UniformStatus.suppliedByEnterprise,
-            uniform: 'Un beau chapeu bleu'),
+            uniforms: ['Un beau chapeu bleu']),
         protections: Protections(
             status: ProtectionsStatus.suppliedByEnterprise,
             protections: [
@@ -177,7 +176,8 @@ Future<void> _addDummyEnterprises(
   );
   jobs.add(
     Job(
-        specialization: ActivitySectorsService.sectors[0].specializations[7],
+        specialization:
+            ActivitySectorsService.activitySectors[0].specializations[7],
         positionsOffered: 3,
         sstEvaluation: JobSstEvaluation.empty,
         incidents: Incidents(minorInjuries: [
@@ -185,11 +185,11 @@ Future<void> _addDummyEnterprises(
           Incident('Une deuxième fois, mais seulement 5 points de suture'),
         ]),
         minimumAge: 15,
-        preInternshipRequest:
-            PreInternshipRequest(requests: ['Manger de la tarte']),
-        uniform: Uniform(
+        preInternshipRequests:
+            PreInternshipRequests.fromStrings(['Manger de la tarte']),
+        uniforms: Uniforms(
             status: UniformStatus.suppliedByEnterprise,
-            uniform: 'Deux dents en or'),
+            uniforms: ['Deux dents en or']),
         protections: Protections(
             status: ProtectionsStatus.suppliedByEnterprise,
             protections: [
@@ -202,9 +202,12 @@ Future<void> _addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Metro Gagnon',
-      activityTypes: {activityTypes[4], activityTypes[7], activityTypes[15]},
-      recrutedBy: teachers[0].id,
-      shareWith: 'Mon centre de services scolire',
+      activityTypes: {
+        ActivityTypes.boucherie,
+        ActivityTypes.commerce,
+        ActivityTypes.epicerie
+      },
+      recruiterId: teachers[0].id,
       jobs: jobs,
       contact: Person(
           firstName: 'Marc',
@@ -235,21 +238,21 @@ Future<void> _addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-        specialization: ActivitySectorsService.sectors[0].specializations[7],
+        specialization:
+            ActivitySectorsService.activitySectors[0].specializations[7],
         positionsOffered: 3,
         sstEvaluation: JobSstEvaluation.empty,
         incidents: Incidents.empty,
         minimumAge: 15,
-        preInternshipRequest: PreInternshipRequest(requests: []),
-        uniform: Uniform(status: UniformStatus.none),
+        preInternshipRequests: PreInternshipRequests.fromStrings([]),
+        uniforms: Uniforms(status: UniformStatus.none),
         protections: Protections(status: ProtectionsStatus.none)),
   );
   enterprises.add(
     Enterprise(
       name: 'Jean Coutu',
-      activityTypes: {activityTypes[7], activityTypes[29]},
-      recrutedBy: teachers[1].id,
-      shareWith: 'Aucun partage',
+      activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
+      recruiterId: teachers[1].id,
       jobs: jobs,
       contact: Person(
         firstName: 'Caroline',
@@ -281,26 +284,27 @@ Future<void> _addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[9].specializations[3],
+      specialization:
+          ActivitySectorsService.activitySectors[9].specializations[3],
       positionsOffered: 3,
       sstEvaluation: JobSstEvaluation(
         questions: {
-          'Q1': 'Oui',
-          'Q1+t': 'Peu souvent, à la discrétion des employés.',
+          'Q1': ['Oui'],
+          'Q1+t': ['Peu souvent, à la discrétion des employés.'],
           'Q3': ['Un diable'],
           'Q5': ['Des ciseaux'],
           'Q9': ['Des solvants', 'Des produits de nettoyage'],
           'Q12': ['Bruyant'],
-          'Q12+t': 'Bouchons a oreilles',
-          'Q15': 'Oui',
-          'Q18': 'Non',
+          'Q12+t': ['Bouchons a oreilles'],
+          'Q15': ['Oui'],
+          'Q18': ['Non'],
         },
         date: DateTime.now(),
       ),
       incidents: Incidents.empty,
       minimumAge: 15,
-      preInternshipRequest: PreInternshipRequest(requests: []),
-      uniform: Uniform(status: UniformStatus.none),
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
     ),
   );
@@ -308,9 +312,8 @@ Future<void> _addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Auto Care',
-      activityTypes: {activityTypes[19]},
-      recrutedBy: teachers[0].id,
-      shareWith: 'Mon centre de services scolaire',
+      activityTypes: {ActivityTypes.garage},
+      recruiterId: teachers[0].id,
       jobs: jobs,
       contact: Person(
         firstName: 'Denis',
@@ -341,22 +344,22 @@ Future<void> _addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[9].specializations[3],
+      specialization:
+          ActivitySectorsService.activitySectors[9].specializations[3],
       positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
-      preInternshipRequest: PreInternshipRequest(requests: []),
-      uniform: Uniform(status: UniformStatus.none),
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
     ),
   );
   enterprises.add(
     Enterprise(
       name: 'Auto Repair',
-      activityTypes: {activityTypes[19], activityTypes[27]},
-      recrutedBy: teachers[2].id,
-      shareWith: 'Enseignants FPT de l\'école',
+      activityTypes: {ActivityTypes.garage, ActivityTypes.mecanique},
+      recruiterId: teachers[2].id,
       jobs: jobs,
       contact: Person(
         firstName: 'Claudio',
@@ -388,13 +391,14 @@ Future<void> _addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[2].specializations[9],
+      specialization:
+          ActivitySectorsService.activitySectors[2].specializations[9],
       positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
-      preInternshipRequest: PreInternshipRequest(requests: []),
-      uniform: Uniform(status: UniformStatus.none),
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
     ),
   );
@@ -402,9 +406,8 @@ Future<void> _addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Boucherie Marien',
-      activityTypes: {activityTypes[4], activityTypes[7]},
-      recrutedBy: teachers[0].id,
-      shareWith: 'Enseignants PFAE de l\'école',
+      activityTypes: {ActivityTypes.boucherie, ActivityTypes.commerce},
+      recruiterId: teachers[0].id,
       jobs: jobs,
       contact: Person(
         firstName: 'Brigitte',
@@ -436,13 +439,14 @@ Future<void> _addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[2].specializations[7],
+      specialization:
+          ActivitySectorsService.activitySectors[2].specializations[7],
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
-      preInternshipRequest: PreInternshipRequest(requests: []),
-      uniform: Uniform(status: UniformStatus.none),
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
     ),
   );
@@ -450,9 +454,8 @@ Future<void> _addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'IGA',
-      activityTypes: {activityTypes[15], activityTypes[41]},
-      recrutedBy: teachers[0].id,
-      shareWith: 'Enseignants FPT de l\'école',
+      activityTypes: {ActivityTypes.epicerie, ActivityTypes.supermarche},
+      recruiterId: teachers[0].id,
       jobs: jobs,
       contact: Person(
         firstName: 'Gabrielle',
@@ -484,13 +487,14 @@ Future<void> _addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[0].specializations[7],
+      specialization:
+          ActivitySectorsService.activitySectors[0].specializations[7],
       positionsOffered: 2,
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
-      preInternshipRequest: PreInternshipRequest(requests: []),
-      uniform: Uniform(status: UniformStatus.none),
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
     ),
   );
@@ -498,9 +502,8 @@ Future<void> _addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Pharmaprix',
-      activityTypes: {activityTypes[7], activityTypes[29]},
-      recrutedBy: teachers[3].id,
-      shareWith: 'Enseignants PFAE de l\'école',
+      activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
+      recruiterId: teachers[3].id,
       jobs: jobs,
       contact: Person(
         firstName: 'Jessica',
@@ -532,13 +535,14 @@ Future<void> _addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[2].specializations[14],
+      specialization:
+          ActivitySectorsService.activitySectors[2].specializations[14],
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
-      preInternshipRequest: PreInternshipRequest(requests: []),
-      uniform: Uniform(status: UniformStatus.none),
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
     ),
   );
@@ -546,9 +550,11 @@ Future<void> _addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Subway',
-      activityTypes: {activityTypes[35], activityTypes[38]},
-      recrutedBy: teachers[3].id,
-      shareWith: 'Enseignants PFAE de l\'école',
+      activityTypes: {
+        ActivityTypes.restaurationRapide,
+        ActivityTypes.sandwicherie
+      },
+      recruiterId: teachers[3].id,
       jobs: jobs,
       contact: Person(
         firstName: 'Carlos',
@@ -575,13 +581,14 @@ Future<void> _addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[0].specializations[7],
+      specialization:
+          ActivitySectorsService.activitySectors[0].specializations[7],
       positionsOffered: 3,
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
-      preInternshipRequest: PreInternshipRequest(requests: []),
-      uniform: Uniform(status: UniformStatus.none),
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
     ),
   );
@@ -589,9 +596,12 @@ Future<void> _addDummyEnterprises(
   enterprises.add(
     Enterprise(
       name: 'Walmart',
-      activityTypes: {activityTypes[7], activityTypes[23], activityTypes[41]},
-      recrutedBy: teachers[0].id,
-      shareWith: 'Enseignants PFAE de l\'école',
+      activityTypes: {
+        ActivityTypes.commerce,
+        ActivityTypes.magasin,
+        ActivityTypes.supermarche
+      },
+      recruiterId: teachers[0].id,
       jobs: jobs,
       contact: Person(
         firstName: 'France',
@@ -623,36 +633,37 @@ Future<void> _addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[1].specializations[2],
+      specialization:
+          ActivitySectorsService.activitySectors[1].specializations[2],
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation(
         questions: {
-          'Q1': 'Oui',
-          'Q1+t': 'Plusieurs fois par jour, surtout des pots de fleurs.',
+          'Q1': ['Oui'],
+          'Q1+t': ['Plusieurs fois par jour, surtout des pots de fleurs.'],
           'Q3': ['Un diable'],
           'Q5': ['Un couteau', 'Des ciseaux', 'Un sécateur'],
           'Q7': ['Des pesticides', 'Engrais'],
           'Q12': ['Bruyant'],
-          'Q15': 'Non',
-          'Q18': 'Oui',
-          'Q18+t':
-              'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
-                  'et il s\'est ouvert profondément la paume en voulant couper une tige.',
+          'Q15': ['Non'],
+          'Q18': ['Oui'],
+          'Q18+t': [
+            'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
+                'et il s\'est ouvert profondément la paume en voulant couper une tige.'
+          ],
         },
       ),
       incidents: Incidents.empty,
       minimumAge: 15,
-      preInternshipRequest: PreInternshipRequest(requests: []),
-      uniform: Uniform(status: UniformStatus.none),
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
     ),
   );
   enterprises.add(
     Enterprise(
       name: 'Le jardin de Joanie',
-      activityTypes: {activityTypes[7], activityTypes[18]},
-      recrutedBy: teachers[0].id,
-      shareWith: 'Mon centre de services scolaire',
+      activityTypes: {ActivityTypes.commerce, ActivityTypes.fleuriste},
+      recruiterId: teachers[0].id,
       jobs: jobs,
       contact: Person(
         firstName: 'Joanie',
@@ -683,35 +694,37 @@ Future<void> _addDummyEnterprises(
   jobs = JobList();
   jobs.add(
     Job(
-      specialization: ActivitySectorsService.sectors[1].specializations[2],
+      specialization:
+          ActivitySectorsService.activitySectors[1].specializations[2],
       positionsOffered: 1,
       sstEvaluation: JobSstEvaluation(
         questions: {
-          'Q1': 'Oui',
-          'Q1+t': 'En début et en fin de journée, surtout des pots de fleurs.',
+          'Q1': ['Oui'],
+          'Q1+t': [
+            'En début et en fin de journée, surtout des pots de fleurs.'
+          ],
           'Q3': ['Un diable'],
           'Q5': ['Un couteau', 'Des ciseaux'],
           'Q7': ['Des pesticides', 'Engrais'],
           'Q12': ['__NOT_APPLICABLE_INTERNAL__'],
-          'Q15': 'Oui',
-          'Q15+t': 'Mais pourquoi donc??',
-          'Q16': 'Beurk',
-          'Q18': 'Non',
+          'Q15': ['Oui'],
+          'Q15+t': ['Mais pourquoi donc??'],
+          'Q16': ['Beurk'],
+          'Q18': ['Non'],
         },
       ),
       incidents: Incidents.empty,
       minimumAge: 15,
-      preInternshipRequest: PreInternshipRequest(requests: []),
-      uniform: Uniform(status: UniformStatus.none),
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
     ),
   );
   enterprises.add(
     Enterprise(
       name: 'Fleuriste Joli',
-      activityTypes: {activityTypes[18], activityTypes[23]},
-      recrutedBy: teachers[0].id,
-      shareWith: 'Mon centre de services scolaire',
+      activityTypes: {ActivityTypes.fleuriste, ActivityTypes.magasin},
+      recruiterId: teachers[0].id,
       jobs: jobs,
       contact: Person(
         firstName: 'Gaëtan',
@@ -1029,8 +1042,8 @@ Future<void> _addDummyInternships(
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Care').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Auto Care').jobs[0].id,
     extraSpecializationIds: [
-      ActivitySectorsService.sectors[2].specializations[1].id,
-      ActivitySectorsService.sectors[1].specializations[0].id,
+      ActivitySectorsService.activitySectors[2].specializations[1].id,
+      ActivitySectorsService.activitySectors[1].specializations[0].id,
     ],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(

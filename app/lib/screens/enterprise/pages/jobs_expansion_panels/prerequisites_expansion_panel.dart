@@ -1,8 +1,5 @@
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
-import 'package:crcrme_banque_stages/common/models/protections.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
@@ -73,11 +70,12 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
 
   final _uniformRequestKey = GlobalKey<RadioWithFollowUpState<UniformStatus>>();
   final _uniformTextController = TextEditingController();
-  Uniform get uniforms => Uniform(
-      status: _uniformRequestKey.currentState!.value!,
-      uniform: _uniformRequestKey.currentState!.value! == UniformStatus.none
-          ? ''
-          : _uniformTextController.text);
+  Uniforms get uniforms =>
+      Uniforms(status: _uniformRequestKey.currentState!.value!, uniforms: [
+        _uniformRequestKey.currentState!.value! == UniformStatus.none
+            ? ''
+            : _uniformTextController.text
+      ]);
 
   final _protectionsRequestKey =
       GlobalKey<RadioWithFollowUpState<ProtectionsStatus>>();
@@ -91,7 +89,7 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
               : _protectionsController.currentState!.values);
 
   final _preInternshipRequestKey =
-      GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>>();
+      GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>();
   List<String> get prerequisites =>
       _preInternshipRequestKey.currentState!.values;
 
@@ -159,7 +157,7 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
 
   Widget _buildUniform() {
     // Workaround for job.uniforms
-    final uniforms = widget.job.uniform;
+    final uniforms = widget.job.uniforms;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +193,8 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
   }
 
   Widget _buildEntepriseRequests() {
-    final requests = widget.job.preInternshipRequest.requests;
+    final requests =
+        widget.job.preInternshipRequests.requests.map((e) => e.name).toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

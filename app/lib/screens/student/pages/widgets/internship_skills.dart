@@ -1,11 +1,11 @@
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';

@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/firebase_options.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_banque_stages/misc/storage_service.dart';
@@ -26,7 +26,7 @@ Future<void> initializeProgram(
     if (!mockFirebase)
       Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
     // coverage:ignore-end
-    ActivitySectorsService.initializeActivitySectorSingleton(),
+    ActivitySectorsService.initialize(),
     RiskDataFileService.loadData(),
     QuestionFileService.loadData(),
   ]);

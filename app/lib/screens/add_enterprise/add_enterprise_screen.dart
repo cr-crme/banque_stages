@@ -1,7 +1,7 @@
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
@@ -109,8 +109,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       name: _informationsKey.currentState!.name!,
       neq: _informationsKey.currentState?.neq,
       activityTypes: _informationsKey.currentState!.activityTypes,
-      recrutedBy: teachers.currentTeacherId,
-      shareWith: _informationsKey.currentState!.shareWith!,
+      recruiterId: teachers.currentTeacherId,
       jobs: _jobsKey.currentState!.jobs,
       contact: Person(
         firstName: _contactKey.currentState!.contactFirstName!,

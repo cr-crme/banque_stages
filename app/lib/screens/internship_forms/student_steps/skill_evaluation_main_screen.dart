@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
@@ -8,13 +9,11 @@ import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-
-import 'skill_evaluation_form_controller.dart';
 
 class SkillEvaluationMainScreen extends StatefulWidget {
   const SkillEvaluationMainScreen(

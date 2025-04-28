@@ -1,13 +1,11 @@
 import 'package:collection/collection.dart';
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/models/protections.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
@@ -125,7 +123,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
 
   Widget _buildUniform(BuildContext context, Job job) {
     // Workaround for job.uniforms
-    final uniforms = job.uniform;
+    final uniforms = job.uniforms;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

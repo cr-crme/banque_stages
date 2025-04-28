@@ -2,16 +2,15 @@ import 'package:collection/collection.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/task_appreciation.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 import 'package:flutter/material.dart';
-
-import 'skill_evaluation_form_controller.dart';
 
 class SkillEvaluationFormScreen extends StatefulWidget {
   const SkillEvaluationFormScreen(

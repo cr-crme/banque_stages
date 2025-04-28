@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';
@@ -15,9 +15,9 @@ void main() {
     });
 
     test('serialization and deserialization works', () {
-      final uniform = dummyUniform();
+      final uniform = dummyUniforms();
       final serialized = uniform.serialize();
-      final deserialized = Uniform.fromSerialized(serialized);
+      final deserialized = Uniforms.fromSerialized(serialized, '1.0.0');
 
       expect(serialized, {
         'id': uniform.id,
@@ -30,7 +30,8 @@ void main() {
       expect(deserialized.uniforms, uniform.uniforms);
 
       // Test for empty deserialize to make sure it doesn't crash
-      final emptyDeserialized = Uniform.fromSerialized({'id': 'emptyId'});
+      final emptyDeserialized =
+          Uniforms.fromSerialized({'id': 'emptyId'}, '1.0.0');
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.status, UniformStatus.none);
       expect(emptyDeserialized.uniforms, []);

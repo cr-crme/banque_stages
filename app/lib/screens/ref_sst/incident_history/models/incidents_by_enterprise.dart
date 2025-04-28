@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:common/models/enterprises/enterprise.dart';
 
 class IncidentsByEnterprise {
   final Map<Enterprise, List<String>> _all = {};

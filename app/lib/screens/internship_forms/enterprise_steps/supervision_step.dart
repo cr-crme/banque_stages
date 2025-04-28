@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';

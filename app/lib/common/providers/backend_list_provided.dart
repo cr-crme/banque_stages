@@ -95,7 +95,7 @@ abstract class BackendListProvided<T extends ItemSerializable>
     );
     _providerSelector[getField(true)] = _Selector(
       deserialize: (data) =>
-          (data as Map).values.map((e) => deserialize(e)).toList(),
+          (data as Map).values.map((e) => deserializeItem(e)).toList(),
       addItem: _addToSelf,
       removeItem: _removeFromSelf,
       notify: notifyListeners,
@@ -108,7 +108,7 @@ abstract class BackendListProvided<T extends ItemSerializable>
         throw Exception('Connection to the server failed');
       }
     }
-    _getFromBackend(getField());
+    _getFromBackend(getField(true));
   }
 
   @override

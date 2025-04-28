@@ -1,5 +1,5 @@
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -102,20 +102,19 @@ class _SstBody extends StatelessWidget {
           switch (q.type) {
             case QuestionType.radio:
               answerWidget = Text(
-                answer,
+                answer!.first,
                 style: Theme.of(context).textTheme.bodyMedium,
               );
               break;
             case QuestionType.checkbox:
-              if ((answer as List).isEmpty ||
+              if (answer!.isEmpty ||
                   answer[0] == '__NOT_APPLICABLE_INTERNAL__') {
                 return Container();
               }
-              answerWidget =
-                  ItemizedText(answer.map((e) => e as String).toList());
+              answerWidget = ItemizedText(answer);
               break;
             case QuestionType.text:
-              answerWidget = Text(answer);
+              answerWidget = Text(answer!.first);
               break;
           }
         } else {
@@ -124,7 +123,7 @@ class _SstBody extends StatelessWidget {
                 'is not implemented yet';
           }
 
-          if (answer == q.choices!.last) {
+          if (answer!.first == q.choices!.last) {
             // No follow up question was needed
             return Container();
           }
@@ -134,7 +133,7 @@ class _SstBody extends StatelessWidget {
             style: Theme.of(context).textTheme.titleSmall,
           );
           answerWidget = Text(
-            answerT ?? 'Aucune réponse fournie',
+            answerT?.first ?? 'Aucune réponse fournie',
             style: Theme.of(context).textTheme.bodyMedium,
           );
         }

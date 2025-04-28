@@ -1,5 +1,5 @@
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
@@ -260,7 +260,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
 
   bool isProfessor = true;
 
-  Map<String, dynamic> answer = {};
+  Map<String, List<String>?> answer = {};
 
   @override
   Widget build(BuildContext context) {
@@ -310,7 +310,7 @@ class _QuestionsStepState extends State<QuestionsStep> {
                     elements: question.choices!.toList(),
                     elementsThatShowChild: [question.choices!.first],
                     onChanged: (value) {
-                      answer['Q${question.id}'] = value.toString();
+                      answer['Q${question.id}'] = [value.toString()];
                       _followUpController['Q${question.id}+t']!.text = '';
                       if (question.choices!.first != value) {
                         answer['Q${question.id}+t'] = null;
@@ -351,10 +351,11 @@ class _QuestionsStepState extends State<QuestionsStep> {
                   padding: const EdgeInsets.only(bottom: 36.0),
                   child: TextWithForm(
                     title: '${index + 1}. ${question.question}',
-                    initialValue:
-                        widget.job.sstEvaluation.questions['Q${question.id}'] ??
-                            '',
-                    onChanged: (text) => answer['Q${question.id}'] = text,
+                    initialValue: widget.job.sstEvaluation
+                            .questions['Q${question.id}']?.first ??
+                        '',
+                    onChanged: (text) => answer['Q${question.id}'] =
+                        text == null ? null : [text],
                   ),
                 );
             }
@@ -366,14 +367,16 @@ class _QuestionsStepState extends State<QuestionsStep> {
 
   Padding _buildFollowUpQuestion(Question question, BuildContext context) {
     _followUpController['Q${question.id}+t'] = TextEditingController(
-        text: widget.job.sstEvaluation.questions['Q${question.id}+t'] ?? '');
+        text: widget.job.sstEvaluation.questions['Q${question.id}+t']?.first ??
+            '');
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: TextWithForm(
         controller: _followUpController['Q${question.id}+t'],
         title: question.followUpQuestion!,
         titleStyle: Theme.of(context).textTheme.bodyMedium,
-        onChanged: (text) => answer['Q${question.id}+t'] = text,
+        onChanged: (text) =>
+            answer['Q${question.id}+t'] = text == null ? null : [text],
       ),
     );
   }

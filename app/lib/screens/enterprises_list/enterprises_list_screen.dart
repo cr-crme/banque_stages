@@ -1,6 +1,8 @@
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/persons/person.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job_list.dart';
+import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
+import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
@@ -157,7 +159,7 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
         return true;
       }
       if (enterprise.activityTypes
-          .any((type) => type.toLowerCase().contains(textToSearch))) {
+          .any((type) => type.name.toLowerCase().contains(textToSearch))) {
         return true;
       }
       if (enterprise.address.toString().toLowerCase().contains(textToSearch)) {
@@ -286,8 +288,7 @@ class _EnterprisesByMap extends StatelessWidget {
     final schoolAsEnterprise = Enterprise(
       name: school.name,
       activityTypes: {},
-      recrutedBy: '',
-      shareWith: '',
+      recruiterId: '',
       jobs: JobList(),
       contact: Person.empty,
       address: school.address,

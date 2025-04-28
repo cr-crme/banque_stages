@@ -1,11 +1,12 @@
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:crcrme_banque_stages/common/models/job_extension.dart';
+import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
+import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
-import 'package:crcrme_banque_stages/router.dart';
 import 'pages/about_page.dart';
 import 'pages/contact_page.dart';
 import 'pages/internships_page.dart';

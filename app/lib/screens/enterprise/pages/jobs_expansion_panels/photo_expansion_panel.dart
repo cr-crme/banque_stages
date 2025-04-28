@@ -1,6 +1,5 @@
+import 'package:common/models/enterprises/job.dart';
 import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/common/models/job.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PhotoExpansionPanel extends ExpansionPanel {

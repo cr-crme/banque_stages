@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/job.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';
@@ -9,20 +9,28 @@ void main() {
       final sstEvaluation = JobSstEvaluation.empty;
       expect(sstEvaluation.isFilled, isFalse);
 
-      sstEvaluation.update(questions: {'Q1': 'My answer'});
+      sstEvaluation.update(questions: {
+        'Q1': ['My answer']
+      });
       expect(sstEvaluation.isFilled, isTrue);
     });
 
     test('"update" erases old answers', () {
       final sstEvaluation = JobSstEvaluation.empty;
-      sstEvaluation.update(questions: {'Q1': 'My first answer'});
+      sstEvaluation.update(questions: {
+        'Q1': ['My first answer']
+      });
       expect(sstEvaluation.questions.length, 1);
 
-      sstEvaluation.update(questions: {'Q2': 'My second first answer'});
+      sstEvaluation.update(questions: {
+        'Q2': ['My second first answer']
+      });
       expect(sstEvaluation.questions.length, 1);
 
-      sstEvaluation.update(
-          questions: {'Q1': 'My first answer', 'Q2': 'My true second answer'});
+      sstEvaluation.update(questions: {
+        'Q1': ['My first answer'],
+        'Q2': ['My true second answer']
+      });
       expect(sstEvaluation.questions.length, 2);
     });
 

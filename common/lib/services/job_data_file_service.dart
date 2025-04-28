@@ -4,6 +4,9 @@ import 'package:enhanced_containers_foundation/enhanced_containers_foundation.da
 abstract class ActivitySectorsService {
   static ActivitySectorList? _activitySectors =
       ActivitySectorList.fromSerialized(jobData);
+
+  static Future<void> initialize() async => activitySectors;
+
   static ActivitySectorList get activitySectors {
     _activitySectors ??= ActivitySectorList.fromSerialized(jobData);
     return _activitySectors!;

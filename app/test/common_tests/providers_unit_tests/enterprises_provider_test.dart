@@ -1,8 +1,8 @@
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job_list.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,8 +21,7 @@ void main() {
       enterprises.add(Enterprise(
         name: 'Test Enterprise',
         activityTypes: {},
-        recrutedBy: 'Nobody',
-        shareWith: 'Noone',
+        recruiterId: 'Nobody',
         jobs: JobList()..add(dummyJob()),
         contact: Person(
           firstName: 'Not',

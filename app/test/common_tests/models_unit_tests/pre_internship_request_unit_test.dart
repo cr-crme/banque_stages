@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';
@@ -6,17 +6,18 @@ import '../utils.dart';
 void main() {
   group('PreInternshipRequest', () {
     test('"types" are the right label', () {
-      expect(PreInternshipRequestType.values.length, 2);
-      expect(PreInternshipRequestType.soloInterview.toString(),
+      expect(PreInternshipRequestTypes.values.length, 2);
+      expect(PreInternshipRequestTypes.soloInterview.toString(),
           'Une entrevue de recrutement de l\'élève en solo');
-      expect(PreInternshipRequestType.judiciaryBackgroundCheck.toString(),
+      expect(PreInternshipRequestTypes.judiciaryBackgroundCheck.toString(),
           'Une vérification des antécédents judiciaires pour les élèves majeurs');
     });
 
     test('serialization and deserialization works', () {
-      final preInternshipRequest = dummyPreInternshipRequest();
+      final preInternshipRequest = dummyPreInternshipRequests();
       final serialized = preInternshipRequest.serialize();
-      final deserialized = PreInternshipRequest.fromSerialized(serialized);
+      final deserialized =
+          PreInternshipRequests.fromSerialized(serialized, '1.0.0');
 
       expect(serialized, {
         'id': preInternshipRequest.id,
@@ -28,7 +29,7 @@ void main() {
 
       // Test for empty deserialize to make sure it doesn't crash
       final emptyDeserialized =
-          PreInternshipRequest.fromSerialized({'id': 'emptyId'});
+          PreInternshipRequests.fromSerialized({'id': 'emptyId'}, '1.0.0');
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.requests, []);
     });

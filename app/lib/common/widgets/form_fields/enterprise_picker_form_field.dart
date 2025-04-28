@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:flutter/material.dart';
 
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
 import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
 
 class EnterprisePickerFormField extends StatelessWidget {

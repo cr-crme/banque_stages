@@ -28,19 +28,6 @@ class Enterprise extends ItemSerializable {
   final Address? headquartersAddress;
   final String? neq;
 
-  // // TODO: Implement this on app side with an extension on
-  // // List<Internship> internships(context, {listen = true}) =>
-  // //     InternshipsProvider.of(context, listen: listen)
-  // //         .mapRemoveNull<Internship>(
-  // //             (Internship e) => e.enterpriseId == id ? e : null)
-  // //         .toList();
-
-  // // TODO Implement this on app side with an extension on
-  // // Iterable<Job> availableJobs(context) {
-  // //   return jobs.where(
-  // //       (job) => job.positionsOffered - job.positionsOccupied(context) > 0);
-  // // }
-
   Enterprise({
     super.id,
     required this.name,

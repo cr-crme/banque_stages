@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/incidents.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';

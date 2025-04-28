@@ -1,12 +1,8 @@
-import 'package:crcrme_banque_stages/common/models/incidents.dart';
-import 'package:crcrme_banque_stages/common/models/job.dart';
-import 'package:crcrme_banque_stages/common/models/pre_internship_request.dart';
-import 'package:crcrme_banque_stages/common/models/protections.dart';
-import 'package:crcrme_banque_stages/common/models/uniform.dart';
+import 'package:common/models/enterprises/job.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
-import 'package:crcrme_banque_stages/misc/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
@@ -34,7 +30,7 @@ class JobFormFieldListTile extends StatefulWidget {
 class JobFormFieldListTileState extends State<JobFormFieldListTile> {
   final _textKey = GlobalKey<FormState>();
   final _preInternshipRequestKey =
-      GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>>();
+      GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>();
   final _uniformKey = GlobalKey<RadioWithFollowUpState<UniformStatus>>();
   final _protectionsKey =
       GlobalKey<RadioWithFollowUpState<ProtectionsStatus>>();
@@ -99,14 +95,15 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
         if (validator() != null) return;
         if (widget.onSaved == null || _specialization == null) return;
 
-        final preInternshipRequest = PreInternshipRequest(
-            requests: _preInternshipRequestKey.currentState?.values
+        final preInternshipRequests = PreInternshipRequests.fromStrings(
+            _preInternshipRequestKey.currentState?.values
                     .map<String>((e) => e.toString())
                     .toList() ??
                 []);
-        final uniform = Uniform(
+
+        final uniforms = Uniforms(
             status: _uniformKey.currentState?.value ?? UniformStatus.none,
-            uniform: _uniformTextController.text);
+            uniforms: _uniformTextController.text.split('\n'));
         final protections = Protections(
             status:
                 _protectionsKey.currentState?.value ?? ProtectionsStatus.none,
@@ -116,8 +113,8 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
           specialization: _specialization!,
           positionsOffered: _positionOffered,
           minimumAge: _minimumAge,
-          preInternshipRequest: preInternshipRequest,
-          uniform: uniform,
+          preInternshipRequests: preInternshipRequests,
+          uniforms: uniforms,
           protections: protections,
           sstEvaluation: JobSstEvaluation.empty,
           incidents: Incidents.empty,
@@ -382,19 +379,20 @@ class BuildPrerequisitesCheckboxes extends StatelessWidget {
     this.initialValues,
   });
 
-  final GlobalKey<CheckboxWithOtherState<PreInternshipRequestType>> checkBoxKey;
+  final GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>
+      checkBoxKey;
   final bool hideTitle;
   final List<String>? initialValues;
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxWithOther<PreInternshipRequestType>(
+    return CheckboxWithOther<PreInternshipRequestTypes>(
       key: checkBoxKey,
       title: hideTitle
           ? null
           : '* Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
       titleStyle: Theme.of(context).textTheme.bodyLarge,
-      elements: PreInternshipRequestType.values,
+      elements: PreInternshipRequestTypes.values,
       initialValues: initialValues,
     );
   }

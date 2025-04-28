@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:crcrme_banque_stages/common/widgets/activity_type_cards.dart';
 import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
+import 'package:flutter/material.dart';
 
-class ActivityTypesPickerFormField extends FormField<Set<String>> {
+class ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
   ActivityTypesPickerFormField({
     super.key,
-    Set<String>? initialValue,
+    Set<ActivityTypes>? initialValue,
     super.onSaved,
-    String? Function(Set<String>? activityTypes)? validator,
+    String? Function(Set<ActivityTypes>? activityTypes)? validator,
     required this.activityTabAtTop,
   }) : super(
           initialValue: initialValue ?? {},
@@ -19,13 +18,13 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
 
   final bool activityTabAtTop;
 
-  static String? _validator(Set<String>? activityTypes) {
+  static String? _validator(Set<ActivityTypes>? activityTypes) {
     if (activityTypes!.isEmpty) return 'Choisir au moins un type d\'activité.';
 
     return null;
   }
 
-  static Widget _builder(FormFieldState<Set<String>> state) {
+  static Widget _builder(FormFieldState<Set<ActivityTypes>> state) {
     late TextEditingController textFieldController;
     late FocusNode textFieldFocusNode;
     final activityTabAtTop =
@@ -45,13 +44,12 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
         if (activityTabAtTop) activityTabs,
         Autocomplete<String>(
           optionsBuilder: (textEditingValue) {
-            return activityTypes.where(
-              (activity) =>
-                  activity
-                      .toLowerCase()
-                      .contains(textEditingValue.text.toLowerCase().trim()) &&
-                  !state.value!.contains(activity),
-            );
+            return ActivityTypes.values.map<String>((e) => e.name).where(
+                  (activity) =>
+                      activity.toLowerCase().contains(
+                          textEditingValue.text.toLowerCase().trim()) &&
+                      !state.value!.contains(activity),
+                );
           },
           optionsViewBuilder: (context, onSelected, options) =>
               OptionsBuilderForAutocomplete(
@@ -59,7 +57,7 @@ class ActivityTypesPickerFormField extends FormField<Set<String>> {
                   options: options,
                   optionToString: (String e) => e),
           onSelected: (activityType) {
-            state.value!.add(activityType);
+            state.value!.add(ActivityTypes.fromString(activityType));
             state.didChange(state.value);
             textFieldController.text = '';
             textFieldFocusNode.unfocus();

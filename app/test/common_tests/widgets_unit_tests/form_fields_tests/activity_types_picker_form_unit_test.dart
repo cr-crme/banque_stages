@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/models/enterprise.dart';
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,7 +12,7 @@ void main() {
           declareWidget(ActivityTypesPickerFormField(activityTabAtTop: false)));
 
       expect(find.text('* Type d\'activité de l\'entreprise'), findsOneWidget);
-      expect(find.text(activityTypes[0]), findsNothing);
+      expect(find.text(ActivityTypes.agricole.name), findsNothing);
       expect(find.byType(Chip), findsNothing);
     });
 
@@ -24,7 +24,7 @@ void main() {
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
 
-      expect(find.text(activityTypes[0]), findsOneWidget);
+      expect(find.text(ActivityTypes.agricole.name), findsOneWidget);
       expect(find.byType(Chip), findsNothing);
     });
 
@@ -36,10 +36,10 @@ void main() {
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(activityTypes[0]));
+      await tester.tap(find.text(ActivityTypes.agricole.name));
       await tester.pumpAndSettle();
 
-      expect(find.text(activityTypes[0]), findsOneWidget);
+      expect(find.text(ActivityTypes.agricole.name), findsOneWidget);
       expect(find.byType(Chip), findsOneWidget);
     });
 
@@ -51,12 +51,12 @@ void main() {
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(activityTypes[0]));
+      await tester.tap(find.text(ActivityTypes.agricole.name));
       await tester.pumpAndSettle();
 
-      expect(find.text(activityTypes[0]), findsOneWidget);
+      expect(find.text(ActivityTypes.agricole.name), findsOneWidget);
       expect(find.byType(Chip), findsOneWidget);
-      expect(find.text(activityTypes[0]), findsOneWidget);
+      expect(find.text(ActivityTypes.agricole.name), findsOneWidget);
 
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
@@ -66,7 +66,7 @@ void main() {
       final textOnChip = tester.widget<Text>(
           find.descendant(of: chipFinder, matching: find.byType(Text)));
       expect(chipFinder, findsOneWidget);
-      expect(textOnChip.data, activityTypes[0]);
+      expect(textOnChip.data, ActivityTypes.agricole.name);
     });
 
     testWidgets('the choice reappear in tab if deleted', (tester) async {
@@ -76,22 +76,22 @@ void main() {
       // Select the first choice
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(activityTypes[0]));
+      await tester.tap(find.text(ActivityTypes.agricole.name));
       await tester.pumpAndSettle();
-      expect(find.text(activityTypes[0]), findsOneWidget);
+      expect(find.text(ActivityTypes.agricole.name), findsOneWidget);
       expect(find.byType(Chip), findsOneWidget);
-      expect(find.text(activityTypes[0]), findsOneWidget);
+      expect(find.text(ActivityTypes.agricole.name), findsOneWidget);
 
       // Delete the card
       await tester.tap(find.byIcon(Icons.delete));
       await tester.pumpAndSettle();
       expect(find.byType(Chip), findsNothing);
-      expect(find.text(activityTypes[0]), findsNothing);
+      expect(find.text(ActivityTypes.agricole.name), findsNothing);
 
       // The choice is back in the list
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
-      expect(find.text(activityTypes[0]), findsOneWidget);
+      expect(find.text(ActivityTypes.agricole.name), findsOneWidget);
     });
 
     testWidgets('can delete a choice when multiple choices were made',
@@ -102,12 +102,12 @@ void main() {
       // Add two activities
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(activityTypes[0]));
+      await tester.tap(find.text(ActivityTypes.agricole.name));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(activityTypes[1]));
+      await tester.tap(find.text(ActivityTypes.animalerie.name));
       await tester.pumpAndSettle();
 
       expect(find.byType(Chip), findsNWidgets(2));
@@ -121,7 +121,7 @@ void main() {
       final textOnChip = tester.widget<Text>(
           find.descendant(of: chipFinder, matching: find.byType(Text)));
       expect(chipFinder, findsOneWidget);
-      expect(textOnChip.data, activityTypes[1]);
+      expect(textOnChip.data, ActivityTypes.animalerie.name);
     });
 
     testWidgets('can delete a choice when only one choice was made',
@@ -132,7 +132,7 @@ void main() {
       // Add an activity
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(activityTypes[0]));
+      await tester.tap(find.text(ActivityTypes.agricole.name));
       await tester.pumpAndSettle();
 
       expect(find.byType(Chip), findsOneWidget);
@@ -157,7 +157,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(Text),
-          findsNWidgets(baseNbOfTexts + activityTypes.length));
+          findsNWidgets(baseNbOfTexts + ActivityTypes.values.length));
 
       // Type the first letter of the first activity
       await tester.enterText(find.byType(TextField), 'Agr');
@@ -171,7 +171,7 @@ void main() {
 
       // Selecting the activity closes the tab and clears the text
       expect(find.text('agr'), findsOneWidget);
-      await tester.tap(find.text(activityTypes[0]));
+      await tester.tap(find.text(ActivityTypes.agricole.name));
       await tester.pumpAndSettle();
       expect(find.byType(Chip), findsOneWidget);
       expect(find.text('agr'), findsNothing);
@@ -203,7 +203,7 @@ void main() {
       // Add an activity
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(activityTypes[0]));
+      await tester.tap(find.text(ActivityTypes.agricole.name));
       await tester.pumpAndSettle();
 
       // test the chip is rendered over the textfield
@@ -222,7 +222,7 @@ void main() {
       // Add an activity
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(activityTypes[0]));
+      await tester.tap(find.text(ActivityTypes.agricole.name));
       await tester.pumpAndSettle();
 
       // test the chip is rendered under the textfield
@@ -258,7 +258,7 @@ void main() {
       // Add an activity
       await tester.tap(find.byType(TextField));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(activityTypes[0]));
+      await tester.tap(find.text(ActivityTypes.agricole.name));
       await tester.pumpAndSettle();
 
       // Try validating

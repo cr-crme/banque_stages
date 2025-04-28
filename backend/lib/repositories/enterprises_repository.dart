@@ -193,7 +193,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               dataTableName: 'enterprise_job_pre_internship_requests',
               asName: 'pre_internship_requests',
               idNameToDataTable: 'job_id',
-              fieldsToFetch: ['request']),
+              fieldsToFetch: ['id', 'other', 'is_applicable']),
           MySqlSelectSubQuery(
               dataTableName: 'enterprise_job_uniforms',
               asName: 'uniforms',
@@ -225,8 +225,17 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         jobs[job['id']]['comments'] =
             (job['comments'] as List?)?.map((e) => e['comment']).toList() ?? [];
         jobs[job['id']]['pre_internship_requests'] =
-            (job['pre_internship_requests'] as List?)
-                    ?.map((e) => e['request'])
+            ((job['pre_internship_requests'] as List?)?.first as Map?) ?? {};
+        jobs[job['id']]['pre_internship_requests']['is_applicable'] =
+            jobs[job['id']]['pre_internship_requests']['is_applicable'] == 1;
+        jobs[job['id']]['pre_internship_requests']['requests'] =
+            (await MySqlHelpers.performSelectQuery(
+                  connection: connection,
+                  tableName: 'enterprise_job_pre_internship_request_items',
+                  idName: 'internship_request_id',
+                  id: job['pre_internship_requests']['id'],
+                ) as List?)
+                    ?.map((e) => e['request'] as int)
                     .toList() ??
                 [];
         final uniforms = job['uniforms'] as List? ?? [];
@@ -360,12 +369,22 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         }
 
         // Insert pre-internship requests for the job
-        for (final request in job['pre_internship_requests']) {
+        final preInternshipRequests = job['pre_internship_requests'];
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'enterprise_job_pre_internship_requests',
+            data: {
+              'id': preInternshipRequests['id'],
+              'job_id': job['id'],
+              'other': preInternshipRequests['other'],
+              'is_applicable': preInternshipRequests['is_applicable'],
+            });
+        for (final request in (preInternshipRequests['requests'] as List)) {
           await MySqlHelpers.performInsertQuery(
               connection: connection,
-              tableName: 'enterprise_job_pre_internship_requests',
+              tableName: 'enterprise_job_pre_internship_request_items',
               data: {
-                'job_id': job['id'],
+                'internship_request_id': preInternshipRequests['id'],
                 'request': request,
               });
         }
