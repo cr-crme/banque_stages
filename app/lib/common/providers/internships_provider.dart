@@ -1,13 +1,13 @@
+import 'package:common/communication_protocol.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
-import 'package:enhanced_containers/enhanced_containers.dart';
+import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/backend_list_provided.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class InternshipsProvider extends FirebaseListProvided<Internship> {
-  InternshipsProvider({super.mockMe}) : super(pathToData: 'internships') {
-    initializeFetchingData();
-  }
+class InternshipsProvider extends BackendListProvided<Internship> {
+  InternshipsProvider({required super.uri, super.mockMe});
 
   static InternshipsProvider of(BuildContext context, {listen = true}) =>
       Provider.of<InternshipsProvider>(context, listen: listen);
@@ -29,4 +29,12 @@ class InternshipsProvider extends FirebaseListProvided<Internship> {
   Internship deserializeItem(data) {
     return Internship.fromSerialized(data);
   }
+
+  void initializeAuth(AuthProvider auth) {
+    initializeFetchingData(authProvider: auth);
+  }
+
+  @override
+  RequestFields getField([bool asList = false]) =>
+      asList ? RequestFields.internships : RequestFields.internship;
 }

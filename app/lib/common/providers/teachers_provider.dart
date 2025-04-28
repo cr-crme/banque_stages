@@ -1,11 +1,10 @@
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/backend_list_provided.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
-import 'auth_provider.dart';
 
 class TeachersProvider extends BackendListProvided<Teacher> {
   TeachersProvider({required super.uri, super.mockMe});
@@ -21,11 +20,6 @@ class TeachersProvider extends BackendListProvided<Teacher> {
   @override
   Teacher deserializeItem(data) {
     return Teacher.fromSerialized(data);
-  }
-
-  @override
-  List<Teacher> deserializeItemCollection(data) {
-    return (data as Map).values.map((e) => Teacher.fromSerialized(e)).toList();
   }
 
   String? _currentId;

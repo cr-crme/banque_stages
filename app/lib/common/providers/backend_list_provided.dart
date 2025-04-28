@@ -94,7 +94,8 @@ abstract class BackendListProvided<T extends ItemSerializable>
       notify: notifyListeners,
     );
     _providerSelector[getField(true)] = _Selector(
-      deserialize: deserializeItemCollection,
+      deserialize: (data) =>
+          (data as Map).values.map((e) => deserialize(e)).toList(),
       addItem: _addToSelf,
       removeItem: _removeFromSelf,
       notify: notifyListeners,
@@ -109,9 +110,6 @@ abstract class BackendListProvided<T extends ItemSerializable>
     }
     _getFromBackend(getField());
   }
-
-  /// Returns a new [T] from the provided serialized data.
-  List<T> deserializeItemCollection(data);
 
   @override
   Future<void> stopFetchingData() async {

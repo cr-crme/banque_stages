@@ -163,7 +163,7 @@ class _MutableElements extends ItemSerializable {
   _MutableElements.fromSerialized(super.map)
       : creationDate =
             DateTime.fromMillisecondsSinceEpoch(map['creation_date']),
-        supervisor = Person.fromSerialized(['supervisor']),
+        supervisor = Person.fromSerialized(map['supervisor']),
         dates = DateTimeRange(
             start: DateTime.fromMillisecondsSinceEpoch(map['starting_date']),
             end: DateTime.fromMillisecondsSinceEpoch(map['ending_date'])),

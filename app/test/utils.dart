@@ -124,7 +124,8 @@ extension BanqueStageWidgetTester on WidgetTester {
             }),
           if (withInternships)
             ChangeNotifierProvider(create: (context) {
-              final internships = InternshipsProvider(mockMe: true);
+              final internships = InternshipsProvider(
+                  uri: Uri.parse('ws://localhost'), mockMe: true);
               if (dummyInternship != null) internships.add(dummyInternship);
               return internships;
             }),

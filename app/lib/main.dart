@@ -43,8 +43,11 @@ class BanqueStagesApp extends StatelessWidget {
             create: (context) => SchoolsProvider(mockMe: mockFirebase)),
         ChangeNotifierProvider(
             create: (context) => EnterprisesProvider(mockMe: mockFirebase)),
-        ChangeNotifierProvider(
-            create: (context) => InternshipsProvider(mockMe: mockFirebase)),
+        ChangeNotifierProxyProvider<AuthProvider, InternshipsProvider>(
+          create: (context) =>
+              InternshipsProvider(uri: _backendUri, mockMe: mockFirebase),
+          update: (context, auth, previous) => previous!..initializeAuth(auth),
+        ),
         // coverage:ignore-start
         ChangeNotifierProxyProvider<AuthProvider, ItinerariesProvider>(
           create: (context) => ItinerariesProvider(mockMe: mockFirebase),

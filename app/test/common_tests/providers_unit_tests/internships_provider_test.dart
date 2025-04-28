@@ -12,7 +12,8 @@ void main() {
     initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
 
     test('"byStudentId" return the right student', () {
-      final internships = InternshipsProvider(mockMe: true);
+      final internships =
+          InternshipsProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       internships.add(dummyInternship(studentId: '123'));
       internships.add(dummyInternship(studentId: '123'));
       internships.add(dummyInternship(studentId: '456'));
@@ -26,7 +27,8 @@ void main() {
     });
 
     test('deserializeItem works', () {
-      final internships = InternshipsProvider(mockMe: true);
+      final internships =
+          InternshipsProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       final internship = internships.deserializeItem({
         'student': '123',
         'enterprise': '456',
@@ -38,7 +40,8 @@ void main() {
     });
 
     test('can replace priority', () {
-      final internships = InternshipsProvider(mockMe: true);
+      final internships =
+          InternshipsProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       internships.add(dummyInternship());
 
       expect(internships[0].visitingPriority, VisitingPriority.low);

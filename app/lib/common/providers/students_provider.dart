@@ -1,14 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/persons/student.dart';
+import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/backend_list_provided.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'auth_provider.dart';
-import 'internships_provider.dart';
-import 'teachers_provider.dart';
 
 class StudentsProvider extends BackendListProvided<Student> {
   StudentsProvider({required super.uri, super.mockMe});
@@ -92,11 +91,6 @@ class StudentsProvider extends BackendListProvided<Student> {
   @override
   Student deserializeItem(data) {
     return Student.fromSerialized(data);
-  }
-
-  @override
-  List<Student> deserializeItemCollection(data) {
-    return (data as Map).values.map((e) => Student.fromSerialized(e)).toList();
   }
 
   Future<void> initializeAuth(AuthProvider auth) async {
