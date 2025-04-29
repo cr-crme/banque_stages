@@ -18,15 +18,15 @@ void main() {
   });
 
   test('MySql query crafter element in table', () {
-    final query = _cleanQuery(
-        MySqlHelpers.craftSelectQuery(tableName: 'my_table', id: 'my_id'));
+    final query = _cleanQuery(MySqlHelpers.craftSelectQuery(
+        tableName: 'my_table', filters: {'id': 'my_id'}));
 
     expect(query, 'SELECT t.* FROM my_table t WHERE t.id = "my_id"');
   });
 
   test('MySql query crafter element in table with specific id', () {
     final query = _cleanQuery(MySqlHelpers.craftSelectQuery(
-        tableName: 'my_table', idName: 'my_named_id', id: 'my_id'));
+        tableName: 'my_table', filters: {'my_named_id': 'my_id'}));
 
     expect(query, 'SELECT t.* FROM my_table t WHERE t.my_named_id = "my_id"');
   });
@@ -49,21 +49,20 @@ void main() {
   });
 
   test('MySql query crafter with normalized table', () {
-    final query = _cleanQuery(MySqlHelpers.craftSelectQuery(
-        tableName: 'my_table',
-        idName: 'my_named_id',
-        id: 'my_id',
-        sublists: [
-          MySqlJoinSubQuery(
-            dataTableName: 'subtable_name',
-            dataTableIdName: 'subtable_id',
-            relationTableName: 'my_relation_table_name',
-            idNameToDataTable: 'to_subtable_id',
-            idNameToMainTable: 'to_main_table_id',
-            mainTableIdName: 'main_id',
-            fieldsToFetch: ['field1', 'field2'],
-          ),
-        ]));
+    final query = _cleanQuery(
+        MySqlHelpers.craftSelectQuery(tableName: 'my_table', filters: {
+      'my_named_id': 'my_id'
+    }, sublists: [
+      MySqlJoinSubQuery(
+        dataTableName: 'subtable_name',
+        dataTableIdName: 'subtable_id',
+        relationTableName: 'my_relation_table_name',
+        idNameToDataTable: 'to_subtable_id',
+        idNameToMainTable: 'to_main_table_id',
+        mainTableIdName: 'main_id',
+        fieldsToFetch: ['field1', 'field2'],
+      ),
+    ]));
 
     expect(
         query,

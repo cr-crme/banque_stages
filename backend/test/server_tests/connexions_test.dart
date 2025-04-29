@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:backend/repositories/enterprises_repository.dart';
 import 'package:backend/repositories/internships_repository.dart';
+import 'package:backend/repositories/school_boards_repository.dart';
 import 'package:backend/repositories/students_repository.dart';
 import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/server/connexions.dart';
@@ -22,6 +23,7 @@ String _prepareHandshake() {
 }
 
 DatabaseManager get _mockedDatabase => DatabaseManager(
+      schoolBoardsDatabase: SchoolBoardsRepositoryMock(),
       teachersDatabase: TeachersRepositoryMock(),
       studentsDatabase: StudentsRepositoryMock(),
       enterprisesDatabase: EnterprisesRepositoryMock(),

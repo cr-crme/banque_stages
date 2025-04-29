@@ -1,5 +1,5 @@
 import 'package:common/models/generic/address.dart';
-import 'package:crcrme_banque_stages/common/models/school.dart';
+import 'package:common/models/school_boards/school.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';

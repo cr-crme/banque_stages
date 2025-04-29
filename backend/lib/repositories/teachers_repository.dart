@@ -74,7 +74,7 @@ class MySqlTeachersRepository extends TeachersRepository {
     final teachers = await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'teachers',
-        id: teacherId,
+        filters: teacherId == null ? null : {'shared_id': teacherId},
         subqueries: [
           MySqlSelectSubQuery(
             dataTableName: 'persons',
@@ -126,10 +126,10 @@ class MySqlTeachersRepository extends TeachersRepository {
         final itineraries = teacher['itineraries'] as List;
         for (final itinerary in itineraries) {
           final waypoints = await MySqlHelpers.performSelectQuery(
-              connection: connection,
-              tableName: 'teacher_itinerary_waypoints',
-              idName: 'itinerary_id',
-              id: itinerary['id']);
+            connection: connection,
+            tableName: 'teacher_itinerary_waypoints',
+            filters: {'itinerary_id': itinerary['id']},
+          );
           itinerary['waypoints'] = [
             for (final waypoint in waypoints)
               {
@@ -175,7 +175,11 @@ class MySqlTeachersRepository extends TeachersRepository {
       await MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'teachers',
-          data: {'id': teacher.id, 'school_id': teacher.schoolId});
+          data: {
+            'id': teacher.id,
+            'school_board_id': teacher.schoolBoardId,
+            'school_id': teacher.schoolId
+          });
 
       // Insert the teaching groups
       for (final group in teacher.groups) {
@@ -210,6 +214,9 @@ class MySqlTeachersRepository extends TeachersRepository {
     final toUpdate = <String, dynamic>{};
     if (teacher.schoolId != previous.schoolId) {
       toUpdate['school_id'] = teacher.schoolId;
+    }
+    if (teacher.schoolBoardId != previous.schoolBoardId) {
+      toUpdate['school_board_id'] = teacher.schoolBoardId;
     }
     if (toUpdate.isNotEmpty) {
       await MySqlHelpers.performUpdateQuery(
@@ -314,6 +321,7 @@ class TeachersRepositoryMock extends TeachersRepository {
         firstName: 'John',
         middleName: null,
         lastName: 'Doe',
+        schoolBoardId: '10',
         schoolId: '10',
         groups: ['100', '101'],
         phone: PhoneNumber.fromString('098-765-4321'),
@@ -326,6 +334,7 @@ class TeachersRepositoryMock extends TeachersRepository {
         firstName: 'Jane',
         middleName: null,
         lastName: 'Doe',
+        schoolBoardId: '10',
         schoolId: '10',
         groups: ['100', '101'],
         phone: PhoneNumber.fromString('123-456-7890'),

@@ -5,8 +5,7 @@ import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -281,11 +280,13 @@ class _EnterprisesByMap extends StatelessWidget {
     final enterprises = enterpriseController.selectedEnterprises;
     final Map<Enterprise, Waypoint> out = {};
 
-    final teacher = TeachersProvider.of(context, listen: false).currentTeacher;
-    final school =
-        SchoolsProvider.of(context, listen: false).fromId(teacher.schoolId);
+    final schoolBoard =
+        SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
+    final school = SchoolBoardsProvider.mySchoolOf(context, listen: false);
+    if (school == null) return out;
 
     final schoolAsEnterprise = Enterprise(
+      schoolBoardId: schoolBoard.id,
       name: school.name,
       activityTypes: {},
       recruiterId: '',

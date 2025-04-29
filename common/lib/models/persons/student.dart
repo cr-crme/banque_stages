@@ -39,6 +39,8 @@ enum Program {
 
 class Student extends Person {
   final _currentVersion = '1.0.0';
+  final String schoolBoardId;
+  final String schoolId;
 
   final String photo;
 
@@ -50,6 +52,8 @@ class Student extends Person {
 
   Student({
     super.id,
+    required this.schoolBoardId,
+    required this.schoolId,
     required super.firstName,
     super.middleName,
     required super.lastName,
@@ -65,7 +69,9 @@ class Student extends Person {
   }) : photo = photo ?? Random().nextInt(0xFFFFFF).toString();
 
   Student.fromSerialized(super.map)
-      : photo = map['photo'] ?? Random().nextInt(0xFFFFFF).toString(),
+      : schoolBoardId = map['school_board_id'] ?? '-1',
+        schoolId = map['school_id'] ?? '-1',
+        photo = map['photo'] ?? Random().nextInt(0xFFFFFF).toString(),
         program = map['program'] == null
             ? Program.undefined
             : Program._fromInt(map['program'] as int, map['version']),
@@ -79,6 +85,8 @@ class Student extends Person {
     return super.serializedMap()
       ..addAll({
         'version': _currentVersion,
+        'school_board_id': schoolBoardId,
+        'school_id': schoolId,
         'photo': photo,
         'program': program._toInt(_currentVersion),
         'group': group,
@@ -89,6 +97,8 @@ class Student extends Person {
 
   Student get limitedInfo => Student(
         id: id,
+        schoolBoardId: schoolBoardId,
+        schoolId: schoolId,
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
@@ -105,6 +115,8 @@ class Student extends Person {
   @override
   Student copyWith({
     String? id,
+    String? schoolBoardId,
+    String? schoolId,
     String? firstName,
     String? middleName,
     String? lastName,
@@ -120,6 +132,8 @@ class Student extends Person {
   }) =>
       Student(
         id: id ?? this.id,
+        schoolBoardId: schoolBoardId ?? this.schoolBoardId,
+        schoolId: schoolId ?? this.schoolId,
         firstName: firstName ?? this.firstName,
         middleName: middleName ?? this.middleName,
         lastName: lastName ?? this.lastName,
@@ -138,6 +152,8 @@ class Student extends Person {
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => ![
           'id',
+          'school_board_id',
+          'school_id',
           'version',
           'first_name',
           'middle_name',
@@ -156,6 +172,8 @@ class Student extends Person {
     }
     return Student(
       id: data['id']?.toString() ?? id,
+      schoolBoardId: data['school_board_id'] ?? schoolBoardId,
+      schoolId: data['school_id'] ?? schoolId,
       firstName: data['first_name'] ?? firstName,
       middleName: data['middle_name'] ?? middleName,
       lastName: data['last_name'] ?? lastName,

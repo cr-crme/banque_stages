@@ -74,7 +74,7 @@ class MySqlStudentsRepository extends StudentsRepository {
     final students = await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'students',
-        id: studentId,
+        filters: studentId == null ? null : {'id': studentId},
         subqueries: [
           MySqlSelectSubQuery(
             dataTableName: 'persons',
@@ -122,7 +122,9 @@ class MySqlStudentsRepository extends StudentsRepository {
           : await MySqlHelpers.performSelectQuery(
               connection: connection,
               tableName: 'persons',
-              id: contactId,
+              filters: {
+                  'id': contactId
+                },
               subqueries: [
                   MySqlSelectSubQuery(
                       dataTableName: 'addresses',
@@ -246,8 +248,7 @@ class MySqlStudentsRepository extends StudentsRepository {
       final contacts = (await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'student_contacts',
-        idName: 'student_id',
-        id: id,
+        filters: {'student_id': id},
       ));
 
       await MySqlHelpers.performDeleteQuery(
@@ -282,6 +283,8 @@ class StudentsRepositoryMock extends StudentsRepository {
   final _dummyDatabase = {
     '0': Student(
         id: '0',
+        schoolBoardId: '0',
+        schoolId: '0',
         firstName: 'John',
         middleName: null,
         lastName: 'Doe',
@@ -303,6 +306,8 @@ class StudentsRepositoryMock extends StudentsRepository {
         contactLink: 'Mother'),
     '1': Student(
         id: '1',
+        schoolBoardId: '0',
+        schoolId: '0',
         firstName: 'Jane',
         middleName: null,
         lastName: 'Doe',

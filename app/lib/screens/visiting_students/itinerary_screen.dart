@@ -4,9 +4,8 @@ import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/routing_map.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/waypoint_card.dart';
@@ -36,11 +35,9 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
   }
 
   Future<bool> _fillAllWaypoints() async {
-    final teacher = TeachersProvider.of(context, listen: false).currentTeacher;
     final internships = InternshipsProvider.of(context, listen: false);
 
-    var school = (await _waitFor<SchoolsProvider>(SchoolsProvider.of))
-        ?.fromId(teacher.schoolId);
+    var school = SchoolBoardsProvider.mySchoolOf(context, listen: false);
     if (!mounted || school == null) return false;
 
     final enterprises =

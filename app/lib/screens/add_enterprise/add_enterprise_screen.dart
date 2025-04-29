@@ -106,6 +106,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     final enterprises = EnterprisesProvider.of(context, listen: false);
 
     Enterprise enterprise = Enterprise(
+      schoolBoardId: teachers.currentTeacher.schoolBoardId,
       name: _informationsKey.currentState!.name!,
       neq: _informationsKey.currentState?.neq,
       activityTypes: _informationsKey.currentState!.activityTypes,

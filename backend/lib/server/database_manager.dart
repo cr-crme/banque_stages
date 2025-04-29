@@ -1,5 +1,6 @@
 import 'package:backend/repositories/enterprises_repository.dart';
 import 'package:backend/repositories/internships_repository.dart';
+import 'package:backend/repositories/school_boards_repository.dart';
 import 'package:backend/repositories/students_repository.dart';
 import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/utils/exceptions.dart';
@@ -13,13 +14,14 @@ String _getId(Map<String, dynamic>? data, {required String messageOnNull}) {
 
 class DatabaseManager {
   DatabaseManager({
+    required this.schoolBoardsDatabase,
     required this.teachersDatabase,
     required this.studentsDatabase,
     required this.enterprisesDatabase,
     required this.internshipsDatabase,
   });
 
-  // TODO: Add a SchoolBoardRepository that will be used to limit teachers/students/enterprises
+  final SchoolBoardsRepository schoolBoardsDatabase;
   final TeachersRepository teachersDatabase;
   final StudentsRepository studentsDatabase;
   final EnterprisesRepository enterprisesDatabase;
@@ -28,6 +30,14 @@ class DatabaseManager {
   Future<Map<String, dynamic>> get(RequestFields field,
       {required Map<String, dynamic>? data}) async {
     switch (field) {
+      case RequestFields.schoolBoards:
+        return await schoolBoardsDatabase.getAll(
+            fields: (data?['fields'] as List?)?.cast<String>());
+      case RequestFields.schoolBoard:
+        return await schoolBoardsDatabase.getById(
+            id: _getId(data,
+                messageOnNull: 'An "id" is required to get a school board'),
+            fields: (data?['fields'] as List?)?.cast<String>());
       case RequestFields.teachers:
         return await teachersDatabase.getAll();
       case RequestFields.teacher:
@@ -66,6 +76,14 @@ class DatabaseManager {
     }
 
     switch (field) {
+      case RequestFields.schoolBoards:
+        await schoolBoardsDatabase.putAll(data: data);
+        return null;
+      case RequestFields.schoolBoard:
+        return await schoolBoardsDatabase.putById(
+            id: _getId(data,
+                messageOnNull: 'An "id" is required to put a school board'),
+            data: data);
       case RequestFields.teachers:
         await teachersDatabase.putAll(data: data);
         return null;
@@ -104,6 +122,15 @@ class DatabaseManager {
   Future<List<String>> delete(RequestFields field,
       {required Map<String, dynamic>? data}) async {
     switch (field) {
+      case RequestFields.schoolBoards:
+        return await schoolBoardsDatabase.deleteAll();
+      case RequestFields.schoolBoard:
+        return [
+          await schoolBoardsDatabase.deleteById(
+              id: _getId(data,
+                  messageOnNull:
+                      'An "id" is required to delete a school board'))
+        ];
       case RequestFields.teachers:
         return await teachersDatabase.deleteAll();
       case RequestFields.teacher:

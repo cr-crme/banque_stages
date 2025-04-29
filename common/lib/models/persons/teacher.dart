@@ -8,6 +8,7 @@ List<String> _stringListFromSerialized(List? list) =>
     (list ?? []).map<String>((e) => e).toList();
 
 class Teacher extends Person {
+  final String schoolBoardId;
   final String schoolId;
   final List<String> groups;
   final List<Itinerary> itineraries;
@@ -17,6 +18,7 @@ class Teacher extends Person {
     required super.firstName,
     required super.middleName,
     required super.lastName,
+    required this.schoolBoardId,
     required this.schoolId,
     required this.groups,
     required super.email,
@@ -37,6 +39,7 @@ class Teacher extends Person {
         firstName: 'Error',
         middleName: null,
         lastName: 'Error',
+        schoolBoardId: '-1',
         schoolId: '-1',
         groups: [],
         email: 'error.error@error.err',
@@ -47,7 +50,8 @@ class Teacher extends Person {
       );
 
   Teacher.fromSerialized(super.map)
-      : schoolId = map['school_id'] ?? '',
+      : schoolBoardId = map['school_board_id'] ?? '-1',
+        schoolId = map['school_id'] ?? '-1',
         groups = _stringListFromSerialized(map['groups']),
         itineraries = map['itineraries'] == null
             ? []
@@ -59,6 +63,7 @@ class Teacher extends Person {
   @override
   Map<String, dynamic> serializedMap() => super.serializedMap()
     ..addAll({
+      'school_board_id': schoolBoardId,
       'school_id': schoolId,
       'groups': groups,
       'itineraries': itineraries.map((e) => e.serializedMap()).toList(),
@@ -70,6 +75,7 @@ class Teacher extends Person {
     String? firstName,
     String? middleName,
     String? lastName,
+    String? schoolBoardId,
     String? schoolId,
     List<String>? groups,
     String? email,
@@ -83,6 +89,7 @@ class Teacher extends Person {
         firstName: firstName ?? this.firstName,
         middleName: middleName ?? this.middleName,
         lastName: lastName ?? this.lastName,
+        schoolBoardId: schoolBoardId ?? this.schoolBoardId,
         schoolId: schoolId ?? this.schoolId,
         groups: groups ?? this.groups,
         phone: phone ?? this.phone,
@@ -99,6 +106,7 @@ class Teacher extends Person {
           'first_name',
           'middle_name',
           'last_name',
+          'school_board_id',
           'school_id',
           'groups',
           'phone',
@@ -114,6 +122,7 @@ class Teacher extends Person {
       firstName: data['first_name'] ?? firstName,
       middleName: data['middle_name'] ?? middleName,
       lastName: data['last_name'] ?? lastName,
+      schoolBoardId: data['school_board_id'] ?? schoolBoardId,
       schoolId: data['school_id'] ?? schoolId,
       groups: data['groups'] == null
           ? groups

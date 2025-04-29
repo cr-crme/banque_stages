@@ -2,7 +2,7 @@ import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
@@ -39,8 +39,11 @@ class BanqueStagesApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
             create: (context) => AuthProvider(mockMe: useDatabaseEmulator)),
-        ChangeNotifierProvider(
-            create: (context) => SchoolsProvider(mockMe: mockFirebase)),
+        ChangeNotifierProxyProvider<AuthProvider, SchoolBoardsProvider>(
+          create: (context) =>
+              SchoolBoardsProvider(uri: _backendUri, mockMe: mockFirebase),
+          update: (context, auth, previous) => previous!..initializeAuth(auth),
+        ),
         ChangeNotifierProxyProvider<AuthProvider, EnterprisesProvider>(
           create: (context) =>
               EnterprisesProvider(uri: _backendUri, mockMe: mockFirebase),

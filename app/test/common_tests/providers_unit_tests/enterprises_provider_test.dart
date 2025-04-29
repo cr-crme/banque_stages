@@ -19,6 +19,7 @@ void main() {
       final enterprises =
           EnterprisesProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       enterprises.add(Enterprise(
+        schoolBoardId: 'Test',
         name: 'Test Enterprise',
         activityTypes: {},
         recruiterId: 'Nobody',

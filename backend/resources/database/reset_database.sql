@@ -51,6 +51,7 @@ DROP TABLE IF EXISTS post_internship_enterprise_evaluations;
 DROP TABLE IF EXISTS post_internship_enterprise_evaluation_skills;
 DROP TABLE IF EXISTS internships;
 
+DROP TABLE IF EXISTS schools;
 DROP TABLE IF EXISTS school_boards;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -83,12 +84,27 @@ CREATE TABLE phone_numbers (
     FOREIGN KEY (entity_id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 
+
+
+/*************************/
+/* School related tables */
+/*************************/
+
 /**** SCHOOL BOARD ****/
 CREATE TABLE school_boards (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
+
+/**** SCHOOLS ****/
+CREATE TABLE schools (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    school_board_id VARCHAR(36) NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    FOREIGN KEY (school_board_id) REFERENCES school_boards(id) ON DELETE CASCADE
+);
+
 
 
 /*************************/
@@ -113,11 +129,15 @@ CREATE TABLE persons (
 CREATE TABLE students (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     version VARCHAR(36) NOT NULL,
+    school_board_id VARCHAR(36) NOT NULL,
+    school_id VARCHAR(36) NOT NULL,
     photo VARCHAR(255) NOT NULL,
     program INT NOT NULL,
     group_name VARCHAR(20) NOT NULL,
     contact_link VARCHAR(255) NOT NULL,
-    FOREIGN KEY (id) REFERENCES persons(id) ON DELETE CASCADE
+    FOREIGN KEY (id) REFERENCES persons(id) ON DELETE CASCADE,
+    FOREIGN KEY (school_board_id) REFERENCES school_boards(id) ON DELETE CASCADE,
+    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE CASCADE
 );
 
 CREATE TABLE student_contacts (
@@ -132,8 +152,11 @@ CREATE TABLE student_contacts (
 
 CREATE TABLE teachers (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
-    school_id VARCHAR(50) NOT NULL, 
-    FOREIGN KEY (id) REFERENCES persons(id) ON DELETE CASCADE
+    school_board_id VARCHAR(36) NOT NULL,
+    school_id VARCHAR(36) NOT NULL, 
+    FOREIGN KEY (id) REFERENCES persons(id) ON DELETE CASCADE,
+    FOREIGN KEY (school_board_id) REFERENCES school_boards(id) ON DELETE CASCADE,
+    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE CASCADE
 );
 
 CREATE TABLE teaching_groups (
@@ -173,12 +196,14 @@ CREATE TABLE teacher_itinerary_waypoints (
 CREATE TABLE enterprises (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     version VARCHAR(36) NOT NULL,
+    school_board_id VARCHAR(36) NOT NULL,
     name VARCHAR(50) NOT NULL,
     recruiter_id VARCHAR(36) NOT NULL, 
     contact_function VARCHAR(255) NOT NULL,
     website VARCHAR(255) NOT NULL,
     neq VARCHAR(50) NOT NULL,
-    FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
+    FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE,
+    FOREIGN KEY (school_board_id) REFERENCES school_boards(id) ON DELETE CASCADE
 );
 
 CREATE TABLE enterprise_contacts(
@@ -295,6 +320,7 @@ CREATE TABLE enterprise_job_sst_evaluation_questions(
 
 CREATE TABLE internships (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
+    school_board_id VARCHAR(36) NOT NULL,
     student_id VARCHAR(36) NOT NULL,
     enterprise_id VARCHAR(36) NOT NULL,
     job_id VARCHAR(36) NOT NULL,
@@ -306,7 +332,8 @@ CREATE TABLE internships (
     FOREIGN KEY (student_id) REFERENCES students(id), 
     FOREIGN KEY (enterprise_id) REFERENCES enterprises(id),
     FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id),
-    FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
+    FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE, 
+    FOREIGN KEY (school_board_id) REFERENCES school_boards(id) ON DELETE CASCADE
 );
 
 CREATE TABLE internship_supervising_teachers (

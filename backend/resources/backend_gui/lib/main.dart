@@ -372,6 +372,9 @@ class _LoginScreenState extends State<LoginScreen> {
             if (protocol.data == null || protocol.field == null) return;
 
             switch (protocol.field!) {
+              case RequestFields.schoolBoards:
+              case RequestFields.schoolBoard:
+                throw 'Not implemented request field: ${protocol.field}';
               case RequestFields.teachers:
               case RequestFields.teacher:
                 _updateTeachers(protocol.data!);
@@ -395,6 +398,9 @@ class _LoginScreenState extends State<LoginScreen> {
           {
             debugPrint('Message received: $message');
             switch (protocol.field) {
+              case RequestFields.schoolBoards:
+              case RequestFields.schoolBoard:
+                throw 'Not implemented request field: ${protocol.field}';
               case RequestFields.teachers:
               case RequestFields.teacher:
                 _getTeachers(
@@ -502,6 +508,7 @@ class _LoginScreenState extends State<LoginScreen> {
           firstName: teacher.firstName,
           middleName: null,
           lastName: teacher.lastName,
+          schoolBoardId: _random.nextInt(100).toString(),
           schoolId: _random.nextInt(100).toString(),
           groups: groups,
           email: teacher.email,
@@ -574,6 +581,8 @@ class _LoginScreenState extends State<LoginScreen> {
         requestType: RequestType.post,
         field: RequestFields.student,
         data: Student(
+          schoolBoardId: '${_random.nextInt(100) + 100}',
+          schoolId: '${_random.nextInt(100) + 100}',
           firstName: student.firstName,
           middleName: null,
           lastName: student.lastName,
@@ -608,6 +617,7 @@ class _LoginScreenState extends State<LoginScreen> {
           .toList()[_random.nextInt(_dummyEnterprises.length)];
 
       final internship = Internship(
+          schoolBoardId: student.schoolBoardId,
           studentId: student.id,
           signatoryTeacherId: _dummyTeachers.keys
               .toList()[_random.nextInt(_dummyTeachers.length)],
@@ -859,6 +869,7 @@ class _LoginScreenState extends State<LoginScreen> {
         requestType: RequestType.post,
         field: RequestFields.enterprise,
         data: Enterprise(
+          schoolBoardId: 'schoolBoardId',
           name: name,
           activityTypes: activities,
           jobs: jobs,

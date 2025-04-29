@@ -77,7 +77,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     final enterprises = await MySqlHelpers.performSelectQuery(
       connection: connection,
       tableName: 'enterprises',
-      id: enterpriseId,
+      filters: enterpriseId == null ? null : {'id': enterpriseId},
       subqueries: [
         MySqlJoinSubQuery(
             dataTableName: 'persons',
@@ -145,7 +145,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           : await MySqlHelpers.performSelectQuery(
               connection: connection,
               tableName: 'persons',
-              id: contactId,
+              filters: {
+                  'id': contactId
+                },
               subqueries: [
                   MySqlSelectSubQuery(
                       dataTableName: 'addresses',
@@ -176,8 +178,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       final jobsTp = await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'enterprise_jobs',
-        idName: 'enterprise_id',
-        id: enterprise['id'],
+        filters: {'enterprise_id': enterprise['id']},
         subqueries: [
           MySqlSelectSubQuery(
               dataTableName: 'enterprise_job_photo_urls',
@@ -232,8 +233,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             (await MySqlHelpers.performSelectQuery(
                   connection: connection,
                   tableName: 'enterprise_job_pre_internship_request_items',
-                  idName: 'internship_request_id',
-                  id: job['pre_internship_requests']['id'],
+                  filters: {
+                    'internship_request_id': job['pre_internship_requests']
+                        ['id']
+                  },
                 ) as List?)
                     ?.map((e) => e['request'] as int)
                     .toList() ??
@@ -530,8 +533,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       final contacts = (await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'enterprise_contacts',
-        idName: 'enterprise_id',
-        id: id,
+        filters: {'enterprise_id': id},
       ));
 
       await MySqlHelpers.performDeleteQuery(
@@ -591,6 +593,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
   final _dummyDatabase = {
     '0': Enterprise(
       id: '0',
+      schoolBoardId: '0',
       name: 'My First Enterprise',
       jobs: JobList(),
       activityTypes: {ActivityTypes.magasin, ActivityTypes.entreposage},
@@ -602,6 +605,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
     ),
     '1': Enterprise(
       id: '1',
+      schoolBoardId: '0',
       name: 'My Second Enterprise',
       jobs: JobList(),
       activityTypes: {

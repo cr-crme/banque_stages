@@ -27,17 +27,13 @@ class MySqlHelpers {
   static Future<List<Map<String, dynamic>>> performSelectQuery({
     required MySqlConnection connection,
     required String tableName,
-    String idName = 'id',
-    String? id,
+    Map<String, String>? filters,
     List<MySqlTableAccessor>? subqueries,
   }) async {
     final results = await tryQuery(
         connection,
         MySqlHelpers.craftSelectQuery(
-            tableName: tableName,
-            idName: idName,
-            id: id,
-            sublists: subqueries));
+            tableName: tableName, filters: filters, sublists: subqueries));
 
     final List<Map<String, dynamic>> list = [];
     for (final row in results) {
@@ -60,14 +56,18 @@ class MySqlHelpers {
 
   static String craftSelectQuery({
     required String tableName,
-    String idName = 'id',
-    String? id,
+    Map<String, String>? filters,
     List<MySqlTableAccessor>? sublists,
-  }) =>
-      '''SELECT t.*${sublists == null || sublists.isEmpty ? '' : ','} 
+  }) {
+    final filtersAsString = filters == null
+        ? ''
+        : 'WHERE ${filters.entries.map((e) => 't.${e.key} = "${e.value}"').join(' AND ')}';
+
+    return '''SELECT t.*${sublists == null || sublists.isEmpty ? '' : ','} 
       ${sublists?.map((e) => e._craft(mainTableAlias: 't')).join(',') ?? ''}
-    FROM $tableName t
-    ${id == null ? '' : 'WHERE t.$idName = "$id"'}''';
+    FROM $tableName t $filtersAsString
+    ''';
+  }
 
 // coverage:ignore-start
   static Future<Results> performInsertQuery({

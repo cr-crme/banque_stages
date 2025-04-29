@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:backend/repositories/school_boards_repository.dart';
 import 'package:backend/repositories/enterprises_repository.dart';
 import 'package:backend/repositories/internships_repository.dart';
 import 'package:backend/repositories/students_repository.dart';
@@ -43,6 +44,11 @@ void main() async {
       Duration(milliseconds: 100)); // Give a bit of time just in case
   final connexions = Connexions(
       database: DatabaseManager(
+    schoolBoardsDatabase: switch (databaseBackend) {
+      DatabaseBackend.mysql =>
+        MySqlSchoolBoardsRepository(connection: connection!),
+      DatabaseBackend.mock => SchoolBoardsRepositoryMock()
+    },
     teachersDatabase: switch (databaseBackend) {
       DatabaseBackend.mysql => MySqlTeachersRepository(connection: connection!),
       DatabaseBackend.mock => TeachersRepositoryMock()

@@ -14,9 +14,9 @@ import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/models/school_boards/school.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/models/itinerary.dart';
-import 'package:crcrme_banque_stages/common/models/school.dart';
 import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 
 School dummySchool({
@@ -32,7 +32,8 @@ Teacher dummyTeacher(
       firstName: 'Pierre',
       middleName: 'Jean',
       lastName: 'Jacques',
-      schoolId: 'schoolId',
+      schoolBoardId: 'school_board_id',
+      schoolId: 'school_id',
       groups: groups,
       email: 'peter.john.jakob@test.com',
       phone: dummyPhoneNumber(),
@@ -51,6 +52,8 @@ Student dummyStudent({
   final tp = dummyPerson(firstName: firstName, lastName: lastName);
   return Student(
     id: id,
+    schoolBoardId: 'schoolBoardId',
+    schoolId: 'schoolId',
     firstName: tp.firstName,
     middleName: tp.middleName,
     lastName: tp.lastName,
@@ -194,6 +197,7 @@ Enterprise dummyEnterprise({bool addJob = false}) {
     jobs.add(dummyJob());
   }
   return Enterprise(
+    schoolBoardId: 'schoolBoardId',
     id: 'enterpriseId',
     name: 'Not named',
     activityTypes: {},
@@ -235,6 +239,7 @@ PostInternshipEnterpriseEvaluation dummyPostInternshipEnterpriseEvaluation({
 
 Internship dummyInternship({
   String id = 'internshipId',
+  String schoolBoardId = 'schoolBoardId',
   DateTime? versionDate,
   String studentId = 'studentId',
   String teacherId = 'teacherId',
@@ -248,6 +253,7 @@ Internship dummyInternship({
       end: DateTime(1995, 10, 31).add(const Duration(days: 20)));
   return Internship(
     id: id,
+    schoolBoardId: schoolBoardId,
     creationDate: versionDate ?? DateTime(1995, 10, 31),
     studentId: studentId,
     signatoryTeacherId: teacherId,

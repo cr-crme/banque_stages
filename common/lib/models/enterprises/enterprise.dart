@@ -11,6 +11,8 @@ class Enterprise extends ItemSerializable {
   static final String _currentVersion = '1.0.0';
   static String get currentVersion => _currentVersion;
 
+  final String schoolBoardId;
+
   final String name;
   final Set<ActivityTypes> activityTypes;
   final String recruiterId;
@@ -30,6 +32,7 @@ class Enterprise extends ItemSerializable {
 
   Enterprise({
     super.id,
+    required this.schoolBoardId,
     required this.name,
     required this.activityTypes,
     required this.recruiterId,
@@ -47,6 +50,7 @@ class Enterprise extends ItemSerializable {
 
   Enterprise copyWith({
     String? id,
+    String? schoolBoardId,
     String? name,
     Set<ActivityTypes>? activityTypes,
     String? recruiterId,
@@ -62,6 +66,7 @@ class Enterprise extends ItemSerializable {
   }) {
     return Enterprise(
       id: id ?? this.id,
+      schoolBoardId: schoolBoardId ?? this.schoolBoardId,
       name: name ?? this.name,
       activityTypes: activityTypes ?? this.activityTypes,
       recruiterId: recruiterId ?? this.recruiterId,
@@ -80,6 +85,7 @@ class Enterprise extends ItemSerializable {
   Enterprise copyWithData(Map<String, dynamic> data) {
     final availableFields = [
       'id',
+      'school_board_id',
       'version',
       'name',
       'activity_types',
@@ -108,6 +114,7 @@ class Enterprise extends ItemSerializable {
 
     return Enterprise(
       id: data['id']?.toString() ?? id,
+      schoolBoardId: data['school_board_id'] ?? schoolBoardId,
       name: data['name'] ?? name,
       activityTypes: data['activity_types'] == null
           ? activityTypes
@@ -130,6 +137,7 @@ class Enterprise extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() {
     return {
+      'school_board_id': schoolBoardId,
       'name': name,
       'version': _currentVersion,
       'activity_types':
@@ -149,7 +157,8 @@ class Enterprise extends ItemSerializable {
 
   @override
   Enterprise.fromSerialized(super.map)
-      : name = map['name'] ?? 'Unnamed enterprise',
+      : schoolBoardId = map['school_board_id'] ?? '-1',
+        name = map['name'] ?? 'Unnamed enterprise',
         activityTypes = (map['activity_types'] as List? ?? [])
             .map((e) => ActivityTypes._fromInt(e, map['version']))
             .toSet(),

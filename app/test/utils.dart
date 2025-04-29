@@ -4,7 +4,7 @@ import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
@@ -115,7 +115,8 @@ extension BanqueStageWidgetTester on WidgetTester {
                 create: (context) => AuthProvider(mockMe: true)),
           if (withSchools)
             ChangeNotifierProvider(
-                create: (context) => SchoolsProvider(mockMe: true)),
+                create: (context) => SchoolBoardsProvider(
+                    uri: Uri.parse('ws://localhost'), mockMe: true)),
           if (withEnterprises)
             ChangeNotifierProvider(create: (context) {
               final enterprises = EnterprisesProvider(

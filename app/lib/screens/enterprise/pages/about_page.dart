@@ -4,7 +4,7 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/schools_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/activity_type_cards.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
@@ -303,7 +303,7 @@ class _RecrutedBy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final schools = SchoolsProvider.of(context);
+    final schools = SchoolBoardsProvider.of(context);
     final teachers = TeachersProvider.of(context);
 
     final teacher = teachers.fromId(enterprise.recruiterId);

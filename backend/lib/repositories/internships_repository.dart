@@ -78,7 +78,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     final internships = await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'internships',
-        id: internshipId,
+        filters: internshipId == null ? null : {'id': internshipId},
         subqueries: [
           MySqlSelectSubQuery(
             dataTableName: 'internship_supervising_teachers',
@@ -173,18 +173,19 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
       for (final mutable in (internship['mutables'] as List? ?? [])) {
         mutable['supervisor'] = (await MySqlHelpers.performSelectQuery(
-                    connection: connection,
-                    tableName: 'persons',
-                    idName: 'id',
-                    id: mutable['supervisor_id']) as List?)
+              connection: connection,
+              tableName: 'persons',
+              filters: {'id': mutable['supervisor_id']},
+            ) as List?)
                 ?.first ??
             {};
 
         final schedules = await MySqlHelpers.performSelectQuery(
             connection: connection,
             tableName: 'internship_weekly_schedules',
-            idName: 'mutable_data_id',
-            id: mutable['id'],
+            filters: {
+              'mutable_data_id': mutable['id']
+            },
             subqueries: [
               MySqlSelectSubQuery(
                 dataTableName: 'internship_daily_schedules',
@@ -222,7 +223,9 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         final evaluationSubquery = (await MySqlHelpers.performSelectQuery(
                 connection: connection,
                 tableName: 'internship_skill_evaluations',
-                id: evaluation['id'],
+                filters: {
+              'id': evaluation['id']
+            },
                 subqueries: [
               MySqlSelectSubQuery(
                 dataTableName: 'internship_skill_evaluation_persons',
@@ -248,10 +251,10 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         evaluation['skills'] = [];
         for (final skill in (evaluationSubquery['skills'] as List? ?? [])) {
           final tasks = await MySqlHelpers.performSelectQuery(
-              connection: connection,
-              tableName: 'internship_skill_evaluation_item_tasks',
-              idName: 'evaluation_item_id',
-              id: skill['id']);
+            connection: connection,
+            tableName: 'internship_skill_evaluation_item_tasks',
+            filters: {'evaluation_item_id': skill['id']},
+          );
           evaluation['skills'].add({
             'id': skill['id'],
             'job_id': skill['job_id'],
@@ -283,7 +286,9 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         final evaluationSubquery = (await MySqlHelpers.performSelectQuery(
                 connection: connection,
                 tableName: 'internship_attitude_evaluations',
-                id: evaluation['id'],
+                filters: {
+              'id': evaluation['id']
+            },
                 subqueries: [
               MySqlSelectSubQuery(
                 dataTableName: 'internship_attitude_evaluation_persons',
@@ -329,8 +334,9 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         final skills = await MySqlHelpers.performSelectQuery(
             connection: connection,
             tableName: 'post_internship_enterprise_evaluation_skills',
-            idName: 'post_evaluation_id',
-            id: internship['enterprise_evaluation']!['id']);
+            filters: {
+              'post_evaluation_id': internship['enterprise_evaluation']['id']
+            });
         internship['enterprise_evaluation']['skills_required'] = [
           for (final skill in (skills as List? ?? [])) skill['skill_name']
         ];
@@ -405,8 +411,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         final supervisor = await MySqlHelpers.performSelectQuery(
             connection: connection,
             tableName: 'persons',
-            idName: 'id',
-            id: mutable['supervisor']['id']);
+            filters: {'id': mutable['supervisor_id']});
         if (supervisor.isEmpty) {
           await MySqlHelpers.performInsertPerson(
               connection: connection, person: internship.supervisor);
@@ -637,6 +642,7 @@ class InternshipsRepositoryMock extends InternshipsRepository {
   final _dummyDatabase = {
     '0': Internship(
         id: '0',
+        schoolBoardId: '0',
         studentId: '12345',
         signatoryTeacherId: '67890',
         extraSupervisingTeacherIds: [],
@@ -680,6 +686,7 @@ class InternshipsRepositoryMock extends InternshipsRepository {
         teacherNotes: 'Nope'),
     '1': Internship(
         id: '1',
+        schoolBoardId: '0',
         studentId: '54321',
         signatoryTeacherId: '09876',
         extraSupervisingTeacherIds: ['54321'],

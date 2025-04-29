@@ -196,6 +196,7 @@ class Internship extends ItemSerializable {
   static String get currentVersion => _currentVersion;
 
   // Elements fixed across versions of the same stage
+  final String schoolBoardId;
   final String studentId;
   final String signatoryTeacherId;
   final List<String> _extraSupervisingTeacherIds;
@@ -277,6 +278,7 @@ class Internship extends ItemSerializable {
 
   Internship._({
     required super.id,
+    required this.schoolBoardId,
     required this.studentId,
     required this.signatoryTeacherId,
     required List<String> extraSupervisingTeacherIds,
@@ -302,6 +304,7 @@ class Internship extends ItemSerializable {
 
   Internship({
     super.id,
+    required this.schoolBoardId,
     required this.studentId,
     required this.signatoryTeacherId,
     required List<String> extraSupervisingTeacherIds,
@@ -336,7 +339,8 @@ class Internship extends ItemSerializable {
   }
 
   Internship.fromSerialized(super.map)
-      : studentId = map['student_id'] ?? '',
+      : schoolBoardId = map['school_board_id'] ?? '-1',
+        studentId = map['student_id'] ?? '',
         signatoryTeacherId = map['signatory_teacher_id'] ?? '',
         _extraSupervisingTeacherIds =
             _stringListFromSerialized(map['extra_supervising_teacher_ids']),
@@ -376,6 +380,7 @@ class Internship extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() => {
+        'school_board_id': schoolBoardId,
         'version': _currentVersion,
         'student_id': studentId,
         'signatory_teacher_id': signatoryTeacherId,
@@ -413,6 +418,7 @@ class Internship extends ItemSerializable {
 
   Internship copyWith({
     String? id,
+    String? schoolBoardId,
     String? studentId,
     String? signatoryTeacherId,
     List<String>? extraSupervisingTeacherIds,
@@ -430,6 +436,7 @@ class Internship extends ItemSerializable {
   }) {
     return Internship._(
       id: id ?? this.id,
+      schoolBoardId: schoolBoardId ?? this.schoolBoardId,
       studentId: studentId ?? this.studentId,
       signatoryTeacherId: signatoryTeacherId ?? this.signatoryTeacherId,
       extraSupervisingTeacherIds:
@@ -455,6 +462,7 @@ class Internship extends ItemSerializable {
     final availableFields = [
       'version',
       'id',
+      'school_board_id',
       'student_id',
       'signatory_teacher_id',
       'extra_supervising_teacher_ids',
@@ -485,6 +493,7 @@ class Internship extends ItemSerializable {
 
     return Internship._(
       id: data['id']?.toString() ?? id,
+      schoolBoardId: data['school_board_id'] ?? schoolBoardId,
       studentId: data['student_id'] ?? studentId,
       signatoryTeacherId: data['signatory_teacher_id'] ?? signatoryTeacherId,
       extraSupervisingTeacherIds: data['extra_supervising_teacher_ids'] == null

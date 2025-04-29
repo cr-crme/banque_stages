@@ -5,6 +5,7 @@ import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
@@ -81,7 +82,11 @@ class _InternshipEnrollmentScreenState
     final enterprise = EnterprisesProvider.of(context, listen: false)
         .fromId(_generalInfoKey.currentState!.enterprise!.id);
 
+    final schoolBoard =
+        SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
+
     final internship = Internship(
+      schoolBoardId: schoolBoard.id,
       creationDate: DateTime.now(),
       studentId: _generalInfoKey.currentState!.student!.id,
       signatoryTeacherId:

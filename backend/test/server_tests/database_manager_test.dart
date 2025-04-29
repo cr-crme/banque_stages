@@ -1,5 +1,6 @@
 import 'package:backend/repositories/enterprises_repository.dart';
 import 'package:backend/repositories/internships_repository.dart';
+import 'package:backend/repositories/school_boards_repository.dart';
 import 'package:backend/repositories/students_repository.dart';
 import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/server/database_manager.dart';
@@ -7,6 +8,8 @@ import 'package:backend/utils/exceptions.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:test/test.dart';
 
+SchoolBoardsRepository get _mockedDatabaseSchoolBoards =>
+    SchoolBoardsRepositoryMock();
 TeachersRepository get _mockedDatabaseTeachers => TeachersRepositoryMock();
 StudentsRepository get _mockedDatabaseStudents => StudentsRepositoryMock();
 EnterprisesRepository get _mockedDatabaseEnterprises =>
@@ -17,6 +20,7 @@ InternshipsRepository get _mockedDatabaseInternships =>
 void main() {
   test('Get teachers from DatabaseManagers', () async {
     final database = DatabaseManager(
+      schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -35,6 +39,7 @@ void main() {
 
   test('Get teacher from DatabaseManagers', () async {
     final database = DatabaseManager(
+      schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -49,6 +54,7 @@ void main() {
 
   test('Get teacher from DatabaseManagers with invalid id', () async {
     final database = DatabaseManager(
+      schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -63,6 +69,7 @@ void main() {
 
   test('Get teacher from DatabaseManagers without id', () async {
     final database = DatabaseManager(
+      schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -78,6 +85,7 @@ void main() {
 
   test('Put without data in DatabaseManagers', () async {
     final database = DatabaseManager(
+      schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -93,6 +101,7 @@ void main() {
 
   test('Set all teachers to DatabaseManagers', () async {
     final database = DatabaseManager(
+      schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -109,6 +118,7 @@ void main() {
 
   test('Set teacher to DatabaseManagers', () async {
     final database = DatabaseManager(
+      schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -124,6 +134,7 @@ void main() {
 
   test('Set new teacher to DatabaseManagers', () async {
     final database = DatabaseManager(
+      schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -139,6 +150,7 @@ void main() {
 
   test('Set teacher to DatabaseManagers without id', () async {
     final database = DatabaseManager(
+      schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
