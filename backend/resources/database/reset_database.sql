@@ -51,6 +51,8 @@ DROP TABLE IF EXISTS post_internship_enterprise_evaluations;
 DROP TABLE IF EXISTS post_internship_enterprise_evaluation_skills;
 DROP TABLE IF EXISTS internships;
 
+DROP TABLE IF EXISTS school_boards;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 
@@ -79,6 +81,13 @@ CREATE TABLE phone_numbers (
     entity_id VARCHAR(36) NOT NULL,
     phone_number VARCHAR(50) NOT NULL, 
     FOREIGN KEY (entity_id) REFERENCES entities(shared_id) ON DELETE CASCADE
+);
+
+/**** SCHOOL BOARD ****/
+CREATE TABLE school_boards (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 
 
