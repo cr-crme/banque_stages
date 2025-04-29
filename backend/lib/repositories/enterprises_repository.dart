@@ -527,13 +527,12 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   @override
   Future<String?> _deleteEnterprise({required String id}) async {
     try {
-      final contact = (await MySqlHelpers.performSelectQuery(
+      final contacts = (await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'enterprise_contacts',
         idName: 'enterprise_id',
         id: id,
-      ))
-          .first;
+      ));
 
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
@@ -541,11 +540,15 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         idName: 'enterprise_id',
         id: id,
       );
-      await MySqlHelpers.performDeleteQuery(
-          connection: connection,
-          tableName: 'entities',
-          idName: 'shared_id',
-          id: contact['id']);
+
+      for (final contact in contacts) {
+        await MySqlHelpers.performDeleteQuery(
+            connection: connection,
+            tableName: 'entities',
+            idName: 'shared_id',
+            id: contact['contact_id']);
+      }
+
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
         tableName: 'enterprise_addresses',

@@ -33,12 +33,14 @@ class CommunicationProtocol {
   final RequestFields? field;
   final Map<String, dynamic>? data;
   final Response? response;
+  final int? socketId;
 
   CommunicationProtocol({
     required this.requestType,
     this.field,
     this.data,
     this.response,
+    this.socketId,
   });
 
   Map<String, dynamic> serialize() {
@@ -48,6 +50,7 @@ class CommunicationProtocol {
       'field': field?.index,
       'data': data,
       'response': response?.index,
+      'socket_id': socketId,
     };
   }
 
@@ -64,6 +67,7 @@ class CommunicationProtocol {
       response: map['response'] != null
           ? Response.values[map['response'] as int]
           : null,
+      socketId: map['socket_id'] as int?,
     );
   }
 
@@ -72,12 +76,14 @@ class CommunicationProtocol {
     RequestFields? field,
     Map<String, dynamic>? data,
     Response? response,
+    int? socketId,
   }) {
     return CommunicationProtocol(
       requestType: requestType ?? this.requestType,
       field: field ?? this.field,
       data: data ?? this.data,
       response: response ?? this.response,
+      socketId: socketId ?? this.socketId,
     );
   }
 

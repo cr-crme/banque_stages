@@ -42,6 +42,8 @@ Future<void> resetDummyData(BuildContext context) async {
   await _addDummyStudents(students, teachers);
   await _addDummyEnterprises(enterprises, teachers);
   await _addDummyInternships(internships, students, enterprises, teachers);
+
+  dev.log('Dummy reset data done');
 }
 
 Future<void> _removeAll(
@@ -51,19 +53,22 @@ Future<void> _removeAll(
   TeachersProvider teachers,
   SchoolsProvider schools,
 ) async {
+  dev.log('Removing dummy data');
   // To properly remove the data, we need to start by the internships
   internships.clear(confirm: true);
+  await _waitForDatabaseUpdate(internships, 0);
+
   enterprises.clear(confirm: true);
+  await _waitForDatabaseUpdate(enterprises, 0);
+
   students.clear(confirm: true);
+  await _waitForDatabaseUpdate(students, 0);
+
   teachers.clear(confirm: true);
+  await _waitForDatabaseUpdate(teachers, 0);
+
   schools.clear(confirm: true);
-  await Future.wait([
-    _waitForDatabaseUpdate(internships, 0),
-    _waitForDatabaseUpdate(enterprises, 0),
-    _waitForDatabaseUpdate(students, 0),
-    _waitForDatabaseUpdate(teachers, 0),
-    _waitForDatabaseUpdate(schools, 0)
-  ]);
+  _waitForDatabaseUpdate(schools, 0);
 }
 
 Future<void> _addDummySchools(SchoolsProvider schools) async {

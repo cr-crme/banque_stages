@@ -243,13 +243,12 @@ class MySqlStudentsRepository extends StudentsRepository {
     // Note: This will fail if the student was involved in an internship. The
     // data from the internship needs to be deleted first.
     try {
-      final contact = (await MySqlHelpers.performSelectQuery(
+      final contacts = (await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'student_contacts',
         idName: 'student_id',
         id: id,
-      ))
-          .first;
+      ));
 
       await MySqlHelpers.performDeleteQuery(
           connection: connection,
@@ -257,11 +256,13 @@ class MySqlStudentsRepository extends StudentsRepository {
           idName: 'student_id',
           id: id);
 
-      await MySqlHelpers.performDeleteQuery(
-          connection: connection,
-          tableName: 'entities',
-          idName: 'shared_id',
-          id: contact['id']);
+      for (final contact in contacts) {
+        await MySqlHelpers.performDeleteQuery(
+            connection: connection,
+            tableName: 'entities',
+            idName: 'shared_id',
+            id: contact['contact_id']);
+      }
 
       await MySqlHelpers.performDeleteQuery(
           connection: connection,

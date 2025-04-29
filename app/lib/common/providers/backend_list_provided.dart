@@ -115,6 +115,7 @@ abstract class BackendListProvided<T extends ItemSerializable>
   Future<void> stopFetchingData() async {
     _socket?.close();
     _socket = null;
+    _socketId = null;
 
     _providerSelector.remove(getField());
     _providerSelector.remove(getField(true));
@@ -266,6 +267,7 @@ abstract class BackendListProvided<T extends ItemSerializable>
 /// connections to the backend, dropping the communications which are related
 /// to other providers.
 WebSocket? _socket;
+int? _socketId;
 bool _handshakeReceived = false;
 Map<RequestFields, _Selector> _providerSelector = {};
 
@@ -293,6 +295,14 @@ Future<void> _incommingMessage(message) async {
     final map = jsonDecode(message);
     final protocol = CommunicationProtocol.deserialize(map);
 
+    // If we received an unsolicited message, it is probably due to previous
+    // connexions that did not get closed properly. Just ignore the message
+    if (protocol.socketId != null &&
+        protocol.socketId != _socketId &&
+        protocol.requestType != RequestType.handshake) {
+      return;
+    }
+
     // If no data are provided
     if (protocol.requestType != RequestType.handshake &&
         (protocol.data == null || protocol.field == null)) {
@@ -303,6 +313,7 @@ Future<void> _incommingMessage(message) async {
       case RequestType.handshake:
         {
           _handshakeReceived = true;
+          _socketId = protocol.socketId;
           for (final selector in _providerSelector.values) {
             selector.notify();
           }

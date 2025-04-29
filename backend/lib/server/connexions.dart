@@ -178,7 +178,8 @@ class Connexions {
   Future<void> _send(WebSocket client,
       {required CommunicationProtocol message}) async {
     try {
-      client.add(jsonEncode(message.serialize()));
+      client.add(
+          jsonEncode(message.copyWith(socketId: client.hashCode).serialize()));
     } catch (e) {
       // If we can't send the message, we can assume the client is disconnected
       await _onConnexionClosed(client, message: 'Connexion closed');
