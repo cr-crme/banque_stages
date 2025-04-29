@@ -172,6 +172,14 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               [];
 
       for (final mutable in (internship['mutables'] as List? ?? [])) {
+        mutable['supervisor'] = (await MySqlHelpers.performSelectQuery(
+                    connection: connection,
+                    tableName: 'persons',
+                    idName: 'id',
+                    id: mutable['supervisor_id']) as List?)
+                ?.first ??
+            {};
+
         final schedules = await MySqlHelpers.performSelectQuery(
             connection: connection,
             tableName: 'internship_weekly_schedules',
@@ -394,6 +402,21 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
       // Insert the mutable data
       for (final mutable in serialized['mutables'] as List) {
+        final supervisor = await MySqlHelpers.performSelectQuery(
+            connection: connection,
+            tableName: 'persons',
+            idName: 'id',
+            id: mutable['supervisor']['id']);
+        if (supervisor.isEmpty) {
+          await MySqlHelpers.performInsertPerson(
+              connection: connection, person: internship.supervisor);
+        } else {
+          await MySqlHelpers.performUpdatePerson(
+              connection: connection,
+              person: internship.supervisor,
+              previous: Person.fromSerialized(supervisor.first));
+        }
+
         await MySqlHelpers.performInsertQuery(
             connection: connection,
             tableName: 'internship_mutable_data',
@@ -401,7 +424,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               'id': mutable['id'],
               'internship_id': internship.id,
               'creation_date': mutable['creation_date'],
-              'supervisor_id': mutable['supervisor_id'],
+              'supervisor_id': internship.supervisor.id,
               'starting_date': mutable['starting_date'],
               'ending_date': mutable['ending_date'],
             });
