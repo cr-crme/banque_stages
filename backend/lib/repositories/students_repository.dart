@@ -227,7 +227,7 @@ class MySqlStudentsRepository extends StudentsRepository {
       await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'students',
-          id: student.id,
+          filters: {'id': student.id},
           data: toUpdate);
     }
 
@@ -252,24 +252,24 @@ class MySqlStudentsRepository extends StudentsRepository {
       ));
 
       await MySqlHelpers.performDeleteQuery(
-          connection: connection,
-          tableName: 'student_contacts',
-          idName: 'student_id',
-          id: id);
+        connection: connection,
+        tableName: 'student_contacts',
+        filters: {'student_id': id},
+      );
 
       for (final contact in contacts) {
         await MySqlHelpers.performDeleteQuery(
-            connection: connection,
-            tableName: 'entities',
-            idName: 'shared_id',
-            id: contact['contact_id']);
+          connection: connection,
+          tableName: 'entities',
+          filters: {'shared_id': contact['contact_id']},
+        );
       }
 
       await MySqlHelpers.performDeleteQuery(
-          connection: connection,
-          tableName: 'entities',
-          idName: 'shared_id',
-          id: id);
+        connection: connection,
+        tableName: 'entities',
+        filters: {'shared_id': id},
+      );
       return id;
     } catch (e) {
       return null;

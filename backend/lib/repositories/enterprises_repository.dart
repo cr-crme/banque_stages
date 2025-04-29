@@ -1,12 +1,12 @@
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
-import 'package:common/models/enterprises/job.dart';
-import 'package:common/models/generic/address.dart';
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
-import 'package:common/models/persons/person.dart';
+import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:common/utils.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -539,47 +539,42 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
         tableName: 'enterprise_contacts',
-        idName: 'enterprise_id',
-        id: id,
+        filters: {'enterprise_id': id},
       );
 
       for (final contact in contacts) {
         await MySqlHelpers.performDeleteQuery(
-            connection: connection,
-            tableName: 'entities',
-            idName: 'shared_id',
-            id: contact['contact_id']);
+          connection: connection,
+          tableName: 'entities',
+          filters: {'shared_id': contact['contact_id']},
+        );
       }
 
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
         tableName: 'enterprise_addresses',
-        idName: 'enterprise_id',
-        id: id,
+        filters: {'enterprise_id': id},
       );
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
         tableName: 'enterprise_headquarter_addresses',
-        idName: 'enterprise_id',
-        id: id,
+        filters: {'enterprise_id': id},
       );
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
         tableName: 'enterprise_phone_numbers',
-        idName: 'enterprise_id',
-        id: id,
+        filters: {'enterprise_id': id},
       );
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
         tableName: 'enterprise_fax_numbers',
-        idName: 'enterprise_id',
-        id: id,
+        filters: {'enterprise_id': id},
       );
       await MySqlHelpers.performDeleteQuery(
-          connection: connection,
-          tableName: 'entities',
-          idName: 'shared_id',
-          id: id);
+        connection: connection,
+        tableName: 'entities',
+        filters: {'shared_id': id},
+      );
       return id;
     } catch (e) {
       return null;

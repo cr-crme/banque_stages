@@ -33,7 +33,8 @@ class MySqlHelpers {
     final results = await tryQuery(
         connection,
         MySqlHelpers.craftSelectQuery(
-            tableName: tableName, filters: filters, sublists: subqueries));
+            tableName: tableName, filters: filters, sublists: subqueries),
+        [...filters?.values ?? []]);
 
     final List<Map<String, dynamic>> list = [];
     for (final row in results) {
@@ -61,7 +62,7 @@ class MySqlHelpers {
   }) {
     final filtersAsString = filters == null
         ? ''
-        : 'WHERE ${filters.entries.map((e) => 't.${e.key} = "${e.value}"').join(' AND ')}';
+        : 'WHERE ${filters.entries.map((e) => 't.${e.key} = ?').join(' AND ')}';
 
     return '''SELECT t.*${sublists == null || sublists.isEmpty ? '' : ','} 
       ${sublists?.map((e) => e._craft(mainTableAlias: 't')).join(',') ?? ''}
@@ -90,40 +91,51 @@ class MySqlHelpers {
   static Future<Results> performUpdateQuery({
     required MySqlConnection connection,
     required String tableName,
-    String idName = 'id',
-    required String id,
+    Map<String, String>? filters,
     required Map<String, dynamic> data,
   }) async =>
       await tryQuery(
           connection,
-          craftUpdateQuery(tableName: tableName, idName: idName, data: data),
-          [...data.values, id]);
+          craftUpdateQuery(tableName: tableName, filters: filters, data: data),
+          [...data.values, ...filters?.values ?? []]);
 // coverage:ignore-end
 
   static String craftUpdateQuery({
     required String tableName,
-    required String idName,
+    required Map<String, String>? filters,
     required Map<String, dynamic> data,
-  }) =>
-      '''UPDATE $tableName SET ${data.keys.join(' = ?, ')} = ?
-       WHERE $idName = ?''';
+  }) {
+    final filtersAsString = filters == null
+        ? ''
+        : 'WHERE ${filters.entries.map((e) => '$e.key = ?').join(' AND ')}';
+
+    return '''UPDATE $tableName SET ${data.keys.join(' = ?, ')} = ?
+       $filtersAsString''';
+  }
 
 // coverage:ignore-start
   static Future<Results> performDeleteQuery({
     required MySqlConnection connection,
     required String tableName,
-    String idName = 'id',
-    required String id,
+    Map<String, String>? filters,
   }) async =>
-      await tryQuery(connection,
-          craftDeleteQuery(tableName: tableName, idName: idName), [id]);
+      await tryQuery(
+          connection,
+          craftDeleteQuery(tableName: tableName, filters: filters),
+          [filters?.values]);
 // coverage:ignore-end
 
   static String craftDeleteQuery({
     required String tableName,
-    String idName = 'id',
-  }) =>
-      '''DELETE FROM $tableName WHERE $idName = ?''';
+    Map<String, String>? filters,
+  }) {
+    final filtersAsString = filters == null
+        ? ''
+        : 'WHERE ${filters.entries.map((e) => '$e.key = ?').join(' AND ')}';
+
+    return '''DELETE FROM $tableName
+       $filtersAsString''';
+  }
 
 // coverage:ignore-start
   ///
@@ -177,7 +189,7 @@ class MySqlHelpers {
       await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'persons',
-          id: person.id,
+          filters: {'id': person.id},
           data: toUpdate);
     }
 
@@ -187,7 +199,7 @@ class MySqlHelpers {
       await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'phone_numbers',
-          id: person.phone.id,
+          filters: {'id': person.phone.id},
           data: {'phone_number': person.phone.toString()});
     }
 
@@ -197,7 +209,9 @@ class MySqlHelpers {
       await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'addresses',
-          id: person.address.id,
+          filters: {
+            'id': person.address.id
+          },
           data: {
             'civic': person.address.civicNumber,
             'street': person.address.street,

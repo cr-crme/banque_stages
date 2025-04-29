@@ -222,14 +222,17 @@ class MySqlTeachersRepository extends TeachersRepository {
       await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'teachers',
-          id: teacher.id,
+          filters: {'id': teacher.id},
           data: toUpdate);
     }
 
     // Update teaching groups
     if (areListsNotEqual(teacher.groups, previous.groups)) {
       await MySqlHelpers.performDeleteQuery(
-          connection: connection, tableName: 'teaching_groups', id: teacher.id);
+        connection: connection,
+        tableName: 'teaching_groups',
+        filters: {'id': teacher.id},
+      );
       for (final group in teacher.groups) {
         await MySqlHelpers.performInsertQuery(
             connection: connection,
@@ -248,10 +251,10 @@ class MySqlTeachersRepository extends TeachersRepository {
         if (previousItinerary != null) {
           // Delete the old itinerary if it exists
           await MySqlHelpers.performDeleteQuery(
-              connection: connection,
-              tableName: 'teacher_itineraries',
-              idName: 'id',
-              id: previousItinerary.id);
+            connection: connection,
+            tableName: 'teacher_itineraries',
+            filters: {'id': previousItinerary.id},
+          );
         }
         await _sendItineraries(connection, teacher, itinerary);
       }
@@ -266,10 +269,10 @@ class MySqlTeachersRepository extends TeachersRepository {
     // Delete the teacher from the database
     try {
       await MySqlHelpers.performDeleteQuery(
-          connection: connection,
-          tableName: 'entities',
-          idName: 'shared_id',
-          id: id);
+        connection: connection,
+        tableName: 'entities',
+        filters: {'shared_id': id},
+      );
       return id;
     } catch (e) {
       return null;

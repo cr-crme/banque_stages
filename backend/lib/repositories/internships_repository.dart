@@ -626,10 +626,10 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   Future<String?> _deleteInternship({required String id}) async {
     try {
       await MySqlHelpers.performDeleteQuery(
-          connection: connection,
-          tableName: 'entities',
-          idName: 'shared_id',
-          id: id);
+        connection: connection,
+        tableName: 'entities',
+        filters: {'shared_id': id},
+      );
       return id;
     } catch (e) {
       return null;

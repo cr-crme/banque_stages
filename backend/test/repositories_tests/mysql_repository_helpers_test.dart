@@ -82,15 +82,15 @@ void main() {
   test('MySql query crafter update element', () {
     final query = _cleanQuery(MySqlHelpers.craftUpdateQuery(
         tableName: 'my_table',
-        idName: 'my_id',
+        filters: {'my_id': 'any_value'},
         data: {'field1': 'value1', 'field2': 'value2'}));
 
     expect(query, 'UPDATE my_table SET field1 = ?, field2 = ? WHERE my_id = ?');
   });
 
   test('MySql query crafter delete element', () {
-    final query = _cleanQuery(
-        MySqlHelpers.craftDeleteQuery(tableName: 'my_table', idName: 'my_id'));
+    final query = _cleanQuery(MySqlHelpers.craftDeleteQuery(
+        tableName: 'my_table', filters: {'my_id': 'any_values'}));
 
     expect(query, 'DELETE FROM my_table WHERE my_id = ?');
   });
