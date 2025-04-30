@@ -12,30 +12,44 @@ import 'package:mysql1/mysql1.dart';
 
 abstract class EnterprisesRepository implements RepositoryAbstract {
   @override
-  Future<Map<String, dynamic>> getAll({List<String>? fields}) async {
-    final enterprises = await _getAllEnterprises();
+  Future<Map<String, dynamic>> getAll({
+    List<String>? fields,
+    required String schoolBoardId,
+  }) async {
+    final enterprises = await _getAllEnterprises(schoolBoardId: schoolBoardId);
     return enterprises
         .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
   }
 
   @override
-  Future<Map<String, dynamic>> getById(
-      {required String id, List<String>? fields}) async {
-    final enterprise = await _getEnterpriseById(id: id);
+  Future<Map<String, dynamic>> getById({
+    required String id,
+    List<String>? fields,
+    required String schoolBoardId,
+  }) async {
+    final enterprise =
+        await _getEnterpriseById(id: id, schoolBoardId: schoolBoardId);
     if (enterprise == null) throw MissingDataException('Enterprise not found');
 
     return enterprise.serializeWithFields(fields);
   }
 
   @override
-  Future<void> putAll({required Map<String, dynamic> data}) async =>
+  Future<void> putAll({
+    required Map<String, dynamic> data,
+    required String schoolBoardId,
+  }) async =>
       throw InvalidRequestException('Enterprises must be created individually');
 
   @override
-  Future<List<String>> putById(
-      {required String id, required Map<String, dynamic> data}) async {
+  Future<List<String>> putById({
+    required String id,
+    required Map<String, dynamic> data,
+    required String schoolBoardId,
+  }) async {
     // Update if exists, insert if not
-    final previous = await _getEnterpriseById(id: id);
+    final previous =
+        await _getEnterpriseById(id: id, schoolBoardId: schoolBoardId);
 
     final newEnterprise = previous?.copyWithData(data) ??
         Enterprise.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
@@ -45,20 +59,27 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   }
 
   @override
-  Future<List<String>> deleteAll() async {
+  Future<List<String>> deleteAll({
+    required String schoolBoardId,
+  }) async {
     throw InvalidRequestException('Enterprises must be deleted individually');
   }
 
   @override
-  Future<String> deleteById({required String id}) async {
+  Future<String> deleteById({
+    required String id,
+    required String schoolBoardId,
+  }) async {
     final removedId = await _deleteEnterprise(id: id);
     if (removedId == null) throw MissingDataException('Enterprise not found');
     return removedId;
   }
 
-  Future<Map<String, Enterprise>> _getAllEnterprises();
+  Future<Map<String, Enterprise>> _getAllEnterprises(
+      {required String schoolBoardId});
 
-  Future<Enterprise?> _getEnterpriseById({required String id});
+  Future<Enterprise?> _getEnterpriseById(
+      {required String id, required String schoolBoardId});
 
   Future<void> _putEnterprise(
       {required Enterprise enterprise, required Enterprise? previous});
@@ -73,11 +94,12 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
   @override
   Future<Map<String, Enterprise>> _getAllEnterprises(
-      {String? enterpriseId}) async {
+      {String? enterpriseId, required String schoolBoardId}) async {
     final enterprises = await MySqlHelpers.performSelectQuery(
       connection: connection,
       tableName: 'enterprises',
-      filters: enterpriseId == null ? null : {'id': enterpriseId},
+      filters: (enterpriseId == null ? {} : {'id': enterpriseId})
+        ..addAll({'school_board_id': schoolBoardId}),
       subqueries: [
         MySqlJoinSubQuery(
             dataTableName: 'persons',
@@ -288,8 +310,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }
 
   @override
-  Future<Enterprise?> _getEnterpriseById({required String id}) async =>
-      (await _getAllEnterprises(enterpriseId: id))[id];
+  Future<Enterprise?> _getEnterpriseById(
+          {required String id, required String schoolBoardId}) async =>
+      (await _getAllEnterprises(
+          enterpriseId: id, schoolBoardId: schoolBoardId))[id];
 
   @override
   Future<void> _putEnterprise(
@@ -309,17 +333,18 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           tableName: 'entities',
           data: {'shared_id': serialized['id']});
       await MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'enterprises',
-          data: {
-            'id': serialized['id'],
-            'version': serialized['version'],
-            'name': serialized['name'],
-            'recruiter_id': serialized['recruiter_id'],
-            'contact_function': serialized['contact_function'],
-            'website': serialized['website'],
-            'neq': serialized['neq'],
-          });
+        connection: connection,
+        tableName: 'enterprises',
+        data: {
+          'id': serialized['id'],
+          'version': serialized['version'],
+          'name': serialized['name'],
+          'recruiter_id': serialized['recruiter_id'],
+          'contact_function': serialized['contact_function'],
+          'website': serialized['website'],
+          'neq': serialized['neq'],
+        },
+      );
 
       // Insert the activity types
       for (final activityType in serialized['activity_types']) {
@@ -617,10 +642,13 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
   };
 
   @override
-  Future<Map<String, Enterprise>> _getAllEnterprises() async => _dummyDatabase;
+  Future<Map<String, Enterprise>> _getAllEnterprises(
+          {required String schoolBoardId}) async =>
+      _dummyDatabase;
 
   @override
-  Future<Enterprise?> _getEnterpriseById({required String id}) async =>
+  Future<Enterprise?> _getEnterpriseById(
+          {required String id, required String schoolBoardId}) async =>
       _dummyDatabase[id];
 
   @override

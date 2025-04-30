@@ -10,30 +10,43 @@ import 'package:mysql1/mysql1.dart';
 
 abstract class TeachersRepository implements RepositoryAbstract {
   @override
-  Future<Map<String, dynamic>> getAll({List<String>? fields}) async {
-    final teachers = await _getAllTeachers();
+  Future<Map<String, dynamic>> getAll({
+    List<String>? fields,
+    required String schoolBoardId,
+  }) async {
+    final teachers = await _getAllTeachers(schoolBoardId: schoolBoardId);
     return teachers
         .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
   }
 
   @override
-  Future<Map<String, dynamic>> getById(
-      {required String id, List<String>? fields}) async {
-    final teacher = await _getTeacherById(id: id);
+  Future<Map<String, dynamic>> getById({
+    required String id,
+    List<String>? fields,
+    required String schoolBoardId,
+  }) async {
+    final teacher = await _getTeacherById(id: id, schoolBoardId: schoolBoardId);
     if (teacher == null) throw MissingDataException('Teacher not found');
 
     return teacher.serializeWithFields(fields);
   }
 
   @override
-  Future<void> putAll({required Map<String, dynamic> data}) async =>
+  Future<void> putAll({
+    required Map<String, dynamic> data,
+    required String schoolBoardId,
+  }) async =>
       throw InvalidRequestException('Teachers must be created individually');
 
   @override
-  Future<List<String>> putById(
-      {required String id, required Map<String, dynamic> data}) async {
+  Future<List<String>> putById({
+    required String id,
+    required Map<String, dynamic> data,
+    required String schoolBoardId,
+  }) async {
     // Update if exists, insert if not
-    final previous = await _getTeacherById(id: id);
+    final previous =
+        await _getTeacherById(id: id, schoolBoardId: schoolBoardId);
 
     final newTeacher = previous?.copyWithData(data) ??
         Teacher.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
@@ -43,20 +56,26 @@ abstract class TeachersRepository implements RepositoryAbstract {
   }
 
   @override
-  Future<List<String>> deleteAll() async {
+  Future<List<String>> deleteAll({
+    required String schoolBoardId,
+  }) async {
     throw InvalidRequestException('Teachers must be deleted individually');
   }
 
   @override
-  Future<String> deleteById({required String id}) async {
+  Future<String> deleteById({
+    required String id,
+    required String schoolBoardId,
+  }) async {
     final removedId = await _deleteTeacher(id: id);
     if (removedId == null) throw MissingDataException('Teacher not found');
     return removedId;
   }
 
-  Future<Map<String, Teacher>> _getAllTeachers();
+  Future<Map<String, Teacher>> _getAllTeachers({required String schoolBoardId});
 
-  Future<Teacher?> _getTeacherById({required String id});
+  Future<Teacher?> _getTeacherById(
+      {required String id, required String schoolBoardId});
 
   Future<void> _putTeacher(
       {required Teacher teacher, required Teacher? previous});
@@ -70,11 +89,15 @@ class MySqlTeachersRepository extends TeachersRepository {
   MySqlTeachersRepository({required this.connection});
 
   @override
-  Future<Map<String, Teacher>> _getAllTeachers({String? teacherId}) async {
+  Future<Map<String, Teacher>> _getAllTeachers(
+      {String? teacherId, required String schoolBoardId}) async {
     final teachers = await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'teachers',
-        filters: teacherId == null ? null : {'shared_id': teacherId},
+        filters: (teacherId == null ? {} : {'shared_id': teacherId})
+          ..addAll({
+            'school_board_id': schoolBoardId,
+          }),
         subqueries: [
           MySqlSelectSubQuery(
             dataTableName: 'persons',
@@ -157,8 +180,9 @@ class MySqlTeachersRepository extends TeachersRepository {
   }
 
   @override
-  Future<Teacher?> _getTeacherById({required String id}) async =>
-      (await _getAllTeachers(teacherId: id))[id];
+  Future<Teacher?> _getTeacherById(
+          {required String id, required String schoolBoardId}) async =>
+      (await _getAllTeachers(teacherId: id, schoolBoardId: schoolBoardId))[id];
 
   @override
   Future<void> _putTeacher(
@@ -348,10 +372,13 @@ class TeachersRepositoryMock extends TeachersRepository {
   };
 
   @override
-  Future<Map<String, Teacher>> _getAllTeachers() async => _dummyDatabase;
+  Future<Map<String, Teacher>> _getAllTeachers(
+          {required String schoolBoardId}) async =>
+      _dummyDatabase;
 
   @override
-  Future<Teacher?> _getTeacherById({required String id}) async =>
+  Future<Teacher?> _getTeacherById(
+          {required String id, required String schoolBoardId}) async =>
       _dummyDatabase[id];
 
   @override

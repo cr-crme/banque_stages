@@ -6,6 +6,7 @@ import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/server/database_manager.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/communication_protocol.dart';
+import 'package:common/utils.dart';
 import 'package:test/test.dart';
 
 SchoolBoardsRepository get _mockedDatabaseSchoolBoards =>
@@ -26,7 +27,11 @@ void main() {
       enterprisesDatabase: _mockedDatabaseEnterprises,
       internshipsDatabase: _mockedDatabaseInternships,
     );
-    final teachers = await database.get(RequestFields.teachers, data: null);
+    final teachers = await database.get(
+      RequestFields.teachers,
+      data: null,
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+    );
     expect(teachers, isA<Map<String, dynamic>>());
     expect(teachers.length, 2);
     expect(teachers['0'], isA<Map<String, dynamic>>());
@@ -45,8 +50,11 @@ void main() {
       enterprisesDatabase: _mockedDatabaseEnterprises,
       internshipsDatabase: _mockedDatabaseInternships,
     );
-    final teacher =
-        await database.get(RequestFields.teacher, data: {'id': '0'});
+    final teacher = await database.get(
+      RequestFields.teacher,
+      data: {'id': '0'},
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+    );
     expect(teacher, isA<Map<String, dynamic>>());
     expect(teacher['first_name'], 'John');
     expect(teacher['last_name'], 'Doe');
@@ -61,7 +69,11 @@ void main() {
       internshipsDatabase: _mockedDatabaseInternships,
     );
     expect(
-      () async => await database.get(RequestFields.teacher, data: {'id': '2'}),
+      () async => await database.get(
+        RequestFields.teacher,
+        data: {'id': '2'},
+        schoolBoardId: DevAuth.devMySchoolBoardId,
+      ),
       throwsA(predicate((e) =>
           e is MissingDataException && e.toString() == 'Teacher not found')),
     );
@@ -76,7 +88,11 @@ void main() {
       internshipsDatabase: _mockedDatabaseInternships,
     );
     expect(
-      () async => await database.get(RequestFields.teacher, data: null),
+      () async => await database.get(
+        RequestFields.teacher,
+        data: null,
+        schoolBoardId: DevAuth.devMySchoolBoardId,
+      ),
       throwsA(predicate((e) =>
           e is MissingFieldException &&
           e.toString() == 'An "id" is required to get a teacher')),
@@ -92,7 +108,11 @@ void main() {
       internshipsDatabase: _mockedDatabaseInternships,
     );
     expect(
-      () async => await database.put(RequestFields.teachers, data: null),
+      () async => await database.put(
+        RequestFields.teachers,
+        data: null,
+        schoolBoardId: DevAuth.devMySchoolBoardId,
+      ),
       throwsA(predicate((e) =>
           e is MissingDataException &&
           e.toString() == 'Data is required to put something')),
@@ -108,8 +128,11 @@ void main() {
       internshipsDatabase: _mockedDatabaseInternships,
     );
     expect(
-      () async =>
-          await database.put(RequestFields.teachers, data: {'0': 'John Doe'}),
+      () async => await database.put(
+        RequestFields.teachers,
+        data: {'0': 'John Doe'},
+        schoolBoardId: DevAuth.devMySchoolBoardId,
+      ),
       throwsA(predicate((e) =>
           e is InvalidRequestException &&
           e.toString() == 'Teachers must be created individually')),
@@ -124,10 +147,16 @@ void main() {
       enterprisesDatabase: _mockedDatabaseEnterprises,
       internshipsDatabase: _mockedDatabaseInternships,
     );
-    await database.put(RequestFields.teacher,
-        data: {'id': '0', 'first_name': 'John', 'last_name': 'Smith'});
-    final updatedTeacher =
-        await database.get(RequestFields.teacher, data: {'id': '0'});
+    await database.put(
+      RequestFields.teacher,
+      data: {'id': '0', 'first_name': 'John', 'last_name': 'Smith'},
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+    );
+    final updatedTeacher = await database.get(
+      RequestFields.teacher,
+      data: {'id': '0'},
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+    );
     expect(updatedTeacher['first_name'], 'John');
     expect(updatedTeacher['last_name'], 'Smith');
   });
@@ -140,10 +169,16 @@ void main() {
       enterprisesDatabase: _mockedDatabaseEnterprises,
       internshipsDatabase: _mockedDatabaseInternships,
     );
-    await database.put(RequestFields.teacher,
-        data: {'id': '2', 'first_name': 'Agent', 'last_name': 'Smith'});
-    final newTeacher =
-        await database.get(RequestFields.teacher, data: {'id': '2'});
+    await database.put(
+      RequestFields.teacher,
+      data: {'id': '2', 'first_name': 'Agent', 'last_name': 'Smith'},
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+    );
+    final newTeacher = await database.get(
+      RequestFields.teacher,
+      data: {'id': '2'},
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+    );
     expect(newTeacher['first_name'], 'Agent');
     expect(newTeacher['last_name'], 'Smith');
   });
@@ -157,10 +192,11 @@ void main() {
       internshipsDatabase: _mockedDatabaseInternships,
     );
     expect(
-      () async => await database.put(RequestFields.teacher, data: {
-        'name': 'John Smith',
-        'age': 45,
-      }),
+      () async => await database.put(
+        RequestFields.teacher,
+        data: {'name': 'John Smith', 'age': 45},
+        schoolBoardId: DevAuth.devMySchoolBoardId,
+      ),
       throwsA(predicate((e) =>
           e is MissingFieldException &&
           e.toString() == 'An "id" is required to put a teacher')),

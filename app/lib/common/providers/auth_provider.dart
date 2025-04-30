@@ -1,3 +1,4 @@
+import 'package:common/utils.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
@@ -49,6 +50,8 @@ class AuthProvider extends ChangeNotifier {
   /// Fetch the JWT from the Microsoft authentication server. For now, it simulates
   ///
   // TODO: At some point, this should be replaced with a real JWT token.
-  final jwt =
-      JWT({'app_secret': '1234567890'}).sign(SecretKey('secret passphrase'));
+  final jwt = JWT({
+    'app_secret': DevAuth.devMyAppSecret,
+    'school_board_id': DevAuth.devMySchoolBoardId
+  }).sign(SecretKey('secret passphrase'));
 }

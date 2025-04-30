@@ -6,6 +6,13 @@ import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:mysql1/mysql1.dart';
 
+final _protectedTables = [
+  'students',
+  'teachers',
+  'enterprises',
+  'internships',
+];
+
 class MySqlHelpers {
 // coverage:ignore-start
   static Future<Results> tryQuery(MySqlConnection connection, String query,
@@ -30,6 +37,12 @@ class MySqlHelpers {
     Map<String, String>? filters,
     List<MySqlTableAccessor>? subqueries,
   }) async {
+    if (_protectedTables.contains(tableName) &&
+        !(filters?.containsKey('school_board_id') ?? false)) {
+      throw InvalidRequestException(
+          'You cannot access a protected table $tableName without a school board id.');
+    }
+
     final results = await tryQuery(
         connection,
         MySqlHelpers.craftSelectQuery(
@@ -60,7 +73,7 @@ class MySqlHelpers {
     Map<String, String>? filters,
     List<MySqlTableAccessor>? sublists,
   }) {
-    final filtersAsString = filters == null
+    final filtersAsString = (filters == null || filters.isEmpty)
         ? ''
         : 'WHERE ${filters.entries.map((e) => 't.${e.key} = ?').join(' AND ')}';
 

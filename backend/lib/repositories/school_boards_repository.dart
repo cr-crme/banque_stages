@@ -7,15 +7,21 @@ import 'package:mysql1/mysql1.dart';
 
 abstract class SchoolBoardsRepository implements RepositoryAbstract {
   @override
-  Future<Map<String, dynamic>> getAll({List<String>? fields}) async {
+  Future<Map<String, dynamic>> getAll({
+    List<String>? fields,
+    required String schoolBoardId,
+  }) async {
     final schoolBoards = await _getAllSchoolBoards();
     return schoolBoards
         .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
   }
 
   @override
-  Future<Map<String, dynamic>> getById(
-      {required String id, List<String>? fields}) async {
+  Future<Map<String, dynamic>> getById({
+    required String id,
+    List<String>? fields,
+    required String schoolBoardId,
+  }) async {
     final schoolBoard = await _getSchoolBoardById(id: id);
     if (schoolBoard == null) {
       throw MissingDataException('School board not found');
@@ -25,13 +31,19 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   }
 
   @override
-  Future<void> putAll({required Map<String, dynamic> data}) async =>
+  Future<void> putAll({
+    required Map<String, dynamic> data,
+    required String schoolBoardId,
+  }) async =>
       throw InvalidRequestException(
           'School boards must be created individually');
 
   @override
-  Future<List<String>> putById(
-      {required String id, required Map<String, dynamic> data}) async {
+  Future<List<String>> putById({
+    required String id,
+    required Map<String, dynamic> data,
+    required String schoolBoardId,
+  }) async {
     // Update if exists, insert if not
     final previous = await _getSchoolBoardById(id: id);
 
@@ -43,12 +55,17 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   }
 
   @override
-  Future<List<String>> deleteAll() async {
+  Future<List<String>> deleteAll({
+    required String schoolBoardId,
+  }) async {
     throw InvalidRequestException('School boards must be deleted individually');
   }
 
   @override
-  Future<String> deleteById({required String id}) async {
+  Future<String> deleteById({
+    required String id,
+    required String schoolBoardId,
+  }) async {
     final removedId = await _deleteSchoolBoard(id: id);
     if (removedId == null) throw MissingDataException('School board not found');
     return removedId;

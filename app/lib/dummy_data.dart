@@ -17,6 +17,7 @@ import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/services/job_data_file_service.dart';
+import 'package:common/utils.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
@@ -76,9 +77,11 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   dev.log('Adding dummy schools');
 
   schoolBoards.add(SchoolBoard(
+    id: DevAuth.devMySchoolBoardId,
     name: 'Ma commission scolaire',
     schools: [
       School(
+          id: DevAuth.devMySchoolId,
           name: 'Mon école',
           address: Address(
               civicNumber: 9105,

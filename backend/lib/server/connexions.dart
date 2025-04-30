@@ -26,7 +26,7 @@ class Connexions {
 
   Future<bool> add(WebSocket client) async {
     try {
-      _clients[client] = {'is_verified': false};
+      _clients[client] = {'is_verified': false, 'school_board_id': null};
 
       client.listen((message) => _incommingMessage(client, message: message),
           onDone: () => _onConnexionClosed(client,
@@ -84,8 +84,9 @@ class Connexions {
               message: CommunicationProtocol(
                   requestType: RequestType.response,
                   field: protocol.field,
-                  data:
-                      await _database.get(protocol.field!, data: protocol.data),
+                  data: await _database.get(protocol.field!,
+                      data: protocol.data,
+                      schoolBoardId: _clients[client]!['school_board_id']),
                   response: Response.success));
           break;
 
@@ -96,8 +97,9 @@ class Connexions {
           }
           _logger.info(
               'Putting data to field: ${protocol.field} for client ${client.hashCode}');
-          final updatedFields =
-              await _database.put(protocol.field!, data: protocol.data);
+          final updatedFields = await _database.put(protocol.field!,
+              data: protocol.data,
+              schoolBoardId: _clients[client]!['school_board_id']);
           await _send(client,
               message: CommunicationProtocol(
                   requestType: RequestType.response,
@@ -124,8 +126,9 @@ class Connexions {
           }
           _logger.info(
               'Deleting data from field: ${protocol.field} for client ${client.hashCode}');
-          final deletedIds =
-              await _database.delete(protocol.field!, data: protocol.data);
+          final deletedIds = await _database.delete(protocol.field!,
+              data: protocol.data,
+              schoolBoardId: _clients[client]!['school_board_id']);
           await _send(client,
               message: CommunicationProtocol(
                   requestType: RequestType.response,
@@ -202,11 +205,13 @@ class Connexions {
       throw ConnexionRefusedException(
           'Token is required to validate the handshake');
     }
-    final token = protocol.data!['token'];
-    if (!isJwtValid(token)) {
+
+    final payload = extractJwt(protocol.data!['token']);
+    if (payload == null) {
       throw ConnexionRefusedException('Invalid token');
     }
     _clients[client]!['is_verified'] = true;
+    _clients[client]!['school_board_id'] = payload['school_board_id'];
   }
 
   Future<void> _refuseConnexion(WebSocket client, String message) async {

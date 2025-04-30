@@ -1,13 +1,16 @@
 import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/exceptions.dart';
+import 'package:common/utils.dart';
 import 'package:test/test.dart';
 
 TeachersRepository get _mockedDatabaseTeachers => TeachersRepositoryMock();
 
 void main() {
   test('Get teachers from DatabaseTeachers', () async {
-    final teachers = await _mockedDatabaseTeachers.getAll();
+    final teachers = await _mockedDatabaseTeachers.getAll(
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+    );
     expect(teachers, isA<Map<String, dynamic>>());
     expect(teachers.length, 2);
     expect(teachers['0'], isA<Map<String, dynamic>>());
@@ -20,7 +23,10 @@ void main() {
 
   test('Set all teachers to DatabaseTeachers', () async {
     expect(
-      () async => await _mockedDatabaseTeachers.putAll(data: {'1': 'John Doe'}),
+      () async => await _mockedDatabaseTeachers.putAll(
+        data: {'1': 'John Doe'},
+        schoolBoardId: DevAuth.devMySchoolBoardId,
+      ),
       throwsA(predicate((e) =>
           e is InvalidRequestException &&
           e.toString() == 'Teachers must be created individually')),
@@ -28,7 +34,10 @@ void main() {
   });
 
   test('Get teacher from DatabaseTeachers', () async {
-    final teacher = await _mockedDatabaseTeachers.getById(id: '0');
+    final teacher = await _mockedDatabaseTeachers.getById(
+      id: '0',
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+    );
     expect(teacher, isA<Map<String, dynamic>>());
     expect(teacher['first_name'], 'John');
     expect(teacher['last_name'], 'Doe');
@@ -36,7 +45,10 @@ void main() {
 
   test('Get teacher from DatabaseTeachers with invalid id', () async {
     expect(
-      () async => await _mockedDatabaseTeachers.getById(id: '2'),
+      () async => await _mockedDatabaseTeachers.getById(
+        id: '2',
+        schoolBoardId: DevAuth.devMySchoolBoardId,
+      ),
       throwsA(predicate((e) =>
           e is MissingDataException && e.toString() == 'Teacher not found')),
     );
@@ -47,6 +59,7 @@ void main() {
       () async => await _mockedDatabaseTeachers.putById(
         id: '0',
         data: {'name': 'John Doe', 'age': 60, 'invalid_field': 'invalid'},
+        schoolBoardId: DevAuth.devMySchoolBoardId,
       ),
       throwsA(predicate((e) =>
           e is InvalidFieldException &&
@@ -59,8 +72,12 @@ void main() {
     await mockedDatabase.putById(
       id: '0',
       data: {'first_name': 'John', 'last_name': 'Smith'},
+      schoolBoardId: DevAuth.devMySchoolBoardId,
     );
-    final updatedTeacher = await mockedDatabase.getById(id: '0');
+    final updatedTeacher = await mockedDatabase.getById(
+      id: '0',
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+    );
     expect(updatedTeacher['first_name'], 'John');
     expect(updatedTeacher['last_name'], 'Smith');
   });
@@ -70,8 +87,12 @@ void main() {
     await mockedDatabase.putById(
       id: '2',
       data: {'first_name': 'Agent', 'last_name': 'Smith'},
+      schoolBoardId: DevAuth.devMySchoolBoardId,
     );
-    final newTeacher = await mockedDatabase.getById(id: '2');
+    final newTeacher = await mockedDatabase.getById(
+      id: '2',
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+    );
     expect(newTeacher['first_name'], 'Agent');
     expect(newTeacher['last_name'], 'Smith');
   });
