@@ -1263,7 +1263,7 @@ Future<void> _addDummyInternships(
       ),
     ],
   );
-  internship.addEnterpriseEvaluation(PostInternshipEnterpriseEvaluation(
+  internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
     internshipId: internship.id,
     skillsRequired: [
       'Communiquer à l\'écrit',
@@ -1283,7 +1283,7 @@ Future<void> _addDummyInternships(
     acceptancePhysicalDisability: 4,
     acceptanceMentalHealthDisorder: 2,
     acceptanceBehaviorDifficulties: 2,
-  ));
+  );
   internships.add(internship);
 
   period = time_utils.DateTimeRange(

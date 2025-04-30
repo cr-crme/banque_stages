@@ -190,7 +190,8 @@ class _StudentInternshipListViewState
                       onTap: canChangeSupervisingStatus
                           ? () {
                               if (_isSupervisingInternship(internship)) {
-                                internship.removeSupervisingTeacher(myId);
+                                internship.removeSupervisingTeacher(context,
+                                    teacherId: myId);
                               } else {
                                 internship.addSupervisingTeacher(context,
                                     teacherId: myId);

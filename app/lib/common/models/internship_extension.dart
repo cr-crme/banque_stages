@@ -1,4 +1,5 @@
 import 'package:common/models/internships/internship.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 
@@ -19,6 +20,26 @@ extension InternshipExtension on Internship {
           'The teacher ${teacher.fullName} is not assigned to the group ${student.group}');
     }
 
-    addSupervisingTeacherInternal(teacherId);
+    InternshipsProvider.of(context, listen: false).replace(
+      copyWith(extraSupervisingTeacherIds: [
+        ...extraSupervisingTeacherIds,
+        teacherId
+      ]),
+    );
+  }
+
+  void removeSupervisingTeacher(context, {required String teacherId}) {
+    if (teacherId == signatoryTeacherId ||
+        !supervisingTeacherIds.contains(teacherId)) {
+      // If the teacher is not assigned, do nothing
+      return;
+    }
+
+    InternshipsProvider.of(context, listen: false).replace(
+      copyWith(
+          extraSupervisingTeacherIds: extraSupervisingTeacherIds
+              .where((id) => id != teacherId)
+              .toList()),
+    );
   }
 }

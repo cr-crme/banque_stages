@@ -116,7 +116,7 @@ class _EnterpriseEvaluationScreenState
     final internships = InternshipsProvider.of(context, listen: false);
     final internship = internships.firstWhere((e) => e.id == widget.id);
 
-    internship.addEnterpriseEvaluation(PostInternshipEnterpriseEvaluation(
+    internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
       internshipId: internship.id,
       skillsRequired: _taskAndAbilityKey.currentState!.requiredSkills,
       taskVariety: _taskAndAbilityKey.currentState!.taskVariety!,
@@ -138,7 +138,7 @@ class _EnterpriseEvaluationScreenState
           _specializedStudentsKey.currentState!.acceptanceMentalHealthDisorder,
       acceptanceBehaviorDifficulties:
           _specializedStudentsKey.currentState!.acceptanceBehaviorDifficulties,
-    ));
+    );
 
     // Pass the evaluation data to the rest of the app
     internships.replace(internship);

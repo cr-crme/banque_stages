@@ -5,29 +5,20 @@ import 'package:enhanced_containers_foundation/enhanced_containers_foundation.da
 class SchoolBoard extends ItemSerializable {
   static final String _currentVersion = '1.0.0';
   final String name;
-  final List<School> _schools;
-  List<School> get schools => _schools.toList(growable: false);
+  final List<School> schools;
 
   SchoolBoard({
     super.id,
     required this.name,
-    required List<School> schools,
-  }) : _schools = schools;
+    required this.schools,
+  });
 
   static SchoolBoard get empty =>
       SchoolBoard(name: 'Unnamed', id: null, schools: []);
 
-  void addSchool(School school) {
-    // TODO: Add a call to database
-    if (_schools.any((s) => s.id == school.id)) {
-      throw InvalidFieldException('School with this ID already exists');
-    }
-    _schools.add(school);
-  }
-
   SchoolBoard.fromSerialized(super.map)
       : name = map['name'] ?? 'Unnamed',
-        _schools = (map['schools'] as List<dynamic>?)
+        schools = (map['schools'] as List<dynamic>?)
                 ?.map((e) => School.fromSerialized(e))
                 .toList() ??
             [],
@@ -35,7 +26,7 @@ class SchoolBoard extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() =>
-      {'name': name, 'schools': _schools.map((e) => e.serialize()).toList()};
+      {'name': name, 'schools': schools.map((e) => e.serialize()).toList()};
 
   SchoolBoard copyWith({
     String? id,
@@ -45,7 +36,7 @@ class SchoolBoard extends ItemSerializable {
       SchoolBoard(
         id: id ?? this.id,
         name: name ?? this.name,
-        schools: schools ?? _schools,
+        schools: schools ?? this.schools,
       );
 
   SchoolBoard copyWithData(Map<String, dynamic> data) {
@@ -73,7 +64,7 @@ class SchoolBoard extends ItemSerializable {
       schools: (data['schools'] as List<dynamic>?)
               ?.map((e) => School.fromSerialized(e))
               .toList() ??
-          _schools,
+          schools,
     );
   }
 

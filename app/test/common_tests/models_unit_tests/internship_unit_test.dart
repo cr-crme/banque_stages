@@ -106,7 +106,7 @@ void main() {
       expect(internship.supervisingTeacherIds.length, 2);
       expect(internship.supervisingTeacherIds, ['teacherId', 'extraTeacherId']);
 
-      internship.removeSupervisingTeacher('extraTeacherId');
+      internship.removeSupervisingTeacher(context, teacherId: 'extraTeacherId');
 
       expect(internship.supervisingTeacherIds.length, 1);
       expect(internship.supervisingTeacherIds, ['teacherId']);

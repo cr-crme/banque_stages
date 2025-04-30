@@ -690,7 +690,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     start: DateTime(2020, 1, 2), end: DateTime(2020, 2, 1))),
           ]);
 
-      internship.addSkillEvaluation(InternshipEvaluationSkill(
+      internship.skillEvaluations.add(InternshipEvaluationSkill(
           date: DateTime(2024, 2, 29),
           presentAtEvaluation: ['Me', 'Myself', 'I'],
           skillGranularity: SkillEvaluationGranularity.byTask,
@@ -720,7 +720,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
           comments: 'No comments',
           formVersion: InternshipEvaluationSkill.currentVersion));
-      internship.addSkillEvaluation(InternshipEvaluationSkill(
+      internship.skillEvaluations.add(InternshipEvaluationSkill(
           date: DateTime(2024, 3, 29),
           presentAtEvaluation: ['You', 'Yourself', 'Truly yours'],
           skillGranularity: SkillEvaluationGranularity.byTask,
@@ -728,7 +728,7 @@ class _LoginScreenState extends State<LoginScreen> {
           skills: [],
           formVersion: InternshipEvaluationSkill.currentVersion));
 
-      internship.addAttitudeEvaluation(InternshipEvaluationAttitude(
+      internship.attitudeEvaluations.add(InternshipEvaluationAttitude(
           date: DateTime(2024, 2, 29),
           presentAtEvaluation: ['Me', 'Myself', 'I'],
           attitude: AttitudeEvaluation(
@@ -745,7 +745,7 @@ class _LoginScreenState extends State<LoginScreen> {
               generalAppreciation: GeneralAppreciation.good),
           comments: 'Very good',
           formVersion: InternshipEvaluationAttitude.currentVersion));
-      internship.addAttitudeEvaluation(InternshipEvaluationAttitude(
+      internship.attitudeEvaluations.add(InternshipEvaluationAttitude(
           date: DateTime(2024, 2, 29),
           presentAtEvaluation: ['Me', 'Myself', 'I'],
           attitude: AttitudeEvaluation(
@@ -762,7 +762,7 @@ class _LoginScreenState extends State<LoginScreen> {
               generalAppreciation: GeneralAppreciation.passable),
           comments: 'Very good',
           formVersion: InternshipEvaluationAttitude.currentVersion));
-      internship.addEnterpriseEvaluation(PostInternshipEnterpriseEvaluation(
+      internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
           skillsRequired: ['skill1', 'skill2', 'skill3'],
           internshipId: 'internshipId',
           taskVariety: 2.1,
@@ -778,7 +778,7 @@ class _LoginScreenState extends State<LoginScreen> {
           acceptanceIntellectualDisability: 2.4,
           acceptancePhysicalDisability: 2.8,
           acceptanceMentalHealthDisorder: 3.5,
-          acceptanceBehaviorDifficulties: 3.1));
+          acceptanceBehaviorDifficulties: 3.1);
 
       final message = jsonEncode(CommunicationProtocol(
         requestType: RequestType.post,

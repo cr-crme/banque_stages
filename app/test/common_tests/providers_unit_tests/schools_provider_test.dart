@@ -10,18 +10,30 @@ void main() {
     initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
 
     test('deserializeItem works', () {
-      final schools =
+      final schoolBoards =
           SchoolBoardsProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
-      final school = schools.deserializeItem({'name': 'Test School'});
-      expect(school.name, 'Test School');
+      final schoolBoard = schoolBoards.deserializeItem({'name': 'Test School'});
+      expect(schoolBoard.name, 'Test School');
     });
 
     testWidgets('can get "of" context', (tester) async {
       final context = await tester.contextWithNotifiers(withSchools: true);
-      final schools = SchoolBoardsProvider.of(context, listen: false);
-      expect(schools, isNotNull);
+      final schoolBoards = SchoolBoardsProvider.of(context, listen: false);
+      expect(schoolBoards, isNotNull);
     });
 
-    // TODO ADD mySchoolBoardOf and mySchoolOf tests
+    testWidgets('can get "mySchoolBoardOf" context with listen',
+        (tester) async {
+      final context = await tester.contextWithNotifiers(withSchools: true);
+      final schoolBoards =
+          SchoolBoardsProvider.mySchoolBoardOf(context, listen: true);
+      expect(schoolBoards, isNotNull);
+    });
+
+    testWidgets('can get "mySchoolOf" context without listen', (tester) async {
+      final context = await tester.contextWithNotifiers(withSchools: true);
+      final school = SchoolBoardsProvider.mySchoolOf(context, listen: false);
+      expect(school, isNotNull);
+    });
   });
 }

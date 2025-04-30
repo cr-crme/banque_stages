@@ -199,20 +199,10 @@ class Internship extends ItemSerializable {
   final String schoolBoardId;
   final String studentId;
   final String signatoryTeacherId;
-  final List<String> _extraSupervisingTeacherIds;
-  void addSupervisingTeacherInternal(String id) {
-    if (_extraSupervisingTeacherIds.contains(id)) {
-      throw Exception('Teacher already added');
-    }
-    _extraSupervisingTeacherIds.add(id);
-  }
+  final List<String> extraSupervisingTeacherIds;
 
   List<String> get supervisingTeacherIds =>
-      [signatoryTeacherId, ..._extraSupervisingTeacherIds];
-
-  // TODO Add a call to the database?
-  void removeSupervisingTeacher(String id) =>
-      _extraSupervisingTeacherIds.remove(id);
+      [signatoryTeacherId, ...extraSupervisingTeacherIds];
 
   final String enterpriseId;
   final String jobId; // Main job attached to the enterprise
@@ -240,37 +230,14 @@ class Internship extends ItemSerializable {
   final VisitingPriority visitingPriority;
   final String teacherNotes;
   final DateTime? endDate;
-  final List<InternshipEvaluationSkill> _skillEvaluations;
-  final List<InternshipEvaluationAttitude> _attitudeEvaluations;
+  final List<InternshipEvaluationSkill> skillEvaluations;
+  final List<InternshipEvaluationAttitude> attitudeEvaluations;
 
-  List<InternshipEvaluationSkill> get skillEvaluations =>
-      _skillEvaluations.toList(growable: false);
-  void addSkillEvaluation(InternshipEvaluationSkill evaluation) {
-    // TODO Add a call to the database?
-    _skillEvaluations.add(evaluation);
-  }
-
-  List<InternshipEvaluationAttitude> get attitudeEvaluations =>
-      _attitudeEvaluations.toList(growable: false);
-  void addAttitudeEvaluation(InternshipEvaluationAttitude evaluation) {
-    // TODO Add a call to the database?
-    _attitudeEvaluations.add(evaluation);
-  }
-
-  PostInternshipEnterpriseEvaluation? _enterpriseEvaluation;
-  PostInternshipEnterpriseEvaluation? get enterpriseEvaluation =>
-      _enterpriseEvaluation;
-  void addEnterpriseEvaluation(PostInternshipEnterpriseEvaluation evaluation) {
-    if (_enterpriseEvaluation != null) {
-      throw Exception('Enterprise evaluation already exists');
-    }
-    // TODO Add a call to the database?
-    _enterpriseEvaluation = evaluation;
-  }
+  PostInternshipEnterpriseEvaluation? enterpriseEvaluation;
 
   bool get isClosed => isNotActive && !isEnterpriseEvaluationPending;
   bool get isEnterpriseEvaluationPending =>
-      isNotActive && _enterpriseEvaluation == null;
+      isNotActive && enterpriseEvaluation == null;
   bool get isActive => endDate == null;
   bool get isNotActive => !isActive;
   bool get shouldTerminate =>
@@ -281,7 +248,7 @@ class Internship extends ItemSerializable {
     required this.schoolBoardId,
     required this.studentId,
     required this.signatoryTeacherId,
-    required List<String> extraSupervisingTeacherIds,
+    required this.extraSupervisingTeacherIds,
     required this.enterpriseId,
     required this.jobId,
     required this.extraSpecializationIds,
@@ -291,15 +258,11 @@ class Internship extends ItemSerializable {
     required this.visitingPriority,
     required this.teacherNotes,
     required this.endDate,
-    required List<InternshipEvaluationSkill> skillEvaluations,
-    required List<InternshipEvaluationAttitude> attitudeEvaluations,
-    required PostInternshipEnterpriseEvaluation? enterpriseEvaluation,
-  })  : _mutables = mutables,
-        _extraSupervisingTeacherIds = extraSupervisingTeacherIds,
-        _skillEvaluations = skillEvaluations,
-        _attitudeEvaluations = attitudeEvaluations,
-        _enterpriseEvaluation = enterpriseEvaluation {
-    _extraSupervisingTeacherIds.remove(signatoryTeacherId);
+    required this.skillEvaluations,
+    required this.attitudeEvaluations,
+    required this.enterpriseEvaluation,
+  }) : _mutables = mutables {
+    extraSupervisingTeacherIds.remove(signatoryTeacherId);
   }
 
   Internship({
@@ -307,7 +270,7 @@ class Internship extends ItemSerializable {
     required this.schoolBoardId,
     required this.studentId,
     required this.signatoryTeacherId,
-    required List<String> extraSupervisingTeacherIds,
+    required this.extraSupervisingTeacherIds,
     required this.enterpriseId,
     required this.jobId,
     required this.extraSpecializationIds,
@@ -320,29 +283,25 @@ class Internship extends ItemSerializable {
     required this.visitingPriority,
     this.teacherNotes = '',
     this.endDate,
-    List<InternshipEvaluationSkill> skillEvaluations = const [],
-    List<InternshipEvaluationAttitude> attitudeEvaluations = const [],
-    PostInternshipEnterpriseEvaluation? enterpriseEvaluation,
-  })  : _extraSupervisingTeacherIds = extraSupervisingTeacherIds,
-        _mutables = [
+    this.skillEvaluations = const [],
+    this.attitudeEvaluations = const [],
+    this.enterpriseEvaluation,
+  }) : _mutables = [
           _MutableElements(
             creationDate: creationDate,
             supervisor: supervisor,
             dates: dates,
             weeklySchedules: weeklySchedules,
           )
-        ],
-        _skillEvaluations = [...skillEvaluations],
-        _attitudeEvaluations = [...attitudeEvaluations],
-        _enterpriseEvaluation = enterpriseEvaluation {
-    _extraSupervisingTeacherIds.remove(signatoryTeacherId);
+        ] {
+    extraSupervisingTeacherIds.remove(signatoryTeacherId);
   }
 
   Internship.fromSerialized(super.map)
       : schoolBoardId = map['school_board_id'] ?? '-1',
         studentId = map['student_id'] ?? '',
         signatoryTeacherId = map['signatory_teacher_id'] ?? '',
-        _extraSupervisingTeacherIds =
+        extraSupervisingTeacherIds =
             _stringListFromSerialized(map['extra_supervising_teacher_ids']),
         enterpriseId = map['enterprise_id'] ?? '',
         jobId = map['job_id'] ?? '',
@@ -361,21 +320,21 @@ class Internship extends ItemSerializable {
         endDate = map['end_date'] == null || map['end_date'] == -1
             ? null
             : DateTime.fromMillisecondsSinceEpoch(map['end_date']),
-        _skillEvaluations = (map['skill_evaluations'] as List?)
+        skillEvaluations = (map['skill_evaluations'] as List?)
                 ?.map((e) => InternshipEvaluationSkill.fromSerialized(e))
                 .toList() ??
             [],
-        _attitudeEvaluations = (map['attitude_evaluations'] as List?)
+        attitudeEvaluations = (map['attitude_evaluations'] as List?)
                 ?.map((e) => InternshipEvaluationAttitude.fromSerialized(e))
                 .toList() ??
             [],
-        _enterpriseEvaluation = map['enterprise_evaluation'] == null ||
+        enterpriseEvaluation = map['enterprise_evaluation'] == null ||
                 map['enterprise_evaluation'] == -1
             ? null
             : PostInternshipEnterpriseEvaluation.fromSerialized(
                 map['enterprise_evaluation']),
         super.fromSerialized() {
-    _extraSupervisingTeacherIds.remove(signatoryTeacherId);
+    extraSupervisingTeacherIds.remove(signatoryTeacherId);
   }
 
   @override
@@ -385,7 +344,7 @@ class Internship extends ItemSerializable {
         'student_id': studentId,
         'signatory_teacher_id': signatoryTeacherId,
         'extra_supervising_teacher_ids':
-            _serializeList(_extraSupervisingTeacherIds),
+            _serializeList(extraSupervisingTeacherIds),
         'enterprise_id': enterpriseId,
         'job_id': jobId,
         'extra_specialization_ids': _serializeList(extraSpecializationIds),
@@ -396,10 +355,10 @@ class Internship extends ItemSerializable {
         'teacher_notes': teacherNotes,
         'end_date': endDate?.millisecondsSinceEpoch ?? -1,
         'skill_evaluations':
-            _skillEvaluations.map((e) => e.serialize()).toList(),
+            skillEvaluations.map((e) => e.serialize()).toList(),
         'attitude_evaluations':
-            _attitudeEvaluations.map((e) => e.serialize()).toList(),
-        'enterprise_evaluation': _enterpriseEvaluation?.serialize() ?? -1,
+            attitudeEvaluations.map((e) => e.serialize()).toList(),
+        'enterprise_evaluation': enterpriseEvaluation?.serialize() ?? -1,
       };
 
   void addVersion({
@@ -440,7 +399,7 @@ class Internship extends ItemSerializable {
       studentId: studentId ?? this.studentId,
       signatoryTeacherId: signatoryTeacherId ?? this.signatoryTeacherId,
       extraSupervisingTeacherIds:
-          extraSupervisingTeacherIds ?? _extraSupervisingTeacherIds,
+          extraSupervisingTeacherIds ?? this.extraSupervisingTeacherIds,
       enterpriseId: enterpriseId ?? this.enterpriseId,
       jobId: jobId ?? this.jobId,
       extraSpecializationIds:
@@ -454,7 +413,7 @@ class Internship extends ItemSerializable {
       skillEvaluations: skillEvaluations?.toList() ?? this.skillEvaluations,
       attitudeEvaluations:
           attitudeEvaluations?.toList() ?? this.attitudeEvaluations,
-      enterpriseEvaluation: enterpriseEvaluation ?? _enterpriseEvaluation,
+      enterpriseEvaluation: enterpriseEvaluation ?? this.enterpriseEvaluation,
     );
   }
 
@@ -497,7 +456,7 @@ class Internship extends ItemSerializable {
       studentId: data['student_id'] ?? studentId,
       signatoryTeacherId: data['signatory_teacher_id'] ?? signatoryTeacherId,
       extraSupervisingTeacherIds: data['extra_supervising_teacher_ids'] == null
-          ? _extraSupervisingTeacherIds
+          ? extraSupervisingTeacherIds
           : _stringListFromSerialized(data['extra_supervising_teacher_ids']),
       enterpriseId: data['enterprise_id'] ?? enterpriseId,
       jobId: data['job_id'] ?? jobId,
@@ -520,14 +479,14 @@ class Internship extends ItemSerializable {
       skillEvaluations: (data['skill_evaluations'] as List?)
               ?.map((e) => InternshipEvaluationSkill.fromSerialized(e))
               .toList() ??
-          _skillEvaluations,
+          skillEvaluations,
       attitudeEvaluations: (data['attitude_evaluations'] as List?)
               ?.map((e) => InternshipEvaluationAttitude.fromSerialized(e))
               .toList() ??
-          _attitudeEvaluations,
+          attitudeEvaluations,
       enterpriseEvaluation: data['enterprise_evaluation'] == null ||
               data['enterprise_evaluation'] == -1
-          ? _enterpriseEvaluation
+          ? enterpriseEvaluation
           : PostInternshipEnterpriseEvaluation.fromSerialized(
               data['enterprise_evaluation']),
     );
@@ -537,7 +496,7 @@ class Internship extends ItemSerializable {
   String toString() {
     return 'Internship{studentId: $studentId, '
         'signatoryTeacherId: $signatoryTeacherId, '
-        'extraSupervisingTeacherIds: $_extraSupervisingTeacherIds, '
+        'extraSupervisingTeacherIds: $extraSupervisingTeacherIds, '
         'enterpriseId: $enterpriseId, '
         'jobId: $jobId, '
         'extraSpecializationIds: $extraSpecializationIds, '
@@ -549,7 +508,7 @@ class Internship extends ItemSerializable {
         'endDate: $endDate, '
         'skillEvaluations: $skillEvaluations, '
         'attitudeEvaluations: $attitudeEvaluations, '
-        'enterpriseEvaluation: $_enterpriseEvaluation'
+        'enterpriseEvaluation: $enterpriseEvaluation'
         '}';
   }
 }

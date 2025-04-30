@@ -19,10 +19,6 @@ class Incident extends ItemSerializable {
         'incident': incident,
         'date': date.millisecondsSinceEpoch,
       };
-
-  // TODO Implement this App side with an extension on
-  // @override
-  // String toString() => '${DateFormat('yyyy-MM-dd').format(date)} - $incident';
 }
 
 class Incidents extends ItemSerializable {
