@@ -1,7 +1,7 @@
 import 'package:common/utils.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
-dynamic extractJwt(String token) {
+Map<String, dynamic>? extractJwt(String token) {
   try {
     // TODO: Store "secret passphrase" in the environment variables
     final jwt = JWT.verify(token, SecretKey('secret passphrase'));

@@ -58,19 +58,19 @@ Future<void> _removeAll(
   dev.log('Removing dummy data');
   // To properly remove the data, we need to start by the internships
   internships.clear(confirm: true);
-  await _waitForDatabaseUpdate(internships, 0);
+  await _waitForDatabaseUpdate(internships, 0, strictlyEqualToExpected: true);
 
   enterprises.clear(confirm: true);
-  await _waitForDatabaseUpdate(enterprises, 0);
+  await _waitForDatabaseUpdate(enterprises, 0, strictlyEqualToExpected: true);
 
   students.clear(confirm: true);
-  await _waitForDatabaseUpdate(students, 0);
+  await _waitForDatabaseUpdate(students, 0, strictlyEqualToExpected: true);
 
   teachers.clear(confirm: true);
-  await _waitForDatabaseUpdate(teachers, 0);
+  await _waitForDatabaseUpdate(teachers, 0, strictlyEqualToExpected: true);
 
   schoolBoards.clear(confirm: true);
-  _waitForDatabaseUpdate(schoolBoards, 0);
+  await _waitForDatabaseUpdate(schoolBoards, 0, strictlyEqualToExpected: true);
 }
 
 Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
@@ -100,7 +100,7 @@ String get _partnerTeacherId {
 }
 
 Future<void> _addDummyTeachers(
-    TeachersProvider teachers, SchoolBoardsProvider schools) async {
+    TeachersProvider teachers, SchoolBoardsProvider schoolBoards) async {
   dev.log('Adding dummy teachers');
 
   teachers.add(Teacher(
@@ -108,8 +108,8 @@ Future<void> _addDummyTeachers(
     firstName: 'Roméo',
     middleName: null,
     lastName: 'Montaigu',
-    schoolBoardId: schools[0].id,
-    schoolId: schools[0].schools[0].id,
+    schoolBoardId: schoolBoards[0].id,
+    schoolId: schoolBoards[0].schools[0].id,
     groups: ['550', '551'],
     email: 'romeo.montaigu@shakespeare.qc',
     phone: PhoneNumber.empty,
@@ -123,8 +123,8 @@ Future<void> _addDummyTeachers(
     firstName: 'Juliette',
     middleName: null,
     lastName: 'Capulet',
-    schoolBoardId: schools[0].id,
-    schoolId: schools[0].schools[0].id,
+    schoolBoardId: schoolBoards[0].id,
+    schoolId: schoolBoards[0].schools[0].id,
     groups: ['550', '551'],
     email: 'juliette.capulet@shakespeare.qc',
     phone: PhoneNumber.empty,
@@ -137,8 +137,8 @@ Future<void> _addDummyTeachers(
     firstName: 'Tybalt',
     middleName: null,
     lastName: 'Capulet',
-    schoolBoardId: schools[0].id,
-    schoolId: schools[0].schools[0].id,
+    schoolBoardId: schoolBoards[0].id,
+    schoolId: schoolBoards[0].schools[0].id,
     groups: ['550', '551'],
     email: 'tybalt.capulet@shakespeare.qc',
     phone: PhoneNumber.empty,
@@ -151,8 +151,8 @@ Future<void> _addDummyTeachers(
     firstName: 'Benvolio',
     middleName: null,
     lastName: 'Montaigu',
-    schoolBoardId: schools[0].id,
-    schoolId: schools[0].schools[0].id,
+    schoolBoardId: schoolBoards[0].id,
+    schoolId: schoolBoards[0].schools[0].id,
     groups: ['552'],
     email: 'benvolio.montaigu@shakespeare.qc',
     phone: PhoneNumber.empty,

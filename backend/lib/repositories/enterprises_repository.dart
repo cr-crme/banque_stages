@@ -337,6 +337,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         tableName: 'enterprises',
         data: {
           'id': serialized['id'],
+          'school_board_id': serialized['school_board_id'],
           'version': serialized['version'],
           'name': serialized['name'],
           'recruiter_id': serialized['recruiter_id'],

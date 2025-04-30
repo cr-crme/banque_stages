@@ -94,7 +94,7 @@ class MySqlTeachersRepository extends TeachersRepository {
     final teachers = await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'teachers',
-        filters: (teacherId == null ? {} : {'shared_id': teacherId})
+        filters: (teacherId == null ? {} : {'id': teacherId})
           ..addAll({
             'school_board_id': schoolBoardId,
           }),

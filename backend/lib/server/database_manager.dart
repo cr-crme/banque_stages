@@ -34,9 +34,17 @@ class DatabaseManager {
   }) async {
     switch (field) {
       case RequestFields.schoolBoards:
-        throw InvalidRequestException('School boards cannot be fetched.');
+        return await schoolBoardsDatabase.getAll(
+          fields: (data?['fields'] as List?)?.cast<String>(),
+          schoolBoardId: schoolBoardId,
+        );
       case RequestFields.schoolBoard:
-        throw InvalidRequestException('School boards cannot be fetched.');
+        return await schoolBoardsDatabase.getById(
+          id: _getId(data,
+              messageOnNull: 'An "id" is required to get a school board'),
+          fields: (data?['fields'] as List?)?.cast<String>(),
+          schoolBoardId: schoolBoardId,
+        );
       case RequestFields.teachers:
         return await teachersDatabase.getAll(
           schoolBoardId: schoolBoardId,

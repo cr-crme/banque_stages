@@ -135,7 +135,7 @@ class MySqlHelpers {
       await tryQuery(
           connection,
           craftDeleteQuery(tableName: tableName, filters: filters),
-          [filters?.values]);
+          filters?.values.toList() ?? []);
 // coverage:ignore-end
 
   static String craftDeleteQuery({
@@ -144,7 +144,7 @@ class MySqlHelpers {
   }) {
     final filtersAsString = filters == null
         ? ''
-        : 'WHERE ${filters.entries.map((e) => '$e.key = ?').join(' AND ')}';
+        : 'WHERE ${filters.keys.map((e) => '$e = ?').join(' AND ')}';
 
     return '''DELETE FROM $tableName
        $filtersAsString''';

@@ -41,6 +41,7 @@ class Connexions {
         // If client disconnected before the handshake was completed
         if (!_clients.containsKey(client)) return false;
         if (startTime.add(_timeout).isBefore(DateTime.now())) {
+          await _onConnexionClosed(client, message: 'Handshake timeout');
           throw ConnexionRefusedException('Handshake timeout');
         }
       }
@@ -210,8 +211,10 @@ class Connexions {
     if (payload == null) {
       throw ConnexionRefusedException('Invalid token');
     }
-    _clients[client]!['is_verified'] = true;
-    _clients[client]!['school_board_id'] = payload['school_board_id'];
+    _clients[client] = {
+      'is_verified': true,
+      'school_board_id': payload['school_board_id']
+    };
   }
 
   Future<void> _refuseConnexion(WebSocket client, String message) async {

@@ -203,6 +203,8 @@ class MySqlStudentsRepository extends StudentsRepository {
           tableName: 'students',
           data: {
             'id': serialized['id'],
+            'school_board_id': serialized['school_board_id'],
+            'school_id': serialized['school_id'],
             'version': serialized['version'],
             'photo': serialized['photo'],
             'program': serialized['program'],

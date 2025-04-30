@@ -399,6 +399,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           tableName: 'internships',
           data: {
             'id': internship.id,
+            'school_board_id': internship.schoolBoardId,
             'student_id': internship.studentId,
             'enterprise_id': internship.enterpriseId,
             'job_id': internship.jobId,
@@ -437,7 +438,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         final supervisor = await MySqlHelpers.performSelectQuery(
             connection: connection,
             tableName: 'persons',
-            filters: {'id': mutable['supervisor_id']});
+            filters: {'id': mutable['supervisor']['id']});
         if (supervisor.isEmpty) {
           await MySqlHelpers.performInsertPerson(
               connection: connection, person: internship.supervisor);

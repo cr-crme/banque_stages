@@ -95,11 +95,26 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
       filters: schoolBoardId == null ? null : {'id': schoolBoardId},
     );
 
-    // TODO: Add the get of the school address
-
     final map = <String, SchoolBoard>{};
     for (final schoolBoard in schoolBoards) {
       final id = schoolBoard['id'].toString();
+
+      final schools = await MySqlHelpers.performSelectQuery(
+        connection: connection,
+        tableName: 'schools',
+        filters: {'school_board_id': id},
+      );
+
+      for (final school in schools) {
+        final schoolId = school['id'].toString();
+        final address = await MySqlHelpers.performSelectQuery(
+          connection: connection,
+          tableName: 'addresses',
+          filters: {'entity_id': schoolId},
+        );
+        school['address'] = address.first;
+      }
+      schoolBoard['schools'] = schools;
 
       map[id] = SchoolBoard.fromSerialized(schoolBoard);
     }
@@ -137,6 +152,10 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
       for (final school in schoolBoard.schools) {
         await MySqlHelpers.performInsertQuery(
             connection: connection,
+            tableName: 'entities',
+            data: {'shared_id': school.id});
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
             tableName: 'schools',
             data: {
               'id': school.id,
@@ -170,6 +189,19 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
   @override
   Future<String?> _deleteSchoolBoard({required String id}) async {
     try {
+      final schools = await MySqlHelpers.performSelectQuery(
+        connection: connection,
+        tableName: 'schools',
+        filters: {'school_board_id': id},
+      );
+      for (final school in schools) {
+        await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'entities',
+          filters: {'shared_id': school['id']},
+        );
+      }
+
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
         tableName: 'entities',
