@@ -1,8 +1,9 @@
+import 'package:common/exceptions.dart';
 import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/extended_item_serializable.dart';
 import 'package:common/models/generic/phone_number.dart';
-import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
-class Person extends ItemSerializable {
+class Person extends ExtendedItemSerializable {
   final String firstName;
   final String? middleName;
   final String lastName;
@@ -80,6 +81,39 @@ class Person extends ItemSerializable {
         email: email ?? this.email,
         address: address ?? this.address,
       );
+
+  @override
+  Person copyWithData(Map<String, dynamic> data) {
+    // Make sure data does not contain unrecognized fields
+    if (data.keys.any((key) => ![
+          'id',
+          'first_name',
+          'middle_name',
+          'last_name',
+          'date_birth',
+          'phone',
+          'email',
+          'address',
+        ].contains(key))) {
+      throw InvalidFieldException('Invalid field data detected');
+    }
+    return Person(
+      id: data['id']?.toString() ?? id,
+      firstName: data['first_name'] ?? firstName,
+      middleName: data['middle_name'] ?? middleName,
+      lastName: data['last_name'] ?? lastName,
+      dateBirth: data['date_birth'] == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(data['date_birth']),
+      phone: data['phone'] == null
+          ? phone
+          : PhoneNumber.fromSerialized(data['phone'] ?? {}),
+      email: data['email'] ?? email,
+      address: data['address'] == null
+          ? address
+          : Address.fromSerialized(data['address']),
+    );
+  }
 
   ///
   /// Full name without the middle name

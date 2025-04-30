@@ -1,8 +1,8 @@
 import 'package:common/exceptions.dart';
+import 'package:common/models/generic/extended_item_serializable.dart';
 import 'package:common/models/school_boards/school.dart';
-import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
-class SchoolBoard extends ItemSerializable {
+class SchoolBoard extends ExtendedItemSerializable {
   static final String _currentVersion = '1.0.0';
   final String name;
   final List<School> schools;
@@ -39,6 +39,7 @@ class SchoolBoard extends ItemSerializable {
         schools: schools ?? this.schools,
       );
 
+  @override
   SchoolBoard copyWithData(Map<String, dynamic> data) {
     final availableFields = [
       'id',

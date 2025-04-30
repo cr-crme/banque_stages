@@ -75,7 +75,7 @@ class MySqlHelpers {
   }) {
     final filtersAsString = (filters == null || filters.isEmpty)
         ? ''
-        : 'WHERE ${filters.entries.map((e) => 't.${e.key} = ?').join(' AND ')}';
+        : 'WHERE ${filters.keys.map((e) => 't.$e = ?').join(' AND ')}';
 
     return '''SELECT t.*${sublists == null || sublists.isEmpty ? '' : ','} 
       ${sublists?.map((e) => e._craft(mainTableAlias: 't')).join(',') ?? ''}
@@ -120,7 +120,7 @@ class MySqlHelpers {
   }) {
     final filtersAsString = filters == null
         ? ''
-        : 'WHERE ${filters.entries.map((e) => '$e.key = ?').join(' AND ')}';
+        : 'WHERE ${filters.keys.map((e) => '$e = ?').join(' AND ')}';
 
     return '''UPDATE $tableName SET ${data.keys.join(' = ?, ')} = ?
        $filtersAsString''';

@@ -1,13 +1,13 @@
 import 'package:common/exceptions.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/extended_item_serializable.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
-import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 part 'package:common/models/enterprises/activity_types.dart';
 
-class Enterprise extends ItemSerializable {
+class Enterprise extends ExtendedItemSerializable {
   static final String _currentVersion = '1.0.0';
   static String get currentVersion => _currentVersion;
 
@@ -82,6 +82,7 @@ class Enterprise extends ItemSerializable {
     );
   }
 
+  @override
   Enterprise copyWithData(Map<String, dynamic> data) {
     final availableFields = [
       'id',

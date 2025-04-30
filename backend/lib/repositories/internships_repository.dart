@@ -215,6 +215,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                 dataTableName: 'internship_daily_schedules',
                 asName: 'daily_schedules',
                 fieldsToFetch: [
+                  'id',
                   'day',
                   'starting_hour',
                   'starting_minute',
@@ -652,6 +653,27 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   @override
   Future<String?> _deleteInternship({required String id}) async {
     try {
+      final supervisor = (await MySqlHelpers.performSelectQuery(
+        connection: connection,
+        tableName: 'internship_mutable_data',
+        filters: {'internship_id': id},
+      ))
+          .firstOrNull;
+
+      await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'internship_mutable_data',
+        filters: {'internship_id': id},
+      );
+
+      if (supervisor != null) {
+        await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'entities',
+          filters: {'shared_id': supervisor['supervisor_id']},
+        );
+      }
+
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
         tableName: 'entities',

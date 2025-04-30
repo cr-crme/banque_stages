@@ -99,6 +99,7 @@ class Teacher extends Person {
         itineraries: itineraries ?? this.itineraries,
       );
 
+  @override
   Teacher copyWithData(Map<String, dynamic> data) {
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => ![

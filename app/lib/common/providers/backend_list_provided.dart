@@ -4,20 +4,19 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:common/communication_protocol.dart';
+import 'package:common/models/generic/extended_item_serializable.dart';
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:enhanced_containers/database_list_provided.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 class _Selector {
-  final Function(Map<String, dynamic>) deserialize;
-  final Function(dynamic item, {bool notify}) addItem;
-  final Function(dynamic item, {bool notify}) removeItem;
+  final Function(Map<String, dynamic> items, {bool notify}) addOrReplaceItems;
+  final Function(dynamic items, {bool notify}) removeItem;
   final Function() notify;
 
   const _Selector({
-    required this.deserialize,
-    required this.addItem,
+    required this.addOrReplaceItems,
     required this.removeItem,
     required this.notify,
   });
@@ -27,7 +26,7 @@ class _Selector {
 /// implemented in $ROOT/backend,
 ///
 /// Written by: @pariterre
-abstract class BackendListProvided<T extends ItemSerializable>
+abstract class BackendListProvided<T extends ExtendedItemSerializable>
     extends DatabaseListProvided<T> {
   final Uri uri;
   bool get isConnected =>
@@ -88,15 +87,12 @@ abstract class BackendListProvided<T extends ItemSerializable>
 
     // Keep a reference to the deserializer function
     _providerSelector[getField()] = _Selector(
-      deserialize: deserializeItem,
-      addItem: _addToSelf,
+      addOrReplaceItems: _addOrReplaceIntoSelf,
       removeItem: _removeFromSelf,
       notify: notifyListeners,
     );
     _providerSelector[getField(true)] = _Selector(
-      deserialize: (data) =>
-          (data as Map).values.map((e) => deserializeItem(e)).toList(),
-      addItem: _addToSelf,
+      addOrReplaceItems: _addOrReplaceIntoSelf,
       removeItem: _removeFromSelf,
       notify: notifyListeners,
     );
@@ -164,8 +160,21 @@ abstract class BackendListProvided<T extends ItemSerializable>
 
   ///
   /// Actually performs the add to the self list
-  void _addToSelf(item, {bool notify = true}) {
-    super.add(item, notify: notify);
+  void _addOrReplaceIntoSelf(Map<String, dynamic> items, {bool notify = true}) {
+    if (items.containsKey('id')) {
+      // A single item was received
+      if (contains(items['id'])) {
+        super.replace(this[items['id']].copyWithData(items), notify: notify);
+      } else {
+        super.add(deserializeItem(items), notify: notify);
+      }
+    } else {
+      // A map of items was received, callback the add function for each item
+      for (final item in items.values) {
+        _addOrReplaceIntoSelf(item, notify: false);
+      }
+    }
+    if (notify) notifyListeners();
   }
 
   /// Inserts elements in a list of a logged user
@@ -272,12 +281,12 @@ bool _handshakeReceived = false;
 Map<RequestFields, _Selector> _providerSelector = {};
 
 _Selector _getSelector(RequestFields field) {
-  final deserializer = _providerSelector[field];
-  if (deserializer == null) {
+  final selector = _providerSelector[field];
+  if (selector == null) {
     throw Exception(
-        'No deserializer found for field $field, please call initializeFetchingData()');
+        'No selector found for field $field, please call initializeFetchingData()');
   }
-  return deserializer;
+  return selector;
 }
 
 void _getFromBackend(RequestFields requestField,
@@ -321,19 +330,15 @@ Future<void> _incommingMessage(message) async {
         }
       case RequestType.response:
         {
-          if (protocol.data == null || protocol.field == null) return;
+          if (protocol.field == null ||
+              protocol.data == null ||
+              protocol.data!.isEmpty) {
+            return;
+          }
 
           final requestField = protocol.field!;
           final selector = _getSelector(requestField);
-          final values = selector.deserialize(protocol.data!);
-          if (values is List) {
-            for (final item in values) {
-              selector.addItem(item, notify: false);
-            }
-          } else {
-            selector.addItem(values, notify: false);
-          }
-          selector.notify();
+          selector.addOrReplaceItems(protocol.data!, notify: true);
           return;
         }
       case RequestType.update:

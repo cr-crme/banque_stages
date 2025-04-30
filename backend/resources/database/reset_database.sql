@@ -410,7 +410,7 @@ CREATE TABLE internship_skill_evaluation_items (
 CREATE TABLE internship_skill_evaluation_item_tasks (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     evaluation_item_id VARCHAR(36) NOT NULL,
-    title VARCHAR(100) NOT NULL,
+    title VARCHAR(1000) NOT NULL,
     level INT NOT NULL,
     FOREIGN KEY (evaluation_item_id) REFERENCES internship_skill_evaluation_items(id) ON DELETE CASCADE
 );

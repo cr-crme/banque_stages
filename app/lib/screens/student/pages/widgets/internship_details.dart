@@ -128,8 +128,8 @@ class InternshipDetailsState extends State<InternshipDetails> {
 
     // Saving the values that do not require an extra version
     if (_internshipController.achievedLengthChanged) {
-      InternshipsProvider.of(context, listen: false).replace(_internship
-          .copyWith(achievedDuration: _internshipController._achievedLength));
+      _internship = _internship.copyWith(
+          achievedDuration: _internshipController._achievedLength);
     }
 
     // Saving the values that require an extra version
@@ -144,8 +144,10 @@ class InternshipDetailsState extends State<InternshipDetails> {
                   _internshipController.supervisorPhoneController.text),
               email: _internshipController.supervisorEmailController.text),
           dates: _internshipController.dates,
-          weeklySchedules:
-              _internshipController.scheduleController.weeklySchedules);
+          weeklySchedules: _internshipController
+              .scheduleController.weeklySchedules
+              .map((e) => e.duplicate())
+              .toList());
 
       InternshipsProvider.of(context, listen: false).replace(_internship);
     }
@@ -356,6 +358,7 @@ class _InternshipBody extends StatelessWidget {
                       )
                     : Text(internship.supervisor.fullName),
                 const SizedBox(height: 8),
+                // TODO: The telephone number won't change in the backend
                 const Text('Numéro de téléphone'),
                 editMode
                     ? TextFormField(
@@ -389,6 +392,7 @@ class _InternshipBody extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // TODO: The dates won't change in the backend
             const Text('Dates du stage', style: _titleStyle),
             Padding(
               padding: const EdgeInsets.only(bottom: _interline),
@@ -468,6 +472,7 @@ class _InternshipBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // TODO: The schedule won't change in the backend
           const Text('Horaire du stage', style: _titleStyle),
           ScheduleSelector(
             withTitle: false,

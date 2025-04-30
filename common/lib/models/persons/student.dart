@@ -148,6 +148,7 @@ class Student extends Person {
         photo: photo ?? this.photo,
       );
 
+  @override
   Student copyWithData(Map<String, dynamic> data) {
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => ![

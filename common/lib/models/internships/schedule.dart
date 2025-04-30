@@ -60,6 +60,14 @@ class DailySchedule extends ItemSerializable {
         'end': [end.hour, end.minute],
       };
 
+  ///
+  /// Similar to [copyWith], but enforce the change of id
+  DailySchedule duplicate() => DailySchedule(
+        dayOfWeek: dayOfWeek,
+        start: start,
+        end: end,
+      );
+
   DailySchedule copyWith({
     String? id,
     Day? dayOfWeek,
@@ -108,6 +116,13 @@ class WeeklySchedule extends ItemSerializable {
         'start': period!.start.millisecondsSinceEpoch,
         'end': period!.end.millisecondsSinceEpoch,
       };
+
+  ///
+  /// Similar to [copyWith], but enforce the change of id
+  WeeklySchedule duplicate() => WeeklySchedule(
+        schedule: schedule.map((e) => e.duplicate()).toList(),
+        period: period,
+      );
 
   WeeklySchedule copyWith({
     String? id,

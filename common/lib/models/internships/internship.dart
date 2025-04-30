@@ -1,4 +1,5 @@
 import 'package:common/exceptions.dart';
+import 'package:common/models/generic/extended_item_serializable.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/schedule.dart';
@@ -191,7 +192,7 @@ class _MutableElements extends ItemSerializable {
   }
 }
 
-class Internship extends ItemSerializable {
+class Internship extends ExtendedItemSerializable {
   static final String _currentVersion = '1.0.0';
   static String get currentVersion => _currentVersion;
 
@@ -417,6 +418,7 @@ class Internship extends ItemSerializable {
     );
   }
 
+  @override
   Internship copyWithData(Map<String, dynamic> data) {
     final availableFields = [
       'version',
