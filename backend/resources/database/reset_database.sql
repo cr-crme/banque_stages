@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS teacher_itinerary_waypoints;
 DROP TABLE IF EXISTS teachers;
 
 DROP TABLE IF EXISTS enterprise_addresses;
-DROP TABLE IF EXISTS enterprise_headquarter_addresses;
+DROP TABLE IF EXISTS enterprise_headquarters_addresses;
 DROP TABLE IF EXISTS enterprise_phone_numbers;
 DROP TABLE IF EXISTS enterprise_fax_numbers;
 DROP TABLE IF EXISTS enterprise_activity_types;
@@ -221,7 +221,7 @@ CREATE TABLE enterprise_addresses(
     FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE
 );
 
-CREATE TABLE enterprise_headquarter_addresses(
+CREATE TABLE enterprise_headquarters_addresses(
     enterprise_id VARCHAR(36) NOT NULL,
     address_id VARCHAR(36) NOT NULL,
     FOREIGN KEY (address_id) REFERENCES addresses(id),

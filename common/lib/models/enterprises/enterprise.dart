@@ -123,14 +123,22 @@ class Enterprise extends ExtendedItemSerializable {
               .map((e) => ActivityTypes._fromInt(e as int, version))
               .toSet(),
       recruiterId: data['recruiter_id'] ?? recruiterId,
-      jobs: data['jobs'] ?? jobs,
-      contact: data['contact'] ?? contact,
+      jobs: data['jobs'] == null ? jobs : JobList.fromSerialized(data['jobs']),
+      contact: data['contact'] == null
+          ? contact
+          : Person.fromSerialized(data['contact']),
       contactFunction: data['contact_function'] ?? contactFunction,
-      address: data['address'] ?? address,
-      phone: data['phone'] ?? phone,
-      fax: data['fax'] ?? fax,
+      address: data['address'] == null
+          ? address
+          : Address.fromSerialized(data['address']),
+      phone: data['phone'] == null
+          ? phone
+          : PhoneNumber.fromSerialized(data['phone']),
+      fax: data['fax'] == null ? fax : PhoneNumber.fromSerialized(data['fax']),
       website: data['website'] ?? website,
-      headquartersAddress: data['headquarters_address'] ?? headquartersAddress,
+      headquartersAddress: data['headquarters_address'] == null
+          ? headquartersAddress
+          : Address.fromSerialized(data['headquarters_address']),
       neq: data['neq'] ?? neq,
     );
   }

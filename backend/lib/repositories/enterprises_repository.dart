@@ -54,7 +54,10 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     final newEnterprise = previous?.copyWithData(data) ??
         Enterprise.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
-    await _putEnterprise(enterprise: newEnterprise, previous: previous);
+    await _putEnterprise(
+        enterprise: newEnterprise,
+        previous: previous,
+        schoolBoardId: schoolBoardId);
     return newEnterprise.getDifference(previous);
   }
 
@@ -70,7 +73,8 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     required String id,
     required String schoolBoardId,
   }) async {
-    final removedId = await _deleteEnterprise(id: id);
+    final removedId =
+        await _deleteEnterprise(id: id, schoolBoardId: schoolBoardId);
     if (removedId == null) throw MissingDataException('Enterprise not found');
     return removedId;
   }
@@ -82,9 +86,12 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
       {required String id, required String schoolBoardId});
 
   Future<void> _putEnterprise(
-      {required Enterprise enterprise, required Enterprise? previous});
+      {required Enterprise enterprise,
+      required Enterprise? previous,
+      required String schoolBoardId});
 
-  Future<String?> _deleteEnterprise({required String id});
+  Future<String?> _deleteEnterprise(
+      {required String id, required String schoolBoardId});
 }
 
 class MySqlEnterprisesRepository extends EnterprisesRepository {
@@ -124,10 +131,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             ]),
         MySqlJoinSubQuery(
             dataTableName: 'addresses',
-            asName: 'headquarter_address',
+            asName: 'headquarters_address',
             idNameToDataTable: 'address_id',
             idNameToMainTable: 'enterprise_id',
-            relationTableName: 'enterprise_headquarter_addresses',
+            relationTableName: 'enterprise_headquarters_addresses',
             fieldsToFetch: [
               'id',
               'civic',
@@ -182,8 +189,16 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                         'city',
                         'postal_code'
                       ]),
+                  MySqlSelectSubQuery(
+                      dataTableName: 'phone_numbers',
+                      idNameToDataTable: 'entity_id',
+                      fieldsToFetch: ['id', 'phone_number']),
                 ]);
       enterprise['contact'] = contacts?.firstOrNull ?? {};
+      enterprise['contact']['address'] =
+          (enterprise['contact']['addresses'] as List?)?.firstOrNull ?? {};
+      enterprise['contact']['phone'] =
+          (enterprise['contact']['phone_numbers'] as List?)?.firstOrNull ?? {};
       enterprise['activity_types'] =
           (enterprise['activity_types'] as List? ?? [])
               .map((e) => e['activity_type'])
@@ -194,8 +209,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           (enterprise['fax_number'] as List?)?.firstOrNull ?? {};
       enterprise['address'] =
           (enterprise['address'] as List?)?.firstOrNull ?? {};
-      enterprise['headquarter_address'] =
-          (enterprise['headquarter_address'] as List?)?.firstOrNull ?? {};
+      enterprise['headquarters_address'] =
+          (enterprise['headquarters_address'] as List?)?.firstOrNull ?? {};
 
       final jobsTp = await MySqlHelpers.performSelectQuery(
         connection: connection,
@@ -318,12 +333,15 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   @override
   Future<void> _putEnterprise(
           {required Enterprise enterprise,
-          required Enterprise? previous}) async =>
+          required Enterprise? previous,
+          required String schoolBoardId}) async =>
       previous == null
-          ? await _putNewEnterprise(enterprise)
-          : await _putExistingEnterprise(enterprise, previous);
+          ? await _putNewEnterprise(enterprise, schoolBoardId: schoolBoardId)
+          : await _putExistingEnterprise(enterprise, previous,
+              schoolBoardId: schoolBoardId);
 
-  Future<void> _putNewEnterprise(Enterprise enterprise) async {
+  Future<void> _putNewEnterprise(Enterprise enterprise,
+      {required String schoolBoardId}) async {
     final serialized = enterprise.serialize();
 
     try {
@@ -505,7 +523,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             entityId: enterprise.id);
         await MySqlHelpers.performInsertQuery(
             connection: connection,
-            tableName: 'enterprise_headquarter_addresses',
+            tableName: 'enterprise_headquarters_addresses',
             data: {
               'enterprise_id': enterprise.id,
               'address_id': enterprise.headquartersAddress!.id
@@ -537,7 +555,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           });
     } catch (e) {
       try {
-        await _deleteEnterprise(id: enterprise.id);
+        await _deleteEnterprise(
+            id: enterprise.id, schoolBoardId: schoolBoardId);
       } catch (e) {
         // Do nothing
       }
@@ -547,34 +566,19 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }
 
   Future<void> _putExistingEnterprise(
-      Enterprise enterprise, Enterprise previous) async {
+      Enterprise enterprise, Enterprise previous,
+      {required String schoolBoardId}) async {
     // TODO: Implement a better updating of the enterprises
-    await _deleteEnterprise(id: previous.id);
-    await _putNewEnterprise(enterprise);
+    await _deleteEnterprise(id: previous.id, schoolBoardId: schoolBoardId);
+    await _putNewEnterprise(enterprise, schoolBoardId: schoolBoardId);
   }
 
   @override
-  Future<String?> _deleteEnterprise({required String id}) async {
+  Future<String?> _deleteEnterprise(
+      {required String id, required String schoolBoardId}) async {
     try {
-      final contacts = (await MySqlHelpers.performSelectQuery(
-        connection: connection,
-        tableName: 'enterprise_contacts',
-        filters: {'enterprise_id': id},
-      ));
-
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
-        tableName: 'enterprise_contacts',
-        filters: {'enterprise_id': id},
-      );
-
-      for (final contact in contacts) {
-        await MySqlHelpers.performDeleteQuery(
-          connection: connection,
-          tableName: 'entities',
-          filters: {'shared_id': contact['contact_id']},
-        );
-      }
+      final enterprise =
+          await _getEnterpriseById(id: id, schoolBoardId: schoolBoardId);
 
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
@@ -583,17 +587,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       );
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
-        tableName: 'enterprise_headquarter_addresses',
-        filters: {'enterprise_id': id},
-      );
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
-        tableName: 'enterprise_phone_numbers',
-        filters: {'enterprise_id': id},
-      );
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
-        tableName: 'enterprise_fax_numbers',
+        tableName: 'enterprise_headquarters_addresses',
         filters: {'enterprise_id': id},
       );
       await MySqlHelpers.performDeleteQuery(
@@ -601,6 +595,44 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         tableName: 'entities',
         filters: {'shared_id': id},
       );
+
+      if (enterprise?.address?.id != null) {
+        await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'addresses',
+          filters: {'entity_id': enterprise!.address!.id},
+        );
+      }
+      if (enterprise?.headquartersAddress?.id != null) {
+        await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'addresses',
+          filters: {'entity_id': enterprise!.headquartersAddress!.id},
+        );
+      }
+      if (enterprise?.phone.id != null) {
+        await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'phone_numbers',
+          filters: {'entity_id': enterprise!.phone.id},
+        );
+      }
+      if (enterprise?.fax.id != null) {
+        await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'phone_numbers',
+          filters: {'entity_id': enterprise!.fax.id},
+        );
+      }
+
+      if (enterprise?.contact.id != null) {
+        await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'entities',
+          filters: {'shared_id': enterprise!.contact.id},
+        );
+      }
+
       return id;
     } catch (e) {
       return null;
@@ -655,11 +687,13 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
   @override
   Future<void> _putEnterprise(
           {required Enterprise enterprise,
-          required Enterprise? previous}) async =>
+          required Enterprise? previous,
+          required String schoolBoardId}) async =>
       _dummyDatabase[enterprise.id] = enterprise;
 
   @override
-  Future<String?> _deleteEnterprise({required String id}) async {
+  Future<String?> _deleteEnterprise(
+      {required String id, required String schoolBoardId}) async {
     if (_dummyDatabase.containsKey(id)) {
       _dummyDatabase.remove(id);
       return id;

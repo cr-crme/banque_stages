@@ -683,10 +683,9 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
-        tableName: 'internship_mutable_data',
-        filters: {'internship_id': id},
+        tableName: 'entities',
+        filters: {'shared_id': id},
       );
-
       if (supervisor != null) {
         await MySqlHelpers.performDeleteQuery(
           connection: connection,
@@ -695,11 +694,6 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         );
       }
 
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
-        tableName: 'entities',
-        filters: {'shared_id': id},
-      );
       return id;
     } catch (e) {
       return null;

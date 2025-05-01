@@ -33,7 +33,8 @@ class ContactPageState extends State<ContactPage> {
       onAddressChanged: (address) {
         if (!mounted) return;
         if (_taxesInfoController.useSameAddress) {
-          _taxesInfoController.address.address = address;
+          _taxesInfoController.address.address =
+              address?.copyWith(id: _taxesInfoController.address.address?.id);
         }
         setState(() {});
       });
@@ -109,6 +110,7 @@ class ContactPageState extends State<ContactPage> {
             : _enterpriseInfoController.website.text,
         headquartersAddress: _taxesInfoController.useSameAddress
             ? _enterpriseInfoController.address.address
+                ?.copyWith(id: _taxesInfoController.address.address?.id)
             : _taxesInfoController.address.address,
         neq: _taxesInfoController.neq.text == ''
             ? null
@@ -172,7 +174,8 @@ class ContactPageState extends State<ContactPage> {
                   _taxesInfoController.useSameAddress = newValue!;
                   if (_taxesInfoController.useSameAddress) {
                     _taxesInfoController.address.address =
-                        _enterpriseInfoController.address.address;
+                        _enterpriseInfoController.address.address?.copyWith(
+                            id: _taxesInfoController.address.address?.id);
                   } else {
                     _taxesInfoController.address.address = Address.empty;
                   }
@@ -389,7 +392,8 @@ class _TaxesInfoController {
 
   _TaxesInfoController({required this.enterprise}) {
     reset();
-    address.initialValue = enterprise.address;
+    address.initialValue = enterprise.headquartersAddress ??
+        enterprise.address?.copyWith(id: Address.empty.id);
   }
 
   void reset() {
