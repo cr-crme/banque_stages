@@ -6,6 +6,7 @@ import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
+import 'package:crcrme_banque_stages/common/models/time_of_day_extension.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';

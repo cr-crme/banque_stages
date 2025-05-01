@@ -7,13 +7,6 @@ class TimeOfDay {
   String toString() {
     return 'TimeOfDay(hour: $hour, minute: $minute)';
   }
-
-  String format(context) {
-    final now = DateTime.now();
-    final dateTime = DateTime(now.year, now.month, now.day, hour, minute);
-    return '${dateTime.hour}:${dateTime.minute}';
-    // TODO: Make this what was intended
-  }
 }
 
 class DateTimeRange {
