@@ -614,8 +614,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       }
 
       // Insert the post internship enterprise evaluations
-      if (serialized['enterprise_evaluation'] != null &&
-          serialized['enterprise_evaluation'] != -1) {
+      if (serialized['enterprise_evaluation'] != null) {
         final evaluation = serialized['enterprise_evaluation'];
         await MySqlHelpers.performInsertQuery(
             connection: connection,

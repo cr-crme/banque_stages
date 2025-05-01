@@ -50,7 +50,7 @@ class AttitudeEvaluationFormController {
 
   InternshipEvaluationAttitude toInternshipEvaluation() {
     return InternshipEvaluationAttitude(
-      date: DateTime.now(),
+      date: evaluationDate,
       presentAtEvaluation: wereAtMeeting,
       attitude: AttitudeEvaluation(
           inattendance: responses[Inattendance]! as Inattendance,

@@ -264,7 +264,9 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
                             elements: GeneralAppreciation.values,
                             editMode: widget.editMode,
                           ),
-                          _Comments(formController: widget.formController),
+                          _Comments(
+                              formController: widget.formController,
+                              editMode: widget.editMode),
                         ],
                       ),
                     )
@@ -431,8 +433,9 @@ class _AttitudeRadioChoicesState extends State<_AttitudeRadioChoices> {
 }
 
 class _Comments extends StatelessWidget {
-  const _Comments({required this.formController});
+  const _Comments({required this.formController, required this.editMode});
 
+  final bool editMode;
   final AttitudeEvaluationFormController formController;
 
   @override
@@ -449,6 +452,7 @@ class _Comments extends StatelessWidget {
         ),
         TextFormField(
           controller: formController.commentsController,
+          enabled: editMode,
           maxLines: null,
         ),
       ],

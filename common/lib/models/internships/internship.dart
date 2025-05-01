@@ -246,8 +246,8 @@ class Internship extends ExtendedItemSerializable {
 
   void _finalizeInitialization() {
     extraSupervisingTeacherIds.remove(signatoryTeacherId);
-    _mutables.sort((a, b) => a.creationDate.compareTo(b.creationDate));
 
+    _mutables.sort((a, b) => a.creationDate.compareTo(b.creationDate));
     for (final mutable in _mutables) {
       mutable.weeklySchedules.sort((a, b) {
         if (a.period.start.isBefore(b.period.start)) return -1;
@@ -275,6 +275,17 @@ class Internship extends ExtendedItemSerializable {
         });
       }
     }
+
+    skillEvaluations.sort((a, b) {
+      if (a.date.isBefore(b.date)) return -1;
+      if (a.date.isAfter(b.date)) return 1;
+      return 0;
+    });
+    attitudeEvaluations.sort((a, b) {
+      if (a.date.isBefore(b.date)) return -1;
+      if (a.date.isAfter(b.date)) return 1;
+      return 0;
+    });
   }
 
   Internship._({
@@ -317,17 +328,19 @@ class Internship extends ExtendedItemSerializable {
     required this.visitingPriority,
     this.teacherNotes = '',
     this.endDate,
-    this.skillEvaluations = const [],
-    this.attitudeEvaluations = const [],
+    List<InternshipEvaluationSkill>? skillEvaluations,
+    List<InternshipEvaluationAttitude>? attitudeEvaluations,
     this.enterpriseEvaluation,
-  }) : _mutables = [
+  })  : _mutables = [
           _MutableElements(
             creationDate: creationDate,
             supervisor: supervisor,
             dates: dates,
             weeklySchedules: weeklySchedules,
           )
-        ] {
+        ],
+        skillEvaluations = skillEvaluations ?? [],
+        attitudeEvaluations = attitudeEvaluations ?? [] {
     _finalizeInitialization();
   }
 
@@ -392,7 +405,7 @@ class Internship extends ExtendedItemSerializable {
             skillEvaluations.map((e) => e.serialize()).toList(),
         'attitude_evaluations':
             attitudeEvaluations.map((e) => e.serialize()).toList(),
-        'enterprise_evaluation': enterpriseEvaluation?.serialize() ?? -1,
+        'enterprise_evaluation': enterpriseEvaluation?.serialize(),
       };
 
   void addVersion({

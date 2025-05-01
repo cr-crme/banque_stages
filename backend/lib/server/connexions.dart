@@ -79,7 +79,7 @@ class Connexions {
           if (protocol.field == null) {
             throw MissingFieldException('Field is required to get data');
           }
-          _logger.info(
+          _logger.finer(
               'Getting data from field: ${protocol.field} for client ${client.hashCode}');
           await _send(client,
               message: CommunicationProtocol(
@@ -96,7 +96,7 @@ class Connexions {
             throw MissingFieldException(
                 'Field is required to put or delete data');
           }
-          _logger.info(
+          _logger.finer(
               'Putting data to field: ${protocol.field} for client ${client.hashCode}');
           final updatedFields = await _database.put(protocol.field!,
               data: protocol.data,
@@ -149,7 +149,7 @@ class Connexions {
 
         case RequestType.response:
         case RequestType.update:
-          _logger.info(
+          _logger.finer(
               'Invalid request type: ${protocol.requestType} for client ${client.hashCode}');
           throw InvalidRequestTypeException(
               'Invalid request type: ${protocol.requestType}');
