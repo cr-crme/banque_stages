@@ -76,7 +76,7 @@ void main() {
       expect(enterpriseDifferent.neq, 'newNeq');
     });
 
-    testWidgets('"interships" behaves properly', (tester) async {
+    testWidgets('"internships" behaves properly', (tester) async {
       final enterprise = dummyEnterprise(addJob: true);
       final context = await tester.contextWithNotifiers(withInternships: true);
       final internships = InternshipsProvider.of(context, listen: false);

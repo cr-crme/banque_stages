@@ -197,12 +197,34 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
       for (final mutable in (internship['mutables'] as List? ?? [])) {
         mutable['supervisor'] = (await MySqlHelpers.performSelectQuery(
-              connection: connection,
-              tableName: 'persons',
-              filters: {'id': mutable['supervisor_id']},
-            ) as List?)
+                    connection: connection,
+                    tableName: 'persons',
+                    filters: {
+                  'id': mutable['supervisor_id']
+                },
+                    subqueries: [
+                  MySqlSelectSubQuery(
+                      dataTableName: 'phone_numbers',
+                      idNameToDataTable: 'entity_id',
+                      fieldsToFetch: ['id', 'phone_number']),
+                  MySqlSelectSubQuery(
+                      dataTableName: 'addresses',
+                      idNameToDataTable: 'entity_id',
+                      fieldsToFetch: [
+                        'id',
+                        'civic',
+                        'street',
+                        'apartment',
+                        'city',
+                        'postal_code'
+                      ]),
+                ]) as List?)
                 ?.first ??
             {};
+        mutable['supervisor']['phone'] =
+            (mutable['supervisor']['phone_numbers'] as List?)?.firstOrNull;
+        mutable['supervisor']['address'] =
+            (mutable['supervisor']['addresses'] as List?)?.firstOrNull;
 
         final schedules = await MySqlHelpers.performSelectQuery(
             connection: connection,

@@ -90,8 +90,8 @@ void main() {
       expect(scheduleDifferent.schedule.length, 2);
       expect(scheduleDifferent.schedule[0].id, 'newDailyScheduleId');
       expect(scheduleDifferent.schedule[1].id, 'newDailyScheduleId2');
-      expect(scheduleDifferent.period!.start, DateTime(2020, 2, 3));
-      expect(scheduleDifferent.period!.end, DateTime(2020, 2, 4));
+      expect(scheduleDifferent.period.start, DateTime(2020, 2, 3));
+      expect(scheduleDifferent.period.end, DateTime(2020, 2, 4));
     });
 
     test('serialization and deserialization works', () {
@@ -102,8 +102,8 @@ void main() {
       expect(serialized, {
         'id': weeklySchedule.id,
         'days': weeklySchedule.schedule.map((e) => e.serialize()).toList(),
-        'start': weeklySchedule.period!.start.millisecondsSinceEpoch,
-        'end': weeklySchedule.period!.end.millisecondsSinceEpoch,
+        'start': weeklySchedule.period.start.millisecondsSinceEpoch,
+        'end': weeklySchedule.period.end.millisecondsSinceEpoch,
       });
 
       expect(deserialized.id, weeklySchedule.id);

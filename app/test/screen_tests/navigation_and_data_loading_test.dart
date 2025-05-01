@@ -115,7 +115,7 @@ void main() {
         expect(find.text(enterprise.name, skipOffstage: false), findsOneWidget);
       }
 
-      // Verify the interships data is now loaded
+      // Verify the internships data is now loaded
       await tester.navigateToScreen(ScreenTest.supervisionTable);
       expect(
         find.byType(ListTile, skipOffstage: false),

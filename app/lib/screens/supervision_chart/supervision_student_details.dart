@@ -179,10 +179,10 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
   ];
 
   void _updatePriority(VisitingPriority newPriority) {
-    final interships = InternshipsProvider.of(context, listen: false);
-    final studentInternships = interships.byStudentId(widget.studentId);
+    final internships = InternshipsProvider.of(context, listen: false);
+    final studentInternships = internships.byStudentId(widget.studentId);
     if (studentInternships.isEmpty) return;
-    interships.replacePriority(widget.studentId, newPriority);
+    internships.replacePriority(widget.studentId, newPriority);
 
     setState(() {});
   }
@@ -274,8 +274,8 @@ class _PersonalNotesState extends State<_PersonalNotes> {
     ..text = widget.internship.teacherNotes;
 
   void _sendComments() {
-    final interships = InternshipsProvider.of(context, listen: false);
-    interships.replace(
+    final internships = InternshipsProvider.of(context, listen: false);
+    internships.replace(
         widget.internship.copyWith(teacherNotes: _textController.text));
   }
 

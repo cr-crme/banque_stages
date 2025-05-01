@@ -39,7 +39,7 @@ class _InternshipController {
       supervisor.firstName != supervisorFirstNameController.text ||
       supervisor.lastName != supervisorLastNameController.text ||
       supervisor.phone.toString() != supervisorPhoneController.text ||
-      supervisor.email != supervisorEmailController.text;
+      (supervisor.email ?? '') != supervisorEmailController.text;
   final supervisorFormKey = GlobalKey<FormState>();
   late final supervisorFirstNameController =
       TextEditingController(text: supervisor.firstName);
@@ -127,9 +127,11 @@ class InternshipDetailsState extends State<InternshipDetails> {
     }
 
     // Saving the values that do not require an extra version
+    bool hasChanged = false;
     if (_internshipController.achievedLengthChanged) {
       _internship = _internship.copyWith(
           achievedDuration: _internshipController._achievedLength);
+      hasChanged = true;
     }
 
     // Saving the values that require an extra version
@@ -149,6 +151,10 @@ class InternshipDetailsState extends State<InternshipDetails> {
               .map((e) => e.duplicate())
               .toList());
 
+      hasChanged = true;
+    }
+
+    if (hasChanged) {
       InternshipsProvider.of(context, listen: false).replace(_internship);
     }
 
@@ -358,7 +364,6 @@ class _InternshipBody extends StatelessWidget {
                       )
                     : Text(internship.supervisor.fullName),
                 const SizedBox(height: 8),
-                // TODO: The telephone number won't change in the backend
                 const Text('Numéro de téléphone'),
                 editMode
                     ? TextFormField(
@@ -392,7 +397,6 @@ class _InternshipBody extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // TODO: The dates won't change in the backend
             const Text('Dates du stage', style: _titleStyle),
             Padding(
               padding: const EdgeInsets.only(bottom: _interline),
@@ -472,7 +476,6 @@ class _InternshipBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // TODO: The schedule won't change in the backend
           const Text('Horaire du stage', style: _titleStyle),
           ScheduleSelector(
             withTitle: false,

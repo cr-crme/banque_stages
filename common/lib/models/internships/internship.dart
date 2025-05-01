@@ -244,6 +244,39 @@ class Internship extends ExtendedItemSerializable {
   bool get shouldTerminate =>
       isActive && dates.end.difference(DateTime.now()).inDays <= -1;
 
+  void _finalizeInitialization() {
+    extraSupervisingTeacherIds.remove(signatoryTeacherId);
+    _mutables.sort((a, b) => a.creationDate.compareTo(b.creationDate));
+
+    for (final mutable in _mutables) {
+      mutable.weeklySchedules.sort((a, b) {
+        if (a.period.start.isBefore(b.period.start)) return -1;
+        if (a.period.start.isAfter(b.period.start)) return 1;
+        return 0;
+      });
+
+      for (final schedule in mutable.weeklySchedules) {
+        schedule.schedule.sort((a, b) {
+          if (a.dayOfWeek.index < b.dayOfWeek.index) return -1;
+          if (a.dayOfWeek.index > b.dayOfWeek.index) return 1;
+
+          if (a.start.hour < b.start.hour) return -1;
+          if (a.start.hour > b.start.hour) return 1;
+
+          if (a.start.minute < b.start.minute) return -1;
+          if (a.start.minute > b.start.minute) return 1;
+
+          if (a.end.hour < b.end.hour) return -1;
+          if (a.end.hour > b.end.hour) return 1;
+
+          if (a.end.minute < b.end.minute) return -1;
+          if (a.end.minute > b.end.minute) return 1;
+          return 0;
+        });
+      }
+    }
+  }
+
   Internship._({
     required super.id,
     required this.schoolBoardId,
@@ -263,7 +296,7 @@ class Internship extends ExtendedItemSerializable {
     required this.attitudeEvaluations,
     required this.enterpriseEvaluation,
   }) : _mutables = mutables {
-    extraSupervisingTeacherIds.remove(signatoryTeacherId);
+    _finalizeInitialization();
   }
 
   Internship({
@@ -295,7 +328,7 @@ class Internship extends ExtendedItemSerializable {
             weeklySchedules: weeklySchedules,
           )
         ] {
-    extraSupervisingTeacherIds.remove(signatoryTeacherId);
+    _finalizeInitialization();
   }
 
   Internship.fromSerialized(super.map)
@@ -335,7 +368,7 @@ class Internship extends ExtendedItemSerializable {
             : PostInternshipEnterpriseEvaluation.fromSerialized(
                 map['enterprise_evaluation']),
         super.fromSerialized() {
-    extraSupervisingTeacherIds.remove(signatoryTeacherId);
+    _finalizeInitialization();
   }
 
   @override

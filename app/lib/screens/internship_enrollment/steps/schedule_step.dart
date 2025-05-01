@@ -95,7 +95,7 @@ class ScheduleStepState extends State<ScheduleStep> {
   final formKey = GlobalKey<FormState>();
 
   late final scheduleController = WeeklyScheduleController();
-  int intershipLength = 0;
+  int internshipDuration = 0;
 
   void onScheduleChanged() {
     if (scheduleController.dateRange != null &&
@@ -130,7 +130,7 @@ class ScheduleStepState extends State<ScheduleStep> {
                     ),
                     _Hours(
                         onSaved: (value) =>
-                            intershipLength = int.parse(value!)),
+                            internshipDuration = int.parse(value!)),
                   ],
                 )),
           ],
@@ -393,6 +393,8 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
   }
 
   void _promptChangeWeek(weeklyIndex) async {
+    final period =
+        widget.scheduleController.weeklySchedules[weeklyIndex].period;
     final range = await showCustomDateRangePicker(
       helpText: 'Sélectionner les dates',
       saveText: 'Confirmer',
@@ -400,20 +402,9 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
       confirmText: 'Confirmer',
       context: context,
       initialEntryMode: DatePickerEntryMode.calendar,
-      initialDateRange:
-          widget.scheduleController.weeklySchedules[weeklyIndex].period,
-      firstDate:
-          widget.scheduleController.weeklySchedules[weeklyIndex].period == null
-              ? DateTime.now()
-              : DateTime(widget.scheduleController.weeklySchedules[weeklyIndex]
-                      .period!.start.year -
-                  1),
-      lastDate:
-          widget.scheduleController.weeklySchedules[weeklyIndex].period == null
-              ? DateTime.now()
-              : DateTime(widget.scheduleController.weeklySchedules[weeklyIndex]
-                      .period!.start.year +
-                  2),
+      initialDateRange: period,
+      firstDate: DateTime(period.start.year - 1),
+      lastDate: DateTime(period.start.year + 2),
     );
     if (range == null) return;
 
@@ -535,12 +526,12 @@ class _ScheduleSelector extends StatelessWidget {
                   Column(children: [
                     const Text('* Date de début'),
                     Text(DateFormat.yMMMEd('fr_CA')
-                        .format(weeklySchedule.period!.start))
+                        .format(weeklySchedule.period.start))
                   ]),
                   Column(children: [
                     const Text('* Date de fin'),
                     Text(DateFormat.yMMMEd('fr_CA')
-                        .format(weeklySchedule.period!.end))
+                        .format(weeklySchedule.period.end))
                   ]),
                 ],
               ),

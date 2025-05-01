@@ -16,8 +16,6 @@ class InternshipsProvider extends BackendListProvided<Internship> {
     String studentId,
     VisitingPriority priority,
   ) {
-    // TODO async here and await to replace
-    // It makes sense to only prioretize the last intership
     replace(byStudentId(studentId).last.copyWith(visitingPriority: priority));
   }
 

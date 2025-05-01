@@ -288,7 +288,7 @@ class MySqlTeachersRepository extends TeachersRepository {
   @override
   Future<String?> _deleteTeacher({required String id}) async {
     // Note, the deletion of the teacher will fail if they were involved in any
-    // interships which therefore needs to be reassigned first
+    // internships which therefore needs to be reassigned first
 
     // Delete the teacher from the database
     try {

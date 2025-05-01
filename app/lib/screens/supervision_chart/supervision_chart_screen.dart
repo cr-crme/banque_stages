@@ -121,10 +121,10 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   void _updatePriority(String studentId) {
-    final interships = InternshipsProvider.of(context, listen: false);
-    final studentInternships = interships.byStudentId(studentId);
+    final internships = InternshipsProvider.of(context, listen: false);
+    final studentInternships = internships.byStudentId(studentId);
     if (studentInternships.isEmpty) return;
-    interships.replacePriority(
+    internships.replacePriority(
         studentId, studentInternships.last.visitingPriority.next);
 
     setState(() {});

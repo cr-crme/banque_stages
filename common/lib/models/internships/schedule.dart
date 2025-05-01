@@ -95,26 +95,24 @@ class WeeklySchedule extends ItemSerializable {
   });
 
   final List<DailySchedule> schedule;
-  final DateTimeRange? period;
+  final DateTimeRange period;
 
   WeeklySchedule.fromSerialized(super.map)
       : schedule = (map['days'] as List?)
                 ?.map((e) => DailySchedule.fromSerialized(e))
                 .toList() ??
             [],
-        period = map['start'] == null || map['end'] == null
-            ? null
-            : DateTimeRange(
-                start: DateTime.fromMillisecondsSinceEpoch(map['start']),
-                end: DateTime.fromMillisecondsSinceEpoch(map['end'])),
+        period = DateTimeRange(
+            start: DateTime.fromMillisecondsSinceEpoch(map['start'] ?? 0),
+            end: DateTime.fromMillisecondsSinceEpoch(map['end'] ?? 0)),
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
         'days': schedule.map((e) => e.serialize()).toList(),
-        'start': period!.start.millisecondsSinceEpoch,
-        'end': period!.end.millisecondsSinceEpoch,
+        'start': period.start.millisecondsSinceEpoch,
+        'end': period.end.millisecondsSinceEpoch,
       };
 
   ///

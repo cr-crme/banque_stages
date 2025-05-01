@@ -111,7 +111,7 @@ class _InternshipEnrollmentScreenState
           phone: PhoneNumber.fromString(
               _generalInfoKey.currentState!.supervisorPhone)),
       dates: _scheduleKey.currentState!.scheduleController.dateRange!,
-      expectedDuration: _scheduleKey.currentState!.intershipLength,
+      expectedDuration: _scheduleKey.currentState!.internshipDuration,
       achievedDuration: 0,
       weeklySchedules:
           _scheduleKey.currentState!.scheduleController.weeklySchedules,

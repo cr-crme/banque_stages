@@ -67,15 +67,15 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
     for (final student in students) {
       final studentInternships = internships.byStudentId(student.id);
       if (studentInternships.isEmpty) continue;
-      final intership = studentInternships.last;
+      final internship = studentInternships.last;
 
-      final enterprise = enterprises.fromId(intership.enterpriseId);
+      final enterprise = enterprises.fromId(internship.enterpriseId);
       _waypoints.add(
         await Waypoint.fromAddress(
           title: '${student.firstName} ${student.lastName[0]}.',
           subtitle: enterprise.name,
           address: enterprise.address.toString(),
-          priority: intership.visitingPriority,
+          priority: internship.visitingPriority,
         ),
       );
     }
