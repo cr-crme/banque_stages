@@ -70,12 +70,11 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
 
   final _uniformRequestKey = GlobalKey<RadioWithFollowUpState<UniformStatus>>();
   final _uniformTextController = TextEditingController();
-  Uniforms get uniforms =>
-      Uniforms(status: _uniformRequestKey.currentState!.value!, uniforms: [
-        _uniformRequestKey.currentState!.value! == UniformStatus.none
-            ? ''
-            : _uniformTextController.text
-      ]);
+  Uniforms get uniforms => Uniforms(
+      status: _uniformRequestKey.currentState!.value!,
+      uniforms: _uniformRequestKey.currentState!.value! == UniformStatus.none
+          ? null
+          : [_uniformTextController.text]);
 
   final _protectionsRequestKey =
       GlobalKey<RadioWithFollowUpState<ProtectionsStatus>>();
@@ -193,8 +192,12 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
   }
 
   Widget _buildEntepriseRequests() {
-    final requests =
-        widget.job.preInternshipRequests.requests.map((e) => e.name).toList();
+    final requests = widget.job.preInternshipRequests.requests
+        .map((e) => e.toString())
+        .toList();
+    if (widget.job.preInternshipRequests.other != null) {
+      requests.add(widget.job.preInternshipRequests.other!);
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

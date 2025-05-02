@@ -14,6 +14,15 @@ enum PreInternshipRequestTypes {
     }
   }
 
+  static PreInternshipRequestTypes? fromString(String value) {
+    for (final type in PreInternshipRequestTypes.values) {
+      if (type.toString() == value) {
+        return type;
+      }
+    }
+    return null;
+  }
+
   int _toInt(String version) {
     if (version == '1.0.0') {
       return index;
@@ -52,7 +61,12 @@ class PreInternshipRequests extends ItemSerializable {
       }
       final asNum = int.tryParse(e);
       if (asNum == null) {
-        other = e;
+        final type = PreInternshipRequestTypes.fromString(e);
+        if (type == null) {
+          other = e;
+        } else {
+          requests.add(type);
+        }
       } else {
         final type =
             PreInternshipRequestTypes._fromInt(asNum, Job._currentVersion);

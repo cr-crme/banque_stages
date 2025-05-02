@@ -2,6 +2,7 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/utils.dart';
 import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
@@ -34,14 +35,14 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
 
   String? _name;
   Set<ActivityTypes> _activityTypes = {};
-  Map<Job, int> _positionOffered = {};
+  final Map<Job, int> _positionOffered = {};
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _name = widget.enterprise.name;
     _activityTypes = {...widget.enterprise.activityTypes};
+    _positionOffered.clear();
     for (var job in widget.enterprise.jobs) {
       _positionOffered[job] = job.positionsOffered;
     }
@@ -66,9 +67,21 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
       return;
     }
 
-    EnterprisesProvider.of(context, listen: false).replace(
-      widget.enterprise.copyWith(name: _name, activityTypes: _activityTypes),
-    );
+    if (_name != widget.enterprise.name ||
+        areSetsNotEqual(_activityTypes, widget.enterprise.activityTypes) ||
+        areMapsNotEqual(_positionOffered, {
+          for (var job in widget.enterprise.jobs) job: job.positionsOffered,
+        })) {
+      EnterprisesProvider.of(context, listen: false).replace(
+        widget.enterprise.copyWith(
+            name: _name,
+            activityTypes: _activityTypes,
+            jobs: JobList()
+              ..addAll(widget.enterprise.jobs.map((job) {
+                return job.copyWith(positionsOffered: _positionOffered[job]!);
+              }))),
+      );
+    }
 
     setState(() => _editing = false);
   }
@@ -77,6 +90,8 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
 
   @override
   Widget build(BuildContext context) {
+    EnterprisesProvider.of(context); // Register so the build is triggered
+
     return PopScope(
       canPop: _canPop,
       onPopInvokedWithResult: (didPop, result) async {

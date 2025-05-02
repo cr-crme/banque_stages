@@ -18,6 +18,18 @@ enum UniformStatus {
     }
     throw WrongVersionException(version, '1.0.0');
   }
+
+  @override
+  String toString() {
+    switch (this) {
+      case suppliedByEnterprise:
+        return 'Fournie par l\'entreprise';
+      case suppliedByStudent:
+        return 'Fournie par l\'élève';
+      case none:
+        return 'Aucune';
+    }
+  }
 }
 
 class Uniforms extends ItemSerializable {

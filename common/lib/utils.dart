@@ -21,6 +21,26 @@ bool areListsNotEqual<T>(List<T> list1, List<T> list2) {
   return !areListsEqual(list1, list2);
 }
 
+bool areSetsEqual<T>(Set<T>? a, Set<T>? b) {
+  if (a == null) {
+    return b == null;
+  }
+  if (b == null || a.length != b.length) {
+    return false;
+  }
+  if (identical(a, b)) {
+    return true;
+  }
+  for (final T element in a) {
+    if (!b.contains(element)) return false;
+  }
+  return true;
+}
+
+bool areSetsNotEqual<T>(Set<T>? a, Set<T>? b) {
+  return !areSetsEqual(a, b);
+}
+
 bool areMapsEqual<T, U>(Map<T, U>? a, Map<T, U>? b) {
   if (a == null) {
     return b == null;
