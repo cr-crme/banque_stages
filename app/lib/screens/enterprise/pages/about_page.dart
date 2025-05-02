@@ -34,6 +34,18 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
 
   String? _name;
   Set<ActivityTypes> _activityTypes = {};
+  Map<Job, int> _positionOffered = {};
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    _name = widget.enterprise.name;
+    _activityTypes = {...widget.enterprise.activityTypes};
+    for (var job in widget.enterprise.jobs) {
+      _positionOffered[job] = job.positionsOffered;
+    }
+  }
 
   bool _editing = false;
   bool get editing => _editing;
@@ -104,11 +116,13 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
                   editMode: _editing,
                   onSaved: (name) => _name = name),
               _AvailablePlace(
-                enterprise: widget.enterprise,
+                initial: _positionOffered,
                 editMode: _editing,
+                onChanged: (Job job, int newValue) =>
+                    setState(() => _positionOffered[job] = newValue),
               ),
               _ActivityType(
-                  enterprise: widget.enterprise,
+                  initial: _activityTypes,
                   editMode: _editing,
                   onSaved: (activityTypes) => _activityTypes = activityTypes!),
               _RecrutedBy(enterprise: widget.enterprise),
@@ -169,27 +183,18 @@ class _GeneralInformation extends StatelessWidget {
 
 class _AvailablePlace extends StatelessWidget {
   const _AvailablePlace({
-    required this.enterprise,
+    required this.initial,
     required this.editMode,
+    required this.onChanged,
   });
 
-  final Enterprise enterprise;
+  final Map<Job, int> initial;
   final bool editMode;
-
-  void _modifyNumberOfAvailableJobs(context, Job job, {required int change}) {
-    final jobs = JobList();
-    for (final jobTp in enterprise.jobs) {
-      jobs.add(jobTp.id == job.id
-          ? jobTp.copyWith(positionsOffered: jobTp.positionsOffered + change)
-          : jobTp);
-    }
-    EnterprisesProvider.of(context, listen: false)
-        .replace(enterprise.copyWith(jobs: jobs));
-  }
+  final Function(Job job, int newValue) onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final jobs = [...enterprise.jobs];
+    final jobs = initial.keys.toList();
     jobs.sort(
       (a, b) => a.specialization.name
           .toLowerCase()
@@ -201,43 +206,45 @@ class _AvailablePlace extends StatelessWidget {
       children: [
         const SubTitle('Places de stage disponibles'),
         Column(
-          children: jobs
-              .map(
-                (job) => ListTile(
-                  visualDensity: VisualDensity.compact,
-                  leading: DisponibilityCircle(
-                    positionsOffered: job.positionsOffered,
-                    positionsOccupied: job.positionsOccupied(context),
-                  ),
-                  title: Text(job.specialization.idWithName),
-                  trailing: editMode
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                                onPressed: job.positionsRemaining(context) == 0
-                                    ? null
-                                    : () => _modifyNumberOfAvailableJobs(
-                                        context, job, change: -1),
-                                icon: Icon(Icons.remove,
-                                    color: job.positionsRemaining(context) == 0
-                                        ? Colors.grey
-                                        : Colors.black)),
-                            Text(job.positionsOffered.toString()),
-                            IconButton(
-                                onPressed: () => _modifyNumberOfAvailableJobs(
-                                    context, job, change: 1),
-                                icon:
-                                    const Icon(Icons.add, color: Colors.black)),
-                          ],
-                        )
-                      : Text(
-                          '${job.positionsRemaining(context)} / ${job.positionsOffered}',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
+          children: jobs.map(
+            (job) {
+              final positionsRemaining = job.positionsRemaining(context);
+              final int positionsOffered = initial[job]!;
+
+              return ListTile(
+                visualDensity: VisualDensity.compact,
+                leading: DisponibilityCircle(
+                  positionsOffered: positionsOffered,
+                  positionsOccupied: job.positionsOccupied(context),
                 ),
-              )
-              .toList(),
+                title: Text(job.specialization.idWithName),
+                trailing: editMode
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                              // TODO Fix the save
+                              onPressed: positionsOffered == 0
+                                  ? null
+                                  : () => onChanged(job, positionsOffered - 1),
+                              icon: Icon(Icons.remove,
+                                  color: positionsRemaining == 0
+                                      ? Colors.grey
+                                      : Colors.black)),
+                          Text(positionsOffered.toString()),
+                          IconButton(
+                              onPressed: () =>
+                                  onChanged(job, positionsOffered + 1),
+                              icon: const Icon(Icons.add, color: Colors.black)),
+                        ],
+                      )
+                    : Text(
+                        '${job.positionsRemaining(context)} / $positionsOffered',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+              );
+            },
+          ).toList(),
         )
       ],
     );
@@ -246,11 +253,9 @@ class _AvailablePlace extends StatelessWidget {
 
 class _ActivityType extends StatelessWidget {
   const _ActivityType(
-      {required this.enterprise,
-      required this.editMode,
-      required this.onSaved});
+      {required this.initial, required this.editMode, required this.onSaved});
 
-  final Enterprise enterprise;
+  final Set<ActivityTypes> initial;
   final bool editMode;
   final Function(Set<ActivityTypes>?) onSaved;
 
@@ -266,15 +271,14 @@ class _ActivityType extends StatelessWidget {
             children: [
               Visibility(
                 visible: !editMode,
-                child:
-                    ActivityTypeCards(activityTypes: enterprise.activityTypes),
+                child: ActivityTypeCards(activityTypes: initial),
               ),
               Visibility(
                 visible: editMode,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: ActivityTypesPickerFormField(
-                    initialValue: enterprise.activityTypes,
+                    initialValue: initial,
                     onSaved: onSaved,
                     activityTabAtTop: true,
                   ),
