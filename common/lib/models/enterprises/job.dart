@@ -110,13 +110,21 @@ class Job extends ItemSerializable {
         minimumAge = map['minimum_age'] ?? 0,
         preInternshipRequests = PreInternshipRequests.fromSerialized(
             map['pre_internship_requests'] ?? {}, map['version']),
-        uniforms =
-            Uniforms.fromSerialized(map['uniforms'] ?? {}, map['version']),
-        protections = Protections.fromSerialized(map['protections'] ?? {}),
+        uniforms = Uniforms.fromSerialized(
+            (map['uniforms'] as Map? ?? {}).cast<String, dynamic>()
+              ..addAll({'id': map['id']}),
+            map['version']),
+        protections = Protections.fromSerialized(
+            (map['protections'] as Map? ?? {}).cast<String, dynamic>()
+              ..addAll({'id': map['id']})),
         photosUrl = _stringListFromSerialized(map['photos_url']),
-        sstEvaluation =
-            JobSstEvaluation.fromSerialized(map['sst_evaluations'] ?? {}),
-        incidents = Incidents.fromSerialized(map['incidents'] ?? {}),
+        sstEvaluation = JobSstEvaluation.fromSerialized(
+            (map['sst_evaluations'] as Map? ?? {}).cast<String, dynamic>()
+              ..addAll({'id': map['id']})),
+        incidents = Incidents.fromSerialized((map['incidents'] as Map? ?? {})
+            .cast<String, dynamic>()
+            .map((key, value) => MapEntry(key, value))
+          ..addAll({'id': map['id']})),
         comments = _stringListFromSerialized(map['comments']),
         super.fromSerialized();
 

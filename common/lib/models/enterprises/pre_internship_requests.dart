@@ -65,11 +65,13 @@ class PreInternshipRequests extends ItemSerializable {
   }
 
   PreInternshipRequests copyWith({
+    String? id,
     List<PreInternshipRequestTypes>? requests,
     String? other,
     bool? isApplicable,
   }) {
     return PreInternshipRequests(
+      id: id ?? this.id,
       requests: requests ?? this.requests,
       other: other ?? this.other,
       isApplicable: isApplicable ?? this.isApplicable,
@@ -90,6 +92,7 @@ class PreInternshipRequests extends ItemSerializable {
     String version,
   ) {
     return PreInternshipRequests(
+      id: map['id'] as String?,
       requests: ((map['requests'] as List<dynamic>?) ?? [])
           .map((e) => PreInternshipRequestTypes._fromInt(e, version))
           .toList(),

@@ -3,7 +3,6 @@ import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/enterprises/enterprise.dart';
-import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
@@ -289,42 +288,44 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                     .toList() ??
                 [];
         final uniforms = job['uniforms'] as List? ?? [];
-        jobs[job['id']]['uniforms'] = {
-          'status': uniforms.isEmpty
-              ? UniformStatus.none.index
-              : uniforms.first['status'],
-          'uniforms':
-              (job['uniforms'] as List?)?.map((e) => e['uniform']).toList()
-        };
+        jobs[job['id']]['uniforms'] = uniforms.isEmpty
+            ? null
+            : {
+                'status': uniforms.first['status'],
+                'uniforms': uniforms.map((e) => e['uniform']).toList()
+              };
         final protections = job['protections'] as List? ?? [];
-        jobs[job['id']]['protections'] = {
-          'status': protections.isEmpty
-              ? ProtectionsStatus.none.index
-              : protections.first['status'],
-          'protections': protections.map((e) => e['protection']).toList()
-        };
-        jobs[job['id']]['incidents'] = {
-          'severe_injuries': (job['incidents'] as List?)
-                  ?.where((e) => e['incident_type'] == 'severe_injuries')
-                  .toList() ??
-              [],
-          'verbal_abuses': (job['incidents'] as List?)
-                  ?.where((e) => e['incident_type'] == 'verbal_abuses')
-                  .toList() ??
-              [],
-          'minor_injuries': (job['incidents'] as List?)
-                  ?.where((e) => e['incident_type'] == 'minor_injuries')
-                  .toList() ??
-              [],
-        };
-        jobs[job['id']]['sst_evaluations'] = {
-          'questions': {
-            for (final Map question in (job['sst_evaluations'] as List? ?? []))
-              question['question']:
-                  (question['answers'] as String?)?.split('\n') ?? []
-          },
-          'date': (job['sst_evaluations'] as List?)?.firstOrNull?['date'] ?? 0
-        };
+        jobs[job['id']]['protections'] = protections.isEmpty
+            ? null
+            : {
+                'status': protections.first['status'],
+                'protections': protections.map((e) => e['protection']).toList()
+              };
+        final incidents = job['incidents'] as List? ?? [];
+        jobs[job['id']]['incidents'] = incidents.isEmpty
+            ? null
+            : {
+                'severe_injuries': incidents
+                    .where((e) => e['incident_type'] == 'severe_injuries')
+                    .toList(),
+                'verbal_abuses': incidents
+                    .where((e) => e['incident_type'] == 'verbal_abuses')
+                    .toList(),
+                'minor_injuries': incidents
+                    .where((e) => e['incident_type'] == 'minor_injuries')
+                    .toList(),
+              };
+        final sstEvaluations = job['sst_evaluations'] as List? ?? [];
+        jobs[job['id']]['sst_evaluations'] = sstEvaluations.isEmpty
+            ? null
+            : {
+                'questions': {
+                  for (final Map question in sstEvaluations)
+                    question['question']:
+                        (question['answers'] as String?)?.split('\n') ?? []
+                },
+                'date': sstEvaluations.first['date'] ?? 0
+              };
       }
       enterprise['jobs'] = jobs;
 
@@ -497,9 +498,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               tableName: 'enterprise_job_sst_evaluation_questions',
               data: {
                 'job_id': job['id'],
+                'date': job['sst_evaluations']['date'],
                 'question': question.key,
                 'answers': (question.value as List?)?.join('\n'),
-                'date': job['sst_evaluations']['date'],
               });
         }
       }

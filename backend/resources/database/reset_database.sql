@@ -308,9 +308,9 @@ CREATE TABLE enterprise_job_incidents(
 
 CREATE TABLE enterprise_job_sst_evaluation_questions(
     job_id VARCHAR(36) NOT NULL,
+    date BIGINT NOT NULL,
     question VARCHAR(255) NOT NULL,
     answers VARCHAR(2000) NOT NULL,
-    date BIGINT NOT NULL,
     FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
 );
 
