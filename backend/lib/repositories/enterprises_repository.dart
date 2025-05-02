@@ -1,3 +1,4 @@
+import 'package:backend/repositories/internships_repository.dart';
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
@@ -46,7 +47,13 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     required String id,
     required Map<String, dynamic> data,
     required String schoolBoardId,
+    InternshipsRepository? internshipsRepository,
   }) async {
+    if (internshipsRepository == null) {
+      throw InvalidRequestException(
+          'Internships repository is required for this operation');
+    }
+
     // Update if exists, insert if not
     final previous =
         await _getEnterpriseById(id: id, schoolBoardId: schoolBoardId);
@@ -57,7 +64,8 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     await _putEnterprise(
         enterprise: newEnterprise,
         previous: previous,
-        schoolBoardId: schoolBoardId);
+        schoolBoardId: schoolBoardId,
+        internshipsRepository: internshipsRepository);
     return newEnterprise.getDifference(previous);
   }
 
@@ -85,10 +93,12 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   Future<Enterprise?> _getEnterpriseById(
       {required String id, required String schoolBoardId});
 
-  Future<void> _putEnterprise(
-      {required Enterprise enterprise,
-      required Enterprise? previous,
-      required String schoolBoardId});
+  Future<void> _putEnterprise({
+    required Enterprise enterprise,
+    required Enterprise? previous,
+    required String schoolBoardId,
+    required InternshipsRepository internshipsRepository,
+  });
 
   Future<String?> _deleteEnterprise(
       {required String id, required String schoolBoardId});
@@ -331,14 +341,17 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           enterpriseId: id, schoolBoardId: schoolBoardId))[id];
 
   @override
-  Future<void> _putEnterprise(
-          {required Enterprise enterprise,
-          required Enterprise? previous,
-          required String schoolBoardId}) async =>
+  Future<void> _putEnterprise({
+    required Enterprise enterprise,
+    required Enterprise? previous,
+    required String schoolBoardId,
+    required InternshipsRepository internshipsRepository,
+  }) async =>
       previous == null
           ? await _putNewEnterprise(enterprise, schoolBoardId: schoolBoardId)
           : await _putExistingEnterprise(enterprise, previous,
-              schoolBoardId: schoolBoardId);
+              schoolBoardId: schoolBoardId,
+              internshipsRepository: internshipsRepository);
 
   Future<void> _putNewEnterprise(Enterprise enterprise,
       {required String schoolBoardId}) async {
@@ -566,16 +579,48 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }
 
   Future<void> _putExistingEnterprise(
-      Enterprise enterprise, Enterprise previous,
-      {required String schoolBoardId}) async {
+    Enterprise enterprise,
+    Enterprise previous, {
+    required String schoolBoardId,
+    required InternshipsRepository internshipsRepository,
+  }) async {
     // TODO: Implement a better updating of the enterprises
+
+    // Because we are doing the delete all then recover from to "put",
+    // we need to delete the internships that depends on that enterprise
+    // and then put them back. Reminder, that is a terrible way to do it,
+    // and MUST be improved in the future.
+    final internshipIds = await MySqlHelpers.performSelectQuery(
+      connection: connection,
+      tableName: 'internships',
+      filters: {
+        'enterprise_id': enterprise.id,
+        'school_board_id': schoolBoardId
+      },
+    );
+
+    final internships = [];
+    for (final internship in internshipIds) {
+      internships.add(await internshipsRepository.getById(
+          id: internship['id'], schoolBoardId: schoolBoardId));
+      await internshipsRepository.deleteById(
+          id: internship['id'], schoolBoardId: schoolBoardId);
+    }
+
     await _deleteEnterprise(id: previous.id, schoolBoardId: schoolBoardId);
     await _putNewEnterprise(enterprise, schoolBoardId: schoolBoardId);
+
+    for (final internship in internships) {
+      await internshipsRepository.putById(
+          id: internship['id'], data: internship, schoolBoardId: schoolBoardId);
+    }
   }
 
   @override
-  Future<String?> _deleteEnterprise(
-      {required String id, required String schoolBoardId}) async {
+  Future<String?> _deleteEnterprise({
+    required String id,
+    required String schoolBoardId,
+  }) async {
     try {
       final enterprise =
           await _getEnterpriseById(id: id, schoolBoardId: schoolBoardId);
@@ -635,7 +680,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
       return id;
     } catch (e) {
-      return null;
+      throw InvalidRequestException(
+          'Unable to delete the enterprise with id $id. Is there any internships associted with this enterprise? $e');
     }
   }
   // coverage:ignore-end
@@ -685,10 +731,12 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       _dummyDatabase[id];
 
   @override
-  Future<void> _putEnterprise(
-          {required Enterprise enterprise,
-          required Enterprise? previous,
-          required String schoolBoardId}) async =>
+  Future<void> _putEnterprise({
+    required Enterprise enterprise,
+    required Enterprise? previous,
+    required String schoolBoardId,
+    required InternshipsRepository internshipsRepository,
+  }) async =>
       _dummyDatabase[enterprise.id] = enterprise;
 
   @override

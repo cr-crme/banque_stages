@@ -137,7 +137,8 @@ class DatabaseManager {
             id: _getId(data,
                 messageOnNull: 'An "id" is required to put an enterprise'),
             data: data,
-            schoolBoardId: schoolBoardId);
+            schoolBoardId: schoolBoardId,
+            internshipsRepository: internshipsDatabase);
       case RequestFields.internships:
         await internshipsDatabase.putAll(
             data: data, schoolBoardId: schoolBoardId);
