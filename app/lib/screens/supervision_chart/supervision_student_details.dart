@@ -257,8 +257,8 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
 
   @override
   Widget build(BuildContext context) {
-    final internships = InternshipsProvider.of(context, listen: false)
-        .byStudentId(widget.studentId);
+    final internships =
+        InternshipsProvider.of(context).byStudentId(widget.studentId);
     if (internships.isEmpty) return Container();
 
     final internship = internships.last;
@@ -342,9 +342,11 @@ class _PersonalNotesState extends State<_PersonalNotes> {
     ..text = widget.internship.teacherNotes;
 
   void _sendComments() {
+    // TODO: This automatically sends the comment which causes a race condition focus out by changing priority
     final internships = InternshipsProvider.of(context, listen: false);
-    internships.replace(
-        widget.internship.copyWith(teacherNotes: _textController.text));
+    if (_textController.text == widget.internship.teacherNotes) return;
+    internships.updateTeacherNote(
+        widget.internship.studentId, _textController.text);
   }
 
   @override

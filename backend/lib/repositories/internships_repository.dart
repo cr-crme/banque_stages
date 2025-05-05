@@ -674,7 +674,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   @override
   Future<String?> _deleteInternship({required String id}) async {
     try {
-      final supervisor = (await MySqlHelpers.performSelectQuery(
+      final mutable = (await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'internship_mutable_data',
         filters: {'internship_id': id},
@@ -686,11 +686,11 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         tableName: 'entities',
         filters: {'shared_id': id},
       );
-      if (supervisor != null) {
+      if (mutable != null) {
         await MySqlHelpers.performDeleteQuery(
           connection: connection,
           tableName: 'entities',
-          filters: {'shared_id': supervisor['supervisor_id']},
+          filters: {'shared_id': mutable['supervisor_id']},
         );
       }
 

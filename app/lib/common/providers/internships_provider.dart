@@ -19,6 +19,13 @@ class InternshipsProvider extends BackendListProvided<Internship> {
     replace(byStudentId(studentId).last.copyWith(visitingPriority: priority));
   }
 
+  void updateTeacherNote(
+    String studentId,
+    String notes,
+  ) {
+    replace(byStudentId(studentId).last.copyWith(teacherNotes: notes));
+  }
+
   List<Internship> byStudentId(String studentId) {
     return where((internship) => internship.studentId == studentId).toList();
   }
