@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/student.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/models/internship_extension.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
@@ -358,87 +360,136 @@ class _StudentTile extends StatelessWidget {
   final bool isManagingStudents;
   final bool isInternshipSupervised;
 
+  Future<Enterprise?> _getEnterprise(BuildContext context) async {
+    final enterprises = EnterprisesProvider.of(context, listen: false);
+
+    Enterprise? enterprise;
+    while (enterprise == null) {
+      if (!context.mounted) return null;
+
+      enterprise = enterprises.fromIdOrNull(internship.enterpriseId);
+      if (enterprise != null) break;
+
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    return enterprise;
+  }
+
+  Future<Specialization?> _getSpecialization(BuildContext context) async {
+    Specialization? specialization;
+
+    final enterprise = await _getEnterprise(context);
+    if (enterprise == null) return null;
+
+    while (specialization == null) {
+      if (!context.mounted) return null;
+
+      specialization =
+          enterprise.jobs.fromIdOrNull(internship.jobId)?.specialization;
+      if (specialization != null) break;
+
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    return specialization;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final enterprise = EnterprisesProvider.of(context, listen: false)
-        .fromId(internship.enterpriseId);
-    final specialization =
-        enterprise.jobs.fromId(internship.jobId).specialization;
+    return FutureBuilder(
+        future: Future.wait([
+          _getEnterprise(context),
+          _getSpecialization(context),
+        ]),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-    return Card(
-      elevation: 10,
-      child: ListTile(
-        onTap: onTap,
-        leading: SizedBox(
-          height: double.infinity, // This centers the avatar
-          child: student.avatar,
-        ),
-        tileColor: onTap == null ? disabled.withAlpha(50) : null,
-        title: Text(student.fullName),
-        isThreeLine: true,
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              enterprise.name,
-              style: const TextStyle(color: Colors.black87),
-            ),
-            AutoSizeText(
-              specialization.name,
-              maxLines: 2,
-              style: const TextStyle(color: Colors.black87),
-            ),
-          ],
-        ),
-        trailing: isManagingStudents
-            ? InkWell(
-                borderRadius: BorderRadius.circular(25),
-                onTap: onTap,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(
-                      isInternshipSupervised
-                          ? Icons.person_add
-                          : Icons.person_remove,
-                      color: onTap == null
-                          ? disabled
-                          : Theme.of(context).primaryColor),
-                ),
-              )
-            : Ink(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 5.0,
-                      spreadRadius: 0.0,
-                      offset: Offset(2.0, 2.0),
+          final enterprise = (snapshot.data as List)[0] as Enterprise?;
+          final specialization = (snapshot.data as List)[1] as Specialization?;
+          if (enterprise == null || specialization == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return Card(
+            elevation: 10,
+            child: ListTile(
+              onTap: onTap,
+              leading: SizedBox(
+                height: double.infinity, // This centers the avatar
+                child: student.avatar,
+              ),
+              tileColor: onTap == null ? disabled.withAlpha(50) : null,
+              title: Text(student.fullName),
+              isThreeLine: true,
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    enterprise.name,
+                    style: const TextStyle(color: Colors.black87),
+                  ),
+                  AutoSizeText(
+                    specialization.name,
+                    maxLines: 2,
+                    style: const TextStyle(color: Colors.black87),
+                  ),
+                ],
+              ),
+              trailing: isManagingStudents
+                  ? InkWell(
+                      borderRadius: BorderRadius.circular(25),
+                      onTap: onTap,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                            isInternshipSupervised
+                                ? Icons.person_add
+                                : Icons.person_remove,
+                            color: onTap == null
+                                ? disabled
+                                : Theme.of(context).primaryColor),
+                      ),
                     )
-                  ],
-                  border: Border.all(
-                      color: Theme.of(context).primaryColor.withAlpha(100),
-                      width: 2.5),
-                  shape: BoxShape.circle,
-                ),
-                child: Tooltip(
-                  message: 'Niveau de priorité pour les visites de supervision',
-                  child: InkWell(
-                    onTap: onUpdatePriority,
-                    borderRadius: BorderRadius.circular(25),
-                    child: SizedBox(
-                      width: 45,
-                      height: 45,
-                      child: Icon(
-                        internship.visitingPriority.icon,
-                        color: internship.visitingPriority.color,
-                        size: 30,
+                  : Ink(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 5.0,
+                            spreadRadius: 0.0,
+                            offset: Offset(2.0, 2.0),
+                          )
+                        ],
+                        border: Border.all(
+                            color:
+                                Theme.of(context).primaryColor.withAlpha(100),
+                            width: 2.5),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Tooltip(
+                        message:
+                            'Niveau de priorité pour les visites de supervision',
+                        child: InkWell(
+                          onTap: onUpdatePriority,
+                          borderRadius: BorderRadius.circular(25),
+                          child: SizedBox(
+                            width: 45,
+                            height: 45,
+                            child: Icon(
+                              internship.visitingPriority.icon,
+                              color: internship.visitingPriority.color,
+                              size: 30,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-      ),
-    );
+            ),
+          );
+        });
   }
 }

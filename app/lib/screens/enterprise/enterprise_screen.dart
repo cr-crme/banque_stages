@@ -141,67 +141,74 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Selector<EnterprisesProvider, Enterprise>(
-      builder: (context, enterprise, _) => Scaffold(
-        appBar: AppBar(
-          title: Text(enterprise.name),
-          actions: [_actionButton],
-          bottom: TabBar(
-            onTap: (index) async {
-              if (!_editing || !_tabController.indexIsChanging) return;
+    return Selector<EnterprisesProvider, Enterprise?>(
+      builder: (context, enterprise, _) {
+        if (enterprise == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-              _tabController.index = _tabController.previousIndex;
-              if (await ConfirmExitDialog.show(context,
-                  content: Text.rich(TextSpan(children: [
-                    const TextSpan(
-                        text: '** Vous quittez la page sans avoir '
-                            'cliqué sur Enregistrer '),
-                    WidgetSpan(
-                        child: SizedBox(
-                      height: 22,
-                      width: 22,
-                      child: Icon(
-                        Icons.save,
-                        color: Theme.of(context).primaryColor,
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(enterprise.name),
+            actions: [_actionButton],
+            bottom: TabBar(
+              onTap: (index) async {
+                if (!_editing || !_tabController.indexIsChanging) return;
+
+                _tabController.index = _tabController.previousIndex;
+                if (await ConfirmExitDialog.show(context,
+                    content: Text.rich(TextSpan(children: [
+                      const TextSpan(
+                          text: '** Vous quittez la page sans avoir '
+                              'cliqué sur Enregistrer '),
+                      WidgetSpan(
+                          child: SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: Icon(
+                          Icons.save,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      )),
+                      const TextSpan(
+                        text:
+                            '. **\n\nToutes vos modifications seront perdues.',
                       ),
-                    )),
-                    const TextSpan(
-                      text: '. **\n\nToutes vos modifications seront perdues.',
-                    ),
-                  ])))) {
-                cancelEditing();
-                _tabController.animateTo(index);
-              }
-            },
+                    ])))) {
+                  cancelEditing();
+                  _tabController.animateTo(index);
+                }
+              },
+              controller: _tabController,
+              tabs: const [
+                Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
+                Tab(icon: Icon(Icons.contact_phone), text: 'Contact'),
+                Tab(icon: Icon(Icons.business_center_rounded), text: 'Postes'),
+                Tab(icon: Icon(Icons.assignment), text: 'Stages'),
+              ],
+            ),
+          ),
+          body: TabBarView(
             controller: _tabController,
-            tabs: const [
-              Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
-              Tab(icon: Icon(Icons.contact_phone), text: 'Contact'),
-              Tab(icon: Icon(Icons.business_center_rounded), text: 'Postes'),
-              Tab(icon: Icon(Icons.assignment), text: 'Stages'),
+            physics: _editing ? const NeverScrollableScrollPhysics() : null,
+            children: [
+              EnterpriseAboutPage(
+                key: _aboutPageKey,
+                enterprise: enterprise,
+                onAddInternshipRequest: addInternship,
+              ),
+              ContactPage(key: _contactPageKey, enterprise: enterprise),
+              JobsPage(key: _jobsPageKey, enterprise: enterprise),
+              InternshipsPage(
+                key: _stagePageKey,
+                enterprise: enterprise,
+                onAddInternshipRequest: addInternship,
+              ),
             ],
           ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          physics: _editing ? const NeverScrollableScrollPhysics() : null,
-          children: [
-            EnterpriseAboutPage(
-              key: _aboutPageKey,
-              enterprise: enterprise,
-              onAddInternshipRequest: addInternship,
-            ),
-            ContactPage(key: _contactPageKey, enterprise: enterprise),
-            JobsPage(key: _jobsPageKey, enterprise: enterprise),
-            InternshipsPage(
-              key: _stagePageKey,
-              enterprise: enterprise,
-              onAddInternshipRequest: addInternship,
-            ),
-          ],
-        ),
-      ),
-      selector: (context, enterprises) => enterprises[widget.id],
+        );
+      },
+      selector: (context, enterprises) => enterprises.fromIdOrNull(widget.id),
     );
   }
 }

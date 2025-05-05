@@ -320,47 +320,72 @@ class _RecrutedBy extends StatelessWidget {
     launchUrl(emailLaunchUri);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final schools = SchoolBoardsProvider.of(context);
+  Future<Teacher?> _getTeacherFromId(BuildContext context) async {
     final teachers = TeachersProvider.of(context);
 
-    final teacher = teachers.fromId(enterprise.recruiterId);
-    final schoolName = schools.hasId(teacher.schoolId)
-        ? schools.fromId(teacher.schoolId).name
-        : '';
+    Teacher? teacher;
+    while (teacher == null) {
+      if (!context.mounted) return null;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Entreprise recrutée par'),
-        GestureDetector(
-          onTap: teacher.email == null ? null : () => _sendEmail(teacher),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 24.0),
-            child: Row(
-              children: [
-                Text(
-                  teacher.fullName,
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        decoration: teacher.email == null
-                            ? null
-                            : TextDecoration.underline,
-                        color: teacher.email == null ? null : Colors.blue,
+      teacher = teachers.fromIdOrNull(enterprise.recruiterId);
+      if (teacher != null) break;
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    return teacher;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: _getTeacherFromId(context),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.data == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final teacher = snapshot.data! as Teacher;
+          final schools = SchoolBoardsProvider.of(context);
+          final schoolName = schools.hasId(teacher.schoolId)
+              ? schools.fromId(teacher.schoolId).name
+              : '';
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SubTitle('Entreprise recrutée par'),
+              GestureDetector(
+                onTap: teacher.email == null ? null : () => _sendEmail(teacher),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 24.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        teacher.fullName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                              decoration: teacher.email == null
+                                  ? null
+                                  : TextDecoration.underline,
+                              color: teacher.email == null ? null : Colors.blue,
+                            ),
                       ),
-                ),
-                Flexible(
-                  child: Text(
-                    ' - $schoolName',
-                    style: Theme.of(context).textTheme.titleMedium,
+                      Flexible(
+                        child: Text(
+                          ' - $schoolName',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        )
-      ],
-    );
+              )
+            ],
+          );
+        });
   }
 }
 
