@@ -8,18 +8,29 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-class WeeklyScheduleController {
+class WeeklySchedulesController {
   List<WeeklySchedule> weeklySchedules = [];
-  time_utils.DateTimeRange? dateRange;
+  time_utils.DateTimeRange? _dateRange;
+  time_utils.DateTimeRange? get dateRange => _dateRange;
   bool _hasChanged = false;
+
+  WeeklySchedulesController(
+      {List<WeeklySchedule>? weeklySchedules,
+      time_utils.DateTimeRange? dateRange})
+      : _dateRange = dateRange,
+        weeklySchedules = weeklySchedules ?? [];
+
   bool get hasChanged => _hasChanged;
+  set dateRange(time_utils.DateTimeRange? newRange) {
+    _dateRange = newRange;
+    if (weeklySchedules.length == 1) {
+      weeklySchedules[0] = weeklySchedules[0].copyWith(period: newRange);
+    }
+    _hasChanged = true;
+  }
 
-  WeeklyScheduleController(
-      {List<WeeklySchedule>? weeklySchedules, this.dateRange})
-      : weeklySchedules = weeklySchedules ?? [];
-
-  void updateDateRange(time_utils.DateTimeRange newRange) {
-    dateRange = newRange;
+  void addWeeklySchedule(WeeklySchedule newSchedule) {
+    weeklySchedules.add(newSchedule);
     _hasChanged = true;
   }
 
@@ -94,14 +105,14 @@ class ScheduleStep extends StatefulWidget {
 class ScheduleStepState extends State<ScheduleStep> {
   final formKey = GlobalKey<FormState>();
 
-  late final scheduleController = WeeklyScheduleController();
+  late final weeklyScheduleController = WeeklySchedulesController();
   int internshipDuration = 0;
 
   void onScheduleChanged() {
-    if (scheduleController.dateRange != null &&
-        scheduleController.weeklySchedules.isEmpty) {
-      scheduleController.weeklySchedules
-          .add(_fillNewScheduleList(scheduleController.dateRange!));
+    if (weeklyScheduleController.dateRange != null &&
+        weeklyScheduleController.weeklySchedules.isEmpty) {
+      weeklyScheduleController.weeklySchedules
+          .add(_fillNewScheduleList(weeklyScheduleController.dateRange!));
     }
     setState(() {});
   }
@@ -115,16 +126,16 @@ class ScheduleStepState extends State<ScheduleStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _DateRange(
-              scheduleController: scheduleController,
+              scheduleController: weeklyScheduleController,
               onScheduleChanged: onScheduleChanged,
             ),
             Visibility(
-                visible: scheduleController.dateRange != null,
+                visible: weeklyScheduleController.dateRange != null,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ScheduleSelector(
-                      scheduleController: scheduleController,
+                      scheduleController: weeklyScheduleController,
                       editMode: true,
                       withTitle: true,
                     ),
@@ -144,7 +155,7 @@ class _DateRange extends StatefulWidget {
   const _DateRange(
       {required this.scheduleController, required this.onScheduleChanged});
 
-  final WeeklyScheduleController scheduleController;
+  final WeeklySchedulesController scheduleController;
   final Function() onScheduleChanged;
 
   @override
@@ -169,7 +180,7 @@ class _DateRangeState extends State<_DateRange> {
     if (range == null) return;
 
     _isValid = true;
-    widget.scheduleController.updateDateRange(range);
+    widget.scheduleController.dateRange = range;
 
     widget.onScheduleChanged();
     setState(() {});
@@ -297,7 +308,7 @@ class ScheduleSelector extends StatefulWidget {
     this.periodTextSize,
   });
 
-  final WeeklyScheduleController scheduleController;
+  final WeeklySchedulesController scheduleController;
   final bool editMode;
   final bool withTitle;
   final double? leftPadding;
@@ -447,9 +458,8 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
                 )),
         if (widget.editMode)
           TextButton(
-            onPressed: () => setState(() => widget
-                .scheduleController.weeklySchedules
-                .add(_fillNewScheduleList(
+            onPressed: () => setState(() => widget.scheduleController
+                .addWeeklySchedule(_fillNewScheduleList(
                     widget.scheduleController.dateRange!))),
             style: Theme.of(context).textButtonTheme.style!.copyWith(
                 backgroundColor: Theme.of(context)

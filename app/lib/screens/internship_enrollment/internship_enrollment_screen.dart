@@ -110,11 +110,11 @@ class _InternshipEnrollmentScreenState
           address: Address.empty,
           phone: PhoneNumber.fromString(
               _generalInfoKey.currentState!.supervisorPhone)),
-      dates: _scheduleKey.currentState!.scheduleController.dateRange!,
+      dates: _scheduleKey.currentState!.weeklyScheduleController.dateRange!,
       expectedDuration: _scheduleKey.currentState!.internshipDuration,
       achievedDuration: 0,
       weeklySchedules:
-          _scheduleKey.currentState!.scheduleController.weeklySchedules,
+          _scheduleKey.currentState!.weeklyScheduleController.weeklySchedules,
       visitingPriority: VisitingPriority.low,
     );
 

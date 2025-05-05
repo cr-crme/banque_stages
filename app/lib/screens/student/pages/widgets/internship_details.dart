@@ -2,8 +2,6 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
-import 'package:common/models/internships/schedule.dart';
-import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:common/models/persons/person.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
@@ -19,12 +17,8 @@ import 'package:intl/intl.dart';
 class _InternshipController {
   _InternshipController(Internship internship)
       : supervisor = internship.supervisor.copyWith(),
-        _dates = time_utils.DateTimeRange(
-            start: internship.dates.start, end: internship.dates.end),
         _achievedLength = internship.achievedDuration,
-        weeklySchedules =
-            internship.weeklySchedules.map((week) => week.copyWith()).toList(),
-        scheduleController = WeeklyScheduleController(
+        weeklyScheduleController = WeeklySchedulesController(
           weeklySchedules: internship.weeklySchedules
               .map((e) => e.copyWith(schedule: [...e.schedule]))
               .toList(),
@@ -32,7 +26,7 @@ class _InternshipController {
         );
 
   bool get hasChanged =>
-      scheduleController.hasChanged || dateHasChanged || supervisorChanged;
+      weeklyScheduleController.hasChanged || supervisorChanged;
 
   Person supervisor;
   bool get supervisorChanged =>
@@ -50,14 +44,6 @@ class _InternshipController {
   late final supervisorEmailController =
       TextEditingController(text: supervisor.email ?? '');
 
-  time_utils.DateTimeRange _dates;
-  bool dateHasChanged = false;
-  time_utils.DateTimeRange get dates => _dates;
-  set date(time_utils.DateTimeRange newDates) {
-    _dates = newDates;
-    dateHasChanged = true;
-  }
-
   bool achievedLengthChanged = false;
   int _achievedLength;
   int get achievedLength => _achievedLength;
@@ -66,8 +52,7 @@ class _InternshipController {
     achievedLengthChanged = true;
   }
 
-  List<WeeklySchedule> weeklySchedules;
-  WeeklyScheduleController scheduleController;
+  WeeklySchedulesController weeklyScheduleController;
 }
 
 class InternshipDetails extends StatefulWidget {
@@ -145,9 +130,9 @@ class InternshipDetailsState extends State<InternshipDetails> {
               phone: PhoneNumber.fromString(
                   _internshipController.supervisorPhoneController.text),
               email: _internshipController.supervisorEmailController.text),
-          dates: _internshipController.dates,
+          dates: _internshipController.weeklyScheduleController.dateRange!,
           weeklySchedules: _internshipController
-              .scheduleController.weeklySchedules
+              .weeklyScheduleController.weeklySchedules
               .map((e) => e.duplicate())
               .toList());
 
@@ -171,13 +156,14 @@ class InternshipDetailsState extends State<InternshipDetails> {
       confirmText: 'Confirmer',
       context: context,
       initialEntryMode: DatePickerEntryMode.calendar,
-      initialDateRange: _internshipController.dates,
+      initialDateRange:
+          _internshipController.weeklyScheduleController.dateRange,
       firstDate: DateTime(DateTime.now().year),
       lastDate: DateTime(DateTime.now().year + 2),
     );
     if (range == null) return;
 
-    _internshipController.date = range;
+    _internshipController.weeklyScheduleController.dateRange = range;
     setState(() {});
   }
 
@@ -407,10 +393,12 @@ class _InternshipBody extends StatelessWidget {
                     Text('Date de fin :'),
                   ]),
                   TableRow(children: [
-                    Text(DateFormat.yMMMEd('fr_CA')
-                        .format(internshipController.dates.start)),
-                    Text(DateFormat.yMMMEd('fr_CA')
-                        .format(internshipController.dates.end)),
+                    Text(DateFormat.yMMMEd('fr_CA').format(internshipController
+                            .weeklyScheduleController.dateRange?.start ??
+                        DateTime.now())),
+                    Text(DateFormat.yMMMEd('fr_CA').format(internshipController
+                            .weeklyScheduleController.dateRange?.end ??
+                        DateTime.now())),
                   ]),
                 ],
               ),
@@ -480,7 +468,7 @@ class _InternshipBody extends StatelessWidget {
           ScheduleSelector(
             withTitle: false,
             editMode: editMode,
-            scheduleController: internshipController.scheduleController,
+            scheduleController: internshipController.weeklyScheduleController,
             leftPadding: 0,
             periodTextSize: 14,
           )
