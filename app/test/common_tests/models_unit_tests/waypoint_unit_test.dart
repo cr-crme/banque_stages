@@ -1,7 +1,6 @@
 import 'package:common/models/generic/address.dart';
-import 'package:common/models/generic/geographic_coordinate_system.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
-import 'package:crcrme_banque_stages/common/models/waypoints.dart';
+import 'package:common/models/itineraries/waypoint.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';
@@ -18,15 +17,16 @@ void main() {
       // because it uses the http request which we can't test so far
       final waypoint = await Waypoint.fromCoordinates(
         title: 'title',
-        gcs: GeographicCoordinateSystem(latitude: 1.0, longitude: 2.0),
+        latitude: 1.0,
+        longitude: 2.0,
       );
 
       // Test that the waypoint is the default value for the Placemark (address)
       expect(waypoint.id, isNotEmpty);
       expect(waypoint.title, 'title');
       expect(waypoint.subtitle, isNull);
-      expect(waypoint.gcs.latitude, 1.0);
-      expect(waypoint.gcs.longitude, 2.0);
+      expect(waypoint.latitude, 1.0);
+      expect(waypoint.longitude, 2.0);
       expect(waypoint.address.toString(), Address().toString());
       expect(waypoint.priority, VisitingPriority.notApplicable);
       expect(waypoint.showTitle, isTrue);
@@ -42,8 +42,8 @@ void main() {
       expect(waypoint.id, isNotEmpty);
       expect(waypoint.title, 'My wonderful place');
       expect(waypoint.subtitle, isNull);
-      expect(waypoint.gcs.latitude, 0.0);
-      expect(waypoint.gcs.longitude, 0.0);
+      expect(waypoint.latitude, 0.0);
+      expect(waypoint.longitude, 0.0);
       expect(waypoint.address.toString(), Address().toString());
       expect(waypoint.priority, VisitingPriority.notApplicable);
       expect(waypoint.showTitle, isTrue);
@@ -56,8 +56,8 @@ void main() {
       expect(waypointSame.id, waypoint.id);
       expect(waypointSame.title, waypoint.title);
       expect(waypointSame.subtitle, waypoint.subtitle);
-      expect(waypointSame.gcs.latitude, waypoint.gcs.latitude);
-      expect(waypointSame.gcs.longitude, waypoint.gcs.longitude);
+      expect(waypointSame.latitude, waypoint.latitude);
+      expect(waypointSame.longitude, waypoint.longitude);
       expect(waypointSame.address, waypoint.address);
       expect(waypointSame.priority, waypoint.priority);
       expect(waypointSame.showTitle, waypoint.showTitle);
@@ -66,7 +66,8 @@ void main() {
         id: 'newId',
         title: 'newTitle',
         subtitle: 'newSubtitle',
-        gcs: GeographicCoordinateSystem(latitude: 1.0, longitude: 2.0),
+        latitude: 1.0,
+        longitude: 2.0,
         address: Address(street: 'newStreet'),
         priority: VisitingPriority.high,
         showTitle: false,
@@ -75,8 +76,8 @@ void main() {
       expect(waypointDifferent.id, 'newId');
       expect(waypointDifferent.title, 'newTitle');
       expect(waypointDifferent.subtitle, 'newSubtitle');
-      expect(waypointDifferent.gcs.latitude, 1.0);
-      expect(waypointDifferent.gcs.longitude, 2.0);
+      expect(waypointDifferent.latitude, 1.0);
+      expect(waypointDifferent.longitude, 2.0);
       expect(waypointDifferent.address.toString(),
           Address(street: 'newStreet').toString());
       expect(waypointDifferent.priority, VisitingPriority.high);
@@ -92,7 +93,6 @@ void main() {
         'id': waypoint.id,
         'title': waypoint.title,
         'subtitle': waypoint.subtitle,
-        'gcs': waypoint.gcs.serialize(),
         'address': waypoint.address.serialize(),
         'priority': waypoint.priority.index,
       });
@@ -100,8 +100,8 @@ void main() {
       expect(deserialized.id, waypoint.id);
       expect(deserialized.title, waypoint.title);
       expect(deserialized.subtitle, waypoint.subtitle);
-      expect(deserialized.gcs.latitude, waypoint.gcs.latitude);
-      expect(deserialized.gcs.longitude, waypoint.gcs.longitude);
+      expect(deserialized.latitude, waypoint.latitude);
+      expect(deserialized.longitude, waypoint.longitude);
       expect(deserialized.address.toString(), waypoint.address.toString());
       expect(deserialized.priority, waypoint.priority);
       expect(deserialized.showTitle, waypoint.showTitle);
@@ -111,8 +111,8 @@ void main() {
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.title, '');
       expect(emptyDeserialized.subtitle, '');
-      expect(emptyDeserialized.gcs.latitude, 0);
-      expect(emptyDeserialized.gcs.longitude, 0);
+      expect(emptyDeserialized.latitude, 0);
+      expect(emptyDeserialized.longitude, 0);
       expect(emptyDeserialized.address.toString(), Address().toString());
       expect(emptyDeserialized.priority, VisitingPriority.notApplicable);
       expect(emptyDeserialized.showTitle, isTrue);

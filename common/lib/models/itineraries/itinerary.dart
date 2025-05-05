@@ -61,7 +61,6 @@ class Itinerary extends ListSerializable<Waypoint>
     String? id,
     DateTime? date,
     List<Waypoint>? waypoints,
-    String? dateAsString,
   }) {
     final itinerary = Itinerary(id: id ?? this.id, date: date ?? this.date);
     for (final waypoint in waypoints ?? this) {

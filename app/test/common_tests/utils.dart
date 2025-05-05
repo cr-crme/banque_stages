@@ -2,7 +2,6 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
-import 'package:common/models/generic/geographic_coordinate_system.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart';
@@ -10,14 +9,14 @@ import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/task_appreciation.dart';
 import 'package:common/models/internships/time_utils.dart';
+import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
+import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/services/job_data_file_service.dart';
-import 'package:crcrme_banque_stages/common/models/itinerary.dart';
-import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 
 School dummySchool({
   String? id,
@@ -320,7 +319,8 @@ Waypoint dummyWaypoint(
       id: id,
       title: 'Waypoint',
       subtitle: 'Subtitle',
-      gcs: GeographicCoordinateSystem(latitude: latitude, longitude: longitude),
+      latitude: latitude,
+      longitude: longitude,
       address: Address(
           street: '123 rue de la rue', city: 'Ville', postalCode: 'H0H 0H0'),
     );

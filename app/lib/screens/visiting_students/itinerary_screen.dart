@@ -1,9 +1,9 @@
+import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
-import 'package:crcrme_banque_stages/common/models/itinerary.dart';
-import 'package:crcrme_banque_stages/common/models/waypoints.dart';
+import 'package:common/models/itineraries/waypoint.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/itineraries_helpers.dart';
 import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
@@ -124,6 +124,11 @@ class ItineraryScreen extends StatefulWidget {
 class _ItineraryScreenState extends State<ItineraryScreen> {
   List<double>? _distances;
 
+  late final Itinerary _currentItinerary =
+      ItinerariesHelpers.fromDate(context, _currentDate, listen: false)
+              ?.copyWith() ??
+          Itinerary(date: _currentDate);
+
   DateTime _currentDate = DateTime.now();
 
   void setRouteDistances(List<double>? legs) {
@@ -132,23 +137,13 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   }
 
   void addStopToCurrentItinerary(int indexInWaypoints) {
-    final itineraries = ItinerariesProvider.of(context, listen: false);
-    final itinerary =
-        itineraries.fromDate(_currentDate) ?? Itinerary(date: _currentDate);
-
-    itinerary
+    _currentItinerary
         .add(widget.waypoints[indexInWaypoints].copyWith(forceNewId: true));
-    itineraries.replace(itinerary, notify: true);
     setState(() {});
   }
 
   void removeStopToCurrentItinerary(int indexInItinerary) {
-    final itineraries = ItinerariesProvider.of(context, listen: false);
-    final itinerary = itineraries.fromDate(_currentDate);
-    if (itinerary == null) return;
-
-    itinerary.remove(indexInItinerary);
-    itineraries.replace(itinerary, notify: true);
+    _currentItinerary.remove(indexInItinerary);
     setState(() {});
   }
 
@@ -159,7 +154,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         _showDate(),
         if (widget.waypoints.isNotEmpty) _map(),
         if (widget.waypoints.isEmpty) const CircularProgressIndicator(),
-        _Distance(_distances, currentDate: _currentDate),
+        _Distance(_distances, itinerary: _currentItinerary),
         const SizedBox(height: 20),
         _studentsToVisitWidget(context),
       ],
@@ -201,8 +196,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   }
 
   void _showDatePicker() async {
-    final itineraries = ItinerariesProvider.of(context, listen: false);
-
     final newDate = await showCustomDatePicker(
         context: context,
         initialDate: _currentDate,
@@ -213,8 +206,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
     _currentDate = newDate;
 
-    // Force update of all widgets
-    itineraries.forceNotify();
     setState(() {});
   }
 
@@ -231,28 +222,20 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   }
 
   Widget _studentsToVisitWidget(BuildContext context) {
-    final itineraries = ItinerariesProvider.of(context, listen: false);
-    if (itineraries.isEmpty || !itineraries.hasDate(_currentDate)) {
-      return Container();
-    }
-
-    final itinerary = itineraries.fromDate(_currentDate)!;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(height: 8),
-        if (itinerary.isNotEmpty)
+        if (_currentItinerary.isNotEmpty)
           ReorderableListView.builder(
             onReorder: (oldIndex, newIndex) {
-              itinerary.move(oldIndex, newIndex);
-              itineraries.replace(itinerary);
+              _currentItinerary.move(oldIndex, newIndex);
               setState(() {});
             },
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              final way = itinerary[index];
+              final way = _currentItinerary[index];
               return WaypointCard(
                 key: ValueKey(way.id),
                 name: way.title,
@@ -260,7 +243,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                 onDelete: () => removeStopToCurrentItinerary(index),
               );
             },
-            itemCount: itinerary.length,
+            itemCount: _currentItinerary.length,
           ),
       ],
     );
@@ -268,10 +251,10 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 }
 
 class _Distance extends StatefulWidget {
-  const _Distance(this.distances, {required this.currentDate});
+  const _Distance(this.distances, {required this.itinerary});
 
   final List<double>? distances;
-  final DateTime currentDate;
+  final Itinerary itinerary;
 
   @override
   State<_Distance> createState() => __DistanceState();
@@ -329,17 +312,13 @@ class __DistanceState extends State<_Distance> {
   }
 
   List<Widget> _distancesTo(List<double?> distances) {
-    final itineraries = ItinerariesProvider.of(context, listen: false);
-    final itinerary = itineraries.fromDate(widget.currentDate);
-    if (itinerary == null) return [];
-
     List<Widget> out = [];
-    if (distances.length + 1 != itinerary.length) return out;
+    if (distances.length + 1 != widget.itinerary.length) return out;
 
     for (int i = 0; i < distances.length; i++) {
       final distance = distances[i];
-      final startingPoint = itinerary[i];
-      final endingPoint = itinerary[i + 1];
+      final startingPoint = widget.itinerary[i];
+      final endingPoint = widget.itinerary[i + 1];
 
       out.add(Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2.0),

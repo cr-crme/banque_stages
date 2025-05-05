@@ -1,6 +1,5 @@
+import 'package:common/models/itineraries/waypoint.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
-import 'package:crcrme_banque_stages/common/models/waypoints.dart';
-import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -53,7 +52,7 @@ class _RoutingMapState extends State<RoutingMap> {
   //   final manager = OSRMManager();
   //   final route = itineraries
   //       .fromDate(widget.currentDate)!
-  //       .map((e) => LngLat(lat: e.gcs.latitude, lng: e.gcs.longitude))
+  //       .map((e) => LngLat(lat: e.latitude, lng: e.longitude))
   //       .toList();
 
   //   late Road out;
@@ -117,13 +116,13 @@ class _RoutingMapState extends State<RoutingMap> {
           0.0,
           (prev, e) =>
               prev +
-              (e.point.latitude == waypoint.gcs.latitude &&
-                      e.point.longitude == waypoint.gcs.longitude
+              (e.point.latitude == waypoint.latitude &&
+                      e.point.longitude == waypoint.longitude
                   ? 1.0
                   : 0.0));
       out.add(
         Marker(
-          point: LatLng(waypoint.gcs.latitude, waypoint.gcs.longitude),
+          point: LatLng(waypoint.latitude, waypoint.longitude),
           alignment:
               Alignment(0.8, 0.4 * previous), // Centered almost at max right,
           width: markerSize + nameWidth,
@@ -171,8 +170,7 @@ class _RoutingMapState extends State<RoutingMap> {
       padding: const EdgeInsets.all(8),
       child: FlutterMap(
         options: MapOptions(
-            initialCenter:
-                LatLng(waypoint.gcs.latitude, waypoint.gcs.longitude),
+            initialCenter: LatLng(waypoint.latitude, waypoint.longitude),
             initialZoom: 12),
         children: [
           TileLayer(

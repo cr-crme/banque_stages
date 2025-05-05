@@ -1,5 +1,5 @@
 import 'package:common/models/generic/geographic_coordinate_system.dart';
-import 'package:crcrme_banque_stages/common/models/itinerary.dart';
+import 'package:common/models/itineraries/itinerary.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';
@@ -47,13 +47,13 @@ void main() {
       final itinerary = dummyItinerary();
       final gcs = itinerary
           .map((e) => GeographicCoordinateSystem(
-              latitude: e.gcs.latitude, longitude: e.gcs.longitude))
+              latitude: e.latitude, longitude: e.longitude))
           .toList();
 
       int i = 0;
       for (final next in itinerary) {
-        expect(gcs[i].latitude, next.gcs.latitude);
-        expect(gcs[i].longitude, next.gcs.longitude);
+        expect(gcs[i].latitude, next.latitude);
+        expect(gcs[i].longitude, next.longitude);
         i++;
       }
       expect(i, 2);

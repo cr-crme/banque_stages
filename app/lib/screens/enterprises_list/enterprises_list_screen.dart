@@ -1,9 +1,9 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job_list.dart';
+import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/models/job_extension.dart';
-import 'package:crcrme_banque_stages/common/models/waypoints.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
@@ -233,7 +233,7 @@ class _EnterprisesByMap extends StatelessWidget {
 
       out.add(
         Marker(
-          point: LatLng(waypoint.gcs.latitude, waypoint.gcs.longitude),
+          point: LatLng(waypoint.latitude, waypoint.longitude),
           alignment: const Alignment(0.8, 0.0), // Centered almost at max right
           width: markerSize + nameWidth,
           height: markerSize + nameHeight,
@@ -329,7 +329,7 @@ class _EnterprisesByMap extends StatelessWidget {
               child: FlutterMap(
                 options: MapOptions(
                     initialCenter:
-                        LatLng(waypoint.gcs.latitude, waypoint.gcs.longitude),
+                        LatLng(waypoint.latitude, waypoint.longitude),
                     initialZoom: 14),
                 children: [
                   TileLayer(

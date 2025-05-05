@@ -3,7 +3,6 @@ import 'package:common/models/internships/internship.dart';
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/itineraries_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
@@ -131,15 +130,6 @@ extension BanqueStageWidgetTester on WidgetTester {
               if (dummyInternship != null) internships.add(dummyInternship);
               return internships;
             }),
-          if (withItineraries && withAuthentication)
-            ChangeNotifierProxyProvider<AuthProvider, ItinerariesProvider>(
-              create: (context) => ItinerariesProvider(mockMe: true),
-              update: (context, auth, previous) =>
-                  previous!..initializeAuth(auth),
-            ),
-          if (withItineraries && !withAuthentication)
-            ChangeNotifierProvider<ItinerariesProvider>(
-                create: (context) => ItinerariesProvider(mockMe: true)),
           if (withTeachers && withAuthentication)
             ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
               create: (context) => TeachersProvider(
