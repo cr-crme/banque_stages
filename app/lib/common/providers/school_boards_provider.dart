@@ -23,18 +23,31 @@ class SchoolBoardsProvider extends BackendListProvided<SchoolBoard> {
   RequestFields getField([bool asList = false]) =>
       asList ? RequestFields.schoolBoards : RequestFields.schoolBoard;
 
-  static SchoolBoard mySchoolBoardOf(BuildContext context, {listen = false}) {
-    final schoolBoard = SchoolBoardsProvider.of(context, listen: listen);
+  static Future<SchoolBoard?> mySchoolBoardOf(BuildContext context,
+      {listen = false}) async {
+    final schoolBoards = SchoolBoardsProvider.of(context, listen: listen);
     final teacher = TeachersProvider.of(context, listen: false).currentTeacher;
-    return schoolBoard.fromId(teacher.schoolBoardId);
+
+    SchoolBoard? schoolBoard;
+    while (schoolBoard == null) {
+      if (!context.mounted) return null;
+
+      schoolBoard = schoolBoards.fromIdOrNull(teacher.schoolBoardId);
+      if (schoolBoard != null) break;
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    return schoolBoard;
   }
 
-  static School? mySchoolOf(BuildContext context, {listen = false}) {
+  static Future<School?> mySchoolOf(BuildContext context,
+      {listen = false}) async {
     final teacher = TeachersProvider.of(context, listen: false).currentTeacher;
-    final schoolBoard =
-        SchoolBoardsProvider.mySchoolBoardOf(context, listen: listen);
+    final schoolBoards =
+        await SchoolBoardsProvider.mySchoolBoardOf(context, listen: listen);
+    if (schoolBoards == null) return null;
 
-    return schoolBoard.schools
+    return schoolBoards.schools
         .firstWhereOrNull((school) => school.id == teacher.schoolId);
   }
 

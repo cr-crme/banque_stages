@@ -347,9 +347,7 @@ class _RecrutedBy extends StatelessWidget {
 
           final teacher = snapshot.data! as Teacher;
           final schools = SchoolBoardsProvider.of(context);
-          final schoolName = schools.hasId(teacher.schoolId)
-              ? schools.fromId(teacher.schoolId).name
-              : '';
+          final schoolName = schools.fromIdOrNull(teacher.schoolId)?.name ?? '';
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

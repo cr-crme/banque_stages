@@ -60,22 +60,24 @@ class SkillsPageState extends State<SkillsPage> {
 
     Map<Specialization, List<SkillEvaluation>> out = {};
     for (final internship in internships) {
-      final List<Specialization> specializations = [];
+      final List<Specialization?> specializations = [];
 
       // Fetch all the specialization of the current internship
       specializations.add(enterprises
-          .fromId(internship.enterpriseId)
-          .jobs[internship.jobId]
+          .fromIdOrNull(internship.enterpriseId)
+          ?.jobs[internship.jobId]
           .specialization);
       specializations.addAll(internship.extraSpecializationIds
           .map((id) => ActivitySectorsService.specialization(id)));
 
+      specializations.removeWhere((specialization) => specialization == null);
+
       for (final specialization in specializations) {
-        if (!out.containsKey(specialization)) out[specialization] = [];
+        if (!out.containsKey(specialization)) out[specialization!] = [];
 
         for (final evaluation in internship.skillEvaluations) {
           for (final skill in evaluation.skills) {
-            if (specialization.skills
+            if (specialization!.skills
                 .any((e) => e.idWithName == skill.skillName)) {
               if (out[specialization]!
                   .any((e) => e.skillName == skill.skillName)) {

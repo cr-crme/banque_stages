@@ -281,8 +281,10 @@ class _EnterprisesByMap extends StatelessWidget {
     final Map<Enterprise, Waypoint> out = {};
 
     final schoolBoard =
-        SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
-    final school = SchoolBoardsProvider.mySchoolOf(context, listen: false);
+        await SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
+    if (schoolBoard == null || !context.mounted) return out;
+    final school =
+        await SchoolBoardsProvider.mySchoolOf(context, listen: false);
     if (school == null) return out;
 
     final schoolAsEnterprise = Enterprise(

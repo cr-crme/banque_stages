@@ -74,7 +74,8 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
           students.firstWhereOrNull((e) => e.id == internship.studentId);
       if (student == null) continue;
 
-      final enterprise = enterprises.fromId(internship.enterpriseId);
+      final enterprise = enterprises.fromIdOrNull(internship.enterpriseId);
+      if (enterprise == null) continue;
 
       out.add(_JobEnterpriseInternshipStudent(
         internship: internship,
@@ -104,7 +105,8 @@ List<_JobEnterpriseInternshipStudent> _postInternshipEvaluationToDo(context) {
           students.firstWhereOrNull((e) => e.id == internship.studentId);
       if (student == null) continue;
 
-      final enterprise = enterprises.fromId(internship.enterpriseId);
+      final enterprise = enterprises.fromIdOrNull(internship.enterpriseId);
+      if (enterprise == null) continue;
 
       out.add(_JobEnterpriseInternshipStudent(
         internship: internship,

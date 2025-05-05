@@ -98,7 +98,8 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
 
     // Only keep evaluations from the requested students
     return evaluations.where((eval) {
-      final internship = internships.fromId(eval.internshipId);
+      final internship = internships.fromIdOrNull(eval.internshipId);
+      if (internship == null) return false;
       final student = students
           .firstWhereOrNull((student) => student.id == internship.studentId);
       return student?.program == _currentProgramToShow;

@@ -158,17 +158,14 @@ class _StudentInternshipListViewState
                   ? DateFormat.yMMMd('fr_CA').format(internship.dates.end)
                   : DateFormat.yMMMd('fr_CA').format(internship.endDate!);
 
-              late final String specializationIdWithName;
-              try {
-                specializationIdWithName = EnterprisesProvider.of(context)
-                    .fromId(internship.enterpriseId)
-                    .jobs
-                    .fromId(internship.jobId)
-                    .specialization
-                    .idWithName;
-              } catch (e) {
-                specializationIdWithName = '';
-              }
+              final String specializationIdWithName =
+                  EnterprisesProvider.of(context)
+                          .fromIdOrNull(internship.enterpriseId)
+                          ?.jobs
+                          .fromIdOrNull(internship.jobId)
+                          ?.specialization
+                          .idWithName ??
+                      '';
 
               return ExpansionPanel(
                 canTapOnHeader: true,

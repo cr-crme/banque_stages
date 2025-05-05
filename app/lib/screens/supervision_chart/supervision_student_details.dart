@@ -40,7 +40,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
 
     final enterprise = internship != null
         ? EnterprisesProvider.of(context, listen: false)
-            .fromId(internship.enterpriseId)
+            .fromIdOrNull(internship.enterpriseId)
         : null;
     final job = enterprise?.jobs[internship?.jobId];
 

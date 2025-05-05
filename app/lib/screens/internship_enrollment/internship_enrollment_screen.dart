@@ -80,17 +80,21 @@ class _InternshipEnrollmentScreenState
     _generalInfoKey.currentState!.formKey.currentState!.save();
     _scheduleKey.currentState!.formKey.currentState!.save();
     final enterprise = EnterprisesProvider.of(context, listen: false)
-        .fromId(_generalInfoKey.currentState!.enterprise!.id);
+        .fromIdOrNull(_generalInfoKey.currentState!.enterprise!.id);
+    if (enterprise == null) return;
+
+    final signatoryTeacher =
+        TeachersProvider.of(context, listen: false).currentTeacherId;
 
     final schoolBoard =
-        SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
+        await SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
+    if (schoolBoard == null || !mounted) return;
 
     final internship = Internship(
       schoolBoardId: schoolBoard.id,
       creationDate: DateTime.now(),
       studentId: _generalInfoKey.currentState!.student!.id,
-      signatoryTeacherId:
-          TeachersProvider.of(context, listen: false).currentTeacherId,
+      signatoryTeacherId: signatoryTeacher,
       extraSupervisingTeacherIds: [],
       enterpriseId: _generalInfoKey.currentState!.enterprise!.id,
       jobId: enterprise.jobs
@@ -157,11 +161,10 @@ class _InternshipEnrollmentScreenState
   @override
   Widget build(BuildContext context) {
     final enterprises = EnterprisesProvider.of(context);
-    if ((!enterprises.hasId(widget.enterpriseId))) {
-      return Container();
+    final enterprise = enterprises.fromIdOrNull(widget.enterpriseId);
+    if (enterprise == null) {
+      return const Center(child: CircularProgressIndicator());
     }
-
-    final enterprise = enterprises.fromId(widget.enterpriseId);
 
     return Scaffold(
       appBar: AppBar(
