@@ -103,7 +103,9 @@ class JobFormFieldListTileState extends State<JobFormFieldListTile> {
 
         final uniforms = Uniforms(
             status: _uniformKey.currentState?.value ?? UniformStatus.none,
-            uniforms: _uniformTextController.text.split('\n'));
+            uniforms: _uniformKey.currentState!.value! == UniformStatus.none
+                ? null
+                : _uniformTextController.text.split('\n'));
         final protections = Protections(
             status:
                 _protectionsKey.currentState?.value ?? ProtectionsStatus.none,
