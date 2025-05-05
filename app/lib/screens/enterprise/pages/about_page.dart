@@ -321,17 +321,13 @@ class _RecrutedBy extends StatelessWidget {
   }
 
   Future<Teacher?> _getTeacherFromId(BuildContext context) async {
-    final teachers = TeachersProvider.of(context);
-
     Teacher? teacher;
     while (teacher == null) {
       if (!context.mounted) return null;
-
+      final teachers = TeachersProvider.of(context);
       teacher = teachers.fromIdOrNull(enterprise.recruiterId);
-      if (teacher != null) break;
       await Future.delayed(const Duration(milliseconds: 100));
     }
-
     return teacher;
   }
 

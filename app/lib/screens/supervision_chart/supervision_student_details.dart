@@ -31,27 +31,74 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
     );
   }
 
+  Future<Internship?> _getInternship(BuildContext context) async {
+    Internship? internship;
+    while (internship == null) {
+      if (!context.mounted) return null;
+      final internships = InternshipsProvider.of(context, listen: false);
+      internship = internships.byStudentId(studentId).lastOrNull;
+      if (internship != null) break;
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    return internship.isActive ? internship : null;
+  }
+
+  Future<Enterprise?> _getEnterprise(BuildContext context) async {
+    final internship = await _getInternship(context);
+    if (internship == null) return null;
+
+    Enterprise? enterprise;
+    while (enterprise == null) {
+      if (!context.mounted) return null;
+      final enterprises = EnterprisesProvider.of(context, listen: false);
+      enterprise = enterprises.fromIdOrNull(internship.enterpriseId);
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    return enterprise;
+  }
+
+  Future<Job?> _getJob(BuildContext context) async {
+    final internship = await _getInternship(context);
+    if (internship == null || !context.mounted) return null;
+    final enterprise = await _getEnterprise(context);
+    if (enterprise == null || !context.mounted) return null;
+
+    return enterprise.jobs[internship.jobId];
+  }
+
+  Future<Student?> _getStudent(BuildContext context) async {
+    Student? student;
+    while (student == null) {
+      if (!context.mounted) return null;
+      final students = StudentsProvider.studentsInMyGroups(context);
+      student = students.firstWhereOrNull((e) => e.id == studentId);
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    return student;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final internships = InternshipsProvider.of(context).byStudentId(studentId);
-    final internship = internships.isNotEmpty && internships.last.isActive
-        ? internships.last
-        : null;
-
-    final enterprise = internship != null
-        ? EnterprisesProvider.of(context, listen: false)
-            .fromIdOrNull(internship.enterpriseId)
-        : null;
-    final job = enterprise?.jobs[internship?.jobId];
-
-    final student = StudentsProvider.studentsInMyGroups(context)
-        .firstWhereOrNull((e) => e.id == studentId);
-
     return Scaffold(
       appBar: AppBar(
-        title: student == null
-            ? const Text('En attente des données')
-            : Row(children: [
+        title: FutureBuilder<List>(
+            future: Future.wait([
+              _getInternship(context),
+              _getEnterprise(context),
+              _getJob(context),
+              _getStudent(context),
+            ]),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.data == null) {
+                return Text('En attente des données');
+              }
+
+              final enterprise = snapshot.data?[1] as Enterprise?;
+              final student = snapshot.data?[3] as Student?;
+              if (student == null) return const Text('Aucun élève trouvé');
+
+              return Row(children: [
                 student.avatar,
                 const SizedBox(width: 12),
                 Column(
@@ -64,12 +111,32 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                     )
                   ],
                 ),
-              ]),
+              ]);
+            }),
       ),
       body: SingleChildScrollView(
-        child: student == null
-            ? const Center(child: CircularProgressIndicator())
-            : Column(
+        child: FutureBuilder<List>(
+            future: Future.wait([
+              _getInternship(context),
+              _getEnterprise(context),
+              _getJob(context),
+              _getStudent(context),
+            ]),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.data == null) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final internship = snapshot.data?[0] as Internship?;
+              final enterprise = snapshot.data?[1] as Enterprise?;
+              final job = snapshot.data?[2] as Job?;
+              final student = snapshot.data?[3] as Student?;
+              if (student == null) {
+                return const Center(child: Text('Aucun élève trouvé'));
+              }
+
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (internship == null)
@@ -97,7 +164,8 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                     onTap: () => _navigateToStudentInternship(context),
                   ),
                 ],
-              ),
+              );
+            }),
       ),
     );
   }

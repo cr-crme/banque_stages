@@ -361,34 +361,24 @@ class _StudentTile extends StatelessWidget {
   final bool isInternshipSupervised;
 
   Future<Enterprise?> _getEnterprise(BuildContext context) async {
-    final enterprises = EnterprisesProvider.of(context, listen: false);
-
     Enterprise? enterprise;
     while (enterprise == null) {
       if (!context.mounted) return null;
-
+      final enterprises = EnterprisesProvider.of(context, listen: false);
       enterprise = enterprises.fromIdOrNull(internship.enterpriseId);
-      if (enterprise != null) break;
-
       await Future.delayed(const Duration(milliseconds: 100));
     }
-
     return enterprise;
   }
 
   Future<Specialization?> _getSpecialization(BuildContext context) async {
     Specialization? specialization;
 
-    final enterprise = await _getEnterprise(context);
-    if (enterprise == null) return null;
-
-    while (specialization == null) {
+    while (specialization == null && context.mounted) {
       if (!context.mounted) return null;
-
+      final enterprise = await _getEnterprise(context);
       specialization =
-          enterprise.jobs.fromIdOrNull(internship.jobId)?.specialization;
-      if (specialization != null) break;
-
+          enterprise?.jobs.fromIdOrNull(internship.jobId)?.specialization;
       await Future.delayed(const Duration(milliseconds: 100));
     }
 
@@ -397,7 +387,7 @@ class _StudentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<List>(
         future: Future.wait([
           _getEnterprise(context),
           _getSpecialization(context),
@@ -407,8 +397,8 @@ class _StudentTile extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final enterprise = (snapshot.data as List)[0] as Enterprise?;
-          final specialization = (snapshot.data as List)[1] as Specialization?;
+          final enterprise = snapshot.data![0] as Enterprise?;
+          final specialization = snapshot.data![1] as Specialization?;
           if (enterprise == null || specialization == null) {
             return const Center(child: CircularProgressIndicator());
           }
