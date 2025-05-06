@@ -36,7 +36,8 @@ void main() {
       // This test is expected to build a Waypoint different from the sent dummy
       // because it uses the http request service which we can't test so far
       final waypoint = await Waypoint.fromAddress(
-          title: 'My wonderful place', address: 'Here');
+          title: 'My wonderful place',
+          address: Address(street: '123 rue de la rue'));
 
       // Test that the waypoint is the default value for the Placemark (address)
       expect(waypoint.id, isNotEmpty);

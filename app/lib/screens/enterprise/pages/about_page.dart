@@ -238,7 +238,6 @@ class _AvailablePlace extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                              // TODO Fix the save
                               onPressed: positionsOffered == 0
                                   ? null
                                   : () => onChanged(job, positionsOffered - 1),

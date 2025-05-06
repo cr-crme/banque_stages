@@ -14,7 +14,7 @@ class ShowAddressDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Waypoint>(
-        future: Waypoint.fromAddress(title: '', address: address.toString()),
+        future: Waypoint.fromAddress(title: '', address: address),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(

@@ -1,3 +1,4 @@
+import 'package:common/models/generic/address.dart';
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/itineraries/waypoint.dart';
@@ -57,7 +58,7 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
     _waypoints.add(
       await Waypoint.fromAddress(
         title: 'École',
-        address: school.address.toString(),
+        address: school.address,
         priority: VisitingPriority.school,
       ),
     );
@@ -76,7 +77,7 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
         await Waypoint.fromAddress(
           title: '${student.firstName} ${student.lastName[0]}.',
           subtitle: enterprise.name,
-          address: enterprise.address.toString(),
+          address: enterprise.address ?? Address.empty,
           priority: internship.visitingPriority,
         ),
       );
@@ -122,7 +123,10 @@ class ItineraryScreen extends StatefulWidget {
 }
 
 class _ItineraryScreenState extends State<ItineraryScreen> {
-  List<double>? _distances;
+  late final _routingController = RoutingController(
+      destinations: widget.waypoints,
+      itinerary: _currentItinerary,
+      onItineraryChanged: (_) => setState(() {}));
 
   late final Itinerary _currentItinerary =
       ItinerariesHelpers.fromDate(context, _currentDate, listen: false)
@@ -131,22 +135,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   DateTime _currentDate = DateTime.now();
 
-  void setRouteDistances(List<double>? legs) {
-    _distances = legs;
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
-  }
-
-  void addStopToCurrentItinerary(int indexInWaypoints) {
-    _currentItinerary
-        .add(widget.waypoints[indexInWaypoints].copyWith(forceNewId: true));
-    setState(() {});
-  }
-
-  void removeStopToCurrentItinerary(int indexInItinerary) {
-    _currentItinerary.remove(indexInItinerary);
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -154,7 +142,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         _showDate(),
         if (widget.waypoints.isNotEmpty) _map(),
         if (widget.waypoints.isEmpty) const CircularProgressIndicator(),
-        _Distance(_distances, itinerary: _currentItinerary),
+        _Distance(_routingController.distances, itinerary: _currentItinerary),
         const SizedBox(height: 20),
         _studentsToVisitWidget(context),
       ],
@@ -214,10 +202,10 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.5,
         child: RoutingMap(
+          controller: _routingController,
           waypoints: widget.waypoints,
-          currentDate: _currentDate,
-          onClickWaypointCallback: addStopToCurrentItinerary,
-          onComputedDistancesCallback: setRouteDistances,
+          itinerary: _currentItinerary,
+          onItineraryChanged: (_) => setState(() {}),
         ));
   }
 
@@ -240,7 +228,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                 key: ValueKey(way.id),
                 name: way.title,
                 waypoint: way,
-                onDelete: () => removeStopToCurrentItinerary(index),
+                onDelete: () => _routingController.removeFromItinerary(index),
               );
             },
             itemCount: _currentItinerary.length,

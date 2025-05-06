@@ -1,21 +1,9 @@
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:common/models/generic/geographic_coordinate_system.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart' as routing_client;
-
-Address _placemarkToAddress(Placemark placemark) {
-  return Address(
-    civicNumber: placemark.thoroughfare == null
-        ? null
-        : int.tryParse(placemark.thoroughfare!),
-    street: placemark.street,
-    apartment: placemark.subThoroughfare,
-    city: placemark.locality,
-    postalCode: placemark.postalCode,
-  );
-}
 
 class Waypoint extends ItemSerializable {
   final String title;
@@ -76,19 +64,14 @@ class Waypoint extends ItemSerializable {
     priority = VisitingPriority.notApplicable,
     showTitle = true,
   }) async {
-    late Placemark placemark;
-    try {
-      placemark = (await placemarkFromCoordinates(latitude, longitude)).first;
-    } catch (e) {
-      placemark = const Placemark();
-    }
-
     return Waypoint(
       title: title,
       subtitle: subtitle,
       latitude: latitude,
       longitude: longitude,
-      address: _placemarkToAddress(placemark),
+      address: (await Address.fromCoordinates(GeographicCoordinateSystem(
+              latitude: latitude, longitude: longitude))) ??
+          Address.empty,
       priority: priority,
       showTitle: showTitle,
     );
@@ -97,24 +80,18 @@ class Waypoint extends ItemSerializable {
   static Future<Waypoint> fromAddress({
     required String title,
     String? subtitle,
-    required String address,
+    required Address address,
     priority = VisitingPriority.notApplicable,
     showTitle = true,
   }) async {
-    late List<Location> locations;
-    try {
-      locations = await locationFromAddress(address);
-    } catch (e) {
-      locations = [
-        Location(latitude: 0, longitude: 0, timestamp: DateTime.now())
-      ];
-    }
-    var first = locations.first;
-    return Waypoint.fromCoordinates(
+    final gcs =
+        await GeographicCoordinateSystem.fromAddress(address.toString());
+    return Waypoint(
       title: title,
       subtitle: subtitle,
-      latitude: first.latitude,
-      longitude: first.longitude,
+      latitude: gcs.latitude,
+      longitude: gcs.longitude,
+      address: address,
       priority: priority,
       showTitle: showTitle,
     );

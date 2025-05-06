@@ -1,5 +1,6 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job_list.dart';
+import 'package:common/models/generic/address.dart';
 import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
@@ -296,12 +297,12 @@ class _EnterprisesByMap extends StatelessWidget {
       contact: Person.empty,
       address: school.address,
     );
-    out[schoolAsEnterprise] = await Waypoint.fromAddress(
-        title: school.name, address: school.address.toString());
+    out[schoolAsEnterprise] =
+        await Waypoint.fromAddress(title: school.name, address: school.address);
 
     for (final enterprise in enterprises) {
       out[enterprise] = await Waypoint.fromAddress(
-          title: enterprise.name, address: enterprise.address.toString());
+          title: enterprise.name, address: enterprise.address ?? Address.empty);
     }
     return out;
   }

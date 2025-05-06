@@ -1,3 +1,4 @@
+import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/waypoint.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
@@ -5,96 +6,119 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
-import 'package:routing_client_dart/routing_client_dart.dart';
+import 'package:routing_client_dart/routing_client_dart.dart' as routing_client;
+
+class RoutingController {
+  RoutingController({
+    required this.destinations,
+    required Itinerary itinerary,
+    this.onItineraryChanged,
+  }) : _itinerary = itinerary;
+
+  final List<Waypoint> destinations;
+  final Function(int index)? onItineraryChanged;
+  final Itinerary _itinerary;
+
+  final _routingManager = routing_client.RoutingManager();
+  Function? _triggerSetState;
+  routing_client.Route? _route;
+  List<double> _distances = [];
+  List<double> get distances => _distances;
+
+  void addToItinerary(int destinationIndex) {
+    _itinerary.add(destinations[destinationIndex].copyWith(forceNewId: true));
+    _updateInternal();
+  }
+
+  void removeFromItinerary(int index) {
+    _itinerary.remove(index);
+    _updateInternal();
+  }
+
+  Future<void> _updateInternal() async {
+    _route = await _getActivateRoute();
+
+    if (_route != null) {
+      _distances = _routeToDistances(_route);
+    } else {
+      _distances = [];
+    }
+
+    if (_triggerSetState != null) {
+      _triggerSetState!();
+    }
+  }
+
+  Future<routing_client.Route?> _getActivateRoute() async {
+    if (_itinerary.isEmpty) return null;
+
+    final out = await _routingManager.getRoute(
+        request: routing_client.OSRMRequest.route(
+      waypoints: _itinerary
+          .map((e) => routing_client.LngLat(lat: e.latitude, lng: e.longitude))
+          .toList(),
+      geometries: routing_client.Geometries.polyline,
+      steps: true,
+      languages: routing_client.Languages.en,
+    ));
+
+    return out;
+  }
+
+  List<double> _routeToDistances(routing_client.Route? route) {
+    List<double> distances = [];
+
+    if (route != null) {
+      for (final leg in route.instructions) {
+        distances.add(leg.distance);
+      }
+    }
+
+    return distances;
+  }
+}
 
 class RoutingMap extends StatefulWidget {
   const RoutingMap({
     super.key,
-    required this.currentDate,
+    required this.controller,
     required this.waypoints,
-    this.onClickWaypointCallback,
+    required this.itinerary,
+    this.onItineraryChanged,
     this.onComputedDistancesCallback,
   });
 
+  final RoutingController controller;
   final List<Waypoint> waypoints;
-  final Function(int index)? onClickWaypointCallback;
+  final Function(int index)? onItineraryChanged;
   final Function(List<double>?)? onComputedDistancesCallback;
-  final DateTime currentDate;
+  final Itinerary itinerary;
 
   @override
   State<RoutingMap> createState() => _RoutingMapState();
 }
 
 class _RoutingMapState extends State<RoutingMap> {
-  // Future<Road?> _road = Future<Road?>.value();
+  @override
+  void initState() {
+    super.initState();
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   computeRoute();
-  // }
+    widget.controller._triggerSetState = () {
+      setState(() {});
+    };
+  }
 
-  // void computeRoute() {
-  //   final itineraries = Provider.of<ItinerariesProvider>(context);
-  //   _road = _getActivatedRoute(itineraries);
-  //   setState(() {});
-  // }
+  List<Polyline> _routeToPolyline(routing_client.Route? route) {
+    if (route == null || route.polyline == null) return [Polyline(points: [])];
 
-  // Future<Road?> _getActivatedRoute(ItinerariesProvider itineraries) async {
-  //   if (itineraries.isEmpty || !itineraries.hasDate(widget.currentDate)) {
-  //     if (widget.onComputedDistancesCallback != null) {
-  //       widget.onComputedDistancesCallback!([]);
-  //     }
-  //     return null;
-  //   }
-
-  //   final manager = OSRMManager();
-  //   final route = itineraries
-  //       .fromDate(widget.currentDate)!
-  //       .map((e) => LngLat(lat: e.latitude, lng: e.longitude))
-  //       .toList();
-
-  //   late Road out;
-  //   try {
-  //     out = await manager.getRoad(
-  //       waypoints: route,
-  //       geometries: Geometries.geojson,
-  //     );
-  //   } catch (e) {
-  //     out = Road(distance: 0, duration: 0, polylineEncoded: null);
-  //   }
-
-  //   if (widget.onComputedDistancesCallback != null) {
-  //     widget.onComputedDistancesCallback!(_roadToDistances(out));
-  //   }
-
-  //   return out;
-  // }
-
-  // List<Polyline> _roadToPolyline(Road? road) {
-  //   if (road == null || road.polyline == null) return [Polyline(points: [])];
-
-  //   return [
-  //     Polyline(
-  //       points: road.polyline!.map((e) => LatLng(e.lat, e.lng)).toList(),
-  //       strokeWidth: 4,
-  //       color: Theme.of(context).primaryColor,
-  //     )
-  //   ];
-  // }
-
-  // List<double> _roadToDistances(Road? road) {
-  //   List<double> distances = [];
-
-  //   if (road != null) {
-  //     for (final leg in road.details.roadLegs) {
-  //       distances.add(leg.distance);
-  //     }
-  //   }
-
-  //   return distances;
-  // }
+    return [
+      Polyline(
+        points: route.polyline!.map((e) => LatLng(e.lat, e.lng)).toList(),
+        strokeWidth: 4,
+        color: Theme.of(context).primaryColor,
+      )
+    ];
+  }
 
   void _toggleName(index) {
     widget.waypoints[index] = widget.waypoints[index]
@@ -130,9 +154,7 @@ class _RoutingMapState extends State<RoutingMap> {
           child: Row(
             children: [
               GestureDetector(
-                onTap: widget.onClickWaypointCallback == null
-                    ? null
-                    : () => widget.onClickWaypointCallback!(i),
+                onTap: () => widget.controller.addToItinerary(i),
                 onLongPress: () => _toggleName(i),
                 child: Container(
                   decoration: BoxDecoration(
@@ -165,12 +187,12 @@ class _RoutingMapState extends State<RoutingMap> {
 
   @override
   Widget build(BuildContext context) {
-    final waypoint = widget.waypoints[0];
     return Padding(
       padding: const EdgeInsets.all(8),
       child: FlutterMap(
         options: MapOptions(
-            initialCenter: LatLng(waypoint.latitude, waypoint.longitude),
+            initialCenter: LatLng(widget.waypoints.first.latitude,
+                widget.waypoints.first.longitude),
             initialZoom: 12),
         children: [
           TileLayer(
@@ -178,13 +200,9 @@ class _RoutingMapState extends State<RoutingMap> {
             userAgentPackageName: 'dev.fleaflet.flutter_map.example',
             tileProvider: CancellableNetworkTileProvider(),
           ),
-          // FutureBuilder<Road?>(
-          //   future: _road,
-          //   builder: (context, road) {
-          //     if (!road.hasData || widget.waypoints.isEmpty) return Container();
-          //     return PolylineLayer(polylines: _roadToPolyline(road.data));
-          //   },
-          // ),
+          if (widget.controller._route != null)
+            PolylineLayer(
+                polylines: _routeToPolyline(widget.controller._route)),
           MarkerLayer(markers: _waypointsToMarkers()),
           const ZoomButtons(),
         ],
