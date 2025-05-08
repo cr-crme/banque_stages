@@ -126,7 +126,11 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   late final _routingController = RoutingController(
       destinations: widget.waypoints,
       itinerary: _currentItinerary,
-      onItineraryChanged: (_) => setState(() {}));
+      onItineraryChanged: _onItineraryChanged);
+
+  void _onItineraryChanged(int index) {
+    setState(() {});
+  }
 
   late final Itinerary _currentItinerary =
       ItinerariesHelpers.fromDate(context, _currentDate, listen: false)

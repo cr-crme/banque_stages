@@ -27,15 +27,15 @@ class RoutingController {
 
   void addToItinerary(int destinationIndex) {
     _itinerary.add(destinations[destinationIndex].copyWith(forceNewId: true));
-    _updateInternal();
+    _updateInternal(destinationIndex);
   }
 
   void removeFromItinerary(int index) {
     _itinerary.remove(index);
-    _updateInternal();
+    _updateInternal(index);
   }
 
-  Future<void> _updateInternal() async {
+  Future<void> _updateInternal(int destinationIndex) async {
     _route = await _getActivateRoute();
 
     if (_route != null) {
@@ -47,10 +47,13 @@ class RoutingController {
     if (_triggerSetState != null) {
       _triggerSetState!();
     }
+    if (onItineraryChanged != null) {
+      onItineraryChanged!(destinationIndex);
+    }
   }
 
   Future<routing_client.Route?> _getActivateRoute() async {
-    if (_itinerary.isEmpty) return null;
+    if (_itinerary.length <= 1) return null;
 
     final out = await _routingManager.getRoute(
         request: routing_client.OSRMRequest.route(
@@ -69,9 +72,18 @@ class RoutingController {
     List<double> distances = [];
 
     if (route != null) {
+      distances.add(0);
       for (final leg in route.instructions) {
-        distances.add(leg.distance);
+        // Instruction that has a distance of 0, is a sub-destination. Otherwise
+        // is it part part of the way to get to this sub-destination.
+        if (leg.distance > 0) {
+          distances[distances.length - 1] += leg.distance;
+        } else {
+          distances.add(0);
+        }
       }
+      // Pop the last item which is added by the previous loop.
+      distances.removeLast();
     }
 
     return distances;
