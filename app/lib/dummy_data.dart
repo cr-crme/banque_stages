@@ -240,7 +240,7 @@ Future<void> _addDummyEnterprises(
       contactFunction: 'Directeur',
       address: Address(
           civicNumber: 1853,
-          street: 'Chem. Rockland',
+          street: 'Chemin Rockland',
           city: 'Mont-Royal',
           postalCode: 'H3P 2Y7'),
       phone: PhoneNumber.fromString('514 999 6655'),
@@ -248,7 +248,7 @@ Future<void> _addDummyEnterprises(
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 1853,
-          street: 'Chem. Rockland',
+          street: 'Chemin Rockland',
           city: 'Mont-Royal',
           postalCode: 'H3P 2Y7'),
       neq: '4567900954',
@@ -494,7 +494,7 @@ Future<void> _addDummyEnterprises(
       contactFunction: 'Gérante',
       address: Address(
           civicNumber: 1415,
-          street: 'Rue Jarry E',
+          street: 'Rue Jarry Est',
           city: 'Montréal',
           postalCode: 'H2E 1A7'),
       phone: PhoneNumber.fromString('514 111 2222'),
@@ -543,7 +543,7 @@ Future<void> _addDummyEnterprises(
       contactFunction: 'Pharmacienne',
       address: Address(
           civicNumber: 3611,
-          street: 'Rue Jarry E',
+          street: 'Rue Jarry Est',
           city: 'Montréal',
           postalCode: 'H1Z 2G1'),
       phone: PhoneNumber.fromString('514 654 5444'),
@@ -551,7 +551,7 @@ Future<void> _addDummyEnterprises(
       website: 'fausse.ca',
       headquartersAddress: Address(
           civicNumber: 3611,
-          street: 'Rue Jarry E',
+          street: 'Rue Jarry Est',
           city: 'Montréal',
           postalCode: 'H1Z 2G1'),
       neq: '3456789933',
