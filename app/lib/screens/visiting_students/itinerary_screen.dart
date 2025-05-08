@@ -132,12 +132,27 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     setState(() {});
   }
 
-  late final Itinerary _currentItinerary =
-      ItinerariesHelpers.fromDate(context, _currentDate, listen: false)
-              ?.copyWith() ??
-          Itinerary(date: _currentDate);
+  final _itineraries = <DateTime, Itinerary>{};
+  void _selectItinerary(DateTime date) {
+    if (_itineraries[date] == null) {
+      _itineraries[date] =
+          ItinerariesHelpers.fromDate(context, date)?.copyWith() ??
+              Itinerary(date: date);
+    }
+    _currentItinerary = _itineraries[date]!;
+  }
 
-  DateTime _currentDate = DateTime.now();
+  late DateTime _currentDate;
+  late Itinerary _currentItinerary;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final date = DateTime.now();
+    _currentDate = DateTime(date.year, date.month, date.day);
+    _selectItinerary(_currentDate);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +211,9 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
     if (newDate == null || !mounted) return;
 
-    _currentDate = newDate;
+    // Keep only granularity of days
+    _currentDate = DateTime(newDate.year, newDate.month, newDate.day);
+    _selectItinerary(_currentDate);
 
     setState(() {});
   }
