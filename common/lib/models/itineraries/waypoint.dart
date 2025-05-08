@@ -169,8 +169,7 @@ class Waypoint extends ItemSerializable {
 
   @override
   String toString() {
-    return '$title ${subtitle != null ? '($subtitle)' : ''}, '
-        '$address (${latitude.toStringAsFixed(6)}, ${longitude.toStringAsFixed(6)}), $priority';
+    return '${subtitle == null ? '' : '$subtitle\n'}$address\n';
   }
 
   @override

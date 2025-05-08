@@ -340,7 +340,7 @@ class _TabIcon extends StatelessWidget {
   }
 }
 
-class _StudentTile extends StatelessWidget {
+class _StudentTile extends StatefulWidget {
   const _StudentTile({
     super.key,
     required this.student,
@@ -360,126 +360,122 @@ class _StudentTile extends StatelessWidget {
   final bool isManagingStudents;
   final bool isInternshipSupervised;
 
-  Future<Enterprise?> _getEnterprise(BuildContext context) async {
-    Enterprise? enterprise;
-    while (enterprise == null) {
-      if (!context.mounted) return null;
-      final enterprises = EnterprisesProvider.of(context, listen: false);
-      enterprise = enterprises.fromIdOrNull(internship.enterpriseId);
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-    return enterprise;
+  @override
+  State<_StudentTile> createState() => _StudentTileState();
+}
+
+class _StudentTileState extends State<_StudentTile> {
+  Enterprise? _enterprise;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getEnterprise(context);
   }
 
-  Future<Specialization?> _getSpecialization(BuildContext context) async {
-    Specialization? specialization;
-
-    while (specialization == null && context.mounted) {
-      if (!context.mounted) return null;
-      final enterprise = await _getEnterprise(context);
-      specialization =
-          enterprise?.jobs.fromIdOrNull(internship.jobId)?.specialization;
+  Future<void> _getEnterprise(BuildContext context) async {
+    while (true) {
+      if (!context.mounted) {
+        _enterprise = null;
+        break;
+      }
+      final enterprises = EnterprisesProvider.of(context, listen: false);
+      _enterprise = enterprises.fromIdOrNull(widget.internship.enterpriseId);
+      if (_enterprise != null) break;
       await Future.delayed(const Duration(milliseconds: 100));
     }
+    setState(() {});
+  }
 
-    return specialization;
+  Specialization? _getSpecialization(BuildContext context) {
+    if (_enterprise == null) return null;
+    return _enterprise!.jobs
+        .fromIdOrNull(widget.internship.jobId)
+        ?.specialization;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List>(
-        future: Future.wait([
-          _getEnterprise(context),
-          _getSpecialization(context),
-        ]),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    return Builder(builder: (context) {
+      final specialization = _getSpecialization(context);
+      if (_enterprise == null || specialization == null) return Container();
 
-          final enterprise = snapshot.data![0] as Enterprise?;
-          final specialization = snapshot.data![1] as Specialization?;
-          if (enterprise == null || specialization == null) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          return Card(
-            elevation: 10,
-            child: ListTile(
-              onTap: onTap,
-              leading: SizedBox(
-                height: double.infinity, // This centers the avatar
-                child: student.avatar,
+      return Card(
+        elevation: 10,
+        child: ListTile(
+          onTap: widget.onTap,
+          leading: SizedBox(
+            height: double.infinity, // This centers the avatar
+            child: widget.student.avatar,
+          ),
+          tileColor: widget.onTap == null ? disabled.withAlpha(50) : null,
+          title: Text(widget.student.fullName),
+          isThreeLine: true,
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _enterprise!.name,
+                style: const TextStyle(color: Colors.black87),
               ),
-              tileColor: onTap == null ? disabled.withAlpha(50) : null,
-              title: Text(student.fullName),
-              isThreeLine: true,
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    enterprise.name,
-                    style: const TextStyle(color: Colors.black87),
-                  ),
-                  AutoSizeText(
-                    specialization.name,
-                    maxLines: 2,
-                    style: const TextStyle(color: Colors.black87),
-                  ),
-                ],
+              AutoSizeText(
+                specialization.name,
+                maxLines: 2,
+                style: const TextStyle(color: Colors.black87),
               ),
-              trailing: isManagingStudents
-                  ? InkWell(
+            ],
+          ),
+          trailing: widget.isManagingStudents
+              ? InkWell(
+                  borderRadius: BorderRadius.circular(25),
+                  onTap: widget.onTap,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(
+                        widget.isInternshipSupervised
+                            ? Icons.person_add
+                            : Icons.person_remove,
+                        color: widget.onTap == null
+                            ? disabled
+                            : Theme.of(context).primaryColor),
+                  ),
+                )
+              : Ink(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 5.0,
+                        spreadRadius: 0.0,
+                        offset: Offset(2.0, 2.0),
+                      )
+                    ],
+                    border: Border.all(
+                        color: Theme.of(context).primaryColor.withAlpha(100),
+                        width: 2.5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Tooltip(
+                    message:
+                        'Niveau de priorité pour les visites de supervision',
+                    child: InkWell(
+                      onTap: widget.onUpdatePriority,
                       borderRadius: BorderRadius.circular(25),
-                      onTap: onTap,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 45,
+                        height: 45,
                         child: Icon(
-                            isInternshipSupervised
-                                ? Icons.person_add
-                                : Icons.person_remove,
-                            color: onTap == null
-                                ? disabled
-                                : Theme.of(context).primaryColor),
-                      ),
-                    )
-                  : Ink(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 5.0,
-                            spreadRadius: 0.0,
-                            offset: Offset(2.0, 2.0),
-                          )
-                        ],
-                        border: Border.all(
-                            color:
-                                Theme.of(context).primaryColor.withAlpha(100),
-                            width: 2.5),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Tooltip(
-                        message:
-                            'Niveau de priorité pour les visites de supervision',
-                        child: InkWell(
-                          onTap: onUpdatePriority,
-                          borderRadius: BorderRadius.circular(25),
-                          child: SizedBox(
-                            width: 45,
-                            height: 45,
-                            child: Icon(
-                              internship.visitingPriority.icon,
-                              color: internship.visitingPriority.color,
-                              size: 30,
-                            ),
-                          ),
+                          widget.internship.visitingPriority.icon,
+                          color: widget.internship.visitingPriority.color,
+                          size: 30,
                         ),
                       ),
                     ),
-            ),
-          );
-        });
+                  ),
+                ),
+        ),
+      );
+    });
   }
 }
