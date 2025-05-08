@@ -24,6 +24,12 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
   final List<Waypoint> _waypoints = [];
   final _scrollController = ScrollController();
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   Future<T?> _waitFor<T>(
       Function(BuildContext context, {bool listen}) providerOf) async {
     var provided = providerOf(context, listen: false);
@@ -125,10 +131,10 @@ class ItineraryScreen extends StatefulWidget {
 class _ItineraryScreenState extends State<ItineraryScreen> {
   late final _routingController = RoutingController(
       destinations: widget.waypoints,
-      itinerary: _currentItinerary,
+      itinerary: currentItinerary,
       onItineraryChanged: _onItineraryChanged);
 
-  void _onItineraryChanged(int index) {
+  void _onItineraryChanged() {
     setState(() {});
   }
 
@@ -139,11 +145,14 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
           ItinerariesHelpers.fromDate(context, date)?.copyWith() ??
               Itinerary(date: date);
     }
-    _currentItinerary = _itineraries[date]!;
+    _routingController.setItinerary(context, _itineraries[date]!);
   }
 
   late DateTime _currentDate;
-  late Itinerary _currentItinerary;
+  Itinerary get currentItinerary {
+    if (_itineraries[_currentDate] == null) _selectItinerary(_currentDate);
+    return _itineraries[_currentDate]!;
+  }
 
   @override
   void initState() {
@@ -156,15 +165,19 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _showDate(),
-        if (widget.waypoints.isNotEmpty) _map(),
-        if (widget.waypoints.isEmpty) const CircularProgressIndicator(),
-        _Distance(_routingController.distances, itinerary: _currentItinerary),
-        const SizedBox(height: 20),
-        _studentsToVisitWidget(context),
-      ],
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) =>
+          didPop ? _routingController.saveItinerary(context) : null,
+      child: Column(
+        children: [
+          _showDate(),
+          if (widget.waypoints.isNotEmpty) _map(),
+          if (widget.waypoints.isEmpty) const CircularProgressIndicator(),
+          _Distance(_routingController.distances, itinerary: currentItinerary),
+          const SizedBox(height: 20),
+          _studentsToVisitWidget(context),
+        ],
+      ),
     );
   }
 
@@ -225,7 +238,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         child: RoutingMap(
           controller: _routingController,
           waypoints: widget.waypoints,
-          itinerary: _currentItinerary,
+          itinerary: currentItinerary,
           onItineraryChanged: (_) => setState(() {}),
         ));
   }
@@ -235,16 +248,16 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(height: 8),
-        if (_currentItinerary.isNotEmpty)
+        if (currentItinerary.isNotEmpty)
           ReorderableListView.builder(
             onReorder: (oldIndex, newIndex) {
-              _currentItinerary.move(oldIndex, newIndex);
+              currentItinerary.move(oldIndex, newIndex);
               setState(() {});
             },
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              final way = _currentItinerary[index];
+              final way = currentItinerary[index];
               return WaypointCard(
                 key: ValueKey(way.id),
                 name: way.title,
@@ -252,7 +265,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                 onDelete: () => _routingController.removeFromItinerary(index),
               );
             },
-            itemCount: _currentItinerary.length,
+            itemCount: currentItinerary.length,
           ),
       ],
     );

@@ -9,7 +9,6 @@ class ItinerariesHelpers {
           {listen = true}) =>
       TeachersProvider.of(context, listen: listen).currentTeacher.itineraries;
 
-  // Make this list act as a Map<DateTime, Itinerary> using Itinerary.date
   static void add(BuildContext context, Itinerary item, {bool notify = false}) {
     final teachers = TeachersProvider.of(context, listen: notify);
     final me = teachers.currentTeacher;
@@ -23,10 +22,6 @@ class ItinerariesHelpers {
     }
     teachers.replace(me.copyWith(itineraries: itineraries));
   }
-
-  static Future<void> replace(BuildContext context, Itinerary item,
-          {bool notify = false}) async =>
-      add(context, item, notify: notify);
 
   static final _dateFormat = DateFormat('dd_MM_yyyy');
 

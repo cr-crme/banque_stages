@@ -1,6 +1,7 @@
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/waypoint.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
+import 'package:crcrme_banque_stages/common/providers/itineraries_helpers.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -16,8 +17,21 @@ class RoutingController {
   }) : _itinerary = itinerary;
 
   final List<Waypoint> destinations;
-  final Function(int index)? onItineraryChanged;
-  final Itinerary _itinerary;
+  final Function()? onItineraryChanged;
+  Itinerary _itinerary;
+  bool _hasChanged = false;
+
+  void saveItinerary(BuildContext context) {
+    if (_hasChanged) ItinerariesHelpers.add(context, _itinerary);
+  }
+
+  void setItinerary(BuildContext context, Itinerary itinerary) {
+    saveItinerary(context);
+
+    _itinerary = itinerary;
+    _hasChanged = false;
+    _updateInternal();
+  }
 
   final _routingManager = routing_client.RoutingManager();
   Function? _triggerSetState;
@@ -27,15 +41,17 @@ class RoutingController {
 
   void addToItinerary(int destinationIndex) {
     _itinerary.add(destinations[destinationIndex].copyWith(forceNewId: true));
-    _updateInternal(destinationIndex);
+    _hasChanged = true;
+    _updateInternal();
   }
 
   void removeFromItinerary(int index) {
     _itinerary.remove(index);
-    _updateInternal(index);
+    _hasChanged = true;
+    _updateInternal();
   }
 
-  Future<void> _updateInternal(int destinationIndex) async {
+  Future<void> _updateInternal() async {
     _route = await _getActivateRoute();
 
     if (_route != null) {
@@ -48,7 +64,7 @@ class RoutingController {
       _triggerSetState!();
     }
     if (onItineraryChanged != null) {
-      onItineraryChanged!(destinationIndex);
+      onItineraryChanged!();
     }
   }
 
