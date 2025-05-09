@@ -196,9 +196,9 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     required SchoolBoard? previous,
   }) async {
     if (previous == null) {
-      _insertToSchoolBoards(schoolBoard);
+      await _insertToSchoolBoards(schoolBoard);
     } else {
-      _updateToSchoolBoards(schoolBoard, previous);
+      await _updateToSchoolBoards(schoolBoard, previous);
     }
 
     // Insert the schools

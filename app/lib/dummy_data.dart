@@ -76,21 +76,61 @@ Future<void> _removeAll(
 Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   dev.log('Adding dummy schools');
 
+  // Test the add function
+  final schools = [
+    School(
+        id: DevAuth.devMySchoolId,
+        name: 'Mon école',
+        address: Address(
+            civicNumber: 9105,
+            street: 'Rue Verville',
+            city: 'Montréal',
+            postalCode: 'H2N 1Y5')),
+    School(
+        name: 'Ma deuxième école',
+        address: Address(
+            civicNumber: 9105,
+            street: 'Rue Verville',
+            city: 'Montréal',
+            postalCode: 'H2N 1Y5')),
+  ];
   schoolBoards.add(SchoolBoard(
-    id: DevAuth.devMySchoolBoardId,
-    name: 'Ma commission scolaire',
-    schools: [
-      School(
-          id: DevAuth.devMySchoolId,
-          name: 'Mon école',
-          address: Address(
-              civicNumber: 9105,
-              street: 'Rue Verville',
-              city: 'Montréal',
-              postalCode: 'H2N 1Y5'))
-    ],
-  ));
+      id: DevAuth.devMySchoolBoardId,
+      name: 'Ma commission scolaire',
+      schools: schools.toList()));
   await _waitForDatabaseUpdate(schoolBoards, 1);
+
+  // Test the replace function
+
+  // Change the name of the schoolboard
+  await schoolBoards.replace(
+      schoolBoards[0].copyWith(name: 'Ma première commission scolaire'));
+  while (schoolBoards[0].name != 'Ma première commission scolaire') {
+    await Future.delayed(const Duration(milliseconds: 100));
+  }
+
+  // Modify the name of the first school
+  schools[0] = schools[0].copyWith(name: 'Ma première école');
+  await schoolBoards
+      .replace(schoolBoards[0].copyWith(schools: schools.toList()));
+  while (!schoolBoards[0].schools.any((e) => e.name == 'Ma première école')) {
+    await Future.delayed(const Duration(milliseconds: 100));
+  }
+
+  // Modify the address of the second school
+  schools[1] = schools[1].copyWith(
+    address: Address(
+      civicNumber: 5019,
+      street: 'Rue Merville',
+      city: 'Québec',
+      postalCode: '1Y5 H2N',
+    ),
+  );
+  await schoolBoards
+      .replace(schoolBoards[0].copyWith(schools: schools.toList()));
+  while (!schoolBoards[0].schools.any((e) => e.address.civicNumber == 5019)) {
+    await Future.delayed(const Duration(milliseconds: 100));
+  }
 }
 
 String get _partnerTeacherId {

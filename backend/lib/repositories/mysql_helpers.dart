@@ -223,7 +223,7 @@ class MySqlHelpers {
           connection: connection,
           tableName: 'addresses',
           filters: {
-            'id': person.address.id
+            'id': previous.address.id
           },
           data: {
             'civic': person.address.civicNumber,
@@ -294,7 +294,8 @@ class MySqlHelpers {
       await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'addresses',
-          filters: {'id': address.id},
+          // TODO: Check that all updates are done using the previous id
+          filters: {'id': previous.id},
           data: toUpdate);
     }
   }
