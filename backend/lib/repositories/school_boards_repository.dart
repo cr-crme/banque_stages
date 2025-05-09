@@ -1,6 +1,7 @@
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
 import 'package:mysql1/mysql1.dart';
@@ -125,65 +126,93 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
   Future<SchoolBoard?> _getSchoolBoardById({required String id}) async =>
       (await _getAllSchoolBoards(schoolBoardId: id))[id];
 
-  @override
-  Future<void> _putSchoolBoard(
-          {required SchoolBoard schoolBoard,
-          required SchoolBoard? previous}) async =>
-      previous == null
-          ? await _putNewSchoolBoard(schoolBoard)
-          : await _putExistingSchoolBoard(schoolBoard, previous);
+  Future<void> _insertToSchoolBoards(SchoolBoard schoolBoard) async {
+    // Insert the school board
+    await MySqlHelpers.performInsertQuery(
+        connection: connection,
+        tableName: 'entities',
+        data: {'shared_id': schoolBoard.id});
+    await MySqlHelpers.performInsertQuery(
+        connection: connection,
+        tableName: 'school_boards',
+        data: {'id': schoolBoard.id, 'name': schoolBoard.name});
+  }
 
-  Future<void> _putNewSchoolBoard(SchoolBoard schoolBoard) async {
-    try {
-      // Insert the school board
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'entities',
-          data: {'shared_id': schoolBoard.id});
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'school_boards',
-          data: {
-            'id': schoolBoard.id,
-            'name': schoolBoard.name,
-          });
+  Future<void> _updateToSchoolBoards(
+      SchoolBoard schoolBoard, SchoolBoard previous) async {
+    final toUpdate = schoolBoard.getDifference(previous);
 
-      // Insert the schools
-      for (final school in schoolBoard.schools) {
-        await MySqlHelpers.performInsertQuery(
-            connection: connection,
-            tableName: 'entities',
-            data: {'shared_id': school.id});
-        await MySqlHelpers.performInsertQuery(
-            connection: connection,
-            tableName: 'schools',
-            data: {
-              'id': school.id,
-              'school_board_id': schoolBoard.id,
-              'name': school.name,
-            });
-
-        await MySqlHelpers.performInsertAddress(
-            connection: connection,
-            address: school.address,
-            entityId: school.id);
-      }
-    } catch (e) {
-      try {
-        // Try to delete the inserted data in case of error (everything is ON CASCADE DELETE)
-        await _deleteSchoolBoard(id: schoolBoard.id);
-      } catch (e) {
-        // Do nothing
-      }
-      rethrow;
+    if (toUpdate.contains('name')) {
+      await MySqlHelpers.performUpdateQuery(
+        connection: connection,
+        tableName: 'school_boards',
+        filters: {'id': schoolBoard.id},
+        data: {'name': schoolBoard.name},
+      );
     }
   }
 
-  Future<void> _putExistingSchoolBoard(
-      SchoolBoard schoolBoard, SchoolBoard previous) async {
-    // TODO: Implement a better updating of the school boards
-    await _deleteSchoolBoard(id: previous.id);
-    await _putNewSchoolBoard(schoolBoard);
+  Future<void> _insertToSchools(School school, SchoolBoard schoolBoard) async {
+    await MySqlHelpers.performInsertQuery(
+        connection: connection,
+        tableName: 'entities',
+        data: {'shared_id': school.id});
+    await MySqlHelpers.performInsertQuery(
+        connection: connection,
+        tableName: 'schools',
+        data: {
+          'id': school.id,
+          'school_board_id': schoolBoard.id,
+          'name': school.name,
+        });
+
+    await MySqlHelpers.performInsertAddress(
+        connection: connection, address: school.address, entityId: school.id);
+  }
+
+  Future<void> _updateToSchools(School school, School previous) async {
+    final toUpdate = school.getDifference(previous);
+
+    if (toUpdate.contains('name')) {
+      await MySqlHelpers.performUpdateQuery(
+        connection: connection,
+        tableName: 'schools',
+        filters: {'id': school.id},
+        data: {'name': school.name},
+      );
+    }
+    if (toUpdate.contains('address')) {
+      await MySqlHelpers.performUpdateAddress(
+        connection: connection,
+        address: school.address,
+        previous: previous.address,
+      );
+    }
+  }
+
+  @override
+  Future<void> _putSchoolBoard({
+    required SchoolBoard schoolBoard,
+    required SchoolBoard? previous,
+  }) async {
+    if (previous == null) {
+      _insertToSchoolBoards(schoolBoard);
+    } else {
+      _updateToSchoolBoards(schoolBoard, previous);
+    }
+
+    // Insert the schools
+    final toWait = <Future>[];
+    for (final school in schoolBoard.schools) {
+      final previousSchool =
+          previous?.schools.firstWhereOrNull((e) => e.id == school.id);
+      if (previousSchool == null) {
+        toWait.add(_insertToSchools(school, schoolBoard));
+      } else {
+        toWait.add(_updateToSchools(school, previousSchool));
+      }
+    }
+    await Future.wait(toWait);
   }
 
   @override

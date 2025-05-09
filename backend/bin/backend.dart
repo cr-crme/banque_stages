@@ -15,6 +15,7 @@ final _logger = Logger('BackendServer');
 
 enum DatabaseBackend { mysql, mock }
 
+// TODO: Add a limiter so the DDOS attacks are limited
 void main() async {
   // Set up logging
   Logger.root.level = Level.INFO;

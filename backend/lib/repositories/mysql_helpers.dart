@@ -266,6 +266,38 @@ class MySqlHelpers {
           'postal_code': address.postalCode
         });
   }
+
+  static Future<void> performUpdateAddress({
+    required MySqlConnection connection,
+    required Address address,
+    required Address previous,
+  }) async {
+    // Update the address if needed
+    final toUpdate = <String, dynamic>{};
+
+    if (address.civicNumber != previous.civicNumber) {
+      toUpdate['civic'] = address.civicNumber;
+    }
+    if (address.street != previous.street) {
+      toUpdate['street'] = address.street;
+    }
+    if (address.apartment != previous.apartment) {
+      toUpdate['apartment'] = address.apartment;
+    }
+    if (address.city != previous.city) {
+      toUpdate['city'] = address.city;
+    }
+    if (address.postalCode != previous.postalCode) {
+      toUpdate['postal_code'] = address.postalCode;
+    }
+    if (toUpdate.isNotEmpty) {
+      await MySqlHelpers.performUpdateQuery(
+          connection: connection,
+          tableName: 'addresses',
+          filters: {'id': address.id},
+          data: toUpdate);
+    }
+  }
 // coverage:ignore-end
 }
 
