@@ -169,7 +169,8 @@ class Waypoint extends ItemSerializable {
 
   @override
   String toString() {
-    return '${subtitle == null ? '' : '$subtitle\n'}$address\n';
+    return '${subtitle == null ? '' : '$subtitle\n'}'
+        '${address.isValid ? '${address.civicNumber} ${address.street}\n${address.city} ${address.postalCode}' : ''}';
   }
 
   @override

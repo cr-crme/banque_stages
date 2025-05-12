@@ -62,7 +62,7 @@ void main() {
 
       expect(enterpriseDifferent.id, 'newId');
       expect(enterpriseDifferent.name, 'newName');
-      expect(enterpriseDifferent.activityTypes, {'newActivity'});
+      expect(enterpriseDifferent.activityTypes, {ActivityTypes.autre});
       expect(enterpriseDifferent.recruiterId, 'newRecrutedBy');
       expect(enterpriseDifferent.jobs[0].id, 'newJobId');
       expect(enterpriseDifferent.contact.fullName, 'Pariterre Nobody');
@@ -147,21 +147,24 @@ void main() {
 
       expect(serialized, {
         'id': enterprise.id,
+        'school_board_id': enterprise.schoolBoardId,
         'name': enterprise.name,
-        'activityTypes': enterprise.activityTypes.toList(),
-        'recrutedBy': enterprise.recruiterId,
+        'version': Enterprise.currentVersion,
+        'activity_types': enterprise.activityTypes.toList(),
+        'recruiter_id': enterprise.recruiterId,
         'jobs': enterprise.jobs.serialize(),
         'contact': enterprise.contact.serialize(),
-        'contactFunction': enterprise.contactFunction,
+        'contact_function': enterprise.contactFunction,
         'address': enterprise.address?.serialize(),
-        'phone': enterprise.phone.toString(),
-        'fax': enterprise.fax.toString(),
+        'phone': enterprise.phone.serialize(),
+        'fax': enterprise.fax.serialize(),
         'website': enterprise.website,
-        'headquartersAddress': enterprise.headquartersAddress?.serialize(),
-        'neq': enterprise.neq,
+        'headquarters_address': enterprise.headquartersAddress?.serialize(),
+        'neq': enterprise.neq
       });
 
       expect(deserialized.id, enterprise.id);
+      expect(deserialized.schoolBoardId, enterprise.schoolBoardId);
       expect(deserialized.name, enterprise.name);
       expect(deserialized.activityTypes, enterprise.activityTypes);
       expect(deserialized.recruiterId, enterprise.recruiterId);
@@ -169,8 +172,8 @@ void main() {
       expect(deserialized.contact.id, enterprise.contact.id);
       expect(deserialized.contactFunction, enterprise.contactFunction);
       expect(deserialized.address?.id, enterprise.address?.id);
-      expect(deserialized.phone, enterprise.phone);
-      expect(deserialized.fax, enterprise.fax);
+      expect(deserialized.phone.toString(), enterprise.phone.toString());
+      expect(deserialized.fax.toString(), enterprise.fax.toString());
       expect(deserialized.website, enterprise.website);
       expect(deserialized.headquartersAddress?.id,
           enterprise.headquartersAddress?.id);
@@ -181,16 +184,16 @@ void main() {
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.name, 'Unnamed enterprise');
       expect(emptyDeserialized.activityTypes, []);
-      expect(emptyDeserialized.recruiterId, 'Unnamed recruiter');
+      expect(emptyDeserialized.recruiterId, 'UnknownId');
       expect(emptyDeserialized.jobs.length, 0);
       expect(emptyDeserialized.contact.firstName, 'Unnamed');
       expect(emptyDeserialized.contactFunction, '');
       expect(emptyDeserialized.address, isNull);
-      expect(emptyDeserialized.phone, PhoneNumber.empty);
-      expect(emptyDeserialized.fax, PhoneNumber.empty);
+      expect(emptyDeserialized.phone.toString(), PhoneNumber.empty.toString());
+      expect(emptyDeserialized.fax.toString(), PhoneNumber.empty.toString());
       expect(emptyDeserialized.website, '');
       expect(emptyDeserialized.headquartersAddress, isNull);
-      expect(emptyDeserialized.neq, isNull);
+      expect(emptyDeserialized.neq, '');
     });
   });
 }

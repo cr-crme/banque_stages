@@ -198,41 +198,42 @@ void main() {
           'politeness': 1,
           'motivation': 2,
           'dressCode': 3,
-          'qualityOfWork': 1,
+          'quality_of_work': 1,
           'productivity': 2,
           'autonomy': 3,
           'cautiousness': 1,
-          'generalAppreciation': 2,
+          'general_appreciation': 2,
         });
 
         expect(deserialized.id, 'attitudeEvaluationId');
-        expect(deserialized.inattendance, 1);
-        expect(deserialized.ponctuality, 2);
-        expect(deserialized.sociability, 3);
-        expect(deserialized.politeness, 1);
-        expect(deserialized.motivation, 2);
-        expect(deserialized.dressCode, 3);
-        expect(deserialized.qualityOfWork, 1);
-        expect(deserialized.productivity, 2);
-        expect(deserialized.autonomy, 3);
-        expect(deserialized.cautiousness, 1);
-        expect(deserialized.generalAppreciation, 2);
+        expect(deserialized.inattendance, Inattendance.values[1]);
+        expect(deserialized.ponctuality, Ponctuality.values[2]);
+        expect(deserialized.sociability, Sociability.values[3]);
+        expect(deserialized.politeness, Politeness.values[1]);
+        expect(deserialized.motivation, Motivation.values[2]);
+        expect(deserialized.dressCode, DressCode.values[3]);
+        expect(deserialized.qualityOfWork, QualityOfWork.values[1]);
+        expect(deserialized.productivity, Productivity.values[2]);
+        expect(deserialized.autonomy, Autonomy.values[3]);
+        expect(deserialized.cautiousness, Cautiousness.values[1]);
+        expect(deserialized.generalAppreciation, GeneralAppreciation.values[2]);
 
         // Test for empty deserialize to make sure it doesn't crash
         final emptyDeserialized =
             AttitudeEvaluation.fromSerialized({'id': 'emptyId'});
         expect(emptyDeserialized.id, 'emptyId');
-        expect(emptyDeserialized.inattendance, 0);
-        expect(emptyDeserialized.ponctuality, 0);
-        expect(emptyDeserialized.sociability, 0);
-        expect(emptyDeserialized.politeness, 0);
-        expect(emptyDeserialized.motivation, 0);
-        expect(emptyDeserialized.dressCode, 0);
-        expect(emptyDeserialized.qualityOfWork, 0);
-        expect(emptyDeserialized.productivity, 0);
-        expect(emptyDeserialized.autonomy, 0);
-        expect(emptyDeserialized.cautiousness, 0);
-        expect(emptyDeserialized.generalAppreciation, 0);
+        expect(emptyDeserialized.inattendance, Inattendance.notEvaluated);
+        expect(emptyDeserialized.ponctuality, Ponctuality.notEvaluated);
+        expect(emptyDeserialized.sociability, Sociability.notEvaluated);
+        expect(emptyDeserialized.politeness, Politeness.notEvaluated);
+        expect(emptyDeserialized.motivation, Motivation.notEvaluated);
+        expect(emptyDeserialized.dressCode, DressCode.notEvaluated);
+        expect(emptyDeserialized.qualityOfWork, QualityOfWork.notEvaluated);
+        expect(emptyDeserialized.productivity, Productivity.notEvaluated);
+        expect(emptyDeserialized.autonomy, Autonomy.notEvaluated);
+        expect(emptyDeserialized.cautiousness, Cautiousness.notEvaluated);
+        expect(emptyDeserialized.generalAppreciation,
+            GeneralAppreciation.notEvaluated);
       });
 
       test(
@@ -249,7 +250,7 @@ void main() {
           'present': attitude.presentAtEvaluation,
           'attitude': attitude.attitude.serialize(),
           'comments': attitude.comments,
-          'formVersion': attitude.formVersion,
+          'form_version': attitude.formVersion,
         });
 
         expect(deserialized.id, 'internshipEvaluationAttitudeId');
@@ -265,17 +266,22 @@ void main() {
         expect(emptyEvaluation.id, 'emptyId');
         expect(emptyEvaluation.date, DateTime(0));
         expect(emptyEvaluation.presentAtEvaluation, []);
-        expect(emptyEvaluation.attitude.inattendance, 0);
-        expect(emptyEvaluation.attitude.ponctuality, 0);
-        expect(emptyEvaluation.attitude.sociability, 0);
-        expect(emptyEvaluation.attitude.politeness, 0);
-        expect(emptyEvaluation.attitude.motivation, 0);
-        expect(emptyEvaluation.attitude.dressCode, 0);
-        expect(emptyEvaluation.attitude.qualityOfWork, 0);
-        expect(emptyEvaluation.attitude.productivity, 0);
-        expect(emptyEvaluation.attitude.autonomy, 0);
-        expect(emptyEvaluation.attitude.cautiousness, 0);
-        expect(emptyEvaluation.attitude.generalAppreciation, 0);
+        expect(
+            emptyEvaluation.attitude.inattendance, Inattendance.notEvaluated);
+        expect(emptyEvaluation.attitude.ponctuality, Ponctuality.notEvaluated);
+        expect(emptyEvaluation.attitude.sociability, Sociability.notEvaluated);
+        expect(emptyEvaluation.attitude.politeness, Politeness.notEvaluated);
+        expect(emptyEvaluation.attitude.motivation, Motivation.notEvaluated);
+        expect(emptyEvaluation.attitude.dressCode, DressCode.notEvaluated);
+        expect(
+            emptyEvaluation.attitude.qualityOfWork, QualityOfWork.notEvaluated);
+        expect(
+            emptyEvaluation.attitude.productivity, Productivity.notEvaluated);
+        expect(emptyEvaluation.attitude.autonomy, Autonomy.notEvaluated);
+        expect(
+            emptyEvaluation.attitude.cautiousness, Cautiousness.notEvaluated);
+        expect(emptyEvaluation.attitude.generalAppreciation,
+            GeneralAppreciation.notEvaluated);
         expect(emptyEvaluation.comments, '');
         expect(emptyEvaluation.formVersion, '1.0.0');
       });
@@ -306,7 +312,7 @@ void main() {
 
         expect(serialized, {
           'id': 'skillEvaluationId',
-          'jobId': 'specializationId',
+          'job_id': 'specializationId',
           'skill': 'skillName',
           'tasks': skill.tasks.map((e) => e.serialize()).toList(),
           'appreciation': skill.appreciation.index,
@@ -342,11 +348,11 @@ void main() {
         expect(serialized, {
           'id': 'internshipEvaluationSkillId',
           'date': skill.date.millisecondsSinceEpoch,
-          'skillGranularity': skill.skillGranularity.index,
+          'skill_granularity': skill.skillGranularity.index,
           'present': skill.presentAtEvaluation,
           'skills': skill.skills.map((e) => e.serialize()).toList(),
           'comments': skill.comments,
-          'formVersion': skill.formVersion,
+          'form_version': skill.formVersion,
         });
 
         expect(deserialized.id, 'internshipEvaluationSkillId');
@@ -391,24 +397,25 @@ void main() {
 
       expect(serialized, {
         'id': evaluation.id,
-        'internshipId': evaluation.internshipId,
-        'skillsRequired': evaluation.skillsRequired,
-        'taskVariety': evaluation.taskVariety,
-        'trainingPlanRespect': evaluation.trainingPlanRespect,
-        'autonomyExpected': evaluation.autonomyExpected,
-        'efficiencyExpected': evaluation.efficiencyExpected,
-        'supervisionStyle': evaluation.supervisionStyle,
-        'easeOfCommunication': evaluation.easeOfCommunication,
-        'absenceAcceptance': evaluation.absenceAcceptance,
-        'supervisionComments': evaluation.supervisionComments,
-        'acceptanceTSA': evaluation.acceptanceTsa,
-        'acceptanceLanguageDisorder': evaluation.acceptanceLanguageDisorder,
-        'acceptanceIntellectualDisability':
+        'internship_id': evaluation.internshipId,
+        'skills_required': evaluation.skillsRequired,
+        'task_variety': evaluation.taskVariety,
+        'training_plan_respect': evaluation.trainingPlanRespect,
+        'autonomy_expected': evaluation.autonomyExpected,
+        'efficiency_expected': evaluation.efficiencyExpected,
+        'supervision_style': evaluation.supervisionStyle,
+        'ease_of_communication': evaluation.easeOfCommunication,
+        'absence_acceptance': evaluation.absenceAcceptance,
+        'supervision_comments': evaluation.supervisionComments,
+        'acceptance_tsa': evaluation.acceptanceTsa,
+        'acceptance_language_disorder': evaluation.acceptanceLanguageDisorder,
+        'acceptance_intellectual_disability':
             evaluation.acceptanceIntellectualDisability,
-        'acceptancePhysicalDisability': evaluation.acceptancePhysicalDisability,
-        'acceptanceMentalHealthDisorder':
+        'acceptance_physical_disability':
+            evaluation.acceptancePhysicalDisability,
+        'acceptance_mental_health_disorder':
             evaluation.acceptanceMentalHealthDisorder,
-        'acceptanceBehaviorDifficulties':
+        'acceptance_behavior_difficulties':
             evaluation.acceptanceBehaviorDifficulties,
       });
 

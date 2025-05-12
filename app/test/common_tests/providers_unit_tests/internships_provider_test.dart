@@ -30,8 +30,8 @@ void main() {
       final internships =
           InternshipsProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       final internship = internships.deserializeItem({
-        'student': '123',
-        'enterprise': '456',
+        'student_id': '123',
+        'enterprise_id': '456',
         'priority': 0,
       });
       expect(internship.studentId, '123');

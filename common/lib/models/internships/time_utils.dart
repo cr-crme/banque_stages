@@ -7,6 +7,16 @@ class TimeOfDay {
   String toString() {
     return 'TimeOfDay(hour: $hour, minute: $minute)';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TimeOfDay && other.hour == hour && other.minute == minute;
+  }
+
+  @override
+  int get hashCode => hour.hashCode ^ minute.hashCode;
 }
 
 class DateTimeRange {
@@ -18,4 +28,14 @@ class DateTimeRange {
   String toString() {
     return 'DateTimeRange(start: $start, end: $end)';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is DateTimeRange && other.start == start && other.end == end;
+  }
+
+  @override
+  int get hashCode => start.hashCode ^ end.hashCode;
 }

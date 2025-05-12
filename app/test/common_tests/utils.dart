@@ -182,12 +182,12 @@ Job dummyJob({String id = 'jobId'}) => Job(
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[9],
       positionsOffered: 2,
-      sstEvaluation: dummyJobSstEvaluation(),
-      incidents: dummyIncidents(),
+      sstEvaluation: dummyJobSstEvaluation(id: id),
+      incidents: dummyIncidents(id: id),
       minimumAge: 12,
-      preInternshipRequests: dummyPreInternshipRequests(),
-      uniforms: dummyUniforms(),
-      protections: dummyProtections(),
+      preInternshipRequests: dummyPreInternshipRequests(id: id),
+      uniforms: dummyUniforms(id: id),
+      protections: dummyProtections(id: id),
     );
 
 Enterprise dummyEnterprise({bool addJob = false}) {
@@ -322,7 +322,10 @@ Waypoint dummyWaypoint(
       latitude: latitude,
       longitude: longitude,
       address: Address(
-          street: '123 rue de la rue', city: 'Ville', postalCode: 'H0H 0H0'),
+          civicNumber: 123,
+          street: 'rue de la rue',
+          city: 'Ville',
+          postalCode: 'H0H 0H0'),
     );
 
 Itinerary dummyItinerary({

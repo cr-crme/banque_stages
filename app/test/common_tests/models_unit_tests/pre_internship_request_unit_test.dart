@@ -21,17 +21,23 @@ void main() {
 
       expect(serialized, {
         'id': preInternshipRequest.id,
-        'requests': preInternshipRequest.requests,
+        'requests': preInternshipRequest.requests.map((e) => e.index).toList(),
+        'is_applicable': true,
+        'other': 'Manger de la poutine',
       });
 
       expect(deserialized.id, preInternshipRequest.id);
       expect(deserialized.requests, preInternshipRequest.requests);
+      expect(deserialized.isApplicable, true);
+      expect(deserialized.other, 'Manger de la poutine');
 
       // Test for empty deserialize to make sure it doesn't crash
       final emptyDeserialized =
           PreInternshipRequests.fromSerialized({'id': 'emptyId'}, '1.0.0');
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.requests, []);
+      expect(emptyDeserialized.isApplicable, true);
+      expect(emptyDeserialized.other, isNull);
     });
   });
 }

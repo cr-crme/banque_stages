@@ -60,11 +60,11 @@ void main() {
 
       expect(serialized, {
         'id': address.id,
-        'number': address.civicNumber,
+        'civic': address.civicNumber,
         'street': address.street,
         'apartment': address.apartment,
         'city': address.city,
-        'postalCode': address.postalCode
+        'postal_code': address.postalCode
       });
 
       expect(deserialized.id, address.id);

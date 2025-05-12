@@ -25,16 +25,15 @@ class SchoolBoardsProvider extends BackendListProvided<SchoolBoard> {
 
   static Future<SchoolBoard?> mySchoolBoardOf(BuildContext context,
       {listen = false}) async {
-    SchoolBoard? schoolBoard;
-    while (schoolBoard == null) {
+    while (true) {
       if (!context.mounted) return null;
       final schoolBoards = SchoolBoardsProvider.of(context, listen: listen);
       final teacher =
           TeachersProvider.of(context, listen: false).currentTeacher;
-      schoolBoard = schoolBoards.fromIdOrNull(teacher.schoolBoardId);
+      final schoolBoard = schoolBoards.fromIdOrNull(teacher.schoolBoardId);
+      if (schoolBoard != null) return schoolBoard;
       await Future.delayed(const Duration(milliseconds: 100));
     }
-    return schoolBoard;
   }
 
   static Future<School?> mySchoolOf(BuildContext context,

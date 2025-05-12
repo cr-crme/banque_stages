@@ -16,10 +16,7 @@ void main() {
       // This test is expected to build a Waypoint different from the sent dummy
       // because it uses the http request which we can't test so far
       final waypoint = await Waypoint.fromCoordinates(
-        title: 'title',
-        latitude: 1.0,
-        longitude: 2.0,
-      );
+          title: 'title', latitude: 1.0, longitude: 2.0);
 
       // Test that the waypoint is the default value for the Placemark (address)
       expect(waypoint.id, isNotEmpty);
@@ -94,6 +91,8 @@ void main() {
         'id': waypoint.id,
         'title': waypoint.title,
         'subtitle': waypoint.subtitle,
+        'latitude': waypoint.latitude,
+        'longitude': waypoint.longitude,
         'address': waypoint.address.serialize(),
         'priority': waypoint.priority.index,
       });

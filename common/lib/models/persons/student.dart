@@ -38,7 +38,9 @@ enum Program {
 }
 
 class Student extends Person {
-  final _currentVersion = '1.0.0';
+  static final _currentVersion = '1.0.0';
+  static String get currentVersion => _currentVersion;
+
   final String schoolBoardId;
   final String schoolId;
 

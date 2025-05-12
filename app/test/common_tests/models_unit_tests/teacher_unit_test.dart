@@ -1,3 +1,4 @@
+import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,7 +20,7 @@ void main() {
       expect(teacherSame.email, teacher.email);
       expect(teacherSame.phone, teacher.phone);
 
-      expect(teacherSame.address, isNull);
+      expect(teacherSame.address.toString(), Address.empty.toString());
       expect(teacherSame.dateBirth, isNull);
 
       final teacherDifferent = teacher.copyWith(
@@ -56,25 +57,31 @@ void main() {
 
       expect(serialized, {
         'id': teacher.id,
-        'firstName': teacher.firstName,
-        'middleName': teacher.middleName,
-        'lastName': teacher.lastName,
-        'schoolId': teacher.schoolId,
+        'school_board_id': teacher.schoolBoardId,
+        'school_id': teacher.schoolId,
+        'first_name': teacher.firstName,
+        'middle_name': teacher.middleName,
+        'last_name': teacher.lastName,
         'groups': teacher.groups,
         'email': teacher.email,
-        'phone': teacher.phone.toString(),
-        'dateBirth': null,
-        'address': null,
+        'phone': teacher.phone.serialize(),
+        'date_birth': null,
+        'address': teacher.address.serialize(),
+        'itineraries': [],
       });
 
       expect(deserialized.id, teacher.id);
+      expect(deserialized.schoolBoardId, teacher.schoolBoardId);
+      expect(deserialized.schoolId, teacher.schoolId);
       expect(deserialized.firstName, teacher.firstName);
       expect(deserialized.middleName, teacher.middleName);
       expect(deserialized.lastName, teacher.lastName);
-      expect(deserialized.schoolId, teacher.schoolId);
       expect(deserialized.groups, teacher.groups);
       expect(deserialized.email, teacher.email);
       expect(deserialized.phone.toString(), teacher.phone.toString());
+      expect(deserialized.dateBirth, isNull);
+      expect(deserialized.address.toString(), Address.empty.toString());
+      expect(deserialized.itineraries, []);
 
       // Test for empty deserialize to make sure it doesn't crash
       final emptyDeserialized = Teacher.fromSerialized({'id': 'emptyId'});
@@ -82,10 +89,10 @@ void main() {
       expect(emptyDeserialized.firstName, 'Unnamed');
       expect(emptyDeserialized.middleName, isNull);
       expect(emptyDeserialized.lastName, 'Unnamed');
-      expect(emptyDeserialized.schoolId, '');
+      expect(emptyDeserialized.schoolId, '-1');
       expect(emptyDeserialized.groups, []);
       expect(emptyDeserialized.email, isNull);
-      expect(emptyDeserialized.phone, PhoneNumber.empty);
+      expect(emptyDeserialized.phone.toString(), PhoneNumber.empty.toString());
     });
   });
 }

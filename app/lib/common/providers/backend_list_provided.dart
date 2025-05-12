@@ -30,9 +30,10 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     extends DatabaseListProvided<T> {
   final Uri uri;
   bool get isConnected =>
-      _providerSelector[getField()] != null &&
-      _socket != null &&
-      _handshakeReceived;
+      (_providerSelector[getField()] != null &&
+          _socket != null &&
+          _handshakeReceived) ||
+      mockMe;
 
   /// Creates a [BackendListProvided] with the specified data path and ids path.
   BackendListProvided({required this.uri, this.mockMe = false});
@@ -50,7 +51,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
 
     // If the socket is already connected, it means another provider is already connected
     // Simply return now after having kept the reference to the deserializer function
-    if (_socket == null) {
+    if (_socket == null && !mockMe) {
       try {
         // Send a connexion request to the server
         _socket = WebSocket(

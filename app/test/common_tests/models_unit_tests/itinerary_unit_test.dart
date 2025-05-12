@@ -78,9 +78,7 @@ void main() {
           'subtitle': 'Subtitle',
           'latitude': 40.0,
           'longitude': 50.0,
-          'street': '123 rue de la rue',
-          'locality': 'Ville',
-          'postalCode': 'H0H 0H0',
+          'address': itinerary[0].address.serialize(),
           'priority': 3
         },
         {
@@ -89,9 +87,7 @@ void main() {
           'subtitle': 'Subtitle',
           'latitude': 30.0,
           'longitude': 30.5,
-          'street': '123 rue de la rue',
-          'locality': 'Ville',
-          'postalCode': 'H0H 0H0',
+          'address': itinerary[1].address.serialize(),
           'priority': 3
         }
       ];

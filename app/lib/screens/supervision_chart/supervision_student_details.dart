@@ -32,29 +32,26 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
   }
 
   Future<Internship?> _getInternship(BuildContext context) async {
-    Internship? internship;
-    while (internship == null) {
+    while (true) {
       if (!context.mounted) return null;
       final internships = InternshipsProvider.of(context, listen: false);
-      internship = internships.byStudentId(studentId).lastOrNull;
-      if (internship != null) break;
+      final internship = internships.byStudentId(studentId).lastOrNull;
+      if (internship != null) return internship.isActive ? internship : null;
       await Future.delayed(const Duration(milliseconds: 100));
     }
-    return internship.isActive ? internship : null;
   }
 
   Future<Enterprise?> _getEnterprise(BuildContext context) async {
     final internship = await _getInternship(context);
     if (internship == null) return null;
 
-    Enterprise? enterprise;
-    while (enterprise == null) {
+    while (true) {
       if (!context.mounted) return null;
       final enterprises = EnterprisesProvider.of(context, listen: false);
-      enterprise = enterprises.fromIdOrNull(internship.enterpriseId);
+      final enterprise = enterprises.fromIdOrNull(internship.enterpriseId);
+      if (enterprise != null) return enterprise;
       await Future.delayed(const Duration(milliseconds: 100));
     }
-    return enterprise;
   }
 
   Future<Job?> _getJob(BuildContext context) async {
@@ -67,14 +64,13 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
   }
 
   Future<Student?> _getStudent(BuildContext context) async {
-    Student? student;
-    while (student == null) {
+    while (true) {
       if (!context.mounted) return null;
       final students = StudentsProvider.studentsInMyGroups(context);
-      student = students.firstWhereOrNull((e) => e.id == studentId);
+      final student = students.firstWhereOrNull((e) => e.id == studentId);
+      if (student != null) return student;
       await Future.delayed(const Duration(milliseconds: 100));
     }
-    return student;
   }
 
   @override

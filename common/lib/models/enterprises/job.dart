@@ -13,6 +13,7 @@ List<String> _stringListFromSerialized(List? list) =>
 
 class Job extends ItemSerializable {
   static final String _currentVersion = '1.0.0';
+  static String get currentVersion => _currentVersion;
 
 // Details
   final Specialization? _specialization;
@@ -109,11 +110,11 @@ class Job extends ItemSerializable {
         positionsOffered = map['positions_offered'] ?? 0,
         minimumAge = map['minimum_age'] ?? 0,
         preInternshipRequests = PreInternshipRequests.fromSerialized(
-            map['pre_internship_requests'] ?? {}, map['version']),
+            map['pre_internship_requests'] ?? {}, map['version'] ?? '1.0.0'),
         uniforms = Uniforms.fromSerialized(
             (map['uniforms'] as Map? ?? {}).cast<String, dynamic>()
               ..addAll({'id': map['id']}),
-            map['version']),
+            map['version'] ?? '1.0.0'),
         protections = Protections.fromSerialized(
             (map['protections'] as Map? ?? {}).cast<String, dynamic>()
               ..addAll({'id': map['id']})),

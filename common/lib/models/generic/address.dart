@@ -33,10 +33,10 @@ class Address extends ItemSerializable {
     if (data.isEmpty) return null;
 
     return Address(
-      civicNumber: int.tryParse(data['address']['house_number']),
-      street: data['address']['road'],
-      city: data['address']['city'],
-      postalCode: data['address']['postcode'],
+      civicNumber: int.tryParse(data['address']?['house_number'] ?? ''),
+      street: data['address']?['road'],
+      city: data['address']?['city'],
+      postalCode: data['address']?['postcode'],
     );
   }
 

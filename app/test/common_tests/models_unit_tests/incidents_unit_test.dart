@@ -28,9 +28,9 @@ void main() {
 
       expect(serialized, {
         'id': incidents.id,
-        'severeInjuries': incidents.severeInjuries.map((e) => e.serialize()),
-        'verbalAbuses': incidents.verbalAbuses.map((e) => e.serialize()),
-        'minorInjuries': incidents.minorInjuries.map((e) => e.serialize()),
+        'severe_injuries': incidents.severeInjuries.map((e) => e.serialize()),
+        'verbal_abuses': incidents.verbalAbuses.map((e) => e.serialize()),
+        'minor_injuries': incidents.minorInjuries.map((e) => e.serialize()),
       });
 
       expect(deserialized.id, incidents.id);

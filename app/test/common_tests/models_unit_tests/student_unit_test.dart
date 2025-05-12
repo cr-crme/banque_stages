@@ -1,3 +1,4 @@
+import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
@@ -50,12 +51,12 @@ void main() {
       expect(limitedInfo.lastName, student.lastName);
       expect(limitedInfo.group, student.group);
       expect(limitedInfo.program, student.program);
-      expect(limitedInfo.address, isNull);
+      expect(limitedInfo.address.toString(), Address.empty.toString());
       expect(limitedInfo.contact.toString(), Person.empty.toString());
       expect(limitedInfo.contactLink, '');
       expect(limitedInfo.dateBirth, isNull);
       expect(limitedInfo.email, isNull);
-      expect(limitedInfo.phone, PhoneNumber.empty);
+      expect(limitedInfo.phone.toString(), PhoneNumber.empty.toString());
     });
 
     test('"copyWith" behave properly', () {
@@ -114,21 +115,26 @@ void main() {
 
       expect(serialized, {
         'id': student.id,
-        'firstName': student.firstName,
-        'middleName': student.middleName,
-        'lastName': student.lastName,
-        'dateBirth': student.dateBirth!.millisecondsSinceEpoch,
-        'phone': student.phone.toString(),
+        'version': Student.currentVersion,
+        'school_board_id': student.schoolBoardId,
+        'school_id': student.schoolId,
+        'first_name': student.firstName,
+        'middle_name': student.middleName,
+        'last_name': student.lastName,
+        'date_birth': student.dateBirth!.millisecondsSinceEpoch,
+        'phone': student.phone.serialize(),
         'email': student.email,
         'address': student.address.serialize(),
         'photo': student.photo,
         'program': student.program.index,
         'group': student.group,
         'contact': student.contact.serialize(),
-        'contactLink': student.contactLink,
+        'contact_link': student.contactLink,
       });
 
       expect(deserialized.id, student.id);
+      expect(deserialized.schoolBoardId, student.schoolBoardId);
+      expect(deserialized.schoolId, student.schoolId);
       expect(deserialized.firstName, student.firstName);
       expect(deserialized.middleName, student.middleName);
       expect(deserialized.lastName, student.lastName);
@@ -149,9 +155,9 @@ void main() {
       expect(emptyDeserialized.middleName, isNull);
       expect(emptyDeserialized.lastName, 'Unnamed');
       expect(emptyDeserialized.dateBirth, isNull);
-      expect(emptyDeserialized.phone, PhoneNumber.empty);
+      expect(emptyDeserialized.phone.toString(), PhoneNumber.empty.toString());
       expect(emptyDeserialized.email, isNull);
-      expect(emptyDeserialized.address, isNull);
+      expect(emptyDeserialized.address.toString(), Address.empty.toString());
       expect(int.parse(emptyDeserialized.photo), greaterThanOrEqualTo(0));
       expect(int.parse(emptyDeserialized.photo), lessThanOrEqualTo(0xFFFFFF));
       expect(emptyDeserialized.program, Program.undefined);

@@ -6,6 +6,7 @@ import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/common/models/internship_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/initialize_program.dart';
@@ -96,17 +97,21 @@ void main() {
       students.initializeAuth(auth);
       students.add(dummyStudent());
 
-      final internship = dummyInternship();
+      Internship internship = dummyInternship();
+      InternshipsProvider.of(context, listen: false).add(internship);
+      expect(
+          internship.id, InternshipsProvider.of(context, listen: false)[0].id);
 
       expect(internship.supervisingTeacherIds.length, 1);
       expect(internship.supervisingTeacherIds, ['teacherId']);
 
       internship.addSupervisingTeacher(context, teacherId: 'extraTeacherId');
-
+      internship = InternshipsProvider.of(context, listen: false)[0];
       expect(internship.supervisingTeacherIds.length, 2);
       expect(internship.supervisingTeacherIds, ['teacherId', 'extraTeacherId']);
 
       internship.removeSupervisingTeacher(context, teacherId: 'extraTeacherId');
+      internship = InternshipsProvider.of(context, listen: false)[0];
 
       expect(internship.supervisingTeacherIds.length, 1);
       expect(internship.supervisingTeacherIds, ['teacherId']);
@@ -214,32 +219,34 @@ void main() {
 
       final expected = {
         'id': 'internshipId',
-        'student': 'studentId',
-        'signatoryTeacherId': 'teacherId',
-        'extraSupervisingTeacherIds': ['EMPTY'],
-        'enterprise': 'enterpriseId',
-        'jobId': 'jobId',
-        'extraSpecializationsId': ['8168', '8134'],
+        'version': Internship.currentVersion,
+        'school_board_id': 'schoolBoardId',
+        'student_id': 'studentId',
+        'signatory_teacher_id': 'teacherId',
+        'extra_supervising_teacher_ids': ['EMPTY'],
+        'enterprise_id': 'enterpriseId',
+        'job_id': 'jobId',
+        'extra_specialization_ids': ['8168', '8134'],
         'mutables': [
           {
             'id': serialized['mutables'][0]['id'],
-            'versionDate': internship.creationDate.millisecondsSinceEpoch,
-            'name': internship.supervisor.serialize(),
-            'date': [
-              internship.dates.start.millisecondsSinceEpoch,
-              internship.dates.end.millisecondsSinceEpoch
-            ],
-            'schedule': [dummyWeeklySchedule(period: period).serialize()],
+            'creation_date': internship.creationDate.millisecondsSinceEpoch,
+            'supervisor': internship.supervisor.serialize(),
+            'starting_date': internship.dates.start.millisecondsSinceEpoch,
+            'ending_date': internship.dates.end.millisecondsSinceEpoch,
+            'schedules': [dummyWeeklySchedule(period: period).serialize()],
           }
         ],
-        'expectedLength': 135,
-        'achievedLength': 130,
+        'expected_duration': 135,
+        'achieved_duration': 130,
         'priority': 0,
-        'teacherNotes': '',
-        'endDate': DateTime(2034, 10, 28).millisecondsSinceEpoch,
-        'skillEvaluation': [dummyInternshipEvaluationSkill().serialize()],
-        'attitudeEvaluation': [dummyInternshipEvaluationAttitude().serialize()],
-        'enterpriseEvaluation':
+        'teacher_notes': '',
+        'end_date': DateTime(2034, 10, 28).millisecondsSinceEpoch,
+        'skill_evaluations': [dummyInternshipEvaluationSkill().serialize()],
+        'attitude_evaluations': [
+          dummyInternshipEvaluationAttitude().serialize()
+        ],
+        'enterprise_evaluation':
             dummyPostInternshipEnterpriseEvaluation().serialize(),
       };
       expect(serialized, expected);

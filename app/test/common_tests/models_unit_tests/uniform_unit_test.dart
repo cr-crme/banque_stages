@@ -8,10 +8,10 @@ void main() {
     test('"statuses" are the right label', () {
       expect(UniformStatus.values.length, 3);
       expect(UniformStatus.suppliedByEnterprise.toString(),
-          'Oui et l\'entreprise la fournit');
-      expect(UniformStatus.suppliedByStudent.toString(),
-          'Oui mais l\'entreprise ne la fournit pas');
-      expect(UniformStatus.none.toString(), 'Non');
+          'Fournie par l\'entreprise');
+      expect(
+          UniformStatus.suppliedByStudent.toString(), 'Fournie par l\'élève');
+      expect(UniformStatus.none.toString(), 'Aucune');
     });
 
     test('serialization and deserialization works', () {
@@ -22,7 +22,7 @@ void main() {
       expect(serialized, {
         'id': uniform.id,
         'status': uniform.status.index,
-        'uniform': uniform.uniforms.join('\n'),
+        'uniforms': uniform.uniforms,
       });
 
       expect(deserialized.id, uniform.id);

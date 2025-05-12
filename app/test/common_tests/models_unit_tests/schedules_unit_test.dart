@@ -115,7 +115,11 @@ void main() {
           WeeklySchedule.fromSerialized({'id': 'emptyId'});
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.schedule.length, 0);
-      expect(emptyDeserialized.period, isNull);
+      expect(
+          emptyDeserialized.period,
+          DateTimeRange(
+              start: DateTime.fromMillisecondsSinceEpoch(0),
+              end: DateTime.fromMillisecondsSinceEpoch(0)));
     });
   });
 }
