@@ -12,13 +12,13 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     ProgramInitializer.initialize(mockMe: true);
 
-    testWidgets('Then opening page is My students',
+    testWidgets('Then opening page is My enterprises',
         (WidgetTester tester) async {
       // Load the app and navigate to the home page.
       await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
 
       // Verify that the home page is "My students"
-      expect(find.text(ScreenTest.myStudents.name), findsOneWidget);
+      expect(find.text(ScreenTest.enterprises.name), findsOneWidget);
     });
 
     testWidgets('The drawer navigates and closes on click',
@@ -50,6 +50,8 @@ void main() {
 
     testWidgets('The reinitialize data button is not shown in production',
         (WidgetTester tester) async {
+      await ProgramInitializer.initialize(
+          showDebugElements: false, mockMe: true);
       // Load the app and navigate to the home page (My enterprises).
       await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
 

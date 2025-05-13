@@ -8,7 +8,7 @@ import '../../utils.dart';
 void main() {
   group('Enterprise navigation tab', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    ProgramInitializer.initialize(mockMe: true);
+    ProgramInitializer.initialize(showDebugElements: true, mockMe: true);
 
     testWidgets('About page', (WidgetTester tester) async {
       await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
