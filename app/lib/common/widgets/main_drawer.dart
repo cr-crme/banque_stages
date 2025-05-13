@@ -66,7 +66,7 @@ class MainDrawer extends StatelessWidget {
                 ),
               ],
             ),
-            if (useDatabaseEmulator || true)
+            if (ProgramInitializer.showDebugElements)
               _DrawerItem(
                 titleText: 'Réinitialiser la base de données',
                 icon: Icons.restore_from_trash_outlined,

@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('RiskDataFileService', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('risks are loaded properly', () async {
       await RiskDataFileService.loadData();

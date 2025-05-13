@@ -21,14 +21,14 @@ void main() {
     final query = _cleanQuery(MySqlHelpers.craftSelectQuery(
         tableName: 'my_table', filters: {'id': 'my_id'}));
 
-    expect(query, 'SELECT t.* FROM my_table t WHERE t.id = "my_id"');
+    expect(query, 'SELECT t.* FROM my_table t WHERE t.id = ?');
   });
 
   test('MySql query crafter element in table with specific id', () {
     final query = _cleanQuery(MySqlHelpers.craftSelectQuery(
         tableName: 'my_table', filters: {'my_named_id': 'my_id'}));
 
-    expect(query, 'SELECT t.* FROM my_table t WHERE t.my_named_id = "my_id"');
+    expect(query, 'SELECT t.* FROM my_table t WHERE t.my_named_id = ?');
   });
 
   test('MySql query crafter with table', () {
@@ -69,7 +69,7 @@ void main() {
         'SELECT t.*, IFNULL(( SELECT JSON_ARRAYAGG( JSON_OBJECT( \'field1\', st.field1, \'field2\', st.field2 ) ) '
         'FROM my_relation_table_name idt JOIN subtable_name st ON idt.to_subtable_id = st.subtable_id '
         'WHERE idt.to_main_table_id = t.main_id ), JSON_ARRAY()) AS subtable_name '
-        'FROM my_table t WHERE t.my_named_id = "my_id"');
+        'FROM my_table t WHERE t.my_named_id = ?');
   });
 
   test('MySql query crafter insert element', () {

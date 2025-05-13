@@ -85,7 +85,6 @@ abstract class Screens {
 }
 
 final router = GoRouter(
-  initialLocation: '/students',
   redirect: (context, state) {
     if (AuthProvider.of(context, listen: false).isSignedIn()) {
       return null;
@@ -93,6 +92,11 @@ final router = GoRouter(
     return '/login';
   },
   routes: [
+    GoRoute(
+        path: '/',
+        redirect: (context, state) {
+          return '/enterprises';
+        }),
     GoRoute(
       path: '/login',
       name: Screens.login,

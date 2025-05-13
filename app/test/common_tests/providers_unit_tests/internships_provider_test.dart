@@ -9,7 +9,7 @@ import '../utils.dart';
 void main() {
   group('InternshipsProvider', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('"byStudentId" return the right student', () {
       final internships =

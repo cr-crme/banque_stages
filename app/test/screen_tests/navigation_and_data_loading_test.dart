@@ -10,12 +10,12 @@ import '../utils.dart';
 void main() {
   group('Navigation', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     testWidgets('Then opening page is My students',
         (WidgetTester tester) async {
       // Load the app and navigate to the home page.
-      await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
+      await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
 
       // Verify that the home page is "My students"
       expect(find.text(ScreenTest.myStudents.name), findsOneWidget);
@@ -24,7 +24,7 @@ void main() {
     testWidgets('The drawer navigates and closes on click',
         (WidgetTester tester) async {
       // Load the app and navigate and open the drawer.
-      await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
+      await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
 
       // Verify that the drawer contains the expected tiles
       for (final screenNameOuter in ScreenTest.values) {
@@ -50,11 +50,8 @@ void main() {
 
     testWidgets('The reinitialize data button is not shown in production',
         (WidgetTester tester) async {
-      // Remove the reinitialized data button (as in production)
-      initializeProgram(useDatabaseEmulator: false, mockFirebase: true);
-
-      // Load the app and navigate to the home page (My students).
-      await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
+      // Load the app and navigate to the home page (My enterprises).
+      await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
 
       // Verify the reinitialized button is hidden (as in production)
       await tester.openDrawer();
@@ -62,7 +59,8 @@ void main() {
       await tester.closeDrawer();
 
       // Reinitialized the testing conditions
-      initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+      await ProgramInitializer.initialize(
+          showDebugElements: true, mockMe: true);
 
       // Verify the reinitialized button is present (as in testing)
       await tester.openDrawer();
@@ -72,16 +70,16 @@ void main() {
 
   group('Data loading', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(showDebugElements: true, mockMe: true);
 
     testWidgets('The dummy data are properly loaded',
         (WidgetTester tester) async {
       // Load the app and navigate to the home page.
-      await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
+      await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
 
       // Verify the home page is empty
-      for (final student in StudentTest.values) {
-        expect(find.text(student.name), findsNothing);
+      for (final enterprise in EnterpriseTest.values) {
+        expect(find.text(enterprise.name), findsNothing);
       }
 
       // Load the dummy data

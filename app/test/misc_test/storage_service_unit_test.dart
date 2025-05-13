@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('StorageService', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('singleton is properly initialized', () async {
       expect(StorageService.instance, StorageService.instance);

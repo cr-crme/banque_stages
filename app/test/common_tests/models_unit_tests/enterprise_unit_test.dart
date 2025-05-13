@@ -14,7 +14,7 @@ import '../utils.dart';
 void main() {
   group('Enterprise', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('"copyWith" changes the requested elements', () {
       final enterprise = dummyEnterprise(addJob: true);

@@ -41,7 +41,7 @@ void _initializeTeachersProvider(BuildContext context) {
 void main() {
   group('SchoolsProvider', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('deserializeItem works', () {
       final schoolBoards =

@@ -9,6 +9,7 @@ import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/server/connexions.dart';
 import 'package:backend/server/database_manager.dart';
 import 'package:common/communication_protocol.dart';
+import 'package:common/utils.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:test/test.dart';
 
@@ -17,8 +18,10 @@ import '../mockers/web_socket_mock.dart';
 String _prepareHandshake() {
   return jsonEncode(
       CommunicationProtocol(requestType: RequestType.handshake, data: {
-    'token':
-        JWT({'app_secret': '1234567890'}).sign(SecretKey('secret passphrase'))
+    'token': JWT({
+      'app_secret': DevAuth.devMyAppSecret,
+      'school_board_id': DevAuth.devMySchoolBoardId,
+    }).sign(SecretKey('secret passphrase')),
   }).serialize());
 }
 
@@ -473,14 +476,12 @@ void main() {
     expect(protocol1.requestType, RequestType.update);
     expect(protocol1.field, RequestFields.teacher);
     expect(protocol1.data, isA<Map<String, dynamic>>());
-    expect(protocol1.data!['first_name'], 'John');
-    expect(protocol1.data!['last_name'], 'Smith');
+    expect(protocol1.data!['updated_fields'], ['first_name', 'last_name']);
     expect(protocol1.response, isNull);
     expect(protocol2.requestType, RequestType.update);
     expect(protocol2.field, RequestFields.teacher);
     expect(protocol2.data, isA<Map<String, dynamic>>());
-    expect(protocol2.data!['first_name'], 'John');
-    expect(protocol2.data!['last_name'], 'Smith');
+    expect(protocol2.data!['updated_fields'], ['first_name', 'last_name']);
     expect(protocol2.response, isNull);
   });
 

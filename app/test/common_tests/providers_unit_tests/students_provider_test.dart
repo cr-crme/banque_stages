@@ -12,7 +12,7 @@ import '../utils.dart';
 void main() {
   group('StudentsProvider', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     testWidgets('"studentsInMyGroups" works', (tester) async {
       // Prepare the StudentsProvider

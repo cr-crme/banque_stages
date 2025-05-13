@@ -18,7 +18,7 @@ import '../utils.dart';
 void main() {
   group('Intenship', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('"isActive" and "isClosed" behave properly', () {
       final internship = dummyInternship();

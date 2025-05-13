@@ -13,7 +13,7 @@ import '../utils.dart';
 void main() {
   group('EnterprisesProvider', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('"replaceJob" works', () {
       final enterprises =

@@ -125,7 +125,7 @@ Future<void> fillAllJobFormFieldsListTile(
 void main() {
   group('JobFormFieldListTile jobs', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     testWidgets('renders a title', (tester) async {
       await tester.pumpWidget(declareWidget(
@@ -315,7 +315,7 @@ void main() {
 
   group('JobFormFieldListTile minimum age', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     testWidgets('renders a title', (tester) async {
       await tester.pumpWidget(declareWidget(

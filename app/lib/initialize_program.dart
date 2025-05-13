@@ -7,43 +7,46 @@ import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_banque_stages/misc/storage_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-bool get useDatabaseEmulator => _useDatabaseEmulator;
-bool _useDatabaseEmulator = kDebugMode;
+class ProgramInitializer {
+  static bool _showDebugElements = kDebugMode;
+  static bool get showDebugElements => _showDebugElements;
+  static bool _initialized = false;
 
-Future<void> initializeProgram(
-    {bool useDatabaseEmulator = false, bool mockFirebase = false}) async {
-  _useDatabaseEmulator = useDatabaseEmulator;
-  initializeDateFormatting('fr_CA');
+  static Future<void> initialize(
+      {bool showDebugElements = false, bool mockMe = false}) async {
+    _showDebugElements = showDebugElements;
+    if (_initialized) return;
 
-  await Future.wait([
-    // coverage:ignore-start
-    if (!mockFirebase)
-      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
-    // coverage:ignore-end
-    ActivitySectorsService.initialize(),
-    RiskDataFileService.loadData(),
-    QuestionFileService.loadData(),
-  ]);
-  StorageService.instance.isMocked = mockFirebase;
+    initializeDateFormatting('fr_CA');
 
-  // Connect Firebase to local emulators
-  assert(() {
-    if (useDatabaseEmulator && !mockFirebase) {
+    await Future.wait([
       // coverage:ignore-start
-      final host = !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost';
-      FirebaseAuth.instance.useAuthEmulator(host, 9099);
-      FirebaseDatabase.instance.useDatabaseEmulator(host, 9000);
-      FirebaseStorage.instance.useStorageEmulator(host, 9199);
+      if (!mockMe)
+        Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
       // coverage:ignore-end
-    }
-    return true;
-  }());
+      ActivitySectorsService.initialize(),
+      RiskDataFileService.loadData(),
+      QuestionFileService.loadData(),
+    ]);
+    StorageService.instance.isMocked = mockMe;
 
-  setPathUrlStrategy();
+    // Connect Firebase to local emulators
+    assert(() {
+      if (!mockMe) {
+        // coverage:ignore-start
+        final host = !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost';
+        FirebaseAuth.instance.useAuthEmulator(host, 9099);
+        // coverage:ignore-end
+      }
+      return true;
+    }());
+
+    setPathUrlStrategy();
+
+    _initialized = true;
+  }
 }

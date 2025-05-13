@@ -10,7 +10,7 @@ import '../utils.dart';
 void main() {
   group('FinalizeInternshipDialog', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     testWidgets('renders a title', (tester) async {
       await tester.pumpWidgetWithNotifiers(

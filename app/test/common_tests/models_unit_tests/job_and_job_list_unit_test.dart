@@ -12,7 +12,7 @@ import '../utils.dart';
 void main() {
   group('Job and JobList', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     testWidgets('can get evaluation of all enterprises', (tester) async {
       final context = await tester.contextWithNotifiers(withInternships: true);

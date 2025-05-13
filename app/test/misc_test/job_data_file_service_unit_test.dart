@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('ActivitySectorsService', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('sectors are loaded properly', () async {
       await ActivitySectorsService.initialize();
@@ -46,7 +46,7 @@ void main() {
 
   group('Serialization and deserialization', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('ActivitySectorList can serialize and deserialize', () async {
       // This test effectively tests the full serialization and deserialization chain

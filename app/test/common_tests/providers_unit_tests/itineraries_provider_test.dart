@@ -8,7 +8,7 @@ import '../utils.dart';
 void main() {
   group('ItinerariesProvider', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('"add" works', () async {
       final teachers =

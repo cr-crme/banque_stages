@@ -8,10 +8,10 @@ import '../../utils.dart';
 void main() {
   group('Enterprise navigation tab', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     testWidgets('About page', (WidgetTester tester) async {
-      await tester.pumpWidget(const BanqueStagesApp(mockFirebase: true));
+      await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
       await tester.loadDummyData();
 
       await tester.navigateToScreen(ScreenTest.enterprises);

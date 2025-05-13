@@ -13,7 +13,7 @@ import '../utils.dart';
 void main() {
   group('Student', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('"Program" is shown properly', () {
       expect(Program.values.length, 3);

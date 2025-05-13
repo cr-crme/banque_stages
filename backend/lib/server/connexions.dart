@@ -41,7 +41,6 @@ class Connexions {
         // If client disconnected before the handshake was completed
         if (!_clients.containsKey(client)) return false;
         if (startTime.add(_timeout).isBefore(DateTime.now())) {
-          await _onConnexionClosed(client, message: 'Handshake timeout');
           throw ConnexionRefusedException('Handshake timeout');
         }
       }

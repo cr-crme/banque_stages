@@ -7,7 +7,7 @@ import '../../utils.dart';
 void main() {
   group('AuthProvider', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('can sign in and out', () {
       final authProvider =

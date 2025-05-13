@@ -9,7 +9,7 @@ import '../utils.dart';
 void main() {
   group('TeachersProvider', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     test('"currentTeacherId" works', () {
       final teachers =

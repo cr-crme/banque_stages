@@ -20,7 +20,7 @@ Future<void> _initializedDrawer(WidgetTester tester) async {
 void main() {
   group('MainDrawer', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     testWidgets('renders the proper title', (tester) async {
       await _initializedDrawer(tester);

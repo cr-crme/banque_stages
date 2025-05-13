@@ -11,7 +11,7 @@ import '../utils.dart';
 void main() {
   group('JobCreatorDialog', () {
     TestWidgetsFlutterBinding.ensureInitialized();
-    initializeProgram(useDatabaseEmulator: true, mockFirebase: true);
+    ProgramInitializer.initialize(mockMe: true);
 
     testWidgets('renders a title', (tester) async {
       await tester.pumpWidget(
