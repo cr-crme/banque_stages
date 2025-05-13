@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
 
+import '../utils.dart';
 import 'utils.dart';
 
 class _MyScrollableStepper extends StatefulWidget {
@@ -100,23 +101,26 @@ void main() {
 
         // AnimatedContainer contains the indexed number
         expect(find.text('1'), findsOneWidget);
-        expect(
-            (tester
-                    .widget<AnimatedContainer>(
-                        find.byType(AnimatedContainer).first)
-                    .decoration as BoxDecoration)
-                .color,
-            const Color(0x61000000)); // not selected
+        final color1 = (tester
+                .widget<AnimatedContainer>(find.byType(AnimatedContainer).first)
+                .decoration as BoxDecoration)
+            .color!;
+        // Not selected
+        expectNear(color1.a, 0.3800, epsilon: 1e-4);
+        expectNear(color1.r, 0.1137, epsilon: 1e-4);
+        expectNear(color1.g, 0.1059, epsilon: 1e-4);
+        expectNear(color1.b, 0.1255, epsilon: 1e-4);
 
         expect(find.text('2'), findsOneWidget);
-        final color = (tester
+        final color2 = (tester
                 .widget<AnimatedContainer>(find.byType(AnimatedContainer).last)
                 .decoration as BoxDecoration)
-            .color as MaterialColor;
-        expect(color.a, const Color(0xff2196f3).a); // selected
-        expect(color.r, const Color(0xff2196f3).r); // selected
-        expect(color.g, const Color(0xff2196f3).g); // selected
-        expect(color.b, const Color(0xff2196f3).b); // selected
+            .color!;
+        // Selected
+        expectNear(color2.a, 1.0, epsilon: 1e-4);
+        expectNear(color2.r, 0.4039, epsilon: 1e-4);
+        expectNear(color2.g, 0.3137, epsilon: 1e-4);
+        expectNear(color2.b, 0.6431, epsilon: 1e-4);
       });
 
       testWidgets('can change which tab is selected', (tester) async {
@@ -130,14 +134,15 @@ void main() {
 
         // AnimatedContainer contains the indexed number
         expect(find.text('1'), findsOneWidget);
-        final color = (tester
+        final color1 = (tester
                 .widget<AnimatedContainer>(find.byType(AnimatedContainer).last)
                 .decoration as BoxDecoration)
-            .color as MaterialColor;
-        expect(color.a, const Color(0xff2196f3).a); // selected
-        expect(color.r, const Color(0xff2196f3).r); // selected
-        expect(color.g, const Color(0xff2196f3).g); // selected
-        expect(color.b, const Color(0xff2196f3).b); // selected
+            .color!;
+        // Selected
+        expectNear(color1.a, 1.0, epsilon: 1e-4);
+        expectNear(color1.r, 0.4039, epsilon: 1e-4);
+        expectNear(color1.g, 0.3137, epsilon: 1e-4);
+        expectNear(color1.b, 0.6431, epsilon: 1e-4);
 
         expect(find.text('2'), findsNothing); // offscreen
 
@@ -174,14 +179,14 @@ void main() {
         await tester.pumpAndSettle();
 
         // Test the cancel button
-        expect(find.text('ANNULER'), findsNWidgets(3));
-        await tester.tap(find.text('ANNULER').first);
+        expect(find.text('Annuler'), findsNWidgets(3));
+        await tester.tap(find.text('Annuler').first);
         await tester.pumpAndSettle();
         expect(tapCancel, isTrue);
 
         // Test the continue button
-        expect(find.text('CONTINUER'), findsNWidgets(3));
-        await tester.tap(find.text('CONTINUER').first);
+        expect(find.text('Continuer'), findsNWidgets(3));
+        await tester.tap(find.text('Continuer').first);
         await tester.pumpAndSettle();
         expect(tapContinue, isTrue);
       });
@@ -241,23 +246,26 @@ void main() {
         expect(find.byType(AnimatedContainer), findsNWidgets(2));
 
         expect(find.text('1'), findsOneWidget);
-        expect(
-            (tester
-                    .widget<AnimatedContainer>(
-                        find.byType(AnimatedContainer).first)
-                    .decoration as BoxDecoration)
-                .color,
-            const Color(0x61000000)); // not selected
+        final color1 = (tester
+                .widget<AnimatedContainer>(find.byType(AnimatedContainer).first)
+                .decoration as BoxDecoration)
+            .color!;
+        // Not selected
+        expectNear(color1.a, 0.3800, epsilon: 1e-4);
+        expectNear(color1.r, 0.1137, epsilon: 1e-4);
+        expectNear(color1.g, 0.1059, epsilon: 1e-4);
+        expectNear(color1.b, 0.1255, epsilon: 1e-4);
 
         expect(find.text('2'), findsOneWidget);
-        final color = (tester
+        final color2 = (tester
                 .widget<AnimatedContainer>(find.byType(AnimatedContainer).last)
                 .decoration as BoxDecoration)
-            .color as MaterialColor;
-        expect(color.a, const Color(0xff2196f3).a); // selected
-        expect(color.r, const Color(0xff2196f3).r); // selected
-        expect(color.g, const Color(0xff2196f3).g); // selected
-        expect(color.b, const Color(0xff2196f3).b); // selected
+            .color!;
+        // Selected
+        expectNear(color2.a, 1.0, epsilon: 1e-4);
+        expectNear(color2.r, 0.4039, epsilon: 1e-4);
+        expectNear(color2.g, 0.3137, epsilon: 1e-4);
+        expectNear(color2.b, 0.6431, epsilon: 1e-4);
       });
 
       testWidgets('can change which tab is selected', (tester) async {
@@ -270,13 +278,15 @@ void main() {
         expect(find.byType(AnimatedContainer), findsNWidgets(2));
 
         expect(find.text('1'), findsOneWidget);
-        expect(
-            (tester
-                    .widget<AnimatedContainer>(
-                        find.byType(AnimatedContainer).first)
-                    .decoration as BoxDecoration)
-                .color,
-            const Color(0x61000000)); // not selected
+        final color1 = (tester
+                .widget<AnimatedContainer>(find.byType(AnimatedContainer).first)
+                .decoration as BoxDecoration)
+            .color!;
+        // Not selected
+        expectNear(color1.a, 0.3800, epsilon: 1e-4);
+        expectNear(color1.r, 0.1137, epsilon: 1e-4);
+        expectNear(color1.g, 0.1059, epsilon: 1e-4);
+        expectNear(color1.b, 0.1255, epsilon: 1e-4);
 
         expect(find.text('2'), findsOneWidget);
 
@@ -285,11 +295,12 @@ void main() {
                   .widget<AnimatedContainer>(
                       find.byType(AnimatedContainer).last)
                   .decoration as BoxDecoration)
-              .color as MaterialColor;
-          expect(color.a, const Color(0xff2196f3).a); // selected
-          expect(color.r, const Color(0xff2196f3).r); // selected
-          expect(color.g, const Color(0xff2196f3).g); // selected
-          expect(color.b, const Color(0xff2196f3).b); // selected
+              .color!;
+          // Selected
+          expectNear(color.a, 1.0, epsilon: 1e-4);
+          expectNear(color.r, 0.4039, epsilon: 1e-4);
+          expectNear(color.g, 0.3137, epsilon: 1e-4);
+          expectNear(color.b, 0.6431, epsilon: 1e-4);
         }
 
         // Tapping on an open tile doest not close it
@@ -302,20 +313,26 @@ void main() {
                   .widget<AnimatedContainer>(
                       find.byType(AnimatedContainer).first)
                   .decoration as BoxDecoration)
-              .color as MaterialColor;
-          expect(color.a, const Color(0xff2196f3).a); // selected
-          expect(color.r, const Color(0xff2196f3).r); // selected
-          expect(color.g, const Color(0xff2196f3).g); // selected
-          expect(color.b, const Color(0xff2196f3).b); // selected
+              .color!;
+          // Selected
+          expectNear(color.a, 1.0, epsilon: 1e-4);
+          expectNear(color.r, 0.4039, epsilon: 1e-4);
+          expectNear(color.g, 0.3137, epsilon: 1e-4);
+          expectNear(color.b, 0.6431, epsilon: 1e-4);
         }
-        expect(find.text('2'), findsOneWidget);
-        expect(
-            (tester
-                    .widget<AnimatedContainer>(
-                        find.byType(AnimatedContainer).last)
-                    .decoration as BoxDecoration)
-                .color,
-            const Color(0x61000000));
+        {
+          expect(find.text('2'), findsOneWidget);
+          final color = (tester
+                  .widget<AnimatedContainer>(
+                      find.byType(AnimatedContainer).last)
+                  .decoration as BoxDecoration)
+              .color!;
+          // Not selected
+          expectNear(color.a, 0.3800, epsilon: 1e-4);
+          expectNear(color.r, 0.1137, epsilon: 1e-4);
+          expectNear(color.g, 0.1059, epsilon: 1e-4);
+          expectNear(color.b, 0.1255, epsilon: 1e-4);
+        }
 
         // Retap on an open tile doest not close it
         await tester.tap(find.text('Title 0'));
@@ -327,11 +344,12 @@ void main() {
                   .widget<AnimatedContainer>(
                       find.byType(AnimatedContainer).first)
                   .decoration as BoxDecoration)
-              .color as MaterialColor;
-          expect(color.a, const Color(0xff2196f3).a); // selected
-          expect(color.r, const Color(0xff2196f3).r); // selected
-          expect(color.g, const Color(0xff2196f3).g); // selected
-          expect(color.b, const Color(0xff2196f3).b); // selected
+              .color!;
+          // Selected
+          expectNear(color.a, 1.0, epsilon: 1e-4);
+          expectNear(color.r, 0.4039, epsilon: 1e-4);
+          expectNear(color.g, 0.3137, epsilon: 1e-4);
+          expectNear(color.b, 0.6431, epsilon: 1e-4);
         }
       });
 
@@ -360,14 +378,14 @@ void main() {
         await tester.pumpAndSettle();
 
         // Test the cancel button
-        expect(find.text('ANNULER'), findsNWidgets(2));
-        await tester.tap(find.text('ANNULER').first);
+        expect(find.text('Annuler'), findsNWidgets(2));
+        await tester.tap(find.text('Annuler').first);
         await tester.pumpAndSettle();
         expect(tapCancel, isTrue);
 
         // Test the continue button
-        expect(find.text('CONTINUER'), findsNWidgets(2));
-        await tester.tap(find.text('CONTINUER').first);
+        expect(find.text('Continuer'), findsNWidgets(2));
+        await tester.tap(find.text('Continuer').first);
         await tester.pumpAndSettle();
         expect(tapContinue, isTrue);
       });

@@ -18,6 +18,12 @@ import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/services/job_data_file_service.dart';
 
+void expectNear(double a, double b, {double epsilon = 1e-8}) {
+  if ((a - b).abs() > epsilon) {
+    throw Exception('Expected $a to be near $b within $epsilon');
+  }
+}
+
 School dummySchool({
   String? id,
 }) =>

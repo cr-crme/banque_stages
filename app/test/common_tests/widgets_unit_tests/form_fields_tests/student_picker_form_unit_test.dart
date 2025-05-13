@@ -39,15 +39,19 @@ void main() {
       await tester.tap(find.byType(TextField));
       await tester.pump();
 
-      expect(find.byType(InkWell), findsNWidgets(2));
+      expect(find.byType(InkWell), findsNWidgets(3));
 
       await tester.enterText(find.byType(TextField), 'First');
+      await tester.pump();
+      expect(find.byType(InkWell), findsNWidgets(2));
+
+      await tester.enterText(find.byType(TextField), 'None');
       await tester.pump();
       expect(find.byType(InkWell), findsNWidgets(1));
 
       await tester.enterText(find.byType(TextField), 'Student');
       await tester.pump();
-      expect(find.byType(InkWell), findsNWidgets(2));
+      expect(find.byType(InkWell), findsNWidgets(3));
     });
 
     testWidgets('tapping a choice moves it to the text field', (tester) async {
@@ -130,11 +134,11 @@ void main() {
 
       await tester.tap(find.byType(TextField));
       await tester.pump();
-      expect(find.byType(InkWell), findsNWidgets(2));
+      expect(find.byType(InkWell), findsNWidgets(3));
 
       await tester.tap(find.byIcon(Icons.clear));
       await tester.pump();
-      expect(find.byType(InkWell), findsNothing);
+      expect(find.byType(InkWell), findsNWidgets(1));
     });
 
     testWidgets('validation fails if nothing is entered', (tester) async {
