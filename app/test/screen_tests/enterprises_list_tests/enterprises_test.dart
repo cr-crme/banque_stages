@@ -1,5 +1,5 @@
-import 'package:crcrme_banque_stages/initialize_program.dart';
 import 'package:crcrme_banque_stages/main.dart';
+import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/widgets/enterprise_card.dart';
 import 'package:flutter_test/flutter_test.dart';
 

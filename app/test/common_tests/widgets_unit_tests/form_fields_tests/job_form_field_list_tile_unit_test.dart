@@ -3,7 +3,7 @@ import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
-import 'package:crcrme_banque_stages/initialize_program.dart';
+import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

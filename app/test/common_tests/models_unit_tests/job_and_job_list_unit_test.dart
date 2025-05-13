@@ -3,7 +3,7 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
-import 'package:crcrme_banque_stages/initialize_program.dart';
+import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../utils.dart';

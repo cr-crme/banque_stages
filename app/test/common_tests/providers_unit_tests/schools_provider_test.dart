@@ -5,7 +5,7 @@ import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/initialize_program.dart';
+import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uuid/uuid.dart';

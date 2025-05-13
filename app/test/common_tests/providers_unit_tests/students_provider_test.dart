@@ -3,7 +3,7 @@ import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/initialize_program.dart';
+import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../utils.dart';

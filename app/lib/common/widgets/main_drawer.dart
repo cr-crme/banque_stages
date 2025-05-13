@@ -1,7 +1,7 @@
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/numbered_tablet.dart';
 import 'package:crcrme_banque_stages/dummy_data.dart';
-import 'package:crcrme_banque_stages/initialize_program.dart';
+import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/tasks_to_do/tasks_to_do_screen.dart';
 import 'package:flutter/material.dart';

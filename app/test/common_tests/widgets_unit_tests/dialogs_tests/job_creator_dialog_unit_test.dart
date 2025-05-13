@@ -1,6 +1,6 @@
 import 'package:crcrme_banque_stages/common/widgets/dialogs/job_creator_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
-import 'package:crcrme_banque_stages/initialize_program.dart';
+import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

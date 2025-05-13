@@ -1,6 +1,6 @@
 import 'package:common/models/persons/student.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/student_picker_form_field.dart';
-import 'package:crcrme_banque_stages/initialize_program.dart';
+import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
