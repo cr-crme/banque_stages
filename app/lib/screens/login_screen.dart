@@ -20,10 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _signIn() async {
     final scaffold = ScaffoldMessenger.of(context);
-
-    if (!FormService.validateForm(_formKey, save: true)) {
-      return;
-    }
+    if (!FormService.validateForm(_formKey, save: true)) return;
 
     try {
       await AuthProvider.of(context)
