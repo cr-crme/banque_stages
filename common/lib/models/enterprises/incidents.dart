@@ -19,6 +19,9 @@ class Incident extends ItemSerializable {
         'incident': incident,
         'date': date.millisecondsSinceEpoch,
       };
+
+  @override
+  String toString() => incident;
 }
 
 class Incidents extends ItemSerializable {

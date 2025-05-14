@@ -9,6 +9,9 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart' as routing_client;
 
+// ignore: implementation_imports
+import 'package:routing_client_dart/src/models/osrm/road.dart' as routing_hack;
+
 class RoutingController {
   RoutingController({
     required this.destinations,
@@ -88,18 +91,13 @@ class RoutingController {
     List<double> distances = [];
 
     if (route != null) {
-      distances.add(0);
-      for (final leg in route.instructions) {
-        // Instruction that has a distance of 0, is a sub-destination. Otherwise
-        // is it part part of the way to get to this sub-destination.
-        if (leg.distance > 0) {
-          distances[distances.length - 1] += leg.distance;
-        } else {
-          distances.add(0);
-        }
+      // Accessing OSRMRoad is not supposed to be done directly, but it is
+      // necessary to access the roadLegs.
+      // This is a hack to access the private members of the OSRMRoad class.
+      final routeTp = route as routing_hack.OSRMRoad;
+      for (final leg in routeTp.roadLegs) {
+        distances.add(leg.distance);
       }
-      // Pop the last item which is added by the previous loop.
-      distances.removeLast();
     }
 
     return distances;
