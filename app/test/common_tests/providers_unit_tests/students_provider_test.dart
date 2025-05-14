@@ -4,10 +4,20 @@ import 'package:crcrme_banque_stages/common/providers/internships_provider.dart'
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../utils.dart';
 import '../utils.dart';
+
+void _prepareProviders(BuildContext context) {
+  final auth = AuthProvider(mockMe: true);
+  final teachers = TeachersProvider.of(context, listen: false);
+  teachers.initializeAuth(auth);
+  teachers.add(dummyTeacher(id: teachers.currentTeacherId));
+  final students = StudentsProvider.instance(context, listen: false);
+  students.initializeAuth(auth);
+}
 
 void main() {
   group('StudentsProvider', () {
@@ -18,14 +28,10 @@ void main() {
       // Prepare the StudentsProvider
       final context = await tester.contextWithNotifiers(
           withStudents: true, withTeachers: true);
-      final auth = AuthProvider(mockMe: true);
-      final teachers = TeachersProvider.of(context, listen: false);
-      teachers.initializeAuth(auth);
-      teachers.add(dummyTeacher(id: auth.currentUser!.uid));
-      final students = StudentsProvider.instance(context, listen: false);
-      students.initializeAuth(auth);
+      _prepareProviders(context);
 
       // Add random students (my groups are 101 and 102)
+      final students = StudentsProvider.instance(context, listen: false);
       students.add(dummyStudent(group: '101'));
       students.add(dummyStudent(group: '101'));
       students.add(dummyStudent(group: '102'));
@@ -39,13 +45,9 @@ void main() {
       // Prepare the StudentsProvider
       final context = await tester.contextWithNotifiers(
           withStudents: true, withTeachers: true, withInternships: true);
-      final auth = AuthProvider(mockMe: true);
-      final teachers = TeachersProvider.of(context, listen: false);
-      teachers.initializeAuth(auth);
-      teachers.add(dummyTeacher(id: auth.currentUser!.uid));
-      final students = StudentsProvider.instance(context, listen: false);
-      students.initializeAuth(auth);
+      _prepareProviders(context);
 
+      final students = StudentsProvider.instance(context, listen: false);
       students.add(dummyStudent(id: 'myStudent1', group: '101'));
       students.add(dummyStudent(id: 'myStudent2', group: '101'));
       students.add(dummyStudent(id: 'myStudent3', group: '102'));
@@ -63,6 +65,7 @@ void main() {
       for (int i = 0; i < students.length; i++) {
         final student = students[i];
         internships.add(dummyInternship(
+            id: 'internshipId$i',
             studentId: student.id,
             teacherId: i >= 3 ? 'anotherTeacherId' : teacherId));
       }
@@ -111,9 +114,9 @@ void main() {
       final students =
           StudentsProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       final student = students.deserializeItem({
-        'firstName': 'NotPierre',
-        'middleName': 'NotJean',
-        'lastName': 'NotJacques',
+        'first_name': 'NotPierre',
+        'middle_name': 'NotJean',
+        'last_name': 'NotJacques',
         'group': '10101',
       });
 

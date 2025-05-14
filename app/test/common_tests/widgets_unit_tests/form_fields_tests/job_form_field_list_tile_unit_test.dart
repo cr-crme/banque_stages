@@ -562,7 +562,12 @@ void main() {
       for (int i = 0; i < UniformStatus.values.length; i++) {
         // First refers to "Non" which appear twice (once in uniform and once in protections)
         await tester.tap(find.text(UniformStatus.values[i].toString()).first);
-        await tester.pump();
+        await tester.pumpAndSettle();
+
+        final coucou = find.text(UniformStatus.values[i].toString());
+        final coucou2 =
+            find.ancestor(of: coucou, matching: find.byType(RadioListTile));
+
         if (UniformStatus.values[i] == UniformStatus.none) {
           expect(formKey.currentState!.validate(), isTrue);
           await tester.pump();

@@ -21,10 +21,9 @@ extension InternshipExtension on Internship {
     }
 
     InternshipsProvider.of(context, listen: false).replace(
-      copyWith(extraSupervisingTeacherIds: [
-        ...extraSupervisingTeacherIds,
-        teacherId
-      ]),
+      copyWith(
+        extraSupervisingTeacherIds: [...extraSupervisingTeacherIds, teacherId],
+      ),
     );
   }
 

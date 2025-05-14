@@ -16,7 +16,7 @@ void main() {
 
       expect(find.text('Sélectionner la date'), findsOneWidget);
       expect(find.text('ven. 1 janv.'), findsOneWidget);
-      expect(find.text('ANNULER'), findsOneWidget);
+      expect(find.text('Annuler'), findsOneWidget);
       expect(find.text('OK'), findsOneWidget);
     });
 
@@ -54,12 +54,12 @@ void main() {
       await tester.tap(find.byIcon(Icons.keyboard_outlined));
       await tester.pumpAndSettle();
 
-      expect(find.text('SÉLECTIONNER LA DATE'), findsOneWidget);
+      expect(find.text('Sélectionner la date'), findsOneWidget);
       expect(find.text('ven. 1 janv.'), findsOneWidget);
       expect(find.text('Entrer une date'), findsOneWidget);
       expect(find.text('jj-mm-aaaa'), findsOneWidget);
 
-      expect(find.text('ANNULER'), findsOneWidget);
+      expect(find.text('Annuler'), findsOneWidget);
       expect(find.text('OK'), findsOneWidget);
     });
 
@@ -216,7 +216,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap the cancel button
-      await tester.tap(find.text('ANNULER'));
+      await tester.tap(find.text('Annuler'));
       await tester.pumpAndSettle();
 
       expect(result, null);
@@ -247,7 +247,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap the cancel button
-      await tester.tap(find.text('ANNULER'));
+      await tester.tap(find.text('Annuler'));
       await tester.pumpAndSettle();
 
       expect(result, null);
@@ -262,8 +262,8 @@ void main() {
         currentDate: DateTime(2021),
       )));
 
-      expect(find.text('ENREGISTRER'), findsOneWidget);
-      expect(find.text('SÉLECTIONNER LA PLAGE'), findsOneWidget);
+      expect(find.text('Enregistrer'), findsOneWidget);
+      expect(find.text('Sélectionner la plage'), findsOneWidget);
       expect(find.text('Début'), findsOneWidget);
       expect(find.text('Fin'), findsOneWidget);
     });
@@ -314,13 +314,13 @@ void main() {
       await tester.tap(find.byIcon(Icons.keyboard_outlined));
       await tester.pumpAndSettle();
 
-      expect(find.text('SÉLECTIONNER LA PLAGE'), findsOneWidget);
+      expect(find.text('Sélectionner la plage'), findsOneWidget);
       expect(find.text('Période'), findsOneWidget);
       expect(find.text('Date de début'), findsOneWidget);
       expect(find.text('Date de fin'), findsOneWidget);
       expect(find.text('jj-mm-aaaa'), findsNWidgets(2));
 
-      expect(find.text('ANNULER'), findsOneWidget);
+      expect(find.text('Annuler'), findsOneWidget);
       expect(find.text('OK'), findsOneWidget);
     });
 
@@ -479,12 +479,12 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap the OK button
-      await tester.tap(find.text('ENREGISTRER'));
+      await tester.tap(find.text('Enregistrer'));
       await tester.pumpAndSettle();
 
       expect(
           result,
-          DateTimeRange(
+          time_utils.DateTimeRange(
               start: DateTime(2021, 1, 15), end: DateTime(2021, 1, 18)));
     });
 
@@ -543,7 +543,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap the cancel button
-      await tester.tap(find.text('ANNULER'));
+      await tester.tap(find.text('Annuler'));
       await tester.pumpAndSettle();
 
       expect(result, null);

@@ -31,14 +31,16 @@ School dummySchool({
 
 Teacher dummyTeacher(
         {String id = 'teacherId',
+        String schoolBoardId = 'school_board_id',
+        String schoolId = 'school_id',
         List<String> groups = const ['101', '102']}) =>
     Teacher(
       id: id,
       firstName: 'Pierre',
       middleName: 'Jean',
       lastName: 'Jacques',
-      schoolBoardId: 'school_board_id',
-      schoolId: 'school_id',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolId,
       groups: groups,
       email: 'peter.john.jakob@test.com',
       phone: dummyPhoneNumber(),

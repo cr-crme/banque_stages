@@ -44,7 +44,7 @@ class ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
         if (activityTabAtTop) activityTabs,
         Autocomplete<String>(
           optionsBuilder: (textEditingValue) {
-            return ActivityTypes.values.map<String>((e) => e.name).where(
+            return ActivityTypes.values.map<String>((e) => e.toString()).where(
                   (activity) =>
                       activity.toLowerCase().contains(
                           textEditingValue.text.toLowerCase().trim()) &&

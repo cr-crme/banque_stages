@@ -12,11 +12,11 @@ void main() {
       await tester.pumpWidget(declareWidget(const ActivityTypeCards(
           activityTypes: {ActivityTypes.restaurant, ActivityTypes.commerce})));
 
-      expect(find.text(ActivityTypes.restaurant.name), findsOneWidget);
-      expect(find.text(ActivityTypes.commerce.name), findsOneWidget);
+      expect(find.text(ActivityTypes.restaurant.toString()), findsOneWidget);
+      expect(find.text(ActivityTypes.commerce.toString()), findsOneWidget);
 
       // Make sure the appareance is correct
-      final textFinder = find.text(ActivityTypes.restaurant.name);
+      final textFinder = find.text(ActivityTypes.restaurant.toString());
       final text = tester.widget<Text>(textFinder);
       final chip = tester.ancestorByType<Chip>(of: textFinder);
 

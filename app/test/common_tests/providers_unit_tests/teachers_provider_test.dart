@@ -2,6 +2,7 @@ import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../utils.dart';
 import '../utils.dart';
@@ -17,7 +18,10 @@ void main() {
       expect(() => teachers.currentTeacherId, throwsException);
 
       teachers.initializeAuth(AuthProvider(mockMe: true));
-      expect(teachers.currentTeacherId, 'Mock User');
+      var uuid = Uuid();
+      final namespace = UuidValue.fromNamespace(Namespace.dns);
+      final teacherId = uuid.v5(namespace.toString(), 'Mock User');
+      expect(teachers.currentTeacherId, teacherId);
     });
 
     test('"getCurrentTeacher" works', () {
@@ -30,7 +34,7 @@ void main() {
       teachers.add(dummyTeacher());
       expect(teachers.currentTeacher.firstName, 'Error');
 
-      teachers.add(dummyTeacher(id: auth.currentUser!.uid));
+      teachers.add(dummyTeacher(id: teachers.currentTeacherId));
       expect(teachers.currentTeacher.firstName, 'Pierre');
     });
 
@@ -42,7 +46,8 @@ void main() {
       expect(teacher.firstName, 'Pierre');
       expect(teacher.middleName, 'Jean');
       expect(teacher.lastName, 'Jacques');
-      expect(teacher.schoolId, 'schoolId');
+      expect(teacher.schoolBoardId, 'school_board_id');
+      expect(teacher.schoolId, 'school_id');
       expect(teacher.email, 'peter.john.jakob@test.com');
       expect(teacher.groups, ['101', '102']);
     });

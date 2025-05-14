@@ -196,7 +196,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
   ///
   /// Note that [notify] has no effect here and should not be used.
   @override
-  Future<void> replace(T item, {bool notify = true}) async {
+  void replace(T item, {bool notify = true}) {
     _sanityChecks(notify: notify);
 
     try {

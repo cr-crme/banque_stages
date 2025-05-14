@@ -103,7 +103,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   // Test the replace function
 
   // Change the name of the schoolboard
-  await schoolBoards.replace(
+  schoolBoards.replace(
       schoolBoards[0].copyWith(name: 'Ma première commission scolaire'));
   while (schoolBoards[0].name != 'Ma première commission scolaire') {
     await Future.delayed(const Duration(milliseconds: 100));
@@ -111,8 +111,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
 
   // Modify the name of the first school
   schools[0] = schools[0].copyWith(name: 'Ma première école');
-  await schoolBoards
-      .replace(schoolBoards[0].copyWith(schools: schools.toList()));
+  schoolBoards.replace(schoolBoards[0].copyWith(schools: schools.toList()));
   while (!schoolBoards[0].schools.any((e) => e.name == 'Ma première école')) {
     await Future.delayed(const Duration(milliseconds: 100));
   }
@@ -126,8 +125,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
       postalCode: '1Y5 H2N',
     ),
   );
-  await schoolBoards
-      .replace(schoolBoards[0].copyWith(schools: schools.toList()));
+  schoolBoards.replace(schoolBoards[0].copyWith(schools: schools.toList()));
   while (!schoolBoards[0].schools.any((e) => e.address.civicNumber == 5019)) {
     await Future.delayed(const Duration(milliseconds: 100));
   }
