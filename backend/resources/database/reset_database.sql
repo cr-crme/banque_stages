@@ -329,7 +329,7 @@ CREATE TABLE internships (
     achieved_duration BIGINT NOT NULL,
     visiting_priority INT NOT NULL,
     teacher_notes VARCHAR(2000) NOT NULL,
-    end_date BIGINT NOT NULL,
+    end_date BIGINT,
     FOREIGN KEY (student_id) REFERENCES students(id), 
     FOREIGN KEY (enterprise_id) REFERENCES enterprises(id),
     FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id),

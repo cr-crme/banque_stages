@@ -1,5 +1,6 @@
 import 'package:common/exceptions.dart';
 import 'package:common/models/generic/extended_item_serializable.dart';
+import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/schedule.dart';
@@ -8,23 +9,11 @@ import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
+export 'package:common/models/generic/serializable_elements.dart';
+
 double _doubleFromSerialized(num? number, {double defaultValue = 0}) {
   if (number is int) return number.toDouble();
   return double.parse(((number ?? defaultValue) as double).toStringAsFixed(5));
-}
-
-List<String> _stringListFromSerialized(List? list) {
-  if (list == null ||
-      list.isEmpty ||
-      (list.length == 1 && list[0] == 'EMPTY')) {
-    return [];
-  }
-  return list.map<String>((e) => e).toList();
-}
-
-List _serializeList(List list) {
-  if (list.isEmpty) return ['EMPTY'];
-  return list;
 }
 
 class PostInternshipEnterpriseEvaluation extends ItemSerializable {
@@ -48,9 +37,17 @@ class PostInternshipEnterpriseEvaluation extends ItemSerializable {
     required this.acceptanceBehaviorDifficulties,
   });
 
+  static PostInternshipEnterpriseEvaluation? deserialize(map) {
+    return map == null
+        ? null
+        : PostInternshipEnterpriseEvaluation.fromSerialized(map);
+  }
+
   PostInternshipEnterpriseEvaluation.fromSerialized(super.map)
       : internshipId = map['internship_id'] ?? '',
-        skillsRequired = _stringListFromSerialized(map['skills_required']),
+        skillsRequired = ListExt.from(map['skills_required'],
+                deserializer: (e) => StringExt.from(e)!) ??
+            [],
         taskVariety = _doubleFromSerialized(map['task_variety']),
         trainingPlanRespect =
             _doubleFromSerialized(map['training_plan_respect']),
@@ -224,6 +221,8 @@ class Internship extends ExtendedItemSerializable {
   List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
   List<WeeklySchedule> weeklySchedulesFrom(int version) =>
       _mutables[version].weeklySchedules;
+  List<Map<String, dynamic>> get serializedMutables =>
+      _mutables.map((e) => e.serialize()).toList();
 
   // Elements that are parts of the inner working of the internship (can be
   // modify, but won't generate a new version)
@@ -345,66 +344,58 @@ class Internship extends ExtendedItemSerializable {
   }
 
   Internship.fromSerialized(super.map)
-      : schoolBoardId = map['school_board_id'] ?? '-1',
-        studentId = map['student_id'] ?? '',
-        signatoryTeacherId = map['signatory_teacher_id'] ?? '',
-        extraSupervisingTeacherIds =
-            _stringListFromSerialized(map['extra_supervising_teacher_ids']),
-        enterpriseId = map['enterprise_id'] ?? '',
-        jobId = map['job_id'] ?? '',
-        extraSpecializationIds =
-            _stringListFromSerialized(map['extra_specialization_ids']),
+      : schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
+        studentId = StringExt.from(map['student_id']) ?? '',
+        signatoryTeacherId = StringExt.from(map['signatory_teacher_id']) ?? '',
+        extraSupervisingTeacherIds = ListExt.from(
+                map['extra_supervising_teacher_ids'],
+                deserializer: (e) => StringExt.from(e)!) ??
+            [],
+        enterpriseId = StringExt.from(map['enterprise_id']) ?? '',
+        jobId = StringExt.from(map['job_id']) ?? '',
+        extraSpecializationIds = ListExt.from(map['extra_specialization_ids'],
+                deserializer: (e) => StringExt.from(e)!) ??
+            [],
         _mutables = (map['mutables'] as List?)
                 ?.map(((e) => _MutableElements.fromSerialized(e)))
                 .toList() ??
             [],
-        expectedDuration = map['expected_duration'] ?? -1,
-        achievedDuration = map['achieved_duration'] ?? -1,
-        visitingPriority = map['priority'] == null
-            ? VisitingPriority.notApplicable
-            : VisitingPriority.values[map['priority']],
-        teacherNotes = map['teacher_notes'] ?? '',
-        endDate = map['end_date'] == null || map['end_date'] == -1
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(map['end_date']),
-        skillEvaluations = (map['skill_evaluations'] as List?)
-                ?.map((e) => InternshipEvaluationSkill.fromSerialized(e))
-                .toList() ??
+        expectedDuration = IntExt.from(map['expected_duration']) ?? -1,
+        achievedDuration = IntExt.from(map['achieved_duration']) ?? -1,
+        visitingPriority = VisitingPriority.deserialize(map['priority']) ??
+            VisitingPriority.notApplicable,
+        teacherNotes = StringExt.from(map['teacher_notes']) ?? '',
+        endDate = DateTimeExt.from(map['end_date']),
+        skillEvaluations = ListExt.from(map['skill_evaluations'],
+                deserializer: InternshipEvaluationSkill.fromSerialized) ??
             [],
-        attitudeEvaluations = (map['attitude_evaluations'] as List?)
-                ?.map((e) => InternshipEvaluationAttitude.fromSerialized(e))
-                .toList() ??
+        attitudeEvaluations = ListExt.from(map['attitude_evaluations'],
+                deserializer: InternshipEvaluationAttitude.fromSerialized) ??
             [],
-        enterpriseEvaluation = map['enterprise_evaluation'] == null ||
-                map['enterprise_evaluation'] == -1
-            ? null
-            : PostInternshipEnterpriseEvaluation.fromSerialized(
-                map['enterprise_evaluation']),
+        enterpriseEvaluation = PostInternshipEnterpriseEvaluation.deserialize(
+            map['enterprise_evaluation']),
         super.fromSerialized() {
     _finalizeInitialization();
   }
 
   @override
   Map<String, dynamic> serializedMap() => {
-        'school_board_id': schoolBoardId,
-        'version': _currentVersion,
-        'student_id': studentId,
-        'signatory_teacher_id': signatoryTeacherId,
-        'extra_supervising_teacher_ids':
-            _serializeList(extraSupervisingTeacherIds),
-        'enterprise_id': enterpriseId,
-        'job_id': jobId,
-        'extra_specialization_ids': _serializeList(extraSpecializationIds),
-        'mutables': _mutables.map((e) => e.serialize()).toList(),
-        'expected_duration': expectedDuration,
-        'achieved_duration': achievedDuration,
-        'priority': visitingPriority.index,
-        'teacher_notes': teacherNotes,
-        'end_date': endDate?.millisecondsSinceEpoch ?? -1,
-        'skill_evaluations':
-            skillEvaluations.map((e) => e.serialize()).toList(),
-        'attitude_evaluations':
-            attitudeEvaluations.map((e) => e.serialize()).toList(),
+        'school_board_id': schoolBoardId.serialize(),
+        'version': _currentVersion.serialize(),
+        'student_id': studentId.serialize(),
+        'signatory_teacher_id': signatoryTeacherId.serialize(),
+        'extra_supervising_teacher_ids': extraSupervisingTeacherIds.serialize(),
+        'enterprise_id': enterpriseId.serialize(),
+        'job_id': jobId.serialize(),
+        'extra_specialization_ids': extraSpecializationIds.serialize(),
+        'mutables': serializedMutables,
+        'expected_duration': expectedDuration.serialize(),
+        'achieved_duration': achievedDuration.serialize(),
+        'priority': visitingPriority.serialize(),
+        'teacher_notes': teacherNotes.serialize(),
+        'end_date': endDate?.serialize(),
+        'skill_evaluations': skillEvaluations.serialize(),
+        'attitude_evaluations': attitudeEvaluations.serialize(),
         'enterprise_evaluation': enterpriseEvaluation?.serialize(),
       };
 
@@ -499,44 +490,41 @@ class Internship extends ExtendedItemSerializable {
     }
 
     return Internship._(
-      id: data['id']?.toString() ?? id,
-      schoolBoardId: data['school_board_id'] ?? schoolBoardId,
-      studentId: data['student_id'] ?? studentId,
-      signatoryTeacherId: data['signatory_teacher_id'] ?? signatoryTeacherId,
-      extraSupervisingTeacherIds: data['extra_supervising_teacher_ids'] == null
-          ? extraSupervisingTeacherIds
-          : _stringListFromSerialized(data['extra_supervising_teacher_ids']),
-      enterpriseId: data['enterprise_id'] ?? enterpriseId,
-      jobId: data['job_id'] ?? jobId,
-      extraSpecializationIds: data['extra_specialization_ids'] == null
-          ? extraSpecializationIds
-          : _stringListFromSerialized(data['extra_specialization_ids']),
+      id: StringExt.from(data['id']) ?? id,
+      schoolBoardId: StringExt.from(data['school_board_id']) ?? schoolBoardId,
+      studentId: StringExt.from(data['student_id']) ?? studentId,
+      signatoryTeacherId:
+          StringExt.from(data['signatory_teacher_id']) ?? signatoryTeacherId,
+      extraSupervisingTeacherIds: ListExt.from(
+              data['extra_supervising_teacher_ids'],
+              deserializer: (e) => StringExt.from(e)!) ??
+          extraSupervisingTeacherIds,
+      enterpriseId: StringExt.from(data['enterprise_id']) ?? enterpriseId,
+      jobId: StringExt.from(data['job_id']) ?? jobId,
+      extraSpecializationIds: ListExt.from(data['extra_specialization_ids'],
+              deserializer: (e) => StringExt.from(e)!) ??
+          extraSpecializationIds,
       mutables: (data['mutables'] as List?)
               ?.map(((e) => _MutableElements.fromSerialized(e)))
               .toList() ??
           _mutables,
-      expectedDuration: data['expected_duration'] ?? expectedDuration,
-      achievedDuration: data['achieved_duration'] ?? achievedDuration,
-      visitingPriority: data['priority'] == null
-          ? visitingPriority
-          : VisitingPriority.values[data['priority']],
-      teacherNotes: data['teacher_notes'] ?? teacherNotes,
-      endDate: data['end_date'] == null || data['end_date'] == -1
-          ? endDate
-          : DateTime.fromMillisecondsSinceEpoch(data['end_date']),
-      skillEvaluations: (data['skill_evaluations'] as List?)
-              ?.map((e) => InternshipEvaluationSkill.fromSerialized(e))
-              .toList() ??
+      expectedDuration:
+          IntExt.from(data['expected_duration']) ?? expectedDuration,
+      achievedDuration:
+          IntExt.from(data['achieved_duration']) ?? achievedDuration,
+      visitingPriority:
+          VisitingPriority.deserialize(data['priority']) ?? visitingPriority,
+      teacherNotes: StringExt.from(data['teacher_notes']) ?? teacherNotes,
+      endDate: DateTimeExt.from(data['end_date']) ?? endDate,
+      skillEvaluations: ListExt.from(data['skill_evaluations'],
+              deserializer: InternshipEvaluationSkill.fromSerialized) ??
           skillEvaluations,
-      attitudeEvaluations: (data['attitude_evaluations'] as List?)
-              ?.map((e) => InternshipEvaluationAttitude.fromSerialized(e))
-              .toList() ??
+      attitudeEvaluations: ListExt.from(data['attitude_evaluations'],
+              deserializer: InternshipEvaluationAttitude.fromSerialized) ??
           attitudeEvaluations,
-      enterpriseEvaluation: data['enterprise_evaluation'] == null ||
-              data['enterprise_evaluation'] == -1
-          ? enterpriseEvaluation
-          : PostInternshipEnterpriseEvaluation.fromSerialized(
-              data['enterprise_evaluation']),
+      enterpriseEvaluation: PostInternshipEnterpriseEvaluation.deserialize(
+              data['enterprise_evaluation']) ??
+          enterpriseEvaluation,
     );
   }
 
