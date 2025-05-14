@@ -36,7 +36,7 @@ class ProgramInitializer {
 
     // Connect Firebase to local emulators
     assert(() {
-      if (!mockMe) {
+      if (mockMe) {
         // coverage:ignore-start
         final host = !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost';
         FirebaseAuth.instance.useAuthEmulator(host, 9099);
