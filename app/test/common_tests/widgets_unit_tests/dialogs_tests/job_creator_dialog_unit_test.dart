@@ -94,6 +94,7 @@ void main() {
 
     testWidgets('confirming is accepted if valid values are entered',
         (tester) async {
+      await tester.binding.setSurfaceSize(Size(400, 1080));
       await tester.pumpWidget(
           declareWidget(JobCreatorDialog(enterprise: dummyEnterprise())));
 

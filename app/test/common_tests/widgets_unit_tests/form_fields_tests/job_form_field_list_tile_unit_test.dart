@@ -541,6 +541,8 @@ void main() {
     testWidgets(
         'validate fails if nothing is selected or if the follow up is left empty',
         (tester) async {
+      await tester.binding.setSurfaceSize(Size(400, 1080));
+
       final formKey = GlobalKey<FormState>();
       await tester.pumpWidget(declareWidget(SingleChildScrollView(
           child: Form(
@@ -553,20 +555,11 @@ void main() {
       expect(formKey.currentState!.validate(), isFalse);
       await tester.pump();
 
-      // Drag the screen back down a little
-      await tester.drag(
-          find.byType(SingleChildScrollView), const Offset(0, 100));
-      await tester.pumpAndSettle();
-
       // Fill the uniform but not the follow up
       for (int i = 0; i < UniformStatus.values.length; i++) {
         // First refers to "Non" which appear twice (once in uniform and once in protections)
         await tester.tap(find.text(UniformStatus.values[i].toString()).first);
         await tester.pumpAndSettle();
-
-        final coucou = find.text(UniformStatus.values[i].toString());
-        final coucou2 =
-            find.ancestor(of: coucou, matching: find.byType(RadioListTile));
 
         if (UniformStatus.values[i] == UniformStatus.none) {
           expect(formKey.currentState!.validate(), isTrue);

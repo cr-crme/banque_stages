@@ -36,5 +36,11 @@
             "program": "backend/resources/backend_gui/lib/main.dart",
             "preLaunchTask": "Run Backend Server",
         },
+        {
+            "name": "Banque de Stages (test widgets)",
+            "request": "launch",
+            "type": "dart",
+            "program": "app/lib/main_widgets.dart",
+        },
     ]
 }
