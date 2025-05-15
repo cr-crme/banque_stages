@@ -258,7 +258,6 @@ class _EvaluationTypeChoserState extends State<_EvaluationTypeChoser> {
           .forceValue(widget.formController.evaluationGranularity);
     }
 
-    debugPrint(widget.formController.evaluationGranularity.toString());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

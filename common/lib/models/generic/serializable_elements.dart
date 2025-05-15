@@ -31,7 +31,15 @@ extension StringExt on String {
 extension IntExt on int {
   int serialize() => this;
 
-  static int? from(element) => int.tryParse(element);
+  static int? from(element) {
+    if (element is int) {
+      return element;
+    } else if (element is String) {
+      return int.tryParse(element);
+    } else {
+      return null;
+    }
+  }
 }
 
 extension DateTimeExt on DateTime {

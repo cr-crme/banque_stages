@@ -1442,7 +1442,7 @@ Future<void> _addDummyInternships(
       middleName: null,
       lastName: 'Forever',
       dateBirth: null,
-      phone: PhoneNumber.empty,
+      phone: PhoneNumber.fromString('123-456-7890'),
       address: Address.empty,
       email: null,
     ),

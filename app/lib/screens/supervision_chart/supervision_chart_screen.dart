@@ -151,7 +151,6 @@ class _SupervisionChartState extends State<SupervisionChart> {
     } else {
       internship.addSupervisingTeacher(context, teacherId: myId);
     }
-    InternshipsProvider.of(context, listen: false).replace(internship);
   }
 
   List<Internship> _getInternshipsByStudents() {

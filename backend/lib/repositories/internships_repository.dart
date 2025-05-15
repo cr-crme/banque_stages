@@ -9,7 +9,10 @@ import 'package:common/models/internships/time_utils.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/utils.dart';
+import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
+
+final _logger = Logger('Connexions');
 
 abstract class InternshipsRepository implements RepositoryAbstract {
   @override
@@ -401,7 +404,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           internshipId: id, schoolBoardId: schoolBoardId))[id];
 
   Future<void> _insertToInternships(Internship internship) async {
-// Insert the internship
+    // Insert the internship
     await MySqlHelpers.performInsertQuery(
         connection: connection,
         tableName: 'entities',
@@ -424,18 +427,52 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   }
 
   Future<void> _updateToInternships(
-      Internship internship, Internship previous) async {}
-
-  @override
-  Future<void> _putInternship(
-      {required Internship internship, required Internship? previous}) async {
-    if (previous == null) {
-      await _insertToInternships(internship);
-    } else {
-      await _updateToInternships(internship, previous);
+      Internship internship, Internship previous) async {
+    // Update the internship
+    final differences = internship.getDifference(previous);
+    if (differences.contains('school_board_id')) {
+      _logger.severe('School board id cannot be changed');
+      throw InvalidRequestException('School board id cannot be changed');
+    }
+    if (differences.contains('student_id')) {
+      _logger.severe('Student id cannot be changed');
+      throw InvalidRequestException('Student id cannot be changed');
+    }
+    if (differences.contains('enterprise_id')) {
+      _logger.severe('Enterprise id cannot be changed');
+      throw InvalidRequestException('Enterprise id cannot be changed');
+    }
+    if (differences.contains('job_id')) {
+      _logger.severe('Job id cannot be changed');
+      throw InvalidRequestException('Job id cannot be changed');
     }
 
-    // Insert the signatory teacher
+    final toUpdate = <String, dynamic>{};
+    if (differences.contains('expected_duration')) {
+      toUpdate['expected_duration'] = internship.expectedDuration.serialize();
+    }
+    if (differences.contains('achieved_duration')) {
+      toUpdate['achieved_duration'] = internship.achievedDuration.serialize();
+    }
+    if (differences.contains('visiting_priority')) {
+      toUpdate['visiting_priority'] = internship.visitingPriority.serialize();
+    }
+    if (differences.contains('teacher_notes')) {
+      toUpdate['teacher_notes'] = internship.teacherNotes.serialize();
+    }
+    if (differences.contains('end_date')) {
+      toUpdate['end_date'] = internship.endDate?.serialize();
+    }
+    if (toUpdate.isNotEmpty) {
+      await MySqlHelpers.performUpdateQuery(
+          connection: connection,
+          tableName: 'internships',
+          filters: {'id': internship.id},
+          data: toUpdate);
+    }
+  }
+
+  Future<void> _insertToSupervisingTeachers(Internship internship) async {
     for (final teacherId in internship.supervisingTeacherIds) {
       await MySqlHelpers.performInsertQuery(
           connection: connection,
@@ -446,8 +483,23 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             'is_signatory_teacher': teacherId == internship.signatoryTeacherId
           });
     }
+  }
 
-    // Insert the extra specializations
+  Future<void> _updateToSupervisingTeachers(
+      Internship internship, Internship previous) async {
+    final toUpdate = internship.getDifference(previous);
+    if (toUpdate.contains('extra_supervising_teacher_ids')) {
+      // This is a bit tricky to simply update, so we delete and reinsert
+      await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'internship_supervising_teachers',
+          filters: {'internship_id': internship.id});
+
+      await _insertToSupervisingTeachers(internship);
+    }
+  }
+
+  Future<void> _insertExtraSpecializations(Internship internship) async {
     for (final specializationId in internship.extraSpecializationIds) {
       await MySqlHelpers.performInsertQuery(
           connection: connection,
@@ -457,9 +509,30 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             'specialization_id': specializationId
           });
     }
+  }
 
-    // Insert the mutable data
+  Future<void> _updateToExtraSpecializations(
+      Internship internship, Internship previous) async {
+    final toUpdate = internship.getDifference(previous);
+    if (toUpdate.contains('extra_specialization_ids')) {
+      // This is a bit tricky to simply update, so we delete and reinsert
+      await MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'internship_extra_specializations',
+          filters: {'internship_id': internship.id});
+
+      await _insertExtraSpecializations(internship);
+    }
+  }
+
+  Future<void> _insertToMutables(Internship internship,
+      [Internship? previous]) async {
+    final previousSerialized = previous?.serializedMutables ?? [];
     for (final mutable in internship.serializedMutables) {
+      if (previousSerialized.any((e) => e['id'] == mutable['id'])) {
+        // Skip if the mutable already exists
+        continue;
+      }
       final supervisor = await MySqlHelpers.performSelectQuery(
           connection: connection,
           tableName: 'persons',
@@ -515,8 +588,23 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         }
       }
     }
-    // Insert skill evaluations
+  }
+
+  Future<void> _updateToMutables(
+      Internship internship, Internship previous) async {
+    // We don't update the mutable data, but stack them
+    _insertToMutables(internship, previous);
+  }
+
+  Future<void> _insertToSkillEvaluations(Internship internship,
+      [Internship? previous]) async {
     for (final evaluation in internship.skillEvaluations.serialize()) {
+      if (previous?.skillEvaluations.any((e) => e.id == evaluation['id']) ??
+          false) {
+        // Skip if the evaluation already exists
+        continue;
+      }
+
       await MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'internship_skill_evaluations',
@@ -568,9 +656,23 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         }
       }
     }
+  }
 
-    // Insert attitude evaluations
+  Future<void> _updateToSkillEvaluations(
+      Internship internship, Internship previous) async {
+    // Skill evaluations are not updated, but stacked
+    _insertToSkillEvaluations(internship, previous);
+  }
+
+  Future<void> _insertToAttitudeEvaluations(Internship internship,
+      [Internship? previous]) async {
     for (final evaluation in internship.attitudeEvaluations.serialize()) {
+      if (previous?.attitudeEvaluations.any((e) => e.id == evaluation['id']) ??
+          false) {
+        // Skip if the evaluation already exists
+        continue;
+      }
+
       await MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'internship_attitude_evaluations',
@@ -614,8 +716,15 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                 ['general_appreciation']
           });
     }
+  }
 
-    // Insert the post internship enterprise evaluations
+  Future<void> _updateToAttitudeEvaluations(
+      Internship internship, Internship previous) async {
+    // Attitude evaluations are not updated, but stacked
+    _insertToAttitudeEvaluations(internship, previous);
+  }
+
+  Future<void> _insertToEnterpriseEvaluation(Internship internship) async {
     if (internship.enterpriseEvaluation != null) {
       final evaluation = internship.enterpriseEvaluation!.serialize();
       await MySqlHelpers.performInsertQuery(
@@ -655,6 +764,44 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             });
       }
     }
+  }
+
+  Future<void> _updateToEnterpriseEvaluation(
+      Internship internship, Internship previous) async {
+    final toUpdate = internship.getDifference(previous);
+    if (toUpdate.contains('enterprise_evaluation')) {
+      _logger.severe('Enterprise evaluation cannot be changed');
+      throw InvalidRequestException('Enterprise evaluation cannot be changed');
+    }
+  }
+
+  @override
+  Future<void> _putInternship(
+      {required Internship internship, required Internship? previous}) async {
+    if (previous == null) {
+      await _insertToInternships(internship);
+    } else {
+      await _updateToInternships(internship, previous);
+    }
+
+    // Insert simultaneously elements
+    final toWait = <Future>[];
+    if (previous == null) {
+      toWait.add(_insertToSupervisingTeachers(internship));
+      toWait.add(_insertExtraSpecializations(internship));
+      toWait.add(_insertToMutables(internship));
+      toWait.add(_insertToSkillEvaluations(internship));
+      toWait.add(_insertToAttitudeEvaluations(internship));
+      toWait.add(_insertToEnterpriseEvaluation(internship));
+    } else {
+      toWait.add(_updateToSupervisingTeachers(internship, previous));
+      toWait.add(_updateToExtraSpecializations(internship, previous));
+      toWait.add(_updateToMutables(internship, previous));
+      toWait.add(_updateToSkillEvaluations(internship, previous));
+      toWait.add(_updateToAttitudeEvaluations(internship, previous));
+      toWait.add(_updateToEnterpriseEvaluation(internship, previous));
+    }
+    await Future.wait(toWait);
   }
 
   @override

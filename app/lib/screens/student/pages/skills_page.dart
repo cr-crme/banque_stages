@@ -84,7 +84,6 @@ class SkillsPageState extends State<SkillsPage> {
                 final index = out[specialization]!
                     .indexWhere((e) => e.skillName == skill.skillName);
                 out[specialization]![index] = skill;
-                debugPrint('coucou');
               } else {
                 out[specialization]!.add(skill);
               }

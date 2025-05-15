@@ -193,8 +193,6 @@ class _StudentInternshipListViewState
                                 internship.addSupervisingTeacher(context,
                                     teacherId: myId);
                               }
-                              InternshipsProvider.of(context, listen: false)
-                                  .replace(internship);
                             }
                           : null,
                       child: Padding(
