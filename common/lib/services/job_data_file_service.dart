@@ -12,6 +12,15 @@ abstract class ActivitySectorsService {
     return _activitySectors!;
   }
 
+  static Specialization? specializationOrNull(String? id) {
+    if (id == null) return null;
+    try {
+      return specialization(id);
+    } catch (e) {
+      return null;
+    }
+  }
+
   static Specialization specialization(String id) {
     for (final sector in activitySectors) {
       for (final specialization in sector.specializations) {

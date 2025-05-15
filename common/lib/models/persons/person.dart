@@ -2,6 +2,7 @@ import 'package:common/exceptions.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/extended_item_serializable.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/generic/serializable_elements.dart';
 
 class Person extends ExtendedItemSerializable {
   final String firstName;
@@ -34,30 +35,29 @@ class Person extends ExtendedItemSerializable {
       id: null,
       phone: PhoneNumber.empty);
 
+  static Person? from(map) {
+    if (map == null) return null;
+    return Person.fromSerialized(map);
+  }
+
   Person.fromSerialized(super.map)
-      : firstName = map['first_name'] ?? 'Unnamed',
-        middleName = map['middle_name'],
-        lastName = map['last_name'] ?? 'Unnamed',
-        dateBirth = map['date_birth'] == null
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(map['date_birth']),
-        phone = map['phone'] == null
-            ? PhoneNumber.empty
-            : PhoneNumber.fromSerialized(map['phone']),
-        email = map['email'],
-        address = map['address'] == null
-            ? Address.empty
-            : Address.fromSerialized(map['address']),
+      : firstName = StringExt.from(map['first_name']) ?? 'Unnamed',
+        middleName = StringExt.from(map['middle_name']),
+        lastName = StringExt.from(map['last_name']) ?? 'Unnamed',
+        dateBirth = DateTimeExt.from(map['date_birth']),
+        phone = PhoneNumber.from(map['phone']) ?? PhoneNumber.empty,
+        email = StringExt.from(map['email']),
+        address = Address.from(map['address']) ?? Address.empty,
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
-        'first_name': firstName,
-        'middle_name': middleName,
-        'last_name': lastName,
-        'date_birth': dateBirth?.millisecondsSinceEpoch,
+        'first_name': firstName.serialize(),
+        'middle_name': middleName?.serialize(),
+        'last_name': lastName.serialize(),
+        'date_birth': dateBirth?.serialize(),
         'phone': phone.serialize(),
-        'email': email,
+        'email': email?.serialize(),
         'address': address.serialize(),
       };
 
@@ -98,20 +98,14 @@ class Person extends ExtendedItemSerializable {
       throw InvalidFieldException('Invalid field data detected');
     }
     return Person(
-      id: data['id']?.toString() ?? id,
-      firstName: data['first_name'] ?? firstName,
-      middleName: data['middle_name'] ?? middleName,
-      lastName: data['last_name'] ?? lastName,
-      dateBirth: data['date_birth'] == null
-          ? null
-          : DateTime.fromMillisecondsSinceEpoch(data['date_birth']),
-      phone: data['phone'] == null
-          ? phone
-          : PhoneNumber.fromSerialized(data['phone'] ?? {}),
-      email: data['email'] ?? email,
-      address: data['address'] == null
-          ? address
-          : Address.fromSerialized(data['address']),
+      id: StringExt.from(data['id']) ?? id,
+      firstName: StringExt.from(data['first_name']) ?? firstName,
+      middleName: StringExt.from(data['middle_name']) ?? middleName,
+      lastName: StringExt.from(data['last_name']) ?? lastName,
+      dateBirth: DateTimeExt.from(data['date_birth']) ?? dateBirth,
+      phone: PhoneNumber.from(data['phone']) ?? phone,
+      email: StringExt.from(data['email']) ?? email,
+      address: Address.from(data['address']) ?? address,
     );
   }
 

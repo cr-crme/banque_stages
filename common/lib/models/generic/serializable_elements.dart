@@ -1,6 +1,6 @@
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
-extension ListExt<T> on List<T> {
+extension ListExt on List {
   List serialize() {
     return map((e) {
       if (e is String) {
@@ -15,8 +15,8 @@ extension ListExt<T> on List<T> {
     }).toList();
   }
 
-  static List<S>? from<S>(List? elements,
-      {required S Function(dynamic) deserializer}) {
+  static List<T>? from<T>(List? elements,
+      {required T Function(dynamic) deserializer}) {
     if (elements == null) return [];
     return elements.map((e) => deserializer(e)).toList();
   }

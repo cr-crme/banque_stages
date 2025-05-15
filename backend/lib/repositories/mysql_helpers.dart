@@ -294,7 +294,6 @@ class MySqlHelpers {
       await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'addresses',
-          // TODO: Check that all updates are done using the previous id
           filters: {'id': previous.id},
           data: toUpdate);
     }

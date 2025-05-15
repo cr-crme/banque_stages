@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:common/models/generic/geographic_coordinate_system.dart';
+import 'package:common/models/internships/internship.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 import 'package:http/http.dart' as http;
 
@@ -49,20 +50,25 @@ class Address extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() => {
-        'civic': civicNumber,
-        'street': street,
-        'apartment': apartment,
-        'city': city,
-        'postal_code': postalCode
+        'civic': civicNumber?.serialize(),
+        'street': street?.serialize(),
+        'apartment': apartment?.serialize(),
+        'city': city?.serialize(),
+        'postal_code': postalCode?.serialize(),
       };
 
+  static Address? from(map) {
+    if (map == null) return null;
+    return Address.fromSerialized(map);
+  }
+
   static Address fromSerialized(map) => Address(
-      id: map['id'],
-      civicNumber: map['civic'],
-      street: map['street'],
-      apartment: map['apartment'],
-      city: map['city'],
-      postalCode: map['postal_code']);
+      id: StringExt.from(map['id']),
+      civicNumber: IntExt.from(map['civic']),
+      street: StringExt.from(map['street']),
+      apartment: StringExt.from(map['apartment']),
+      city: StringExt.from(map['city']),
+      postalCode: StringExt.from(map['postal_code']));
 
   Address copyWith({
     String? id,

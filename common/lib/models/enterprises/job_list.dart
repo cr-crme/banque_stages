@@ -4,6 +4,11 @@ import 'package:enhanced_containers_foundation/enhanced_containers_foundation.da
 class JobList extends ListSerializable<Job> {
   JobList();
 
+  static JobList? from(map) {
+    if (map == null) return null;
+    return JobList.fromSerialized(map);
+  }
+
   JobList.fromSerialized(super.map) : super.fromSerialized();
 
   @override

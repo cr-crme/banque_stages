@@ -1,4 +1,5 @@
 import 'package:common/exceptions.dart';
+import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
@@ -7,9 +8,6 @@ part 'package:common/models/enterprises/job_sst_evaluation.dart';
 part 'package:common/models/enterprises/pre_internship_requests.dart';
 part 'package:common/models/enterprises/protections.dart';
 part 'package:common/models/enterprises/uniforms.dart';
-
-List<String> _stringListFromSerialized(List? list) =>
-    (list ?? []).map<String>((e) => e).toList();
 
 class Job extends ItemSerializable {
   static final String _currentVersion = '1.0.0';
@@ -89,26 +87,25 @@ class Job extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() => {
-        'id': id,
-        'version': _currentVersion,
-        'specialization_id': specialization.id,
-        'positions_offered': positionsOffered,
-        'minimum_age': minimumAge,
+        'id': id.serialize(),
+        'version': _currentVersion.serialize(),
+        'specialization_id': specialization.id.serialize(),
+        'positions_offered': positionsOffered.serialize(),
+        'minimum_age': minimumAge.serialize(),
         'pre_internship_requests': preInternshipRequests.serialize(),
         'uniforms': uniforms.serialize(),
         'protections': protections.serialize(),
-        'photos_url': photosUrl,
+        'photos_url': photosUrl.serialize(),
         'sst_evaluations': sstEvaluation.serialize(),
         'incidents': incidents.serialize(),
-        'comments': comments,
+        'comments': comments.serialize(),
       };
 
   Job.fromSerialized(super.map)
-      : _specialization = map['specialization_id'] == null
-            ? null
-            : ActivitySectorsService.specialization(map['specialization_id']),
-        positionsOffered = map['positions_offered'] ?? 0,
-        minimumAge = map['minimum_age'] ?? 0,
+      : _specialization = ActivitySectorsService.specializationOrNull(
+            map['specialization_id']),
+        positionsOffered = IntExt.from(map['positions_offered']) ?? 0,
+        minimumAge = IntExt.from(map['minimum_age']) ?? 0,
         preInternshipRequests = PreInternshipRequests.fromSerialized(
             map['pre_internship_requests'] ?? {}, map['version'] ?? '1.0.0'),
         uniforms = Uniforms.fromSerialized(
@@ -118,7 +115,9 @@ class Job extends ItemSerializable {
         protections = Protections.fromSerialized(
             (map['protections'] as Map? ?? {}).cast<String, dynamic>()
               ..addAll({'id': map['id']})),
-        photosUrl = _stringListFromSerialized(map['photos_url']),
+        photosUrl = ListExt.from(map['photos_url'],
+                deserializer: (e) => StringExt.from(e) ?? '') ??
+            [],
         sstEvaluation = JobSstEvaluation.fromSerialized(
             (map['sst_evaluations'] as Map? ?? {}).cast<String, dynamic>()
               ..addAll({'id': map['id']})),
@@ -126,7 +125,9 @@ class Job extends ItemSerializable {
             .cast<String, dynamic>()
             .map((key, value) => MapEntry(key, value))
           ..addAll({'id': map['id']})),
-        comments = _stringListFromSerialized(map['comments']),
+        comments = ListExt.from(map['comments'],
+                deserializer: (e) => StringExt.from(e) ?? '') ??
+            [],
         super.fromSerialized();
 
   @override
