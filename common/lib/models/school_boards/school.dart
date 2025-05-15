@@ -1,4 +1,5 @@
 import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/serializable_elements.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 class School extends ItemSerializable {
@@ -18,14 +19,14 @@ class School extends ItemSerializable {
       );
 
   School.fromSerialized(super.map)
-      : name = map['name'] ?? 'Unnamed school',
+      : name = StringExt.from(map['name']) ?? 'Unnamed',
         address = Address.fromSerialized(map['address'] ?? {}),
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() {
     return {
-      'name': name,
+      'name': name.serialize(),
       'address': address.serialize(),
     };
   }

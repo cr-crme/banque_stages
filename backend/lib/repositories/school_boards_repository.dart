@@ -1,6 +1,7 @@
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/models/internships/internship.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
@@ -161,9 +162,9 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
         connection: connection,
         tableName: 'schools',
         data: {
-          'id': school.id,
-          'school_board_id': schoolBoard.id,
-          'name': school.name,
+          'id': school.id.serialize(),
+          'school_board_id': schoolBoard.id.serialize(),
+          'name': school.name.serialize(),
         });
 
     await MySqlHelpers.performInsertAddress(
@@ -177,8 +178,8 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
       await MySqlHelpers.performUpdateQuery(
         connection: connection,
         tableName: 'schools',
-        filters: {'id': school.id},
-        data: {'name': school.name},
+        filters: {'id': school.id.serialize()},
+        data: {'name': school.name.serialize()},
       );
     }
     if (toUpdate.contains('address')) {

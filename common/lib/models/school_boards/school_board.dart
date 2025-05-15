@@ -1,5 +1,6 @@
 import 'package:common/exceptions.dart';
 import 'package:common/models/generic/extended_item_serializable.dart';
+import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/models/school_boards/school.dart';
 
 class SchoolBoard extends ExtendedItemSerializable {
@@ -17,16 +18,17 @@ class SchoolBoard extends ExtendedItemSerializable {
       SchoolBoard(name: 'Unnamed', id: null, schools: []);
 
   SchoolBoard.fromSerialized(super.map)
-      : name = map['name'] ?? 'Unnamed',
-        schools = (map['schools'] as List<dynamic>?)
-                ?.map((e) => School.fromSerialized(e))
-                .toList() ??
+      : name = StringExt.from(map['name']) ?? 'Unnamed',
+        schools = ListExt.from(
+              map['schools'],
+              deserializer: (e) => School.fromSerialized(e),
+            ) ??
             [],
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() =>
-      {'name': name, 'schools': schools.map((e) => e.serialize()).toList()};
+      {'name': name.serialize(), 'schools': schools.serialize()};
 
   SchoolBoard copyWith({
     String? id,
@@ -60,11 +62,12 @@ class SchoolBoard extends ExtendedItemSerializable {
     }
 
     return SchoolBoard(
-      id: data['id']?.toString() ?? id,
+      id: StringExt.from(data['id']) ?? id,
       name: data['name'] ?? name,
-      schools: (data['schools'] as List<dynamic>?)
-              ?.map((e) => School.fromSerialized(e))
-              .toList() ??
+      schools: ListExt.from(
+            data['schools'],
+            deserializer: (e) => School.fromSerialized(e),
+          ) ??
           schools,
     );
   }
