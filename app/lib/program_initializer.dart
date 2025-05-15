@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/firebase_options.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_banque_stages/misc/storage_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -35,16 +32,6 @@ class ProgramInitializer {
     StorageService.instance.isMocked = mockMe;
 
     // Connect Firebase to local emulators
-    assert(() {
-      if (mockMe) {
-        // coverage:ignore-start
-        final host = !kIsWeb && Platform.isAndroid ? '10.0.2.2' : 'localhost';
-        FirebaseAuth.instance.useAuthEmulator(host, 9099);
-        // coverage:ignore-end
-      }
-      return true;
-    }());
-
     setPathUrlStrategy();
 
     _initialized = true;

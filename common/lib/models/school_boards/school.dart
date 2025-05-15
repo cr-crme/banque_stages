@@ -13,13 +13,13 @@ class School extends ItemSerializable {
   });
 
   static School get empty => School(
-        name: 'Unnamed',
+        name: 'Unnamed school',
         id: null,
         address: Address.empty,
       );
 
   School.fromSerialized(super.map)
-      : name = StringExt.from(map['name']) ?? 'Unnamed',
+      : name = StringExt.from(map['name']) ?? 'Unnamed school',
         address = Address.fromSerialized(map['address'] ?? {}),
         super.fromSerialized();
 

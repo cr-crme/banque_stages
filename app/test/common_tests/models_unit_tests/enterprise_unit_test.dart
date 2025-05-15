@@ -184,7 +184,7 @@ void main() {
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.name, 'Unnamed enterprise');
       expect(emptyDeserialized.activityTypes, []);
-      expect(emptyDeserialized.recruiterId, 'UnknownId');
+      expect(emptyDeserialized.recruiterId, '-1');
       expect(emptyDeserialized.jobs.length, 0);
       expect(emptyDeserialized.contact.firstName, 'Unnamed');
       expect(emptyDeserialized.contactFunction, '');
@@ -193,7 +193,7 @@ void main() {
       expect(emptyDeserialized.fax.toString(), PhoneNumber.empty.toString());
       expect(emptyDeserialized.website, '');
       expect(emptyDeserialized.headquartersAddress, isNull);
-      expect(emptyDeserialized.neq, '');
+      expect(emptyDeserialized.neq, isNull);
     });
   });
 }

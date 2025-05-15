@@ -162,7 +162,7 @@ class Enterprise extends ExtendedItemSerializable {
   @override
   Enterprise.fromSerialized(super.map)
       : schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
-        name = StringExt.from(map['name']) ?? 'Unnamed',
+        name = StringExt.from(map['name']) ?? 'Unnamed enterprise',
         activityTypes = (map['activity_types'] as List? ?? [])
             .map((e) => ActivityTypes._fromInt(e, map['version']))
             .toSet(),

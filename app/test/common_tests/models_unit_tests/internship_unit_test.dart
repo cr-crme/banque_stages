@@ -223,7 +223,7 @@ void main() {
         'school_board_id': 'schoolBoardId',
         'student_id': 'studentId',
         'signatory_teacher_id': 'teacherId',
-        'extra_supervising_teacher_ids': ['EMPTY'],
+        'extra_supervising_teacher_ids': [],
         'enterprise_id': 'enterpriseId',
         'job_id': 'jobId',
         'extra_specialization_ids': ['8168', '8134'],
