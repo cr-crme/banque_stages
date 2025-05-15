@@ -49,7 +49,7 @@ class Uniforms extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() => {
-        'id': id,
+        'id': id.serialize(),
         'status': status._toInt(Job._currentVersion),
         'uniforms': uniforms,
       };

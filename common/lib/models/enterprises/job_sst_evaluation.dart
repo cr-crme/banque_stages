@@ -29,14 +29,14 @@ class JobSstEvaluation extends ItemSerializable {
           for (final entry in (map['questions'] as Map? ?? {}).entries)
             entry.key: (entry.value as List?)?.map((e) => e as String).toList()
         },
-        date = DateTime.fromMillisecondsSinceEpoch(map['date'] ?? 0),
+        date = DateTimeExt.from(map['date']) ?? DateTime(0),
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
-        'id': id,
+        'id': id.serialize(),
         'questions': questions,
-        'date': date.millisecondsSinceEpoch,
+        'date': date.serialize(),
       };
 
   @override

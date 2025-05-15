@@ -16,6 +16,8 @@ class Enterprise extends ExtendedItemSerializable {
 
   final String name;
   final Set<ActivityTypes> activityTypes;
+  List<int> get activityTypesSerialized =>
+      activityTypes.map((e) => e._toInt(_currentVersion)).toList();
   final String recruiterId;
 
   final JobList jobs;
@@ -144,8 +146,7 @@ class Enterprise extends ExtendedItemSerializable {
       'school_board_id': schoolBoardId.serialize(),
       'name': name.serialize(),
       'version': _currentVersion.serialize(),
-      'activity_types':
-          activityTypes.map((e) => e._toInt(_currentVersion)).toList(),
+      'activity_types': activityTypesSerialized,
       'recruiter_id': recruiterId.serialize(),
       'jobs': jobs.serialize(),
       'contact': contact.serialize(),
