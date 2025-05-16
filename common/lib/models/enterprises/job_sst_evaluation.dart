@@ -22,7 +22,8 @@ class JobSstEvaluation extends ItemSerializable {
     DateTime? date,
   }) : date = date ?? DateTime.now();
 
-  static JobSstEvaluation get empty => JobSstEvaluation(questions: {});
+  static JobSstEvaluation get empty =>
+      JobSstEvaluation(questions: {}, date: DateTime(0));
 
   JobSstEvaluation.fromSerialized(super.map)
       : questions = {

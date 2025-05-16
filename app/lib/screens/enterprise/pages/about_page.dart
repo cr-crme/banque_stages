@@ -5,7 +5,6 @@ import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/activity_type_cards.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
@@ -340,9 +339,6 @@ class _RecrutedBy extends StatelessWidget {
           }
 
           final teacher = snapshot.data! as Teacher;
-          final schools = SchoolBoardsProvider.of(context);
-          final schoolName = schools.fromIdOrNull(teacher.schoolId)?.name ?? '';
-
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -351,27 +347,14 @@ class _RecrutedBy extends StatelessWidget {
                 onTap: teacher.email == null ? null : () => _sendEmail(teacher),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 24.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        teacher.fullName,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(
-                              decoration: teacher.email == null
-                                  ? null
-                                  : TextDecoration.underline,
-                              color: teacher.email == null ? null : Colors.blue,
-                            ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          ' - $schoolName',
-                          style: Theme.of(context).textTheme.titleMedium,
+                  child: Text(
+                    teacher.fullName,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          decoration: teacher.email == null
+                              ? null
+                              : TextDecoration.underline,
+                          color: teacher.email == null ? null : Colors.blue,
                         ),
-                      ),
-                    ],
                   ),
                 ),
               )

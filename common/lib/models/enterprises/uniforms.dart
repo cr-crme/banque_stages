@@ -47,6 +47,18 @@ class Uniforms extends ItemSerializable {
             (map['uniforms'] as List?)?.map((e) => e as String).toList() ?? [],
         super.fromSerialized();
 
+  Uniforms copyWith({
+    String? id,
+    UniformStatus? status,
+    List<String>? uniforms,
+  }) {
+    return Uniforms(
+      id: id ?? this.id,
+      status: status ?? this.status,
+      uniforms: uniforms ?? this.uniforms,
+    );
+  }
+
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id.serialize(),

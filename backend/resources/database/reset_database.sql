@@ -299,6 +299,7 @@ CREATE TABLE enterprise_job_protections(
 );
 
 CREATE TABLE enterprise_job_incidents(
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
     job_id VARCHAR(36) NOT NULL,
     incident_type VARCHAR(20) NOT NULL,
     incident VARCHAR(2000) NOT NULL,

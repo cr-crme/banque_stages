@@ -75,9 +75,11 @@ class Job extends ItemSerializable {
       positionsOffered: positionsOffered ?? this.positionsOffered,
       minimumAge: minimumAge ?? this.minimumAge,
       preInternshipRequests:
-          preInternshipRequests ?? this.preInternshipRequests,
-      uniforms: uniforms ?? this.uniforms,
-      protections: protections ?? this.protections,
+          preInternshipRequests?.copyWith(id: this.preInternshipRequests.id) ??
+              this.preInternshipRequests,
+      uniforms: uniforms?.copyWith(id: this.uniforms.id) ?? this.uniforms,
+      protections:
+          protections?.copyWith(id: this.protections.id) ?? this.protections,
       photosUrl: photosUrl ?? this.photosUrl,
       sstEvaluation: sstEvaluation ?? this.sstEvaluation,
       incidents: incidents ?? this.incidents,

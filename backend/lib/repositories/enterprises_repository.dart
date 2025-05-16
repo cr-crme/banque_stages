@@ -65,12 +65,17 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     final newEnterprise = previous?.copyWithData(data) ??
         Enterprise.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
-    await _putEnterprise(
-        enterprise: newEnterprise,
-        previous: previous,
-        schoolBoardId: schoolBoardId,
-        internshipsRepository: internshipsRepository);
-    return newEnterprise.getDifference(previous);
+    try {
+      await _putEnterprise(
+          enterprise: newEnterprise,
+          previous: previous,
+          schoolBoardId: schoolBoardId,
+          internshipsRepository: internshipsRepository);
+      return newEnterprise.getDifference(previous);
+    } catch (e) {
+      _logger.severe('Error while putting enterprise: $e');
+      return [];
+    }
   }
 
   @override
@@ -258,7 +263,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               dataTableName: 'enterprise_job_incidents',
               asName: 'incidents',
               idNameToDataTable: 'job_id',
-              fieldsToFetch: ['incident_type', 'incident', 'date']),
+              fieldsToFetch: ['id', 'incident_type', 'incident', 'date']),
           MySqlSelectSubQuery(
               dataTableName: 'enterprise_job_sst_evaluation_questions',
               asName: 'sst_evaluations',
@@ -429,7 +434,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         connection: connection,
         tableName: 'enterprise_activity_types',
         filters: {'enterprise_id': previous.id});
-    _insertToEnterprisesActivityTypes(enterprise);
+    await _insertToEnterprisesActivityTypes(enterprise);
   }
 
   Future<void> _insertJobPhotoUrls(List<String> urls, String jobId) async {
@@ -530,6 +535,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             connection: connection,
             tableName: 'enterprise_job_incidents',
             data: {
+              'id': incident['id'],
               'job_id': jobId.serialize(),
               'incident_type': incidentType.serialize(),
               'incident': incident['incident'],
@@ -596,10 +602,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   Future<void> _updateToEnterprisesJobs(
       Enterprise enterprise, Enterprise previous) async {
     final toUpdate = enterprise.getDifference(previous);
+    if (!toUpdate.contains('jobs')) return;
 
     // Prevent from removing a job from an enterprise
     for (final job in previous.jobs) {
-      if (!toUpdate.contains(job.id)) {
+      if (!enterprise.jobs.map((e) => e.id).contains(job.id)) {
         _logger.severe('It is not possible to remove a job from an enterprise');
         throw InvalidRequestException(
             'It is not possible to remove a job from an enterprise');
@@ -609,7 +616,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     // Add the new jobs
     final toWait = <Future>[];
     for (final job in enterprise.jobs) {
-      if (!previous.jobs.contains(job)) {
+      if (!previous.jobs.map((e) => e.id).contains(job.id)) {
         toWait.add(_insertToEnterprisesJob(enterprise.id, job));
       }
     }
@@ -713,7 +720,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       // It would be possible to update properly the sst evaluation, but
       // it is not so important, so we use the same trick of deleting and
       // reinserting.
-      if (differences.contains('sst_evaluation')) {
+      if (differences.contains('sst_evaluations')) {
         toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
             connection: connection,
             tableName: 'enterprise_job_sst_evaluation_questions',
@@ -728,7 +735,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     }
   }
 
-  Future<void> _insertToJobsContact(Enterprise enterprise) async {
+  Future<void> _insertToContact(Enterprise enterprise) async {
     // Insert the contact
     await MySqlHelpers.performInsertPerson(
         connection: connection, person: enterprise.contact);
@@ -741,7 +748,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         });
   }
 
-  Future<void> _updateToJobsContact(
+  Future<void> _updateToContact(
       Enterprise enterprise, Enterprise previous) async {
     final toUpdate = enterprise.getDifference(previous);
     if (!toUpdate.contains('contact')) return;
@@ -872,7 +879,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         tableName: 'enterprise_fax_numbers',
         data: {
           'enterprise_id': enterprise.id,
-          'fax_number_id': enterprise.phone!.id
+          'fax_number_id': enterprise.fax!.id
         });
   }
 
@@ -911,7 +918,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     if (previous == null) {
       toWait.add(_insertToEnterprisesActivityTypes(enterprise));
       toWait.add(_insertToEnterprisesJobs(enterprise));
-      toWait.add(_insertToJobsContact(enterprise));
+      toWait.add(_insertToContact(enterprise));
       toWait.add(_insertToEnterpriseAddress(enterprise));
       toWait.add(_insertToEnterpriseHeadquartersAddress(enterprise));
       toWait.add(_insertToEnterprisePhoneNumber(enterprise));
@@ -919,7 +926,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     } else {
       toWait.add(_updateToEnterprisesActivityTypes(enterprise, previous));
       toWait.add(_updateToEnterprisesJobs(enterprise, previous));
-      toWait.add(_updateToJobsContact(enterprise, previous));
+      toWait.add(_updateToContact(enterprise, previous));
       toWait.add(_updateToEnterpriseAddress(enterprise, previous));
       toWait.add(_updateToEnterpriseHeadquartersAddress(enterprise, previous));
       toWait.add(_updateToEnterprisePhoneNumber(enterprise, previous));

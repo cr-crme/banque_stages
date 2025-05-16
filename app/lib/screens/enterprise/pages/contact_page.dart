@@ -1,6 +1,7 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/utils.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
@@ -84,41 +85,41 @@ class ContactPageState extends State<ContactPage> {
     if (!mounted) return;
     if (!FormService.validateForm(_formKey, save: true)) return;
 
-    EnterprisesProvider.of(context, listen: false).replace(
-      widget.enterprise.copyWith(
-        contact: widget.enterprise.contact.copyWith(
-          firstName: _contactInfoController.firstName.text,
-          lastName: _contactInfoController.lastName.text,
-          phone: _contactInfoController.contactPhone.text == ''
-              ? null
-              : PhoneNumber.fromString(_contactInfoController.contactPhone.text,
-                  id: widget.enterprise.contact.phone?.id),
-          email: _contactInfoController.contactEmail.text,
-        ),
-        contactFunction: _contactInfoController.contactFunction.text == ''
+    final newEnteprise = widget.enterprise.copyWith(
+      contact: widget.enterprise.contact.copyWith(
+        firstName: _contactInfoController.firstName.text,
+        lastName: _contactInfoController.lastName.text,
+        phone: _contactInfoController.contactPhone.text == ''
             ? null
-            : _contactInfoController.contactFunction.text,
-        address: _enterpriseInfoController.address.address,
-        phone: _enterpriseInfoController.phone.text == ''
-            ? null
-            : PhoneNumber.fromString(_enterpriseInfoController.phone.text,
-                id: widget.enterprise.phone?.id),
-        fax: _enterpriseInfoController.fax.text == ''
-            ? null
-            : PhoneNumber.fromString(_enterpriseInfoController.fax.text,
-                id: widget.enterprise.fax?.id),
-        website: _enterpriseInfoController.website.text == ''
-            ? null
-            : _enterpriseInfoController.website.text,
-        headquartersAddress: _taxesInfoController.useSameAddress
-            ? _enterpriseInfoController.address.address
-                ?.copyWith(id: _taxesInfoController.address.address?.id)
-            : _taxesInfoController.address.address,
-        neq: _taxesInfoController.neq.text == ''
-            ? null
-            : _taxesInfoController.neq.text,
+            : PhoneNumber.fromString(_contactInfoController.contactPhone.text,
+                id: widget.enterprise.contact.phone?.id),
+        email: _contactInfoController.contactEmail.text,
       ),
+      contactFunction: _contactInfoController.contactFunction.text == ''
+          ? null
+          : _contactInfoController.contactFunction.text,
+      address: _enterpriseInfoController.address.address,
+      phone: _enterpriseInfoController.phone.text == ''
+          ? null
+          : PhoneNumber.fromString(_enterpriseInfoController.phone.text,
+              id: widget.enterprise.phone?.id),
+      fax: _enterpriseInfoController.fax.text == ''
+          ? null
+          : PhoneNumber.fromString(_enterpriseInfoController.fax.text,
+              id: widget.enterprise.fax?.id),
+      website: _enterpriseInfoController.website.text == ''
+          ? null
+          : _enterpriseInfoController.website.text,
+      headquartersAddress: _taxesInfoController.useSameAddress
+          ? _enterpriseInfoController.address.address
+              ?.copyWith(id: _taxesInfoController.address.address?.id)
+          : _taxesInfoController.address.address,
+      neq: _taxesInfoController.neq.text == ''
+          ? null
+          : _taxesInfoController.neq.text,
     );
+    if (widget.enterprise.getDifference(newEnteprise).isEmpty) return;
+    EnterprisesProvider.of(context, listen: false).replace(newEnteprise);
 
     setState(() {});
   }
@@ -319,8 +320,8 @@ class _EnterpriseInfoController {
 
   void reset() {
     address.address = enterprise.address;
-    phone.text = enterprise.phone.toString();
-    fax.text = enterprise.fax.toString();
+    phone.text = enterprise.phone?.toString() ?? '';
+    fax.text = enterprise.fax?.toString() ?? '';
     website.text = enterprise.website ?? '';
   }
 }

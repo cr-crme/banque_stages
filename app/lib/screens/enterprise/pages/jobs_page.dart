@@ -1,5 +1,6 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
+import 'package:common/utils.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/animated_expanding_card.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_sst_event_dialog.dart';
@@ -153,14 +154,18 @@ class JobsPageState extends State<JobsPage> {
 
       final enterprises = EnterprisesProvider.of(context, listen: false);
 
-      widget.enterprise.jobs.replace(job.copyWith(
+      final newJob = job.copyWith(
         minimumAge: _prerequisitesFormKeys[job.id]!.currentState!.minimumAge,
         preInternshipRequests: PreInternshipRequests.fromStrings(
-            _prerequisitesFormKeys[job.id]!.currentState!.prerequisites),
+          _prerequisitesFormKeys[job.id]!.currentState!.prerequisites,
+        ),
         uniforms: _prerequisitesFormKeys[job.id]!.currentState!.uniforms,
         protections: _prerequisitesFormKeys[job.id]!.currentState!.protections,
-      ));
-      enterprises.replace(widget.enterprise);
+      );
+      if (job.getDifference(newJob).isNotEmpty) {
+        widget.enterprise.jobs.replace(newJob);
+        enterprises.replace(widget.enterprise);
+      }
     }
 
     _isEditingPrerequisites[job.id] = !_isEditingPrerequisites[job.id]!;

@@ -5,7 +5,10 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
+import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
+
+final _logger = Logger('SchoolBoardsRepository');
 
 abstract class SchoolBoardsRepository implements RepositoryAbstract {
   @override
@@ -52,8 +55,13 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
     final newSchoolBoard = previous?.copyWithData(data) ??
         SchoolBoard.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
-    await _putSchoolBoard(schoolBoard: newSchoolBoard, previous: previous);
-    return newSchoolBoard.getDifference(previous);
+    try {
+      await _putSchoolBoard(schoolBoard: newSchoolBoard, previous: previous);
+      return newSchoolBoard.getDifference(previous);
+    } catch (e) {
+      _logger.severe('Error while putting school board: $e');
+      return [];
+    }
   }
 
   @override

@@ -58,8 +58,13 @@ abstract class InternshipsRepository implements RepositoryAbstract {
     final newInternship = previous?.copyWithData(data) ??
         Internship.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
-    await _putInternship(internship: newInternship, previous: previous);
-    return newInternship.getDifference(previous);
+    try {
+      await _putInternship(internship: newInternship, previous: previous);
+      return newInternship.getDifference(previous);
+    } catch (e) {
+      _logger.severe('Error while putting internship: $e');
+      return [];
+    }
   }
 
   @override
@@ -528,23 +533,72 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   Future<void> _insertToMutables(Internship internship,
       [Internship? previous]) async {
     final previousSerialized = previous?.serializedMutables ?? [];
+    bool supervisorIsUpdated = false;
     for (final mutable in internship.serializedMutables) {
       if (previousSerialized.any((e) => e['id'] == mutable['id'])) {
         // Skip if the mutable already exists
         continue;
       }
-      final supervisor = await MySqlHelpers.performSelectQuery(
-          connection: connection,
-          tableName: 'persons',
-          filters: {'id': mutable['supervisor']['id']});
-      if (supervisor.isEmpty) {
-        await MySqlHelpers.performInsertPerson(
-            connection: connection, person: internship.supervisor);
-      } else {
-        await MySqlHelpers.performUpdatePerson(
-            connection: connection,
-            person: internship.supervisor,
-            previous: Person.fromSerialized(supervisor.first));
+      if (!supervisorIsUpdated) {
+        final previousSupervisor = (await MySqlHelpers.performSelectQuery(
+                    connection: connection,
+                    tableName: 'persons',
+                    filters: {
+                  'id': mutable['supervisor']['id']
+                },
+                    subqueries: [
+                  MySqlSelectSubQuery(
+                      dataTableName: 'phone_numbers',
+                      idNameToDataTable: 'entity_id',
+                      fieldsToFetch: ['id', 'phone_number']),
+                  MySqlSelectSubQuery(
+                      dataTableName: 'addresses',
+                      idNameToDataTable: 'entity_id',
+                      fieldsToFetch: [
+                        'id',
+                        'civic',
+                        'street',
+                        'apartment',
+                        'city',
+                        'postal_code'
+                      ]),
+                ]) as List?)
+                ?.first as Map<String, dynamic>? ??
+            {};
+        final phones = (previousSupervisor['phone_numbers'] as List?) ?? [];
+        final addresses = (previousSupervisor['addresses'] as List?) ?? [];
+
+        if (previousSupervisor.isEmpty) {
+          await MySqlHelpers.performInsertPerson(
+              connection: connection, person: internship.supervisor);
+        } else {
+          // Don't keep previous phone numbers and adresses (the current will be readded later)
+          final toWait = <Future>[];
+          for (final phone in phones) {
+            toWait.add(MySqlHelpers.performDeletePhoneNumber(
+              connection: connection,
+              phoneNumber: PhoneNumber.fromString(phone['phone_number'],
+                  id: phone['id']),
+            ));
+          }
+          for (final address in addresses) {
+            if (address['id'] != internship.supervisor.address?.id) {
+              // Don't keep previous addresses
+              toWait.add(MySqlHelpers.performDeleteAddress(
+                connection: connection,
+                address: Address.fromSerialized(address),
+              ));
+            }
+          }
+          await Future.wait(toWait);
+
+          // Update the person (without the phone numbers and addresses of previous as they were removed)
+          await MySqlHelpers.performUpdatePerson(
+              connection: connection,
+              person: internship.supervisor,
+              previous: Person.fromSerialized(previousSupervisor));
+        }
+        supervisorIsUpdated = true;
       }
 
       await MySqlHelpers.performInsertQuery(
@@ -593,7 +647,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   Future<void> _updateToMutables(
       Internship internship, Internship previous) async {
     // We don't update the mutable data, but stack them
-    _insertToMutables(internship, previous);
+    await _insertToMutables(internship, previous);
   }
 
   Future<void> _insertToSkillEvaluations(Internship internship,
@@ -812,7 +866,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         tableName: 'internship_mutable_data',
         filters: {'internship_id': id},
       ))
-          .firstOrNull;
+          .lastOrNull;
 
       await MySqlHelpers.performDeleteQuery(
         connection: connection,

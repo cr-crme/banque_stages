@@ -78,6 +78,18 @@ class Protections extends ItemSerializable {
             (map['protections'] as List? ?? []).map<String>((e) => e).toList(),
         super.fromSerialized();
 
+  Protections copyWith({
+    String? id,
+    ProtectionsStatus? status,
+    List<String>? protections,
+  }) {
+    return Protections(
+      id: id ?? this.id,
+      status: status ?? this.status,
+      protections: protections ?? this.protections,
+    );
+  }
+
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
