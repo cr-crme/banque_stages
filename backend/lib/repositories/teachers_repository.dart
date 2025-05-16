@@ -6,7 +6,10 @@ import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
+import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
+
+final _logger = Logger('TeachersRepository');
 
 abstract class TeachersRepository implements RepositoryAbstract {
   @override
@@ -51,8 +54,13 @@ abstract class TeachersRepository implements RepositoryAbstract {
     final newTeacher = previous?.copyWithData(data) ??
         Teacher.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
-    await _putTeacher(teacher: newTeacher, previous: previous);
-    return newTeacher.getDifference(previous);
+    try {
+      await _putTeacher(teacher: newTeacher, previous: previous);
+      return newTeacher.getDifference(previous);
+    } catch (e) {
+      _logger.severe('Error while putting teacher: $e');
+      return [];
+    }
   }
 
   @override
@@ -184,105 +192,115 @@ class MySqlTeachersRepository extends TeachersRepository {
           {required String id, required String schoolBoardId}) async =>
       (await _getAllTeachers(teacherId: id, schoolBoardId: schoolBoardId))[id];
 
-  @override
-  Future<void> _putTeacher(
-          {required Teacher teacher, required Teacher? previous}) async =>
-      previous == null
-          ? await _putNewTeacher(teacher)
-          : await _putExistingTeacher(teacher, previous);
+  Future<void> _insertToTeachers(Teacher teacher) async {
+    await MySqlHelpers.performInsertPerson(
+        connection: connection, person: teacher);
+    await MySqlHelpers.performInsertQuery(
+        connection: connection,
+        tableName: 'teachers',
+        data: {
+          'id': teacher.id,
+          'school_board_id': teacher.schoolBoardId,
+          'school_id': teacher.schoolId
+        });
+  }
 
-  Future<void> _putNewTeacher(Teacher teacher) async {
-    try {
-      // Insert the teacher
-      await MySqlHelpers.performInsertPerson(
-          connection: connection, person: teacher);
-      await MySqlHelpers.performInsertQuery(
+  Future<void> _updateToTeachers(Teacher teacher, Teacher previous) async {
+    final differences = teacher.getDifference(previous);
+
+    if (differences.contains('school_board_id')) {
+      _logger.severe('Cannot update school_board_id for the teachers');
+      throw InvalidRequestException(
+          'Cannot update school_board_id for the teachers');
+    }
+    if (differences.contains('school_id')) {
+      _logger.severe('Cannot update school_id for the teachers');
+      throw InvalidRequestException('Cannot update school_id for the teachers');
+    }
+
+    // Update the persons table if needed
+    await MySqlHelpers.performUpdatePerson(
+        connection: connection, person: teacher, previous: previous);
+  }
+
+  Future<void> _insertToGroups(Teacher teacher) async {
+    final toWait = <Future>[];
+    for (final group in teacher.groups) {
+      toWait.add(MySqlHelpers.performInsertQuery(
           connection: connection,
-          tableName: 'teachers',
-          data: {
-            'id': teacher.id,
-            'school_board_id': teacher.schoolBoardId,
-            'school_id': teacher.schoolId
-          });
+          tableName: 'teaching_groups',
+          data: {'teacher_id': teacher.id, 'group_name': group}));
+    }
+    await Future.wait(toWait);
+  }
 
-      // Insert the teaching groups
-      for (final group in teacher.groups) {
-        await MySqlHelpers.performInsertQuery(
-            connection: connection,
-            tableName: 'teaching_groups',
-            data: {'teacher_id': teacher.id, 'group_name': group});
-      }
+  Future<void> _updateToGroups(Teacher teacher, Teacher previous) async {
+    final differences = teacher.getDifference(previous);
+    if (!differences.contains('groups')) return;
 
-      // Insert itineraries
-      for (final itinerary in teacher.itineraries) {
-        await _sendItineraries(connection, teacher, itinerary);
-      }
-    } catch (e) {
-      try {
-        // Try to delete the inserted data in case of error. Since they by
-        // design cannot have already be involved in any internships,
-        // we can safely delete them
-        _deleteTeacher(id: teacher.id);
-      } catch (e) {
-        // Do nothing
-      }
-      rethrow;
+    // This is a bit tricky to update the groups, so we delete the old ones
+    // and reinsert the new ones
+    await MySqlHelpers.performDeleteQuery(
+      connection: connection,
+      tableName: 'teaching_groups',
+      filters: {'teacher_id': teacher.id},
+    );
+    await _insertToGroups(teacher);
+  }
+
+  Future<void> _insertToItineraries(Teacher teacher) async {
+    for (final itinerary in teacher.itineraries) {
+      await _sendItineraries(connection, teacher, itinerary);
     }
   }
 
-  Future<void> _putExistingTeacher(Teacher teacher, Teacher previous) async {
-    await MySqlHelpers.performUpdatePerson(
-        connection: connection, person: teacher, previous: previous);
-
-    // Update the teachers table if needed
-    final toUpdate = <String, dynamic>{};
-    if (teacher.schoolId != previous.schoolId) {
-      toUpdate['school_id'] = teacher.schoolId;
-    }
-    if (teacher.schoolBoardId != previous.schoolBoardId) {
-      toUpdate['school_board_id'] = teacher.schoolBoardId;
-    }
-    if (toUpdate.isNotEmpty) {
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'teachers',
-          filters: {'id': teacher.id},
-          data: toUpdate);
-    }
-
-    // Update teaching groups
-    if (areListsNotEqual(teacher.groups, previous.groups)) {
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
-        tableName: 'teaching_groups',
-        filters: {'id': teacher.id},
-      );
-      for (final group in teacher.groups) {
-        await MySqlHelpers.performInsertQuery(
-            connection: connection,
-            tableName: 'teaching_groups',
-            data: {'id': teacher.id, 'group_name': group});
-      }
-    }
+  Future<void> _updateToItineraries(Teacher teacher, Teacher previous) async {
+    final differences = teacher.getDifference(previous);
+    if (!differences.contains('itineraries')) return;
 
     // Update itineraries
+    final toWaitDeleted = <Future>[];
+    final toWait = <Future>[];
     for (final itinerary in teacher.itineraries) {
-      // Check if the itinerary already exists
+      // Check if the itinerary already exists and/or has changed
       final previousItinerary =
           previous.itineraries.firstWhereOrNull((e) => e.id == itinerary.id);
+      if (previousItinerary != null && itinerary == previousItinerary) continue;
 
-      if (previousItinerary == null || itinerary != previousItinerary) {
-        if (previousItinerary != null) {
-          // Delete the old itinerary if it exists
-          await MySqlHelpers.performDeleteQuery(
-            connection: connection,
-            tableName: 'teacher_itineraries',
-            filters: {'id': previousItinerary.id},
-          );
-        }
-        await _sendItineraries(connection, teacher, itinerary);
+      // This is a bit tricky to update the itineraries, so we delete the old
+      // ones and reinsert the new ones
+      if (previousItinerary != null) {
+        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'teacher_itineraries',
+          filters: {'id': previousItinerary.id},
+        ));
       }
+      toWait.add(_sendItineraries(connection, teacher, itinerary));
     }
+
+    await Future.wait(toWaitDeleted);
+    await Future.wait(toWait);
+  }
+
+  @override
+  Future<void> _putTeacher(
+      {required Teacher teacher, required Teacher? previous}) async {
+    if (previous == null) {
+      await _insertToTeachers(teacher);
+    } else {
+      await _updateToTeachers(teacher, previous);
+    }
+
+    final toWait = <Future>[];
+    if (previous == null) {
+      toWait.add(_insertToGroups(teacher));
+      toWait.add(_insertToItineraries(teacher));
+    } else {
+      toWait.add(_updateToGroups(teacher, previous));
+      toWait.add(_updateToItineraries(teacher, previous));
+    }
+    await Future.wait(toWait);
   }
 
   @override

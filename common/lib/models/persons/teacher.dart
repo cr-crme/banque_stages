@@ -1,11 +1,9 @@
 import 'package:common/exceptions.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/persons/person.dart';
-
-List<String> _stringListFromSerialized(List? list) =>
-    (list ?? []).map<String>((e) => e).toList();
 
 class Teacher extends Person {
   final String schoolBoardId;
@@ -43,30 +41,30 @@ class Teacher extends Person {
         schoolId: '-1',
         groups: [],
         email: 'error.error@error.err',
-        phone: PhoneNumber.empty,
-        address: Address.empty,
+        phone: null,
+        address: null,
         dateBirth: null,
         itineraries: [],
       );
 
   Teacher.fromSerialized(super.map)
-      : schoolBoardId = map['school_board_id'] ?? '-1',
-        schoolId = map['school_id'] ?? '-1',
-        groups = _stringListFromSerialized(map['groups']),
-        itineraries = map['itineraries'] == null
-            ? []
-            : (map['itineraries'] as List)
-                .map<Itinerary>((e) => Itinerary.fromSerialized(e))
-                .toList(),
+      : schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
+        schoolId = StringExt.from(map['school_id']) ?? '-1',
+        groups = ListExt.from(map['groups'],
+                deserializer: (e) => StringExt.from(e) ?? '-1') ??
+            [],
+        itineraries = ListExt.from(map['itineraries'],
+                deserializer: Itinerary.fromSerialized) ??
+            [],
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => super.serializedMap()
     ..addAll({
-      'school_board_id': schoolBoardId,
-      'school_id': schoolId,
-      'groups': groups,
-      'itineraries': itineraries.map((e) => e.serializedMap()).toList(),
+      'school_board_id': schoolBoardId.serialize(),
+      'school_id': schoolId.serialize(),
+      'groups': groups.serialize(),
+      'itineraries': itineraries.serialize(),
     });
 
   @override
@@ -119,28 +117,22 @@ class Teacher extends Person {
       throw InvalidFieldException('Invalid field data detected');
     }
     return Teacher(
-      id: data['id']?.toString() ?? id,
-      firstName: data['first_name'] ?? firstName,
-      middleName: data['middle_name'] ?? middleName,
-      lastName: data['last_name'] ?? lastName,
-      schoolBoardId: data['school_board_id'] ?? schoolBoardId,
-      schoolId: data['school_id'] ?? schoolId,
-      groups: data['groups'] == null
-          ? groups
-          : _stringListFromSerialized(data['groups']),
-      phone: data['phone'] == null
-          ? phone
-          : PhoneNumber.fromSerialized(data['phone']),
-      email: data['email'] ?? email,
+      id: StringExt.from(data['id']) ?? id,
+      firstName: StringExt.from(data['first_name']) ?? firstName,
+      middleName: StringExt.from(data['middle_name']) ?? middleName,
+      lastName: StringExt.from(data['last_name']) ?? lastName,
+      schoolBoardId: StringExt.from(data['school_board_id']) ?? schoolBoardId,
+      schoolId: StringExt.from(data['school_id']) ?? schoolId,
+      groups: ListExt.from(data['groups'],
+              deserializer: (e) => StringExt.from(e) ?? '-1') ??
+          groups,
+      phone: PhoneNumber.from(data['phone']) ?? phone,
+      email: StringExt.from(data['email']) ?? email,
       dateBirth: null,
-      address: data['address'] == null
-          ? address
-          : Address.fromSerialized(data['address']),
-      itineraries: data['itineraries'] == null
-          ? itineraries
-          : (data['itineraries'] as List)
-              .map<Itinerary>((e) => Itinerary.fromSerialized(e))
-              .toList(),
+      address: Address.from(data['address']) ?? address,
+      itineraries: ListExt.from(data['itineraries'],
+              deserializer: Itinerary.fromSerialized) ??
+          itineraries,
     );
   }
 

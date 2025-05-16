@@ -563,7 +563,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                         'postal_code'
                       ]),
                 ]) as List?)
-                ?.first as Map<String, dynamic>? ??
+                ?.firstOrNull as Map<String, dynamic>? ??
             {};
         final phones = (previousSupervisor['phone_numbers'] as List?) ?? [];
         final addresses = (previousSupervisor['addresses'] as List?) ?? [];
