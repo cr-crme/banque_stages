@@ -3,10 +3,14 @@ import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/utils.dart';
+import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
+
+final _logger = Logger('StudentsRepository');
 
 abstract class StudentsRepository implements RepositoryAbstract {
   @override
@@ -51,8 +55,13 @@ abstract class StudentsRepository implements RepositoryAbstract {
     final newStudent = previous?.copyWithData(data) ??
         Student.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
-    await _putStudent(student: newStudent, previous: previous);
-    return newStudent.getDifference(previous);
+    try {
+      await _putStudent(student: newStudent, previous: previous);
+      return newStudent.getDifference(previous);
+    } catch (e) {
+      _logger.severe('Error while putting student $id: ${e.toString()}');
+      return [];
+    }
   }
 
   @override
@@ -184,58 +193,41 @@ class MySqlStudentsRepository extends StudentsRepository {
           {required String id, required String schoolBoardId}) async =>
       (await _getAllStudents(studentId: id, schoolBoardId: schoolBoardId))[id];
 
-  @override
-  Future<void> _putStudent(
-          {required Student student, required Student? previous}) async =>
-      previous == null
-          ? await _putNewStudent(student)
-          : await _putExistingStudent(student, previous);
-
-  Future<void> _putNewStudent(Student student) async {
-    try {
-      final serialized = student.serialize();
-
-      // Insert the student
-      await MySqlHelpers.performInsertPerson(
-          connection: connection, person: student);
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'students',
-          data: {
-            'id': serialized['id'],
-            'school_board_id': serialized['school_board_id'],
-            'school_id': serialized['school_id'],
-            'version': serialized['version'],
-            'photo': serialized['photo'],
-            'program': serialized['program'],
-            'group_name': serialized['group'],
-            'contact_link': serialized['contact_link'],
-          });
-
-      // Insert the contact
-      await MySqlHelpers.performInsertPerson(
-          connection: connection, person: student.contact);
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'student_contacts',
-          data: {'student_id': student.id, 'contact_id': student.contact.id});
-    } catch (e) {
-      try {
-        // Try to delete the inserted data in case of error
-        await _deleteStudent(id: student.id);
-      } catch (e) {
-        // Do nothing
-      }
-      rethrow;
-    }
+  Future<void> _insertToStudents(Student student) async {
+    await MySqlHelpers.performInsertPerson(
+        connection: connection, person: student);
+    await MySqlHelpers.performInsertQuery(
+        connection: connection,
+        tableName: 'students',
+        data: {
+          'id': student.id.serialize(),
+          'school_board_id': student.schoolBoardId.serialize(),
+          'school_id': student.schoolId.serialize(),
+          'version': Student.currentVersion.serialize(),
+          'photo': student.photo.serialize(),
+          'program': student.programSerialized,
+          'group_name': student.group.serialize(),
+          'contact_link': student.contactLink.serialize(),
+        });
   }
 
-  Future<void> _putExistingStudent(Student student, Student previous) async {
+  Future<void> _updateToStudents(Student student, Student previous) async {
+    final differences = student.getDifference(previous);
+
+    if (differences.contains('school_board_id')) {
+      _logger.severe('Cannot update school_board_id for the students');
+      throw InvalidRequestException(
+          'Cannot update school_board_id for the students');
+    }
+    if (differences.contains('school_id')) {
+      _logger.severe('Cannot update school_id for the students');
+      throw InvalidRequestException('Cannot update school_id for the students');
+    }
+
     // Update the persons table if needed
     await MySqlHelpers.performUpdatePerson(
         connection: connection, person: student, previous: previous);
 
-    // Update the students table if needed
     final toUpdate = <String, dynamic>{};
     if (student.photo != previous.photo) {
       toUpdate['photo'] = student.photo;
@@ -256,13 +248,37 @@ class MySqlStudentsRepository extends StudentsRepository {
           filters: {'id': student.id},
           data: toUpdate);
     }
+  }
 
-    // Update student contact if needed
-    if (student.contact != previous.contact) {
+  Future<void> _insertToContacts(Student student) async {
+    await MySqlHelpers.performInsertPerson(
+        connection: connection, person: student.contact);
+    await MySqlHelpers.performInsertQuery(
+        connection: connection,
+        tableName: 'student_contacts',
+        data: {'student_id': student.id, 'contact_id': student.contact.id});
+  }
+
+  Future<void> _updateToContacts(
+      {required Student student, required Student previous}) async {
+    final differences = student.getDifference(previous);
+    if (differences.contains('contact')) {
       await MySqlHelpers.performUpdatePerson(
           connection: connection,
           person: student.contact,
           previous: previous.contact);
+    }
+  }
+
+  @override
+  Future<void> _putStudent(
+      {required Student student, required Student? previous}) async {
+    if (previous == null) {
+      await _insertToStudents(student);
+      await _insertToContacts(student);
+    } else {
+      await _updateToStudents(student, previous);
+      await _updateToContacts(student: student, previous: previous);
     }
   }
 

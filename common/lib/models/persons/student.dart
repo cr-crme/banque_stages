@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:common/exceptions.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/models/persons/person.dart';
 
 enum Program {
@@ -47,6 +48,7 @@ class Student extends Person {
   final String photo;
 
   final Program program;
+  int get programSerialized => program._toInt(_currentVersion);
   final String group;
 
   final Person contact;
@@ -71,29 +73,30 @@ class Student extends Person {
   }) : photo = photo ?? Random().nextInt(0xFFFFFF).toString();
 
   Student.fromSerialized(super.map)
-      : schoolBoardId = map['school_board_id'] ?? '-1',
-        schoolId = map['school_id'] ?? '-1',
-        photo = map['photo'] ?? Random().nextInt(0xFFFFFF).toString(),
+      : schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
+        schoolId = StringExt.from(map['school_id']) ?? '-1',
+        photo = StringExt.from(map['photo']) ??
+            Random().nextInt(0xFFFFFF).toString(),
         program = map['program'] == null
             ? Program.undefined
             : Program._fromInt(map['program'] as int, map['version']),
-        group = map['group'] ?? '',
+        group = StringExt.from(map['group']) ?? '-1',
         contact = Person.fromSerialized(map['contact'] ?? {}),
-        contactLink = map['contact_link'] ?? '',
+        contactLink = StringExt.from(map['contact_link']) ?? '',
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() {
     return super.serializedMap()
       ..addAll({
-        'version': _currentVersion,
-        'school_board_id': schoolBoardId,
-        'school_id': schoolId,
-        'photo': photo,
-        'program': program._toInt(_currentVersion),
-        'group': group,
+        'version': _currentVersion.serialize(),
+        'school_board_id': schoolBoardId.serialize(),
+        'school_id': schoolId.serialize(),
+        'photo': photo.serialize(),
+        'program': programSerialized,
+        'group': group.serialize(),
         'contact': contact.serialize(),
-        'contact_link': contactLink,
+        'contact_link': contactLink.serialize(),
       });
   }
 
@@ -174,31 +177,23 @@ class Student extends Person {
       throw InvalidFieldException('Invalid field data detected');
     }
     return Student(
-      id: data['id']?.toString() ?? id,
-      schoolBoardId: data['school_board_id'] ?? schoolBoardId,
-      schoolId: data['school_id'] ?? schoolId,
-      firstName: data['first_name'] ?? firstName,
-      middleName: data['middle_name'] ?? middleName,
-      lastName: data['last_name'] ?? lastName,
-      dateBirth: data['date_birth'] == null
-          ? null
-          : DateTime.fromMillisecondsSinceEpoch(data['date_birth']),
-      phone: data['phone'] == null
-          ? phone
-          : PhoneNumber.fromSerialized(data['phone'] ?? {}),
-      email: data['email'] ?? email,
-      address: data['address'] == null
-          ? address
-          : Address.fromSerialized(data['address']),
-      photo: data['photo'] ?? photo,
+      id: StringExt.from(data['id']) ?? id,
+      schoolBoardId: StringExt.from(data['school_board_id']) ?? schoolBoardId,
+      schoolId: StringExt.from(data['school_id']) ?? schoolId,
+      firstName: StringExt.from(data['first_name']) ?? firstName,
+      middleName: StringExt.from(data['middle_name']) ?? middleName,
+      lastName: StringExt.from(data['last_name']) ?? lastName,
+      dateBirth: DateTimeExt.from(data['date_birth']) ?? dateBirth,
+      phone: PhoneNumber.from(data['phone']) ?? phone,
+      email: StringExt.from(data['email']) ?? email,
+      address: Address.from(data['address']) ?? address,
+      photo: StringExt.from(data['photo']) ?? photo,
       program: data['program'] == null
           ? program
           : Program._fromInt(data['program'] as int, _currentVersion),
-      group: data['group'] ?? group,
-      contact: data['contact'] == null
-          ? contact
-          : Person.fromSerialized(data['contact']),
-      contactLink: data['contact_link'] ?? contactLink,
+      group: StringExt.from(data['group']) ?? group,
+      contact: Person.from(data['contact']) ?? contact,
+      contactLink: StringExt.from(data['contact_link']) ?? contactLink,
     );
   }
 
