@@ -170,10 +170,20 @@ class MySqlHelpers {
           'date_birthday': person.dateBirth?.toIso8601String().substring(0, 10),
           'email': person.email,
         });
-    await performInsertPhoneNumber(
-        connection: connection, phoneNumber: person.phone, entityId: person.id);
-    await performInsertAddress(
-        connection: connection, address: person.address, entityId: person.id);
+
+    if (person.phone != null) {
+      await performInsertPhoneNumber(
+          connection: connection,
+          phoneNumber: person.phone!,
+          entityId: person.id);
+    }
+
+    if (person.address != null) {
+      await performInsertAddress(
+          connection: connection,
+          address: person.address!,
+          entityId: person.id);
+    }
   }
 
   static Future<void> performUpdatePerson(
@@ -209,29 +219,45 @@ class MySqlHelpers {
     // Update the phone number if needed
     if (person.phone != previous.phone) {
       // Update the phone number
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'phone_numbers',
-          filters: {'id': person.phone.id},
-          data: {'phone_number': person.phone.toString()});
+      if (person.phone == null) {
+        // Delete the phone number
+        await MySqlHelpers.performDeletePhoneNumber(
+            connection: connection, phoneNumber: previous.phone!);
+      } else if (previous.phone == null) {
+        // Insert the new phone number
+        await MySqlHelpers.performInsertPhoneNumber(
+            connection: connection,
+            phoneNumber: person.phone!,
+            entityId: person.id);
+      } else {
+        // Update the phone number
+        await MySqlHelpers.performUpdatePhoneNumber(
+            connection: connection,
+            phoneNumber: person.phone!,
+            previous: previous.phone!);
+      }
     }
 
     // Update the address if needed
     if (person.address != previous.address) {
       // Update the address
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'addresses',
-          filters: {
-            'id': previous.address.id
-          },
-          data: {
-            'civic': person.address.civicNumber,
-            'street': person.address.street,
-            'apartment': person.address.apartment,
-            'city': person.address.city,
-            'postal_code': person.address.postalCode
-          });
+      if (person.address == null) {
+        // Delete the address
+        await MySqlHelpers.performDeleteAddress(
+            connection: connection, address: previous.address!);
+      } else if (previous.address == null) {
+        // Insert the new address
+        await MySqlHelpers.performInsertAddress(
+            connection: connection,
+            address: person.address!,
+            entityId: person.id);
+      } else {
+        // Update the address
+        await MySqlHelpers.performUpdateAddress(
+            connection: connection,
+            address: person.address!,
+            previous: previous.address!);
+      }
     }
   }
 
@@ -247,6 +273,30 @@ class MySqlHelpers {
           'entity_id': entityId,
           'phone_number': phoneNumber.toString()
         });
+  }
+
+  static Future<void> performUpdatePhoneNumber({
+    required MySqlConnection connection,
+    required PhoneNumber phoneNumber,
+    required PhoneNumber previous,
+  }) async {
+    // Update the phone number if needed
+    if (phoneNumber.toString() == previous.toString()) return;
+    await MySqlHelpers.performUpdateQuery(
+        connection: connection,
+        tableName: 'phone_numbers',
+        filters: {'id': previous.id},
+        data: {'phone_number': phoneNumber.toString()});
+  }
+
+  static Future<void> performDeletePhoneNumber({
+    required MySqlConnection connection,
+    required PhoneNumber phoneNumber,
+  }) async {
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'phone_numbers',
+        filters: {'id': phoneNumber.id});
   }
 
   static Future<void> performInsertAddress(
@@ -297,6 +347,16 @@ class MySqlHelpers {
           filters: {'id': previous.id},
           data: toUpdate);
     }
+  }
+
+  static Future<void> performDeleteAddress({
+    required MySqlConnection connection,
+    required Address address,
+  }) async {
+    await MySqlHelpers.performDeleteQuery(
+        connection: connection,
+        tableName: 'addresses',
+        filters: {'id': address.id});
   }
 // coverage:ignore-end
 }

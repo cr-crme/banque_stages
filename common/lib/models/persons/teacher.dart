@@ -27,7 +27,7 @@ class Teacher extends Person {
     required super.dateBirth,
     required this.itineraries,
   }) {
-    if (address.isNotEmpty) {
+    if (address?.isNotEmpty ?? false) {
       throw ArgumentError('Address should not be set for a teacher');
     }
     if (dateBirth != null) {

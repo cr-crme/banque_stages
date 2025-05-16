@@ -201,7 +201,7 @@ CREATE TABLE enterprises (
     name VARCHAR(50) NOT NULL,
     recruiter_id VARCHAR(36) NOT NULL, 
     contact_function VARCHAR(255) NOT NULL,
-    website VARCHAR(255) NOT NULL,
+    website VARCHAR(255),
     neq VARCHAR(50) NOT NULL,
     FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE,
     FOREIGN KEY (school_board_id) REFERENCES school_boards(id) ON DELETE CASCADE

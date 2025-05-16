@@ -26,9 +26,9 @@ class Enterprise extends ExtendedItemSerializable {
   final String contactFunction;
 
   final Address? address;
-  final PhoneNumber phone;
-  final PhoneNumber fax;
-  final String website;
+  final PhoneNumber? phone;
+  final PhoneNumber? fax;
+  final String? website;
 
   final Address? headquartersAddress;
   final String? neq;
@@ -43,13 +43,12 @@ class Enterprise extends ExtendedItemSerializable {
     required this.contact,
     this.contactFunction = '',
     this.address,
-    PhoneNumber? phone,
-    PhoneNumber? fax,
+    this.phone,
+    this.fax,
     this.website = '',
     this.headquartersAddress,
     this.neq = '',
-  })  : phone = phone ?? PhoneNumber.empty,
-        fax = fax ?? PhoneNumber.empty;
+  });
 
   Enterprise copyWith({
     String? id,
@@ -152,9 +151,9 @@ class Enterprise extends ExtendedItemSerializable {
       'contact': contact.serialize(),
       'contact_function': contactFunction.serialize(),
       'address': address?.serialize(),
-      'phone': phone.serialize(),
-      'fax': fax.serialize(),
-      'website': website.serialize(),
+      'phone': phone?.serialize(),
+      'fax': fax?.serialize(),
+      'website': website?.serialize(),
       'headquarters_address': headquartersAddress?.serialize(),
       'neq': neq?.serialize(),
     };
@@ -172,9 +171,9 @@ class Enterprise extends ExtendedItemSerializable {
         contact = Person.fromSerialized(map['contact'] ?? {}),
         contactFunction = StringExt.from(map['contact_function']) ?? '',
         address = Address.from(map['address']),
-        phone = PhoneNumber.from(map['phone']) ?? PhoneNumber.empty,
-        fax = PhoneNumber.from(map['fax']) ?? PhoneNumber.empty,
-        website = StringExt.from(map['website']) ?? '',
+        phone = PhoneNumber.from(map['phone']),
+        fax = PhoneNumber.from(map['fax']),
+        website = StringExt.from(map['website']),
         headquartersAddress = Address.from(map['headquarters_address']),
         neq = StringExt.from(map['neq']),
         super.fromSerialized();

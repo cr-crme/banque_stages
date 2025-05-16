@@ -64,9 +64,9 @@ void main() {
         'last_name': teacher.lastName,
         'groups': teacher.groups,
         'email': teacher.email,
-        'phone': teacher.phone.serialize(),
+        'phone': teacher.phone?.serialize(),
         'date_birth': null,
-        'address': teacher.address.serialize(),
+        'address': teacher.address?.serialize(),
         'itineraries': [],
       });
 

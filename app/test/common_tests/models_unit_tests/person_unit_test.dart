@@ -52,7 +52,7 @@ void main() {
       expect(personDifferent.lastName, 'newLastName');
       expect(personDifferent.email, 'newEmail');
       expect(personDifferent.phone.toString(), '(866) 666-6666');
-      expect(personDifferent.address.id, 'newAddressId');
+      expect(personDifferent.address?.id, 'newAddressId');
     });
 
     test('serialization and deserialization works', () {
@@ -66,9 +66,9 @@ void main() {
         'middle_name': person.middleName,
         'last_name': person.lastName,
         'date_birth': person.dateBirth?.millisecondsSinceEpoch ?? -1,
-        'phone': person.phone.serialize(),
+        'phone': person.phone?.serialize(),
         'email': person.email,
-        'address': person.address.serialize(),
+        'address': person.address?.serialize(),
       });
 
       expect(deserialized.id, person.id);
@@ -78,7 +78,7 @@ void main() {
       expect(deserialized.dateBirth, person.dateBirth);
       expect(deserialized.phone.toString(), person.phone.toString());
       expect(deserialized.email, person.email);
-      expect(deserialized.address.id, person.address.id);
+      expect(deserialized.address?.id, person.address?.id);
 
       // Test for empty deserialize to make sure it doesn't crash
       final emptyDeserialized = Person.fromSerialized({'id': 'emptyId'});

@@ -10,9 +10,9 @@ class Person extends ExtendedItemSerializable {
   final String lastName;
   final DateTime? dateBirth;
 
-  final PhoneNumber phone;
+  final PhoneNumber? phone;
   final String? email;
-  final Address address;
+  final Address? address;
 
   Person({
     super.id,
@@ -33,7 +33,7 @@ class Person extends ExtendedItemSerializable {
       dateBirth: null,
       email: null,
       id: null,
-      phone: PhoneNumber.empty);
+      phone: null);
 
   static Person? from(map) {
     if (map == null) return null;
@@ -45,9 +45,9 @@ class Person extends ExtendedItemSerializable {
         middleName = StringExt.from(map['middle_name']),
         lastName = StringExt.from(map['last_name']) ?? 'Unnamed',
         dateBirth = DateTimeExt.from(map['date_birth']),
-        phone = PhoneNumber.from(map['phone']) ?? PhoneNumber.empty,
+        phone = PhoneNumber.from(map['phone']),
         email = StringExt.from(map['email']),
-        address = Address.from(map['address']) ?? Address.empty,
+        address = Address.from(map['address']),
         super.fromSerialized();
 
   @override
@@ -56,9 +56,9 @@ class Person extends ExtendedItemSerializable {
         'middle_name': middleName?.serialize(),
         'last_name': lastName.serialize(),
         'date_birth': dateBirth?.serialize(),
-        'phone': phone.serialize(),
+        'phone': phone?.serialize(),
         'email': email?.serialize(),
-        'address': address.serialize(),
+        'address': address?.serialize(),
       };
 
   Person copyWith({

@@ -156,8 +156,8 @@ void main() {
         'contact': enterprise.contact.serialize(),
         'contact_function': enterprise.contactFunction,
         'address': enterprise.address?.serialize(),
-        'phone': enterprise.phone.serialize(),
-        'fax': enterprise.fax.serialize(),
+        'phone': enterprise.phone?.serialize(),
+        'fax': enterprise.fax?.serialize(),
         'website': enterprise.website,
         'headquarters_address': enterprise.headquartersAddress?.serialize(),
         'neq': enterprise.neq

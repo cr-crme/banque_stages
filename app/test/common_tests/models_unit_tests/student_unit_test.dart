@@ -100,7 +100,7 @@ void main() {
       expect(studentDifferent.dateBirth, DateTime(2001, 1, 1));
       expect(studentDifferent.phone.toString(), '(866) 666-6666');
       expect(studentDifferent.email, 'newEmail');
-      expect(studentDifferent.address.id, 'newAddressId');
+      expect(studentDifferent.address?.id, 'newAddressId');
       expect(studentDifferent.photo.toString(), '0xFF0000');
       expect(studentDifferent.program, Program.fms);
       expect(studentDifferent.group, 'newGroup');
@@ -122,9 +122,9 @@ void main() {
         'middle_name': student.middleName,
         'last_name': student.lastName,
         'date_birth': student.dateBirth!.millisecondsSinceEpoch,
-        'phone': student.phone.serialize(),
+        'phone': student.phone?.serialize(),
         'email': student.email,
-        'address': student.address.serialize(),
+        'address': student.address?.serialize(),
         'photo': student.photo,
         'program': student.program.index,
         'group': student.group,
@@ -141,7 +141,7 @@ void main() {
       expect(deserialized.dateBirth, student.dateBirth);
       expect(deserialized.phone.toString(), student.phone.toString());
       expect(deserialized.email, student.email);
-      expect(deserialized.address.id, student.address.id);
+      expect(deserialized.address?.id, student.address?.id);
       expect(deserialized.photo, student.photo);
       expect(deserialized.program, student.program);
       expect(deserialized.group, student.group);

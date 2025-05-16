@@ -92,7 +92,7 @@ class ContactPageState extends State<ContactPage> {
           phone: _contactInfoController.contactPhone.text == ''
               ? null
               : PhoneNumber.fromString(_contactInfoController.contactPhone.text,
-                  id: widget.enterprise.contact.phone.id),
+                  id: widget.enterprise.contact.phone?.id),
           email: _contactInfoController.contactEmail.text,
         ),
         contactFunction: _contactInfoController.contactFunction.text == ''
@@ -102,11 +102,11 @@ class ContactPageState extends State<ContactPage> {
         phone: _enterpriseInfoController.phone.text == ''
             ? null
             : PhoneNumber.fromString(_enterpriseInfoController.phone.text,
-                id: widget.enterprise.phone.id),
+                id: widget.enterprise.phone?.id),
         fax: _enterpriseInfoController.fax.text == ''
             ? null
             : PhoneNumber.fromString(_enterpriseInfoController.fax.text,
-                id: widget.enterprise.fax.id),
+                id: widget.enterprise.fax?.id),
         website: _enterpriseInfoController.website.text == ''
             ? null
             : _enterpriseInfoController.website.text,
@@ -321,7 +321,7 @@ class _EnterpriseInfoController {
     address.address = enterprise.address;
     phone.text = enterprise.phone.toString();
     fax.text = enterprise.fax.toString();
-    website.text = enterprise.website;
+    website.text = enterprise.website ?? '';
   }
 }
 
