@@ -488,16 +488,16 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }
 
   Future<void> _insertJobUniforms(Uniforms uniforms, String jobId) async {
-    final serialized = uniforms.serialize();
+    final status = uniforms.serialize()['status'];
     final toWait = <Future>[];
-    for (final key in serialized.keys) {
+    for (final uniform in uniforms.uniforms) {
       toWait.add(MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'enterprise_job_uniforms',
           data: {
             'job_id': jobId.serialize(),
-            'status': serialized['status'],
-            'uniform': serialized[key],
+            'status': status,
+            'uniform': uniform.serialize(),
           }));
     }
     await Future.wait(toWait);
@@ -505,16 +505,16 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
   Future<void> _insertJobProtections(
       Protections protections, String jobId) async {
-    final serialized = protections.serialize();
+    final status = protections.serialize()['status'];
     final toWait = <Future>[];
-    for (final key in serialized.keys) {
+    for (final protection in protections.protections) {
       toWait.add(MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'enterprise_job_protections',
           data: {
             'job_id': jobId.serialize(),
-            'status': serialized['status'],
-            'protection': serialized[key],
+            'status': status,
+            'protection': protection.serialize(),
           }));
     }
     await Future.wait(toWait);
@@ -542,17 +542,18 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
   Future<void> _insertJobSstEvaluation(
       JobSstEvaluation sstEvaluation, String jobId) async {
-    final serialized = sstEvaluation.serialize();
+    final serialized =
+        sstEvaluation.serialize()['questions'] as Map<String, dynamic>;
     final toWait = <Future>[];
-    for (final question in serialized.entries) {
+    for (final question in serialized.keys) {
       toWait.add(MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'enterprise_job_sst_evaluation_questions',
           data: {
             'job_id': jobId.serialize(),
-            'date': serialized['date'],
-            'question': question.key,
-            'answers': (question.value as List?)?.join('\n'),
+            'date': sstEvaluation.date.serialize(),
+            'question': question,
+            'answers': (serialized[question] as List?)?.join('\n'),
           }));
     }
     await Future.wait(toWait);
