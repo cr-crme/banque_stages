@@ -9,60 +9,38 @@ import 'package:common/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class TeachersListScreen extends StatefulWidget {
+class TeachersListScreen extends StatelessWidget {
   const TeachersListScreen({super.key});
 
   static const route = '/teachers_list';
 
-  @override
-  State<TeachersListScreen> createState() => _TeachersListScreenState();
-}
-
-class _TeachersListScreenState extends State<TeachersListScreen> {
-  final _teachersKey = <String, GlobalKey>{};
-
-  Future<List<Teacher>> getTeachers(BuildContext context) async {
-    final teachers = TeachersProvider.of(context, listen: true);
+  Future<Map<String, List<Teacher>>> getTeachers(BuildContext context) async {
+    final teachersTp = TeachersProvider.of(context, listen: true);
     final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(context);
     final schools = schoolBoard?.schools ?? [];
 
     // Sort by school name
-    teachers.sorted((a, b) {
-      final schoolA =
-          utils.IterableExtensions(
-            schools,
-          ).firstWhereOrNull((e) => e.id == a.schoolId)?.name ??
-          '';
-      final schoolB =
-          utils.IterableExtensions(
-            schools,
-          ).firstWhereOrNull((e) => e.id == b.schoolId)?.name ??
-          '';
-      return schoolA.compareTo(schoolB);
-    });
-
-    // Sort by last name
-    teachers.sorted((a, b) {
-      final lastNameA = a.lastName.toLowerCase();
-      final lastNameB = b.lastName.toLowerCase();
-      return lastNameA.compareTo(lastNameB);
-    });
-    // Sort by first name
-    teachers.sorted((a, b) {
-      final firstNameA = a.firstName.toLowerCase();
-      final firstNameB = b.firstName.toLowerCase();
-      return firstNameA.compareTo(firstNameB);
-    });
-
-    // Set the key for each teacher
-    for (final teacher in teachers) {
-      if (_teachersKey[teacher.id] != null) continue;
-      _teachersKey[teacher.id] = GlobalKey(
-        debugLabel: '${teacher.firstName} ${teacher.lastName}',
+    final teachers = <String, List<Teacher>>{}; // Teachers by school
+    for (final school in schools) {
+      final scoolTeachers = teachersTp.where(
+        (teacher) => teacher.schoolId == school.id,
       );
+
+      // Sort by last name then first name
+      scoolTeachers.sorted((a, b) {
+        final lastNameA = a.lastName.toLowerCase();
+        final lastNameB = b.lastName.toLowerCase();
+        return lastNameA.compareTo(lastNameB);
+      });
+      scoolTeachers.sorted((a, b) {
+        final firstNameA = a.firstName.toLowerCase();
+        final firstNameB = b.firstName.toLowerCase();
+        return firstNameA.compareTo(firstNameB);
+      });
+      teachers[school.id] = scoolTeachers.toList();
     }
 
-    return [...teachers];
+    return teachers;
   }
 
   @override
@@ -70,46 +48,91 @@ class _TeachersListScreenState extends State<TeachersListScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Liste des enseignant·e·s')),
       drawer: const MainDrawer(),
-      body: FutureBuilder(
-        future: Future.wait([
-          SchoolBoardsProvider.mySchoolBoardOf(context),
-          getTeachers(context),
-        ]),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: SingleChildScrollView(
+        child: FutureBuilder(
+          future: Future.wait([
+            SchoolBoardsProvider.mySchoolBoardOf(context),
+            getTeachers(context),
+          ]),
+          builder: (context, snapshot) {
+            final schoolBoard = snapshot.data?[0] as SchoolBoard?;
+            final schoolTeachers =
+                snapshot.data?[1] as Map<String, List<Teacher>>?;
+            if (schoolBoard == null || schoolTeachers == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final schoolBoard = snapshot.data?[0] as SchoolBoard?;
-          final teachers = snapshot.data?[1] as List<Teacher>?;
-          if (schoolBoard == null || teachers == null) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          return ListView.builder(
-            itemCount: teachers.length,
-            itemBuilder:
-                (context, index) => _TeacherListTile(
-                  key: _teachersKey[teachers[index].id],
-                  teacher: teachers[index],
-                  schoolBoard: schoolBoard,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    schoolBoard.name,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                  ),
                 ),
-          );
-        },
+                ...schoolTeachers.keys.map(
+                  (String schoolId) => _SchoolTeachers(
+                    schoolId: schoolId,
+                    teachers: schoolTeachers[schoolId] ?? [],
+                    schoolBoard: schoolBoard,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-class _TeacherListTile extends StatefulWidget {
-  const _TeacherListTile({
-    super.key,
-    required this.teacher,
+class _SchoolTeachers extends StatelessWidget {
+  const _SchoolTeachers({
+    required this.schoolId,
+    required this.teachers,
     required this.schoolBoard,
   });
 
-  final Teacher teacher;
+  final String schoolId;
+  final List<Teacher> teachers;
   final SchoolBoard schoolBoard;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
+          child: Text(
+            utils.IterableExtensions(
+                  schoolBoard.schools,
+                ).firstWhereOrNull((school) => school.id == schoolId)?.name ??
+                'École introuvable',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+        if (teachers.isEmpty)
+          Center(child: Text('Aucun enseignant·e inscrit·e')),
+        if (teachers.isNotEmpty)
+          ...teachers.map(
+            (Teacher teacher) =>
+                _TeacherListTile(key: ValueKey(teacher.id), teacher: teacher),
+          ),
+        const Divider(),
+      ],
+    );
+  }
+}
+
+class _TeacherListTile extends StatefulWidget {
+  const _TeacherListTile({super.key, required this.teacher});
+
+  final Teacher teacher;
 
   @override
   State<_TeacherListTile> createState() => _TeacherListTileState();
@@ -118,6 +141,8 @@ class _TeacherListTile extends StatefulWidget {
 class _TeacherListTileState extends State<_TeacherListTile> {
   bool _isExpanded = false;
   bool _isEditing = false;
+  TextEditingController? _firstNameController;
+  TextEditingController? _lastNameController;
   final Map<TextEditingController, int?> _currentGroups = {};
   TextEditingController? _emailController;
 
@@ -125,13 +150,9 @@ class _TeacherListTileState extends State<_TeacherListTile> {
     if (_isEditing) {
       // Finish editing
       final newTeacher = widget.teacher.copyWith(
-        firstName: widget.teacher.firstName,
-        middleName: widget.teacher.middleName,
-        lastName: widget.teacher.lastName,
+        firstName: _firstNameController?.text,
+        lastName: _lastNameController?.text,
         email: _emailController?.text,
-        phone: widget.teacher.phone,
-        address: widget.teacher.address,
-        dateBirth: widget.teacher.dateBirth,
         groups:
             _currentGroups.keys
                 .map((e) => e.text)
@@ -144,6 +165,12 @@ class _TeacherListTileState extends State<_TeacherListTile> {
       }
     } else {
       // Start editing
+      _firstNameController = TextEditingController(
+        text: widget.teacher.firstName,
+      );
+      _lastNameController = TextEditingController(
+        text: widget.teacher.lastName,
+      );
       _currentGroups.clear();
       for (var group in widget.teacher.groups) {
         _currentGroups[TextEditingController(text: group)] = int.tryParse(
@@ -153,9 +180,7 @@ class _TeacherListTileState extends State<_TeacherListTile> {
       _emailController = TextEditingController(text: widget.teacher.email);
     }
 
-    setState(() {
-      _isEditing = !_isEditing;
-    });
+    setState(() => _isEditing = !_isEditing);
   }
 
   @override
@@ -188,9 +213,7 @@ class _TeacherListTileState extends State<_TeacherListTile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'École : ${utils.IterableExtensions(widget.schoolBoard.schools).firstWhereOrNull((e) => e.id == widget.teacher.schoolId)?.name ?? 'Nom de l\'école introuvable'}',
-            ),
+            _buildName(),
             const SizedBox(height: 4),
             _buildGroups(),
             const SizedBox(height: 4),
@@ -199,6 +222,24 @@ class _TeacherListTileState extends State<_TeacherListTile> {
         ),
       ),
     );
+  }
+
+  Widget _buildName() {
+    return _isEditing
+        ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextFormField(
+              controller: _firstNameController,
+              decoration: const InputDecoration(labelText: 'Prénom'),
+            ),
+            TextFormField(
+              controller: _lastNameController,
+              decoration: const InputDecoration(labelText: 'Nom de famille'),
+            ),
+          ],
+        )
+        : Container();
   }
 
   Widget _buildGroups() {
@@ -213,12 +254,33 @@ class _TeacherListTileState extends State<_TeacherListTile> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final controller in _currentGroups.keys)
-                TextFormField(
-                  controller: controller,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Groupe'),
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              for (int i = 0; i < _currentGroups.keys.length; i++)
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _currentGroups.keys.elementAt(i),
+                        keyboardType: TextInputType.number,
+                        decoration:
+                            i == 0
+                                ? const InputDecoration(labelText: 'Groupes')
+                                : null,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _currentGroups.remove(
+                            _currentGroups.keys.elementAt(i),
+                          );
+                        });
+                      },
+                      icon: Icon(Icons.delete, color: Colors.red),
+                    ),
+                  ],
                 ),
               Center(
                 child: Padding(
