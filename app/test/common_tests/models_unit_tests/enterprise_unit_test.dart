@@ -189,9 +189,9 @@ void main() {
       expect(emptyDeserialized.contact.firstName, 'Unnamed');
       expect(emptyDeserialized.contactFunction, '');
       expect(emptyDeserialized.address, isNull);
-      expect(emptyDeserialized.phone.toString(), PhoneNumber.empty.toString());
-      expect(emptyDeserialized.fax.toString(), PhoneNumber.empty.toString());
-      expect(emptyDeserialized.website, '');
+      expect(emptyDeserialized.phone, isNull);
+      expect(emptyDeserialized.fax, isNull);
+      expect(emptyDeserialized.website, isNull);
       expect(emptyDeserialized.headquartersAddress, isNull);
       expect(emptyDeserialized.neq, isNull);
     });

@@ -27,7 +27,12 @@ void main() {
     });
 
     test('"copyWith" behaves properly', () {
-      final job = dummyJob();
+      final job = dummyJob(
+          preInternshipId: 'newPreInternshipId',
+          uniformId: 'newUniformId',
+          protectionsId: 'newProtectionsId',
+          sstEvaluationId: 'newSstEvaluationId',
+          incidentsId: 'newIncidentsId');
 
       final jobSame = job.copyWith();
       expect(jobSame.id, job.id);

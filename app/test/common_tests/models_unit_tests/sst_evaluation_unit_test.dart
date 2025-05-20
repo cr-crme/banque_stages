@@ -53,7 +53,8 @@ void main() {
           JobSstEvaluation.fromSerialized({'id': 'emptyId'});
       expect(emptyDeserialized.id, 'emptyId');
       expect(emptyDeserialized.questions, {});
-      expect(emptyDeserialized.date.millisecondsSinceEpoch, 0);
+      expect(emptyDeserialized.date.millisecondsSinceEpoch,
+          DateTime(0).millisecondsSinceEpoch);
     });
   });
 }

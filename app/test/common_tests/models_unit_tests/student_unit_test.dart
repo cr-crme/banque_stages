@@ -155,13 +155,13 @@ void main() {
       expect(emptyDeserialized.middleName, isNull);
       expect(emptyDeserialized.lastName, 'Unnamed');
       expect(emptyDeserialized.dateBirth, isNull);
-      expect(emptyDeserialized.phone.toString(), PhoneNumber.empty.toString());
+      expect(emptyDeserialized.phone, isNull);
       expect(emptyDeserialized.email, isNull);
-      expect(emptyDeserialized.address.toString(), Address.empty.toString());
+      expect(emptyDeserialized.address, isNull);
       expect(int.parse(emptyDeserialized.photo), greaterThanOrEqualTo(0));
       expect(int.parse(emptyDeserialized.photo), lessThanOrEqualTo(0xFFFFFF));
       expect(emptyDeserialized.program, Program.undefined);
-      expect(emptyDeserialized.group, '');
+      expect(emptyDeserialized.group, '-1');
       expect(emptyDeserialized.contact.toString(), Person.empty.toString());
       expect(emptyDeserialized.contactLink, '');
     });

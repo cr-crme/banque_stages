@@ -44,7 +44,7 @@ Teacher dummyTeacher(
       groups: groups,
       email: 'peter.john.jakob@test.com',
       phone: dummyPhoneNumber(),
-      address: Address.empty,
+      address: null,
       dateBirth: null,
       itineraries: [],
     );
@@ -101,7 +101,7 @@ Person dummyPerson({
         phone: dummyPhoneNumber());
 
 PhoneNumber dummyPhoneNumber({int? extension}) => PhoneNumber.fromString(
-    '800-555-5555${extension == null ? '' : ' poste $extension'}}');
+    '800-555-5555${extension == null ? '' : ' poste $extension'}');
 
 Address dummyAddress({
   bool skipCivicNumber = false,
@@ -185,17 +185,26 @@ PreInternshipRequests dummyPreInternshipRequests({
       isApplicable: true,
     );
 
-Job dummyJob({String id = 'jobId'}) => Job(
+Job dummyJob({
+  String id = 'jobId',
+  String? sstEvaluationId,
+  String? incidentsId,
+  String? preInternshipId,
+  String? uniformId,
+  String? protectionsId,
+}) =>
+    Job(
       id: id,
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[9],
       positionsOffered: 2,
-      sstEvaluation: dummyJobSstEvaluation(id: id),
-      incidents: dummyIncidents(id: id),
+      sstEvaluation: dummyJobSstEvaluation(id: sstEvaluationId ?? id),
+      incidents: dummyIncidents(id: incidentsId ?? id),
       minimumAge: 12,
-      preInternshipRequests: dummyPreInternshipRequests(id: id),
-      uniforms: dummyUniforms(id: id),
-      protections: dummyProtections(id: id),
+      preInternshipRequests:
+          dummyPreInternshipRequests(id: preInternshipId ?? id),
+      uniforms: dummyUniforms(id: uniformId ?? id),
+      protections: dummyProtections(id: protectionsId ?? id),
     );
 
 Enterprise dummyEnterprise({bool addJob = false}) {

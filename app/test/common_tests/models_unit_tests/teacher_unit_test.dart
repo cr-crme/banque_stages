@@ -1,4 +1,3 @@
-import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +19,7 @@ void main() {
       expect(teacherSame.email, teacher.email);
       expect(teacherSame.phone, teacher.phone);
 
-      expect(teacherSame.address.toString(), Address.empty.toString());
+      expect(teacherSame.address, isNull);
       expect(teacherSame.dateBirth, isNull);
 
       final teacherDifferent = teacher.copyWith(
@@ -78,21 +77,25 @@ void main() {
       expect(deserialized.lastName, teacher.lastName);
       expect(deserialized.groups, teacher.groups);
       expect(deserialized.email, teacher.email);
-      expect(deserialized.phone.toString(), teacher.phone.toString());
+      expect(deserialized.phone?.toString(), dummyPhoneNumber().toString());
       expect(deserialized.dateBirth, isNull);
-      expect(deserialized.address.toString(), Address.empty.toString());
+      expect(deserialized.address, isNull);
       expect(deserialized.itineraries, []);
 
       // Test for empty deserialize to make sure it doesn't crash
       final emptyDeserialized = Teacher.fromSerialized({'id': 'emptyId'});
       expect(emptyDeserialized.id, 'emptyId');
+      expect(emptyDeserialized.schoolBoardId, '-1');
       expect(emptyDeserialized.firstName, 'Unnamed');
       expect(emptyDeserialized.middleName, isNull);
       expect(emptyDeserialized.lastName, 'Unnamed');
       expect(emptyDeserialized.schoolId, '-1');
       expect(emptyDeserialized.groups, []);
       expect(emptyDeserialized.email, isNull);
-      expect(emptyDeserialized.phone.toString(), PhoneNumber.empty.toString());
+      expect(emptyDeserialized.phone, isNull);
+      expect(emptyDeserialized.dateBirth, isNull);
+      expect(emptyDeserialized.address, isNull);
+      expect(emptyDeserialized.itineraries, []);
     });
   });
 }

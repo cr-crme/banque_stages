@@ -29,7 +29,7 @@ class Person extends ExtendedItemSerializable {
       firstName: 'Unnamed',
       middleName: null,
       lastName: 'Unnamed',
-      address: Address.empty,
+      address: null,
       dateBirth: null,
       email: null,
       id: null,

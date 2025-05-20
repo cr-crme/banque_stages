@@ -1,5 +1,5 @@
-import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -13,9 +13,9 @@ void main() {
       expect(person.middleName, isNull);
       expect(person.lastName, 'Unnamed');
       expect(person.dateBirth, isNull);
-      expect(person.phone.toString(), PhoneNumber.empty.toString());
+      expect(person.phone, isNull);
       expect(person.email, isNull);
-      expect(person.address.toString(), Address.empty.toString());
+      expect(person.address, isNull);
 
       expect(person.toString(), Person.empty.toString());
       expect(person.fullName, 'Unnamed Unnamed');
@@ -65,9 +65,9 @@ void main() {
         'first_name': person.firstName,
         'middle_name': person.middleName,
         'last_name': person.lastName,
-        'date_birth': person.dateBirth?.millisecondsSinceEpoch ?? -1,
+        'date_birth': person.dateBirth?.serialize() ?? -1,
         'phone': person.phone?.serialize(),
-        'email': person.email,
+        'email': person.email?.serialize(),
         'address': person.address?.serialize(),
       });
 
@@ -87,9 +87,9 @@ void main() {
       expect(emptyDeserialized.middleName, isNull);
       expect(emptyDeserialized.lastName, 'Unnamed');
       expect(emptyDeserialized.dateBirth, isNull);
-      expect(emptyDeserialized.phone.toString(), PhoneNumber.empty.toString());
+      expect(emptyDeserialized.phone, isNull);
       expect(emptyDeserialized.email, isNull);
-      expect(emptyDeserialized.address.toString(), Address.empty.toString());
+      expect(emptyDeserialized.address, isNull);
     });
   });
 }

@@ -17,7 +17,7 @@ extension ListExt on List {
 
   static List<T>? from<T>(List? elements,
       {required T Function(dynamic) deserializer}) {
-    if (elements == null) return [];
+    if (elements == null) return null;
     return elements.map((e) => deserializer(e)).toList();
   }
 }
