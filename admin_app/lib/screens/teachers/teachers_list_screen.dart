@@ -1,6 +1,7 @@
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
+import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:collection/collection.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -8,10 +9,17 @@ import 'package:common/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class TeachersListScreen extends StatelessWidget {
+class TeachersListScreen extends StatefulWidget {
   const TeachersListScreen({super.key});
 
   static const route = '/teachers_list';
+
+  @override
+  State<TeachersListScreen> createState() => _TeachersListScreenState();
+}
+
+class _TeachersListScreenState extends State<TeachersListScreen> {
+  final _teachersKey = <String, GlobalKey>{};
 
   Future<List<Teacher>> getTeachers(BuildContext context) async {
     final teachers = TeachersProvider.of(context, listen: true);
@@ -32,6 +40,27 @@ class TeachersListScreen extends StatelessWidget {
           '';
       return schoolA.compareTo(schoolB);
     });
+
+    // Sort by last name
+    teachers.sorted((a, b) {
+      final lastNameA = a.lastName.toLowerCase();
+      final lastNameB = b.lastName.toLowerCase();
+      return lastNameA.compareTo(lastNameB);
+    });
+    // Sort by first name
+    teachers.sorted((a, b) {
+      final firstNameA = a.firstName.toLowerCase();
+      final firstNameB = b.firstName.toLowerCase();
+      return firstNameA.compareTo(firstNameB);
+    });
+
+    // Set the key for each teacher
+    for (final teacher in teachers) {
+      if (_teachersKey[teacher.id] != null) continue;
+      _teachersKey[teacher.id] = GlobalKey(
+        debugLabel: '${teacher.firstName} ${teacher.lastName}',
+      );
+    }
 
     return [...teachers];
   }
@@ -61,6 +90,7 @@ class TeachersListScreen extends StatelessWidget {
             itemCount: teachers.length,
             itemBuilder:
                 (context, index) => _TeacherListTile(
+                  key: _teachersKey[teachers[index].id],
                   teacher: teachers[index],
                   schoolBoard: schoolBoard,
                 ),
@@ -72,7 +102,11 @@ class TeachersListScreen extends StatelessWidget {
 }
 
 class _TeacherListTile extends StatefulWidget {
-  const _TeacherListTile({required this.teacher, required this.schoolBoard});
+  const _TeacherListTile({
+    super.key,
+    required this.teacher,
+    required this.schoolBoard,
+  });
 
   final Teacher teacher;
   final SchoolBoard schoolBoard;
@@ -82,8 +116,10 @@ class _TeacherListTile extends StatefulWidget {
 }
 
 class _TeacherListTileState extends State<_TeacherListTile> {
+  bool _isExpanded = false;
   bool _isEditing = false;
   final Map<TextEditingController, int?> _currentGroups = {};
+  TextEditingController? _emailController;
 
   void _onClickedEditing() {
     if (_isEditing) {
@@ -92,7 +128,7 @@ class _TeacherListTileState extends State<_TeacherListTile> {
         firstName: widget.teacher.firstName,
         middleName: widget.teacher.middleName,
         lastName: widget.teacher.lastName,
-        email: widget.teacher.email,
+        email: _emailController?.text,
         phone: widget.teacher.phone,
         address: widget.teacher.address,
         dateBirth: widget.teacher.dateBirth,
@@ -114,6 +150,7 @@ class _TeacherListTileState extends State<_TeacherListTile> {
           group,
         );
       }
+      _emailController = TextEditingController(text: widget.teacher.email);
     }
 
     setState(() {
@@ -123,21 +160,43 @@ class _TeacherListTileState extends State<_TeacherListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text('${widget.teacher.firstName} ${widget.teacher.lastName}'),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return AnimatedExpandingCard(
+      initialExpandedState: _isExpanded,
+      onTapHeader: (isExpanded) => setState(() => _isExpanded = isExpanded),
+      header: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            'École : ${utils.IterableExtensions(widget.schoolBoard.schools).firstWhereOrNull((e) => e.id == widget.teacher.schoolId)?.name ?? 'Nom de l\'école introuvable'}',
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
+            child: Text(
+              '${widget.teacher.firstName} ${widget.teacher.lastName}',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
-          _buildGroups(),
-          Text('Courriel : ${widget.teacher.email ?? 'Courriel introuvable'}'),
+          if (_isExpanded)
+            IconButton(
+              icon: Icon(
+                _isEditing ? Icons.save : Icons.edit,
+                color: Colors.black,
+              ),
+              onPressed: _onClickedEditing,
+            ),
         ],
       ),
-      trailing: IconButton(
-        icon: Icon(_isEditing ? Icons.save : Icons.edit),
-        onPressed: _onClickedEditing,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 24.0, bottom: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'École : ${utils.IterableExtensions(widget.schoolBoard.schools).firstWhereOrNull((e) => e.id == widget.teacher.schoolId)?.name ?? 'Nom de l\'école introuvable'}',
+            ),
+            const SizedBox(height: 4),
+            _buildGroups(),
+            const SizedBox(height: 4),
+            _buildEmail(),
+          ],
+        ),
       ),
     );
   }
@@ -154,7 +213,6 @@ class _TeacherListTileState extends State<_TeacherListTile> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Modifier les groupes :'),
               for (final controller in _currentGroups.keys)
                 TextFormField(
                   controller: controller,
@@ -179,5 +237,15 @@ class _TeacherListTileState extends State<_TeacherListTile> {
         if (!_isEditing) Text('Groupes : ${widget.teacher.groups.join(', ')}'),
       ],
     );
+  }
+
+  Widget _buildEmail() {
+    return _isEditing
+        ? TextFormField(
+          controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
+          decoration: const InputDecoration(labelText: 'Courriel'),
+        )
+        : Text('Courriel : ${widget.teacher.email ?? 'Courriel introuvable'}');
   }
 }
