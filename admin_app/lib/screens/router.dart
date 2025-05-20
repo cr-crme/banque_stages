@@ -1,0 +1,37 @@
+import 'package:admin_app/providers/auth_provider.dart';
+import 'package:admin_app/screens/login/login_screen.dart';
+import 'package:admin_app/screens/teachers/teachers_list_screen.dart';
+import 'package:go_router/go_router.dart';
+
+abstract class Screens {
+  static const home = teacherListsScreen;
+
+  static const login = LoginScreen.route;
+  static const teacherListsScreen = TeachersListScreen.route;
+}
+
+final router = GoRouter(
+  redirect: (context, state) {
+    if (AuthProvider.of(context, listen: false).isSignedIn()) {
+      return null;
+    }
+    return Screens.login;
+  },
+  routes: [
+    GoRoute(path: '/', redirect: (context, state) => Screens.home),
+    GoRoute(
+      path: Screens.login,
+      name: Screens.login,
+      builder: (context, state) => const LoginScreen(),
+      redirect:
+          (context, state) =>
+              AuthProvider.of(context, listen: false).isSignedIn() ? '/' : null,
+    ),
+
+    GoRoute(
+      path: Screens.teacherListsScreen,
+      name: Screens.teacherListsScreen,
+      builder: (context, state) => const TeachersListScreen(),
+    ),
+  ],
+);

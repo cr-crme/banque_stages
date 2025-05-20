@@ -37,6 +37,19 @@
             "preLaunchTask": "Run Backend Server",
         },
         {
+            "name": "Admin Banque de Stages ",
+            "request": "launch",
+            "type": "dart",
+            "program": "admin_app/lib/main.dart",
+        },
+        {
+            "name": "Admin Banque de Stages (with Backend)",
+            "request": "launch",
+            "type": "dart",
+            "program": "admin_app/lib/main.dart",
+            "preLaunchTask": "Run Backend Server",
+        },
+        {
             "name": "Banque de Stages (test widgets)",
             "request": "launch",
             "type": "dart",
