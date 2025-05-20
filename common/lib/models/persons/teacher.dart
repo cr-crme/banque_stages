@@ -34,13 +34,13 @@ class Teacher extends Person {
   }
 
   static Teacher get empty => Teacher(
-        firstName: 'Error',
+        firstName: '',
         middleName: null,
-        lastName: 'Error',
+        lastName: '',
         schoolBoardId: '-1',
         schoolId: '-1',
         groups: [],
-        email: 'error.error@error.err',
+        email: null,
         phone: null,
         address: null,
         dateBirth: null,

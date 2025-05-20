@@ -1,13 +1,12 @@
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
-import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/screens/teachers/add_teacher_dialog.dart';
+import 'package:admin_app/screens/teachers/school_teachers_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school_board.dart';
-import 'package:common/utils.dart' as utils;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class TeachersListScreen extends StatelessWidget {
   const TeachersListScreen({super.key});
@@ -43,11 +42,34 @@ class TeachersListScreen extends StatelessWidget {
     return teachers;
   }
 
+  Future<void> _showAddTeacherDialog(BuildContext context) async {
+    final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(context);
+    if (schoolBoard == null || context.mounted == false) return;
+
+    final answer = await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AddTeacherDialog(schoolBoard: schoolBoard),
+    );
+    if (answer == null) return;
+
+    debugPrint(answer.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Liste des enseignant·e·s')),
+      appBar: AppBar(
+        title: const Text('Liste des enseignant·e·s'),
+        actions: [
+          IconButton(
+            onPressed: () => _showAddTeacherDialog(context),
+            icon: Icon(Icons.add),
+          ),
+        ],
+      ),
       drawer: const MainDrawer(),
+
       body: SingleChildScrollView(
         child: FutureBuilder(
           future: Future.wait([
@@ -75,7 +97,7 @@ class TeachersListScreen extends StatelessWidget {
                   ),
                 ),
                 ...schoolTeachers.keys.map(
-                  (String schoolId) => _SchoolTeachers(
+                  (String schoolId) => SchoolTeachersTile(
                     schoolId: schoolId,
                     teachers: schoolTeachers[schoolId] ?? [],
                     schoolBoard: schoolBoard,
@@ -87,227 +109,5 @@ class TeachersListScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _SchoolTeachers extends StatelessWidget {
-  const _SchoolTeachers({
-    required this.schoolId,
-    required this.teachers,
-    required this.schoolBoard,
-  });
-
-  final String schoolId;
-  final List<Teacher> teachers;
-  final SchoolBoard schoolBoard;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
-          child: Text(
-            utils.IterableExtensions(
-                  schoolBoard.schools,
-                ).firstWhereOrNull((school) => school.id == schoolId)?.name ??
-                'École introuvable',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ),
-        if (teachers.isEmpty)
-          Center(child: Text('Aucun enseignant·e inscrit·e')),
-        if (teachers.isNotEmpty)
-          ...teachers.map(
-            (Teacher teacher) =>
-                _TeacherListTile(key: ValueKey(teacher.id), teacher: teacher),
-          ),
-        const Divider(),
-      ],
-    );
-  }
-}
-
-class _TeacherListTile extends StatefulWidget {
-  const _TeacherListTile({super.key, required this.teacher});
-
-  final Teacher teacher;
-
-  @override
-  State<_TeacherListTile> createState() => _TeacherListTileState();
-}
-
-class _TeacherListTileState extends State<_TeacherListTile> {
-  bool _isExpanded = false;
-  bool _isEditing = false;
-  TextEditingController? _firstNameController;
-  TextEditingController? _lastNameController;
-  final Map<TextEditingController, int?> _currentGroups = {};
-  TextEditingController? _emailController;
-
-  void _onClickedEditing() {
-    if (_isEditing) {
-      // Finish editing
-      final newTeacher = widget.teacher.copyWith(
-        firstName: _firstNameController?.text,
-        lastName: _lastNameController?.text,
-        email: _emailController?.text,
-        groups:
-            _currentGroups.keys
-                .map((e) => e.text)
-                .where((e) => e.isNotEmpty)
-                .toList(),
-      );
-
-      if (newTeacher.getDifference(widget.teacher).isNotEmpty) {
-        TeachersProvider.of(context, listen: false).replace(newTeacher);
-      }
-    } else {
-      // Start editing
-      _firstNameController = TextEditingController(
-        text: widget.teacher.firstName,
-      );
-      _lastNameController = TextEditingController(
-        text: widget.teacher.lastName,
-      );
-      _currentGroups.clear();
-      for (var group in widget.teacher.groups) {
-        _currentGroups[TextEditingController(text: group)] = int.tryParse(
-          group,
-        );
-      }
-      _emailController = TextEditingController(text: widget.teacher.email);
-    }
-
-    setState(() => _isEditing = !_isEditing);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedExpandingCard(
-      initialExpandedState: _isExpanded,
-      onTapHeader: (isExpanded) => setState(() => _isExpanded = isExpanded),
-      header: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
-            child: Text(
-              '${widget.teacher.firstName} ${widget.teacher.lastName}',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ),
-          if (_isExpanded)
-            IconButton(
-              icon: Icon(
-                _isEditing ? Icons.save : Icons.edit,
-                color: Colors.black,
-              ),
-              onPressed: _onClickedEditing,
-            ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 24.0, bottom: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildName(),
-            const SizedBox(height: 4),
-            _buildGroups(),
-            const SizedBox(height: 4),
-            _buildEmail(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildName() {
-    return _isEditing
-        ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              controller: _firstNameController,
-              decoration: const InputDecoration(labelText: 'Prénom'),
-            ),
-            TextFormField(
-              controller: _lastNameController,
-              decoration: const InputDecoration(labelText: 'Nom de famille'),
-            ),
-          ],
-        )
-        : Container();
-  }
-
-  Widget _buildGroups() {
-    if (widget.teacher.groups.isEmpty) {
-      return const Text('Aucun groupe');
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (_isEditing)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (int i = 0; i < _currentGroups.keys.length; i++)
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _currentGroups.keys.elementAt(i),
-                        keyboardType: TextInputType.number,
-                        decoration:
-                            i == 0
-                                ? const InputDecoration(labelText: 'Groupes')
-                                : null,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _currentGroups.remove(
-                            _currentGroups.keys.elementAt(i),
-                          );
-                        });
-                      },
-                      icon: Icon(Icons.delete, color: Colors.red),
-                    ),
-                  ],
-                ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextButton(
-                    onPressed:
-                        () => setState(
-                          () => _currentGroups[TextEditingController()] = null,
-                        ),
-                    child: const Text('Ajouter un groupe'),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        if (!_isEditing) Text('Groupes : ${widget.teacher.groups.join(', ')}'),
-      ],
-    );
-  }
-
-  Widget _buildEmail() {
-    return _isEditing
-        ? TextFormField(
-          controller: _emailController,
-          keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(labelText: 'Courriel'),
-        )
-        : Text('Courriel : ${widget.teacher.email ?? 'Courriel introuvable'}');
   }
 }
