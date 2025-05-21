@@ -40,17 +40,24 @@ class TeacherListTileState extends State<TeacherListTile> {
   bool _isEditing = false;
 
   late String _selectedSchoolId = widget.teacher.schoolId;
-  TextEditingController? _firstNameController;
-  TextEditingController? _lastNameController;
-  final List<TextEditingController> _currentGroups = [];
-  TextEditingController? _emailController;
-  String? get email => _emailController?.text ?? widget.teacher.email;
+  late final _firstNameController = TextEditingController(
+    text: widget.teacher.firstName,
+  );
+  late final _lastNameController = TextEditingController(
+    text: widget.teacher.lastName,
+  );
+  late final List<TextEditingController> _currentGroups = [
+    for (var group in widget.teacher.groups) TextEditingController(text: group),
+  ];
+  late final _emailController = TextEditingController(
+    text: widget.teacher.email,
+  );
 
   Teacher get editedTeacher => widget.teacher.copyWith(
     schoolId: _selectedSchoolId,
-    firstName: _firstNameController?.text,
-    lastName: _lastNameController?.text,
-    email: _emailController?.text,
+    firstName: _firstNameController.text,
+    lastName: _lastNameController.text,
+    email: _emailController.text,
     groups:
         _currentGroups.map((e) => e.text).where((e) => e.isNotEmpty).toList(),
   );
@@ -83,21 +90,7 @@ class TeacherListTileState extends State<TeacherListTile> {
       if (newTeacher.getDifference(widget.teacher).isNotEmpty) {
         TeachersProvider.of(context, listen: false).replace(newTeacher);
       }
-    } else {
-      // Start editing
-      _firstNameController = TextEditingController(
-        text: widget.teacher.firstName,
-      );
-      _lastNameController = TextEditingController(
-        text: widget.teacher.lastName,
-      );
-      _currentGroups.clear();
-      for (var group in widget.teacher.groups) {
-        _currentGroups.add(TextEditingController(text: group));
-      }
-      _emailController = TextEditingController(text: widget.teacher.email);
     }
-
     setState(() => _isEditing = !_isEditing);
   }
 

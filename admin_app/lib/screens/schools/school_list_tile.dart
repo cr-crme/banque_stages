@@ -38,13 +38,13 @@ class SchoolListTileState extends State<SchoolListTile> {
   bool _isExpanded = false;
   bool _isEditing = false;
 
-  TextEditingController? _nameController;
+  late final _nameController = TextEditingController(text: widget.school.name);
   late final _addressController = AddressController(
     initialValue: widget.school.address,
   );
 
   School get editedSchool => widget.school.copyWith(
-    name: _nameController?.text,
+    name: _nameController.text,
     address: _addressController.address,
   );
 
@@ -89,9 +89,6 @@ class SchoolListTileState extends State<SchoolListTile> {
           listen: false,
         ).replace(widget.schoolBoard);
       }
-    } else {
-      // Start editing
-      _nameController = TextEditingController(text: widget.school.name);
     }
 
     setState(() => _isEditing = !_isEditing);

@@ -1,6 +1,7 @@
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/students/confirm_delete_student_dialog.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
@@ -42,19 +43,28 @@ class StudentListTileState extends State<StudentListTile> {
   bool _isEditing = false;
 
   late String _selectedSchoolId = widget.student.schoolId;
-  TextEditingController? _firstNameController;
-  TextEditingController? _lastNameController;
-  TextEditingController? _groupController;
+  late final _firstNameController = TextEditingController(
+    text: widget.student.firstName,
+  );
+  late final _lastNameController = TextEditingController(
+    text: widget.student.lastName,
+  );
+  late final _groupController = TextEditingController(
+    text: widget.student.group == '-1' ? '' : widget.student.group,
+  );
   late Program _selectedProgram = widget.student.program;
-  TextEditingController? _emailController;
+  late final _emailController = TextEditingController(
+    text: widget.student.email,
+  );
+  late Person? _contact = widget.student.contact;
   Student get editedStudent => widget.student.copyWith(
     schoolBoardId: widget.schoolBoard.id,
     schoolId: _selectedSchoolId,
-    firstName: _firstNameController?.text,
-    lastName: _lastNameController?.text,
-    group: _groupController?.text,
+    firstName: _firstNameController.text,
+    lastName: _lastNameController.text,
+    group: _groupController.text,
     program: _selectedProgram,
-    email: _emailController?.text,
+    email: _emailController.text,
   );
 
   @override
@@ -85,18 +95,6 @@ class StudentListTileState extends State<StudentListTile> {
       if (newStudent.getDifference(widget.student).isNotEmpty) {
         StudentsProvider.of(context, listen: false).replace(newStudent);
       }
-    } else {
-      // Start editing
-      _firstNameController = TextEditingController(
-        text: widget.student.firstName,
-      );
-      _lastNameController = TextEditingController(
-        text: widget.student.lastName,
-      );
-      _groupController = TextEditingController(
-        text: widget.student.group == '-1' ? '' : widget.student.group,
-      );
-      _emailController = TextEditingController(text: widget.student.email);
     }
 
     setState(() => _isEditing = !_isEditing);
