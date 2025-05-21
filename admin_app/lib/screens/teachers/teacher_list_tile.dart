@@ -1,14 +1,17 @@
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class TeacherListTile extends StatefulWidget {
   const TeacherListTile({
     super.key,
     required this.teacher,
+    required this.schoolBoard,
     this.isExpandable = true,
     this.forceEditingMode = false,
   });
@@ -16,15 +19,28 @@ class TeacherListTile extends StatefulWidget {
   final Teacher teacher;
   final bool isExpandable;
   final bool forceEditingMode;
+  final SchoolBoard schoolBoard;
 
   @override
   State<TeacherListTile> createState() => TeacherListTileState();
 }
 
 class TeacherListTileState extends State<TeacherListTile> {
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
+  final _radioKey = GlobalKey<FormFieldState>();
+  bool validate() {
+    // We do both like so, so all the fields get validated even if one is not valid
+    bool isValid = _formKey.currentState?.validate() ?? false;
+    isValid = (_radioKey.currentState?.validate() ?? false) && isValid;
+    return isValid;
+  }
+
   bool _isExpanded = false;
   bool _isEditing = false;
+
+  String? _seletecSchoolId;
+  String get schoolId => _seletecSchoolId ?? widget.teacher.schoolId;
+
   TextEditingController? _firstNameController;
   String get firstName =>
       _firstNameController?.text ?? widget.teacher.firstName;
@@ -53,6 +69,7 @@ class TeacherListTileState extends State<TeacherListTile> {
     if (_isEditing) {
       // Finish editing
       final newTeacher = widget.teacher.copyWith(
+        schoolId: _seletecSchoolId,
         firstName: _firstNameController?.text,
         lastName: _lastNameController?.text,
         email: _emailController?.text,
@@ -117,12 +134,14 @@ class TeacherListTileState extends State<TeacherListTile> {
 
   Widget _buildEditingForm() {
     return Form(
-      key: formKey,
+      key: _formKey,
       child: Padding(
         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildSchoolSelection(),
+            const SizedBox(height: 8),
             _buildName(),
             const SizedBox(height: 4),
             _buildGroups(),
@@ -132,6 +151,30 @@ class TeacherListTileState extends State<TeacherListTile> {
         ),
       ),
     );
+  }
+
+  Widget _buildSchoolSelection() {
+    return _isEditing
+        ? FormBuilderRadioGroup(
+          key: _radioKey,
+          initialValue: widget.teacher.schoolId,
+          name: 'School selection',
+          decoration: InputDecoration(labelText: 'Assigner à une école'),
+          onChanged: (value) => setState(() => _seletecSchoolId = value),
+          validator: (_) {
+            return _seletecSchoolId == null ? 'Sélectionner une école' : null;
+          },
+          options:
+              widget.schoolBoard.schools
+                  .map(
+                    (e) => FormBuilderFieldOption(
+                      value: e.id,
+                      child: Text(e.name),
+                    ),
+                  )
+                  .toList(),
+        )
+        : Container();
   }
 
   Widget _buildName() {

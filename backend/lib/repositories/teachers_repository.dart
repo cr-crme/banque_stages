@@ -214,8 +214,14 @@ class MySqlTeachersRepository extends TeachersRepository {
           'Cannot update school_board_id for the teachers');
     }
     if (differences.contains('school_id')) {
-      _logger.severe('Cannot update school_id for the teachers');
-      throw InvalidRequestException('Cannot update school_id for the teachers');
+      // TODO limit this to the admin users
+      _logger.severe(
+          'Cannot update school_id for the teachers, but will do anyway');
+      await MySqlHelpers.performUpdateQuery(
+          connection: connection,
+          tableName: 'teachers',
+          filters: {'id': teacher.id},
+          data: {'school_id': teacher.schoolId});
     }
 
     // Update the persons table if needed

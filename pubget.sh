@@ -7,12 +7,8 @@
 # Make sure to give execute permission to the script
 # chmod +x pubget.sh
 
-# Check if the script is being run from the root directory 
-# of the project by checking for the presence of the "backend" and "app" directory
-if [ ! -d "backend" ] || [ ! -d "app" ]; then
-    echo "Please run this script from the root directory of the project."
-    exit 1
-fi
+# Move to the directory of the script
+cd "$(dirname "$0")"
 
 # Pub get in the common directory
 pushd common
@@ -46,5 +42,11 @@ popd
 # Pub get in the app directory
 pushd app
 echo "Running pub get in app directory..."
+flutter pub get
+popd
+
+# Pub get in the admin_app directory
+pushd admin_app
+echo "Running pub get in admin_app directory..."
 flutter pub get
 popd

@@ -35,10 +35,12 @@ class SchoolTeachersTile extends StatelessWidget {
           Center(child: Text('Aucun enseignant·e inscrit·e')),
         if (teachers.isNotEmpty)
           ...teachers.map(
-            (Teacher teacher) =>
-                TeacherListTile(key: ValueKey(teacher.id), teacher: teacher),
+            (Teacher teacher) => TeacherListTile(
+              key: ValueKey(teacher.id),
+              teacher: teacher,
+              schoolBoard: schoolBoard,
+            ),
           ),
-        const Divider(),
       ],
     );
   }

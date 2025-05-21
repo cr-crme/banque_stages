@@ -51,9 +51,9 @@ class TeachersListScreen extends StatelessWidget {
       context: context,
       builder: (context) => AddTeacherDialog(schoolBoard: schoolBoard),
     );
-    if (answer == null) return;
+    if (answer is! Teacher || !context.mounted) return;
 
-    debugPrint(answer.toString());
+    TeachersProvider.of(context, listen: false).add(answer);
   }
 
   @override

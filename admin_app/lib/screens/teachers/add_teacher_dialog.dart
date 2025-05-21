@@ -2,7 +2,6 @@ import 'package:admin_app/screens/teachers/teacher_list_tile.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class AddTeacherDialog extends StatefulWidget {
   const AddTeacherDialog({super.key, required this.schoolBoard});
@@ -14,23 +13,17 @@ class AddTeacherDialog extends StatefulWidget {
 }
 
 class _AddTeacherDialogState extends State<AddTeacherDialog> {
-  final _radioKey = GlobalKey<FormFieldState>();
   final _editingKey = GlobalKey();
-  String? _seletecSchoolId;
 
   void _onClickedConfirm() {
     final state = _editingKey.currentState as TeacherListTileState;
 
     // Validate the form
-    bool isValid = state.formKey.currentState!.validate();
-    isValid = _radioKey.currentState!.validate() && isValid;
-    if (!isValid) {
-      return;
-    }
+    if (!state.validate()) return;
 
     final newTeacher = Teacher.empty.copyWith(
       schoolBoardId: widget.schoolBoard.id,
-      schoolId: _seletecSchoolId,
+      schoolId: state.schoolId,
       firstName: state.firstName,
       lastName: state.lastName,
       email: state.email,
@@ -59,33 +52,14 @@ class _AddTeacherDialogState extends State<AddTeacherDialog> {
               ),
             ),
             const SizedBox(height: 16),
-            FormBuilderRadioGroup(
-              // TODO Move this to the updater instead of Add
-              key: _radioKey,
-              name: 'coucou',
-              decoration: InputDecoration(labelText: 'Assigner à une école'),
-              onChanged: (value) => setState(() => _seletecSchoolId = value),
-              validator: (_) {
-                return _seletecSchoolId == null
-                    ? 'Sélectionner une école'
-                    : null;
-              },
-              options:
-                  widget.schoolBoard.schools
-                      .map(
-                        (e) => FormBuilderFieldOption(
-                          value: e.id,
-                          child: Text(e.name),
-                        ),
-                      )
-                      .toList(),
-            ),
+
             const SizedBox(height: 12),
             Text('Compléter les informations personnelles'),
             const SizedBox(height: 8),
             TeacherListTile(
               key: _editingKey,
               teacher: Teacher.empty,
+              schoolBoard: widget.schoolBoard,
               isExpandable: false,
               forceEditingMode: true,
             ),
