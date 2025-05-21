@@ -54,6 +54,21 @@ class Student extends Person {
   final Person contact;
   final String contactLink;
 
+  static get empty => Student(
+        schoolBoardId: '-1',
+        schoolId: '-1',
+        firstName: '',
+        lastName: '',
+        dateBirth: null,
+        phone: null,
+        email: null,
+        address: null,
+        program: Program.undefined,
+        group: '-1',
+        contact: Person.empty,
+        contactLink: '',
+      );
+
   Student({
     super.id,
     required this.schoolBoardId,

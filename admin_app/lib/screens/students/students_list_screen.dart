@@ -1,69 +1,69 @@
 import 'package:admin_app/providers/school_boards_provider.dart';
-import 'package:admin_app/providers/teachers_provider.dart';
+import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
-import 'package:admin_app/screens/teachers/add_teacher_dialog.dart';
-import 'package:admin_app/screens/teachers/school_teachers_card.dart';
+import 'package:admin_app/screens/students/add_student_dialog.dart';
+import 'package:admin_app/screens/students/school_students_card.dart';
 import 'package:collection/collection.dart';
-import 'package:common/models/persons/teacher.dart';
+import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
 
-class TeachersListScreen extends StatelessWidget {
-  const TeachersListScreen({super.key});
+class StudentsListScreen extends StatelessWidget {
+  const StudentsListScreen({super.key});
 
-  static const route = '/teachers_list';
+  static const route = '/students_list';
 
-  Future<Map<String, List<Teacher>>> getTeachers(BuildContext context) async {
-    final teachersTp = TeachersProvider.of(context, listen: true);
+  Future<Map<String, List<Student>>> getStudents(BuildContext context) async {
+    final studentsTp = StudentsProvider.of(context, listen: true);
     final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(context);
     final schools = schoolBoard?.schools ?? [];
 
     // Sort by school name
-    final teachers = <String, List<Teacher>>{}; // Teachers by school
+    final students = <String, List<Student>>{}; // Students by school
     for (final school in schools) {
-      final schoolTeachers = teachersTp.where(
-        (teacher) => teacher.schoolId == school.id,
+      final schoolStudents = studentsTp.where(
+        (student) => student.schoolId == school.id,
       );
 
       // Sort by last name then first name
-      schoolTeachers.sorted((a, b) {
+      schoolStudents.sorted((a, b) {
         final lastNameA = a.lastName.toLowerCase();
         final lastNameB = b.lastName.toLowerCase();
         return lastNameA.compareTo(lastNameB);
       });
-      schoolTeachers.sorted((a, b) {
+      schoolStudents.sorted((a, b) {
         final firstNameA = a.firstName.toLowerCase();
         final firstNameB = b.firstName.toLowerCase();
         return firstNameA.compareTo(firstNameB);
       });
-      teachers[school.id] = schoolTeachers.toList();
+      students[school.id] = schoolStudents.toList();
     }
 
-    return teachers;
+    return students;
   }
 
-  Future<void> _showAddTeacherDialog(BuildContext context) async {
+  Future<void> _showAddStudentDialog(BuildContext context) async {
     final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(context);
     if (schoolBoard == null || context.mounted == false) return;
 
     final answer = await showDialog(
       barrierDismissible: false,
       context: context,
-      builder: (context) => AddTeacherDialog(schoolBoard: schoolBoard),
+      builder: (context) => AddStudentDialog(schoolBoard: schoolBoard),
     );
-    if (answer is! Teacher || !context.mounted) return;
+    if (answer is! Student || !context.mounted) return;
 
-    TeachersProvider.of(context, listen: false).add(answer);
+    StudentsProvider.of(context, listen: false).add(answer);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Liste des enseignant·e·s'),
+        title: const Text('Liste des élèves'),
         actions: [
           IconButton(
-            onPressed: () => _showAddTeacherDialog(context),
+            onPressed: () => _showAddStudentDialog(context),
             icon: Icon(Icons.add),
           ),
         ],
@@ -74,13 +74,13 @@ class TeachersListScreen extends StatelessWidget {
         child: FutureBuilder(
           future: Future.wait([
             SchoolBoardsProvider.mySchoolBoardOf(context),
-            getTeachers(context),
+            getStudents(context),
           ]),
           builder: (context, snapshot) {
             final schoolBoard = snapshot.data?[0] as SchoolBoard?;
-            final schoolTeachers =
-                snapshot.data?[1] as Map<String, List<Teacher>>?;
-            if (schoolBoard == null || schoolTeachers == null) {
+            final schoolStudents =
+                snapshot.data?[1] as Map<String, List<Student>>?;
+            if (schoolBoard == null || schoolStudents == null) {
               return const Center(child: CircularProgressIndicator());
             }
 
@@ -96,10 +96,10 @@ class TeachersListScreen extends StatelessWidget {
                     ).textTheme.titleLarge!.copyWith(color: Colors.black),
                   ),
                 ),
-                ...schoolTeachers.keys.map(
-                  (String schoolId) => SchoolTeachersCard(
+                ...schoolStudents.keys.map(
+                  (String schoolId) => SchoolStudentsCard(
                     schoolId: schoolId,
-                    teachers: schoolTeachers[schoolId] ?? [],
+                    students: schoolStudents[schoolId] ?? [],
                     schoolBoard: schoolBoard,
                   ),
                 ),

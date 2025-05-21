@@ -220,8 +220,13 @@ class MySqlStudentsRepository extends StudentsRepository {
           'Cannot update school_board_id for the students');
     }
     if (differences.contains('school_id')) {
-      _logger.severe('Cannot update school_id for the students');
-      throw InvalidRequestException('Cannot update school_id for the students');
+      _logger.severe(
+          'Cannot update school_id for the students, but will do anyway');
+      await MySqlHelpers.performUpdateQuery(
+          connection: connection,
+          tableName: 'students',
+          filters: {'id': student.id},
+          data: {'school_id': student.schoolId});
     }
 
     // Update the persons table if needed
