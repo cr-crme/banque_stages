@@ -15,11 +15,11 @@ class AddSchoolDialog extends StatefulWidget {
 class _AddSchoolDialogState extends State<AddSchoolDialog> {
   final _editingKey = GlobalKey();
 
-  void _onClickedConfirm() {
+  Future<void> _onClickedConfirm(BuildContext context) async {
     final state = _editingKey.currentState as SchoolListTileState;
 
     // Validate the form
-    if (!state.validate()) return;
+    if (!(await state.validate()) || !context.mounted) return;
 
     final newSchool = School.empty.copyWith(name: state.firstName);
 
@@ -61,7 +61,10 @@ class _AddSchoolDialogState extends State<AddSchoolDialog> {
       ),
       actions: [
         OutlinedButton(onPressed: _onClickedCancel, child: Text('Annuler')),
-        TextButton(onPressed: _onClickedConfirm, child: Text('Confirmer')),
+        TextButton(
+          onPressed: () => _onClickedConfirm(context),
+          child: Text('Confirmer'),
+        ),
       ],
     );
   }

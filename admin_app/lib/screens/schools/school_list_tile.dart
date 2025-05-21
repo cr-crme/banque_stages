@@ -1,5 +1,6 @@
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/screens/schools/confirm_delete_school_dialog.dart';
+import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -26,9 +27,11 @@ class SchoolListTile extends StatefulWidget {
 
 class SchoolListTileState extends State<SchoolListTile> {
   final _formKey = GlobalKey<FormState>();
-  bool validate() {
+  Future<bool> validate() async {
     // We do both like so, so all the fields get validated even if one is not valid
     bool isValid = _formKey.currentState?.validate() ?? false;
+    await _addressController.waitForValidation();
+    isValid = (_addressController.address?.isValid ?? false) && isValid;
     return isValid;
   }
 
@@ -38,10 +41,14 @@ class SchoolListTileState extends State<SchoolListTile> {
   TextEditingController? _nameController;
   String get firstName => _nameController?.text ?? widget.school.name;
 
+  late final _addressController = AddressController(
+    initialValue: widget.school.address,
+  );
+
   @override
   void initState() {
     super.initState();
-    if (widget.forceEditingMode) _onClickedEditing();
+    if (widget.forceEditingMode) _onClickedEditing(context);
   }
 
   Future<void> _onClickedDeleting(BuildContext context) async {
@@ -62,10 +69,16 @@ class SchoolListTileState extends State<SchoolListTile> {
     SchoolBoardsProvider.of(context).replace(schoolBoard);
   }
 
-  void _onClickedEditing() {
+  Future<void> _onClickedEditing(BuildContext context) async {
     if (_isEditing) {
+      // Validate the form
+      if (!(await validate()) || !context.mounted) return;
+
       // Finish editing
-      final newSchool = widget.school.copyWith(name: _nameController?.text);
+      final newSchool = widget.school.copyWith(
+        name: _nameController?.text,
+        address: _addressController.address,
+      );
 
       if (newSchool.getDifference(widget.school).isNotEmpty) {
         widget.schoolBoard.schools.removeWhere(
@@ -113,7 +126,7 @@ class SchoolListTileState extends State<SchoolListTile> {
                         _isEditing ? Icons.save : Icons.edit,
                         color: Colors.black,
                       ),
-                      onPressed: _onClickedEditing,
+                      onPressed: () => _onClickedEditing(context),
                     ),
                   ],
                 ),
@@ -131,7 +144,7 @@ class SchoolListTileState extends State<SchoolListTile> {
         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildName()],
+          children: [_buildName(), _buildAddress()],
         ),
       ),
     );
@@ -139,20 +152,35 @@ class SchoolListTileState extends State<SchoolListTile> {
 
   Widget _buildName() {
     return _isEditing
-        ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              controller: _nameController,
-              validator:
-                  (value) =>
-                      value?.isEmpty == true
-                          ? 'Le nom de l\'école est requis'
-                          : null,
-              decoration: const InputDecoration(labelText: 'Nom de l\'école'),
-            ),
-          ],
+        ? Padding(
+          padding: const EdgeInsets.only(right: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _nameController,
+                validator:
+                    (value) =>
+                        value?.isEmpty == true
+                            ? 'Le nom de l\'école est requis'
+                            : null,
+                decoration: const InputDecoration(labelText: 'Nom de l\'école'),
+              ),
+            ],
+          ),
         )
         : Container();
+  }
+
+  Widget _buildAddress() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: AddressListTile(
+        title: 'Adresse de l\'école',
+        addressController: _addressController,
+        isMandatory: true,
+        enabled: _isEditing,
+      ),
+    );
   }
 }

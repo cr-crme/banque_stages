@@ -80,6 +80,9 @@ class TeacherListTileState extends State<TeacherListTile> {
 
   void _onClickedEditing() {
     if (_isEditing) {
+      // Validate the form
+      if (!validate() || !context.mounted) return;
+
       // Finish editing
       final newTeacher = widget.teacher.copyWith(
         schoolId: _seletecSchoolId,
@@ -184,7 +187,7 @@ class TeacherListTileState extends State<TeacherListTile> {
           decoration: InputDecoration(labelText: 'Assigner à une école'),
           onChanged: (value) => setState(() => _seletecSchoolId = value),
           validator: (_) {
-            return _seletecSchoolId == null ? 'Sélectionner une école' : null;
+            return schoolId == '-1' ? 'Sélectionner une école' : null;
           },
           options:
               widget.schoolBoard.schools

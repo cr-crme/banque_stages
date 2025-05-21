@@ -225,6 +225,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     // Remove the schools that are not in the new list
     for (final school in previous?.schools ?? <School>[]) {
       if (!schoolBoard.schools.any((e) => e.id == school.id)) {
+        _logger.severe('Cannot delete schools, but will do anyway');
         toWait.add(_deleteFromSchools(school.id));
       }
     }
