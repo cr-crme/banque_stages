@@ -4,8 +4,8 @@ import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart' as utils;
 import 'package:flutter/material.dart';
 
-class SchoolTeachersTile extends StatelessWidget {
-  const SchoolTeachersTile({
+class SchoolTeachersCard extends StatelessWidget {
+  const SchoolTeachersCard({
     super.key,
     required this.schoolId,
     required this.teachers,

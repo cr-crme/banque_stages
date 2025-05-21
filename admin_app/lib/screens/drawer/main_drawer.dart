@@ -18,9 +18,14 @@ class MainDrawer extends StatelessWidget {
             Column(
               children: [
                 const _DrawerItem(
+                  titleText: 'Écoles',
+                  icon: Icons.school_rounded,
+                  route: Screens.schoolsListScreen,
+                ),
+                const _DrawerItem(
                   titleText: 'Enseignant·e·s',
                   icon: Icons.school_rounded,
-                  route: Screens.teacherListsScreen,
+                  route: Screens.teachersListScreen,
                 ),
                 _DrawerItem(
                   titleText: 'Se déconnecter',

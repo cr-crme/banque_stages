@@ -2,7 +2,7 @@ import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/teachers/add_teacher_dialog.dart';
-import 'package:admin_app/screens/teachers/school_teachers_tile.dart';
+import 'package:admin_app/screens/teachers/school_teachers_card.dart';
 import 'package:collection/collection.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -97,7 +97,7 @@ class TeachersListScreen extends StatelessWidget {
                   ),
                 ),
                 ...schoolTeachers.keys.map(
-                  (String schoolId) => SchoolTeachersTile(
+                  (String schoolId) => SchoolTeachersCard(
                     schoolId: schoolId,
                     teachers: schoolTeachers[schoolId] ?? [],
                     schoolBoard: schoolBoard,

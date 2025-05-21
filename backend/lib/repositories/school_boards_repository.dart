@@ -221,7 +221,23 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
         toWait.add(_updateToSchools(school, previousSchool));
       }
     }
+
+    // Remove the schools that are not in the new list
+    for (final school in previous?.schools ?? <School>[]) {
+      if (!schoolBoard.schools.any((e) => e.id == school.id)) {
+        toWait.add(_deleteFromSchools(school.id));
+      }
+    }
+
     await Future.wait(toWait);
+  }
+
+  Future<void> _deleteFromSchools(String schoolId) async {
+    await MySqlHelpers.performDeleteQuery(
+      connection: connection,
+      tableName: 'entities',
+      filters: {'shared_id': schoolId},
+    );
   }
 
   @override
@@ -233,11 +249,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
         filters: {'school_board_id': id},
       );
       for (final school in schools) {
-        await MySqlHelpers.performDeleteQuery(
-          connection: connection,
-          tableName: 'entities',
-          filters: {'shared_id': school['id']},
-        );
+        await _deleteFromSchools(school['id'].toString());
       }
 
       await MySqlHelpers.performDeleteQuery(

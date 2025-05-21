@@ -13,7 +13,7 @@ class School extends ItemSerializable {
   });
 
   static School get empty => School(
-        name: 'Unnamed school',
+        name: '',
         id: null,
         address: Address.empty,
       );

@@ -1,4 +1,5 @@
 import 'package:admin_app/providers/teachers_provider.dart';
+import 'package:admin_app/screens/teachers/confirm_delete_teacher_dialog.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -65,6 +66,18 @@ class TeacherListTileState extends State<TeacherListTile> {
     if (widget.forceEditingMode) _onClickedEditing();
   }
 
+  Future<void> _onClickedDeleting(BuildContext context) async {
+    // Show confirmation dialog
+    final answer = await showDialog(
+      context: context,
+      builder: (context) => ConfirmDeleteTeacherDialog(teacher: widget.teacher),
+    );
+    if (answer == null || !answer || !context.mounted) return;
+
+    final teachers = TeachersProvider.of(context, listen: false);
+    teachers.remove(widget.teacher);
+  }
+
   void _onClickedEditing() {
     if (_isEditing) {
       // Finish editing
@@ -118,12 +131,20 @@ class TeacherListTileState extends State<TeacherListTile> {
                 ),
               ),
               if (_isExpanded)
-                IconButton(
-                  icon: Icon(
-                    _isEditing ? Icons.save : Icons.edit,
-                    color: Colors.black,
-                  ),
-                  onPressed: _onClickedEditing,
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _onClickedDeleting(context),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        _isEditing ? Icons.save : Icons.edit,
+                        color: Colors.black,
+                      ),
+                      onPressed: _onClickedEditing,
+                    ),
+                  ],
                 ),
             ],
           ),
@@ -159,6 +180,7 @@ class TeacherListTileState extends State<TeacherListTile> {
           key: _radioKey,
           initialValue: widget.teacher.schoolId,
           name: 'School selection',
+          orientation: OptionsOrientation.vertical,
           decoration: InputDecoration(labelText: 'Assigner à une école'),
           onChanged: (value) => setState(() => _seletecSchoolId = value),
           validator: (_) {
