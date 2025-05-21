@@ -11,6 +11,10 @@ enum Program {
   fms,
   undefined;
 
+  static List<Program> get allowedValues => [...Program.values]..removeWhere(
+      (element) => element == Program.undefined,
+    );
+
   int _toInt(String version) {
     if (version == '1.0.0') {
       return index;
@@ -33,7 +37,7 @@ enum Program {
       case Program.fms:
         return 'FMS';
       case Program.undefined:
-        return 'Undefined';
+        return 'À déterminer';
     }
   }
 }

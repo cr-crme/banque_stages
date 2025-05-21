@@ -39,26 +39,21 @@ class TeacherListTileState extends State<TeacherListTile> {
   bool _isExpanded = false;
   bool _isEditing = false;
 
-  String? _seletecSchoolId;
-  String get schoolId => _seletecSchoolId ?? widget.teacher.schoolId;
-
+  late String _selectedSchoolId = widget.teacher.schoolId;
   TextEditingController? _firstNameController;
-  String get firstName =>
-      _firstNameController?.text ?? widget.teacher.firstName;
-
   TextEditingController? _lastNameController;
-  String get lastName => _lastNameController?.text ?? widget.teacher.lastName;
-
   final List<TextEditingController> _currentGroups = [];
-  List<int> get groups =>
-      _currentGroups
-          .map((e) => int.tryParse(e.text))
-          .where((e) => e != null)
-          .map((e) => e!)
-          .toList();
-
   TextEditingController? _emailController;
   String? get email => _emailController?.text ?? widget.teacher.email;
+
+  Teacher get editedTeacher => widget.teacher.copyWith(
+    schoolId: _selectedSchoolId,
+    firstName: _firstNameController?.text,
+    lastName: _lastNameController?.text,
+    email: _emailController?.text,
+    groups:
+        _currentGroups.map((e) => e.text).where((e) => e.isNotEmpty).toList(),
+  );
 
   @override
   void initState() {
@@ -84,18 +79,7 @@ class TeacherListTileState extends State<TeacherListTile> {
       if (!validate() || !context.mounted) return;
 
       // Finish editing
-      final newTeacher = widget.teacher.copyWith(
-        schoolId: _seletecSchoolId,
-        firstName: _firstNameController?.text,
-        lastName: _lastNameController?.text,
-        email: _emailController?.text,
-        groups:
-            _currentGroups
-                .map((e) => e.text)
-                .where((e) => e.isNotEmpty)
-                .toList(),
-      );
-
+      final newTeacher = editedTeacher;
       if (newTeacher.getDifference(widget.teacher).isNotEmpty) {
         TeachersProvider.of(context, listen: false).replace(newTeacher);
       }
@@ -185,9 +169,10 @@ class TeacherListTileState extends State<TeacherListTile> {
           name: 'School selection',
           orientation: OptionsOrientation.vertical,
           decoration: InputDecoration(labelText: 'Assigner à une école'),
-          onChanged: (value) => setState(() => _seletecSchoolId = value),
+          onChanged:
+              (value) => setState(() => _selectedSchoolId = value ?? '-1'),
           validator: (_) {
-            return schoolId == '-1' ? 'Sélectionner une école' : null;
+            return _selectedSchoolId == '-1' ? 'Sélectionner une école' : null;
           },
           options:
               widget.schoolBoard.schools

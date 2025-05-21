@@ -28,32 +28,34 @@ class StudentListTile extends StatefulWidget {
 
 class StudentListTileState extends State<StudentListTile> {
   final _formKey = GlobalKey<FormState>();
-  final _radioKey = GlobalKey<FormFieldState>();
+  final _schoolRadioKey = GlobalKey<FormFieldState>();
+  final _programRadioKey = GlobalKey<FormFieldState>();
   bool validate() {
     // We do both like so, so all the fields get validated even if one is not valid
     bool isValid = _formKey.currentState?.validate() ?? false;
-    isValid = (_radioKey.currentState?.validate() ?? false) && isValid;
+    isValid = (_schoolRadioKey.currentState?.validate() ?? false) && isValid;
+    isValid = (_programRadioKey.currentState?.validate() ?? false) && isValid;
     return isValid;
   }
 
   bool _isExpanded = false;
   bool _isEditing = false;
 
-  String? _seletecSchoolId;
-  String get schoolId => _seletecSchoolId ?? widget.student.schoolId;
-
+  late String _selectedSchoolId = widget.student.schoolId;
   TextEditingController? _firstNameController;
-  String get firstName =>
-      _firstNameController?.text ?? widget.student.firstName;
-
   TextEditingController? _lastNameController;
-  String get lastName => _lastNameController?.text ?? widget.student.lastName;
-
   TextEditingController? _groupController;
-  String? get group => _groupController?.text ?? widget.student.group;
-
+  late Program _selectedProgram = widget.student.program;
   TextEditingController? _emailController;
-  String? get email => _emailController?.text ?? widget.student.email;
+  Student get editedStudent => widget.student.copyWith(
+    schoolBoardId: widget.schoolBoard.id,
+    schoolId: _selectedSchoolId,
+    firstName: _firstNameController?.text,
+    lastName: _lastNameController?.text,
+    group: _groupController?.text,
+    program: _selectedProgram,
+    email: _emailController?.text,
+  );
 
   @override
   void initState() {
@@ -79,14 +81,7 @@ class StudentListTileState extends State<StudentListTile> {
       if (!validate() || !context.mounted) return;
 
       // Finish editing
-      final newStudent = widget.student.copyWith(
-        schoolId: _seletecSchoolId,
-        firstName: _firstNameController?.text,
-        lastName: _lastNameController?.text,
-        group: _groupController?.text,
-        email: _emailController?.text,
-      );
-
+      final newStudent = editedStudent;
       if (newStudent.getDifference(widget.student).isNotEmpty) {
         StudentsProvider.of(context, listen: false).replace(newStudent);
       }
@@ -98,7 +93,9 @@ class StudentListTileState extends State<StudentListTile> {
       _lastNameController = TextEditingController(
         text: widget.student.lastName,
       );
-      _groupController = TextEditingController(text: widget.student.group);
+      _groupController = TextEditingController(
+        text: widget.student.group == '-1' ? '' : widget.student.group,
+      );
       _emailController = TextEditingController(text: widget.student.email);
     }
 
@@ -158,6 +155,8 @@ class StudentListTileState extends State<StudentListTile> {
             const SizedBox(height: 4),
             _buildGroup(),
             const SizedBox(height: 4),
+            _buildProgramSelection(),
+            const SizedBox(height: 4),
             _buildEmail(),
           ],
         ),
@@ -168,14 +167,15 @@ class StudentListTileState extends State<StudentListTile> {
   Widget _buildSchoolSelection() {
     return _isEditing
         ? FormBuilderRadioGroup(
-          key: _radioKey,
+          key: _schoolRadioKey,
           initialValue: widget.student.schoolId,
           name: 'School selection',
           orientation: OptionsOrientation.vertical,
           decoration: InputDecoration(labelText: 'Assigner à une école'),
-          onChanged: (value) => setState(() => _seletecSchoolId = value),
+          onChanged:
+              (value) => setState(() => _selectedSchoolId = value ?? '-1'),
           validator: (_) {
-            return schoolId == '-1' ? 'Sélectionner une école' : null;
+            return _selectedSchoolId == '-1' ? 'Sélectionner une école' : null;
           },
           options:
               widget.schoolBoard.schools
@@ -227,6 +227,34 @@ class StudentListTileState extends State<StudentListTile> {
           decoration: const InputDecoration(labelText: 'Groupe'),
         )
         : Text('Groupe : ${widget.student.group}');
+  }
+
+  Widget _buildProgramSelection() {
+    return FormBuilderRadioGroup(
+      key: _programRadioKey,
+      initialValue: widget.student.program,
+      name: 'Program selection',
+      enabled: _isEditing,
+      orientation: OptionsOrientation.vertical,
+      decoration: InputDecoration(labelText: 'Assigner à un programme'),
+      onChanged:
+          (value) =>
+              setState(() => _selectedProgram = value ?? Program.undefined),
+      validator: (_) {
+        return _selectedProgram == Program.undefined
+            ? 'Sélectionner un programme'
+            : null;
+      },
+      options:
+          (_isEditing && widget.forceEditingMode
+                  ? Program.values
+                  : Program.allowedValues)
+              .map(
+                (e) =>
+                    FormBuilderFieldOption(value: e, child: Text(e.toString())),
+              )
+              .toList(),
+    );
   }
 
   Widget _buildEmail() {

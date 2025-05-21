@@ -39,10 +39,13 @@ class SchoolListTileState extends State<SchoolListTile> {
   bool _isEditing = false;
 
   TextEditingController? _nameController;
-  String get firstName => _nameController?.text ?? widget.school.name;
-
   late final _addressController = AddressController(
     initialValue: widget.school.address,
+  );
+
+  School get editedSchool => widget.school.copyWith(
+    name: _nameController?.text,
+    address: _addressController.address,
   );
 
   @override
@@ -75,11 +78,7 @@ class SchoolListTileState extends State<SchoolListTile> {
       if (!(await validate()) || !context.mounted) return;
 
       // Finish editing
-      final newSchool = widget.school.copyWith(
-        name: _nameController?.text,
-        address: _addressController.address,
-      );
-
+      final newSchool = editedSchool;
       if (newSchool.getDifference(widget.school).isNotEmpty) {
         widget.schoolBoard.schools.removeWhere(
           (school) => school.id == widget.school.id,

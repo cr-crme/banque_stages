@@ -20,17 +20,7 @@ class _AddTeacherDialogState extends State<AddTeacherDialog> {
 
     // Validate the form
     if (!state.validate()) return;
-
-    final newTeacher = Teacher.empty.copyWith(
-      schoolBoardId: widget.schoolBoard.id,
-      schoolId: state.schoolId,
-      firstName: state.firstName,
-      lastName: state.lastName,
-      email: state.email,
-      groups: state.groups.map((e) => e.toString()).toList(),
-    );
-
-    Navigator.of(context).pop(newTeacher);
+    Navigator.of(context).pop(state.editedTeacher);
   }
 
   void _onClickedCancel() {

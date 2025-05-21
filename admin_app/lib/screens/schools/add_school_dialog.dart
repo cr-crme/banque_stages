@@ -20,10 +20,7 @@ class _AddSchoolDialogState extends State<AddSchoolDialog> {
 
     // Validate the form
     if (!(await state.validate()) || !context.mounted) return;
-
-    final newSchool = School.empty.copyWith(name: state.firstName);
-
-    Navigator.of(context).pop(newSchool);
+    Navigator.of(context).pop(state.editedSchool);
   }
 
   void _onClickedCancel() {
