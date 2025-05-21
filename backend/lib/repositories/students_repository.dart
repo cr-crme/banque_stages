@@ -235,16 +235,16 @@ class MySqlStudentsRepository extends StudentsRepository {
 
     final toUpdate = <String, dynamic>{};
     if (student.photo != previous.photo) {
-      toUpdate['photo'] = student.photo;
+      toUpdate['photo'] = student.photo.serialize();
     }
     if (student.program != previous.program) {
-      toUpdate['program'] = student.program;
+      toUpdate['program'] = student.programSerialized;
     }
     if (student.group != previous.group) {
-      toUpdate['group_name'] = student.group;
+      toUpdate['group_name'] = student.group.serialize();
     }
     if (student.contactLink != previous.contactLink) {
-      toUpdate['contact_link'] = student.contactLink;
+      toUpdate['contact_link'] = student.contactLink.serialize();
     }
     if (toUpdate.isNotEmpty) {
       await MySqlHelpers.performUpdateQuery(

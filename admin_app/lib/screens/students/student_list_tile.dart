@@ -230,31 +230,33 @@ class StudentListTileState extends State<StudentListTile> {
   }
 
   Widget _buildProgramSelection() {
-    return FormBuilderRadioGroup(
-      key: _programRadioKey,
-      initialValue: widget.student.program,
-      name: 'Program selection',
-      enabled: _isEditing,
-      orientation: OptionsOrientation.vertical,
-      decoration: InputDecoration(labelText: 'Assigner à un programme'),
-      onChanged:
-          (value) =>
-              setState(() => _selectedProgram = value ?? Program.undefined),
-      validator: (_) {
-        return _selectedProgram == Program.undefined
-            ? 'Sélectionner un programme'
-            : null;
-      },
-      options:
-          (_isEditing && widget.forceEditingMode
-                  ? Program.values
-                  : Program.allowedValues)
-              .map(
-                (e) =>
-                    FormBuilderFieldOption(value: e, child: Text(e.toString())),
-              )
-              .toList(),
-    );
+    return _isEditing
+        ? FormBuilderRadioGroup(
+          key: _programRadioKey,
+          initialValue: widget.student.program,
+          name: 'Program selection',
+          enabled: _isEditing,
+          orientation: OptionsOrientation.vertical,
+          decoration: InputDecoration(labelText: 'Assigner à un programme'),
+          onChanged:
+              (value) =>
+                  setState(() => _selectedProgram = value ?? Program.undefined),
+          validator: (_) {
+            return _selectedProgram == Program.undefined
+                ? 'Sélectionner un programme'
+                : null;
+          },
+          options:
+              (widget.forceEditingMode ? Program.values : Program.allowedValues)
+                  .map(
+                    (e) => FormBuilderFieldOption(
+                      value: e,
+                      child: Text(e.toString()),
+                    ),
+                  )
+                  .toList(),
+        )
+        : Text('Programme : ${widget.student.program.toString()}');
   }
 
   Widget _buildEmail() {
