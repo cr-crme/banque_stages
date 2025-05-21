@@ -1,7 +1,6 @@
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/students/confirm_delete_student_dialog.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
-import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
@@ -56,7 +55,13 @@ class StudentListTileState extends State<StudentListTile> {
   late final _emailController = TextEditingController(
     text: widget.student.email,
   );
-  late Person? _contact = widget.student.contact;
+  late final _contactFirstNameController = TextEditingController(
+    text: widget.student.contact.firstName,
+  );
+  late final _contactLastNameController = TextEditingController(
+    text: widget.student.contact.lastName,
+  );
+  // TODO Add the contact phone number
   Student get editedStudent => widget.student.copyWith(
     schoolBoardId: widget.schoolBoard.id,
     schoolId: _selectedSchoolId,
@@ -65,6 +70,10 @@ class StudentListTileState extends State<StudentListTile> {
     group: _groupController.text,
     program: _selectedProgram,
     email: _emailController.text,
+    contact: widget.student.contact.copyWith(
+      firstName: _contactFirstNameController.text,
+      lastName: _contactLastNameController.text,
+    ),
   );
 
   @override
@@ -156,6 +165,8 @@ class StudentListTileState extends State<StudentListTile> {
             _buildProgramSelection(),
             const SizedBox(height: 4),
             _buildEmail(),
+            const SizedBox(height: 4),
+            _buildContact(),
           ],
         ),
       ),
@@ -275,5 +286,42 @@ class StudentListTileState extends State<StudentListTile> {
           decoration: const InputDecoration(labelText: 'Courriel'),
         )
         : Text('Courriel : ${widget.student.email ?? 'Courriel introuvable'}');
+  }
+
+  Widget _buildContact() {
+    return _isEditing
+        ? Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _contactFirstNameController,
+                decoration: const InputDecoration(labelText: 'Contact'),
+                validator: (value) {
+                  if (value?.isEmpty == true) {
+                    return 'Le prénom du contact est requis';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextFormField(
+                controller: _contactLastNameController,
+                decoration: const InputDecoration(labelText: 'Contact'),
+                validator: (value) {
+                  if (value?.isEmpty == true) {
+                    return 'Le nom du contact est requis';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ],
+        )
+        : Text(
+          'Contact : ${widget.student.contact.toString()}, ${widget.student.contactLink} '
+          '(${widget.student.phone})',
+        );
   }
 }
