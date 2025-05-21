@@ -5,6 +5,7 @@ import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class StudentListTile extends StatefulWidget {
@@ -48,6 +49,9 @@ class StudentListTileState extends State<StudentListTile> {
   TextEditingController? _lastNameController;
   String get lastName => _lastNameController?.text ?? widget.student.lastName;
 
+  TextEditingController? _groupController;
+  String? get group => _groupController?.text ?? widget.student.group;
+
   TextEditingController? _emailController;
   String? get email => _emailController?.text ?? widget.student.email;
 
@@ -79,6 +83,7 @@ class StudentListTileState extends State<StudentListTile> {
         schoolId: _seletecSchoolId,
         firstName: _firstNameController?.text,
         lastName: _lastNameController?.text,
+        group: _groupController?.text,
         email: _emailController?.text,
       );
 
@@ -93,6 +98,7 @@ class StudentListTileState extends State<StudentListTile> {
       _lastNameController = TextEditingController(
         text: widget.student.lastName,
       );
+      _groupController = TextEditingController(text: widget.student.group);
       _emailController = TextEditingController(text: widget.student.email);
     }
 
@@ -150,6 +156,8 @@ class StudentListTileState extends State<StudentListTile> {
             const SizedBox(height: 8),
             _buildName(),
             const SizedBox(height: 4),
+            _buildGroup(),
+            const SizedBox(height: 4),
             _buildEmail(),
           ],
         ),
@@ -204,6 +212,21 @@ class StudentListTileState extends State<StudentListTile> {
           ],
         )
         : Container();
+  }
+
+  Widget _buildGroup() {
+    return _isEditing
+        ? TextFormField(
+          controller: _groupController,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9a-zA-Z]')),
+          ],
+          keyboardType: TextInputType.number,
+          validator:
+              (value) => value?.isEmpty == true ? 'Le groupe est requis' : null,
+          decoration: const InputDecoration(labelText: 'Groupe'),
+        )
+        : Text('Groupe : ${widget.student.group}');
   }
 
   Widget _buildEmail() {
