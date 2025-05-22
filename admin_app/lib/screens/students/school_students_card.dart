@@ -1,3 +1,4 @@
+import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/students/student_list_tile.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -8,16 +9,18 @@ class SchoolStudentsCard extends StatelessWidget {
   const SchoolStudentsCard({
     super.key,
     required this.schoolId,
-    required this.students,
+    required this.studentsByGroups,
     required this.schoolBoard,
   });
 
   final String schoolId;
-  final List<Student> students;
+  final Map<String, List<Student>> studentsByGroups;
   final SchoolBoard schoolBoard;
 
   @override
   Widget build(BuildContext context) {
+    final teachers = TeachersProvider.of(context, listen: false);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -31,13 +34,43 @@ class SchoolStudentsCard extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
-        if (students.isEmpty) Center(child: Text('Aucun élève inscrit·e')),
-        if (students.isNotEmpty)
-          ...students.map(
-            (Student student) => StudentListTile(
-              key: ValueKey(student.id),
-              student: student,
-              schoolBoard: schoolBoard,
+        if (studentsByGroups.isEmpty)
+          Center(child: Text('Aucun élève inscrit·e à cette école')),
+        if (studentsByGroups.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 12.0),
+            child: Column(
+              children: [
+                ...studentsByGroups.keys.map((group) {
+                  final teacherForGroup = teachers
+                      .where((teacher) => teacher.groups.contains(group))
+                      .map((teacher) => teacher.fullName);
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Groupe : $group - ${teacherForGroup.isNotEmpty ? teacherForGroup.join(', ') : 'Aucun enseignant·e'}',
+                        ),
+                        if (studentsByGroups[group]!.isEmpty)
+                          Center(
+                            child: Text('Aucun élève inscrit·e dans ce groupe'),
+                          ),
+                        if (studentsByGroups[group]!.isNotEmpty)
+                          ...studentsByGroups[group]!.map(
+                            (student) => StudentListTile(
+                              key: ValueKey(student.id),
+                              student: student,
+                              schoolBoard: schoolBoard,
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                }),
+              ],
             ),
           ),
       ],

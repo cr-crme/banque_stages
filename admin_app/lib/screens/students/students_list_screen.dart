@@ -12,35 +12,52 @@ class StudentsListScreen extends StatelessWidget {
 
   static const route = '/students_list';
 
-  Future<Map<String, List<Student>>> getStudents(BuildContext context) async {
-    final studentsTp = StudentsProvider.of(context, listen: true);
-    final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(context);
-    final schools = schoolBoard?.schools ?? [];
+  void _sortByName({required List<Student> students}) {
+    // Do the secondary sort by first name before the primary sort
+    students.sort((a, b) {
+      final firstNameA = a.firstName.toLowerCase();
+      final firstNameB = b.firstName.toLowerCase();
+      return firstNameA.compareTo(firstNameB);
+    });
+    // Sort by last name then first name
+    students.sort((a, b) {
+      final lastNameA = a.lastName.toLowerCase();
+      final lastNameB = b.lastName.toLowerCase();
+      return lastNameA.compareTo(lastNameB);
+    });
+  }
+
+  ///
+  /// This complicate structure is basically separating the students by
+  /// school and then by class group (associated with a teacher).
+  Future<Map<String, Map<String, List<Student>>>> getStudents(
+    BuildContext context,
+  ) async {
+    final students = [...StudentsProvider.of(context, listen: true)];
+    _sortByName(students: students);
 
     // Sort by school name
-    final students = <String, List<Student>>{}; // Students by school
-    for (final school in schools) {
-      final schoolStudents =
-          studentsTp.where((student) => student.schoolId == school.id).toList();
+    final schools =
+        (await SchoolBoardsProvider.mySchoolBoardOf(context))?.schools ?? [];
+    final studentsBySchools = <String, List<Student>>{
+      for (final school in schools)
+        school.id:
+            students.where((student) => student.schoolId == school.id).toList(),
+    };
 
-      // Do the secondary sort by first name before the primary sort
-      schoolStudents.sort((a, b) {
-        final firstNameA = a.firstName.toLowerCase();
-        final firstNameB = b.firstName.toLowerCase();
-        return firstNameA.compareTo(firstNameB);
-      });
-
-      // Sort by last name then first name
-      schoolStudents.sort((a, b) {
-        final lastNameA = a.lastName.toLowerCase();
-        final lastNameB = b.lastName.toLowerCase();
-        return lastNameA.compareTo(lastNameB);
-      });
-
-      students[school.id] = schoolStudents;
+    // Sort by class group
+    final studentBySchoolsAndGroups = <String, Map<String, List<Student>>>{};
+    for (final school in studentsBySchools.keys) {
+      final studentsByGroups = <String, List<Student>>{};
+      for (final student in studentsBySchools[school]!) {
+        if (!studentsByGroups.containsKey(student.group)) {
+          studentsByGroups[student.group] = [];
+        }
+        studentsByGroups[student.group]!.add(student);
+      }
+      studentBySchoolsAndGroups[school] = studentsByGroups;
     }
-
-    return students;
+    return studentBySchoolsAndGroups;
   }
 
   Future<void> _showAddStudentDialog(BuildContext context) async {
@@ -80,7 +97,7 @@ class StudentsListScreen extends StatelessWidget {
           builder: (context, snapshot) {
             final schoolBoard = snapshot.data?[0] as SchoolBoard?;
             final schoolStudents =
-                snapshot.data?[1] as Map<String, List<Student>>?;
+                snapshot.data?[1] as Map<String, Map<String, List<Student>>>?;
             if (schoolBoard == null || schoolStudents == null) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -98,10 +115,14 @@ class StudentsListScreen extends StatelessWidget {
                   ),
                 ),
                 ...schoolStudents.keys.map(
-                  (String schoolId) => SchoolStudentsCard(
-                    schoolId: schoolId,
-                    students: schoolStudents[schoolId] ?? [],
-                    schoolBoard: schoolBoard,
+                  (String schoolId) => Column(
+                    children: [
+                      SchoolStudentsCard(
+                        schoolId: schoolId,
+                        studentsByGroups: schoolStudents[schoolId] ?? {},
+                        schoolBoard: schoolBoard,
+                      ),
+                    ],
                   ),
                 ),
               ],
