@@ -59,6 +59,7 @@ class StudentListTileState extends State<StudentListTile> {
     _emailController.dispose();
     _contactFirstNameController.dispose();
     _contactLastNameController.dispose();
+    _contactLinkController.dispose();
     _contactAddressController.dispose();
     _contactPhoneController.dispose();
     _contactEmailController.dispose();
@@ -97,6 +98,9 @@ class StudentListTileState extends State<StudentListTile> {
   late final _contactLastNameController = TextEditingController(
     text: widget.student.contact.lastName,
   );
+  late final _contactLinkController = TextEditingController(
+    text: widget.student.contactLink,
+  );
   late final _contactAddressController = AddressController(
     initialValue: widget.student.contact.address,
   );
@@ -123,6 +127,7 @@ class StudentListTileState extends State<StudentListTile> {
       id: widget.student.phone?.id,
     ),
     email: _emailController.text,
+    contactLink: _contactLinkController.text,
     contact: widget.student.contact.copyWith(
       firstName: _contactFirstNameController.text,
       lastName: _contactLastNameController.text,
@@ -420,6 +425,19 @@ class StudentListTileState extends State<StudentListTile> {
                       ),
                     ),
                   ],
+                ),
+              if (_isEditing)
+                TextFormField(
+                  controller: _contactLinkController,
+                  decoration: const InputDecoration(
+                    labelText: 'Lien avec l\'élève',
+                  ),
+                  validator: (value) {
+                    if (value?.isEmpty == true) {
+                      return 'Le lien du contact est requis';
+                    }
+                    return null;
+                  },
                 ),
               const SizedBox(height: 4),
               AddressListTile(
