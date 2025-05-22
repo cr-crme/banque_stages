@@ -26,9 +26,9 @@ class Person extends ExtendedItemSerializable {
   });
 
   static Person get empty => Person(
-      firstName: 'Unnamed',
+      firstName: '',
       middleName: null,
-      lastName: 'Unnamed',
+      lastName: '',
       address: null,
       dateBirth: null,
       email: null,

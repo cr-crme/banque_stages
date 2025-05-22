@@ -15,11 +15,11 @@ class AddStudentDialog extends StatefulWidget {
 class _AddStudentDialogState extends State<AddStudentDialog> {
   final _editingKey = GlobalKey();
 
-  void _onClickedConfirm() {
+  Future<void> _onClickedConfirm() async {
     final state = _editingKey.currentState as StudentListTileState;
 
     // Validate the form
-    if (!state.validate()) return;
+    if (!(await state.validate()) || !mounted) return;
     Navigator.of(context).pop(state.editedStudent);
   }
 

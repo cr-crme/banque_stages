@@ -1,6 +1,10 @@
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/students/confirm_delete_student_dialog.dart';
+import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/email_list_tile.dart';
+import 'package:admin_app/widgets/phone_list_tile.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
@@ -30,12 +34,28 @@ class StudentListTileState extends State<StudentListTile> {
   final _formKey = GlobalKey<FormState>();
   final _schoolRadioKey = GlobalKey<FormFieldState>();
   final _programRadioKey = GlobalKey<FormFieldState>();
-  bool validate() {
+  Future<bool> validate() async {
     // We do both like so, so all the fields get validated even if one is not valid
     bool isValid = _formKey.currentState?.validate() ?? false;
     isValid = (_schoolRadioKey.currentState?.validate() ?? false) && isValid;
     isValid = (_programRadioKey.currentState?.validate() ?? false) && isValid;
+    await _addressController.waitForValidation();
+    isValid = (_addressController.address?.isValid ?? false) && isValid;
     return isValid;
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _addressController.dispose();
+    _phoneController.dispose();
+    _groupController.dispose();
+    _emailController.dispose();
+    _contactFirstNameController.dispose();
+    _contactLastNameController.dispose();
+    _contactPhoneController.dispose();
+    super.dispose();
   }
 
   bool _isExpanded = false;
@@ -47,6 +67,12 @@ class StudentListTileState extends State<StudentListTile> {
   );
   late final _lastNameController = TextEditingController(
     text: widget.student.lastName,
+  );
+  late final _addressController = AddressController(
+    initialValue: widget.student.address,
+  );
+  late final _phoneController = TextEditingController(
+    text: widget.student.phone?.toString() ?? '',
   );
   late final _groupController = TextEditingController(
     text: widget.student.group == '-1' ? '' : widget.student.group,
@@ -61,7 +87,10 @@ class StudentListTileState extends State<StudentListTile> {
   late final _contactLastNameController = TextEditingController(
     text: widget.student.contact.lastName,
   );
-  // TODO Add the contact phone number
+  late final _contactPhoneController = TextEditingController(
+    text: widget.student.contact.phone?.toString() ?? '',
+  );
+
   Student get editedStudent => widget.student.copyWith(
     schoolBoardId: widget.schoolBoard.id,
     schoolId: _selectedSchoolId,
@@ -69,10 +98,15 @@ class StudentListTileState extends State<StudentListTile> {
     lastName: _lastNameController.text,
     group: _groupController.text,
     program: _selectedProgram,
+    address: _addressController.address,
     email: _emailController.text,
     contact: widget.student.contact.copyWith(
       firstName: _contactFirstNameController.text,
       lastName: _contactLastNameController.text,
+      phone: PhoneNumber.fromString(
+        _contactPhoneController.text,
+        id: widget.student.contact.phone?.id,
+      ),
     ),
   );
 
@@ -82,22 +116,22 @@ class StudentListTileState extends State<StudentListTile> {
     if (widget.forceEditingMode) _onClickedEditing();
   }
 
-  Future<void> _onClickedDeleting(BuildContext context) async {
+  Future<void> _onClickedDeleting() async {
     // Show confirmation dialog
     final answer = await showDialog(
       context: context,
       builder: (context) => ConfirmDeleteStudentDialog(student: widget.student),
     );
-    if (answer == null || !answer || !context.mounted) return;
+    if (answer == null || !answer || !mounted) return;
 
     final students = StudentsProvider.of(context, listen: false);
     students.remove(widget.student);
   }
 
-  void _onClickedEditing() {
+  Future<void> _onClickedEditing() async {
     if (_isEditing) {
       // Validate the form
-      if (!validate() || !context.mounted) return;
+      if (!(await validate()) || !mounted) return;
 
       // Finish editing
       final newStudent = editedStudent;
@@ -130,7 +164,7 @@ class StudentListTileState extends State<StudentListTile> {
                   children: [
                     IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _onClickedDeleting(context),
+                      onPressed: _onClickedDeleting,
                     ),
                     IconButton(
                       icon: Icon(
@@ -160,12 +194,16 @@ class StudentListTileState extends State<StudentListTile> {
             const SizedBox(height: 8),
             _buildName(),
             const SizedBox(height: 4),
-            _buildGroup(),
+            _buildAddress(),
             const SizedBox(height: 4),
-            _buildProgramSelection(),
+            _buildPhone(),
             const SizedBox(height: 4),
             _buildEmail(),
             const SizedBox(height: 4),
+            _buildGroup(),
+            const SizedBox(height: 4),
+            _buildProgramSelection(),
+            const SizedBox(height: 8),
             _buildContact(),
           ],
         ),
@@ -268,60 +306,86 @@ class StudentListTileState extends State<StudentListTile> {
         : Text('Programme : ${widget.student.program.toString()}');
   }
 
-  Widget _buildEmail() {
-    return _isEditing
-        ? TextFormField(
-          controller: _emailController,
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) {
-            if (value?.isEmpty == true) {
-              return 'Le courriel est requis';
-            }
+  Widget _buildAddress() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: AddressListTile(
+        title: 'Adresse',
+        addressController: _addressController,
+        isMandatory: false,
+        enabled: _isEditing,
+      ),
+    );
+  }
 
-            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value!)) {
-              return 'Le courriel est invalide';
-            }
-            return null;
-          },
-          decoration: const InputDecoration(labelText: 'Courriel'),
-        )
-        : Text('Courriel : ${widget.student.email ?? 'Courriel introuvable'}');
+  Widget _buildPhone() {
+    return PhoneListTile(
+      controller: _phoneController,
+      isMandatory: false,
+      enabled: _isEditing,
+      title: 'Téléphone',
+    );
+  }
+
+  Widget _buildEmail() {
+    return EmailListTile(
+      controller: _emailController,
+      isMandatory: false,
+      enabled: _isEditing,
+      title: 'Courriel',
+    );
   }
 
   Widget _buildContact() {
-    return _isEditing
-        ? Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: _contactFirstNameController,
-                decoration: const InputDecoration(labelText: 'Contact'),
-                validator: (value) {
-                  if (value?.isEmpty == true) {
-                    return 'Le prénom du contact est requis';
-                  }
-                  return null;
-                },
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (_isEditing) Text('Contact'),
+        _isEditing
+            ? Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _contactFirstNameController,
+                    decoration: const InputDecoration(labelText: 'Prénom'),
+                    validator: (value) {
+                      if (value?.isEmpty == true) {
+                        return 'Le prénom du contact est requis';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextFormField(
+                    controller: _contactLastNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nom de famille',
+                    ),
+                    validator: (value) {
+                      if (value?.isEmpty == true) {
+                        return 'Le nom du contact est requis';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ],
+            )
+            : Text(
+              'Contact : ${widget.student.contact.toString()} (${widget.student.contactLink})',
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TextFormField(
-                controller: _contactLastNameController,
-                decoration: const InputDecoration(labelText: 'Contact'),
-                validator: (value) {
-                  if (value?.isEmpty == true) {
-                    return 'Le nom du contact est requis';
-                  }
-                  return null;
-                },
-              ),
-            ),
-          ],
-        )
-        : Text(
-          'Contact : ${widget.student.contact.toString()}, ${widget.student.contactLink} '
-          '(${widget.student.phone})',
-        );
+        const SizedBox(height: 4),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: PhoneListTile(
+            controller: _contactPhoneController,
+            isMandatory: false,
+            enabled: _isEditing,
+          ),
+        ),
+      ],
+    );
   }
 }

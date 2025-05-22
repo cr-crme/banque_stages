@@ -35,6 +35,13 @@ class SchoolListTileState extends State<SchoolListTile> {
     return isValid;
   }
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _addressController.dispose();
+    super.dispose();
+  }
+
   bool _isExpanded = false;
   bool _isEditing = false;
 
@@ -51,31 +58,31 @@ class SchoolListTileState extends State<SchoolListTile> {
   @override
   void initState() {
     super.initState();
-    if (widget.forceEditingMode) _onClickedEditing(context);
+    if (widget.forceEditingMode) _onClickedEditing();
   }
 
-  Future<void> _onClickedDeleting(BuildContext context) async {
+  Future<void> _onClickedDeleting() async {
     // Show confirmation dialog
     final answer = await showDialog(
       context: context,
       builder: (context) => ConfirmDeleteSchoolDialog(school: widget.school),
     );
-    if (answer == null || !answer || !context.mounted) return;
+    if (answer == null || !answer || !mounted) return;
 
     final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(
       context,
       listen: false,
     );
-    if (schoolBoard == null || !context.mounted) return;
+    if (schoolBoard == null || !mounted) return;
 
     schoolBoard.schools.removeWhere((school) => school.id == widget.school.id);
     SchoolBoardsProvider.of(context).replace(schoolBoard);
   }
 
-  Future<void> _onClickedEditing(BuildContext context) async {
+  Future<void> _onClickedEditing() async {
     if (_isEditing) {
       // Validate the form
-      if (!(await validate()) || !context.mounted) return;
+      if (!(await validate()) || !mounted) return;
 
       // Finish editing
       final newSchool = editedSchool;
@@ -115,14 +122,14 @@ class SchoolListTileState extends State<SchoolListTile> {
                   children: [
                     IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _onClickedDeleting(context),
+                      onPressed: _onClickedDeleting,
                     ),
                     IconButton(
                       icon: Icon(
                         _isEditing ? Icons.save : Icons.edit,
                         color: Colors.black,
                       ),
-                      onPressed: () => _onClickedEditing(context),
+                      onPressed: _onClickedEditing,
                     ),
                   ],
                 ),

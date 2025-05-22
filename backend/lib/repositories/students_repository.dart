@@ -169,8 +169,16 @@ class MySqlStudentsRepository extends StudentsRepository {
                         'city',
                         'postal_code'
                       ]),
+                  MySqlSelectSubQuery(
+                      dataTableName: 'phone_numbers',
+                      idNameToDataTable: 'entity_id',
+                      fieldsToFetch: ['id', 'phone_number']),
                 ]);
       student['contact'] = contacts?.firstOrNull ?? {};
+      if (student['contact']['phone_numbers'] != null) {
+        student['contact']['phone'] =
+            (student['contact']['phone_numbers'] as List).first as Map;
+      }
 
       student
           .addAll((student['persons'] as List).first as Map<String, dynamic>);

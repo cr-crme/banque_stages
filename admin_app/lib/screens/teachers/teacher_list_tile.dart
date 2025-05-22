@@ -36,6 +36,17 @@ class TeacherListTileState extends State<TeacherListTile> {
     return isValid;
   }
 
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    for (var controller in _currentGroups) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
   bool _isExpanded = false;
   bool _isEditing = false;
 
@@ -68,13 +79,13 @@ class TeacherListTileState extends State<TeacherListTile> {
     if (widget.forceEditingMode) _onClickedEditing();
   }
 
-  Future<void> _onClickedDeleting(BuildContext context) async {
+  Future<void> _onClickedDeleting() async {
     // Show confirmation dialog
     final answer = await showDialog(
       context: context,
       builder: (context) => ConfirmDeleteTeacherDialog(teacher: widget.teacher),
     );
-    if (answer == null || !answer || !context.mounted) return;
+    if (answer == null || !answer || !mounted) return;
 
     final teachers = TeachersProvider.of(context, listen: false);
     teachers.remove(widget.teacher);
@@ -115,7 +126,7 @@ class TeacherListTileState extends State<TeacherListTile> {
                   children: [
                     IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _onClickedDeleting(context),
+                      onPressed: _onClickedDeleting,
                     ),
                     IconButton(
                       icon: Icon(

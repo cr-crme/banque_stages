@@ -9,7 +9,9 @@ class AddressController {
     this.initialValue,
     this.fromStringOverrideForDebug,
     this.confirmAddressForDebug,
-  });
+  }) {
+    _textController.text = initialValue?.toString() ?? '';
+  }
 
   Future<Address?> Function(String)? fromStringOverrideForDebug;
   bool Function(Address?)? confirmAddressForDebug;
@@ -39,6 +41,10 @@ class AddressController {
     while (_isValidating!()) {
       await Future.delayed(const Duration(milliseconds: 50));
     }
+  }
+
+  void dispose() {
+    _textController.dispose();
   }
 }
 
@@ -84,7 +90,6 @@ class _AddressListTileState extends State<AddressListTile> {
       addressHasChanged = true;
     } else {
       addressHasChanged = false;
-      widget.addressController._textController.text = _address.toString();
     }
   }
 
@@ -145,7 +150,7 @@ class _AddressListTileState extends State<AddressListTile> {
               barrierDismissible: false,
               context: context,
               builder:
-                  (BuildContext context) => AlertDialog(
+                  (context) => AlertDialog(
                     title: const Text('Confimer l\'adresse'),
                     content: SingleChildScrollView(
                       child: Column(
@@ -204,7 +209,7 @@ class _AddressListTileState extends State<AddressListTile> {
     await showDialog(
       context: context,
       builder:
-          (BuildContext context) => AlertDialog(
+          (context) => AlertDialog(
             title: Text(widget.title ?? 'Adresse'),
             content: SingleChildScrollView(
               child: SizedBox(
@@ -242,9 +247,7 @@ class _AddressListTileState extends State<AddressListTile> {
               decoration: InputDecoration(
                 labelText:
                     '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
-                labelStyle:
-                    widget.titleStyle?.copyWith(color: Colors.black) ??
-                    TextStyle(color: Colors.black),
+                labelStyle: widget.titleStyle ?? TextStyle(color: Colors.black),
                 // Add an invisible icon so the text wraps
                 suffixIcon: Icon(
                   addressHasChanged ? Icons.search : Icons.map,
@@ -252,9 +255,7 @@ class _AddressListTileState extends State<AddressListTile> {
                 ),
                 disabledBorder: InputBorder.none,
               ),
-              style:
-                  widget.contentStyle?.copyWith(color: Colors.black) ??
-                  TextStyle(color: Colors.black),
+              style: widget.contentStyle ?? TextStyle(color: Colors.black),
               enabled: widget.enabled && !isValidating,
               maxLines: null,
               onSaved: (newAddress) => validate(),

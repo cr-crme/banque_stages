@@ -54,9 +54,9 @@ bool areMapsEqual<T, U>(Map<T, U>? a, Map<T, U>? b) {
   for (final T key in a.keys) {
     if (!b.containsKey(key)) return false;
     if (a[key] is List) {
-      if (areListsNotEqual(a[key] as List, b[key] as List)) return false;
+      if (areListsNotEqual(a[key] as List, b[key] as List? ?? [])) return false;
     } else if (a[key] is Map) {
-      if (areMapsNotEqual(a[key] as Map, b[key] as Map)) return false;
+      if (areMapsNotEqual(a[key] as Map, b[key] as Map? ?? {})) return false;
     } else if (a[key] != b[key]) {
       return false;
     }
