@@ -16,9 +16,25 @@ class PhoneNumber extends ItemSerializable {
 
   static PhoneNumber get empty => PhoneNumber();
 
+  PhoneNumber copyWith({
+    String? id,
+    String? areaCode,
+    String? cityCode,
+    String? number,
+    String? extension,
+  }) {
+    return PhoneNumber(
+      id: id ?? this.id,
+      areaCode: areaCode ?? this.areaCode,
+      cityCode: cityCode ?? this.cityCode,
+      number: number ?? this.number,
+      extension: extension ?? this.extension,
+    );
+  }
+
   factory PhoneNumber.fromString(number, {String? id}) {
     final reg = RegExp(_regExp);
-    if (!reg.hasMatch(number)) return PhoneNumber.empty;
+    if (!reg.hasMatch(number)) return PhoneNumber.empty.copyWith(id: id);
 
     final result = RegExp(_regExp).firstMatch(number)!;
     if (result.groupCount != 4) {

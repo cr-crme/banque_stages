@@ -20,6 +20,7 @@ class AddressController {
   bool Function()? _isValidating;
   Address? Function()? _getAddress;
   Address? Function(Address)? _setAddress;
+  bool Function()? _isMandatory;
   Address? initialValue;
   final TextEditingController _textController = TextEditingController();
 
@@ -40,6 +41,19 @@ class AddressController {
     if (_isValidating == null) return;
     while (_isValidating!()) {
       await Future.delayed(const Duration(milliseconds: 50));
+    }
+  }
+
+  bool get isValid {
+    if (_isValidating == null) return false;
+
+    final address = _getAddress!();
+    if (address?.isNotEmpty ?? false) {
+      // If the address is filled, then it is valid if it is valid
+      return address!.isValid;
+    } else {
+      // If the address is empty, then it is valid if it is not mandatory
+      return !_isMandatory!();
     }
   }
 
@@ -83,6 +97,7 @@ class _AddressListTileState extends State<AddressListTile> {
     widget.addressController._isValidating = () => isValidating;
     widget.addressController._getAddress = getAddress;
     widget.addressController._setAddress = setAddress;
+    widget.addressController._isMandatory = () => widget.isMandatory;
     _address = widget.addressController.initialValue;
 
     if (_address == null) {
@@ -104,6 +119,7 @@ class _AddressListTileState extends State<AddressListTile> {
     }
     if (!addressHasChanged) return null;
 
+    _address = null;
     previousValidatedAddress = widget.addressController._textController.text;
     if (widget.addressController._textController.text == '') {
       return widget.isMandatory ? 'Entrer une adresse valide' : null;

@@ -4,6 +4,7 @@ import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
+import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -36,11 +37,13 @@ class StudentListTileState extends State<StudentListTile> {
   final _programRadioKey = GlobalKey<FormFieldState>();
   Future<bool> validate() async {
     // We do both like so, so all the fields get validated even if one is not valid
+    await _addressController.waitForValidation();
+    await _contactAddressController.waitForValidation();
     bool isValid = _formKey.currentState?.validate() ?? false;
     isValid = (_schoolRadioKey.currentState?.validate() ?? false) && isValid;
     isValid = (_programRadioKey.currentState?.validate() ?? false) && isValid;
-    await _addressController.waitForValidation();
-    isValid = (_addressController.address?.isValid ?? false) && isValid;
+    isValid = _addressController.isValid && isValid;
+    isValid = _contactAddressController.isValid && isValid;
     return isValid;
   }
 
@@ -54,7 +57,9 @@ class StudentListTileState extends State<StudentListTile> {
     _emailController.dispose();
     _contactFirstNameController.dispose();
     _contactLastNameController.dispose();
+    _contactAddressController.dispose();
     _contactPhoneController.dispose();
+    _contactEmailController.dispose();
     super.dispose();
   }
 
@@ -87,8 +92,14 @@ class StudentListTileState extends State<StudentListTile> {
   late final _contactLastNameController = TextEditingController(
     text: widget.student.contact.lastName,
   );
+  late final _contactAddressController = AddressController(
+    initialValue: widget.student.contact.address,
+  );
   late final _contactPhoneController = TextEditingController(
     text: widget.student.contact.phone?.toString() ?? '',
+  );
+  late final _contactEmailController = TextEditingController(
+    text: widget.student.contact.email,
   );
 
   Student get editedStudent => widget.student.copyWith(
@@ -98,15 +109,25 @@ class StudentListTileState extends State<StudentListTile> {
     lastName: _lastNameController.text,
     group: _groupController.text,
     program: _selectedProgram,
-    address: _addressController.address,
+    address:
+        _addressController.address ??
+        Address.empty.copyWith(id: widget.student.address?.id),
+    phone: PhoneNumber.fromString(
+      _phoneController.text,
+      id: widget.student.phone?.id,
+    ),
     email: _emailController.text,
     contact: widget.student.contact.copyWith(
       firstName: _contactFirstNameController.text,
       lastName: _contactLastNameController.text,
+      address:
+          _contactAddressController.address ??
+          Address.empty.copyWith(id: widget.student.contact.address?.id),
       phone: PhoneNumber.fromString(
         _contactPhoneController.text,
         id: widget.student.contact.phone?.id,
       ),
+      email: _contactEmailController.text,
     ),
   );
 
@@ -340,49 +361,68 @@ class StudentListTileState extends State<StudentListTile> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (_isEditing) Text('Contact'),
         _isEditing
-            ? Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _contactFirstNameController,
-                    decoration: const InputDecoration(labelText: 'Prénom'),
-                    validator: (value) {
-                      if (value?.isEmpty == true) {
-                        return 'Le prénom du contact est requis';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextFormField(
-                    controller: _contactLastNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Nom de famille',
-                    ),
-                    validator: (value) {
-                      if (value?.isEmpty == true) {
-                        return 'Le nom du contact est requis';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ],
-            )
+            ? Text('Contact')
             : Text(
               'Contact : ${widget.student.contact.toString()} (${widget.student.contactLink})',
             ),
-        const SizedBox(height: 4),
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
-          child: PhoneListTile(
-            controller: _contactPhoneController,
-            isMandatory: false,
-            enabled: _isEditing,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (_isEditing)
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _contactFirstNameController,
+                        decoration: const InputDecoration(labelText: 'Prénom'),
+                        validator: (value) {
+                          if (value?.isEmpty == true) {
+                            return 'Le prénom du contact est requis';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _contactLastNameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Nom de famille',
+                        ),
+                        validator: (value) {
+                          if (value?.isEmpty == true) {
+                            return 'Le nom du contact est requis';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              const SizedBox(height: 4),
+              AddressListTile(
+                title: 'Adresse du contact',
+                addressController: _contactAddressController,
+                isMandatory: false,
+                enabled: _isEditing,
+              ),
+              const SizedBox(height: 4),
+              PhoneListTile(
+                controller: _contactPhoneController,
+                isMandatory: false,
+                enabled: _isEditing,
+              ),
+              const SizedBox(height: 4),
+              EmailListTile(
+                controller: _contactEmailController,
+                isMandatory: false,
+                enabled: _isEditing,
+              ),
+            ],
           ),
         ),
       ],

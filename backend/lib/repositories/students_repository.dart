@@ -179,6 +179,10 @@ class MySqlStudentsRepository extends StudentsRepository {
         student['contact']['phone'] =
             (student['contact']['phone_numbers'] as List).first as Map;
       }
+      if (student['contact']['addresses'] != null) {
+        student['contact']['address'] =
+            (student['contact']['addresses'] as List).firstOrNull as Map?;
+      }
 
       student
           .addAll((student['persons'] as List).first as Map<String, dynamic>);

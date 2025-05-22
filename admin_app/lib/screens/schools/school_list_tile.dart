@@ -29,9 +29,9 @@ class SchoolListTileState extends State<SchoolListTile> {
   final _formKey = GlobalKey<FormState>();
   Future<bool> validate() async {
     // We do both like so, so all the fields get validated even if one is not valid
-    bool isValid = _formKey.currentState?.validate() ?? false;
     await _addressController.waitForValidation();
-    isValid = (_addressController.address?.isValid ?? false) && isValid;
+    bool isValid = _formKey.currentState?.validate() ?? false;
+    isValid = _addressController.isValid && isValid;
     return isValid;
   }
 
