@@ -19,7 +19,12 @@ class SchoolStudentsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final teachers = TeachersProvider.of(context, listen: false);
+    final groups = studentsByGroups.keys.toList();
+    groups.sort((a, b) {
+      final groupA = a.toLowerCase();
+      final groupB = b.toLowerCase();
+      return groupA.compareTo(groupB);
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,36 +46,68 @@ class SchoolStudentsCard extends StatelessWidget {
             padding: const EdgeInsets.only(left: 16.0, right: 12.0),
             child: Column(
               children: [
-                ...studentsByGroups.keys.map((group) {
-                  final teacherForGroup = teachers
-                      .where((teacher) => teacher.groups.contains(group))
-                      .map((teacher) => teacher.fullName);
-
-                  return Padding(
+                ...groups.map(
+                  (group) => Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Groupe : $group - ${teacherForGroup.isNotEmpty ? teacherForGroup.join(', ') : 'Aucun enseignant·e'}',
-                        ),
-                        if (studentsByGroups[group]!.isEmpty)
-                          Center(
-                            child: Text('Aucun élève inscrit·e dans ce groupe'),
-                          ),
-                        if (studentsByGroups[group]!.isNotEmpty)
-                          ...studentsByGroups[group]!.map(
-                            (student) => StudentListTile(
-                              key: ValueKey(student.id),
-                              student: student,
-                              schoolBoard: schoolBoard,
-                            ),
-                          ),
-                      ],
+                    child: _GroupStudentsCard(
+                      group: group,
+                      students: studentsByGroups[group] ?? [],
+                      schoolBoard: schoolBoard,
                     ),
-                  );
-                }),
+                  ),
+                ),
               ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _GroupStudentsCard extends StatelessWidget {
+  const _GroupStudentsCard({
+    required this.group,
+    required this.students,
+    required this.schoolBoard,
+  });
+
+  final String group;
+  final List<Student> students;
+  final SchoolBoard schoolBoard;
+
+  @override
+  Widget build(BuildContext context) {
+    final teachers =
+        TeachersProvider.of(
+          context,
+          listen: false,
+        ).where((teacher) => teacher.groups.contains(group)).toList();
+    teachers.sort((a, b) {
+      final teacherA = a.lastName.toLowerCase();
+      final teacherB = b.lastName.toLowerCase();
+      var comparison = teacherA.compareTo(teacherB);
+      if (comparison != 0) return comparison;
+      final firstNameA = a.firstName.toLowerCase();
+      final firstNameB = b.firstName.toLowerCase();
+      comparison = firstNameA.compareTo(firstNameB);
+      return comparison;
+    });
+    final teachersForGroups = teachers.map((teacher) => teacher.fullName);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Groupe : $group - ${teachersForGroups.isNotEmpty ? teachersForGroups.join(', ') : 'Aucun enseignant·e'}',
+        ),
+        if (students.isEmpty)
+          Center(child: Text('Aucun élève inscrit·e dans ce groupe')),
+        if (students.isNotEmpty)
+          ...students.map(
+            (student) => StudentListTile(
+              key: ValueKey(student.id),
+              student: student,
+              schoolBoard: schoolBoard,
             ),
           ),
       ],

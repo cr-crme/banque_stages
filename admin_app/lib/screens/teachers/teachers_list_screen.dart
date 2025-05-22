@@ -23,18 +23,15 @@ class TeachersListScreen extends StatelessWidget {
       final schoolTeachers =
           teachersTp.where((teacher) => teacher.schoolId == school.id).toList();
 
-      // Do the secondary sort by first name before the primary sort
-      schoolTeachers.sort((a, b) {
-        final firstNameA = a.firstName.toLowerCase();
-        final firstNameB = b.firstName.toLowerCase();
-        return firstNameA.compareTo(firstNameB);
-      });
-
-      // Sort by last name then first name
       schoolTeachers.sort((a, b) {
         final lastNameA = a.lastName.toLowerCase();
         final lastNameB = b.lastName.toLowerCase();
-        return lastNameA.compareTo(lastNameB);
+        var comparison = lastNameA.compareTo(lastNameB);
+        if (comparison != 0) return comparison;
+
+        final firstNameA = a.firstName.toLowerCase();
+        final firstNameB = b.firstName.toLowerCase();
+        return firstNameA.compareTo(firstNameB);
       });
       teachers[school.id] = schoolTeachers;
     }

@@ -12,21 +12,6 @@ class StudentsListScreen extends StatelessWidget {
 
   static const route = '/students_list';
 
-  void _sortByName({required List<Student> students}) {
-    // Do the secondary sort by first name before the primary sort
-    students.sort((a, b) {
-      final firstNameA = a.firstName.toLowerCase();
-      final firstNameB = b.firstName.toLowerCase();
-      return firstNameA.compareTo(firstNameB);
-    });
-    // Sort by last name then first name
-    students.sort((a, b) {
-      final lastNameA = a.lastName.toLowerCase();
-      final lastNameB = b.lastName.toLowerCase();
-      return lastNameA.compareTo(lastNameB);
-    });
-  }
-
   ///
   /// This complicate structure is basically separating the students by
   /// school and then by class group (associated with a teacher).
@@ -34,7 +19,17 @@ class StudentsListScreen extends StatelessWidget {
     BuildContext context,
   ) async {
     final students = [...StudentsProvider.of(context, listen: true)];
-    _sortByName(students: students);
+    students.sort((a, b) {
+      final lastNameA = a.lastName.toLowerCase();
+      final lastNameB = b.lastName.toLowerCase();
+      var comparison = lastNameA.compareTo(lastNameB);
+      if (comparison != 0) return comparison;
+
+      final firstNameA = a.firstName.toLowerCase();
+      final firstNameB = b.firstName.toLowerCase();
+      comparison = firstNameA.compareTo(firstNameB);
+      return comparison;
+    });
 
     // Sort by school name
     final schools =
@@ -98,7 +93,9 @@ class StudentsListScreen extends StatelessWidget {
             final schoolBoard = snapshot.data?[0] as SchoolBoard?;
             final schoolStudents =
                 snapshot.data?[1] as Map<String, Map<String, List<Student>>>?;
-            if (schoolBoard == null || schoolStudents == null) {
+            if (schoolBoard == null ||
+                schoolStudents == null ||
+                schoolStudents.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
 
