@@ -2,6 +2,7 @@ import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/students/confirm_delete_student_dialog.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/birthday_list_tile.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:common/models/generic/address.dart';
@@ -51,6 +52,7 @@ class StudentListTileState extends State<StudentListTile> {
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _birthController.dispose();
     _addressController.dispose();
     _phoneController.dispose();
     _groupController.dispose();
@@ -72,6 +74,9 @@ class StudentListTileState extends State<StudentListTile> {
   );
   late final _lastNameController = TextEditingController(
     text: widget.student.lastName,
+  );
+  late final _birthController = BirthdayController(
+    initialValue: widget.student.dateBirth,
   );
   late final _addressController = AddressController(
     initialValue: widget.student.address,
@@ -107,6 +112,7 @@ class StudentListTileState extends State<StudentListTile> {
     schoolId: _selectedSchoolId,
     firstName: _firstNameController.text,
     lastName: _lastNameController.text,
+    dateBirth: _birthController.value,
     group: _groupController.text,
     program: _selectedProgram,
     address:
@@ -190,7 +196,7 @@ class StudentListTileState extends State<StudentListTile> {
                     IconButton(
                       icon: Icon(
                         _isEditing ? Icons.save : Icons.edit,
-                        color: Colors.black,
+                        color: Theme.of(context).primaryColor,
                       ),
                       onPressed: _onClickedEditing,
                     ),
@@ -214,6 +220,8 @@ class StudentListTileState extends State<StudentListTile> {
             _buildSchoolSelection(),
             const SizedBox(height: 8),
             _buildName(),
+            const SizedBox(height: 8),
+            _buildBirthday(),
             const SizedBox(height: 4),
             _buildAddress(),
             const SizedBox(height: 4),
@@ -325,6 +333,16 @@ class StudentListTileState extends State<StudentListTile> {
                   .toList(),
         )
         : Text('Programme : ${widget.student.program.toString()}');
+  }
+
+  Widget _buildBirthday() {
+    return BirthdayListTile(
+      title: 'Date de naissance',
+      controller: _birthController,
+      enabled: _isEditing,
+      isMandatory: false,
+      onSaved: (value) => setState(() {}),
+    );
   }
 
   Widget _buildAddress() {

@@ -48,7 +48,11 @@ extension DateTimeExt on DateTime {
   static DateTime? from(element) {
     if (element == null) return null;
     try {
-      return DateTime.fromMillisecondsSinceEpoch(element as int);
+      final date = DateTime.fromMillisecondsSinceEpoch(element as int);
+      // We take an arbitrary small date to account for the rounding error
+      // that are introduced when storing the date as an int. DateTime(2000)
+      // is still way before any realistic useful date.
+      return date.isBefore(DateTime(2000)) ? DateTime(0) : date;
     } catch (e) {
       return null;
     }

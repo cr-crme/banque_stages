@@ -127,7 +127,7 @@ class SchoolListTileState extends State<SchoolListTile> {
                     IconButton(
                       icon: Icon(
                         _isEditing ? Icons.save : Icons.edit,
-                        color: Colors.black,
+                        color: Theme.of(context).primaryColor,
                       ),
                       onPressed: _onClickedEditing,
                     ),
