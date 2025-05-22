@@ -3,7 +3,6 @@ import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/students/add_student_dialog.dart';
 import 'package:admin_app/screens/students/school_students_card.dart';
-import 'package:collection/collection.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
@@ -21,22 +20,24 @@ class StudentsListScreen extends StatelessWidget {
     // Sort by school name
     final students = <String, List<Student>>{}; // Students by school
     for (final school in schools) {
-      final schoolStudents = studentsTp.where(
-        (student) => student.schoolId == school.id,
-      );
+      final schoolStudents =
+          studentsTp.where((student) => student.schoolId == school.id).toList();
 
-      // Sort by last name then first name
-      schoolStudents.sorted((a, b) {
-        final lastNameA = a.lastName.toLowerCase();
-        final lastNameB = b.lastName.toLowerCase();
-        return lastNameA.compareTo(lastNameB);
-      });
-      schoolStudents.sorted((a, b) {
+      // Do the secondary sort by first name before the primary sort
+      schoolStudents.sort((a, b) {
         final firstNameA = a.firstName.toLowerCase();
         final firstNameB = b.firstName.toLowerCase();
         return firstNameA.compareTo(firstNameB);
       });
-      students[school.id] = schoolStudents.toList();
+
+      // Sort by last name then first name
+      schoolStudents.sort((a, b) {
+        final lastNameA = a.lastName.toLowerCase();
+        final lastNameB = b.lastName.toLowerCase();
+        return lastNameA.compareTo(lastNameB);
+      });
+
+      students[school.id] = schoolStudents;
     }
 
     return students;
