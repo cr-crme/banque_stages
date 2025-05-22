@@ -171,19 +171,15 @@ class MySqlHelpers {
           'email': person.email,
         });
 
-    if (person.phone != null) {
-      await performInsertPhoneNumber(
-          connection: connection,
-          phoneNumber: person.phone!,
-          entityId: person.id);
-    }
+    await performInsertPhoneNumber(
+        connection: connection,
+        phoneNumber: person.phone ?? PhoneNumber.empty,
+        entityId: person.id);
 
-    if (person.address != null) {
-      await performInsertAddress(
-          connection: connection,
-          address: person.address!,
-          entityId: person.id);
-    }
+    await performInsertAddress(
+        connection: connection,
+        address: person.address ?? Address.empty,
+        entityId: person.id);
   }
 
   static Future<void> performUpdatePerson(

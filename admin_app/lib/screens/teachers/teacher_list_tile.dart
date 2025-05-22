@@ -1,6 +1,11 @@
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/teachers/confirm_delete_teacher_dialog.dart';
+import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/email_list_tile.dart';
+import 'package:admin_app/widgets/phone_list_tile.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
@@ -29,10 +34,12 @@ class TeacherListTile extends StatefulWidget {
 class TeacherListTileState extends State<TeacherListTile> {
   final _formKey = GlobalKey<FormState>();
   final _radioKey = GlobalKey<FormFieldState>();
-  bool validate() {
+  Future<bool> validate() async {
     // We do both like so, so all the fields get validated even if one is not valid
+    await _addressController.waitForValidation();
     bool isValid = _formKey.currentState?.validate() ?? false;
     isValid = (_radioKey.currentState?.validate() ?? false) && isValid;
+    isValid = _addressController.isValid && isValid;
     return isValid;
   }
 
@@ -40,6 +47,8 @@ class TeacherListTileState extends State<TeacherListTile> {
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _addressController.dispose();
+    _phoneController.dispose();
     _emailController.dispose();
     for (var controller in _currentGroups) {
       controller.dispose();
@@ -60,6 +69,12 @@ class TeacherListTileState extends State<TeacherListTile> {
   late final List<TextEditingController> _currentGroups = [
     for (var group in widget.teacher.groups) TextEditingController(text: group),
   ];
+  late final _addressController = AddressController(
+    initialValue: widget.teacher.address,
+  );
+  late final _phoneController = TextEditingController(
+    text: widget.teacher.phone?.toString() ?? '',
+  );
   late final _emailController = TextEditingController(
     text: widget.teacher.email,
   );
@@ -68,6 +83,13 @@ class TeacherListTileState extends State<TeacherListTile> {
     schoolId: _selectedSchoolId,
     firstName: _firstNameController.text,
     lastName: _lastNameController.text,
+    address:
+        _addressController.address ??
+        Address.empty.copyWith(id: widget.teacher.address?.id),
+    phone: PhoneNumber.fromString(
+      _phoneController.text,
+      id: widget.teacher.phone?.id,
+    ),
     email: _emailController.text,
     groups:
         _currentGroups.map((e) => e.text).where((e) => e.isNotEmpty).toList(),
@@ -91,10 +113,10 @@ class TeacherListTileState extends State<TeacherListTile> {
     teachers.remove(widget.teacher);
   }
 
-  void _onClickedEditing() {
+  Future<void> _onClickedEditing() async {
     if (_isEditing) {
       // Validate the form
-      if (!validate() || !context.mounted) return;
+      if (!(await validate()) || !mounted) return;
 
       // Finish editing
       final newTeacher = editedTeacher;
@@ -155,10 +177,14 @@ class TeacherListTileState extends State<TeacherListTile> {
             _buildSchoolSelection(),
             const SizedBox(height: 8),
             _buildName(),
+            const SizedBox(height: 8),
+            _buildAddress(),
+            const SizedBox(height: 8),
+            _buildPhone(),
+            const SizedBox(height: 8),
+            _buildEmail(),
             const SizedBox(height: 4),
             _buildGroups(),
-            const SizedBox(height: 4),
-            _buildEmail(),
           ],
         ),
       ),
@@ -269,23 +295,33 @@ class TeacherListTileState extends State<TeacherListTile> {
     );
   }
 
-  Widget _buildEmail() {
-    return _isEditing
-        ? TextFormField(
-          controller: _emailController,
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) {
-            if (value?.isEmpty == true) {
-              return 'Le courriel est requis';
-            }
+  Widget _buildAddress() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: AddressListTile(
+        title: 'Adresse',
+        addressController: _addressController,
+        isMandatory: false,
+        enabled: _isEditing,
+      ),
+    );
+  }
 
-            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value!)) {
-              return 'Le courriel est invalide';
-            }
-            return null;
-          },
-          decoration: const InputDecoration(labelText: 'Courriel'),
-        )
-        : Text('Courriel : ${widget.teacher.email ?? 'Courriel introuvable'}');
+  Widget _buildPhone() {
+    return PhoneListTile(
+      controller: _phoneController,
+      isMandatory: false,
+      enabled: _isEditing,
+      title: 'Téléphone',
+    );
+  }
+
+  Widget _buildEmail() {
+    return EmailListTile(
+      controller: _emailController,
+      isMandatory: true,
+      enabled: _isEditing,
+      title: 'Courriel',
+    );
   }
 }

@@ -15,11 +15,11 @@ class AddTeacherDialog extends StatefulWidget {
 class _AddTeacherDialogState extends State<AddTeacherDialog> {
   final _editingKey = GlobalKey();
 
-  void _onClickedConfirm() {
+  Future<void> _onClickedConfirm() async {
     final state = _editingKey.currentState as TeacherListTileState;
 
     // Validate the form
-    if (!state.validate()) return;
+    if (!(await state.validate()) || !mounted) return;
     Navigator.of(context).pop(state.editedTeacher);
   }
 
