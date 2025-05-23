@@ -4,6 +4,7 @@ import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
+import 'package:admin_app/widgets/web_site_list_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/utils.dart';
@@ -30,15 +31,21 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   Future<bool> validate() async {
     // We do both like so, so all the fields get validated even if one is not valid
     await _addressController.waitForValidation();
+    await _headquartersAddressController.waitForValidation();
     bool isValid = _formKey.currentState?.validate() ?? false;
     isValid = _addressController.isValid && isValid;
+    isValid = _headquartersAddressController.isValid && isValid;
     return isValid;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _phoneController.dispose();
+    _faxController.dispose();
+    _websiteController.dispose();
     _addressController.dispose();
+    _headquartersAddressController.dispose();
     _contactFirstNameController.dispose();
     _contactLastNameController.dispose();
     _contactFunctionController.dispose();
@@ -53,8 +60,20 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   late final _nameController = TextEditingController(
     text: widget.enterprise.name,
   );
+  late final _phoneController = TextEditingController(
+    text: widget.enterprise.phone?.toString(),
+  );
+  late final _faxController = TextEditingController(
+    text: widget.enterprise.fax?.toString(),
+  );
+  late final _websiteController = TextEditingController(
+    text: widget.enterprise.website,
+  );
   late final _addressController = AddressController(
     initialValue: widget.enterprise.address,
+  );
+  late final _headquartersAddressController = AddressController(
+    initialValue: widget.enterprise.headquartersAddress,
   );
   late final _contactFirstNameController = TextEditingController(
     text: widget.enterprise.contact.firstName,
@@ -74,7 +93,17 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
 
   Enterprise get editedEnterprise => widget.enterprise.copyWith(
     name: _nameController.text,
+    phone: PhoneNumber.fromString(
+      _phoneController.text,
+      id: widget.enterprise.phone?.id,
+    ),
+    fax: PhoneNumber.fromString(
+      _faxController.text,
+      id: widget.enterprise.fax?.id,
+    ),
+    website: _websiteController.text,
     address: _addressController.address,
+    headquartersAddress: _headquartersAddressController.address,
     contact: widget.enterprise.contact.copyWith(
       firstName: _contactFirstNameController.text,
       lastName: _contactLastNameController.text,
@@ -169,7 +198,16 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildName(),
+            const SizedBox(height: 8),
             _buildAddress(),
+            const SizedBox(height: 8),
+            _buildPhone(),
+            const SizedBox(height: 8),
+            _buildFax(),
+            const SizedBox(height: 8),
+            _buildWebsite(),
+            const SizedBox(height: 8),
+            _buildHeadquartersAddress(),
             const SizedBox(height: 8),
             _buildContact(),
           ],
@@ -202,12 +240,59 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
         : Container();
   }
 
+  Widget _buildPhone() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: PhoneListTile(
+        title: 'Téléphone',
+        controller: _phoneController,
+        isMandatory: false,
+        enabled: _isEditing,
+      ),
+    );
+  }
+
+  Widget _buildFax() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: PhoneListTile(
+        title: 'Fax',
+        controller: _faxController,
+        isMandatory: false,
+        enabled: _isEditing,
+      ),
+    );
+  }
+
+  Widget _buildWebsite() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: WebSiteListTile(
+        controller: _websiteController,
+        title: 'Site web de l\'entreprise',
+        enabled: _isEditing,
+      ),
+    );
+  }
+
   Widget _buildAddress() {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
       child: AddressListTile(
         title: 'Adresse de l\'entreprise',
         addressController: _addressController,
+        isMandatory: true,
+        enabled: _isEditing,
+      ),
+    );
+  }
+
+  Widget _buildHeadquartersAddress() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: AddressListTile(
+        title: 'Adresse du siège social',
+        addressController: _headquartersAddressController,
         isMandatory: true,
         enabled: _isEditing,
       ),
