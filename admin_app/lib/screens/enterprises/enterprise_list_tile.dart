@@ -1,4 +1,5 @@
 import 'package:admin_app/providers/enterprises_provider.dart';
+import 'package:admin_app/screens/enterprises/activity_type_list_tile.dart';
 import 'package:admin_app/screens/enterprises/confirm_delete_enterprise_dialog.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
@@ -42,6 +43,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   @override
   void dispose() {
     _nameController.dispose();
+    _activityTypeController.dispose();
     _phoneController.dispose();
     _faxController.dispose();
     _websiteController.dispose();
@@ -61,6 +63,9 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
 
   late final _nameController = TextEditingController(
     text: widget.enterprise.name,
+  );
+  late final _activityTypeController = ActivityTypeListController(
+    initial: widget.enterprise.activityTypes,
   );
   late final _phoneController = TextEditingController(
     text: widget.enterprise.phone?.toString(),
@@ -98,6 +103,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
 
   Enterprise get editedEnterprise => widget.enterprise.copyWith(
     name: _nameController.text,
+    activityTypes: _activityTypeController.activityTypes,
     phone: PhoneNumber.fromString(
       _phoneController.text,
       id: widget.enterprise.phone?.id,
@@ -205,6 +211,8 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
           children: [
             _buildName(),
             const SizedBox(height: 8),
+            _buildActivityTypes(),
+            const SizedBox(height: 8),
             _buildAddress(),
             const SizedBox(height: 8),
             _buildPhone(),
@@ -246,6 +254,16 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
           ),
         )
         : Container();
+  }
+
+  Widget _buildActivityTypes() {
+    return ActivityTypeListTile(
+      controller: _activityTypeController,
+      editMode: _isEditing,
+      onSaved: (activities) {
+        debugPrint('coucou');
+      },
+    );
   }
 
   Widget _buildPhone() {
