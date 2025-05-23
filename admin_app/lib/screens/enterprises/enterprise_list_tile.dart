@@ -1,6 +1,7 @@
 import 'package:admin_app/providers/enterprises_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/enterprises/activity_type_list_tile.dart';
+import 'package:admin_app/screens/enterprises/available_places_list_tile.dart';
 import 'package:admin_app/screens/enterprises/confirm_delete_enterprise_dialog.dart';
 import 'package:admin_app/screens/enterprises/teacher_picker_tile.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
@@ -223,6 +224,8 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
             const SizedBox(height: 8),
             _buildActivityTypes(),
             const SizedBox(height: 8),
+            _buildAvailability(),
+            const SizedBox(height: 8),
             _buildRecruiter(),
             const SizedBox(height: 8),
             _buildAddress(),
@@ -272,6 +275,17 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     return ActivityTypeListTile(
       controller: _activityTypeController,
       editMode: _isEditing,
+    );
+  }
+
+  Widget _buildAvailability() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: AvailablePlaceListTile(
+        initial: {},
+        editMode: _isEditing,
+        onChanged: (_, __) {},
+      ),
     );
   }
 
