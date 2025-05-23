@@ -1,9 +1,13 @@
 // coverage:ignore-file
 import 'dart:developer' as dev;
 
+import 'package:admin_app/providers/enterprises_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
+import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
@@ -11,6 +15,7 @@ import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:common/utils.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:flutter/material.dart';
@@ -20,25 +25,31 @@ Future<void> resetDummyData(BuildContext context) async {
   final schoolBoards = SchoolBoardsProvider.of(context, listen: false);
   final teachers = TeachersProvider.of(context, listen: false);
   final students = StudentsProvider.of(context, listen: false);
+  final enterprises = EnterprisesProvider.of(context, listen: false);
   // TODO Enterprises should store all the teachers that have recruited them and
   // fixed the shareWith field to be a list of teacher ids
 
-  await _removeAll(students, teachers, schoolBoards);
+  await _removeAll(enterprises, students, teachers, schoolBoards);
 
   // TODO Look for Quebec servers (OVH, Akamai, Vultr, etc.) to host the database
   await _addDummySchoolBoards(schoolBoards);
   await _addDummyTeachers(teachers, schoolBoards);
   await _addDummyStudents(students, teachers);
+  await _addDummyEnterprises(enterprises, teachers);
 
   dev.log('Dummy reset data done');
 }
 
 Future<void> _removeAll(
+  EnterprisesProvider enterprises,
   StudentsProvider students,
   TeachersProvider teachers,
   SchoolBoardsProvider schoolBoards,
 ) async {
   dev.log('Removing dummy data');
+
+  enterprises.clear(confirm: true);
+  await _waitForDatabaseUpdate(enterprises, 0, strictlyEqualToExpected: true);
 
   students.clear(confirm: true);
   await _waitForDatabaseUpdate(students, 0, strictlyEqualToExpected: true);
@@ -505,6 +516,662 @@ Future<void> _addDummyStudents(
   );
 
   await _waitForDatabaseUpdate(students, 10);
+}
+
+Future<void> _addDummyEnterprises(
+  EnterprisesProvider enterprises,
+  TeachersProvider teachers,
+) async {
+  dev.log('Adding dummy enterprises');
+  final schoolBoardId = teachers.currentTeacher.schoolBoardId;
+
+  JobList jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[2].specializations[9],
+      positionsOffered: 2,
+      sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents(
+        severeInjuries: [Incident('Vaut mieux ne pas détailler...')],
+      ),
+      minimumAge: 12,
+      preInternshipRequests: PreInternshipRequests.fromStrings([
+        'Manger de la poutine',
+        PreInternshipRequestTypes.soloInterview.index.toString(),
+      ]),
+      uniforms: Uniforms(
+        status: UniformStatus.suppliedByEnterprise,
+        uniforms: ['Un beau chapeu bleu'],
+      ),
+      protections: Protections(
+        status: ProtectionsStatus.suppliedByEnterprise,
+        protections: [
+          'Une veste de mithril',
+          'Une cotte de maille',
+          'Une drole de bague',
+        ],
+      ),
+    ),
+  );
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[0].specializations[7],
+      positionsOffered: 3,
+      sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents(
+        minorInjuries: [
+          Incident('Juste un petit couteau de 5cm dans la main'),
+          Incident('Une deuxième fois, mais seulement 5 points de suture'),
+        ],
+      ),
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([
+        'Manger de la tarte',
+      ]),
+      uniforms: Uniforms(
+        status: UniformStatus.suppliedByEnterprise,
+        uniforms: ['Deux dents en or'],
+      ),
+      protections: Protections(
+        status: ProtectionsStatus.suppliedByEnterprise,
+        protections: [
+          'Une veste de mithril',
+          'Une cotte de maille',
+          'Une drole de bague',
+        ],
+      ),
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'Metro Gagnon',
+      activityTypes: {
+        ActivityTypes.boucherie,
+        ActivityTypes.commerce,
+        ActivityTypes.epicerie,
+      },
+      recruiterId: teachers[0].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Marc',
+        middleName: null,
+        lastName: 'Arcand',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 999 6655'),
+        address: null,
+        email: 'm.arcand@email.com',
+      ),
+      contactFunction: 'Directeur',
+      address: Address(
+        civicNumber: 1853,
+        street: 'Chemin Rockland',
+        city: 'Mont-Royal',
+        postalCode: 'H3P 2Y7',
+      ),
+      phone: PhoneNumber.fromString('514 999 6655'),
+      fax: PhoneNumber.fromString('514 999 6600'),
+      website: 'fausse.ca',
+      headquartersAddress: Address(
+        civicNumber: 1853,
+        street: 'Chemin Rockland',
+        city: 'Mont-Royal',
+        postalCode: 'H3P 2Y7',
+      ),
+      neq: '4567900954',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[0].specializations[7],
+      positionsOffered: 3,
+      sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'Jean Coutu',
+      activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
+      recruiterId: teachers[1].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Caroline',
+        middleName: null,
+        lastName: 'Mercier',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 123 4567 poste 123'),
+        address: null,
+        email: 'c.mercier@email.com',
+      ),
+      contactFunction: 'Assistante-gérante',
+      address: Address(
+        civicNumber: 1665,
+        street: 'Poncet',
+        city: 'Montréal',
+        postalCode: 'H3M 1T8',
+      ),
+      phone: PhoneNumber.fromString('514 123 4567'),
+      fax: PhoneNumber.fromString('514 123 4560'),
+      website: 'example.com',
+      headquartersAddress: Address(
+        civicNumber: 1665,
+        street: 'Poncet',
+        city: 'Montréal',
+        postalCode: 'H3M 1T8',
+      ),
+      neq: '1234567891',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[9].specializations[3],
+      positionsOffered: 3,
+      sstEvaluation: JobSstEvaluation(
+        questions: {
+          'Q1': ['Oui'],
+          'Q1+t': ['Peu souvent, à la discrétion des employés.'],
+          'Q3': ['Un diable'],
+          'Q5': ['Des ciseaux'],
+          'Q9': ['Des solvants', 'Des produits de nettoyage'],
+          'Q12': ['Bruyant'],
+          'Q12+t': ['Bouchons a oreilles'],
+          'Q15': ['Oui'],
+          'Q18': ['Non'],
+        },
+        date: DateTime.now(),
+      ),
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'Auto Care',
+      activityTypes: {ActivityTypes.garage},
+      recruiterId: teachers[0].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Denis',
+        middleName: null,
+        lastName: 'Rondeau',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('438 987 6543'),
+        address: null,
+        email: 'd.rondeau@email.com',
+      ),
+      contactFunction: 'Propriétaire',
+      address: Address(
+        civicNumber: 8490,
+        street: 'Rue Saint-Dominique',
+        city: 'Montréal',
+        postalCode: 'H2P 2L5',
+      ),
+      phone: PhoneNumber.fromString('438 987 6543'),
+      website: '',
+      headquartersAddress: Address(
+        civicNumber: 8490,
+        street: 'Rue Saint-Dominique',
+        city: 'Montréal',
+        postalCode: 'H2P 2L5',
+      ),
+      neq: '5679011975',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[9].specializations[3],
+      positionsOffered: 2,
+      sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'Auto Repair',
+      activityTypes: {ActivityTypes.garage, ActivityTypes.mecanique},
+      recruiterId: teachers[2].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Claudio',
+        middleName: null,
+        lastName: 'Brodeur',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 235 6789'),
+        address: null,
+        email: 'c.brodeur@email.com',
+      ),
+      contactFunction: 'Propriétaire',
+      address: Address(
+        civicNumber: 10142,
+        street: 'Boul. Saint-Laurent',
+        city: 'Montréal',
+        postalCode: 'H3L 2N7',
+      ),
+      phone: PhoneNumber.fromString('514 235 6789'),
+      fax: PhoneNumber.fromString('514 321 9870'),
+      website: 'fausse.ca',
+      headquartersAddress: Address(
+        civicNumber: 10142,
+        street: 'Boul. Saint-Laurent',
+        city: 'Montréal',
+        postalCode: 'H3L 2N7',
+      ),
+      neq: '2345678912',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[2].specializations[9],
+      positionsOffered: 2,
+      sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'Boucherie Marien',
+      activityTypes: {ActivityTypes.boucherie, ActivityTypes.commerce},
+      recruiterId: teachers[0].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Brigitte',
+        middleName: null,
+        lastName: 'Samson',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('438 888 2222'),
+        address: null,
+        email: 'b.samson@email.com',
+      ),
+      contactFunction: 'Gérante',
+      address: Address(
+        civicNumber: 8921,
+        street: 'Rue Lajeunesse',
+        city: 'Montréal',
+        postalCode: 'H2M 1S1',
+      ),
+      phone: PhoneNumber.fromString('514 321 9876'),
+      fax: PhoneNumber.fromString('514 321 9870'),
+      website: 'fausse.ca',
+      headquartersAddress: Address(
+        civicNumber: 8921,
+        street: 'Rue Lajeunesse',
+        city: 'Montréal',
+        postalCode: 'H2M 1S1',
+      ),
+      neq: '1234567080',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[2].specializations[7],
+      positionsOffered: 1,
+      sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'IGA',
+      activityTypes: {ActivityTypes.epicerie, ActivityTypes.supermarche},
+      recruiterId: teachers[0].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Gabrielle',
+        middleName: null,
+        lastName: 'Fortin',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 111 2222'),
+        address: null,
+        email: 'g.fortin@email.com',
+      ),
+      contactFunction: 'Gérante',
+      address: Address(
+        civicNumber: 1415,
+        street: 'Rue Jarry Est',
+        city: 'Montréal',
+        postalCode: 'H2E 1A7',
+      ),
+      phone: PhoneNumber.fromString('514 111 2222'),
+      fax: PhoneNumber.fromString('514 111 2200'),
+      website: 'fausse.ca',
+      headquartersAddress: Address(
+        civicNumber: 7885,
+        street: 'Rue Lajeunesse',
+        city: 'Montréal',
+        postalCode: 'H2M 1S1',
+      ),
+      neq: '1234560522',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[0].specializations[7],
+      positionsOffered: 2,
+      sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'Pharmaprix',
+      activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
+      recruiterId: teachers[3].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Jessica',
+        middleName: null,
+        lastName: 'Marcotte',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 111 2222'),
+        address: null,
+        email: 'g.fortin@email.com',
+      ),
+      contactFunction: 'Pharmacienne',
+      address: Address(
+        civicNumber: 3611,
+        street: 'Rue Jarry Est',
+        city: 'Montréal',
+        postalCode: 'H1Z 2G1',
+      ),
+      phone: PhoneNumber.fromString('514 654 5444'),
+      fax: PhoneNumber.fromString('514 654 5445'),
+      website: 'fausse.ca',
+      headquartersAddress: Address(
+        civicNumber: 3611,
+        street: 'Rue Jarry Est',
+        city: 'Montréal',
+        postalCode: 'H1Z 2G1',
+      ),
+      neq: '3456789933',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[2].specializations[14],
+      positionsOffered: 1,
+      sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'Subway',
+      activityTypes: {
+        ActivityTypes.restaurationRapide,
+        ActivityTypes.sandwicherie,
+      },
+      recruiterId: teachers[3].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Carlos',
+        middleName: null,
+        lastName: 'Rodriguez',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 555 3333'),
+        address: null,
+        email: 'c.rodriguez@email.com',
+      ),
+      contactFunction: 'Gérant',
+      address: Address(
+        civicNumber: 775,
+        street: 'Rue Chabanel O',
+        city: 'Montréal',
+        postalCode: 'H4N 3J7',
+      ),
+      phone: PhoneNumber.fromString('514 555 7891'),
+      website: 'fausse.ca',
+      headquartersAddress: null,
+      neq: '6790122996',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[0].specializations[7],
+      positionsOffered: 3,
+      sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
+
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'Walmart',
+      activityTypes: {
+        ActivityTypes.commerce,
+        ActivityTypes.magasin,
+        ActivityTypes.supermarche,
+      },
+      recruiterId: teachers[0].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'France',
+        middleName: null,
+        lastName: 'Boissonneau',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 879 8654 poste 1112'),
+        address: null,
+        email: 'f.boissonneau@email.com',
+      ),
+      contactFunction: 'Directrice des Ressources Humaines',
+      address: Address(
+        civicNumber: 10345,
+        street: 'Ave Christophe-Colomb',
+        city: 'Montréal',
+        postalCode: 'H2C 2V1',
+      ),
+      phone: PhoneNumber.fromString('514 879 8654'),
+      fax: PhoneNumber.fromString('514 879 8000'),
+      website: 'fausse.ca',
+      headquartersAddress: Address(
+        civicNumber: 10345,
+        street: 'Ave Christophe-Colomb',
+        city: 'Montréal',
+        postalCode: 'H2C 2V1',
+      ),
+      neq: '9012345038',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[1].specializations[2],
+      positionsOffered: 1,
+      sstEvaluation: JobSstEvaluation(
+        questions: {
+          'Q1': ['Oui'],
+          'Q1+t': ['Plusieurs fois par jour, surtout des pots de fleurs.'],
+          'Q3': ['Un diable'],
+          'Q5': ['Un couteau', 'Des ciseaux', 'Un sécateur'],
+          'Q7': ['Des pesticides', 'Engrais'],
+          'Q12': ['Bruyant'],
+          'Q15': ['Non'],
+          'Q18': ['Oui'],
+          'Q18+t': [
+            'L\'élève ne portait pas ses gants malgré plusieurs avertissements, '
+                'et il s\'est ouvert profondément la paume en voulant couper une tige.',
+          ],
+        },
+      ),
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'Le jardin de Joanie',
+      activityTypes: {ActivityTypes.commerce, ActivityTypes.fleuriste},
+      recruiterId: teachers[0].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Joanie',
+        middleName: null,
+        lastName: 'Lemieux',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('438 789 6543'),
+        address: null,
+        email: 'j.lemieux@email.com',
+      ),
+      contactFunction: 'Propriétaire',
+      address: Address(
+        civicNumber: 8629,
+        street: 'Rue de Gaspé',
+        city: 'Montréal',
+        postalCode: 'H2P 2K3',
+      ),
+      phone: PhoneNumber.fromString('438 789 6543'),
+      website: '',
+      headquartersAddress: Address(
+        civicNumber: 8629,
+        street: 'Rue de Gaspé',
+        city: 'Montréal',
+        postalCode: 'H2P 2K3',
+      ),
+      neq: '5679011966',
+    ),
+  );
+
+  jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[1].specializations[2],
+      positionsOffered: 1,
+      sstEvaluation: JobSstEvaluation(
+        questions: {
+          'Q1': ['Oui'],
+          'Q1+t': [
+            'En début et en fin de journée, surtout des pots de fleurs.',
+          ],
+          'Q3': ['Un diable'],
+          'Q5': ['Un couteau', 'Des ciseaux'],
+          'Q7': ['Des pesticides', 'Engrais'],
+          'Q12': ['__NOT_APPLICABLE_INTERNAL__'],
+          'Q15': ['Oui'],
+          'Q15+t': ['Mais pourquoi donc??'],
+          'Q16': ['Beurk'],
+          'Q18': ['Non'],
+        },
+      ),
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: schoolBoardId,
+      name: 'Fleuriste Joli',
+      activityTypes: {ActivityTypes.fleuriste, ActivityTypes.magasin},
+      recruiterId: teachers[0].id,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Gaëtan',
+        middleName: null,
+        lastName: 'Munger',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 987 6543'),
+        address: null,
+        email: 'g.munger@email.com',
+      ),
+      contactFunction: 'Gérant',
+      address: Address(
+        civicNumber: 70,
+        street: 'Rue Chabanel Ouest',
+        city: 'Montréal',
+        postalCode: 'H2N 1E7',
+      ),
+      phone: PhoneNumber.fromString('514 987 6543'),
+      website: '',
+      headquartersAddress: Address(
+        civicNumber: 70,
+        street: 'Rue Chabanel Ouest',
+        city: 'Montréal',
+        postalCode: 'H2N 1E7',
+      ),
+      neq: '5679055590',
+    ),
+  );
+  await _waitForDatabaseUpdate(enterprises, 11);
 }
 
 Future<void> _waitForDatabaseUpdate(

@@ -1,4 +1,5 @@
 import 'package:admin_app/providers/auth_provider.dart';
+import 'package:admin_app/screens/enterprises/enterprises_list_screen.dart';
 import 'package:admin_app/screens/login/login_screen.dart';
 import 'package:admin_app/screens/schools/schools_list_screen.dart';
 import 'package:admin_app/screens/students/students_list_screen.dart';
@@ -12,6 +13,7 @@ abstract class Screens {
   static const schoolsListScreen = SchoolsListScreen.route;
   static const teachersListScreen = TeachersListScreen.route;
   static const studentsListScreen = StudentsListScreen.route;
+  static const enterprisesListScreen = EnterprisesListScreen.route;
 }
 
 final router = GoRouter(
@@ -41,11 +43,15 @@ final router = GoRouter(
       name: Screens.teachersListScreen,
       builder: (context, state) => const TeachersListScreen(),
     ),
-
     GoRoute(
       path: Screens.studentsListScreen,
       name: Screens.studentsListScreen,
       builder: (context, state) => const StudentsListScreen(),
+    ),
+    GoRoute(
+      path: Screens.enterprisesListScreen,
+      name: Screens.enterprisesListScreen,
+      builder: (context, state) => const EnterprisesListScreen(),
     ),
   ],
 );

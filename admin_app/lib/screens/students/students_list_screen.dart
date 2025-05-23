@@ -15,7 +15,7 @@ class StudentsListScreen extends StatelessWidget {
   ///
   /// This complicate structure is basically separating the students by
   /// school and then by class group (associated with a teacher).
-  Future<Map<String, Map<String, List<Student>>>> getStudents(
+  Future<Map<String, Map<String, List<Student>>>> _getStudents(
     BuildContext context,
   ) async {
     final students = [...StudentsProvider.of(context, listen: true)];
@@ -87,7 +87,7 @@ class StudentsListScreen extends StatelessWidget {
         child: FutureBuilder(
           future: Future.wait([
             SchoolBoardsProvider.mySchoolBoardOf(context),
-            getStudents(context),
+            _getStudents(context),
           ]),
           builder: (context, snapshot) {
             final schoolBoard = snapshot.data?[0] as SchoolBoard?;

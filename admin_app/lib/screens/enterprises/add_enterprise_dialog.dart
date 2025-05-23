@@ -1,26 +1,23 @@
-import 'package:admin_app/screens/schools/school_list_tile.dart';
-import 'package:common/models/school_boards/school.dart';
-import 'package:common/models/school_boards/school_board.dart';
+import 'package:admin_app/screens/enterprises/enterprise_list_tile.dart';
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:flutter/material.dart';
 
-class AddSchoolDialog extends StatefulWidget {
-  const AddSchoolDialog({super.key, required this.schoolBoard});
-
-  final SchoolBoard schoolBoard;
+class AddEnterpriseDialog extends StatefulWidget {
+  const AddEnterpriseDialog({super.key});
 
   @override
-  State<AddSchoolDialog> createState() => _AddSchoolDialogState();
+  State<AddEnterpriseDialog> createState() => _AddEnterpriseDialogState();
 }
 
-class _AddSchoolDialogState extends State<AddSchoolDialog> {
+class _AddEnterpriseDialogState extends State<AddEnterpriseDialog> {
   final _editingKey = GlobalKey();
 
   Future<void> _onClickedConfirm() async {
-    final state = _editingKey.currentState as SchoolListTileState;
+    final state = _editingKey.currentState as EnterpriseListTileState;
 
     // Validate the form
     if (!(await state.validate()) || !mounted) return;
-    Navigator.of(context).pop(state.editedSchool);
+    Navigator.of(context).pop(state.editedEnterprise);
   }
 
   void _onClickedCancel() {
@@ -37,7 +34,7 @@ class _AddSchoolDialogState extends State<AddSchoolDialog> {
           children: [
             Center(
               child: Text(
-                'Nouvelle école',
+                'Nouvelle entreprise',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
@@ -46,10 +43,9 @@ class _AddSchoolDialogState extends State<AddSchoolDialog> {
             const SizedBox(height: 12),
             Text('Compléter les informations'),
             const SizedBox(height: 8),
-            SchoolListTile(
+            EnterpriseListTile(
               key: _editingKey,
-              school: School.empty,
-              schoolBoard: widget.schoolBoard,
+              enterprise: Enterprise.empty,
               isExpandable: false,
               forceEditingMode: true,
             ),

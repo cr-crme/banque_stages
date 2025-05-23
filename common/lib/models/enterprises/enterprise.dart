@@ -50,6 +50,15 @@ class Enterprise extends ExtendedItemSerializable {
     this.neq = '',
   });
 
+  static Enterprise get empty => Enterprise(
+        schoolBoardId: '-1',
+        name: '',
+        activityTypes: {},
+        recruiterId: '-1',
+        jobs: JobList(),
+        contact: Person.empty,
+      );
+
   Enterprise copyWith({
     String? id,
     String? schoolBoardId,

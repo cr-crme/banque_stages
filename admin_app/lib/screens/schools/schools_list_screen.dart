@@ -4,12 +4,28 @@ import 'package:admin_app/screens/schools/add_school_dialog.dart';
 import 'package:admin_app/screens/schools/school_list_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:common/models/school_boards/school.dart';
+import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
 
 class SchoolsListScreen extends StatelessWidget {
   const SchoolsListScreen({super.key});
 
   static const route = '/schools_list';
+
+  Future<List<School>> _getSchools(BuildContext context) async {
+    final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(
+      context,
+      listen: true,
+    );
+    final schools = schoolBoard?.schools ?? [];
+
+    schools.sorted((a, b) {
+      final nameA = a.name.toLowerCase();
+      final nameB = b.name.toLowerCase();
+      return nameA.compareTo(nameB);
+    });
+    return schools;
+  }
 
   Future<void> _showAddSchoolDialog(BuildContext context) async {
     final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(context);
@@ -42,17 +58,16 @@ class SchoolsListScreen extends StatelessWidget {
 
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: SchoolBoardsProvider.mySchoolBoardOf(context, listen: true),
+          future: Future.wait([
+            SchoolBoardsProvider.mySchoolBoardOf(context, listen: true),
+            _getSchools(context),
+          ]),
           builder: (context, snapshot) {
-            final schoolBoard = snapshot.data;
-            if (schoolBoard == null) {
+            final schoolBoard = snapshot.data?[0] as SchoolBoard?;
+            final schools = snapshot.data?[1] as List<School>?;
+            if (schoolBoard == null || schools == null) {
               return const Center(child: CircularProgressIndicator());
             }
-            final schools = schoolBoard.schools.sorted((a, b) {
-              final nameA = a.name.toLowerCase();
-              final nameB = b.name.toLowerCase();
-              return nameA.compareTo(nameB);
-            });
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

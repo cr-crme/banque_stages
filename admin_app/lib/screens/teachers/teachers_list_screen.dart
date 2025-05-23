@@ -12,7 +12,7 @@ class TeachersListScreen extends StatelessWidget {
 
   static const route = '/teachers_list';
 
-  Future<Map<String, List<Teacher>>> getTeachers(BuildContext context) async {
+  Future<Map<String, List<Teacher>>> _getTeachers(BuildContext context) async {
     final teachersTp = TeachersProvider.of(context, listen: true);
     final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(context);
     final schools = schoolBoard?.schools ?? [];
@@ -71,7 +71,7 @@ class TeachersListScreen extends StatelessWidget {
         child: FutureBuilder(
           future: Future.wait([
             SchoolBoardsProvider.mySchoolBoardOf(context),
-            getTeachers(context),
+            _getTeachers(context),
           ]),
           builder: (context, snapshot) {
             final schoolBoard = snapshot.data?[0] as SchoolBoard?;
