@@ -62,9 +62,11 @@ class _WebSiteListTileState extends State<WebSiteListTile> {
       onFocusChange: (hasFocus) {
         if (!hasFocus) _addHttp(_websiteController.text);
       },
-      // TODO: Add MouseRegion to change the cursor to a pointer when hovering over the icon
       child: InkWell(
-        onTap: widget.enabled || _websiteController.text == '' ? null : _visit,
+        onTap:
+            !widget.canVisit || widget.enabled || _websiteController.text == ''
+                ? null
+                : _visit,
         child: Stack(
           alignment: Alignment.centerLeft,
           children: [
@@ -83,18 +85,14 @@ class _WebSiteListTileState extends State<WebSiteListTile> {
               onSaved: (value) => _addHttp(value!),
               keyboardType: TextInputType.url,
             ),
-            InkWell(
-              onTap: widget.canVisit ? _visit : null,
-              borderRadius: BorderRadius.circular(25),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  widget.icon,
-                  color:
-                      widget.canVisit
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey,
-                ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                widget.icon,
+                color:
+                    widget.canVisit
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey,
               ),
             ),
           ],

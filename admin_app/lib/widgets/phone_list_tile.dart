@@ -97,18 +97,14 @@ class _PhoneListTileState extends State<PhoneListTile> {
               onSaved: widget.onSaved,
               keyboardType: TextInputType.phone,
             ),
-            InkWell(
-              onTap: widget.canCall ? _call : null,
-              borderRadius: BorderRadius.circular(25),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  widget.icon,
-                  color:
-                      widget.canCall
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey,
-                ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                widget.icon,
+                color:
+                    widget.canCall
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey,
               ),
             ),
           ],

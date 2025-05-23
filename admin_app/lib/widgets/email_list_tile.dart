@@ -86,18 +86,12 @@ class _EmailListTileState extends State<EmailListTile> {
             onSaved: widget.onSaved,
             keyboardType: TextInputType.emailAddress,
           ),
-          InkWell(
-            onTap: widget.canMail ? _email : null,
-            borderRadius: BorderRadius.circular(25),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                widget.icon,
-                color:
-                    widget.canMail
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey,
-              ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              widget.icon,
+              color:
+                  widget.canMail ? Theme.of(context).primaryColor : Colors.grey,
             ),
           ),
         ],

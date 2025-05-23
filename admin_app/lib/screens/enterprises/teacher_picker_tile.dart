@@ -20,7 +20,8 @@ class TeacherPickerController {
   final _formKey = GlobalKey<FormFieldState<String>>();
 
   void dispose() {
-    _textController?.dispose();
+    // Since _textController is managed by the FormField, we don't need to
+    // dispose of it here.
   }
 }
 
