@@ -1,6 +1,8 @@
 import 'package:admin_app/providers/enterprises_provider.dart';
+import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/enterprises/activity_type_list_tile.dart';
 import 'package:admin_app/screens/enterprises/confirm_delete_enterprise_dialog.dart';
+import 'package:admin_app/screens/enterprises/teacher_picker_tile.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
@@ -8,6 +10,7 @@ import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:admin_app/widgets/web_site_list_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +47,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   void dispose() {
     _nameController.dispose();
     _activityTypeController.dispose();
+    _teacherPickerController.dispose();
     _phoneController.dispose();
     _faxController.dispose();
     _websiteController.dispose();
@@ -66,6 +70,11 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   );
   late final _activityTypeController = ActivityTypeListController(
     initial: widget.enterprise.activityTypes,
+  );
+  late final _teacherPickerController = TeacherPickerController(
+    initial: TeachersProvider.of(context, listen: true).firstWhereOrNull(
+      (teacher) => teacher.id == widget.enterprise.recruiterId,
+    ),
   );
   late final _phoneController = TextEditingController(
     text: widget.enterprise.phone?.toString(),
@@ -104,6 +113,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   Enterprise get editedEnterprise => widget.enterprise.copyWith(
     name: _nameController.text,
     activityTypes: _activityTypeController.activityTypes,
+    recruiterId: _teacherPickerController.teacher.id,
     phone: PhoneNumber.fromString(
       _phoneController.text,
       id: widget.enterprise.phone?.id,
@@ -213,6 +223,8 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
             const SizedBox(height: 8),
             _buildActivityTypes(),
             const SizedBox(height: 8),
+            _buildRecruiter(),
+            const SizedBox(height: 8),
             _buildAddress(),
             const SizedBox(height: 8),
             _buildPhone(),
@@ -263,6 +275,21 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       onSaved: (activities) {
         debugPrint('coucou');
       },
+    );
+  }
+
+  Widget _buildRecruiter() {
+    _teacherPickerController.teacher =
+        TeachersProvider.of(context, listen: false).firstWhereOrNull(
+          (teacher) => teacher.id == widget.enterprise.recruiterId,
+        ) ??
+        Teacher.empty;
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: TeacherPickerTile(
+        controller: _teacherPickerController,
+        editMode: _isEditing,
+      ),
     );
   }
 
