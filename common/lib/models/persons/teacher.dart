@@ -44,6 +44,8 @@ class Teacher extends Person {
         itineraries: [],
       );
 
+  bool get isEmpty => firstName.isEmpty && lastName.isEmpty;
+
   Teacher.fromSerialized(super.map)
       : schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
         schoolId = StringExt.from(map['school_id']) ?? '-1',

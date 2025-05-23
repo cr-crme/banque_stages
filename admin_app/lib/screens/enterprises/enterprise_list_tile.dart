@@ -272,9 +272,6 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     return ActivityTypeListTile(
       controller: _activityTypeController,
       editMode: _isEditing,
-      onSaved: (activities) {
-        debugPrint('coucou');
-      },
     );
   }
 
@@ -284,6 +281,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
           (teacher) => teacher.id == widget.enterprise.recruiterId,
         ) ??
         Teacher.empty;
+
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
       child: TeacherPickerTile(

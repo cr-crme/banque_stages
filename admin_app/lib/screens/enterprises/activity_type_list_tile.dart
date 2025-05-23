@@ -19,12 +19,10 @@ class ActivityTypeListTile extends StatelessWidget {
     super.key,
     required this.controller,
     required this.editMode,
-    required this.onSaved,
   });
 
   final ActivityTypeListController controller;
   final bool editMode;
-  final Function(Set<ActivityTypes>?) onSaved;
 
   @override
   Widget build(BuildContext context) {
