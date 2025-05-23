@@ -9,6 +9,7 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class EnterpriseListTile extends StatefulWidget {
   const EnterpriseListTile({
@@ -51,6 +52,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     _contactFunctionController.dispose();
     _contactPhoneController.dispose();
     _contactEmailController.dispose();
+    _neqController.dispose();
     super.dispose();
   }
 
@@ -90,6 +92,9 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   late final _contactEmailController = TextEditingController(
     text: widget.enterprise.contact.email,
   );
+  late final _neqController = TextEditingController(
+    text: widget.enterprise.neq,
+  );
 
   Enterprise get editedEnterprise => widget.enterprise.copyWith(
     name: _nameController.text,
@@ -114,6 +119,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       email: _contactEmailController.text,
     ),
     contactFunction: _contactFunctionController.text,
+    neq: _neqController.text,
   );
 
   @override
@@ -210,6 +216,8 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
             _buildHeadquartersAddress(),
             const SizedBox(height: 8),
             _buildContact(),
+            const SizedBox(height: 8),
+            _buildNeq(),
           ],
         ),
       ),
@@ -368,6 +376,22 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildNeq() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: TextFormField(
+        controller: _neqController,
+        enabled: _isEditing,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        decoration: const InputDecoration(
+          labelText: 'Numéro d\'entreprise (NEQ)',
+          labelStyle: TextStyle(color: Colors.black),
+        ),
+        style: TextStyle(color: Colors.black),
+      ),
     );
   }
 }
