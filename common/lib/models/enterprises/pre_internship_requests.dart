@@ -50,7 +50,13 @@ class PreInternshipRequests extends ItemSerializable {
     required this.isApplicable,
   });
 
-  factory PreInternshipRequests.fromStrings(List<String> values) {
+  static PreInternshipRequests get empty => PreInternshipRequests(
+        requests: [],
+        other: null,
+        isApplicable: true,
+      );
+
+  factory PreInternshipRequests.fromStrings(List<String> values, {String? id}) {
     final requests = <PreInternshipRequestTypes>[];
     bool isApplicable = true;
     String? other;
@@ -75,7 +81,7 @@ class PreInternshipRequests extends ItemSerializable {
     }
 
     return PreInternshipRequests(
-        requests: requests, other: other, isApplicable: isApplicable);
+        id: id, requests: requests, other: other, isApplicable: isApplicable);
   }
 
   PreInternshipRequests copyWith({

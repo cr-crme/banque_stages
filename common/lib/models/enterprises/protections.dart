@@ -69,6 +69,11 @@ class Protections extends ItemSerializable {
   Protections({super.id, required this.status, List<String>? protections})
       : protections = protections ?? [];
 
+  static Protections get empty => Protections(
+        status: ProtectionsStatus.none,
+        protections: [],
+      );
+
   Protections.fromSerialized(super.map)
       : status = map['status'] == null
             ? ProtectionsStatus.none

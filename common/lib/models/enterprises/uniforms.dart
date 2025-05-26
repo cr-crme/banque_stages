@@ -39,6 +39,11 @@ class Uniforms extends ItemSerializable {
   Uniforms({super.id, required this.status, List<String>? uniforms})
       : uniforms = uniforms ?? [];
 
+  static Uniforms get empty => Uniforms(
+        status: UniformStatus.none,
+        uniforms: [],
+      );
+
   Uniforms.fromSerialized(super.map, String version)
       : status = map['status'] == null
             ? UniformStatus.none

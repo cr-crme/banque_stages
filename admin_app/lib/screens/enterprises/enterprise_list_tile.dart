@@ -10,6 +10,7 @@ import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:admin_app/widgets/web_site_list_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
@@ -73,7 +74,11 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   late final _activityTypeController = ActivityTypeListController(
     initial: widget.enterprise.activityTypes,
   );
-  final _jobController = JobListController();
+  late final _jobControllers = Map.fromEntries(
+    widget.enterprise.jobs.map(
+      (job) => MapEntry(job.id, JobListController(job: job)),
+    ),
+  );
   late final _teacherPickerController = TeacherPickerController(
     initial: TeachersProvider.of(context, listen: true).firstWhereOrNull(
       (teacher) => teacher.id == widget.enterprise.recruiterId,
@@ -126,13 +131,9 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       id: widget.enterprise.fax?.id,
     ),
     jobs:
-        JobList()..addAll([
-          ...widget.enterprise.jobs.map(
-            (job) => job.copyWith(
-              positionsOffered: _jobController.positionsOffered(job.id),
-            ),
-          ),
-        ]),
+        JobList()..addAll(
+          _jobControllers.values.map((jobController) => jobController.job),
+        ),
     website: _websiteController.text,
     address: _addressController.address,
     headquartersAddress: _headquartersAddressController.address,
@@ -234,7 +235,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
             const SizedBox(height: 8),
             _buildActivityTypes(),
             const SizedBox(height: 8),
-            _buildAvailability(),
+            _buildJob(),
             const SizedBox(height: 8),
             _buildRecruiter(),
             const SizedBox(height: 8),
@@ -288,11 +289,21 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     );
   }
 
-  Widget _buildAvailability() {
+  void _addJob() {
+    final job = Job.empty;
+    setState(() => _jobControllers[job.id] = JobListController(job: job));
+  }
+
+  void _deleteJob(String id) {
+    setState(() => _jobControllers.remove(id));
+  }
+
+  Widget _buildJob() {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
-      child:
-          widget.enterprise.jobs.isEmpty
+      child: Column(
+        children: [
+          _jobControllers.isEmpty
               ? Padding(
                 padding: const EdgeInsets.only(
                   left: 12.0,
@@ -303,15 +314,25 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
               )
               : Column(
                 children: [
-                  ...widget.enterprise.jobs.map(
-                    (job) => JobListTile(
-                      controller: _jobController,
-                      job: job,
+                  ..._jobControllers.keys.map(
+                    (jobId) => JobListTile(
+                      controller: _jobControllers[jobId]!,
                       editMode: _isEditing,
+                      onRequestDelete: () => _deleteJob(jobId),
                     ),
                   ),
                 ],
               ),
+          if (_isEditing)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
+              child: TextButton(
+                onPressed: _addJob,
+                child: const Text('Enregitrer un stage'),
+              ),
+            ),
+        ],
+      ),
     );
   }
 

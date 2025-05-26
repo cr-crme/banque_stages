@@ -15,6 +15,7 @@ class Job extends ItemSerializable {
 
 // Details
   final Specialization? _specialization;
+  Specialization? get specializationOrNull => _specialization;
   Specialization get specialization {
     if (_specialization == null) {
       throw ArgumentError('No specialization found for this job');
@@ -42,7 +43,7 @@ class Job extends ItemSerializable {
 
   Job({
     super.id,
-    required Specialization specialization,
+    required Specialization? specialization,
     required this.positionsOffered,
     required this.minimumAge,
     required this.preInternshipRequests,
@@ -71,7 +72,7 @@ class Job extends ItemSerializable {
   }) {
     return Job(
       id: id ?? this.id,
-      specialization: specialization ?? this.specialization,
+      specialization: specialization ?? _specialization,
       positionsOffered: positionsOffered ?? this.positionsOffered,
       minimumAge: minimumAge ?? this.minimumAge,
       preInternshipRequests:
@@ -84,6 +85,21 @@ class Job extends ItemSerializable {
       sstEvaluation: sstEvaluation ?? this.sstEvaluation,
       incidents: incidents ?? this.incidents,
       comments: comments ?? this.comments,
+    );
+  }
+
+  static Job get empty {
+    return Job(
+      specialization: null,
+      positionsOffered: 0,
+      minimumAge: 0,
+      preInternshipRequests: PreInternshipRequests.empty,
+      uniforms: Uniforms.empty,
+      protections: Protections.empty,
+      photosUrl: [],
+      sstEvaluation: JobSstEvaluation.empty,
+      incidents: Incidents.empty,
+      comments: [],
     );
   }
 

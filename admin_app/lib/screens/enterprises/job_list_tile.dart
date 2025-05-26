@@ -1,89 +1,122 @@
 import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/autocomplete_options_builder.dart';
 import 'package:admin_app/widgets/checkbox_with_other.dart';
 import 'package:admin_app/widgets/radio_with_follow_up.dart';
 import 'package:common/models/enterprises/job.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class JobListController {
-  final _key = GlobalKey<_JobListTileState>();
-  JobListController();
-
-  int minimumAge(String jobId) {
-    return int.tryParse(_key.currentState?._minimumAgeController.text ?? '0') ??
-        0;
-  }
-
-  int positionsOffered(String jobId) {
-    return _key.currentState?._positionsOffered ?? 0;
-  }
-}
-
-class JobListTile extends StatefulWidget {
-  JobListTile({
-    required this.controller,
-    required this.job,
-    required this.editMode,
-  }) : super(key: controller._key);
-
-  final JobListController controller;
-  final Job job;
-  final bool editMode;
-
-  @override
-  State<JobListTile> createState() => _JobListTileState();
-}
-
-class _JobListTileState extends State<JobListTile> {
+  late Specialization? _specialization = _job.specializationOrNull;
   late final _minimumAgeController = TextEditingController(
-    text: widget.job.minimumAge.toString(),
+    text: _job.minimumAge.toString(),
   );
-  late Job job = widget.job.copyWith();
-  late int _positionsOffered = widget.job.positionsOffered;
+  late int _positionsOffered = _job.positionsOffered;
   int _positionsOccupied = 0;
+
   final _preInternshipRequestKey =
       GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>();
   final _uniformFormKey = GlobalKey<RadioWithFollowUpState<UniformStatus>>();
   late final _uniformTextController = TextEditingController(
-    text: job.uniforms.uniforms.join('\n '),
+    text: _job.uniforms.uniforms.join('\n '),
   );
   final _protectionsKey =
       GlobalKey<RadioWithFollowUpState<ProtectionsStatus>>();
   final _protectionsTextController =
       GlobalKey<CheckboxWithOtherState<ProtectionsType>>();
 
+  final Job _job;
+  JobListController({required Job job}) : _job = job.copyWith();
+
+  Job get job => _job.copyWith(
+    specialization: _specialization,
+    minimumAge: int.tryParse(_minimumAgeController.text),
+    positionsOffered: _positionsOffered,
+    preInternshipRequests: PreInternshipRequests.fromStrings(
+      _preInternshipRequestKey.currentState!.values,
+      id: _job.preInternshipRequests.id,
+    ),
+    uniforms: _job.uniforms.copyWith(
+      status: _uniformFormKey.currentState!.value,
+      uniforms: _uniformTextController.text.split('\n'),
+    ),
+    protections: _job.protections.copyWith(
+      status: _protectionsKey.currentState!.value,
+      protections: _protectionsTextController.currentState?.values,
+    ),
+  );
+
+  void dispose() {
+    _minimumAgeController.dispose();
+    _uniformTextController.dispose();
+  }
+}
+
+class JobListTile extends StatefulWidget {
+  const JobListTile({
+    super.key,
+    required this.controller,
+    required this.editMode,
+    required this.onRequestDelete,
+  });
+
+  final JobListController controller;
+  final bool editMode;
+  final Function() onRequestDelete;
+
+  @override
+  State<JobListTile> createState() => _JobListTileState();
+}
+
+class _JobListTileState extends State<JobListTile> {
+  Job get job => widget.controller._job;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     final internships = InternshipsProvider.of(context, listen: true);
-    _positionsOffered = job.positionsOffered;
-    _positionsOccupied = internships.fold(
+    widget.controller._positionsOffered = job.positionsOffered;
+    widget.controller._positionsOccupied = internships.fold(
       0,
       (sum, e) => e.jobId == job.id && e.isActive ? sum + 1 : sum,
     );
   }
 
   void _updatePositions(int newCount) {
-    setState(() => _positionsOffered = newCount);
+    setState(() => widget.controller._positionsOffered = newCount);
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedExpandingCard(
-      header: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Text(
-          job.specialization.idWithName,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+      header: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              widget.controller._specialization?.idWithName ??
+                  'Aucune spécialisation',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+          if (widget.editMode)
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: widget.onRequestDelete,
+            ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.only(left: 24.0, top: 12.0, right: 24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (widget.editMode) _buildJobPicker(),
+            const SizedBox(height: 8),
             _buildMinimumAge(),
             const SizedBox(height: 8),
             _buildAvailability(),
@@ -99,6 +132,73 @@ class _JobListTileState extends State<JobListTile> {
     );
   }
 
+  List<Specialization> get _availableSpecialization {
+    // Make a copy of the available specializations
+    List<Specialization> out = [...ActivitySectorsService.allSpecializations];
+    out.sort((a, b) => a.name.compareTo(b.name)); // Sort them by name
+    return out;
+  }
+
+  Autocomplete<Specialization> _buildJobPicker() {
+    return Autocomplete<Specialization>(
+      displayStringForOption: (specialization) => specialization.idWithName,
+      optionsBuilder:
+          (textEditingValue) =>
+              _availableSpecialization
+                  .where(
+                    (s) => s.idWithName.toLowerCase().contains(
+                      textEditingValue.text.toLowerCase().trim(),
+                    ),
+                  )
+                  .toList(),
+      optionsViewBuilder:
+          (context, onSelected, options) => OptionsBuilderForAutocomplete(
+            onSelected: onSelected,
+            options: options,
+            optionToString: (Specialization e) => e.idWithName,
+          ),
+      onSelected: (specialization) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        widget.controller._specialization = specialization;
+        setState(() {});
+      },
+      initialValue: TextEditingValue(
+        text: widget.controller._specialization?.idWithName ?? '',
+      ),
+      fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
+        if (_availableSpecialization.length == 1) {
+          widget.controller._specialization = _availableSpecialization[0];
+          controller.text = widget.controller._specialization!.idWithName;
+        }
+        return TextFormField(
+          controller: controller,
+          focusNode: focusNode,
+          validator: (value) {
+            return widget.controller._specialization == null
+                ? 'Sélectionner un métier.'
+                : null;
+          },
+          enabled: _availableSpecialization.length != 1,
+          decoration: InputDecoration(
+            labelText: '* Métier semi-spécialisé',
+            hintText: 'Saisir nom ou n° de métier',
+            suffixIcon:
+                _availableSpecialization.length == 1
+                    ? null
+                    : IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        if (focusNode.hasFocus) focusNode.nextFocus();
+                        widget.controller._specialization = null;
+                        controller.clear();
+                      },
+                    ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildMinimumAge() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -108,7 +208,7 @@ class _JobListTileState extends State<JobListTile> {
           width: MediaQuery.of(context).size.width * 0.24,
           height: 25,
           child: TextFormField(
-            controller: _minimumAgeController,
+            controller: widget.controller._minimumAgeController,
             enabled: widget.editMode,
             validator: (value) {
               final current = int.tryParse(value!);
@@ -126,7 +226,9 @@ class _JobListTileState extends State<JobListTile> {
   }
 
   Widget _buildAvailability() {
-    final positionsRemaining = _positionsOffered - _positionsOccupied;
+    final positionsRemaining =
+        widget.controller._positionsOffered -
+        widget.controller._positionsOccupied;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -138,23 +240,30 @@ class _JobListTileState extends State<JobListTile> {
               children: [
                 IconButton(
                   onPressed:
-                      _positionsOffered == 0
+                      widget.controller._positionsOffered == 0
                           ? null
-                          : () => _updatePositions(_positionsOffered - 1),
+                          : () => _updatePositions(
+                            widget.controller._positionsOffered - 1,
+                          ),
                   icon: Icon(
                     Icons.remove,
                     color: positionsRemaining == 0 ? Colors.grey : Colors.black,
                   ),
                 ),
-                Text(_positionsOffered.toString()),
+                Text(
+                  '$positionsRemaining / ${widget.controller._positionsOffered}',
+                ),
                 IconButton(
-                  onPressed: () => _updatePositions(_positionsOffered + 1),
+                  onPressed:
+                      () => _updatePositions(
+                        widget.controller._positionsOffered + 1,
+                      ),
                   icon: const Icon(Icons.add, color: Colors.black),
                 ),
               ],
             )
             : Text(
-              '$positionsRemaining / $_positionsOffered',
+              '$positionsRemaining / ${widget.controller._positionsOffered}',
               style: Theme.of(context).textTheme.titleMedium,
             ),
       ],
@@ -163,7 +272,7 @@ class _JobListTileState extends State<JobListTile> {
 
   Widget _buildPrerequisites() {
     return _BuildPrerequisitesCheckboxes(
-      checkBoxKey: _preInternshipRequestKey,
+      checkBoxKey: widget.controller._preInternshipRequestKey,
       enabled: widget.editMode,
       initialValues: [
         ...job.preInternshipRequests.requests.map((e) => e.toString()),
@@ -174,8 +283,8 @@ class _JobListTileState extends State<JobListTile> {
 
   Widget _buildUniform() {
     return _BuildUniformRadio(
-      uniformKey: _uniformFormKey,
-      uniformTextController: _uniformTextController,
+      uniformKey: widget.controller._uniformFormKey,
+      uniformTextController: widget.controller._uniformTextController,
       initialSelection: job.uniforms.status,
       enabled: widget.editMode,
     );
@@ -183,8 +292,8 @@ class _JobListTileState extends State<JobListTile> {
 
   Widget _buildProtections() {
     return _BuildProtectionsRadio(
-      protectionsKey: _protectionsKey,
-      protectionsTypeKey: _protectionsTextController,
+      protectionsKey: widget.controller._protectionsKey,
+      protectionsTypeKey: widget.controller._protectionsTextController,
       initialSelection: job.protections.status,
       initialItems:
           job.protections.protections.map((e) => e.toString()).toList(),
