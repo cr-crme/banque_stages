@@ -1,7 +1,9 @@
 // coverage:ignore-file
 import 'dart:developer' as dev;
+import 'dart:math';
 
 import 'package:admin_app/providers/enterprises_provider.dart';
+import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
@@ -10,6 +12,10 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/schedule.dart';
+import 'package:common/models/internships/time_utils.dart' as time_utils;
+import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
@@ -26,27 +32,33 @@ Future<void> resetDummyData(BuildContext context) async {
   final teachers = TeachersProvider.of(context, listen: false);
   final students = StudentsProvider.of(context, listen: false);
   final enterprises = EnterprisesProvider.of(context, listen: false);
+  final internships = InternshipsProvider.of(context, listen: false);
   // TODO Enterprises should store all the teachers that have recruited them and
   // fixed the shareWith field to be a list of teacher ids
 
-  await _removeAll(enterprises, students, teachers, schoolBoards);
+  await _removeAll(internships, enterprises, students, teachers, schoolBoards);
 
   // TODO Look for Quebec servers (OVH, Akamai, Vultr, etc.) to host the database
   await _addDummySchoolBoards(schoolBoards);
   await _addDummyTeachers(teachers, schoolBoards);
   await _addDummyStudents(students, teachers);
   await _addDummyEnterprises(enterprises, teachers);
+  await _addDummyInternships(internships, students, enterprises, teachers);
 
   dev.log('Dummy reset data done');
 }
 
 Future<void> _removeAll(
+  InternshipsProvider internships,
   EnterprisesProvider enterprises,
   StudentsProvider students,
   TeachersProvider teachers,
   SchoolBoardsProvider schoolBoards,
 ) async {
   dev.log('Removing dummy data');
+
+  internships.clear(confirm: true);
+  await _waitForDatabaseUpdate(internships, 0, strictlyEqualToExpected: true);
 
   enterprises.clear(confirm: true);
   await _waitForDatabaseUpdate(enterprises, 0, strictlyEqualToExpected: true);
@@ -1172,6 +1184,559 @@ Future<void> _addDummyEnterprises(
     ),
   );
   await _waitForDatabaseUpdate(enterprises, 11);
+}
+
+Future<void> _addDummyInternships(
+  InternshipsProvider internships,
+  StudentsProvider students,
+  EnterprisesProvider enterprises,
+  TeachersProvider teachers,
+) async {
+  dev.log('Adding dummy internships');
+
+  final schoolBoardId = teachers.currentTeacher.schoolBoardId;
+  final rng = Random();
+
+  var period = time_utils.DateTimeRange(
+    start: DateTime.now(),
+    end: DateTime.now().add(Duration(days: rng.nextInt(90))),
+  );
+  internships.add(
+    Internship(
+      schoolBoardId: schoolBoardId,
+      creationDate: DateTime.now(),
+      studentId: students.firstWhere((e) => e.fullName == 'Cedric Masson').id,
+      signatoryTeacherId: teachers.currentTeacherId,
+      extraSupervisingTeacherIds: [],
+      enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Care').id,
+      jobId: enterprises.firstWhere((e) => e.name == 'Auto Care').jobs[0].id,
+      extraSpecializationIds: [
+        ActivitySectorsService.activitySectors[2].specializations[1].id,
+        ActivitySectorsService.activitySectors[1].specializations[0].id,
+      ],
+      visitingPriority: VisitingPriority.values[0],
+      supervisor: Person(
+        firstName: 'Nobody',
+        middleName: null,
+        lastName: 'Forever',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514-555-1234'),
+        address: null,
+        email: null,
+      ),
+      dates: period,
+      expectedDuration: 135,
+      achievedDuration: 0,
+      teacherNotes: 'Un stage de rêve, mais pas pour l\'élève.',
+      weeklySchedules: [
+        WeeklySchedule(
+          schedule: [
+            DailySchedule(
+              dayOfWeek: Day.monday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.tuesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.wednesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.thursday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.friday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+          ],
+          period: period,
+        ),
+      ],
+    ),
+  );
+
+  var startingPeriod = DateTime.now().subtract(
+    Duration(days: rng.nextInt(50) + 60),
+  );
+  period = time_utils.DateTimeRange(
+    start: startingPeriod,
+    end: startingPeriod.add(Duration(days: rng.nextInt(50))),
+  );
+  internships.add(
+    Internship(
+      schoolBoardId: schoolBoardId,
+      creationDate: DateTime.now(),
+      studentId: students.firstWhere((e) => e.fullName == 'Thomas Caron').id,
+      signatoryTeacherId: teachers.currentTeacherId,
+      extraSupervisingTeacherIds: [],
+      enterpriseId:
+          enterprises.firstWhere((e) => e.name == 'Boucherie Marien').id,
+      jobId:
+          enterprises
+              .firstWhere((e) => e.name == 'Boucherie Marien')
+              .jobs[0]
+              .id,
+      extraSpecializationIds: [],
+      visitingPriority: VisitingPriority.values[0],
+      supervisor: Person(
+        firstName: 'Nobody',
+        middleName: null,
+        lastName: 'Forever',
+        dateBirth: null,
+        phone: null,
+        address: null,
+        email: null,
+      ),
+      dates: period,
+      expectedDuration: 135,
+      achievedDuration: 0,
+      weeklySchedules: [
+        WeeklySchedule(
+          schedule: [
+            DailySchedule(
+              dayOfWeek: Day.monday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.tuesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.wednesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.thursday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.friday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+          ],
+          period: period,
+        ),
+      ],
+    ),
+  );
+
+  period = time_utils.DateTimeRange(
+    start: DateTime.now(),
+    end: DateTime.now().add(Duration(days: rng.nextInt(90))),
+  );
+  var internship = Internship(
+    schoolBoardId: schoolBoardId,
+    creationDate: DateTime.now(),
+    studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
+    signatoryTeacherId: teachers.currentTeacherId,
+    extraSupervisingTeacherIds: [],
+    enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
+    jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
+    extraSpecializationIds: [],
+    visitingPriority: VisitingPriority.values[0],
+    supervisor: Person(
+      firstName: 'Nobody',
+      middleName: null,
+      lastName: 'Forever',
+      dateBirth: null,
+      phone: null,
+      address: null,
+      email: null,
+    ),
+    dates: period,
+    endDate: DateTime.now().add(const Duration(days: 10)),
+    expectedDuration: 135,
+    achievedDuration: 125,
+    weeklySchedules: [
+      WeeklySchedule(
+        schedule: [
+          DailySchedule(
+            dayOfWeek: Day.monday,
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.tuesday,
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.wednesday,
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+          ),
+          DailySchedule(
+            dayOfWeek: Day.thursday,
+            start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+            end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+          ),
+        ],
+        period: period,
+      ),
+    ],
+  );
+  internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
+    internshipId: internship.id,
+    skillsRequired: ['Communiquer à l\'écrit', 'Interagir avec des clients'],
+    taskVariety: 0,
+    trainingPlanRespect: 1,
+    autonomyExpected: 4,
+    efficiencyExpected: 2,
+    supervisionStyle: 1,
+    easeOfCommunication: 5,
+    absenceAcceptance: 4,
+    supervisionComments: 'Milieu peu aidant, mais ouvert',
+    acceptanceTsa: -1,
+    acceptanceLanguageDisorder: 4,
+    acceptanceIntellectualDisability: 4,
+    acceptancePhysicalDisability: 4,
+    acceptanceMentalHealthDisorder: 2,
+    acceptanceBehaviorDifficulties: 2,
+  );
+  internships.add(internship);
+
+  period = time_utils.DateTimeRange(
+    start: DateTime.now(),
+    end: DateTime.now().add(Duration(days: rng.nextInt(90))),
+  );
+  internships.add(
+    Internship(
+      schoolBoardId: schoolBoardId,
+      creationDate: DateTime.now(),
+      studentId: students.firstWhere((e) => e.fullName == 'Vincent Picard').id,
+      signatoryTeacherId: teachers.currentTeacherId,
+      extraSupervisingTeacherIds: [],
+      enterpriseId: enterprises.firstWhere((e) => e.name == 'IGA').id,
+      jobId: enterprises.firstWhere((e) => e.name == 'IGA').jobs[0].id,
+      extraSpecializationIds: [],
+      visitingPriority: VisitingPriority.values[0],
+      supervisor: Person(
+        firstName: 'Nobody',
+        middleName: null,
+        lastName: 'Forever',
+        dateBirth: null,
+        phone: null,
+        address: null,
+        email: null,
+      ),
+      dates: period,
+      expectedDuration: 135,
+      achievedDuration: 0,
+      weeklySchedules: [
+        WeeklySchedule(
+          schedule: [
+            DailySchedule(
+              dayOfWeek: Day.monday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.tuesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.wednesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+          ],
+          period: period,
+        ),
+      ],
+    ),
+  );
+
+  period = time_utils.DateTimeRange(
+    start: DateTime.now(),
+    end: DateTime.now().add(Duration(days: rng.nextInt(90))),
+  );
+  internships.add(
+    Internship(
+      schoolBoardId: schoolBoardId,
+      creationDate: DateTime.now(),
+      studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
+      signatoryTeacherId:
+          _partnerTeacherId, // This is a Roméo Montaigu's student
+      extraSupervisingTeacherIds: [],
+      enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Repair').id,
+      jobId: enterprises.firstWhere((e) => e.name == 'Auto Repair').jobs[0].id,
+      extraSpecializationIds: [],
+      visitingPriority: VisitingPriority.values[0],
+      supervisor: Person(
+        firstName: 'Nobody',
+        middleName: null,
+        lastName: 'Forever',
+        dateBirth: null,
+        phone: null,
+        address: null,
+        email: null,
+      ),
+      dates: period,
+      endDate: DateTime.now().add(const Duration(days: 10)),
+      expectedDuration: 135,
+      achievedDuration: 0,
+      weeklySchedules: [
+        WeeklySchedule(
+          schedule: [
+            DailySchedule(
+              dayOfWeek: Day.monday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.wednesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.friday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+          ],
+          period: period,
+        ),
+      ],
+    ),
+  );
+
+  startingPeriod = DateTime.now().subtract(const Duration(days: 100));
+  period = time_utils.DateTimeRange(
+    start: startingPeriod,
+    end: startingPeriod.add(Duration(days: rng.nextInt(90))),
+  );
+  internships.add(
+    Internship(
+      schoolBoardId: schoolBoardId,
+      creationDate: DateTime.now(),
+      studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
+      signatoryTeacherId: _partnerTeacherId,
+      extraSupervisingTeacherIds: [],
+      enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
+      jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
+      extraSpecializationIds: [],
+      visitingPriority: VisitingPriority.values[0],
+      supervisor: Person(
+        firstName: 'Nobody',
+        middleName: null,
+        lastName: 'Forever',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('123-456-7890'),
+        address: null,
+        email: null,
+      ),
+      dates: period,
+      expectedDuration: 135,
+      achievedDuration: 0,
+      weeklySchedules: [
+        WeeklySchedule(
+          schedule: [
+            DailySchedule(
+              dayOfWeek: Day.monday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.tuesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.wednesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.thursday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.friday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+          ],
+          period: period,
+        ),
+      ],
+    ),
+  );
+
+  period = time_utils.DateTimeRange(
+    start: DateTime.now(),
+    end: DateTime.now().add(Duration(days: rng.nextInt(90))),
+  );
+  internships.add(
+    Internship(
+      schoolBoardId: schoolBoardId,
+      creationDate: DateTime.now(),
+      studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
+      signatoryTeacherId: _partnerTeacherId,
+      extraSupervisingTeacherIds: [teachers.currentTeacherId],
+      enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
+      jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
+      extraSpecializationIds: [],
+      visitingPriority: VisitingPriority.values[0],
+      supervisor: Person(
+        firstName: 'Nobody',
+        middleName: null,
+        lastName: 'Forever',
+        dateBirth: null,
+        phone: null,
+        address: null,
+        email: null,
+      ),
+      dates: period,
+      expectedDuration: 135,
+      achievedDuration: 0,
+      weeklySchedules: [
+        WeeklySchedule(
+          schedule: [
+            DailySchedule(
+              dayOfWeek: Day.monday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.tuesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.wednesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.thursday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.friday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+          ],
+          period: period,
+        ),
+      ],
+    ),
+  );
+
+  startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(250)));
+  period = time_utils.DateTimeRange(
+    start: startingPeriod,
+    end: startingPeriod.add(Duration(days: rng.nextInt(50))),
+  );
+  internships.add(
+    Internship(
+      schoolBoardId: schoolBoardId,
+      creationDate: DateTime.now(),
+      studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
+      signatoryTeacherId: teachers.currentTeacherId,
+      extraSupervisingTeacherIds: [],
+      enterpriseId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').id,
+      jobId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').jobs[0].id,
+      extraSpecializationIds: [],
+      visitingPriority: VisitingPriority.values[0],
+      supervisor: Person(
+        firstName: 'Un',
+        middleName: null,
+        lastName: 'Ami',
+        dateBirth: null,
+        phone: null,
+        address: null,
+        email: null,
+      ),
+      dates: period,
+      endDate: period.end,
+      expectedDuration: 135,
+      achievedDuration: 100,
+      weeklySchedules: [
+        WeeklySchedule(
+          schedule: [
+            DailySchedule(
+              dayOfWeek: Day.monday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.tuesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+          ],
+          period: period,
+        ),
+      ],
+    ),
+  );
+
+  startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(200)));
+  period = time_utils.DateTimeRange(
+    start: startingPeriod,
+    end: startingPeriod.add(Duration(days: rng.nextInt(50))),
+  );
+  internships.add(
+    Internship(
+      schoolBoardId: schoolBoardId,
+      creationDate: DateTime.now(),
+      studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
+      signatoryTeacherId: teachers.currentTeacherId,
+      extraSupervisingTeacherIds: [],
+      enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
+      jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,
+      extraSpecializationIds: [],
+      visitingPriority: VisitingPriority.values[0],
+      supervisor: Person(
+        firstName: 'Deux',
+        middleName: null,
+        lastName: 'Amis',
+        dateBirth: null,
+        phone: null,
+        address: null,
+        email: null,
+      ),
+      dates: period,
+      endDate: period.end,
+      expectedDuration: 135,
+      achievedDuration: 100,
+      weeklySchedules: [
+        WeeklySchedule(
+          schedule: [
+            DailySchedule(
+              dayOfWeek: Day.monday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+            DailySchedule(
+              dayOfWeek: Day.tuesday,
+              start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+              end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            ),
+          ],
+          period: period,
+        ),
+      ],
+    ),
+  );
+  await _waitForDatabaseUpdate(internships, 9);
 }
 
 Future<void> _waitForDatabaseUpdate(

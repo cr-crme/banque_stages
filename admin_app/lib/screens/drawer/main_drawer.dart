@@ -37,6 +37,11 @@ class MainDrawer extends StatelessWidget {
                   icon: Icons.business,
                   route: Screens.enterprisesListScreen,
                 ),
+                const _DrawerItem(
+                  titleText: 'Stages',
+                  icon: Icons.work,
+                  route: Screens.internshipsListScreen,
+                ),
                 _DrawerItem(
                   titleText: 'Se déconnecter',
                   icon: Icons.logout,

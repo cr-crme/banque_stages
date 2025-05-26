@@ -343,6 +343,26 @@ class Internship extends ExtendedItemSerializable {
     _finalizeInitialization();
   }
 
+  static Internship get empty => Internship._(
+        id: '',
+        schoolBoardId: '-1',
+        studentId: '',
+        signatoryTeacherId: '',
+        extraSupervisingTeacherIds: [],
+        enterpriseId: '',
+        jobId: '',
+        extraSpecializationIds: [],
+        mutables: [],
+        expectedDuration: -1,
+        achievedDuration: -1,
+        visitingPriority: VisitingPriority.notApplicable,
+        teacherNotes: '',
+        endDate: null,
+        skillEvaluations: [],
+        attitudeEvaluations: [],
+        enterpriseEvaluation: null,
+      );
+
   Internship.fromSerialized(super.map)
       : schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
         studentId = StringExt.from(map['student_id']) ?? '',
