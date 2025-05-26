@@ -25,6 +25,17 @@ class JobSstEvaluation extends ItemSerializable {
   static JobSstEvaluation get empty =>
       JobSstEvaluation(questions: {}, date: DateTime(0));
 
+  JobSstEvaluation copyWith({
+    String? id,
+    Map<String, List<String>?>? questions,
+    DateTime? date,
+  }) =>
+      JobSstEvaluation(
+        id: id ?? this.id,
+        questions: questions ?? this.questions,
+        date: date ?? this.date,
+      );
+
   JobSstEvaluation.fromSerialized(super.map)
       : questions = {
           for (final entry in (map['questions'] as Map? ?? {}).entries)

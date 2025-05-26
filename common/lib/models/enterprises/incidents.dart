@@ -48,6 +48,19 @@ class Incidents extends ItemSerializable {
 
   static Incidents get empty => Incidents();
 
+  Incidents copyWith({
+    String? id,
+    List<Incident>? severeInjuries,
+    List<Incident>? verbalAbuses,
+    List<Incident>? minorInjuries,
+  }) =>
+      Incidents(
+        id: id ?? this.id,
+        severeInjuries: severeInjuries ?? this.severeInjuries,
+        verbalAbuses: verbalAbuses ?? this.verbalAbuses,
+        minorInjuries: minorInjuries ?? this.minorInjuries,
+      );
+
   Incidents.fromSerialized(super.map)
       : severeInjuries = (map['severe_injuries'] as List?)
                 ?.map((e) => Incident.fromSerialized(e))

@@ -600,16 +600,36 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }
 
   Future<void> _updateToEnterprisesJobs(
-      Enterprise enterprise, Enterprise previous) async {
+      Enterprise enterprise, Enterprise previous,
+      {required String schoolBoardId}) async {
     final toUpdate = enterprise.getDifference(previous);
     if (!toUpdate.contains('jobs')) return;
 
     // Prevent from removing a job from an enterprise
     for (final job in previous.jobs) {
       if (!enterprise.jobs.map((e) => e.id).contains(job.id)) {
-        _logger.severe('It is not possible to remove a job from an enterprise');
-        throw InvalidRequestException(
-            'It is not possible to remove a job from an enterprise');
+        _logger.warning(
+            'It is not possible to remove a job from an enterprise, but will do anyway');
+        final internships = await MySqlHelpers.performSelectQuery(
+            connection: connection,
+            tableName: 'internships',
+            filters: {'job_id': job.id.serialize()}..addAll({
+                'school_board_id': schoolBoardId,
+              }));
+
+        final toWait = <Future>[];
+        for (final internship in internships) {
+          toWait.add(MySqlHelpers.performDeleteQuery(
+              connection: connection,
+              tableName: 'internships',
+              filters: {'id': internship['id']}));
+        }
+        await Future.wait(toWait);
+
+        await MySqlHelpers.performDeleteQuery(
+            connection: connection,
+            tableName: 'enterprise_jobs',
+            filters: {'id': job.id});
       }
     }
 
@@ -638,13 +658,14 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         throw InvalidRequestException(
             'Cannot update the enterprise id of a job');
       }
-      if (differences.contains('specialization_id')) {
-        _logger.severe('Cannot update the specialization id of a job');
-        throw InvalidRequestException(
-            'Cannot update the specialization id of a job');
-      }
 
       final toUpdate = <String, dynamic>{};
+      if (differences.contains('specialization_id')) {
+        _logger.warning(
+            'Cannot update the specialization id of a job, but will do anyway');
+        toUpdate['specialization_id'] = job.specialization.id.serialize();
+      }
+
       if (differences.contains('positions_offered')) {
         toUpdate['positions_offered'] = job.positionsOffered.serialize();
       }
@@ -925,7 +946,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       toWait.add(_insertToEnterpriseFax(enterprise));
     } else {
       toWait.add(_updateToEnterprisesActivityTypes(enterprise, previous));
-      toWait.add(_updateToEnterprisesJobs(enterprise, previous));
+      toWait.add(_updateToEnterprisesJobs(enterprise, previous,
+          schoolBoardId: schoolBoardId));
       toWait.add(_updateToContact(enterprise, previous));
       toWait.add(_updateToEnterpriseAddress(enterprise, previous));
       toWait.add(_updateToEnterpriseHeadquartersAddress(enterprise, previous));

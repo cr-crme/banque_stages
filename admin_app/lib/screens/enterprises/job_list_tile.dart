@@ -95,12 +95,14 @@ class _JobListTileState extends State<JobListTile> {
       header: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(
-              widget.controller._specialization?.idWithName ??
-                  'Aucune spécialisation',
-              style: Theme.of(context).textTheme.titleMedium,
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                widget.controller._specialization?.idWithName ??
+                    'Aucune spécialisation',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
           ),
           if (widget.editMode)

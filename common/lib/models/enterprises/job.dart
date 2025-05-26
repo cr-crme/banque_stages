@@ -89,7 +89,7 @@ class Job extends ItemSerializable {
   }
 
   static Job get empty {
-    return Job(
+    final job = Job(
       specialization: null,
       positionsOffered: 0,
       minimumAge: 0,
@@ -100,6 +100,11 @@ class Job extends ItemSerializable {
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       comments: [],
+    );
+    return job.copyWith(
+      uniforms: job.uniforms.copyWith(id: job.id),
+      protections: job.protections.copyWith(id: job.id),
+      sstEvaluation: job.sstEvaluation.copyWith(id: job.id),
     );
   }
 
