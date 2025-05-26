@@ -1,47 +1,65 @@
+import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/widgets/disponibility_circle.dart';
-import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/enterprises/job_list.dart';
 import 'package:flutter/material.dart';
 
-extension JobExtension on Job {
-  // TODO Update this
-  int positionsOccupied(context) => 2;
-  // InternshipsProvider.of(context, listen: false)
-  //     .where((e) => e.jobId == id && e.isActive)
-  //     .length;
+class AvailablePlacesListController {
+  final _key = GlobalKey<_AvailablePlaceListTileState>();
+  AvailablePlacesListController();
 
-  // TODO Update this
-  int positionsRemaining(context) => 3;
-  // positionsOffered - positionsOccupied(context);
+  int positionsOffered(String jobId) {
+    return _key.currentState?._positionsOffered[jobId] ?? 0;
+  }
 }
 
-class AvailablePlaceListTile extends StatelessWidget {
-  const AvailablePlaceListTile({
-    super.key,
-    required this.initial,
+class AvailablePlaceListTile extends StatefulWidget {
+  AvailablePlaceListTile({
+    required this.controller,
+    required this.jobList,
     required this.editMode,
-    required this.onChanged,
-  });
+  }) : super(key: controller._key);
 
-  final Map<Job, int> initial;
+  final AvailablePlacesListController controller;
+  final JobList jobList;
   final bool editMode;
-  final Function(Job job, int newValue) onChanged;
+
+  @override
+  State<AvailablePlaceListTile> createState() => _AvailablePlaceListTileState();
+}
+
+class _AvailablePlaceListTileState extends State<AvailablePlaceListTile> {
+  final Map<String, int> _positionsOffered = {};
+  final Map<String, int> _positionsOccupied = {};
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final internships = InternshipsProvider.of(context, listen: true);
+    for (final job in widget.jobList) {
+      _positionsOffered[job.id] = job.positionsOffered;
+      _positionsOccupied[job.id] = internships.fold(
+        0,
+        (sum, e) => e.jobId == job.id && e.isActive ? sum + 1 : sum,
+      );
+    }
+  }
+
+  void _updatePositions(String jobId, int newCount) {
+    setState(() {
+      _positionsOffered[jobId] = newCount;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final jobs = initial.keys.toList();
-    jobs.sort(
-      (a, b) => a.specialization.name.toLowerCase().compareTo(
-        b.specialization.name.toLowerCase(),
-      ),
-    );
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('Places de stage disponibles'),
         Column(
           children:
-              jobs.isEmpty
+              widget.jobList.isEmpty
                   ? [
                     Padding(
                       padding: const EdgeInsets.only(
@@ -52,19 +70,21 @@ class AvailablePlaceListTile extends StatelessWidget {
                       child: Text('Aucun stage proposé pour le moment.'),
                     ),
                   ]
-                  : jobs.map((job) {
-                    final positionsRemaining = job.positionsRemaining(context);
-                    final int positionsOffered = initial[job]!;
+                  : widget.jobList.map((job) {
+                    final positionOccupied = _positionsOccupied[job.id] ?? 0;
+                    final positionsOffered = _positionsOffered[job.id] ?? 0;
+                    final positionsRemaining =
+                        positionsOffered - positionOccupied;
 
                     return ListTile(
                       visualDensity: VisualDensity.compact,
                       leading: DisponibilityCircle(
                         positionsOffered: positionsOffered,
-                        positionsOccupied: job.positionsOccupied(context),
+                        positionsOccupied: positionOccupied,
                       ),
                       title: Text(job.specialization.idWithName),
                       trailing:
-                          editMode
+                          widget.editMode
                               ? Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -72,8 +92,8 @@ class AvailablePlaceListTile extends StatelessWidget {
                                     onPressed:
                                         positionsOffered == 0
                                             ? null
-                                            : () => onChanged(
-                                              job,
+                                            : () => _updatePositions(
+                                              job.id,
                                               positionsOffered - 1,
                                             ),
                                     icon: Icon(
@@ -87,8 +107,8 @@ class AvailablePlaceListTile extends StatelessWidget {
                                   Text(positionsOffered.toString()),
                                   IconButton(
                                     onPressed:
-                                        () => onChanged(
-                                          job,
+                                        () => _updatePositions(
+                                          job.id,
                                           positionsOffered + 1,
                                         ),
                                     icon: const Icon(
@@ -99,7 +119,7 @@ class AvailablePlaceListTile extends StatelessWidget {
                                 ],
                               )
                               : Text(
-                                '${job.positionsRemaining(context)} / $positionsOffered',
+                                '$positionsRemaining / $positionsOffered',
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                     );

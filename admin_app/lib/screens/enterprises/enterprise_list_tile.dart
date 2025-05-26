@@ -10,6 +10,7 @@ import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:admin_app/widgets/web_site_list_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
@@ -72,6 +73,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   late final _activityTypeController = ActivityTypeListController(
     initial: widget.enterprise.activityTypes,
   );
+  final _availablePlacesController = AvailablePlacesListController();
   late final _teacherPickerController = TeacherPickerController(
     initial: TeachersProvider.of(context, listen: true).firstWhereOrNull(
       (teacher) => teacher.id == widget.enterprise.recruiterId,
@@ -123,6 +125,16 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       _faxController.text,
       id: widget.enterprise.fax?.id,
     ),
+    jobs:
+        JobList()..addAll([
+          ...widget.enterprise.jobs.map(
+            (job) => job.copyWith(
+              positionsOffered: _availablePlacesController.positionsOffered(
+                job.id,
+              ),
+            ),
+          ),
+        ]),
     website: _websiteController.text,
     address: _addressController.address,
     headquartersAddress: _headquartersAddressController.address,
@@ -282,9 +294,9 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
       child: AvailablePlaceListTile(
-        initial: {},
+        controller: _availablePlacesController,
+        jobList: widget.enterprise.jobs,
         editMode: _isEditing,
-        onChanged: (_, __) {},
       ),
     );
   }
