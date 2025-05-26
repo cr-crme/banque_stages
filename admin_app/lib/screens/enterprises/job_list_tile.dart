@@ -35,15 +35,15 @@ class JobListController {
     minimumAge: int.tryParse(_minimumAgeController.text),
     positionsOffered: _positionsOffered,
     preInternshipRequests: PreInternshipRequests.fromStrings(
-      _preInternshipRequestKey.currentState!.values,
+      _preInternshipRequestKey.currentState?.values ?? [],
       id: _job.preInternshipRequests.id,
     ),
     uniforms: _job.uniforms.copyWith(
-      status: _uniformFormKey.currentState!.value,
+      status: _uniformFormKey.currentState?.value,
       uniforms: _uniformTextController.text.split('\n'),
     ),
     protections: _job.protections.copyWith(
-      status: _protectionsKey.currentState!.value,
+      status: _protectionsKey.currentState?.value,
       protections: _protectionsTextController.currentState?.values,
     ),
   );

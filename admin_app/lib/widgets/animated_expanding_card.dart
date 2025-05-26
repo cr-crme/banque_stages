@@ -70,14 +70,16 @@ class _AnimatedExpandingCardState extends State<AnimatedExpandingCard>
                     size: 30,
                     color: Colors.grey[700],
                   ),
-                )
+                ),
               ],
             ),
           ),
-          SizeTransition(
-            sizeFactor: _expandingTween.animate(_expandingAnimation),
-            child: widget.child,
-          ),
+          _expandingAnimation.value == 0 && !_isExpanded
+              ? Container()
+              : SizeTransition(
+                sizeFactor: _expandingTween.animate(_expandingAnimation),
+                child: widget.child,
+              ),
         ],
       ),
     );
