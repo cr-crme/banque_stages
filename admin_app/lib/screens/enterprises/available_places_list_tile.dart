@@ -16,6 +16,7 @@ extension JobExtension on Job {
 
 class AvailablePlaceListTile extends StatelessWidget {
   const AvailablePlaceListTile({
+    super.key,
     required this.initial,
     required this.editMode,
     required this.onChanged,
@@ -40,55 +41,69 @@ class AvailablePlaceListTile extends StatelessWidget {
         const Text('Places de stage disponibles'),
         Column(
           children:
-              jobs.map((job) {
-                final positionsRemaining = job.positionsRemaining(context);
-                final int positionsOffered = initial[job]!;
+              jobs.isEmpty
+                  ? [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 12.0,
+                        top: 8.0,
+                        bottom: 4.0,
+                      ),
+                      child: Text('Aucun stage proposé pour le moment.'),
+                    ),
+                  ]
+                  : jobs.map((job) {
+                    final positionsRemaining = job.positionsRemaining(context);
+                    final int positionsOffered = initial[job]!;
 
-                return ListTile(
-                  visualDensity: VisualDensity.compact,
-                  leading: DisponibilityCircle(
-                    positionsOffered: positionsOffered,
-                    positionsOccupied: job.positionsOccupied(context),
-                  ),
-                  title: Text(job.specialization.idWithName),
-                  trailing:
-                      editMode
-                          ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                onPressed:
-                                    positionsOffered == 0
-                                        ? null
-                                        : () => onChanged(
+                    return ListTile(
+                      visualDensity: VisualDensity.compact,
+                      leading: DisponibilityCircle(
+                        positionsOffered: positionsOffered,
+                        positionsOccupied: job.positionsOccupied(context),
+                      ),
+                      title: Text(job.specialization.idWithName),
+                      trailing:
+                          editMode
+                              ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    onPressed:
+                                        positionsOffered == 0
+                                            ? null
+                                            : () => onChanged(
+                                              job,
+                                              positionsOffered - 1,
+                                            ),
+                                    icon: Icon(
+                                      Icons.remove,
+                                      color:
+                                          positionsRemaining == 0
+                                              ? Colors.grey
+                                              : Colors.black,
+                                    ),
+                                  ),
+                                  Text(positionsOffered.toString()),
+                                  IconButton(
+                                    onPressed:
+                                        () => onChanged(
                                           job,
-                                          positionsOffered - 1,
+                                          positionsOffered + 1,
                                         ),
-                                icon: Icon(
-                                  Icons.remove,
-                                  color:
-                                      positionsRemaining == 0
-                                          ? Colors.grey
-                                          : Colors.black,
-                                ),
+                                    icon: const Icon(
+                                      Icons.add,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              )
+                              : Text(
+                                '${job.positionsRemaining(context)} / $positionsOffered',
+                                style: Theme.of(context).textTheme.titleMedium,
                               ),
-                              Text(positionsOffered.toString()),
-                              IconButton(
-                                onPressed:
-                                    () => onChanged(job, positionsOffered + 1),
-                                icon: const Icon(
-                                  Icons.add,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          )
-                          : Text(
-                            '${job.positionsRemaining(context)} / $positionsOffered',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                );
-              }).toList(),
+                    );
+                  }).toList(),
         ),
       ],
     );
