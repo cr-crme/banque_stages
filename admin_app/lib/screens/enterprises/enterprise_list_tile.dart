@@ -3,7 +3,7 @@ import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/enterprises/activity_type_list_tile.dart';
 import 'package:admin_app/screens/enterprises/job_list_tile.dart';
 import 'package:admin_app/screens/enterprises/confirm_delete_enterprise_dialog.dart';
-import 'package:admin_app/screens/enterprises/teacher_picker_tile.dart';
+import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
@@ -347,6 +347,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
       child: TeacherPickerTile(
+        title: 'Enseignant·e ayant démarché l\'entreprise',
         controller: _teacherPickerController,
         editMode: _isEditing,
       ),

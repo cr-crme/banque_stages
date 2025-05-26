@@ -478,22 +478,25 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   }
 
   Future<void> _insertToSupervisingTeachers(Internship internship) async {
+    final toWait = <Future>[];
     for (final teacherId in internship.supervisingTeacherIds) {
-      await MySqlHelpers.performInsertQuery(
+      toWait.add(MySqlHelpers.performInsertQuery(
           connection: connection,
           tableName: 'internship_supervising_teachers',
           data: {
             'internship_id': internship.id,
             'teacher_id': teacherId,
             'is_signatory_teacher': teacherId == internship.signatoryTeacherId
-          });
+          }));
     }
+    await Future.wait(toWait);
   }
 
   Future<void> _updateToSupervisingTeachers(
       Internship internship, Internship previous) async {
     final toUpdate = internship.getDifference(previous);
-    if (toUpdate.contains('extra_supervising_teacher_ids')) {
+    if (toUpdate.contains('signatory_teacher_id') ||
+        toUpdate.contains('extra_supervising_teacher_ids')) {
       // This is a bit tricky to simply update, so we delete and reinsert
       await MySqlHelpers.performDeleteQuery(
           connection: connection,

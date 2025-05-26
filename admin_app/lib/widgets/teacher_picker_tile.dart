@@ -28,10 +28,12 @@ class TeacherPickerController {
 class TeacherPickerTile extends StatelessWidget {
   const TeacherPickerTile({
     super.key,
+    this.title,
     required this.controller,
     required this.editMode,
   });
 
+  final String? title;
   final TeacherPickerController controller;
   final bool editMode;
 
@@ -96,7 +98,7 @@ class TeacherPickerTile extends StatelessWidget {
           enabled: editMode,
           style: const TextStyle(color: Colors.black),
           decoration: InputDecoration(
-            labelText: 'Enseignant·e ayant démarché l\'entreprise',
+            labelText: title ?? 'Sélectionner un·e enseignant·e',
             labelStyle: const TextStyle(color: Colors.black),
             errorText: state.errorText,
             suffixIcon: IconButton(

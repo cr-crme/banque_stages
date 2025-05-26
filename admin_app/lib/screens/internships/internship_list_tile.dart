@@ -1,7 +1,12 @@
+import 'package:admin_app/providers/enterprises_provider.dart';
 import 'package:admin_app/providers/internships_provider.dart';
+import 'package:admin_app/providers/students_provider.dart';
+import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/internships/confirm_delete_internship_dialog.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -38,12 +43,19 @@ class InternshipListTileState extends State<InternshipListTile> {
   bool _isExpanded = false;
   bool _isEditing = false;
 
+  late final _teacherPickerController = TeacherPickerController(
+    initial: TeachersProvider.of(context, listen: true).firstWhereOrNull(
+      (teacher) => teacher.id == widget.internship.signatoryTeacherId,
+    ),
+  );
   late final _teacherNotesController = TextEditingController(
     text: widget.internship.teacherNotes,
   );
 
-  Internship get editedInternship =>
-      widget.internship.copyWith(teacherNotes: _teacherNotesController.text);
+  Internship get editedInternship => widget.internship.copyWith(
+    signatoryTeacherId: _teacherPickerController.teacher.id,
+    teacherNotes: _teacherNotesController.text,
+  );
 
   @override
   void initState() {
@@ -81,6 +93,17 @@ class InternshipListTileState extends State<InternshipListTile> {
 
   @override
   Widget build(BuildContext context) {
+    final student = StudentsProvider.of(
+      context,
+      listen: true,
+    ).firstWhereOrNull((student) => student.id == widget.internship.studentId);
+    final enterprise = EnterprisesProvider.of(
+      context,
+      listen: true,
+    ).firstWhereOrNull(
+      (enterprise) => enterprise.id == widget.internship.enterpriseId,
+    );
+
     return widget.isExpandable
         ? AnimatedExpandingCard(
           initialExpandedState: _isExpanded,
@@ -91,7 +114,9 @@ class InternshipListTileState extends State<InternshipListTile> {
               Padding(
                 padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
                 child: Text(
-                  'Coucou',
+                  (student == null || enterprise == null)
+                      ? 'En cours de chargement...'
+                      : '${student.fullName} - ${enterprise.name}',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
@@ -125,8 +150,29 @@ class InternshipListTileState extends State<InternshipListTile> {
         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildTeacherNotes()],
+          children: [
+            _buildSupervisingTeacher(),
+            const SizedBox(height: 8),
+            _buildTeacherNotes(),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSupervisingTeacher() {
+    _teacherPickerController.teacher =
+        TeachersProvider.of(context, listen: true).firstWhereOrNull(
+          (teacher) => teacher.id == widget.internship.signatoryTeacherId,
+        ) ??
+        Teacher.empty;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: TeacherPickerTile(
+        title: 'Enseignant·e·s responsable',
+        controller: _teacherPickerController,
+        editMode: _isEditing,
       ),
     );
   }

@@ -200,6 +200,7 @@ class DatabaseManager {
         );
       case RequestFields.enterprise:
         return [
+          // TODO: The frontend don't know they should update their internships
           await enterprisesDatabase.deleteById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to delete an enterprise'),
