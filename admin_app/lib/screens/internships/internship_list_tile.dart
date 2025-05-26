@@ -3,9 +3,11 @@ import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/internships/confirm_delete_internship_dialog.dart';
+import 'package:admin_app/screens/internships/schedule_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
@@ -48,14 +50,60 @@ class InternshipListTileState extends State<InternshipListTile> {
       (teacher) => teacher.id == widget.internship.signatoryTeacherId,
     ),
   );
+  late final _schedulesController = SchedulesController(
+    dateRange: widget.internship.dates,
+    weeklySchedules: widget.internship.weeklySchedules,
+    internshipDuration: widget.internship.expectedDuration,
+  );
   late final _teacherNotesController = TextEditingController(
     text: widget.internship.teacherNotes,
   );
 
-  Internship get editedInternship => widget.internship.copyWith(
-    signatoryTeacherId: _teacherPickerController.teacher.id,
-    teacherNotes: _teacherNotesController.text,
-  );
+  // TODO: use previous weekly schedules if not editing (almost done but do not update at all currently)
+  // TODO: Make sure the ids of weekly schedules are unique
+  Internship get editedInternship {
+    final internship = widget.internship.copyWith(
+      signatoryTeacherId: _teacherPickerController.teacher.id,
+      teacherNotes: _teacherNotesController.text,
+      expectedDuration: _schedulesController.internshipDuration,
+    );
+
+    if (areListsNotEqual(
+          internship.weeklySchedules,
+          _schedulesController.weeklySchedules,
+        ) ||
+        internship.dates != _schedulesController.dateRange) {
+      internship.addVersion(
+        creationDate: DateTime.now(),
+        supervisor:
+            TeachersProvider.of(context, listen: false).firstWhereOrNull(
+              (teacher) => teacher.id == widget.internship.signatoryTeacherId,
+            ) ??
+            Teacher.empty,
+        dates: _schedulesController.dateRange!,
+        weeklySchedules:
+            _schedulesController.weeklySchedules
+                .map(
+                  (week) => WeeklySchedule(
+                    period: week.period,
+                    schedule:
+                        week.schedule
+                            .map(
+                              (day) => DailySchedule(
+                                dayOfWeek: day.dayOfWeek,
+                                start: day.start,
+                                end: day.end,
+                              ),
+                            )
+                            .toList(),
+                  ),
+                )
+                .toList(),
+      );
+    }
+
+    return internship;
+  }
 
   @override
   void initState() {
@@ -153,6 +201,8 @@ class InternshipListTileState extends State<InternshipListTile> {
           children: [
             _buildSupervisingTeacher(),
             const SizedBox(height: 8),
+            _buildWeeklySchedule(),
+            const SizedBox(height: 8),
             _buildTeacherNotes(),
           ],
         ),
@@ -170,10 +220,17 @@ class InternshipListTileState extends State<InternshipListTile> {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
       child: TeacherPickerTile(
-        title: 'Enseignant·e·s responsable',
+        title: 'Enseignant·e responsable',
         controller: _teacherPickerController,
         editMode: _isEditing,
       ),
+    );
+  }
+
+  Widget _buildWeeklySchedule() {
+    return ScheduleListTile(
+      scheduleController: _schedulesController,
+      editMode: _isEditing,
     );
   }
 
