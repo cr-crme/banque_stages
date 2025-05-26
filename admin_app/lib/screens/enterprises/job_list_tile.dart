@@ -1,0 +1,325 @@
+import 'package:admin_app/providers/internships_provider.dart';
+import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/checkbox_with_other.dart';
+import 'package:admin_app/widgets/radio_with_follow_up.dart';
+import 'package:common/models/enterprises/job.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+class JobListController {
+  final _key = GlobalKey<_JobListTileState>();
+  JobListController();
+
+  int minimumAge(String jobId) {
+    return int.tryParse(_key.currentState?._minimumAgeController.text ?? '0') ??
+        0;
+  }
+
+  int positionsOffered(String jobId) {
+    return _key.currentState?._positionsOffered ?? 0;
+  }
+}
+
+class JobListTile extends StatefulWidget {
+  JobListTile({
+    required this.controller,
+    required this.job,
+    required this.editMode,
+  }) : super(key: controller._key);
+
+  final JobListController controller;
+  final Job job;
+  final bool editMode;
+
+  @override
+  State<JobListTile> createState() => _JobListTileState();
+}
+
+class _JobListTileState extends State<JobListTile> {
+  late final _minimumAgeController = TextEditingController(
+    text: widget.job.minimumAge.toString(),
+  );
+  late Job job = widget.job.copyWith();
+  late int _positionsOffered = widget.job.positionsOffered;
+  int _positionsOccupied = 0;
+  final _preInternshipRequestKey =
+      GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>();
+  final _uniformFormKey = GlobalKey<RadioWithFollowUpState<UniformStatus>>();
+  late final _uniformTextController = TextEditingController(
+    text: job.uniforms.uniforms.join('\n '),
+  );
+  final _protectionsKey =
+      GlobalKey<RadioWithFollowUpState<ProtectionsStatus>>();
+  final _protectionsTextController =
+      GlobalKey<CheckboxWithOtherState<ProtectionsType>>();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final internships = InternshipsProvider.of(context, listen: true);
+    _positionsOffered = job.positionsOffered;
+    _positionsOccupied = internships.fold(
+      0,
+      (sum, e) => e.jobId == job.id && e.isActive ? sum + 1 : sum,
+    );
+  }
+
+  void _updatePositions(int newCount) {
+    setState(() => _positionsOffered = newCount);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedExpandingCard(
+      header: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Text(
+          job.specialization.idWithName,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 24.0, top: 12.0, right: 24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildMinimumAge(),
+            const SizedBox(height: 8),
+            _buildAvailability(),
+            const SizedBox(height: 8),
+            _buildPrerequisites(),
+            const SizedBox(height: 8),
+            _buildUniform(),
+            const SizedBox(height: 8),
+            _buildProtections(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMinimumAge() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(child: Text('* Âge minimum des stagiaires (ans)')),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.24,
+          height: 25,
+          child: TextFormField(
+            controller: _minimumAgeController,
+            enabled: widget.editMode,
+            validator: (value) {
+              final current = int.tryParse(value!);
+              if (current == null) return 'Préciser';
+              if (current < 10 || current > 30) return 'Entre 10 et 30';
+              return null;
+            },
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAvailability() {
+    final positionsRemaining = _positionsOffered - _positionsOccupied;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('Places disponibles'),
+        widget.editMode
+            ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  onPressed:
+                      _positionsOffered == 0
+                          ? null
+                          : () => _updatePositions(_positionsOffered - 1),
+                  icon: Icon(
+                    Icons.remove,
+                    color: positionsRemaining == 0 ? Colors.grey : Colors.black,
+                  ),
+                ),
+                Text(_positionsOffered.toString()),
+                IconButton(
+                  onPressed: () => _updatePositions(_positionsOffered + 1),
+                  icon: const Icon(Icons.add, color: Colors.black),
+                ),
+              ],
+            )
+            : Text(
+              '$positionsRemaining / $_positionsOffered',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+      ],
+    );
+  }
+
+  Widget _buildPrerequisites() {
+    return _BuildPrerequisitesCheckboxes(
+      checkBoxKey: _preInternshipRequestKey,
+      enabled: widget.editMode,
+      initialValues: [
+        ...job.preInternshipRequests.requests.map((e) => e.toString()),
+        job.preInternshipRequests.other ?? '',
+      ],
+    );
+  }
+
+  Widget _buildUniform() {
+    return _BuildUniformRadio(
+      uniformKey: _uniformFormKey,
+      uniformTextController: _uniformTextController,
+      initialSelection: job.uniforms.status,
+      enabled: widget.editMode,
+    );
+  }
+
+  Widget _buildProtections() {
+    return _BuildProtectionsRadio(
+      protectionsKey: _protectionsKey,
+      protectionsTypeKey: _protectionsTextController,
+      initialSelection: job.protections.status,
+      initialItems:
+          job.protections.protections.map((e) => e.toString()).toList(),
+      enabled: widget.editMode,
+    );
+  }
+}
+
+class _BuildPrerequisitesCheckboxes extends StatelessWidget {
+  const _BuildPrerequisitesCheckboxes({
+    required this.checkBoxKey,
+    required this.initialValues,
+    required this.enabled,
+  });
+
+  final GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>
+  checkBoxKey;
+  final List<String>? initialValues;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxWithOther<PreInternshipRequestTypes>(
+      key: checkBoxKey,
+      title:
+          'Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
+      titleStyle: Theme.of(context).textTheme.bodyLarge,
+      enabled: enabled,
+      elements: PreInternshipRequestTypes.values,
+      initialValues: initialValues,
+    );
+  }
+}
+
+class _BuildUniformRadio extends StatelessWidget {
+  const _BuildUniformRadio({
+    required this.uniformKey,
+    required this.uniformTextController,
+    this.initialSelection,
+    required this.enabled,
+  });
+
+  final GlobalKey<RadioWithFollowUpState<UniformStatus>> uniformKey;
+  final TextEditingController uniformTextController;
+  final UniformStatus? initialSelection;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return RadioWithFollowUp<UniformStatus>(
+      key: uniformKey,
+      title:
+          'Est-ce qu\'une tenue de travail spécifique est exigée pour '
+          'ce poste\u00a0?',
+      titleStyle: Theme.of(context).textTheme.bodyLarge,
+      elements: UniformStatus.values,
+      elementsThatShowChild: const [
+        UniformStatus.suppliedByEnterprise,
+        UniformStatus.suppliedByStudent,
+      ],
+      enabled: enabled,
+      initialValue: initialSelection,
+      followUpChild: Padding(
+        padding: const EdgeInsets.only(
+          left: 16.0,
+          right: 8,
+          top: 4,
+          bottom: 12,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Décrire la tenue exigée par l\'entreprise ou les '
+              'règles d\'habillement\u00a0:',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            TextFormField(
+              controller: uniformTextController,
+              decoration: const InputDecoration(border: OutlineInputBorder()),
+              enabled: enabled,
+              minLines: 1,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              style: const TextStyle(color: Colors.black),
+              validator:
+                  (value) =>
+                      value == null || !RegExp('[a-zA-Z0-9]').hasMatch(value)
+                          ? 'Décrire la tenue de travail.'
+                          : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BuildProtectionsRadio extends StatelessWidget {
+  const _BuildProtectionsRadio({
+    required this.protectionsKey,
+    required this.protectionsTypeKey,
+    this.initialSelection,
+    this.initialItems,
+    required this.enabled,
+  });
+
+  final GlobalKey<RadioWithFollowUpState<ProtectionsStatus>> protectionsKey;
+  final GlobalKey<CheckboxWithOtherState<ProtectionsType>> protectionsTypeKey;
+  final ProtectionsStatus? initialSelection;
+  final List<String>? initialItems;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return RadioWithFollowUp<ProtectionsStatus>(
+      key: protectionsKey,
+      title:
+          'Est-ce que l\'élève devra porter des équipements de protection '
+          'individuelle (EPI)\u00a0?',
+      enabled: enabled,
+      titleStyle: Theme.of(context).textTheme.bodyLarge,
+      elements: ProtectionsStatus.values,
+      elementsThatShowChild: const [
+        ProtectionsStatus.suppliedByEnterprise,
+        ProtectionsStatus.suppliedBySchool,
+      ],
+      initialValue: initialSelection,
+      followUpChild: CheckboxWithOther<ProtectionsType>(
+        key: protectionsTypeKey,
+        title: 'Lesquels\u00a0:',
+        enabled: enabled,
+        elements: ProtectionsType.values,
+        initialValues: initialItems,
+      ),
+    );
+  }
+}

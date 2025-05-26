@@ -1,7 +1,7 @@
 import 'package:admin_app/providers/enterprises_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/enterprises/activity_type_list_tile.dart';
-import 'package:admin_app/screens/enterprises/available_places_list_tile.dart';
+import 'package:admin_app/screens/enterprises/job_list_tile.dart';
 import 'package:admin_app/screens/enterprises/confirm_delete_enterprise_dialog.dart';
 import 'package:admin_app/screens/enterprises/teacher_picker_tile.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
@@ -73,7 +73,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   late final _activityTypeController = ActivityTypeListController(
     initial: widget.enterprise.activityTypes,
   );
-  final _availablePlacesController = AvailablePlacesListController();
+  final _jobController = JobListController();
   late final _teacherPickerController = TeacherPickerController(
     initial: TeachersProvider.of(context, listen: true).firstWhereOrNull(
       (teacher) => teacher.id == widget.enterprise.recruiterId,
@@ -129,9 +129,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
         JobList()..addAll([
           ...widget.enterprise.jobs.map(
             (job) => job.copyWith(
-              positionsOffered: _availablePlacesController.positionsOffered(
-                job.id,
-              ),
+              positionsOffered: _jobController.positionsOffered(job.id),
             ),
           ),
         ]),
@@ -293,11 +291,27 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   Widget _buildAvailability() {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
-      child: AvailablePlaceListTile(
-        controller: _availablePlacesController,
-        jobList: widget.enterprise.jobs,
-        editMode: _isEditing,
-      ),
+      child:
+          widget.enterprise.jobs.isEmpty
+              ? Padding(
+                padding: const EdgeInsets.only(
+                  left: 12.0,
+                  top: 8.0,
+                  bottom: 4.0,
+                ),
+                child: Text('Aucun stage proposé pour le moment.'),
+              )
+              : Column(
+                children: [
+                  ...widget.enterprise.jobs.map(
+                    (job) => JobListTile(
+                      controller: _jobController,
+                      job: job,
+                      editMode: _isEditing,
+                    ),
+                  ),
+                ],
+              ),
     );
   }
 

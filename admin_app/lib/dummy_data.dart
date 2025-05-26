@@ -709,9 +709,18 @@ Future<void> _addDummyEnterprises(
       ),
       incidents: Incidents.empty,
       minimumAge: 15,
-      preInternshipRequests: PreInternshipRequests.fromStrings([]),
-      uniforms: Uniforms(status: UniformStatus.none),
-      protections: Protections(status: ProtectionsStatus.none),
+      preInternshipRequests: PreInternshipRequests.fromStrings([
+        PreInternshipRequestTypes.soloInterview.toString(),
+        'Faire le ménage',
+      ]),
+      uniforms: Uniforms(
+        status: UniformStatus.suppliedByEnterprise,
+        uniforms: ['Un beau chapeau bleu'],
+      ),
+      protections: Protections(
+        status: ProtectionsStatus.suppliedBySchool,
+        protections: ['Masque', 'Un masque de protection'],
+      ),
     ),
   );
 
