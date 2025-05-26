@@ -61,7 +61,10 @@ class EnterprisesListScreen extends StatelessWidget {
                   const Center(child: Text('Aucune entreprise inscrite')),
                 if (enterprises.isNotEmpty)
                   ...enterprises.map(
-                    (enterprise) => EnterpriseListTile(enterprise: enterprise),
+                    (enterprise) => EnterpriseListTile(
+                      key: ValueKey(enterprise.id),
+                      enterprise: enterprise,
+                    ),
                   ),
               ],
             );

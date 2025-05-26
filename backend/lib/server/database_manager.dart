@@ -204,6 +204,7 @@ class DatabaseManager {
             id: _getId(data,
                 messageOnNull: 'An "id" is required to delete an enterprise'),
             schoolBoardId: schoolBoardId,
+            internshipsRepository: internshipsDatabase,
           )
         ];
       case RequestFields.internships:

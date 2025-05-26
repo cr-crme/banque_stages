@@ -316,6 +316,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
                 children: [
                   ..._jobControllers.keys.map(
                     (jobId) => JobListTile(
+                      key: ValueKey(jobId),
                       controller: _jobControllers[jobId]!,
                       editMode: _isEditing,
                       onRequestDelete: () => _deleteJob(jobId),

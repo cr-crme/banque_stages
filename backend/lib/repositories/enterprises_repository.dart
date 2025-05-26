@@ -89,9 +89,12 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   Future<String> deleteById({
     required String id,
     required String schoolBoardId,
+    InternshipsRepository? internshipsRepository,
   }) async {
-    final removedId =
-        await _deleteEnterprise(id: id, schoolBoardId: schoolBoardId);
+    final removedId = await _deleteEnterprise(
+        id: id,
+        schoolBoardId: schoolBoardId,
+        internshipsRepository: internshipsRepository);
     if (removedId == null) throw MissingDataException('Enterprise not found');
     return removedId;
   }
@@ -110,7 +113,9 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   });
 
   Future<String?> _deleteEnterprise(
-      {required String id, required String schoolBoardId});
+      {required String id,
+      required String schoolBoardId,
+      required InternshipsRepository? internshipsRepository});
 }
 
 class MySqlEnterprisesRepository extends EnterprisesRepository {
@@ -601,7 +606,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
   Future<void> _updateToEnterprisesJobs(
       Enterprise enterprise, Enterprise previous,
-      {required String schoolBoardId}) async {
+      {required String schoolBoardId,
+      required InternshipsRepository internshipsRepository}) async {
     final toUpdate = enterprise.getDifference(previous);
     if (!toUpdate.contains('jobs')) return;
 
@@ -610,22 +616,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       if (!enterprise.jobs.map((e) => e.id).contains(job.id)) {
         _logger.warning(
             'It is not possible to remove a job from an enterprise, but will do anyway');
-        final internships = await MySqlHelpers.performSelectQuery(
-            connection: connection,
-            tableName: 'internships',
-            filters: {'job_id': job.id.serialize()}..addAll({
-                'school_board_id': schoolBoardId,
-              }));
-
-        final toWait = <Future>[];
-        for (final internship in internships) {
-          toWait.add(MySqlHelpers.performDeleteQuery(
-              connection: connection,
-              tableName: 'internships',
-              filters: {'id': internship['id']}));
-        }
-        await Future.wait(toWait);
-
+        await _deleteInternshipsFromJob(job.id,
+            schoolBoardId: schoolBoardId,
+            internshipsRepository: internshipsRepository);
         await MySqlHelpers.performDeleteQuery(
             connection: connection,
             tableName: 'enterprise_jobs',
@@ -947,7 +940,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     } else {
       toWait.add(_updateToEnterprisesActivityTypes(enterprise, previous));
       toWait.add(_updateToEnterprisesJobs(enterprise, previous,
-          schoolBoardId: schoolBoardId));
+          schoolBoardId: schoolBoardId,
+          internshipsRepository: internshipsRepository));
       toWait.add(_updateToContact(enterprise, previous));
       toWait.add(_updateToEnterpriseAddress(enterprise, previous));
       toWait.add(_updateToEnterpriseHeadquartersAddress(enterprise, previous));
@@ -957,14 +951,47 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     await Future.wait(toWait);
   }
 
+  Future<void> _deleteInternshipsFromJob(String jobId,
+      {required String schoolBoardId,
+      required InternshipsRepository internshipsRepository}) async {
+    final internships = await MySqlHelpers.performSelectQuery(
+        connection: connection,
+        tableName: 'internships',
+        filters: {'job_id': jobId.serialize()}..addAll({
+            'school_board_id': schoolBoardId,
+          }));
+
+    final toWait = <Future>[];
+    for (final internship in internships) {
+      toWait.add(internshipsRepository.deleteById(
+          id: internship['id'], schoolBoardId: schoolBoardId));
+    }
+    await Future.wait(toWait);
+  }
+
   @override
   Future<String?> _deleteEnterprise({
     required String id,
     required String schoolBoardId,
+    required InternshipsRepository? internshipsRepository,
   }) async {
     try {
       final enterprise =
           await _getEnterpriseById(id: id, schoolBoardId: schoolBoardId);
+
+      if (enterprise?.jobs != null) {
+        if (internshipsRepository == null) {
+          _logger.severe(
+              'Cannot delete an enterprise with jobs without an internships repository');
+          throw InvalidRequestException(
+              'Cannot delete an enterprise with jobs without an internships repository');
+        }
+        for (final job in enterprise!.jobs) {
+          await _deleteInternshipsFromJob(job.id,
+              schoolBoardId: schoolBoardId,
+              internshipsRepository: internshipsRepository);
+        }
+      }
 
       await MySqlHelpers.performDeleteQuery(
         connection: connection,
@@ -1082,7 +1109,9 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
 
   @override
   Future<String?> _deleteEnterprise(
-      {required String id, required String schoolBoardId}) async {
+      {required String id,
+      required String schoolBoardId,
+      required InternshipsRepository? internshipsRepository}) async {
     if (_dummyDatabase.containsKey(id)) {
       _dummyDatabase.remove(id);
       return id;
