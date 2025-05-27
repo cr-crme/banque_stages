@@ -248,15 +248,10 @@ class _ScheduleListTileState extends State<ScheduleListTile> {
           ),
           Visibility(
             visible: widget.scheduleController.dateRange != null,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ScheduleSelector(
-                  scheduleController: widget.scheduleController,
-                  editMode: widget.editMode,
-                  withTitle: true,
-                ),
-              ],
+            child: ScheduleSelector(
+              scheduleController: widget.scheduleController,
+              editMode: widget.editMode,
+              withTitle: true,
             ),
           ),
         ],

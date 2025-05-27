@@ -5,6 +5,7 @@ import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/internships/confirm_delete_internship_dialog.dart';
 import 'package:admin_app/screens/internships/schedule_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/custom_date_picker.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
@@ -80,6 +81,7 @@ class InternshipListTileState extends State<InternshipListTile> {
   late final _expectedDurationController = TextEditingController(
     text: widget.internship.expectedDuration.toString(),
   );
+  late DateTime? _endDate = widget.internship.endDate;
   late final _achievedDurationController = TextEditingController(
     text:
         widget.internship.achievedDuration > 0
@@ -96,6 +98,7 @@ class InternshipListTileState extends State<InternshipListTile> {
       teacherNotes: _teacherNotesController.text,
       expectedDuration: int.tryParse(_expectedDurationController.text) ?? 0,
       achievedDuration: int.tryParse(_achievedDurationController.text) ?? -1,
+      endDate: _endDate,
     );
 
     final schedulesHasChanged =
@@ -362,20 +365,40 @@ class InternshipListTileState extends State<InternshipListTile> {
     );
   }
 
+  Future<void> _promptEndDate() async {
+    final date = await showCustomDatePicker(
+      helpText: 'Sélectionner les dates',
+      cancelText: 'Annuler',
+      confirmText: 'Confirmer',
+      context: context,
+      initialDate: _endDate ?? DateTime.now(),
+      initialEntryMode: DatePickerEntryMode.calendar,
+      firstDate: DateTime(widget.internship.dates.start.year - 1),
+      lastDate: DateTime(widget.internship.dates.start.year + 2),
+    );
+    if (date == null) return;
+    _endDate = date;
+    setState(() {});
+  }
+
   Widget _buildEndDate() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        const Text('Date de fin'),
+        const Text('Date de fin effective :'),
         Padding(
-          padding: const EdgeInsets.only(left: 12.0),
+          padding: const EdgeInsets.only(left: 8.0),
           child: Text(
-            widget.internship.endDate != null
-                ? DateFormat.yMMMEd('fr_CA').format(widget.internship.endDate!)
-                : 'Stage en cours',
+            _endDate == null
+                ? 'Stage en cours'
+                : DateFormat.yMMMEd('fr_CA').format(_endDate!),
             style: const TextStyle(color: Colors.black),
           ),
         ),
+        if (_isEditing)
+          IconButton(
+            icon: const Icon(Icons.calendar_month_outlined, color: Colors.blue),
+            onPressed: _promptEndDate,
+          ),
       ],
     );
   }
