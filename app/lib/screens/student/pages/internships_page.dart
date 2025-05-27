@@ -154,9 +154,9 @@ class _StudentInternshipListViewState
               final canChangeSupervisingStatus =
                   internship.signatoryTeacherId != myId;
 
-              final endDate = internship.endDate == null
+              final endDate = internship.isActive
                   ? DateFormat.yMMMd('fr_CA').format(internship.dates.end)
-                  : DateFormat.yMMMd('fr_CA').format(internship.endDate!);
+                  : DateFormat.yMMMd('fr_CA').format(internship.endDate);
 
               final String specializationIdWithName =
                   EnterprisesProvider.of(context)

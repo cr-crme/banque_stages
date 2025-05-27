@@ -254,8 +254,8 @@ class _PostInternshipEvaluation extends StatelessWidget {
   Widget build(BuildContext context) {
     final internships = _postInternshipEvaluationToDo(context);
 
-    internships.sort(
-        (a, b) => a.internship!.endDate!.compareTo(b.internship!.endDate!));
+    internships
+        .sort((a, b) => a.internship!.endDate.compareTo(b.internship!.endDate));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,7 +274,7 @@ class _PostInternshipEvaluation extends StatelessWidget {
                     subtitle: enterprise.name,
                     icon: Icons.rate_review,
                     iconColor: Colors.blueGrey,
-                    date: internship.endDate!,
+                    date: internship.endDate,
                     buttonTitle: 'Évaluer l\'entreprise',
                     onTap: () => GoRouter.of(context).pushNamed(
                       Screens.enterpriseEvaluationScreen,

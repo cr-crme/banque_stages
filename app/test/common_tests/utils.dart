@@ -291,7 +291,7 @@ Internship dummyInternship({
       email: null,
     ),
     dates: period,
-    endDate: hasEndDate ? DateTime(2034, 10, 28) : null,
+    endDate: hasEndDate ? DateTime(2034, 10, 28) : DateTime(0),
     expectedDuration: 135,
     achievedDuration: achievedLength,
     enterpriseEvaluation:

@@ -11,12 +11,12 @@ class InternshipsListScreen extends StatelessWidget {
   static const route = '/internships_list';
 
   Future<List<Internship>> _getInternships(
-    BuildContext context, {
+    InternshipsProvider internshipsProvider, {
     required bool active,
   }) async {
     // TODO Sort by school, enterprise, teacher, student
     final internships =
-        InternshipsProvider.of(context, listen: true)
+        internshipsProvider
             .where(
               (internship) =>
                   active ? internship.isActive : !internship.isActive,
@@ -44,6 +44,8 @@ class InternshipsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final internshipsProvider = InternshipsProvider.of(context, listen: true);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des stages'),
@@ -59,8 +61,8 @@ class InternshipsListScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: FutureBuilder(
           future: Future.wait([
-            _getInternships(context, active: true),
-            _getInternships(context, active: false),
+            _getInternships(internshipsProvider, active: true),
+            _getInternships(internshipsProvider, active: false),
           ]),
           builder: (context, snapshot) {
             final activeInternships = snapshot.data?[0];

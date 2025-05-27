@@ -116,7 +116,8 @@ class _InternshipEnrollmentScreenState
               _generalInfoKey.currentState!.supervisorPhone)),
       dates: _scheduleKey.currentState!.weeklyScheduleController.dateRange!,
       expectedDuration: _scheduleKey.currentState!.internshipDuration,
-      achievedDuration: 0,
+      achievedDuration: -1,
+      endDate: DateTime(0),
       weeklySchedules:
           _scheduleKey.currentState!.weeklyScheduleController.weeklySchedules,
       visitingPriority: VisitingPriority.low,

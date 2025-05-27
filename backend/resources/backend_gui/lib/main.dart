@@ -663,7 +663,7 @@ class _LoginScreenState extends State<LoginScreen> {
           expectedDuration: 30,
           achievedDuration: -1,
           visitingPriority: VisitingPriority.high,
-          endDate: null,
+          endDate: DateTime(0),
           teacherNotes: 'No notes');
       internship.addVersion(
           creationDate: DateTime(2020, 1, 15),

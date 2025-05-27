@@ -270,8 +270,8 @@ void main() {
       expect(deserialized.achievedDuration, 130);
       expect(deserialized.visitingPriority, VisitingPriority.low);
       expect(deserialized.teacherNotes, '');
-      expect(deserialized.endDate!.millisecondsSinceEpoch,
-          internship.endDate!.millisecondsSinceEpoch);
+      expect(deserialized.endDate.millisecondsSinceEpoch,
+          internship.endDate.millisecondsSinceEpoch);
       expect(deserialized.skillEvaluations.length, 1);
       expect(deserialized.skillEvaluations[0].id,
           internship.skillEvaluations[0].id);

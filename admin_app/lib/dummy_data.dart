@@ -1236,6 +1236,7 @@ Future<void> _addDummyInternships(
       dates: period,
       expectedDuration: 135,
       achievedDuration: -1,
+      endDate: DateTime(0),
       teacherNotes: 'Un stage de rêve, mais pas pour l\'élève.',
       weeklySchedules: [
         WeeklySchedule(
@@ -1307,6 +1308,7 @@ Future<void> _addDummyInternships(
       dates: period,
       expectedDuration: 135,
       achievedDuration: -1,
+      endDate: DateTime(0),
       weeklySchedules: [
         WeeklySchedule(
           schedule: [
@@ -1444,6 +1446,7 @@ Future<void> _addDummyInternships(
       dates: period,
       expectedDuration: 135,
       achievedDuration: -1,
+      endDate: DateTime(0),
       weeklySchedules: [
         WeeklySchedule(
           schedule: [
@@ -1551,6 +1554,7 @@ Future<void> _addDummyInternships(
       dates: period,
       expectedDuration: 135,
       achievedDuration: -1,
+      endDate: DateTime(0),
       weeklySchedules: [
         WeeklySchedule(
           schedule: [
@@ -1613,6 +1617,7 @@ Future<void> _addDummyInternships(
       dates: period,
       expectedDuration: 135,
       achievedDuration: -1,
+      endDate: DateTime(0),
       weeklySchedules: [
         WeeklySchedule(
           schedule: [

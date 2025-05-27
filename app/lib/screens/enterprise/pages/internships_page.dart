@@ -120,7 +120,7 @@ class _InternshipListState extends State<_InternshipList> {
 
   Widget _dateBuild(Internship internship) {
     final endDate =
-        internship.isActive ? internship.dates.end : internship.endDate!;
+        internship.isActive ? internship.dates.end : internship.endDate;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -1149,7 +1149,8 @@ Future<void> _addDummyInternships(
     ),
     dates: period,
     expectedDuration: 135,
-    achievedDuration: 0,
+    achievedDuration: -1,
+    endDate: DateTime(0),
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -1212,7 +1213,8 @@ Future<void> _addDummyInternships(
     ),
     dates: period,
     expectedDuration: 135,
-    achievedDuration: 0,
+    achievedDuration: -1,
+    endDate: DateTime(0),
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -1348,7 +1350,8 @@ Future<void> _addDummyInternships(
     ),
     dates: period,
     expectedDuration: 135,
-    achievedDuration: 0,
+    achievedDuration: -1,
+    endDate: DateTime(0),
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -1398,7 +1401,7 @@ Future<void> _addDummyInternships(
     dates: period,
     endDate: DateTime.now().add(const Duration(days: 10)),
     expectedDuration: 135,
-    achievedDuration: 0,
+    achievedDuration: -1,
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -1448,7 +1451,8 @@ Future<void> _addDummyInternships(
     ),
     dates: period,
     expectedDuration: 135,
-    achievedDuration: 0,
+    achievedDuration: -1,
+    endDate: DateTime(0),
     weeklySchedules: [
       WeeklySchedule(
         schedule: [
@@ -1507,7 +1511,8 @@ Future<void> _addDummyInternships(
     ),
     dates: period,
     expectedDuration: 135,
-    achievedDuration: 0,
+    achievedDuration: -1,
+    endDate: DateTime(0),
     weeklySchedules: [
       WeeklySchedule(
         schedule: [

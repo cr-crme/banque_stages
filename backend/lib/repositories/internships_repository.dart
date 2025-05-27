@@ -427,7 +427,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           'achieved_duration': internship.achievedDuration.serialize(),
           'visiting_priority': internship.visitingPriority.serialize(),
           'teacher_notes': internship.teacherNotes.serialize(),
-          'end_date': internship.endDate?.serialize(),
+          'end_date': internship.endDate.serialize(),
         });
   }
 
@@ -466,7 +466,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       toUpdate['teacher_notes'] = internship.teacherNotes.serialize();
     }
     if (differences.contains('end_date')) {
-      toUpdate['end_date'] = internship.endDate?.serialize();
+      toUpdate['end_date'] = internship.endDate.serialize();
     }
     if (toUpdate.isNotEmpty) {
       await MySqlHelpers.performUpdateQuery(
@@ -920,7 +920,7 @@ class InternshipsRepositoryMock extends InternshipsRepository {
         expectedDuration: 30,
         achievedDuration: -1,
         visitingPriority: VisitingPriority.low,
-        endDate: null,
+        endDate: DateTime(0),
         teacherNotes: 'Nope'),
     '1': Internship(
         id: '1',
@@ -960,7 +960,7 @@ class InternshipsRepositoryMock extends InternshipsRepository {
         expectedDuration: 20,
         achievedDuration: -1,
         visitingPriority: VisitingPriority.mid,
-        endDate: null,
+        endDate: DateTime(0),
         teacherNotes: 'Yes'),
   };
 
