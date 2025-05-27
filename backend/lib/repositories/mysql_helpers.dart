@@ -169,6 +169,7 @@ class MySqlHelpers {
           'last_name': person.lastName,
           'date_birthday': person.dateBirth?.toIso8601String().substring(0, 10),
           'email': person.email,
+          'has_admin_rights': false,
         });
 
     await performInsertPhoneNumber(
@@ -206,10 +207,11 @@ class MySqlHelpers {
     }
     if (toUpdate.isNotEmpty) {
       await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'persons',
-          filters: {'id': person.id},
-          data: toUpdate);
+        connection: connection,
+        tableName: 'persons',
+        filters: {'id': person.id},
+        data: toUpdate,
+      );
     }
 
     // Update the phone number if needed

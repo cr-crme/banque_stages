@@ -121,6 +121,7 @@ CREATE TABLE persons (
     last_name VARCHAR(50) NOT NULL,
     date_birthday DATE,
     email VARCHAR(100),
+    has_admin_rights BOOLEAN NOT NULL,
     FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 
