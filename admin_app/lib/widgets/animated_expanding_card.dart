@@ -8,6 +8,7 @@ class AnimatedExpandingCard extends StatefulWidget {
     this.expandingDuration = const Duration(milliseconds: 300),
     this.onTapHeader,
     this.initialExpandedState = false,
+    this.elevation = 10.0,
   });
 
   final Duration expandingDuration;
@@ -15,6 +16,7 @@ class AnimatedExpandingCard extends StatefulWidget {
   final Function(bool newState)? onTapHeader;
   final Widget child;
   final bool initialExpandedState;
+  final double elevation;
 
   @override
   State<AnimatedExpandingCard> createState() => _AnimatedExpandingCardState();
@@ -43,7 +45,7 @@ class _AnimatedExpandingCardState extends State<AnimatedExpandingCard>
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 10,
+      elevation: widget.elevation,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

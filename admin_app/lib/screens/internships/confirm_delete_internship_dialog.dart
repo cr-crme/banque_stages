@@ -1,3 +1,4 @@
+import 'package:admin_app/providers/students_provider.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:flutter/material.dart';
 
@@ -8,12 +9,15 @@ class ConfirmDeleteInternshipDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final student =
+        StudentsProvider.of(context, listen: false)[internship.studentId];
+
     return AlertDialog(
       title: const Text('Supprimer'),
-      // TODO : Get the name of the student from the internship
+
       content: Text(
         'Êtes-vous sûr·e de vouloir supprimer\n'
-        'le stage de ${internship.studentId} ?',
+        'le stage de ${student.fullName} ?',
       ),
       actions: [
         OutlinedButton(
