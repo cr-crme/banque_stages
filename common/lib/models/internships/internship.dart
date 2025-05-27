@@ -228,7 +228,9 @@ class Internship extends ExtendedItemSerializable {
   final int achievedDuration;
   final VisitingPriority visitingPriority;
   final String teacherNotes;
-  final DateTime? endDate;
+  final DateTime? _endDate;
+  DateTime? get endDate => _endDate?.year == 0 ? null : _endDate;
+
   final List<InternshipEvaluationSkill> skillEvaluations;
   final List<InternshipEvaluationAttitude> attitudeEvaluations;
 
@@ -237,7 +239,7 @@ class Internship extends ExtendedItemSerializable {
   bool get isClosed => isNotActive && !isEnterpriseEvaluationPending;
   bool get isEnterpriseEvaluationPending =>
       isNotActive && enterpriseEvaluation == null;
-  bool get isActive => endDate == null;
+  bool get isActive => endDate != null;
   bool get isNotActive => !isActive;
   bool get shouldTerminate =>
       isActive && dates.end.difference(DateTime.now()).inDays <= -1;
@@ -300,11 +302,12 @@ class Internship extends ExtendedItemSerializable {
     required this.achievedDuration,
     required this.visitingPriority,
     required this.teacherNotes,
-    required this.endDate,
+    required DateTime? endDate,
     required this.skillEvaluations,
     required this.attitudeEvaluations,
     required this.enterpriseEvaluation,
-  }) : _mutables = mutables {
+  })  : _mutables = mutables,
+        _endDate = endDate {
     _finalizeInitialization();
   }
 
@@ -325,7 +328,7 @@ class Internship extends ExtendedItemSerializable {
     required this.achievedDuration,
     required this.visitingPriority,
     this.teacherNotes = '',
-    this.endDate,
+    DateTime? endDate,
     List<InternshipEvaluationSkill>? skillEvaluations,
     List<InternshipEvaluationAttitude>? attitudeEvaluations,
     this.enterpriseEvaluation,
@@ -338,7 +341,8 @@ class Internship extends ExtendedItemSerializable {
           )
         ],
         skillEvaluations = skillEvaluations ?? [],
-        attitudeEvaluations = attitudeEvaluations ?? [] {
+        attitudeEvaluations = attitudeEvaluations ?? [],
+        _endDate = endDate {
     _finalizeInitialization();
   }
 
@@ -384,7 +388,7 @@ class Internship extends ExtendedItemSerializable {
         visitingPriority = VisitingPriority.deserialize(map['priority']) ??
             VisitingPriority.notApplicable,
         teacherNotes = StringExt.from(map['teacher_notes']) ?? '',
-        endDate = DateTimeExt.from(map['end_date']),
+        _endDate = DateTimeExt.from(map['end_date']),
         skillEvaluations = ListExt.from(map['skill_evaluations'],
                 deserializer: InternshipEvaluationSkill.fromSerialized) ??
             [],
@@ -412,7 +416,7 @@ class Internship extends ExtendedItemSerializable {
         'achieved_duration': achievedDuration.serialize(),
         'priority': visitingPriority.serialize(),
         'teacher_notes': teacherNotes.serialize(),
-        'end_date': endDate?.serialize(),
+        'end_date': _endDate?.serialize(),
         'skill_evaluations': skillEvaluations.serialize(),
         'attitude_evaluations': attitudeEvaluations.serialize(),
         'enterprise_evaluation': enterpriseEvaluation?.serialize(),
@@ -466,7 +470,7 @@ class Internship extends ExtendedItemSerializable {
       achievedDuration: achievedDuration ?? this.achievedDuration,
       visitingPriority: visitingPriority ?? this.visitingPriority,
       teacherNotes: teacherNotes ?? this.teacherNotes,
-      endDate: endDate ?? this.endDate,
+      endDate: endDate ?? _endDate,
       skillEvaluations: skillEvaluations?.toList() ?? this.skillEvaluations,
       attitudeEvaluations:
           attitudeEvaluations?.toList() ?? this.attitudeEvaluations,
@@ -534,7 +538,7 @@ class Internship extends ExtendedItemSerializable {
       visitingPriority:
           VisitingPriority.deserialize(data['priority']) ?? visitingPriority,
       teacherNotes: StringExt.from(data['teacher_notes']) ?? teacherNotes,
-      endDate: DateTimeExt.from(data['end_date']) ?? endDate,
+      endDate: DateTimeExt.from(data['end_date']) ?? _endDate,
       skillEvaluations: ListExt.from(data['skill_evaluations'],
               deserializer: InternshipEvaluationSkill.fromSerialized) ??
           skillEvaluations,
@@ -560,7 +564,7 @@ class Internship extends ExtendedItemSerializable {
         'achievedDuration: $achievedDuration, '
         'visitingPriority: $visitingPriority, '
         'teacherNotes: $teacherNotes, '
-        'endDate: $endDate, '
+        'endDate: $_endDate, '
         'skillEvaluations: $skillEvaluations, '
         'attitudeEvaluations: $attitudeEvaluations, '
         'enterpriseEvaluation: $enterpriseEvaluation'

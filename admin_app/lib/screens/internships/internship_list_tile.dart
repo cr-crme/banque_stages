@@ -82,6 +82,7 @@ class InternshipListTileState extends State<InternshipListTile> {
     text: widget.internship.expectedDuration.toString(),
   );
   late DateTime? _endDate = widget.internship.endDate;
+  bool get _hasEndDate => _endDate != null && _endDate!.year > 0;
   late final _achievedDurationController = TextEditingController(
     text:
         widget.internship.achievedDuration > 0
@@ -317,13 +318,13 @@ class InternshipListTileState extends State<InternshipListTile> {
               PhoneListTile(
                 controller: _contactPhoneController,
                 isMandatory: false,
-                enabled: _isEditing && widget.internship.isActive,
+                enabled: _isEditing && !_hasEndDate,
               ),
               const SizedBox(height: 4),
               EmailListTile(
                 controller: _contactEmailController,
                 isMandatory: false,
-                enabled: _isEditing && widget.internship.isActive,
+                enabled: _isEditing && !_hasEndDate,
               ),
             ],
           ),
@@ -335,7 +336,7 @@ class InternshipListTileState extends State<InternshipListTile> {
   Widget _buildWeeklySchedule() {
     return ScheduleListTile(
       scheduleController: _schedulesController,
-      editMode: _isEditing && widget.internship.isActive,
+      editMode: _isEditing && !_hasEndDate,
     );
   }
 
@@ -371,7 +372,7 @@ class InternshipListTileState extends State<InternshipListTile> {
       cancelText: 'Annuler',
       confirmText: 'Confirmer',
       context: context,
-      initialDate: _endDate ?? DateTime.now(),
+      initialDate: _hasEndDate ? _endDate! : DateTime.now(),
       initialEntryMode: DatePickerEntryMode.calendar,
       firstDate: DateTime(widget.internship.dates.start.year - 1),
       lastDate: DateTime(widget.internship.dates.start.year + 2),
@@ -388,16 +389,27 @@ class InternshipListTileState extends State<InternshipListTile> {
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(
-            _endDate == null
-                ? 'Stage en cours'
-                : DateFormat.yMMMEd('fr_CA').format(_endDate!),
+            _hasEndDate
+                ? DateFormat.yMMMEd('fr_CA').format(_endDate!)
+                : 'Stage en cours',
             style: const TextStyle(color: Colors.black),
           ),
         ),
         if (_isEditing)
-          IconButton(
-            icon: const Icon(Icons.calendar_month_outlined, color: Colors.blue),
-            onPressed: _promptEndDate,
+          Row(
+            children: [
+              IconButton(
+                onPressed: () => setState(() => _endDate = DateTime(0)),
+                icon: Icon(Icons.delete, color: Colors.red),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.calendar_month_outlined,
+                  color: Colors.blue,
+                ),
+                onPressed: _promptEndDate,
+              ),
+            ],
           ),
       ],
     );
