@@ -1231,11 +1231,11 @@ Future<void> _addDummyInternships(
         dateBirth: null,
         phone: PhoneNumber.fromString('514-555-1234'),
         address: null,
-        email: null,
+        email: '',
       ),
       dates: period,
       expectedDuration: 135,
-      achievedDuration: 0,
+      achievedDuration: -1,
       teacherNotes: 'Un stage de rêve, mais pas pour l\'élève.',
       weeklySchedules: [
         WeeklySchedule(
@@ -1302,11 +1302,11 @@ Future<void> _addDummyInternships(
         dateBirth: null,
         phone: null,
         address: null,
-        email: null,
+        email: '',
       ),
       dates: period,
       expectedDuration: 135,
-      achievedDuration: 0,
+      achievedDuration: -1,
       weeklySchedules: [
         WeeklySchedule(
           schedule: [
@@ -1363,7 +1363,7 @@ Future<void> _addDummyInternships(
       dateBirth: null,
       phone: null,
       address: null,
-      email: null,
+      email: '',
     ),
     dates: period,
     endDate: DateTime.now().add(const Duration(days: 10)),
@@ -1439,11 +1439,11 @@ Future<void> _addDummyInternships(
         dateBirth: null,
         phone: null,
         address: null,
-        email: null,
+        email: '',
       ),
       dates: period,
       expectedDuration: 135,
-      achievedDuration: 0,
+      achievedDuration: -1,
       weeklySchedules: [
         WeeklySchedule(
           schedule: [
@@ -1492,12 +1492,12 @@ Future<void> _addDummyInternships(
         dateBirth: null,
         phone: null,
         address: null,
-        email: null,
+        email: '',
       ),
       dates: period,
       endDate: DateTime.now().add(const Duration(days: 10)),
       expectedDuration: 135,
-      achievedDuration: 0,
+      achievedDuration: -1,
       weeklySchedules: [
         WeeklySchedule(
           schedule: [
@@ -1546,11 +1546,11 @@ Future<void> _addDummyInternships(
         dateBirth: null,
         phone: PhoneNumber.fromString('123-456-7890'),
         address: null,
-        email: null,
+        email: '',
       ),
       dates: period,
       expectedDuration: 135,
-      achievedDuration: 0,
+      achievedDuration: -1,
       weeklySchedules: [
         WeeklySchedule(
           schedule: [
@@ -1608,11 +1608,11 @@ Future<void> _addDummyInternships(
         dateBirth: null,
         phone: null,
         address: null,
-        email: null,
+        email: '',
       ),
       dates: period,
       expectedDuration: 135,
-      achievedDuration: 0,
+      achievedDuration: -1,
       weeklySchedules: [
         WeeklySchedule(
           schedule: [
@@ -1671,7 +1671,7 @@ Future<void> _addDummyInternships(
         dateBirth: null,
         phone: null,
         address: null,
-        email: null,
+        email: '',
       ),
       dates: period,
       endDate: period.end,
@@ -1720,7 +1720,7 @@ Future<void> _addDummyInternships(
         dateBirth: null,
         phone: null,
         address: null,
-        email: null,
+        email: '',
       ),
       dates: period,
       endDate: period.end,

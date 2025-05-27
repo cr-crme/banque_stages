@@ -5,11 +5,16 @@ import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/internships/confirm_delete_internship_dialog.dart';
 import 'package:admin_app/screens/internships/schedule_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/email_list_tile.dart';
+import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class InternshipListTile extends StatefulWidget {
   const InternshipListTile({
@@ -38,6 +43,13 @@ class InternshipListTileState extends State<InternshipListTile> {
   @override
   void dispose() {
     _teacherNotesController.dispose();
+    _contactFirstNameController.dispose();
+    _contactLastNameController.dispose();
+    _contactPhoneController.dispose();
+    _contactEmailController.dispose();
+    _expectedDurationController.dispose();
+    _achievedDurationController.dispose();
+    _schedulesController.dispose();
     super.dispose();
   }
 
@@ -49,37 +61,68 @@ class InternshipListTileState extends State<InternshipListTile> {
       (teacher) => teacher.id == widget.internship.signatoryTeacherId,
     ),
   );
+  late final _contactFirstNameController = TextEditingController(
+    text: widget.internship.supervisor.firstName,
+  );
+  late final _contactLastNameController = TextEditingController(
+    text: widget.internship.supervisor.lastName,
+  );
+  late final _contactPhoneController = TextEditingController(
+    text: widget.internship.supervisor.phone?.toString(),
+  );
+  late final _contactEmailController = TextEditingController(
+    text: widget.internship.supervisor.email,
+  );
   late final _schedulesController = SchedulesController(
     dateRange: widget.internship.dates,
     weeklySchedules: widget.internship.weeklySchedules,
-    internshipDuration: widget.internship.expectedDuration,
+  );
+  late final _expectedDurationController = TextEditingController(
+    text: widget.internship.expectedDuration.toString(),
+  );
+  late final _achievedDurationController = TextEditingController(
+    text:
+        widget.internship.achievedDuration > 0
+            ? widget.internship.achievedDuration.toString()
+            : '',
   );
   late final _teacherNotesController = TextEditingController(
     text: widget.internship.teacherNotes,
   );
 
   Internship get editedInternship {
+    var internship = widget.internship.copyWith(
+      signatoryTeacherId: _teacherPickerController.teacher.id,
+      teacherNotes: _teacherNotesController.text,
+      expectedDuration: int.tryParse(_expectedDurationController.text) ?? 0,
+      achievedDuration: int.tryParse(_achievedDurationController.text) ?? -1,
+    );
+
     final schedulesHasChanged =
         !InternshipHelpers.areSchedulesEqual(
           widget.internship.weeklySchedules,
           _schedulesController.weeklySchedules,
         ) ||
         widget.internship.dates != _schedulesController.dateRange;
-
-    var internship = widget.internship.copyWith(
-      signatoryTeacherId: _teacherPickerController.teacher.id,
-      teacherNotes: _teacherNotesController.text,
-      expectedDuration: _schedulesController.internshipDuration,
+    final supervisor = internship.supervisor.copyWith(
+      firstName: _contactFirstNameController.text,
+      lastName: _contactLastNameController.text,
+      phone: PhoneNumber.fromString(
+        _contactPhoneController.text,
+        id: internship.supervisor.phone?.id,
+      ),
+      email: _contactEmailController.text,
     );
 
-    if (schedulesHasChanged) {
+    if (schedulesHasChanged ||
+        internship.supervisor.getDifference(supervisor).isNotEmpty) {
       // If a mutable has changed, we cannot edit it from here. We have to
       // create a deep copy of the internship and modify this new instance.
       // The easiest way to do this is to serialize, modify and then deserialize.
       final serialized = internship.serialize();
       final newVersion = InternshipMutableElements(
         creationDate: DateTime.now(),
-        supervisor: widget.internship.supervisor,
+        supervisor: supervisor,
         dates: _schedulesController.dateRange!,
         weeklySchedules: InternshipHelpers.copySchedules(
           _schedulesController.weeklySchedules,
@@ -189,7 +232,15 @@ class InternshipListTileState extends State<InternshipListTile> {
           children: [
             _buildSupervisingTeacher(),
             const SizedBox(height: 8),
+            _buildSupervisorContact(),
+            const SizedBox(height: 8),
             _buildWeeklySchedule(),
+            const SizedBox(height: 8.0),
+            _buildExpectedDuration(),
+            const SizedBox(height: 8.0),
+            _buildEndDate(),
+            const SizedBox(height: 8.0),
+            _buildAchievedDuration(),
             const SizedBox(height: 8),
             _buildTeacherNotes(),
           ],
@@ -215,10 +266,140 @@ class InternshipListTileState extends State<InternshipListTile> {
     );
   }
 
+  Widget _buildSupervisorContact() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _isEditing && widget.internship.isActive
+            ? Text('Contact')
+            : Text('Contact : ${widget.internship.supervisor.toString()}'),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (_isEditing && widget.internship.isActive)
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _contactFirstNameController,
+                        decoration: const InputDecoration(labelText: 'Prénom'),
+                        validator: (value) {
+                          if (value?.isEmpty == true) {
+                            return 'Le prénom du contact est requis';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _contactLastNameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Nom de famille',
+                        ),
+                        validator: (value) {
+                          if (value?.isEmpty == true) {
+                            return 'Le nom du contact est requis';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              const SizedBox(height: 4),
+              PhoneListTile(
+                controller: _contactPhoneController,
+                isMandatory: false,
+                enabled: _isEditing && widget.internship.isActive,
+              ),
+              const SizedBox(height: 4),
+              EmailListTile(
+                controller: _contactEmailController,
+                isMandatory: false,
+                enabled: _isEditing && widget.internship.isActive,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildWeeklySchedule() {
     return ScheduleListTile(
       scheduleController: _schedulesController,
-      editMode: _isEditing,
+      editMode: _isEditing && widget.internship.isActive,
+    );
+  }
+
+  Widget _buildExpectedDuration() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Nombre d\'heures prévues'),
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: TextFormField(
+            controller: _expectedDurationController,
+            decoration: const InputDecoration(
+              labelText: '* Nombre total d\'heures de stage à faire',
+              labelStyle: TextStyle(color: Colors.black),
+            ),
+            validator:
+                (text) =>
+                    text!.isEmpty ? 'Indiquer un nombre d\'heures.' : null,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            style: const TextStyle(color: Colors.black),
+            enabled: _isEditing,
+            keyboardType: TextInputType.number,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEndDate() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Date de fin'),
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Text(
+            widget.internship.endDate != null
+                ? DateFormat.yMMMEd('fr_CA').format(widget.internship.endDate!)
+                : 'Stage en cours',
+            style: const TextStyle(color: Colors.black),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAchievedDuration() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Nombre d\'heures réalisées'),
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: TextFormField(
+            controller: _achievedDurationController,
+            decoration: const InputDecoration(
+              labelText: 'Nombre total d\'heures de stage faites',
+              labelStyle: TextStyle(color: Colors.black),
+            ),
+            style: const TextStyle(color: Colors.black),
+            enabled: _isEditing,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            keyboardType: TextInputType.number,
+          ),
+        ),
+      ],
     );
   }
 

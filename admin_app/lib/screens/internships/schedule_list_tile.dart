@@ -80,15 +80,6 @@ class InternshipHelpers {
 }
 
 class SchedulesController {
-  final _internshipDurationController = TextEditingController();
-  int get internshipDuration =>
-      int.tryParse(
-        _internshipDurationController.text.isEmpty
-            ? '0'
-            : _internshipDurationController.text,
-      ) ??
-      0;
-
   List<WeeklySchedule> weeklySchedules = [];
   time_utils.DateTimeRange? _dateRange;
   time_utils.DateTimeRange? get dateRange => _dateRange;
@@ -97,7 +88,6 @@ class SchedulesController {
   SchedulesController({
     List<WeeklySchedule>? weeklySchedules,
     time_utils.DateTimeRange? dateRange,
-    int internshipDuration = 0,
   }) : _dateRange =
            dateRange == null
                ? null
@@ -108,12 +98,7 @@ class SchedulesController {
        weeklySchedules =
            weeklySchedules == null
                ? []
-               : InternshipHelpers.copySchedules(
-                 weeklySchedules,
-                 keepId: true,
-               ) {
-    _internshipDurationController.text = internshipDuration.toString();
-  }
+               : InternshipHelpers.copySchedules(weeklySchedules, keepId: true);
 
   bool get hasChanged => _hasChanged;
   set dateRange(time_utils.DateTimeRange? newRange) {
@@ -177,6 +162,8 @@ class SchedulesController {
     );
     _hasChanged = true;
   }
+
+  void dispose() {}
 }
 
 const time_utils.TimeOfDay _defaultStart = time_utils.TimeOfDay(
@@ -268,10 +255,6 @@ class _ScheduleListTileState extends State<ScheduleListTile> {
                   scheduleController: widget.scheduleController,
                   editMode: widget.editMode,
                   withTitle: true,
-                ),
-                _Hours(
-                  controller: widget.scheduleController,
-                  editMode: widget.editMode,
                 ),
               ],
             ),
@@ -379,39 +362,35 @@ class _DateRangeState extends State<_DateRange> {
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width / 2 - 36,
-                      child: TextField(
+                      child: TextFormField(
                         decoration: const InputDecoration(
                           labelText: 'Date de début',
                           labelStyle: TextStyle(color: Colors.black),
                           border: InputBorder.none,
                         ),
-                        controller: TextEditingController(
-                          text:
-                              widget.scheduleController.dateRange == null
-                                  ? null
-                                  : DateFormat.yMMMEd('fr_CA').format(
-                                    widget.scheduleController.dateRange!.start,
-                                  ),
-                        ),
+                        initialValue:
+                            widget.scheduleController.dateRange == null
+                                ? null
+                                : DateFormat.yMMMEd('fr_CA').format(
+                                  widget.scheduleController.dateRange!.start,
+                                ),
                         style: TextStyle(color: Colors.black),
                         enabled: false,
                       ),
                     ),
                     Flexible(
-                      child: TextField(
+                      child: TextFormField(
                         decoration: const InputDecoration(
                           labelText: 'Date de fin',
                           labelStyle: TextStyle(color: Colors.black),
                           border: InputBorder.none,
                         ),
-                        controller: TextEditingController(
-                          text:
-                              widget.scheduleController.dateRange == null
-                                  ? null
-                                  : DateFormat.yMMMEd('fr_CA').format(
-                                    widget.scheduleController.dateRange!.end,
-                                  ),
-                        ),
+                        initialValue:
+                            widget.scheduleController.dateRange == null
+                                ? null
+                                : DateFormat.yMMMEd('fr_CA').format(
+                                  widget.scheduleController.dateRange!.end,
+                                ),
                         style: TextStyle(color: Colors.black),
                         enabled: false,
                       ),
@@ -420,39 +399,6 @@ class _DateRangeState extends State<_DateRange> {
                 ),
               ),
             ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _Hours extends StatelessWidget {
-  const _Hours({required this.controller, required this.editMode});
-
-  final SchedulesController controller;
-  final bool editMode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Nombre d\'heures'),
-        Padding(
-          padding: const EdgeInsets.only(left: 12.0),
-          child: TextFormField(
-            controller: controller._internshipDurationController,
-            decoration: const InputDecoration(
-              labelText: '* Nombre total d\'heures de stage à faire',
-              labelStyle: TextStyle(color: Colors.black),
-            ),
-            validator:
-                (text) =>
-                    text!.isEmpty ? 'Indiquer un nombre d\'heures.' : null,
-            style: const TextStyle(color: Colors.black),
-            enabled: editMode,
-            keyboardType: TextInputType.number,
           ),
         ),
       ],

@@ -568,10 +568,12 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                 ]) as List?)
                 ?.firstOrNull as Map<String, dynamic>? ??
             {};
-        previousSupervisor['phone'] =
-            (previousSupervisor['phone_numbers'] as List?)?[0] ?? [];
-        previousSupervisor['address'] =
-            (previousSupervisor['addresses'] as List?)?[0] ?? [];
+        if (previousSupervisor.isNotEmpty) {
+          previousSupervisor['phone'] =
+              (previousSupervisor['phone_numbers'] as List?)?[0] ?? [];
+          previousSupervisor['address'] =
+              (previousSupervisor['addresses'] as List?)?[0] ?? [];
+        }
 
         if (previousSupervisor.isEmpty) {
           await MySqlHelpers.performInsertPerson(
