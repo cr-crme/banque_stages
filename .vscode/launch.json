@@ -42,5 +42,13 @@
             "type": "dart",
             "program": "app/lib/main_widgets.dart",
         },
+        {
+            "name": "Reset database",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "backend/resources/database/reset_database.py",
+            "console": "integratedTerminal",
+            "args": ["1VNTBNj4jePZA2CGkbVJtbB8x1t2"],  // This id refers to the aa@aa.aa account in the dummy database
+        },
     ]
 }

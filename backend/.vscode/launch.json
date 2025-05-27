@@ -11,17 +11,12 @@
             "program": "bin/backend.dart",
         },
         {
-            "name": "Backend GUI",
+            "name": "Reset database",
+            "type": "debugpy",
             "request": "launch",
-            "type": "dart",
-            "program": "resources/backend_gui/lib/main.dart",
-        },
-        {
-            "name": "Backend GUI (with Backend)",
-            "request": "launch",
-            "type": "dart",
-            "program": "resources/backend_gui/lib/main.dart",
-            "preLaunchTask": "Run Backend Server",
+            "program": "resources/database/reset_database.py",
+            "console": "integratedTerminal",
+            "args": ["1VNTBNj4jePZA2CGkbVJtbB8x1t2"],  // This id refers to the aa@aa.aa account in the dummy database
         },
     ]
 }
