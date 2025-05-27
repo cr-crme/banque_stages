@@ -24,19 +24,6 @@
             "program": "backend/bin/backend.dart",
         },
         {
-            "name": "Backend GUI",
-            "request": "launch",
-            "type": "dart",
-            "program": "backend/resources/backend_gui/lib/main.dart",
-        },
-        {
-            "name": "Backend GUI (with Backend)",
-            "request": "launch",
-            "type": "dart",
-            "program": "backend/resources/backend_gui/lib/main.dart",
-            "preLaunchTask": "Run Backend Server",
-        },
-        {
             "name": "Admin Banque de Stages ",
             "request": "launch",
             "type": "dart",
