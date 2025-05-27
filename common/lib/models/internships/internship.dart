@@ -146,8 +146,8 @@ class PostInternshipEnterpriseEvaluation extends ItemSerializable {
   }
 }
 
-class _MutableElements extends ItemSerializable {
-  _MutableElements({
+class InternshipMutableElements extends ItemSerializable {
+  InternshipMutableElements({
     required this.creationDate,
     required this.supervisor,
     required this.dates,
@@ -158,13 +158,12 @@ class _MutableElements extends ItemSerializable {
   final DateTimeRange dates;
   final List<WeeklySchedule> weeklySchedules;
 
-  _MutableElements.fromSerialized(super.map)
-      : creationDate =
-            DateTime.fromMillisecondsSinceEpoch(map['creation_date']),
+  InternshipMutableElements.fromSerialized(super.map)
+      : creationDate = DateTimeExt.from(map['creation_date']) ?? DateTime.now(),
         supervisor = Person.fromSerialized(map['supervisor']),
         dates = DateTimeRange(
-            start: DateTime.fromMillisecondsSinceEpoch(map['starting_date']),
-            end: DateTime.fromMillisecondsSinceEpoch(map['ending_date'])),
+            start: DateTimeExt.from(map['starting_date']) ?? DateTime(0),
+            end: DateTimeExt.from(map['ending_date']) ?? DateTime(0)),
         weeklySchedules = (map['schedules'] as List)
             .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
@@ -173,10 +172,10 @@ class _MutableElements extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'creation_date': creationDate.millisecondsSinceEpoch,
+        'creation_date': creationDate.serialize(),
         'supervisor': supervisor.serialize(),
-        'starting_date': dates.start.millisecondsSinceEpoch,
-        'ending_date': dates.end.millisecondsSinceEpoch,
+        'starting_date': dates.start.serialize(),
+        'ending_date': dates.end.serialize(),
         'schedules': weeklySchedules.map((e) => e.serialize()).toList(),
       };
 
@@ -210,7 +209,7 @@ class Internship extends ExtendedItemSerializable {
 
   // Elements that can be modified (which increase the version number, but
   // do not require a completely new internship contract)
-  final List<_MutableElements> _mutables;
+  final List<InternshipMutableElements> _mutables;
   int get nbVersions => _mutables.length;
   DateTime get creationDate => _mutables.last.creationDate;
   DateTime creationDateFrom(int version) => _mutables[version].creationDate;
@@ -296,7 +295,7 @@ class Internship extends ExtendedItemSerializable {
     required this.enterpriseId,
     required this.jobId,
     required this.extraSpecializationIds,
-    required List<_MutableElements> mutables,
+    required List<InternshipMutableElements> mutables,
     required this.expectedDuration,
     required this.achievedDuration,
     required this.visitingPriority,
@@ -331,7 +330,7 @@ class Internship extends ExtendedItemSerializable {
     List<InternshipEvaluationAttitude>? attitudeEvaluations,
     this.enterpriseEvaluation,
   })  : _mutables = [
-          _MutableElements(
+          InternshipMutableElements(
             creationDate: creationDate,
             supervisor: supervisor,
             dates: dates,
@@ -377,7 +376,7 @@ class Internship extends ExtendedItemSerializable {
                 deserializer: (e) => StringExt.from(e)!) ??
             [],
         _mutables = (map['mutables'] as List?)
-                ?.map(((e) => _MutableElements.fromSerialized(e)))
+                ?.map(((e) => InternshipMutableElements.fromSerialized(e)))
                 .toList() ??
             [],
         expectedDuration = IntExt.from(map['expected_duration']) ?? -1,
@@ -425,7 +424,7 @@ class Internship extends ExtendedItemSerializable {
     required DateTimeRange dates,
     required List<WeeklySchedule> weeklySchedules,
   }) {
-    _mutables.add(_MutableElements(
+    _mutables.add(InternshipMutableElements(
       creationDate: creationDate,
       supervisor: supervisor,
       dates: dates,
@@ -525,7 +524,7 @@ class Internship extends ExtendedItemSerializable {
               deserializer: (e) => StringExt.from(e)!) ??
           extraSpecializationIds,
       mutables: (data['mutables'] as List?)
-              ?.map(((e) => _MutableElements.fromSerialized(e)))
+              ?.map(((e) => InternshipMutableElements.fromSerialized(e)))
               .toList() ??
           _mutables,
       expectedDuration:

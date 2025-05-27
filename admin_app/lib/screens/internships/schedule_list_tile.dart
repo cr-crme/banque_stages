@@ -3,13 +3,79 @@ import 'package:admin_app/widgets/custom_time_picker.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:flutter/material.dart';
-
 import 'package:intl/intl.dart';
 
 extension TimeOfDayExtension on time_utils.TimeOfDay {
   String format(context) {
     TimeOfDay timeOfDay = TimeOfDay(hour: hour, minute: minute);
     return timeOfDay.format(context).toString();
+  }
+}
+
+class InternshipHelpers {
+  static List<WeeklySchedule> copySchedules(
+    List<WeeklySchedule> schedules, {
+    bool keepId = true,
+  }) =>
+      schedules
+          .map(
+            (schedule) => WeeklySchedule(
+              id: keepId ? schedule.id : null,
+              period: time_utils.DateTimeRange(
+                start: schedule.period.start,
+                end: schedule.period.end,
+              ),
+              schedule:
+                  schedule.schedule
+                      .map(
+                        (day) => DailySchedule(
+                          id: keepId ? day.id : null,
+                          dayOfWeek: day.dayOfWeek,
+                          start: time_utils.TimeOfDay(
+                            hour: day.start.hour,
+                            minute: day.start.minute,
+                          ),
+                          end: time_utils.TimeOfDay(
+                            hour: day.end.hour,
+                            minute: day.end.minute,
+                          ),
+                        ),
+                      )
+                      .toList(),
+            ),
+          )
+          .toList();
+
+  static bool areSchedulesEqual(
+    List<WeeklySchedule> listA,
+    List<WeeklySchedule> listB,
+  ) {
+    if (listA.length != listB.length) return false;
+
+    for (int i = 0; i < listA.length; i++) {
+      final a = listA[i];
+      final b = listB[i];
+
+      if (a.period.start != b.period.start || a.period.end != b.period.end) {
+        return false;
+      }
+
+      if (a.schedule.length != b.schedule.length) return false;
+
+      for (int i = 0; i < a.schedule.length; i++) {
+        final dayA = a.schedule[i];
+        final dayB = b.schedule[i];
+
+        if (dayA.dayOfWeek != dayB.dayOfWeek ||
+            dayA.start.hour != dayB.start.hour ||
+            dayA.start.minute != dayB.start.minute ||
+            dayA.end.hour != dayB.end.hour ||
+            dayA.end.minute != dayB.end.minute) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
 
@@ -39,7 +105,13 @@ class SchedulesController {
                  start: dateRange.start,
                  end: dateRange.end,
                ),
-       weeklySchedules = weeklySchedules == null ? [] : [...weeklySchedules] {
+       weeklySchedules =
+           weeklySchedules == null
+               ? []
+               : InternshipHelpers.copySchedules(
+                 weeklySchedules,
+                 keepId: true,
+               ) {
     _internshipDurationController.text = internshipDuration.toString();
   }
 
@@ -229,6 +301,8 @@ class _DateRangeState extends State<_DateRange> {
   bool _isValid = true;
 
   Future<void> _promptDateRange(context) async {
+    final referenceDate =
+        (widget.scheduleController.dateRange?.start ?? DateTime.now());
     final range = await showCustomDateRangePicker(
       helpText: 'Sélectionner les dates',
       saveText: 'Confirmer',
@@ -237,8 +311,8 @@ class _DateRangeState extends State<_DateRange> {
       context: context,
       initialEntryMode: DatePickerEntryMode.calendar,
       initialDateRange: widget.scheduleController.dateRange,
-      firstDate: DateTime(DateTime.now().year),
-      lastDate: DateTime(DateTime.now().year + 2),
+      firstDate: DateTime(referenceDate.year - 1),
+      lastDate: DateTime(referenceDate.year + 2),
     );
     if (range == null) return;
 

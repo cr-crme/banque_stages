@@ -7,7 +7,6 @@ import 'package:admin_app/screens/internships/schedule_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:common/models/internships/internship.dart';
-import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
@@ -59,47 +58,36 @@ class InternshipListTileState extends State<InternshipListTile> {
     text: widget.internship.teacherNotes,
   );
 
-  // TODO: use previous weekly schedules if not editing (almost done but do not update at all currently)
-  // TODO: Make sure the ids of weekly schedules are unique
   Internship get editedInternship {
-    final internship = widget.internship.copyWith(
+    final schedulesHasChanged =
+        !InternshipHelpers.areSchedulesEqual(
+          widget.internship.weeklySchedules,
+          _schedulesController.weeklySchedules,
+        ) ||
+        widget.internship.dates != _schedulesController.dateRange;
+
+    var internship = widget.internship.copyWith(
       signatoryTeacherId: _teacherPickerController.teacher.id,
       teacherNotes: _teacherNotesController.text,
       expectedDuration: _schedulesController.internshipDuration,
     );
 
-    if (areListsNotEqual(
-          internship.weeklySchedules,
-          _schedulesController.weeklySchedules,
-        ) ||
-        internship.dates != _schedulesController.dateRange) {
-      internship.addVersion(
+    if (schedulesHasChanged) {
+      // If a mutable has changed, we cannot edit it from here. We have to
+      // create a deep copy of the internship and modify this new instance.
+      // The easiest way to do this is to serialize, modify and then deserialize.
+      final serialized = internship.serialize();
+      final newVersion = InternshipMutableElements(
         creationDate: DateTime.now(),
-        supervisor:
-            TeachersProvider.of(context, listen: false).firstWhereOrNull(
-              (teacher) => teacher.id == widget.internship.signatoryTeacherId,
-            ) ??
-            Teacher.empty,
+        supervisor: widget.internship.supervisor,
         dates: _schedulesController.dateRange!,
-        weeklySchedules:
-            _schedulesController.weeklySchedules
-                .map(
-                  (week) => WeeklySchedule(
-                    period: week.period,
-                    schedule:
-                        week.schedule
-                            .map(
-                              (day) => DailySchedule(
-                                dayOfWeek: day.dayOfWeek,
-                                start: day.start,
-                                end: day.end,
-                              ),
-                            )
-                            .toList(),
-                  ),
-                )
-                .toList(),
+        weeklySchedules: InternshipHelpers.copySchedules(
+          _schedulesController.weeklySchedules,
+          keepId: false,
+        ),
       );
+      (serialized['mutables'] as List).add(newVersion.serialize());
+      internship = Internship.fromSerialized(serialized);
     }
 
     return internship;

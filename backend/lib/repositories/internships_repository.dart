@@ -568,33 +568,15 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                 ]) as List?)
                 ?.firstOrNull as Map<String, dynamic>? ??
             {};
-        final phones = (previousSupervisor['phone_numbers'] as List?) ?? [];
-        final addresses = (previousSupervisor['addresses'] as List?) ?? [];
+        previousSupervisor['phone'] =
+            (previousSupervisor['phone_numbers'] as List?)?[0] ?? [];
+        previousSupervisor['address'] =
+            (previousSupervisor['addresses'] as List?)?[0] ?? [];
 
         if (previousSupervisor.isEmpty) {
           await MySqlHelpers.performInsertPerson(
               connection: connection, person: internship.supervisor);
         } else {
-          // Don't keep previous phone numbers and adresses (the current will be readded later)
-          final toWait = <Future>[];
-          for (final phone in phones) {
-            toWait.add(MySqlHelpers.performDeletePhoneNumber(
-              connection: connection,
-              phoneNumber: PhoneNumber.fromString(phone['phone_number'],
-                  id: phone['id']),
-            ));
-          }
-          for (final address in addresses) {
-            if (address['id'] != internship.supervisor.address?.id) {
-              // Don't keep previous addresses
-              toWait.add(MySqlHelpers.performDeleteAddress(
-                connection: connection,
-                address: Address.fromSerialized(address),
-              ));
-            }
-          }
-          await Future.wait(toWait);
-
           // Update the person (without the phone numbers and addresses of previous as they were removed)
           await MySqlHelpers.performUpdatePerson(
               connection: connection,
