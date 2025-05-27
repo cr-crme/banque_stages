@@ -10,9 +10,19 @@ class InternshipsListScreen extends StatelessWidget {
 
   static const route = '/internships_list';
 
-  Future<List<Internship>> _getInternships(BuildContext context) async {
+  Future<List<Internship>> _getInternships(
+    BuildContext context, {
+    required bool active,
+  }) async {
     // TODO Sort by school, enterprise, teacher, student
-    final internships = [...InternshipsProvider.of(context, listen: true)];
+    final internships =
+        InternshipsProvider.of(context, listen: true)
+            .where(
+              (internship) =>
+                  active ? internship.isActive : !internship.isActive,
+            )
+            .toList();
+
     internships.sort((a, b) {
       final nameA = a.studentId.toLowerCase();
       final nameB = b.studentId.toLowerCase();
@@ -48,21 +58,52 @@ class InternshipsListScreen extends StatelessWidget {
 
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: Future.wait([_getInternships(context)]),
+          future: Future.wait([
+            _getInternships(context, active: true),
+            _getInternships(context, active: false),
+          ]),
           builder: (context, snapshot) {
-            final internships = snapshot.data?[0];
-            if (internships == null) {
+            final activeInternships = snapshot.data?[0];
+            final inactiveInternships = snapshot.data?[1];
+            if (activeInternships == null || inactiveInternships == null) {
               return const Center(child: CircularProgressIndicator());
             }
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (internships.isEmpty)
+                if (activeInternships.isEmpty && inactiveInternships.isEmpty)
                   const Center(child: Text('Aucune stage enregistré.')),
-                if (internships.isNotEmpty)
-                  ...internships.map(
-                    (internship) => InternshipListTile(internship: internship),
+                if (activeInternships.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Stages actifs (${activeInternships.length})',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                if (activeInternships.isNotEmpty)
+                  ...activeInternships.map(
+                    (internship) => InternshipListTile(
+                      key: ValueKey(internship.id),
+                      internship: internship,
+                    ),
+                  ),
+
+                if (inactiveInternships.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Stages inactifs (${inactiveInternships.length})',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                if (inactiveInternships.isNotEmpty)
+                  ...inactiveInternships.map(
+                    (internship) => InternshipListTile(
+                      key: ValueKey(internship.id),
+                      internship: internship,
+                    ),
                   ),
               ],
             );

@@ -274,7 +274,7 @@ class InternshipListTileState extends State<InternshipListTile> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _isEditing && widget.internship.isActive
+        _isEditing && !_hasEndDate
             ? Text('Contact')
             : Text('Contact : ${widget.internship.supervisor.toString()}'),
         Padding(
@@ -282,7 +282,7 @@ class InternshipListTileState extends State<InternshipListTile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (_isEditing && widget.internship.isActive)
+              if (_isEditing && !_hasEndDate)
                 Row(
                   children: [
                     Expanded(

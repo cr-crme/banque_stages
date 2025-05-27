@@ -239,7 +239,7 @@ class Internship extends ExtendedItemSerializable {
   bool get isClosed => isNotActive && !isEnterpriseEvaluationPending;
   bool get isEnterpriseEvaluationPending =>
       isNotActive && enterpriseEvaluation == null;
-  bool get isActive => endDate != null;
+  bool get isActive => endDate == null;
   bool get isNotActive => !isActive;
   bool get shouldTerminate =>
       isActive && dates.end.difference(DateTime.now()).inDays <= -1;
