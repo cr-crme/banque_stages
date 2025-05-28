@@ -26,6 +26,7 @@ String _prepareHandshake() {
 }
 
 DatabaseManager get _mockedDatabase => DatabaseManager(
+      connection: null,
       schoolBoardsDatabase: SchoolBoardsRepositoryMock(),
       teachersDatabase: TeachersRepositoryMock(),
       studentsDatabase: StudentsRepositoryMock(),

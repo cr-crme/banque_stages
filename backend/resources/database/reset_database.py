@@ -51,7 +51,7 @@ def add_admin_user(secret: str):
     # Use uuid v5 with namespace DNS to generate a stable ID from the secret
     id = str(uuid.uuid5(uuid.NAMESPACE_DNS, secret))
 
-    query = f"INSERT INTO entities (shared_id) VALUES ('{id}');"
+    query = f"INSERT INTO users (shared_id, authenticator_id, has_admin_rights) VALUES ('{id}', '{secret}', 1);"
     result = subprocess.run(
         _base_docker_command + [_database, "-e", query], stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
@@ -60,21 +60,7 @@ def add_admin_user(secret: str):
         print(f"Error adding admin user: {result.stderr.decode()}")
         return False
 
-    result = subprocess.run(
-        _base_docker_command
-        + [
-            _database,
-            "-e",
-            f"INSERT INTO persons (id, first_name, last_name, has_admin_rights) VALUES ('{id}', 'Master', 'User', 1);",
-        ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    if result.returncode != 0:
-        # Log the error message
-        print(f"Error adding admin user: {result.stderr.decode()}")
-        return False
-    return result.returncode == 0
+    return True
 
 
 if __name__ == "__main__":

@@ -117,6 +117,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     while (!_handshakeReceived) {
       await Future.delayed(const Duration(milliseconds: 100));
       if (_socket == null) {
+        // TODO There is no catch for this
         throw Exception('Connection to the server failed');
       }
     }

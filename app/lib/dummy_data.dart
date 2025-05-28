@@ -187,6 +187,7 @@ Future<void> _addDummyTeachers(
 
   teachers.add(
     Teacher(
+      id: 'dummy_teacher_id_1',
       firstName: 'Tybalt',
       middleName: null,
       lastName: 'Capulet',
@@ -203,6 +204,7 @@ Future<void> _addDummyTeachers(
 
   teachers.add(
     Teacher(
+      id: 'dummy_teacher_id_2',
       firstName: 'Benvolio',
       middleName: null,
       lastName: 'Montaigu',

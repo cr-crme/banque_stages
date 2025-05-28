@@ -5,6 +5,7 @@ import 'package:backend/repositories/students_repository.dart';
 import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/communication_protocol.dart';
+import 'package:mysql1/mysql1.dart';
 
 String _getId(Map<String, dynamic>? data, {required String messageOnNull}) {
   final id = data?['id']?.toString();
@@ -14,13 +15,16 @@ String _getId(Map<String, dynamic>? data, {required String messageOnNull}) {
 
 class DatabaseManager {
   DatabaseManager({
+    required MySqlConnection? connection,
     required this.schoolBoardsDatabase,
     required this.teachersDatabase,
     required this.studentsDatabase,
     required this.enterprisesDatabase,
     required this.internshipsDatabase,
-  });
+  }) : _connection = connection;
 
+  final MySqlConnection? _connection;
+  MySqlConnection get connection => _connection!;
   final SchoolBoardsRepository schoolBoardsDatabase;
   final TeachersRepository teachersDatabase;
   final StudentsRepository studentsDatabase;

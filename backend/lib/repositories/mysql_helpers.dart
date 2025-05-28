@@ -169,7 +169,6 @@ class MySqlHelpers {
           'last_name': person.lastName,
           'date_birthday': person.dateBirth?.toIso8601String().substring(0, 10),
           'email': person.email,
-          'has_admin_rights': false,
         });
 
     await performInsertPhoneNumber(

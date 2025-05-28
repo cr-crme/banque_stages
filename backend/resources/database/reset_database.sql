@@ -8,6 +8,8 @@ DROP TABLE IF EXISTS entities;
 DROP TABLE IF EXISTS phone_numbers;
 DROP TABLE IF EXISTS addresses;
 
+DROP TABLE IF EXISTS logins;
+
 DROP TABLE IF EXISTS persons;
 
 DROP TABLE IF EXISTS student_contacts;
@@ -84,7 +86,11 @@ CREATE TABLE phone_numbers (
     FOREIGN KEY (entity_id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 
-
+CREATE TABLE users (
+    shared_id VARCHAR(36) NOT NULL PRIMARY KEY,
+    authenticator_id VARCHAR(36) NOT NULL,
+    has_admin_rights BOOLEAN NOT NULL
+);
 
 /*************************/
 /* School related tables */
@@ -121,7 +127,6 @@ CREATE TABLE persons (
     last_name VARCHAR(50) NOT NULL,
     date_birthday DATE,
     email VARCHAR(100),
-    has_admin_rights BOOLEAN NOT NULL,
     FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 

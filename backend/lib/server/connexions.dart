@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/server/database_manager.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:backend/utils/helpers.dart';
@@ -216,12 +217,31 @@ class Connexions {
     if (payload == null) {
       throw ConnexionRefusedException('Invalid token');
     }
+    final authenticatorId = payload['user_id'] as String?;
+    if (authenticatorId == null) {
+      throw ConnexionRefusedException('Invalid token payload');
+    }
 
     // Get the user id from the database to first verify
+    final users = (await MySqlHelpers.performSelectQuery(
+            connection: _database.connection,
+            tableName: 'users',
+            filters: {
+          'authenticator_id': authenticatorId,
+        }) as List)
+        .firstOrNull;
+    if (users == null ||
+        users['shared_id'] == null ||
+        users['has_admin_rights'] == null) {
+      throw ConnexionRefusedException('Invalid token payload');
+    }
+
+    // TODO Create a dedicated class for this
     _clients[client] = {
       'is_verified': true,
       'school_board_id': '12345', // TODO
-      'user_id': '54321', // TODO
+      'user_id': users['shared_id'],
+      'has_admin_rights': users['has_admin_rights'] == 1,
     };
   }
 

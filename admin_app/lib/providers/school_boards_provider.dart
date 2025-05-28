@@ -21,6 +21,7 @@ class SchoolBoardsProvider extends BackendListProvided<SchoolBoard> {
   RequestFields getField([bool asList = false]) =>
       asList ? RequestFields.schoolBoards : RequestFields.schoolBoard;
 
+  // TODO REMOVE THE SCHOOL BOARD CONCEPT FROM THE APP (move it to the python reset)
   static Future<SchoolBoard?> mySchoolBoardOf(
     BuildContext context, {
     listen = false,

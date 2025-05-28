@@ -21,6 +21,7 @@ InternshipsRepository get _mockedDatabaseInternships =>
 void main() {
   test('Get teachers from DatabaseManagers', () async {
     final database = DatabaseManager(
+      connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
@@ -44,6 +45,7 @@ void main() {
 
   test('Get teacher from DatabaseManagers', () async {
     final database = DatabaseManager(
+      connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
@@ -62,6 +64,7 @@ void main() {
 
   test('Get teacher from DatabaseManagers with invalid id', () async {
     final database = DatabaseManager(
+      connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
@@ -81,6 +84,7 @@ void main() {
 
   test('Get teacher from DatabaseManagers without id', () async {
     final database = DatabaseManager(
+      connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
@@ -101,6 +105,7 @@ void main() {
 
   test('Put without data in DatabaseManagers', () async {
     final database = DatabaseManager(
+      connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
@@ -121,6 +126,7 @@ void main() {
 
   test('Set all teachers to DatabaseManagers', () async {
     final database = DatabaseManager(
+      connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
@@ -141,6 +147,7 @@ void main() {
 
   test('Set teacher to DatabaseManagers', () async {
     final database = DatabaseManager(
+      connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
@@ -163,6 +170,7 @@ void main() {
 
   test('Set new teacher to DatabaseManagers', () async {
     final database = DatabaseManager(
+      connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
@@ -185,6 +193,7 @@ void main() {
 
   test('Set teacher to DatabaseManagers without id', () async {
     final database = DatabaseManager(
+      connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,

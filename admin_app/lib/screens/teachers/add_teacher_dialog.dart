@@ -46,6 +46,7 @@ class _AddTeacherDialogState extends State<AddTeacherDialog> {
             const SizedBox(height: 12),
             Text('Compléter les informations personnelles'),
             const SizedBox(height: 8),
+            // TODO: The id from the authenticator should be added to the teacher at some point
             TeacherListTile(
               key: _editingKey,
               teacher: Teacher.empty,

@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:backend/repositories/school_boards_repository.dart';
 import 'package:backend/repositories/enterprises_repository.dart';
 import 'package:backend/repositories/internships_repository.dart';
+import 'package:backend/repositories/school_boards_repository.dart';
 import 'package:backend/repositories/students_repository.dart';
 import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/server/connexions.dart';
@@ -45,27 +45,28 @@ void main() async {
       Duration(milliseconds: 100)); // Give a bit of time just in case
   final connexions = Connexions(
       database: DatabaseManager(
+    connection: connection!,
     schoolBoardsDatabase: switch (databaseBackend) {
       DatabaseBackend.mysql =>
-        MySqlSchoolBoardsRepository(connection: connection!),
+        MySqlSchoolBoardsRepository(connection: connection),
       DatabaseBackend.mock => SchoolBoardsRepositoryMock()
     },
     teachersDatabase: switch (databaseBackend) {
-      DatabaseBackend.mysql => MySqlTeachersRepository(connection: connection!),
+      DatabaseBackend.mysql => MySqlTeachersRepository(connection: connection),
       DatabaseBackend.mock => TeachersRepositoryMock()
     },
     studentsDatabase: switch (databaseBackend) {
-      DatabaseBackend.mysql => MySqlStudentsRepository(connection: connection!),
+      DatabaseBackend.mysql => MySqlStudentsRepository(connection: connection),
       DatabaseBackend.mock => StudentsRepositoryMock()
     },
     enterprisesDatabase: switch (databaseBackend) {
       DatabaseBackend.mysql =>
-        MySqlEnterprisesRepository(connection: connection!),
+        MySqlEnterprisesRepository(connection: connection),
       DatabaseBackend.mock => EnterprisesRepositoryMock()
     },
     internshipsDatabase: switch (databaseBackend) {
       DatabaseBackend.mysql =>
-        MySqlInternshipsRepository(connection: connection!),
+        MySqlInternshipsRepository(connection: connection),
       DatabaseBackend.mock => InternshipsRepositoryMock()
     },
   ));
@@ -76,6 +77,6 @@ void main() async {
   }
 
   if (databaseBackend == DatabaseBackend.mysql) {
-    await connection!.close();
+    await connection.close();
   }
 }

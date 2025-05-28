@@ -12,6 +12,7 @@ import '../mockers/http_request_mock.dart';
 
 Connexions get _mockedConnexions => Connexions(
         database: DatabaseManager(
+      connection: null, // No real database connection in tests
       schoolBoardsDatabase: SchoolBoardsRepositoryMock(),
       teachersDatabase: TeachersRepositoryMock(),
       studentsDatabase: StudentsRepositoryMock(),
