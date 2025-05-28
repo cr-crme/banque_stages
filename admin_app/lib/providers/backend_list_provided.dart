@@ -47,7 +47,12 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     }
 
     // Get the JWT token
-    String token = authProvider.jwt;
+    String? token;
+    while (true) {
+      token = await authProvider.getAuthenticatorIdToken();
+      if (token != null) break;
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
 
     // If the socket is already connected, it means another provider is already connected
     // Simply return now after having kept the reference to the deserializer function
@@ -75,7 +80,9 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
             notifyListeners();
           }
         });
-        _socket!.messages.listen((data) => _incommingMessage(data));
+        _socket!.messages.listen(
+          (data) => _incommingMessage(data, authProvider: authProvider),
+        );
 
         final started = DateTime.now();
         while (!_handshakeReceived) {
@@ -322,7 +329,10 @@ void _getFromBackend(
   _socket?.send(message);
 }
 
-Future<void> _incommingMessage(message) async {
+Future<void> _incommingMessage(
+  message, {
+  required AuthProvider authProvider,
+}) async {
   try {
     final map = jsonDecode(message);
     final protocol = CommunicationProtocol.deserialize(map);
@@ -344,6 +354,7 @@ Future<void> _incommingMessage(message) async {
     switch (protocol.requestType) {
       case RequestType.handshake:
         {
+          authProvider.backendId = protocol.data!['user_id']!;
           _handshakeReceived = true;
           _socketId = protocol.socketId;
           for (final selector in _providerSelector.values) {

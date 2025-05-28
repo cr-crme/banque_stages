@@ -1,10 +1,9 @@
-import 'package:common/communication_protocol.dart';
-import 'package:common/models/persons/teacher.dart';
 import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/backend_list_provided.dart';
+import 'package:common/communication_protocol.dart';
+import 'package:common/models/persons/teacher.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class TeachersProvider extends BackendListProvided<Teacher> {
   TeachersProvider({required super.uri, super.mockMe});
@@ -21,28 +20,20 @@ class TeachersProvider extends BackendListProvided<Teacher> {
     return Teacher.fromSerialized(data);
   }
 
-  String? _currentId;
+  String? get _currentTeacherId => _authProvider!.backendId;
   String get currentTeacherId {
-    if (_currentId == null) throw Exception('Teacher is not logged in');
-
-    return _currentId!;
-  }
-
-  set currentTeacherId(String? id) {
-    var uuid = Uuid();
-    final namespace = UuidValue.fromNamespace(Namespace.dns);
-    _currentId = uuid.v5(namespace.toString(), id!);
-    notifyListeners();
+    if (_currentTeacherId == null) throw Exception('Teacher is not logged in');
+    return _currentTeacherId!;
   }
 
   Teacher get currentTeacher =>
-      isEmpty || _currentId == null || !hasId(_currentId!)
+      isEmpty || _currentTeacherId == null || !hasId(_currentTeacherId!)
           ? Teacher.empty
-          : this[_currentId];
+          : this[_currentTeacherId];
 
+  AuthProvider? _authProvider;
   void initializeAuth(AuthProvider auth) {
-    currentTeacherId = auth.currentUser?.uid;
-
+    _authProvider = auth;
     initializeFetchingData(authProvider: auth);
   }
 }

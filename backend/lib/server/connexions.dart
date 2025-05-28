@@ -26,7 +26,11 @@ class Connexions {
 
   Future<bool> add(WebSocket client) async {
     try {
-      _clients[client] = {'is_verified': false, 'school_board_id': null};
+      _clients[client] = {
+        'is_verified': false,
+        'school_board_id': null,
+        'user_id': null
+      };
 
       client.listen((message) => _incommingMessage(client, message: message),
           onDone: () => _onConnexionClosed(client,
@@ -52,7 +56,9 @@ class Connexions {
     // Send the handshake to the client
     _send(client,
         message: CommunicationProtocol(
-            requestType: RequestType.handshake, response: Response.success));
+            requestType: RequestType.handshake,
+            response: Response.success,
+            data: {'user_id': _clients[client]!['user_id']}));
     return true;
   }
 
@@ -206,13 +212,16 @@ class Connexions {
           'Token is required to validate the handshake');
     }
 
-    final payload = extractJwt(protocol.data!['token']);
+    final payload = await extractJwt(protocol.data!['token']);
     if (payload == null) {
       throw ConnexionRefusedException('Invalid token');
     }
+
+    // Get the user id from the database to first verify
     _clients[client] = {
       'is_verified': true,
-      'school_board_id': payload['school_board_id']
+      'school_board_id': '12345', // TODO
+      'user_id': '54321', // TODO
     };
   }
 

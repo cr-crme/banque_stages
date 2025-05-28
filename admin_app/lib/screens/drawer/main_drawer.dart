@@ -1,11 +1,28 @@
 import 'package:admin_app/dummy_data.dart';
 import 'package:admin_app/providers/auth_provider.dart';
+import 'package:admin_app/providers/enterprises_provider.dart';
+import 'package:admin_app/providers/internships_provider.dart';
+import 'package:admin_app/providers/school_boards_provider.dart';
+import 'package:admin_app/providers/students_provider.dart';
+import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
+
+  void _logOut(BuildContext context) async {
+    InternshipsProvider.of(context, listen: false).stopFetchingData();
+    StudentsProvider.of(context, listen: false).stopFetchingData();
+    EnterprisesProvider.of(context, listen: false).stopFetchingData();
+    TeachersProvider.of(context, listen: false).stopFetchingData();
+    SchoolBoardsProvider.of(context, listen: false).stopFetchingData();
+
+    await AuthProvider.of(context).signOut();
+    if (!context.mounted) return;
+    GoRouter.of(context).goNamed(Screens.login);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +62,7 @@ class MainDrawer extends StatelessWidget {
                 _DrawerItem(
                   titleText: 'Se déconnecter',
                   icon: Icons.logout,
-                  onTap: () {
-                    AuthProvider.of(context).signOut();
-                    GoRouter.of(context).goNamed(Screens.login);
-                  },
+                  onTap: () => _logOut(context),
                 ),
               ],
             ),

@@ -1,5 +1,3 @@
-import 'package:common/utils.dart';
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
@@ -37,26 +35,39 @@ class AuthProvider extends ChangeNotifier {
     required String email,
     required String password,
   }) async {
-    return await _firebaseAuth.signInWithEmailAndPassword(
+    final user = await _firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
+
+    return user;
   }
 
-  Future<void> signOut() {
-    return _firebaseAuth.signOut();
+  Future<void> signOut() async {
+    await _firebaseAuth.signOut();
+    backendId = null;
+    notifyListeners();
   }
 
-  bool isSignedIn() {
+  Future<String?> getAuthenticatorIdToken() async {
+    if (!isAuthenticatorSignedIn()) return null;
+    return await _firebaseAuth.currentUser!.getIdToken();
+  }
+
+  bool isAuthenticatorSignedIn() {
     return _firebaseAuth.currentUser != null;
   }
 
-  ///
-  /// Fetch the JWT from the Microsoft authentication server. For now, it simulates
-  ///
-  // TODO: At some point, this should be replaced with a real JWT token.
-  final jwt = JWT({
-    'app_secret': DevAuth.devMyAppSecret,
-    'school_board_id': DevAuth.devMySchoolBoardId,
-  }).sign(SecretKey('secret passphrase'));
+  String? _backendId;
+  String? get backendId => _backendId;
+  set backendId(String? id) {
+    _backendId = id;
+    notifyListeners();
+  }
+
+  bool isBackendConnected() {
+    return backendId != null && backendId!.isNotEmpty;
+  }
+
+  bool isFullySignedIn() => isAuthenticatorSignedIn() && isBackendConnected();
 }
