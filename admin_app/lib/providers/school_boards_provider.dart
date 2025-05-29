@@ -21,7 +21,9 @@ class SchoolBoardsProvider extends BackendListProvided<SchoolBoard> {
   RequestFields getField([bool asList = false]) =>
       asList ? RequestFields.schoolBoards : RequestFields.schoolBoard;
 
-  // TODO REMOVE THE SCHOOL BOARD CONCEPT FROM THE APP (move it to the python reset)
+  // TODO Manage the different access level cases (super admin, admin, user)
+  // With super admin who does not have a school board id, admin who has a school board id but no school id,
+  // and user who has a school board id and a school id
   static Future<SchoolBoard?> mySchoolBoardOf(
     BuildContext context, {
     listen = false,
