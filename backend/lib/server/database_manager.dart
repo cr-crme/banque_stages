@@ -3,6 +3,7 @@ import 'package:backend/repositories/internships_repository.dart';
 import 'package:backend/repositories/school_boards_repository.dart';
 import 'package:backend/repositories/students_repository.dart';
 import 'package:backend/repositories/teachers_repository.dart';
+import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:mysql1/mysql1.dart';
@@ -34,71 +35,73 @@ class DatabaseManager {
   Future<Map<String, dynamic>> get(
     RequestFields field, {
     required Map<String, dynamic>? data,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
     switch (field) {
       case RequestFields.schoolBoards:
         return await schoolBoardsDatabase.getAll(
           fields: (data?['fields'] as List?)?.cast<String>(),
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.schoolBoard:
         return await schoolBoardsDatabase.getById(
           id: _getId(data,
               messageOnNull: 'An "id" is required to get a school board'),
           fields: (data?['fields'] as List?)?.cast<String>(),
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.teachers:
         return await teachersDatabase.getAll(
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.teacher:
         return await teachersDatabase.getById(
           id: _getId(data,
               messageOnNull: 'An "id" is required to get a teacher'),
           fields: (data?['fields'] as List?)?.cast<String>(),
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.students:
         return await studentsDatabase.getAll(
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.student:
         return await studentsDatabase.getById(
           id: _getId(data,
               messageOnNull: 'An "id" is required to get a student'),
           fields: (data?['fields'] as List?)?.cast<String>(),
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.enterprises:
         return await enterprisesDatabase.getAll(
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.enterprise:
         return await enterprisesDatabase.getById(
           id: _getId(data,
               messageOnNull: 'An "id" is required to get an enterprise'),
           fields: (data?['fields'] as List?)?.cast<String>(),
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.internships:
         return await internshipsDatabase.getAll(
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.internship:
         return await internshipsDatabase.getById(
           id: _getId(data,
               messageOnNull: 'An "id" is required to get an internship'),
           fields: (data?['fields'] as List?)?.cast<String>(),
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
     }
   }
 
-  Future<List<String>?> put(RequestFields field,
-      {required Map<String, dynamic>? data,
-      required String schoolBoardId}) async {
+  Future<List<String>?> put(
+    RequestFields field, {
+    required Map<String, dynamic>? data,
+    required DatabaseUser user,
+  }) async {
     if (data == null) {
       throw MissingDataException('Data is required to put something');
     }
@@ -106,101 +109,118 @@ class DatabaseManager {
     switch (field) {
       case RequestFields.schoolBoards:
         await schoolBoardsDatabase.putAll(
-            data: data, schoolBoardId: schoolBoardId);
+          data: data,
+          user: user,
+        );
         return null;
       case RequestFields.schoolBoard:
         return await schoolBoardsDatabase.putById(
-            id: _getId(data,
-                messageOnNull: 'An "id" is required to put a school board'),
-            data: data,
-            schoolBoardId: schoolBoardId);
+          id: _getId(data,
+              messageOnNull: 'An "id" is required to put a school board'),
+          data: data,
+          user: user,
+        );
       case RequestFields.teachers:
-        await teachersDatabase.putAll(data: data, schoolBoardId: schoolBoardId);
+        await teachersDatabase.putAll(
+          data: data,
+          user: user,
+        );
         return null;
       case RequestFields.teacher:
         return await teachersDatabase.putById(
-            id: _getId(data,
-                messageOnNull: 'An "id" is required to put a teacher'),
-            data: data,
-            schoolBoardId: schoolBoardId);
+          id: _getId(data,
+              messageOnNull: 'An "id" is required to put a teacher'),
+          data: data,
+          user: user,
+        );
       case RequestFields.students:
-        await studentsDatabase.putAll(data: data, schoolBoardId: schoolBoardId);
+        await studentsDatabase.putAll(
+          data: data,
+          user: user,
+        );
         return null;
       case RequestFields.student:
         return await studentsDatabase.putById(
-            id: _getId(data,
-                messageOnNull: 'An "id" is required to put a student'),
-            data: data,
-            schoolBoardId: schoolBoardId);
+          id: _getId(data,
+              messageOnNull: 'An "id" is required to put a student'),
+          data: data,
+          user: user,
+        );
       case RequestFields.enterprises:
         await enterprisesDatabase.putAll(
-            data: data, schoolBoardId: schoolBoardId);
+          data: data,
+          user: user,
+        );
         return null;
       case RequestFields.enterprise:
         return await enterprisesDatabase.putById(
-            id: _getId(data,
-                messageOnNull: 'An "id" is required to put an enterprise'),
-            data: data,
-            schoolBoardId: schoolBoardId,
-            internshipsRepository: internshipsDatabase);
+          id: _getId(data,
+              messageOnNull: 'An "id" is required to put an enterprise'),
+          data: data,
+          user: user,
+          internshipsRepository: internshipsDatabase,
+        );
       case RequestFields.internships:
         await internshipsDatabase.putAll(
-            data: data, schoolBoardId: schoolBoardId);
+          data: data,
+          user: user,
+        );
         return null;
       case RequestFields.internship:
         return await internshipsDatabase.putById(
-            id: _getId(data,
-                messageOnNull: 'An "id" is required to put an internship'),
-            data: data,
-            schoolBoardId: schoolBoardId);
+          id: _getId(data,
+              messageOnNull: 'An "id" is required to put an internship'),
+          data: data,
+          user: user,
+        );
     }
   }
 
   Future<List<String>> delete(
     RequestFields field, {
     required Map<String, dynamic>? data,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
     switch (field) {
       case RequestFields.schoolBoards:
         return await schoolBoardsDatabase.deleteAll(
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.schoolBoard:
         return [
           await schoolBoardsDatabase.deleteById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to delete a school board'),
-            schoolBoardId: schoolBoardId,
+            user: user,
           )
         ];
       case RequestFields.teachers:
         return await teachersDatabase.deleteAll(
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.teacher:
         return [
           await teachersDatabase.deleteById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to delete a teacher'),
-            schoolBoardId: schoolBoardId,
+            user: user,
           )
         ];
       case RequestFields.students:
         return await studentsDatabase.deleteAll(
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.student:
         return [
           await studentsDatabase.deleteById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to delete a student'),
-            schoolBoardId: schoolBoardId,
+            user: user,
           )
         ];
       case RequestFields.enterprises:
         return await enterprisesDatabase.deleteAll(
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.enterprise:
         return [
@@ -208,20 +228,20 @@ class DatabaseManager {
           await enterprisesDatabase.deleteById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to delete an enterprise'),
-            schoolBoardId: schoolBoardId,
+            user: user,
             internshipsRepository: internshipsDatabase,
           )
         ];
       case RequestFields.internships:
         return await internshipsDatabase.deleteAll(
-          schoolBoardId: schoolBoardId,
+          user: user,
         );
       case RequestFields.internship:
         return [
           await internshipsDatabase.deleteById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to delete an internship'),
-            schoolBoardId: schoolBoardId,
+            user: user,
           )
         ];
     }

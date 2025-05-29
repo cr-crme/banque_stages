@@ -16,7 +16,10 @@
             "request": "launch",
             "program": "resources/database/reset_database.py",
             "console": "integratedTerminal",
-            "args": ["1VNTBNj4jePZA2CGkbVJtbB8x1t2"],  // This id refers to the aa@aa.aa account in the dummy database
+            "env": {
+                // This id refers to the aa@aa.aa account in the dummy database
+                "BANQUE_STAGE_SUPERUSER_ID": "1VNTBNj4jePZA2CGkbVJtbB8x1t2",
+            },
         },
     ]
 }

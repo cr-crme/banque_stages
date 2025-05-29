@@ -1,7 +1,7 @@
 import 'package:backend/repositories/teachers_repository.dart';
+import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/exceptions.dart';
-import 'package:common/utils.dart';
 import 'package:test/test.dart';
 
 TeachersRepository get _mockedDatabaseTeachers => TeachersRepositoryMock();
@@ -9,7 +9,7 @@ TeachersRepository get _mockedDatabaseTeachers => TeachersRepositoryMock();
 void main() {
   test('Get teachers from DatabaseTeachers', () async {
     final teachers = await _mockedDatabaseTeachers.getAll(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     expect(teachers, isA<Map<String, dynamic>>());
     expect(teachers.length, 2);
@@ -25,7 +25,7 @@ void main() {
     expect(
       () async => await _mockedDatabaseTeachers.putAll(
         data: {'1': 'John Doe'},
-        schoolBoardId: DevAuth.devMySchoolBoardId,
+        user: DatabaseUser.unverified(),
       ),
       throwsA(predicate((e) =>
           e is InvalidRequestException &&
@@ -36,7 +36,7 @@ void main() {
   test('Get teacher from DatabaseTeachers', () async {
     final teacher = await _mockedDatabaseTeachers.getById(
       id: '0',
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     expect(teacher, isA<Map<String, dynamic>>());
     expect(teacher['first_name'], 'John');
@@ -47,7 +47,7 @@ void main() {
     expect(
       () async => await _mockedDatabaseTeachers.getById(
         id: '2',
-        schoolBoardId: DevAuth.devMySchoolBoardId,
+        user: DatabaseUser.unverified(),
       ),
       throwsA(predicate((e) =>
           e is MissingDataException && e.toString() == 'Teacher not found')),
@@ -59,7 +59,7 @@ void main() {
       () async => await _mockedDatabaseTeachers.putById(
         id: '0',
         data: {'name': 'John Doe', 'age': 60, 'invalid_field': 'invalid'},
-        schoolBoardId: DevAuth.devMySchoolBoardId,
+        user: DatabaseUser.unverified(),
       ),
       throwsA(predicate((e) =>
           e is InvalidFieldException &&
@@ -72,11 +72,11 @@ void main() {
     await mockedDatabase.putById(
       id: '0',
       data: {'first_name': 'John', 'last_name': 'Smith'},
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     final updatedTeacher = await mockedDatabase.getById(
       id: '0',
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     expect(updatedTeacher['first_name'], 'John');
     expect(updatedTeacher['last_name'], 'Smith');
@@ -87,11 +87,11 @@ void main() {
     await mockedDatabase.putById(
       id: '2',
       data: {'first_name': 'Agent', 'last_name': 'Smith'},
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     final newTeacher = await mockedDatabase.getById(
       id: '2',
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     expect(newTeacher['first_name'], 'Agent');
     expect(newTeacher['last_name'], 'Smith');

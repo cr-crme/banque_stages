@@ -1,6 +1,7 @@
 import 'package:backend/repositories/internships_repository.dart';
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
+import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
@@ -15,13 +16,16 @@ import 'package:mysql1/mysql1.dart';
 
 final _logger = Logger('EnterprisesRepository');
 
+// AccessLevel in this repository is discarded as all operations are currently
+// available to all users
+
 abstract class EnterprisesRepository implements RepositoryAbstract {
   @override
   Future<Map<String, dynamic>> getAll({
     List<String>? fields,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
-    final enterprises = await _getAllEnterprises(schoolBoardId: schoolBoardId);
+    final enterprises = await _getAllEnterprises(user: user);
     return enterprises
         .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
   }
@@ -30,10 +34,9 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   Future<Map<String, dynamic>> getById({
     required String id,
     List<String>? fields,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
-    final enterprise =
-        await _getEnterpriseById(id: id, schoolBoardId: schoolBoardId);
+    final enterprise = await _getEnterpriseById(id: id, user: user);
     if (enterprise == null) throw MissingDataException('Enterprise not found');
 
     return enterprise.serializeWithFields(fields);
@@ -42,7 +45,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   @override
   Future<void> putAll({
     required Map<String, dynamic> data,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async =>
       throw InvalidRequestException('Enterprises must be created individually');
 
@@ -50,7 +53,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   Future<List<String>> putById({
     required String id,
     required Map<String, dynamic> data,
-    required String schoolBoardId,
+    required DatabaseUser user,
     InternshipsRepository? internshipsRepository,
   }) async {
     if (internshipsRepository == null) {
@@ -59,8 +62,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     }
 
     // Update if exists, insert if not
-    final previous =
-        await _getEnterpriseById(id: id, schoolBoardId: schoolBoardId);
+    final previous = await _getEnterpriseById(id: id, user: user);
 
     final newEnterprise = previous?.copyWithData(data) ??
         Enterprise.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
@@ -69,7 +71,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
       await _putEnterprise(
           enterprise: newEnterprise,
           previous: previous,
-          schoolBoardId: schoolBoardId,
+          user: user,
           internshipsRepository: internshipsRepository);
       return newEnterprise.getDifference(previous);
     } catch (e) {
@@ -80,7 +82,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
 
   @override
   Future<List<String>> deleteAll({
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
     throw InvalidRequestException('Enterprises must be deleted individually');
   }
@@ -88,33 +90,34 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   @override
   Future<String> deleteById({
     required String id,
-    required String schoolBoardId,
+    required DatabaseUser user,
     InternshipsRepository? internshipsRepository,
   }) async {
     final removedId = await _deleteEnterprise(
-        id: id,
-        schoolBoardId: schoolBoardId,
-        internshipsRepository: internshipsRepository);
+        id: id, user: user, internshipsRepository: internshipsRepository);
     if (removedId == null) throw MissingDataException('Enterprise not found');
     return removedId;
   }
 
-  Future<Map<String, Enterprise>> _getAllEnterprises(
-      {required String schoolBoardId});
+  Future<Map<String, Enterprise>> _getAllEnterprises({
+    required DatabaseUser user,
+  });
 
-  Future<Enterprise?> _getEnterpriseById(
-      {required String id, required String schoolBoardId});
+  Future<Enterprise?> _getEnterpriseById({
+    required String id,
+    required DatabaseUser user,
+  });
 
   Future<void> _putEnterprise({
     required Enterprise enterprise,
     required Enterprise? previous,
-    required String schoolBoardId,
+    required DatabaseUser user,
     required InternshipsRepository internshipsRepository,
   });
 
   Future<String?> _deleteEnterprise(
       {required String id,
-      required String schoolBoardId,
+      required DatabaseUser user,
       required InternshipsRepository? internshipsRepository});
 }
 
@@ -124,13 +127,15 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   MySqlEnterprisesRepository({required this.connection});
 
   @override
-  Future<Map<String, Enterprise>> _getAllEnterprises(
-      {String? enterpriseId, required String schoolBoardId}) async {
+  Future<Map<String, Enterprise>> _getAllEnterprises({
+    String? enterpriseId,
+    required DatabaseUser user,
+  }) async {
     final enterprises = await MySqlHelpers.performSelectQuery(
       connection: connection,
       tableName: 'enterprises',
       filters: (enterpriseId == null ? {} : {'id': enterpriseId})
-        ..addAll({'school_board_id': schoolBoardId}),
+        ..addAll({'school_board_id': user.schoolBoardId}),
       subqueries: [
         MySqlJoinSubQuery(
             dataTableName: 'persons',
@@ -349,10 +354,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }
 
   @override
-  Future<Enterprise?> _getEnterpriseById(
-          {required String id, required String schoolBoardId}) async =>
-      (await _getAllEnterprises(
-          enterpriseId: id, schoolBoardId: schoolBoardId))[id];
+  Future<Enterprise?> _getEnterpriseById({
+    required String id,
+    required DatabaseUser user,
+  }) async =>
+      (await _getAllEnterprises(enterpriseId: id, user: user))[id];
 
   Future<void> _insertToEnterprises(Enterprise enterprise) async {
     await MySqlHelpers.performInsertQuery(
@@ -605,9 +611,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }
 
   Future<void> _updateToEnterprisesJobs(
-      Enterprise enterprise, Enterprise previous,
-      {required String schoolBoardId,
-      required InternshipsRepository internshipsRepository}) async {
+    Enterprise enterprise,
+    Enterprise previous, {
+    required DatabaseUser user,
+    required InternshipsRepository internshipsRepository,
+  }) async {
     final toUpdate = enterprise.getDifference(previous);
     if (!toUpdate.contains('jobs')) return;
 
@@ -617,8 +625,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         _logger.warning(
             'It is not possible to remove a job from an enterprise, but will do anyway');
         await _deleteInternshipsFromJob(job.id,
-            schoolBoardId: schoolBoardId,
-            internshipsRepository: internshipsRepository);
+            user: user, internshipsRepository: internshipsRepository);
         await MySqlHelpers.performDeleteQuery(
             connection: connection,
             tableName: 'enterprise_jobs',
@@ -919,7 +926,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   Future<void> _putEnterprise({
     required Enterprise enterprise,
     required Enterprise? previous,
-    required String schoolBoardId,
+    required DatabaseUser user,
     required InternshipsRepository internshipsRepository,
   }) async {
     if (previous == null) {
@@ -940,8 +947,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     } else {
       toWait.add(_updateToEnterprisesActivityTypes(enterprise, previous));
       toWait.add(_updateToEnterprisesJobs(enterprise, previous,
-          schoolBoardId: schoolBoardId,
-          internshipsRepository: internshipsRepository));
+          user: user, internshipsRepository: internshipsRepository));
       toWait.add(_updateToContact(enterprise, previous));
       toWait.add(_updateToEnterpriseAddress(enterprise, previous));
       toWait.add(_updateToEnterpriseHeadquartersAddress(enterprise, previous));
@@ -951,20 +957,22 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     await Future.wait(toWait);
   }
 
-  Future<void> _deleteInternshipsFromJob(String jobId,
-      {required String schoolBoardId,
-      required InternshipsRepository internshipsRepository}) async {
+  Future<void> _deleteInternshipsFromJob(
+    String jobId, {
+    required DatabaseUser user,
+    required InternshipsRepository internshipsRepository,
+  }) async {
     final internships = await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'internships',
         filters: {'job_id': jobId.serialize()}..addAll({
-            'school_board_id': schoolBoardId,
+            'school_board_id': user.schoolBoardId,
           }));
 
     final toWait = <Future>[];
     for (final internship in internships) {
-      toWait.add(internshipsRepository.deleteById(
-          id: internship['id'], schoolBoardId: schoolBoardId));
+      toWait.add(
+          internshipsRepository.deleteById(id: internship['id'], user: user));
     }
     await Future.wait(toWait);
   }
@@ -972,12 +980,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   @override
   Future<String?> _deleteEnterprise({
     required String id,
-    required String schoolBoardId,
+    required DatabaseUser user,
     required InternshipsRepository? internshipsRepository,
   }) async {
     try {
-      final enterprise =
-          await _getEnterpriseById(id: id, schoolBoardId: schoolBoardId);
+      final enterprise = await _getEnterpriseById(id: id, user: user);
 
       if (enterprise?.jobs != null) {
         if (internshipsRepository == null) {
@@ -988,8 +995,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         }
         for (final job in enterprise!.jobs) {
           await _deleteInternshipsFromJob(job.id,
-              schoolBoardId: schoolBoardId,
-              internshipsRepository: internshipsRepository);
+              user: user, internshipsRepository: internshipsRepository);
         }
       }
 
@@ -1089,20 +1095,23 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
   };
 
   @override
-  Future<Map<String, Enterprise>> _getAllEnterprises(
-          {required String schoolBoardId}) async =>
+  Future<Map<String, Enterprise>> _getAllEnterprises({
+    required DatabaseUser user,
+  }) async =>
       _dummyDatabase;
 
   @override
-  Future<Enterprise?> _getEnterpriseById(
-          {required String id, required String schoolBoardId}) async =>
+  Future<Enterprise?> _getEnterpriseById({
+    required String id,
+    required DatabaseUser user,
+  }) async =>
       _dummyDatabase[id];
 
   @override
   Future<void> _putEnterprise({
     required Enterprise enterprise,
     required Enterprise? previous,
-    required String schoolBoardId,
+    required DatabaseUser user,
     required InternshipsRepository internshipsRepository,
   }) async =>
       _dummyDatabase[enterprise.id] = enterprise;
@@ -1110,7 +1119,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
   @override
   Future<String?> _deleteEnterprise(
       {required String id,
-      required String schoolBoardId,
+      required DatabaseUser user,
       required InternshipsRepository? internshipsRepository}) async {
     if (_dummyDatabase.containsKey(id)) {
       _dummyDatabase.remove(id);

@@ -1,3 +1,4 @@
+import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
 
 abstract class RepositoryAbstract {
@@ -5,7 +6,7 @@ abstract class RepositoryAbstract {
   /// Get all data from the repository related to the given field.
   Future<Map<String, dynamic>> getAll({
     List<String>? fields,
-    required String schoolBoardId,
+    required DatabaseUser user,
   });
 
   ///
@@ -14,7 +15,7 @@ abstract class RepositoryAbstract {
   Future<Map<String, dynamic>> getById({
     required String id,
     List<String>? fields,
-    required String schoolBoardId,
+    required DatabaseUser user,
   });
 
   ///
@@ -22,7 +23,7 @@ abstract class RepositoryAbstract {
   /// If the request is invalid for the field, a [InvalidRequestException] will be thrown.
   Future<void> putAll({
     required Map<String, dynamic> data,
-    required String schoolBoardId,
+    required DatabaseUser user,
   });
 
   ///
@@ -33,13 +34,13 @@ abstract class RepositoryAbstract {
   Future<List<String>> putById({
     required String id,
     required Map<String, dynamic> data,
-    required String schoolBoardId,
+    required DatabaseUser user,
   });
 
   ///
   /// Delete all data from the repository related to the given field.
   Future<List<String>> deleteAll({
-    required String schoolBoardId,
+    required DatabaseUser user,
   });
 
   ///
@@ -47,6 +48,6 @@ abstract class RepositoryAbstract {
   /// If the data doesn't exist, a [MissingDataException] will be thrown.
   Future<String> deleteById({
     required String id,
-    required String schoolBoardId,
+    required DatabaseUser user,
   });
 }

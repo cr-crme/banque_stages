@@ -27,7 +27,7 @@ def main(secret: str):
     print("Database reset successfully.")
 
     # Add an admin user
-    if not add_admin_user(secret=secret):
+    if not add_super_admin_user(secret=secret):
         print("Failed to add admin user.")
         return
     print("Admin user added successfully.")
@@ -47,11 +47,11 @@ def reset_database(sql_filepath: str) -> bool:
         return False
 
 
-def add_admin_user(secret: str):
+def add_super_admin_user(secret: str):
     # Use uuid v5 with namespace DNS to generate a stable ID from the secret
     id = str(uuid.uuid5(uuid.NAMESPACE_DNS, secret))
 
-    query = f"INSERT INTO users (shared_id, authenticator_id, has_admin_rights) VALUES ('{id}', '{secret}', 1);"
+    query = f"INSERT INTO users (shared_id, authenticator_id, access_level) VALUES ('{id}', '{secret}', 2);"
     result = subprocess.run(
         _base_docker_command + [_database, "-e", query], stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
@@ -64,14 +64,10 @@ def add_admin_user(secret: str):
 
 
 if __name__ == "__main__":
-    # Get the secret from the command line arguments
-    if len(sys.argv) != 2:
-        print("Usage: python reset_database.py <secret>")
-        sys.exit(1)
-
-    secret = sys.argv[1]
+    # Get the secret from BANQUE_STAGE_SUPERUSER_ID environment variable
+    secret = os.getenv("BANQUE_STAGE_SUPERUSER_ID")
     if not secret:
-        print("Secret cannot be empty.")
+        print("Environment variable BANQUE_STAGE_SUPERUSER_ID is not set.")
         sys.exit(1)
 
     main(secret)

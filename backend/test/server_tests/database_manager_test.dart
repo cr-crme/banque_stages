@@ -4,9 +4,9 @@ import 'package:backend/repositories/school_boards_repository.dart';
 import 'package:backend/repositories/students_repository.dart';
 import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/server/database_manager.dart';
+import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/communication_protocol.dart';
-import 'package:common/utils.dart';
 import 'package:test/test.dart';
 
 SchoolBoardsRepository get _mockedDatabaseSchoolBoards =>
@@ -31,7 +31,7 @@ void main() {
     final teachers = await database.get(
       RequestFields.teachers,
       data: null,
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     expect(teachers, isA<Map<String, dynamic>>());
     expect(teachers.length, 2);
@@ -55,7 +55,7 @@ void main() {
     final teacher = await database.get(
       RequestFields.teacher,
       data: {'id': '0'},
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     expect(teacher, isA<Map<String, dynamic>>());
     expect(teacher['first_name'], 'John');
@@ -75,7 +75,7 @@ void main() {
       () async => await database.get(
         RequestFields.teacher,
         data: {'id': '2'},
-        schoolBoardId: DevAuth.devMySchoolBoardId,
+        user: DatabaseUser.unverified(),
       ),
       throwsA(predicate((e) =>
           e is MissingDataException && e.toString() == 'Teacher not found')),
@@ -95,7 +95,7 @@ void main() {
       () async => await database.get(
         RequestFields.teacher,
         data: null,
-        schoolBoardId: DevAuth.devMySchoolBoardId,
+        user: DatabaseUser.unverified(),
       ),
       throwsA(predicate((e) =>
           e is MissingFieldException &&
@@ -116,7 +116,7 @@ void main() {
       () async => await database.put(
         RequestFields.teachers,
         data: null,
-        schoolBoardId: DevAuth.devMySchoolBoardId,
+        user: DatabaseUser.unverified(),
       ),
       throwsA(predicate((e) =>
           e is MissingDataException &&
@@ -137,7 +137,7 @@ void main() {
       () async => await database.put(
         RequestFields.teachers,
         data: {'0': 'John Doe'},
-        schoolBoardId: DevAuth.devMySchoolBoardId,
+        user: DatabaseUser.unverified(),
       ),
       throwsA(predicate((e) =>
           e is InvalidRequestException &&
@@ -157,12 +157,12 @@ void main() {
     await database.put(
       RequestFields.teacher,
       data: {'id': '0', 'first_name': 'John', 'last_name': 'Smith'},
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     final updatedTeacher = await database.get(
       RequestFields.teacher,
       data: {'id': '0'},
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     expect(updatedTeacher['first_name'], 'John');
     expect(updatedTeacher['last_name'], 'Smith');
@@ -180,12 +180,12 @@ void main() {
     await database.put(
       RequestFields.teacher,
       data: {'id': '2', 'first_name': 'Agent', 'last_name': 'Smith'},
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     final newTeacher = await database.get(
       RequestFields.teacher,
       data: {'id': '2'},
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      user: DatabaseUser.unverified(),
     );
     expect(newTeacher['first_name'], 'Agent');
     expect(newTeacher['last_name'], 'Smith');
@@ -204,7 +204,7 @@ void main() {
       () async => await database.put(
         RequestFields.teacher,
         data: {'name': 'John Smith', 'age': 45},
-        schoolBoardId: DevAuth.devMySchoolBoardId,
+        user: DatabaseUser.unverified(),
       ),
       throwsA(predicate((e) =>
           e is MissingFieldException &&

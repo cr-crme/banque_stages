@@ -13,6 +13,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+// TODO: Mutualize the widgets from admin_app and app (with admin_app being the reference)
+
 void main() async {
   final useMockers = false;
   final backendUrl = Uri.parse('ws://localhost:3456/connect');

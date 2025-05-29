@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS entities;
 DROP TABLE IF EXISTS phone_numbers;
 DROP TABLE IF EXISTS addresses;
 
-DROP TABLE IF EXISTS logins;
+DROP TABLE IF EXISTS users;
 
 DROP TABLE IF EXISTS persons;
 
@@ -88,8 +88,8 @@ CREATE TABLE phone_numbers (
 
 CREATE TABLE users (
     shared_id VARCHAR(36) NOT NULL PRIMARY KEY,
-    authenticator_id VARCHAR(36) NOT NULL,
-    has_admin_rights BOOLEAN NOT NULL
+    authenticator_id VARCHAR(50) NOT NULL,
+    access_level INT NOT NULL
 );
 
 /*************************/

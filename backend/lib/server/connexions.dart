@@ -3,16 +3,18 @@ import 'dart:io';
 
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/server/database_manager.dart';
+import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:backend/utils/helpers.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:common/exceptions.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:logging/logging.dart';
 
 final _logger = Logger('Connexions');
 
 class Connexions {
-  final Map<WebSocket, dynamic> _clients = {};
+  final Map<WebSocket, DatabaseUser> _clients = {};
   int get clientCount => _clients.length;
   final DatabaseManager _database;
   final Duration _timeout;
@@ -27,11 +29,7 @@ class Connexions {
 
   Future<bool> add(WebSocket client) async {
     try {
-      _clients[client] = {
-        'is_verified': false,
-        'school_board_id': null,
-        'user_id': null
-      };
+      _clients[client] = DatabaseUser.unverified();
 
       client.listen((message) => _incommingMessage(client, message: message),
           onDone: () => _onConnexionClosed(client,
@@ -40,7 +38,7 @@ class Connexions {
               _onConnexionClosed(client, message: 'Connexion error $error'));
 
       final startTime = DateTime.now();
-      while (!_clients[client]!['is_verified']) {
+      while (_clients[client]?.isNotVerified ?? true) {
         await Future.delayed(Duration(milliseconds: 100));
 
         // If client disconnected before the handshake was completed
@@ -59,7 +57,10 @@ class Connexions {
         message: CommunicationProtocol(
             requestType: RequestType.handshake,
             response: Response.success,
-            data: {'user_id': _clients[client]!['user_id']}));
+            data: {
+              'user_id': _clients[client]!.databaseId,
+              'access_level': _clients[client]!.accessLevel.name,
+            }));
     return true;
   }
 
@@ -70,7 +71,7 @@ class Connexions {
       final protocol = CommunicationProtocol.deserialize(map);
 
       // Prevent unauthorized access to the database
-      if (!(_clients[client]?['is_verified'] ?? false) &&
+      if ((_clients[client]?.isNotVerified ?? true) &&
           protocol.requestType != RequestType.handshake) {
         throw ConnexionRefusedException(
             'Client ${client.hashCode} not verified');
@@ -92,8 +93,7 @@ class Connexions {
                   requestType: RequestType.response,
                   field: protocol.field,
                   data: await _database.get(protocol.field!,
-                      data: protocol.data,
-                      schoolBoardId: _clients[client]!['school_board_id']),
+                      data: protocol.data, user: _clients[client]!),
                   response: Response.success));
           break;
 
@@ -105,8 +105,7 @@ class Connexions {
           _logger.finer(
               'Putting data to field: ${protocol.field} for client ${client.hashCode}');
           final updatedFields = await _database.put(protocol.field!,
-              data: protocol.data,
-              schoolBoardId: _clients[client]!['school_board_id']);
+              data: protocol.data, user: _clients[client]!);
           await _send(client,
               message: CommunicationProtocol(
                   requestType: RequestType.response,
@@ -134,8 +133,7 @@ class Connexions {
           _logger.info(
               'Deleting data from field: ${protocol.field} for client ${client.hashCode}');
           final deletedIds = await _database.delete(protocol.field!,
-              data: protocol.data,
-              schoolBoardId: _clients[client]!['school_board_id']);
+              data: protocol.data, user: _clients[client]!);
           await _send(client,
               message: CommunicationProtocol(
                   requestType: RequestType.response,
@@ -230,19 +228,14 @@ class Connexions {
           'authenticator_id': authenticatorId,
         }) as List)
         .firstOrNull;
-    if (users == null ||
-        users['shared_id'] == null ||
-        users['has_admin_rights'] == null) {
-      throw ConnexionRefusedException('Invalid token payload');
-    }
+    if (users == null) throw ConnexionRefusedException('Invalid token payload');
 
-    // TODO Create a dedicated class for this
-    _clients[client] = {
-      'is_verified': true,
-      'school_board_id': '12345', // TODO
-      'user_id': users['shared_id'],
-      'has_admin_rights': users['has_admin_rights'] == 1,
-    };
+    _clients[client] = DatabaseUser.verified(
+      databaseId: users['shared_id'] as String,
+      authenticatorId: authenticatorId,
+      schoolBoardId: users['school_board_id'] as String? ?? '',
+      accessLevel: AccessLevel.fromSerialized(users['access_level']),
+    );
   }
 
   Future<void> _refuseConnexion(WebSocket client, String message) async {

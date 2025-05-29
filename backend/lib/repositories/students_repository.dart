@@ -1,5 +1,6 @@
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
+import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
@@ -12,13 +13,16 @@ import 'package:mysql1/mysql1.dart';
 
 final _logger = Logger('StudentsRepository');
 
+// AccessLevel in this repository is discarded as all operations are currently
+// available to all users
+
 abstract class StudentsRepository implements RepositoryAbstract {
   @override
   Future<Map<String, dynamic>> getAll({
     List<String>? fields,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
-    final students = await _getAllStudents(schoolBoardId: schoolBoardId);
+    final students = await _getAllStudents(user: user);
     return students
         .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
   }
@@ -27,9 +31,9 @@ abstract class StudentsRepository implements RepositoryAbstract {
   Future<Map<String, dynamic>> getById({
     required String id,
     List<String>? fields,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
-    final student = await _getStudentById(id: id, schoolBoardId: schoolBoardId);
+    final student = await _getStudentById(id: id, user: user);
     if (student == null) throw MissingDataException('Student not found');
 
     return student.serializeWithFields(fields);
@@ -38,7 +42,7 @@ abstract class StudentsRepository implements RepositoryAbstract {
   @override
   Future<void> putAll({
     required Map<String, dynamic> data,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async =>
       throw InvalidRequestException('Students must be created individually');
 
@@ -46,11 +50,10 @@ abstract class StudentsRepository implements RepositoryAbstract {
   Future<List<String>> putById({
     required String id,
     required Map<String, dynamic> data,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
     // Update if exists, insert if not
-    final previous =
-        await _getStudentById(id: id, schoolBoardId: schoolBoardId);
+    final previous = await _getStudentById(id: id, user: user);
 
     final newStudent = previous?.copyWithData(data) ??
         Student.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
@@ -66,7 +69,7 @@ abstract class StudentsRepository implements RepositoryAbstract {
 
   @override
   Future<List<String>> deleteAll({
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
     throw InvalidRequestException('Students must be deleted individually');
   }
@@ -74,17 +77,21 @@ abstract class StudentsRepository implements RepositoryAbstract {
   @override
   Future<String> deleteById({
     required String id,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
     final removedId = await _deleteStudent(id: id);
     if (removedId == null) throw MissingDataException('Student not found');
     return removedId;
   }
 
-  Future<Map<String, Student>> _getAllStudents({required String schoolBoardId});
+  Future<Map<String, Student>> _getAllStudents({
+    required DatabaseUser user,
+  });
 
-  Future<Student?> _getStudentById(
-      {required String id, required String schoolBoardId});
+  Future<Student?> _getStudentById({
+    required String id,
+    required DatabaseUser user,
+  });
 
   Future<void> _putStudent(
       {required Student student, required Student? previous});
@@ -98,14 +105,16 @@ class MySqlStudentsRepository extends StudentsRepository {
   MySqlStudentsRepository({required this.connection});
 
   @override
-  Future<Map<String, Student>> _getAllStudents(
-      {String? studentId, required String schoolBoardId}) async {
+  Future<Map<String, Student>> _getAllStudents({
+    String? studentId,
+    required DatabaseUser user,
+  }) async {
     final students = await MySqlHelpers.performSelectQuery(
         connection: connection,
         tableName: 'students',
         filters: (studentId == null ? {} : {'id': studentId})
           ..addAll({
-            'school_board_id': schoolBoardId,
+            'school_board_id': user.schoolBoardId,
           }),
         subqueries: [
           MySqlSelectSubQuery(
@@ -201,9 +210,11 @@ class MySqlStudentsRepository extends StudentsRepository {
   }
 
   @override
-  Future<Student?> _getStudentById(
-          {required String id, required String schoolBoardId}) async =>
-      (await _getAllStudents(studentId: id, schoolBoardId: schoolBoardId))[id];
+  Future<Student?> _getStudentById({
+    required String id,
+    required DatabaseUser user,
+  }) async =>
+      (await _getAllStudents(studentId: id, user: user))[id];
 
   Future<void> _insertToStudents(Student student) async {
     await MySqlHelpers.performInsertPerson(
@@ -389,13 +400,16 @@ class StudentsRepositoryMock extends StudentsRepository {
   };
 
   @override
-  Future<Map<String, Student>> _getAllStudents(
-          {required String schoolBoardId}) async =>
+  Future<Map<String, Student>> _getAllStudents({
+    required DatabaseUser user,
+  }) async =>
       _dummyDatabase;
 
   @override
-  Future<Student?> _getStudentById(
-          {required String id, required String schoolBoardId}) async =>
+  Future<Student?> _getStudentById({
+    required String id,
+    required DatabaseUser user,
+  }) async =>
       _dummyDatabase[id];
 
   @override

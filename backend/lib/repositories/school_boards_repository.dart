@@ -1,6 +1,8 @@
 import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
+import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -14,9 +16,9 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   @override
   Future<Map<String, dynamic>> getAll({
     List<String>? fields,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
-    final schoolBoards = await _getAllSchoolBoards();
+    final schoolBoards = await _getAllSchoolBoards(user: user);
     return schoolBoards
         .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
   }
@@ -25,9 +27,9 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   Future<Map<String, dynamic>> getById({
     required String id,
     List<String>? fields,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
-    final schoolBoard = await _getSchoolBoardById(id: id);
+    final schoolBoard = await _getSchoolBoardById(id: id, user: user);
     if (schoolBoard == null) {
       throw MissingDataException('School board not found');
     }
@@ -38,7 +40,7 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   @override
   Future<void> putAll({
     required Map<String, dynamic> data,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async =>
       throw InvalidRequestException(
           'School boards must be created individually');
@@ -47,16 +49,17 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   Future<List<String>> putById({
     required String id,
     required Map<String, dynamic> data,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
     // Update if exists, insert if not
-    final previous = await _getSchoolBoardById(id: id);
+    final previous = await _getSchoolBoardById(id: id, user: user);
 
     final newSchoolBoard = previous?.copyWithData(data) ??
         SchoolBoard.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
     try {
-      await _putSchoolBoard(schoolBoard: newSchoolBoard, previous: previous);
+      await _putSchoolBoard(
+          schoolBoard: newSchoolBoard, previous: previous, user: user);
       return newSchoolBoard.getDifference(previous);
     } catch (e) {
       _logger.severe('Error while putting school board: $e');
@@ -66,7 +69,7 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
 
   @override
   Future<List<String>> deleteAll({
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
     throw InvalidRequestException('School boards must be deleted individually');
   }
@@ -74,21 +77,32 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   @override
   Future<String> deleteById({
     required String id,
-    required String schoolBoardId,
+    required DatabaseUser user,
   }) async {
-    final removedId = await _deleteSchoolBoard(id: id);
+    final removedId = await _deleteSchoolBoard(id: id, user: user);
     if (removedId == null) throw MissingDataException('School board not found');
     return removedId;
   }
 
-  Future<Map<String, SchoolBoard>> _getAllSchoolBoards();
+  Future<Map<String, SchoolBoard>> _getAllSchoolBoards({
+    required DatabaseUser user,
+  });
 
-  Future<SchoolBoard?> _getSchoolBoardById({required String id});
+  Future<SchoolBoard?> _getSchoolBoardById({
+    required String id,
+    required DatabaseUser user,
+  });
 
-  Future<void> _putSchoolBoard(
-      {required SchoolBoard schoolBoard, required SchoolBoard? previous});
+  Future<void> _putSchoolBoard({
+    required SchoolBoard schoolBoard,
+    required SchoolBoard? previous,
+    required DatabaseUser user,
+  });
 
-  Future<String?> _deleteSchoolBoard({required String id});
+  Future<String?> _deleteSchoolBoard({
+    required String id,
+    required DatabaseUser user,
+  });
 }
 
 class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
@@ -97,8 +111,10 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
   MySqlSchoolBoardsRepository({required this.connection});
 
   @override
-  Future<Map<String, SchoolBoard>> _getAllSchoolBoards(
-      {String? schoolBoardId}) async {
+  Future<Map<String, SchoolBoard>> _getAllSchoolBoards({
+    String? schoolBoardId,
+    required DatabaseUser user,
+  }) async {
     final schoolBoards = await MySqlHelpers.performSelectQuery(
       connection: connection,
       tableName: 'school_boards',
@@ -132,10 +148,19 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
   }
 
   @override
-  Future<SchoolBoard?> _getSchoolBoardById({required String id}) async =>
-      (await _getAllSchoolBoards(schoolBoardId: id))[id];
+  Future<SchoolBoard?> _getSchoolBoardById({
+    required String id,
+    required DatabaseUser user,
+  }) async =>
+      (await _getAllSchoolBoards(schoolBoardId: id, user: user))[id];
 
-  Future<void> _insertToSchoolBoards(SchoolBoard schoolBoard) async {
+  Future<void> _insertToSchoolBoards(SchoolBoard schoolBoard,
+      {required DatabaseUser user}) async {
+    if (user.accessLevel < AccessLevel.superAdmin) {
+      throw InvalidRequestException(
+          'You must be a super admin to create a school board');
+    }
+
     // Insert the school board
     await MySqlHelpers.performInsertQuery(
         connection: connection,
@@ -148,8 +173,15 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
   }
 
   Future<void> _updateToSchoolBoards(
-      SchoolBoard schoolBoard, SchoolBoard previous) async {
+    SchoolBoard schoolBoard,
+    SchoolBoard previous, {
+    required DatabaseUser user,
+  }) async {
     final toUpdate = schoolBoard.getDifference(previous);
+    if (toUpdate.isNotEmpty && user.accessLevel < AccessLevel.superAdmin) {
+      throw InvalidRequestException(
+          'You must be a super admin to update a school board');
+    }
 
     if (toUpdate.contains('name')) {
       await MySqlHelpers.performUpdateQuery(
@@ -161,7 +193,12 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     }
   }
 
-  Future<void> _insertToSchools(School school, SchoolBoard schoolBoard) async {
+  Future<void> _insertToSchools(School school, SchoolBoard schoolBoard,
+      {required DatabaseUser user}) async {
+    if (user.accessLevel < AccessLevel.admin) {
+      throw InvalidRequestException('You must be a admin to create a school');
+    }
+
     await MySqlHelpers.performInsertQuery(
         connection: connection,
         tableName: 'entities',
@@ -179,8 +216,12 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
         connection: connection, address: school.address, entityId: school.id);
   }
 
-  Future<void> _updateToSchools(School school, School previous) async {
+  Future<void> _updateToSchools(School school, School previous,
+      {required DatabaseUser user}) async {
     final toUpdate = school.getDifference(previous);
+    if (toUpdate.isNotEmpty && user.accessLevel < AccessLevel.admin) {
+      throw InvalidRequestException('You must be a admin to update a school');
+    }
 
     if (toUpdate.contains('name')) {
       await MySqlHelpers.performUpdateQuery(
@@ -203,11 +244,12 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
   Future<void> _putSchoolBoard({
     required SchoolBoard schoolBoard,
     required SchoolBoard? previous,
+    required DatabaseUser user,
   }) async {
     if (previous == null) {
-      await _insertToSchoolBoards(schoolBoard);
+      await _insertToSchoolBoards(schoolBoard, user: user);
     } else {
-      await _updateToSchoolBoards(schoolBoard, previous);
+      await _updateToSchoolBoards(schoolBoard, previous, user: user);
     }
 
     // Insert the schools
@@ -216,24 +258,31 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
       final previousSchool =
           previous?.schools.firstWhereOrNull((e) => e.id == school.id);
       if (previousSchool == null) {
-        toWait.add(_insertToSchools(school, schoolBoard));
+        toWait.add(_insertToSchools(school, schoolBoard, user: user));
       } else {
-        toWait.add(_updateToSchools(school, previousSchool));
+        toWait.add(_updateToSchools(school, previousSchool, user: user));
       }
     }
 
     // Remove the schools that are not in the new list
     for (final school in previous?.schools ?? <School>[]) {
       if (!schoolBoard.schools.any((e) => e.id == school.id)) {
-        _logger.severe('Cannot delete schools, but will do anyway');
-        toWait.add(_deleteFromSchools(school.id));
+        toWait.add(_deleteFromSchools(school.id, user: user));
       }
     }
 
     await Future.wait(toWait);
   }
 
-  Future<void> _deleteFromSchools(String schoolId) async {
+  Future<void> _deleteFromSchools(String schoolId,
+      {required DatabaseUser user}) async {
+    if (user.accessLevel < AccessLevel.superAdmin) {
+      throw InvalidRequestException(
+          'You must be a super admin to delete a school');
+    }
+
+    _logger.warning(
+        'The school with id: $schoolId is being deleted by user: ${user.databaseId}');
     await MySqlHelpers.performDeleteQuery(
       connection: connection,
       tableName: 'entities',
@@ -242,7 +291,15 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
   }
 
   @override
-  Future<String?> _deleteSchoolBoard({required String id}) async {
+  Future<String?> _deleteSchoolBoard({
+    required String id,
+    required DatabaseUser user,
+  }) async {
+    if (user.accessLevel < AccessLevel.superAdmin) {
+      throw InvalidRequestException(
+          'You must be a super admin to delete a school board');
+    }
+
     try {
       final schools = await MySqlHelpers.performSelectQuery(
         connection: connection,
@@ -250,7 +307,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
         filters: {'school_board_id': id},
       );
       for (final school in schools) {
-        await _deleteFromSchools(school['id'].toString());
+        await _deleteFromSchools(school['id'].toString(), user: user);
       }
 
       await MySqlHelpers.performDeleteQuery(
@@ -274,21 +331,31 @@ class SchoolBoardsRepositoryMock extends SchoolBoardsRepository {
   };
 
   @override
-  Future<Map<String, SchoolBoard>> _getAllSchoolBoards() async =>
+  Future<Map<String, SchoolBoard>> _getAllSchoolBoards({
+    required DatabaseUser user,
+  }) async =>
       _dummyDatabase;
 
   @override
-  Future<SchoolBoard?> _getSchoolBoardById({required String id}) async =>
+  Future<SchoolBoard?> _getSchoolBoardById({
+    required String id,
+    required DatabaseUser user,
+  }) async =>
       _dummyDatabase[id];
 
   @override
-  Future<void> _putSchoolBoard(
-          {required SchoolBoard schoolBoard,
-          required SchoolBoard? previous}) async =>
+  Future<void> _putSchoolBoard({
+    required SchoolBoard schoolBoard,
+    required SchoolBoard? previous,
+    required DatabaseUser user,
+  }) async =>
       _dummyDatabase[schoolBoard.id] = schoolBoard;
 
   @override
-  Future<String?> _deleteSchoolBoard({required String id}) async {
+  Future<String?> _deleteSchoolBoard({
+    required String id,
+    required DatabaseUser user,
+  }) async {
     if (_dummyDatabase.containsKey(id)) {
       _dummyDatabase.remove(id);
       return id;
