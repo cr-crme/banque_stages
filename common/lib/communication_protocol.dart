@@ -25,6 +25,7 @@ enum RequestType {
 enum Response {
   success,
   failure,
+  connexionRefused,
 }
 
 const String _currentVersion = '1.0.0';

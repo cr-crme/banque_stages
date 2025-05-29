@@ -27,7 +27,8 @@ class AuthProvider extends ChangeNotifier {
       mockMe ? _mockFirebaseAuth! : FirebaseAuth.instance;
   MockFirebaseAuth? _mockFirebaseAuth;
 
-  User? get currentUser => _firebaseAuth.currentUser;
+  User? get currentUser =>
+      isAuthenticatorSignedIn ? _firebaseAuth.currentUser : null;
 
   static AuthProvider of(BuildContext context, {bool listen = false}) =>
       Provider.of<AuthProvider>(context, listen: listen);
@@ -52,11 +53,11 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<String?> getAuthenticatorIdToken() async {
-    if (!isAuthenticatorSignedIn()) return null;
+    if (!isAuthenticatorSignedIn) return null;
     return await _firebaseAuth.currentUser!.getIdToken();
   }
 
-  bool isAuthenticatorSignedIn() {
+  bool get isAuthenticatorSignedIn {
     return _firebaseAuth.currentUser != null;
   }
 
@@ -69,9 +70,9 @@ class AuthProvider extends ChangeNotifier {
 
   AccessLevel? databaseAccessLevel;
 
-  bool isBackendConnected() {
+  bool get isBackendConnected {
     return backendId != null && backendId!.isNotEmpty;
   }
 
-  bool isFullySignedIn() => isAuthenticatorSignedIn() && isBackendConnected();
+  bool get isFullySignedIn => isAuthenticatorSignedIn && isBackendConnected;
 }

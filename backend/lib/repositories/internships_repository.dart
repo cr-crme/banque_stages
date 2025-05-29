@@ -61,7 +61,8 @@ abstract class InternshipsRepository implements RepositoryAbstract {
         Internship.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
     try {
-      await _putInternship(internship: newInternship, previous: previous);
+      await _putInternship(
+          internship: newInternship, previous: previous, user: user);
       return newInternship.getDifference(previous);
     } catch (e) {
       _logger.severe('Error while putting internship: $e');
@@ -81,7 +82,7 @@ abstract class InternshipsRepository implements RepositoryAbstract {
     required String id,
     required DatabaseUser user,
   }) async {
-    final removedId = await _deleteInternship(id: id);
+    final removedId = await _deleteInternship(id: id, user: user);
     if (removedId == null) throw MissingDataException('Internship not found');
     return removedId;
   }
@@ -95,10 +96,16 @@ abstract class InternshipsRepository implements RepositoryAbstract {
     required DatabaseUser user,
   });
 
-  Future<void> _putInternship(
-      {required Internship internship, required Internship? previous});
+  Future<void> _putInternship({
+    required Internship internship,
+    required Internship? previous,
+    required DatabaseUser user,
+  });
 
-  Future<String?> _deleteInternship({required String id});
+  Future<String?> _deleteInternship({
+    required String id,
+    required DatabaseUser user,
+  });
 }
 
 class MySqlInternshipsRepository extends InternshipsRepository {
@@ -113,10 +120,11 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   }) async {
     final internships = await MySqlHelpers.performSelectQuery(
         connection: connection,
+        user: user,
         tableName: 'internships',
         filters: (internshipId == null ? {} : {'id': internshipId})
           ..addAll({
-            'school_board_id': user.schoolBoardId,
+            'school_board_id': user.schoolBoardId ?? '',
           }),
         subqueries: [
           MySqlSelectSubQuery(
@@ -213,6 +221,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       for (final mutable in (internship['mutables'] as List? ?? [])) {
         mutable['supervisor'] = (await MySqlHelpers.performSelectQuery(
                     connection: connection,
+                    user: user,
                     tableName: 'persons',
                     filters: {
                   'id': mutable['supervisor_id']
@@ -243,6 +252,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
         final schedules = await MySqlHelpers.performSelectQuery(
             connection: connection,
+            user: user,
             tableName: 'internship_weekly_schedules',
             filters: {
               'mutable_data_id': mutable['id']
@@ -284,6 +294,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           in (internship['skill_evaluations'] as List? ?? [])) {
         final evaluationSubquery = (await MySqlHelpers.performSelectQuery(
                 connection: connection,
+                user: user,
                 tableName: 'internship_skill_evaluations',
                 filters: {
               'id': evaluation['id']
@@ -314,6 +325,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         for (final skill in (evaluationSubquery['skills'] as List? ?? [])) {
           final tasks = await MySqlHelpers.performSelectQuery(
             connection: connection,
+            user: user,
             tableName: 'internship_skill_evaluation_item_tasks',
             filters: {'evaluation_item_id': skill['id']},
           );
@@ -347,6 +359,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           in (internship['attitude_evaluations'] as List? ?? [])) {
         final evaluationSubquery = (await MySqlHelpers.performSelectQuery(
                 connection: connection,
+                user: user,
                 tableName: 'internship_attitude_evaluations',
                 filters: {
               'id': evaluation['id']
@@ -395,6 +408,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       if (internship['enterprise_evaluation'] != null) {
         final skills = await MySqlHelpers.performSelectQuery(
             connection: connection,
+            user: user,
             tableName: 'post_internship_enterprise_evaluation_skills',
             filters: {
               'post_evaluation_id': internship['enterprise_evaluation']['id']
@@ -542,7 +556,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   }
 
   Future<void> _insertToMutables(Internship internship,
-      [Internship? previous]) async {
+      {Internship? previous, required DatabaseUser user}) async {
     final previousSerialized = previous?.serializedMutables ?? [];
     bool supervisorIsUpdated = false;
     for (final mutable in internship.serializedMutables) {
@@ -553,6 +567,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       if (!supervisorIsUpdated) {
         final previousSupervisor = (await MySqlHelpers.performSelectQuery(
                     connection: connection,
+                    user: user,
                     tableName: 'persons',
                     filters: {
                   'id': mutable['supervisor']['id']
@@ -640,9 +655,9 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   }
 
   Future<void> _updateToMutables(
-      Internship internship, Internship previous) async {
+      Internship internship, Internship previous, DatabaseUser user) async {
     // We don't update the mutable data, but stack them
-    await _insertToMutables(internship, previous);
+    await _insertToMutables(internship, previous: previous, user: user);
   }
 
   Future<void> _insertToSkillEvaluations(Internship internship,
@@ -825,8 +840,11 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   }
 
   @override
-  Future<void> _putInternship(
-      {required Internship internship, required Internship? previous}) async {
+  Future<void> _putInternship({
+    required Internship internship,
+    required Internship? previous,
+    required DatabaseUser user,
+  }) async {
     if (previous == null) {
       await _insertToInternships(internship);
     } else {
@@ -838,14 +856,14 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     if (previous == null) {
       toWait.add(_insertToSupervisingTeachers(internship));
       toWait.add(_insertExtraSpecializations(internship));
-      toWait.add(_insertToMutables(internship));
+      toWait.add(_insertToMutables(internship, user: user));
       toWait.add(_insertToSkillEvaluations(internship));
       toWait.add(_insertToAttitudeEvaluations(internship));
       toWait.add(_insertToEnterpriseEvaluation(internship));
     } else {
       toWait.add(_updateToSupervisingTeachers(internship, previous));
       toWait.add(_updateToExtraSpecializations(internship, previous));
-      toWait.add(_updateToMutables(internship, previous));
+      toWait.add(_updateToMutables(internship, previous, user));
       toWait.add(_updateToSkillEvaluations(internship, previous));
       toWait.add(_updateToAttitudeEvaluations(internship, previous));
       toWait.add(_updateToEnterpriseEvaluation(internship, previous));
@@ -854,10 +872,14 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   }
 
   @override
-  Future<String?> _deleteInternship({required String id}) async {
+  Future<String?> _deleteInternship({
+    required String id,
+    required DatabaseUser user,
+  }) async {
     try {
       final mutable = (await MySqlHelpers.performSelectQuery(
         connection: connection,
+        user: user,
         tableName: 'internship_mutable_data',
         filters: {'internship_id': id},
       ))
@@ -986,13 +1008,18 @@ class InternshipsRepositoryMock extends InternshipsRepository {
       _dummyDatabase[id];
 
   @override
-  Future<void> _putInternship(
-          {required Internship internship,
-          required Internship? previous}) async =>
+  Future<void> _putInternship({
+    required Internship internship,
+    required Internship? previous,
+    required DatabaseUser user,
+  }) async =>
       _dummyDatabase[internship.id] = internship;
 
   @override
-  Future<String?> _deleteInternship({required String id}) async {
+  Future<String?> _deleteInternship({
+    required String id,
+    required DatabaseUser user,
+  }) async {
     if (_dummyDatabase.containsKey(id)) {
       _dummyDatabase.remove(id);
       return id;

@@ -117,6 +117,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
   }) async {
     final schoolBoards = await MySqlHelpers.performSelectQuery(
       connection: connection,
+      user: user,
       tableName: 'school_boards',
       filters: schoolBoardId == null ? null : {'id': schoolBoardId},
     );
@@ -127,6 +128,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
 
       final schools = await MySqlHelpers.performSelectQuery(
         connection: connection,
+        user: user,
         tableName: 'schools',
         filters: {'school_board_id': id},
       );
@@ -135,6 +137,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
         final schoolId = school['id'].toString();
         final address = await MySqlHelpers.performSelectQuery(
           connection: connection,
+          user: user,
           tableName: 'addresses',
           filters: {'entity_id': schoolId},
         );
@@ -303,6 +306,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     try {
       final schools = await MySqlHelpers.performSelectQuery(
         connection: connection,
+        user: user,
         tableName: 'schools',
         filters: {'school_board_id': id},
       );

@@ -79,7 +79,7 @@ abstract class StudentsRepository implements RepositoryAbstract {
     required String id,
     required DatabaseUser user,
   }) async {
-    final removedId = await _deleteStudent(id: id);
+    final removedId = await _deleteStudent(id: id, user: user);
     if (removedId == null) throw MissingDataException('Student not found');
     return removedId;
   }
@@ -96,7 +96,10 @@ abstract class StudentsRepository implements RepositoryAbstract {
   Future<void> _putStudent(
       {required Student student, required Student? previous});
 
-  Future<String?> _deleteStudent({required String id});
+  Future<String?> _deleteStudent({
+    required String id,
+    required DatabaseUser user,
+  });
 }
 
 class MySqlStudentsRepository extends StudentsRepository {
@@ -111,10 +114,11 @@ class MySqlStudentsRepository extends StudentsRepository {
   }) async {
     final students = await MySqlHelpers.performSelectQuery(
         connection: connection,
+        user: user,
         tableName: 'students',
         filters: (studentId == null ? {} : {'id': studentId})
           ..addAll({
-            'school_board_id': user.schoolBoardId,
+            'school_board_id': user.schoolBoardId ?? '',
           }),
         subqueries: [
           MySqlSelectSubQuery(
@@ -162,6 +166,7 @@ class MySqlStudentsRepository extends StudentsRepository {
           ? null
           : await MySqlHelpers.performSelectQuery(
               connection: connection,
+              user: user,
               tableName: 'persons',
               filters: {
                   'id': contactId
@@ -311,12 +316,16 @@ class MySqlStudentsRepository extends StudentsRepository {
   }
 
   @override
-  Future<String?> _deleteStudent({required String id}) async {
+  Future<String?> _deleteStudent({
+    required String id,
+    required DatabaseUser user,
+  }) async {
     // Note: This will fail if the student was involved in an internship. The
     // data from the internship needs to be deleted first.
     try {
       final contacts = (await MySqlHelpers.performSelectQuery(
         connection: connection,
+        user: user,
         tableName: 'student_contacts',
         filters: {'student_id': id},
       ));
@@ -418,7 +427,10 @@ class StudentsRepositoryMock extends StudentsRepository {
       _dummyDatabase[student.id] = student;
 
   @override
-  Future<String?> _deleteStudent({required String id}) async {
+  Future<String?> _deleteStudent({
+    required String id,
+    required DatabaseUser user,
+  }) async {
     if (_dummyDatabase.containsKey(id)) {
       _dummyDatabase.remove(id);
       return id;

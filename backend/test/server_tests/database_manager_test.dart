@@ -31,7 +31,7 @@ void main() {
     final teachers = await database.get(
       RequestFields.teachers,
       data: null,
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     expect(teachers, isA<Map<String, dynamic>>());
     expect(teachers.length, 2);
@@ -55,7 +55,7 @@ void main() {
     final teacher = await database.get(
       RequestFields.teacher,
       data: {'id': '0'},
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     expect(teacher, isA<Map<String, dynamic>>());
     expect(teacher['first_name'], 'John');
@@ -75,7 +75,7 @@ void main() {
       () async => await database.get(
         RequestFields.teacher,
         data: {'id': '2'},
-        user: DatabaseUser.unverified(),
+        user: DatabaseUser.empty(),
       ),
       throwsA(predicate((e) =>
           e is MissingDataException && e.toString() == 'Teacher not found')),
@@ -95,7 +95,7 @@ void main() {
       () async => await database.get(
         RequestFields.teacher,
         data: null,
-        user: DatabaseUser.unverified(),
+        user: DatabaseUser.empty(),
       ),
       throwsA(predicate((e) =>
           e is MissingFieldException &&
@@ -116,7 +116,7 @@ void main() {
       () async => await database.put(
         RequestFields.teachers,
         data: null,
-        user: DatabaseUser.unverified(),
+        user: DatabaseUser.empty(),
       ),
       throwsA(predicate((e) =>
           e is MissingDataException &&
@@ -137,7 +137,7 @@ void main() {
       () async => await database.put(
         RequestFields.teachers,
         data: {'0': 'John Doe'},
-        user: DatabaseUser.unverified(),
+        user: DatabaseUser.empty(),
       ),
       throwsA(predicate((e) =>
           e is InvalidRequestException &&
@@ -157,12 +157,12 @@ void main() {
     await database.put(
       RequestFields.teacher,
       data: {'id': '0', 'first_name': 'John', 'last_name': 'Smith'},
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     final updatedTeacher = await database.get(
       RequestFields.teacher,
       data: {'id': '0'},
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     expect(updatedTeacher['first_name'], 'John');
     expect(updatedTeacher['last_name'], 'Smith');
@@ -180,12 +180,12 @@ void main() {
     await database.put(
       RequestFields.teacher,
       data: {'id': '2', 'first_name': 'Agent', 'last_name': 'Smith'},
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     final newTeacher = await database.get(
       RequestFields.teacher,
       data: {'id': '2'},
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     expect(newTeacher['first_name'], 'Agent');
     expect(newTeacher['last_name'], 'Smith');
@@ -204,7 +204,7 @@ void main() {
       () async => await database.put(
         RequestFields.teacher,
         data: {'name': 'John Smith', 'age': 45},
-        user: DatabaseUser.unverified(),
+        user: DatabaseUser.empty(),
       ),
       throwsA(predicate((e) =>
           e is MissingFieldException &&

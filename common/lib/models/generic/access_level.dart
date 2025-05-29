@@ -24,6 +24,7 @@ enum AccessLevel {
   }
 
   static AccessLevel fromSerialized(value) {
+    if (value == null) return AccessLevel.user;
     if (value < 0 || value >= AccessLevel.values.length) {
       throw ArgumentError('Invalid access level value: $value');
     }

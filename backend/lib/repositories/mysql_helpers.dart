@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
@@ -33,20 +35,28 @@ class MySqlHelpers {
 // coverage:ignore-start
   static Future<List<Map<String, dynamic>>> performSelectQuery({
     required MySqlConnection connection,
+    required DatabaseUser user,
     required String tableName,
+    List<String>? fieldsToFetch,
     Map<String, String>? filters,
     List<MySqlTableAccessor>? subqueries,
   }) async {
     if (_protectedTables.contains(tableName) &&
-        !(filters?.containsKey('school_board_id') ?? false)) {
-      throw InvalidRequestException(
-          'You cannot access a protected table $tableName without a school board id.');
+        (filters?['school_board_id']?.isEmpty ?? true)) {
+      // If the table is protected, we need to check if the user has super admin access
+      if (user.accessLevel < AccessLevel.superAdmin) {
+        throw InvalidRequestException(
+            'You cannot access a protected table $tableName without a school board id.');
+      }
     }
 
     final results = await tryQuery(
         connection,
         MySqlHelpers.craftSelectQuery(
-            tableName: tableName, filters: filters, sublists: subqueries),
+            tableName: tableName,
+            fieldsToFetch: fieldsToFetch,
+            filters: filters,
+            sublists: subqueries),
         [...filters?.values ?? []]);
 
     final List<Map<String, dynamic>> list = [];
@@ -70,14 +80,18 @@ class MySqlHelpers {
 
   static String craftSelectQuery({
     required String tableName,
+    List<String>? fieldsToFetch,
     Map<String, String>? filters,
     List<MySqlTableAccessor>? sublists,
   }) {
     final filtersAsString = (filters == null || filters.isEmpty)
         ? ''
         : 'WHERE ${filters.keys.map((e) => 't.$e = ?').join(' AND ')}';
+    final fieldsToFetchAsString = fieldsToFetch == null || fieldsToFetch.isEmpty
+        ? 't.*'
+        : 't.${fieldsToFetch.join(', t.')}';
 
-    return '''SELECT t.*${sublists == null || sublists.isEmpty ? '' : ','} 
+    return '''SELECT $fieldsToFetchAsString${sublists == null || sublists.isEmpty ? '' : ','} 
       ${sublists?.map((e) => e._craft(mainTableAlias: 't')).join(',') ?? ''}
     FROM $tableName t $filtersAsString
     ''';

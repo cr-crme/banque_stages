@@ -32,6 +32,8 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
   final Uri uri;
   bool _hasProblemConnecting = false;
   bool get hasProblemConnecting => _hasProblemConnecting;
+  bool _connexionRefused = false;
+  bool get connexionRefused => _connexionRefused;
   bool get isConnected =>
       (_providerSelector[getField()] != null &&
           _socket != null &&
@@ -49,6 +51,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
       throw Exception('AuthProvider is required to initialize the connection');
     }
     _hasProblemConnecting = false;
+    _connexionRefused = false;
 
     // Get the JWT token
     String? token;
@@ -70,6 +73,8 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
         );
 
         _socket!.connection.listen((event) {
+          if (_socket == null) return;
+
           if (event is Connected || event is Reconnected) {
             _socket!.send(
               jsonEncode(
@@ -84,13 +89,31 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
             notifyListeners();
           }
         });
-        _socket!.messages.listen(
-          (data) => _incommingMessage(data, authProvider: authProvider),
-        );
+        _socket!.messages.listen((data) {
+          final map = jsonDecode(data);
+          final protocol = CommunicationProtocol.deserialize(map);
+
+          if (!isConnected) {
+            if (protocol.requestType == RequestType.response &&
+                protocol.response == Response.connexionRefused) {
+              _connexionRefused = true;
+              stopFetchingData();
+              return;
+            }
+          }
+
+          _incommingMessage(protocol, authProvider: authProvider);
+        });
 
         final started = DateTime.now();
         while (!_handshakeReceived) {
           await Future.delayed(const Duration(milliseconds: 100));
+          if (_socket == null) {
+            // If the socket is null, it means the connection failed
+            dev.log('Connection to the server was canceled');
+            return;
+          }
+
           if (DateTime.now().isAfter(started.add(const Duration(seconds: 5)))) {
             if (!_hasProblemConnecting) {
               // Only notify once
@@ -114,6 +137,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     _providerSelector[getField()] = _Selector(
       addOrReplaceItems: _addOrReplaceIntoSelf,
       removeItem: _removeFromSelf,
+
       notify: notifyListeners,
     );
     _providerSelector[getField(true)] = _Selector(
@@ -125,10 +149,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     // Send a get request to the server for the list of items
     while (!_handshakeReceived) {
       await Future.delayed(const Duration(milliseconds: 100));
-      if (_socket == null) {
-        // TODO There is no catch for this
-        throw Exception('Connection to the server failed');
-      }
+      if (_socket == null) return;
     }
     _getFromBackend(getField(true));
   }
@@ -144,6 +165,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     _handshakeReceived = false;
 
     super.clear();
+    notifyListeners();
   }
 
   final bool mockMe;
@@ -340,13 +362,10 @@ void _getFromBackend(
 }
 
 Future<void> _incommingMessage(
-  message, {
+  CommunicationProtocol protocol, {
   required AuthProvider authProvider,
 }) async {
   try {
-    final map = jsonDecode(message);
-    final protocol = CommunicationProtocol.deserialize(map);
-
     // If we received an unsolicited message, it is probably due to previous
     // connexions that did not get closed properly. Just ignore the message
     if (protocol.socketId != null &&

@@ -1,5 +1,6 @@
 import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
+import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/login/misc.dart';
 import 'package:admin_app/screens/router.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
@@ -56,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final schoolBoardsProvider = SchoolBoardsProvider.of(context, listen: true);
 
     final authProvider = AuthProvider.of(context, listen: true);
-    if (authProvider.isFullySignedIn()) {
+    if (authProvider.isFullySignedIn) {
       Future.microtask(() {
         if (context.mounted) GoRouter.of(context).goNamed(Screens.home);
       });
@@ -64,22 +65,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return PopScope(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Banque de stages'),
-          automaticallyImplyLeading: false,
-        ),
+        appBar: AppBar(title: const Text('Banque de stages')),
+        drawer: const MainDrawer(),
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child:
-                  authProvider.isAuthenticatorSignedIn()
+                  authProvider.isAuthenticatorSignedIn
                       ? Center(
                         child: Text(
                           schoolBoardsProvider.hasProblemConnecting
                               ? 'Impossible de se connecter à la base de données, \n'
                                   'vérifiez votre connexion internet.'
+                              : schoolBoardsProvider.connexionRefused
+                              ? 'Connexion refusée, \n'
+                                  'veuillez contacter votre administrateur'
                               : 'Connexion en cours...',
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleMedium,

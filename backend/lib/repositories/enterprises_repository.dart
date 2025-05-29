@@ -133,9 +133,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }) async {
     final enterprises = await MySqlHelpers.performSelectQuery(
       connection: connection,
+      user: user,
       tableName: 'enterprises',
       filters: (enterpriseId == null ? {} : {'id': enterpriseId})
-        ..addAll({'school_board_id': user.schoolBoardId}),
+        ..addAll({'school_board_id': user.schoolBoardId ?? ''}),
       subqueries: [
         MySqlJoinSubQuery(
             dataTableName: 'persons',
@@ -202,6 +203,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           ? null
           : await MySqlHelpers.performSelectQuery(
               connection: connection,
+              user: user,
               tableName: 'persons',
               filters: {
                   'id': contactId
@@ -241,6 +243,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
       final jobsTp = await MySqlHelpers.performSelectQuery(
         connection: connection,
+        user: user,
         tableName: 'enterprise_jobs',
         filters: {'enterprise_id': enterprise['id']},
         subqueries: [
@@ -296,6 +299,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         jobs[job['id']]['pre_internship_requests']['requests'] =
             (await MySqlHelpers.performSelectQuery(
                   connection: connection,
+                  user: user,
                   tableName: 'enterprise_job_pre_internship_request_items',
                   filters: {
                     'internship_request_id': job['pre_internship_requests']
@@ -964,9 +968,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }) async {
     final internships = await MySqlHelpers.performSelectQuery(
         connection: connection,
+        user: user,
         tableName: 'internships',
         filters: {'job_id': jobId.serialize()}..addAll({
-            'school_board_id': user.schoolBoardId,
+            'school_board_id': user.schoolBoardId ?? '',
           }));
 
     final toWait = <Future>[];

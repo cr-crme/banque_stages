@@ -26,7 +26,7 @@ GoRouterState? _lastRequestedState;
 final router = GoRouter(
   redirect: (context, state) {
     _lastRequestedState ??= state;
-    if (AuthProvider.of(context).isFullySignedIn()) {
+    if (AuthProvider.of(context).isFullySignedIn) {
       final lastRequestedState = _lastRequestedState;
       _lastRequestedState = null;
       return lastRequestedState?.fullPath;
@@ -41,7 +41,7 @@ final router = GoRouter(
       builder: (context, state) => const LoginScreen(),
       redirect:
           (context, state) =>
-              AuthProvider.of(context).isFullySignedIn() ? '/' : null,
+              AuthProvider.of(context).isFullySignedIn ? '/' : null,
     ),
     GoRoute(
       path: Screens.schoolBoardsListScreen,

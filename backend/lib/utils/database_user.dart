@@ -1,24 +1,41 @@
 import 'package:common/models/generic/access_level.dart';
 
 class DatabaseUser {
-  final bool isVerified;
+  bool get isVerified =>
+      databaseId.isNotEmpty &&
+      authenticatorId.isNotEmpty &&
+      ((schoolBoardId?.isNotEmpty ?? false) ||
+          accessLevel >= AccessLevel.superAdmin);
   bool get isNotVerified => !isVerified;
   final String databaseId;
   final String authenticatorId;
-  final String schoolBoardId;
+  final String? schoolBoardId;
   final AccessLevel accessLevel;
 
-  DatabaseUser.verified({
+  DatabaseUser._({
     required this.databaseId,
     required this.authenticatorId,
     required this.schoolBoardId,
     required this.accessLevel,
-  }) : isVerified = true;
+  });
 
-  DatabaseUser.unverified()
-      : isVerified = false,
-        databaseId = '',
-        authenticatorId = '',
-        schoolBoardId = '',
+  DatabaseUser.empty({
+    this.authenticatorId = '',
+  })  : databaseId = '',
+        schoolBoardId = null,
         accessLevel = AccessLevel.user;
+
+  DatabaseUser copyWith({
+    String? databaseId,
+    String? authenticatorId,
+    String? schoolBoardId,
+    AccessLevel? accessLevel,
+  }) {
+    return DatabaseUser._(
+      databaseId: databaseId ?? this.databaseId,
+      authenticatorId: authenticatorId ?? this.authenticatorId,
+      schoolBoardId: schoolBoardId ?? this.schoolBoardId,
+      accessLevel: accessLevel ?? this.accessLevel,
+    );
+  }
 }

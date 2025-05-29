@@ -110,10 +110,11 @@ class MySqlTeachersRepository extends TeachersRepository {
   }) async {
     final teachers = await MySqlHelpers.performSelectQuery(
         connection: connection,
+        user: user,
         tableName: 'teachers',
         filters: (teacherId == null ? {} : {'id': teacherId})
           ..addAll({
-            'school_board_id': user.schoolBoardId,
+            'school_board_id': user.schoolBoardId ?? '',
           }),
         subqueries: [
           MySqlSelectSubQuery(
@@ -167,6 +168,7 @@ class MySqlTeachersRepository extends TeachersRepository {
         for (final itinerary in itineraries) {
           final waypoints = await MySqlHelpers.performSelectQuery(
             connection: connection,
+            user: user,
             tableName: 'teacher_itinerary_waypoints',
             filters: {'itinerary_id': itinerary['id']},
           );

@@ -9,6 +9,7 @@ import 'package:backend/utils/helpers.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:common/exceptions.dart';
 import 'package:common/models/generic/access_level.dart';
+import 'package:common/utils.dart';
 import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -30,7 +31,7 @@ class Connexions {
 
   Future<bool> add(WebSocket client) async {
     try {
-      _clients[client] = DatabaseUser.unverified();
+      _clients[client] = DatabaseUser.empty();
 
       client.listen((message) => _incommingMessage(client, message: message),
           onDone: () => _onConnexionClosed(client,
@@ -165,7 +166,7 @@ class Connexions {
           message: CommunicationProtocol(
               requestType: RequestType.response,
               data: {'error': e.toString()},
-              response: Response.failure));
+              response: Response.connexionRefused));
     } on InternshipBankException catch (e) {
       _logger
           .severe('Error processing request for client ${client.hashCode}: $e');
@@ -217,12 +218,14 @@ class Connexions {
       throw ConnexionRefusedException('Invalid token');
     }
     final authenticatorId = payload['user_id'] as String?;
-    if (authenticatorId == null) {
+    final email = payload['email'] as String?;
+    if (authenticatorId == null || email == null) {
       throw ConnexionRefusedException('Invalid token payload');
     }
 
     // Get the user information from the database to first verify its identity
-    final user = await _getUser(_database.connection, id: authenticatorId);
+    final user =
+        await _getUser(_database.connection, id: authenticatorId, email: email);
     if (user == null) throw ConnexionRefusedException('Invalid token payload');
     _clients[client] = user;
   }
@@ -246,7 +249,7 @@ class Connexions {
 }
 
 Future<DatabaseUser?> _getUser(MySqlConnection connection,
-    {required String id}) async {
+    {required String id, required String email}) async {
   // There are 3 possible cases:
   // 1. The user has previously connected so they will be in the 'users' table.
   //    We can retrieve their information from there and return it.
@@ -258,20 +261,66 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
   //    This is probably someone who is not supposed to be using the app, so we
   //    return null to indicate that the user is not valid.
 
+  // Slowly build the user object as we go through the cases
+  var user = DatabaseUser.empty(authenticatorId: id);
+
+  // First, try to login via the 'users' table
   final users = (await MySqlHelpers.performSelectQuery(
           connection: connection,
+          user: user,
           tableName: 'users',
+          filters: {'authenticator_id': id}) as List)
+      .firstOrNull as Map<String, dynamic>?;
+
+  user = user.copyWith(
+    databaseId: users?['shared_id'],
+    schoolBoardId: users?['school_board_id'],
+    accessLevel: AccessLevel.fromSerialized(users?['access_level']),
+  );
+  if (user.isVerified) return user;
+
+  // If there is information missing in the user structure, then we are not in case 1
+  // We therefore try to log using the information from the 'teachers' table
+  final teacher = (await MySqlHelpers.performSelectQuery(
+          connection: connection,
+          user: user.copyWith(accessLevel: AccessLevel.superAdmin),
+          tableName: 'persons',
+          fieldsToFetch: [
+        'email'
+      ],
           filters: {
-        'authenticator_id': id,
-      }) as List)
+        'email': email
+      },
+          subqueries: [
+        MySqlSelectSubQuery(
+          dataTableName: 'teachers',
+          idNameToDataTable: 'id',
+          fieldsToFetch: ['id', 'school_board_id'],
+        ),
+      ]) as List)
       .firstOrNull;
-  if (users != null) {
-    // We are in case 1, the user is already registered
-    return DatabaseUser.verified(
-      databaseId: users['shared_id'] as String,
-      authenticatorId: id,
-      schoolBoardId: users['school_board_id'] as String? ?? '',
-      accessLevel: AccessLevel.fromSerialized(users['access_level']),
-    );
-  }
+  // If there is no teacher with that email, we are in case 3, which means this is not a valid user
+  if (teacher == null) return null;
+
+  // Otherwise, we probably are in the case 2, so we can login them and augment the users table
+  user = user.copyWith(
+    databaseId: teacher['id'] as String,
+    schoolBoardId: teacher['school_board_id'],
+    accessLevel: AccessLevel.user,
+  );
+  // Just make sure, even though at this point it should always be verified
+  if (user.isNotVerified) return null;
+
+  // Register the user in the 'users' table
+  await MySqlHelpers.performInsertQuery(
+      connection: connection,
+      tableName: 'users',
+      data: {
+        'shared_id': user.databaseId,
+        'authenticator_id': user.authenticatorId,
+        'school_board_id': user.schoolBoardId,
+        'access_level': user.accessLevel.serialize(),
+      });
+
+  return user;
 }

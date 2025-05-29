@@ -9,7 +9,7 @@ TeachersRepository get _mockedDatabaseTeachers => TeachersRepositoryMock();
 void main() {
   test('Get teachers from DatabaseTeachers', () async {
     final teachers = await _mockedDatabaseTeachers.getAll(
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     expect(teachers, isA<Map<String, dynamic>>());
     expect(teachers.length, 2);
@@ -25,7 +25,7 @@ void main() {
     expect(
       () async => await _mockedDatabaseTeachers.putAll(
         data: {'1': 'John Doe'},
-        user: DatabaseUser.unverified(),
+        user: DatabaseUser.empty(),
       ),
       throwsA(predicate((e) =>
           e is InvalidRequestException &&
@@ -36,7 +36,7 @@ void main() {
   test('Get teacher from DatabaseTeachers', () async {
     final teacher = await _mockedDatabaseTeachers.getById(
       id: '0',
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     expect(teacher, isA<Map<String, dynamic>>());
     expect(teacher['first_name'], 'John');
@@ -47,7 +47,7 @@ void main() {
     expect(
       () async => await _mockedDatabaseTeachers.getById(
         id: '2',
-        user: DatabaseUser.unverified(),
+        user: DatabaseUser.empty(),
       ),
       throwsA(predicate((e) =>
           e is MissingDataException && e.toString() == 'Teacher not found')),
@@ -59,7 +59,7 @@ void main() {
       () async => await _mockedDatabaseTeachers.putById(
         id: '0',
         data: {'name': 'John Doe', 'age': 60, 'invalid_field': 'invalid'},
-        user: DatabaseUser.unverified(),
+        user: DatabaseUser.empty(),
       ),
       throwsA(predicate((e) =>
           e is InvalidFieldException &&
@@ -72,11 +72,11 @@ void main() {
     await mockedDatabase.putById(
       id: '0',
       data: {'first_name': 'John', 'last_name': 'Smith'},
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     final updatedTeacher = await mockedDatabase.getById(
       id: '0',
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     expect(updatedTeacher['first_name'], 'John');
     expect(updatedTeacher['last_name'], 'Smith');
@@ -87,11 +87,11 @@ void main() {
     await mockedDatabase.putById(
       id: '2',
       data: {'first_name': 'Agent', 'last_name': 'Smith'},
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     final newTeacher = await mockedDatabase.getById(
       id: '2',
-      user: DatabaseUser.unverified(),
+      user: DatabaseUser.empty(),
     );
     expect(newTeacher['first_name'], 'Agent');
     expect(newTeacher['last_name'], 'Smith');

@@ -14,79 +14,95 @@ class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
 
   void _logOut(BuildContext context) async {
-    InternshipsProvider.of(context, listen: false).stopFetchingData();
-    StudentsProvider.of(context, listen: false).stopFetchingData();
-    EnterprisesProvider.of(context, listen: false).stopFetchingData();
-    TeachersProvider.of(context, listen: false).stopFetchingData();
-    SchoolBoardsProvider.of(context, listen: false).stopFetchingData();
-
     await AuthProvider.of(context).signOut();
     if (!context.mounted) return;
+
+    await Future.wait([
+      InternshipsProvider.of(context, listen: false).stopFetchingData(),
+      StudentsProvider.of(context, listen: false).stopFetchingData(),
+      EnterprisesProvider.of(context, listen: false).stopFetchingData(),
+      TeachersProvider.of(context, listen: false).stopFetchingData(),
+      SchoolBoardsProvider.of(context, listen: false).stopFetchingData(),
+    ]);
+    if (!context.mounted) return;
+
+    // Pop the drawer and navigate to the login screen
+    Navigator.pop(context);
     GoRouter.of(context).goNamed(Screens.login);
   }
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = AuthProvider.of(context);
+    final authProvider = AuthProvider.of(context, listen: true);
 
     return Drawer(
       child: Scaffold(
         appBar: AppBar(title: const Text('Banque de Stages')),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              children: [
-                if ((authProvider.databaseAccessLevel ?? AccessLevel.user) >=
-                    AccessLevel.superAdmin)
-                  const _DrawerItem(
-                    titleText: 'Commissions scolaires',
-                    icon: Icons.school,
-                    route: Screens.schoolBoardsListScreen,
-                  ),
-                const _DrawerItem(
-                  titleText: 'Écoles',
-                  icon: Icons.school_rounded,
-                  route: Screens.schoolsListScreen,
-                ),
-                const _DrawerItem(
-                  titleText: 'Enseignant·e·s',
-                  icon: Icons.person,
-                  route: Screens.teachersListScreen,
-                ),
-                const _DrawerItem(
-                  titleText: 'Élèves',
-                  icon: Icons.person,
-                  route: Screens.studentsListScreen,
-                ),
-                const _DrawerItem(
-                  titleText: 'Entreprises',
-                  icon: Icons.business,
-                  route: Screens.enterprisesListScreen,
-                ),
-                const _DrawerItem(
-                  titleText: 'Stages',
-                  icon: Icons.work,
-                  route: Screens.internshipsListScreen,
-                ),
-                _DrawerItem(
+        body:
+            authProvider.isFullySignedIn
+                ? Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        if ((authProvider.databaseAccessLevel ??
+                                AccessLevel.user) >=
+                            AccessLevel.superAdmin)
+                          const _DrawerItem(
+                            titleText: 'Commissions scolaires',
+                            icon: Icons.school,
+                            route: Screens.schoolBoardsListScreen,
+                          ),
+                        const _DrawerItem(
+                          titleText: 'Écoles',
+                          icon: Icons.school_rounded,
+                          route: Screens.schoolsListScreen,
+                        ),
+                        const _DrawerItem(
+                          titleText: 'Enseignant·e·s',
+                          icon: Icons.person,
+                          route: Screens.teachersListScreen,
+                        ),
+                        const _DrawerItem(
+                          titleText: 'Élèves',
+                          icon: Icons.person,
+                          route: Screens.studentsListScreen,
+                        ),
+                        const _DrawerItem(
+                          titleText: 'Entreprises',
+                          icon: Icons.business,
+                          route: Screens.enterprisesListScreen,
+                        ),
+                        const _DrawerItem(
+                          titleText: 'Stages',
+                          icon: Icons.work,
+                          route: Screens.internshipsListScreen,
+                        ),
+                        _DrawerItem(
+                          titleText: 'Se déconnecter',
+                          icon: Icons.logout,
+                          onTap: () => _logOut(context),
+                        ),
+                      ],
+                    ),
+                    _DrawerItem(
+                      titleText: 'Réinitialiser la base de données',
+                      icon: Icons.restore_from_trash_outlined,
+                      onTap: () async {
+                        await resetDummyData(context);
+                        if (context.mounted) Navigator.pop(context);
+                      },
+                      tileColor: Colors.red,
+                    ),
+                  ],
+                )
+                : authProvider.isAuthenticatorSignedIn
+                ? _DrawerItem(
                   titleText: 'Se déconnecter',
                   icon: Icons.logout,
                   onTap: () => _logOut(context),
-                ),
-              ],
-            ),
-            _DrawerItem(
-              titleText: 'Réinitialiser la base de données',
-              icon: Icons.restore_from_trash_outlined,
-              onTap: () async {
-                await resetDummyData(context);
-                if (context.mounted) Navigator.pop(context);
-              },
-              tileColor: Colors.red,
-            ),
-          ],
-        ),
+                )
+                : Container(),
       ),
     );
   }

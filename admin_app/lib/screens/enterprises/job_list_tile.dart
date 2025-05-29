@@ -231,7 +231,9 @@ class _JobListTileState extends State<JobListTile> {
     final positionsRemaining =
         widget.controller._positionsOffered -
         widget.controller._positionsOccupied;
-
+    // TODO Add a close the internship for all the schools
+    // TODO Bring this into the header and add schools
+    // TODO Add a toggle to make the specialization private or public
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
