@@ -14,8 +14,7 @@ class SchoolBoard extends ExtendedItemSerializable {
     required this.schools,
   });
 
-  static SchoolBoard get empty =>
-      SchoolBoard(name: 'Unnamed', id: null, schools: []);
+  static SchoolBoard get empty => SchoolBoard(name: '', schools: []);
 
   SchoolBoard.fromSerialized(super.map)
       : name = StringExt.from(map['name']) ?? 'Unnamed',

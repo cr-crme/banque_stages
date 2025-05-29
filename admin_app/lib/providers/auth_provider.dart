@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:provider/provider.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -46,6 +47,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
     backendId = null;
+    databaseAccessLevel = null;
     notifyListeners();
   }
 
@@ -64,6 +66,8 @@ class AuthProvider extends ChangeNotifier {
     _backendId = id;
     notifyListeners();
   }
+
+  AccessLevel? databaseAccessLevel;
 
   bool isBackendConnected() {
     return backendId != null && backendId!.isNotEmpty;

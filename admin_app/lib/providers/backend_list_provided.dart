@@ -1,11 +1,12 @@
-import 'dart:developer' as dev;
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'dart:io';
 
-import 'package:common/communication_protocol.dart';
-import 'package:common/models/generic/extended_item_serializable.dart';
 import 'package:admin_app/providers/auth_provider.dart';
+import 'package:common/communication_protocol.dart';
+import 'package:common/models/generic/access_level.dart';
+import 'package:common/models/generic/extended_item_serializable.dart';
 import 'package:enhanced_containers/database_list_provided.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -29,6 +30,8 @@ class _Selector {
 abstract class BackendListProvided<T extends ExtendedItemSerializable>
     extends DatabaseListProvided<T> {
   final Uri uri;
+  bool _hasProblemConnecting = false;
+  bool get hasProblemConnecting => _hasProblemConnecting;
   bool get isConnected =>
       (_providerSelector[getField()] != null &&
           _socket != null &&
@@ -45,6 +48,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     if (authProvider == null) {
       throw Exception('AuthProvider is required to initialize the connection');
     }
+    _hasProblemConnecting = false;
 
     // Get the JWT token
     String? token;
@@ -88,7 +92,12 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
         while (!_handshakeReceived) {
           await Future.delayed(const Duration(milliseconds: 100));
           if (DateTime.now().isAfter(started.add(const Duration(seconds: 5)))) {
-            throw Exception('Handshake timeout');
+            if (!_hasProblemConnecting) {
+              // Only notify once
+              _hasProblemConnecting = true;
+              dev.log('Handshake takes more time than expected');
+              notifyListeners();
+            }
           }
         }
       } catch (e) {
@@ -356,6 +365,9 @@ Future<void> _incommingMessage(
       case RequestType.handshake:
         {
           authProvider.backendId = protocol.data!['user_id']!;
+          authProvider.databaseAccessLevel = AccessLevel.fromSerialized(
+            protocol.data!['access_level'],
+          );
           _handshakeReceived = true;
           _socketId = protocol.socketId;
           for (final selector in _providerSelector.values) {

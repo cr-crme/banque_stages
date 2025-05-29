@@ -51,15 +51,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    // Calling the provider jumps start the authentication process
-    SchoolBoardsProvider.of(context, listen: false);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // Calling the provider jumps start the authentication process
+    final schoolBoardsProvider = SchoolBoardsProvider.of(context, listen: true);
+
     final authProvider = AuthProvider.of(context, listen: true);
     if (authProvider.isFullySignedIn()) {
       Future.microtask(() {
@@ -82,7 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   authProvider.isAuthenticatorSignedIn()
                       ? Center(
                         child: Text(
-                          'Connexion en cours...',
+                          schoolBoardsProvider.hasProblemConnecting
+                              ? 'Impossible de se connecter à la base de données, \n'
+                                  'vérifiez votre connexion internet.'
+                              : 'Connexion en cours...',
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),

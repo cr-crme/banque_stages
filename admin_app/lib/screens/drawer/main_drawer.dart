@@ -6,6 +6,7 @@ import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/router.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,6 +27,8 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = AuthProvider.of(context);
+
     return Drawer(
       child: Scaffold(
         appBar: AppBar(title: const Text('Banque de Stages')),
@@ -34,6 +37,13 @@ class MainDrawer extends StatelessWidget {
           children: [
             Column(
               children: [
+                if ((authProvider.databaseAccessLevel ?? AccessLevel.user) >=
+                    AccessLevel.superAdmin)
+                  const _DrawerItem(
+                    titleText: 'Commissions scolaires',
+                    icon: Icons.school,
+                    route: Screens.schoolBoardsListScreen,
+                  ),
                 const _DrawerItem(
                   titleText: 'Écoles',
                   icon: Icons.school_rounded,

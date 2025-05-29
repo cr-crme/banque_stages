@@ -10,6 +10,7 @@ import 'package:common/communication_protocol.dart';
 import 'package:common/exceptions.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:logging/logging.dart';
+import 'package:mysql1/mysql1.dart';
 
 final _logger = Logger('Connexions');
 
@@ -59,7 +60,7 @@ class Connexions {
             response: Response.success,
             data: {
               'user_id': _clients[client]!.databaseId,
-              'access_level': _clients[client]!.accessLevel.name,
+              'access_level': _clients[client]!.accessLevel.serialize(),
             }));
     return true;
   }
@@ -220,22 +221,10 @@ class Connexions {
       throw ConnexionRefusedException('Invalid token payload');
     }
 
-    // Get the user id from the database to first verify
-    final users = (await MySqlHelpers.performSelectQuery(
-            connection: _database.connection,
-            tableName: 'users',
-            filters: {
-          'authenticator_id': authenticatorId,
-        }) as List)
-        .firstOrNull;
-    if (users == null) throw ConnexionRefusedException('Invalid token payload');
-
-    _clients[client] = DatabaseUser.verified(
-      databaseId: users['shared_id'] as String,
-      authenticatorId: authenticatorId,
-      schoolBoardId: users['school_board_id'] as String? ?? '',
-      accessLevel: AccessLevel.fromSerialized(users['access_level']),
-    );
+    // Get the user information from the database to first verify its identity
+    final user = await _getUser(_database.connection, id: authenticatorId);
+    if (user == null) throw ConnexionRefusedException('Invalid token payload');
+    _clients[client] = user;
   }
 
   Future<void> _refuseConnexion(WebSocket client, String message) async {
@@ -253,5 +242,36 @@ class Connexions {
     await client.close();
     _clients.remove(client);
     _logger.info(message);
+  }
+}
+
+Future<DatabaseUser?> _getUser(MySqlConnection connection,
+    {required String id}) async {
+  // There are 3 possible cases:
+  // 1. The user has previously connected so they will be in the 'users' table.
+  //    We can retrieve their information from there and return it.
+  // 2. The user has never connected before, but was added to the teachers database.
+  //    We can retrieve their information from the 'teachers' table and provide
+  //    them with an AccessLevel of 'user', register them in the 'users' table
+  //    and return the user.
+  // 3. The user has never connected before, and is not in the teachers database.
+  //    This is probably someone who is not supposed to be using the app, so we
+  //    return null to indicate that the user is not valid.
+
+  final users = (await MySqlHelpers.performSelectQuery(
+          connection: connection,
+          tableName: 'users',
+          filters: {
+        'authenticator_id': id,
+      }) as List)
+      .firstOrNull;
+  if (users != null) {
+    // We are in case 1, the user is already registered
+    return DatabaseUser.verified(
+      databaseId: users['shared_id'] as String,
+      authenticatorId: id,
+      schoolBoardId: users['school_board_id'] as String? ?? '',
+      accessLevel: AccessLevel.fromSerialized(users['access_level']),
+    );
   }
 }

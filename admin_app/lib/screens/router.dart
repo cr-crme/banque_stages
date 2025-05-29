@@ -2,6 +2,7 @@ import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/screens/enterprises/enterprises_list_screen.dart';
 import 'package:admin_app/screens/internships/internships_list_screen.dart';
 import 'package:admin_app/screens/login/login_screen.dart';
+import 'package:admin_app/screens/school_boards/school_boards_list_screen.dart';
 import 'package:admin_app/screens/schools/schools_list_screen.dart';
 import 'package:admin_app/screens/students/students_list_screen.dart';
 import 'package:admin_app/screens/teachers/teachers_list_screen.dart';
@@ -11,6 +12,7 @@ abstract class Screens {
   static const home = teachersListScreen;
 
   static const login = LoginScreen.route;
+  static const schoolBoardsListScreen = SchoolBoardsListScreen.route;
   static const schoolsListScreen = SchoolsListScreen.route;
   static const teachersListScreen = TeachersListScreen.route;
   static const studentsListScreen = StudentsListScreen.route;
@@ -40,6 +42,11 @@ final router = GoRouter(
       redirect:
           (context, state) =>
               AuthProvider.of(context).isFullySignedIn() ? '/' : null,
+    ),
+    GoRoute(
+      path: Screens.schoolBoardsListScreen,
+      name: Screens.schoolBoardsListScreen,
+      builder: (context, state) => const SchoolBoardsListScreen(),
     ),
     GoRoute(
       path: Screens.schoolsListScreen,
