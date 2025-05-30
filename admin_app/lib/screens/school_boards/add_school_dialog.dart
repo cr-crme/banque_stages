@@ -1,4 +1,4 @@
-import 'package:admin_app/screens/schools/school_list_tile.dart';
+import 'package:admin_app/screens/school_boards/school_list_tile.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';

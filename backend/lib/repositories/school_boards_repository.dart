@@ -285,7 +285,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     }
 
     _logger.warning(
-        'The school with id: $schoolId is being deleted by user: ${user.databaseId}');
+        'The school with id: $schoolId is being deleted by user: ${user.authenticatorId}');
     await MySqlHelpers.performDeleteQuery(
       connection: connection,
       tableName: 'entities',

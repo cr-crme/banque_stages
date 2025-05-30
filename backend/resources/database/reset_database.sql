@@ -87,8 +87,8 @@ CREATE TABLE phone_numbers (
 );
 
 CREATE TABLE users (
-    shared_id VARCHAR(36) NOT NULL PRIMARY KEY,
-    authenticator_id VARCHAR(50) NOT NULL,
+    authenticator_id VARCHAR(50) NOT NULL PRIMARY KEY,
+    teacher_id VARCHAR(36),
     access_level INT NOT NULL
 );
 

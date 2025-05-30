@@ -20,7 +20,7 @@ class TeachersProvider extends BackendListProvided<Teacher> {
     return Teacher.fromSerialized(data);
   }
 
-  String? get _currentTeacherId => _authProvider!.backendId;
+  String? get _currentTeacherId => _authProvider!.teacherId;
   String get currentTeacherId {
     if (_currentTeacherId == null) throw Exception('Teacher is not logged in');
     return _currentTeacherId!;

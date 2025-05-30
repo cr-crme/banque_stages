@@ -1,7 +1,9 @@
+import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
-import 'package:admin_app/screens/schools/confirm_delete_school_dialog.dart';
+import 'package:admin_app/screens/school_boards/confirm_delete_school_dialog.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
@@ -14,12 +16,14 @@ class SchoolListTile extends StatefulWidget {
     required this.schoolBoard,
     this.isExpandable = true,
     this.forceEditingMode = false,
+    this.elevation = 10.0,
   });
 
   final School school;
   final bool isExpandable;
   final bool forceEditingMode;
   final SchoolBoard schoolBoard;
+  final double elevation;
 
   @override
   State<SchoolListTile> createState() => SchoolListTileState();
@@ -44,6 +48,11 @@ class SchoolListTileState extends State<SchoolListTile> {
 
   bool _isExpanded = false;
   bool _isEditing = false;
+  // TODO Test if a AccessLevel.user user can edit a school
+  late final bool _canEdit =
+      (AuthProvider.of(context, listen: false).databaseAccessLevel ??
+          AccessLevel.user) >=
+      AccessLevel.admin;
 
   late final _nameController = TextEditingController(text: widget.school.name);
   late final _addressController = AddressController(
@@ -106,6 +115,7 @@ class SchoolListTileState extends State<SchoolListTile> {
     return widget.isExpandable
         ? AnimatedExpandingCard(
           initialExpandedState: _isExpanded,
+          elevation: widget.elevation,
           onTapHeader: (isExpanded) => setState(() => _isExpanded = isExpanded),
           header: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,7 +127,7 @@ class SchoolListTileState extends State<SchoolListTile> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-              if (_isExpanded)
+              if (_isExpanded && _canEdit)
                 Row(
                   children: [
                     IconButton(

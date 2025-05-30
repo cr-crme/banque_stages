@@ -1,6 +1,11 @@
+import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/screens/school_boards/confirm_delete_school_board_dialog.dart';
+import 'package:admin_app/screens/school_boards/add_school_dialog.dart';
+import 'package:admin_app/screens/school_boards/school_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:common/models/generic/access_level.dart';
+import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
@@ -35,8 +40,13 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
     super.dispose();
   }
 
-  bool _isExpanded = false;
+  bool _isExpanded = true;
   bool _isEditing = false;
+  // TODO Test if a AccessLevel.user user can edit a school board
+  late final bool _canEdit =
+      (AuthProvider.of(context, listen: false).databaseAccessLevel ??
+          AccessLevel.user) >=
+      AccessLevel.superAdmin;
 
   late final _nameController = TextEditingController(
     text: widget.schoolBoard.name,
@@ -84,6 +94,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
     return widget.isExpandable
         ? AnimatedExpandingCard(
           initialExpandedState: _isExpanded,
+          elevation: 5.0,
           onTapHeader: (isExpanded) => setState(() => _isExpanded = isExpanded),
           header: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +106,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-              if (_isExpanded)
+              if (_isExpanded && _canEdit)
                 Row(
                   children: [
                     IconButton(
@@ -125,7 +136,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildName()],
+          children: [_buildName(), _buildSchoolNames()],
         ),
       ),
     );
@@ -154,4 +165,66 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
         )
         : Container();
   }
+
+  Future<void> _showAddSchoolDialog(SchoolBoard schoolBoard) async {
+    final answer = await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AddSchoolDialog(schoolBoard: schoolBoard),
+    );
+    if (answer is! School || !mounted) return;
+
+    schoolBoard.schools.add(answer);
+    SchoolBoardsProvider.of(context, listen: false).replace(schoolBoard);
+  }
+
+  Widget _buildSchoolNames() {
+    final schools = _getSchools(widget.schoolBoard);
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: Column(
+        children: [
+          schools.isEmpty
+              ? const Text('Aucune école associée')
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...schools.map(
+                    (school) => Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: SchoolListTile(
+                        school: school,
+                        schoolBoard: widget.schoolBoard,
+                        elevation: 0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+          if (_canEdit && !widget.forceEditingMode)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Center(
+                child: TextButton(
+                  onPressed: () => _showAddSchoolDialog(widget.schoolBoard),
+                  child: Text('Ajouter une école'),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+List<School> _getSchools(SchoolBoard schoolBoard) {
+  final schools = schoolBoard.schools;
+
+  schools.sort((a, b) {
+    final nameA = a.name.toLowerCase();
+    final nameB = b.name.toLowerCase();
+    return nameA.compareTo(nameB);
+  });
+  return schools;
 }

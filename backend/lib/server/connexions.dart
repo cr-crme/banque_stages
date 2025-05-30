@@ -60,7 +60,7 @@ class Connexions {
             requestType: RequestType.handshake,
             response: Response.success,
             data: {
-              'user_id': _clients[client]!.databaseId,
+              'teacher_id': _clients[client]!.teacherId,
               'access_level': _clients[client]!.accessLevel.serialize(),
             }));
     return true;
@@ -273,8 +273,7 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
       .firstOrNull as Map<String, dynamic>?;
 
   user = user.copyWith(
-    databaseId: users?['shared_id'],
-    schoolBoardId: users?['school_board_id'],
+    teacherId: users?['teacher_id'],
     accessLevel: AccessLevel.fromSerialized(users?['access_level']),
   );
   if (user.isVerified) return user;
@@ -295,7 +294,7 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
         MySqlSelectSubQuery(
           dataTableName: 'teachers',
           idNameToDataTable: 'id',
-          fieldsToFetch: ['id', 'school_board_id'],
+          fieldsToFetch: ['id', 'school_board_id', 'school_id'],
         ),
       ]) as List)
       .firstOrNull;
@@ -304,8 +303,9 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
 
   // Otherwise, we probably are in the case 2, so we can login them and augment the users table
   user = user.copyWith(
-    databaseId: teacher['id'] as String,
+    teacherId: teacher['id'] as String,
     schoolBoardId: teacher['school_board_id'],
+    schoolId: teacher['school_id'],
     accessLevel: AccessLevel.user,
   );
   // Just make sure, even though at this point it should always be verified
@@ -316,9 +316,8 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
       connection: connection,
       tableName: 'users',
       data: {
-        'shared_id': user.databaseId,
+        'teacher_id': user.teacherId,
         'authenticator_id': user.authenticatorId,
-        'school_board_id': user.schoolBoardId,
         'access_level': user.accessLevel.serialize(),
       });
 

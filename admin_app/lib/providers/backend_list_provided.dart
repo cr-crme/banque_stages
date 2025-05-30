@@ -383,7 +383,9 @@ Future<void> _incommingMessage(
     switch (protocol.requestType) {
       case RequestType.handshake:
         {
-          authProvider.backendId = protocol.data!['user_id']!;
+          authProvider.teacherId = protocol.data!['teacher_id']!;
+          authProvider.schoolId = protocol.data!['school_id']!;
+          authProvider.schoolBoardId = protocol.data!['school_board_id']!;
           authProvider.databaseAccessLevel = AccessLevel.fromSerialized(
             protocol.data!['access_level'],
           );

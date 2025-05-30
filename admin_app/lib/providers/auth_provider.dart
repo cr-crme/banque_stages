@@ -47,7 +47,9 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
-    backendId = null;
+    teacherId = null;
+    schoolId = null;
+    schoolBoardId = null;
     databaseAccessLevel = null;
     notifyListeners();
   }
@@ -61,17 +63,32 @@ class AuthProvider extends ChangeNotifier {
     return _firebaseAuth.currentUser != null;
   }
 
-  String? _backendId;
-  String? get backendId => _backendId;
-  set backendId(String? id) {
-    _backendId = id;
+  String? _teacherId;
+  String? get teacherId => _teacherId;
+  set teacherId(String? id) {
+    _teacherId = id;
+    notifyListeners();
+  }
+
+  String? _schoolId;
+  String? get schoolId => _schoolId;
+  set schoolId(String? id) {
+    _schoolId = id;
+    notifyListeners();
+  }
+
+  String? _schoolBoardId;
+  String? get schoolBoardId => _schoolBoardId;
+  set schoolBoardId(String? id) {
+    _schoolBoardId = id;
     notifyListeners();
   }
 
   AccessLevel? databaseAccessLevel;
 
   bool get isBackendConnected {
-    return backendId != null && backendId!.isNotEmpty;
+    return (teacherId != null && teacherId!.isNotEmpty) ||
+        databaseAccessLevel == AccessLevel.superAdmin;
   }
 
   bool get isFullySignedIn => isAuthenticatorSignedIn && isBackendConnected;

@@ -2,7 +2,6 @@ import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/school_boards/add_school_board_dialog.dart';
 import 'package:admin_app/screens/school_boards/school_board_list_tile.dart';
-import 'package:collection/collection.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +12,7 @@ class SchoolBoardsListScreen extends StatelessWidget {
 
   Future<List<SchoolBoard>> _getSchoolBoards(BuildContext context) async {
     final schoolBoards = [...SchoolBoardsProvider.of(context, listen: true)];
-    schoolBoards.sorted((a, b) {
+    schoolBoards.sort((a, b) {
       final nameA = a.name.toLowerCase();
       final nameB = b.name.toLowerCase();
       return nameA.compareTo(nameB);
@@ -51,7 +50,7 @@ class SchoolBoardsListScreen extends StatelessWidget {
         child: FutureBuilder(
           future: Future.wait([_getSchoolBoards(context)]),
           builder: (context, snapshot) {
-            final schoolBoards = snapshot.data?[1];
+            final schoolBoards = snapshot.data?[0];
             if (schoolBoards == null) {
               return const Center(child: CircularProgressIndicator());
             }

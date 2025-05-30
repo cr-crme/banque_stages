@@ -51,7 +51,7 @@ def add_super_admin_user(secret: str):
     # Use uuid v5 with namespace DNS to generate a stable ID from the secret
     id = str(uuid.uuid5(uuid.NAMESPACE_DNS, secret))
 
-    query = f"INSERT INTO users (shared_id, authenticator_id, access_level) VALUES ('{id}', '{secret}', 2);"
+    query = f"INSERT INTO users (authenticator_id, access_level) VALUES ('{secret}', 2);"
     result = subprocess.run(
         _base_docker_command + [_database, "-e", query], stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
