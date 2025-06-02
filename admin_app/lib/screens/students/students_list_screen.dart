@@ -3,7 +3,9 @@ import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/students/add_student_dialog.dart';
 import 'package:admin_app/screens/students/school_students_card.dart';
+import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:common/models/persons/student.dart';
+import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
 
@@ -15,11 +17,12 @@ class StudentsListScreen extends StatelessWidget {
   ///
   /// This complicate structure is basically separating the students by
   /// school and then by class group (associated with a teacher).
-  Future<Map<String, Map<String, List<Student>>>> _getStudents(
-    BuildContext context,
-  ) async {
-    final students = [...StudentsProvider.of(context, listen: true)];
-    students.sort((a, b) {
+  Future<Map<SchoolBoard, Map<School, Map<String, List<Student>>>>>
+  _getStudents(BuildContext context) async {
+    final schoolBoards = SchoolBoardsProvider.of(context);
+
+    final allStudents = [...StudentsProvider.of(context, listen: true)];
+    allStudents.sort((a, b) {
       final lastNameA = a.lastName.toLowerCase();
       final lastNameB = b.lastName.toLowerCase();
       var comparison = lastNameA.compareTo(lastNameB);
@@ -31,28 +34,27 @@ class StudentsListScreen extends StatelessWidget {
       return comparison;
     });
 
-    // Sort by school name
-    final schools =
-        (await SchoolBoardsProvider.mySchoolBoardOf(context))?.schools ?? [];
-    final studentsBySchools = <String, List<Student>>{
-      for (final school in schools)
-        school.id:
-            students.where((student) => student.schoolId == school.id).toList(),
-    };
-
-    // Sort by class group
-    final studentBySchoolsAndGroups = <String, Map<String, List<Student>>>{};
-    for (final school in studentsBySchools.keys) {
-      final studentsByGroups = <String, List<Student>>{};
-      for (final student in studentsBySchools[school]!) {
-        if (!studentsByGroups.containsKey(student.group)) {
-          studentsByGroups[student.group] = [];
+    // Dispatch students
+    final students = <SchoolBoard, Map<School, Map<String, List<Student>>>>{};
+    for (final schoolBoard in schoolBoards) {
+      final studentsBySchoolsAndGroups = <School, Map<String, List<Student>>>{};
+      for (final school in schoolBoard.schools) {
+        final studentsInSchool =
+            allStudents
+                .where((student) => student.schoolId == school.id)
+                .toList();
+        final studentsByGroups = <String, List<Student>>{};
+        for (final student in studentsInSchool) {
+          if (!studentsByGroups.containsKey(student.group)) {
+            studentsByGroups[student.group] = [];
+          }
+          studentsByGroups[student.group]!.add(student);
         }
-        studentsByGroups[student.group]!.add(student);
+        studentsBySchoolsAndGroups[school] = studentsByGroups;
       }
-      studentBySchoolsAndGroups[school] = studentsByGroups;
+      students[schoolBoard] = studentsBySchoolsAndGroups;
     }
-    return studentBySchoolsAndGroups;
+    return students;
   }
 
   Future<void> _showAddStudentDialog(BuildContext context) async {
@@ -85,43 +87,49 @@ class StudentsListScreen extends StatelessWidget {
 
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: Future.wait([
-            SchoolBoardsProvider.mySchoolBoardOf(context),
-            _getStudents(context),
-          ]),
+          future: Future.wait([_getStudents(context)]),
           builder: (context, snapshot) {
-            final schoolBoard = snapshot.data?[0] as SchoolBoard?;
-            final schoolStudents =
-                snapshot.data?[1] as Map<String, Map<String, List<Student>>>?;
-            if (schoolBoard == null ||
-                schoolStudents == null ||
-                schoolStudents.isEmpty) {
+            final schoolBoards = snapshot.data?[0];
+            if (schoolBoards == null) {
               return const Center(child: CircularProgressIndicator());
             }
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    schoolBoard.name,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                if (schoolBoards.isEmpty)
+                  const Center(
+                    child: Text('Aucune commission scolaire inscrite'),
                   ),
-                ),
-                ...schoolStudents.keys.map(
-                  (String schoolId) => Column(
-                    children: [
-                      SchoolStudentsCard(
-                        schoolId: schoolId,
-                        studentsByGroups: schoolStudents[schoolId] ?? {},
-                        schoolBoard: schoolBoard,
+                if (schoolBoards.isNotEmpty)
+                  ...schoolBoards.entries.map(
+                    (schoolBoardEntry) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AnimatedExpandingCard(
+                        header: Text(
+                          schoolBoardEntry.key.name,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                        ),
+                        child: Column(
+                          children: [
+                            ...schoolBoardEntry.value.entries.map(
+                              (schoolEntry) => Column(
+                                children: [
+                                  SchoolStudentsCard(
+                                    schoolId: schoolEntry.key.id,
+                                    studentsByGroups: schoolEntry.value,
+                                    schoolBoard: schoolBoardEntry.key,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
               ],
             );
           },

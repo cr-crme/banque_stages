@@ -60,6 +60,8 @@ class Connexions {
             requestType: RequestType.handshake,
             response: Response.success,
             data: {
+              'school_board_id': _clients[client]!.schoolBoardId,
+              'school_id': _clients[client]!.schoolId,
               'teacher_id': _clients[client]!.teacherId,
               'access_level': _clients[client]!.accessLevel.serialize(),
             }));

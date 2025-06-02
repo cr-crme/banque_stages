@@ -3,7 +3,9 @@ import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/teachers/add_teacher_dialog.dart';
 import 'package:admin_app/screens/teachers/school_teachers_card.dart';
+import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
 
@@ -12,28 +14,37 @@ class TeachersListScreen extends StatelessWidget {
 
   static const route = '/teachers_list';
 
-  Future<Map<String, List<Teacher>>> _getTeachers(BuildContext context) async {
-    final teachersTp = TeachersProvider.of(context, listen: true);
-    final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(context);
-    final schools = schoolBoard?.schools ?? [];
+  Future<Map<SchoolBoard, Map<School, List<Teacher>>>> _getTeachers(
+    BuildContext context,
+  ) async {
+    final teachersProvider = TeachersProvider.of(context, listen: true);
+    final schoolBoards = SchoolBoardsProvider.of(context);
 
     // Sort by school name
-    final teachers = <String, List<Teacher>>{}; // Teachers by school
-    for (final school in schools) {
-      final schoolTeachers =
-          teachersTp.where((teacher) => teacher.schoolId == school.id).toList();
+    final teachers = <SchoolBoard, Map<School, List<Teacher>>>{};
+    for (final schoolBoard in schoolBoards) {
+      final teachersBySchool = <School, List<Teacher>>{};
 
-      schoolTeachers.sort((a, b) {
-        final lastNameA = a.lastName.toLowerCase();
-        final lastNameB = b.lastName.toLowerCase();
-        var comparison = lastNameA.compareTo(lastNameB);
-        if (comparison != 0) return comparison;
+      for (final school in schoolBoard.schools) {
+        final schoolTeachers =
+            teachersProvider
+                .where((teacher) => teacher.schoolId == school.id)
+                .toList();
 
-        final firstNameA = a.firstName.toLowerCase();
-        final firstNameB = b.firstName.toLowerCase();
-        return firstNameA.compareTo(firstNameB);
-      });
-      teachers[school.id] = schoolTeachers;
+        schoolTeachers.sort((a, b) {
+          final lastNameA = a.lastName.toLowerCase();
+          final lastNameB = b.lastName.toLowerCase();
+          var comparison = lastNameA.compareTo(lastNameB);
+          if (comparison != 0) return comparison;
+
+          final firstNameA = a.firstName.toLowerCase();
+          final firstNameB = b.firstName.toLowerCase();
+          return firstNameA.compareTo(firstNameB);
+        });
+        teachersBySchool[school] = schoolTeachers;
+      }
+
+      teachers[schoolBoard] = teachersBySchool;
     }
 
     return teachers;
@@ -69,37 +80,45 @@ class TeachersListScreen extends StatelessWidget {
 
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: Future.wait([
-            SchoolBoardsProvider.mySchoolBoardOf(context),
-            _getTeachers(context),
-          ]),
+          future: Future.wait([_getTeachers(context)]),
           builder: (context, snapshot) {
-            final schoolBoard = snapshot.data?[0] as SchoolBoard?;
-            final schoolTeachers =
-                snapshot.data?[1] as Map<String, List<Teacher>>?;
-            if (schoolBoard == null || schoolTeachers == null) {
+            final schoolBoards = snapshot.data?[0];
+            if (schoolBoards == null) {
               return const Center(child: CircularProgressIndicator());
             }
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    schoolBoard.name,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                if (schoolBoards.isEmpty)
+                  const Center(
+                    child: Text('Aucune commission scolaire inscrite'),
                   ),
-                ),
-                ...schoolTeachers.keys.map(
-                  (String schoolId) => SchoolTeachersCard(
-                    schoolId: schoolId,
-                    teachers: schoolTeachers[schoolId] ?? [],
-                    schoolBoard: schoolBoard,
+                if (schoolBoards.isNotEmpty)
+                  ...schoolBoards.entries.map(
+                    (schoolBoardEntry) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AnimatedExpandingCard(
+                        header: Text(
+                          schoolBoardEntry.key.name,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                        ),
+                        child: Column(
+                          children: [
+                            ...schoolBoardEntry.value.entries.map(
+                              (schoolEntry) => SchoolTeachersCard(
+                                schoolId: schoolEntry.key.id,
+                                teachers: schoolEntry.value,
+                                schoolBoard: schoolBoardEntry.key,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
               ],
             );
           },
