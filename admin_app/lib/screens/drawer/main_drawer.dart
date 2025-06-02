@@ -1,4 +1,5 @@
 import 'package:admin_app/dummy_data.dart';
+import 'package:admin_app/providers/admins_provider.dart';
 import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/enterprises_provider.dart';
 import 'package:admin_app/providers/internships_provider.dart';
@@ -22,6 +23,7 @@ class MainDrawer extends StatelessWidget {
       StudentsProvider.of(context, listen: false).stopFetchingData(),
       EnterprisesProvider.of(context, listen: false).stopFetchingData(),
       TeachersProvider.of(context, listen: false).stopFetchingData(),
+      AdminsProvider.of(context, listen: false).stopFetchingData(),
       SchoolBoardsProvider.of(context, listen: false).stopFetchingData(),
     ]);
     if (!context.mounted) return;
@@ -52,6 +54,14 @@ class MainDrawer extends StatelessWidget {
                             titleText: 'Écoles',
                             icon: Icons.school,
                             route: Screens.schoolBoardsListScreen,
+                          ),
+                        if ((authProvider.databaseAccessLevel ??
+                                AccessLevel.user) >=
+                            AccessLevel.superAdmin)
+                          const _DrawerItem(
+                            titleText: 'Administrateurs·trices',
+                            icon: Icons.admin_panel_settings,
+                            route: Screens.adminsListScreen,
                           ),
                         const _DrawerItem(
                           titleText: 'Enseignant·e·s',

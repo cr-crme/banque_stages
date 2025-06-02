@@ -1,4 +1,5 @@
 import 'package:admin_app/firebase_options.dart';
+import 'package:admin_app/providers/admins_provider.dart';
 import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/enterprises_provider.dart';
 import 'package:admin_app/providers/internships_provider.dart';
@@ -43,6 +44,11 @@ class Home extends StatelessWidget {
           create:
               (context) =>
                   SchoolBoardsProvider(uri: backendUri, mockMe: useMockers),
+          update: (context, auth, previous) => previous!..initializeAuth(auth),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, AdminsProvider>(
+          create:
+              (context) => AdminsProvider(uri: backendUri, mockMe: useMockers),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
         ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(

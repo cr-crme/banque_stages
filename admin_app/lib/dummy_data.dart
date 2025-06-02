@@ -2,6 +2,7 @@
 import 'dart:developer' as dev;
 import 'dart:math';
 
+import 'package:admin_app/providers/admins_provider.dart';
 import 'package:admin_app/providers/enterprises_provider.dart';
 import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
@@ -16,6 +17,7 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:common/models/itineraries/visiting_priority.dart';
+import 'package:common/models/persons/admin.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
@@ -28,12 +30,14 @@ import 'package:flutter/material.dart';
 
 Future<void> resetDummyData(BuildContext context) async {
   final schoolBoards = SchoolBoardsProvider.of(context, listen: false);
+  final admins = AdminsProvider.of(context, listen: false);
   final teachers = TeachersProvider.of(context, listen: false);
   final students = StudentsProvider.of(context, listen: false);
   final enterprises = EnterprisesProvider.of(context, listen: false);
   final internships = InternshipsProvider.of(context, listen: false);
 
   while (schoolBoards.isNotConnected ||
+      admins.isNotConnected ||
       teachers.isNotConnected ||
       students.isNotConnected ||
       enterprises.isNotConnected ||
@@ -43,10 +47,18 @@ Future<void> resetDummyData(BuildContext context) async {
   // TODO Enterprises should store all the teachers that have recruited them and
   // fixed the shareWith field to be a list of teacher ids
 
-  await _removeAll(internships, enterprises, students, teachers, schoolBoards);
+  await _removeAll(
+    internships,
+    enterprises,
+    students,
+    teachers,
+    admins,
+    schoolBoards,
+  );
 
   // TODO Look for Quebec servers (OVH, Akamai, Vultr, etc.) to host the database
   await _addDummySchoolBoards(schoolBoards);
+  await _addDummyAdmins(admins);
   await _addDummyTeachers(teachers);
   await _addDummyStudents(students);
   await _addDummyEnterprises(enterprises);
@@ -60,6 +72,7 @@ Future<void> _removeAll(
   EnterprisesProvider enterprises,
   StudentsProvider students,
   TeachersProvider teachers,
+  AdminsProvider admins,
   SchoolBoardsProvider schoolBoards,
 ) async {
   dev.log('Removing dummy data');
@@ -75,6 +88,9 @@ Future<void> _removeAll(
 
   teachers.clear(confirm: true);
   await _waitForDatabaseUpdate(teachers, 0, strictlyEqualToExpected: true);
+
+  admins.clear(confirm: true);
+  await _waitForDatabaseUpdate(admins, 0, strictlyEqualToExpected: true);
 
   schoolBoards.clear(confirm: true);
   await _waitForDatabaseUpdate(schoolBoards, 0, strictlyEqualToExpected: true);
@@ -156,6 +172,29 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   );
 
   await _waitForDatabaseUpdate(schoolBoards, 2);
+}
+
+Future<void> _addDummyAdmins(AdminsProvider admins) async {
+  dev.log('Adding dummy admins');
+
+  admins.add(
+    Admin(
+      firstName: 'Jean',
+      middleName: null,
+      lastName: 'Dupont',
+      schoolBoardId: DevAuth.devMySchoolBoardId,
+      email: 'jean.dupont@monecole.qc',
+    ),
+  );
+  admins.add(
+    Admin(
+      firstName: 'Marie',
+      middleName: null,
+      lastName: 'Lefebvre',
+      schoolBoardId: 'dummy_school_board_id_1',
+      email: 'marie.lefebvre@monecole.qc',
+    ),
+  );
 }
 
 Future<void> _addDummyTeachers(TeachersProvider teachers) async {

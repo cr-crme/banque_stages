@@ -1,74 +1,63 @@
+import 'package:admin_app/providers/admins_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
-import 'package:admin_app/providers/teachers_provider.dart';
+import 'package:admin_app/screens/admins/add_admin_dialog.dart';
+import 'package:admin_app/screens/admins/admin_list_tile.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
-import 'package:admin_app/screens/teachers/add_teacher_dialog.dart';
-import 'package:admin_app/screens/teachers/school_teachers_card.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
-import 'package:common/models/persons/teacher.dart';
-import 'package:common/models/school_boards/school.dart';
+import 'package:common/models/persons/admin.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
 
-class TeachersListScreen extends StatelessWidget {
-  const TeachersListScreen({super.key});
+class AdminsListScreen extends StatelessWidget {
+  const AdminsListScreen({super.key});
 
-  static const route = '/teachers_list';
+  static const route = '/admins_list';
 
-  Future<Map<SchoolBoard, Map<School, List<Teacher>>>> _getTeachers(
-    BuildContext context,
-  ) async {
-    final teachersProvider = TeachersProvider.of(context, listen: true);
+  Future<Map<SchoolBoard, List<Admin>>> _getAdmins(BuildContext context) async {
+    final allAdmins = [...AdminsProvider.of(context, listen: true)];
+    allAdmins.sort((a, b) {
+      final lastNameA = a.lastName.toLowerCase();
+      final lastNameB = b.lastName.toLowerCase();
+      var comparison = lastNameA.compareTo(lastNameB);
+      if (comparison != 0) return comparison;
+
+      final firstNameA = a.firstName.toLowerCase();
+      final firstNameB = b.firstName.toLowerCase();
+      return firstNameA.compareTo(firstNameB);
+    });
+
     final schoolBoards = SchoolBoardsProvider.of(context);
 
-    // Sort by school name
-    final teachers = <SchoolBoard, Map<School, List<Teacher>>>{};
+    final admins = <SchoolBoard, List<Admin>>{};
     for (final schoolBoard in schoolBoards) {
-      final teachersBySchool = <School, List<Teacher>>{};
-
-      for (final school in schoolBoard.schools) {
-        final schoolTeachers =
-            teachersProvider
-                .where((teacher) => teacher.schoolId == school.id)
-                .toList();
-
-        schoolTeachers.sort((a, b) {
-          final lastNameA = a.lastName.toLowerCase();
-          final lastNameB = b.lastName.toLowerCase();
-          var comparison = lastNameA.compareTo(lastNameB);
-          if (comparison != 0) return comparison;
-
-          final firstNameA = a.firstName.toLowerCase();
-          final firstNameB = b.firstName.toLowerCase();
-          return firstNameA.compareTo(firstNameB);
-        });
-        teachersBySchool[school] = schoolTeachers;
-      }
-
-      teachers[schoolBoard] = teachersBySchool;
+      admins[schoolBoard] =
+          allAdmins
+              .where((admin) => admin.schoolBoardId == schoolBoard.id)
+              .toList();
     }
 
-    return teachers;
+    return admins;
   }
 
-  Future<void> _showAddTeacherDialog(BuildContext context) async {
+  Future<void> _showAddAdminDialog(BuildContext context) async {
     final answer = await showDialog(
       barrierDismissible: false,
       context: context,
-      builder: (context) => AddTeacherDialog(),
+      builder: (context) => AddAdminDialog(),
     );
-    if (answer is! Teacher || !context.mounted) return;
+    if (answer is! Admin || !context.mounted) return;
 
-    TeachersProvider.of(context, listen: false).add(answer);
+    AdminsProvider.of(context, listen: false).add(answer);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Liste des enseignant·e·s'),
+        title: const Text('Liste des administrateurs·trices'),
         actions: [
           IconButton(
-            onPressed: () => _showAddTeacherDialog(context),
+            onPressed: () => _showAddAdminDialog(context),
             icon: Icon(Icons.add),
           ),
         ],
@@ -77,7 +66,7 @@ class TeachersListScreen extends StatelessWidget {
 
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: Future.wait([_getTeachers(context)]),
+          future: Future.wait([_getAdmins(context)]),
           builder: (context, snapshot) {
             final schoolBoards = snapshot.data?[0];
             if (schoolBoards == null) {
@@ -106,11 +95,8 @@ class TeachersListScreen extends StatelessWidget {
                         initialExpandedState: true,
                         child: Column(
                           children: [
-                            ...schoolBoardEntry.value.entries.map(
-                              (schoolEntry) => SchoolTeachersCard(
-                                schoolId: schoolEntry.key.id,
-                                teachers: schoolEntry.value,
-                              ),
+                            ...schoolBoardEntry.value.map(
+                              (adminEntry) => AdminListTile(admin: adminEntry),
                             ),
                           ],
                         ),

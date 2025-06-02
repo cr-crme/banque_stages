@@ -1,23 +1,23 @@
-import 'package:admin_app/screens/teachers/teacher_list_tile.dart';
-import 'package:common/models/persons/teacher.dart';
+import 'package:admin_app/screens/admins/admin_list_tile.dart';
+import 'package:common/models/persons/admin.dart';
 import 'package:flutter/material.dart';
 
-class AddTeacherDialog extends StatefulWidget {
-  const AddTeacherDialog({super.key});
+class AddAdminDialog extends StatefulWidget {
+  const AddAdminDialog({super.key});
 
   @override
-  State<AddTeacherDialog> createState() => _AddTeacherDialogState();
+  State<AddAdminDialog> createState() => _AddAdminDialogState();
 }
 
-class _AddTeacherDialogState extends State<AddTeacherDialog> {
+class _AddAdminDialogState extends State<AddAdminDialog> {
   final _editingKey = GlobalKey();
 
   Future<void> _onClickedConfirm() async {
-    final state = _editingKey.currentState as TeacherListTileState;
+    final state = _editingKey.currentState as AdminListTileState;
 
     // Validate the form
     if (!(await state.validate()) || !mounted) return;
-    Navigator.of(context).pop(state.editedTeacher);
+    Navigator.of(context).pop(state.editedAdmin);
   }
 
   void _onClickedCancel() {
@@ -34,7 +34,7 @@ class _AddTeacherDialogState extends State<AddTeacherDialog> {
           children: [
             Center(
               child: Text(
-                'Nouveau·elle enseignant·e',
+                'Nouveau·elle administrateur·trice',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
@@ -43,10 +43,9 @@ class _AddTeacherDialogState extends State<AddTeacherDialog> {
             const SizedBox(height: 12),
             Text('Compléter les informations personnelles'),
             const SizedBox(height: 8),
-            // TODO: The id from the authenticator should be added to the teacher at some point
-            TeacherListTile(
+            AdminListTile(
               key: _editingKey,
-              teacher: Teacher.empty,
+              admin: Admin.empty,
               isExpandable: false,
               forceEditingMode: true,
             ),

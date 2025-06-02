@@ -3,6 +3,8 @@ import 'package:common/exceptions.dart';
 enum RequestFields {
   schoolBoard,
   schoolBoards,
+  admin,
+  admins,
   teacher,
   teachers,
   student,
