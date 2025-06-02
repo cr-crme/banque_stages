@@ -41,5 +41,6 @@ class SchoolBoardsProvider extends BackendListProvided<SchoolBoard> {
 
   void initializeAuth(AuthProvider auth) {
     initializeFetchingData(authProvider: auth);
+    auth.addListener(() => initializeFetchingData(authProvider: auth));
   }
 }

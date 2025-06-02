@@ -6,6 +6,7 @@ import 'package:backend/utils/exceptions.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
@@ -136,7 +137,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       user: user,
       tableName: 'enterprises',
       filters: (enterpriseId == null ? {} : {'id': enterpriseId})
-        ..addAll({'school_board_id': user.schoolBoardId ?? ''}),
+        ..addAll(user.accessLevel == AccessLevel.superAdmin
+            ? {}
+            : {'school_board_id': user.schoolBoardId ?? ''}),
       subqueries: [
         MySqlJoinSubQuery(
             dataTableName: 'persons',

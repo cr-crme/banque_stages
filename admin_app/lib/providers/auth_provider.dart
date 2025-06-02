@@ -42,6 +42,7 @@ class AuthProvider extends ChangeNotifier {
       password: password,
     );
 
+    notifyListeners();
     return user;
   }
 

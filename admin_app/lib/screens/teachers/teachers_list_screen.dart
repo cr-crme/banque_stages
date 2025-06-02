@@ -105,6 +105,8 @@ class TeachersListScreen extends StatelessWidget {
                             context,
                           ).textTheme.titleLarge!.copyWith(color: Colors.black),
                         ),
+                        elevation: 0.0,
+                        initialExpandedState: true,
                         child: Column(
                           children: [
                             ...schoolBoardEntry.value.entries.map(

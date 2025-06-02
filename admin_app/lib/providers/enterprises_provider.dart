@@ -28,5 +28,6 @@ class EnterprisesProvider extends BackendListProvided<Enterprise> {
 
   void initializeAuth(AuthProvider auth) {
     initializeFetchingData(authProvider: auth);
+    auth.addListener(() => initializeFetchingData(authProvider: auth));
   }
 }

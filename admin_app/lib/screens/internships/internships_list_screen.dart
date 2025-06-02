@@ -9,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
+import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
 
 class InternshipsListScreen extends StatelessWidget {
@@ -16,10 +17,11 @@ class InternshipsListScreen extends StatelessWidget {
 
   static const route = '/internships_list';
 
-  Future<Map<bool, Map<School, Map<Teacher, List<Internship>>>>>
+  Future<
+    Map<SchoolBoard, Map<bool, Map<School, Map<Teacher, List<Internship>>>>>
+  >
   _getInternships(BuildContext context) async {
     final schoolBoards = SchoolBoardsProvider.of(context, listen: true);
-    final schools = schoolBoards.firstOrNull?.schools;
     final teachers = TeachersProvider.of(context, listen: true);
 
     final internshipsTp = [...InternshipsProvider.of(context, listen: true)];
@@ -29,28 +31,39 @@ class InternshipsListScreen extends StatelessWidget {
       return nameA.compareTo(nameB);
     });
 
-    final internships = <bool, Map<School, Map<Teacher, List<Internship>>>>{};
-    for (final internship in internshipsTp) {
-      final teacher = teachers.firstWhereOrNull(
-        (teacher) => teacher.id == internship.signatoryTeacherId,
-      );
-      if (teacher == null) continue;
+    final internships =
+        <SchoolBoard, Map<bool, Map<School, Map<Teacher, List<Internship>>>>>{};
+    for (final schoolBoard in schoolBoards) {
+      final internshipsBySchools =
+          <bool, Map<School, Map<Teacher, List<Internship>>>>{};
+      final schools = schoolBoard.schools;
+      for (final internship in internshipsTp) {
+        final teacher = teachers.firstWhereOrNull(
+          (teacher) => teacher.id == internship.signatoryTeacherId,
+        );
+        if (teacher == null) continue;
 
-      final school = schools?.firstWhereOrNull(
-        (school) => school.id == teacher.schoolId,
-      );
-      if (school == null) continue;
+        final school = schools.firstWhereOrNull(
+          (school) => school.id == teacher.schoolId,
+        );
+        if (school == null) continue;
 
-      if (!internships.containsKey(internship.isActive)) {
-        internships[internship.isActive] = {};
+        if (!internshipsBySchools.containsKey(internship.isActive)) {
+          internshipsBySchools[internship.isActive] = {};
+        }
+        if (!internshipsBySchools[internship.isActive]!.containsKey(school)) {
+          internshipsBySchools[internship.isActive]![school] = {};
+        }
+        if (!internshipsBySchools[internship.isActive]![school]!.containsKey(
+          teacher,
+        )) {
+          internshipsBySchools[internship.isActive]![school]![teacher] = [];
+        }
+        internshipsBySchools[internship.isActive]![school]![teacher]!.add(
+          internship,
+        );
       }
-      if (!internships[internship.isActive]!.containsKey(school)) {
-        internships[internship.isActive]![school] = {};
-      }
-      if (!internships[internship.isActive]![school]!.containsKey(teacher)) {
-        internships[internship.isActive]![school]![teacher] = [];
-      }
-      internships[internship.isActive]![school]![teacher]!.add(internship);
+      internships[schoolBoard] = internshipsBySchools;
     }
 
     return internships;
@@ -92,24 +105,40 @@ class InternshipsListScreen extends StatelessWidget {
 
             Map<School, Map<Teacher, Map<bool, dynamic>>>;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children:
-                  internships.isEmpty
-                      ? [const Center(child: Text('Aucun stage enregistré.'))]
-                      : [
-                        _InternshipsByActive(
-                          key: const ValueKey('active_internships'),
-                          areActive: true,
-                          internships: internships[true] ?? {},
+            return internships.isEmpty
+                ? const Center(child: Text('Aucun stage enregistré.'))
+                : Column(
+                  children: [
+                    ...internships.entries.map(
+                      (schoolBoardEntry) => AnimatedExpandingCard(
+                        header: Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Text(
+                            schoolBoardEntry.key.name,
+                            style: Theme.of(context).textTheme.titleLarge!
+                                .copyWith(color: Colors.black),
+                          ),
                         ),
-                        _InternshipsByActive(
-                          key: const ValueKey('closed_internships'),
-                          areActive: false,
-                          internships: internships[false] ?? {},
+                        elevation: 0.0,
+                        initialExpandedState: true,
+                        child: Column(
+                          children: [
+                            _InternshipsByActive(
+                              key: const ValueKey('active_internships'),
+                              areActive: true,
+                              internships: schoolBoardEntry.value[true] ?? {},
+                            ),
+                            _InternshipsByActive(
+                              key: const ValueKey('closed_internships'),
+                              areActive: false,
+                              internships: schoolBoardEntry.value[false] ?? {},
+                            ),
+                          ],
                         ),
-                      ],
-            );
+                      ),
+                    ),
+                  ],
+                );
           },
         ),
       ),
@@ -137,7 +166,7 @@ class _InternshipsByActive extends StatelessWidget {
           style: Theme.of(context).textTheme.titleMedium,
         ),
       ),
-      initialExpandedState: true,
+      initialExpandedState: areActive,
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0),
         child: _InternshipsBySchools(internships: internships),

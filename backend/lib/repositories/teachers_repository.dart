@@ -2,6 +2,7 @@ import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/itineraries/itinerary.dart';
@@ -113,9 +114,9 @@ class MySqlTeachersRepository extends TeachersRepository {
         user: user,
         tableName: 'teachers',
         filters: (teacherId == null ? {} : {'id': teacherId})
-          ..addAll({
-            'school_board_id': user.schoolBoardId ?? '',
-          }),
+          ..addAll(user.accessLevel == AccessLevel.superAdmin
+              ? {}
+              : {'school_board_id': user.schoolBoardId ?? ''}),
         subqueries: [
           MySqlSelectSubQuery(
             dataTableName: 'persons',

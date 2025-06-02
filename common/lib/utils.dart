@@ -136,4 +136,10 @@ class DevAuth {
   static String devMySchoolId = Uuid()
       .v5(UuidValue.fromNamespace(Namespace.dns).toString(), 'dummy_school')
       .toString();
+  static String devMyTeacherId = Uuid()
+      .v5(UuidValue.fromNamespace(Namespace.dns).toString(),
+          '1VNTBNj4jePZA2CGkbVJtbB8x1t2')
+      .toString();
+  static String devMyTeacherPartnerId =
+      Uuid().v5(UuidValue.fromNamespace(Namespace.dns).toString(), '42');
 }

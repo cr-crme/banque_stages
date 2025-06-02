@@ -14,11 +14,13 @@ import 'package:web_socket_client/web_socket_client.dart';
 class _Selector {
   final Function(Map<String, dynamic> items, {bool notify}) addOrReplaceItems;
   final Function(dynamic items, {bool notify}) removeItem;
+  final Function() stopFetchingData;
   final Function() notify;
 
   const _Selector({
     required this.addOrReplaceItems,
     required this.removeItem,
+    required this.stopFetchingData,
     required this.notify,
   });
 }
@@ -39,6 +41,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
           _socket != null &&
           _handshakeReceived) ||
       mockMe;
+  bool get isNotConnected => !isConnected;
 
   /// Creates a [BackendListProvided] with the specified data path and ids path.
   BackendListProvided({required this.uri, this.mockMe = false});
@@ -50,6 +53,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     if (authProvider == null) {
       throw Exception('AuthProvider is required to initialize the connection');
     }
+    dev.log('Initializing connection of $runtimeType to $uri');
     _hasProblemConnecting = false;
     _connexionRefused = false;
 
@@ -97,7 +101,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
             if (protocol.requestType == RequestType.response &&
                 protocol.response == Response.connexionRefused) {
               _connexionRefused = true;
-              stopFetchingData();
+              disconnect();
               return;
             }
           }
@@ -129,7 +133,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
           error: e,
           stackTrace: StackTrace.current,
         );
-        stopFetchingData();
+        disconnect();
       }
     }
 
@@ -137,12 +141,13 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     _providerSelector[getField()] = _Selector(
       addOrReplaceItems: _addOrReplaceIntoSelf,
       removeItem: _removeFromSelf,
-
+      stopFetchingData: stopFetchingData,
       notify: notifyListeners,
     );
     _providerSelector[getField(true)] = _Selector(
       addOrReplaceItems: _addOrReplaceIntoSelf,
       removeItem: _removeFromSelf,
+      stopFetchingData: stopFetchingData,
       notify: notifyListeners,
     );
 
@@ -154,15 +159,29 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     _getFromBackend(getField(true));
   }
 
+  Future<void> disconnect() async {
+    if (_socket != null) {
+      _socket!.close();
+      _socket = null;
+      _socketId = null;
+      _handshakeReceived = false;
+    }
+
+    for (final selector in _providerSelector.values) {
+      selector.stopFetchingData();
+    }
+
+    super.clear();
+    notifyListeners();
+  }
+
   @override
   Future<void> stopFetchingData() async {
-    _socket?.close();
-    _socket = null;
-    _socketId = null;
-
+    dev.log(
+      'Stopping fetching data for $runtimeType, clearing the list and removing the provider selector.',
+    );
     _providerSelector.remove(getField());
     _providerSelector.remove(getField(true));
-    _handshakeReceived = false;
 
     super.clear();
     notifyListeners();

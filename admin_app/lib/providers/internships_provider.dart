@@ -31,6 +31,7 @@ class InternshipsProvider extends BackendListProvided<Internship> {
 
   void initializeAuth(AuthProvider auth) {
     initializeFetchingData(authProvider: auth);
+    auth.addListener(() => initializeFetchingData(authProvider: auth));
   }
 
   @override
