@@ -103,7 +103,9 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
                 padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
                 child: Text(
                   widget.schoolBoard.name,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge!.copyWith(color: Colors.black),
                 ),
               ),
               if (_isExpanded && _canEdit)

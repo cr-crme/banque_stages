@@ -136,10 +136,14 @@ class DevAuth {
   static String devMySchoolId = Uuid()
       .v5(UuidValue.fromNamespace(Namespace.dns).toString(), 'dummy_school')
       .toString();
+  static String devMyTeacherAuthenticationId = 'YCqQupPvyMN2UvhhvdJIVkUTTJI2';
   static String devMyTeacherId = Uuid()
-      .v5(UuidValue.fromNamespace(Namespace.dns).toString(),
-          '1VNTBNj4jePZA2CGkbVJtbB8x1t2')
+      .v5(
+        UuidValue.fromNamespace(Namespace.dns).toString(),
+        DevAuth.devMyTeacherAuthenticationId,
+      )
       .toString();
+  static String devMyTeacherEmail = 'bb@bb.bb';
   static String devMyTeacherPartnerId =
       Uuid().v5(UuidValue.fromNamespace(Namespace.dns).toString(), '42');
 }

@@ -87,12 +87,9 @@ Future<void> _removeAll(
   students.clear(confirm: true);
   await _waitForDatabaseUpdate(students, 0, strictlyEqualToExpected: true);
 
-  teachers.clear(confirm: true);
-  await _waitForDatabaseUpdate(teachers, 0, strictlyEqualToExpected: true);
-
   // There is supposed to have one remaining admin (the dev one)
   final hasSuperAdmin = admins.any(
-    (admin) => admin.id == DevAuth.devMyTeacherId,
+    (admin) => admin.accessLevel == AccessLevel.superAdmin,
   );
   admins.clear(confirm: true);
   await _waitForDatabaseUpdate(
@@ -100,6 +97,9 @@ Future<void> _removeAll(
     hasSuperAdmin ? 1 : 0,
     strictlyEqualToExpected: true,
   );
+
+  teachers.clear(confirm: true);
+  await _waitForDatabaseUpdate(teachers, 0, strictlyEqualToExpected: true);
 
   schoolBoards.clear(confirm: true);
   await _waitForDatabaseUpdate(schoolBoards, 0, strictlyEqualToExpected: true);
@@ -188,12 +188,13 @@ Future<void> _addDummyAdmins(AdminsProvider admins) async {
 
   admins.add(
     Admin(
-      authenticationId: DevAuth.devMyTeacherId,
+      id: DevAuth.devMyTeacherId,
+      authenticationId: DevAuth.devMyTeacherAuthenticationId,
       firstName: 'Jean',
       middleName: null,
       lastName: 'Dupont',
       schoolBoardId: DevAuth.devMySchoolBoardId,
-      email: 'jean.dupont@monecole.qc',
+      email: DevAuth.devMyTeacherEmail,
       accessLevel: AccessLevel.admin,
     ),
   );
@@ -1809,13 +1810,13 @@ Future<void> _addDummyInternships(
 
 Future<void> _waitForDatabaseUpdate(
   DatabaseListProvided list,
-  int expectedDuration, {
+  int expectedLength, {
   bool strictlyEqualToExpected = false,
 }) async {
   // Wait for the database to add all the students
   while (strictlyEqualToExpected
-      ? list.length != expectedDuration
-      : list.length < expectedDuration) {
+      ? list.length != expectedLength
+      : list.length < expectedLength) {
     await Future.delayed(const Duration(milliseconds: 100));
   }
 }
