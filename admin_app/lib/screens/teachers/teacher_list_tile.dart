@@ -1,4 +1,3 @@
-import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/teachers/confirm_delete_teacher_dialog.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
@@ -8,6 +7,7 @@ import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,11 +17,13 @@ class TeacherListTile extends StatefulWidget {
   const TeacherListTile({
     super.key,
     required this.teacher,
+    required this.schoolBoard,
     this.isExpandable = true,
     this.forceEditingMode = false,
   });
 
   final Teacher teacher;
+  final SchoolBoard schoolBoard;
   final bool isExpandable;
   final bool forceEditingMode;
 
@@ -191,15 +193,6 @@ class TeacherListTileState extends State<TeacherListTile> {
   }
 
   Widget _buildSchoolSelection() {
-    final schoolBoards = SchoolBoardsProvider.of(context, listen: true);
-    if (schoolBoards.length > 1) {
-      // TODO : Handle multiple school boards
-      throw Exception(
-        'Multiple school boards are not supported yet in TeacherListTile',
-      );
-    }
-    final schools = schoolBoards.firstOrNull?.schools ?? [];
-
     return _isEditing
         ? FormBuilderRadioGroup(
           key: _radioKey,
@@ -213,7 +206,7 @@ class TeacherListTileState extends State<TeacherListTile> {
             return _selectedSchoolId == '-1' ? 'Sélectionner une école' : null;
           },
           options:
-              schools
+              widget.schoolBoard.schools
                   .map(
                     (e) => FormBuilderFieldOption(
                       value: e.id,

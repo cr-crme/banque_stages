@@ -168,11 +168,15 @@ class MySqlHelpers {
   ///
   /// Specific helpers
   static Future<void> performInsertPerson(
-      {required MySqlConnection connection, required Person person}) async {
-    await performInsertQuery(
-        connection: connection,
-        tableName: 'entities',
-        data: {'shared_id': person.id});
+      {required MySqlConnection connection,
+      required Person person,
+      bool skipAddingEntity = false}) async {
+    if (!skipAddingEntity) {
+      await performInsertQuery(
+          connection: connection,
+          tableName: 'entities',
+          data: {'shared_id': person.id});
+    }
     await performInsertQuery(
         connection: connection,
         tableName: 'persons',

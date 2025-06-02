@@ -1,3 +1,4 @@
+import 'package:backend/repositories/admins_repository.dart';
 import 'package:backend/repositories/enterprises_repository.dart';
 import 'package:backend/repositories/internships_repository.dart';
 import 'package:backend/repositories/school_boards_repository.dart';
@@ -14,6 +15,7 @@ Connexions get _mockedConnexions => Connexions(
         database: DatabaseManager(
       connection: null, // No real database connection in tests
       schoolBoardsDatabase: SchoolBoardsRepositoryMock(),
+      adminsDatabase: AdminsRepositoryMock(),
       teachersDatabase: TeachersRepositoryMock(),
       studentsDatabase: StudentsRepositoryMock(),
       enterprisesDatabase: EnterprisesRepositoryMock(),

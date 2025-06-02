@@ -45,7 +45,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
   // TODO Test if a AccessLevel.user user can edit a school board
   late final bool _canEdit =
       (AuthProvider.of(context, listen: false).databaseAccessLevel ??
-          AccessLevel.user) >=
+          AccessLevel.teacher) >=
       AccessLevel.superAdmin;
 
   late final _nameController = TextEditingController(

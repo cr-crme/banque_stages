@@ -48,7 +48,7 @@ class MainDrawer extends StatelessWidget {
                     Column(
                       children: [
                         if ((authProvider.databaseAccessLevel ??
-                                AccessLevel.user) >=
+                                AccessLevel.teacher) >=
                             AccessLevel.admin)
                           const _DrawerItem(
                             titleText: 'Écoles',
@@ -56,7 +56,7 @@ class MainDrawer extends StatelessWidget {
                             route: Screens.schoolBoardsListScreen,
                           ),
                         if ((authProvider.databaseAccessLevel ??
-                                AccessLevel.user) >=
+                                AccessLevel.teacher) >=
                             AccessLevel.superAdmin)
                           const _DrawerItem(
                             titleText: 'Administrateurs·trices',

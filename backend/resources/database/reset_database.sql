@@ -8,9 +8,8 @@ DROP TABLE IF EXISTS entities;
 DROP TABLE IF EXISTS phone_numbers;
 DROP TABLE IF EXISTS addresses;
 
-DROP TABLE IF EXISTS users;
-
 DROP TABLE IF EXISTS persons;
+DROP TABLE IF EXISTS admins;
 
 DROP TABLE IF EXISTS student_contacts;
 DROP TABLE IF EXISTS students;
@@ -86,10 +85,21 @@ CREATE TABLE phone_numbers (
     FOREIGN KEY (entity_id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 
-CREATE TABLE users (
-    authenticator_id VARCHAR(50) NOT NULL PRIMARY KEY,
-    teacher_id VARCHAR(36),
-    access_level INT NOT NULL
+
+/*************************/
+/** Admin related tables **/
+/*************************/
+
+CREATE TABLE admins (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    authenticator_id VARCHAR(50) NOT NULL,
+    school_board_id VARCHAR(36) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    middle_name VARCHAR(50),
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    access_level INT NOT NULL,
+    FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 
 /*************************/

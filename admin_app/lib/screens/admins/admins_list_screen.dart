@@ -13,7 +13,9 @@ class AdminsListScreen extends StatelessWidget {
 
   static const route = '/admins_list';
 
-  Future<Map<SchoolBoard, List<Admin>>> _getAdmins(BuildContext context) async {
+  Future<Map<SchoolBoard?, List<Admin>>> _getAdmins(
+    BuildContext context,
+  ) async {
     final allAdmins = [...AdminsProvider.of(context, listen: true)];
     allAdmins.sort((a, b) {
       final lastNameA = a.lastName.toLowerCase();
@@ -28,13 +30,15 @@ class AdminsListScreen extends StatelessWidget {
 
     final schoolBoards = SchoolBoardsProvider.of(context);
 
-    final admins = <SchoolBoard, List<Admin>>{};
+    final admins = <SchoolBoard?, List<Admin>>{};
     for (final schoolBoard in schoolBoards) {
       admins[schoolBoard] =
           allAdmins
               .where((admin) => admin.schoolBoardId == schoolBoard.id)
               .toList();
     }
+    admins[null] =
+        allAdmins.where((admin) => admin.schoolBoardId == '').toList();
 
     return admins;
   }
@@ -86,7 +90,8 @@ class AdminsListScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: AnimatedExpandingCard(
                         header: Text(
-                          schoolBoardEntry.key.name,
+                          schoolBoardEntry.key?.name ??
+                              'Super administrateurs·trices',
                           style: Theme.of(
                             context,
                           ).textTheme.titleLarge!.copyWith(color: Colors.black),

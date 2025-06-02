@@ -1,3 +1,4 @@
+import 'package:backend/repositories/admins_repository.dart';
 import 'package:backend/repositories/enterprises_repository.dart';
 import 'package:backend/repositories/internships_repository.dart';
 import 'package:backend/repositories/school_boards_repository.dart';
@@ -18,6 +19,7 @@ class DatabaseManager {
   DatabaseManager({
     required MySqlConnection? connection,
     required this.schoolBoardsDatabase,
+    required this.adminsDatabase,
     required this.teachersDatabase,
     required this.studentsDatabase,
     required this.enterprisesDatabase,
@@ -27,6 +29,7 @@ class DatabaseManager {
   final MySqlConnection? _connection;
   MySqlConnection get connection => _connection!;
   final SchoolBoardsRepository schoolBoardsDatabase;
+  final AdminsRepository adminsDatabase;
   final TeachersRepository teachersDatabase;
   final StudentsRepository studentsDatabase;
   final EnterprisesRepository enterprisesDatabase;
@@ -47,6 +50,15 @@ class DatabaseManager {
         return await schoolBoardsDatabase.getById(
           id: _getId(data,
               messageOnNull: 'An "id" is required to get a school board'),
+          fields: (data?['fields'] as List?)?.cast<String>(),
+          user: user,
+        );
+      case RequestFields.admins:
+        return await adminsDatabase.getAll(user: user);
+      case RequestFields.admin:
+        return await adminsDatabase.getById(
+          id: _getId(data,
+              messageOnNull: 'An "id" is required to get an admin'),
           fields: (data?['fields'] as List?)?.cast<String>(),
           user: user,
         );
@@ -117,6 +129,19 @@ class DatabaseManager {
         return await schoolBoardsDatabase.putById(
           id: _getId(data,
               messageOnNull: 'An "id" is required to put a school board'),
+          data: data,
+          user: user,
+        );
+      case RequestFields.admins:
+        await adminsDatabase.putAll(
+          data: data,
+          user: user,
+        );
+        return null;
+      case RequestFields.admin:
+        return await adminsDatabase.putById(
+          id: _getId(data,
+              messageOnNull: 'An "id" is required to put an admin'),
           data: data,
           user: user,
         );
@@ -191,6 +216,18 @@ class DatabaseManager {
           await schoolBoardsDatabase.deleteById(
             id: _getId(data,
                 messageOnNull: 'An "id" is required to delete a school board'),
+            user: user,
+          )
+        ];
+      case RequestFields.admins:
+        return await adminsDatabase.deleteAll(
+          user: user,
+        );
+      case RequestFields.admin:
+        return [
+          await adminsDatabase.deleteById(
+            id: _getId(data,
+                messageOnNull: 'An "id" is required to delete an admin'),
             user: user,
           )
         ];

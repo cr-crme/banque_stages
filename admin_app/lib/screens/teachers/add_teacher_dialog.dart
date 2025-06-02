@@ -1,9 +1,12 @@
 import 'package:admin_app/screens/teachers/teacher_list_tile.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
 
 class AddTeacherDialog extends StatefulWidget {
-  const AddTeacherDialog({super.key});
+  const AddTeacherDialog({super.key, required this.schoolBoard});
+
+  final SchoolBoard schoolBoard;
 
   @override
   State<AddTeacherDialog> createState() => _AddTeacherDialogState();
@@ -49,6 +52,7 @@ class _AddTeacherDialogState extends State<AddTeacherDialog> {
               teacher: Teacher.empty,
               isExpandable: false,
               forceEditingMode: true,
+              schoolBoard: widget.schoolBoard,
             ),
           ],
         ),

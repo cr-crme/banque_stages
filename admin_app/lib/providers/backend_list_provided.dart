@@ -404,7 +404,7 @@ Future<void> _incommingMessage(
         {
           authProvider.schoolBoardId = protocol.data!['school_board_id'] ?? '';
           authProvider.schoolId = protocol.data!['school_id'] ?? '';
-          authProvider.teacherId = protocol.data!['teacher_id'] ?? '';
+          authProvider.teacherId = protocol.data!['user_id'] ?? '';
           authProvider.databaseAccessLevel = AccessLevel.fromSerialized(
             protocol.data!['access_level'],
           );

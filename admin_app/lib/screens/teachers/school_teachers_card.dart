@@ -1,6 +1,6 @@
-import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/screens/teachers/teacher_list_tile.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart' as utils;
 import 'package:flutter/material.dart';
 
@@ -9,27 +9,24 @@ class SchoolTeachersCard extends StatelessWidget {
     super.key,
     required this.schoolId,
     required this.teachers,
+    required this.schoolBoard,
   });
 
   final String schoolId;
   final List<Teacher> teachers;
+  final SchoolBoard schoolBoard;
 
   @override
   Widget build(BuildContext context) {
-    final schoolBoards = SchoolBoardsProvider.of(context, listen: true);
-    if (schoolBoards.length > 1) {
-      // TODO: Support multiple school boards
-      throw Exception('More than on school boards is not supported yet.');
-    }
-    final schools = schoolBoards.firstOrNull?.schools ?? [];
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
           child: Text(
-            schools.firstWhereOrNull((school) => school.id == schoolId)?.name ??
+            schoolBoard.schools
+                    .firstWhereOrNull((school) => school.id == schoolId)
+                    ?.name ??
                 'École introuvable',
             style: Theme.of(context).textTheme.titleMedium,
           ),
@@ -38,8 +35,11 @@ class SchoolTeachersCard extends StatelessWidget {
           Center(child: Text('Aucun enseignant·e inscrit·e')),
         if (teachers.isNotEmpty)
           ...teachers.map(
-            (Teacher teacher) =>
-                TeacherListTile(key: ValueKey(teacher.id), teacher: teacher),
+            (Teacher teacher) => TeacherListTile(
+              key: ValueKey(teacher.id),
+              teacher: teacher,
+              schoolBoard: schoolBoard,
+            ),
           ),
       ],
     );

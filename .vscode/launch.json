@@ -51,6 +51,7 @@
             "env": {
                 // This id refers to the aa@aa.aa account in the dummy database
                 "BANQUE_STAGE_SUPERUSER_ID": "1VNTBNj4jePZA2CGkbVJtbB8x1t2",
+                "BANQUE_STAGE_SUPERUSER_EMAIL": "aa@aa.aa",
             },
         },
     ]

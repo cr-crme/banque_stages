@@ -1063,7 +1063,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       return id;
     } catch (e) {
       throw InvalidRequestException(
-          'Unable to delete the enterprise with id $id. Is there any internships associted with this enterprise? $e');
+          'Unable to delete the enterprise with id $id. Is there any internships associated with this enterprise? $e');
     }
   }
   // coverage:ignore-end

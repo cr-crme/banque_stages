@@ -1,3 +1,4 @@
+import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
@@ -51,10 +52,30 @@ class TeachersListScreen extends StatelessWidget {
   }
 
   Future<void> _showAddTeacherDialog(BuildContext context) async {
+    final schoolBoardId = AuthProvider.of(context, listen: false).schoolBoardId;
+    if (schoolBoardId == null || schoolBoardId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Aucune commission scolaire associée à votre compte.'),
+        ),
+      );
+      return;
+    }
+
+    final schoolBoard = SchoolBoardsProvider.of(
+      context,
+    ).firstWhereOrNull((e) => e.id == schoolBoardId);
+    if (schoolBoard == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Commission scolaire introuvable.')),
+      );
+      return;
+    }
+
     final answer = await showDialog(
       barrierDismissible: false,
       context: context,
-      builder: (context) => AddTeacherDialog(),
+      builder: (context) => AddTeacherDialog(schoolBoard: schoolBoard),
     );
     if (answer is! Teacher || !context.mounted) return;
 
@@ -110,6 +131,7 @@ class TeachersListScreen extends StatelessWidget {
                               (schoolEntry) => SchoolTeachersCard(
                                 schoolId: schoolEntry.key.id,
                                 teachers: schoolEntry.value,
+                                schoolBoard: schoolBoardEntry.key,
                               ),
                             ),
                           ],

@@ -10,7 +10,7 @@ _database = "dev_db"
 _base_docker_command = "docker exec -i banque_stage_container mysql -u devuser -pdevpassword".split()
 
 
-def main(secret: str):
+def main(secret: str, secret_email: str):
     # Get the path to the SQL file
     sql_filename = "reset_database.sql"
     sql_file_path = os.path.join(os.path.dirname(__file__), sql_filename)
@@ -27,7 +27,7 @@ def main(secret: str):
     print("Database reset successfully.")
 
     # Add an admin user
-    if not add_super_admin_user(secret=secret):
+    if not add_super_admin_user(secret=secret, secret_email=secret_email):
         print("Failed to add admin user.")
         return
     print("Admin user added successfully.")
@@ -47,19 +47,35 @@ def reset_database(sql_filepath: str) -> bool:
         return False
 
 
-def add_super_admin_user(secret: str):
+def add_super_admin_user(secret: str, secret_email: str) -> bool:
     # Use uuid v5 with namespace DNS to generate a stable ID from the secret
     id = str(uuid.uuid5(uuid.NAMESPACE_DNS, secret))
 
-    query = f"INSERT INTO users (authenticator_id, access_level) VALUES ('{secret}', 2);"
+    query = f"""
+    INSERT INTO entities (shared_id) 
+    VALUES ('{id}');
+    """
+    if not _perform_query(query):
+        return False
+
+    query = f"""
+    INSERT INTO admins (id, authenticator_id, school_board_id, first_name, last_name, email, access_level) 
+    VALUES ('{id}', '{secret}', '', 'Super', 'Admin', '{secret_email}', 2);
+    """
+    if not _perform_query(query):
+        return False
+
+    return True
+
+
+def _perform_query(query: str) -> bool:
+    # Run the query against the database
     result = subprocess.run(
         _base_docker_command + [_database, "-e", query], stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     if result.returncode != 0:
-        # Log the error message
-        print(f"Error adding admin user: {result.stderr.decode()}")
+        print(f"Error executing query: {result.stderr.decode()}")
         return False
-
     return True
 
 
@@ -69,5 +85,9 @@ if __name__ == "__main__":
     if not secret:
         print("Environment variable BANQUE_STAGE_SUPERUSER_ID is not set.")
         sys.exit(1)
+    secret_email = os.getenv("BANQUE_STAGE_SUPERUSER_EMAIL")
+    if not secret_email:
+        print("Environment variable BANQUE_STAGE_SUPERUSER_EMAIL is not set.")
+        sys.exit(1)
 
-    main(secret)
+    main(secret, secret_email)

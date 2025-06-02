@@ -62,7 +62,7 @@ class Connexions {
             data: {
               'school_board_id': _clients[client]!.schoolBoardId,
               'school_id': _clients[client]!.schoolId,
-              'teacher_id': _clients[client]!.teacherId,
+              'user_id': _clients[client]!.userId,
               'access_level': _clients[client]!.accessLevel.serialize(),
             }));
     return true;
@@ -268,14 +268,24 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
 
   // First, try to login via the 'users' table
   final users = (await MySqlHelpers.performSelectQuery(
-          connection: connection,
-          user: user,
-          tableName: 'users',
-          filters: {'authenticator_id': id}) as List)
+    connection: connection,
+    user: user,
+    tableName: 'admins',
+    filters: {'authenticator_id': id},
+    subqueries: [
+      MySqlSelectSubQuery(
+        dataTableName: 'teachers',
+        idNameToDataTable: 'id',
+        fieldsToFetch: ['school_id'],
+      )
+    ],
+  ) as List)
       .firstOrNull as Map<String, dynamic>?;
 
   user = user.copyWith(
-    teacherId: users?['teacher_id'],
+    userId: users?['id'],
+    schoolBoardId: users?['school_board_id'],
+    schoolId: (users?['teachers'] as List?)?.firstOrNull?['school_id'],
     accessLevel: AccessLevel.fromSerialized(users?['access_level']),
   );
   if (user.isVerified) return user;
@@ -305,10 +315,9 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
 
   // Otherwise, we probably are in the case 2, so we can login them and augment the users table
   user = user.copyWith(
-    teacherId: teacher['id'] as String,
     schoolBoardId: teacher['school_board_id'],
     schoolId: teacher['school_id'],
-    accessLevel: AccessLevel.user,
+    accessLevel: AccessLevel.teacher,
   );
   // Just make sure, even though at this point it should always be verified
   if (user.isNotVerified) return null;
@@ -318,7 +327,6 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
       connection: connection,
       tableName: 'users',
       data: {
-        'teacher_id': user.teacherId,
         'authenticator_id': user.authenticatorId,
         'access_level': user.accessLevel.serialize(),
       });

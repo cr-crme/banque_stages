@@ -207,8 +207,18 @@ class MySqlTeachersRepository extends TeachersRepository {
       (await _getAllTeachers(teacherId: id, user: user))[id];
 
   Future<void> _insertToTeachers(Teacher teacher) async {
+    final entity = (await MySqlHelpers.performSelectQuery(
+            connection: connection,
+            tableName: 'entities',
+            filters: {'shared_id': teacher.id},
+            user: DatabaseUser.empty()
+                .copyWith(accessLevel: AccessLevel.superAdmin)) as List)
+        .firstOrNull;
+
     await MySqlHelpers.performInsertPerson(
-        connection: connection, person: teacher);
+        connection: connection,
+        person: teacher,
+        skipAddingEntity: entity != null);
     await MySqlHelpers.performInsertQuery(
         connection: connection,
         tableName: 'teachers',

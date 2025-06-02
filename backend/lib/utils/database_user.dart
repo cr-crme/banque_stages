@@ -10,10 +10,10 @@ class DatabaseUser {
         return authenticatorId.isNotEmpty &&
             schoolBoardId != null &&
             schoolBoardId!.isNotEmpty;
-      case AccessLevel.user:
+      case AccessLevel.teacher:
         return authenticatorId.isNotEmpty &&
-            teacherId != null &&
-            teacherId!.isNotEmpty &&
+            userId != null &&
+            userId!.isNotEmpty &&
             schoolBoardId != null &&
             schoolBoardId!.isNotEmpty &&
             schoolId != null &&
@@ -22,14 +22,14 @@ class DatabaseUser {
   }
 
   bool get isNotVerified => !isVerified;
-  final String? teacherId;
+  final String? userId;
   final String authenticatorId;
   final String? schoolBoardId;
   final String? schoolId;
   final AccessLevel accessLevel;
 
   DatabaseUser._({
-    required this.teacherId,
+    required this.userId,
     required this.authenticatorId,
     required this.schoolBoardId,
     required this.schoolId,
@@ -38,20 +38,20 @@ class DatabaseUser {
 
   DatabaseUser.empty({
     this.authenticatorId = '',
-  })  : teacherId = '',
+  })  : userId = '',
         schoolBoardId = null,
         schoolId = null,
-        accessLevel = AccessLevel.user;
+        accessLevel = AccessLevel.teacher;
 
   DatabaseUser copyWith({
-    String? teacherId,
+    String? userId,
     String? authenticatorId,
     String? schoolBoardId,
     String? schoolId,
     AccessLevel? accessLevel,
   }) {
     return DatabaseUser._(
-      teacherId: teacherId ?? this.teacherId,
+      userId: userId ?? this.userId,
       authenticatorId: authenticatorId ?? this.authenticatorId,
       schoolBoardId: schoolBoardId ?? this.schoolBoardId,
       schoolId: schoolId ?? this.schoolId,

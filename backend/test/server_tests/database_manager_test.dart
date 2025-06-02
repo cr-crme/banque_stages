@@ -1,3 +1,4 @@
+import 'package:backend/repositories/admins_repository.dart';
 import 'package:backend/repositories/enterprises_repository.dart';
 import 'package:backend/repositories/internships_repository.dart';
 import 'package:backend/repositories/school_boards_repository.dart';
@@ -11,6 +12,7 @@ import 'package:test/test.dart';
 
 SchoolBoardsRepository get _mockedDatabaseSchoolBoards =>
     SchoolBoardsRepositoryMock();
+AdminsRepository get _mockedAdminsDatabase => AdminsRepositoryMock();
 TeachersRepository get _mockedDatabaseTeachers => TeachersRepositoryMock();
 StudentsRepository get _mockedDatabaseStudents => StudentsRepositoryMock();
 EnterprisesRepository get _mockedDatabaseEnterprises =>
@@ -23,6 +25,7 @@ void main() {
     final database = DatabaseManager(
       connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
+      adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -47,6 +50,7 @@ void main() {
     final database = DatabaseManager(
       connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
+      adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -66,6 +70,7 @@ void main() {
     final database = DatabaseManager(
       connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
+      adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -86,6 +91,7 @@ void main() {
     final database = DatabaseManager(
       connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
+      adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -107,6 +113,7 @@ void main() {
     final database = DatabaseManager(
       connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
+      adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -128,6 +135,7 @@ void main() {
     final database = DatabaseManager(
       connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
+      adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -149,6 +157,7 @@ void main() {
     final database = DatabaseManager(
       connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
+      adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -172,6 +181,7 @@ void main() {
     final database = DatabaseManager(
       connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
+      adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,
@@ -195,6 +205,7 @@ void main() {
     final database = DatabaseManager(
       connection: null,
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
+      adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
       studentsDatabase: _mockedDatabaseStudents,
       enterprisesDatabase: _mockedDatabaseEnterprises,

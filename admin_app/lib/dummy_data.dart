@@ -11,6 +11,7 @@ import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
@@ -89,8 +90,16 @@ Future<void> _removeAll(
   teachers.clear(confirm: true);
   await _waitForDatabaseUpdate(teachers, 0, strictlyEqualToExpected: true);
 
+  // There is supposed to have one remaining admin (the dev one)
+  final hasSuperAdmin = admins.any(
+    (admin) => admin.id == DevAuth.devMyTeacherId,
+  );
   admins.clear(confirm: true);
-  await _waitForDatabaseUpdate(admins, 0, strictlyEqualToExpected: true);
+  await _waitForDatabaseUpdate(
+    admins,
+    hasSuperAdmin ? 1 : 0,
+    strictlyEqualToExpected: true,
+  );
 
   schoolBoards.clear(confirm: true);
   await _waitForDatabaseUpdate(schoolBoards, 0, strictlyEqualToExpected: true);
@@ -179,20 +188,24 @@ Future<void> _addDummyAdmins(AdminsProvider admins) async {
 
   admins.add(
     Admin(
+      authenticationId: DevAuth.devMyTeacherId,
       firstName: 'Jean',
       middleName: null,
       lastName: 'Dupont',
       schoolBoardId: DevAuth.devMySchoolBoardId,
       email: 'jean.dupont@monecole.qc',
+      accessLevel: AccessLevel.admin,
     ),
   );
   admins.add(
     Admin(
+      authenticationId: 'dummy_admin_id_1',
       firstName: 'Marie',
       middleName: null,
       lastName: 'Lefebvre',
       schoolBoardId: 'dummy_school_board_id_1',
       email: 'marie.lefebvre@monecole.qc',
+      accessLevel: AccessLevel.admin,
     ),
   );
 }
