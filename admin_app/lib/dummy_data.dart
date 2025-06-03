@@ -1247,6 +1247,44 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
       neq: '5679055590',
     ),
   );
+
+  jobs = JobList();
+  enterprises.add(
+    Enterprise(
+      schoolBoardId: 'dummy_school_board_id_1',
+      name: 'Fleuriste Joli',
+      activityTypes: {ActivityTypes.fleuriste, ActivityTypes.magasin},
+      recruiterId: DevAuth.devMyTeacherPartnerId,
+      jobs: jobs,
+      contact: Person(
+        firstName: 'Gaëtan',
+        middleName: null,
+        lastName: 'Munger',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 987 6543'),
+        address: null,
+        email: 'g.munger@email.com',
+      ),
+      contactFunction: 'Gérant',
+      address: Address(
+        civicNumber: 70,
+        street: 'Rue Chabanel Ouest',
+        city: 'Montréal',
+        postalCode: 'H2N 1E7',
+      ),
+      phone: PhoneNumber.fromString('514 987 6543'),
+      website: '',
+      headquartersAddress: Address(
+        civicNumber: 70,
+        street: 'Rue Chabanel Ouest',
+        city: 'Montréal',
+        postalCode: 'H2N 1E7',
+      ),
+      neq: '5679055590',
+    ),
+  );
+
+  // There are 12, but one is for another school board
   await _waitForDatabaseUpdate(enterprises, 11);
 }
 

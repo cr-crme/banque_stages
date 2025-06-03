@@ -22,6 +22,13 @@ abstract class TeachersRepository implements RepositoryAbstract {
     List<String>? fields,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to get teachers');
+      throw InvalidRequestException(
+          'You do not have permission to get teachers');
+    }
+
     final teachers = await _getAllTeachers(user: user);
     return teachers
         .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
@@ -33,6 +40,13 @@ abstract class TeachersRepository implements RepositoryAbstract {
     List<String>? fields,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to get teachers');
+      throw InvalidRequestException(
+          'You do not have permission to get teachers');
+    }
+
     final teacher = await _getTeacherById(id: id, user: user);
     if (teacher == null) throw MissingDataException('Teacher not found');
 
@@ -52,6 +66,13 @@ abstract class TeachersRepository implements RepositoryAbstract {
     required Map<String, dynamic> data,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified || user.accessLevel < AccessLevel.admin) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to put teachers');
+      throw InvalidRequestException(
+          'You do not have permission to put teachers');
+    }
+
     // Update if exists, insert if not
     final previous = await _getTeacherById(id: id, user: user);
 
@@ -59,7 +80,7 @@ abstract class TeachersRepository implements RepositoryAbstract {
         Teacher.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
     try {
-      await _putTeacher(teacher: newTeacher, previous: previous);
+      await _putTeacher(teacher: newTeacher, previous: previous, user: user);
       return newTeacher.getDifference(previous);
     } catch (e) {
       _logger.severe('Error while putting teacher: $e');
@@ -79,6 +100,13 @@ abstract class TeachersRepository implements RepositoryAbstract {
     required String id,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified || user.accessLevel < AccessLevel.admin) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to delete teachers');
+      throw InvalidRequestException(
+          'You do not have permission to delete teachers');
+    }
+
     final removedId = await _deleteTeacher(id: id);
     if (removedId == null) throw MissingDataException('Teacher not found');
     return removedId;
@@ -94,7 +122,9 @@ abstract class TeachersRepository implements RepositoryAbstract {
   });
 
   Future<void> _putTeacher(
-      {required Teacher teacher, required Teacher? previous});
+      {required Teacher teacher,
+      required Teacher? previous,
+      required DatabaseUser user});
 
   Future<String?> _deleteTeacher({required String id});
 }
@@ -229,7 +259,8 @@ class MySqlTeachersRepository extends TeachersRepository {
         });
   }
 
-  Future<void> _updateToTeachers(Teacher teacher, Teacher previous) async {
+  Future<void> _updateToTeachers(
+      Teacher teacher, Teacher previous, DatabaseUser user) async {
     final differences = teacher.getDifference(previous);
 
     if (differences.contains('school_board_id')) {
@@ -238,14 +269,15 @@ class MySqlTeachersRepository extends TeachersRepository {
           'Cannot update school_board_id for the teachers');
     }
     if (differences.contains('school_id')) {
-      // TODO limit this to the admin users
-      _logger.severe(
-          'Cannot update school_id for the teachers, but will do anyway');
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'teachers',
-          filters: {'id': teacher.id},
-          data: {'school_id': teacher.schoolId});
+      if (user.accessLevel < AccessLevel.admin) {
+        _logger.severe('Cannot update school_id for the teachers');
+      } else {
+        await MySqlHelpers.performUpdateQuery(
+            connection: connection,
+            tableName: 'teachers',
+            filters: {'id': teacher.id},
+            data: {'school_id': teacher.schoolId});
+      }
     }
 
     // Update the persons table if needed
@@ -314,12 +346,15 @@ class MySqlTeachersRepository extends TeachersRepository {
   }
 
   @override
-  Future<void> _putTeacher(
-      {required Teacher teacher, required Teacher? previous}) async {
+  Future<void> _putTeacher({
+    required Teacher teacher,
+    required Teacher? previous,
+    required DatabaseUser user,
+  }) async {
     if (previous == null) {
       await _insertToTeachers(teacher);
     } else {
-      await _updateToTeachers(teacher, previous);
+      await _updateToTeachers(teacher, previous, user);
     }
 
     final toWait = <Future>[];
@@ -433,8 +468,11 @@ class TeachersRepositoryMock extends TeachersRepository {
       _dummyDatabase[id];
 
   @override
-  Future<void> _putTeacher(
-          {required Teacher teacher, required Teacher? previous}) async =>
+  Future<void> _putTeacher({
+    required Teacher teacher,
+    required Teacher? previous,
+    required DatabaseUser user,
+  }) async =>
       _dummyDatabase[teacher.id] = teacher;
 
   @override

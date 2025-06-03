@@ -18,6 +18,13 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
     List<String>? fields,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to get school boards');
+      throw InvalidRequestException(
+          'You do not have permission to get school boards');
+    }
+
     final schoolBoards = await _getAllSchoolBoards(user: user);
     return schoolBoards
         .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
@@ -29,6 +36,13 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
     List<String>? fields,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to get school boards');
+      throw InvalidRequestException(
+          'You do not have permission to get school boards');
+    }
+
     final schoolBoard = await _getSchoolBoardById(id: id, user: user);
     if (schoolBoard == null) {
       throw MissingDataException('School board not found');
@@ -51,6 +65,13 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
     required Map<String, dynamic> data,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified || user.accessLevel < AccessLevel.superAdmin) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to put school boards');
+      throw InvalidRequestException(
+          'You do not have permission to put school boards');
+    }
+
     // Update if exists, insert if not
     final previous = await _getSchoolBoardById(id: id, user: user);
 
@@ -79,6 +100,13 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
     required String id,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified || user.accessLevel < AccessLevel.superAdmin) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to delete school boards');
+      throw InvalidRequestException(
+          'You do not have permission to delete school boards');
+    }
+
     final removedId = await _deleteSchoolBoard(id: id, user: user);
     if (removedId == null) throw MissingDataException('School board not found');
     return removedId;

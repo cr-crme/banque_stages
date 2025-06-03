@@ -26,6 +26,13 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     List<String>? fields,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to get enterprises');
+      throw InvalidRequestException(
+          'You do not have permission to get enterprises');
+    }
+
     final enterprises = await _getAllEnterprises(user: user);
     return enterprises
         .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
@@ -37,6 +44,13 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     List<String>? fields,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to get enterprises');
+      throw InvalidRequestException(
+          'You do not have permission to get enterprises');
+    }
+
     final enterprise = await _getEnterpriseById(id: id, user: user);
     if (enterprise == null) throw MissingDataException('Enterprise not found');
 
@@ -57,6 +71,13 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     required DatabaseUser user,
     InternshipsRepository? internshipsRepository,
   }) async {
+    if (user.isNotVerified) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to put new enterprises');
+      throw InvalidRequestException(
+          'You do not have permission to put new enterprises');
+    }
+
     if (internshipsRepository == null) {
       throw InvalidRequestException(
           'Internships repository is required for this operation');
@@ -94,6 +115,13 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     required DatabaseUser user,
     InternshipsRepository? internshipsRepository,
   }) async {
+    if (user.isNotVerified || user.accessLevel < AccessLevel.admin) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to delete enterprises');
+      throw InvalidRequestException(
+          'You do not have permission to delete enterprises');
+    }
+
     final removedId = await _deleteEnterprise(
         id: id, user: user, internshipsRepository: internshipsRepository);
     if (removedId == null) throw MissingDataException('Enterprise not found');
@@ -629,8 +657,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     // Prevent from removing a job from an enterprise
     for (final job in previous.jobs) {
       if (!enterprise.jobs.map((e) => e.id).contains(job.id)) {
-        _logger.warning(
-            'It is not possible to remove a job from an enterprise, but will do anyway');
+        if (user.accessLevel < AccessLevel.admin) {
+          _logger.severe(
+              'User ${user.authenticatorId} does not have permission to remove a job from an enterprise');
+          continue;
+        }
         await _deleteInternshipsFromJob(job.id,
             user: user, internshipsRepository: internshipsRepository);
         await MySqlHelpers.performDeleteQuery(
@@ -668,9 +699,12 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
       final toUpdate = <String, dynamic>{};
       if (differences.contains('specialization_id')) {
-        _logger.warning(
-            'Cannot update the specialization id of a job, but will do anyway');
-        toUpdate['specialization_id'] = job.specialization.id.serialize();
+        if (user.accessLevel < AccessLevel.admin) {
+          _logger.severe(
+              'User ${user.authenticatorId} does not have permission to update the specialization id of a job');
+        } else {
+          toUpdate['specialization_id'] = job.specialization.id.serialize();
+        }
       }
 
       if (differences.contains('positions_offered')) {

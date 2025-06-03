@@ -25,6 +25,13 @@ abstract class InternshipsRepository implements RepositoryAbstract {
     List<String>? fields,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to get internships');
+      throw InvalidRequestException(
+          'You do not have permission to get internships');
+    }
+
     final internships = await _getAllInternships(user: user);
     return internships
         .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
@@ -36,6 +43,13 @@ abstract class InternshipsRepository implements RepositoryAbstract {
     List<String>? fields,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to get internships');
+      throw InvalidRequestException(
+          'You do not have permission to get internships');
+    }
+
     final internship = await _getInternshipById(id: id, user: user);
     if (internship == null) throw MissingDataException('Internship not found');
 
@@ -55,6 +69,13 @@ abstract class InternshipsRepository implements RepositoryAbstract {
     required Map<String, dynamic> data,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to put internships');
+      throw InvalidRequestException(
+          'You do not have permission to put internships');
+    }
+
     // Update if exists, insert if not
     final previous = await _getInternshipById(id: id, user: user);
 
@@ -83,6 +104,13 @@ abstract class InternshipsRepository implements RepositoryAbstract {
     required String id,
     required DatabaseUser user,
   }) async {
+    if (user.isNotVerified || user.accessLevel < AccessLevel.admin) {
+      _logger.severe(
+          'User ${user.authenticatorId} does not have permission to delete internships');
+      throw InvalidRequestException(
+          'You do not have permission to delete internships');
+    }
+
     final removedId = await _deleteInternship(id: id, user: user);
     if (removedId == null) throw MissingDataException('Internship not found');
     return removedId;
