@@ -5,6 +5,7 @@ import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/enterprises/add_enterprise_dialog.dart';
 import 'package:admin_app/screens/enterprises/enterprise_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/select_school_board_dialog.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -36,11 +37,13 @@ class EnterprisesListScreen extends StatelessWidget {
   }
 
   Future<void> _showAddEnterpriseDialog(BuildContext context) async {
-    // TODO RENDU ICI
+    final schoolBoard = await showSelectSchoolBoardDialog(context);
+    if (schoolBoard == null || !context.mounted) return;
+
     final answer = await showDialog(
       barrierDismissible: false,
       context: context,
-      builder: (context) => AddEnterpriseDialog(),
+      builder: (context) => AddEnterpriseDialog(schoolBoard: schoolBoard),
     );
     if (answer is! Enterprise || !context.mounted) return;
 

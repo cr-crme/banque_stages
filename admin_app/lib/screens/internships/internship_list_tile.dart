@@ -7,10 +7,15 @@ import 'package:admin_app/screens/internships/schedule_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/custom_date_picker.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
+import 'package:admin_app/widgets/enterprise_picker_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
+import 'package:admin_app/widgets/student_picker_tile.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/persons/person.dart';
+import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
@@ -57,29 +62,59 @@ class InternshipListTileState extends State<InternshipListTile> {
   bool _isExpanded = false;
   bool _isEditing = false;
 
+  late final _studentPickerController = StudentPickerController(
+    initial: StudentsProvider.of(
+      context,
+      listen: false,
+    ).firstWhereOrNull((student) => student.id == widget.internship.studentId),
+  );
   late final _teacherPickerController = TeacherPickerController(
-    initial: TeachersProvider.of(context, listen: true).firstWhereOrNull(
+    initial: TeachersProvider.of(context, listen: false).firstWhereOrNull(
       (teacher) => teacher.id == widget.internship.signatoryTeacherId,
     ),
   );
+  late final _enterprisePickerController = EnterprisePickerController(
+    initialEnterprise: EnterprisesProvider.of(
+      context,
+      listen: false,
+    ).firstWhereOrNull(
+      (enterprise) => enterprise.id == widget.internship.enterpriseId,
+    ),
+  );
   late final _contactFirstNameController = TextEditingController(
-    text: widget.internship.supervisor.firstName,
+    text:
+        widget.internship.hasVersions
+            ? widget.internship.supervisor.firstName
+            : '',
   );
   late final _contactLastNameController = TextEditingController(
-    text: widget.internship.supervisor.lastName,
+    text:
+        widget.internship.hasVersions
+            ? widget.internship.supervisor.lastName
+            : '',
   );
   late final _contactPhoneController = TextEditingController(
-    text: widget.internship.supervisor.phone?.toString(),
+    text:
+        widget.internship.hasVersions
+            ? widget.internship.supervisor.phone?.toString()
+            : '',
   );
   late final _contactEmailController = TextEditingController(
-    text: widget.internship.supervisor.email,
+    text:
+        widget.internship.hasVersions ? widget.internship.supervisor.email : '',
   );
   late final _schedulesController = SchedulesController(
-    dateRange: widget.internship.dates,
-    weeklySchedules: widget.internship.weeklySchedules,
+    dateRange: widget.internship.hasVersions ? widget.internship.dates : null,
+    weeklySchedules:
+        widget.internship.hasVersions
+            ? widget.internship.weeklySchedules
+            : null,
   );
   late final _expectedDurationController = TextEditingController(
-    text: widget.internship.expectedDuration.toString(),
+    text:
+        widget.internship.expectedDuration > 0
+            ? widget.internship.expectedDuration.toString()
+            : '',
   );
   late DateTime _endDate = widget.internship.endDate;
   bool get _isActive => _endDate == DateTime(0);
@@ -95,7 +130,14 @@ class InternshipListTileState extends State<InternshipListTile> {
 
   Internship get editedInternship {
     var internship = widget.internship.copyWith(
+      studentId: _studentPickerController.student.id,
       signatoryTeacherId: _teacherPickerController.teacher.id,
+      enterpriseId:
+          widget.forceEditingMode
+              ? _enterprisePickerController.enterprise.id
+              : null,
+      jobId:
+          widget.forceEditingMode ? _enterprisePickerController.job.id : null,
       teacherNotes: _teacherNotesController.text,
       expectedDuration: int.tryParse(_expectedDurationController.text) ?? 0,
       achievedDuration: int.tryParse(_achievedDurationController.text) ?? -1,
@@ -103,23 +145,29 @@ class InternshipListTileState extends State<InternshipListTile> {
     );
 
     final schedulesHasChanged =
+        !widget.internship.hasVersions ||
         !InternshipHelpers.areSchedulesEqual(
           widget.internship.weeklySchedules,
           _schedulesController.weeklySchedules,
         ) ||
         widget.internship.dates != _schedulesController.dateRange;
-    final supervisor = internship.supervisor.copyWith(
+
+    final previousSupervisor =
+        widget.internship.hasVersions
+            ? widget.internship.supervisor
+            : Person.empty;
+    final supervisor = previousSupervisor.copyWith(
       firstName: _contactFirstNameController.text,
       lastName: _contactLastNameController.text,
       phone: PhoneNumber.fromString(
         _contactPhoneController.text,
-        id: internship.supervisor.phone?.id,
+        id: previousSupervisor.phone?.id,
       ),
       email: _contactEmailController.text,
     );
 
     if (schedulesHasChanged ||
-        internship.supervisor.getDifference(supervisor).isNotEmpty) {
+        previousSupervisor.getDifference(supervisor).isNotEmpty) {
       // If a mutable has changed, we cannot edit it from here. We have to
       // create a deep copy of the internship and modify this new instance.
       // The easiest way to do this is to serialize, modify and then deserialize.
@@ -176,16 +224,8 @@ class InternshipListTileState extends State<InternshipListTile> {
 
   @override
   Widget build(BuildContext context) {
-    final student = StudentsProvider.of(
-      context,
-      listen: true,
-    ).firstWhereOrNull((student) => student.id == widget.internship.studentId);
-    final enterprise = EnterprisesProvider.of(
-      context,
-      listen: true,
-    ).firstWhereOrNull(
-      (enterprise) => enterprise.id == widget.internship.enterpriseId,
-    );
+    final student = _studentPickerController.student;
+    final enterprise = _enterprisePickerController.enterprise;
 
     return widget.isExpandable
         ? AnimatedExpandingCard(
@@ -197,9 +237,7 @@ class InternshipListTileState extends State<InternshipListTile> {
               Padding(
                 padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
                 child: Text(
-                  (student == null || enterprise == null)
-                      ? 'En cours de chargement...'
-                      : '${student.fullName} - ${enterprise.name}',
+                  '${student.fullName} - ${enterprise.name}',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
@@ -236,6 +274,16 @@ class InternshipListTileState extends State<InternshipListTile> {
           children: [
             _buildSupervisingTeacher(),
             const SizedBox(height: 8),
+            if (widget.forceEditingMode)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildStudent(),
+                  const SizedBox(height: 8),
+                  _buildEnterprise(),
+                  const SizedBox(height: 8),
+                ],
+              ),
             _buildSupervisorContact(),
             const SizedBox(height: 8),
             _buildWeeklySchedule(),
@@ -253,6 +301,42 @@ class InternshipListTileState extends State<InternshipListTile> {
     );
   }
 
+  Widget _buildStudent() {
+    _studentPickerController.student =
+        StudentsProvider.of(context, listen: true).firstWhereOrNull(
+          (student) => student.id == widget.internship.studentId,
+        ) ??
+        Student.empty;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: StudentPickerTile(
+        title: 'Élève',
+        schoolBoardId: widget.internship.schoolBoardId,
+        controller: _studentPickerController,
+        editMode: _isEditing,
+      ),
+    );
+  }
+
+  Widget _buildEnterprise() {
+    _enterprisePickerController.enterprise =
+        EnterprisesProvider.of(context, listen: true).firstWhereOrNull(
+          (enterprise) => enterprise.id == widget.internship.enterpriseId,
+        ) ??
+        Enterprise.empty;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: EnterprisePickerTile(
+        title: 'Entreprise',
+        schoolBoardId: widget.internship.schoolBoardId,
+        controller: _enterprisePickerController,
+        editMode: _isEditing,
+      ),
+    );
+  }
+
   Widget _buildSupervisingTeacher() {
     _teacherPickerController.teacher =
         TeachersProvider.of(context, listen: true).firstWhereOrNull(
@@ -264,6 +348,7 @@ class InternshipListTileState extends State<InternshipListTile> {
       padding: const EdgeInsets.only(right: 12.0),
       child: TeacherPickerTile(
         title: 'Enseignant·e responsable',
+        schoolBoardId: widget.internship.schoolBoardId,
         controller: _teacherPickerController,
         editMode: _isEditing,
       ),
@@ -276,7 +361,9 @@ class InternshipListTileState extends State<InternshipListTile> {
       children: [
         _isEditing && _isActive
             ? Text('Contact')
-            : Text('Contact : ${widget.internship.supervisor.toString()}'),
+            : Text(
+              'Contact : ${widget.internship.hasVersions ? widget.internship.supervisor.toString() : ''}',
+            ),
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
           child: Column(

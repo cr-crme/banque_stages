@@ -1,9 +1,12 @@
 import 'package:admin_app/screens/enterprises/enterprise_list_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
 
 class AddEnterpriseDialog extends StatefulWidget {
-  const AddEnterpriseDialog({super.key});
+  const AddEnterpriseDialog({super.key, required this.schoolBoard});
+
+  final SchoolBoard schoolBoard;
 
   @override
   State<AddEnterpriseDialog> createState() => _AddEnterpriseDialogState();
@@ -45,7 +48,9 @@ class _AddEnterpriseDialogState extends State<AddEnterpriseDialog> {
             const SizedBox(height: 8),
             EnterpriseListTile(
               key: _editingKey,
-              enterprise: Enterprise.empty,
+              enterprise: Enterprise.empty.copyWith(
+                schoolBoardId: widget.schoolBoard.id,
+              ),
               isExpandable: false,
               forceEditingMode: true,
             ),

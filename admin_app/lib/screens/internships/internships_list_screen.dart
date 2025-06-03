@@ -6,6 +6,7 @@ import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/internships/add_internship_dialog.dart';
 import 'package:admin_app/screens/internships/internship_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/select_school_board_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/internships/internship.dart';
@@ -70,10 +71,13 @@ class InternshipsListScreen extends StatelessWidget {
   }
 
   Future<void> _showAddInternshipDialog(BuildContext context) async {
+    final schoolBoard = await showSelectSchoolBoardDialog(context);
+    if (schoolBoard == null || !context.mounted) return;
+
     final answer = await showDialog(
       barrierDismissible: false,
       context: context,
-      builder: (context) => AddInternshipDialog(),
+      builder: (context) => AddInternshipDialog(schoolBoard: schoolBoard),
     );
     if (answer is! Internship || !context.mounted) return;
 

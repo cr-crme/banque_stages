@@ -1,9 +1,12 @@
 import 'package:admin_app/screens/internships/internship_list_tile.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
 
 class AddInternshipDialog extends StatefulWidget {
-  const AddInternshipDialog({super.key});
+  const AddInternshipDialog({super.key, required this.schoolBoard});
+
+  final SchoolBoard schoolBoard;
 
   @override
   State<AddInternshipDialog> createState() => _AddInternshipDialogState();
@@ -45,7 +48,9 @@ class _AddInternshipDialogState extends State<AddInternshipDialog> {
             const SizedBox(height: 8),
             InternshipListTile(
               key: _editingKey,
-              internship: Internship.empty,
+              internship: Internship.empty.copyWith(
+                schoolBoardId: widget.schoolBoard.id,
+              ),
               isExpandable: false,
               forceEditingMode: true,
             ),

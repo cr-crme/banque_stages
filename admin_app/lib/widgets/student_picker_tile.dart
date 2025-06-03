@@ -1,22 +1,22 @@
-import 'package:admin_app/providers/teachers_provider.dart';
+import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/widgets/autocomplete_options_builder.dart';
-import 'package:collection/collection.dart';
-import 'package:common/models/persons/teacher.dart';
+import 'package:common/models/persons/student.dart';
+import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
 
-class TeacherPickerController {
+class StudentPickerController {
   TextEditingController? _textController;
 
-  Teacher _selection;
-  Teacher get teacher => _selection;
-  set teacher(Teacher value) {
+  Student _selection;
+  Student get student => _selection;
+  set student(Student value) {
     _selection = value;
     _textController?.text = value.fullName;
     _formKey.currentState?.didChange(value.fullName);
   }
 
-  TeacherPickerController({required Teacher? initial})
-    : _selection = initial ?? Teacher.empty;
+  StudentPickerController({required Student? initial})
+    : _selection = initial ?? Student.empty;
 
   final _formKey = GlobalKey<FormFieldState<String>>();
 
@@ -26,8 +26,8 @@ class TeacherPickerController {
   }
 }
 
-class TeacherPickerTile extends StatelessWidget {
-  const TeacherPickerTile({
+class StudentPickerTile extends StatelessWidget {
+  const StudentPickerTile({
     super.key,
     this.title,
     required this.schoolBoardId,
@@ -36,13 +36,13 @@ class TeacherPickerTile extends StatelessWidget {
   });
 
   final String? title;
-  final TeacherPickerController controller;
+  final StudentPickerController controller;
   final String schoolBoardId;
   final bool editMode;
 
   @override
   Widget build(BuildContext context) {
-    return FormField<Teacher>(
+    return FormField<Student>(
       key: controller._formKey,
       initialValue: controller._selection,
       builder: (field) => _builder(context, field),
@@ -50,40 +50,40 @@ class TeacherPickerTile extends StatelessWidget {
     );
   }
 
-  Widget _builder(BuildContext context, FormFieldState<Teacher> state) {
-    final teachers = TeachersProvider.of(
+  Widget _builder(BuildContext context, FormFieldState<Student> state) {
+    final students = StudentsProvider.of(
       context,
       listen: true,
-    ).where((teacher) => teacher.schoolBoardId == schoolBoardId);
+    ).where((student) => student.schoolBoardId == schoolBoardId);
 
-    return Autocomplete<Teacher>(
+    return Autocomplete<Student>(
       initialValue: TextEditingValue(text: controller._selection.fullName),
       optionsBuilder: (textEditingValue) {
         // We kind of hijack this builder to test the current status of the text.
-        // If it fits a teacher, or if it is empty, we set that value to the
+        // If it fits a student, or if it is empty, we set that value to the
         // current selection.
         if (textEditingValue.text.isEmpty) {
-          controller._selection = Teacher.empty;
+          controller._selection = Student.empty;
         } else {
-          final selectedTeacher = teachers.firstWhereOrNull(
-            (teacher) =>
-                teacher.fullName.toLowerCase() ==
+          final selectedStudent = students.firstWhereOrNull(
+            (student) =>
+                student.fullName.toLowerCase() ==
                 textEditingValue.text.toLowerCase(),
           );
-          if (selectedTeacher != null) {
-            controller._selection = selectedTeacher;
+          if (selectedStudent != null) {
+            controller._selection = selectedStudent;
           }
         }
 
         // We show everything if there is no text. Otherwise, we show only if
         // the names containing that approach the text.
-        if (textEditingValue.text.isEmpty) return teachers;
-        return teachers.where(
-          (teacher) =>
-              teacher.fullName.toLowerCase().contains(
+        if (textEditingValue.text.isEmpty) return students;
+        return students.where(
+          (student) =>
+              student.fullName.toLowerCase().contains(
                 textEditingValue.text.toLowerCase(),
               ) &&
-              teacher.fullName.toLowerCase() !=
+              student.fullName.toLowerCase() !=
                   textEditingValue.text.toLowerCase(),
         );
       },
@@ -91,9 +91,9 @@ class TeacherPickerTile extends StatelessWidget {
           (context, onSelected, options) => OptionsBuilderForAutocomplete(
             onSelected: onSelected,
             options: options,
-            optionToString: (Teacher e) => e.fullName,
+            optionToString: (Student e) => e.fullName,
           ),
-      onSelected: (item) => controller.teacher = item,
+      onSelected: (item) => controller.student = item,
       fieldViewBuilder: (_, textController, focusNode, onSubmitted) {
         controller._textController = textController;
 
@@ -104,15 +104,15 @@ class TeacherPickerTile extends StatelessWidget {
           enabled: editMode,
           style: const TextStyle(color: Colors.black),
           decoration: InputDecoration(
-            labelText: title ?? 'Sélectionner un·e enseignant·e',
+            labelText: title ?? 'Sélectionner un·e élève',
             labelStyle: const TextStyle(color: Colors.black),
             errorText: state.errorText,
             suffixIcon: IconButton(
               onPressed: () {
                 if (focusNode.hasFocus) focusNode.previousFocus();
-                controller.teacher = Teacher.empty;
+                controller.student = Student.empty;
                 textController.clear();
-                state.didChange(Teacher.empty);
+                state.didChange(Student.empty);
               },
               icon: const Icon(Icons.clear),
             ),

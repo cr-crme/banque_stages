@@ -210,6 +210,7 @@ class Internship extends ExtendedItemSerializable {
   // Elements that can be modified (which increase the version number, but
   // do not require a completely new internship contract)
   final List<InternshipMutableElements> _mutables;
+  bool get hasVersions => _mutables.isNotEmpty;
   int get nbVersions => _mutables.length;
   DateTime get creationDate => _mutables.last.creationDate;
   DateTime creationDateFrom(int version) => _mutables[version].creationDate;
@@ -288,7 +289,7 @@ class Internship extends ExtendedItemSerializable {
   }
 
   Internship._({
-    required super.id,
+    super.id,
     required this.schoolBoardId,
     required this.studentId,
     required this.signatoryTeacherId,
@@ -344,7 +345,6 @@ class Internship extends ExtendedItemSerializable {
   }
 
   static Internship get empty => Internship._(
-        id: '',
         schoolBoardId: '-1',
         studentId: '',
         signatoryTeacherId: '',

@@ -1,5 +1,9 @@
+import 'package:admin_app/providers/admins_provider.dart';
 import 'package:admin_app/providers/auth_provider.dart';
+import 'package:admin_app/providers/enterprises_provider.dart';
+import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
+import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/login/misc.dart';
 import 'package:admin_app/screens/router.dart';
@@ -53,8 +57,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Calling the provider jumps start the authentication process
+    // Calling the provider jumps start the authentication process and ensures data arrival
     final schoolBoardsProvider = SchoolBoardsProvider.of(context, listen: true);
+    AdminsProvider.of(context, listen: false);
+    EnterprisesProvider.of(context, listen: false);
+    InternshipsProvider.of(context, listen: false);
+    StudentsProvider.of(context, listen: false);
 
     final authProvider = AuthProvider.of(context, listen: true);
     if (authProvider.isFullySignedIn) {

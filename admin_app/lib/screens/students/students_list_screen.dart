@@ -62,38 +62,8 @@ class StudentsListScreen extends StatelessWidget {
   }
 
   Future<void> _showAddStudentDialog(BuildContext context) async {
-    final authProvider = AuthProvider.of(context, listen: false);
-    var schoolBoardId = authProvider.schoolBoardId;
-    if (schoolBoardId == null) {
-      if (authProvider.databaseAccessLevel == AccessLevel.superAdmin) {
-        final answer = await showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) => SelectSchoolBoardDialog(),
-        );
-        if (answer is! String || !context.mounted) return;
-        schoolBoardId = answer;
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Aucune commission scolaire associée à votre compte.',
-            ),
-          ),
-        );
-        return;
-      }
-    }
-
-    final schoolBoard = SchoolBoardsProvider.of(
-      context,
-    ).firstWhereOrNull((e) => e.id == schoolBoardId);
-    if (schoolBoard == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Commission scolaire introuvable.')),
-      );
-      return;
-    }
+    final schoolBoard = await showSelectSchoolBoardDialog(context);
+    if (schoolBoard == null || !context.mounted) return;
 
     final answer = await showDialog(
       barrierDismissible: false,
