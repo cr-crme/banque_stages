@@ -11,8 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-// TODO: What happen if the enterprise is not found anymore?
-
 // coverage:ignore-start
 void main() async {
   const showDebugElements = true;

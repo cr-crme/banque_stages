@@ -1,7 +1,5 @@
 import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/numbered_tablet.dart';
-import 'package:crcrme_banque_stages/dummy_data.dart';
-import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/tasks_to_do/tasks_to_do_screen.dart';
 import 'package:flutter/material.dart';
@@ -66,16 +64,6 @@ class MainDrawer extends StatelessWidget {
                 ),
               ],
             ),
-            if (ProgramInitializer.showDebugElements)
-              _DrawerItem(
-                titleText: 'Réinitialiser la base de données',
-                icon: Icons.restore_from_trash_outlined,
-                onTap: () async {
-                  await resetDummyData(context);
-                  if (context.mounted) Navigator.pop(context);
-                },
-                tileColor: Colors.red,
-              ),
           ],
         ),
       ),
@@ -90,7 +78,6 @@ class _DrawerItem extends StatelessWidget {
     this.route,
     this.onTap,
     this.trailing,
-    this.tileColor,
   }) : assert(
           (route != null || onTap != null) && (route == null || onTap == null),
           'One parameter has to be null while the other one is not.',
@@ -101,7 +88,6 @@ class _DrawerItem extends StatelessWidget {
   final String titleText;
   final void Function()? onTap;
   final Widget? trailing;
-  final Color? tileColor;
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +102,7 @@ class _DrawerItem extends StatelessWidget {
             },
         tileColor: isCurrentlySelectedTile
             ? Theme.of(context).primaryColor.withAlpha(40)
-            : tileColor,
+            : null,
         leading: icon == null
             ? null
             : Icon(
