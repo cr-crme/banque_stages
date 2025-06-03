@@ -13,9 +13,7 @@ class AdminsListScreen extends StatelessWidget {
 
   static const route = '/admins_list';
 
-  Future<Map<SchoolBoard?, List<Admin>>> _getAdmins(
-    BuildContext context,
-  ) async {
+  Map<SchoolBoard?, List<Admin>> _getAdmins(BuildContext context) {
     final allAdmins = [...AdminsProvider.of(context, listen: true)];
     allAdmins.sort((a, b) {
       final lastNameA = a.lastName.toLowerCase();
@@ -56,6 +54,8 @@ class AdminsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final schoolBoardAdmins = _getAdmins(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des administrateurs·trices'),
@@ -69,48 +69,36 @@ class AdminsListScreen extends StatelessWidget {
       drawer: const MainDrawer(),
 
       body: SingleChildScrollView(
-        child: FutureBuilder(
-          future: Future.wait([_getAdmins(context)]),
-          builder: (context, snapshot) {
-            final schoolBoards = snapshot.data?[0];
-            if (schoolBoards == null) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (schoolBoards.isEmpty)
-                  const Center(
-                    child: Text('Aucune commission scolaire inscrite'),
-                  ),
-                if (schoolBoards.isNotEmpty)
-                  ...schoolBoards.entries.map(
-                    (schoolBoardEntry) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: AnimatedExpandingCard(
-                        header: Text(
-                          schoolBoardEntry.key?.name ??
-                              'Super administrateurs·trices',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleLarge!.copyWith(color: Colors.black),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (schoolBoardAdmins.isEmpty)
+              const Center(child: Text('Aucune commission scolaire inscrite')),
+            if (schoolBoardAdmins.isNotEmpty)
+              ...schoolBoardAdmins.entries.map(
+                (schoolBoardEntry) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: AnimatedExpandingCard(
+                    header: Text(
+                      schoolBoardEntry.key?.name ??
+                          'Super administrateurs·trices',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                    ),
+                    elevation: 0.0,
+                    initialExpandedState: true,
+                    child: Column(
+                      children: [
+                        ...schoolBoardEntry.value.map(
+                          (adminEntry) => AdminListTile(admin: adminEntry),
                         ),
-                        elevation: 0.0,
-                        initialExpandedState: true,
-                        child: Column(
-                          children: [
-                            ...schoolBoardEntry.value.map(
-                              (adminEntry) => AdminListTile(admin: adminEntry),
-                            ),
-                          ],
-                        ),
-                      ),
+                      ],
                     ),
                   ),
-              ],
-            );
-          },
+                ),
+              ),
+          ],
         ),
       ),
     );

@@ -13,27 +13,14 @@ class SchoolBoardsListScreen extends StatelessWidget {
 
   static const route = '/schoolboards_list';
 
-  Future<List<SchoolBoard>> _getSchoolBoards(BuildContext context) async {
+  List<SchoolBoard> _getSchoolBoards(BuildContext context) {
     final schoolBoards = [...SchoolBoardsProvider.of(context, listen: true)];
-
-    final authProvider = AuthProvider.of(context, listen: true);
-    if (authProvider.databaseAccessLevel == AccessLevel.superAdmin) {
-      schoolBoards.sort((a, b) {
-        final nameA = a.name.toLowerCase();
-        final nameB = b.name.toLowerCase();
-        return nameA.compareTo(nameB);
-      });
-      return schoolBoards;
-    } else if (authProvider.databaseAccessLevel == AccessLevel.admin) {
-      final schoolBoard = schoolBoards.firstWhere(
-        (sb) => sb.id == authProvider.schoolBoardId,
-        orElse: () => SchoolBoard.empty,
-      );
-      return [schoolBoard];
-    } else {
-      // If the user is not an admin or super admin, return an empty list
-      return [];
-    }
+    schoolBoards.sort((a, b) {
+      final nameA = a.name.toLowerCase();
+      final nameB = b.name.toLowerCase();
+      return nameA.compareTo(nameB);
+    });
+    return schoolBoards;
   }
 
   Future<void> _showAddSchoolBoardDialog(BuildContext context) async {
@@ -69,42 +56,37 @@ class SchoolBoardsListScreen extends StatelessWidget {
       drawer: const MainDrawer(),
 
       body: SingleChildScrollView(
-        child: FutureBuilder(
-          future: Future.wait([_getSchoolBoards(context)]),
-          builder: (context, snapshot) {
-            final schoolBoards = snapshot.data?[0];
-            if (schoolBoards == null) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (schoolBoards.isEmpty)
-                  const Center(
-                    child: Text('Aucune commission scolaire inscrite'),
-                  ),
-                if (schoolBoards.isNotEmpty &&
-                    authProvider.databaseAccessLevel == AccessLevel.superAdmin)
-                  ...schoolBoards.map(
-                    (schoolBoard) =>
-                        SchoolBoardListTile(schoolBoard: schoolBoard),
-                  ),
-                if (schoolBoards.isNotEmpty &&
-                    authProvider.databaseAccessLevel == AccessLevel.admin)
-                  ...(schoolBoards.firstOrNull?.schools.map(
-                        (school) => SchoolListTile(
-                          school: school,
-                          schoolBoard:
-                              schoolBoards.firstOrNull ?? SchoolBoard.empty,
-                        ),
-                      ) ??
-                      []),
-              ],
-            );
-          },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _buildTiles(authProvider, _getSchoolBoards(context)),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildTiles(
+    AuthProvider authProvider,
+    List<SchoolBoard> schoolBoards,
+  ) {
+    if (schoolBoards.isEmpty) {
+      return [const Center(child: Text('Aucune commission scolaire inscrite'))];
+    }
+
+    return switch (authProvider.databaseAccessLevel) {
+      AccessLevel.superAdmin =>
+        schoolBoards
+            .map((schoolBoard) => SchoolBoardListTile(schoolBoard: schoolBoard))
+            .toList(),
+      AccessLevel.admin || AccessLevel.teacher || null =>
+        schoolBoards.firstOrNull?.schools
+                .map(
+                  (school) => SchoolListTile(
+                    school: school,
+                    schoolBoard: schoolBoards.firstOrNull ?? SchoolBoard.empty,
+                  ),
+                )
+                .toList() ??
+            [],
+    };
   }
 }

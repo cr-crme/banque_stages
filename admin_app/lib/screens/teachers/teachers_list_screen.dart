@@ -5,6 +5,7 @@ import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/teachers/add_teacher_dialog.dart';
 import 'package:admin_app/screens/teachers/school_teachers_card.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -84,8 +85,6 @@ class TeachersListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final schoolBoardTeachers = _getTeachers(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des enseignant·e·s'),
@@ -101,39 +100,65 @@ class TeachersListScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (schoolBoardTeachers.isEmpty)
-              const Center(child: Text('Aucune commission scolaire inscrite')),
-            if (schoolBoardTeachers.isNotEmpty)
-              ...schoolBoardTeachers.entries.map(
-                (schoolBoardEntry) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: AnimatedExpandingCard(
-                    header: Text(
-                      schoolBoardEntry.key.name,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleLarge!.copyWith(color: Colors.black),
-                    ),
-                    elevation: 0.0,
-                    initialExpandedState: true,
-                    child: Column(
-                      children: [
-                        ...schoolBoardEntry.value.entries.map(
-                          (schoolEntry) => SchoolTeachersCard(
-                            schoolId: schoolEntry.key.id,
-                            teachers: schoolEntry.value,
-                            schoolBoard: schoolBoardEntry.key,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-          ],
+          children: _buildTiles(context, _getTeachers(context)),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildTiles(
+    BuildContext context,
+    Map<SchoolBoard, Map<School, List<Teacher>>> schoolBoardTeachers,
+  ) {
+    final authProvider = AuthProvider.of(context, listen: true);
+
+    if (schoolBoardTeachers.isEmpty) {
+      return [const Center(child: Text('Aucun enseignant·e inscrit·e'))];
+    }
+
+    return switch (authProvider.databaseAccessLevel) {
+      AccessLevel.superAdmin =>
+        schoolBoardTeachers.entries
+            .map(
+              (schoolBoardEntry) => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: AnimatedExpandingCard(
+                  header: Text(
+                    schoolBoardEntry.key.name,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                  ),
+                  elevation: 0.0,
+                  initialExpandedState: true,
+                  child: Column(
+                    children: [
+                      ...schoolBoardEntry.value.entries.map(
+                        (schoolEntry) => SchoolTeachersCard(
+                          schoolId: schoolEntry.key.id,
+                          teachers: schoolEntry.value,
+                          schoolBoard: schoolBoardEntry.key,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+            .toList(),
+      AccessLevel.admin || AccessLevel.teacher || null =>
+        schoolBoardTeachers.values.firstOrNull?.entries
+                .map(
+                  (schoolEntry) => SchoolTeachersCard(
+                    schoolId: schoolEntry.key.id,
+                    teachers: schoolEntry.value,
+                    schoolBoard:
+                        schoolBoardTeachers.keys.firstOrNull ??
+                        SchoolBoard.empty,
+                  ),
+                )
+                .toList() ??
+            [],
+    };
   }
 }

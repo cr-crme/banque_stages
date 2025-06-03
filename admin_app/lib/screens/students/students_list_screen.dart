@@ -1,9 +1,11 @@
+import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/students/add_student_dialog.dart';
 import 'package:admin_app/screens/students/school_students_card.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -17,8 +19,9 @@ class StudentsListScreen extends StatelessWidget {
   ///
   /// This complicate structure is basically separating the students by
   /// school and then by class group (associated with a teacher).
-  Future<Map<SchoolBoard, Map<School, Map<String, List<Student>>>>>
-  _getStudents(BuildContext context) async {
+  Map<SchoolBoard, Map<School, Map<String, List<Student>>>> _getStudents(
+    BuildContext context,
+  ) {
     final schoolBoards = SchoolBoardsProvider.of(context);
 
     final allStudents = [...StudentsProvider.of(context, listen: true)];
@@ -73,6 +76,8 @@ class StudentsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final schoolBoardStudents = _getStudents(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des élèves'),
@@ -86,57 +91,76 @@ class StudentsListScreen extends StatelessWidget {
       drawer: const MainDrawer(),
 
       body: SingleChildScrollView(
-        child: FutureBuilder(
-          future: Future.wait([_getStudents(context)]),
-          builder: (context, snapshot) {
-            final schoolBoards = snapshot.data?[0];
-            if (schoolBoards == null) {
-              return const Center(child: CircularProgressIndicator());
-            }
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _buildTiles(context, schoolBoardStudents),
+        ),
+      ),
+    );
+  }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (schoolBoards.isEmpty)
-                  const Center(
-                    child: Text('Aucune commission scolaire inscrite'),
+  List<Widget> _buildTiles(
+    BuildContext context,
+    Map<SchoolBoard, Map<School, Map<String, List<Student>>>>
+    schoolBoardStudents,
+  ) {
+    final authProvider = AuthProvider.of(context, listen: true);
+
+    if (schoolBoardStudents.isEmpty) {
+      return [const Center(child: Text('Aucun élève inscrit·e'))];
+    }
+
+    return switch (authProvider.databaseAccessLevel) {
+      AccessLevel.superAdmin =>
+        schoolBoardStudents.entries
+            .map(
+              (schoolBoardEntry) => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: AnimatedExpandingCard(
+                  header: Text(
+                    schoolBoardEntry.key.name,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge!.copyWith(color: Colors.black),
                   ),
-                if (schoolBoards.isNotEmpty)
-                  ...schoolBoards.entries.map(
-                    (schoolBoardEntry) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: AnimatedExpandingCard(
-                        header: Text(
-                          schoolBoardEntry.key.name,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleLarge!.copyWith(color: Colors.black),
-                        ),
-                        elevation: 0.0,
-                        initialExpandedState: true,
-                        child: Column(
+                  elevation: 0.0,
+                  initialExpandedState: true,
+                  child: Column(
+                    children: [
+                      ...schoolBoardEntry.value.entries.map(
+                        (schoolEntry) => Column(
                           children: [
-                            ...schoolBoardEntry.value.entries.map(
-                              (schoolEntry) => Column(
-                                children: [
-                                  SchoolStudentsCard(
-                                    schoolId: schoolEntry.key.id,
-                                    studentsByGroups: schoolEntry.value,
-                                    schoolBoard: schoolBoardEntry.key,
-                                  ),
-                                ],
-                              ),
+                            SchoolStudentsCard(
+                              schoolId: schoolEntry.key.id,
+                              studentsByGroups: schoolEntry.value,
+                              schoolBoard: schoolBoardEntry.key,
                             ),
                           ],
                         ),
                       ),
-                    ),
+                    ],
                   ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
+                ),
+              ),
+            )
+            .toList(),
+      AccessLevel.admin || AccessLevel.teacher || null =>
+        schoolBoardStudents.values.firstOrNull?.entries
+                .map(
+                  (schoolEntry) => Column(
+                    children: [
+                      SchoolStudentsCard(
+                        schoolId: schoolEntry.key.id,
+                        studentsByGroups: schoolEntry.value,
+                        schoolBoard:
+                            schoolBoardStudents.keys.firstOrNull ??
+                            SchoolBoard.empty,
+                      ),
+                    ],
+                  ),
+                )
+                .toList() ??
+            [],
+    };
   }
 }

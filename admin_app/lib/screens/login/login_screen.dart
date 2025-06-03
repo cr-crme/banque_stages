@@ -59,7 +59,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = AuthProvider.of(context, listen: true);
     if (authProvider.isFullySignedIn) {
       Future.microtask(() {
-        if (context.mounted) GoRouter.of(context).goNamed(Screens.home);
+        if (context.mounted) {
+          GoRouter.of(context).goNamed(Screens.home);
+        }
       });
     }
 

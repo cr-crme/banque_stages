@@ -21,27 +21,30 @@ abstract class Screens {
 }
 
 // Keep a reference of the last requested state so when login is successful, we can redirect to it
-GoRouterState? _lastRequestedState;
 
 final router = GoRouter(
-  redirect: (context, state) {
-    if (state.fullPath != Screens.login) _lastRequestedState ??= state;
-    if (AuthProvider.of(context).isFullySignedIn) {
-      final lastRequestedState = _lastRequestedState;
-      _lastRequestedState = null;
-      return lastRequestedState?.fullPath;
-    }
-    return Screens.login;
-  },
+  redirect:
+      (context, state) =>
+          AuthProvider.of(context).isFullySignedIn ? null : Screens.login,
   routes: [
-    GoRoute(path: '/', redirect: (context, state) => Screens.home),
+    GoRoute(
+      path: '/',
+      redirect: (context, state) {
+        if (AuthProvider.of(context).isFullySignedIn) {
+          return null;
+        }
+        return Screens.login;
+      },
+    ),
     GoRoute(
       path: Screens.login,
       name: Screens.login,
       builder: (context, state) => const LoginScreen(),
       redirect:
           (context, state) =>
-              AuthProvider.of(context).isFullySignedIn ? '/' : null,
+              AuthProvider.of(context).isFullySignedIn
+                  ? Screens.home
+                  : Screens.login,
     ),
     GoRoute(
       path: Screens.schoolBoardsListScreen,

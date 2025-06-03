@@ -1,3 +1,4 @@
+import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
@@ -6,6 +7,7 @@ import 'package:admin_app/screens/internships/add_internship_dialog.dart';
 import 'package:admin_app/screens/internships/internship_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:collection/collection.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
@@ -17,10 +19,8 @@ class InternshipsListScreen extends StatelessWidget {
 
   static const route = '/internships_list';
 
-  Future<
-    Map<SchoolBoard, Map<bool, Map<School, Map<Teacher, List<Internship>>>>>
-  >
-  _getInternships(BuildContext context) async {
+  Map<SchoolBoard, Map<bool, Map<School, Map<Teacher, List<Internship>>>>>
+  _getInternships(BuildContext context) {
     final schoolBoards = SchoolBoardsProvider.of(context, listen: true);
     final teachers = TeachersProvider.of(context, listen: true);
 
@@ -82,6 +82,8 @@ class InternshipsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final schoolBoardInternships = _getInternships(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des stages'),
@@ -95,54 +97,68 @@ class InternshipsListScreen extends StatelessWidget {
       drawer: const MainDrawer(),
 
       body: SingleChildScrollView(
-        child: FutureBuilder(
-          future: Future.wait([_getInternships(context)]),
-          builder: (context, snapshot) {
-            final internships = snapshot.data?[0];
-            if (internships == null) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            Map<School, Map<Teacher, Map<bool, dynamic>>>;
-
-            return internships.isEmpty
-                ? const Center(child: Text('Aucun stage enregistré.'))
-                : Column(
-                  children: [
-                    ...internships.entries.map(
-                      (schoolBoardEntry) => AnimatedExpandingCard(
-                        header: Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            schoolBoardEntry.key.name,
-                            style: Theme.of(context).textTheme.titleLarge!
-                                .copyWith(color: Colors.black),
-                          ),
-                        ),
-                        elevation: 0.0,
-                        initialExpandedState: true,
-                        child: Column(
-                          children: [
-                            _InternshipsByActive(
-                              key: const ValueKey('active_internships'),
-                              areActive: true,
-                              internships: schoolBoardEntry.value[true] ?? {},
-                            ),
-                            _InternshipsByActive(
-                              key: const ValueKey('closed_internships'),
-                              areActive: false,
-                              internships: schoolBoardEntry.value[false] ?? {},
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-          },
-        ),
+        child: Column(children: _buildTiles(context, schoolBoardInternships)),
       ),
     );
+  }
+
+  List<Widget> _buildTiles(
+    BuildContext context,
+    Map<SchoolBoard, Map<bool, Map<School, Map<Teacher, List<Internship>>>>>
+    schoolBoardInternships,
+  ) {
+    final authProvider = AuthProvider.of(context, listen: true);
+
+    if (schoolBoardInternships.isEmpty) {
+      return [const Center(child: Text('Aucun stage enregistré'))];
+    }
+
+    return switch (authProvider.databaseAccessLevel) {
+      AccessLevel.superAdmin =>
+        schoolBoardInternships.entries
+            .map(
+              (schoolBoardEntry) => AnimatedExpandingCard(
+                header: Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: Text(
+                    schoolBoardEntry.key.name,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                  ),
+                ),
+                elevation: 0.0,
+                initialExpandedState: true,
+                child: Column(
+                  children: [
+                    _InternshipsByActive(
+                      key: const ValueKey('active_internships'),
+                      areActive: true,
+                      internships: schoolBoardEntry.value[true] ?? {},
+                    ),
+                    _InternshipsByActive(
+                      key: const ValueKey('closed_internships'),
+                      areActive: false,
+                      internships: schoolBoardEntry.value[false] ?? {},
+                    ),
+                  ],
+                ),
+              ),
+            )
+            .toList(),
+      AccessLevel.admin || AccessLevel.teacher || null => [
+        _InternshipsByActive(
+          key: const ValueKey('active_internships'),
+          areActive: true,
+          internships: schoolBoardInternships.values.firstOrNull?[true] ?? {},
+        ),
+        _InternshipsByActive(
+          key: const ValueKey('closed_internships'),
+          areActive: false,
+          internships: schoolBoardInternships.values.firstOrNull?[false] ?? {},
+        ),
+      ],
+    };
   }
 }
 

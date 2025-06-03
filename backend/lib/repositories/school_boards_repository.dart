@@ -115,6 +115,15 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     String? schoolBoardId,
     required DatabaseUser user,
   }) async {
+    if (user.accessLevel < AccessLevel.superAdmin) {
+      // Only super admins can access all school boards
+      schoolBoardId ??= user.schoolBoardId;
+      if (schoolBoardId != user.schoolBoardId) {
+        throw InvalidRequestException(
+            'You must be a super admin to access the requested school board');
+      }
+    }
+
     final schoolBoards = await MySqlHelpers.performSelectQuery(
       connection: connection,
       user: user,
