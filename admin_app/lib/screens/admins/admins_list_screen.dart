@@ -91,7 +91,10 @@ class AdminsListScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         ...schoolBoardEntry.value.map(
-                          (adminEntry) => AdminListTile(admin: adminEntry),
+                          (adminEntry) => AdminListTile(
+                            key: ValueKey(adminEntry.id),
+                            admin: adminEntry,
+                          ),
                         ),
                       ],
                     ),

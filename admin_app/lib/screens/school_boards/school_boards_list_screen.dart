@@ -75,12 +75,18 @@ class SchoolBoardsListScreen extends StatelessWidget {
     return switch (authProvider.databaseAccessLevel) {
       AccessLevel.superAdmin =>
         schoolBoards
-            .map((schoolBoard) => SchoolBoardListTile(schoolBoard: schoolBoard))
+            .map(
+              (schoolBoard) => SchoolBoardListTile(
+                key: ValueKey(schoolBoard.id),
+                schoolBoard: schoolBoard,
+              ),
+            )
             .toList(),
       AccessLevel.admin || AccessLevel.teacher || null =>
         schoolBoards.firstOrNull?.schools
                 .map(
                   (school) => SchoolListTile(
+                    key: ValueKey(school.id),
                     school: school,
                     schoolBoard: schoolBoards.firstOrNull ?? SchoolBoard.empty,
                   ),

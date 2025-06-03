@@ -48,7 +48,6 @@ class SchoolListTileState extends State<SchoolListTile> {
 
   bool _isExpanded = false;
   bool _isEditing = false;
-  // TODO Test if a AccessLevel.user user can edit a school
   late final bool _canEdit =
       (AuthProvider.of(context, listen: false).databaseAccessLevel ??
           AccessLevel.teacher) >=
