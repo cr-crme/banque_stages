@@ -77,12 +77,15 @@ class Admin extends Person {
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => ![
           'id',
+          'authentication_id',
+          'school_board_id',
           'first_name',
           'middle_name',
           'last_name',
-          'school_board_id',
-          'email'
-              'authentication_id',
+          'date_birth',
+          'address',
+          'phone',
+          'email',
           'access_level',
         ].contains(key))) {
       throw InvalidFieldException('Invalid field data detected');

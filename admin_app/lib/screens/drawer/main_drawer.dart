@@ -18,13 +18,17 @@ class MainDrawer extends StatelessWidget {
     await AuthProvider.of(context).signOut();
     if (!context.mounted) return;
 
+    await SchoolBoardsProvider.of(context, listen: false).disconnect();
+    if (!context.mounted) return;
+    InternshipsProvider.of(context, listen: false).disconnect();
+    if (!context.mounted) return;
     await Future.wait([
-      InternshipsProvider.of(context, listen: false).stopFetchingData(),
-      StudentsProvider.of(context, listen: false).stopFetchingData(),
-      EnterprisesProvider.of(context, listen: false).stopFetchingData(),
-      TeachersProvider.of(context, listen: false).stopFetchingData(),
-      AdminsProvider.of(context, listen: false).stopFetchingData(),
-      SchoolBoardsProvider.of(context, listen: false).stopFetchingData(),
+      SchoolBoardsProvider.of(context, listen: false).disconnect(),
+      InternshipsProvider.of(context, listen: false).disconnect(),
+      StudentsProvider.of(context, listen: false).disconnect(),
+      EnterprisesProvider.of(context, listen: false).disconnect(),
+      TeachersProvider.of(context, listen: false).disconnect(),
+      AdminsProvider.of(context, listen: false).disconnect(),
     ]);
     if (!context.mounted) return;
 

@@ -15,11 +15,11 @@ class TeachersListScreen extends StatelessWidget {
 
   static const route = '/teachers_list';
 
-  Future<Map<SchoolBoard, Map<School, List<Teacher>>>> _getTeachers(
+  Map<SchoolBoard, Map<School, List<Teacher>>> _getTeachers(
     BuildContext context,
-  ) async {
+  ) {
     final teachersProvider = TeachersProvider.of(context, listen: true);
-    final schoolBoards = SchoolBoardsProvider.of(context);
+    final schoolBoards = SchoolBoardsProvider.of(context, listen: true);
 
     // Sort by school name
     final teachers = <SchoolBoard, Map<School, List<Teacher>>>{};
@@ -84,6 +84,8 @@ class TeachersListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final schoolBoardTeachers = _getTeachers(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des enseignant·e·s'),
@@ -97,51 +99,39 @@ class TeachersListScreen extends StatelessWidget {
       drawer: const MainDrawer(),
 
       body: SingleChildScrollView(
-        child: FutureBuilder(
-          future: Future.wait([_getTeachers(context)]),
-          builder: (context, snapshot) {
-            final schoolBoards = snapshot.data?[0];
-            if (schoolBoards == null) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (schoolBoards.isEmpty)
-                  const Center(
-                    child: Text('Aucune commission scolaire inscrite'),
-                  ),
-                if (schoolBoards.isNotEmpty)
-                  ...schoolBoards.entries.map(
-                    (schoolBoardEntry) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: AnimatedExpandingCard(
-                        header: Text(
-                          schoolBoardEntry.key.name,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleLarge!.copyWith(color: Colors.black),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (schoolBoardTeachers.isEmpty)
+              const Center(child: Text('Aucune commission scolaire inscrite')),
+            if (schoolBoardTeachers.isNotEmpty)
+              ...schoolBoardTeachers.entries.map(
+                (schoolBoardEntry) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: AnimatedExpandingCard(
+                    header: Text(
+                      schoolBoardEntry.key.name,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                    ),
+                    elevation: 0.0,
+                    initialExpandedState: true,
+                    child: Column(
+                      children: [
+                        ...schoolBoardEntry.value.entries.map(
+                          (schoolEntry) => SchoolTeachersCard(
+                            schoolId: schoolEntry.key.id,
+                            teachers: schoolEntry.value,
+                            schoolBoard: schoolBoardEntry.key,
+                          ),
                         ),
-                        elevation: 0.0,
-                        initialExpandedState: true,
-                        child: Column(
-                          children: [
-                            ...schoolBoardEntry.value.entries.map(
-                              (schoolEntry) => SchoolTeachersCard(
-                                schoolId: schoolEntry.key.id,
-                                teachers: schoolEntry.value,
-                                schoolBoard: schoolBoardEntry.key,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      ],
                     ),
                   ),
-              ],
-            );
-          },
+                ),
+              ),
+          ],
         ),
       ),
     );

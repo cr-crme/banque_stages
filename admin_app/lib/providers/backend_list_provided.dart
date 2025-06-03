@@ -53,7 +53,6 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     if (authProvider == null) {
       throw Exception('AuthProvider is required to initialize the connection');
     }
-    dev.log('Initializing connection of $runtimeType to $uri');
     _hasProblemConnecting = false;
     _connexionRefused = false;
 
@@ -167,19 +166,14 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
       _handshakeReceived = false;
     }
 
-    for (final selector in _providerSelector.values) {
-      selector.stopFetchingData();
+    for (final selectorKey in _providerSelector.keys.toList()) {
+      await _providerSelector[selectorKey]?.stopFetchingData();
     }
-
-    super.clear();
-    notifyListeners();
+    dev.log('Disconnected from the backend');
   }
 
   @override
   Future<void> stopFetchingData() async {
-    dev.log(
-      'Stopping fetching data for $runtimeType, clearing the list and removing the provider selector.',
-    );
     _providerSelector.remove(getField());
     _providerSelector.remove(getField(true));
 

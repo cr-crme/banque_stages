@@ -25,7 +25,7 @@ GoRouterState? _lastRequestedState;
 
 final router = GoRouter(
   redirect: (context, state) {
-    _lastRequestedState ??= state;
+    if (state.fullPath != Screens.login) _lastRequestedState ??= state;
     if (AuthProvider.of(context).isFullySignedIn) {
       final lastRequestedState = _lastRequestedState;
       _lastRequestedState = null;

@@ -99,13 +99,16 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
           header: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
-                child: Text(
-                  widget.schoolBoard.name,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge!.copyWith(color: Colors.black),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
+                  child: Text(
+                    widget.schoolBoard.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                  ),
                 ),
               ),
               if (_isExpanded && _canEdit)

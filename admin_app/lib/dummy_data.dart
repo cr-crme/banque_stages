@@ -112,7 +112,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   final schools = [
     School(
       id: DevAuth.devMySchoolId,
-      name: 'Mon école',
+      name: 'Ma première école',
       address: Address(
         civicNumber: 9105,
         street: 'Rue Verville',
