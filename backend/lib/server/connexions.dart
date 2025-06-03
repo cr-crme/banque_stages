@@ -266,12 +266,14 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
   // Slowly build the user object as we go through the cases
   var user = DatabaseUser.empty(authenticatorId: id);
 
+  // At this point, we know the JWT is valid and secure. So we can safely use the email
+  // to fetch the user information.
   // First, try to login via the 'users' table
-  final users = (await MySqlHelpers.performSelectQuery(
+  var users = (await MySqlHelpers.performSelectQuery(
     connection: connection,
     user: user,
     tableName: 'admins',
-    filters: {'authenticator_id': id},
+    filters: {'email': email},
     subqueries: [
       MySqlSelectSubQuery(
         dataTableName: 'teachers',
@@ -281,6 +283,16 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
     ],
   ) as List)
       .firstOrNull as Map<String, dynamic>?;
+  if (users?['authenticator_id'] == null ||
+      (users!['authenticator_id'] as String).isEmpty) {
+    // If authenticator_id is empty, it means that user was added but never logged in
+    // Add the id to the user object
+    await MySqlHelpers.performUpdateQuery(
+        connection: connection,
+        tableName: 'admins',
+        filters: {'email': email},
+        data: {'authenticator_id': id});
+  }
 
   user = user.copyWith(
     userId: users?['id'],
@@ -312,24 +324,16 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
       .firstOrNull;
   // If there is no teacher with that email, we are in case 3, which means this is not a valid user
   if (teacher == null) return null;
+  (teacher as Map).addAll((teacher['teachers'] as List).firstOrNull);
 
   // Otherwise, we probably are in the case 2, so we can login them and augment the users table
   user = user.copyWith(
+    userId: teacher['id'],
     schoolBoardId: teacher['school_board_id'],
     schoolId: teacher['school_id'],
     accessLevel: AccessLevel.teacher,
   );
   // Just make sure, even though at this point it should always be verified
   if (user.isNotVerified) return null;
-
-  // Register the user in the 'users' table
-  await MySqlHelpers.performInsertQuery(
-      connection: connection,
-      tableName: 'users',
-      data: {
-        'authenticator_id': user.authenticatorId,
-        'access_level': user.accessLevel.serialize(),
-      });
-
   return user;
 }
