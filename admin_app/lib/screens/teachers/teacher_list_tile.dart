@@ -82,6 +82,7 @@ class TeacherListTileState extends State<TeacherListTile> {
   // TODO: Use an ID provided by the
   Teacher get editedTeacher => widget.teacher.copyWith(
     schoolId: _selectedSchoolId,
+    schoolBoardId: widget.schoolBoard.id,
     firstName: _firstNameController.text,
     lastName: _lastNameController.text,
     address:

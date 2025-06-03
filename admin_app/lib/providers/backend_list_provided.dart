@@ -169,7 +169,6 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     for (final selectorKey in _providerSelector.keys.toList()) {
       await _providerSelector[selectorKey]?.stopFetchingData();
     }
-    dev.log('Disconnected from the backend');
   }
 
   @override

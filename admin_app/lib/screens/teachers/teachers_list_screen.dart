@@ -5,6 +5,7 @@ import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/teachers/add_teacher_dialog.dart';
 import 'package:admin_app/screens/teachers/school_teachers_card.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/select_school_board_dialog.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
@@ -53,14 +54,27 @@ class TeachersListScreen extends StatelessWidget {
   }
 
   Future<void> _showAddTeacherDialog(BuildContext context) async {
-    final schoolBoardId = AuthProvider.of(context, listen: false).schoolBoardId;
+    final authProvider = AuthProvider.of(context, listen: false);
+    var schoolBoardId = authProvider.schoolBoardId;
     if (schoolBoardId == null || schoolBoardId.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Aucune commission scolaire associée à votre compte.'),
-        ),
-      );
-      return;
+      if (authProvider.databaseAccessLevel == AccessLevel.superAdmin) {
+        final answer = await showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => SelectSchoolBoardDialog(),
+        );
+        if (answer is! String || !context.mounted) return;
+        schoolBoardId = answer;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Aucune commission scolaire associée à votre compte.',
+            ),
+          ),
+        );
+        return;
+      }
     }
 
     final schoolBoard = SchoolBoardsProvider.of(
