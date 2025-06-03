@@ -94,15 +94,17 @@ class MainDrawer extends StatelessWidget {
                         ),
                       ],
                     ),
-                    _DrawerItem(
-                      titleText: 'Réinitialiser la base de données',
-                      icon: Icons.restore_from_trash_outlined,
-                      onTap: () async {
-                        await resetDummyData(context);
-                        if (context.mounted) Navigator.pop(context);
-                      },
-                      tileColor: Colors.red,
-                    ),
+                    if (authProvider.databaseAccessLevel ==
+                        AccessLevel.superAdmin)
+                      _DrawerItem(
+                        titleText: 'Réinitialiser la base de données',
+                        icon: Icons.restore_from_trash_outlined,
+                        onTap: () async {
+                          await resetDummyData(context);
+                          if (context.mounted) Navigator.pop(context);
+                        },
+                        tileColor: Colors.red,
+                      ),
                   ],
                 )
                 : authProvider.isAuthenticatorSignedIn
