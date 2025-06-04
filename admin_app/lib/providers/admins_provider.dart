@@ -24,4 +24,23 @@ class AdminsProvider extends BackendListProvided<Admin> {
     initializeFetchingData(authProvider: auth);
     auth.addListener(() => initializeFetchingData(authProvider: auth));
   }
+
+  Future<bool> createUserWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await sendMessageWithResponse(
+        message: CommunicationProtocol(
+          requestType: RequestType.register,
+          field: RequestFields.teacher,
+          data: {'email': email, 'password': password},
+        ),
+      );
+
+      return response.response == Response.success;
+    } catch (e) {
+      return false;
+    }
+  }
 }

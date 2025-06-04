@@ -364,6 +364,7 @@ Future<void> _incommingMessage(message) async {
           selector.notify();
           return;
         }
+      case RequestType.register:
       case RequestType.get:
       case RequestType.post:
         throw Exception('Unsupported request type: ${protocol.requestType}');

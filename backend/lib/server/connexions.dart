@@ -10,6 +10,7 @@ import 'package:common/communication_protocol.dart';
 import 'package:common/exceptions.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/utils.dart';
+import 'package:firebase_admin/firebase_admin.dart';
 import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -157,6 +158,27 @@ class Connexions {
           }
 
           break;
+        case RequestType.register:
+          final email = protocol.data?['email'] as String?;
+          final password = protocol.data?['password'] as String?;
+
+          final app = FirebaseAdmin.instance.app();
+          if (email == null || app == null) {
+            throw ConnexionRefusedException(
+                'Firebase app is not initialized. Please check your configuration.');
+          }
+          // TODO TEST THIS
+          var user =
+              await app.auth().createUser(email: email, password: password);
+          var link = await app.auth().generateSignInWithEmailLink(
+              email!, ActionCodeSettings(url: 'https://example.com'));
+
+          await _send(client,
+              message: CommunicationProtocol(
+                  id: protocol.id,
+                  requestType: RequestType.response,
+                  field: protocol.field,
+                  response: Response.success));
 
         case RequestType.response:
         case RequestType.update:

@@ -67,3 +67,5 @@ lib/localizations/untranslated-messages.txt
 utilities/
 
 coverage/
+
+backendFirebaseServiceAccountKey.json

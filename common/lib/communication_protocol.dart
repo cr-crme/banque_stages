@@ -23,6 +23,7 @@ enum RequestType {
   delete,
   response,
   update,
+  register,
 }
 
 enum Response {

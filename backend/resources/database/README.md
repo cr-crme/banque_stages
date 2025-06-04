@@ -1,3 +1,8 @@
+# Accessing the database
+
+One must request the `backendFirebaseServiceAccountKey.json` file from the administrator of the database. This file must be placed in the ROOT directory of the project.
+NOTE: This is true as long as the authentication is done using Firebase.
+
 # Docker basics
 
 ## Linux

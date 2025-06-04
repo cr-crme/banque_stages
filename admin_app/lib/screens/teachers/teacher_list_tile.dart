@@ -1,3 +1,4 @@
+import 'package:admin_app/providers/admins_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/teachers/confirm_delete_teacher_dialog.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
@@ -208,8 +209,15 @@ class TeacherListTileState extends State<TeacherListTile> {
             _buildPhone(),
             const SizedBox(height: 8),
             _buildEmail(),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             _buildGroups(),
+            if (!_isEditing &&
+                widget.teacher.email != null &&
+                widget.teacher.email!.isNotEmpty)
+              Column(
+                children: [const SizedBox(height: 8), _buildCreateUserButton()],
+              ),
+            const SizedBox(height: 4),
           ],
         ),
       ),
@@ -347,6 +355,30 @@ class TeacherListTileState extends State<TeacherListTile> {
       isMandatory: true,
       enabled: _isEditing,
       title: 'Courriel',
+    );
+  }
+
+  Widget _buildCreateUserButton() {
+    return Center(
+      child: TextButton(
+        onPressed: () async {
+          final admins = AdminsProvider.of(context, listen: false);
+          final isSuccess = await admins.createUserWithEmailAndPassword(
+            email: _emailController.text,
+            password: '123456789',
+          );
+          if (!mounted) return;
+
+          showSnackBar(
+            context,
+            message:
+                isSuccess
+                    ? 'Compte utilisateur créé avec succès.'
+                    : 'Échec de la création du compte utilisateur.',
+          );
+        },
+        child: const Text('Créer un compte utilisateur'),
+      ),
     );
   }
 }

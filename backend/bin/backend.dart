@@ -9,6 +9,8 @@ import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/server/connexions.dart';
 import 'package:backend/server/database_manager.dart';
 import 'package:backend/server/http_request_handler.dart';
+import 'package:firebase_admin/firebase_admin.dart';
+import 'package:firebase_admin/src/auth/credential.dart';
 import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -23,6 +25,15 @@ void main() async {
   Logger.root.onRecord.listen((record) {
     print('${record.level.name}: ${record.time}: ${record.message}');
   });
+
+  // Connect to the authentication service
+  Credentials.firebaseAdminCredentialPath;
+  FirebaseAdmin.instance.initializeApp(
+    AppOptions(
+      credential:
+          ServiceAccountCredential('backendFirebaseServiceAccountKey.json'),
+    ),
+  );
 
   // Set up the database backend
   final databaseBackend = DatabaseBackend.mysql;
