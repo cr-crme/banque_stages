@@ -111,8 +111,19 @@ class TeacherListTileState extends State<TeacherListTile> {
     );
     if (answer == null || !answer || !mounted) return;
 
-    final teachers = TeachersProvider.of(context, listen: false);
-    teachers.remove(widget.teacher);
+    final isSuccess = await TeachersProvider.of(
+      context,
+      listen: false,
+    ).removeWithConfirmation(widget.teacher);
+    if (!mounted) return;
+
+    showSnackBar(
+      context,
+      message:
+          isSuccess
+              ? 'Enseignant supprimé avec succès'
+              : 'Échec de la suppression de l\'enseignant',
+    );
   }
 
   Future<void> _onClickedEditing() async {
@@ -123,7 +134,19 @@ class TeacherListTileState extends State<TeacherListTile> {
       // Finish editing
       final newTeacher = editedTeacher;
       if (newTeacher.getDifference(widget.teacher).isNotEmpty) {
-        TeachersProvider.of(context, listen: false).replace(newTeacher);
+        final isSuccess = await TeachersProvider.of(
+          context,
+          listen: false,
+        ).replaceWithConfirmation(newTeacher);
+        if (!mounted) return;
+
+        showSnackBar(
+          context,
+          message:
+              isSuccess
+                  ? 'Enseignant modifié avec succès'
+                  : 'Échec de la modification de l\'enseignant',
+        );
       }
     }
     setState(() => _isEditing = !_isEditing);

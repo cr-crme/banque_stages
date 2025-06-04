@@ -5,6 +5,7 @@ import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/birthday_list_tile.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/student.dart';
@@ -156,8 +157,19 @@ class StudentListTileState extends State<StudentListTile> {
     );
     if (answer == null || !answer || !mounted) return;
 
-    final students = StudentsProvider.of(context, listen: false);
-    students.remove(widget.student);
+    final isSuccess = await StudentsProvider.of(
+      context,
+      listen: false,
+    ).removeWithConfirmation(widget.student);
+    if (!mounted) return;
+
+    showSnackBar(
+      context,
+      message:
+          isSuccess
+              ? 'L\'élève a été supprimé avec succès.'
+              : 'Une erreur est survenue lors de la suppression de l\'élève.',
+    );
   }
 
   Future<void> _onClickedEditing() async {
@@ -168,7 +180,19 @@ class StudentListTileState extends State<StudentListTile> {
       // Finish editing
       final newStudent = editedStudent;
       if (newStudent.getDifference(widget.student).isNotEmpty) {
-        StudentsProvider.of(context, listen: false).replace(newStudent);
+        final isSuccess = await StudentsProvider.of(
+          context,
+          listen: false,
+        ).replaceWithConfirmation(newStudent);
+        if (!mounted) return;
+
+        showSnackBar(
+          context,
+          message:
+              isSuccess
+                  ? 'L\'élève a été modifié avec succès.'
+                  : 'Une erreur est survenue lors de la modification de l\'élève.',
+        );
       }
     }
 

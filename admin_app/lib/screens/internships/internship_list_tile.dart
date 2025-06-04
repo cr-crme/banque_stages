@@ -9,6 +9,7 @@ import 'package:admin_app/widgets/custom_date_picker.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/enterprise_picker_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:admin_app/widgets/student_picker_tile.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
@@ -204,7 +205,19 @@ class InternshipListTileState extends State<InternshipListTile> {
     );
     if (answer == null || !answer || !mounted) return;
 
-    InternshipsProvider.of(context, listen: false).remove(widget.internship);
+    final isSuccess = await InternshipsProvider.of(
+      context,
+      listen: false,
+    ).removeWithConfirmation(widget.internship);
+    if (!mounted) return;
+
+    showSnackBar(
+      context,
+      message:
+          isSuccess
+              ? 'Stage supprimé avec succès.'
+              : 'Échec de la suppression du stage.',
+    );
   }
 
   Future<void> _onClickedEditing() async {
@@ -215,7 +228,19 @@ class InternshipListTileState extends State<InternshipListTile> {
       // Finish editing
       final newInternship = editedInternship;
       if (newInternship.getDifference(widget.internship).isNotEmpty) {
-        InternshipsProvider.of(context, listen: false).replace(newInternship);
+        final isSuccess = await InternshipsProvider.of(
+          context,
+          listen: false,
+        ).replaceWithConfirmation(newInternship);
+        if (!mounted) return;
+
+        showSnackBar(
+          context,
+          message:
+              isSuccess
+                  ? 'Stage modifié avec succès.'
+                  : 'Échec de la modification du stage.',
+        );
       }
     }
 

@@ -3,6 +3,7 @@ import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/screens/admins/confirm_delete_admin_dialog.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:common/models/persons/admin.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
@@ -75,22 +76,47 @@ class AdminListTileState extends State<AdminListTile> {
     );
     if (answer == null || !answer || !mounted) return;
 
-    final admins = AdminsProvider.of(context, listen: false);
-    admins.remove(widget.admin);
+    final isSuccess = await AdminsProvider.of(
+      context,
+      listen: false,
+    ).removeWithConfirmation(widget.admin);
+    if (!mounted) return;
+
+    showSnackBar(
+      context,
+      message:
+          isSuccess
+              ? 'L\'administrateur a été supprimé avec succès.'
+              : 'Une erreur est survenue lors de la suppression de l\'administrateur.',
+    );
   }
 
   Future<void> _onClickedEditing() async {
     if (_isEditing) {
       // Validate the form
       if (!(await validate()) || !mounted) return;
+      setState(() => _isEditing = !_isEditing);
 
       // Finish editing
       final newAdmin = editedAdmin;
       if (newAdmin.getDifference(widget.admin).isNotEmpty) {
-        AdminsProvider.of(context, listen: false).replace(newAdmin);
+        final isSuccess = await AdminsProvider.of(
+          context,
+          listen: false,
+        ).replaceWithConfirmation(newAdmin);
+        if (!mounted) return;
+
+        showSnackBar(
+          context,
+          message:
+              isSuccess
+                  ? 'L\'administrateur a été modifié avec succès.'
+                  : 'Une erreur est survenue lors de la modification de l\'administrateur.',
+        );
       }
+    } else {
+      setState(() => _isEditing = !_isEditing);
     }
-    setState(() => _isEditing = !_isEditing);
   }
 
   @override

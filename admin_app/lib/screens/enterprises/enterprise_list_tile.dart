@@ -3,6 +3,7 @@ import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/enterprises/activity_type_list_tile.dart';
 import 'package:admin_app/screens/enterprises/job_list_tile.dart';
 import 'package:admin_app/screens/enterprises/confirm_delete_enterprise_dialog.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
@@ -166,7 +167,19 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     );
     if (answer == null || !answer || !mounted) return;
 
-    EnterprisesProvider.of(context, listen: false).remove(widget.enterprise);
+    final isSuccess = await EnterprisesProvider.of(
+      context,
+      listen: false,
+    ).removeWithConfirmation(widget.enterprise);
+    if (!mounted) return;
+
+    showSnackBar(
+      context,
+      message:
+          isSuccess
+              ? 'Entreprise supprimée avec succès'
+              : 'Échec de la suppression de l\'entreprise',
+    );
   }
 
   Future<void> _onClickedEditing() async {
@@ -177,7 +190,19 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       // Finish editing
       final newEnterprise = editedEnterprise;
       if (newEnterprise.getDifference(widget.enterprise).isNotEmpty) {
-        EnterprisesProvider.of(context, listen: false).replace(newEnterprise);
+        final isSuccess = await EnterprisesProvider.of(
+          context,
+          listen: false,
+        ).replaceWithConfirmation(newEnterprise);
+        if (!mounted) return;
+
+        showSnackBar(
+          context,
+          message:
+              isSuccess
+                  ? 'Entreprise mise à jour avec succès'
+                  : 'Échec de la mise à jour de l\'entreprise',
+        );
       }
     }
 

@@ -4,6 +4,7 @@ import 'package:admin_app/screens/school_boards/confirm_delete_school_board_dial
 import 'package:admin_app/screens/school_boards/add_school_dialog.dart';
 import 'package:admin_app/screens/school_boards/school_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -70,7 +71,18 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
     );
     if (answer == null || !answer || !mounted) return;
 
-    SchoolBoardsProvider.of(context).remove(widget.schoolBoard);
+    final isSuccess = await SchoolBoardsProvider.of(
+      context,
+    ).removeWithConfirmation(widget.schoolBoard);
+    if (!mounted) return;
+
+    showSnackBar(
+      context,
+      message:
+          isSuccess
+              ? 'Commission scolaire supprimée avec succès'
+              : 'Échec de la suppression de la commission scolaire',
+    );
   }
 
   Future<void> _onClickedEditing() async {
@@ -81,7 +93,19 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
       // Finish editing
       final newSchoolBoard = editedSchoolBoard;
       if (newSchoolBoard.getDifference(widget.schoolBoard).isNotEmpty) {
-        SchoolBoardsProvider.of(context, listen: false).replace(newSchoolBoard);
+        final isSuccess = await SchoolBoardsProvider.of(
+          context,
+          listen: false,
+        ).replaceWithConfirmation(newSchoolBoard);
+        if (!mounted) return;
+
+        showSnackBar(
+          context,
+          message:
+              isSuccess
+                  ? 'Commission scolaire modifiée avec succès'
+                  : 'Échec de la modification de la commission scolaire',
+        );
       }
     }
 
@@ -179,7 +203,19 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
     if (answer is! School || !mounted) return;
 
     schoolBoard.schools.add(answer);
-    SchoolBoardsProvider.of(context, listen: false).replace(schoolBoard);
+    final isSuccess = await SchoolBoardsProvider.of(
+      context,
+      listen: false,
+    ).addWithConfirmation(schoolBoard);
+    if (!mounted) return;
+
+    showSnackBar(
+      context,
+      message:
+          isSuccess
+              ? 'École ajoutée avec succès'
+              : 'Échec de l\'ajout de l\'école',
+    );
   }
 
   Widget _buildSchoolNames() {

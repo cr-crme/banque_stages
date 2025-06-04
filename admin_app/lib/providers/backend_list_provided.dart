@@ -315,24 +315,29 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
   /// Note that [notify] has no effect here and should not be used.
   @override
   void remove(value, {bool notify = true}) {
+    removeWithConfirmation(value, notify: notify);
+  }
+
+  Future<bool> removeWithConfirmation(T item, {bool notify = true}) async {
     _sanityChecks(notify: notify);
 
     try {
-      final message = jsonEncode(
-        CommunicationProtocol(
+      final response = await sendMessageWithResponse(
+        message: CommunicationProtocol(
           requestType: RequestType.delete,
           field: getField(),
-          data: value.serialize(),
-        ).serialize(),
+          data: item.serialize(),
+        ),
       );
-      _socket?.send(message);
+
+      if (mockMe) {
+        super.remove(item, notify: true);
+      }
+      return response.response == Response.success;
     } on Exception {
       // Make sure to keep the list in sync with the database
       notifyListeners();
-    }
-
-    if (mockMe) {
-      super.remove(value, notify: true);
+      return false;
     }
   }
 

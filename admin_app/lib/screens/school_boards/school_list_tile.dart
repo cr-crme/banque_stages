@@ -3,6 +3,7 @@ import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/screens/school_boards/confirm_delete_school_dialog.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
@@ -77,14 +78,21 @@ class SchoolListTileState extends State<SchoolListTile> {
     );
     if (answer == null || !answer || !mounted) return;
 
-    final schoolBoard = await SchoolBoardsProvider.mySchoolBoardOf(
-      context,
-      listen: false,
+    widget.schoolBoard.schools.removeWhere(
+      (school) => school.id == widget.school.id,
     );
-    if (schoolBoard == null || !mounted) return;
+    final isSuccess = await SchoolBoardsProvider.of(
+      context,
+    ).replaceWithConfirmation(widget.schoolBoard);
+    if (!mounted) return;
 
-    schoolBoard.schools.removeWhere((school) => school.id == widget.school.id);
-    SchoolBoardsProvider.of(context).replace(schoolBoard);
+    showSnackBar(
+      context,
+      message:
+          isSuccess
+              ? 'L\'école a été supprimée avec succès'
+              : 'Une erreur est survenue lors de la suppression de l\'école',
+    );
   }
 
   Future<void> _onClickedEditing() async {
@@ -99,10 +107,19 @@ class SchoolListTileState extends State<SchoolListTile> {
           (school) => school.id == widget.school.id,
         );
         widget.schoolBoard.schools.add(newSchool);
-        SchoolBoardsProvider.of(
+        final isSuccess = await SchoolBoardsProvider.of(
           context,
           listen: false,
-        ).replace(widget.schoolBoard);
+        ).replaceWithConfirmation(widget.schoolBoard);
+        if (!mounted) return;
+
+        showSnackBar(
+          context,
+          message:
+              isSuccess
+                  ? 'L\'école a été modifiée avec succès'
+                  : 'Une erreur est survenue lors de la modification de l\'école',
+        );
       }
     }
 
