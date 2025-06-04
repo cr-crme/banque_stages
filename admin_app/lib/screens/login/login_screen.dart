@@ -7,6 +7,7 @@ import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/login/misc.dart';
 import 'package:admin_app/screens/router.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _password;
 
   void _signIn() async {
-    final scaffold = ScaffoldMessenger.of(context);
     if (!FormService.validateForm(_formKey, save: true)) return;
 
     try {
@@ -50,7 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
           errorMessage = 'Erreur non reconnue lors de la connexion';
       }
 
-      scaffold.showSnackBar(SnackBar(content: Text(errorMessage)));
+      if (!mounted) return;
+      showSnackBar(context, message: errorMessage);
     }
     setState(() {});
   }

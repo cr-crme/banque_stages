@@ -109,7 +109,9 @@ abstract class StudentsRepository implements RepositoryAbstract {
     }
 
     final removedId = await _deleteStudent(id: id, user: user);
-    if (removedId == null) throw MissingDataException('Student not found');
+    if (removedId == null) {
+      throw DatabaseFailureException('Failed to delete student with id $id');
+    }
     return removedId;
   }
 

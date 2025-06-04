@@ -120,7 +120,8 @@ abstract class AdminsRepository implements RepositoryAbstract {
 
     final removedId = await _deleteAdmin(id: id);
     if (removedId == null) {
-      throw MissingDataException('Administrator not found');
+      throw DatabaseFailureException(
+          'Failed to delete administrator with id $id');
     }
     return removedId;
   }

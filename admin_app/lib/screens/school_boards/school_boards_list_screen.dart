@@ -4,6 +4,7 @@ import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/school_boards/add_school_board_dialog.dart';
 import 'package:admin_app/screens/school_boards/school_board_list_tile.dart';
 import 'package:admin_app/screens/school_boards/school_list_tile.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,19 @@ class SchoolBoardsListScreen extends StatelessWidget {
     );
     if (answer is! SchoolBoard || !context.mounted) return;
 
-    SchoolBoardsProvider.of(context, listen: false).add(answer);
+    final isSuccess = await SchoolBoardsProvider.of(
+      context,
+      listen: false,
+    ).addWithConfirmation(answer);
+    if (!context.mounted) return;
+
+    showSnackBar(
+      context,
+      message:
+          isSuccess
+              ? 'Commission scolaire ajoutée avec succès'
+              : 'Échec de l\'ajout de la commission scolaire',
+    );
   }
 
   @override

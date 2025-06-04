@@ -112,7 +112,9 @@ abstract class InternshipsRepository implements RepositoryAbstract {
     }
 
     final removedId = await _deleteInternship(id: id, user: user);
-    if (removedId == null) throw MissingDataException('Internship not found');
+    if (removedId == null) {
+      throw DatabaseFailureException('Failed to delete internship with id $id');
+    }
     return removedId;
   }
 

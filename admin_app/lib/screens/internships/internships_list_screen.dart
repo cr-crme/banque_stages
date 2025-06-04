@@ -7,6 +7,7 @@ import 'package:admin_app/screens/internships/add_internship_dialog.dart';
 import 'package:admin_app/screens/internships/internship_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/select_school_board_dialog.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:collection/collection.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/internships/internship.dart';
@@ -81,7 +82,17 @@ class InternshipsListScreen extends StatelessWidget {
     );
     if (answer is! Internship || !context.mounted) return;
 
-    InternshipsProvider.of(context, listen: false).replace(answer);
+    final isSuccess = await InternshipsProvider.of(
+      context,
+      listen: false,
+    ).addWithConfirmation(answer);
+    if (!context.mounted) return;
+
+    showSnackBar(
+      context,
+      message:
+          isSuccess ? 'Stage ajouté avec succès' : 'Échec de l\'ajout du stage',
+    );
   }
 
   @override

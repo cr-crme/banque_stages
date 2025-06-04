@@ -45,7 +45,7 @@ abstract class RepositoryAbstract {
 
   ///
   /// Delete data from the repository related to the given field and [id].
-  /// If the data doesn't exist, a [MissingDataException] will be thrown.
+  /// If something goes wrong, a [DatabaseFailureException] will be thrown.
   Future<String> deleteById({
     required String id,
     required DatabaseUser user,

@@ -194,29 +194,46 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     assert(isConnected, 'Please call \'initializeFetchingData\' at least once');
   }
 
+  Future<CommunicationProtocol> sendMessageWithResponse({
+    required CommunicationProtocol message,
+  }) async {
+    try {
+      return await _sendMessageWithResponse(message: message);
+    } on Exception {
+      // Make sure to keep the list in sync with the database
+      notifyListeners();
+      rethrow;
+    }
+  }
+
   /// Adds an item to the Realtime Database.
   ///
   /// Note that [notify] has no effect here and should not be used.
   @override
   void add(T item, {bool notify = true}) {
+    addWithConfirmation(item, notify: notify);
+  }
+
+  Future<bool> addWithConfirmation(T item, {bool notify = true}) async {
     _sanityChecks(notify: notify);
 
     try {
-      final message = jsonEncode(
-        CommunicationProtocol(
+      final response = await sendMessageWithResponse(
+        message: CommunicationProtocol(
           requestType: RequestType.post,
           field: getField(),
           data: item.serialize(),
-        ).serialize(),
+        ),
       );
-      _socket?.send(message);
+
+      if (mockMe) {
+        super.add(item, notify: true);
+      }
+      return response.response == Response.success;
     } on Exception {
       // Make sure to keep the list in sync with the database
       notifyListeners();
-    }
-
-    if (mockMe) {
-      super.add(item, notify: true);
+      return false;
     }
   }
 
@@ -258,23 +275,29 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
   /// Note that [notify] has no effect here and should not be used.
   @override
   void replace(T item, {bool notify = true}) {
+    replaceWithConfirmation(item, notify: notify);
+  }
+
+  Future<bool> replaceWithConfirmation(T item, {bool notify = true}) async {
     _sanityChecks(notify: notify);
 
     try {
-      final message = jsonEncode(
-        CommunicationProtocol(
+      final response = await sendMessageWithResponse(
+        message: CommunicationProtocol(
           requestType: RequestType.post,
           field: getField(),
           data: item.serialize(),
-        ).serialize(),
+        ),
       );
-      _socket?.send(message);
+
+      if (mockMe) {
+        super.replace(item, notify: true);
+      }
+      return response.response == Response.success;
     } on Exception {
       // Make sure to keep the list in sync with the database
       notifyListeners();
-    }
-    if (mockMe) {
-      super.replace(item, notify: true);
+      return false;
     }
   }
 
@@ -347,6 +370,7 @@ WebSocket? _socket;
 int? _socketId;
 bool _handshakeReceived = false;
 Map<RequestFields, _Selector> _providerSelector = {};
+final _completers = <String, Completer<CommunicationProtocol>>{};
 
 _Selector _getSelector(RequestFields field) {
   final selector = _providerSelector[field];
@@ -358,19 +382,45 @@ _Selector _getSelector(RequestFields field) {
   return selector;
 }
 
-void _getFromBackend(
+Future<void> _getFromBackend(
   RequestFields requestField, {
   String? id,
   List<String>? fields,
-}) {
-  final message = jsonEncode(
-    CommunicationProtocol(
+}) async {
+  final protocol = await _sendMessageWithResponse(
+    message: CommunicationProtocol(
       requestType: RequestType.get,
       field: requestField, // Id is not null for item of the list
       data: id == null ? null : {'id': id, 'fields': fields},
-    ).serialize(),
+    ),
   );
-  _socket?.send(message);
+
+  final selector = _getSelector(protocol.field!);
+  selector.addOrReplaceItems(protocol.data!, notify: true);
+}
+
+Future<CommunicationProtocol> _sendMessageWithResponse({
+  required CommunicationProtocol message,
+}) async {
+  _completers[message.id] = Completer<CommunicationProtocol>();
+
+  final encodedMessage = jsonEncode(message.serialize());
+  _socket?.send(encodedMessage);
+
+  final answer = await _completers[message.id]!.future.timeout(
+    const Duration(seconds: 5),
+    onTimeout: () {
+      _completers.remove(message.id);
+      throw TimeoutException(
+        'The request timed out after 5 seconds',
+        Duration(seconds: 5),
+      );
+    },
+  );
+  if (answer.response == Response.failure) {
+    throw Exception('Error while processing the request: ${answer.field}');
+  }
+  return answer;
 }
 
 Future<void> _incommingMessage(
@@ -388,7 +438,7 @@ Future<void> _incommingMessage(
 
     // If no data are provided
     if (protocol.requestType != RequestType.handshake &&
-        (protocol.data == null || protocol.field == null)) {
+        protocol.field == null) {
       return;
     }
 
@@ -410,19 +460,20 @@ Future<void> _incommingMessage(
         }
       case RequestType.response:
         {
-          if (protocol.field == null ||
-              protocol.data == null ||
-              protocol.data!.isEmpty) {
-            return;
+          final completer = _completers.remove(protocol.id);
+          if (completer != null && !completer.isCompleted) {
+            completer.complete(protocol);
           }
-
-          final requestField = protocol.field!;
-          final selector = _getSelector(requestField);
-          selector.addOrReplaceItems(protocol.data!, notify: true);
           return;
         }
       case RequestType.update:
         {
+          if (protocol.data == null) {
+            throw Exception(
+              'The data field cannot be null for the update request',
+            );
+          }
+
           final requestField = protocol.field!;
           _getFromBackend(
             requestField,
@@ -433,6 +484,12 @@ Future<void> _incommingMessage(
         }
       case RequestType.delete:
         {
+          if (protocol.data == null) {
+            throw Exception(
+              'The data field cannot be null for the delete request',
+            );
+          }
+
           final requestField = protocol.field!;
           final selector = _getSelector(requestField);
 
@@ -446,6 +503,7 @@ Future<void> _incommingMessage(
         }
       case RequestType.get:
       case RequestType.post:
+      case RequestType.register:
         throw Exception('Unsupported request type: ${protocol.requestType}');
     }
   } catch (e) {

@@ -1,5 +1,6 @@
 import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +19,9 @@ Future<SchoolBoard?> showSelectSchoolBoardDialog(BuildContext context) async {
       if (answer is! String || !context.mounted) return null;
       schoolBoardId = answer;
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Aucune commission scolaire associée à votre compte.'),
-        ),
+      showSnackBar(
+        context,
+        message: 'Aucune commission scolaire associée à votre compte.',
       );
       return null;
     }
@@ -31,9 +31,7 @@ Future<SchoolBoard?> showSelectSchoolBoardDialog(BuildContext context) async {
     context,
   ).firstWhereOrNull((e) => e.id == schoolBoardId);
   if (schoolBoard == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Commission scolaire introuvable.')),
-    );
+    showSnackBar(context, message: 'Commission scolaire introuvable.');
     return null;
   }
 

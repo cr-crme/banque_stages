@@ -108,7 +108,10 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
     }
 
     final removedId = await _deleteSchoolBoard(id: id, user: user);
-    if (removedId == null) throw MissingDataException('School board not found');
+    if (removedId == null) {
+      throw DatabaseFailureException(
+          'Failed to delete school board with id: $id');
+    }
     return removedId;
   }
 

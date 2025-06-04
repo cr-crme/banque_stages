@@ -124,7 +124,9 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
 
     final removedId = await _deleteEnterprise(
         id: id, user: user, internshipsRepository: internshipsRepository);
-    if (removedId == null) throw MissingDataException('Enterprise not found');
+    if (removedId == null) {
+      throw DatabaseFailureException('Failed to delete enterprise with id $id');
+    }
     return removedId;
   }
 

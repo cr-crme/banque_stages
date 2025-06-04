@@ -108,7 +108,9 @@ abstract class TeachersRepository implements RepositoryAbstract {
     }
 
     final removedId = await _deleteTeacher(id: id);
-    if (removedId == null) throw MissingDataException('Teacher not found');
+    if (removedId == null) {
+      throw DatabaseFailureException('Failed to delete teacher with id $id');
+    }
     return removedId;
   }
 

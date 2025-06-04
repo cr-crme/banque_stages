@@ -94,6 +94,7 @@ class Connexions {
               'Getting data from field: ${protocol.field} for client ${client.hashCode}');
           await _send(client,
               message: CommunicationProtocol(
+                  id: protocol.id,
                   requestType: RequestType.response,
                   field: protocol.field,
                   data: await _database.get(protocol.field!,
@@ -112,6 +113,7 @@ class Connexions {
               data: protocol.data, user: _clients[client]!);
           await _send(client,
               message: CommunicationProtocol(
+                  id: protocol.id,
                   requestType: RequestType.response,
                   field: protocol.field,
                   response: Response.success));
@@ -140,6 +142,7 @@ class Connexions {
               data: protocol.data, user: _clients[client]!);
           await _send(client,
               message: CommunicationProtocol(
+                  id: protocol.id,
                   requestType: RequestType.response,
                   field: protocol.field,
                   response: Response.success));

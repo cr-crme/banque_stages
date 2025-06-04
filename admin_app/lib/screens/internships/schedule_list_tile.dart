@@ -1,5 +1,6 @@
 import 'package:admin_app/widgets/custom_date_picker.dart';
 import 'package:admin_app/widgets/custom_time_picker.dart';
+import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:flutter/material.dart';
@@ -142,10 +143,9 @@ class SchedulesController {
 
   void removedDailyScheduleTime(context, int weeklyIndex, int dailyIndex) {
     if (weeklySchedules[weeklyIndex].schedule.length == 1) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Au moins une plage horaire est nécessaire'),
-        ),
+      showSnackBar(
+        context,
+        message: 'Au moins une plage horaire est nécessaire',
       );
       return;
     }

@@ -1,7 +1,7 @@
+import 'package:common/models/generic/access_level.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
-import 'package:common/models/generic/access_level.dart';
 import 'package:provider/provider.dart';
 
 class AuthProvider extends ChangeNotifier {
