@@ -308,8 +308,9 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
     ],
   ) as List)
       .firstOrNull as Map<String, dynamic>?;
-  if (users?['authenticator_id'] == null ||
-      (users!['authenticator_id'] as String).isEmpty) {
+  if (users != null &&
+      (users['authenticator_id'] == null ||
+          (users['authenticator_id'] as String).isEmpty)) {
     // If authenticator_id is empty, it means that user was added but never logged in
     // Add the id to the user object
     await MySqlHelpers.performUpdateQuery(
