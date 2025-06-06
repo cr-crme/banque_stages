@@ -1,7 +1,6 @@
-import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,30 +24,15 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await AuthProvider.of(context)
           .signInWithEmailAndPassword(email: _email!, password: _password!);
-    } on firebase.FirebaseAuthException catch (e) {
-      late final String errorMessage;
-      switch (e.code) {
-        case 'invalid-email':
-        case 'user-not-found':
-        case 'wrong-password':
-          errorMessage = 'Identifiants invalides. Veuillez réssayer.';
-          break;
-        case 'user-disabled':
-          errorMessage =
-              'Impossible de se connecter; ce compte à été désactivé.';
-          break;
-        default:
-          errorMessage = 'Erreur non reconnue lors de la connexion';
-      }
-
-      scaffold.showSnackBar(SnackBar(content: Text(errorMessage)));
+    } catch (e) {
+      scaffold.showSnackBar(SnackBar(content: Text('Erreur de connexion')));
     }
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    if (AuthProvider.of(context).isSignedIn()) {
+    if (AuthProvider.of(context).isFullySignedIn) {
       Future.microtask(() {
         if (context.mounted) GoRouter.of(context).goNamed(Screens.home);
       });

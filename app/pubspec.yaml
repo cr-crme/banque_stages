@@ -29,11 +29,7 @@ dependencies:
     flutter_spinbox: ^0.13.1
     flutter_rating_bar: ^4.0.1
     image_picker: ^1.1.2
-    firebase_core: ^3.10.1
-    firebase_auth: ^5.4.1
     firebase_storage: ^12.4.1 
-    firebase_database: ^11.3.1
-    firebase_auth_mocks: ^0.14.1
     firebase_storage_mocks: ^0.7.0
     path: ^1.8.1
     nanoid: ^1.0.0
@@ -64,6 +60,8 @@ dependencies:
     uuid: 4.5.1
     common:
         path: ../common
+    common_flutter:
+        path: ../common_flutter
 
 dependency_overrides:
     enhanced_containers_foundation:

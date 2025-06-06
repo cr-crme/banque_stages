@@ -1,0 +1,30 @@
+name: common_flutter
+description: "Common resources shared between the admin and user apps of Banque Stage"
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  common:
+    path: ../common
+  provider: ^6.0.3
+  cupertino_icons: ^1.0.8
+  firebase_core: ^3.10.1
+  firebase_auth: ^5.4.1
+  firebase_auth_mocks: ^0.14.1
+
+dependency_overrides:
+  enhanced_containers_foundation:
+    path: ../external/enhanced_containers/plugins/enhanced_containers_foundation
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';

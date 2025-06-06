@@ -120,6 +120,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  common_flutter:
+    dependency: "direct main"
+    description:
+      path: "../common_flutter"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   convert:
     dependency: transitive
     description:
@@ -246,7 +253,7 @@ packages:
     source: hosted
     version: "7.0.1"
   firebase_auth:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_auth
       sha256: "06787c45d773af3db3ae693ff648ef488e6048a00b654620b3b8849988f63793"
@@ -254,7 +261,7 @@ packages:
     source: hosted
     version: "5.5.3"
   firebase_auth_mocks:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_auth_mocks
       sha256: "3d4442f2856c03917777e5ddf6bb7ff5fb53e9b04426d1e1146b339bd3f19892"
@@ -278,7 +285,7 @@ packages:
     source: hosted
     version: "5.14.2"
   firebase_core:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_core
       sha256: "017d17d9915670e6117497e640b2859e0b868026ea36bf3a57feb28c3b97debe"

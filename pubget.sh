@@ -16,6 +16,12 @@ echo "Running pub get in common directory..."
 dart pub get
 popd
 
+# Pub get in the common_flutter directory
+pushd common_flutter
+echo "Running pub get in common_flutter directory..."
+flutter pub get
+popd
+
 # Pub get in the external directory
 pushd external/crcrme_material_theme
 echo "Running pub get in external/crcrme_material_theme directory..."

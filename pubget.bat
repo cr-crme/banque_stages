@@ -9,10 +9,16 @@
 cd /d "%~dp0"
 
 @REM @REM Pub get in the common directory
-@REM pushd common
-@REM echo "Running pub get in common directory..."
-@REM dart pub get
-@REM popd
+pushd common
+echo "Running pub get in common directory..."
+dart pub get
+popd
+
+@REM @REM Pub get in the common_flutter directory
+pushd common_flutter
+echo "Running pub get in common_flutter directory..."
+dart pub get
+popd
 
 @REM Pub get in the external directory
 pushd external\crcrme_material_theme

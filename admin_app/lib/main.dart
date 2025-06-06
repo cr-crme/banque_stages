@@ -1,18 +1,18 @@
 import 'package:admin_app/firebase_options.dart';
 import 'package:admin_app/providers/admins_provider.dart';
-import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/enterprises_provider.dart';
 import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/router.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:provider/provider.dart';
 
 // TODO: Mutualize the widgets from admin_app and app (with admin_app being the reference)
 

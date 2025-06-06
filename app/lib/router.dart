@@ -1,3 +1,4 @@
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/screens/add_enterprise/add_enterprise_screen.dart';
 import 'package:crcrme_banque_stages/screens/enterprise/enterprise_screen.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/enterprises_list_screen.dart';
@@ -21,8 +22,6 @@ import 'package:crcrme_banque_stages/screens/tasks_to_do/tasks_to_do_screen.dart
 import 'package:crcrme_banque_stages/screens/visiting_students/itinerary_screen.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:go_router/go_router.dart';
-
-import 'common/providers/auth_provider.dart';
 
 abstract class Screens {
   static const home = enterprisesList;
@@ -86,7 +85,7 @@ abstract class Screens {
 
 final router = GoRouter(
   redirect: (context, state) {
-    if (AuthProvider.of(context, listen: false).isSignedIn()) {
+    if (AuthProvider.of(context, listen: false).isFullySignedIn) {
       return null;
     }
     return '/login';
@@ -102,7 +101,7 @@ final router = GoRouter(
       name: Screens.login,
       builder: (context, state) => const LoginScreen(),
       redirect: (context, state) =>
-          AuthProvider.of(context, listen: false).isSignedIn() ? '/' : null,
+          AuthProvider.of(context, listen: false).isFullySignedIn ? '/' : null,
     ),
     GoRoute(
       path: '/enterprises',

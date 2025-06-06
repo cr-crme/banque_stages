@@ -1,5 +1,4 @@
 import 'package:admin_app/providers/admins_provider.dart';
-import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/enterprises_provider.dart';
 import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
@@ -8,7 +7,7 @@ import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/login/misc.dart';
 import 'package:admin_app/screens/router.dart';
 import 'package:admin_app/widgets/show_snackbar.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase;
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,24 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
       await AuthProvider.of(
         context,
       ).signInWithEmailAndPassword(email: _email!, password: _password!);
-    } on firebase.FirebaseAuthException catch (e) {
-      late final String errorMessage;
-      switch (e.code) {
-        case 'invalid-email':
-        case 'user-not-found':
-        case 'wrong-password':
-          errorMessage = 'Identifiants invalides. Veuillez réssayer.';
-          break;
-        case 'user-disabled':
-          errorMessage =
-              'Impossible de se connecter; ce compte à été désactivé.';
-          break;
-        default:
-          errorMessage = 'Erreur non reconnue lors de la connexion';
-      }
-
+    } catch (e) {
       if (!mounted) return;
-      showSnackBar(context, message: errorMessage);
+      showSnackBar(context, message: 'Erreur de connexion');
     }
     setState(() {});
   }

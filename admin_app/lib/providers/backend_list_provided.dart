@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:io';
 
-import 'package:admin_app/providers/auth_provider.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/generic/extended_item_serializable.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:enhanced_containers/database_list_provided.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 import 'package:web_socket_client/web_socket_client.dart';

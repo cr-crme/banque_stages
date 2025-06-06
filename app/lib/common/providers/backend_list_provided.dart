@@ -1,11 +1,11 @@
-import 'dart:developer' as dev;
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'dart:io';
 
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/generic/extended_item_serializable.dart';
-import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:enhanced_containers/database_list_provided.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -47,7 +47,7 @@ abstract class BackendListProvided<T extends ExtendedItemSerializable>
     }
 
     // Get the JWT token
-    String token = authProvider.jwt;
+    String token = (await authProvider.getAuthenticatorIdToken())!;
 
     // If the socket is already connected, it means another provider is already connected
     // Simply return now after having kept the reference to the deserializer function

@@ -1,4 +1,3 @@
-import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/screens/admins/admins_list_screen.dart';
 import 'package:admin_app/screens/enterprises/enterprises_list_screen.dart';
 import 'package:admin_app/screens/internships/internships_list_screen.dart';
@@ -6,6 +5,7 @@ import 'package:admin_app/screens/login/login_screen.dart';
 import 'package:admin_app/screens/school_boards/school_boards_list_screen.dart';
 import 'package:admin_app/screens/students/students_list_screen.dart';
 import 'package:admin_app/screens/teachers/teachers_list_screen.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class Screens {

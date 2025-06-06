@@ -1,4 +1,3 @@
-import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
@@ -14,6 +13,7 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 
 class InternshipsListScreen extends StatelessWidget {

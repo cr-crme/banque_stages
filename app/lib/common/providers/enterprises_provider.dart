@@ -1,7 +1,7 @@
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
-import 'package:crcrme_banque_stages/common/providers/auth_provider.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/backend_list_provided.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -1,8 +1,8 @@
-import 'package:admin_app/providers/auth_provider.dart';
 import 'package:admin_app/providers/backend_list_provided.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
