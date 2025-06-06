@@ -182,6 +182,7 @@ class MySqlAdminsRepository extends AdminsRepository {
         data: {
           'id': admin.id.serialize(),
           'school_board_id': admin.schoolBoardId.serialize(),
+          'has_registered_account': admin.hasRegisteredAccount,
           'first_name': admin.firstName.serialize(),
           'middle_name': admin.middleName?.serialize(),
           'last_name': admin.lastName.serialize(),
@@ -200,6 +201,9 @@ class MySqlAdminsRepository extends AdminsRepository {
     final toUpdate = <String, dynamic>{};
     if (differences.contains('school_board_id')) {
       toUpdate['school_board_id'] = admin.schoolBoardId;
+    }
+    if (differences.contains('has_registered_account')) {
+      toUpdate['has_registered_account'] = admin.hasRegisteredAccount;
     }
     if (differences.contains('first_name')) {
       toUpdate['first_name'] = admin.firstName;
@@ -258,6 +262,7 @@ class AdminsRepositoryMock extends AdminsRepository {
       middleName: null,
       lastName: 'Doe',
       schoolBoardId: '10',
+      hasRegisteredAccount: true,
       email: 'john.doe@email.com',
       accessLevel: AccessLevel.admin,
     ),
@@ -267,6 +272,7 @@ class AdminsRepositoryMock extends AdminsRepository {
       middleName: null,
       lastName: 'Doe',
       schoolBoardId: '10',
+      hasRegisteredAccount: true,
       email: 'john.doe@email.com',
       accessLevel: AccessLevel.admin,
     ),

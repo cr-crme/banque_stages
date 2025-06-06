@@ -161,7 +161,7 @@ class InternshipsListScreen extends StatelessWidget {
               ),
             )
             .toList(),
-      AccessLevel.admin || AccessLevel.teacher || null => [
+      AccessLevel.admin || AccessLevel.teacher || AccessLevel.invalid => [
         _InternshipsByActive(
           key: const ValueKey('active_internships'),
           areActive: true,

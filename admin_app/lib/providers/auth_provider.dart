@@ -120,11 +120,17 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  AccessLevel? databaseAccessLevel;
+  AccessLevel? _databaseAccessLevel;
+  AccessLevel get databaseAccessLevel =>
+      _databaseAccessLevel ?? AccessLevel.invalid;
+  set databaseAccessLevel(AccessLevel? level) {
+    _databaseAccessLevel = level;
+    notifyListeners();
+  }
 
   bool get isBackendConnected {
     return (teacherId != null && teacherId!.isNotEmpty) ||
-        databaseAccessLevel == AccessLevel.superAdmin;
+        _databaseAccessLevel == AccessLevel.superAdmin;
   }
 
   bool get isFullySignedIn => isAuthenticatorSignedIn && isBackendConnected;

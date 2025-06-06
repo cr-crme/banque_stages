@@ -1,4 +1,5 @@
 enum AccessLevel {
+  invalid,
   teacher,
   admin,
   superAdmin;
@@ -24,7 +25,7 @@ enum AccessLevel {
   }
 
   static AccessLevel fromSerialized(value) {
-    if (value == null) return AccessLevel.teacher;
+    if (value == null) return AccessLevel.invalid;
     if (value < 0 || value >= AccessLevel.values.length) {
       throw ArgumentError('Invalid access level value: $value');
     }

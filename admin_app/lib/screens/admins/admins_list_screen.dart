@@ -120,5 +120,3 @@ class AdminsListScreen extends StatelessWidget {
     );
   }
 }
-
-// TODO Add the capability to add user (such as teachers) to the admin list

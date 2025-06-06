@@ -50,8 +50,7 @@ class SchoolListTileState extends State<SchoolListTile> {
   bool _isExpanded = false;
   bool _isEditing = false;
   late final bool _canEdit =
-      (AuthProvider.of(context, listen: false).databaseAccessLevel ??
-          AccessLevel.teacher) >=
+      AuthProvider.of(context, listen: false).databaseAccessLevel >=
       AccessLevel.admin;
 
   late final _nameController = TextEditingController(text: widget.school.name);

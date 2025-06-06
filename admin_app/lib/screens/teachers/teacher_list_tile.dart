@@ -6,6 +6,7 @@ import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:admin_app/widgets/show_snackbar.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
@@ -371,6 +372,7 @@ class TeacherListTileState extends State<TeacherListTile> {
                 final isSuccess = await admins.addUserToDatabase(
                   email: _emailController.text,
                   password: '123456789',
+                  userType: AccessLevel.teacher,
                 );
                 if (!mounted) return;
 
@@ -390,6 +392,7 @@ class TeacherListTileState extends State<TeacherListTile> {
                 final admins = AdminsProvider.of(context, listen: false);
                 final isSuccess = await admins.deleteUserFromDatabase(
                   email: _emailController.text,
+                  userType: AccessLevel.teacher,
                 );
                 if (!mounted) return;
 

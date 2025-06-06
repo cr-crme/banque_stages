@@ -93,6 +93,7 @@ CREATE TABLE phone_numbers (
 CREATE TABLE admins (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     school_board_id VARCHAR(36) NOT NULL,
+    has_registered_account BOOLEAN NOT NULL DEFAULT FALSE,
     first_name VARCHAR(50) NOT NULL,
     middle_name VARCHAR(50),
     last_name VARCHAR(50) NOT NULL,

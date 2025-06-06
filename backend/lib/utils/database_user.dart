@@ -4,6 +4,8 @@ class DatabaseUser {
   bool get isVerified {
     if (_authenticatorId.isEmpty) return false;
     switch (accessLevel) {
+      case AccessLevel.invalid:
+        return false;
       case AccessLevel.superAdmin:
         return _authenticatorId.isNotEmpty;
       case AccessLevel.admin:
@@ -45,7 +47,7 @@ class DatabaseUser {
         schoolBoardId = null,
         schoolId = null,
         shouldChangePassword = false,
-        accessLevel = AccessLevel.teacher;
+        accessLevel = AccessLevel.invalid;
 
   DatabaseUser copyWith({
     String? userId,

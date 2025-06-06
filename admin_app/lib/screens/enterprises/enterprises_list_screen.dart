@@ -127,7 +127,7 @@ class EnterprisesListScreen extends StatelessWidget {
               ),
             )
             .toList(),
-      AccessLevel.admin || AccessLevel.teacher || null =>
+      AccessLevel.admin || AccessLevel.teacher || AccessLevel.invalid =>
         schoolBoardEnterprises.values.firstOrNull
                 ?.map(
                   (enterprise) => EnterpriseListTile(

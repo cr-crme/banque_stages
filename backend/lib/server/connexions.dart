@@ -155,28 +155,57 @@ class Connexions {
 
           break;
         case RequestType.registerUser:
-          // Limit this to admins only
-          if ((_clients[client]?.accessLevel ?? AccessLevel.teacher) <
-              AccessLevel.admin) {
-            throw ConnexionRefusedException(
-                'Client ${client.hashCode} is not authorized to register users');
-          }
-
+          final myAccessLevel =
+              _clients[client]?.accessLevel ?? AccessLevel.invalid;
           final email = protocol.data?['email'] as String?;
           final password = protocol.data?['password'] as String?;
+          final userType =
+              AccessLevel.fromSerialized(protocol.data?['user_type']);
+          if (email == null ||
+              password == null ||
+              userType == AccessLevel.invalid) {
+            throw ConnexionRefusedException('Invalid request data.');
+          }
 
           final app = FirebaseAdmin.instance.app();
-          if (email == null || app == null) {
+          if (app == null) {
             throw ConnexionRefusedException(
                 'Firebase app is not initialized. Please check your configuration.');
           }
 
+          // Get the related user data
+          late Map<String, dynamic>? user;
+          switch (userType) {
+            case AccessLevel.teacher:
+              if (myAccessLevel < AccessLevel.admin) {
+                throw ConnexionRefusedException(
+                    'Client ${client.hashCode} is not authorized to register user');
+              }
+              user = await _getTeacherFromDatabase(
+                  user: _clients[client]!,
+                  connection: _database.connection,
+                  email: email);
+              break;
+            case AccessLevel.admin:
+              if (myAccessLevel < AccessLevel.superAdmin) {
+                throw ConnexionRefusedException(
+                    'Client ${client.hashCode} is not authorized to register user');
+              }
+              user = await _getAdminFromDatabase(
+                  user: _clients[client]!,
+                  connection: _database.connection,
+                  email: email);
+              break;
+            case AccessLevel.superAdmin:
+            case AccessLevel.invalid:
+              throw ConnexionRefusedException(
+                  'Client ${client.hashCode} is not authorized to register user.');
+          }
+
           // Make sure only previously added teachers can be registered
-          final teacher = await _getTeacherFromDatabase(
-              _clients[client]!, _database.connection, email);
-          if (teacher == null || teacher['has_registered_account'] == 1) {
+          if (user == null || user['has_registered_account'] == 1) {
             throw ConnexionRefusedException(
-                'No teacher found with email $email. Please add the teacher to the database before registering them.');
+                'No user found with email $email. Please add the user to the database before registering them.');
           }
 
           // Register the user in Firebase
@@ -189,12 +218,6 @@ class Connexions {
               rethrow;
             }
           }
-
-          // Add the confirmation to the database
-          await _database.put(RequestFields.teacher,
-              data: {'id': teacher['id'], 'has_registered_account': true},
-              user: _clients[client]!);
-
           // Send confirmation to the client
           await _send(client,
               message: CommunicationProtocol(
@@ -203,32 +226,45 @@ class Connexions {
                   field: protocol.field,
                   response: Response.success));
 
+          // Add the confirmation to the database
+          final field = switch (userType) {
+            AccessLevel.teacher => RequestFields.teacher,
+            AccessLevel.admin => RequestFields.admin,
+            AccessLevel.superAdmin ||
+            AccessLevel.invalid =>
+              throw 'Client ${client.hashCode} is not authorized to register user.',
+          };
+          await _database.put(field,
+              data: {'id': user['id'], 'has_registered_account': true},
+              user: _clients[client]!);
+
           // Notify all clients that the teacher has registered an account
           await _sendAll(CommunicationProtocol(
             requestType: RequestType.update,
-            field: RequestFields.teacher,
+            field: field,
             data: {
-              'id': teacher['id'],
+              'id': user['id'],
               'updated_fields': ['has_registered_account']
             },
           ));
 
         case RequestType.unregisterUser:
-          // Limit this to admins only
-          if ((_clients[client]?.accessLevel ?? AccessLevel.teacher) <
-              AccessLevel.admin) {
-            throw ConnexionRefusedException(
-                'Client ${client.hashCode} is not authorized to unregister users');
+          final myAccessLevel =
+              _clients[client]?.accessLevel ?? AccessLevel.invalid;
+          final email = protocol.data?['email'] as String?;
+          final userType =
+              AccessLevel.fromSerialized(protocol.data?['user_type']);
+          if (email == null || userType == AccessLevel.invalid) {
+            throw ConnexionRefusedException('Invalid request data.');
           }
 
-          final email = protocol.data?['email'] as String?;
-
           final app = FirebaseAdmin.instance.app();
-          if (email == null || app == null) {
+          if (app == null) {
             throw ConnexionRefusedException(
                 'Firebase app is not initialized. Please check your configuration.');
           }
 
+          // Delete the user from Firebase
           try {
             final user = await app.auth().getUserByEmail(email);
             await app.auth().deleteUser(user.uid);
@@ -239,11 +275,6 @@ class Connexions {
               rethrow;
             }
           }
-
-          // Remove the confirmation from the database
-          final teacher = await _getTeacherFromDatabase(
-              _clients[client]!, _database.connection, email);
-
           // Send confirmation to the client
           await _send(client,
               message: CommunicationProtocol(
@@ -252,16 +283,54 @@ class Connexions {
                   field: protocol.field,
                   response: Response.success));
 
-          if (teacher != null) {
-            await _database.put(RequestFields.teacher,
-                data: {'id': teacher['id'], 'has_registered_account': false},
+          // Adjust the internal database to reflect the unregistration
+          late Map<String, dynamic>? user;
+          switch (userType) {
+            case AccessLevel.teacher:
+              if (myAccessLevel < AccessLevel.admin) {
+                throw ConnexionRefusedException(
+                    'Client is not authorized to register user');
+              }
+              user = await _getTeacherFromDatabase(
+                  user: _clients[client]!,
+                  connection: _database.connection,
+                  email: email);
+              break;
+            case AccessLevel.admin:
+              if (myAccessLevel < AccessLevel.superAdmin) {
+                throw ConnexionRefusedException(
+                    'Client is not authorized to register user');
+              }
+              user = await _getAdminFromDatabase(
+                  user: _clients[client]!,
+                  connection: _database.connection,
+                  email: email);
+              break;
+            case AccessLevel.superAdmin:
+            case AccessLevel.invalid:
+              throw ConnexionRefusedException(
+                  'Client is not authorized to register user.');
+          }
+
+          if (user != null) {
+            // Remove the confirmation from the database
+            final field = switch (userType) {
+              AccessLevel.teacher => RequestFields.teacher,
+              AccessLevel.admin => RequestFields.admin,
+              AccessLevel.invalid ||
+              AccessLevel.superAdmin =>
+                throw 'Client is not authorized to register user.',
+            };
+
+            await _database.put(field,
+                data: {'id': user['id'], 'has_registered_account': false},
                 user: _clients[client]!);
             // Notify all clients that the teacher has unregistered an account
             await _sendAll(CommunicationProtocol(
               requestType: RequestType.update,
-              field: RequestFields.teacher,
+              field: field,
               data: {
-                'id': teacher['id'],
+                'id': user['id'],
                 'updated_fields': ['has_registered_account']
               },
             ));
@@ -269,7 +338,9 @@ class Connexions {
 
         case RequestType.changedPassword:
           final tableName =
-              switch ((_clients[client]?.accessLevel ?? AccessLevel.teacher)) {
+              switch ((_clients[client]?.accessLevel ?? AccessLevel.invalid)) {
+            AccessLevel.invalid => throw ConnexionRefusedException(
+                'Client ${client.hashCode} is not authorized to change password.'),
             AccessLevel.teacher => 'teachers',
             AccessLevel.admin || AccessLevel.superAdmin => 'admins',
           };
@@ -402,19 +473,8 @@ Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
   // At this point, we know the JWT is valid and secure. So we can safely use the email
   // to fetch the user information.
   // First, try to login via the 'users' table
-  var users = (await MySqlHelpers.performSelectQuery(
-    connection: connection,
-    user: user,
-    tableName: 'admins',
-    filters: {'email': email},
-    subqueries: [
-      MySqlSelectSubQuery(
-          dataTableName: 'teachers',
-          idNameToDataTable: 'id',
-          fieldsToFetch: ['school_id'])
-    ],
-  ) as List)
-      .firstOrNull as Map<String, dynamic>?;
+  var users = await _getAdminFromDatabase(
+      user: user, connection: connection, email: email);
 
   user = user.copyWith(
     userId: users?['id'],
@@ -428,7 +488,8 @@ Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
 
   // If there is information missing in the user structure, then we are not admin (case 1)
   // We therefore try to log using the information from the 'teachers' table
-  final teacher = await _getTeacherFromDatabase(user, connection, email);
+  final teacher = await _getTeacherFromDatabase(
+      user: user, connection: connection, email: email);
   // If there is no teacher with that email, the user is not valid (case 3)
   if (teacher == null) return null;
   (teacher as Map).addAll((teacher['teachers'] as List).firstOrNull);
@@ -448,7 +509,9 @@ Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
 }
 
 Future<Map<String, dynamic>?> _getTeacherFromDatabase(
-    DatabaseUser user, MySqlConnection connection, String teacherEmail) async {
+    {required DatabaseUser user,
+    required MySqlConnection connection,
+    required String email}) async {
   final teacher = (await MySqlHelpers.performSelectQuery(
           connection: connection,
           user: user.copyWith(accessLevel: AccessLevel.superAdmin),
@@ -457,7 +520,7 @@ Future<Map<String, dynamic>?> _getTeacherFromDatabase(
         'email'
       ],
           filters: {
-        'email': teacherEmail
+        'email': email
       },
           subqueries: [
         MySqlSelectSubQuery(
@@ -473,9 +536,27 @@ Future<Map<String, dynamic>?> _getTeacherFromDatabase(
         ),
       ]) as List)
       .firstOrNull;
-  // If there is no teacher with that email, the user is not valid (case 3)
   if (teacher == null || teacher['teachers'] == null) return null;
 
   (teacher as Map).addAll((teacher['teachers'] as List).firstOrNull);
   return teacher as Map<String, dynamic>?;
+}
+
+Future<Map<String, dynamic>?> _getAdminFromDatabase(
+    {required DatabaseUser user,
+    required MySqlConnection connection,
+    required String email}) async {
+  return (await MySqlHelpers.performSelectQuery(
+    connection: connection,
+    user: user,
+    tableName: 'admins',
+    filters: {'email': email},
+    subqueries: [
+      MySqlSelectSubQuery(
+          dataTableName: 'teachers',
+          idNameToDataTable: 'id',
+          fieldsToFetch: ['school_id'])
+    ],
+  ) as List)
+      .firstOrNull as Map<String, dynamic>?;
 }

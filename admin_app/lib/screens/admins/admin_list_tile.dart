@@ -4,6 +4,7 @@ import 'package:admin_app/screens/admins/confirm_delete_admin_dialog.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/show_snackbar.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/persons/admin.dart';
 import 'package:common/utils.dart';
 import 'package:flutter/material.dart';
@@ -171,6 +172,12 @@ class AdminListTileState extends State<AdminListTile> {
             _buildName(),
             const SizedBox(height: 8),
             _buildEmail(),
+            if (!_isEditing &&
+                widget.admin.email != null &&
+                widget.admin.email!.isNotEmpty)
+              Column(
+                children: [const SizedBox(height: 8), _buildCreateUserButton()],
+              ),
             const SizedBox(height: 4),
           ],
         ),
@@ -240,6 +247,58 @@ class AdminListTileState extends State<AdminListTile> {
       isMandatory: true,
       enabled: _isEditing,
       title: 'Courriel',
+    );
+  }
+
+  Widget _buildCreateUserButton() {
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.admin.hasNotRegisteredAccount)
+            TextButton(
+              onPressed: () async {
+                final admins = AdminsProvider.of(context, listen: false);
+                final isSuccess = await admins.addUserToDatabase(
+                  email: _emailController.text,
+                  password: '123456789',
+                  userType: AccessLevel.admin,
+                );
+                if (!mounted) return;
+
+                showSnackBar(
+                  context,
+                  message:
+                      isSuccess
+                          ? 'Compte utilisateur créé avec succès.'
+                          : 'Échec de la création du compte utilisateur.',
+                );
+              },
+              child: const Text('Créer un compte'),
+            ),
+          if (widget.admin.hasRegisteredAccount)
+            TextButton(
+              onPressed: () async {
+                final admins = AdminsProvider.of(context, listen: false);
+                final isSuccess = await admins.deleteUserFromDatabase(
+                  email: _emailController.text,
+                  userType: AccessLevel.admin,
+                );
+                if (!mounted) return;
+
+                showSnackBar(
+                  context,
+                  message:
+                      isSuccess
+                          ? 'Compte utilisateur supprimé avec succès.'
+                          : 'Échec de la suppression du compte utilisateur.',
+                );
+              },
+              child: const Text('Supprimer un compte'),
+            ),
+        ],
+      ),
     );
   }
 }

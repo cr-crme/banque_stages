@@ -23,8 +23,7 @@ class AdminsProvider extends BackendListProvided<Admin> {
 
   void initializeAuth(AuthProvider auth) {
     if (!auth.isFullySignedIn ||
-        (auth.databaseAccessLevel ?? AccessLevel.teacher) <
-            AccessLevel.superAdmin) {
+        auth.databaseAccessLevel < AccessLevel.superAdmin) {
       return;
     }
 
@@ -35,13 +34,18 @@ class AdminsProvider extends BackendListProvided<Admin> {
   Future<bool> addUserToDatabase({
     required String email,
     required String password,
+    required AccessLevel userType,
   }) async {
     try {
       final response = await sendMessageWithResponse(
         message: CommunicationProtocol(
           requestType: RequestType.registerUser,
           field: RequestFields.teacher,
-          data: {'email': email, 'password': password},
+          data: {
+            'email': email,
+            'password': password,
+            'user_type': userType.serialize(),
+          },
         ),
       );
 
@@ -51,13 +55,16 @@ class AdminsProvider extends BackendListProvided<Admin> {
     }
   }
 
-  Future<bool> deleteUserFromDatabase({required String email}) async {
+  Future<bool> deleteUserFromDatabase({
+    required String email,
+    required AccessLevel userType,
+  }) async {
     try {
       final response = await sendMessageWithResponse(
         message: CommunicationProtocol(
           requestType: RequestType.unregisterUser,
           field: RequestFields.teacher,
-          data: {'email': email},
+          data: {'email': email, 'user_type': userType.serialize()},
         ),
       );
 

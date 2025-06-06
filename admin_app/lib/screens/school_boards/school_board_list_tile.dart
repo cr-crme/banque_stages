@@ -44,8 +44,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
   bool _isExpanded = true;
   bool _isEditing = false;
   late final bool _canEdit =
-      (AuthProvider.of(context, listen: false).databaseAccessLevel ??
-          AccessLevel.teacher) >=
+      AuthProvider.of(context, listen: false).databaseAccessLevel >=
       AccessLevel.superAdmin;
 
   late final _nameController = TextEditingController(

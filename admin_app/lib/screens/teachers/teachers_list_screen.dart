@@ -130,7 +130,7 @@ class TeachersListScreen extends StatelessWidget {
               ),
             )
             .toList(),
-      AccessLevel.admin || AccessLevel.teacher || null =>
+      AccessLevel.admin || AccessLevel.teacher || AccessLevel.invalid =>
         schoolBoardTeachers.values.firstOrNull?.entries
                 .map(
                   (schoolEntry) => SchoolTeachersCard(

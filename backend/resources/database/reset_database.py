@@ -60,7 +60,7 @@ def add_super_admin_user(secret: str, secret_email: str) -> bool:
 
     query = f"""
     INSERT INTO admins (id, school_board_id, first_name, last_name, email, access_level) 
-    VALUES ('{id}', '', 'Super', 'Admin', '{secret_email}', 2);
+    VALUES ('{id}', '', 'Super', 'Admin', '{secret_email}', 3);
     """
     if not _perform_query(query):
         return False

@@ -7,6 +7,8 @@ import 'package:common/models/persons/person.dart';
 
 class Admin extends Person {
   final String schoolBoardId;
+  final bool hasRegisteredAccount;
+  bool get hasNotRegisteredAccount => !hasRegisteredAccount;
   final AccessLevel accessLevel;
 
   Admin({
@@ -15,6 +17,7 @@ class Admin extends Person {
     required super.middleName,
     required super.lastName,
     required this.schoolBoardId,
+    required this.hasRegisteredAccount,
     required super.email,
     required this.accessLevel,
   }) : super(dateBirth: null, phone: null, address: null);
@@ -24,6 +27,7 @@ class Admin extends Person {
         middleName: null,
         lastName: '',
         schoolBoardId: '-1',
+        hasRegisteredAccount: false,
         email: null,
         accessLevel: AccessLevel.teacher,
       );
@@ -32,6 +36,8 @@ class Admin extends Person {
 
   Admin.fromSerialized(super.map)
       : schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
+        hasRegisteredAccount =
+            BoolExt.from(map['has_registered_account']) ?? false,
         accessLevel = AccessLevel.fromSerialized(map['access_level']),
         super.fromSerialized();
 
@@ -39,6 +45,7 @@ class Admin extends Person {
   Map<String, dynamic> serializedMap() => super.serializedMap()
     ..addAll({
       'school_board_id': schoolBoardId.serialize(),
+      'has_registered_account': hasRegisteredAccount.serialize(),
       'access_level': accessLevel.serialize(),
     });
 
@@ -49,6 +56,7 @@ class Admin extends Person {
     String? middleName,
     String? lastName,
     String? schoolBoardId,
+    bool? hasRegisteredAccount,
     String? email,
     PhoneNumber? phone,
     Address? address,
@@ -61,6 +69,7 @@ class Admin extends Person {
         middleName: middleName ?? this.middleName,
         lastName: lastName ?? this.lastName,
         schoolBoardId: schoolBoardId ?? this.schoolBoardId,
+        hasRegisteredAccount: hasRegisteredAccount ?? this.hasRegisteredAccount,
         email: email ?? this.email,
         accessLevel: accessLevel ?? this.accessLevel,
       );
@@ -71,6 +80,7 @@ class Admin extends Person {
     if (data.keys.any((key) => ![
           'id',
           'school_board_id',
+          'has_registered_account',
           'first_name',
           'middle_name',
           'last_name',
@@ -88,6 +98,8 @@ class Admin extends Person {
       middleName: StringExt.from(data['middle_name']) ?? middleName,
       lastName: StringExt.from(data['last_name']) ?? lastName,
       schoolBoardId: StringExt.from(data['school_board_id']) ?? schoolBoardId,
+      hasRegisteredAccount:
+          BoolExt.from(data['has_registered_account']) ?? hasRegisteredAccount,
       email: StringExt.from(data['email']) ?? email,
       accessLevel: AccessLevel.fromSerialized(data['access_level']),
     );

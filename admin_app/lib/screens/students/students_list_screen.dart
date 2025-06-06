@@ -145,7 +145,7 @@ class StudentsListScreen extends StatelessWidget {
               ),
             )
             .toList(),
-      AccessLevel.admin || AccessLevel.teacher || null =>
+      AccessLevel.admin || AccessLevel.teacher || AccessLevel.invalid =>
         schoolBoardStudents.values.firstOrNull?.entries
                 .map(
                   (schoolEntry) => Column(

@@ -95,7 +95,7 @@ class SchoolBoardsListScreen extends StatelessWidget {
               ),
             )
             .toList(),
-      AccessLevel.admin || AccessLevel.teacher || null =>
+      AccessLevel.admin || AccessLevel.teacher || AccessLevel.invalid =>
         schoolBoards.firstOrNull?.schools
                 .map(
                   (school) => SchoolListTile(
