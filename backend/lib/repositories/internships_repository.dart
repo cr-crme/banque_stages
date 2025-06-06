@@ -27,7 +27,7 @@ abstract class InternshipsRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to get internships');
+          'User ${user.userId} does not have permission to get internships');
       throw InvalidRequestException(
           'You do not have permission to get internships');
     }
@@ -45,7 +45,7 @@ abstract class InternshipsRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to get internships');
+          'User ${user.userId} does not have permission to get internships');
       throw InvalidRequestException(
           'You do not have permission to get internships');
     }
@@ -71,7 +71,7 @@ abstract class InternshipsRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to put internships');
+          'User ${user.userId} does not have permission to put internships');
       throw InvalidRequestException(
           'You do not have permission to put internships');
     }
@@ -106,7 +106,7 @@ abstract class InternshipsRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified || user.accessLevel < AccessLevel.admin) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to delete internships');
+          'User ${user.userId} does not have permission to delete internships');
       throw InvalidRequestException(
           'You do not have permission to delete internships');
     }

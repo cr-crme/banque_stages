@@ -24,7 +24,7 @@ abstract class TeachersRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to get teachers');
+          'User ${user.userId} does not have permission to get teachers');
       throw InvalidRequestException(
           'You do not have permission to get teachers');
     }
@@ -42,7 +42,7 @@ abstract class TeachersRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to get teachers');
+          'User ${user.userId} does not have permission to get teachers');
       throw InvalidRequestException(
           'You do not have permission to get teachers');
     }
@@ -68,7 +68,7 @@ abstract class TeachersRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified || user.accessLevel < AccessLevel.admin) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to put teachers');
+          'User ${user.userId} does not have permission to put teachers');
       throw InvalidRequestException(
           'You do not have permission to put teachers');
     }
@@ -102,7 +102,7 @@ abstract class TeachersRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified || user.accessLevel < AccessLevel.admin) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to delete teachers');
+          'User ${user.userId} does not have permission to delete teachers');
       throw InvalidRequestException(
           'You do not have permission to delete teachers');
     }

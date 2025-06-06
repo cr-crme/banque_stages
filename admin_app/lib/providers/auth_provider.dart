@@ -55,6 +55,34 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> changePassword({
+    required String email,
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    if (!isAuthenticatorSignedIn) {
+      return Future.value(false);
+    }
+
+    try {
+      // First make sure the user is signed in with recent credentials
+      await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: oldPassword,
+      );
+
+      // Now update the password
+      await _firebaseAuth.currentUser!.updatePassword(newPassword);
+
+      shouldChangePassword = false;
+      notifyListeners();
+      return true;
+    } catch (error) {
+      debugPrint('Error changing password: $error');
+      return false;
+    }
+  }
+
   Future<String?> getAuthenticatorIdToken() async {
     if (!isAuthenticatorSignedIn) return null;
     return await _firebaseAuth.currentUser!.getIdToken();
@@ -68,6 +96,13 @@ class AuthProvider extends ChangeNotifier {
   String? get teacherId => _teacherId;
   set teacherId(String? id) {
     _teacherId = id;
+    notifyListeners();
+  }
+
+  bool? _shouldChangePassword;
+  bool? get shouldChangePassword => _shouldChangePassword;
+  set shouldChangePassword(bool? value) {
+    _shouldChangePassword = value;
     notifyListeners();
   }
 

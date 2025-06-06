@@ -404,13 +404,16 @@ Future<void> _getFromBackend(
   selector.addOrReplaceItems(protocol.data!, notify: true);
 }
 
+Future<void> _sendMessage({required CommunicationProtocol message}) async {
+  final encodedMessage = jsonEncode(message.serialize());
+  _socket?.send(encodedMessage);
+}
+
 Future<CommunicationProtocol> _sendMessageWithResponse({
   required CommunicationProtocol message,
 }) async {
   _completers[message.id] = Completer<CommunicationProtocol>();
-
-  final encodedMessage = jsonEncode(message.serialize());
-  _socket?.send(encodedMessage);
+  _sendMessage(message: message);
 
   final answer = await _completers[message.id]!.future.timeout(
     const Duration(seconds: 5),
@@ -453,13 +456,36 @@ Future<void> _incommingMessage(
           authProvider.schoolBoardId = protocol.data!['school_board_id'] ?? '';
           authProvider.schoolId = protocol.data!['school_id'] ?? '';
           authProvider.teacherId = protocol.data!['user_id'] ?? '';
+          authProvider.shouldChangePassword =
+              protocol.data!['should_change_password'] ?? false;
           authProvider.databaseAccessLevel = AccessLevel.fromSerialized(
             protocol.data!['access_level'],
           );
+
           _handshakeReceived = true;
           _socketId = protocol.socketId;
           for (final selector in _providerSelector.values) {
             selector.notify();
+          }
+
+          if (authProvider.shouldChangePassword!) {
+            while (authProvider.shouldChangePassword!) {
+              await Future.delayed(const Duration(milliseconds: 100));
+            }
+            if (!authProvider.shouldChangePassword!) {
+              final response = await _sendMessageWithResponse(
+                message: CommunicationProtocol(
+                  requestType: RequestType.changedPassword,
+                ),
+              );
+              if (response.response == Response.failure) {
+                throw Exception(
+                  'Error while processing the changed password request',
+                );
+              }
+              authProvider.shouldChangePassword = false;
+              break;
+            }
           }
           return;
         }
@@ -508,7 +534,9 @@ Future<void> _incommingMessage(
         }
       case RequestType.get:
       case RequestType.post:
-      case RequestType.register:
+      case RequestType.registerUser:
+      case RequestType.unregisterUser:
+      case RequestType.changedPassword:
         throw Exception('Unsupported request type: ${protocol.requestType}');
     }
   } catch (e) {

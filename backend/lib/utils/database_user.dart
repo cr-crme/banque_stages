@@ -2,16 +2,16 @@ import 'package:common/models/generic/access_level.dart';
 
 class DatabaseUser {
   bool get isVerified {
-    if (authenticatorId.isEmpty) return false;
+    if (_authenticatorId.isEmpty) return false;
     switch (accessLevel) {
       case AccessLevel.superAdmin:
-        return authenticatorId.isNotEmpty;
+        return _authenticatorId.isNotEmpty;
       case AccessLevel.admin:
-        return authenticatorId.isNotEmpty &&
+        return _authenticatorId.isNotEmpty &&
             schoolBoardId != null &&
             schoolBoardId!.isNotEmpty;
       case AccessLevel.teacher:
-        return authenticatorId.isNotEmpty &&
+        return _authenticatorId.isNotEmpty &&
             userId != null &&
             userId!.isNotEmpty &&
             schoolBoardId != null &&
@@ -23,39 +23,54 @@ class DatabaseUser {
 
   bool get isNotVerified => !isVerified;
   final String? userId;
-  final String authenticatorId;
+  final String _authenticatorId;
   final String? schoolBoardId;
   final String? schoolId;
+  final bool shouldChangePassword;
   final AccessLevel accessLevel;
 
   DatabaseUser._({
     required this.userId,
-    required this.authenticatorId,
+    required String authenticatorId,
     required this.schoolBoardId,
     required this.schoolId,
+    required this.shouldChangePassword,
     required this.accessLevel,
-  });
+  }) : _authenticatorId = authenticatorId;
 
   DatabaseUser.empty({
-    this.authenticatorId = '',
-  })  : userId = '',
+    String authenticatorId = '',
+  })  : _authenticatorId = authenticatorId,
+        userId = '',
         schoolBoardId = null,
         schoolId = null,
+        shouldChangePassword = false,
         accessLevel = AccessLevel.teacher;
 
   DatabaseUser copyWith({
     String? userId,
-    String? authenticatorId,
     String? schoolBoardId,
     String? schoolId,
+    bool? shouldChangePassword,
     AccessLevel? accessLevel,
   }) {
     return DatabaseUser._(
       userId: userId ?? this.userId,
-      authenticatorId: authenticatorId ?? this.authenticatorId,
+      authenticatorId: _authenticatorId,
       schoolBoardId: schoolBoardId ?? this.schoolBoardId,
       schoolId: schoolId ?? this.schoolId,
+      shouldChangePassword: shouldChangePassword ?? this.shouldChangePassword,
       accessLevel: accessLevel ?? this.accessLevel,
     );
+  }
+
+  Map<String, dynamic> serialize() {
+    return {
+      'user_id': userId,
+      'school_board_id': schoolBoardId,
+      'school_id': schoolId,
+      'should_change_password': shouldChangePassword,
+      'access_level': accessLevel.serialize(),
+    };
   }
 }

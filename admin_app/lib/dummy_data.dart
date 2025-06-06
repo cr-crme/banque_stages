@@ -189,7 +189,6 @@ Future<void> _addDummyAdmins(AdminsProvider admins) async {
   admins.add(
     Admin(
       id: DevAuth.devMyTeacherId,
-      authenticationId: DevAuth.devMyTeacherAuthenticationId,
       firstName: 'Jean',
       middleName: null,
       lastName: 'Dupont',
@@ -200,7 +199,6 @@ Future<void> _addDummyAdmins(AdminsProvider admins) async {
   );
   admins.add(
     Admin(
-      authenticationId: 'dummy_admin_id_1',
       firstName: 'Marie',
       middleName: null,
       lastName: 'Lefebvre',

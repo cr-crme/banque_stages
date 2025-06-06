@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 
 abstract class Screens {
   static const home = teachersListScreen;
+  static String previous = home;
 
   static const login = LoginScreen.route;
   static const schoolBoardsListScreen = SchoolBoardsListScreen.route;
@@ -49,32 +50,50 @@ final router = GoRouter(
     GoRoute(
       path: Screens.schoolBoardsListScreen,
       name: Screens.schoolBoardsListScreen,
-      builder: (context, state) => const SchoolBoardsListScreen(),
+      builder: (context, state) {
+        Screens.previous = Screens.schoolBoardsListScreen;
+        return const SchoolBoardsListScreen();
+      },
     ),
     GoRoute(
       path: Screens.adminsListScreen,
       name: Screens.adminsListScreen,
-      builder: (context, state) => const AdminsListScreen(),
+      builder: (context, state) {
+        Screens.previous = Screens.adminsListScreen;
+        return const AdminsListScreen();
+      },
     ),
     GoRoute(
       path: Screens.teachersListScreen,
       name: Screens.teachersListScreen,
-      builder: (context, state) => const TeachersListScreen(),
+      builder: (context, state) {
+        Screens.previous = Screens.teachersListScreen;
+        return const TeachersListScreen();
+      },
     ),
     GoRoute(
       path: Screens.studentsListScreen,
       name: Screens.studentsListScreen,
-      builder: (context, state) => const StudentsListScreen(),
+      builder: (context, state) {
+        Screens.previous = Screens.studentsListScreen;
+        return const StudentsListScreen();
+      },
     ),
     GoRoute(
       path: Screens.enterprisesListScreen,
       name: Screens.enterprisesListScreen,
-      builder: (context, state) => const EnterprisesListScreen(),
+      builder: (context, state) {
+        Screens.previous = Screens.enterprisesListScreen;
+        return const EnterprisesListScreen();
+      },
     ),
     GoRoute(
       path: Screens.internshipsListScreen,
       name: Screens.internshipsListScreen,
-      builder: (context, state) => const InternshipsListScreen(),
+      builder: (context, state) {
+        Screens.previous = Screens.internshipsListScreen;
+        return const InternshipsListScreen();
+      },
     ),
   ],
 );

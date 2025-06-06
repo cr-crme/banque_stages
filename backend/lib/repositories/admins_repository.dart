@@ -21,8 +21,8 @@ abstract class AdminsRepository implements RepositoryAbstract {
     required DatabaseUser user,
   }) async {
     if (user.accessLevel < AccessLevel.superAdmin) {
-      _logger.severe(
-          'User ${user.authenticatorId} does not have permission to get admins');
+      _logger
+          .severe('User ${user.userId} does not have permission to get admins');
       throw InvalidRequestException(
           'You do not have permission to get all administrators');
     }
@@ -39,8 +39,8 @@ abstract class AdminsRepository implements RepositoryAbstract {
     required DatabaseUser user,
   }) async {
     if (user.accessLevel < AccessLevel.superAdmin) {
-      _logger.severe(
-          'User ${user.authenticatorId} does not have permission to get admins');
+      _logger
+          .severe('User ${user.userId} does not have permission to get admins');
       throw InvalidRequestException(
           'You do not have permission to get all administrators');
     }
@@ -66,8 +66,8 @@ abstract class AdminsRepository implements RepositoryAbstract {
     required DatabaseUser user,
   }) async {
     if (user.accessLevel < AccessLevel.superAdmin) {
-      _logger.severe(
-          'User ${user.authenticatorId} does not have permission to put admins');
+      _logger
+          .severe('User ${user.userId} does not have permission to put admins');
       throw InvalidRequestException(
           'You do not have permission to get put administrators');
     }
@@ -102,7 +102,7 @@ abstract class AdminsRepository implements RepositoryAbstract {
   }) async {
     if (user.accessLevel < AccessLevel.superAdmin) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to delete admins');
+          'User ${user.userId} does not have permission to delete admins');
       throw InvalidRequestException(
           'You do not have permission to get delete administrators');
     }
@@ -113,8 +113,7 @@ abstract class AdminsRepository implements RepositoryAbstract {
       throw MissingDataException('Administrator not found');
     }
     if (admin.accessLevel >= AccessLevel.superAdmin) {
-      _logger.severe(
-          'User ${user.authenticatorId} tried to delete a super admin: $id');
+      _logger.severe('User ${user.userId} tried to delete a super admin: $id');
       throw InvalidRequestException('You cannot delete a super administrator');
     }
 
@@ -182,7 +181,6 @@ class MySqlAdminsRepository extends AdminsRepository {
         tableName: 'admins',
         data: {
           'id': admin.id.serialize(),
-          'authenticator_id': admin.authenticationId.serialize(),
           'school_board_id': admin.schoolBoardId.serialize(),
           'first_name': admin.firstName.serialize(),
           'middle_name': admin.middleName?.serialize(),
@@ -256,7 +254,6 @@ class AdminsRepositoryMock extends AdminsRepository {
   final _dummyDatabase = {
     '0': Admin(
       id: '0',
-      authenticationId: 'auth0',
       firstName: 'John',
       middleName: null,
       lastName: 'Doe',
@@ -266,7 +263,6 @@ class AdminsRepositoryMock extends AdminsRepository {
     ),
     '1': Admin(
       id: '1',
-      authenticationId: 'auth1',
       firstName: 'Jane',
       middleName: null,
       lastName: 'Doe',

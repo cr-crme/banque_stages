@@ -20,7 +20,7 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to get school boards');
+          'User ${user.userId} does not have permission to get school boards');
       throw InvalidRequestException(
           'You do not have permission to get school boards');
     }
@@ -38,7 +38,7 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to get school boards');
+          'User ${user.userId} does not have permission to get school boards');
       throw InvalidRequestException(
           'You do not have permission to get school boards');
     }
@@ -67,7 +67,7 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified || user.accessLevel < AccessLevel.superAdmin) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to put school boards');
+          'User ${user.userId} does not have permission to put school boards');
       throw InvalidRequestException(
           'You do not have permission to put school boards');
     }
@@ -102,7 +102,7 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified || user.accessLevel < AccessLevel.superAdmin) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to delete school boards');
+          'User ${user.userId} does not have permission to delete school boards');
       throw InvalidRequestException(
           'You do not have permission to delete school boards');
     }
@@ -325,7 +325,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     }
 
     _logger.warning(
-        'The school with id: $schoolId is being deleted by user: ${user.authenticatorId}');
+        'The school with id: $schoolId is being deleted by user: ${user.userId}');
     await MySqlHelpers.performDeleteQuery(
       connection: connection,
       tableName: 'entities',

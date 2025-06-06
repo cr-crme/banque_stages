@@ -6,13 +6,11 @@ import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/models/persons/person.dart';
 
 class Admin extends Person {
-  final String authenticationId;
   final String schoolBoardId;
   final AccessLevel accessLevel;
 
   Admin({
     super.id,
-    required this.authenticationId,
     required super.firstName,
     required super.middleName,
     required super.lastName,
@@ -22,7 +20,6 @@ class Admin extends Person {
   }) : super(dateBirth: null, phone: null, address: null);
 
   static Admin get empty => Admin(
-        authenticationId: '',
         firstName: '',
         middleName: null,
         lastName: '',
@@ -34,15 +31,13 @@ class Admin extends Person {
   bool get isEmpty => firstName.isEmpty && lastName.isEmpty;
 
   Admin.fromSerialized(super.map)
-      : authenticationId = StringExt.from(map['authentication_id']) ?? '',
-        schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
+      : schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
         accessLevel = AccessLevel.fromSerialized(map['access_level']),
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => super.serializedMap()
     ..addAll({
-      'authentication_id': authenticationId.serialize(),
       'school_board_id': schoolBoardId.serialize(),
       'access_level': accessLevel.serialize(),
     });
@@ -50,7 +45,6 @@ class Admin extends Person {
   @override
   Admin copyWith({
     String? id,
-    String? authenticationId,
     String? firstName,
     String? middleName,
     String? lastName,
@@ -63,7 +57,6 @@ class Admin extends Person {
   }) =>
       Admin(
         id: id ?? this.id,
-        authenticationId: authenticationId ?? this.authenticationId,
         firstName: firstName ?? this.firstName,
         middleName: middleName ?? this.middleName,
         lastName: lastName ?? this.lastName,
@@ -77,7 +70,6 @@ class Admin extends Person {
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => ![
           'id',
-          'authentication_id',
           'school_board_id',
           'first_name',
           'middle_name',
@@ -92,8 +84,6 @@ class Admin extends Person {
     }
     return Admin(
       id: StringExt.from(data['id']) ?? id,
-      authenticationId:
-          StringExt.from(data['authentication_id']) ?? authenticationId,
       firstName: StringExt.from(data['first_name']) ?? firstName,
       middleName: StringExt.from(data['middle_name']) ?? middleName,
       lastName: StringExt.from(data['last_name']) ?? lastName,

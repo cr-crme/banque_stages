@@ -92,11 +92,11 @@ CREATE TABLE phone_numbers (
 
 CREATE TABLE admins (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
-    authenticator_id VARCHAR(50) NOT NULL,
     school_board_id VARCHAR(36) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     middle_name VARCHAR(50),
     last_name VARCHAR(50) NOT NULL,
+    should_change_password BOOLEAN NOT NULL DEFAULT TRUE,
     email VARCHAR(100) NOT NULL,
     access_level INT NOT NULL,
     FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
@@ -171,6 +171,7 @@ CREATE TABLE teachers (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     school_board_id VARCHAR(36) NOT NULL,
     school_id VARCHAR(36) NOT NULL, 
+    should_change_password BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (id) REFERENCES persons(id) ON DELETE CASCADE,
     FOREIGN KEY (school_board_id) REFERENCES school_boards(id) ON DELETE CASCADE,
     FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE CASCADE

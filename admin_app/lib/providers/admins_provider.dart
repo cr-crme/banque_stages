@@ -23,7 +23,7 @@ class AdminsProvider extends BackendListProvided<Admin> {
 
   void initializeAuth(AuthProvider auth) {
     if (!auth.isFullySignedIn ||
-        (auth.databaseAccessLevel ?? AccessLevel.teacher) <=
+        (auth.databaseAccessLevel ?? AccessLevel.teacher) <
             AccessLevel.superAdmin) {
       return;
     }
@@ -32,16 +32,32 @@ class AdminsProvider extends BackendListProvided<Admin> {
     auth.addListener(() => initializeFetchingData(authProvider: auth));
   }
 
-  Future<bool> createUserWithEmailAndPassword({
+  Future<bool> addUserToDatabase({
     required String email,
     required String password,
   }) async {
     try {
       final response = await sendMessageWithResponse(
         message: CommunicationProtocol(
-          requestType: RequestType.register,
+          requestType: RequestType.registerUser,
           field: RequestFields.teacher,
           data: {'email': email, 'password': password},
+        ),
+      );
+
+      return response.response == Response.success;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteUserFromDatabase({required String email}) async {
+    try {
+      final response = await sendMessageWithResponse(
+        message: CommunicationProtocol(
+          requestType: RequestType.unregisterUser,
+          field: RequestFields.teacher,
+          data: {'email': email},
         ),
       );
 

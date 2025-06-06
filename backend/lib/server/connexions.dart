@@ -55,17 +55,6 @@ class Connexions {
       return false;
     }
 
-    // Send the handshake to the client
-    _send(client,
-        message: CommunicationProtocol(
-            requestType: RequestType.handshake,
-            response: Response.success,
-            data: {
-              'school_board_id': _clients[client]!.schoolBoardId,
-              'school_id': _clients[client]!.schoolId,
-              'user_id': _clients[client]!.userId,
-              'access_level': _clients[client]!.accessLevel.serialize(),
-            }));
     return true;
   }
 
@@ -85,6 +74,13 @@ class Connexions {
       switch (protocol.requestType) {
         case RequestType.handshake:
           await _handleHandshake(client, protocol: protocol);
+
+          // Send the handshake to the client
+          _send(client,
+              message: CommunicationProtocol(
+                  requestType: RequestType.handshake,
+                  response: Response.success,
+                  data: _clients[client]!.serialize()));
           break;
 
         case RequestType.get:
@@ -158,7 +154,14 @@ class Connexions {
           }
 
           break;
-        case RequestType.register:
+        case RequestType.registerUser:
+          // Limit this to admins only
+          if ((_clients[client]?.accessLevel ?? AccessLevel.teacher) <
+              AccessLevel.admin) {
+            throw ConnexionRefusedException(
+                'Client ${client.hashCode} is not authorized to register users');
+          }
+
           final email = protocol.data?['email'] as String?;
           final password = protocol.data?['password'] as String?;
 
@@ -167,12 +170,55 @@ class Connexions {
             throw ConnexionRefusedException(
                 'Firebase app is not initialized. Please check your configuration.');
           }
-          // TODO TEST THIS
-          var user =
-              await app.auth().createUser(email: email, password: password);
-          var link = await app.auth().generateSignInWithEmailLink(
-              email!, ActionCodeSettings(url: 'https://example.com'));
+          await app.auth().createUser(email: email, password: password);
 
+          await _send(client,
+              message: CommunicationProtocol(
+                  id: protocol.id,
+                  requestType: RequestType.response,
+                  field: protocol.field,
+                  response: Response.success));
+
+        case RequestType.unregisterUser:
+          // Limit this to admins only
+          if ((_clients[client]?.accessLevel ?? AccessLevel.teacher) <
+              AccessLevel.admin) {
+            throw ConnexionRefusedException(
+                'Client ${client.hashCode} is not authorized to unregister users');
+          }
+
+          final email = protocol.data?['email'] as String?;
+
+          final app = FirebaseAdmin.instance.app();
+          if (email == null || app == null) {
+            throw ConnexionRefusedException(
+                'Firebase app is not initialized. Please check your configuration.');
+          }
+
+          final user = await app.auth().getUserByEmail(email);
+          await app.auth().deleteUser(user.uid);
+
+          await _send(client,
+              message: CommunicationProtocol(
+                  id: protocol.id,
+                  requestType: RequestType.response,
+                  field: protocol.field,
+                  response: Response.success));
+
+        case RequestType.changedPassword:
+          final tableName =
+              switch ((_clients[client]?.accessLevel ?? AccessLevel.teacher)) {
+            AccessLevel.teacher => 'teachers',
+            AccessLevel.admin || AccessLevel.superAdmin => 'admins',
+          };
+          MySqlHelpers.performUpdateQuery(
+            connection: _database.connection,
+            tableName: tableName,
+            filters: {'id': _clients[client]!.userId!},
+            data: {
+              'should_change_password': false,
+            },
+          );
           await _send(client,
               message: CommunicationProtocol(
                   id: protocol.id,
@@ -251,8 +297,8 @@ class Connexions {
     }
 
     // Get the user information from the database to first verify its identity
-    final user =
-        await _getUser(_database.connection, id: authenticatorId, email: email);
+    final user = await _getValidatedUser(_database.connection,
+        id: authenticatorId, email: email);
     if (user == null) throw ConnexionRefusedException('Invalid token payload');
     _clients[client] = user;
   }
@@ -275,7 +321,7 @@ class Connexions {
   }
 }
 
-Future<DatabaseUser?> _getUser(MySqlConnection connection,
+Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
     {required String id, required String email}) async {
   // There are 3 possible cases:
   // 1. The user has previously connected so they will be in the 'users' table.
@@ -301,34 +347,24 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
     filters: {'email': email},
     subqueries: [
       MySqlSelectSubQuery(
-        dataTableName: 'teachers',
-        idNameToDataTable: 'id',
-        fieldsToFetch: ['school_id'],
-      )
+          dataTableName: 'teachers',
+          idNameToDataTable: 'id',
+          fieldsToFetch: ['school_id'])
     ],
   ) as List)
       .firstOrNull as Map<String, dynamic>?;
-  if (users != null &&
-      (users['authenticator_id'] == null ||
-          (users['authenticator_id'] as String).isEmpty)) {
-    // If authenticator_id is empty, it means that user was added but never logged in
-    // Add the id to the user object
-    await MySqlHelpers.performUpdateQuery(
-        connection: connection,
-        tableName: 'admins',
-        filters: {'email': email},
-        data: {'authenticator_id': id});
-  }
 
   user = user.copyWith(
     userId: users?['id'],
     schoolBoardId: users?['school_board_id'],
     schoolId: (users?['teachers'] as List?)?.firstOrNull?['school_id'],
+    shouldChangePassword: users?['should_change_password'] == 1,
     accessLevel: AccessLevel.fromSerialized(users?['access_level']),
   );
+  // This will be true if the user is an admin or a super admin
   if (user.isVerified) return user;
 
-  // If there is information missing in the user structure, then we are not in case 1
+  // If there is information missing in the user structure, then we are not admin (case 1)
   // We therefore try to log using the information from the 'teachers' table
   final teacher = (await MySqlHelpers.performSelectQuery(
           connection: connection,
@@ -344,21 +380,28 @@ Future<DatabaseUser?> _getUser(MySqlConnection connection,
         MySqlSelectSubQuery(
           dataTableName: 'teachers',
           idNameToDataTable: 'id',
-          fieldsToFetch: ['id', 'school_board_id', 'school_id'],
+          fieldsToFetch: [
+            'id',
+            'school_board_id',
+            'school_id',
+            'should_change_password'
+          ],
         ),
       ]) as List)
       .firstOrNull;
-  // If there is no teacher with that email, we are in case 3, which means this is not a valid user
+  // If there is no teacher with that email, the user is not valid (case 3)
   if (teacher == null) return null;
   (teacher as Map).addAll((teacher['teachers'] as List).firstOrNull);
 
-  // Otherwise, we probably are in the case 2, so we can login them and augment the users table
+  // Otherwise, we probably are logging in a teacher (case 2
   user = user.copyWith(
     userId: teacher['id'],
     schoolBoardId: teacher['school_board_id'],
     schoolId: teacher['school_id'],
     accessLevel: AccessLevel.teacher,
+    shouldChangePassword: teacher['should_change_password'] == 1,
   );
+
   // Just make sure, even though at this point it should always be verified
   if (user.isNotVerified) return null;
   return user;

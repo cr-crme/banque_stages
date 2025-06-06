@@ -28,7 +28,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to get enterprises');
+          'User ${user.userId} does not have permission to get enterprises');
       throw InvalidRequestException(
           'You do not have permission to get enterprises');
     }
@@ -46,7 +46,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to get enterprises');
+          'User ${user.userId} does not have permission to get enterprises');
       throw InvalidRequestException(
           'You do not have permission to get enterprises');
     }
@@ -73,7 +73,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to put new enterprises');
+          'User ${user.userId} does not have permission to put new enterprises');
       throw InvalidRequestException(
           'You do not have permission to put new enterprises');
     }
@@ -117,7 +117,7 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
   }) async {
     if (user.isNotVerified || user.accessLevel < AccessLevel.admin) {
       _logger.severe(
-          'User ${user.authenticatorId} does not have permission to delete enterprises');
+          'User ${user.userId} does not have permission to delete enterprises');
       throw InvalidRequestException(
           'You do not have permission to delete enterprises');
     }
@@ -661,7 +661,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       if (!enterprise.jobs.map((e) => e.id).contains(job.id)) {
         if (user.accessLevel < AccessLevel.admin) {
           _logger.severe(
-              'User ${user.authenticatorId} does not have permission to remove a job from an enterprise');
+              'User ${user.userId} does not have permission to remove a job from an enterprise');
           continue;
         }
         await _deleteInternshipsFromJob(job.id,
@@ -703,7 +703,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       if (differences.contains('specialization_id')) {
         if (user.accessLevel < AccessLevel.admin) {
           _logger.severe(
-              'User ${user.authenticatorId} does not have permission to update the specialization id of a job');
+              'User ${user.userId} does not have permission to update the specialization id of a job');
         } else {
           toUpdate['specialization_id'] = job.specialization.id.serialize();
         }

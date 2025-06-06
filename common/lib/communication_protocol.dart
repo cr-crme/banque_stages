@@ -23,7 +23,9 @@ enum RequestType {
   delete,
   response,
   update,
-  register,
+  registerUser,
+  unregisterUser,
+  changedPassword,
 }
 
 enum Response {
