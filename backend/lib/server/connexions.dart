@@ -162,12 +162,9 @@ class Connexions {
           final myAccessLevel =
               _clients[client]?.accessLevel ?? AccessLevel.invalid;
           final email = protocol.data?['email'] as String?;
-          final password = protocol.data?['password'] as String?;
           final userType =
               AccessLevel.fromSerialized(protocol.data?['user_type']);
-          if (email == null ||
-              password == null ||
-              userType == AccessLevel.invalid) {
+          if (email == null || userType == AccessLevel.invalid) {
             throw ConnexionRefusedException('Invalid request data.');
           }
 
@@ -341,29 +338,6 @@ class Connexions {
             ));
           }
 
-        case RequestType.changedPassword:
-          final tableName =
-              switch ((_clients[client]?.accessLevel ?? AccessLevel.invalid)) {
-            AccessLevel.invalid => throw ConnexionRefusedException(
-                'Client ${client.hashCode} is not authorized to change password.'),
-            AccessLevel.teacher => 'teachers',
-            AccessLevel.admin || AccessLevel.superAdmin => 'admins',
-          };
-          MySqlHelpers.performUpdateQuery(
-            connection: _database.connection,
-            tableName: tableName,
-            filters: {'id': _clients[client]!.userId!},
-            data: {
-              'should_change_password': false,
-            },
-          );
-          await _send(client,
-              message: CommunicationProtocol(
-                  id: protocol.id,
-                  requestType: RequestType.response,
-                  field: protocol.field,
-                  response: Response.success));
-
         case RequestType.response:
         case RequestType.update:
           _logger.finer(
@@ -485,7 +459,6 @@ Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
     userId: users?['id'],
     schoolBoardId: users?['school_board_id'],
     schoolId: (users?['teachers'] as List?)?.firstOrNull?['school_id'],
-    shouldChangePassword: users?['should_change_password'] == 1,
     accessLevel: AccessLevel.fromSerialized(users?['access_level']),
   );
   // This will be true if the user is an admin or a super admin
@@ -505,7 +478,6 @@ Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
     schoolBoardId: teacher['school_board_id'],
     schoolId: teacher['school_id'],
     accessLevel: AccessLevel.teacher,
-    shouldChangePassword: teacher['should_change_password'] == 1,
   );
 
   // Just make sure, even though at this point it should always be verified
@@ -535,7 +507,6 @@ Future<Map<String, dynamic>?> _getTeacherFromDatabase(
             'id',
             'school_board_id',
             'school_id',
-            'should_change_password',
             'has_registered_account',
           ],
         ),
@@ -581,7 +552,7 @@ Future<void> _sendPasswordResetEmail(String email, String apiKey) async {
   );
 
   if (response.statusCode == 200) {
-    print('Password reset email sent to $email');
+    _logger.info('Password initialization email sent to $email');
   } else {
     throw ConnexionRefusedException('Failed to send password reset email');
   }

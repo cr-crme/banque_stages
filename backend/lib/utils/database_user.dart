@@ -28,7 +28,6 @@ class DatabaseUser {
   final String _authenticatorId;
   final String? schoolBoardId;
   final String? schoolId;
-  final bool shouldChangePassword;
   final AccessLevel accessLevel;
 
   DatabaseUser._({
@@ -36,7 +35,6 @@ class DatabaseUser {
     required String authenticatorId,
     required this.schoolBoardId,
     required this.schoolId,
-    required this.shouldChangePassword,
     required this.accessLevel,
   }) : _authenticatorId = authenticatorId;
 
@@ -46,14 +44,12 @@ class DatabaseUser {
         userId = '',
         schoolBoardId = null,
         schoolId = null,
-        shouldChangePassword = false,
         accessLevel = AccessLevel.invalid;
 
   DatabaseUser copyWith({
     String? userId,
     String? schoolBoardId,
     String? schoolId,
-    bool? shouldChangePassword,
     AccessLevel? accessLevel,
   }) {
     return DatabaseUser._(
@@ -61,7 +57,6 @@ class DatabaseUser {
       authenticatorId: _authenticatorId,
       schoolBoardId: schoolBoardId ?? this.schoolBoardId,
       schoolId: schoolId ?? this.schoolId,
-      shouldChangePassword: shouldChangePassword ?? this.shouldChangePassword,
       accessLevel: accessLevel ?? this.accessLevel,
     );
   }
@@ -71,7 +66,6 @@ class DatabaseUser {
       'user_id': userId,
       'school_board_id': schoolBoardId,
       'school_id': schoolId,
-      'should_change_password': shouldChangePassword,
       'access_level': accessLevel.serialize(),
     };
   }

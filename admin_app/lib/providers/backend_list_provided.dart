@@ -460,8 +460,6 @@ Future<void> _incommingMessage(
           authProvider.schoolBoardId = protocol.data!['school_board_id'] ?? '';
           authProvider.schoolId = protocol.data!['school_id'] ?? '';
           authProvider.teacherId = protocol.data!['user_id'] ?? '';
-          authProvider.shouldChangePassword =
-              protocol.data!['should_change_password'] ?? false;
           authProvider.databaseAccessLevel = AccessLevel.fromSerialized(
             protocol.data!['access_level'],
           );
@@ -472,25 +470,6 @@ Future<void> _incommingMessage(
             selector.notify();
           }
 
-          if (authProvider.shouldChangePassword!) {
-            while (authProvider.shouldChangePassword!) {
-              await Future.delayed(const Duration(milliseconds: 100));
-            }
-            if (!authProvider.shouldChangePassword!) {
-              final response = await _sendMessageWithResponse(
-                message: CommunicationProtocol(
-                  requestType: RequestType.changedPassword,
-                ),
-              );
-              if (response.response == Response.failure) {
-                throw Exception(
-                  'Error while processing the changed password request',
-                );
-              }
-              authProvider.shouldChangePassword = false;
-              break;
-            }
-          }
           return;
         }
       case RequestType.response:
@@ -540,7 +519,6 @@ Future<void> _incommingMessage(
       case RequestType.post:
       case RequestType.registerUser:
       case RequestType.unregisterUser:
-      case RequestType.changedPassword:
         throw Exception('Unsupported request type: ${protocol.requestType}');
     }
   } catch (e) {

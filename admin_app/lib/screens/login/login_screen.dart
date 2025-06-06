@@ -58,18 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isTransitioning = false;
   Future<void> _performHasSignedId() async {
-    final authProvider = AuthProvider.of(context, listen: false);
-    if (authProvider.shouldChangePassword!) {
-      await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder:
-            (_) =>
-                _ChangePasswordDialog(email: authProvider.currentUser!.email!),
-      );
-    }
-
-    if (!mounted) return;
     GoRouter.of(context).goNamed(Screens.home);
   }
 
@@ -155,96 +143,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _ChangePasswordDialog extends StatefulWidget {
-  const _ChangePasswordDialog({required this.email});
-
-  final String email;
-
-  @override
-  State<_ChangePasswordDialog> createState() => _ChangePasswordDialogState();
-}
-
-class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
-  final _formKey = GlobalKey<FormState>();
-  String? _oldPassword;
-  String? _newPassword;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Changer le mot de passe'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Ancien mot de passe',
-              ),
-              validator:
-                  (value) =>
-                      value!.isEmpty
-                          ? 'Veuillez entrer votre ancien mot de passe'
-                          : null,
-              obscureText: true,
-              onChanged: (value) => _oldPassword = value,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Nouveau mot de passe',
-              ),
-              validator: FormService.passwordValidator,
-              obscureText: true,
-              onChanged: (value) => _newPassword = value,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Confirmer le nouveau mot de passe',
-              ),
-              validator: (value) {
-                if (value != _newPassword) {
-                  return 'Les mots de passe ne correspondent pas';
-                }
-                return null;
-              },
-              obscureText: true,
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              final result = await AuthProvider.of(
-                context,
-                listen: false,
-              ).changePassword(
-                email: widget.email,
-                oldPassword: _oldPassword!,
-                newPassword: _newPassword!,
-              );
-              if (!context.mounted) return;
-
-              if (!result) {
-                showSnackBar(
-                  context,
-                  message: 'Échec du changement de mot de passe',
-                );
-                return;
-              } else {
-                Navigator.of(context).pop();
-              }
-            }
-          },
-          child: const Text('Changer'),
-        ),
-      ],
     );
   }
 }

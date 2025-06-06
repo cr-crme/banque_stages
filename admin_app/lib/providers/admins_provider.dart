@@ -33,7 +33,6 @@ class AdminsProvider extends BackendListProvided<Admin> {
 
   Future<bool> addUserToDatabase({
     required String email,
-    required String password,
     required AccessLevel userType,
   }) async {
     try {
@@ -41,11 +40,7 @@ class AdminsProvider extends BackendListProvided<Admin> {
         message: CommunicationProtocol(
           requestType: RequestType.registerUser,
           field: RequestFields.teacher,
-          data: {
-            'email': email,
-            'password': password,
-            'user_type': userType.serialize(),
-          },
+          data: {'email': email, 'user_type': userType.serialize()},
         ),
       );
 

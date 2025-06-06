@@ -262,7 +262,6 @@ class AdminListTileState extends State<AdminListTile> {
                 final admins = AdminsProvider.of(context, listen: false);
                 final isSuccess = await admins.addUserToDatabase(
                   email: _emailController.text,
-                  password: '123456789',
                   userType: AccessLevel.admin,
                 );
                 if (!mounted) return;
