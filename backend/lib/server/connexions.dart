@@ -11,6 +11,7 @@ import 'package:common/exceptions.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/utils.dart';
 import 'package:firebase_admin/firebase_admin.dart';
+import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -21,13 +22,16 @@ class Connexions {
   int get clientCount => _clients.length;
   final DatabaseManager _database;
   final Duration _timeout;
+  final String _firebaseApiKey;
 
   // coverage:ignore-start
   Connexions({
     Duration timeout = const Duration(seconds: 5),
     required DatabaseManager database,
+    required String firebaseApiKey,
   })  : _timeout = timeout,
-        _database = database;
+        _database = database,
+        _firebaseApiKey = firebaseApiKey;
   // coverage:ignore-end
 
   Future<bool> add(WebSocket client) async {
@@ -210,7 +214,8 @@ class Connexions {
 
           // Register the user in Firebase
           try {
-            await app.auth().createUser(email: email, password: password);
+            await app.auth().createUser(email: email, emailVerified: false);
+            await _sendPasswordResetEmail(email, _firebaseApiKey);
           } on FirebaseAuthError catch (e) {
             if (e.code == 'auth/email-already-exists') {
               // Continue as it means the user is registered
@@ -559,4 +564,25 @@ Future<Map<String, dynamic>?> _getAdminFromDatabase(
     ],
   ) as List)
       .firstOrNull as Map<String, dynamic>?;
+}
+
+Future<void> _sendPasswordResetEmail(String email, String apiKey) async {
+  final uri = Uri.parse(
+    'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=$apiKey',
+  );
+
+  final response = await http.post(
+    uri,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'requestType': 'PASSWORD_RESET',
+      'email': email,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    print('Password reset email sent to $email');
+  } else {
+    throw ConnexionRefusedException('Failed to send password reset email');
+  }
 }

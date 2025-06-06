@@ -12,15 +12,17 @@ import 'package:test/test.dart';
 import '../mockers/http_request_mock.dart';
 
 Connexions get _mockedConnexions => Connexions(
-        database: DatabaseManager(
-      connection: null, // No real database connection in tests
-      schoolBoardsDatabase: SchoolBoardsRepositoryMock(),
-      adminsDatabase: AdminsRepositoryMock(),
-      teachersDatabase: TeachersRepositoryMock(),
-      studentsDatabase: StudentsRepositoryMock(),
-      enterprisesDatabase: EnterprisesRepositoryMock(),
-      internshipsDatabase: InternshipsRepositoryMock(),
-    ));
+      database: DatabaseManager(
+        connection: null, // No real database connection in tests
+        schoolBoardsDatabase: SchoolBoardsRepositoryMock(),
+        adminsDatabase: AdminsRepositoryMock(),
+        teachersDatabase: TeachersRepositoryMock(),
+        studentsDatabase: StudentsRepositoryMock(),
+        enterprisesDatabase: EnterprisesRepositoryMock(),
+        internshipsDatabase: InternshipsRepositoryMock(),
+      ),
+      firebaseApiKey: '',
+    );
 
 void main() {
   test('Send an a preflight request', () async {

@@ -16,12 +16,18 @@
             "type": "dart",
             "program": "app/lib/main.dart",
             "preLaunchTask": "Run Backend Server",
+            "env": {
+                "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
+            },
         },
         {
             "name": "Backend",
             "request": "launch",
             "type": "dart",
             "program": "backend/bin/backend.dart",
+            "env": {
+                "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
+            },
         },
         {
             "name": "Admin Banque de Stages ",
@@ -35,6 +41,9 @@
             "type": "dart",
             "program": "admin_app/lib/main.dart",
             "preLaunchTask": "Run Backend Server",
+            "env": {
+                "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
+            },
         },
         {
             "name": "Banque de Stages (test widgets)",
@@ -49,9 +58,9 @@
             "program": "backend/resources/database/reset_database.py",
             "console": "integratedTerminal",
             "env": {
-                // This id refers to the aa@aa.aa account in the dummy database
-                "BANQUE_STAGE_SUPERUSER_ID": "1VNTBNj4jePZA2CGkbVJtbB8x1t2",
-                "BANQUE_STAGE_SUPERUSER_EMAIL": "aa@aa.aa",
+                "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
+                "BANQUE_STAGE_SUPERADMIN_EMAIL": "<PUT EMAIL OF THE SUPERADMIN ACCOUNT HERE>",
+                "BANQUE_STAGE_SUPERADMIN_ID": "<PUT ID OF THE SUPERADMIN ACCOUNT HERE>",
             },
         },
     ]

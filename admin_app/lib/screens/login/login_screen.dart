@@ -129,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             validator: FormService.emailValidator,
                             keyboardType: TextInputType.emailAddress,
-                            onSaved: (email) => _email = email!,
+                            onSaved: (email) => _email = email,
                           ),
                           const SizedBox(height: 8),
                           TextFormField(
@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
-                            onSaved: (function) => _password = function!,
+                            onSaved: (password) => _password = password,
                           ),
                           const SizedBox(height: 16),
                           ElevatedButton(

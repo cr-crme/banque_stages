@@ -80,14 +80,14 @@ def _perform_query(query: str) -> bool:
 
 
 if __name__ == "__main__":
-    # Get the secret from BANQUE_STAGE_SUPERUSER_ID environment variable
-    secret = os.getenv("BANQUE_STAGE_SUPERUSER_ID")
+    # Get the secret from BANQUE_STAGE_SUPERADMIN_ID environment variable
+    secret = os.getenv("BANQUE_STAGE_SUPERADMIN_ID")
     if not secret:
-        print("Environment variable BANQUE_STAGE_SUPERUSER_ID is not set.")
+        print("Environment variable BANQUE_STAGE_SUPERADMIN_ID is not set.")
         sys.exit(1)
-    secret_email = os.getenv("BANQUE_STAGE_SUPERUSER_EMAIL")
+    secret_email = os.getenv("BANQUE_STAGE_SUPERADMIN_EMAIL")
     if not secret_email:
-        print("Environment variable BANQUE_STAGE_SUPERUSER_EMAIL is not set.")
+        print("Environment variable BANQUE_STAGE_SUPERADMIN_EMAIL is not set.")
         sys.exit(1)
 
     main(secret, secret_email)

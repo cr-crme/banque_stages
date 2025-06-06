@@ -69,3 +69,7 @@ utilities/
 coverage/
 
 backendFirebaseServiceAccountKey.json
+
+.vscode/launch.json
+
+backend/.vscode/launch.json

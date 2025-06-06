@@ -34,6 +34,12 @@ void main() async {
           ServiceAccountCredential('backendFirebaseServiceAccountKey.json'),
     ),
   );
+  // Get the Firebase API key from the environment variable
+  final firebaseApiKey = Platform.environment['FIREBASE_WEB_API_KEY'];
+  if (firebaseApiKey == null || firebaseApiKey.isEmpty) {
+    _logger.severe('FIREBASE_WEB_API_KEY environment variable is not set.');
+    exit(1);
+  }
 
   // Set up the database backend
   final databaseBackend = DatabaseBackend.mysql;
@@ -56,36 +62,40 @@ void main() async {
   await Future.delayed(
       Duration(milliseconds: 100)); // Give a bit of time just in case
   final connexions = Connexions(
+      firebaseApiKey: firebaseApiKey,
       database: DatabaseManager(
-    connection: connection!,
-    schoolBoardsDatabase: switch (databaseBackend) {
-      DatabaseBackend.mysql =>
-        MySqlSchoolBoardsRepository(connection: connection),
-      DatabaseBackend.mock => SchoolBoardsRepositoryMock()
-    },
-    adminsDatabase: switch (databaseBackend) {
-      DatabaseBackend.mysql => MySqlAdminsRepository(connection: connection),
-      DatabaseBackend.mock => AdminsRepositoryMock()
-    },
-    teachersDatabase: switch (databaseBackend) {
-      DatabaseBackend.mysql => MySqlTeachersRepository(connection: connection),
-      DatabaseBackend.mock => TeachersRepositoryMock()
-    },
-    studentsDatabase: switch (databaseBackend) {
-      DatabaseBackend.mysql => MySqlStudentsRepository(connection: connection),
-      DatabaseBackend.mock => StudentsRepositoryMock()
-    },
-    enterprisesDatabase: switch (databaseBackend) {
-      DatabaseBackend.mysql =>
-        MySqlEnterprisesRepository(connection: connection),
-      DatabaseBackend.mock => EnterprisesRepositoryMock()
-    },
-    internshipsDatabase: switch (databaseBackend) {
-      DatabaseBackend.mysql =>
-        MySqlInternshipsRepository(connection: connection),
-      DatabaseBackend.mock => InternshipsRepositoryMock()
-    },
-  ));
+        connection: connection!,
+        schoolBoardsDatabase: switch (databaseBackend) {
+          DatabaseBackend.mysql =>
+            MySqlSchoolBoardsRepository(connection: connection),
+          DatabaseBackend.mock => SchoolBoardsRepositoryMock()
+        },
+        adminsDatabase: switch (databaseBackend) {
+          DatabaseBackend.mysql =>
+            MySqlAdminsRepository(connection: connection),
+          DatabaseBackend.mock => AdminsRepositoryMock()
+        },
+        teachersDatabase: switch (databaseBackend) {
+          DatabaseBackend.mysql =>
+            MySqlTeachersRepository(connection: connection),
+          DatabaseBackend.mock => TeachersRepositoryMock()
+        },
+        studentsDatabase: switch (databaseBackend) {
+          DatabaseBackend.mysql =>
+            MySqlStudentsRepository(connection: connection),
+          DatabaseBackend.mock => StudentsRepositoryMock()
+        },
+        enterprisesDatabase: switch (databaseBackend) {
+          DatabaseBackend.mysql =>
+            MySqlEnterprisesRepository(connection: connection),
+          DatabaseBackend.mock => EnterprisesRepositoryMock()
+        },
+        internshipsDatabase: switch (databaseBackend) {
+          DatabaseBackend.mysql =>
+            MySqlInternshipsRepository(connection: connection),
+          DatabaseBackend.mock => InternshipsRepositoryMock()
+        },
+      ));
   final requestHandler = HttpRequestHandler(connexions: connexions);
   _logger.info('Waiting for requests...');
   await for (HttpRequest request in server) {
