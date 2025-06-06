@@ -28,6 +28,20 @@ extension StringExt on String {
   static String? from(element) => element?.toString();
 }
 
+extension BoolExt on bool {
+  bool serialize() => this;
+
+  static bool? from(element) {
+    if (element is bool) {
+      return element;
+    } else if (element is int) {
+      return element != 0;
+    } else {
+      return null;
+    }
+  }
+}
+
 extension IntExt on int {
   int serialize() => this;
 

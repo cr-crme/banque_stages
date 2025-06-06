@@ -41,6 +41,7 @@ Teacher dummyTeacher(
       lastName: 'Jacques',
       schoolBoardId: schoolBoardId,
       schoolId: schoolId,
+      hasRegisteredAccount: false,
       groups: groups,
       email: 'peter.john.jakob@test.com',
       phone: dummyPhoneNumber(),

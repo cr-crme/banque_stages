@@ -366,6 +366,7 @@ Future<void> _incommingMessage(message) async {
         }
       case RequestType.registerUser:
       case RequestType.unregisterUser:
+      case RequestType.changedPassword:
       case RequestType.get:
       case RequestType.post:
         throw Exception('Unsupported request type: ${protocol.requestType}');

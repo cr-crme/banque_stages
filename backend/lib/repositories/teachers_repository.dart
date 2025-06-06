@@ -257,7 +257,8 @@ class MySqlTeachersRepository extends TeachersRepository {
         data: {
           'id': teacher.id,
           'school_board_id': teacher.schoolBoardId,
-          'school_id': teacher.schoolId
+          'school_id': teacher.schoolId,
+          'has_registered_account': teacher.hasRegisteredAccount,
         });
   }
 
@@ -265,6 +266,7 @@ class MySqlTeachersRepository extends TeachersRepository {
       Teacher teacher, Teacher previous, DatabaseUser user) async {
     final differences = teacher.getDifference(previous);
 
+    final toUpdate = <String, dynamic>{};
     if (differences.contains('school_board_id')) {
       _logger.severe('Cannot update school_board_id for the teachers');
       throw InvalidRequestException(
@@ -274,12 +276,19 @@ class MySqlTeachersRepository extends TeachersRepository {
       if (user.accessLevel < AccessLevel.admin) {
         _logger.severe('Cannot update school_id for the teachers');
       } else {
-        await MySqlHelpers.performUpdateQuery(
-            connection: connection,
-            tableName: 'teachers',
-            filters: {'id': teacher.id},
-            data: {'school_id': teacher.schoolId});
+        toUpdate['school_id'] = teacher.schoolId;
       }
+    }
+
+    if (differences.contains('has_registered_account')) {
+      toUpdate['has_registered_account'] = teacher.hasRegisteredAccount;
+    }
+    if (toUpdate.isNotEmpty) {
+      await MySqlHelpers.performUpdateQuery(
+          connection: connection,
+          tableName: 'teachers',
+          filters: {'id': teacher.id},
+          data: toUpdate);
     }
 
     // Update the persons table if needed
@@ -435,6 +444,7 @@ class TeachersRepositoryMock extends TeachersRepository {
         lastName: 'Doe',
         schoolBoardId: '10',
         schoolId: '10',
+        hasRegisteredAccount: true,
         groups: ['100', '101'],
         phone: PhoneNumber.fromString('098-765-4321'),
         email: 'john.doe@email.com',
@@ -448,6 +458,7 @@ class TeachersRepositoryMock extends TeachersRepository {
         lastName: 'Doe',
         schoolBoardId: '10',
         schoolId: '10',
+        hasRegisteredAccount: true,
         groups: ['100', '101'],
         phone: PhoneNumber.fromString('123-456-7890'),
         email: 'john.doe@email.com',

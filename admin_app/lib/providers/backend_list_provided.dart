@@ -392,16 +392,20 @@ Future<void> _getFromBackend(
   String? id,
   List<String>? fields,
 }) async {
-  final protocol = await _sendMessageWithResponse(
-    message: CommunicationProtocol(
-      requestType: RequestType.get,
-      field: requestField, // Id is not null for item of the list
-      data: id == null ? null : {'id': id, 'fields': fields},
-    ),
-  );
+  try {
+    final protocol = await _sendMessageWithResponse(
+      message: CommunicationProtocol(
+        requestType: RequestType.get,
+        field: requestField, // Id is not null for item of the list
+        data: id == null ? null : {'id': id, 'fields': fields},
+      ),
+    );
 
-  final selector = _getSelector(protocol.field!);
-  selector.addOrReplaceItems(protocol.data!, notify: true);
+    final selector = _getSelector(protocol.field!);
+    selector.addOrReplaceItems(protocol.data!, notify: true);
+  } catch (e) {
+    dev.log('Error while getting data from the backend: $e');
+  }
 }
 
 Future<void> _sendMessage({required CommunicationProtocol message}) async {

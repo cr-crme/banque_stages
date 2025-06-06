@@ -8,6 +8,8 @@ import 'package:common/models/persons/person.dart';
 class Teacher extends Person {
   final String schoolBoardId;
   final String schoolId;
+  final bool hasRegisteredAccount;
+  bool get hasNotRegisteredAccount => !hasRegisteredAccount;
   final List<String> groups;
   final List<Itinerary> itineraries;
 
@@ -18,6 +20,7 @@ class Teacher extends Person {
     required super.lastName,
     required this.schoolBoardId,
     required this.schoolId,
+    required this.hasRegisteredAccount,
     required this.groups,
     required super.email,
     required super.phone,
@@ -36,6 +39,7 @@ class Teacher extends Person {
         lastName: '',
         schoolBoardId: '-1',
         schoolId: '-1',
+        hasRegisteredAccount: false,
         groups: [],
         email: null,
         phone: null,
@@ -49,6 +53,8 @@ class Teacher extends Person {
   Teacher.fromSerialized(super.map)
       : schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
         schoolId = StringExt.from(map['school_id']) ?? '-1',
+        hasRegisteredAccount =
+            BoolExt.from(map['has_registered_account']) ?? false,
         groups = ListExt.from(map['groups'],
                 deserializer: (e) => StringExt.from(e) ?? '-1') ??
             [],
@@ -62,6 +68,7 @@ class Teacher extends Person {
     ..addAll({
       'school_board_id': schoolBoardId.serialize(),
       'school_id': schoolId.serialize(),
+      'has_registered_account': hasRegisteredAccount.serialize(),
       'groups': groups.serialize(),
       'itineraries': itineraries.serialize(),
     });
@@ -74,6 +81,7 @@ class Teacher extends Person {
     String? lastName,
     String? schoolBoardId,
     String? schoolId,
+    bool? hasRegisteredAccount,
     List<String>? groups,
     String? email,
     PhoneNumber? phone,
@@ -88,6 +96,7 @@ class Teacher extends Person {
         lastName: lastName ?? this.lastName,
         schoolBoardId: schoolBoardId ?? this.schoolBoardId,
         schoolId: schoolId ?? this.schoolId,
+        hasRegisteredAccount: hasRegisteredAccount ?? this.hasRegisteredAccount,
         groups: groups ?? this.groups,
         phone: phone ?? this.phone,
         email: email ?? this.email,
@@ -106,6 +115,7 @@ class Teacher extends Person {
           'last_name',
           'school_board_id',
           'school_id',
+          'has_registered_account',
           'groups',
           'phone',
           'email',
@@ -122,6 +132,7 @@ class Teacher extends Person {
       lastName: StringExt.from(data['last_name']) ?? lastName,
       schoolBoardId: StringExt.from(data['school_board_id']) ?? schoolBoardId,
       schoolId: StringExt.from(data['school_id']) ?? schoolId,
+      hasRegisteredAccount: data['has_registered_account'] ?? false,
       groups: ListExt.from(data['groups'],
               deserializer: (e) => StringExt.from(e) ?? '-1') ??
           groups,

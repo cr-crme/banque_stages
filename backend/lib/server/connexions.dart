@@ -170,14 +170,48 @@ class Connexions {
             throw ConnexionRefusedException(
                 'Firebase app is not initialized. Please check your configuration.');
           }
-          await app.auth().createUser(email: email, password: password);
 
+          // Make sure only previously added teachers can be registered
+          final teacher = await _getTeacherFromDatabase(
+              _clients[client]!, _database.connection, email);
+          if (teacher == null || teacher['has_registered_account'] == 1) {
+            throw ConnexionRefusedException(
+                'No teacher found with email $email. Please add the teacher to the database before registering them.');
+          }
+
+          // Register the user in Firebase
+          try {
+            await app.auth().createUser(email: email, password: password);
+          } on FirebaseAuthError catch (e) {
+            if (e.code == 'auth/email-already-exists') {
+              // Continue as it means the user is registered
+            } else {
+              rethrow;
+            }
+          }
+
+          // Add the confirmation to the database
+          await _database.put(RequestFields.teacher,
+              data: {'id': teacher['id'], 'has_registered_account': true},
+              user: _clients[client]!);
+
+          // Send confirmation to the client
           await _send(client,
               message: CommunicationProtocol(
                   id: protocol.id,
                   requestType: RequestType.response,
                   field: protocol.field,
                   response: Response.success));
+
+          // Notify all clients that the teacher has registered an account
+          await _sendAll(CommunicationProtocol(
+            requestType: RequestType.update,
+            field: RequestFields.teacher,
+            data: {
+              'id': teacher['id'],
+              'updated_fields': ['has_registered_account']
+            },
+          ));
 
         case RequestType.unregisterUser:
           // Limit this to admins only
@@ -195,15 +229,43 @@ class Connexions {
                 'Firebase app is not initialized. Please check your configuration.');
           }
 
-          final user = await app.auth().getUserByEmail(email);
-          await app.auth().deleteUser(user.uid);
+          try {
+            final user = await app.auth().getUserByEmail(email);
+            await app.auth().deleteUser(user.uid);
+          } on FirebaseAuthError catch (e) {
+            if (e.code == 'auth/user-not-found') {
+              // Continue as it means the user is not registered
+            } else {
+              rethrow;
+            }
+          }
 
+          // Remove the confirmation from the database
+          final teacher = await _getTeacherFromDatabase(
+              _clients[client]!, _database.connection, email);
+
+          // Send confirmation to the client
           await _send(client,
               message: CommunicationProtocol(
                   id: protocol.id,
                   requestType: RequestType.response,
                   field: protocol.field,
                   response: Response.success));
+
+          if (teacher != null) {
+            await _database.put(RequestFields.teacher,
+                data: {'id': teacher['id'], 'has_registered_account': false},
+                user: _clients[client]!);
+            // Notify all clients that the teacher has unregistered an account
+            await _sendAll(CommunicationProtocol(
+              requestType: RequestType.update,
+              field: RequestFields.teacher,
+              data: {
+                'id': teacher['id'],
+                'updated_fields': ['has_registered_account']
+              },
+            ));
+          }
 
         case RequestType.changedPassword:
           final tableName =
@@ -366,29 +428,7 @@ Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
 
   // If there is information missing in the user structure, then we are not admin (case 1)
   // We therefore try to log using the information from the 'teachers' table
-  final teacher = (await MySqlHelpers.performSelectQuery(
-          connection: connection,
-          user: user.copyWith(accessLevel: AccessLevel.superAdmin),
-          tableName: 'persons',
-          fieldsToFetch: [
-        'email'
-      ],
-          filters: {
-        'email': email
-      },
-          subqueries: [
-        MySqlSelectSubQuery(
-          dataTableName: 'teachers',
-          idNameToDataTable: 'id',
-          fieldsToFetch: [
-            'id',
-            'school_board_id',
-            'school_id',
-            'should_change_password'
-          ],
-        ),
-      ]) as List)
-      .firstOrNull;
+  final teacher = await _getTeacherFromDatabase(user, connection, email);
   // If there is no teacher with that email, the user is not valid (case 3)
   if (teacher == null) return null;
   (teacher as Map).addAll((teacher['teachers'] as List).firstOrNull);
@@ -405,4 +445,37 @@ Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
   // Just make sure, even though at this point it should always be verified
   if (user.isNotVerified) return null;
   return user;
+}
+
+Future<Map<String, dynamic>?> _getTeacherFromDatabase(
+    DatabaseUser user, MySqlConnection connection, String teacherEmail) async {
+  final teacher = (await MySqlHelpers.performSelectQuery(
+          connection: connection,
+          user: user.copyWith(accessLevel: AccessLevel.superAdmin),
+          tableName: 'persons',
+          fieldsToFetch: [
+        'email'
+      ],
+          filters: {
+        'email': teacherEmail
+      },
+          subqueries: [
+        MySqlSelectSubQuery(
+          dataTableName: 'teachers',
+          idNameToDataTable: 'id',
+          fieldsToFetch: [
+            'id',
+            'school_board_id',
+            'school_id',
+            'should_change_password',
+            'has_registered_account',
+          ],
+        ),
+      ]) as List)
+      .firstOrNull;
+  // If there is no teacher with that email, the user is not valid (case 3)
+  if (teacher == null || teacher['teachers'] == null) return null;
+
+  (teacher as Map).addAll((teacher['teachers'] as List).firstOrNull);
+  return teacher as Map<String, dynamic>?;
 }

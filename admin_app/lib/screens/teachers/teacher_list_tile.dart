@@ -364,43 +364,45 @@ class TeacherListTileState extends State<TeacherListTile> {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextButton(
-            onPressed: () async {
-              final admins = AdminsProvider.of(context, listen: false);
-              final isSuccess = await admins.addUserToDatabase(
-                email: _emailController.text,
-                password: '123456789',
-              );
-              if (!mounted) return;
+          if (widget.teacher.hasNotRegisteredAccount)
+            TextButton(
+              onPressed: () async {
+                final admins = AdminsProvider.of(context, listen: false);
+                final isSuccess = await admins.addUserToDatabase(
+                  email: _emailController.text,
+                  password: '123456789',
+                );
+                if (!mounted) return;
 
-              showSnackBar(
-                context,
-                message:
-                    isSuccess
-                        ? 'Compte utilisateur créé avec succès.'
-                        : 'Échec de la création du compte utilisateur.',
-              );
-            },
-            child: const Text('Créer un compte'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final admins = AdminsProvider.of(context, listen: false);
-              final isSuccess = await admins.deleteUserFromDatabase(
-                email: _emailController.text,
-              );
-              if (!mounted) return;
+                showSnackBar(
+                  context,
+                  message:
+                      isSuccess
+                          ? 'Compte utilisateur créé avec succès.'
+                          : 'Échec de la création du compte utilisateur.',
+                );
+              },
+              child: const Text('Créer un compte'),
+            ),
+          if (widget.teacher.hasRegisteredAccount)
+            TextButton(
+              onPressed: () async {
+                final admins = AdminsProvider.of(context, listen: false);
+                final isSuccess = await admins.deleteUserFromDatabase(
+                  email: _emailController.text,
+                );
+                if (!mounted) return;
 
-              showSnackBar(
-                context,
-                message:
-                    isSuccess
-                        ? 'Compte utilisateur supprimé avec succès.'
-                        : 'Échec de la suppression du compte utilisateur.',
-              );
-            },
-            child: const Text('Supprimer un compte'),
-          ),
+                showSnackBar(
+                  context,
+                  message:
+                      isSuccess
+                          ? 'Compte utilisateur supprimé avec succès.'
+                          : 'Échec de la suppression du compte utilisateur.',
+                );
+              },
+              child: const Text('Supprimer un compte'),
+            ),
         ],
       ),
     );
