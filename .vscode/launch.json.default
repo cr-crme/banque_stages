@@ -16,9 +16,6 @@
             "type": "dart",
             "program": "app/lib/main.dart",
             "preLaunchTask": "Run Backend Server",
-            "env": {
-                "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
-            },
         },
         {
             "name": "Backend",
@@ -41,9 +38,6 @@
             "type": "dart",
             "program": "admin_app/lib/main.dart",
             "preLaunchTask": "Run Backend Server",
-            "env": {
-                "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
-            },
         },
         {
             "name": "Banque de Stages (test widgets)",

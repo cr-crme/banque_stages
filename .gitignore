@@ -73,3 +73,5 @@ backendFirebaseServiceAccountKey.json
 .vscode/launch.json
 
 backend/.vscode/launch.json
+
+.vscode/tasks.json
