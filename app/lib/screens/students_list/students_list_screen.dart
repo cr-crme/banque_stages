@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
+import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/router.dart';

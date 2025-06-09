@@ -4,7 +4,7 @@ import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/task_appreciation.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
+import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';

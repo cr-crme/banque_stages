@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
-import 'package:crcrme_banque_stages/common/models/students_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
+import 'package:crcrme_banque_stages/common/extensions/students_extension.dart';
+import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/screens/student/pages/skills_page.dart';
 import 'package:flutter/material.dart';
 

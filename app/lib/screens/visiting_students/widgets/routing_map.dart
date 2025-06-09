@@ -1,14 +1,13 @@
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/waypoint.dart';
-import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/itineraries_helpers.dart';
+import 'package:crcrme_banque_stages/common/extensions/visiting_priorities_extension.dart';
+import 'package:crcrme_banque_stages/common/provider_helpers/itineraries_helpers.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:routing_client_dart/routing_client_dart.dart' as routing_client;
-
 // ignore: implementation_imports
 import 'package:routing_client_dart/src/models/osrm/road.dart' as routing_hack;
 

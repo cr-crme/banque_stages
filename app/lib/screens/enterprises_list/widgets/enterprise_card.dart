@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/enterprises/enterprise.dart';
-import 'package:crcrme_banque_stages/common/models/job_extension.dart';
+import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:flutter/material.dart';
 
