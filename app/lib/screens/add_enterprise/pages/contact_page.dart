@@ -1,5 +1,5 @@
-import 'package:crcrme_banque_stages/common/widgets/email_list_tile.dart';
-import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';
+import 'package:common_flutter/widgets/email_list_tile.dart';
+import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 

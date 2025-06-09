@@ -1,6 +1,5 @@
+import 'package:common_flutter/helpers/form_service.dart';
 import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EmailListTile extends StatefulWidget {
@@ -61,33 +60,30 @@ class _EmailListTileState extends State<EmailListTile> {
             decoration: InputDecoration(
               icon: const SizedBox(width: 30),
               labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
-              labelStyle: widget.titleStyle,
+              labelStyle:
+                  widget.titleStyle ?? const TextStyle(color: Colors.black),
               disabledBorder: InputBorder.none,
             ),
-            style: widget.contentStyle,
+            style: widget.contentStyle ?? const TextStyle(color: Colors.black),
             validator: (value) {
               if (!widget.enabled) return null;
 
               if (!widget.isMandatory && (value == '' || value == null)) {
                 return null;
               }
+
               return FormService.emailValidator(value);
             },
             enabled: widget.enabled,
             onSaved: widget.onSaved,
             keyboardType: TextInputType.emailAddress,
           ),
-          InkWell(
-            onTap: widget.canMail ? _email : null,
-            borderRadius: BorderRadius.circular(25),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                widget.icon,
-                color: widget.canMail
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey,
-              ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              widget.icon,
+              color:
+                  widget.canMail ? Theme.of(context).primaryColor : Colors.grey,
             ),
           ),
         ],

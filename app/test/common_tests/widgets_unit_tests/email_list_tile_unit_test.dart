@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/widgets/email_list_tile.dart';
+import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

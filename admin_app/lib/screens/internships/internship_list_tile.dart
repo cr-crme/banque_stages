@@ -1,8 +1,6 @@
 import 'package:admin_app/screens/internships/confirm_delete_internship_dialog.dart';
 import 'package:admin_app/screens/internships/schedule_list_tile.dart';
-import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/enterprise_picker_tile.dart';
-import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:admin_app/widgets/student_picker_tile.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
@@ -18,6 +16,8 @@ import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
+import 'package:common_flutter/widgets/email_list_tile.dart';
+import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

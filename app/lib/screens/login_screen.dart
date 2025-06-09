@@ -1,5 +1,5 @@
+import 'package:common_flutter/helpers/form_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
-import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

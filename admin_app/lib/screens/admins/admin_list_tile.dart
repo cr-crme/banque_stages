@@ -1,11 +1,11 @@
 import 'package:admin_app/screens/admins/confirm_delete_admin_dialog.dart';
-import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/persons/admin.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
+import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';

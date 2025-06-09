@@ -3,6 +3,7 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
+import 'package:common_flutter/helpers/form_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
@@ -11,7 +12,6 @@ import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
-import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 

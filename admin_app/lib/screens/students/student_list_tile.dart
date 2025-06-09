@@ -1,6 +1,4 @@
 import 'package:admin_app/screens/students/confirm_delete_student_dialog.dart';
-import 'package:admin_app/widgets/email_list_tile.dart';
-import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/student.dart';
@@ -10,6 +8,8 @@ import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/widgets/address_list_tile.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/birthday_list_tile.dart';
+import 'package:common_flutter/widgets/email_list_tile.dart';
+import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

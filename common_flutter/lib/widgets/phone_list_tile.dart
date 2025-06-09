@@ -1,7 +1,7 @@
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common_flutter/helpers/form_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/misc/form_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PhoneListTile extends StatefulWidget {
@@ -63,7 +63,10 @@ class _PhoneListTileState extends State<PhoneListTile> {
         }
       },
       child: InkWell(
-        onTap: widget.enabled || _phoneController.text == '' ? null : _call,
+        onTap:
+            kIsWeb || widget.enabled || _phoneController.text == ''
+                ? null
+                : _call,
         child: Stack(
           alignment: Alignment.centerLeft,
           children: [
@@ -72,7 +75,7 @@ class _PhoneListTileState extends State<PhoneListTile> {
               decoration: InputDecoration(
                 icon: const SizedBox(width: 30),
                 labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
-                labelStyle: widget.titleStyle,
+                labelStyle: widget.titleStyle ?? TextStyle(color: Colors.black),
                 disabledBorder: InputBorder.none,
               ),
               validator: (value) {
@@ -83,22 +86,20 @@ class _PhoneListTileState extends State<PhoneListTile> {
                 }
                 return FormService.phoneValidator(value);
               },
-              style: widget.contentStyle,
+              style:
+                  widget.contentStyle ?? const TextStyle(color: Colors.black),
               enabled: widget.enabled,
               onSaved: widget.onSaved,
               keyboardType: TextInputType.phone,
             ),
-            InkWell(
-              onTap: widget.canCall ? _call : null,
-              borderRadius: BorderRadius.circular(25),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  widget.icon,
-                  color: widget.canCall
-                      ? Theme.of(context).primaryColor
-                      : Colors.grey,
-                ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                widget.icon,
+                color:
+                    widget.canCall
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey,
               ),
             ),
           ],

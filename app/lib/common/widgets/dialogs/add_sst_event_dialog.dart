@@ -1,7 +1,6 @@
+import 'package:common_flutter/helpers/form_service.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/text_with_form.dart';
 import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/misc/form_service.dart';
 
 enum SstEventType {
   severe,
