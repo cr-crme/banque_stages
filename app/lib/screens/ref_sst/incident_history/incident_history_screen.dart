@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:common/services/job_data_file_service.dart';
-import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/models/incidents_by_enterprise.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/widgets/incident_list_tile.dart';

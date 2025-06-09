@@ -1,6 +1,6 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
-import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
+import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';

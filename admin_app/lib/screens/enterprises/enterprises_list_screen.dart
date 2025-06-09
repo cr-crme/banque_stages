@@ -1,4 +1,3 @@
-import 'package:admin_app/providers/enterprises_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/enterprises/add_enterprise_dialog.dart';
 import 'package:admin_app/screens/enterprises/enterprise_list_tile.dart';
@@ -8,6 +7,7 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
+import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
