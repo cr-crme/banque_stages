@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 
 abstract class Screens {
   static const home = teachersListScreen;
-  static String previous = home;
 
   static const login = LoginScreen.route;
   static const schoolBoardsListScreen = SchoolBoardsListScreen.route;
@@ -30,12 +29,9 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      redirect: (context, state) {
-        if (AuthProvider.of(context).isFullySignedIn) {
-          return null;
-        }
-        return Screens.login;
-      },
+      redirect:
+          (context, state) =>
+              AuthProvider.of(context).isFullySignedIn ? null : Screens.login,
     ),
     GoRoute(
       path: Screens.login,
@@ -51,7 +47,6 @@ final router = GoRouter(
       path: Screens.schoolBoardsListScreen,
       name: Screens.schoolBoardsListScreen,
       builder: (context, state) {
-        Screens.previous = Screens.schoolBoardsListScreen;
         return const SchoolBoardsListScreen();
       },
     ),
@@ -59,7 +54,6 @@ final router = GoRouter(
       path: Screens.adminsListScreen,
       name: Screens.adminsListScreen,
       builder: (context, state) {
-        Screens.previous = Screens.adminsListScreen;
         return const AdminsListScreen();
       },
     ),
@@ -67,7 +61,6 @@ final router = GoRouter(
       path: Screens.teachersListScreen,
       name: Screens.teachersListScreen,
       builder: (context, state) {
-        Screens.previous = Screens.teachersListScreen;
         return const TeachersListScreen();
       },
     ),
@@ -75,7 +68,6 @@ final router = GoRouter(
       path: Screens.studentsListScreen,
       name: Screens.studentsListScreen,
       builder: (context, state) {
-        Screens.previous = Screens.studentsListScreen;
         return const StudentsListScreen();
       },
     ),
@@ -83,7 +75,6 @@ final router = GoRouter(
       path: Screens.enterprisesListScreen,
       name: Screens.enterprisesListScreen,
       builder: (context, state) {
-        Screens.previous = Screens.enterprisesListScreen;
         return const EnterprisesListScreen();
       },
     ),
@@ -91,7 +82,6 @@ final router = GoRouter(
       path: Screens.internshipsListScreen,
       name: Screens.internshipsListScreen,
       builder: (context, state) {
-        Screens.previous = Screens.internshipsListScreen;
         return const InternshipsListScreen();
       },
     ),

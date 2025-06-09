@@ -84,24 +84,20 @@ abstract class Screens {
 }
 
 final router = GoRouter(
-  redirect: (context, state) {
-    if (AuthProvider.of(context, listen: false).isFullySignedIn) {
-      return null;
-    }
-    return '/login';
-  },
+  redirect: (context, state) =>
+      AuthProvider.of(context).isFullySignedIn ? null : '/login',
   routes: [
     GoRoute(
-        path: '/',
-        redirect: (context, state) {
-          return '/enterprises';
-        }),
+      path: '/',
+      redirect: (context, state) =>
+          AuthProvider.of(context).isFullySignedIn ? null : Screens.login,
+    ),
     GoRoute(
       path: '/login',
       name: Screens.login,
       builder: (context, state) => const LoginScreen(),
       redirect: (context, state) =>
-          AuthProvider.of(context, listen: false).isFullySignedIn ? '/' : null,
+          AuthProvider.of(context).isFullySignedIn ? '/' : null,
     ),
     GoRoute(
       path: '/enterprises',

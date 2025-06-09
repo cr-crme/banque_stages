@@ -1,12 +1,13 @@
 import 'package:admin_app/screens/drawer/main_drawer.dart';
-import 'package:admin_app/screens/login/misc.dart';
 import 'package:admin_app/screens/router.dart';
+import 'package:common_flutter/helpers/form_service.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/students_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -40,11 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {});
   }
 
-  bool _isTransitioning = false;
-  Future<void> _performHasSignedId() async {
-    GoRouter.of(context).goNamed(Screens.home);
-  }
-
   @override
   Widget build(BuildContext context) {
     // Calling the provider jumps start the authentication process and ensures data arrival
@@ -53,19 +49,20 @@ class _LoginScreenState extends State<LoginScreen> {
     EnterprisesProvider.of(context, listen: false);
     InternshipsProvider.of(context, listen: false);
     StudentsProvider.of(context, listen: false);
+    TeachersProvider.of(context, listen: false);
 
     final authProvider = AuthProvider.of(context, listen: true);
-    if (!_isTransitioning && authProvider.isFullySignedIn) {
-      _isTransitioning = true;
+    if (authProvider.isFullySignedIn) {
       WidgetsBinding.instance.addPostFrameCallback(
-        (_) => _performHasSignedId(),
+        (_) => GoRouter.of(context).goNamed(Screens.home),
       );
     }
 
     return PopScope(
       child: Scaffold(
         appBar: AppBar(title: const Text('Banque de stages')),
-        drawer: const MainDrawer(),
+        drawer:
+            authProvider.isAuthenticatorSignedIn ? const MainDrawer() : null,
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(

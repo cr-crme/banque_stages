@@ -1,4 +1,9 @@
 import 'package:common_flutter/providers/auth_provider.dart';
+import 'package:common_flutter/providers/enterprises_provider.dart';
+import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
+import 'package:common_flutter/providers/students_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/numbered_tablet.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/tasks_to_do/tasks_to_do_screen.dart';
@@ -7,6 +12,28 @@ import 'package:go_router/go_router.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
+
+  void _logOut(BuildContext context) async {
+    await AuthProvider.of(context).signOut();
+    if (!context.mounted) return;
+
+    await SchoolBoardsProvider.of(context, listen: false).disconnect();
+    if (!context.mounted) return;
+    InternshipsProvider.of(context, listen: false).disconnect();
+    if (!context.mounted) return;
+    await Future.wait([
+      SchoolBoardsProvider.of(context, listen: false).disconnect(),
+      InternshipsProvider.of(context, listen: false).disconnect(),
+      StudentsProvider.of(context, listen: false).disconnect(),
+      EnterprisesProvider.of(context, listen: false).disconnect(),
+      TeachersProvider.of(context, listen: false).disconnect(),
+    ]);
+    if (!context.mounted) return;
+
+    // Pop the drawer and navigate to the login screen
+    Navigator.pop(context);
+    GoRouter.of(context).goNamed(Screens.login);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +84,7 @@ class MainDrawer extends StatelessWidget {
                 _DrawerItem(
                   titleText: 'Se déconnecter',
                   icon: Icons.logout,
-                  onTap: () {
-                    AuthProvider.of(context).signOut();
-                    GoRouter.of(context).goNamed(Screens.login);
-                  },
+                  onTap: () => _logOut(context),
                 ),
               ],
             ),
