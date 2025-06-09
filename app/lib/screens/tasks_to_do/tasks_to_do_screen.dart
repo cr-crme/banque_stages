@@ -4,9 +4,9 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -26,7 +26,8 @@ int numberOfTasksToDo(context) {
 List<_JobEnterpriseInternshipStudent> _enterprisesToEvaluate(context) {
   // We should evaluate a job of an enterprise if there is at least one
   // internship in this job and the no evaluation was ever performed
-  final myId = TeachersProvider.of(context).currentTeacherId;
+  final myId = TeachersProvider.of(context).myTeacher?.id;
+  if (myId == null) return [];
   final enterprises = EnterprisesProvider.of(context);
   final internships = InternshipsProvider.of(context);
 

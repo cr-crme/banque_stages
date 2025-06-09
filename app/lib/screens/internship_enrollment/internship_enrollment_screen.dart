@@ -5,9 +5,10 @@ import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
@@ -84,17 +85,23 @@ class _InternshipEnrollmentScreenState
     if (enterprise == null) return;
 
     final signatoryTeacher =
-        TeachersProvider.of(context, listen: false).currentTeacherId;
+        TeachersProvider.of(context, listen: false).myTeacher;
+    if (signatoryTeacher == null) {
+      showSnackBar(context,
+          message:
+              'Vous devez être connecté en tant qu\'enseignant pour inscrire un stagiaire.');
+      return;
+    }
 
     final schoolBoard =
-        SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
+        SchoolBoardsProvider.of(context, listen: false).mySchoolBoard;
     if (schoolBoard == null) return;
 
     final internship = Internship(
       schoolBoardId: schoolBoard.id,
       creationDate: DateTime.now(),
       studentId: _generalInfoKey.currentState!.student!.id,
-      signatoryTeacherId: signatoryTeacher,
+      signatoryTeacherId: signatoryTeacher.id,
       extraSupervisingTeacherIds: [],
       enterpriseId: _generalInfoKey.currentState!.enterprise!.id,
       jobId: enterprise.jobs

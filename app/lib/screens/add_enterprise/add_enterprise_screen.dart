@@ -2,8 +2,9 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
@@ -104,13 +105,19 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   void _submit() async {
     final teachers = TeachersProvider.of(context, listen: false);
     final enterprises = EnterprisesProvider.of(context, listen: false);
+    final myTeacher = teachers.myTeacher;
+    if (myTeacher == null) {
+      showSnackBar(context,
+          message: 'Erreur, votre compte n\'est pas configuré.');
+      return;
+    }
 
     Enterprise enterprise = Enterprise(
-      schoolBoardId: teachers.currentTeacher.schoolBoardId,
+      schoolBoardId: myTeacher.schoolBoardId,
       name: _informationsKey.currentState!.name!,
       neq: _informationsKey.currentState?.neq,
       activityTypes: _informationsKey.currentState!.activityTypes,
-      recruiterId: teachers.currentTeacherId,
+      recruiterId: myTeacher.id,
       jobs: _jobsKey.currentState!.jobs,
       contact: Person(
         firstName: _contactKey.currentState!.contactFirstName!,

@@ -2,11 +2,11 @@ import 'package:admin_app/screens/admins/add_admin_dialog.dart';
 import 'package:admin_app/screens/admins/admin_list_tile.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
-import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:common/models/persons/admin.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 
 class AdminsListScreen extends StatelessWidget {

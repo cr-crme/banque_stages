@@ -1,9 +1,9 @@
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/models/internship_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:flutter/material.dart';
@@ -130,8 +130,8 @@ class _StudentInternshipListViewState
     }
   }
 
-  bool _isSupervisingInternship(internship) {
-    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+  bool _isSupervisingInternship(Internship internship) {
+    final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
     return internship.supervisingTeacherIds.contains(myId);
   }
 
@@ -139,7 +139,10 @@ class _StudentInternshipListViewState
   Widget build(BuildContext context) {
     _prepareExpander(widget.internships);
 
-    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
+    if (myId == null) {
+      return const Center(child: Text('Vous n\'êtes pas connecté.'));
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

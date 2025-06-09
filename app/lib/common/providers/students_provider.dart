@@ -4,7 +4,7 @@ import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/backend_list_provided.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +23,9 @@ class StudentsProvider extends BackendListProvided<Student> {
   /// they are not supervising them personnally)
   static List<Student> studentsInMyGroups(context, {listen = true}) {
     final acceptedGroups =
-        TeachersProvider.of(context, listen: false).currentTeacher.groups;
+        TeachersProvider.of(context, listen: false).myTeacher?.groups;
+    if (acceptedGroups == null || acceptedGroups.isEmpty) return [];
+
     return _of(context, listen: listen)
         .where((e) => acceptedGroups.contains(e.group))
         .toList();
@@ -37,7 +39,8 @@ class StudentsProvider extends BackendListProvided<Student> {
     final allStudents = studentsInMyGroups(context, listen: listen);
     final internships = InternshipsProvider.of(context, listen: false);
     final myTeacherId =
-        TeachersProvider.of(context, listen: false).currentTeacherId;
+        TeachersProvider.of(context, listen: false).myTeacher?.id;
+    if (myTeacherId == null || internships.isEmpty) return [];
 
     // Get the student I supervise by default
     final List<Student> out = [];

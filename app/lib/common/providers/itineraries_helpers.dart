@@ -1,19 +1,20 @@
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/utils.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ItinerariesHelpers {
-  static List<Itinerary> myIninerariesOf(BuildContext context,
+  static List<Itinerary>? myItinerariesOf(BuildContext context,
           {listen = true}) =>
-      TeachersProvider.of(context, listen: listen).currentTeacher.itineraries;
+      TeachersProvider.of(context, listen: listen).myTeacher?.itineraries;
 
   static void add(BuildContext context, Itinerary item, {bool notify = false}) {
     final teachers = TeachersProvider.of(context, listen: notify);
-    final me = teachers.currentTeacher;
+    final me = teachers.myTeacher;
+    if (me == null) throw Exception('No teacher found in context');
 
-    final itineraries = teachers.currentTeacher.itineraries;
+    final itineraries = me.itineraries;
     final index = itineraries.indexWhere((e) => e.date == item.date);
     if (index < 0) {
       itineraries.add(item);
@@ -27,14 +28,18 @@ class ItinerariesHelpers {
 
   static bool hasDate(BuildContext context, DateTime date,
       {bool listen = false}) {
-    final itineraries = myIninerariesOf(context, listen: listen);
+    final itineraries = myItinerariesOf(context, listen: listen);
+    if (itineraries == null) return false;
+
     final dateAsString = _dateFormat.format(date);
     return itineraries.any((e) => _dateFormat.format(e.date) == dateAsString);
   }
 
   static Itinerary? fromDate(BuildContext context, DateTime date,
       {bool listen = false}) {
-    final itineraries = myIninerariesOf(context, listen: listen);
+    final itineraries = myItinerariesOf(context, listen: listen);
+    if (itineraries == null) return null;
+
     final dateAsString = _dateFormat.format(date);
     return itineraries
         .firstWhereOrNull((e) => _dateFormat.format(e.date) == dateAsString);

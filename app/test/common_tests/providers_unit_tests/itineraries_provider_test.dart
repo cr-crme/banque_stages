@@ -1,5 +1,5 @@
 import 'package:common_flutter/providers/auth_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,13 +14,13 @@ void main() {
       final teachers =
           TeachersProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
       teachers.initializeAuth(AuthProvider(mockMe: true));
-      final itineraries = [...teachers.currentTeacher.itineraries];
+      final itineraries = [...(teachers.myTeacher?.itineraries ?? [])];
 
       itineraries.add(dummyItinerary(date: DateTime(2021, 1, 1)));
       itineraries.add(dummyItinerary(date: DateTime(2021, 1, 2)));
       itineraries.add(dummyItinerary(date: DateTime(2021, 1, 3)));
 
-      final teacherItineraries = teachers.currentTeacher.itineraries;
+      final teacherItineraries = teachers.myTeacher?.itineraries ?? [];
       expect(teacherItineraries.length, 0);
 
       // TODO FROM HERE

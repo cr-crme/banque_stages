@@ -1,8 +1,8 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/finalize_internship_dialog.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
@@ -43,7 +43,7 @@ class InternshipQuickAccess extends StatelessWidget {
   }
 
   Widget _buildQuickAccessButton(context, {required Internship internship}) {
-    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
     final isSupervising = internship.supervisingTeacherIds.contains(myId);
 
     return isSupervising &&

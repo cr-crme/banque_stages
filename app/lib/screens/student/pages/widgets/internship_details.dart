@@ -5,8 +5,8 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
@@ -193,7 +193,10 @@ class InternshipDetailsState extends State<InternshipDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final myId = TeachersProvider.of(context).currentTeacherId;
+    final myId = TeachersProvider.of(context).myTeacher?.id;
+    if (myId == null) {
+      return const Center(child: Text('Vous n\'êtes pas connecté.'));
+    }
 
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 24),

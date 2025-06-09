@@ -1,8 +1,8 @@
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/models/internship_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,7 +14,7 @@ void _prepareProviders(BuildContext context) {
   final auth = AuthProvider(mockMe: true);
   final teachers = TeachersProvider.of(context, listen: false);
   teachers.initializeAuth(auth);
-  teachers.add(dummyTeacher(id: teachers.currentTeacherId));
+  teachers.add(dummyTeacher(id: teachers.myTeacher?.id ?? 'FailedToGetId'));
   final students = StudentsProvider.instance(context, listen: false);
   students.initializeAuth(auth);
 }
@@ -61,7 +61,8 @@ void main() {
 
       // Add internship to all of the students
       final internships = InternshipsProvider.of(context, listen: false);
-      final teacherId = TeachersProvider.of(context).currentTeacherId;
+      final teacherId =
+          TeachersProvider.of(context).myTeacher?.id ?? 'FailedToGetId';
       for (int i = 0; i < students.length; i++) {
         final student = students[i];
         internships.add(dummyInternship(
@@ -77,7 +78,8 @@ void main() {
       internships
           .firstWhere((e) => e.studentId == 'notYetMyStudent')
           .addSupervisingTeacher(context,
-              teacherId: TeachersProvider.of(context).currentTeacherId);
+              teacherId: TeachersProvider.of(context).myTeacher?.id ??
+                  'FailedToGetId');
       expect(
           StudentsProvider.mySupervizedStudents(context, listen: false).length,
           4);
@@ -103,7 +105,8 @@ void main() {
           () => internships
               .firstWhere((e) => e.studentId == 'neverMyStudent2')
               .addSupervisingTeacher(context,
-                  teacherId: TeachersProvider.of(context).currentTeacherId),
+                  teacherId: TeachersProvider.of(context).myTeacher?.id ??
+                      'FailedToGetId'),
           throwsException);
       expect(
           StudentsProvider.mySupervizedStudents(context, listen: false).length,

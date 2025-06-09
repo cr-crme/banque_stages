@@ -22,22 +22,21 @@ class SchoolBoardsProvider extends BackendListProvided<SchoolBoard> {
   RequestFields getField([bool asList = false]) =>
       asList ? RequestFields.schoolBoards : RequestFields.schoolBoard;
 
-  static SchoolBoard? mySchoolBoardOf(BuildContext context, {listen = false}) {
-    final schoolBoardId = AuthProvider.of(context, listen: false).schoolBoardId;
+  SchoolBoard? get mySchoolBoard {
+    final schoolBoardId = _authProvider?.schoolBoardId;
     if (schoolBoardId == null) return null;
 
-    final schoolBoards = SchoolBoardsProvider.of(context, listen: listen);
-    final schoolBoard = schoolBoards.fromIdOrNull(schoolBoardId);
+    final schoolBoard = fromIdOrNull(schoolBoardId);
     if (schoolBoard == null) return null;
 
     return schoolBoard;
   }
 
-  static School? mySchoolOf(BuildContext context, {listen = false}) {
-    final schoolBoard = mySchoolBoardOf(context, listen: listen);
+  School? get mySchool {
+    final schoolBoard = mySchoolBoard;
     if (schoolBoard == null) return null;
 
-    final schoolId = AuthProvider.of(context, listen: false).schoolId;
+    final schoolId = _authProvider?.schoolId;
     if (schoolId == null) return null;
 
     return schoolBoard.schools.firstWhereOrNull(
@@ -45,7 +44,9 @@ class SchoolBoardsProvider extends BackendListProvided<SchoolBoard> {
     );
   }
 
+  AuthProvider? _authProvider;
   void initializeAuth(AuthProvider auth) {
+    _authProvider = auth;
     initializeFetchingData(authProvider: auth);
     auth.addListener(() => initializeFetchingData(authProvider: auth));
   }

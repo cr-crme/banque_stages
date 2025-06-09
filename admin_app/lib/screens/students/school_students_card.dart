@@ -1,8 +1,8 @@
-import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/students/student_list_tile.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart' as utils;
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
 
 class SchoolStudentsCard extends StatelessWidget {

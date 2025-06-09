@@ -44,7 +44,7 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
   Future<bool> _fillAllWaypoints() async {
     final internships = InternshipsProvider.of(context, listen: false);
 
-    var school = SchoolBoardsProvider.mySchoolOf(context, listen: false);
+    var school = SchoolBoardsProvider.of(context, listen: false).mySchool;
     if (!mounted || school == null) return false;
 
     final enterprises =

@@ -1,14 +1,12 @@
 import 'package:admin_app/providers/enterprises_provider.dart';
-import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/enterprises/activity_type_list_tile.dart';
-import 'package:admin_app/screens/enterprises/job_list_tile.dart';
 import 'package:admin_app/screens/enterprises/confirm_delete_enterprise_dialog.dart';
-import 'package:admin_app/widgets/show_snackbar.dart';
-import 'package:admin_app/widgets/teacher_picker_tile.dart';
+import 'package:admin_app/screens/enterprises/job_list_tile.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
+import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:admin_app/widgets/web_site_list_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
@@ -16,6 +14,8 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

@@ -20,16 +20,10 @@ class TeachersProvider extends BackendListProvided<Teacher> {
     return Teacher.fromSerialized(data);
   }
 
-  String? get _currentTeacherId => _authProvider!.teacherId;
-  String get currentTeacherId {
-    if (_currentTeacherId == null) throw Exception('Teacher is not logged in');
-    return _currentTeacherId!;
-  }
-
-  Teacher get currentTeacher =>
-      isEmpty || _currentTeacherId == null || !hasId(_currentTeacherId!)
-          ? Teacher.empty
-          : this[_currentTeacherId];
+  Teacher? get myTeacher =>
+      _authProvider!.teacherId == null || !hasId(_authProvider!.teacherId!)
+          ? null
+          : this[_authProvider!.teacherId];
 
   AuthProvider? _authProvider;
   void initializeAuth(AuthProvider auth) {

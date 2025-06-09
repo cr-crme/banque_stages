@@ -5,12 +5,13 @@ import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/models/internship_extension.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
@@ -144,7 +145,11 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   void _swapSupervisionStatus(Internship internship) {
-    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
+    if (myId == null) {
+      showSnackBar(context, message: 'Vous n\'êtes pas connecté.');
+      return;
+    }
 
     if (internship.supervisingTeacherIds.contains(myId)) {
       internship.removeSupervisingTeacher(context, teacherId: myId);
@@ -154,7 +159,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   List<Internship> _getInternshipsByStudents() {
-    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
     var allMyStudents =
         StudentsProvider.studentsInMyGroups(context, listen: false);
 
@@ -185,7 +190,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
 
   @override
   Widget build(BuildContext context) {
-    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
     final screenSize = MediaQuery.of(context).size;
     final iconSize = screenSize.width / 16;
     final internships = _getInternshipsByStudents();

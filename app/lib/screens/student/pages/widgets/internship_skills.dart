@@ -3,8 +3,8 @@ import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
@@ -27,7 +27,7 @@ class _InternshipSkillsState extends State<InternshipSkills> {
 
   @override
   Widget build(BuildContext context) {
-    final myId = TeachersProvider.of(context, listen: false).currentTeacherId;
+    final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
     final internship =
         InternshipsProvider.of(context).fromId(widget.internshipId);
 

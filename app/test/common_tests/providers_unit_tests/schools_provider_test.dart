@@ -1,6 +1,6 @@
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,9 +15,8 @@ void _initializeTeacher(BuildContext context) {
       schools: [dummySchool(id: 'SchoolId')]));
 
   final teachers = TeachersProvider.of(context, listen: false);
-  teachers.currentTeacherId = 'MockedTeacherId';
   teachers.add(dummyTeacher(
-      id: teachers.currentTeacherId,
+      id: 'MockedTeacherId',
       schoolBoardId: 'SchoolBoardId',
       schoolId: 'SchoolId'));
 }
@@ -46,7 +45,7 @@ void main() {
       _initializeTeacher(context);
 
       final schoolBoards =
-          SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
+          SchoolBoardsProvider.of(context, listen: false).mySchoolBoard;
       expect(schoolBoards, isNotNull);
     });
 
@@ -55,7 +54,7 @@ void main() {
           withSchools: true, withTeachers: true);
       _initializeTeacher(context);
 
-      final school = SchoolBoardsProvider.mySchoolOf(context, listen: false);
+      final school = SchoolBoardsProvider.of(context, listen: false).mySchool;
       expect(school, isNotNull);
     });
   });

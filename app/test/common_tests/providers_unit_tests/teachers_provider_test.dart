@@ -1,5 +1,5 @@
 import 'package:common_flutter/providers/auth_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uuid/uuid.dart';
@@ -15,27 +15,27 @@ void main() {
     test('"currentTeacherId" works', () {
       final teachers =
           TeachersProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
-      expect(() => teachers.currentTeacherId, throwsException);
+      expect(() => teachers.myTeacher?.id, throwsException);
 
       teachers.initializeAuth(AuthProvider(mockMe: true));
       var uuid = Uuid();
       final namespace = UuidValue.fromNamespace(Namespace.dns);
       final teacherId = uuid.v5(namespace.toString(), 'Mock User');
-      expect(teachers.currentTeacherId, teacherId);
+      expect(teachers.myTeacher?.id, teacherId);
     });
 
     test('"getCurrentTeacher" works', () {
       final teachers =
           TeachersProvider(uri: Uri.parse('ws://localhost'), mockMe: true);
-      expect(teachers.currentTeacher.firstName, 'Error');
+      expect(teachers.myTeacher?.firstName, 'Error');
 
       final auth = AuthProvider(mockMe: true);
       teachers.initializeAuth(auth);
       teachers.add(dummyTeacher());
-      expect(teachers.currentTeacher.firstName, 'Error');
+      expect(teachers.myTeacher?.firstName, 'Error');
 
-      teachers.add(dummyTeacher(id: teachers.currentTeacherId));
-      expect(teachers.currentTeacher.firstName, 'Pierre');
+      teachers.add(dummyTeacher(id: teachers.myTeacher?.id ?? 'FailedToGetId'));
+      expect(teachers.myTeacher?.firstName, 'Pierre');
     });
 
     test('"deserializeItem" works', () {
