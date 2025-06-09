@@ -1,5 +1,5 @@
 import 'package:common/models/internships/internship.dart';
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 

@@ -1,5 +1,5 @@
 import 'package:common/models/persons/student.dart';
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:flutter/material.dart';
 
 extension StudentsExtension on Student {

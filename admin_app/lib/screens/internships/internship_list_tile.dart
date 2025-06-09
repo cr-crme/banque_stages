@@ -1,5 +1,4 @@
 import 'package:admin_app/providers/enterprises_provider.dart';
-import 'package:admin_app/providers/internships_provider.dart';
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/internships/confirm_delete_internship_dialog.dart';
@@ -19,6 +18,7 @@ import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
+import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';

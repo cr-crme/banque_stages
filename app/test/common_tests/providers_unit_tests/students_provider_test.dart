@@ -1,6 +1,6 @@
 import 'package:common_flutter/providers/auth_provider.dart';
+import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/models/internship_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';

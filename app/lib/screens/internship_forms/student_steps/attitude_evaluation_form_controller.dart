@@ -1,6 +1,6 @@
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart';
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:flutter/widgets.dart';
 

@@ -1,6 +1,6 @@
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/internships/internship.dart';
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
+import 'package:common_flutter/providers/internships_provider.dart';
 
 extension JobExtension on Job {
   int positionsOccupied(context) =>

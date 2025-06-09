@@ -3,8 +3,8 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
+import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter_test/flutter_test.dart';
 

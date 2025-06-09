@@ -1,6 +1,5 @@
+import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:flutter/material.dart';
-
-import 'package:crcrme_banque_stages/common/providers/internships_provider.dart';
 
 class FinalizeInternshipDialog extends StatelessWidget {
   const FinalizeInternshipDialog({super.key, required this.internshipId});
