@@ -1,7 +1,7 @@
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/backend_list_provided.dart';
+import 'package:common_flutter/providers/backend_list_provided.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';

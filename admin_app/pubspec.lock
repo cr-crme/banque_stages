@@ -207,14 +207,14 @@ packages:
     source: hosted
     version: "0.3.1"
   enhanced_containers:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       path: "../external/enhanced_containers"
       relative: true
     source: path
     version: "0.1.0"
   enhanced_containers_foundation:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       path: "../external/enhanced_containers/plugins/enhanced_containers_foundation"
       relative: true
@@ -285,7 +285,7 @@ packages:
     source: hosted
     version: "5.14.2"
   firebase_core:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core
       sha256: "017d17d9915670e6117497e640b2859e0b868026ea36bf3a57feb28c3b97debe"
@@ -918,7 +918,7 @@ packages:
     source: hosted
     version: "3.0.3"
   web_socket_client:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: web_socket_client
       sha256: "22264cb5143e9bb55c943d6b051d207fdd6470ffb77ee45778c9a7a0fda100bc"

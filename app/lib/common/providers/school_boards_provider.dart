@@ -3,7 +3,7 @@ import 'package:common/communication_protocol.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/backend_list_provided.dart';
+import 'package:common_flutter/providers/backend_list_provided.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';

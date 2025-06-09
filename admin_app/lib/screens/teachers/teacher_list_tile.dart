@@ -1,4 +1,3 @@
-import 'package:admin_app/providers/admins_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/teachers/confirm_delete_teacher_dialog.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
@@ -12,6 +11,7 @@ import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
+import 'package:common_flutter/providers/admins_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
