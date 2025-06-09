@@ -8,7 +8,7 @@ import 'package:common_flutter/widgets/radio_with_follow_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class JobListController {
+class EnterpriseJobListController {
   late Specialization? _specialization = _job.specializationOrNull;
   late final _minimumAgeController = TextEditingController(
     text: _job.minimumAge.toString(),
@@ -28,7 +28,7 @@ class JobListController {
       GlobalKey<CheckboxWithOtherState<ProtectionsType>>();
 
   final Job _job;
-  JobListController({required Job job}) : _job = job.copyWith();
+  EnterpriseJobListController({required Job job}) : _job = job.copyWith();
 
   Job get job => _job.copyWith(
     specialization: _specialization,
@@ -54,23 +54,23 @@ class JobListController {
   }
 }
 
-class JobListTile extends StatefulWidget {
-  const JobListTile({
+class EnterpriseJobListTile extends StatefulWidget {
+  const EnterpriseJobListTile({
     super.key,
     required this.controller,
     required this.editMode,
     required this.onRequestDelete,
   });
 
-  final JobListController controller;
+  final EnterpriseJobListController controller;
   final bool editMode;
   final Function() onRequestDelete;
 
   @override
-  State<JobListTile> createState() => _JobListTileState();
+  State<EnterpriseJobListTile> createState() => _EnterpriseJobListTileState();
 }
 
-class _JobListTileState extends State<JobListTile> {
+class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   Job get job => widget.controller._job;
 
   @override
@@ -100,7 +100,7 @@ class _JobListTileState extends State<JobListTile> {
               padding: const EdgeInsets.all(12.0),
               child: Text(
                 widget.controller._specialization?.idWithName ??
-                    'Aucune spécialisation',
+                    'Aucune spécialisation sélectionnée',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),

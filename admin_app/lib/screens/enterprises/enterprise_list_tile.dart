@@ -1,5 +1,4 @@
 import 'package:admin_app/screens/enterprises/confirm_delete_enterprise_dialog.dart';
-import 'package:admin_app/screens/enterprises/job_list_tile.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
@@ -13,6 +12,7 @@ import 'package:common_flutter/widgets/address_list_tile.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
+import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:common_flutter/widgets/web_site_list_tile.dart';
@@ -77,7 +77,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   );
   late final _jobControllers = Map.fromEntries(
     widget.enterprise.jobs.map(
-      (job) => MapEntry(job.id, JobListController(job: job)),
+      (job) => MapEntry(job.id, EnterpriseJobListController(job: job)),
     ),
   );
   late final _teacherPickerController = TeacherPickerController(
@@ -316,7 +316,9 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
 
   void _addJob() {
     final job = Job.empty;
-    setState(() => _jobControllers[job.id] = JobListController(job: job));
+    setState(
+      () => _jobControllers[job.id] = EnterpriseJobListController(job: job),
+    );
   }
 
   void _deleteJob(String id) {
@@ -340,7 +342,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
               : Column(
                 children: [
                   ..._jobControllers.keys.map(
-                    (jobId) => JobListTile(
+                    (jobId) => EnterpriseJobListTile(
                       key: ValueKey(jobId),
                       controller: _jobControllers[jobId]!,
                       editMode: _isEditing,

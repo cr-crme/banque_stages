@@ -1,5 +1,6 @@
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
+import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -10,30 +11,23 @@ class JobsPage extends StatefulWidget {
   State<JobsPage> createState() => JobsPageState();
 }
 
+// TODO: Finalize passage to EnterpriseJobListTile (no job is currently okay)
 class JobsPageState extends State<JobsPage> {
   final _formKey = GlobalKey<FormState>();
-  final Map<GlobalKey<FormState>, Widget> _jobsForm = {};
+  final _jobsControllers = <EnterpriseJobListController>[];
   final JobList jobs = JobList();
 
   bool validate() {
     jobs.clear();
     _formKey.currentState!.save();
 
-    if (_jobsForm.isEmpty) return false;
-
-    for (final key in _jobsForm.keys) {
-      key.currentState?.activate();
-    }
+    if (_jobsControllers.isEmpty) return false;
 
     return _formKey.currentState!.validate();
   }
 
   void addJobToForm() {
-    final key = GlobalKey<FormState>();
-    _jobsForm[key] = JobFormFieldListTile(
-      key: key,
-      onSaved: (Job? job) => setState(() => jobs.add(job!)),
-    );
+    _jobsControllers.add(EnterpriseJobListController(job: Job.empty));
     setState(() {});
   }
 
@@ -44,7 +38,7 @@ class JobsPageState extends State<JobsPage> {
         key: _formKey,
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: _jobsForm.length,
+          itemCount: _jobsControllers.length,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (BuildContext context, int index) =>
               _buildNewJobsForm(index),
@@ -54,10 +48,10 @@ class JobsPageState extends State<JobsPage> {
   }
 
   Widget _buildNewJobsForm(int index) {
-    final key = _jobsForm.keys.toList()[index];
+    final controller = _jobsControllers[index];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      key: Key('${key}_formKey'),
+      key: Key('${controller.hashCode}_formKey'),
       children: [
         Row(
           children: [
@@ -66,7 +60,8 @@ class JobsPageState extends State<JobsPage> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             IconButton(
-              onPressed: () => setState(() => _jobsForm.remove(key)),
+              onPressed: () =>
+                  setState(() => _jobsControllers.remove(controller)),
               padding: const EdgeInsets.all(8.0),
               icon: const Icon(Icons.delete_forever),
               tooltip: 'Supprimer',
@@ -74,7 +69,11 @@ class JobsPageState extends State<JobsPage> {
             ),
           ],
         ),
-        _jobsForm[key]!,
+        EnterpriseJobListTile(
+            controller: controller,
+            editMode: true,
+            onRequestDelete: () =>
+                setState(() => _jobsControllers.remove(controller))),
         const SizedBox(height: 20),
       ],
     );
