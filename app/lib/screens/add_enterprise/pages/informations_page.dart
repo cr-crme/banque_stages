@@ -1,5 +1,5 @@
 import 'package:common/models/enterprises/enterprise.dart';
-import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
+import 'package:common_flutter/widgets/address_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import 'package:flutter/material.dart';
 

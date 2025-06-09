@@ -1,5 +1,5 @@
-import 'package:admin_app/widgets/show_address_dialog.dart';
 import 'package:common/models/generic/address.dart';
+import 'package:common_flutter/widgets/show_address_dialog.dart';
 import 'package:flutter/material.dart';
 
 class AddressController {

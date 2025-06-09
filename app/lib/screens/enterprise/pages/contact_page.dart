@@ -3,7 +3,7 @@ import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/widgets/address_list_tile.dart';
+import 'package:common_flutter/widgets/address_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/email_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/phone_list_tile.dart';

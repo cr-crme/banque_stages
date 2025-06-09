@@ -375,7 +375,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_map:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_map
       sha256: f7d0379477274f323c3f3bc12d369a2b42eb86d1e7bd2970ae1ea3cff782449a
@@ -383,7 +383,7 @@ packages:
     source: hosted
     version: "8.1.1"
   flutter_map_cancellable_tile_provider:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_map_cancellable_tile_provider
       sha256: "801760c104a3cfd9268cda7c9b1241223247e8182613a7e060ef4ffc0d825ac8"
@@ -457,7 +457,7 @@ packages:
     source: hosted
     version: "0.7.2"
   latlong2:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: latlong2
       sha256: "98227922caf49e6056f91b6c56945ea1c7b166f28ffcd5fb8e72fc0b453cc8fe"
