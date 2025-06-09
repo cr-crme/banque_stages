@@ -5,7 +5,7 @@ import 'package:common/models/internships/task_appreciation.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
+import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:flutter/widgets.dart';
 
 class SkillEvaluationFormController {

@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
+import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

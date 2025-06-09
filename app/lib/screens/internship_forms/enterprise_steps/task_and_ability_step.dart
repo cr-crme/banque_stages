@@ -3,8 +3,8 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
+import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 

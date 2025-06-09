@@ -1,6 +1,6 @@
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/services/job_data_file_service.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
+import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
