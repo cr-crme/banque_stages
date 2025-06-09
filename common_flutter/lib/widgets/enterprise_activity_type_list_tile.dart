@@ -2,11 +2,11 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:flutter/material.dart';
 
-class ActivityTypeListController {
+class EnterpriseActivityTypeListController {
   final Set<ActivityTypes> _activityTypes;
   Set<ActivityTypes> get activityTypes => {..._activityTypes};
 
-  ActivityTypeListController({required Set<ActivityTypes> initial})
+  EnterpriseActivityTypeListController({required Set<ActivityTypes> initial})
     : _activityTypes = {...initial};
 
   void dispose() {
@@ -14,33 +14,34 @@ class ActivityTypeListController {
   }
 }
 
-class ActivityTypeListTile extends StatelessWidget {
-  const ActivityTypeListTile({
+class EnterpriseActivityTypeListTile extends StatelessWidget {
+  const EnterpriseActivityTypeListTile({
     super.key,
     required this.controller,
     required this.editMode,
+    this.activityTabAtTop = true,
+    this.tilePadding = const EdgeInsets.only(left: 24.0),
   });
 
-  final ActivityTypeListController controller;
+  final EnterpriseActivityTypeListController controller;
   final bool editMode;
+  final bool activityTabAtTop;
+  final EdgeInsets tilePadding;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Types d\'activités'),
+        const Text('Types d\'activités de l\'entreprise'),
         Padding(
-          padding: const EdgeInsets.only(left: 24.0),
+          padding: tilePadding,
           child: Column(
             children: [
               editMode
-                  ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: _ActivityTypesPickerFormField(
-                      controller: controller,
-                      activityTabAtTop: true,
-                    ),
+                  ? _ActivityTypesPickerFormField(
+                    controller: controller,
+                    activityTabAtTop: activityTabAtTop,
                   )
                   : _ActivityTypeCards(controller: controller),
             ],
@@ -54,7 +55,7 @@ class ActivityTypeListTile extends StatelessWidget {
 class _ActivityTypeCards extends StatelessWidget {
   const _ActivityTypeCards({required this.controller, this.onDeleted});
 
-  final ActivityTypeListController controller;
+  final EnterpriseActivityTypeListController controller;
   final void Function(ActivityTypes activityType)? onDeleted;
 
   @override
@@ -106,7 +107,7 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
        );
 
   final bool activityTabAtTop;
-  final ActivityTypeListController controller;
+  final EnterpriseActivityTypeListController controller;
 
   static String? _validator(Set<ActivityTypes>? activityTypes) {
     if (activityTypes!.isEmpty) return 'Choisir au moins un type d\'activité.';
@@ -171,7 +172,7 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
               controller: controller,
               focusNode: focusNode,
               decoration: InputDecoration(
-                labelText: '* Type d\'activité de l\'entreprise',
+                labelText: '* Choisir le type d\'activité',
                 errorText: state.errorText,
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.clear),

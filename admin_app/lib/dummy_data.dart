@@ -19,7 +19,6 @@ import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/services/job_data_file_service.dart';
-import 'package:common/utils.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
 import 'package:common_flutter/providers/backend_list_provided.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
@@ -28,6 +27,12 @@ import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
+
+String _mySchoolBoardName = 'Ma première commission scolaire';
+String _mySchoolName = 'Ma deuxième école';
+String _adminEmail = 'bb@bb.bb';
+String _myEmail = 'cc@cc.cc';
+String _myParternerEmail = 'romeo.montaigu@shakespeare.qc';
 
 Future<void> resetDummyData(BuildContext context) async {
   final schoolBoards = SchoolBoardsProvider.of(context, listen: false);
@@ -57,13 +62,22 @@ Future<void> resetDummyData(BuildContext context) async {
     schoolBoards,
   );
 
-  // TODO Look for Quebec servers (OVH, Akamai, Vultr, etc.) to host the database
   await _addDummySchoolBoards(schoolBoards);
-  await _addDummyAdmins(admins);
-  await _addDummyTeachers(teachers);
-  await _addDummyStudents(students);
-  await _addDummyEnterprises(enterprises);
-  await _addDummyInternships(internships, students, enterprises);
+  await _addDummyAdmins(admins, schoolBoards: schoolBoards);
+  await _addDummyTeachers(teachers, schoolBoards: schoolBoards);
+  await _addDummyStudents(students, schoolBoards: schoolBoards);
+  await _addDummyEnterprises(
+    enterprises,
+    schoolBoards: schoolBoards,
+    teachers: teachers,
+  );
+  await _addDummyInternships(
+    internships,
+    schoolBoards: schoolBoards,
+    enterprises: enterprises,
+    students: students,
+    teachers: teachers,
+  );
 
   dev.log('Dummy reset data done');
 }
@@ -111,7 +125,6 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   // Test the add function
   final schools = [
     School(
-      id: DevAuth.devMySchoolId,
       name: 'Ma première école',
       address: Address(
         civicNumber: 9105,
@@ -121,7 +134,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
       ),
     ),
     School(
-      name: 'Ma deuxième école',
+      name: _mySchoolName,
       address: Address(
         civicNumber: 9105,
         street: 'Rue Verville',
@@ -131,11 +144,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
     ),
   ];
   schoolBoards.add(
-    SchoolBoard(
-      id: DevAuth.devMySchoolBoardId,
-      name: 'Ma première commission scolaire',
-      schools: schools.toList(),
-    ),
+    SchoolBoard(name: _mySchoolBoardName, schools: schools.toList()),
   );
 
   schools.clear();
@@ -183,18 +192,25 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   await _waitForDatabaseUpdate(schoolBoards, 2);
 }
 
-Future<void> _addDummyAdmins(AdminsProvider admins) async {
+Future<void> _addDummyAdmins(
+  AdminsProvider admins, {
+  required SchoolBoardsProvider schoolBoards,
+}) async {
   dev.log('Adding dummy admins');
+
+  final mySchoolBoardId =
+      schoolBoards
+          .firstWhere((schoolBoard) => schoolBoard.name == _mySchoolBoardName)
+          .id;
 
   admins.add(
     Admin(
-      id: DevAuth.devMyTeacherId,
       firstName: 'Jean',
       middleName: null,
       lastName: 'Dupont',
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       hasRegisteredAccount: false,
-      email: DevAuth.devMyTeacherEmail,
+      email: _adminEmail,
       accessLevel: AccessLevel.admin,
     ),
   );
@@ -211,17 +227,28 @@ Future<void> _addDummyAdmins(AdminsProvider admins) async {
   );
 }
 
-Future<void> _addDummyTeachers(TeachersProvider teachers) async {
+Future<void> _addDummyTeachers(
+  TeachersProvider teachers, {
+  required SchoolBoardsProvider schoolBoards,
+}) async {
   dev.log('Adding dummy teachers');
+
+  final mySchoolBoard = schoolBoards.firstWhere(
+    (schoolBoard) => schoolBoard.name == _mySchoolBoardName,
+  );
+  final mySchoolBoardId = mySchoolBoard.id;
+  final mySchoolId =
+      mySchoolBoard.schools
+          .firstWhere((school) => school.name == _mySchoolName)
+          .id;
 
   teachers.add(
     Teacher(
-      id: DevAuth.devMyTeacherPartnerId,
       firstName: 'Roméo',
       middleName: null,
       lastName: 'Montaigu',
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       hasRegisteredAccount: false,
       groups: ['550', '551'],
       email: 'romeo.montaigu@shakespeare.qc',
@@ -234,15 +261,14 @@ Future<void> _addDummyTeachers(TeachersProvider teachers) async {
 
   teachers.add(
     Teacher(
-      id: DevAuth.devMyTeacherId,
       firstName: 'Juliette',
       middleName: null,
       lastName: 'Capulet',
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       hasRegisteredAccount: false,
       groups: ['550', '551'],
-      email: 'juliette.capulet@shakespeare.qc',
+      email: _myEmail,
       phone: null,
       address: null,
       dateBirth: null,
@@ -256,8 +282,8 @@ Future<void> _addDummyTeachers(TeachersProvider teachers) async {
       firstName: 'Tybalt',
       middleName: null,
       lastName: 'Capulet',
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       hasRegisteredAccount: false,
       groups: ['550', '551'],
       email: 'tybalt.capulet@shakespeare.qc',
@@ -274,8 +300,8 @@ Future<void> _addDummyTeachers(TeachersProvider teachers) async {
       firstName: 'Benvolio',
       middleName: null,
       lastName: 'Montaigu',
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       hasRegisteredAccount: false,
       groups: ['552'],
       email: 'benvolio.montaigu@shakespeare.qc',
@@ -288,12 +314,25 @@ Future<void> _addDummyTeachers(TeachersProvider teachers) async {
   await _waitForDatabaseUpdate(teachers, 1);
 }
 
-Future<void> _addDummyStudents(StudentsProvider students) async {
+Future<void> _addDummyStudents(
+  StudentsProvider students, {
+  required SchoolBoardsProvider schoolBoards,
+}) async {
   dev.log('Adding dummy students');
+
+  final mySchoolBoard = schoolBoards.firstWhere(
+    (schoolBoard) => schoolBoard.name == _mySchoolBoardName,
+  );
+  final mySchoolBoardId = mySchoolBoard.id;
+  final mySchoolId =
+      mySchoolBoard.schools
+          .firstWhere((school) => school.name == _mySchoolName)
+          .id;
+
   students.add(
     Student(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       firstName: 'Cedric',
       lastName: 'Masson',
       dateBirth: DateTime(2005, 5, 20),
@@ -322,8 +361,8 @@ Future<void> _addDummyStudents(StudentsProvider students) async {
 
   students.add(
     Student(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       firstName: 'Thomas',
       lastName: 'Caron',
       dateBirth: null,
@@ -352,8 +391,8 @@ Future<void> _addDummyStudents(StudentsProvider students) async {
 
   students.add(
     Student(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       firstName: 'Mikael',
       lastName: 'Boucher',
       dateBirth: null,
@@ -382,8 +421,8 @@ Future<void> _addDummyStudents(StudentsProvider students) async {
 
   students.add(
     Student(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       firstName: 'Kevin',
       lastName: 'Leblanc',
       dateBirth: null,
@@ -412,8 +451,8 @@ Future<void> _addDummyStudents(StudentsProvider students) async {
 
   students.add(
     Student(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       firstName: 'Simon',
       lastName: 'Gingras',
       dateBirth: null,
@@ -442,8 +481,8 @@ Future<void> _addDummyStudents(StudentsProvider students) async {
 
   students.add(
     Student(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       firstName: 'Diego',
       lastName: 'Vargas',
       dateBirth: null,
@@ -472,8 +511,8 @@ Future<void> _addDummyStudents(StudentsProvider students) async {
 
   students.add(
     Student(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       firstName: 'Jeanne',
       lastName: 'Tremblay',
       dateBirth: null,
@@ -502,8 +541,8 @@ Future<void> _addDummyStudents(StudentsProvider students) async {
 
   students.add(
     Student(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       firstName: 'Vincent',
       lastName: 'Picard',
       dateBirth: null,
@@ -532,8 +571,8 @@ Future<void> _addDummyStudents(StudentsProvider students) async {
 
   students.add(
     Student(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       firstName: 'Vanessa',
       lastName: 'Monette',
       dateBirth: null,
@@ -562,8 +601,8 @@ Future<void> _addDummyStudents(StudentsProvider students) async {
 
   students.add(
     Student(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
-      schoolId: DevAuth.devMySchoolId,
+      schoolBoardId: mySchoolBoardId,
+      schoolId: mySchoolId,
       firstName: 'Melissa',
       lastName: 'Poulain',
       dateBirth: null,
@@ -593,8 +632,22 @@ Future<void> _addDummyStudents(StudentsProvider students) async {
   await _waitForDatabaseUpdate(students, 10);
 }
 
-Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
+Future<void> _addDummyEnterprises(
+  EnterprisesProvider enterprises, {
+  required SchoolBoardsProvider schoolBoards,
+  required TeachersProvider teachers,
+}) async {
   dev.log('Adding dummy enterprises');
+
+  final mySchoolBoard = schoolBoards.firstWhere(
+    (schoolBoard) => schoolBoard.name == _mySchoolBoardName,
+  );
+  final mySchoolBoardId = mySchoolBoard.id;
+
+  final myTeacherId =
+      teachers.firstWhere((teacher) => teacher.email == _myEmail).id;
+  final myPartnerTeacherId =
+      teachers.firstWhere((teacher) => teacher.email == _myParternerEmail).id;
 
   JobList jobs = JobList();
   jobs.add(
@@ -658,14 +711,14 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'Metro Gagnon',
       activityTypes: {
         ActivityTypes.boucherie,
         ActivityTypes.commerce,
         ActivityTypes.epicerie,
       },
-      recruiterId: DevAuth.devMyTeacherPartnerId,
+      recruiterId: myPartnerTeacherId,
       jobs: jobs,
       contact: Person(
         firstName: 'Marc',
@@ -712,10 +765,10 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
   );
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'Jean Coutu',
       activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
-      recruiterId: DevAuth.devMyTeacherId,
+      recruiterId: myTeacherId,
       jobs: jobs,
       contact: Person(
         firstName: 'Caroline',
@@ -785,10 +838,10 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'Auto Care',
       activityTypes: {ActivityTypes.garage},
-      recruiterId: DevAuth.devMyTeacherPartnerId,
+      recruiterId: myPartnerTeacherId,
       jobs: jobs,
       contact: Person(
         firstName: 'Denis',
@@ -834,7 +887,7 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
   );
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'Auto Repair',
       activityTypes: {ActivityTypes.garage, ActivityTypes.mecanique},
       recruiterId: 'dummy_teacher_id_1',
@@ -885,10 +938,10 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'Boucherie Marien',
       activityTypes: {ActivityTypes.boucherie, ActivityTypes.commerce},
-      recruiterId: DevAuth.devMyTeacherPartnerId,
+      recruiterId: myPartnerTeacherId,
       jobs: jobs,
       contact: Person(
         firstName: 'Brigitte',
@@ -936,10 +989,10 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'IGA',
       activityTypes: {ActivityTypes.epicerie, ActivityTypes.supermarche},
-      recruiterId: DevAuth.devMyTeacherPartnerId,
+      recruiterId: myPartnerTeacherId,
       jobs: jobs,
       contact: Person(
         firstName: 'Gabrielle',
@@ -987,7 +1040,7 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'Pharmaprix',
       activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
       recruiterId: 'dummy_teacher_id_2',
@@ -1038,7 +1091,7 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'Subway',
       activityTypes: {
         ActivityTypes.restaurationRapide,
@@ -1086,14 +1139,14 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'Walmart',
       activityTypes: {
         ActivityTypes.commerce,
         ActivityTypes.magasin,
         ActivityTypes.supermarche,
       },
-      recruiterId: DevAuth.devMyTeacherPartnerId,
+      recruiterId: myPartnerTeacherId,
       jobs: jobs,
       contact: Person(
         firstName: 'France',
@@ -1155,10 +1208,10 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
   );
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'Le jardin de Joanie',
       activityTypes: {ActivityTypes.commerce, ActivityTypes.fleuriste},
-      recruiterId: DevAuth.devMyTeacherPartnerId,
+      recruiterId: myPartnerTeacherId,
       jobs: jobs,
       contact: Person(
         firstName: 'Joanie',
@@ -1219,10 +1272,10 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
   );
   enterprises.add(
     Enterprise(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       name: 'Fleuriste Joli',
       activityTypes: {ActivityTypes.fleuriste, ActivityTypes.magasin},
-      recruiterId: DevAuth.devMyTeacherPartnerId,
+      recruiterId: myPartnerTeacherId,
       jobs: jobs,
       contact: Person(
         firstName: 'Gaëtan',
@@ -1258,7 +1311,7 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
       schoolBoardId: 'dummy_school_board_id_1',
       name: 'Fleuriste Joli',
       activityTypes: {ActivityTypes.fleuriste, ActivityTypes.magasin},
-      recruiterId: DevAuth.devMyTeacherPartnerId,
+      recruiterId: myPartnerTeacherId,
       jobs: jobs,
       contact: Person(
         firstName: 'Gaëtan',
@@ -1293,11 +1346,23 @@ Future<void> _addDummyEnterprises(EnterprisesProvider enterprises) async {
 }
 
 Future<void> _addDummyInternships(
-  InternshipsProvider internships,
-  StudentsProvider students,
-  EnterprisesProvider enterprises,
-) async {
+  InternshipsProvider internships, {
+  required SchoolBoardsProvider schoolBoards,
+  required TeachersProvider teachers,
+  required StudentsProvider students,
+  required EnterprisesProvider enterprises,
+}) async {
   dev.log('Adding dummy internships');
+
+  final mySchoolBoard = schoolBoards.firstWhere(
+    (schoolBoard) => schoolBoard.name == _mySchoolBoardName,
+  );
+  final mySchoolBoardId = mySchoolBoard.id;
+
+  final myTeacherId =
+      teachers.firstWhere((teacher) => teacher.email == _myEmail).id;
+  final myPartnerTeacherId =
+      teachers.firstWhere((teacher) => teacher.email == _myParternerEmail).id;
 
   final rng = Random();
 
@@ -1307,10 +1372,10 @@ Future<void> _addDummyInternships(
   );
   internships.add(
     Internship(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Cedric Masson').id,
-      signatoryTeacherId: DevAuth.devMyTeacherId,
+      signatoryTeacherId: myTeacherId,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Care').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Auto Care').jobs[0].id,
@@ -1377,10 +1442,10 @@ Future<void> _addDummyInternships(
   );
   internships.add(
     Internship(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Thomas Caron').id,
-      signatoryTeacherId: DevAuth.devMyTeacherId,
+      signatoryTeacherId: myTeacherId,
       extraSupervisingTeacherIds: [],
       enterpriseId:
           enterprises.firstWhere((e) => e.name == 'Boucherie Marien').id,
@@ -1444,10 +1509,10 @@ Future<void> _addDummyInternships(
     end: DateTime.now().add(Duration(days: rng.nextInt(90))),
   );
   var internship = Internship(
-    schoolBoardId: DevAuth.devMySchoolBoardId,
+    schoolBoardId: mySchoolBoardId,
     creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
-    signatoryTeacherId: DevAuth.devMyTeacherId,
+    signatoryTeacherId: myTeacherId,
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
@@ -1520,10 +1585,10 @@ Future<void> _addDummyInternships(
   );
   internships.add(
     Internship(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Vincent Picard').id,
-      signatoryTeacherId: DevAuth.devMyTeacherId,
+      signatoryTeacherId: myTeacherId,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'IGA').id,
       jobId: enterprises.firstWhere((e) => e.name == 'IGA').jobs[0].id,
@@ -1573,11 +1638,11 @@ Future<void> _addDummyInternships(
   );
   internships.add(
     Internship(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
       // This is a Roméo Montaigu's student
-      signatoryTeacherId: DevAuth.devMyTeacherPartnerId,
+      signatoryTeacherId: myPartnerTeacherId,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Repair').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Auto Repair').jobs[0].id,
@@ -1628,11 +1693,11 @@ Future<void> _addDummyInternships(
   );
   internships.add(
     Internship(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
       // This is a Roméo Montaigu's student
-      signatoryTeacherId: DevAuth.devMyTeacherPartnerId,
+      signatoryTeacherId: myPartnerTeacherId,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
@@ -1692,12 +1757,12 @@ Future<void> _addDummyInternships(
   );
   internships.add(
     Internship(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
       // This is a Roméo Montaigu's student
-      signatoryTeacherId: DevAuth.devMyTeacherPartnerId,
-      extraSupervisingTeacherIds: [DevAuth.devMyTeacherId],
+      signatoryTeacherId: myPartnerTeacherId,
+      extraSupervisingTeacherIds: [myTeacherId],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
       extraSpecializationIds: [],
@@ -1757,10 +1822,10 @@ Future<void> _addDummyInternships(
   );
   internships.add(
     Internship(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
-      signatoryTeacherId: DevAuth.devMyTeacherId,
+      signatoryTeacherId: myTeacherId,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').jobs[0].id,
@@ -1806,10 +1871,10 @@ Future<void> _addDummyInternships(
   );
   internships.add(
     Internship(
-      schoolBoardId: DevAuth.devMySchoolBoardId,
+      schoolBoardId: mySchoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
-      signatoryTeacherId: DevAuth.devMyTeacherId,
+      signatoryTeacherId: myTeacherId,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,

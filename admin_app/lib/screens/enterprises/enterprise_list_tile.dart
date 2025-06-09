@@ -1,4 +1,3 @@
-import 'package:admin_app/screens/enterprises/activity_type_list_tile.dart';
 import 'package:admin_app/screens/enterprises/confirm_delete_enterprise_dialog.dart';
 import 'package:admin_app/screens/enterprises/job_list_tile.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
@@ -13,6 +12,7 @@ import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/address_list_tile.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
+import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:common_flutter/widgets/web_site_list_tile.dart';
@@ -72,7 +72,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   late final _nameController = TextEditingController(
     text: widget.enterprise.name,
   );
-  late final _activityTypeController = ActivityTypeListController(
+  late final _activityTypeController = EnterpriseActivityTypeListController(
     initial: widget.enterprise.activityTypes,
   );
   late final _jobControllers = Map.fromEntries(
@@ -308,7 +308,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   }
 
   Widget _buildActivityTypes() {
-    return ActivityTypeListTile(
+    return EnterpriseActivityTypeListTile(
       controller: _activityTypeController,
       editMode: _isEditing,
     );

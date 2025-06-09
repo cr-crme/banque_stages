@@ -1,6 +1,6 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common_flutter/widgets/address_list_tile.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
+import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
 import 'package:flutter/material.dart';
 
 class InformationsPage extends StatefulWidget {
@@ -17,7 +17,11 @@ class InformationsPageState extends State<InformationsPage> {
   final addressController = AddressController();
   String? neq;
 
-  Set<ActivityTypes> activityTypes = {};
+  final _activityTypesController = EnterpriseActivityTypeListController(
+    initial: {},
+  );
+  Set<ActivityTypes> get activityTypes =>
+      _activityTypesController.activityTypes;
 
   Future<String?> validate() async {
     await addressController.requestValidation();
@@ -47,9 +51,10 @@ class InformationsPageState extends State<InformationsPage> {
                     text!.isEmpty ? 'Ajouter le nom de l\'entreprise.' : null,
                 onSaved: (name) => this.name = name,
               ),
-              ActivityTypesPickerFormField(
-                onSaved: (Set<ActivityTypes>? activityTypes) =>
-                    setState(() => this.activityTypes = activityTypes!),
+              SizedBox(height: 8),
+              EnterpriseActivityTypeListTile(
+                controller: _activityTypesController,
+                editMode: true,
                 activityTabAtTop: false,
               ),
               AddressListTile(

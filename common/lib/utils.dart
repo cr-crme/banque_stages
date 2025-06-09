@@ -1,5 +1,4 @@
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
-import 'package:uuid/uuid.dart';
 
 bool areListsEqual<T>(List<T> list1, List<T> list2) {
   if (list1.length != list2.length) return false;
@@ -123,27 +122,4 @@ extension ItemSerializableExtension on ItemSerializable {
 
     return serialized;
   }
-}
-
-class DevAuth {
-  static String devMyAppSecret = Uuid()
-      .v5(UuidValue.fromNamespace(Namespace.dns).toString(), 'dummy_app')
-      .toString();
-  static String devMySchoolBoardId = Uuid()
-      .v5(UuidValue.fromNamespace(Namespace.dns).toString(),
-          'dummy_school_board')
-      .toString();
-  static String devMySchoolId = Uuid()
-      .v5(UuidValue.fromNamespace(Namespace.dns).toString(), 'dummy_school')
-      .toString();
-  static String devMyTeacherAuthenticationId = 'YCqQupPvyMN2UvhhvdJIVkUTTJI2';
-  static String devMyTeacherId = Uuid()
-      .v5(
-        UuidValue.fromNamespace(Namespace.dns).toString(),
-        DevAuth.devMyTeacherAuthenticationId,
-      )
-      .toString();
-  static String devMyTeacherEmail = 'bb@bb.bb';
-  static String devMyTeacherPartnerId =
-      Uuid().v5(UuidValue.fromNamespace(Namespace.dns).toString(), '42');
 }

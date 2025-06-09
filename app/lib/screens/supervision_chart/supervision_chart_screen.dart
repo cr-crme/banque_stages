@@ -373,12 +373,12 @@ class _StudentTileState extends State<_StudentTile> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _getEnterprise(context);
+    _getEnterprise();
   }
 
-  Future<void> _getEnterprise(BuildContext context) async {
+  Future<void> _getEnterprise() async {
     while (true) {
-      if (!context.mounted) {
+      if (!mounted) {
         _enterprise = null;
         break;
       }

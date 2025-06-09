@@ -18,6 +18,7 @@ dependencies:
   go_router: ^14.2.7
   flutter_form_builder: ^10.0.1
   intl: ^0.19.0
+  uuid: ^4.5.1
   crcrme_material_theme:
     path: ../external/crcrme_material_theme
   common:

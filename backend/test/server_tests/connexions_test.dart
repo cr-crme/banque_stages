@@ -10,7 +10,6 @@ import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/server/connexions.dart';
 import 'package:backend/server/database_manager.dart';
 import 'package:common/communication_protocol.dart';
-import 'package:common/utils.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:test/test.dart';
 
@@ -20,8 +19,8 @@ String _prepareHandshake() {
   return jsonEncode(
       CommunicationProtocol(requestType: RequestType.handshake, data: {
     'token': JWT({
-      'app_secret': DevAuth.devMyAppSecret,
-      'school_board_id': DevAuth.devMySchoolBoardId,
+      'app_secret': 'dummy_app_secret',
+      'school_board_id': 'dummy_school_board_id',
     }).sign(SecretKey('secret passphrase')),
   }).serialize());
 }
