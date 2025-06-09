@@ -1,5 +1,5 @@
-import 'package:admin_app/providers/students_provider.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common_flutter/providers/students_provider.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmDeleteInternshipDialog extends StatelessWidget {

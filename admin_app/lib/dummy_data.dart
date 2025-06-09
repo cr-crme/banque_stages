@@ -2,7 +2,6 @@
 import 'dart:developer' as dev;
 import 'dart:math';
 
-import 'package:admin_app/providers/students_provider.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
@@ -26,6 +25,7 @@ import 'package:common_flutter/providers/backend_list_provided.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
+import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
 

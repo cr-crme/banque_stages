@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -48,7 +48,7 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
   @override
   Widget build(BuildContext context) {
     final students =
-        _filterSelectedStudents(StudentsProvider.studentsInMyGroups(context));
+        _filterSelectedStudents(StudentsHelpers.studentsInMyGroups(context));
 
     return Scaffold(
       appBar: AppBar(

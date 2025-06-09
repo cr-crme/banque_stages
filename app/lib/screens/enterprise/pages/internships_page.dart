@@ -3,9 +3,10 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
@@ -161,7 +162,7 @@ class _InternshipListState extends State<_InternshipList> {
   /// id [internshipId].
   bool _canSeeDetails({required String internshipId}) {
     final internship = InternshipsProvider.of(context)[internshipId];
-    final student = StudentsProvider.studentsInMyGroups(context)
+    final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
     return student != null;
@@ -183,7 +184,7 @@ class _InternshipListState extends State<_InternshipList> {
             (internship) {
               final specialization =
                   widget.enterprise.jobs[internship.jobId].specialization;
-              final student = StudentsProvider.allStudentsLimitedInfo(context)
+              final student = StudentsProvider.of(context)
                   .firstWhereOrNull((e) => e.id == internship.studentId);
               final signatoryTeacher = teachers
                   .firstWhere((e) => e.id == internship.signatoryTeacherId);

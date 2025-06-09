@@ -3,7 +3,7 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +86,7 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
     // Sometimes for some reason the build is called this with these
     // provider empty on the first call
     if (enterprise == null) return Container();
-    final student = StudentsProvider.studentsInMyGroups(context)
+    final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == widget.internship.studentId);
 
     return student == null

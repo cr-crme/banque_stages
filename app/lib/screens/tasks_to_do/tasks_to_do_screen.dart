@@ -6,7 +6,7 @@ import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -61,7 +61,7 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
   // We should terminate an internship if the end date is passed for more that
   // one day
   final internships = InternshipsProvider.of(context);
-  final students = StudentsProvider.mySupervizedStudents(context);
+  final students = StudentsHelpers.mySupervizedStudents(context);
   final enterprises = EnterprisesProvider.of(context);
 
   // This happens sometimes, so we need to wait a frame
@@ -92,7 +92,7 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
 List<_JobEnterpriseInternshipStudent> _postInternshipEvaluationToDo(context) {
   // We should evaluate an internship as soon as it is terminated
   final internships = InternshipsProvider.of(context);
-  final students = StudentsProvider.mySupervizedStudents(context);
+  final students = StudentsHelpers.mySupervizedStudents(context);
   final enterprises = EnterprisesProvider.of(context);
 
   // This happens sometimes, so we need to wait a frame

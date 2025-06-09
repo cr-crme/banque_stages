@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/screens/student/pages/skills_page.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +59,7 @@ class _StudentScreenState extends State<StudentScreen>
 
   @override
   Widget build(BuildContext context) {
-    final student = StudentsProvider.studentsInMyGroups(context)
+    final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == widget.id);
 
     return student == null

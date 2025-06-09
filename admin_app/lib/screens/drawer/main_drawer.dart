@@ -1,5 +1,4 @@
 import 'package:admin_app/dummy_data.dart';
-import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/router.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
@@ -7,6 +6,7 @@ import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
+import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
@@ -136,7 +136,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
   Widget build(BuildContext context) {
     final internship =
         InternshipsProvider.of(context)[widget.formController.internshipId];
-    final student = StudentsProvider.studentsInMyGroups(context)
+    final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
     return Scaffold(

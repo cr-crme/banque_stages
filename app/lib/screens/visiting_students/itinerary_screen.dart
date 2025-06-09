@@ -6,7 +6,7 @@ import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/itineraries_helpers.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/routing_map.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/waypoint_card.dart';
@@ -54,7 +54,7 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
     if (!mounted) return false;
 
     final students = {
-      ...StudentsProvider.mySupervizedStudents(context,
+      ...StudentsHelpers.mySupervizedStudents(context,
           listen: false, activeOnly: true)
     };
     if (!mounted) return false;

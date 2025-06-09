@@ -10,7 +10,7 @@ import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
 import 'package:crcrme_banque_stages/common/models/time_of_day_extension.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -66,7 +66,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
   Future<Student?> _getStudent(BuildContext context) async {
     while (true) {
       if (!context.mounted) return null;
-      final students = StudentsProvider.studentsInMyGroups(context);
+      final students = StudentsHelpers.studentsInMyGroups(context);
       final student = students.firstWhereOrNull((e) => e.id == studentId);
       if (student != null) return student;
       await Future.delayed(const Duration(milliseconds: 100));

@@ -4,7 +4,7 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/models/job_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/supervision_step.dart';
@@ -93,7 +93,7 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
 
   List<PostInternshipEnterpriseEvaluation> _getFilteredEvaluations() {
     final internships = InternshipsProvider.of(context);
-    final students = StudentsProvider.studentsInMyGroups(context);
+    final students = StudentsHelpers.studentsInMyGroups(context);
     var evaluations = widget.job.postInternshipEnterpriseEvaluations(context);
 
     // Only keep evaluations from the requested students

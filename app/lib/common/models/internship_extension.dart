@@ -1,7 +1,7 @@
 import 'package:common/models/internships/internship.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 
 extension InternshipExtension on Internship {
   void addSupervisingTeacher(context, {required String teacherId}) {
@@ -12,7 +12,7 @@ extension InternshipExtension on Internship {
     }
 
     // Make sure the student is in a group supervised by the teacher
-    final students = StudentsProvider.allStudentsLimitedInfo(context);
+    final students = StudentsProvider.of(context);
     final student = students.firstWhere((e) => e.id == studentId);
     final teacher = TeachersProvider.of(context, listen: false)[teacherId];
     if (!teacher.groups.contains(student.group)) {

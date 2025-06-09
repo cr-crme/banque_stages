@@ -8,7 +8,7 @@ import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/misc/form_service.dart';
@@ -132,7 +132,7 @@ class _InternshipEnrollmentScreenState
 
     InternshipsProvider.of(context, listen: false).add(internship);
 
-    final student = StudentsProvider.studentsInMyGroups(context, listen: false)
+    final student = StudentsHelpers.studentsInMyGroups(context, listen: false)
         .firstWhere((e) => e.id == _generalInfoKey.currentState!.student!.id);
     await showDialog(
         context: context,

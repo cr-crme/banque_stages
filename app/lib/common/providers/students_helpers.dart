@@ -1,22 +1,11 @@
 import 'package:collection/collection.dart';
-import 'package:common/communication_protocol.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:common_flutter/providers/auth_provider.dart';
-import 'package:common_flutter/providers/backend_list_provided.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class StudentsProvider extends BackendListProvided<Student> {
-  StudentsProvider({required super.uri, super.mockMe});
-
-  @override
-  RequestFields getField([bool asList = false]) {
-    return asList ? RequestFields.students : RequestFields.student;
-  }
-
+class StudentsHelpers {
   ///
   /// This returns the students the teacher should have read/write access too.
   /// These are the students from the group the teacher teaches too (even though
@@ -26,7 +15,7 @@ class StudentsProvider extends BackendListProvided<Student> {
         TeachersProvider.of(context, listen: false).myTeacher?.groups;
     if (acceptedGroups == null || acceptedGroups.isEmpty) return [];
 
-    return _of(context, listen: listen)
+    return StudentsProvider.of(context, listen: listen)
         .where((e) => acceptedGroups.contains(e.group))
         .toList();
   }
@@ -67,36 +56,5 @@ class StudentsProvider extends BackendListProvided<Student> {
     }
 
     return out;
-  }
-
-  ///
-  /// This is an instance to the Provider, 99% of the time this should not be called.
-  /// Using this can lead to a potential security breach as it access all the students
-  /// info without restriction. It is used for debug purposes.
-  static StudentsProvider instance(context, {bool listen = true}) {
-    if (!kDebugMode) throw 'This should not be called in production';
-    return _of(context, listen: listen);
-  }
-
-  ///
-  /// This returns all the students from the database but with very limited info
-  static List<Student> allStudentsLimitedInfo(context) {
-    return _of(context, listen: false).map((e) => e.limitedInfo).toList();
-  }
-
-  ///
-  /// Internal accessor to the provider. This holds ALL the students, including
-  /// those that the teacher should not have access to.
-  static StudentsProvider _of(BuildContext context, {listen = true}) {
-    return Provider.of<StudentsProvider>(context, listen: listen);
-  }
-
-  @override
-  Student deserializeItem(data) {
-    return Student.fromSerialized(data);
-  }
-
-  Future<void> initializeAuth(AuthProvider auth) async {
-    await initializeFetchingData(authProvider: auth);
   }
 }

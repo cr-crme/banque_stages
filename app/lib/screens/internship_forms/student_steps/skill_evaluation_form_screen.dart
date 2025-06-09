@@ -4,7 +4,7 @@ import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/task_appreciation.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
@@ -152,7 +152,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     final internship = widget.formController.internship(context);
     final skills = _extractSkills(context, internship: internship);
 
-    final student = StudentsProvider.studentsInMyGroups(context)
+    final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
     return Scaffold(

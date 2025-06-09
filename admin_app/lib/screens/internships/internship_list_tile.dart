@@ -1,4 +1,3 @@
-import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/screens/internships/confirm_delete_internship_dialog.dart';
 import 'package:admin_app/screens/internships/schedule_list_tile.dart';
 import 'package:admin_app/widgets/animated_expanding_card.dart';
@@ -17,6 +16,7 @@ import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';

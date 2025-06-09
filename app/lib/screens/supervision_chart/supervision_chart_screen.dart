@@ -11,7 +11,7 @@ import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/models/internship_extension.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
 import 'package:crcrme_banque_stages/common/models/visiting_priorities_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
@@ -104,8 +104,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
   }
 
   List<Internship> _filterByName(List<Internship> internships) {
-    final students =
-        StudentsProvider.studentsInMyGroups(context, listen: false);
+    final students = StudentsHelpers.studentsInMyGroups(context, listen: false);
 
     return internships
         .where((internship) => students.any((student) =>
@@ -161,7 +160,7 @@ class _SupervisionChartState extends State<SupervisionChart> {
   List<Internship> _getInternshipsByStudents() {
     final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
     var allMyStudents =
-        StudentsProvider.studentsInMyGroups(context, listen: false);
+        StudentsHelpers.studentsInMyGroups(context, listen: false);
 
     var internships = [...InternshipsProvider.of(context)];
     internships = internships
@@ -195,12 +194,12 @@ class _SupervisionChartState extends State<SupervisionChart> {
     final iconSize = screenSize.width / 16;
     final internships = _getInternshipsByStudents();
 
-    final studentsInMyGroups = StudentsProvider.studentsInMyGroups(context);
+    final studentsInMyGroups = StudentsHelpers.studentsInMyGroups(context);
     final studentsISignedIntenships = internships
         .where((internship) => internship.signatoryTeacherId == myId)
         .map((internship) => studentsInMyGroups
             .firstWhere((student) => student.id == internship.studentId));
-    final studentsISupervize = StudentsProvider.mySupervizedStudents(context);
+    final studentsISupervize = StudentsHelpers.mySupervizedStudents(context);
 
     return Scaffold(
       appBar: AppBar(

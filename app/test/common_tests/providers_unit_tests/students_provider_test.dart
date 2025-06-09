@@ -1,8 +1,9 @@
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/models/internship_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +16,7 @@ void _prepareProviders(BuildContext context) {
   final teachers = TeachersProvider.of(context, listen: false);
   teachers.initializeAuth(auth);
   teachers.add(dummyTeacher(id: teachers.myTeacher?.id ?? 'FailedToGetId'));
-  final students = StudentsProvider.instance(context, listen: false);
+  final students = StudentsProvider.of(context, listen: false);
   students.initializeAuth(auth);
 }
 
@@ -31,14 +32,14 @@ void main() {
       _prepareProviders(context);
 
       // Add random students (my groups are 101 and 102)
-      final students = StudentsProvider.instance(context, listen: false);
+      final students = StudentsProvider.of(context, listen: false);
       students.add(dummyStudent(group: '101'));
       students.add(dummyStudent(group: '101'));
       students.add(dummyStudent(group: '102'));
       students.add(dummyStudent(group: '103'));
 
-      expect(StudentsProvider.studentsInMyGroups(context, listen: false).length,
-          3);
+      expect(
+          StudentsHelpers.studentsInMyGroups(context, listen: false).length, 3);
     });
 
     testWidgets('"mySupervizedStudents" works', (tester) async {
@@ -47,7 +48,7 @@ void main() {
           withStudents: true, withTeachers: true, withInternships: true);
       _prepareProviders(context);
 
-      final students = StudentsProvider.instance(context, listen: false);
+      final students = StudentsProvider.of(context, listen: false);
       students.add(dummyStudent(id: 'myStudent1', group: '101'));
       students.add(dummyStudent(id: 'myStudent2', group: '101'));
       students.add(dummyStudent(id: 'myStudent3', group: '102'));
@@ -56,7 +57,7 @@ void main() {
       students.add(dummyStudent(id: 'neverMyStudent2', group: '103'));
 
       expect(
-          StudentsProvider.mySupervizedStudents(context, listen: false).length,
+          StudentsHelpers.mySupervizedStudents(context, listen: false).length,
           0);
 
       // Add internship to all of the students
@@ -71,7 +72,7 @@ void main() {
             teacherId: i >= 3 ? 'anotherTeacherId' : teacherId));
       }
       expect(
-          StudentsProvider.mySupervizedStudents(context, listen: false).length,
+          StudentsHelpers.mySupervizedStudents(context, listen: false).length,
           3);
 
       // Add the fourth student to the supervising list of the teacher
@@ -81,7 +82,7 @@ void main() {
               teacherId: TeachersProvider.of(context).myTeacher?.id ??
                   'FailedToGetId');
       expect(
-          StudentsProvider.mySupervizedStudents(context, listen: false).length,
+          StudentsHelpers.mySupervizedStudents(context, listen: false).length,
           4);
 
       // Terminate one of the internships
@@ -90,12 +91,12 @@ void main() {
           .copyWith(endDate: DateTime(0));
       internships.replace(internship);
       expect(
-          StudentsProvider.mySupervizedStudents(context,
+          StudentsHelpers.mySupervizedStudents(context,
                   listen: false, activeOnly: false)
               .length,
           4);
       expect(
-          StudentsProvider.mySupervizedStudents(context,
+          StudentsHelpers.mySupervizedStudents(context,
                   listen: false, activeOnly: true)
               .length,
           3);
@@ -109,7 +110,7 @@ void main() {
                       'FailedToGetId'),
           throwsException);
       expect(
-          StudentsProvider.mySupervizedStudents(context, listen: false).length,
+          StudentsHelpers.mySupervizedStudents(context, listen: false).length,
           4);
     });
 

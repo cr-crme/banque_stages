@@ -5,7 +5,7 @@ import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/models/students_extension.dart';
-import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
+import 'package:crcrme_banque_stages/common/providers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
 import 'package:crcrme_banque_stages/common/widgets/email_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
@@ -105,7 +105,7 @@ class _GeneralInformations extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final students = StudentsProvider.studentsInMyGroups(context);
+    final students = StudentsHelpers.studentsInMyGroups(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
