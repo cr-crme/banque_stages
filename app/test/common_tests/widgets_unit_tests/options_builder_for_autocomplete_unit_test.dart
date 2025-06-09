@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
+import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'utils.dart';

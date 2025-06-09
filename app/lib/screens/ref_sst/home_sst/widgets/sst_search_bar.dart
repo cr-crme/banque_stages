@@ -1,5 +1,5 @@
 import 'package:common/services/job_data_file_service.dart';
-import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
+import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
 import 'package:flutter/material.dart';
 

@@ -1,7 +1,7 @@
-import 'package:admin_app/widgets/autocomplete_options_builder.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/students_provider.dart';
+import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:flutter/material.dart';
 
 class StudentPickerController {

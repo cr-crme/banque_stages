@@ -1,6 +1,6 @@
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/services/job_data_file_service.dart';
-import 'package:crcrme_banque_stages/common/widgets/autocomplete_options_builder.dart';
+import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
-import 'package:admin_app/widgets/autocomplete_options_builder.dart';
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:flutter/material.dart';
 
 class ActivityTypeListController {
