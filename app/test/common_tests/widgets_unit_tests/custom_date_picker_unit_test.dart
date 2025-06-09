@@ -1,5 +1,5 @@
 import 'package:common/models/internships/time_utils.dart' as time_utils;
-import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
+import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

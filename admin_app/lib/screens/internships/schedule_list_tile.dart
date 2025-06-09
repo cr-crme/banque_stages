@@ -1,7 +1,7 @@
-import 'package:admin_app/widgets/custom_date_picker.dart';
-import 'package:admin_app/widgets/custom_time_picker.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
+import 'package:common_flutter/widgets/custom_date_picker.dart';
+import 'package:common_flutter/widgets/custom_time_picker.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

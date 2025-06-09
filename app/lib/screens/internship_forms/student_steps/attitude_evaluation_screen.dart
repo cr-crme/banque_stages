@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
-import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
