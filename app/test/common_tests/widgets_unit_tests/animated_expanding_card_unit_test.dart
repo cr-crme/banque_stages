@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/widgets/animated_expanding_card.dart';
+import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

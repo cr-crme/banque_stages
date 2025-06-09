@@ -1,7 +1,6 @@
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/internships/add_internship_dialog.dart';
 import 'package:admin_app/screens/internships/internship_list_tile.dart';
-import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/select_school_board_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:common/models/generic/access_level.dart';
@@ -13,6 +12,7 @@ import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 

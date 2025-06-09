@@ -1,6 +1,5 @@
 import 'package:admin_app/screens/teachers/confirm_delete_teacher_dialog.dart';
 import 'package:admin_app/widgets/address_list_tile.dart';
-import 'package:admin_app/widgets/animated_expanding_card.dart';
 import 'package:admin_app/widgets/email_list_tile.dart';
 import 'package:admin_app/widgets/phone_list_tile.dart';
 import 'package:common/models/generic/access_level.dart';
@@ -11,6 +10,7 @@ import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
