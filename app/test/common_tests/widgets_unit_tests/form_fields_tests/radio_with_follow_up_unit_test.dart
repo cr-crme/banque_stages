@@ -1,4 +1,4 @@
-import 'package:crcrme_banque_stages/common/widgets/form_fields/radio_with_follow_up.dart';
+import 'package:common_flutter/widgets/radio_with_follow_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

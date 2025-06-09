@@ -1,10 +1,10 @@
-import 'package:admin_app/widgets/radio_with_follow_up.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
+import 'package:common_flutter/widgets/radio_with_follow_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
