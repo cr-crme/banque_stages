@@ -1,4 +1,3 @@
-import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/teachers/add_teacher_dialog.dart';
@@ -10,6 +9,7 @@ import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:flutter/material.dart';
 
 class TeachersListScreen extends StatelessWidget {

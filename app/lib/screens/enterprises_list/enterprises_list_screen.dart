@@ -3,10 +3,10 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common/models/persons/person.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/models/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/models/job_extension.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -282,10 +282,9 @@ class _EnterprisesByMap extends StatelessWidget {
     final Map<Enterprise, Waypoint> out = {};
 
     final schoolBoard =
-        await SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
-    if (schoolBoard == null || !context.mounted) return out;
-    final school =
-        await SchoolBoardsProvider.mySchoolOf(context, listen: false);
+        SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
+    if (schoolBoard == null) return out;
+    final school = SchoolBoardsProvider.mySchoolOf(context, listen: false);
     if (school == null) return out;
 
     final schoolAsEnterprise = Enterprise(

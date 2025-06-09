@@ -3,9 +3,9 @@ import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/itineraries_helpers.dart';
-import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/routing_map.dart';
@@ -44,7 +44,7 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
   Future<bool> _fillAllWaypoints() async {
     final internships = InternshipsProvider.of(context, listen: false);
 
-    var school = await SchoolBoardsProvider.mySchoolOf(context, listen: false);
+    var school = SchoolBoardsProvider.mySchoolOf(context, listen: false);
     if (!mounted || school == null) return false;
 
     final enterprises =

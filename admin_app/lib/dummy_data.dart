@@ -3,7 +3,6 @@ import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:admin_app/providers/enterprises_provider.dart';
-import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:common/models/enterprises/enterprise.dart';
@@ -27,6 +26,7 @@ import 'package:common/utils.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
 import 'package:common_flutter/providers/backend_list_provided.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:flutter/material.dart';
 
 Future<void> resetDummyData(BuildContext context) async {

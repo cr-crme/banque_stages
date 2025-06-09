@@ -1,4 +1,3 @@
-import 'package:admin_app/providers/school_boards_provider.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/school_boards/add_school_board_dialog.dart';
 import 'package:admin_app/screens/school_boards/school_board_list_tile.dart';
@@ -7,6 +6,7 @@ import 'package:admin_app/widgets/show_snackbar.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:flutter/material.dart';
 
 class SchoolBoardsListScreen extends StatelessWidget {

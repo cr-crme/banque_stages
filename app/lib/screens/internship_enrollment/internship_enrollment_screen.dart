@@ -4,8 +4,8 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/students_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
@@ -87,8 +87,8 @@ class _InternshipEnrollmentScreenState
         TeachersProvider.of(context, listen: false).currentTeacherId;
 
     final schoolBoard =
-        await SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
-    if (schoolBoard == null || !mounted) return;
+        SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
+    if (schoolBoard == null) return;
 
     final internship = Internship(
       schoolBoardId: schoolBoard.id,

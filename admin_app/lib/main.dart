@@ -1,6 +1,6 @@
 import 'package:admin_app/firebase_options.dart';
 import 'package:admin_app/providers/enterprises_provider.dart';
-import 'package:admin_app/providers/school_boards_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:admin_app/providers/students_provider.dart';
 import 'package:admin_app/providers/teachers_provider.dart';
 import 'package:admin_app/screens/router.dart';

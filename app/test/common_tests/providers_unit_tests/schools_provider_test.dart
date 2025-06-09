@@ -1,5 +1,5 @@
 import 'package:common/models/school_boards/school_board.dart';
-import 'package:crcrme_banque_stages/common/providers/school_boards_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +46,7 @@ void main() {
       _initializeTeacher(context);
 
       final schoolBoards =
-          await SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
+          SchoolBoardsProvider.mySchoolBoardOf(context, listen: false);
       expect(schoolBoards, isNotNull);
     });
 
@@ -55,8 +55,7 @@ void main() {
           withSchools: true, withTeachers: true);
       _initializeTeacher(context);
 
-      final school =
-          await SchoolBoardsProvider.mySchoolOf(context, listen: false);
+      final school = SchoolBoardsProvider.mySchoolOf(context, listen: false);
       expect(school, isNotNull);
     });
   });
