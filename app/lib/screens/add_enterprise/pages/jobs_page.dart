@@ -1,7 +1,6 @@
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:flutter/material.dart';
 
 class JobsPage extends StatefulWidget {
@@ -11,14 +10,11 @@ class JobsPage extends StatefulWidget {
   State<JobsPage> createState() => JobsPageState();
 }
 
-// TODO: Finalize passage to EnterpriseJobListTile (no job is currently okay)
 class JobsPageState extends State<JobsPage> {
   final _formKey = GlobalKey<FormState>();
   final _jobsControllers = <EnterpriseJobListController>[];
-  final JobList jobs = JobList();
 
   bool validate() {
-    jobs.clear();
     _formKey.currentState!.save();
 
     if (_jobsControllers.isEmpty) return false;
@@ -29,6 +25,14 @@ class JobsPageState extends State<JobsPage> {
   void addJobToForm() {
     _jobsControllers.add(EnterpriseJobListController(job: Job.empty));
     setState(() {});
+  }
+
+  JobList get jobs {
+    final jobs = JobList();
+    for (final controller in _jobsControllers) {
+      jobs.add(controller.job);
+    }
+    return jobs;
   }
 
   @override
@@ -53,24 +57,15 @@ class JobsPageState extends State<JobsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       key: Key('${controller.hashCode}_formKey'),
       children: [
-        Row(
-          children: [
-            Text(
-              'Métier ${index + 1}',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            IconButton(
-              onPressed: () =>
-                  setState(() => _jobsControllers.remove(controller)),
-              padding: const EdgeInsets.all(8.0),
-              icon: const Icon(Icons.delete_forever),
-              tooltip: 'Supprimer',
-              color: Theme.of(context).colorScheme.error,
-            ),
-          ],
+        Text(
+          'Métier ${index + 1}',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         EnterpriseJobListTile(
             controller: controller,
+            elevation: 0,
+            canChangeExpandedState: false,
+            initialExpandedState: true,
             editMode: true,
             onRequestDelete: () =>
                 setState(() => _jobsControllers.remove(controller))),

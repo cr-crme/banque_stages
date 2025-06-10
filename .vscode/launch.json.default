@@ -46,9 +46,7 @@
             "program": "backend/resources/database/reset_database.py",
             "console": "integratedTerminal",
             "env": {
-                "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
                 "BANQUE_STAGE_SUPERADMIN_EMAIL": "<PUT EMAIL OF THE SUPERADMIN ACCOUNT HERE>",
-                "BANQUE_STAGE_SUPERADMIN_ID": "<PUT ID OF THE SUPERADMIN ACCOUNT HERE>",
             },
         },
     ]

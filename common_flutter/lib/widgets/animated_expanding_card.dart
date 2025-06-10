@@ -7,6 +7,7 @@ class AnimatedExpandingCard extends StatefulWidget {
     required this.child,
     this.expandingDuration = const Duration(milliseconds: 300),
     this.onTapHeader,
+    this.canChangeExpandedState = true,
     this.initialExpandedState = false,
     this.elevation = 10.0,
   });
@@ -15,6 +16,7 @@ class AnimatedExpandingCard extends StatefulWidget {
   final Widget header;
   final Function(bool newState)? onTapHeader;
   final Widget child;
+  final bool canChangeExpandedState;
   final bool initialExpandedState;
   final double elevation;
 
@@ -52,10 +54,12 @@ class _AnimatedExpandingCardState extends State<AnimatedExpandingCard>
         children: [
           InkWell(
             onTap: () {
-              _isExpanded = !_isExpanded;
-              _isExpanded
-                  ? _expandingAnimationController.forward()
-                  : _expandingAnimationController.reverse();
+              if (widget.canChangeExpandedState) {
+                _isExpanded = !_isExpanded;
+                _isExpanded
+                    ? _expandingAnimationController.forward()
+                    : _expandingAnimationController.reverse();
+              }
 
               if (widget.onTapHeader != null) widget.onTapHeader!(_isExpanded);
               setState(() {});
@@ -65,14 +69,16 @@ class _AnimatedExpandingCardState extends State<AnimatedExpandingCard>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Flexible(child: widget.header),
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0, right: 16.0),
-                  child: Icon(
-                    _isExpanded ? Icons.expand_less : Icons.expand_more,
-                    size: 30,
-                    color: Colors.grey[700],
-                  ),
-                ),
+                widget.canChangeExpandedState
+                    ? Padding(
+                      padding: const EdgeInsets.only(left: 12.0, right: 16.0),
+                      child: Icon(
+                        _isExpanded ? Icons.expand_less : Icons.expand_more,
+                        size: 30,
+                        color: Colors.grey[700],
+                      ),
+                    )
+                    : const SizedBox.shrink(),
               ],
             ),
           ),

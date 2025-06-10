@@ -16,16 +16,13 @@ class EnterpriseJobListController {
   late int _positionsOffered = _job.positionsOffered;
   int _positionsOccupied = 0;
 
-  final _preInternshipRequestKey =
-      GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>();
-  final _uniformFormKey = GlobalKey<RadioWithFollowUpState<UniformStatus>>();
-  late final _uniformTextController = TextEditingController(
+  var _preInternshipRequests = PreInternshipRequests.empty;
+  late var _uniformStatus = _job.uniforms.status;
+  late final _uniformDescription = TextEditingController(
     text: _job.uniforms.uniforms.join('\n '),
   );
-  final _protectionsKey =
-      GlobalKey<RadioWithFollowUpState<ProtectionsStatus>>();
-  final _protectionsTextController =
-      GlobalKey<CheckboxWithOtherState<ProtectionsType>>();
+  late var _protectionStatus = _job.protections.status;
+  late var _protections = _job.protections.protections;
 
   final Job _job;
   EnterpriseJobListController({required Job job}) : _job = job.copyWith();
@@ -34,23 +31,23 @@ class EnterpriseJobListController {
     specialization: _specialization,
     minimumAge: int.tryParse(_minimumAgeController.text),
     positionsOffered: _positionsOffered,
-    preInternshipRequests: PreInternshipRequests.fromStrings(
-      _preInternshipRequestKey.currentState?.values ?? [],
-      id: _job.preInternshipRequests.id,
-    ),
+    preInternshipRequests: _preInternshipRequests,
     uniforms: _job.uniforms.copyWith(
-      status: _uniformFormKey.currentState?.value,
-      uniforms: _uniformTextController.text.split('\n'),
+      status: _uniformStatus,
+      uniforms:
+          _uniformStatus == UniformStatus.none
+              ? []
+              : _uniformDescription.text.split('\n'),
     ),
     protections: _job.protections.copyWith(
-      status: _protectionsKey.currentState?.value,
-      protections: _protectionsTextController.currentState?.values,
+      status: _protectionStatus,
+      protections: _protections,
     ),
   );
 
   void dispose() {
     _minimumAgeController.dispose();
-    _uniformTextController.dispose();
+    _uniformDescription.dispose();
   }
 }
 
@@ -60,18 +57,24 @@ class EnterpriseJobListTile extends StatefulWidget {
     required this.controller,
     required this.editMode,
     required this.onRequestDelete,
+    this.canChangeExpandedState = true,
+    this.initialExpandedState = false,
+    this.elevation = 10.0,
   });
 
   final EnterpriseJobListController controller;
   final bool editMode;
   final Function() onRequestDelete;
+  final bool canChangeExpandedState;
+  final bool initialExpandedState;
+  final double elevation;
 
   @override
   State<EnterpriseJobListTile> createState() => _EnterpriseJobListTileState();
 }
 
 class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
-  Job get job => widget.controller._job;
+  Job get job => widget.controller.job;
 
   @override
   void didChangeDependencies() {
@@ -92,6 +95,9 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   @override
   Widget build(BuildContext context) {
     return AnimatedExpandingCard(
+      elevation: widget.elevation,
+      canChangeExpandedState: widget.canChangeExpandedState,
+      initialExpandedState: widget.initialExpandedState,
       header: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -274,34 +280,53 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
     );
   }
 
+  final _preInternshipRequestKey =
+      GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>();
   Widget _buildPrerequisites() {
     return _BuildPrerequisitesCheckboxes(
-      checkBoxKey: widget.controller._preInternshipRequestKey,
+      checkBoxKey: _preInternshipRequestKey,
       enabled: widget.editMode,
       initialValues: [
         ...job.preInternshipRequests.requests.map((e) => e.toString()),
         job.preInternshipRequests.other ?? '',
       ],
+      onChanged: (values) {
+        widget
+            .controller
+            ._preInternshipRequests = PreInternshipRequests.fromStrings(values);
+      },
     );
   }
 
+  final _uniformFormKey = GlobalKey<RadioWithFollowUpState<UniformStatus>>();
   Widget _buildUniform() {
     return _BuildUniformRadio(
-      uniformKey: widget.controller._uniformFormKey,
-      uniformTextController: widget.controller._uniformTextController,
+      uniformKey: _uniformFormKey,
+      uniformTextController: widget.controller._uniformDescription,
       initialSelection: job.uniforms.status,
       enabled: widget.editMode,
+      onChanged: (value) {
+        widget.controller._uniformStatus = value;
+      },
     );
   }
 
+  final _protectionsKey =
+      GlobalKey<RadioWithFollowUpState<ProtectionsStatus>>();
+  final _protectionsTextController =
+      GlobalKey<CheckboxWithOtherState<ProtectionsType>>();
   Widget _buildProtections() {
     return _BuildProtectionsRadio(
-      protectionsKey: widget.controller._protectionsKey,
-      protectionsTypeKey: widget.controller._protectionsTextController,
+      protectionsKey: _protectionsKey,
+      protectionsTypeKey: _protectionsTextController,
       initialSelection: job.protections.status,
       initialItems:
           job.protections.protections.map((e) => e.toString()).toList(),
       enabled: widget.editMode,
+      onChanged: (status, protections) {
+        widget.controller._protectionStatus = status;
+        widget.controller._protections = protections;
+      },
     );
   }
 }
@@ -311,12 +336,14 @@ class _BuildPrerequisitesCheckboxes extends StatelessWidget {
     required this.checkBoxKey,
     required this.initialValues,
     required this.enabled,
+    this.onChanged,
   });
 
   final GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>
   checkBoxKey;
   final List<String>? initialValues;
   final bool enabled;
+  final Function(List<String>)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -328,6 +355,11 @@ class _BuildPrerequisitesCheckboxes extends StatelessWidget {
       enabled: enabled,
       elements: PreInternshipRequestTypes.values,
       initialValues: initialValues,
+      onOptionSelected: (_) {
+        if (onChanged != null) {
+          onChanged!(checkBoxKey.currentState?.values ?? []);
+        }
+      },
     );
   }
 }
@@ -338,12 +370,14 @@ class _BuildUniformRadio extends StatelessWidget {
     required this.uniformTextController,
     this.initialSelection,
     required this.enabled,
+    required this.onChanged,
   });
 
   final GlobalKey<RadioWithFollowUpState<UniformStatus>> uniformKey;
   final TextEditingController uniformTextController;
   final UniformStatus? initialSelection;
   final bool enabled;
+  final Function(UniformStatus) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -359,6 +393,7 @@ class _BuildUniformRadio extends StatelessWidget {
         UniformStatus.suppliedByStudent,
       ],
       enabled: enabled,
+      onChanged: (value) => onChanged(value!),
       initialValue: initialSelection,
       followUpChild: Padding(
         padding: const EdgeInsets.only(
@@ -403,6 +438,7 @@ class _BuildProtectionsRadio extends StatelessWidget {
     this.initialSelection,
     this.initialItems,
     required this.enabled,
+    required this.onChanged,
   });
 
   final GlobalKey<RadioWithFollowUpState<ProtectionsStatus>> protectionsKey;
@@ -410,6 +446,7 @@ class _BuildProtectionsRadio extends StatelessWidget {
   final ProtectionsStatus? initialSelection;
   final List<String>? initialItems;
   final bool enabled;
+  final Function(ProtectionsStatus status, List<String> protections) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -432,7 +469,19 @@ class _BuildProtectionsRadio extends StatelessWidget {
         enabled: enabled,
         elements: ProtectionsType.values,
         initialValues: initialItems,
+        onOptionSelected: (values) {
+          final status =
+              protectionsKey.currentState?.value ?? ProtectionsStatus.none;
+          final protections = values.map((e) => e.toString()).toList();
+          onChanged(status, protections);
+        },
       ),
+      onChanged: (value) {
+        final status =
+            protectionsKey.currentState?.value ?? ProtectionsStatus.none;
+        final protections = protectionsTypeKey.currentState?.values ?? [];
+        onChanged(status, protections);
+      },
     );
   }
 }

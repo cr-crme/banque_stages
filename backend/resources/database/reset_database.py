@@ -10,7 +10,7 @@ _database = "dev_db"
 _base_docker_command = "docker exec -i banque_stage_container mysql -u devuser -pdevpassword".split()
 
 
-def main(secret: str, secret_email: str):
+def main(super_admin_email: str):
     # Get the path to the SQL file
     sql_filename = "reset_database.sql"
     sql_file_path = os.path.join(os.path.dirname(__file__), sql_filename)
@@ -27,7 +27,7 @@ def main(secret: str, secret_email: str):
     print("Database reset successfully.")
 
     # Add an admin user
-    if not add_super_admin_user(secret=secret, secret_email=secret_email):
+    if not add_super_admin_user(super_admin_email=super_admin_email):
         print("Failed to add admin user.")
         return
     print("Admin user added successfully.")
@@ -47,9 +47,9 @@ def reset_database(sql_filepath: str) -> bool:
         return False
 
 
-def add_super_admin_user(secret: str, secret_email: str) -> bool:
-    # Use uuid v5 with namespace DNS to generate a stable ID from the secret
-    id = str(uuid.uuid5(uuid.NAMESPACE_DNS, secret))
+def add_super_admin_user(super_admin_email: str) -> bool:
+    # Use uuid v4 to generate a random ID
+    id = str(uuid.uuid4())
 
     query = f"""
     INSERT INTO entities (shared_id) 
@@ -60,7 +60,7 @@ def add_super_admin_user(secret: str, secret_email: str) -> bool:
 
     query = f"""
     INSERT INTO admins (id, school_board_id, first_name, last_name, email, access_level) 
-    VALUES ('{id}', '', 'Super', 'Admin', '{secret_email}', 3);
+    VALUES ('{id}', '', 'Super', 'Admin', '{super_admin_email}', 3);
     """
     if not _perform_query(query):
         return False
@@ -80,14 +80,10 @@ def _perform_query(query: str) -> bool:
 
 
 if __name__ == "__main__":
-    # Get the secret from BANQUE_STAGE_SUPERADMIN_ID environment variable
-    secret = os.getenv("BANQUE_STAGE_SUPERADMIN_ID")
-    if not secret:
-        print("Environment variable BANQUE_STAGE_SUPERADMIN_ID is not set.")
-        sys.exit(1)
-    secret_email = os.getenv("BANQUE_STAGE_SUPERADMIN_EMAIL")
-    if not secret_email:
+    # Get the super admin email from BANQUE_STAGE_SUPERADMIN_EMAIL environment variable
+    super_admin_email = os.getenv("BANQUE_STAGE_SUPERADMIN_EMAIL")
+    if not super_admin_email:
         print("Environment variable BANQUE_STAGE_SUPERADMIN_EMAIL is not set.")
         sys.exit(1)
 
-    main(secret, secret_email)
+    main(super_admin_email=super_admin_email)
