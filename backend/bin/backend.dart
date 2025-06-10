@@ -9,6 +9,7 @@ import 'package:backend/repositories/teachers_repository.dart';
 import 'package:backend/server/connexions.dart';
 import 'package:backend/server/database_manager.dart';
 import 'package:backend/server/http_request_handler.dart';
+import 'package:backend/utils/network_rate_limiter.dart';
 import 'package:firebase_admin/firebase_admin.dart';
 import 'package:firebase_admin/src/auth/credential.dart';
 import 'package:logging/logging.dart';
@@ -18,7 +19,6 @@ final _logger = Logger('BackendServer');
 
 enum DatabaseBackend { mysql, mock }
 
-// TODO: Add a limiter so the DDOS attacks are limited
 void main() async {
   // Set up logging
   Logger.root.level = Level.INFO;
@@ -96,10 +96,13 @@ void main() async {
           DatabaseBackend.mock => InternshipsRepositoryMock()
         },
       ));
-  final requestHandler = HttpRequestHandler(connexions: connexions);
+
   _logger.info('Waiting for requests...');
+  final requestHandler = HttpRequestHandler(connexions: connexions);
+  final rateLimiter =
+      NetworkRateLimiter(maxRequests: 50, duration: Duration(minutes: 1));
   await for (HttpRequest request in server) {
-    requestHandler.answer(request);
+    requestHandler.answer(request, rateLimiter: rateLimiter);
   }
 
   if (databaseBackend == DatabaseBackend.mysql) {

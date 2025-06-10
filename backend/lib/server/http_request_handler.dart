@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:backend/server/connexions.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:backend/utils/network_rate_limiter.dart';
 import 'package:logging/logging.dart';
 
 final _logger = Logger('AnswerHttpRequest');
@@ -12,7 +13,17 @@ class HttpRequestHandler {
   HttpRequestHandler({required Connexions connexions})
       : _connexions = connexions;
 
-  Future<void> answer(HttpRequest request) async {
+  Future<void> answer(HttpRequest request,
+      {NetworkRateLimiter? rateLimiter}) async {
+    if (rateLimiter != null && rateLimiter.isRefused(request)) {
+      _logger.warning(
+          'Rate limit exceeded for ${request.connectionInfo?.remoteAddress.address}');
+      request.response.statusCode = HttpStatus.tooManyRequests;
+      request.response.write('Too Many Requests');
+      await request.response.close();
+      return;
+    }
+
     try {
       if (request.method == 'OPTIONS') {
         return await _answerOptionsRequest(request);
