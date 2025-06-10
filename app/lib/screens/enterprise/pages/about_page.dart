@@ -6,11 +6,10 @@ import 'package:common/utils.dart';
 import 'package:common_flutter/helpers/form_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
-import 'package:crcrme_banque_stages/common/widgets/activity_type_cards.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/activity_types_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -33,14 +32,14 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
   final _formKey = GlobalKey<FormState>();
 
   String? _name;
-  Set<ActivityTypes> _activityTypes = {};
+  late final _activityTypesController = EnterpriseActivityTypeListController(
+      initial: {...widget.enterprise.activityTypes});
   final Map<Job, int> _positionOffered = {};
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _name = widget.enterprise.name;
-    _activityTypes = {...widget.enterprise.activityTypes};
     _positionOffered.clear();
     for (var job in widget.enterprise.jobs) {
       _positionOffered[job] = job.positionsOffered;
@@ -67,14 +66,15 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
     }
 
     if (_name != widget.enterprise.name ||
-        areSetsNotEqual(_activityTypes, widget.enterprise.activityTypes) ||
+        areSetsNotEqual(_activityTypesController.activityTypes,
+            widget.enterprise.activityTypes) ||
         areMapsNotEqual(_positionOffered, {
           for (var job in widget.enterprise.jobs) job: job.positionsOffered,
         })) {
       EnterprisesProvider.of(context, listen: false).replace(
         widget.enterprise.copyWith(
             name: _name,
-            activityTypes: _activityTypes,
+            activityTypes: _activityTypesController.activityTypes,
             jobs: JobList()
               ..addAll(widget.enterprise.jobs.map((job) {
                 return job.copyWith(positionsOffered: _positionOffered[job]!);
@@ -136,9 +136,9 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
                     setState(() => _positionOffered[job] = newValue),
               ),
               _ActivityType(
-                  initial: _activityTypes,
+                  controller: _activityTypesController,
                   editMode: _editing,
-                  onSaved: (activityTypes) => _activityTypes = activityTypes!),
+                  setState: setState),
               _RecrutedBy(enterprise: widget.enterprise),
               _AddInternshipButton(
                 editingMode: _editing,
@@ -244,7 +244,9 @@ class _AvailablePlace extends StatelessWidget {
                                   color: positionsRemaining == 0
                                       ? Colors.grey
                                       : Colors.black)),
-                          Text(positionsOffered.toString()),
+                          Text(
+                            '$positionsRemaining / $positionsOffered',
+                          ),
                           IconButton(
                               onPressed: () =>
                                   onChanged(job, positionsOffered + 1),
@@ -266,11 +268,13 @@ class _AvailablePlace extends StatelessWidget {
 
 class _ActivityType extends StatelessWidget {
   const _ActivityType(
-      {required this.initial, required this.editMode, required this.onSaved});
+      {required this.controller,
+      required this.editMode,
+      required this.setState});
 
-  final Set<ActivityTypes> initial;
+  final EnterpriseActivityTypeListController controller;
   final bool editMode;
-  final Function(Set<ActivityTypes>?) onSaved;
+  final Function(Function()) setState;
 
   @override
   Widget build(BuildContext context) {
@@ -280,24 +284,15 @@ class _ActivityType extends StatelessWidget {
         const SubTitle('Types d\'activités'),
         Padding(
           padding: const EdgeInsets.only(left: 24.0),
-          child: Column(
-            children: [
-              Visibility(
-                visible: !editMode,
-                child: ActivityTypeCards(activityTypes: initial),
-              ),
-              Visibility(
-                visible: editMode,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: ActivityTypesPickerFormField(
-                    initialValue: initial,
-                    onSaved: onSaved,
-                    activityTabAtTop: true,
-                  ),
-                ),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: EnterpriseActivityTypeListTile(
+              hideTitle: true,
+              controller: controller,
+              editMode: editMode,
+              activityTabAtTop: true,
+              tilePadding: const EdgeInsets.all(0),
+            ),
           ),
         )
       ],

@@ -277,7 +277,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('Places disponibles'),
+        const Text('Places de stages disponibles'),
         widget.editMode
             ? Row(
               mainAxisSize: MainAxisSize.min,

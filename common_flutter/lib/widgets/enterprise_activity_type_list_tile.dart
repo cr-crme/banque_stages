@@ -19,12 +19,14 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
     super.key,
     required this.controller,
     required this.editMode,
+    this.hideTitle = false,
     this.activityTabAtTop = true,
     this.tilePadding = const EdgeInsets.only(left: 24.0),
   });
 
   final EnterpriseActivityTypeListController controller;
   final bool editMode;
+  final bool hideTitle;
   final bool activityTabAtTop;
   final EdgeInsets tilePadding;
 
@@ -33,7 +35,7 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Types d\'activités de l\'entreprise'),
+        if (!hideTitle) const Text('Types d\'activités de l\'entreprise'),
         Padding(
           padding: tilePadding,
           child: Column(
