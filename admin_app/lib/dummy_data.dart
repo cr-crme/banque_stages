@@ -50,8 +50,6 @@ Future<void> resetDummyData(BuildContext context) async {
       internships.isNotConnected) {
     await Future.delayed(const Duration(milliseconds: 100));
   }
-  // TODO Enterprises should store all the teachers that have recruited them and
-  // fixed the shareWith field to be a list of teacher ids
 
   await _removeAll(
     internships,
