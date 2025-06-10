@@ -1,8 +1,8 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
+import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:common_flutter/widgets/radio_with_follow_up.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -174,6 +174,7 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
                       ? ''
                       : uniforms.uniforms.join('\n'),
                 initialSelection: uniforms.status,
+                onChanged: (value) => setState(() {}),
               )
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,6 +236,7 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
                 protectionsTypeKey: _protectionsController,
                 initialSelection: protections.status,
                 initialItems: protections.protections,
+                onChanged: (status, protections) => setState(() {}),
               )
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

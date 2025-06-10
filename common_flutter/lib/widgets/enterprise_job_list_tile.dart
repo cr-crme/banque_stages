@@ -10,6 +10,10 @@ import 'package:flutter/services.dart';
 
 class EnterpriseJobListController {
   late Specialization? _specialization = _job.specializationOrNull;
+
+  final List<Specialization>? _specializationsWhiteList;
+  final List<Specialization>? _specializationBlacklist;
+
   late final _minimumAgeController = TextEditingController(
     text: _job.minimumAge.toString(),
   );
@@ -25,7 +29,13 @@ class EnterpriseJobListController {
   late var _protections = _job.protections.protections;
 
   final Job _job;
-  EnterpriseJobListController({required Job job}) : _job = job.copyWith();
+  EnterpriseJobListController({
+    required Job job,
+    List<Specialization>? specializationWhiteList,
+    List<Specialization>? specializationBlackList,
+  }) : _job = job.copyWith(),
+       _specializationsWhiteList = specializationWhiteList,
+       _specializationBlacklist = specializationBlackList;
 
   Job get job => _job.copyWith(
     specialization: _specialization,
@@ -55,19 +65,23 @@ class EnterpriseJobListTile extends StatefulWidget {
   const EnterpriseJobListTile({
     super.key,
     required this.controller,
-    required this.editMode,
-    required this.onRequestDelete,
+    this.editMode = false,
+    this.onRequestDelete,
     this.canChangeExpandedState = true,
     this.initialExpandedState = false,
     this.elevation = 10.0,
+    this.specializationOnly = false,
+    this.showHeader = true,
   });
 
   final EnterpriseJobListController controller;
   final bool editMode;
-  final Function() onRequestDelete;
+  final Function()? onRequestDelete;
   final bool canChangeExpandedState;
   final bool initialExpandedState;
   final double elevation;
+  final bool specializationOnly;
+  final bool showHeader;
 
   @override
   State<EnterpriseJobListTile> createState() => _EnterpriseJobListTileState();
@@ -98,26 +112,29 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
       elevation: widget.elevation,
       canChangeExpandedState: widget.canChangeExpandedState,
       initialExpandedState: widget.initialExpandedState,
-      header: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text(
-                widget.controller._specialization?.idWithName ??
-                    'Aucune spécialisation sélectionnée',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-          ),
-          if (widget.editMode)
-            IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: widget.onRequestDelete,
-            ),
-        ],
-      ),
+      header:
+          widget.showHeader
+              ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(
+                        widget.controller._specialization?.idWithName ??
+                            'Aucune spécialisation sélectionnée',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                  ),
+                  if (widget.editMode && widget.onRequestDelete != null)
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: widget.onRequestDelete,
+                    ),
+                ],
+              )
+              : const SizedBox.shrink(),
       child: Padding(
         padding: const EdgeInsets.only(left: 24.0, top: 12.0, right: 24.0),
         child: Column(
@@ -125,15 +142,21 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
           children: [
             if (widget.editMode) _buildJobPicker(),
             const SizedBox(height: 8),
-            _buildMinimumAge(),
-            const SizedBox(height: 8),
-            _buildAvailability(),
-            const SizedBox(height: 8),
-            _buildPrerequisites(),
-            const SizedBox(height: 8),
-            _buildUniform(),
-            const SizedBox(height: 8),
-            _buildProtections(),
+            if (!widget.specializationOnly)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildMinimumAge(),
+                  const SizedBox(height: 8),
+                  _buildAvailability(),
+                  const SizedBox(height: 8),
+                  _buildPrerequisites(),
+                  const SizedBox(height: 8),
+                  _buildUniform(),
+                  const SizedBox(height: 8),
+                  _buildProtections(),
+                ],
+              ),
           ],
         ),
       ),
@@ -142,7 +165,18 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
 
   List<Specialization> get _availableSpecialization {
     // Make a copy of the available specializations
-    List<Specialization> out = [...ActivitySectorsService.allSpecializations];
+    List<Specialization> out = [
+      ...(widget.controller._specializationsWhiteList ??
+          ActivitySectorsService.allSpecializations),
+    ];
+    if (widget.controller._specializationBlacklist != null) {
+      // Remove the blacklisted specializations
+      out.removeWhere(
+        (s) => widget.controller._specializationBlacklist!.any(
+          (blacklisted) => blacklisted.id == s.id,
+        ),
+      );
+    }
     out.sort((a, b) => a.name.compareTo(b.name)); // Sort them by name
     return out;
   }
@@ -283,7 +317,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   final _preInternshipRequestKey =
       GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>();
   Widget _buildPrerequisites() {
-    return _BuildPrerequisitesCheckboxes(
+    return BuildPrerequisitesCheckboxes(
       checkBoxKey: _preInternshipRequestKey,
       enabled: widget.editMode,
       initialValues: [
@@ -300,7 +334,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
 
   final _uniformFormKey = GlobalKey<RadioWithFollowUpState<UniformStatus>>();
   Widget _buildUniform() {
-    return _BuildUniformRadio(
+    return BuildUniformRadio(
       uniformKey: _uniformFormKey,
       uniformTextController: widget.controller._uniformDescription,
       initialSelection: job.uniforms.status,
@@ -316,7 +350,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   final _protectionsTextController =
       GlobalKey<CheckboxWithOtherState<ProtectionsType>>();
   Widget _buildProtections() {
-    return _BuildProtectionsRadio(
+    return BuildProtectionsRadio(
       protectionsKey: _protectionsKey,
       protectionsTypeKey: _protectionsTextController,
       initialSelection: job.protections.status,
@@ -331,12 +365,14 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   }
 }
 
-class _BuildPrerequisitesCheckboxes extends StatelessWidget {
-  const _BuildPrerequisitesCheckboxes({
+class BuildPrerequisitesCheckboxes extends StatelessWidget {
+  const BuildPrerequisitesCheckboxes({
+    super.key,
     required this.checkBoxKey,
     required this.initialValues,
-    required this.enabled,
+    this.enabled = true,
     this.onChanged,
+    this.hideTitle = false,
   });
 
   final GlobalKey<CheckboxWithOtherState<PreInternshipRequestTypes>>
@@ -344,13 +380,16 @@ class _BuildPrerequisitesCheckboxes extends StatelessWidget {
   final List<String>? initialValues;
   final bool enabled;
   final Function(List<String>)? onChanged;
+  final bool hideTitle;
 
   @override
   Widget build(BuildContext context) {
     return CheckboxWithOther<PreInternshipRequestTypes>(
       key: checkBoxKey,
       title:
-          'Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
+          hideTitle
+              ? null
+              : 'Exigences de l\'entreprise avant d\'accueillir des élèves en stage:',
       titleStyle: Theme.of(context).textTheme.bodyLarge,
       enabled: enabled,
       elements: PreInternshipRequestTypes.values,
@@ -364,19 +403,22 @@ class _BuildPrerequisitesCheckboxes extends StatelessWidget {
   }
 }
 
-class _BuildUniformRadio extends StatelessWidget {
-  const _BuildUniformRadio({
+class BuildUniformRadio extends StatelessWidget {
+  const BuildUniformRadio({
+    super.key,
     required this.uniformKey,
     required this.uniformTextController,
     this.initialSelection,
-    required this.enabled,
+    this.enabled = true,
     required this.onChanged,
+    this.hideTitle = false,
   });
 
   final GlobalKey<RadioWithFollowUpState<UniformStatus>> uniformKey;
   final TextEditingController uniformTextController;
   final UniformStatus? initialSelection;
   final bool enabled;
+  final bool hideTitle;
   final Function(UniformStatus) onChanged;
 
   @override
@@ -384,8 +426,10 @@ class _BuildUniformRadio extends StatelessWidget {
     return RadioWithFollowUp<UniformStatus>(
       key: uniformKey,
       title:
-          'Est-ce qu\'une tenue de travail spécifique est exigée pour '
-          'ce poste\u00a0?',
+          hideTitle
+              ? null
+              : 'Est-ce qu\'une tenue de travail spécifique est exigée pour '
+                  'ce poste\u00a0?',
       titleStyle: Theme.of(context).textTheme.bodyLarge,
       elements: UniformStatus.values,
       elementsThatShowChild: const [
@@ -431,14 +475,16 @@ class _BuildUniformRadio extends StatelessWidget {
   }
 }
 
-class _BuildProtectionsRadio extends StatelessWidget {
-  const _BuildProtectionsRadio({
+class BuildProtectionsRadio extends StatelessWidget {
+  const BuildProtectionsRadio({
+    super.key,
     required this.protectionsKey,
     required this.protectionsTypeKey,
     this.initialSelection,
     this.initialItems,
-    required this.enabled,
+    this.enabled = true,
     required this.onChanged,
+    this.hideTitle = false,
   });
 
   final GlobalKey<RadioWithFollowUpState<ProtectionsStatus>> protectionsKey;
@@ -447,14 +493,17 @@ class _BuildProtectionsRadio extends StatelessWidget {
   final List<String>? initialItems;
   final bool enabled;
   final Function(ProtectionsStatus status, List<String> protections) onChanged;
+  final bool hideTitle;
 
   @override
   Widget build(BuildContext context) {
     return RadioWithFollowUp<ProtectionsStatus>(
       key: protectionsKey,
       title:
-          'Est-ce que l\'élève devra porter des équipements de protection '
-          'individuelle (EPI)\u00a0?',
+          hideTitle
+              ? null
+              : 'Est-ce que l\'élève devra porter des équipements de protection '
+                  'individuelle (EPI)\u00a0?',
       enabled: enabled,
       titleStyle: Theme.of(context).textTheme.bodyLarge,
       elements: ProtectionsStatus.values,

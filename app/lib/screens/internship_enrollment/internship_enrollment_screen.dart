@@ -107,10 +107,11 @@ class _InternshipEnrollmentScreenState
       jobId: enterprise.jobs
           .firstWhere((job) =>
               job.specialization ==
-              _generalInfoKey.currentState!.primaryJob!.specialization)
+              _generalInfoKey
+                  .currentState!.primaryJobController.job.specialization)
           .id,
-      extraSpecializationIds: _generalInfoKey.currentState!.extraSpecializations
-          .map<String>((e) => e!.id)
+      extraSpecializationIds: _generalInfoKey.currentState!.extraJobControllers
+          .map<String>((e) => e.job.specialization.id)
           .toList(),
       supervisor: Person(
           firstName: _generalInfoKey.currentState!.supervisorFirstName!,

@@ -1,15 +1,13 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
+import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
-import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/students_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/student_picker_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +28,15 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   late Enterprise? enterprise = widget.enterprise;
   Student? student;
 
-  Job? primaryJob;
-  final List<Specialization?> extraSpecializations = [];
+  late final primaryJobController = EnterpriseJobListController(
+    job:
+        widget.enterprise.jobs.length == 1 ? enterprise!.jobs.first : Job.empty,
+    specializationWhiteList: widget.enterprise
+        .availableJobs(context)
+        .map((job) => job.specialization)
+        .toList(),
+  );
+  final extraJobControllers = <EnterpriseJobListController>[];
 
   String? supervisorFirstName;
   String? supervisorLastName;
@@ -54,19 +59,11 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
             ),
             const SizedBox(height: 10),
             _MainJob(
-                enterprise: enterprise,
-                onSaved: (job) => setState(() => primaryJob = job),
-                extraSpecializations: extraSpecializations),
+                controller: primaryJobController,
+                extraJobControllers: extraJobControllers),
             if (student != null && student!.program == Program.fpt)
               _ExtraSpecialization(
-                extraSpecializations: extraSpecializations,
-                onAddSpecialization: () =>
-                    setState(() => extraSpecializations.add(null)),
-                onSetSpecialization: (specialization, i) =>
-                    setState(() => extraSpecializations[i] = specialization),
-                onDeleteSpecialization: (i) =>
-                    setState(() => extraSpecializations.removeAt(i)),
-              ),
+                  controllers: extraJobControllers, setState: setState),
             _SupervisonInformation(
               enterprise: enterprise,
               onSavedFirstName: (name) => supervisorFirstName = name!,
@@ -130,23 +127,13 @@ class _GeneralInformations extends StatelessWidget {
 }
 
 class _MainJob extends StatelessWidget {
-  const _MainJob(
-      {required this.enterprise,
-      required this.onSaved,
-      required this.extraSpecializations});
+  const _MainJob({
+    required this.controller,
+    required this.extraJobControllers,
+  });
 
-  final Enterprise? enterprise;
-  final Function(Job?) onSaved;
-  final List<Specialization?> extraSpecializations;
-
-  Map<Specialization, int> _generateSpecializationAndAvailability(context) {
-    final Map<Specialization, int> out = {};
-    if (enterprise == null) return out;
-    for (final job in enterprise!.availableJobs(context)) {
-      out[job.specialization] = job.positionsRemaining(context);
-    }
-    return out;
-  }
+  final EnterpriseJobListController controller;
+  final List<EnterpriseJobListController> extraJobControllers;
 
   @override
   Widget build(BuildContext context) {
@@ -159,16 +146,19 @@ class _MainJob extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (extraSpecializations.isNotEmpty)
+              if (extraJobControllers.isNotEmpty)
                 Text(
                   'Métier principal',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-              JobFormFieldListTile(
-                specializations:
-                    _generateSpecializationAndAvailability(context),
+              EnterpriseJobListTile(
+                controller: controller,
+                editMode: true,
                 specializationOnly: true,
-                onSaved: onSaved,
+                canChangeExpandedState: false,
+                initialExpandedState: true,
+                elevation: 0.0,
+                showHeader: false,
               ),
             ],
           ),
@@ -179,17 +169,11 @@ class _MainJob extends StatelessWidget {
 }
 
 class _ExtraSpecialization extends StatelessWidget {
-  const _ExtraSpecialization({
-    required this.extraSpecializations,
-    required this.onAddSpecialization,
-    required this.onSetSpecialization,
-    required this.onDeleteSpecialization,
-  });
+  const _ExtraSpecialization(
+      {required this.controllers, required this.setState});
 
-  final List<Specialization?> extraSpecializations;
-  final Function() onAddSpecialization;
-  final Function(Specialization, int) onSetSpecialization;
-  final Function(int) onDeleteSpecialization;
+  final List<EnterpriseJobListController> controllers;
+  final Function(void Function()) setState;
 
   Widget _extraJobTileBuilder(context, int index) {
     return Column(
@@ -208,15 +192,20 @@ class _ExtraSpecialization extends StatelessWidget {
               height: 35,
               child: InkWell(
                 borderRadius: BorderRadius.circular(25),
-                onTap: () => onDeleteSpecialization(index),
+                onTap: () => setState(() => controllers.removeAt(index)),
                 child: const Icon(Icons.delete, color: Colors.red),
               ),
             )
           ],
         ),
-        JobFormFieldListTile(
-          onSaved: (job) => onSetSpecialization(job!.specialization, index),
+        EnterpriseJobListTile(
+          controller: controllers[index],
+          editMode: true,
           specializationOnly: true,
+          canChangeExpandedState: false,
+          initialExpandedState: true,
+          elevation: 0.0,
+          showHeader: false,
         ),
       ],
     );
@@ -229,17 +218,18 @@ class _ExtraSpecialization extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (extraSpecializations.isNotEmpty)
-            ...extraSpecializations.asMap().keys.map<Widget>((i) => Padding(
-                  padding: const EdgeInsets.only(bottom: 24.0),
-                  child: _extraJobTileBuilder(context, i),
-                )),
+          ...controllers.asMap().keys.map<Widget>((i) => Padding(
+                padding: const EdgeInsets.only(bottom: 24.0),
+                child: _extraJobTileBuilder(context, i),
+              )),
           Text(
               'Besoin d\'ajouter des compétences d\'un autre métier pour ce stage?',
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           AddJobButton(
-            onPressed: onAddSpecialization,
+            onPressed: () => setState(() {
+              controllers.add(EnterpriseJobListController(job: Job.empty));
+            }),
             style: Theme.of(context).textButtonTheme.style!.copyWith(
                 backgroundColor: Theme.of(context)
                     .elevatedButtonTheme

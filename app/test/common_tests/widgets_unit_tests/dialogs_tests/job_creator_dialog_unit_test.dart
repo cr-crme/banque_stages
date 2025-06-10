@@ -1,11 +1,9 @@
 import 'package:crcrme_banque_stages/common/widgets/dialogs/job_creator_dialog.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
 import 'package:crcrme_banque_stages/program_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../utils.dart';
-import '../form_fields_tests/job_form_field_list_tile_unit_test.dart';
 import '../utils.dart';
 
 void main() {
@@ -18,13 +16,6 @@ void main() {
           declareWidget(JobCreatorDialog(enterprise: dummyEnterprise())));
 
       expect(find.text('Ajouter un nouveau poste'), findsOneWidget);
-    });
-
-    testWidgets('renders a JobFormFieldListTile', (tester) async {
-      await tester.pumpWidget(
-          declareWidget(JobCreatorDialog(enterprise: dummyEnterprise())));
-
-      expect(find.byType(JobFormFieldListTile), findsOneWidget);
     });
 
     testWidgets('should display a cancel button', (tester) async {
@@ -90,22 +81,6 @@ void main() {
 
       // A snackbar should be displayed
       expect(find.byType(SnackBar), findsOneWidget);
-    });
-
-    testWidgets('confirming is accepted if valid values are entered',
-        (tester) async {
-      await tester.binding.setSurfaceSize(Size(400, 1080));
-      await tester.pumpWidget(
-          declareWidget(JobCreatorDialog(enterprise: dummyEnterprise())));
-
-      await fillAllJobFormFieldsListTile(tester);
-
-      // Validate
-      await tester.tap(find.text('Confirmer'));
-      await tester.pumpAndSettle();
-
-      // The dialog should still be open
-      expect(find.byType(JobCreatorDialog), findsNothing);
     });
   });
 }

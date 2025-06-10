@@ -1,7 +1,7 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common_flutter/helpers/form_service.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/job_form_field_list_tile.dart';
+import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:flutter/material.dart';
 
 class JobCreatorDialog extends StatefulWidget {
@@ -16,8 +16,6 @@ class JobCreatorDialog extends StatefulWidget {
 class _JobCreatorDialogState extends State<JobCreatorDialog> {
   final _formKey = GlobalKey<FormState>();
 
-  Job? _job;
-
   void _onCancel() {
     Navigator.pop(context);
   }
@@ -25,9 +23,15 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
   void _onConfirm() {
     if (FormService.validateForm(_formKey,
         save: true, showSnackbarError: true)) {
-      Navigator.pop(context, _job);
+      Navigator.pop(context, controller.job);
     }
   }
+
+  late final controller = EnterpriseJobListController(
+    job: Job.empty,
+    specializationBlackList:
+        widget.enterprise.jobs.map((e) => e.specialization).toList(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +41,13 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
           title: const Text('Ajouter un nouveau poste'),
           content: Form(
             key: _formKey,
-            child: JobFormFieldListTile(
-              onSaved: (Job? job) => setState(() => _job = job),
-              specializationBlackList:
-                  widget.enterprise.jobs.map((e) => e.specialization).toList(),
+            child: EnterpriseJobListTile(
+              controller: controller,
+              elevation: 0,
+              canChangeExpandedState: false,
+              initialExpandedState: true,
+              editMode: true,
+              showHeader: false,
             ),
           ),
           actions: [

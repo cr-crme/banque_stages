@@ -421,6 +421,10 @@ class _InternshipBody extends StatelessWidget {
   }
 
   Widget _buildTime() {
+    final achievedDuration = internshipController.achievedLength < 0
+        ? 0
+        : internshipController.achievedLength;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -440,8 +444,7 @@ class _InternshipBody extends StatelessWidget {
                             width: 45,
                             child: TextFormField(
                               textAlign: TextAlign.right,
-                              initialValue: internshipController.achievedLength
-                                  .toString(),
+                              initialValue: achievedDuration.toString(),
                               onChanged: (newValue) =>
                                   internshipController.achievedLength =
                                       newValue == '' ? 0 : int.parse(newValue),
@@ -449,7 +452,7 @@ class _InternshipBody extends StatelessWidget {
                                   const TextInputType.numberWithOptions(),
                             ),
                           )
-                        : Text(internship.achievedDuration.toString()),
+                        : Text(achievedDuration.toString()),
                     const Text('h'),
                   ],
                 ),
