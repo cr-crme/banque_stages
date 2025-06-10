@@ -1,5 +1,6 @@
 import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/widgets/address_list_tile.dart';
+import 'package:common_flutter/widgets/birthday_list_tile.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
@@ -25,6 +26,12 @@ class AboutPageState extends State<AboutPage> {
   late final _addressController = AddressController()
     ..initialValue = widget.student.address;
 
+  late final _birthdayController = BirthdayController(
+    initialValue: (widget.student.dateBirth ?? DateTime(0)) == DateTime(0)
+        ? null
+        : widget.student.dateBirth,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -39,6 +46,7 @@ class AboutPageState extends State<AboutPage> {
                 student: widget.student,
                 dateFormat: _dateFormat,
                 addressController: _addressController,
+                birthdayController: _birthdayController,
               ),
               _EmergencyContact(student: widget.student),
             ],
@@ -54,11 +62,13 @@ class _GeneralInformation extends StatelessWidget {
     required this.student,
     required this.dateFormat,
     required this.addressController,
+    required this.birthdayController,
   });
 
   final Student student;
   final DateFormat dateFormat;
   final AddressController addressController;
+  final BirthdayController birthdayController;
 
   @override
   Widget build(BuildContext context) {
@@ -76,33 +86,8 @@ class _GeneralInformation extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Stack(
-                  alignment: Alignment.centerLeft,
-                  children: [
-                    TextFormField(
-                      controller: TextEditingController(
-                          text: dateFormat.format(student.dateBirth!)),
-                      decoration: const InputDecoration(
-                        icon: SizedBox(width: 30),
-                        labelText: 'Date de naissance',
-                        labelStyle: styleOverride,
-                        disabledBorder: InputBorder.none,
-                      ),
-                      style: styleOverride,
-                      enabled: false,
-                    ),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(25),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(
-                          Icons.cake,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                BirthdayListTile(
+                    controller: birthdayController, enabled: false),
                 PhoneListTile(
                   titleStyle: styleOverride,
                   contentStyle: styleOverride,
