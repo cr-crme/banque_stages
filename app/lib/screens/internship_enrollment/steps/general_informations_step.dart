@@ -1,6 +1,7 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/persons/student.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
@@ -8,9 +9,18 @@ import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart
 import 'package:crcrme_banque_stages/common/extensions/students_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
-import 'package:crcrme_banque_stages/common/widgets/form_fields/student_picker_form_field.dart';
+import 'package:common_flutter/widgets/student_picker_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
+
+List<Student> _studentsWithoutInternship(context, List<Student> students) {
+  final List<Student> out = [];
+  for (final student in students) {
+    if (!student.hasActiveInternship(context)) out.add(student);
+  }
+
+  return out;
+}
 
 class GeneralInformationsStep extends StatefulWidget {
   const GeneralInformationsStep({super.key, required this.enterprise});
@@ -26,7 +36,13 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   final formKey = GlobalKey<FormState>();
 
   late Enterprise? enterprise = widget.enterprise;
-  Student? student;
+
+  late final studentController = StudentPickerController(
+    schoolBoardId: AuthProvider.of(context).schoolBoardId!,
+    studentWhiteList: _studentsWithoutInternship(
+        context, StudentsHelpers.studentsInMyGroups(context)),
+  );
+  Student? get student => studentController.student;
 
   late final primaryJobController = EnterpriseJobListController(
     job:
@@ -52,11 +68,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _GeneralInformations(
-              enterprise: enterprise,
-              onSelectEnterprise: (e) => setState(() => enterprise = e),
-              student: student,
-              onSelectStudent: (s) => setState(() => student = s),
-            ),
+                studentController: studentController, setState: setState),
             const SizedBox(height: 10),
             _MainJob(
                 controller: primaryJobController,
@@ -79,31 +91,14 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 }
 
 class _GeneralInformations extends StatelessWidget {
-  const _GeneralInformations({
-    required this.enterprise,
-    required this.onSelectEnterprise,
-    required this.student,
-    required this.onSelectStudent,
-  });
+  const _GeneralInformations(
+      {required this.studentController, required this.setState});
+  final StudentPickerController studentController;
 
-  final Enterprise? enterprise;
-  final Function(Enterprise?) onSelectEnterprise;
-  final Student? student;
-  final Function(Student?) onSelectStudent;
-
-  List<Student> _studentsWithoutInternship(context, List<Student> students) {
-    final List<Student> out = [];
-    for (final student in students) {
-      if (!student.hasActiveInternship(context)) out.add(student);
-    }
-
-    return out;
-  }
+  final Function(Function()) setState;
 
   @override
   Widget build(BuildContext context) {
-    final students = StudentsHelpers.studentsInMyGroups(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -113,10 +108,9 @@ class _GeneralInformations extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              StudentPickerFormField(
-                students: _studentsWithoutInternship(context, students),
-                onSaved: onSelectStudent,
-                onSelect: onSelectStudent,
+              StudentPickerTile(
+                controller: studentController,
+                onSelected: (_) => setState(() {}),
               ),
             ],
           ),

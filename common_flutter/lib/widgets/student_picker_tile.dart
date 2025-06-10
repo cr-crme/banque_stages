@@ -5,18 +5,25 @@ import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:flutter/material.dart';
 
 class StudentPickerController {
+  final String schoolBoardId;
   TextEditingController? _textController;
 
-  Student _selection;
-  Student get student => _selection;
-  set student(Student value) {
+  final List<Student>? _studentWhiteList;
+
+  Student? _selection;
+  Student? get student => _selection;
+  set student(Student? value) {
     _selection = value;
-    _textController?.text = value.fullName;
-    _formKey.currentState?.didChange(value.fullName);
+    _textController?.text = value?.fullName ?? '';
+    _formKey.currentState?.didChange(value?.fullName);
   }
 
-  StudentPickerController({required Student? initial})
-    : _selection = initial ?? Student.empty;
+  StudentPickerController({
+    required this.schoolBoardId,
+    Student? initial,
+    List<Student>? studentWhiteList,
+  }) : _studentWhiteList = studentWhiteList,
+       _selection = initial ?? Student.empty;
 
   final _formKey = GlobalKey<FormFieldState<String>>();
 
@@ -29,16 +36,18 @@ class StudentPickerController {
 class StudentPickerTile extends StatelessWidget {
   const StudentPickerTile({
     super.key,
-    this.title,
-    required this.schoolBoardId,
     required this.controller,
-    required this.editMode,
+    this.title,
+    this.editMode = true,
+    this.isMandatory = true,
+    this.onSelected,
   });
 
-  final String? title;
   final StudentPickerController controller;
-  final String schoolBoardId;
+  final String? title;
   final bool editMode;
+  final bool isMandatory;
+  final Function(Student)? onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +60,22 @@ class StudentPickerTile extends StatelessWidget {
   }
 
   Widget _builder(BuildContext context, FormFieldState<Student> state) {
-    final students = StudentsProvider.of(
-      context,
-      listen: true,
-    ).where((student) => student.schoolBoardId == schoolBoardId);
+    final students = [
+      ...StudentsProvider.of(
+        context,
+        listen: true,
+      ).where((student) => student.schoolBoardId == controller.schoolBoardId),
+    ];
+    if (controller._studentWhiteList != null) {
+      students.retainWhere(
+        (student) => controller._studentWhiteList!.contains(student),
+      );
+    }
 
     return Autocomplete<Student>(
-      initialValue: TextEditingValue(text: controller._selection.fullName),
+      initialValue: TextEditingValue(
+        text: controller._selection?.fullName ?? '',
+      ),
       optionsBuilder: (textEditingValue) {
         // We kind of hijack this builder to test the current status of the text.
         // If it fits a student, or if it is empty, we set that value to the
@@ -70,9 +88,8 @@ class StudentPickerTile extends StatelessWidget {
                 student.fullName.toLowerCase() ==
                 textEditingValue.text.toLowerCase(),
           );
-          if (selectedStudent != null) {
-            controller._selection = selectedStudent;
-          }
+          if (selectedStudent != null) controller._selection = selectedStudent;
+          if (onSelected != null) onSelected!(controller._selection!);
         }
 
         // We show everything if there is no text. Otherwise, we show only if
@@ -97,14 +114,20 @@ class StudentPickerTile extends StatelessWidget {
       fieldViewBuilder: (_, textController, focusNode, onSubmitted) {
         controller._textController = textController;
 
-        return TextField(
+        return TextFormField(
           controller: controller._textController,
           focusNode: focusNode,
           readOnly: false,
           enabled: editMode,
           style: const TextStyle(color: Colors.black),
+          validator:
+              (value) =>
+                  isMandatory && (value?.isEmpty ?? true)
+                      ? 'Veuillez sélectionner un·e élève'
+                      : null,
           decoration: InputDecoration(
-            labelText: title ?? 'Sélectionner un·e élève',
+            labelText:
+                title ?? '${isMandatory ? '* ' : ''}Sélectionner un·e élève',
             labelStyle: const TextStyle(color: Colors.black),
             errorText: state.errorText,
             suffixIcon: IconButton(

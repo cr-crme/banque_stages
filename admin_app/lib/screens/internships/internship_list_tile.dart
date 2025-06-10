@@ -1,7 +1,6 @@
 import 'package:admin_app/screens/internships/confirm_delete_internship_dialog.dart';
 import 'package:admin_app/screens/internships/schedule_list_tile.dart';
 import 'package:admin_app/widgets/enterprise_picker_tile.dart';
-import 'package:admin_app/widgets/student_picker_tile.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/phone_number.dart';
@@ -19,6 +18,7 @@ import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
+import 'package:common_flutter/widgets/student_picker_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -64,6 +64,7 @@ class InternshipListTileState extends State<InternshipListTile> {
   bool _isEditing = false;
 
   late final _studentPickerController = StudentPickerController(
+    schoolBoardId: widget.internship.schoolBoardId,
     initial: StudentsProvider.of(
       context,
       listen: false,
@@ -131,7 +132,7 @@ class InternshipListTileState extends State<InternshipListTile> {
 
   Internship get editedInternship {
     var internship = widget.internship.copyWith(
-      studentId: _studentPickerController.student.id,
+      studentId: _studentPickerController.student?.id,
       signatoryTeacherId: _teacherPickerController.teacher.id,
       enterpriseId:
           widget.forceEditingMode
@@ -262,7 +263,7 @@ class InternshipListTileState extends State<InternshipListTile> {
               Padding(
                 padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
                 child: Text(
-                  '${student.fullName} - ${enterprise.name}',
+                  '${student?.fullName} - ${enterprise.name}',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
@@ -337,7 +338,6 @@ class InternshipListTileState extends State<InternshipListTile> {
       padding: const EdgeInsets.only(right: 12.0),
       child: StudentPickerTile(
         title: 'Élève',
-        schoolBoardId: widget.internship.schoolBoardId,
         controller: _studentPickerController,
         editMode: _isEditing,
       ),
