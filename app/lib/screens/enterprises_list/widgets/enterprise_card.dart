@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
+import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,8 @@ class EnterpriseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final schoolId = AuthProvider.of(context, listen: false).schoolId ?? '';
+
+    final jobs = enterprise.availablejobs(context);
 
     return Card(
       elevation: 10,
@@ -44,26 +47,36 @@ class EnterpriseCard extends StatelessWidget {
                 style: TextStyle(color: Colors.grey[800]),
               ),
             ),
-            ...enterprise.jobs.map((job) => Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(children: [
-                  DisponibilityCircle(
-                      positionsOffered: job.positionsOffered[schoolId] ?? 0,
-                      positionsOccupied: job.positionsOccupied(context)),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      job.specialization.idWithName,
-                      style: TextStyle(color: Colors.grey[800]),
-                    ),
-                  ),
-                ]))),
+            ...(jobs.isEmpty
+                ? [
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 12, top: 8, bottom: 4),
+                      child: Text(
+                        'Aucun poste disponible pour le moment',
+                        style: TextStyle(color: Colors.grey[800]),
+                      ),
+                    )
+                  ]
+                : jobs.map((job) => Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(children: [
+                      DisponibilityCircle(
+                          positionsOffered: job.positionsOffered[schoolId] ?? 0,
+                          positionsOccupied: job.positionsOccupied(context)),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          job.specialization.idWithName,
+                          style: TextStyle(color: Colors.grey[800]),
+                        ),
+                      ),
+                    ])))),
           ],
         ),
         trailing: Visibility(
-          visible: enterprise.jobs
-                  .lastWhereOrNull((e) => e.incidents.hasMajorIncident) !=
-              null,
+          visible:
+              jobs.lastWhereOrNull((e) => e.incidents.hasMajorIncident) != null,
           child: Tooltip(
             message:
                 'Il y a au moins eu un accident répertorié pour cette entreprise',

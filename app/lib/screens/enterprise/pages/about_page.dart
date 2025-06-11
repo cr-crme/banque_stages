@@ -9,6 +9,7 @@ import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
+import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
@@ -51,7 +52,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
     _name = widget.enterprise.name;
 
     _positionOffered.clear();
-    for (var job in widget.enterprise.jobs) {
+    for (var job in widget.enterprise.availablejobs(context)) {
       _positionOffered[job.id] =
           job.positionsOffered[authProvider.schoolId] ?? 0;
     }
@@ -86,7 +87,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
         areSetsNotEqual(_activityTypesController.activityTypes,
             widget.enterprise.activityTypes) ||
         areMapsNotEqual(_positionOffered, {
-          for (var job in widget.enterprise.jobs)
+          for (var job in widget.enterprise.availablejobs(context))
             job.id: job.positionsOffered[schoolId],
         })) {
       EnterprisesProvider.of(context, listen: false).replace(
@@ -94,7 +95,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
             name: _name,
             activityTypes: _activityTypesController.activityTypes,
             jobs: JobList()
-              ..addAll(widget.enterprise.jobs.map((job) {
+              ..addAll(widget.enterprise.availablejobs(context).map((job) {
                 return job.copyWith(
                     positionsOffered: {schoolId: _positionOffered[job.id]!});
               }))),
@@ -151,7 +152,9 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
               _AvailablePlace(
                 initial: _positionOffered.map(
                   (key, value) => MapEntry(
-                      widget.enterprise.jobs.firstWhere((e) => e.id == key),
+                      widget.enterprise
+                          .availablejobs(context)
+                          .firstWhere((e) => e.id == key),
                       value),
                 ),
                 editMode: _editing,
@@ -247,49 +250,62 @@ class _AvailablePlace extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Places de stage disponibles'),
-        Column(
-          children: jobs.map(
-            (job) {
-              final int positionsOffered = initial[job]!;
-              final positionsRemaining =
-                  positionsOffered - job.positionsOccupied(context);
+        if (jobs.isEmpty)
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Text(
+                'Aucun stage disponible pour cette entreprise.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ),
+        if (jobs.isNotEmpty)
+          Column(
+            children: jobs.map(
+              (job) {
+                final int positionsOffered = initial[job]!;
+                final positionsRemaining =
+                    positionsOffered - job.positionsOccupied(context);
 
-              return ListTile(
-                visualDensity: VisualDensity.compact,
-                leading: DisponibilityCircle(
-                  positionsOffered: positionsOffered,
-                  positionsOccupied: job.positionsOccupied(context),
-                ),
-                title: Text(job.specialization.idWithName),
-                trailing: editMode
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                              onPressed: positionsOffered == 0
-                                  ? null
-                                  : () => onChanged(job, positionsOffered - 1),
-                              icon: Icon(Icons.remove,
-                                  color: positionsRemaining == 0
-                                      ? Colors.grey
-                                      : Colors.black)),
-                          Text(
-                            '$positionsRemaining / $positionsOffered',
-                          ),
-                          IconButton(
-                              onPressed: () =>
-                                  onChanged(job, positionsOffered + 1),
-                              icon: const Icon(Icons.add, color: Colors.black)),
-                        ],
-                      )
-                    : Text(
-                        '${job.positionsRemaining(context, schoolId: schoolId)} / $positionsOffered',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-              );
-            },
-          ).toList(),
-        )
+                return ListTile(
+                  visualDensity: VisualDensity.compact,
+                  leading: DisponibilityCircle(
+                    positionsOffered: positionsOffered,
+                    positionsOccupied: job.positionsOccupied(context),
+                  ),
+                  title: Text(job.specialization.idWithName),
+                  trailing: editMode
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                                onPressed: positionsOffered == 0
+                                    ? null
+                                    : () =>
+                                        onChanged(job, positionsOffered - 1),
+                                icon: Icon(Icons.remove,
+                                    color: positionsRemaining == 0
+                                        ? Colors.grey
+                                        : Colors.black)),
+                            Text(
+                              '$positionsRemaining / $positionsOffered',
+                            ),
+                            IconButton(
+                                onPressed: () =>
+                                    onChanged(job, positionsOffered + 1),
+                                icon:
+                                    const Icon(Icons.add, color: Colors.black)),
+                          ],
+                        )
+                      : Text(
+                          '${job.positionsRemaining(context, schoolId: schoolId)} / $positionsOffered',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                );
+              },
+            ).toList(),
+          )
       ],
     );
   }

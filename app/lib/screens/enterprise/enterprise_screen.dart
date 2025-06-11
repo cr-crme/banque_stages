@@ -2,6 +2,7 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
+import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -120,7 +121,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
       return;
     }
 
-    if (enterprise.jobs.fold<int>(
+    if (enterprise.availablejobs(context).fold<int>(
             0,
             (prev, e) =>
                 prev + e.positionsRemaining(context, schoolId: schoolId)) ==

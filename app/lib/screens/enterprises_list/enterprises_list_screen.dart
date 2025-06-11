@@ -142,7 +142,7 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
     return enterprises.where((enterprise) {
       // Remove if should not be shown by filter availability filter
       if (_hideNotAvailable &&
-          enterprise.jobs.every((job) =>
+          enterprise.availablejobs(context).every((job) =>
               job.positionsRemaining(context, schoolId: schoolId) <= 0)) {
         return false;
       }
@@ -153,7 +153,7 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
       if (enterprise.name.toLowerCase().contains(textToSearch)) {
         return true;
       }
-      if (enterprise.jobs.any((job) {
+      if (enterprise.availablejobs(context).any((job) {
         final hasSpecialization =
             job.specialization.name.toLowerCase().contains(textToSearch);
         final hasSector =
@@ -235,7 +235,9 @@ class _EnterprisesByMap extends StatelessWidget {
       final waypoint = enterprises[enterprise]!;
       final color = i == 0
           ? Colors.purple
-          : enterprise.availableJobs(context, schoolId: schoolId).isNotEmpty
+          : enterprise
+                  .withRemainingPositions(context, schoolId: schoolId)
+                  .isNotEmpty
               ? Colors.green
               : Colors.red;
 

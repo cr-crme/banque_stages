@@ -5,6 +5,7 @@ import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
+import 'package:common_flutter/widgets/entity_picker_tile.dart';
 import 'package:common_flutter/widgets/radio_with_follow_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,14 +32,18 @@ class EnterpriseJobListController {
   late var _protectionStatus = _job.protections.status;
   late var _protections = _job.protections.protections;
 
+  final EntityPickerController? _reservedForPickerController;
+
   final Job _job;
   EnterpriseJobListController({
     required Job job,
     List<Specialization>? specializationWhiteList,
     List<Specialization>? specializationBlackList,
+    EntityPickerController? reservedForPickerController,
   }) : _job = job.copyWith(),
        _specializationsWhiteList = specializationWhiteList,
-       _specializationBlacklist = specializationBlackList;
+       _specializationBlacklist = specializationBlackList,
+       _reservedForPickerController = reservedForPickerController;
 
   Job get job => _job.copyWith(
     specialization: _specialization,
@@ -56,6 +61,10 @@ class EnterpriseJobListController {
       status: _protectionStatus,
       protections: _protections,
     ),
+    reservedForId:
+        _reservedForPickerController == null
+            ? _job.reservedForId
+            : _reservedForPickerController.selectionId,
   );
 
   void dispose() {
@@ -182,6 +191,14 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                   _buildUniform(),
                   const SizedBox(height: 8),
                   _buildProtections(),
+                  const SizedBox(height: 8),
+                  if (widget.controller._reservedForPickerController != null)
+                    Column(
+                      children: [
+                        _buildReservedFor(),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                 ],
               ),
           ],
@@ -300,8 +317,6 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   Widget _buildAvailability({required School school}) {
     final positionsRemaining =
         _positionOffered(school.id) - widget.controller._positionsOccupied;
-    // TODO Add a toggle to make the specialization private or public
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -389,6 +404,25 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
         widget.controller._protectionStatus = status;
         widget.controller._protections = protections;
       },
+    );
+  }
+
+  Widget _buildReservedFor() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Réserver ce poste à une école ou enseignant\u00b7e',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0, right: 36.0),
+          child: EntityPickerTile(
+            controller: widget.controller._reservedForPickerController!,
+            editMode: widget.editMode,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -206,6 +206,7 @@ Job dummyJob({
           dummyPreInternshipRequests(id: preInternshipId ?? id),
       uniforms: dummyUniforms(id: uniformId ?? id),
       protections: dummyProtections(id: protectionsId ?? id),
+      reservedForId: null,
     );
 
 Enterprise dummyEnterprise({bool addJob = false}) {

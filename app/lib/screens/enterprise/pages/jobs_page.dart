@@ -3,6 +3,7 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
+import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_sst_event_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_text_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
@@ -176,92 +177,98 @@ class JobsPageState extends State<JobsPage> {
   Widget build(BuildContext context) {
     _updateSectionsIfNeeded();
 
-    final jobs = [...widget.enterprise.jobs];
+    final jobs = [...widget.enterprise.availablejobs(context)];
     jobs.sort(
       (a, b) => a.specialization.name
           .toLowerCase()
           .compareTo(b.specialization.name.toLowerCase()),
     );
 
-    return ListView.builder(
-      itemCount: jobs.length,
-      itemBuilder: (context, index) {
-        final job = jobs[index];
+    return jobs.isEmpty
+        ? Center(
+            child: Text('Aucun poste disponible pour cette entreprise.',
+                style: Theme.of(context).textTheme.bodyLarge),
+          )
+        : ListView.builder(
+            itemCount: jobs.length,
+            itemBuilder: (context, index) {
+              final job = jobs[index];
 
-        return AnimatedExpandingCard(
-          key: _cardKey[job.id],
-          header: SubTitle(job.specialization.name, top: 12, bottom: 12),
-          initialExpandedState: jobs.length == 1,
-          child: ExpansionPanelList(
-            expansionCallback: (panelIndex, isExpanded) async {
-              if (isEditing) {
-                if (!await ConfirmExitDialog.show(
-                  context,
-                  content: Text.rich(TextSpan(children: [
-                    const TextSpan(
-                        text: '** Vous quittez la page sans avoir '
-                            'cliqué sur Enregistrer '),
-                    WidgetSpan(
-                        child: SizedBox(
-                      height: 22,
-                      width: 22,
-                      child: Icon(
-                        Icons.save,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    )),
-                    const TextSpan(
-                      text: '. **\n\nToutes vos modifications seront perdues.',
+              return AnimatedExpandingCard(
+                key: _cardKey[job.id],
+                header: SubTitle(job.specialization.name, top: 12, bottom: 12),
+                initialExpandedState: jobs.length == 1,
+                child: ExpansionPanelList(
+                  expansionCallback: (panelIndex, isExpanded) async {
+                    if (isEditing) {
+                      if (!await ConfirmExitDialog.show(
+                        context,
+                        content: Text.rich(TextSpan(children: [
+                          const TextSpan(
+                              text: '** Vous quittez la page sans avoir '
+                                  'cliqué sur Enregistrer '),
+                          WidgetSpan(
+                              child: SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: Icon(
+                              Icons.save,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          )),
+                          const TextSpan(
+                            text:
+                                '. **\n\nToutes vos modifications seront perdues.',
+                          ),
+                        ])),
+                      )) {
+                        return;
+                      }
+                      cancelEditing();
+                    }
+                    _expandedSections[job.id]![panelIndex] = isExpanded;
+                    setState(() {});
+                  },
+                  children: [
+                    PrerequisitesExpansionPanel(
+                      key: _prerequisitesFormKeys[job.id]!,
+                      isExpanded: _expandedSections[job.id]![0],
+                      isEditing: _isEditingPrerequisites[job.id]!,
+                      enterprise: widget.enterprise,
+                      job: job,
+                      onClickEdit: () => _onClickPrerequisiteEdit(job),
                     ),
-                  ])),
-                )) {
-                  return;
-                }
-                cancelEditing();
-              }
-              _expandedSections[job.id]![panelIndex] = isExpanded;
-              setState(() {});
+                    SstExpansionPanel(
+                      isExpanded: _expandedSections[job.id]![1],
+                      enterprise: widget.enterprise,
+                      job: job,
+                      addSstEvent: _addSstEvent,
+                    ),
+                    IncidentsExpansionPanel(
+                      isExpanded: _expandedSections[job.id]![2],
+                      enterprise: widget.enterprise,
+                      job: job,
+                      addSstEvent: _addSstEvent,
+                    ),
+                    SupervisionExpansionPanel(
+                      isExpanded: _expandedSections[job.id]![3],
+                      job: job,
+                    ),
+                    PhotoExpansionPanel(
+                      isExpanded: _expandedSections[job.id]![4],
+                      job: job,
+                      addImage: _addImage,
+                      removeImage: _removeImage,
+                    ),
+                    CommentsExpansionPanel(
+                      isExpanded: _expandedSections[job.id]![5],
+                      job: job,
+                      addComment: _addComment,
+                    ),
+                  ],
+                ),
+              );
             },
-            children: [
-              PrerequisitesExpansionPanel(
-                key: _prerequisitesFormKeys[job.id]!,
-                isExpanded: _expandedSections[job.id]![0],
-                isEditing: _isEditingPrerequisites[job.id]!,
-                enterprise: widget.enterprise,
-                job: job,
-                onClickEdit: () => _onClickPrerequisiteEdit(job),
-              ),
-              SstExpansionPanel(
-                isExpanded: _expandedSections[job.id]![1],
-                enterprise: widget.enterprise,
-                job: job,
-                addSstEvent: _addSstEvent,
-              ),
-              IncidentsExpansionPanel(
-                isExpanded: _expandedSections[job.id]![2],
-                enterprise: widget.enterprise,
-                job: job,
-                addSstEvent: _addSstEvent,
-              ),
-              SupervisionExpansionPanel(
-                isExpanded: _expandedSections[job.id]![3],
-                job: job,
-              ),
-              PhotoExpansionPanel(
-                isExpanded: _expandedSections[job.id]![4],
-                job: job,
-                addImage: _addImage,
-                removeImage: _removeImage,
-              ),
-              CommentsExpansionPanel(
-                isExpanded: _expandedSections[job.id]![5],
-                job: job,
-                addComment: _addComment,
-              ),
-            ],
-          ),
-        );
-      },
-    );
+          );
   }
 }

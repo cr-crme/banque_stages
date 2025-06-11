@@ -20,7 +20,8 @@ class Enterprise extends ExtendedItemSerializable {
       activityTypes.map((e) => e._toInt(_currentVersion)).toList();
   final String recruiterId;
 
-  final JobList jobs;
+  final JobList _jobs;
+  JobList get jobs => _jobs;
 
   final Person contact;
   final String contactFunction;
@@ -39,7 +40,7 @@ class Enterprise extends ExtendedItemSerializable {
     required this.name,
     required this.activityTypes,
     required this.recruiterId,
-    required this.jobs,
+    required JobList jobs,
     required this.contact,
     this.contactFunction = '',
     this.address,
@@ -48,7 +49,7 @@ class Enterprise extends ExtendedItemSerializable {
     this.website = '',
     this.headquartersAddress,
     this.neq = '',
-  });
+  }) : _jobs = jobs;
 
   static Enterprise get empty => Enterprise(
         schoolBoardId: '-1',
@@ -81,7 +82,7 @@ class Enterprise extends ExtendedItemSerializable {
       name: name ?? this.name,
       activityTypes: activityTypes ?? this.activityTypes,
       recruiterId: recruiterId ?? this.recruiterId,
-      jobs: jobs ?? this.jobs,
+      jobs: jobs ?? _jobs,
       contact: contact ?? this.contact,
       contactFunction: contactFunction ?? this.contactFunction,
       address: address ?? this.address,
@@ -134,7 +135,7 @@ class Enterprise extends ExtendedItemSerializable {
               .map((e) => ActivityTypes._fromInt(e as int, version))
               .toSet(),
       recruiterId: StringExt.from(data['recruiter_id']) ?? recruiterId,
-      jobs: JobList.from(data['jobs']) ?? jobs,
+      jobs: JobList.from(data['jobs']) ?? _jobs,
       contact: Person.from(data['contact']) ?? contact,
       contactFunction:
           StringExt.from(data['contact_function']) ?? contactFunction,
@@ -156,7 +157,7 @@ class Enterprise extends ExtendedItemSerializable {
       'version': _currentVersion.serialize(),
       'activity_types': activityTypesSerialized,
       'recruiter_id': recruiterId.serialize(),
-      'jobs': jobs.serialize(),
+      'jobs': _jobs.serialize(),
       'contact': contact.serialize(),
       'contact_function': contactFunction.serialize(),
       'address': address?.serialize(),
@@ -176,7 +177,7 @@ class Enterprise extends ExtendedItemSerializable {
             .map((e) => ActivityTypes._fromInt(e, map['version']))
             .toSet(),
         recruiterId = StringExt.from(map['recruiter_id']) ?? '-1',
-        jobs = JobList.fromSerialized(map['jobs'] ?? {}),
+        _jobs = JobList.fromSerialized(map['jobs'] ?? {}),
         contact = Person.fromSerialized(map['contact'] ?? {}),
         contactFunction = StringExt.from(map['contact_function']) ?? '',
         address = Address.from(map['address']),

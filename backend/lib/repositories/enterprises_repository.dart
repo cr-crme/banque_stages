@@ -648,6 +648,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           'enterprise_id': enterpriseId.serialize(),
           'specialization_id': job.specialization.id.serialize(),
           'minimum_age': job.minimumAge.serialize(),
+          'reserved_for_id': job.reservedForId?.serialize(),
         });
 
     final toWait = <Future>[];
@@ -738,6 +739,15 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       if (differences.contains('minimum_age')) {
         toUpdate['minimum_age'] = job.minimumAge.serialize();
       }
+      if (differences.contains('reserved_for_id')) {
+        if (user.accessLevel < AccessLevel.admin) {
+          _logger.severe(
+              'User ${user.userId} does not have permission to update the reserved for id of a job');
+        } else {
+          toUpdate['reserved_for_id'] = job.reservedForId?.serialize();
+        }
+      }
+
       if (toUpdate.isNotEmpty) {
         await MySqlHelpers.performUpdateQuery(
           connection: connection,

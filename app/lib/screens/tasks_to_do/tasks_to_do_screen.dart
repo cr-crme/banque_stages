@@ -6,6 +6,7 @@ import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
@@ -36,7 +37,7 @@ List<_JobEnterpriseInternshipStudent> _enterprisesToEvaluate(context) {
 
   List<_JobEnterpriseInternshipStudent> out = [];
   for (final enterprise in enterprises) {
-    for (final job in enterprise.jobs) {
+    for (final job in enterprise.availablejobs(context)) {
       if (!job.sstEvaluation.isFilled) {
         final interns = internships
             .where((e) =>

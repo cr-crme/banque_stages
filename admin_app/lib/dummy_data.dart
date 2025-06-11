@@ -683,6 +683,7 @@ Future<void> _addDummyEnterprises(
           'Une drole de bague',
         ],
       ),
+      reservedForId: null,
     ),
   );
   jobs.add(
@@ -713,6 +714,7 @@ Future<void> _addDummyEnterprises(
           'Une drole de bague',
         ],
       ),
+      reservedForId: null,
     ),
   );
 
@@ -768,6 +770,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
+      reservedForId: myPartnerTeacherId,
     ),
   );
   enterprises.add(
@@ -840,6 +843,7 @@ Future<void> _addDummyEnterprises(
         status: ProtectionsStatus.suppliedBySchool,
         protections: ['Masque', 'Un masque de protection'],
       ),
+      reservedForId: myTeacherId,
     ),
   );
 
@@ -890,6 +894,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
+      reservedForId: mySchoolId,
     ),
   );
   enterprises.add(
@@ -940,6 +945,8 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
+      reservedForId:
+          mySchoolBoard.schools.firstWhere((e) => e.id != mySchoolId).id,
     ),
   );
 
@@ -991,6 +998,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
+      reservedForId: null,
     ),
   );
 
@@ -1042,6 +1050,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
+      reservedForId: null,
     ),
   );
 
@@ -1093,6 +1102,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
+      reservedForId: null,
     ),
   );
 
@@ -1141,6 +1151,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
+      reservedForId: null,
     ),
   );
 
@@ -1211,6 +1222,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
+      reservedForId: null,
     ),
   );
   enterprises.add(
@@ -1275,6 +1287,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
+      reservedForId: null,
     ),
   );
   enterprises.add(
@@ -1345,6 +1358,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
+      reservedForId: null,
     ),
   );
   enterprises.add(

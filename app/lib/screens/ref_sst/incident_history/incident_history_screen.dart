@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
+import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/models/incidents_by_enterprise.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/widgets/incident_list_tile.dart';
@@ -45,7 +46,7 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
 
     Map<Specialization, IncidentsByEnterprise> out = {};
     for (final enterprise in enterprises) {
-      for (final job in enterprise.jobs) {
+      for (final job in enterprise.availablejobs(context)) {
         // Do not add if there is no incident
         if (job.incidents.isEmpty) continue;
 

@@ -46,10 +46,11 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   Student? get student => studentController.student;
 
   late final primaryJobController = EnterpriseJobListController(
-    job:
-        widget.enterprise.jobs.length == 1 ? enterprise!.jobs.first : Job.empty,
+    job: widget.enterprise.availablejobs(context).length == 1
+        ? enterprise!.availablejobs(context).first
+        : Job.empty,
     specializationWhiteList: widget.enterprise
-        .availableJobs(context,
+        .withRemainingPositions(context,
             schoolId: AuthProvider.of(context, listen: false).schoolId!)
         .map((job) => job.specialization)
         .toList(),

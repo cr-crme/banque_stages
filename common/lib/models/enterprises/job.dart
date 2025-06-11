@@ -23,6 +23,9 @@ class Job extends ItemSerializable {
     return _specialization;
   }
 
+  // Reserved to a specific ID (i.e., school, teacher)
+  final String? reservedForId;
+
   // Positions offered by school
   final Map<String, int> positionsOffered;
 
@@ -54,6 +57,7 @@ class Job extends ItemSerializable {
     required this.sstEvaluation,
     required this.incidents,
     List<String>? comments,
+    required this.reservedForId,
   })  : _specialization = specialization,
         photosUrl = photosUrl ?? [],
         comments = comments ?? [];
@@ -70,6 +74,7 @@ class Job extends ItemSerializable {
     JobSstEvaluation? sstEvaluation,
     Incidents? incidents,
     List<String>? comments,
+    String? reservedForId,
   }) {
     return Job(
       id: id ?? this.id,
@@ -86,6 +91,7 @@ class Job extends ItemSerializable {
       sstEvaluation: sstEvaluation ?? this.sstEvaluation,
       incidents: incidents ?? this.incidents,
       comments: comments ?? this.comments,
+      reservedForId: reservedForId ?? this.reservedForId,
     );
   }
 
@@ -101,6 +107,7 @@ class Job extends ItemSerializable {
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       comments: [],
+      reservedForId: null,
     );
     return job.copyWith(
       uniforms: job.uniforms.copyWith(id: job.id),
@@ -123,6 +130,7 @@ class Job extends ItemSerializable {
         'sst_evaluations': sstEvaluation.serialize(),
         'incidents': incidents.serialize(),
         'comments': comments.serialize(),
+        'reserved_for_id': reservedForId?.serialize(),
       };
 
   Job.fromSerialized(super.map)
@@ -154,6 +162,7 @@ class Job extends ItemSerializable {
         comments = ListExt.from(map['comments'],
                 deserializer: (e) => StringExt.from(e) ?? '') ??
             [],
+        reservedForId = StringExt.from(map['reserved_for_id']),
         super.fromSerialized();
 
   @override

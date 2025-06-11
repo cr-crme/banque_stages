@@ -5,6 +5,7 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
@@ -14,6 +15,7 @@ import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
+import 'package:common_flutter/widgets/entity_picker_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:common_flutter/widgets/web_site_list_tile.dart';
@@ -48,6 +50,10 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     return isValid;
   }
 
+  SchoolBoard? get _currentSchoolBoard =>
+      SchoolBoardsProvider.of(context, listen: false).firstWhereOrNull(
+        (schoolboard) => schoolboard.id == widget.enterprise.schoolBoardId,
+      );
   @override
   void dispose() {
     _nameController.dispose();
@@ -78,7 +84,17 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   );
   late final _jobControllers = Map.fromEntries(
     widget.enterprise.jobs.map(
-      (job) => MapEntry(job.id, EnterpriseJobListController(job: job)),
+      (job) => MapEntry(
+        job.id,
+        EnterpriseJobListController(
+          job: job,
+          reservedForPickerController: EntityPickerController(
+            schools: _currentSchoolBoard?.schools ?? [],
+            teachers: [...TeachersProvider.of(context, listen: false)],
+            initialId: job.reservedForId,
+          ),
+        ),
+      ),
     ),
   );
   late final _teacherPickerController = TeacherPickerController(
@@ -318,7 +334,15 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   void _addJob() {
     final job = Job.empty;
     setState(
-      () => _jobControllers[job.id] = EnterpriseJobListController(job: job),
+      () =>
+          _jobControllers[job.id] = EnterpriseJobListController(
+            job: job,
+            reservedForPickerController: EntityPickerController(
+              schools: _currentSchoolBoard?.schools ?? [],
+              teachers: [...TeachersProvider.of(context, listen: false)],
+              initialId: job.reservedForId,
+            ),
+          ),
     );
   }
 
@@ -327,19 +351,6 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   }
 
   Widget _buildJob() {
-    final schoolBoard = SchoolBoardsProvider.of(
-      context,
-      listen: false,
-    ).firstWhereOrNull(
-      (schoolboard) => schoolboard.id == widget.enterprise.schoolBoardId,
-    );
-    if (schoolBoard == null) {
-      return Padding(
-        padding: const EdgeInsets.only(right: 12.0),
-        child: Text('Aucune comission scolaire trouvée pour cette entreprise.'),
-      );
-    }
-
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
       child: Column(
@@ -359,7 +370,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
                     (jobId) => EnterpriseJobListTile(
                       key: ValueKey(jobId),
                       controller: _jobControllers[jobId]!,
-                      schools: schoolBoard.schools,
+                      schools: _currentSchoolBoard?.schools ?? [],
                       editMode: _isEditing,
                       onRequestDelete: () => _deleteJob(jobId),
                     ),
@@ -450,7 +461,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       child: AddressListTile(
         title: 'Adresse du siège social',
         addressController: _headquartersAddressController,
-        isMandatory: true,
+        isMandatory: false,
         enabled: _isEditing,
       ),
     );
