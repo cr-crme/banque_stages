@@ -7,6 +7,7 @@ import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/address_list_tile.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
@@ -326,6 +327,19 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   }
 
   Widget _buildJob() {
+    final schoolBoard = SchoolBoardsProvider.of(
+      context,
+      listen: false,
+    ).firstWhereOrNull(
+      (schoolboard) => schoolboard.id == widget.enterprise.schoolBoardId,
+    );
+    if (schoolBoard == null) {
+      return Padding(
+        padding: const EdgeInsets.only(right: 12.0),
+        child: Text('Aucune comission scolaire trouvée pour cette entreprise.'),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
       child: Column(
@@ -345,6 +359,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
                     (jobId) => EnterpriseJobListTile(
                       key: ValueKey(jobId),
                       controller: _jobControllers[jobId]!,
+                      schools: schoolBoard.schools,
                       editMode: _isEditing,
                       onRequestDelete: () => _deleteJob(jobId),
                     ),

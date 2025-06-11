@@ -494,6 +494,22 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     await _insertToEnterprisesActivityTypes(enterprise);
   }
 
+  Future<void> _insertPositionsOffered(
+      Map<String, int> positionOffered, String jobId) async {
+    final toWait = <Future>[];
+    for (final entry in positionOffered.entries) {
+      toWait.add(MySqlHelpers.performInsertQuery(
+          connection: connection,
+          tableName: 'enterprise_job_positions_offered',
+          data: {
+            'job_id': jobId.serialize(),
+            'school_id': entry.key,
+            'positions': entry.value,
+          }));
+    }
+    await Future.wait(toWait);
+  }
+
   Future<void> _insertJobPhotoUrls(List<String> urls, String jobId) async {
     final toWait = <Future>[];
     for (final url in urls) {
@@ -631,11 +647,12 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           'version': Job.currentVersion.serialize(),
           'enterprise_id': enterpriseId.serialize(),
           'specialization_id': job.specialization.id.serialize(),
-          'positions_offered': job.positionsOffered.serialize(),
           'minimum_age': job.minimumAge.serialize(),
         });
 
     final toWait = <Future>[];
+    toWait
+        .add(_insertPositionsOffered(job.positionsOffered, job.id.serialize()));
     toWait.add(_insertJobPhotoUrls(job.photosUrl, job.id.serialize()));
     toWait.add(_insertJobComments(job.comments, job.id.serialize()));
     toWait.add(_insertJobPreintershipRequests(
@@ -718,9 +735,6 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         }
       }
 
-      if (differences.contains('positions_offered')) {
-        toUpdate['positions_offered'] = job.positionsOffered.serialize();
-      }
       if (differences.contains('minimum_age')) {
         toUpdate['minimum_age'] = job.minimumAge.serialize();
       }
@@ -733,10 +747,33 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         );
       }
 
-      // PhotoUrls, Comments, Uniforms, protections and incidents are
-      // tricky to update, so we delete and reinsert all of them.
+      // Position offered, PhotoUrls, Comments, Uniforms, protections and incidents are
+      // tricky to update (particularly those who can be removed), so we delete them all
+      // and reinsert all of them.
       final toWaitDeleted = <Future>[];
       toWait.clear();
+      if (differences.contains('positions_offered')) {
+        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
+          connection: connection,
+          tableName: 'enterprise_job_positions_offered',
+          filters: {'job_id': job.id},
+        ));
+
+        late final Map<String, int> newPositionsOffered;
+        if (user.accessLevel < AccessLevel.admin) {
+          // Only admins can modify all positions offered, others can only
+          // modify their own school positions offered
+          newPositionsOffered =
+              previousJob.positionsOffered.map((k, v) => MapEntry(k, v));
+          newPositionsOffered[user.schoolId!] =
+              job.positionsOffered[user.schoolId] ?? 0;
+        } else {
+          newPositionsOffered = job.positionsOffered;
+        }
+
+        toWait.add(
+            _insertPositionsOffered(newPositionsOffered, job.id.serialize()));
+      }
       if (differences.contains('photos_url')) {
         // This is a bit tricky to simply update, so we delete and reinsert
         toWaitDeleted.add(MySqlHelpers.performDeleteQuery(

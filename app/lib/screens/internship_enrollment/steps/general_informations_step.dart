@@ -2,6 +2,7 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
@@ -148,6 +149,10 @@ class _MainJob extends StatelessWidget {
                 ),
               EnterpriseJobListTile(
                 controller: controller,
+                schools: SchoolBoardsProvider.of(context, listen: false)
+                        .mySchoolBoard
+                        ?.schools ??
+                    [],
                 editMode: true,
                 specializationOnly: true,
                 canChangeExpandedState: false,
@@ -195,6 +200,10 @@ class _ExtraSpecialization extends StatelessWidget {
         ),
         EnterpriseJobListTile(
           controller: controllers[index],
+          schools: SchoolBoardsProvider.of(context, listen: false)
+                  .mySchoolBoard
+                  ?.schools ??
+              [],
           editMode: true,
           specializationOnly: true,
           canChangeExpandedState: false,

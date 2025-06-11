@@ -36,7 +36,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
   String? _name;
   late final _activityTypesController = EnterpriseActivityTypeListController(
       initial: {...widget.enterprise.activityTypes});
-  final Map<Job, int> _positionOffered = {};
+  final Map<String, int> _positionOffered = {};
 
   @override
   void didChangeDependencies() {
@@ -52,7 +52,8 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
 
     _positionOffered.clear();
     for (var job in widget.enterprise.jobs) {
-      _positionOffered[job] = job.positionsOffered[authProvider.schoolId] ?? 0;
+      _positionOffered[job.id] =
+          job.positionsOffered[authProvider.schoolId] ?? 0;
     }
   }
 
@@ -75,19 +76,19 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
       return;
     }
 
+    final schoolId = AuthProvider.of(context, listen: false).schoolId;
+    if (schoolId == null) {
+      showSnackBar(context,
+          message: 'Impossible de sauvegarder, l\'école est introuvable.');
+      return;
+    }
     if (_name != widget.enterprise.name ||
         areSetsNotEqual(_activityTypesController.activityTypes,
             widget.enterprise.activityTypes) ||
         areMapsNotEqual(_positionOffered, {
-          for (var job in widget.enterprise.jobs) job: job.positionsOffered,
+          for (var job in widget.enterprise.jobs)
+            job.id: job.positionsOffered[schoolId],
         })) {
-      final schoolId = AuthProvider.of(context, listen: false).schoolId;
-      if (schoolId == null) {
-        showSnackBar(context,
-            message: 'Impossible de sauvegarder, l\'école est introuvable.');
-        return;
-      }
-
       EnterprisesProvider.of(context, listen: false).replace(
         widget.enterprise.copyWith(
             name: _name,
@@ -95,7 +96,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
             jobs: JobList()
               ..addAll(widget.enterprise.jobs.map((job) {
                 return job.copyWith(
-                    positionsOffered: {schoolId: _positionOffered[job]!});
+                    positionsOffered: {schoolId: _positionOffered[job.id]!});
               }))),
       );
     }
@@ -148,10 +149,14 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
                   editMode: _editing,
                   onSaved: (name) => _name = name),
               _AvailablePlace(
-                initial: _positionOffered,
+                initial: _positionOffered.map(
+                  (key, value) => MapEntry(
+                      widget.enterprise.jobs.firstWhere((e) => e.id == key),
+                      value),
+                ),
                 editMode: _editing,
                 onChanged: (Job job, int newValue) =>
-                    setState(() => _positionOffered[job] = newValue),
+                    setState(() => _positionOffered[job.id] = newValue),
               ),
               _ActivityType(
                   controller: _activityTypesController,
@@ -245,9 +250,9 @@ class _AvailablePlace extends StatelessWidget {
         Column(
           children: jobs.map(
             (job) {
-              final positionsRemaining =
-                  job.positionsRemaining(context, schoolId: schoolId);
               final int positionsOffered = initial[job]!;
+              final positionsRemaining =
+                  positionsOffered - job.positionsOccupied(context);
 
               return ListTile(
                 visualDensity: VisualDensity.compact,

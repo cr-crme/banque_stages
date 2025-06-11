@@ -1,6 +1,6 @@
 import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/school_boards/school.dart';
 import 'package:common/services/job_data_file_service.dart';
-import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
@@ -18,7 +18,9 @@ class EnterpriseJobListController {
   late final _minimumAgeController = TextEditingController(
     text: _job.minimumAge.toString(),
   );
-  late Map<String, int> _positionsOffered = _job.positionsOffered;
+  late Map<String, int> _positionsOffered = _job.positionsOffered.map(
+    (key, value) => MapEntry(key, value),
+  );
   int _positionsOccupied = 0;
 
   var _preInternshipRequests = PreInternshipRequests.empty;
@@ -66,6 +68,7 @@ class EnterpriseJobListTile extends StatefulWidget {
   const EnterpriseJobListTile({
     super.key,
     required this.controller,
+    required this.schools,
     this.editMode = false,
     this.onRequestDelete,
     this.canChangeExpandedState = true,
@@ -76,6 +79,7 @@ class EnterpriseJobListTile extends StatefulWidget {
   });
 
   final EnterpriseJobListController controller;
+  final List<School> schools;
   final bool editMode;
   final Function()? onRequestDelete;
   final bool canChangeExpandedState;
@@ -109,11 +113,6 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
 
   @override
   Widget build(BuildContext context) {
-    final schoolId = AuthProvider.of(context, listen: true).schoolId;
-    if (schoolId == null) {
-      throw Exception('School ID is not set in AuthProvider.');
-    }
-
     return AnimatedExpandingCard(
       elevation: widget.elevation,
       canChangeExpandedState: widget.canChangeExpandedState,
@@ -154,7 +153,9 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                 children: [
                   _buildMinimumAge(),
                   const SizedBox(height: 8),
-                  _buildAvailability(schoolId: schoolId),
+                  ...widget.schools.map(
+                    (school) => _buildAvailability(school: school),
+                  ),
                   const SizedBox(height: 8),
                   _buildPrerequisites(),
                   const SizedBox(height: 8),
@@ -272,52 +273,50 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
     );
   }
 
-  Widget _buildAvailability({required String schoolId}) {
+  int _positionOffered(String schoolId) {
+    return widget.controller._positionsOffered[schoolId] ?? 0;
+  }
+
+  Widget _buildAvailability({required School school}) {
     final positionsRemaining =
-        (widget.controller._positionsOffered[schoolId] ?? 0) -
-        widget.controller._positionsOccupied;
-    // TODO Add a close the internship for all the schools
+        _positionOffered(school.id) - widget.controller._positionsOccupied;
     // TODO Bring this into the header and add schools
     // TODO Add a toggle to make the specialization private or public
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('Places de stages disponibles'),
+        Text('Places de stages disponibles à ${school.name}'),
         widget.editMode
             ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   onPressed:
-                      (widget.controller._positionsOffered[schoolId] ?? 0) == 0
+                      _positionOffered(school.id) == 0
                           ? null
                           : () => _updatePositions(
-                            schoolId,
-                            (widget.controller._positionsOffered[schoolId] ??
-                                    0) -
-                                1,
+                            school.id,
+                            _positionOffered(school.id) - 1,
                           ),
                   icon: Icon(
                     Icons.remove,
                     color: positionsRemaining == 0 ? Colors.grey : Colors.black,
                   ),
                 ),
-                Text(
-                  '$positionsRemaining / ${widget.controller._positionsOffered}',
-                ),
+                Text('$positionsRemaining / ${_positionOffered(school.id)}'),
                 IconButton(
                   onPressed:
                       () => _updatePositions(
-                        schoolId,
-                        (widget.controller._positionsOffered[schoolId] ?? 0) +
-                            1,
+                        school.id,
+                        _positionOffered(school.id) + 1,
                       ),
                   icon: const Icon(Icons.add, color: Colors.black),
                 ),
               ],
             )
             : Text(
-              '$positionsRemaining / ${widget.controller._positionsOffered}',
+              '$positionsRemaining / ${_positionOffered(school.id)}',
               style: Theme.of(context).textTheme.titleMedium,
             ),
       ],

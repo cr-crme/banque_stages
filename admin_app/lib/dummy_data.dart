@@ -170,6 +170,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   );
   schools.add(
     School(
+      id: 'dummy_school_id_1_of_2',
       name: 'École des Arts',
       address: Address(
         civicNumber: 9101,
@@ -181,7 +182,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   );
   schoolBoards.add(
     SchoolBoard(
-      id: 'dummy_school_board_id_1',
+      id: 'dummy_school_board_id_2',
       name: 'Commission scolaire de l\'Île-de-Montréal',
       schools: schools.toList(),
     ),
@@ -217,7 +218,7 @@ Future<void> _addDummyAdmins(
       firstName: 'Marie',
       middleName: null,
       lastName: 'Lefebvre',
-      schoolBoardId: 'dummy_school_board_id_1',
+      schoolBoardId: 'dummy_school_board_id_2',
       hasRegisteredAccount: false,
       email: 'marie.lefebvre@monecole.qc',
       accessLevel: AccessLevel.admin,
@@ -1311,11 +1312,45 @@ Future<void> _addDummyEnterprises(
     ),
   );
 
+  final randomSchoolId =
+      schoolBoards
+          .firstWhere((schoolBoard) => schoolBoard.name != _mySchoolBoardName)
+          .schools
+          .firstWhere((school) => school.name != 'dummy_school_id_1_of_2')
+          .id;
   jobs = JobList();
+  jobs.add(
+    Job(
+      specialization:
+          ActivitySectorsService.activitySectors[1].specializations[2],
+      positionsOffered: {'dummy_school_id_1_of_2': 3, randomSchoolId: 5},
+      sstEvaluation: JobSstEvaluation(
+        questions: {
+          'Q1': ['Oui'],
+          'Q1+t': [
+            'En début et en fin de journée, surtout des pots de fleurs.',
+          ],
+          'Q3': ['Un diable'],
+          'Q5': ['Un couteau', 'Des ciseaux'],
+          'Q7': ['Des pesticides', 'Engrais'],
+          'Q12': ['__NOT_APPLICABLE_INTERNAL__'],
+          'Q15': ['Oui'],
+          'Q15+t': ['Mais pourquoi donc??'],
+          'Q16': ['Beurk'],
+          'Q18': ['Non'],
+        },
+      ),
+      incidents: Incidents.empty,
+      minimumAge: 15,
+      preInternshipRequests: PreInternshipRequests.fromStrings([]),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+    ),
+  );
   enterprises.add(
     Enterprise(
-      schoolBoardId: 'dummy_school_board_id_1',
-      name: 'Fleuriste Joli',
+      schoolBoardId: 'dummy_school_board_id_2',
+      name: 'Fleuriste Pasjoli',
       activityTypes: {ActivityTypes.fleuriste, ActivityTypes.magasin},
       recruiterId: myPartnerTeacherId,
       jobs: jobs,

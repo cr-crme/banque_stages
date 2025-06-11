@@ -1,5 +1,6 @@
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -63,6 +64,10 @@ class JobsPageState extends State<JobsPage> {
         ),
         EnterpriseJobListTile(
             controller: controller,
+            schools: SchoolBoardsProvider.of(context, listen: false)
+                    .mySchoolBoard
+                    ?.schools ??
+                [],
             elevation: 0,
             canChangeExpandedState: false,
             initialExpandedState: true,

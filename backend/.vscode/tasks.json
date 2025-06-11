@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Run Backend Server",
+        "type": "shell",
+        "command": "dart",
+        "args": ["bin/backend.dart"],
+        "options": {
+          "env": {
+            "FIREBASE_WEB_API_KEY": "AIzaSyDMaibi4TnWHesiAB_WbN5A7G-mPE_qD_I",
+          }
+        },  
+        "problemMatcher": [],
+        "isBackground": true,
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }, 
+      }
+    ]
+  }
+  

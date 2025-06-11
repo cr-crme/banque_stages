@@ -26,6 +26,7 @@ DROP TABLE IF EXISTS enterprise_fax_numbers;
 DROP TABLE IF EXISTS enterprise_activity_types;
 DROP TABLE IF EXISTS enterprise_contacts;
 DROP TABLE IF EXISTS enterprise_jobs;
+DROP TABLE IF EXISTS enterprise_job_positions_offered;
 DROP TABLE IF EXISTS enterprise_job_photo_urls;
 DROP TABLE IF EXISTS enterprise_job_comments;
 DROP TABLE IF EXISTS enterprise_job_pre_internship_request_items;
@@ -278,7 +279,7 @@ CREATE TABLE enterprise_job_positions_offered(
     job_id VARCHAR(36) NOT NULL,
     school_id VARCHAR(36) NOT NULL,
     positions INT NOT NULL,
-    FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
+    FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE,
     FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE CASCADE
 );
 

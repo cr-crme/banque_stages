@@ -1,6 +1,7 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common_flutter/helpers/form_service.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -43,6 +44,10 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
             key: _formKey,
             child: EnterpriseJobListTile(
               controller: controller,
+              schools: SchoolBoardsProvider.of(context, listen: false)
+                      .mySchoolBoard
+                      ?.schools ??
+                  [],
               elevation: 0,
               canChangeExpandedState: false,
               initialExpandedState: true,
