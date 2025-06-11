@@ -281,6 +281,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         filters: {'enterprise_id': enterprise['id']},
         subqueries: [
           MySqlSelectSubQuery(
+              dataTableName: 'enterprise_job_positions_offered',
+              asName: 'positions_offered',
+              idNameToDataTable: 'job_id',
+              fieldsToFetch: ['school_id', 'positions']),
+          MySqlSelectSubQuery(
               dataTableName: 'enterprise_job_photo_urls',
               asName: 'photo_url',
               idNameToDataTable: 'job_id',
@@ -320,6 +325,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       final jobs = <String, dynamic>{};
       for (final job in jobsTp) {
         jobs[job['id']] = job;
+        jobs[job['id']]['positions_offered'] =
+            (job['positions_offered'] as List?)?.asMap().map((_, e) => MapEntry(
+                    e['school_id'].toString(), e['positions'] as int? ?? 0)) ??
+                {};
         jobs[job['id']]['photos_url'] =
             (job['photo_url'] as List?)?.map((e) => e['photo_url']).toList() ??
                 [];

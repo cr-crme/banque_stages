@@ -6,6 +6,11 @@
         "type": "shell",
         "command": "dart",
         "args": ["bin/backend.dart"],
+        "options": {
+          "env": {
+            "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
+          }
+        },  
         "problemMatcher": [],
         "isBackground": true,
         "group": {

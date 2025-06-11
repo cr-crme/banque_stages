@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ class EnterpriseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final schoolId = AuthProvider.of(context, listen: false).schoolId ?? '';
+
     return Card(
       elevation: 10,
       child: ListTile(
@@ -45,7 +48,7 @@ class EnterpriseCard extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8),
                 child: Row(children: [
                   DisponibilityCircle(
-                      positionsOffered: job.positionsOffered,
+                      positionsOffered: job.positionsOffered[schoolId] ?? 0,
                       positionsOccupied: job.positionsOccupied(context)),
                   const SizedBox(width: 8),
                   Flexible(

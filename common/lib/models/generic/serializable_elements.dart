@@ -11,6 +11,10 @@ extension ListExt on List {
         return e.serialize();
       } else if (e is ItemSerializable) {
         return e.serialize();
+      } else {
+        throw ArgumentError(
+            'Unsupported type in list: ${e.runtimeType}. Only String, int, '
+            'DateTime, and ItemSerializable are supported.');
       }
     }).toList();
   }
@@ -19,6 +23,34 @@ extension ListExt on List {
       {required T Function(dynamic) deserializer}) {
     if (elements == null) return null;
     return elements.map((e) => deserializer(e)).toList();
+  }
+}
+
+extension MapExt<T> on Map<String, T> {
+  Map<String, dynamic> serialize() {
+    return map((key, value) {
+      if (value is String) {
+        return MapEntry(key, value.serialize());
+      } else if (value is int) {
+        return MapEntry(key, value.serialize());
+      } else if (value is DateTime) {
+        return MapEntry(key, value.serialize());
+      } else if (value is ItemSerializable) {
+        return MapEntry(key, value.serialize());
+      } else {
+        throw ArgumentError(
+            'Unsupported type in map: ${value.runtimeType}. Only String, int, '
+            'DateTime, and ItemSerializable are supported.');
+      }
+    });
+  }
+
+  static Map<String, T>? from<T>(Map? elements,
+      {required T Function(dynamic) deserializer}) {
+    if (elements == null) return null;
+    return {
+      for (var entry in elements.entries) entry.key: deserializer(entry.value),
+    };
   }
 }
 

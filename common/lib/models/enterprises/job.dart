@@ -23,7 +23,8 @@ class Job extends ItemSerializable {
     return _specialization;
   }
 
-  final int positionsOffered;
+  // Positions offered by school
+  final Map<String, int> positionsOffered;
 
   // Prerequisites for an internship
   final int minimumAge;
@@ -60,7 +61,7 @@ class Job extends ItemSerializable {
   Job copyWith({
     String? id,
     Specialization? specialization,
-    int? positionsOffered,
+    Map<String, int>? positionsOffered,
     int? minimumAge,
     PreInternshipRequests? preInternshipRequests,
     Uniforms? uniforms,
@@ -91,7 +92,7 @@ class Job extends ItemSerializable {
   static Job get empty {
     final job = Job(
       specialization: null,
-      positionsOffered: 0,
+      positionsOffered: {},
       minimumAge: 0,
       preInternshipRequests: PreInternshipRequests.empty,
       uniforms: Uniforms.empty,
@@ -127,7 +128,9 @@ class Job extends ItemSerializable {
   Job.fromSerialized(super.map)
       : _specialization = ActivitySectorsService.specializationOrNull(
             map['specialization_id']),
-        positionsOffered = IntExt.from(map['positions_offered']) ?? 0,
+        positionsOffered = MapExt.from<int>(map['positions_offered'],
+                deserializer: (e) => e) ??
+            {},
         minimumAge = IntExt.from(map['minimum_age']) ?? 0,
         preInternshipRequests = PreInternshipRequests.fromSerialized(
             map['pre_internship_requests'] ?? {}, map['version'] ?? '1.0.0'),

@@ -1,5 +1,6 @@
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/services/job_data_file_service.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
@@ -17,7 +18,7 @@ class EnterpriseJobListController {
   late final _minimumAgeController = TextEditingController(
     text: _job.minimumAge.toString(),
   );
-  late int _positionsOffered = _job.positionsOffered;
+  late Map<String, int> _positionsOffered = _job.positionsOffered;
   int _positionsOccupied = 0;
 
   var _preInternshipRequests = PreInternshipRequests.empty;
@@ -102,12 +103,17 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
     );
   }
 
-  void _updatePositions(int newCount) {
-    setState(() => widget.controller._positionsOffered = newCount);
+  void _updatePositions(String schoolId, int newCount) {
+    setState(() => widget.controller._positionsOffered[schoolId] = newCount);
   }
 
   @override
   Widget build(BuildContext context) {
+    final schoolId = AuthProvider.of(context, listen: true).schoolId;
+    if (schoolId == null) {
+      throw Exception('School ID is not set in AuthProvider.');
+    }
+
     return AnimatedExpandingCard(
       elevation: widget.elevation,
       canChangeExpandedState: widget.canChangeExpandedState,
@@ -148,7 +154,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                 children: [
                   _buildMinimumAge(),
                   const SizedBox(height: 8),
-                  _buildAvailability(),
+                  _buildAvailability(schoolId: schoolId),
                   const SizedBox(height: 8),
                   _buildPrerequisites(),
                   const SizedBox(height: 8),
@@ -248,7 +254,6 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
         Expanded(child: Text('* Âge minimum des stagiaires (ans)')),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.24,
-          height: 25,
           child: TextFormField(
             controller: widget.controller._minimumAgeController,
             enabled: widget.editMode,
@@ -267,9 +272,9 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
     );
   }
 
-  Widget _buildAvailability() {
+  Widget _buildAvailability({required String schoolId}) {
     final positionsRemaining =
-        widget.controller._positionsOffered -
+        (widget.controller._positionsOffered[schoolId] ?? 0) -
         widget.controller._positionsOccupied;
     // TODO Add a close the internship for all the schools
     // TODO Bring this into the header and add schools
@@ -284,10 +289,13 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
               children: [
                 IconButton(
                   onPressed:
-                      widget.controller._positionsOffered == 0
+                      (widget.controller._positionsOffered[schoolId] ?? 0) == 0
                           ? null
                           : () => _updatePositions(
-                            widget.controller._positionsOffered - 1,
+                            schoolId,
+                            (widget.controller._positionsOffered[schoolId] ??
+                                    0) -
+                                1,
                           ),
                   icon: Icon(
                     Icons.remove,
@@ -300,7 +308,9 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                 IconButton(
                   onPressed:
                       () => _updatePositions(
-                        widget.controller._positionsOffered + 1,
+                        schoolId,
+                        (widget.controller._positionsOffered[schoolId] ?? 0) +
+                            1,
                       ),
                   icon: const Icon(Icons.add, color: Colors.black),
                 ),

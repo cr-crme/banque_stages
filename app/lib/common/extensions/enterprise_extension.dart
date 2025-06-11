@@ -11,8 +11,9 @@ extension EnterpriseExtension on Enterprise {
               (Internship e) => e.enterpriseId == id ? e : null)
           .toList();
 
-  Iterable<Job> availableJobs(context) {
-    return jobs.where(
-        (job) => job.positionsOffered - job.positionsOccupied(context) > 0);
+  Iterable<Job> availableJobs(context, {required String schoolId}) {
+    return jobs.where((job) =>
+        (job.positionsOffered[schoolId] ?? 0) - job.positionsOccupied(context) >
+        0);
   }
 }

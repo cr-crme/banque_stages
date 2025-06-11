@@ -270,9 +270,16 @@ CREATE TABLE enterprise_jobs(
     version VARCHAR(36) NOT NULL,
     enterprise_id VARCHAR(36) NOT NULL,
     specialization_id VARCHAR(36) NOT NULL,
-    positions_offered INT NOT NULL,
     minimum_age INT NOT NULL,
     FOREIGN KEY (enterprise_id) REFERENCES enterprises(id) ON DELETE CASCADE
+);
+
+CREATE TABLE enterprise_job_positions_offered(
+    job_id VARCHAR(36) NOT NULL,
+    school_id VARCHAR(36) NOT NULL,
+    positions INT NOT NULL,
+    FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
+    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE CASCADE
 );
 
 CREATE TABLE enterprise_job_photo_urls(

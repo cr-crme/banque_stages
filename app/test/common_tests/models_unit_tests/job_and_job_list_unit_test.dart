@@ -51,7 +51,7 @@ void main() {
         id: 'newId',
         specialization:
             ActivitySectorsService.activitySectors[2].specializations[8],
-        positionsOffered: 2,
+        positionsOffered: {'school_id': 2},
         minimumAge: 12,
         preInternshipRequests:
             dummyPreInternshipRequests(id: 'newPreInternshipId'),

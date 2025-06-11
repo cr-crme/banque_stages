@@ -120,24 +120,28 @@ void main() {
           jobId: 'anotherJobId'));
 
       // One job with two positions was created, so it should be available
-      expect(enterprise.availableJobs(context).length, 1);
+      expect(
+          enterprise.availableJobs(context, schoolId: 'school_id').length, 1);
 
       // Fill one of that position, so it should still be available
       internships.add(dummyInternship(
           enterpriseId: enterprise.id, jobId: enterprise.jobs[0].id));
-      expect(enterprise.availableJobs(context).length, 1);
+      expect(
+          enterprise.availableJobs(context, schoolId: 'school_id').length, 1);
 
       // Fill the remainning one, so it should not be available anymore
       internships.add(dummyInternship(
           id: 'anotherInternshipId',
           enterpriseId: enterprise.id,
           jobId: enterprise.jobs[0].id));
-      expect(enterprise.availableJobs(context).length, 0);
+      expect(
+          enterprise.availableJobs(context, schoolId: 'school_id').length, 0);
 
       // Terminate one the of job, so it should be available again
       internships.replace(internships[1]
           .copyWith(endDate: DateTime.now().subtract(const Duration(days: 1))));
-      expect(enterprise.availableJobs(context).length, 1);
+      expect(
+          enterprise.availableJobs(context, schoolId: 'school_id').length, 1);
     });
 
     test('serialization and deserialization works', () {

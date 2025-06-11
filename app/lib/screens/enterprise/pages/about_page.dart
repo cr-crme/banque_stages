@@ -4,9 +4,11 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/helpers/form_service.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
@@ -39,10 +41,18 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    final authProvider = AuthProvider.of(context, listen: false);
+    if (authProvider.schoolId == null) {
+      showSnackBar(context,
+          message: 'Impossible de charger les informations de l\'école.');
+      return;
+    }
     _name = widget.enterprise.name;
+
     _positionOffered.clear();
     for (var job in widget.enterprise.jobs) {
-      _positionOffered[job] = job.positionsOffered;
+      _positionOffered[job] = job.positionsOffered[authProvider.schoolId] ?? 0;
     }
   }
 
@@ -71,13 +81,21 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
         areMapsNotEqual(_positionOffered, {
           for (var job in widget.enterprise.jobs) job: job.positionsOffered,
         })) {
+      final schoolId = AuthProvider.of(context, listen: false).schoolId;
+      if (schoolId == null) {
+        showSnackBar(context,
+            message: 'Impossible de sauvegarder, l\'école est introuvable.');
+        return;
+      }
+
       EnterprisesProvider.of(context, listen: false).replace(
         widget.enterprise.copyWith(
             name: _name,
             activityTypes: _activityTypesController.activityTypes,
             jobs: JobList()
               ..addAll(widget.enterprise.jobs.map((job) {
-                return job.copyWith(positionsOffered: _positionOffered[job]!);
+                return job.copyWith(
+                    positionsOffered: {schoolId: _positionOffered[job]!});
               }))),
       );
     }
@@ -208,6 +226,11 @@ class _AvailablePlace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final schoolId = AuthProvider.of(context, listen: true).schoolId;
+    if (schoolId == null) {
+      return const Center(child: Text('Impossible de charger les stages.'));
+    }
+
     final jobs = initial.keys.toList();
     jobs.sort(
       (a, b) => a.specialization.name
@@ -222,7 +245,8 @@ class _AvailablePlace extends StatelessWidget {
         Column(
           children: jobs.map(
             (job) {
-              final positionsRemaining = job.positionsRemaining(context);
+              final positionsRemaining =
+                  job.positionsRemaining(context, schoolId: schoolId);
               final int positionsOffered = initial[job]!;
 
               return ListTile(
@@ -254,7 +278,7 @@ class _AvailablePlace extends StatelessWidget {
                         ],
                       )
                     : Text(
-                        '${job.positionsRemaining(context)} / $positionsOffered',
+                        '${job.positionsRemaining(context, schoolId: schoolId)} / $positionsOffered',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
               );

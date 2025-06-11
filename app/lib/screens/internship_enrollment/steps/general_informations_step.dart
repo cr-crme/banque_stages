@@ -38,7 +38,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   late Enterprise? enterprise = widget.enterprise;
 
   late final studentController = StudentPickerController(
-    schoolBoardId: AuthProvider.of(context).schoolBoardId!,
+    schoolBoardId: AuthProvider.of(context, listen: false).schoolBoardId!,
     studentWhiteList: _studentsWithoutInternship(
         context, StudentsHelpers.studentsInMyGroups(context)),
   );
@@ -48,7 +48,8 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
     job:
         widget.enterprise.jobs.length == 1 ? enterprise!.jobs.first : Job.empty,
     specializationWhiteList: widget.enterprise
-        .availableJobs(context)
+        .availableJobs(context,
+            schoolId: AuthProvider.of(context, listen: false).schoolId!)
         .map((job) => job.specialization)
         .toList(),
   );

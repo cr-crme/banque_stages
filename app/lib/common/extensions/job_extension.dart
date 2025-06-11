@@ -8,8 +8,8 @@ extension JobExtension on Job {
           .where((e) => e.jobId == id && e.isActive)
           .length;
 
-  int positionsRemaining(context) =>
-      positionsOffered - positionsOccupied(context);
+  int positionsRemaining(context, {required String schoolId}) =>
+      (positionsOffered[schoolId] ?? 0) - positionsOccupied(context);
 
   // Post-internship evaluations
   List<PostInternshipEnterpriseEvaluation> postInternshipEnterpriseEvaluations(

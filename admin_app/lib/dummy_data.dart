@@ -641,6 +641,14 @@ Future<void> _addDummyEnterprises(
     (schoolBoard) => schoolBoard.name == _mySchoolBoardName,
   );
   final mySchoolBoardId = mySchoolBoard.id;
+  final mySchoolId =
+      mySchoolBoard.schools
+          .firstWhere((school) => school.name == _mySchoolName)
+          .id;
+  final otherSchoolId =
+      mySchoolBoard.schools
+          .firstWhere((school) => school.name != _mySchoolName)
+          .id;
 
   final myTeacherId =
       teachers.firstWhere((teacher) => teacher.email == _myEmail).id;
@@ -652,7 +660,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[9],
-      positionsOffered: 2,
+      positionsOffered: {mySchoolId: 2, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents(
         severeInjuries: [Incident('Vaut mieux ne pas détailler...')],
@@ -680,7 +688,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[0].specializations[7],
-      positionsOffered: 3,
+      positionsOffered: {mySchoolId: 3, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents(
         minorInjuries: [
@@ -752,7 +760,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[0].specializations[7],
-      positionsOffered: 3,
+      positionsOffered: {mySchoolId: 3, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -802,7 +810,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[9].specializations[3],
-      positionsOffered: 3,
+      positionsOffered: {mySchoolId: 3, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation(
         questions: {
           'Q1': ['Oui'],
@@ -874,7 +882,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[9].specializations[3],
-      positionsOffered: 2,
+      positionsOffered: {mySchoolId: 2, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -924,7 +932,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[9],
-      positionsOffered: 2,
+      positionsOffered: {mySchoolId: 2, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -975,7 +983,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[7],
-      positionsOffered: 1,
+      positionsOffered: {mySchoolId: 1, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -1026,7 +1034,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[0].specializations[7],
-      positionsOffered: 2,
+      positionsOffered: {mySchoolId: 2, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -1077,7 +1085,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[14],
-      positionsOffered: 1,
+      positionsOffered: {mySchoolId: 1, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -1125,7 +1133,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[0].specializations[7],
-      positionsOffered: 3,
+      positionsOffered: {mySchoolId: 3, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -1180,7 +1188,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[1].specializations[2],
-      positionsOffered: 1,
+      positionsOffered: {mySchoolId: 1, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation(
         questions: {
           'Q1': ['Oui'],
@@ -1244,7 +1252,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[1].specializations[2],
-      positionsOffered: 1,
+      positionsOffered: {mySchoolId: 1, otherSchoolId: 5},
       sstEvaluation: JobSstEvaluation(
         questions: {
           'Q1': ['Oui'],

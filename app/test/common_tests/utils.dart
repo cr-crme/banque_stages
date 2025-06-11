@@ -198,7 +198,7 @@ Job dummyJob({
       id: id,
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[9],
-      positionsOffered: 2,
+      positionsOffered: {'school_id': 2},
       sstEvaluation: dummyJobSstEvaluation(id: sstEvaluationId ?? id),
       incidents: dummyIncidents(id: incidentsId ?? id),
       minimumAge: 12,

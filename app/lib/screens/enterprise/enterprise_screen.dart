@@ -1,5 +1,7 @@
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -112,8 +114,16 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
   }
 
   Future<void> addInternship(Enterprise enterprise) async {
-    if (enterprise.jobs
-            .fold<int>(0, (prev, e) => prev + e.positionsRemaining(context)) ==
+    final schoolId = Provider.of<AuthProvider>(context, listen: false).schoolId;
+    if (schoolId == null) {
+      showSnackBar(context, message: 'Vous n\'êtes pas connecté à une école');
+      return;
+    }
+
+    if (enterprise.jobs.fold<int>(
+            0,
+            (prev, e) =>
+                prev + e.positionsRemaining(context, schoolId: schoolId)) ==
         0) {
       await showDialog(
         context: context,

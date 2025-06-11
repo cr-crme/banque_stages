@@ -3,6 +3,7 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common/models/persons/person.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
@@ -135,11 +136,14 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
   }
 
   List<Enterprise> _filterSelectedEnterprises(List<Enterprise> enterprises) {
+    final schoolId = AuthProvider.of(context, listen: false).schoolId;
+    if (schoolId == null) return enterprises;
+
     return enterprises.where((enterprise) {
       // Remove if should not be shown by filter availability filter
       if (_hideNotAvailable &&
-          !enterprise.jobs.any(
-              (job) => job.positionsOccupied(context) < job.positionsOffered)) {
+          enterprise.jobs.every((job) =>
+              job.positionsRemaining(context, schoolId: schoolId) <= 0)) {
         return false;
       }
 
@@ -218,6 +222,9 @@ class _EnterprisesByMap extends StatelessWidget {
       context, Map<Enterprise, Waypoint> enterprises) {
     List<Marker> out = [];
 
+    final schoolId = AuthProvider.of(context, listen: false).schoolId;
+    if (schoolId == null) return out;
+
     const double markerSize = 40;
     for (final i in enterprises.keys.toList().asMap().keys) {
       // i == 0 is the school
@@ -228,7 +235,7 @@ class _EnterprisesByMap extends StatelessWidget {
       final waypoint = enterprises[enterprise]!;
       final color = i == 0
           ? Colors.purple
-          : enterprise.availableJobs(context).isNotEmpty
+          : enterprise.availableJobs(context, schoolId: schoolId).isNotEmpty
               ? Colors.green
               : Colors.red;
 
