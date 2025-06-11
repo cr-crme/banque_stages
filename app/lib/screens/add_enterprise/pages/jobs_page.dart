@@ -58,22 +58,32 @@ class JobsPageState extends State<JobsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       key: Key('${controller.hashCode}_formKey'),
       children: [
-        Text(
-          'Métier ${index + 1}',
-          style: Theme.of(context).textTheme.titleLarge,
+        Row(
+          children: [
+            Text(
+              'Métier ${index + 1}',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            IconButton(
+              onPressed: () =>
+                  setState(() => _jobsControllers.remove(controller)),
+              padding: const EdgeInsets.all(8.0),
+              icon: const Icon(Icons.delete_forever),
+              tooltip: 'Supprimer',
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ],
         ),
         EnterpriseJobListTile(
             controller: controller,
-            schools: SchoolBoardsProvider.of(context, listen: false)
-                    .mySchoolBoard
-                    ?.schools ??
-                [],
+            showHeader: false,
+            schools: [
+              SchoolBoardsProvider.of(context, listen: false).mySchool!
+            ],
             elevation: 0,
             canChangeExpandedState: false,
             initialExpandedState: true,
-            editMode: true,
-            onRequestDelete: () =>
-                setState(() => _jobsControllers.remove(controller))),
+            editMode: true),
         const SizedBox(height: 20),
       ],
     );

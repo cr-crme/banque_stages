@@ -119,25 +119,40 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
       initialExpandedState: widget.initialExpandedState,
       header:
           widget.showHeader
-              ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                        widget.controller._specialization?.idWithName ??
-                            'Aucune spécialisation sélectionnée',
-                        style: Theme.of(context).textTheme.titleMedium,
+              ? Padding(
+                padding: const EdgeInsets.only(left: 12.0, top: 8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            widget.controller._specialization?.idWithName ??
+                                'Aucune spécialisation sélectionnée',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                        if (widget.editMode && widget.onRequestDelete != null)
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: widget.onRequestDelete,
+                          ),
+                      ],
+                    ),
+                    SizedBox(height: 4.0),
+                    ...widget.schools.map(
+                      (school) => Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 2.0,
+                        ),
+                        child: _buildAvailability(school: school),
                       ),
                     ),
-                  ),
-                  if (widget.editMode && widget.onRequestDelete != null)
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: widget.onRequestDelete,
-                    ),
-                ],
+                    const SizedBox(height: 8),
+                  ],
+                ),
               )
               : const SizedBox.shrink(),
       child: Padding(
@@ -153,10 +168,15 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                 children: [
                   _buildMinimumAge(),
                   const SizedBox(height: 8),
-                  ...widget.schools.map(
-                    (school) => _buildAvailability(school: school),
-                  ),
-                  const SizedBox(height: 8),
+                  if (!widget.showHeader)
+                    Column(
+                      children: [
+                        ...widget.schools.map(
+                          (school) => _buildAvailability(school: school),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
                   _buildPrerequisites(),
                   const SizedBox(height: 8),
                   _buildUniform(),
@@ -280,13 +300,12 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   Widget _buildAvailability({required School school}) {
     final positionsRemaining =
         _positionOffered(school.id) - widget.controller._positionsOccupied;
-    // TODO Bring this into the header and add schools
     // TODO Add a toggle to make the specialization private or public
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Places de stages disponibles à ${school.name}'),
+        Text('Places disponibles à ${school.name}'),
         widget.editMode
             ? Row(
               mainAxisSize: MainAxisSize.min,

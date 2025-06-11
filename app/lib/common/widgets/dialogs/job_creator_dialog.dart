@@ -44,10 +44,9 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
             key: _formKey,
             child: EnterpriseJobListTile(
               controller: controller,
-              schools: SchoolBoardsProvider.of(context, listen: false)
-                      .mySchoolBoard
-                      ?.schools ??
-                  [],
+              schools: [
+                SchoolBoardsProvider.of(context, listen: false).mySchool!
+              ],
               elevation: 0,
               canChangeExpandedState: false,
               initialExpandedState: true,

@@ -149,10 +149,9 @@ class _MainJob extends StatelessWidget {
                 ),
               EnterpriseJobListTile(
                 controller: controller,
-                schools: SchoolBoardsProvider.of(context, listen: false)
-                        .mySchoolBoard
-                        ?.schools ??
-                    [],
+                schools: [
+                  SchoolBoardsProvider.of(context, listen: false).mySchool!
+                ],
                 editMode: true,
                 specializationOnly: true,
                 canChangeExpandedState: false,
@@ -200,10 +199,7 @@ class _ExtraSpecialization extends StatelessWidget {
         ),
         EnterpriseJobListTile(
           controller: controllers[index],
-          schools: SchoolBoardsProvider.of(context, listen: false)
-                  .mySchoolBoard
-                  ?.schools ??
-              [],
+          schools: [SchoolBoardsProvider.of(context, listen: false).mySchool!],
           editMode: true,
           specializationOnly: true,
           canChangeExpandedState: false,
