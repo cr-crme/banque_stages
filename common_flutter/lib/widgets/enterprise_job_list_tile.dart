@@ -2,6 +2,7 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
@@ -22,7 +23,7 @@ class EnterpriseJobListController {
   late Map<String, int> _positionsOffered = _job.positionsOffered.map(
     (key, value) => MapEntry(key, value),
   );
-  int _positionsOccupied = 0;
+  final Map<String, int> _positionsOccupied = {};
 
   var _preInternshipRequests = PreInternshipRequests.empty;
   late var _uniformStatus = _job.uniforms.status;
@@ -108,12 +109,25 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+    final students = StudentsProvider.of(context, listen: true);
     final internships = InternshipsProvider.of(context, listen: true);
     widget.controller._positionsOffered = job.positionsOffered;
-    widget.controller._positionsOccupied = internships.fold(
-      0,
-      (sum, e) => e.jobId == job.id && e.isActive ? sum + 1 : sum,
-    );
+
+    widget.controller._positionsOccupied.clear();
+    for (final intership in internships) {
+      if (intership.jobId == job.id && intership.isActive) {
+        final schoolId =
+            students
+                .firstWhereOrNull(
+                  (student) => student.id == intership.studentId,
+                )
+                ?.schoolId;
+        if (schoolId == null) continue;
+
+        widget.controller._positionsOccupied[schoolId] =
+            (widget.controller._positionsOccupied[schoolId] ?? 0) + 1;
+      }
+    }
   }
 
   void _updatePositions(String schoolId, int newCount) {
@@ -314,13 +328,18 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
     return widget.controller._positionsOffered[schoolId] ?? 0;
   }
 
+  int _positionOccupied(String schoolId) {
+    return widget.controller._positionsOccupied[schoolId] ?? 0;
+  }
+
+  int _positionRemaining(String schoolId) =>
+      _positionOffered(schoolId) - _positionOccupied(schoolId);
+
   Widget _buildAvailability({required School school}) {
-    final positionsRemaining =
-        _positionOffered(school.id) - widget.controller._positionsOccupied;
+    final positionsRemaining = _positionRemaining(school.id);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // TODO The number of positions is not dependent on the school
         Flexible(child: Text('Places disponibles à ${school.name}')),
         widget.editMode
             ? Row(
