@@ -135,11 +135,16 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   late final _neqController = TextEditingController(
     text: widget.enterprise.neq,
   );
+  late final _reservedForPickerController = EntityPickerController(
+    schools: _currentSchoolBoard?.schools ?? [],
+    teachers: [...TeachersProvider.of(context, listen: false)],
+    initialId: widget.enterprise.reservedForId,
+  );
 
   Enterprise get editedEnterprise => widget.enterprise.copyWith(
     name: _nameController.text,
     activityTypes: _activityTypeController.activityTypes,
-    recruiterId: _teacherPickerController.teacher.id,
+    recruiterId: _teacherPickerController.teacher?.id ?? '',
     phone: PhoneNumber.fromString(
       _phoneController.text,
       id: widget.enterprise.phone?.id,
@@ -166,6 +171,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     ),
     contactFunction: _contactFunctionController.text,
     neq: _neqController.text,
+    reservedForId: _reservedForPickerController.selectionId ?? '',
   );
 
   @override
@@ -294,6 +300,8 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
             _buildContact(),
             const SizedBox(height: 8),
             _buildNeq(),
+            const SizedBox(height: 8),
+            _buildReservedFor(),
           ],
         ),
       ),
@@ -552,6 +560,25 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
         ),
         style: TextStyle(color: Colors.black),
       ),
+    );
+  }
+
+  Widget _buildReservedFor() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Réserver cette entreprise à une école ou enseignant\u00b7e',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0, right: 36.0),
+          child: EntityPickerTile(
+            controller: _reservedForPickerController,
+            editMode: _isEditing,
+          ),
+        ),
+      ],
     );
   }
 }

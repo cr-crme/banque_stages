@@ -33,6 +33,7 @@ void main() {
           address: Address.empty,
           email: null,
         ),
+        reservedForId: '',
       ));
 
       final enterprise = enterprises[0];

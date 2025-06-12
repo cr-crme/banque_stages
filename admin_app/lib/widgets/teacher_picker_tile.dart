@@ -7,16 +7,15 @@ import 'package:flutter/material.dart';
 class TeacherPickerController {
   TextEditingController? _textController;
 
-  Teacher _selection;
-  Teacher get teacher => _selection;
-  set teacher(Teacher value) {
+  Teacher? _selection;
+  Teacher? get teacher => _selection;
+  set teacher(Teacher? value) {
     _selection = value;
-    _textController?.text = value.fullName;
-    _formKey.currentState?.didChange(value.fullName);
+    _textController?.text = value?.fullName ?? '';
+    _formKey.currentState?.didChange(value?.fullName ?? '');
   }
 
-  TeacherPickerController({required Teacher? initial})
-    : _selection = initial ?? Teacher.empty;
+  TeacherPickerController({required Teacher? initial}) : _selection = initial;
 
   final _formKey = GlobalKey<FormFieldState<String>>();
 
@@ -57,13 +56,15 @@ class TeacherPickerTile extends StatelessWidget {
     ).where((teacher) => teacher.schoolBoardId == schoolBoardId);
 
     return Autocomplete<Teacher>(
-      initialValue: TextEditingValue(text: controller._selection.fullName),
+      initialValue: TextEditingValue(
+        text: controller._selection?.fullName ?? '',
+      ),
       optionsBuilder: (textEditingValue) {
         // We kind of hijack this builder to test the current status of the text.
         // If it fits a teacher, or if it is empty, we set that value to the
         // current selection.
         if (textEditingValue.text.isEmpty) {
-          controller._selection = Teacher.empty;
+          controller._selection = null;
         } else {
           final selectedTeacher = teachers.firstWhereOrNull(
             (teacher) =>
@@ -110,9 +111,9 @@ class TeacherPickerTile extends StatelessWidget {
             suffixIcon: IconButton(
               onPressed: () {
                 if (focusNode.hasFocus) focusNode.previousFocus();
-                controller.teacher = Teacher.empty;
+                controller.teacher = null;
                 textController.clear();
-                state.didChange(Teacher.empty);
+                state.didChange(null);
               },
               icon: const Icon(Icons.clear),
             ),

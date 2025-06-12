@@ -4,7 +4,6 @@ import 'package:common/models/generic/address.dart';
 import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
-import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
@@ -17,14 +16,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
 
 import 'widgets/enterprise_card.dart';
-
-class EnterpriseController {
-  EnterpriseController();
-  List<Enterprise> selectedEnterprises = [];
-}
 
 class EnterprisesListScreen extends StatefulWidget {
   const EnterprisesListScreen({super.key});
@@ -37,7 +30,6 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
     with SingleTickerProviderStateMixin {
   final _enterpriseKey = GlobalKey<_EnterprisesByListState>();
   bool _withSearchBar = false;
-  final _enterpriseController = EnterpriseController();
 
   late final _tabController =
       TabController(initialIndex: 0, length: 2, vsync: this)
@@ -92,6 +84,10 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
       ),
     );
 
+    final enterprises = EnterprisesProviderExtension.availableEnterprisesOf(
+        context,
+        listen: true);
+
     return Scaffold(
       appBar: appBar,
       drawer: const MainDrawer(),
@@ -101,9 +97,9 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
           _EnterprisesByList(
             key: _enterpriseKey,
             withSearchBar: _withSearchBar,
-            enterpriseController: _enterpriseController,
+            enterprises: enterprises,
           ),
-          _EnterprisesByMap(enterpriseController: _enterpriseController),
+          _EnterprisesByMap(enterprises: enterprises),
         ],
       ),
     );
@@ -114,11 +110,11 @@ class _EnterprisesByList extends StatefulWidget {
   const _EnterprisesByList({
     super.key,
     required this.withSearchBar,
-    required this.enterpriseController,
+    required this.enterprises,
   });
 
   final bool withSearchBar;
-  final EnterpriseController enterpriseController;
+  final List<Enterprise> enterprises;
 
   @override
   State<_EnterprisesByList> createState() => _EnterprisesByListState();
@@ -175,6 +171,9 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
 
   @override
   Widget build(BuildContext context) {
+    final enterprises =
+        _sortEnterprisesByName(_filterSelectedEnterprises(widget.enterprises));
+
     return Column(
       children: [
         if (widget.withSearchBar)
@@ -186,27 +185,19 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
           value: _hideNotAvailable,
           onChanged: (value) => setState(() => _hideNotAvailable = value),
         ),
-        Selector<EnterprisesProvider, List<Enterprise>>(
-          builder: (context, enterprises, child) => Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: enterprises.length,
-              itemBuilder: (context, index) => EnterpriseCard(
-                enterprise: enterprises.elementAt(index),
-                onTap: (enterprise) => GoRouter.of(context).goNamed(
-                  Screens.enterprise,
-                  pathParameters: Screens.params(enterprise),
-                  queryParameters: Screens.queryParams(pageIndex: '0'),
-                ),
+        Expanded(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: enterprises.length,
+            itemBuilder: (context, index) => EnterpriseCard(
+              enterprise: enterprises.elementAt(index),
+              onTap: (enterprise) => GoRouter.of(context).goNamed(
+                Screens.enterprise,
+                pathParameters: Screens.params(enterprise),
+                queryParameters: Screens.queryParams(pageIndex: '0'),
               ),
             ),
           ),
-          selector: (context, enterprises) {
-            widget.enterpriseController.selectedEnterprises =
-                _filterSelectedEnterprises(enterprises.toList());
-            return _sortEnterprisesByName(
-                widget.enterpriseController.selectedEnterprises);
-          },
         ),
       ],
     );
@@ -214,9 +205,9 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
 }
 
 class _EnterprisesByMap extends StatelessWidget {
-  const _EnterprisesByMap({required this.enterpriseController});
+  const _EnterprisesByMap({required this.enterprises});
 
-  final EnterpriseController enterpriseController;
+  final List<Enterprise> enterprises;
 
   List<Marker> _latlngToMarkers(
       context, Map<Enterprise, Waypoint> enterprises) {
@@ -287,7 +278,6 @@ class _EnterprisesByMap extends StatelessWidget {
 
   Future<Map<Enterprise, Waypoint>> _fetchEnterprisesCoordinates(
       BuildContext context) async {
-    final enterprises = enterpriseController.selectedEnterprises;
     final Map<Enterprise, Waypoint> out = {};
 
     final schoolBoard =
@@ -304,6 +294,7 @@ class _EnterprisesByMap extends StatelessWidget {
       jobs: JobList(),
       contact: Person.empty,
       address: school.address,
+      reservedForId: '',
     );
     out[schoolAsEnterprise] =
         await Waypoint.fromAddress(title: school.name, address: school.address);

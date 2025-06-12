@@ -419,10 +419,15 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         'school_board_id': enterprise.schoolBoardId.serialize(),
         'version': Enterprise.currentVersion.serialize(),
         'name': enterprise.name.serialize(),
-        'recruiter_id': enterprise.recruiterId.serialize(),
+        'recruiter_id': enterprise.recruiterId.isEmpty
+            ? null
+            : enterprise.recruiterId.serialize(),
         'contact_function': enterprise.contactFunction.serialize(),
         'website': enterprise.website?.serialize(),
         'neq': enterprise.neq?.serialize(),
+        'reserved_for_id': enterprise.reservedForId.isEmpty
+            ? null
+            : enterprise.reservedForId.serialize(),
       },
     );
   }
@@ -447,7 +452,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       toUpdate['name'] = enterprise.name.serialize();
     }
     if (differences.contains('recruiter_id')) {
-      toUpdate['recruiter_id'] = enterprise.recruiterId.serialize();
+      toUpdate['recruiter_id'] = enterprise.recruiterId.isEmpty
+          ? null
+          : enterprise.recruiterId.serialize();
     }
     if (differences.contains('contact_function')) {
       toUpdate['contact_function'] = enterprise.contactFunction.serialize();
@@ -457,6 +464,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     }
     if (differences.contains('neq')) {
       toUpdate['neq'] = enterprise.neq?.serialize();
+    }
+    if (differences.contains('reserved_for_id')) {
+      toUpdate['reserved_for_id'] = enterprise.reservedForId.isEmpty
+          ? null
+          : enterprise.reservedForId.serialize();
     }
 
     if (toUpdate.isNotEmpty) {
@@ -648,7 +660,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           'enterprise_id': enterpriseId.serialize(),
           'specialization_id': job.specialization.id.serialize(),
           'minimum_age': job.minimumAge.serialize(),
-          'reserved_for_id': job.reservedForId?.serialize(),
+          'reserved_for_id':
+              job.reservedForId.isEmpty ? null : job.reservedForId.serialize(),
         });
 
     final toWait = <Future>[];
@@ -744,7 +757,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           _logger.severe(
               'User ${user.userId} does not have permission to update the reserved for id of a job');
         } else {
-          toUpdate['reserved_for_id'] = job.reservedForId?.serialize();
+          toUpdate['reserved_for_id'] =
+              job.reservedForId.isEmpty ? null : job.reservedForId.serialize();
         }
       }
 
@@ -1175,6 +1189,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       address: Address.empty,
       phone: PhoneNumber.fromString('123-456-7890'),
       fax: PhoneNumber.fromString('098-765-4321'),
+      reservedForId: '',
     ),
     '1': Enterprise(
       id: '1',
@@ -1191,6 +1206,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       address: Address.empty,
       phone: PhoneNumber.fromString('123-456-7890'),
       fax: PhoneNumber.fromString('098-765-4321'),
+      reservedForId: '',
     )
   };
 

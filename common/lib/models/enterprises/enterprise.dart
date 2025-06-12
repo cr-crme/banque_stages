@@ -34,6 +34,9 @@ class Enterprise extends ExtendedItemSerializable {
   final Address? headquartersAddress;
   final String? neq;
 
+  // Reserved to a specific ID (i.e., school, teacher)
+  final String reservedForId;
+
   Enterprise({
     super.id,
     required this.schoolBoardId,
@@ -49,6 +52,7 @@ class Enterprise extends ExtendedItemSerializable {
     this.website = '',
     this.headquartersAddress,
     this.neq = '',
+    required this.reservedForId,
   }) : _jobs = jobs;
 
   static Enterprise get empty => Enterprise(
@@ -58,6 +62,7 @@ class Enterprise extends ExtendedItemSerializable {
         recruiterId: '-1',
         jobs: JobList(),
         contact: Person.empty,
+        reservedForId: '',
       );
 
   Enterprise copyWith({
@@ -75,6 +80,7 @@ class Enterprise extends ExtendedItemSerializable {
     String? website,
     Address? headquartersAddress,
     String? neq,
+    String? reservedForId,
   }) {
     return Enterprise(
       id: id ?? this.id,
@@ -91,6 +97,7 @@ class Enterprise extends ExtendedItemSerializable {
       website: website ?? this.website,
       headquartersAddress: headquartersAddress ?? this.headquartersAddress,
       neq: neq ?? this.neq,
+      reservedForId: reservedForId ?? this.reservedForId,
     );
   }
 
@@ -112,6 +119,7 @@ class Enterprise extends ExtendedItemSerializable {
       'website',
       'headquarters_address',
       'neq',
+      'reserved_for_id',
     ];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
@@ -146,6 +154,7 @@ class Enterprise extends ExtendedItemSerializable {
       headquartersAddress:
           Address.from(data['headquarters_address']) ?? headquartersAddress,
       neq: StringExt.from(data['neq']) ?? neq,
+      reservedForId: StringExt.from(data['reserved_for_id']) ?? reservedForId,
     );
   }
 
@@ -166,6 +175,7 @@ class Enterprise extends ExtendedItemSerializable {
       'website': website?.serialize(),
       'headquarters_address': headquartersAddress?.serialize(),
       'neq': neq?.serialize(),
+      'reserved_for_id': reservedForId.serialize(),
     };
   }
 
@@ -176,7 +186,7 @@ class Enterprise extends ExtendedItemSerializable {
         activityTypes = (map['activity_types'] as List? ?? [])
             .map((e) => ActivityTypes._fromInt(e, map['version']))
             .toSet(),
-        recruiterId = StringExt.from(map['recruiter_id']) ?? '-1',
+        recruiterId = StringExt.from(map['recruiter_id']) ?? '',
         _jobs = JobList.fromSerialized(map['jobs'] ?? {}),
         contact = Person.fromSerialized(map['contact'] ?? {}),
         contactFunction = StringExt.from(map['contact_function']) ?? '',
@@ -186,5 +196,6 @@ class Enterprise extends ExtendedItemSerializable {
         website = StringExt.from(map['website']),
         headquartersAddress = Address.from(map['headquarters_address']),
         neq = StringExt.from(map['neq']),
+        reservedForId = StringExt.from(map['reserved_for_id']) ?? '',
         super.fromSerialized();
 }

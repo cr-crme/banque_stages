@@ -320,7 +320,8 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Places disponibles à ${school.name}'),
+        // TODO The number of positions is not dependent on the school
+        Flexible(child: Text('Places disponibles à ${school.name}')),
         widget.editMode
             ? Row(
               mainAxisSize: MainAxisSize.min,

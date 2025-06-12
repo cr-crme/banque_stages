@@ -683,7 +683,7 @@ Future<void> _addDummyEnterprises(
           'Une drole de bague',
         ],
       ),
-      reservedForId: null,
+      reservedForId: '',
     ),
   );
   jobs.add(
@@ -714,7 +714,7 @@ Future<void> _addDummyEnterprises(
           'Une drole de bague',
         ],
       ),
-      reservedForId: null,
+      reservedForId: '',
     ),
   );
 
@@ -755,6 +755,7 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H3P 2Y7',
       ),
       neq: '4567900954',
+      reservedForId: '',
     ),
   );
 
@@ -806,6 +807,7 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H3M 1T8',
       ),
       neq: '1234567891',
+      reservedForId: '',
     ),
   );
 
@@ -879,6 +881,7 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H2P 2L5',
       ),
       neq: '5679011975',
+      reservedForId: '',
     ),
   );
 
@@ -930,6 +933,7 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H3L 2N7',
       ),
       neq: '2345678912',
+      reservedForId: myPartnerTeacherId,
     ),
   );
 
@@ -983,6 +987,7 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H2M 1S1',
       ),
       neq: '1234567080',
+      reservedForId: '',
     ),
   );
 
@@ -998,7 +1003,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
-      reservedForId: null,
+      reservedForId: '',
     ),
   );
 
@@ -1035,6 +1040,8 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H2M 1S1',
       ),
       neq: '1234560522',
+      reservedForId:
+          mySchoolBoard.schools.firstWhere((e) => e.id != mySchoolId).id,
     ),
   );
 
@@ -1050,7 +1057,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
-      reservedForId: null,
+      reservedForId: '',
     ),
   );
 
@@ -1087,6 +1094,7 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H1Z 2G1',
       ),
       neq: '3456789933',
+      reservedForId: '',
     ),
   );
 
@@ -1102,7 +1110,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
-      reservedForId: null,
+      reservedForId: '',
     ),
   );
 
@@ -1136,6 +1144,7 @@ Future<void> _addDummyEnterprises(
       website: 'fausse.ca',
       headquartersAddress: null,
       neq: '6790122996',
+      reservedForId: '',
     ),
   );
 
@@ -1151,7 +1160,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
-      reservedForId: null,
+      reservedForId: '',
     ),
   );
 
@@ -1192,6 +1201,7 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H2C 2V1',
       ),
       neq: '9012345038',
+      reservedForId: '',
     ),
   );
 
@@ -1222,7 +1232,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
-      reservedForId: null,
+      reservedForId: '',
     ),
   );
   enterprises.add(
@@ -1257,6 +1267,7 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H2P 2K3',
       ),
       neq: '5679011966',
+      reservedForId: '',
     ),
   );
 
@@ -1287,7 +1298,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
-      reservedForId: null,
+      reservedForId: '',
     ),
   );
   enterprises.add(
@@ -1322,6 +1333,7 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H2N 1E7',
       ),
       neq: '5679055590',
+      reservedForId: '',
     ),
   );
 
@@ -1358,7 +1370,7 @@ Future<void> _addDummyEnterprises(
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
-      reservedForId: null,
+      reservedForId: '',
     ),
   );
   enterprises.add(
@@ -1393,6 +1405,7 @@ Future<void> _addDummyEnterprises(
         postalCode: 'H2N 1E7',
       ),
       neq: '5679055590',
+      reservedForId: '',
     ),
   );
 

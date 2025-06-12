@@ -206,7 +206,7 @@ Job dummyJob({
           dummyPreInternshipRequests(id: preInternshipId ?? id),
       uniforms: dummyUniforms(id: uniformId ?? id),
       protections: dummyProtections(id: protectionsId ?? id),
-      reservedForId: null,
+      reservedForId: '',
     );
 
 Enterprise dummyEnterprise({bool addJob = false}) {
@@ -224,6 +224,7 @@ Enterprise dummyEnterprise({bool addJob = false}) {
     contact: dummyPerson(),
     address: dummyAddress(),
     headquartersAddress: dummyAddress(),
+    reservedForId: '',
   );
 }
 

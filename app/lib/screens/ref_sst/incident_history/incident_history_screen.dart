@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:common/services/job_data_file_service.dart';
-import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/models/incidents_by_enterprise.dart';
@@ -39,9 +38,11 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
   }
 
   Map<Specialization, IncidentsByEnterprise> _fetchAllIncidents(context) {
-    final enterprises = [...EnterprisesProvider.of(context)]..sort(
-        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-      );
+    final enterprises =
+        EnterprisesProviderExtension.availableEnterprisesOf(context)
+          ..sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+          );
     final textToSearch = _searchController.text.toLowerCase().trim();
 
     Map<Specialization, IncidentsByEnterprise> out = {};

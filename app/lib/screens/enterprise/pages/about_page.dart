@@ -109,7 +109,8 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    EnterprisesProvider.of(context); // Register so the build is triggered
+    // Register so the build is triggered if the enterprises are changed
+    EnterprisesProvider.of(context, listen: true);
 
     return PopScope(
       canPop: _canPop,
@@ -359,6 +360,8 @@ class _RecrutedBy extends StatelessWidget {
   }
 
   Future<Teacher?> _getTeacherFromId(BuildContext context) async {
+    if (enterprise.recruiterId.isEmpty) return null;
+
     while (true) {
       if (!context.mounted) return null;
       final teachers = TeachersProvider.of(context);
@@ -373,31 +376,44 @@ class _RecrutedBy extends StatelessWidget {
     return FutureBuilder(
         future: _getTeacherFromId(context),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting ||
-              snapshot.data == null) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final teacher = snapshot.data! as Teacher;
+          final teacher = snapshot.data as Teacher?;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SubTitle('Entreprise recrutée par'),
-              GestureDetector(
-                onTap: teacher.email == null ? null : () => _sendEmail(teacher),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 24.0),
-                  child: Text(
-                    teacher.fullName,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          decoration: teacher.email == null
-                              ? null
-                              : TextDecoration.underline,
-                          color: teacher.email == null ? null : Colors.blue,
+              teacher == null
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 24.0),
+                      child: Text(
+                        'Aucun enseignant n\'est assigné à cette entreprise.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    )
+                  : GestureDetector(
+                      onTap: teacher.email == null
+                          ? null
+                          : () => _sendEmail(teacher),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 24.0),
+                        child: Text(
+                          teacher.fullName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                decoration: teacher.email == null
+                                    ? null
+                                    : TextDecoration.underline,
+                                color:
+                                    teacher.email == null ? null : Colors.blue,
+                              ),
                         ),
-                  ),
-                ),
-              )
+                      ),
+                    )
             ],
           );
         });

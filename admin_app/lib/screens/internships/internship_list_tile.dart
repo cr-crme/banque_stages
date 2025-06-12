@@ -133,7 +133,7 @@ class InternshipListTileState extends State<InternshipListTile> {
   Internship get editedInternship {
     var internship = widget.internship.copyWith(
       studentId: _studentPickerController.student?.id,
-      signatoryTeacherId: _teacherPickerController.teacher.id,
+      signatoryTeacherId: _teacherPickerController.teacher?.id ?? '',
       enterpriseId:
           widget.forceEditingMode
               ? _enterprisePickerController.enterprise.id

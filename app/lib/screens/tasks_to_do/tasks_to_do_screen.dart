@@ -3,7 +3,6 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
-import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
@@ -29,7 +28,8 @@ List<_JobEnterpriseInternshipStudent> _enterprisesToEvaluate(context) {
   // internship in this job and the no evaluation was ever performed
   final myId = TeachersProvider.of(context).myTeacher?.id;
   if (myId == null) return [];
-  final enterprises = EnterprisesProvider.of(context);
+  final enterprises =
+      EnterprisesProviderExtension.availableEnterprisesOf(context);
   final internships = InternshipsProvider.of(context);
 
   // This happens sometimes, so we need to wait a frame
@@ -63,7 +63,8 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
   // one day
   final internships = InternshipsProvider.of(context);
   final students = StudentsHelpers.mySupervizedStudents(context);
-  final enterprises = EnterprisesProvider.of(context);
+  final enterprises =
+      EnterprisesProviderExtension.availableEnterprisesOf(context);
 
   // This happens sometimes, so we need to wait a frame
   if (internships.isEmpty || students.isEmpty || enterprises.isEmpty) return [];
@@ -76,7 +77,8 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
           students.firstWhereOrNull((e) => e.id == internship.studentId);
       if (student == null) continue;
 
-      final enterprise = enterprises.fromIdOrNull(internship.enterpriseId);
+      final enterprise =
+          enterprises.firstWhereOrNull((e) => e.id == internship.enterpriseId);
       if (enterprise == null) continue;
 
       out.add(_JobEnterpriseInternshipStudent(
@@ -94,7 +96,8 @@ List<_JobEnterpriseInternshipStudent> _postInternshipEvaluationToDo(context) {
   // We should evaluate an internship as soon as it is terminated
   final internships = InternshipsProvider.of(context);
   final students = StudentsHelpers.mySupervizedStudents(context);
-  final enterprises = EnterprisesProvider.of(context);
+  final enterprises =
+      EnterprisesProviderExtension.availableEnterprisesOf(context);
 
   // This happens sometimes, so we need to wait a frame
   if (internships.isEmpty || students.isEmpty || enterprises.isEmpty) return [];
@@ -107,7 +110,8 @@ List<_JobEnterpriseInternshipStudent> _postInternshipEvaluationToDo(context) {
           students.firstWhereOrNull((e) => e.id == internship.studentId);
       if (student == null) continue;
 
-      final enterprise = enterprises.fromIdOrNull(internship.enterpriseId);
+      final enterprise =
+          enterprises.firstWhereOrNull((e) => e.id == internship.enterpriseId);
       if (enterprise == null) continue;
 
       out.add(_JobEnterpriseInternshipStudent(
