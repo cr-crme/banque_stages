@@ -36,14 +36,14 @@ void main() {
       data: null,
       user: DatabaseUser.empty(),
     );
-    expect(teachers, isA<Map<String, dynamic>>());
-    expect(teachers.length, 2);
-    expect(teachers['0'], isA<Map<String, dynamic>>());
-    expect(teachers['0']['first_name'], 'John');
-    expect(teachers['0']['last_name'], 'Doe');
-    expect(teachers['1'], isA<Map<String, dynamic>>());
-    expect(teachers['1']['first_name'], 'Jane');
-    expect(teachers['1']['last_name'], 'Doe');
+    expect(teachers.data, isA<Map<String, dynamic>>());
+    expect(teachers.data!.length, 2);
+    expect(teachers.data!['0'], isA<Map<String, dynamic>>());
+    expect(teachers.data!['0']['first_name'], 'John');
+    expect(teachers.data!['0']['last_name'], 'Doe');
+    expect(teachers.data!['1'], isA<Map<String, dynamic>>());
+    expect(teachers.data!['1']['first_name'], 'Jane');
+    expect(teachers.data!['1']['last_name'], 'Doe');
   });
 
   test('Get teacher from DatabaseManagers', () async {
@@ -62,8 +62,8 @@ void main() {
       user: DatabaseUser.empty(),
     );
     expect(teacher, isA<Map<String, dynamic>>());
-    expect(teacher['first_name'], 'John');
-    expect(teacher['last_name'], 'Doe');
+    expect(teacher.data!['first_name'], 'John');
+    expect(teacher.data!['last_name'], 'Doe');
   });
 
   test('Get teacher from DatabaseManagers with invalid id', () async {
@@ -173,8 +173,8 @@ void main() {
       data: {'id': '0'},
       user: DatabaseUser.empty(),
     );
-    expect(updatedTeacher['first_name'], 'John');
-    expect(updatedTeacher['last_name'], 'Smith');
+    expect(updatedTeacher.data!['first_name'], 'John');
+    expect(updatedTeacher.data!['last_name'], 'Smith');
   });
 
   test('Set new teacher to DatabaseManagers', () async {
@@ -197,8 +197,8 @@ void main() {
       data: {'id': '2'},
       user: DatabaseUser.empty(),
     );
-    expect(newTeacher['first_name'], 'Agent');
-    expect(newTeacher['last_name'], 'Smith');
+    expect(newTeacher.data!['first_name'], 'Agent');
+    expect(newTeacher.data!['last_name'], 'Smith');
   });
 
   test('Set teacher to DatabaseManagers without id', () async {

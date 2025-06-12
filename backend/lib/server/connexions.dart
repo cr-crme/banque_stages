@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:backend/repositories/mysql_helpers.dart';
+import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/server/database_manager.dart';
 import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
@@ -88,76 +89,29 @@ class Connexions {
           break;
 
         case RequestType.get:
-          if (protocol.field == null) {
-            throw MissingFieldException('Field is required to get data');
-          }
-          _logger.finer(
-              'Getting data from field: ${protocol.field} for client ${client.hashCode}');
-          await _send(client,
-              message: CommunicationProtocol(
-                  id: protocol.id,
-                  requestType: RequestType.response,
-                  field: protocol.field,
-                  data: await _database.get(protocol.field!,
-                      data: protocol.data, user: _clients[client]!),
-                  response: Response.success));
-          break;
-
         case RequestType.post:
-          if (protocol.field == null) {
-            throw MissingFieldException(
-                'Field is required to put or delete data');
-          }
-          _logger.finer(
-              'Putting data to field: ${protocol.field} for client ${client.hashCode}');
-          final updatedFields = await _database.put(protocol.field!,
-              data: protocol.data, user: _clients[client]!);
-          await _send(client,
-              message: CommunicationProtocol(
-                  id: protocol.id,
-                  requestType: RequestType.response,
-                  field: protocol.field,
-                  response: Response.success));
-
-          // Notify all clients that the data has been updated (but do not send
-          // the actual new data. The client must request it for security reasons)
-          if (updatedFields != null) {
-            await _sendAll(CommunicationProtocol(
-              requestType: RequestType.update,
-              field: protocol.field,
-              data: {
-                'id': protocol.data?['id'],
-                'updated_fields': updatedFields
-              },
-            ));
-          }
-          break;
-
         case RequestType.delete:
           if (protocol.field == null) {
-            throw MissingFieldException('Field is required to get data');
+            throw MissingFieldException(
+                'Field is required to ${protocol.requestType.name} data');
           }
-          _logger.info(
-              'Deleting data from field: ${protocol.field} for client ${client.hashCode}');
-          final deletedIds = await _database.delete(protocol.field!,
-              data: protocol.data, user: _clients[client]!);
-          await _send(client,
-              message: CommunicationProtocol(
-                  id: protocol.id,
-                  requestType: RequestType.response,
-                  field: protocol.field,
-                  response: Response.success));
-
-          // Notify all clients that the data has been deleted
-          if (deletedIds.isNotEmpty) {
-            await _sendAll(CommunicationProtocol(
-              requestType: RequestType.delete,
-              field: protocol.field,
-              data: {'deleted_ids': deletedIds},
-            ));
-          }
-
+          _logger.finer(
+              '${protocol.requestType.name} data to field: ${protocol.field} for '
+              'client ${client.hashCode}');
+          final response = switch (protocol.requestType) {
+            RequestType.get => await _database.get(protocol.field!,
+                data: protocol.data, user: _clients[client]!),
+            RequestType.post => await _database.put(protocol.field!,
+                data: protocol.data, user: _clients[client]!),
+            RequestType.delete => await _database.delete(protocol.field!,
+                data: protocol.data, user: _clients[client]!),
+            _ => throw InvalidRequestTypeException(
+                'Invalid request type: ${protocol.requestType}'),
+          };
+          _sendSuccessResponse(
+              client: client, protocol: protocol, response: response);
           break;
+
         case RequestType.registerUser:
           final myAccessLevel =
               _clients[client]?.accessLevel ?? AccessLevel.invalid;
@@ -367,6 +321,49 @@ class Connexions {
               requestType: RequestType.response,
               data: {'error': 'Invalid message format: $e'},
               response: Response.failure));
+    }
+  }
+
+  Future<void> _sendSuccessResponse({
+    required WebSocket client,
+    required CommunicationProtocol protocol,
+    required RepositoryResponse response,
+  }) async {
+    await _send(client,
+        message: CommunicationProtocol(
+            id: protocol.id,
+            requestType: RequestType.response,
+            field: protocol.field,
+            data: response.data,
+            response: Response.success));
+
+    // Notify all clients for the fields that were updated, but do not send the
+    // actual new data. The client must request it for security reasons
+    for (final field in response.updatedData?.keys ?? <RequestFields>[]) {
+      for (final updatedId in response.updatedData![field]!.keys) {
+        _logger.finer(
+            'Client ${client.hashCode} updated $field for id $updatedId');
+        final updateFields = response.updatedData![field]![updatedId]!;
+        if (updateFields.isEmpty) continue;
+
+        await _sendAll(CommunicationProtocol(
+          requestType: RequestType.update,
+          field: field,
+          data: {'id': updatedId, 'updated_fields': updateFields},
+        ));
+      }
+    }
+
+    // Notify all clients for the fields that were deleted
+    for (final field in response.deletedData?.keys ?? <RequestFields>[]) {
+      final deletedIds = response.deletedData![field]!;
+      if (deletedIds.isEmpty) continue;
+
+      await _sendAll(CommunicationProtocol(
+        requestType: RequestType.delete,
+        field: field,
+        data: {'deleted_ids': deletedIds},
+      ));
     }
   }
 

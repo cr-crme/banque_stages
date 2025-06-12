@@ -3,6 +3,7 @@ import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/communication_protocol.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
@@ -22,7 +23,7 @@ final _logger = Logger('EnterprisesRepository');
 
 abstract class EnterprisesRepository implements RepositoryAbstract {
   @override
-  Future<Map<String, dynamic>> getAll({
+  Future<RepositoryResponse> getAll({
     List<String>? fields,
     required DatabaseUser user,
   }) async {
@@ -34,12 +35,13 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     }
 
     final enterprises = await _getAllEnterprises(user: user);
-    return enterprises
-        .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
+    return RepositoryResponse(
+        data: enterprises.map(
+            (key, value) => MapEntry(key, value.serializeWithFields(fields))));
   }
 
   @override
-  Future<Map<String, dynamic>> getById({
+  Future<RepositoryResponse> getById({
     required String id,
     List<String>? fields,
     required DatabaseUser user,
@@ -54,18 +56,11 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     final enterprise = await _getEnterpriseById(id: id, user: user);
     if (enterprise == null) throw MissingDataException('Enterprise not found');
 
-    return enterprise.serializeWithFields(fields);
+    return RepositoryResponse(data: enterprise.serializeWithFields(fields));
   }
 
   @override
-  Future<void> putAll({
-    required Map<String, dynamic> data,
-    required DatabaseUser user,
-  }) async =>
-      throw InvalidRequestException('Enterprises must be created individually');
-
-  @override
-  Future<List<String>> putById({
+  Future<RepositoryResponse> putById({
     required String id,
     required Map<String, dynamic> data,
     required DatabaseUser user,
@@ -89,28 +84,25 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     final newEnterprise = previous?.copyWithData(data) ??
         Enterprise.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
-    try {
-      await _putEnterprise(
-          enterprise: newEnterprise,
-          previous: previous,
-          user: user,
-          internshipsRepository: internshipsRepository);
-      return newEnterprise.getDifference(previous);
-    } catch (e) {
-      _logger.severe('Error while putting enterprise: $e');
-      return [];
-    }
+    // Put enterprise can remove internships if a job is removed
+    final deletedData = await _putEnterprise(
+        enterprise: newEnterprise,
+        previous: previous,
+        user: user,
+        internshipsRepository: internshipsRepository);
+
+    return RepositoryResponse(
+      updatedData: {
+        RequestFields.enterprise: {
+          newEnterprise.id: newEnterprise.getDifference(previous)
+        },
+      },
+      deletedData: deletedData.deletedData,
+    );
   }
 
   @override
-  Future<List<String>> deleteAll({
-    required DatabaseUser user,
-  }) async {
-    throw InvalidRequestException('Enterprises must be deleted individually');
-  }
-
-  @override
-  Future<String> deleteById({
+  Future<RepositoryResponse> deleteById({
     required String id,
     required DatabaseUser user,
     InternshipsRepository? internshipsRepository,
@@ -122,12 +114,16 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
           'You do not have permission to delete enterprises');
     }
 
-    final removedId = await _deleteEnterprise(
+    final response = await _deleteEnterprise(
         id: id, user: user, internshipsRepository: internshipsRepository);
-    if (removedId == null) {
+    if (response.deletedData?[RequestFields.enterprise] == null) {
       throw DatabaseFailureException('Failed to delete enterprise with id $id');
     }
-    return removedId;
+
+    return RepositoryResponse(deletedData: {
+      RequestFields.enterprise:
+          response.deletedData![RequestFields.enterprise]!,
+    });
   }
 
   Future<Map<String, Enterprise>> _getAllEnterprises({
@@ -139,14 +135,14 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     required DatabaseUser user,
   });
 
-  Future<void> _putEnterprise({
+  Future<RepositoryResponse> _putEnterprise({
     required Enterprise enterprise,
     required Enterprise? previous,
     required DatabaseUser user,
     required InternshipsRepository internshipsRepository,
   });
 
-  Future<String?> _deleteEnterprise(
+  Future<RepositoryResponse> _deleteEnterprise(
       {required String id,
       required DatabaseUser user,
       required InternshipsRepository? internshipsRepository});
@@ -687,14 +683,16 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     await Future.wait(toWait);
   }
 
-  Future<void> _updateToEnterprisesJobs(
+  Future<RepositoryResponse> _updateToEnterprisesJobs(
     Enterprise enterprise,
     Enterprise previous, {
     required DatabaseUser user,
     required InternshipsRepository internshipsRepository,
   }) async {
+    final out = RepositoryResponse();
+
     final toUpdate = enterprise.getDifference(previous);
-    if (!toUpdate.contains('jobs')) return;
+    if (!toUpdate.contains('jobs')) return out;
 
     // Prevent from removing a job from an enterprise
     for (final job in previous.jobs) {
@@ -704,12 +702,18 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               'User ${user.userId} does not have permission to remove a job from an enterprise');
           continue;
         }
+
         await _deleteInternshipsFromJob(job.id,
             user: user, internshipsRepository: internshipsRepository);
+
         await MySqlHelpers.performDeleteQuery(
             connection: connection,
             tableName: 'enterprise_jobs',
             filters: {'id': job.id});
+
+        out.deletedData ??= {};
+        out.deletedData![RequestFields.internship] ??= [];
+        out.deletedData![RequestFields.internship]!.add(job.id);
       }
     }
 
@@ -867,6 +871,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       await Future.wait(toWaitDeleted);
       await Future.wait(toWait);
     }
+    return out;
   }
 
   Future<void> _insertToContact(Enterprise enterprise) async {
@@ -1036,7 +1041,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }
 
   @override
-  Future<void> _putEnterprise({
+  Future<RepositoryResponse> _putEnterprise({
     required Enterprise enterprise,
     required Enterprise? previous,
     required DatabaseUser user,
@@ -1048,6 +1053,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       await _updateToEnterprises(enterprise, previous);
     }
 
+    var out = RepositoryResponse();
     final toWait = <Future>[];
     if (previous == null) {
       toWait.add(_insertToEnterprisesActivityTypes(enterprise));
@@ -1067,7 +1073,21 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       toWait.add(_updateToEnterprisePhoneNumber(enterprise, previous));
       toWait.add(_updateToEnterpriseFax(enterprise, previous));
     }
-    await Future.wait(toWait);
+
+    final response = await Future.wait(toWait);
+    for (final res in response) {
+      if (res is RepositoryResponse) {
+        if (res.deletedData != null) {
+          out.deletedData ??= {};
+          out.deletedData!.addAll(res.deletedData!);
+        }
+        if (res.updatedData != null) {
+          out.updatedData ??= {};
+          out.updatedData!.addAll(res.updatedData!);
+        }
+      }
+    }
+    return out;
   }
 
   Future<void> _deleteInternshipsFromJob(
@@ -1079,9 +1099,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         connection: connection,
         user: user,
         tableName: 'internships',
-        filters: {'job_id': jobId.serialize()}..addAll({
-            'school_board_id': user.schoolBoardId ?? '',
-          }));
+        filters: {'job_id': jobId.serialize()}..addAll(
+            user.accessLevel == AccessLevel.superAdmin
+                ? {}
+                : {'school_board_id': user.schoolBoardId ?? ''}));
 
     final toWait = <Future>[];
     for (final internship in internships) {
@@ -1092,11 +1113,13 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }
 
   @override
-  Future<String?> _deleteEnterprise({
+  Future<RepositoryResponse> _deleteEnterprise({
     required String id,
     required DatabaseUser user,
     required InternshipsRepository? internshipsRepository,
   }) async {
+    final out = RepositoryResponse();
+
     try {
       final enterprise = await _getEnterpriseById(id: id, user: user);
 
@@ -1110,6 +1133,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         for (final job in enterprise!.jobs) {
           await _deleteInternshipsFromJob(job.id,
               user: user, internshipsRepository: internshipsRepository);
+
+          out.deletedData ??= {};
+          out.deletedData![RequestFields.internship] ??= [];
+          out.deletedData![RequestFields.internship]!.add(job.id);
         }
       }
 
@@ -1166,11 +1193,13 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         );
       }
 
-      return id;
+      out.deletedData ??= {};
+      out.deletedData![RequestFields.enterprise] ??= [id];
     } catch (e) {
       throw InvalidRequestException(
           'Unable to delete the enterprise with id $id. Is there any internships associated with this enterprise? $e');
     }
+    return out;
   }
   // coverage:ignore-end
 }
@@ -1224,23 +1253,31 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       _dummyDatabase[id];
 
   @override
-  Future<void> _putEnterprise({
+  Future<RepositoryResponse> _putEnterprise({
     required Enterprise enterprise,
     required Enterprise? previous,
     required DatabaseUser user,
     required InternshipsRepository internshipsRepository,
-  }) async =>
-      _dummyDatabase[enterprise.id] = enterprise;
+  }) async {
+    _dummyDatabase[enterprise.id] = enterprise;
+    return RepositoryResponse(updatedData: {
+      RequestFields.enterprise: {
+        enterprise.id: enterprise.getDifference(previous)
+      }
+    });
+  }
 
   @override
-  Future<String?> _deleteEnterprise(
+  Future<RepositoryResponse> _deleteEnterprise(
       {required String id,
       required DatabaseUser user,
       required InternshipsRepository? internshipsRepository}) async {
     if (_dummyDatabase.containsKey(id)) {
       _dummyDatabase.remove(id);
-      return id;
+      return RepositoryResponse(deletedData: {
+        RequestFields.enterprise: [id]
+      });
     }
-    return null;
+    return RepositoryResponse();
   }
 }

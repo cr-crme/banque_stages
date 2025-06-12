@@ -2,6 +2,7 @@ import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/communication_protocol.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
@@ -19,7 +20,7 @@ final _logger = Logger('StudentsRepository');
 
 abstract class StudentsRepository implements RepositoryAbstract {
   @override
-  Future<Map<String, dynamic>> getAll({
+  Future<RepositoryResponse> getAll({
     List<String>? fields,
     required DatabaseUser user,
   }) async {
@@ -31,12 +32,13 @@ abstract class StudentsRepository implements RepositoryAbstract {
     }
 
     final students = await _getAllStudents(user: user);
-    return students
-        .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
+    return RepositoryResponse(
+        data: students.map(
+            (key, value) => MapEntry(key, value.serializeWithFields(fields))));
   }
 
   @override
-  Future<Map<String, dynamic>> getById({
+  Future<RepositoryResponse> getById({
     required String id,
     List<String>? fields,
     required DatabaseUser user,
@@ -51,18 +53,11 @@ abstract class StudentsRepository implements RepositoryAbstract {
     final student = await _getStudentById(id: id, user: user);
     if (student == null) throw MissingDataException('Student not found');
 
-    return student.serializeWithFields(fields);
+    return RepositoryResponse(data: student.serializeWithFields(fields));
   }
 
   @override
-  Future<void> putAll({
-    required Map<String, dynamic> data,
-    required DatabaseUser user,
-  }) async =>
-      throw InvalidRequestException('Students must be created individually');
-
-  @override
-  Future<List<String>> putById({
+  Future<RepositoryResponse> putById({
     required String id,
     required Map<String, dynamic> data,
     required DatabaseUser user,
@@ -80,24 +75,14 @@ abstract class StudentsRepository implements RepositoryAbstract {
     final newStudent = previous?.copyWithData(data) ??
         Student.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
-    try {
-      await _putStudent(student: newStudent, previous: previous, user: user);
-      return newStudent.getDifference(previous);
-    } catch (e) {
-      _logger.severe('Error while putting student $id: ${e.toString()}');
-      return [];
-    }
+    await _putStudent(student: newStudent, previous: previous, user: user);
+    return RepositoryResponse(updatedData: {
+      RequestFields.student: {newStudent.id: newStudent.getDifference(previous)}
+    });
   }
 
   @override
-  Future<List<String>> deleteAll({
-    required DatabaseUser user,
-  }) async {
-    throw InvalidRequestException('Students must be deleted individually');
-  }
-
-  @override
-  Future<String> deleteById({
+  Future<RepositoryResponse> deleteById({
     required String id,
     required DatabaseUser user,
   }) async {
@@ -112,7 +97,9 @@ abstract class StudentsRepository implements RepositoryAbstract {
     if (removedId == null) {
       throw DatabaseFailureException('Failed to delete student with id $id');
     }
-    return removedId;
+    return RepositoryResponse(deletedData: {
+      RequestFields.student: [removedId]
+    });
   }
 
   Future<Map<String, Student>> _getAllStudents({

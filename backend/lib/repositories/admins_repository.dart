@@ -2,6 +2,7 @@ import 'package:backend/repositories/mysql_helpers.dart';
 import 'package:backend/repositories/repository_abstract.dart';
 import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
+import 'package:common/communication_protocol.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/models/persons/admin.dart';
@@ -16,7 +17,7 @@ final _logger = Logger('AdminsRepository');
 
 abstract class AdminsRepository implements RepositoryAbstract {
   @override
-  Future<Map<String, dynamic>> getAll({
+  Future<RepositoryResponse> getAll({
     List<String>? fields,
     required DatabaseUser user,
   }) async {
@@ -28,12 +29,13 @@ abstract class AdminsRepository implements RepositoryAbstract {
     }
 
     final admins = await _getAllAdmins(user: user);
-    return admins
-        .map((key, value) => MapEntry(key, value.serializeWithFields(fields)));
+    return RepositoryResponse(
+        data: admins.map(
+            (key, value) => MapEntry(key, value.serializeWithFields(fields))));
   }
 
   @override
-  Future<Map<String, dynamic>> getById({
+  Future<RepositoryResponse> getById({
     required String id,
     List<String>? fields,
     required DatabaseUser user,
@@ -48,19 +50,11 @@ abstract class AdminsRepository implements RepositoryAbstract {
     final admin = await _getAdminById(id: id, user: user);
     if (admin == null) throw MissingDataException('Administrator not found');
 
-    return admin.serializeWithFields(fields);
+    return RepositoryResponse(data: admin.serializeWithFields(fields));
   }
 
   @override
-  Future<void> putAll({
-    required Map<String, dynamic> data,
-    required DatabaseUser user,
-  }) async =>
-      throw InvalidRequestException(
-          'Administrators must be created individually');
-
-  @override
-  Future<List<String>> putById({
+  Future<RepositoryResponse> putById({
     required String id,
     required Map<String, dynamic> data,
     required DatabaseUser user,
@@ -78,25 +72,14 @@ abstract class AdminsRepository implements RepositoryAbstract {
     final newAdmin = previous?.copyWithData(data) ??
         Admin.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
-    try {
-      await _putAdmin(admin: newAdmin, previous: previous);
-      return newAdmin.getDifference(previous);
-    } catch (e) {
-      _logger.severe('Error while putting admin: $e');
-      return [];
-    }
+    await _putAdmin(admin: newAdmin, previous: previous);
+    return RepositoryResponse(updatedData: {
+      RequestFields.admin: {newAdmin.id: newAdmin.getDifference(previous)}
+    });
   }
 
   @override
-  Future<List<String>> deleteAll({
-    required DatabaseUser user,
-  }) async {
-    throw InvalidRequestException(
-        'Adminisntrators must be deleted individually');
-  }
-
-  @override
-  Future<String> deleteById({
+  Future<RepositoryResponse> deleteById({
     required String id,
     required DatabaseUser user,
   }) async {
@@ -122,7 +105,9 @@ abstract class AdminsRepository implements RepositoryAbstract {
       throw DatabaseFailureException(
           'Failed to delete administrator with id $id');
     }
-    return removedId;
+    return RepositoryResponse(deletedData: {
+      RequestFields.admin: [removedId]
+    });
   }
 
   Future<Map<String, Admin>> _getAllAdmins({
