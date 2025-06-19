@@ -21,6 +21,8 @@ import 'package:go_router/go_router.dart';
 class SupervisionChart extends StatefulWidget {
   const SupervisionChart({super.key});
 
+  static const route = '/supervision';
+
   @override
   State<SupervisionChart> createState() => _SupervisionChartState();
 }

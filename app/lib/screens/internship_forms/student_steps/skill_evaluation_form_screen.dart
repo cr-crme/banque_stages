@@ -16,6 +16,8 @@ class SkillEvaluationFormScreen extends StatefulWidget {
   const SkillEvaluationFormScreen(
       {super.key, required this.formController, required this.editMode});
 
+  static const route = '/skill_evaluation_form';
+
   final SkillEvaluationFormController formController;
   final bool editMode;
 

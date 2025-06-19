@@ -25,6 +25,7 @@ class InternshipEnrollmentScreen extends StatefulWidget {
     required this.enterpriseId,
   });
 
+  static const route = '/enrollment';
   final String enterpriseId;
 
   @override

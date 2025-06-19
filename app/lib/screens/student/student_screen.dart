@@ -16,6 +16,8 @@ class StudentScreen extends StatefulWidget {
     this.initialPage = 0,
   });
 
+  static const route = '/student';
+
   final String id;
   final int initialPage;
 

@@ -19,6 +19,8 @@ class JobSstFormScreen extends StatefulWidget {
     required this.jobId,
   });
 
+  static const route = '/job-sst-form';
+
   final String enterpriseId;
   final String jobId;
 

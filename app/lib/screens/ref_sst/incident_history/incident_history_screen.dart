@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:common/services/job_data_file_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/models/incidents_by_enterprise.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/widgets/incident_list_tile.dart';
@@ -14,7 +16,7 @@ enum _FilterType {
 class IncidentHistoryScreen extends StatefulWidget {
   const IncidentHistoryScreen({super.key});
 
-  static const route = '/accident-history-screen';
+  static const route = '/incident-history';
 
   @override
   State<IncidentHistoryScreen> createState() => _IncidentHistoryScreenState();
@@ -95,8 +97,10 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
         sortedSpecializationId = _filterByNumberOfIncident(incidents);
     }
 
-    return Scaffold(
-      appBar: AppBar(
+    return ResponsiveService.scaffoldOf(
+      context,
+      appBar: ResponsiveService.appBarOf(
+        context,
         title: const Text('Historique d\'accidents'),
         leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -109,6 +113,9 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
         ],
         bottom: _showSearchBar ? Search(controller: _searchController) : null,
       ),
+      smallDrawer: null,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
       body: Column(
         children: [
           Row(

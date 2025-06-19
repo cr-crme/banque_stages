@@ -13,6 +13,8 @@ import 'widgets/student_card.dart';
 class StudentsListScreen extends StatefulWidget {
   const StudentsListScreen({super.key});
 
+  static const route = '/students';
+
   @override
   State<StudentsListScreen> createState() => _StudentsListScreenState();
 }

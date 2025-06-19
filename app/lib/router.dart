@@ -12,6 +12,7 @@ import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skil
 import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.dart';
 import 'package:crcrme_banque_stages/screens/login_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/incident_history_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
 import 'package:crcrme_banque_stages/screens/student/student_screen.dart';
@@ -26,34 +27,34 @@ import 'package:go_router/go_router.dart';
 abstract class Screens {
   static const home = enterprisesList;
 
-  static const login = 'login';
-  static const itinerary = 'itinerary';
+  static const login = LoginScreen.route;
+  static const itinerary = ItineraryMainScreen.route;
 
-  static const tasksToDo = 'tasksToDo';
+  static const tasksToDo = TasksToDoScreen.route;
 
-  static const enterprisesList = 'enterprises-list';
-  static const enterprise = 'enterprise';
-  static const addEnterprise = 'add-enterprise';
-  static const jobSstForm = 'job-sst-form';
+  static const enterprisesList = EnterprisesListScreen.route;
+  static const enterprise = EnterpriseScreen.route;
+  static const addEnterprise = AddEnterpriseScreen.route;
+  static const jobSstForm = JobSstFormScreen.route;
 
-  static const supervisionChart = 'supervision';
-  static const supervisionStudentDetails = 'supervision-student-details';
+  static const supervisionChart = SupervisionChart.route;
+  static const supervisionStudentDetails =
+      SupervisionStudentDetailsScreen.route;
 
-  static const studentsList = 'students-list';
-  static const student = 'student';
-  static const addStudent = 'add-student';
+  static const studentsList = StudentsListScreen.route;
+  static const student = StudentScreen.route;
 
   static const internshipEnrollementFromEnterprise =
-      'add-internship-from-enterprise';
-  static const internshipEnrollementFromStudent = 'add-internship-from-student';
-  static const enterpriseEvaluationScreen = 'enterprise-evaluation';
-  static const skillEvaluationMainScreen = 'skill-evaluation-main';
-  static const skillEvaluationFormScreen = 'skill-evaluation-form';
-  static const attitudeEvaluationScreen = 'attitude-evaluation';
+      InternshipEnrollmentScreen.route;
+  static const enterpriseEvaluationScreen = EnterpriseEvaluationScreen.route;
+  static const skillEvaluationMainScreen = SkillEvaluationMainScreen.route;
+  static const skillEvaluationFormScreen = SkillEvaluationFormScreen.route;
+  static const attitudeEvaluationScreen = AttitudeEvaluationScreen.route;
 
-  static const homeSst = 'home-sst';
-  static const jobSst = 'job-sst';
-  static const cardsSst = 'cards-sst';
+  static const homeSst = HomeSstScreen.route;
+  static const cardsSst = SstCardsScreen.route;
+  static const incidentHistorySst = IncidentHistoryScreen.route;
+  static const jobSst = SpecializationListScreen.route;
 
   static Map<String, String> params(id, {jobId}) {
     return {
@@ -85,7 +86,7 @@ abstract class Screens {
 
 final router = GoRouter(
   redirect: (context, state) =>
-      AuthProvider.of(context).isFullySignedIn ? null : '/login',
+      AuthProvider.of(context).isFullySignedIn ? null : Screens.login,
   routes: [
     GoRoute(
       path: '/',
@@ -93,36 +94,36 @@ final router = GoRouter(
           AuthProvider.of(context).isFullySignedIn ? null : Screens.login,
     ),
     GoRoute(
-      path: '/login',
+      path: Screens.login,
       name: Screens.login,
       builder: (context, state) => const LoginScreen(),
       redirect: (context, state) =>
           AuthProvider.of(context).isFullySignedIn ? '/' : null,
     ),
     GoRoute(
-      path: '/enterprises',
+      path: Screens.enterprisesList,
       name: Screens.enterprisesList,
       builder: (context, state) => const EnterprisesListScreen(),
       routes: [
         GoRoute(
-          path: 'add',
+          path: Screens.addEnterprise,
           name: Screens.addEnterprise,
           builder: (context, state) => const AddEnterpriseScreen(),
         ),
         GoRoute(
-          path: 'add-internship-enterprise/:id',
+          path: '${Screens.internshipEnrollementFromEnterprise}_id=:id',
           name: Screens.internshipEnrollementFromEnterprise,
           builder: (context, state) => InternshipEnrollmentScreen(
               enterpriseId: state.pathParameters['id']!),
         ),
         GoRoute(
-          path: 'enterprise-evaluation/:id',
+          path: '${Screens.enterpriseEvaluationScreen}_id=:id',
           name: Screens.enterpriseEvaluationScreen,
           builder: (context, state) =>
               EnterpriseEvaluationScreen(id: state.pathParameters['id']!),
         ),
         GoRoute(
-          path: ':id',
+          path: '${Screens.enterprise}_id=:id',
           name: Screens.enterprise,
           builder: (context, state) => EnterpriseScreen(
             id: state.pathParameters['id']!,
@@ -142,12 +143,12 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/students',
+      path: Screens.studentsList,
       name: Screens.studentsList,
       builder: (context, state) => const StudentsListScreen(),
       routes: [
         GoRoute(
-          path: 'studentScreen/:id',
+          path: '${Screens.student}_id=:id',
           name: Screens.student,
           builder: (context, state) => StudentScreen(
               id: state.pathParameters['id']!,
@@ -157,12 +158,12 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/supervision',
+      path: Screens.supervisionChart,
       name: Screens.supervisionChart,
       builder: (context, state) => const SupervisionChart(),
       routes: [
         GoRoute(
-          path: 'student-details/:id',
+          path: '${Screens.supervisionStudentDetails}/:id',
           name: Screens.supervisionStudentDetails,
           builder: (context, state) => SupervisionStudentDetailsScreen(
             studentId: state.pathParameters['id']!,
@@ -171,17 +172,17 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/itinerary',
+      path: Screens.itinerary,
       name: Screens.itinerary,
       builder: (context, state) => const ItineraryMainScreen(),
     ),
     GoRoute(
-      path: '/tasks-to-do',
+      path: Screens.tasksToDo,
       name: Screens.tasksToDo,
       builder: (context, state) => const TasksToDoScreen(),
     ),
     GoRoute(
-      path: '/skill-evaluation-main/:id',
+      path: '${Screens.skillEvaluationMainScreen}_id=:id',
       name: Screens.skillEvaluationMainScreen,
       builder: (context, state) => SkillEvaluationMainScreen(
         internshipId: state.pathParameters['id']!,
@@ -189,7 +190,7 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/skill-evaluation-form',
+      path: Screens.skillEvaluationFormScreen,
       name: Screens.skillEvaluationFormScreen,
       builder: (context, state) {
         return SkillEvaluationFormScreen(
@@ -199,7 +200,7 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/attitude-evaluation-form',
+      path: Screens.attitudeEvaluationScreen,
       name: Screens.attitudeEvaluationScreen,
       builder: (context, state) => AttitudeEvaluationScreen(
         formController: state.extra as AttitudeEvaluationFormController,
@@ -207,20 +208,26 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/sst',
+      path: Screens.homeSst,
       name: Screens.homeSst,
       builder: (context, state) => const HomeSstScreen(),
       routes: [
         GoRoute(
-          path: 'jobs/:id',
-          name: Screens.jobSst,
-          builder: (context, state) =>
-              SpecializationListScreen(id: state.uri.queryParameters['id']!),
+          path: Screens.cardsSst,
+          name: Screens.cardsSst,
+          builder: (context, state) => const SstCardsScreen(),
         ),
         GoRoute(
-          name: Screens.cardsSst,
-          path: 'cards',
-          builder: (context, state) => const SstCardsScreen(),
+          path: Screens.incidentHistorySst,
+          name: Screens.incidentHistorySst,
+          builder: (context, state) => const IncidentHistoryScreen(),
+        ),
+        GoRoute(
+          path: '${Screens.jobSst}_id=:id',
+          name: Screens.jobSst,
+          builder: (context, state) {
+            return SpecializationListScreen(id: state.pathParameters['id']!);
+          },
         ),
       ],
     ),

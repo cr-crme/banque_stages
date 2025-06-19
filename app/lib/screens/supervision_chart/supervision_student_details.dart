@@ -21,6 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 class SupervisionStudentDetailsScreen extends StatelessWidget {
   const SupervisionStudentDetailsScreen({super.key, required this.studentId});
 
+  static const route = '/student-details';
   final String studentId;
 
   void _navigateToStudentInternship(BuildContext context) {

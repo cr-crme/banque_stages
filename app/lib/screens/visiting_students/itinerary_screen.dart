@@ -16,6 +16,8 @@ import 'package:intl/intl.dart';
 class ItineraryMainScreen extends StatefulWidget {
   const ItineraryMainScreen({super.key});
 
+  static const route = '/itineraries';
+
   @override
   State<ItineraryMainScreen> createState() => _ItineraryMainScreenState();
 }

@@ -21,6 +21,8 @@ class EnterpriseScreen extends StatefulWidget {
   const EnterpriseScreen(
       {super.key, required this.id, required this.pageIndex});
 
+  static const route = '/enterprise';
+
   final String id;
   final int pageIndex;
 

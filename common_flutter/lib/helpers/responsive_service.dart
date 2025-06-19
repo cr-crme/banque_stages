@@ -72,6 +72,7 @@ class ResponsiveService {
         ScreenSize.medium =>
           mediumDrawer != null
               ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   mediumDrawer,
                   Expanded(
@@ -86,6 +87,7 @@ class ResponsiveService {
         ScreenSize.large =>
           largeDrawer != null
               ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   largeDrawer,
                   Expanded(

@@ -14,6 +14,7 @@ import 'task_and_ability_step.dart';
 class EnterpriseEvaluationScreen extends StatefulWidget {
   const EnterpriseEvaluationScreen({super.key, required this.id});
 
+  static const route = '/enterprise_evaluation';
   final String id; // Internship id
 
   @override

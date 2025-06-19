@@ -1,7 +1,8 @@
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/specialization_list_risks_and_skills/specialization_list_screen.dart';
+import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SstSearchBar extends StatelessWidget {
   const SstSearchBar({super.key});
@@ -124,8 +125,7 @@ class _AutoCompleteSstSearchBarState extends State<_AutoCompleteSstSearchBar> {
     final index = options.indexWhere((e) => e.idWithName == choice);
 
     if (_textController != null) _clearText(_textController!);
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => SpecializationListScreen(id: options[index].id),
-    ));
+    GoRouter.of(context).goNamed(Screens.jobSst,
+        pathParameters: Screens.params(options[index].id));
   }
 }

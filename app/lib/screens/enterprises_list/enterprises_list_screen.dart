@@ -23,6 +23,8 @@ import 'widgets/enterprise_card.dart';
 class EnterprisesListScreen extends StatefulWidget {
   const EnterprisesListScreen({super.key});
 
+  static const route = '/enterprises';
+
   @override
   State<EnterprisesListScreen> createState() => _EnterprisesListScreenState();
 }

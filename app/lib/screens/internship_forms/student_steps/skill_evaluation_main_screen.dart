@@ -19,6 +19,8 @@ class SkillEvaluationMainScreen extends StatefulWidget {
   const SkillEvaluationMainScreen(
       {super.key, required this.internshipId, required this.editMode});
 
+  static const route = '/skill_evaluation';
+
   final String internshipId;
   final bool editMode;
 

@@ -16,6 +16,8 @@ class AttitudeEvaluationScreen extends StatefulWidget {
   const AttitudeEvaluationScreen(
       {super.key, required this.formController, required this.editMode});
 
+  static const route = '/attitude_evaluation';
+
   final AttitudeEvaluationFormController formController;
   final bool editMode;
 

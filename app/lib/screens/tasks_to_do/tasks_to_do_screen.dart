@@ -3,6 +3,7 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
@@ -128,13 +129,19 @@ List<_JobEnterpriseInternshipStudent> _postInternshipEvaluationToDo(context) {
 class TasksToDoScreen extends StatelessWidget {
   const TasksToDoScreen({super.key});
 
+  static const route = '/tasks-to-do';
+
   @override
   Widget build(BuildContext context) {
     int nbTasksToDo = numberOfTasksToDo(context);
 
-    return Scaffold(
-      drawer: const MainDrawer(),
-      appBar: AppBar(
+    return ResponsiveService.scaffoldOf(
+      context,
+      smallDrawer: MainDrawer.small,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
+      appBar: ResponsiveService.appBarOf(
+        context,
         title: const Text('Tâches à réaliser'),
       ),
       body: SingleChildScrollView(
@@ -315,6 +322,29 @@ class _TaskTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = ResponsiveService.getScreenSize(context);
+
+    final button = SizedBox(
+      width: 400,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            DateFormat.yMMMEd('fr_CA').format(date),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          TextButton(
+              onPressed: onTap,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Text(
+                  buttonTitle,
+                  textAlign: TextAlign.center,
+                ),
+              ))
+        ],
+      ),
+    );
     return Card(
       elevation: 10,
       child: Column(
@@ -322,8 +352,8 @@ class _TaskTile extends StatelessWidget {
           const SizedBox(height: 8),
           Row(children: [
             SizedBox(width: 60, child: Icon(icon, color: iconColor)),
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 72,
+            Expanded(
+              //width: MediaQuery.of(context).size.width - 72,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -338,26 +368,10 @@ class _TaskTile extends StatelessWidget {
                   const SizedBox(height: 8),
                 ],
               ),
-            )
+            ),
+            if (screenSize == ScreenSize.large) button
           ]),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                DateFormat.yMMMEd('fr_CA').format(date),
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              TextButton(
-                  onPressed: onTap,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(
-                      buttonTitle,
-                      textAlign: TextAlign.center,
-                    ),
-                  ))
-            ],
-          ),
+          if (screenSize != ScreenSize.large) button,
           const SizedBox(height: 8),
         ],
       ),

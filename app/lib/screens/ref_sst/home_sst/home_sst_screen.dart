@@ -1,15 +1,16 @@
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/incident_history_screen.dart';
+import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/widgets/sst_main_card.dart';
-import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'widgets/sst_search_bar.dart';
 
 class HomeSstScreen extends StatefulWidget {
   const HomeSstScreen({super.key});
 
-  static const route = '/home-sst';
+  static const route = '/sst';
 
   @override
   State<HomeSstScreen> createState() => _HomeSstScreenState();
@@ -32,21 +33,18 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
     body = ListView(
       children: [
         SstMainCard(
-            title: 'Fiches de risques SST',
-            content: const Text(
-              'Principaux risques à la santé et à la sécurité en milieu de travail ',
-            ),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => const SstCardsScreen(),
-                ))),
+          title: 'Fiches de risques SST',
+          content: const Text(
+            'Principaux risques à la santé et à la sécurité en milieu de travail ',
+          ),
+          onTap: () => GoRouter.of(context).goNamed(Screens.cardsSst),
+        ),
         SstMainCard(
           title: 'Historique d\'accidents et d\'incidents',
           content: const Text(
             'Blessures d\'élèves et incidents en stage rapportés par le personnel enseignant',
           ),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => const IncidentHistoryScreen(),
-          )),
+          onTap: () => GoRouter.of(context).goNamed(Screens.incidentHistorySst),
         ),
         SstMainCard(
             title: 'Aperçu des risques SST par métier',
@@ -56,11 +54,14 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
     );
     // To refresh the scaffold body after the data are fetched
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
-    return Scaffold(
-        appBar: AppBar(
+    return ResponsiveService.scaffoldOf(context,
+        appBar: ResponsiveService.appBarOf(
+          context,
           title: const Text('Santé et sécurité au PFAE'),
         ),
-        drawer: const MainDrawer(),
+        smallDrawer: MainDrawer.small,
+        mediumDrawer: MainDrawer.medium,
+        largeDrawer: MainDrawer.large,
         body: body);
   }
 

@@ -1,4 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
@@ -8,7 +10,7 @@ import 'widgets/clickable_risk_tile.dart';
 class SstCardsScreen extends StatefulWidget {
   const SstCardsScreen({super.key});
 
-  static const route = '/sst-cards';
+  static const route = '/cards';
 
   @override
   State<SstCardsScreen> createState() => _SstCardsScreenState();
@@ -62,13 +64,18 @@ class _SstCardsScreenState extends State<SstCardsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return ResponsiveService.scaffoldOf(
+      context,
+      appBar: ResponsiveService.appBarOf(
+        context,
         title: _appBarBuilder(_tabController.animation!.value
             .round()), // animation is more reactive than index
         leading: IconButton(
             onPressed: _onTapBack, icon: const Icon(Icons.arrow_back)),
       ),
+      smallDrawer: null,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
       body: TabBarView(
         controller: _tabController,
         children: [

@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:common/services/job_data_file_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/specialization_list_risks_and_skills/widgets/tile_job_risk.dart';
@@ -7,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SpecializationListScreen extends StatelessWidget {
+  static const route = '/job-risks';
+
   final String id;
   const SpecializationListScreen({super.key, required this.id});
 
@@ -125,8 +129,9 @@ class SpecializationListScreen extends StatelessWidget {
 
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-          appBar: AppBar(
+      child: ResponsiveService.scaffoldOf(context,
+          appBar: ResponsiveService.appBarOf(
+            context,
             title: Padding(
               padding: const EdgeInsets.only(top: 5.0, bottom: 5),
               child: AutoSizeText(specialization.name, maxLines: 2),
@@ -174,6 +179,9 @@ class SpecializationListScreen extends StatelessWidget {
               ),
             ]),
           ),
+          smallDrawer: null,
+          mediumDrawer: MainDrawer.medium,
+          largeDrawer: MainDrawer.large,
           body: TabBarView(children: [
             ListView.separated(
               physics: const ScrollPhysics(),
