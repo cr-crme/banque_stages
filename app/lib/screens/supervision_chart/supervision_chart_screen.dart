@@ -4,6 +4,7 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/services/job_data_file_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
@@ -203,8 +204,10 @@ class _SupervisionChartState extends State<SupervisionChart> {
             .firstWhere((student) => student.id == internship.studentId));
     final studentsISupervize = StudentsHelpers.mySupervizedStudents(context);
 
-    return Scaffold(
-      appBar: AppBar(
+    return ResponsiveService.scaffoldOf(
+      context,
+      appBar: ResponsiveService.appBarOf(
+        context,
         title: const Text('Tableau des supervisions'),
         actions: [
           if (!_inManagingMode)
@@ -301,7 +304,9 @@ class _SupervisionChartState extends State<SupervisionChart> {
             ),
         ],
       ),
-      drawer: const MainDrawer(),
+      smallDrawer: MainDrawer.small,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
     );
   }
 }

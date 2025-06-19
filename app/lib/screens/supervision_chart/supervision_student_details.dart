@@ -5,6 +5,7 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/student.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/students_extension.dart';
@@ -12,6 +13,7 @@ import 'package:crcrme_banque_stages/common/extensions/time_of_day_extension.dar
 import 'package:crcrme_banque_stages/common/extensions/visiting_priorities_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
@@ -76,8 +78,10 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return ResponsiveService.scaffoldOf(
+      context,
+      appBar: ResponsiveService.appBarOf(
+        context,
         title: FutureBuilder<List>(
             future: Future.wait([
               _getInternship(context),
@@ -111,6 +115,9 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
               ]);
             }),
       ),
+      smallDrawer: null,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
       body: SingleChildScrollView(
         child: FutureBuilder<List>(
             future: Future.wait([
