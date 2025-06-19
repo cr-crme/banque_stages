@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:crcrme_banque_stages/common/extensions/students_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/screens/student/pages/skills_page.dart';
 import 'package:flutter/material.dart';
 
@@ -64,8 +66,10 @@ class _StudentScreenState extends State<StudentScreen>
 
     return student == null
         ? Container()
-        : Scaffold(
-            appBar: AppBar(
+        : ResponsiveService.scaffoldOf(
+            context,
+            appBar: ResponsiveService.appBarOf(
+              context,
               title: Row(
                 children: [
                   student.avatar,
@@ -106,6 +110,9 @@ class _StudentScreenState extends State<StudentScreen>
                 ],
               ),
             ),
+            smallDrawer: null,
+            mediumDrawer: MainDrawer.medium,
+            largeDrawer: MainDrawer.large,
             body: TabBarView(
               controller: _tabController,
               children: [

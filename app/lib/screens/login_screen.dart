@@ -1,4 +1,5 @@
 import 'package:common_flutter/helpers/form_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
@@ -55,66 +56,80 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     return PopScope(
-      child: Scaffold(
+      child: ResponsiveService.scaffoldOf(
+        context,
         appBar: AppBar(title: const Text('Banque de stages')),
-        drawer:
+        smallDrawer:
             authProvider.isAuthenticatorSignedIn ? const MainDrawer() : null,
-        body: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: authProvider.isAuthenticatorSignedIn
-                  ? Center(
-                      child: Text(
-                        schoolBoardsProvider.hasProblemConnecting
-                            ? 'Impossible de se connecter à la base de données, \n'
-                                'vérifiez votre connexion internet.'
-                            : schoolBoardsProvider.connexionRefused
-                                ? 'Connexion refusée, \n'
-                                    'veuillez contacter votre administrateur'
-                                : 'Connexion en cours...',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    )
-                  : Column(
-                      children: [
-                        Text(
-                          'Connectez-vous à votre compte avant de poursuivre.',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.mail),
-                            labelText: 'Courriel',
+        mediumDrawer: authProvider.isAuthenticatorSignedIn
+            ? const MainDrawer(iconOnly: true, showTitle: false)
+            : null,
+        largeDrawer: authProvider.isAuthenticatorSignedIn
+            ? const MainDrawer(showTitle: false)
+            : null,
+        body: Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: ResponsiveService.maxBodyWidth,
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  child: authProvider.isAuthenticatorSignedIn
+                      ? Center(
+                          child: Text(
+                            schoolBoardsProvider.hasProblemConnecting
+                                ? 'Impossible de se connecter à la base de données, \n'
+                                    'vérifiez votre connexion internet.'
+                                : schoolBoardsProvider.connexionRefused
+                                    ? 'Connexion refusée, \n'
+                                        'veuillez contacter votre administrateur'
+                                    : 'Connexion en cours...',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
-                          validator: FormService.emailValidator,
-                          keyboardType: TextInputType.emailAddress,
-                          onSaved: (email) => _email = email,
+                        )
+                      : Column(
+                          children: [
+                            Text(
+                              'Connectez-vous à votre compte avant de poursuivre.',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                icon: Icon(Icons.mail),
+                                labelText: 'Courriel',
+                              ),
+                              validator: FormService.emailValidator,
+                              keyboardType: TextInputType.emailAddress,
+                              onSaved: (email) => _email = email,
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                icon: Icon(Icons.lock),
+                                labelText: 'Mot de passe',
+                              ),
+                              validator: FormService.passwordValidator,
+                              keyboardType: TextInputType.visiblePassword,
+                              obscureText: true,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              onSaved: (password) => _password = password,
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: _signIn,
+                              child: const Text('Se connecter'),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.lock),
-                            labelText: 'Mot de passe',
-                          ),
-                          validator: FormService.passwordValidator,
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: true,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          onSaved: (password) => _password = password,
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: _signIn,
-                          child: const Text('Se connecter'),
-                        ),
-                      ],
-                    ),
+                ),
+              ),
             ),
           ),
         ),

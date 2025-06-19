@@ -3,6 +3,7 @@ import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/helpers/form_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/widgets/address_list_tile.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
@@ -154,7 +155,7 @@ class ContactPageState extends State<ContactPage> {
             isEditing: editing);
 
         // If the user confirms the exit, redo the pop
-        if (_canPop && context.mounted) Navigator.of(context).pop();
+        if (_canPop && context.mounted) ResponsiveService.popOf(context);
       },
       child: SingleChildScrollView(
         child: Form(

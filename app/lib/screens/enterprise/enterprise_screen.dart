@@ -1,10 +1,12 @@
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -158,10 +160,19 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
           return const Center(child: CircularProgressIndicator());
         }
 
-        return Scaffold(
-          appBar: AppBar(
+        return ResponsiveService.scaffoldOf(
+          context,
+          smallDrawer: null,
+          mediumDrawer: MainDrawer.medium,
+          largeDrawer: MainDrawer.large,
+          appBar: ResponsiveService.appBarOf(
+            context,
             title: Text(enterprise.name),
             actions: [_actionButton],
+            leading:
+                ResponsiveService.getScreenSize(context) == ScreenSize.small
+                    ? null
+                    : SizedBox.shrink(),
             bottom: TabBar(
               onTap: (index) async {
                 if (!_editing || !_tabController.indexIsChanging) return;

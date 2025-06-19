@@ -11,8 +11,11 @@ extension EnterprisesProviderExtension on EnterprisesProvider {
   static List<Enterprise> availableEnterprisesOf(BuildContext context,
       {bool listen = true}) {
     final authProvider = AuthProvider.of(context, listen: false);
-    final mySchoolId = authProvider.schoolId!;
-    final myTeacherId = authProvider.teacherId!;
+    final mySchoolId = authProvider.schoolId;
+    final myTeacherId = authProvider.teacherId;
+    if (mySchoolId == null || myTeacherId == null) {
+      return [];
+    }
 
     return [...EnterprisesProvider.of(context, listen: listen)]..removeWhere(
         (enterprise) =>

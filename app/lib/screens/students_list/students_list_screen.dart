@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/persons/student.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
@@ -50,8 +51,10 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
     final students =
         _filterSelectedStudents(StudentsHelpers.studentsInMyGroups(context));
 
-    return Scaffold(
-      appBar: AppBar(
+    return ResponsiveService.scaffoldOf(
+      context,
+      appBar: ResponsiveService.appBarOf(
+        context,
         title: const Text('Mes élèves'),
         actions: [
           IconButton(
@@ -61,7 +64,9 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
         ],
         bottom: _showSearchBar ? Search(controller: _searchController) : null,
       ),
-      drawer: const MainDrawer(),
+      smallDrawer: MainDrawer.small,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
       body: Column(
         children: [
           Expanded(

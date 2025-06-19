@@ -3,6 +3,7 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common/models/persons/person.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
@@ -39,7 +40,8 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(
+    final appBar = ResponsiveService.appBarOf(
+      context,
       title: const Text('Entreprises'),
       actions: [
         if (_tabController.index == 0)
@@ -88,16 +90,22 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
         context,
         listen: true);
 
-    return Scaffold(
+    return ResponsiveService.scaffoldOf(
+      context,
       appBar: appBar,
-      drawer: const MainDrawer(),
+      smallDrawer: MainDrawer.small,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
       body: TabBarView(
         controller: _tabController,
         children: [
-          _EnterprisesByList(
-            key: _enterpriseKey,
-            withSearchBar: _withSearchBar,
-            enterprises: enterprises,
+          SizedBox(
+            width: 100,
+            child: _EnterprisesByList(
+              key: _enterpriseKey,
+              withSearchBar: _withSearchBar,
+              enterprises: enterprises,
+            ),
           ),
           _EnterprisesByMap(enterprises: enterprises),
         ],

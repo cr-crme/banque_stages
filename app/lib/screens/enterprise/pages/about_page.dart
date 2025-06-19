@@ -4,6 +4,7 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/helpers/form_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
@@ -138,7 +139,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
             isEditing: editing);
 
         // If the user confirms the exit, redo the pop
-        if (_canPop && context.mounted) Navigator.of(context).pop();
+        if (_canPop && context.mounted) ResponsiveService.popOf(context);
       },
       child: SingleChildScrollView(
         child: Form(
