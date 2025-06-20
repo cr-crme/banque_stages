@@ -5,7 +5,9 @@ import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/finalize_internship_dialog.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -65,12 +67,14 @@ class InternshipQuickAccess extends StatelessWidget {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(18))),
                           child: IconButton(
-                            onPressed: () => GoRouter.of(context).pushNamed(
-                              Screens.skillEvaluationMainScreen,
-                              pathParameters: Screens.params(internshipId),
-                              queryParameters:
-                                  Screens.queryParams(editMode: '1'),
-                            ),
+                            onPressed: () => showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => Dialog(
+                                        child: SkillEvaluationMainScreen(
+                                      internshipId: internshipId,
+                                      editMode: true,
+                                    ))),
                             icon: const Icon(Icons.add_chart_rounded),
                             color: Theme.of(context).colorScheme.primary,
                           ),
@@ -172,9 +176,10 @@ class InternshipQuickAccess extends StatelessWidget {
   }
 
   void _evaluateEnterprise(context, Internship internship) async {
-    GoRouter.of(context).pushNamed(
-      Screens.enterpriseEvaluationScreen,
-      pathParameters: Screens.params(internship.id),
-    );
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) =>
+            Dialog(child: EnterpriseEvaluationScreen(id: internship.id)));
   }
 }

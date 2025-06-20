@@ -1,14 +1,8 @@
 import 'package:common_flutter/providers/auth_provider.dart';
-import 'package:crcrme_banque_stages/screens/add_enterprise/add_enterprise_screen.dart';
 import 'package:crcrme_banque_stages/screens/enterprise/enterprise_screen.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/enterprises_list_screen.dart';
-import 'package:crcrme_banque_stages/screens/internship_enrollment/internship_enrollment_screen.dart';
-import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_screen.dart';
-import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
-import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
-import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
 import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.dart';
 import 'package:crcrme_banque_stages/screens/login_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
@@ -34,7 +28,6 @@ abstract class Screens {
 
   static const enterprisesList = EnterprisesListScreen.route;
   static const enterprise = EnterpriseScreen.route;
-  static const addEnterprise = AddEnterpriseScreen.route;
   static const jobSstForm = JobSstFormScreen.route;
 
   static const supervisionChart = SupervisionChart.route;
@@ -44,11 +37,6 @@ abstract class Screens {
   static const studentsList = StudentsListScreen.route;
   static const student = StudentScreen.route;
 
-  static const internshipEnrollementFromEnterprise =
-      InternshipEnrollmentScreen.route;
-  static const enterpriseEvaluationScreen = EnterpriseEvaluationScreen.route;
-  static const skillEvaluationMainScreen = SkillEvaluationMainScreen.route;
-  static const skillEvaluationFormScreen = SkillEvaluationFormScreen.route;
   static const attitudeEvaluationScreen = AttitudeEvaluationScreen.route;
 
   static const homeSst = HomeSstScreen.route;
@@ -105,23 +93,6 @@ final router = GoRouter(
       name: Screens.enterprisesList,
       builder: (context, state) => const EnterprisesListScreen(),
       routes: [
-        GoRoute(
-          path: Screens.addEnterprise,
-          name: Screens.addEnterprise,
-          builder: (context, state) => const AddEnterpriseScreen(),
-        ),
-        GoRoute(
-          path: '${Screens.internshipEnrollementFromEnterprise}_id=:id',
-          name: Screens.internshipEnrollementFromEnterprise,
-          builder: (context, state) => InternshipEnrollmentScreen(
-              enterpriseId: state.pathParameters['id']!),
-        ),
-        GoRoute(
-          path: '${Screens.enterpriseEvaluationScreen}_id=:id',
-          name: Screens.enterpriseEvaluationScreen,
-          builder: (context, state) =>
-              EnterpriseEvaluationScreen(id: state.pathParameters['id']!),
-        ),
         GoRoute(
           path: '${Screens.enterprise}_id=:id',
           name: Screens.enterprise,
@@ -180,24 +151,6 @@ final router = GoRouter(
       path: Screens.tasksToDo,
       name: Screens.tasksToDo,
       builder: (context, state) => const TasksToDoScreen(),
-    ),
-    GoRoute(
-      path: '${Screens.skillEvaluationMainScreen}_id=:id',
-      name: Screens.skillEvaluationMainScreen,
-      builder: (context, state) => SkillEvaluationMainScreen(
-        internshipId: state.pathParameters['id']!,
-        editMode: state.uri.queryParameters['editMode']! == '1',
-      ),
-    ),
-    GoRoute(
-      path: Screens.skillEvaluationFormScreen,
-      name: Screens.skillEvaluationFormScreen,
-      builder: (context, state) {
-        return SkillEvaluationFormScreen(
-          formController: state.extra as SkillEvaluationFormController,
-          editMode: state.uri.queryParameters['editMode']! == '1',
-        );
-      },
     ),
     GoRoute(
       path: Screens.attitudeEvaluationScreen,

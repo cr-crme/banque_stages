@@ -1,12 +1,14 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common_flutter/helpers/form_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:common_flutter/widgets/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/text_with_form.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:flutter/material.dart';
@@ -185,8 +187,9 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     final enterprise =
         EnterprisesProvider.of(context).fromId(widget.enterpriseId);
 
-    return Scaffold(
-      appBar: AppBar(
+    return ResponsiveService.scaffoldOf(
+      context,
+      appBar: ResponsiveService.appBarOf(context,
           title: const Text('Repérer les risques SST'),
           leading: IconButton(
               onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
@@ -200,6 +203,9 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
               ),
             )
           ]),
+      smallDrawer: null,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
       body: PopScope(
         child: SingleChildScrollView(
           child: Padding(

@@ -9,6 +9,8 @@ import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -67,11 +69,14 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(18))),
                         child: IconButton(
-                          onPressed: () => GoRouter.of(context).pushNamed(
-                            Screens.skillEvaluationMainScreen,
-                            pathParameters: Screens.params(internship.id),
-                            queryParameters: Screens.queryParams(editMode: '1'),
-                          ),
+                          onPressed: () => showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) => Dialog(
+                                      child: SkillEvaluationMainScreen(
+                                    internshipId: internship.id,
+                                    editMode: true,
+                                  ))),
                           icon: const Icon(Icons.add_chart_rounded),
                           color: Theme.of(context).colorScheme.primary,
                         ),
@@ -290,14 +295,19 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
       child: Center(
         child: OutlinedButton(
             onPressed: () {
-              GoRouter.of(context).pushNamed(Screens.skillEvaluationFormScreen,
-                  queryParameters: Screens.queryParams(editMode: '0'),
-                  extra: SkillEvaluationFormController.fromInternshipId(
-                    context,
-                    internshipId: widget.internship.id,
-                    evaluationIndex: _currentEvaluationIndex,
-                    canModify: false,
-                  ));
+              showDialog(
+                  context: context,
+                  builder: (context) => Dialog(
+                          child: SkillEvaluationFormScreen(
+                        formController:
+                            SkillEvaluationFormController.fromInternshipId(
+                          context,
+                          internshipId: widget.internship.id,
+                          evaluationIndex: _currentEvaluationIndex,
+                          canModify: false,
+                        ),
+                        editMode: false,
+                      )));
             },
             child: const Text('Voir l\'évaluation détaillée')),
       ),

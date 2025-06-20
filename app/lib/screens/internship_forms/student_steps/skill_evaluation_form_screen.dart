@@ -159,19 +159,14 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
-    return ResponsiveService.scaffoldOf(
-      context,
-      appBar: ResponsiveService.appBarOf(
-        context,
+    return Scaffold(
+      appBar: AppBar(
         title: Text(
             '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\n'
             'C1. Compétences spécifiques'),
         leading:
             IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
       ),
-      smallDrawer: null,
-      mediumDrawer: MainDrawer(iconOnly: true, showTitle: false),
-      largeDrawer: MainDrawer(showTitle: false),
       body: PopScope(
         child: student == null
             ? const Center(child: CircularProgressIndicator())

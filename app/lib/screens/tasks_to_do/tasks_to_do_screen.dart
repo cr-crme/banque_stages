@@ -11,6 +11,7 @@ import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.da
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -289,10 +290,12 @@ class _PostInternshipEvaluation extends StatelessWidget {
                     iconColor: Colors.blueGrey,
                     date: internship.endDate,
                     buttonTitle: 'Évaluer l\'entreprise',
-                    onTap: () => GoRouter.of(context).pushNamed(
-                      Screens.enterpriseEvaluationScreen,
-                      pathParameters: Screens.params(internship.id),
-                    ),
+                    onTap: () => showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => Dialog(
+                            child:
+                                EnterpriseEvaluationScreen(id: internship.id))),
                   );
                 },
               )),

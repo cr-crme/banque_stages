@@ -7,9 +7,8 @@ import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
-import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'pages/about_page.dart';
@@ -141,10 +140,11 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
       return;
     }
 
-    GoRouter.of(context).pushNamed(
-      Screens.internshipEnrollementFromEnterprise,
-      pathParameters: Screens.params(enterprise),
-    );
+    await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => Dialog(
+            child: InternshipEnrollmentScreen(enterpriseId: enterprise.id)));
   }
 
   @override

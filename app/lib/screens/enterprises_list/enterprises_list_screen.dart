@@ -11,6 +11,7 @@ import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/add_enterprise/add_enterprise_screen.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -55,7 +56,10 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
           onPressed: () {
             _withSearchBar = false;
             _enterpriseKey.currentState!.searchController.text = '';
-            GoRouter.of(context).goNamed(Screens.addEnterprise);
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => Dialog(child: AddEnterpriseScreen()));
           },
           tooltip: 'Ajouter une entreprise',
           icon: const Icon(Icons.add),
