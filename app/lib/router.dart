@@ -11,7 +11,6 @@ import 'package:crcrme_banque_stages/screens/students_list/students_list_screen.
 import 'package:crcrme_banque_stages/screens/supervision_chart/supervision_chart_screen.dart';
 import 'package:crcrme_banque_stages/screens/supervision_chart/supervision_student_details.dart';
 import 'package:crcrme_banque_stages/screens/tasks_to_do/tasks_to_do_screen.dart';
-import 'package:crcrme_banque_stages/screens/visiting_students/itinerary_screen.dart';
 import 'package:enhanced_containers/enhanced_containers.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,7 +18,6 @@ abstract class Screens {
   static const home = enterprisesList;
 
   static const login = LoginScreen.route;
-  static const itinerary = ItineraryMainScreen.route;
 
   static const tasksToDo = TasksToDoScreen.route;
 
@@ -125,11 +123,6 @@ final router = GoRouter(
           ),
         ),
       ],
-    ),
-    GoRoute(
-      path: Screens.itinerary,
-      name: Screens.itinerary,
-      builder: (context, state) => const ItineraryMainScreen(),
     ),
     GoRoute(
       path: Screens.tasksToDo,

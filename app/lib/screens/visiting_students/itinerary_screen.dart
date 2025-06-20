@@ -2,14 +2,12 @@ import 'package:common/models/generic/address.dart';
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/itineraries/waypoint.dart';
-import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/itineraries_helpers.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
-import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/routing_map.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/waypoint_card.dart';
 import 'package:flutter/material.dart';
@@ -98,31 +96,23 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveService.scaffoldOf(
-      context,
-      appBar: ResponsiveService.appBarOf(context,
-          title: const Text('Itinéraire des visites')),
-      smallDrawer: null,
-      mediumDrawer: MainDrawer.medium,
-      largeDrawer: MainDrawer.large,
-      body: RawScrollbar(
+    return RawScrollbar(
+      controller: _scrollController,
+      thumbVisibility: true,
+      thickness: 7,
+      minThumbLength: 75,
+      thumbColor: Theme.of(context).primaryColor,
+      radius: const Radius.circular(20),
+      child: SingleChildScrollView(
         controller: _scrollController,
-        thumbVisibility: true,
-        thickness: 7,
-        minThumbLength: 75,
-        thumbColor: Theme.of(context).primaryColor,
-        radius: const Radius.circular(20),
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          physics: const ScrollPhysics(),
-          child: FutureBuilder(
-            future: _fillAllWaypoints(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) const CircularProgressIndicator();
+        physics: const ScrollPhysics(),
+        child: FutureBuilder(
+          future: _fillAllWaypoints(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) const CircularProgressIndicator();
 
-              return ItineraryScreen(waypoints: _waypoints);
-            },
-          ),
+            return ItineraryScreen(waypoints: _waypoints);
+          },
         ),
       ),
     );
