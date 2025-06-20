@@ -3,23 +3,26 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/task_appreciation.dart';
 import 'package:common/services/job_data_file_service.dart';
-import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
-import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 import 'package:flutter/material.dart';
 
 class SkillEvaluationFormScreen extends StatefulWidget {
-  const SkillEvaluationFormScreen(
-      {super.key, required this.formController, required this.editMode});
+  const SkillEvaluationFormScreen({
+    super.key,
+    required this.rootContext,
+    required this.formController,
+    required this.editMode,
+  });
 
   static const route = '/skill_evaluation_form';
 
+  final BuildContext rootContext;
   final SkillEvaluationFormController formController;
   final bool editMode;
 
@@ -59,7 +62,6 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
   }
 
   void _cancel() async {
-    final navigator = Navigator.of(context);
     final answer = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'),
         isEditing: widget.editMode);
@@ -68,7 +70,9 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       widget.formController.dispose();
     });
-    navigator.pop();
+
+    if (!widget.rootContext.mounted) return;
+    Navigator.of(widget.rootContext).pop();
   }
 
   void _submit() async {
@@ -109,7 +113,9 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       widget.formController.dispose();
     });
-    Navigator.of(context).pop();
+
+    if (!widget.rootContext.mounted) return;
+    Navigator.of(widget.rootContext).pop();
   }
 
   Widget _controlBuilder(

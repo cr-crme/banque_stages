@@ -1,9 +1,6 @@
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/screens/enterprise/enterprise_screen.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/enterprises_list_screen.dart';
-import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
-import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_screen.dart';
-import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.dart';
 import 'package:crcrme_banque_stages/screens/login_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/incident_history_screen.dart';
@@ -28,7 +25,6 @@ abstract class Screens {
 
   static const enterprisesList = EnterprisesListScreen.route;
   static const enterprise = EnterpriseScreen.route;
-  static const jobSstForm = JobSstFormScreen.route;
 
   static const supervisionChart = SupervisionChart.route;
   static const supervisionStudentDetails =
@@ -36,8 +32,6 @@ abstract class Screens {
 
   static const studentsList = StudentsListScreen.route;
   static const student = StudentScreen.route;
-
-  static const attitudeEvaluationScreen = AttitudeEvaluationScreen.route;
 
   static const homeSst = HomeSstScreen.route;
   static const cardsSst = SstCardsScreen.route;
@@ -100,16 +94,6 @@ final router = GoRouter(
             id: state.pathParameters['id']!,
             pageIndex: int.parse(state.pathParameters['pageIndex'] ?? '0'),
           ),
-          routes: [
-            GoRoute(
-              path: ':jobId',
-              name: Screens.jobSstForm,
-              builder: (context, state) => JobSstFormScreen(
-                enterpriseId: state.pathParameters['id']!,
-                jobId: state.pathParameters['jobId']!,
-              ),
-            ),
-          ],
         ),
       ],
     ),
@@ -151,14 +135,6 @@ final router = GoRouter(
       path: Screens.tasksToDo,
       name: Screens.tasksToDo,
       builder: (context, state) => const TasksToDoScreen(),
-    ),
-    GoRoute(
-      path: Screens.attitudeEvaluationScreen,
-      name: Screens.attitudeEvaluationScreen,
-      builder: (context, state) => AttitudeEvaluationScreen(
-        formController: state.extra as AttitudeEvaluationFormController,
-        editMode: state.uri.queryParameters['editMode'] == '1',
-      ),
     ),
     GoRoute(
       path: Screens.homeSst,

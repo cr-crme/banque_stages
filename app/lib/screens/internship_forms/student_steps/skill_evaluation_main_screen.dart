@@ -14,12 +14,35 @@ import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skil
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+Future<T?> showSkillEvaluationDialog<T>(
+    {required BuildContext context,
+    required String internshipId,
+    required bool editMode}) async {
+  return await showDialog<T>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Navigator(
+          onGenerateRoute: (settings) => MaterialPageRoute(
+                builder: (ctx) => Dialog(
+                  child: SkillEvaluationMainScreen(
+                    rootContext: context,
+                    internshipId: internshipId,
+                    editMode: editMode,
+                  ),
+                ),
+              )));
+}
+
 class SkillEvaluationMainScreen extends StatefulWidget {
   const SkillEvaluationMainScreen(
-      {super.key, required this.internshipId, required this.editMode});
+      {super.key,
+      required this.rootContext,
+      required this.internshipId,
+      required this.editMode});
 
   static const route = '/skill_evaluation';
 
+  final BuildContext rootContext;
   final String internshipId;
   final bool editMode;
 
@@ -48,14 +71,14 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   }
 
   void _cancel() async {
-    final navigator = Navigator.of(context);
     final answer = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'),
         isEditing: widget.editMode);
     if (!mounted || !answer) return;
 
     _formController.dispose();
-    navigator.pop();
+    if (!widget.rootContext.mounted) return;
+    Navigator.of(widget.rootContext).pop();
   }
 
   @override
@@ -99,6 +122,7 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
                         editMode: widget.editMode,
                       ),
                       _StartEvaluation(
+                        rootContext: widget.rootContext,
                         formController: _formController,
                         editMode: widget.editMode,
                       ),
@@ -480,8 +504,11 @@ class _JobToEvaluateState extends State<_JobToEvaluate> {
 
 class _StartEvaluation extends StatelessWidget {
   const _StartEvaluation(
-      {required this.formController, required this.editMode});
+      {required this.rootContext,
+      required this.formController,
+      required this.editMode});
 
+  final BuildContext rootContext;
   final SkillEvaluationFormController formController;
   final bool editMode;
 
@@ -494,10 +521,10 @@ class _StartEvaluation extends StatelessWidget {
         child: TextButton(
             onPressed: () {
               formController.setWereAtMeeting();
-              // TODO fix navigator in a dialog
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => Dialog(
                           child: SkillEvaluationFormScreen(
+                        rootContext: rootContext,
                         formController: formController,
                         editMode: editMode,
                       ))));

@@ -12,6 +12,7 @@ import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
+import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -201,17 +202,15 @@ class _SstRisk extends StatelessWidget {
                   final internship = e.internship!;
 
                   return _TaskTile(
-                      title: enterprise.name,
-                      subtitle: job.specialization.name,
-                      icon: Icons.warning,
-                      iconColor: Theme.of(context).colorScheme.secondary,
-                      date: internship.dates.start,
-                      buttonTitle: 'Remplir le\nquestionnaire SST',
-                      onTap: () => GoRouter.of(context).pushNamed(
-                            Screens.jobSstForm,
-                            pathParameters:
-                                Screens.params(enterprise, jobId: job),
-                          ));
+                    title: enterprise.name,
+                    subtitle: job.specialization.name,
+                    icon: Icons.warning,
+                    iconColor: Theme.of(context).colorScheme.secondary,
+                    date: internship.dates.start,
+                    buttonTitle: 'Remplir le\nquestionnaire SST',
+                    onTap: () => showJobSstFormDialog(context,
+                        enterpriseId: enterprise.id, jobId: job.id),
+                  );
                 },
               )),
       ],

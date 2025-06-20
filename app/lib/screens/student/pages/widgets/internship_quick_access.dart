@@ -7,6 +7,7 @@ import 'package:crcrme_banque_stages/common/widgets/dialogs/finalize_internship_
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_screen.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -67,14 +68,10 @@ class InternshipQuickAccess extends StatelessWidget {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(18))),
                           child: IconButton(
-                            onPressed: () => showDialog(
+                            onPressed: () => showSkillEvaluationDialog(
                                 context: context,
-                                barrierDismissible: false,
-                                builder: (context) => Dialog(
-                                        child: SkillEvaluationMainScreen(
-                                      internshipId: internshipId,
-                                      editMode: true,
-                                    ))),
+                                internshipId: internshipId,
+                                editMode: true),
                             icon: const Icon(Icons.add_chart_rounded),
                             color: Theme.of(context).colorScheme.primary,
                           ),
@@ -98,12 +95,12 @@ class InternshipQuickAccess extends StatelessWidget {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(18))),
                           child: IconButton(
-                            onPressed: () => GoRouter.of(context).pushNamed(
-                                Screens.attitudeEvaluationScreen,
-                                queryParameters:
-                                    Screens.queryParams(editMode: '1'),
-                                extra: AttitudeEvaluationFormController(
-                                    internshipId: internshipId)),
+                            onPressed: () => showAttitudeEvaluationDialog(
+                                context: context,
+                                formController:
+                                    AttitudeEvaluationFormController(
+                                        internshipId: internshipId),
+                                editMode: true),
                             icon: const Icon(Icons.playlist_add_sharp),
                             color: Theme.of(context).colorScheme.primary,
                           ),

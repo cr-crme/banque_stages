@@ -2,9 +2,8 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
-import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class SstExpansionPanel extends ExpansionPanel {
@@ -53,10 +52,8 @@ class _SstBody extends StatelessWidget {
             _buildAnswers(context),
             Center(
               child: TextButton(
-                onPressed: () => GoRouter.of(context).pushNamed(
-                  Screens.jobSstForm,
-                  pathParameters: Screens.params(enterprise, jobId: job),
-                ),
+                onPressed: () => showJobSstFormDialog(context,
+                    enterpriseId: enterprise.id, jobId: job.id),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Text(

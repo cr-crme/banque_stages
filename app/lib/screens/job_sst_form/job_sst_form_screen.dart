@@ -1,28 +1,46 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common_flutter/helpers/form_service.dart';
-import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:common_flutter/widgets/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/text_with_form.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
-import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+Future<T?> showJobSstFormDialog<T>(
+  BuildContext context, {
+  required String enterpriseId,
+  required String jobId,
+}) {
+  return showDialog<T>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Navigator(
+          onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (ctx) => Dialog(
+                      child: JobSstFormScreen(
+                    rootContext: context,
+                    enterpriseId: enterpriseId,
+                    jobId: jobId,
+                  )))));
+}
+
 class JobSstFormScreen extends StatefulWidget {
   const JobSstFormScreen({
     super.key,
+    required this.rootContext,
     required this.enterpriseId,
     required this.jobId,
   });
 
   static const route = '/job-sst-form';
 
+  final BuildContext rootContext;
   final String enterpriseId;
   final String jobId;
 
@@ -50,17 +68,19 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     enterprises.replaceJob(widget.enterpriseId,
         enterprises[widget.enterpriseId].jobs[widget.jobId]);
 
-    Navigator.pop(context);
+    if (!widget.rootContext.mounted) return;
+    Navigator.of(widget.rootContext).pop();
   }
 
   void _cancel() async {
-    final navigator = Navigator.of(context);
     final answer = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'));
-    if (!mounted || !answer) return;
+    // If the user cancelled the closing of the dialog, we do nothing
+    if (!answer) return;
 
-    if (!answer || !mounted) return;
-    navigator.pop();
+    // If the user confirmed, we close the dialog and return to the previous screen
+    if (!widget.rootContext.mounted) return;
+    Navigator.of(widget.rootContext).pop();
   }
 
   void _showHelp({required bool force}) async {
@@ -187,9 +207,8 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     final enterprise =
         EnterprisesProvider.of(context).fromId(widget.enterpriseId);
 
-    return ResponsiveService.scaffoldOf(
-      context,
-      appBar: ResponsiveService.appBarOf(context,
+    return Scaffold(
+      appBar: AppBar(
           title: const Text('Repérer les risques SST'),
           leading: IconButton(
               onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
@@ -203,9 +222,6 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
               ),
             )
           ]),
-      smallDrawer: null,
-      mediumDrawer: MainDrawer.medium,
-      largeDrawer: MainDrawer.large,
       body: PopScope(
         child: SingleChildScrollView(
           child: Padding(
