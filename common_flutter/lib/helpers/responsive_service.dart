@@ -62,7 +62,11 @@ class ResponsiveService {
     final screenSize = ResponsiveService.getScreenSize(context);
 
     return Scaffold(
-      appBar: appBar,
+      appBar:
+          (screenSize == ScreenSize.large && largeDrawer != null) ||
+                  (screenSize == ScreenSize.medium && mediumDrawer != null)
+              ? null
+              : appBar,
       drawer:
           smallDrawer != null && screenSize == ScreenSize.small
               ? smallDrawer
@@ -76,9 +80,12 @@ class ResponsiveService {
                 children: [
                   mediumDrawer,
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 4.0),
-                      child: body,
+                    child: Scaffold(
+                      appBar: appBar,
+                      body: Padding(
+                        padding: const EdgeInsets.only(right: 4.0),
+                        child: body,
+                      ),
                     ),
                   ),
                 ],
@@ -91,17 +98,20 @@ class ResponsiveService {
                 children: [
                   largeDrawer,
                   Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        if (constraints.maxWidth < maxBodyWidth) return body;
-                        return Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal:
-                                (constraints.maxWidth - maxBodyWidth) / 2,
-                          ),
-                          child: body,
-                        );
-                      },
+                    child: Scaffold(
+                      appBar: appBar,
+                      body: LayoutBuilder(
+                        builder: (context, constraints) {
+                          if (constraints.maxWidth < maxBodyWidth) return body;
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  (constraints.maxWidth - maxBodyWidth) / 2,
+                            ),
+                            child: body,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],

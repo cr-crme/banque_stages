@@ -13,20 +13,22 @@ import 'package:go_router/go_router.dart';
 class MainDrawer extends StatelessWidget {
   const MainDrawer({
     super.key,
-    this.iconOnly = false,
     this.showTitle = true,
+    this.iconOnly = false,
     this.canPop = true,
+    this.roundedCorners = true,
   });
 
   static MainDrawer get small => const MainDrawer();
   static MainDrawer get medium =>
-      const MainDrawer(iconOnly: true, showTitle: false, canPop: false);
+      const MainDrawer(iconOnly: true, canPop: false, roundedCorners: false);
   static MainDrawer get large =>
-      const MainDrawer(showTitle: false, canPop: false);
+      const MainDrawer(canPop: false, roundedCorners: false);
 
   final bool showTitle;
   final bool iconOnly;
   final bool canPop;
+  final bool roundedCorners;
 
   void _logOut(BuildContext context) async {
     await AuthProvider.of(context).signOut();
@@ -56,9 +58,23 @@ class MainDrawer extends StatelessWidget {
 
     return Drawer(
       width: iconOnly ? 120.0 : null,
+      shape: roundedCorners
+          ? null
+          : RoundedRectangleBorder(borderRadius: BorderRadius.circular(0.0)),
       child: Scaffold(
-        appBar:
-            showTitle ? AppBar(title: const Text('Banque de Stages')) : null,
+        appBar: showTitle
+            ? AppBar(
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.menu),
+                    SizedBox(width: 8.0),
+                    if (!iconOnly) const Text('Menu'),
+                  ],
+                ),
+                automaticallyImplyLeading: false,
+              )
+            : null,
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
