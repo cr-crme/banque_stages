@@ -292,7 +292,6 @@ class _PersonalNotes extends StatefulWidget {
 }
 
 class _PersonalNotesState extends State<_PersonalNotes> {
-  late final _focusNode = FocusNode()..addListener(_sendComments);
   late final _textController = TextEditingController()
     ..text = widget.internship.teacherNotes;
 
@@ -305,10 +304,11 @@ class _PersonalNotesState extends State<_PersonalNotes> {
 
   @override
   void dispose() {
-    _focusNode.dispose();
     _textController.dispose();
     super.dispose();
   }
+
+  bool _editMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -316,26 +316,49 @@ class _PersonalNotesState extends State<_PersonalNotes> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Particularités du stage à connaitre'),
-        const Padding(
-          padding: EdgeInsets.only(left: 32.0, bottom: 8),
-          child: Text('(ex. entrer par la porte 5 réservée au personnel, ...)'),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 32.0, bottom: 8),
+              child: Text(
+                  '(ex. entrer par la porte 5 réservée au personnel, ...)'),
+            ),
+            IconButton(
+                onPressed: () => setState(() {
+                      _editMode = !_editMode;
+                      if (!_editMode) _sendComments();
+                    }),
+                icon: Icon(
+                  _editMode ? Icons.save : Icons.edit,
+                  color: Theme.of(context).primaryColor,
+                ))
+          ],
         ),
         Padding(
           padding: const EdgeInsets.only(left: 32.0),
           child: Container(
             width: MediaQuery.of(context).size.width * 5 / 6,
-            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-              ),
-              keyboardType: TextInputType.multiline,
-              minLines: 4,
-              maxLines: null,
-              focusNode: _focusNode,
-              controller: _textController,
-            ),
+            decoration: _editMode
+                ? BoxDecoration(border: Border.all(color: Colors.grey))
+                : null,
+            child: _editMode
+                ? TextField(
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    minLines: 4,
+                    maxLines: null,
+                    controller: _textController,
+                  )
+                : Text(
+                    _textController.text.isEmpty
+                        ? 'Aucun commentaire'
+                        : _textController.text,
+                    style: const TextStyle(fontStyle: FontStyle.italic)),
           ),
         ),
       ],
