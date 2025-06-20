@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/services/job_data_file_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
@@ -8,6 +9,7 @@ import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:common_flutter/widgets/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
@@ -66,14 +68,20 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
     final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
-    return Scaffold(
-      appBar: AppBar(
+    return ResponsiveService.scaffoldOf(
+      context,
+      appBar: ResponsiveService.appBarOf(
+        context,
         title: Text(
             '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\n'
             'C1. Compétences spécifiques'),
-        leading:
-            IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
+        leading: IconButton(
+            onPressed: Navigator.of(context).pop,
+            icon: const Icon(Icons.arrow_back)),
       ),
+      smallDrawer: null,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
       body: PopScope(
         child: student == null
             ? const Center(child: CircularProgressIndicator())

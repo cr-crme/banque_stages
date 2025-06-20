@@ -11,11 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer(
-      {super.key,
-      this.iconOnly = false,
-      this.showTitle = true,
-      this.canPop = true});
+  const MainDrawer({
+    super.key,
+    this.iconOnly = false,
+    this.showTitle = true,
+    this.canPop = true,
+  });
 
   static MainDrawer get small => const MainDrawer();
   static MainDrawer get medium =>
@@ -54,7 +55,7 @@ class MainDrawer extends StatelessWidget {
     final authProvider = AuthProvider.of(context, listen: false);
 
     return Drawer(
-      width: iconOnly ? 100.0 : null,
+      width: iconOnly ? 120.0 : null,
       child: Scaffold(
         appBar:
             showTitle ? AppBar(title: const Text('Banque de Stages')) : null,
@@ -180,34 +181,22 @@ class _DrawerItem extends StatelessWidget {
     return Card(
       child: Container(
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.0),
           color: isCurrentlySelectedTile
               ? Theme.of(context).primaryColor.withAlpha(40)
               : null,
-          borderRadius: BorderRadius.circular(12.0),
         ),
-        child: iconOnly
-            ? IconButton(
-                onPressed: onPressed,
-                icon: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 4.0, right: 4.0, bottom: 4.0, left: 6.0),
-                      child: leadingIcon,
-                    ),
-                    trailing ?? const SizedBox.shrink(),
-                  ],
-                ))
-            : ListTile(
-                onTap: onPressed,
-                leading: leadingIcon,
-                title: Text(
+        child: ListTile(
+          onTap: onPressed,
+          leading: leadingIcon,
+          title: iconOnly
+              ? null
+              : Text(
                   titleText,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                trailing: trailing,
-              ),
+          trailing: trailing,
+        ),
       ),
     );
   }

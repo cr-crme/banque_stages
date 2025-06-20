@@ -1,10 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
@@ -141,13 +143,17 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
     final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
-    return Scaffold(
-        appBar: AppBar(
+    return ResponsiveService.scaffoldOf(context,
+        appBar: ResponsiveService.appBarOf(
+          context,
           title: Text(
               '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\nC2. Attitudes - Comportements'),
           leading: IconButton(
               onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
         ),
+        smallDrawer: null,
+        mediumDrawer: MainDrawer.medium,
+        largeDrawer: MainDrawer.large,
         body: PopScope(
           child: student == null
               ? const Center(child: CircularProgressIndicator())
