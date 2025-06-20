@@ -11,6 +11,14 @@ extension StudentsExtension on Student {
     return false;
   }
 
-  Widget get avatar =>
-      CircleAvatar(backgroundColor: Color(int.parse(photo)).withAlpha(255));
+  Widget get avatar {
+    final color = int.tryParse(photo);
+    if (color == null) {
+      throw Exception('Avatar cannot be created from photo: $photo. ');
+    }
+
+    return CircleAvatar(
+        backgroundColor: Color(int.parse(photo)).withAlpha(255),
+        child: Text(initials));
+  }
 }

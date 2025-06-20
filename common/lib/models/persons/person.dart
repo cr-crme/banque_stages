@@ -113,6 +113,14 @@ class Person extends ExtendedItemSerializable {
   /// Full name without the middle name
   String get fullName => '$firstName${lastName.isEmpty ? '' : ' $lastName'}';
 
+  ///
+  /// Initials of the first and last name
+  String get initials {
+    final firstInitial = firstName.isNotEmpty ? firstName[0].toUpperCase() : '';
+    final lastInitial = lastName.isNotEmpty ? lastName[0].toUpperCase() : '';
+    return '$firstInitial$lastInitial';
+  }
+
   @override
   String toString() =>
       '$firstName${middleName == null ? '' : ' $middleName'}${lastName.isEmpty ? '' : ' $lastName'}';
