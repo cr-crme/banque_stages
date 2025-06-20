@@ -3,14 +3,12 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/schedule.dart';
-import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/students_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/time_of_day_extension.dart';
-import 'package:crcrme_banque_stages/common/extensions/visiting_priorities_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
@@ -149,7 +147,7 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
                       child: Center(child: Text('Aucun stage pour l\'élève')),
                     ),
                   if (internship != null)
-                    _VisitingPriority(
+                    _IsOver(
                       studentId: studentId,
                       onTapGoToInternship: () =>
                           _navigateToStudentInternship(context),
@@ -230,8 +228,8 @@ Widget _buildProtections(BuildContext context, Job job) {
   );
 }
 
-class _VisitingPriority extends StatefulWidget {
-  const _VisitingPriority({
+class _IsOver extends StatelessWidget {
+  const _IsOver({
     required this.studentId,
     required this.onTapGoToInternship,
   });
@@ -240,61 +238,15 @@ class _VisitingPriority extends StatefulWidget {
   final Function() onTapGoToInternship;
 
   @override
-  State<_VisitingPriority> createState() => _VisitingPriorityState();
-}
-
-class _VisitingPriorityState extends State<_VisitingPriority> {
-  final _visibilityFilters = [
-    VisitingPriority.high,
-    VisitingPriority.mid,
-    VisitingPriority.low
-  ];
-
-  void _updatePriority(VisitingPriority newPriority) {
-    final internships = InternshipsProvider.of(context, listen: false);
-    final studentInternships = internships.byStudentId(widget.studentId);
-    if (studentInternships.isEmpty) return;
-    internships.replacePriority(widget.studentId, newPriority);
-
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final internships =
-        InternshipsProvider.of(context).byStudentId(widget.studentId);
+    final internships = InternshipsProvider.of(context).byStudentId(studentId);
     if (internships.isEmpty) return Container();
 
     final internship = internships.last;
     final isOver = internship.dates.end.compareTo(DateTime.now()) < 1;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SubTitle('Niveau de priorité pour les visites'),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: _visibilityFilters.map<Widget>((priority) {
-            return InkWell(
-              onTap: () => _updatePriority(priority),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Checkbox(
-                    value: priority == internship.visitingPriority,
-                    onChanged: (value) => _updatePriority(priority),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25),
-                    child: Icon(priority.icon, color: priority.color),
-                  )
-                ],
-              ),
-            );
-          }).toList(),
-        ),
-        if (isOver)
-          Center(
+    return isOver
+        ? Center(
             child: Column(
               children: [
                 const SizedBox(height: 8),
@@ -315,7 +267,7 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                    onPressed: widget.onTapGoToInternship,
+                    onPressed: onTapGoToInternship,
                     child: Text(
                       'Aller au stage',
                       style: Theme.of(context)
@@ -325,9 +277,8 @@ class _VisitingPriorityState extends State<_VisitingPriority> {
                     ))
               ],
             ),
-          ),
-      ],
-    );
+          )
+        : SizedBox.shrink();
   }
 }
 
@@ -346,7 +297,6 @@ class _PersonalNotesState extends State<_PersonalNotes> {
     ..text = widget.internship.teacherNotes;
 
   void _sendComments() {
-    // TODO: This automatically sends the comment which causes a race condition focus out by changing priority
     final internships = InternshipsProvider.of(context, listen: false);
     if (_textController.text == widget.internship.teacherNotes) return;
     internships.updateTeacherNote(
