@@ -78,7 +78,7 @@ void main() {
       // Add the fourth student to the supervising list of the teacher
       internships
           .firstWhere((e) => e.studentId == 'notYetMyStudent')
-          .addSupervisingTeacher(context,
+          .copyWithTeacher(context,
               teacherId: TeachersProvider.of(context).myTeacher?.id ??
                   'FailedToGetId');
       expect(
@@ -105,7 +105,7 @@ void main() {
       expect(
           () => internships
               .firstWhere((e) => e.studentId == 'neverMyStudent2')
-              .addSupervisingTeacher(context,
+              .copyWithTeacher(context,
                   teacherId: TeachersProvider.of(context).myTeacher?.id ??
                       'FailedToGetId'),
           throwsException);

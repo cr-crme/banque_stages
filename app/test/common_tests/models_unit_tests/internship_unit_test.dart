@@ -105,12 +105,14 @@ void main() {
       expect(internship.supervisingTeacherIds.length, 1);
       expect(internship.supervisingTeacherIds, ['teacherId']);
 
-      internship.addSupervisingTeacher(context, teacherId: 'extraTeacherId');
+      InternshipsProvider.of(context, listen: false).replace(
+          internship.copyWithTeacher(context, teacherId: 'extraTeacherId'));
       internship = InternshipsProvider.of(context, listen: false)[0];
       expect(internship.supervisingTeacherIds.length, 2);
       expect(internship.supervisingTeacherIds, ['teacherId', 'extraTeacherId']);
 
-      internship.removeSupervisingTeacher(context, teacherId: 'extraTeacherId');
+      InternshipsProvider.of(context, listen: false).replace(
+          internship.copyWithoutTeacher(context, teacherId: 'extraTeacherId'));
       internship = InternshipsProvider.of(context, listen: false)[0];
 
       expect(internship.supervisingTeacherIds.length, 1);
@@ -119,8 +121,7 @@ void main() {
       // Prevent from adding a teacher which is not related to a group
       teachers.add(dummyTeacher(id: 'bannedTeacher', groups: ['103']));
       expect(
-          () => internship.addSupervisingTeacher(context,
-              teacherId: 'bannedTeacher'),
+          () => internship.copyWithTeacher(context, teacherId: 'bannedTeacher'),
           throwsException);
       expect(internship.supervisingTeacherIds.length, 1);
       expect(internship.supervisingTeacherIds, ['teacherId']);

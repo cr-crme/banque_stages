@@ -1,18 +1,17 @@
 import 'package:common/models/internships/internship.dart';
-import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 
 extension InternshipExtension on Internship {
-  void addSupervisingTeacher(context, {required String teacherId}) {
+  Internship copyWithTeacher(context, {required String teacherId}) {
     if (teacherId == signatoryTeacherId ||
         supervisingTeacherIds.contains(teacherId)) {
       // If the teacher is already assigned, do nothing
-      return;
+      return this;
     }
 
     // Make sure the student is in a group supervised by the teacher
-    final students = StudentsProvider.of(context);
+    final students = StudentsProvider.of(context, listen: false);
     final student = students.firstWhere((e) => e.id == studentId);
     final teacher = TeachersProvider.of(context, listen: false)[teacherId];
     if (!teacher.groups.contains(student.group)) {
@@ -20,25 +19,20 @@ extension InternshipExtension on Internship {
           'The teacher ${teacher.fullName} is not assigned to the group ${student.group}');
     }
 
-    InternshipsProvider.of(context, listen: false).replace(
-      copyWith(
-        extraSupervisingTeacherIds: [...extraSupervisingTeacherIds, teacherId],
-      ),
+    return copyWith(
+      extraSupervisingTeacherIds: [...extraSupervisingTeacherIds, teacherId],
     );
   }
 
-  void removeSupervisingTeacher(context, {required String teacherId}) {
+  Internship copyWithoutTeacher(context, {required String teacherId}) {
     if (teacherId == signatoryTeacherId ||
         !supervisingTeacherIds.contains(teacherId)) {
       // If the teacher is not assigned, do nothing
-      return;
+      return this;
     }
 
-    InternshipsProvider.of(context, listen: false).replace(
-      copyWith(
-          extraSupervisingTeacherIds: extraSupervisingTeacherIds
-              .where((id) => id != teacherId)
-              .toList()),
-    );
+    return copyWith(
+        extraSupervisingTeacherIds:
+            extraSupervisingTeacherIds.where((id) => id != teacherId).toList());
   }
 }

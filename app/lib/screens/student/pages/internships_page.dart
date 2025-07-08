@@ -188,15 +188,12 @@ class _StudentInternshipListViewState
                     child: InkWell(
                       borderRadius: BorderRadius.circular(25),
                       onTap: canChangeSupervisingStatus
-                          ? () {
-                              if (_isSupervisingInternship(internship)) {
-                                internship.removeSupervisingTeacher(context,
-                                    teacherId: myId);
-                              } else {
-                                internship.addSupervisingTeacher(context,
-                                    teacherId: myId);
-                              }
-                            }
+                          ? () => InternshipsProvider.of(context, listen: false)
+                              .replace(_isSupervisingInternship(internship)
+                                  ? internship.copyWithoutTeacher(context,
+                                      teacherId: myId)
+                                  : internship.copyWithTeacher(context,
+                                      teacherId: myId))
                           : null,
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),

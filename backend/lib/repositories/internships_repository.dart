@@ -501,7 +501,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     if (differences.contains('achieved_duration')) {
       toUpdate['achieved_duration'] = internship.achievedDuration.serialize();
     }
-    if (differences.contains('visiting_priority')) {
+    if (differences.contains('priority')) {
       toUpdate['visiting_priority'] = internship.visitingPriority.serialize();
     }
     if (differences.contains('teacher_notes')) {
