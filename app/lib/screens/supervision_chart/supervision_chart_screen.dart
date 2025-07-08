@@ -272,7 +272,7 @@ class _SupervisionChartState extends State<SupervisionChart>
                       onChanged: (value) => setState(
                           () => _visibilityFilters[priority] = value!)),
                   Padding(
-                    padding: const EdgeInsets.only(right: 25),
+                    padding: const EdgeInsets.only(right: 15),
                     child: Icon(priority.icon, color: priority.color),
                   )
                 ],

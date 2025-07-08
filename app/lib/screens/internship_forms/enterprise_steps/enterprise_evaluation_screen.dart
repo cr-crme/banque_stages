@@ -1,5 +1,6 @@
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
@@ -160,56 +161,60 @@ class _EnterpriseEvaluationScreenState
     final internships = InternshipsProvider.of(context, listen: false);
     final internship = internships.firstWhere((e) => e.id == widget.id);
 
-    return Scaffold(
-      appBar: AppBar(
-          title: const Text('Évaluation post-stage'),
-          leading: IconButton(
-              onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
-      body: PopScope(
-        child: Selector<EnterprisesProvider, Job>(
-          builder: (context, job, _) => ScrollableStepper(
-            type: StepperType.horizontal,
-            scrollController: _scrollController,
-            currentStep: _currentStep,
-            onTapContinue: _nextStep,
-            onStepTapped: (int tapped) => setState(() {
-              _scrollController.jumpTo(0);
-              _currentStep = tapped;
-            }),
-            onTapCancel: () => Navigator.pop(context),
-            steps: [
-              Step(
-                state: _stepStatus[0],
-                isActive: _currentStep == 0,
-                title: const Text(
-                  'Tâches et\nhabiletés',
-                  textAlign: TextAlign.center,
+    return SizedBox(
+      width: ResponsiveService.maxBodyWidth,
+      child: Scaffold(
+        appBar: AppBar(
+            title: const Text('Évaluation post-stage'),
+            leading: IconButton(
+                onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
+        body: PopScope(
+          child: Selector<EnterprisesProvider, Job>(
+            builder: (context, job, _) => ScrollableStepper(
+              type: StepperType.horizontal,
+              scrollController: _scrollController,
+              currentStep: _currentStep,
+              onTapContinue: _nextStep,
+              onStepTapped: (int tapped) => setState(() {
+                _scrollController.jumpTo(0);
+                _currentStep = tapped;
+              }),
+              onTapCancel: () => Navigator.pop(context),
+              steps: [
+                Step(
+                  state: _stepStatus[0],
+                  isActive: _currentStep == 0,
+                  title: const Text(
+                    'Tâches et\nhabiletés',
+                    textAlign: TextAlign.center,
+                  ),
+                  content: TaskAndAbilityStep(
+                    key: _taskAndAbilityKey,
+                    internship: internship,
+                  ),
                 ),
-                content: TaskAndAbilityStep(
-                  key: _taskAndAbilityKey,
-                  internship: internship,
+                Step(
+                  state: _stepStatus[1],
+                  isActive: _currentStep == 1,
+                  title: const Text('Encadrement'),
+                  content: SupervisionStep(
+                    key: _supervisionKey,
+                    job: job,
+                  ),
                 ),
-              ),
-              Step(
-                state: _stepStatus[1],
-                isActive: _currentStep == 1,
-                title: const Text('Encadrement'),
-                content: SupervisionStep(
-                  key: _supervisionKey,
-                  job: job,
+                Step(
+                  state: _stepStatus[2],
+                  isActive: _currentStep == 2,
+                  title: const Text('Clientèle\nspécialisée'),
+                  content:
+                      SpecializedStudentsStep(key: _specializedStudentsKey),
                 ),
-              ),
-              Step(
-                state: _stepStatus[2],
-                isActive: _currentStep == 2,
-                title: const Text('Clientèle\nspécialisée'),
-                content: SpecializedStudentsStep(key: _specializedStudentsKey),
-              ),
-            ],
-            controlsBuilder: _controlBuilder,
+              ],
+              controlsBuilder: _controlBuilder,
+            ),
+            selector: (context, enterprises) =>
+                enterprises[internship.enterpriseId].jobs[internship.jobId],
           ),
-          selector: (context, enterprises) =>
-              enterprises[internship.enterpriseId].jobs[internship.jobId],
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/task_appreciation.dart';
 import 'package:common/services/job_data_file_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
@@ -165,57 +166,61 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
     final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-            '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\n'
-            'C1. Compétences spécifiques'),
-        leading:
-            IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
-      ),
-      body: PopScope(
-        child: student == null
-            ? const Center(child: CircularProgressIndicator())
-            : ScrollableStepper(
-                scrollController: _scrollController,
-                type: StepperType.vertical,
-                currentStep: _currentStep,
-                onTapContinue: _nextStep,
-                onStepTapped: (int tapped) => setState(() {
-                  _currentStep = tapped;
-                  _scrollToCurrentTab();
-                }),
-                onTapCancel: _cancel,
-                steps: [
-                  ...skills.map((skill) => Step(
-                        isActive: true,
-                        state: widget.formController.appreciations[skill.id] ==
-                                SkillAppreciation.notSelected
-                            ? StepState.indexed
-                            : StepState.complete,
-                        title: SubTitle(
-                            '${skill.id}${skill.isOptional ? ' (Facultative)' : ''}',
-                            top: 0,
-                            bottom: 0),
-                        content: _EvaluateSkill(
-                          formController: widget.formController,
-                          skill: skill,
-                          editMode: widget.editMode,
-                        ),
-                      )),
-                  Step(
-                    isActive: true,
-                    title: const SubTitle('Commentaires', top: 0, bottom: 0),
-                    content: _Comments(
-                      formController: widget.formController,
-                      editMode: widget.editMode,
-                    ),
-                  )
-                ],
-                controlsBuilder:
-                    (BuildContext context, ControlsDetails details) =>
-                        _controlBuilder(context, details, skills),
-              ),
+    return SizedBox(
+      width: ResponsiveService.maxBodyWidth,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+              '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\n'
+              'C1. Compétences spécifiques'),
+          leading: IconButton(
+              onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
+        ),
+        body: PopScope(
+          child: student == null
+              ? const Center(child: CircularProgressIndicator())
+              : ScrollableStepper(
+                  scrollController: _scrollController,
+                  type: StepperType.vertical,
+                  currentStep: _currentStep,
+                  onTapContinue: _nextStep,
+                  onStepTapped: (int tapped) => setState(() {
+                    _currentStep = tapped;
+                    _scrollToCurrentTab();
+                  }),
+                  onTapCancel: _cancel,
+                  steps: [
+                    ...skills.map((skill) => Step(
+                          isActive: true,
+                          state:
+                              widget.formController.appreciations[skill.id] ==
+                                      SkillAppreciation.notSelected
+                                  ? StepState.indexed
+                                  : StepState.complete,
+                          title: SubTitle(
+                              '${skill.id}${skill.isOptional ? ' (Facultative)' : ''}',
+                              top: 0,
+                              bottom: 0),
+                          content: _EvaluateSkill(
+                            formController: widget.formController,
+                            skill: skill,
+                            editMode: widget.editMode,
+                          ),
+                        )),
+                    Step(
+                      isActive: true,
+                      title: const SubTitle('Commentaires', top: 0, bottom: 0),
+                      content: _Comments(
+                        formController: widget.formController,
+                        editMode: widget.editMode,
+                      ),
+                    )
+                  ],
+                  controlsBuilder:
+                      (BuildContext context, ControlsDetails details) =>
+                          _controlBuilder(context, details, skills),
+                ),
+        ),
       ),
     );
   }

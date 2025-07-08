@@ -1,6 +1,7 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common_flutter/helpers/form_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:common_flutter/widgets/radio_with_follow_up.dart';
@@ -207,35 +208,38 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     final enterprise =
         EnterprisesProvider.of(context).fromId(widget.enterpriseId);
 
-    return Scaffold(
-      appBar: AppBar(
-          title: const Text('Repérer les risques SST'),
-          leading: IconButton(
-              onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
-          actions: [
-            InkWell(
-              onTap: () => _showHelp(force: true),
-              borderRadius: BorderRadius.circular(25),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Icon(Icons.info),
-              ),
-            )
-          ]),
-      body: PopScope(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                QuestionsStep(
-                  key: _questionsKey,
-                  enterprise: enterprise,
-                  job: enterprise.jobs[widget.jobId],
+    return SizedBox(
+      width: ResponsiveService.maxBodyWidth,
+      child: Scaffold(
+        appBar: AppBar(
+            title: const Text('Repérer les risques SST'),
+            leading: IconButton(
+                onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
+            actions: [
+              InkWell(
+                onTap: () => _showHelp(force: true),
+                borderRadius: BorderRadius.circular(25),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Icon(Icons.info),
                 ),
-                _controlBuilder(),
-              ],
+              )
+            ]),
+        body: PopScope(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  QuestionsStep(
+                    key: _questionsKey,
+                    enterprise: enterprise,
+                    job: enterprise.jobs[widget.jobId],
+                  ),
+                  _controlBuilder(),
+                ],
+              ),
             ),
           ),
         ),

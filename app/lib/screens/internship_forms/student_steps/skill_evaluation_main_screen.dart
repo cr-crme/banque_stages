@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/services/job_data_file_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
@@ -88,48 +89,51 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
     final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == internship.studentId);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-            '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\n'
-            'C1. Compétences spécifiques'),
-        leading:
-            IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
-      ),
-      body: PopScope(
-        child: student == null
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: Builder(builder: (context) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _EvaluationDate(
-                        formController: _formController,
-                        editMode: widget.editMode,
-                      ),
-                      _PersonAtMeeting(
-                        formController: _formController,
-                        editMode: widget.editMode,
-                      ),
-                      _buildAutofillChooser(),
-                      _JobToEvaluate(
-                        formController: _formController,
-                        editMode: widget.editMode,
-                      ),
-                      _EvaluationTypeChoser(
-                        formController: _formController,
-                        editMode: widget.editMode,
-                      ),
-                      _StartEvaluation(
-                        rootContext: widget.rootContext,
-                        formController: _formController,
-                        editMode: widget.editMode,
-                      ),
-                    ],
-                  );
-                }),
-              ),
+    return SizedBox(
+      width: ResponsiveService.maxBodyWidth,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+              '${student == null ? 'En attente des informations' : 'Évaluation de ${student.fullName}'}\n'
+              'C1. Compétences spécifiques'),
+          leading: IconButton(
+              onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
+        ),
+        body: PopScope(
+          child: student == null
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  child: Builder(builder: (context) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _EvaluationDate(
+                          formController: _formController,
+                          editMode: widget.editMode,
+                        ),
+                        _PersonAtMeeting(
+                          formController: _formController,
+                          editMode: widget.editMode,
+                        ),
+                        _buildAutofillChooser(),
+                        _JobToEvaluate(
+                          formController: _formController,
+                          editMode: widget.editMode,
+                        ),
+                        _EvaluationTypeChoser(
+                          formController: _formController,
+                          editMode: widget.editMode,
+                        ),
+                        _StartEvaluation(
+                          rootContext: widget.rootContext,
+                          formController: _formController,
+                          editMode: widget.editMode,
+                        ),
+                      ],
+                    );
+                  }),
+                ),
+        ),
       ),
     );
   }
@@ -517,7 +521,7 @@ class _StartEvaluation extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(
-        padding: const EdgeInsets.only(top: 24, right: 24.0),
+        padding: const EdgeInsets.only(top: 24, right: 24.0, bottom: 24),
         child: TextButton(
             onPressed: () {
               formController.setWereAtMeeting();

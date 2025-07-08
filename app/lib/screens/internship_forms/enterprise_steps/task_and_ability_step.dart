@@ -162,8 +162,7 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
         ),
         Row(
           children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
+            Expanded(
               child: RadioListTile<_TaskVariety>(
                 value: _TaskVariety.low,
                 dense: true,
@@ -176,8 +175,7 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
                 ),
               ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
+            Expanded(
               child: RadioListTile<_TaskVariety>(
                 value: _TaskVariety.high,
                 groupValue: _taskVariety,
@@ -211,8 +209,7 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
         ),
         Row(
           children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
+            Expanded(
               child: RadioListTile<_TrainingPlan>(
                 value: _TrainingPlan.notFilled,
                 dense: true,
@@ -225,8 +222,7 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
                 ),
               ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.4,
+            Expanded(
               child: RadioListTile<_TrainingPlan>(
                 value: _TrainingPlan.filled,
                 groupValue: _trainingPlan,
