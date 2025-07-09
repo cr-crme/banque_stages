@@ -53,6 +53,7 @@ class ResponsiveService {
 
   static Scaffold scaffoldOf(
     BuildContext context, {
+    Key? key,
     PreferredSizeWidget? appBar,
     Widget? smallDrawer,
     Widget? mediumDrawer,
@@ -62,6 +63,7 @@ class ResponsiveService {
     final screenSize = ResponsiveService.getScreenSize(context);
 
     return Scaffold(
+      key: key,
       appBar:
           (screenSize == ScreenSize.large && largeDrawer != null) ||
                   (screenSize == ScreenSize.medium && mediumDrawer != null)
