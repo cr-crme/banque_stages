@@ -179,75 +179,74 @@ class _SupervisionChartState extends State<SupervisionChart>
             .toList(),
         filterText: _searchTextController.text.toLowerCase());
 
-    return LayoutBuilder(builder: (context, constraints) {
-      return ResponsiveService.scaffoldOf(
-        context,
-        smallDrawer: MainDrawer.small,
-        mediumDrawer: MainDrawer.medium,
-        largeDrawer: MainDrawer.large,
-        appBar: AppBar(
-          title: const Text('Tableau des supervisions'),
-          actions: [
-            if (_tabController.index == 0)
-              IconButton(
-                onPressed: () =>
-                    _toggleEditMode(context, internships: internships),
-                icon: Icon(
-                  _editMode ? Icons.save : Icons.edit,
-                ),
-              )
-          ],
-          bottom: _buildBottomTabBar(constraints),
-        ),
-        body: TabBarView(controller: _tabController, children: [
-          Column(
-            children: [
-              _buildFilters(constraints),
-              if (internships.isEmpty)
-                Center(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(top: 12.0, left: 36, right: 36),
-                    child: Text(
-                      'Aucun élève en stage',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+    return ResponsiveService.scaffoldOf(
+      context,
+      smallDrawer: MainDrawer.small,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
+      appBar: AppBar(
+        title: const Text('Tableau des supervisions'),
+        actions: [
+          if (_tabController.index == 0)
+            IconButton(
+              onPressed: () =>
+                  _toggleEditMode(context, internships: internships),
+              icon: Icon(
+                _editMode ? Icons.save : Icons.edit,
+              ),
+            )
+        ],
+        bottom: _buildBottomTabBar(context),
+      ),
+      body: TabBarView(controller: _tabController, children: [
+        Column(
+          children: [
+            _buildFilters(context),
+            if (internships.isEmpty)
+              Center(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(top: 12.0, left: 36, right: 36),
+                  child: Text(
+                    'Aucun élève en stage',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
-              if (internships.isNotEmpty)
-                Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _editMode
-                        ? internships.length
-                        : internships.supervizedCount,
-                    itemBuilder: ((ctx, i) {
-                      final meta = _editMode
-                          ? internships[i]
-                          : internships.getSupervized(i);
-                      if (meta == null) return Container();
+              ),
+            if (internships.isNotEmpty)
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _editMode
+                      ? internships.length
+                      : internships.supervizedCount,
+                  itemBuilder: ((ctx, i) {
+                    final meta = _editMode
+                        ? internships[i]
+                        : internships.getSupervized(i);
+                    if (meta == null) return Container();
 
-                      return _StudentTile(
-                        key: Key(meta.student.id),
-                        meta: meta,
-                        onTap: () => _navigateToStudentInfo(meta.student),
-                        onInternshipChanged: () {},
-                        editMode: _editMode,
-                      );
-                    }),
-                  ),
+                    return _StudentTile(
+                      key: Key(meta.student.id),
+                      meta: meta,
+                      onTap: () => _navigateToStudentInfo(meta.student),
+                      onInternshipChanged: () {},
+                      editMode: _editMode,
+                    );
+                  }),
                 ),
-            ],
-          ),
-          const ItineraryMainScreen(),
-        ]),
-      );
-    });
+              ),
+          ],
+        ),
+        const ItineraryMainScreen(),
+      ]),
+    );
   }
 
-  PreferredSizeWidget _buildBottomTabBar(BoxConstraints constraints) {
-    final isColumn = constraints.maxWidth < ResponsiveService.smallScreenWidth;
+  PreferredSizeWidget _buildBottomTabBar(BuildContext context) {
+    final isColumn =
+        ResponsiveService.getScreenSize(context) == ScreenSize.small;
     return TabBar(
       controller: _tabController,
       tabs: [
@@ -324,8 +323,8 @@ class _SupervisionChartState extends State<SupervisionChart>
     );
   }
 
-  Widget _buildFilters(BoxConstraints constraints) {
-    return constraints.maxWidth < ResponsiveService.smallScreenWidth
+  Widget _buildFilters(BuildContext context) {
+    return ResponsiveService.getScreenSize(context) == ScreenSize.small
         ? Column(
             children: [
               _buildFlagFilter(),

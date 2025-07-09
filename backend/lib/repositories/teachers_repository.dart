@@ -61,7 +61,7 @@ abstract class TeachersRepository implements RepositoryAbstract {
     required Map<String, dynamic> data,
     required DatabaseUser user,
   }) async {
-    if (user.isNotVerified || user.accessLevel < AccessLevel.admin) {
+    if (user.isNotVerified) {
       _logger.severe(
           'User ${user.userId} does not have permission to put teachers');
       throw InvalidRequestException(
@@ -70,6 +70,20 @@ abstract class TeachersRepository implements RepositoryAbstract {
 
     // Update if exists, insert if not
     final previous = await _getTeacherById(id: id, user: user);
+    // If the user is not at least an admin, they cannot insert new teachers
+    if (user.accessLevel < AccessLevel.admin) {
+      if (previous == null) {
+        _logger.severe(
+            'User ${user.userId} does not have permission to insert teachers');
+        throw InvalidRequestException(
+            'You do not have permission to insert teachers');
+      } else if (previous.id != user.userId) {
+        _logger.severe(
+            'User ${user.userId} does not have permission to update teachers other than themselves');
+        throw InvalidRequestException(
+            'You do not have permission to update teachers');
+      }
+    }
 
     final newTeacher = previous?.copyWithData(data) ??
         Teacher.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
@@ -271,6 +285,14 @@ class MySqlTeachersRepository extends TeachersRepository {
       toUpdate['has_registered_account'] = teacher.hasRegisteredAccount;
     }
     if (toUpdate.isNotEmpty) {
+      // These modifications are only allowed to admins
+      if (user.accessLevel < AccessLevel.admin) {
+        _logger.severe(
+            'User ${user.userId} does not have permission to update teachers');
+        throw InvalidRequestException(
+            'You do not have permission to insert teachers');
+      }
+
       await MySqlHelpers.performUpdateQuery(
           connection: connection,
           tableName: 'teachers',
@@ -294,9 +316,18 @@ class MySqlTeachersRepository extends TeachersRepository {
     await Future.wait(toWait);
   }
 
-  Future<void> _updateToGroups(Teacher teacher, Teacher previous) async {
+  Future<void> _updateToGroups(
+      Teacher teacher, Teacher previous, DatabaseUser user) async {
     final differences = teacher.getDifference(previous);
     if (!differences.contains('groups')) return;
+
+    // These modifications are only allowed to admins
+    if (user.accessLevel < AccessLevel.admin) {
+      _logger.severe(
+          'User ${user.userId} does not have permission to update teachers');
+      throw InvalidRequestException(
+          'You do not have permission to insert teachers');
+    }
 
     // This is a bit tricky to update the groups, so we delete the old ones
     // and reinsert the new ones
@@ -360,7 +391,7 @@ class MySqlTeachersRepository extends TeachersRepository {
       toWait.add(_insertToGroups(teacher));
       toWait.add(_insertToItineraries(teacher));
     } else {
-      toWait.add(_updateToGroups(teacher, previous));
+      toWait.add(_updateToGroups(teacher, previous, user));
       toWait.add(_updateToItineraries(teacher, previous));
     }
     await Future.wait(toWait);

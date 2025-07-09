@@ -2,14 +2,17 @@ import 'package:common/models/generic/address.dart';
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/itineraries/waypoint.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/itineraries_helpers.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/routing_map.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/waypoint_card.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -56,6 +59,7 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
         priority: VisitingPriority.school,
       ),
     );
+    setState(() {});
 
     // Get the students from the registered students, but we copy them so
     // we don't mess with them
@@ -123,14 +127,20 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     setState(() {});
   }
 
+  // We need to access TeachersProvider when dispose is called so we save it
+  // and update it each time we would have used it
+  late var _teachersProvider = TeachersProvider.of(context, listen: false);
   final _itineraries = <DateTime, Itinerary>{};
   void _selectItinerary(DateTime date) {
+    _teachersProvider = TeachersProvider.of(context, listen: false);
     if (_itineraries[date] == null) {
       _itineraries[date] =
-          ItinerariesHelpers.fromDate(context, date)?.copyWith() ??
+          ItinerariesHelpers.fromDate(date, teachers: _teachersProvider)
+                  ?.copyWith() ??
               Itinerary(date: date);
     }
-    _routingController.setItinerary(context, _itineraries[date]!);
+    _routingController.setItinerary(_itineraries[date]!,
+        teachers: _teachersProvider);
   }
 
   late DateTime _currentDate;
@@ -149,20 +159,46 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   }
 
   @override
+  void dispose() {
+    _routingController.saveItinerary(teachers: _teachersProvider);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return PopScope(
-      onPopInvokedWithResult: (didPop, result) =>
-          didPop ? _routingController.saveItinerary(context) : null,
-      child: Column(
-        children: [
-          _showDate(),
-          if (widget.waypoints.isNotEmpty) _map(),
-          if (widget.waypoints.isEmpty) const CircularProgressIndicator(),
-          _Distance(_routingController.distances, itinerary: currentItinerary),
-          const SizedBox(height: 20),
-          _studentsToVisitWidget(context),
-        ],
-      ),
+    // We need to define small 200px over actual small screen width because of the
+    // row nature of the page.
+    final isSmall = MediaQuery.of(context).size.width <
+        ResponsiveService.smallScreenWidth + 200;
+
+    return Column(
+      children: [
+        _showDate(),
+        Flex(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment:
+              isSmall ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+          direction: isSmall ? Axis.vertical : Axis.horizontal,
+          children: [
+            Flexible(flex: 3, child: _map()),
+            Flexible(
+              flex: 2,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _Distance(_routingController.distances,
+                      itinerary: currentItinerary),
+                  if (_routingController.hasChanged)
+                    TextButton(
+                        onPressed: () => _selectItinerary(_currentDate),
+                        child: Text('Enregistrer l\'itinéraire')),
+                  _studentsToVisitWidget(context),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -217,15 +253,29 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   }
 
   Widget _map() {
-    return SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.5,
-        child: RoutingMap(
-          controller: _routingController,
-          waypoints: widget.waypoints,
-          itinerary: currentItinerary,
-          onItineraryChanged: (_) => setState(() {}),
-        ));
+    return LayoutBuilder(builder: (context, constraints) {
+      return SizedBox(
+          width: constraints.maxWidth,
+          height: MediaQuery.of(context).size.height * 0.5,
+          child: widget.waypoints.isEmpty
+              ? Center(child: CircularProgressIndicator())
+              : Stack(
+                  children: [
+                    RoutingMap(
+                      controller: _routingController,
+                      waypoints:
+                          widget.waypoints.length == 1 ? [] : widget.waypoints,
+                      centerWaypoint: widget.waypoints.first,
+                      itinerary: currentItinerary,
+                      onItineraryChanged: (_) => setState(() {}),
+                    ),
+                    if (widget.waypoints.length == 1)
+                      Container(
+                          color: Colors.white.withAlpha(100),
+                          child: Center(child: CircularProgressIndicator())),
+                  ],
+                ));
+    });
   }
 
   Widget _studentsToVisitWidget(BuildContext context) {
@@ -236,15 +286,17 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         if (currentItinerary.isNotEmpty)
           ReorderableListView.builder(
             onReorder: (oldIndex, newIndex) {
-              currentItinerary.move(oldIndex, newIndex);
+              _routingController.move(oldIndex, newIndex);
               setState(() {});
             },
+            buildDefaultDragHandles: !kIsWeb,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, index) {
               final way = currentItinerary[index];
               return WaypointCard(
                 key: ValueKey(way.id),
+                index: index,
                 name: way.title,
                 waypoint: way,
                 onDelete: () => _routingController.removeFromItinerary(index),

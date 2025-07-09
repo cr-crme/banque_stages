@@ -1,5 +1,6 @@
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/waypoint.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/visiting_priorities_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/itineraries_helpers.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
@@ -22,13 +23,14 @@ class RoutingController {
   final Function()? onItineraryChanged;
   Itinerary _itinerary;
   bool _hasChanged = false;
+  bool get hasChanged => _hasChanged;
 
-  void saveItinerary(BuildContext context) {
-    if (_hasChanged) ItinerariesHelpers.add(context, _itinerary);
+  void saveItinerary({required TeachersProvider teachers}) {
+    if (_hasChanged) ItinerariesHelpers.add(_itinerary, teachers: teachers);
   }
 
-  void setItinerary(BuildContext context, Itinerary itinerary) {
-    saveItinerary(context);
+  void setItinerary(Itinerary itinerary, {required TeachersProvider teachers}) {
+    saveItinerary(teachers: teachers);
 
     _itinerary = itinerary;
     _hasChanged = false;
@@ -43,6 +45,12 @@ class RoutingController {
 
   void addToItinerary(int destinationIndex) {
     _itinerary.add(destinations[destinationIndex].copyWith(forceNewId: true));
+    _hasChanged = true;
+    _updateInternal();
+  }
+
+  void move(int oldIndex, int newIndex) {
+    _itinerary.move(oldIndex, newIndex);
     _hasChanged = true;
     _updateInternal();
   }
@@ -108,6 +116,7 @@ class RoutingMap extends StatefulWidget {
     super.key,
     required this.controller,
     required this.waypoints,
+    required this.centerWaypoint,
     required this.itinerary,
     this.onItineraryChanged,
     this.onComputedDistancesCallback,
@@ -115,6 +124,7 @@ class RoutingMap extends StatefulWidget {
 
   final RoutingController controller;
   final List<Waypoint> waypoints;
+  final Waypoint centerWaypoint;
   final Function(int index)? onItineraryChanged;
   final Function(List<double>?)? onComputedDistancesCallback;
   final Itinerary itinerary;
@@ -216,8 +226,8 @@ class _RoutingMapState extends State<RoutingMap> {
       padding: const EdgeInsets.all(8),
       child: FlutterMap(
         options: MapOptions(
-            initialCenter: LatLng(widget.waypoints.first.latitude,
-                widget.waypoints.first.longitude),
+            initialCenter: LatLng(widget.centerWaypoint.latitude,
+                widget.centerWaypoint.longitude),
             initialZoom: 12),
         children: [
           TileLayer(

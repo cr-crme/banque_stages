@@ -5,7 +5,7 @@ enum VisitingPriority {
   notApplicable,
   school;
 
-  VisitingPriority get next => VisitingPriority.values[(index - 1) % 3];
+  VisitingPriority get next => VisitingPriority.values[(index + 1) % 3];
 
   int serialize() => index;
 
