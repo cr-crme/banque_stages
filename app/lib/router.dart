@@ -2,6 +2,7 @@ import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/screens/enterprise/enterprise_screen.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/enterprises_list_screen.dart';
 import 'package:crcrme_banque_stages/screens/login_screen.dart';
+import 'package:crcrme_banque_stages/screens/my_account/my_account_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/home_sst_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/incident_history_screen.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/risks_list_screen.dart';
@@ -18,6 +19,7 @@ abstract class Screens {
   static const home = enterprisesList;
 
   static const login = LoginScreen.route;
+  static const myAccountScreen = MyAccountScreen.route;
 
   static const tasksToDo = TasksToDoScreen.route;
 
@@ -79,6 +81,11 @@ final router = GoRouter(
       builder: (context, state) => const LoginScreen(),
       redirect: (context, state) =>
           AuthProvider.of(context).isFullySignedIn ? '/' : null,
+    ),
+    GoRoute(
+      path: Screens.myAccountScreen,
+      name: Screens.myAccountScreen,
+      builder: (context, state) => const MyAccountScreen(),
     ),
     GoRoute(
       path: Screens.enterprisesList,

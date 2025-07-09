@@ -87,6 +87,13 @@ class MainDrawer extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _DrawerItem(
+                          titleText: 'Mon compte',
+                          icon: Icons.person,
+                          route: Screens.myAccountScreen,
+                          iconOnly: iconOnly,
+                          canPop: canPop,
+                        ),
+                        _DrawerItem(
                           titleText: 'Mes élèves',
                           icon: Icons.school_rounded,
                           route: Screens.studentsList,

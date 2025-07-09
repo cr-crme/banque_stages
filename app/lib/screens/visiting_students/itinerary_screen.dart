@@ -160,7 +160,9 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   @override
   void dispose() {
-    _routingController.saveItinerary(teachers: _teachersProvider);
+    if (_routingController.hasChanged) {
+      _routingController.saveItinerary(teachers: _teachersProvider);
+    }
     super.dispose();
   }
 
