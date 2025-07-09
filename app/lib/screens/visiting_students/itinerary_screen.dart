@@ -32,34 +32,20 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
     super.dispose();
   }
 
-  Future<T?> _waitFor<T>(
-      Function(BuildContext context, {bool listen}) providerOf) async {
-    var provided = providerOf(context, listen: false);
-    while (provided.isEmpty) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      if (!mounted) return null;
-      provided = providerOf(context, listen: false);
-    }
-    return provided;
-  }
-
-  Future<bool> _fillAllWaypoints() async {
+  Future<void> _fillAllWaypoints() async {
     final internships = InternshipsProvider.of(context, listen: false);
 
     var school = SchoolBoardsProvider.of(context, listen: false).mySchool;
-    if (!mounted || school == null) return false;
+    if (!mounted || school == null) return;
 
-    final enterprises =
-        await _waitFor<EnterprisesProvider>(EnterprisesProvider.of);
-    if (!mounted || enterprises == null) return false;
-
-    if (!mounted) return false;
+    final enterprises = EnterprisesProvider.of(context, listen: false);
+    if (enterprises.isEmpty) return;
 
     final students = {
       ...StudentsHelpers.mySupervizedStudents(context,
           listen: false, activeOnly: true)
     };
-    if (!mounted) return false;
+    if (!mounted) return;
 
     // Add the school as the first waypoint
     _waypoints.clear();
@@ -91,7 +77,14 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
       );
     }
 
-    return true;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fillAllWaypoints());
   }
 
   @override
@@ -106,14 +99,7 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
       child: SingleChildScrollView(
         controller: _scrollController,
         physics: const ScrollPhysics(),
-        child: FutureBuilder(
-          future: _fillAllWaypoints(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) const CircularProgressIndicator();
-
-            return ItineraryScreen(waypoints: _waypoints);
-          },
-        ),
+        child: ItineraryScreen(waypoints: _waypoints),
       ),
     );
   }

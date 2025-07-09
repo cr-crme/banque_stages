@@ -53,7 +53,6 @@ class ResponsiveService {
 
   static Scaffold scaffoldOf(
     BuildContext context, {
-    Key? key,
     PreferredSizeWidget? appBar,
     Widget? smallDrawer,
     Widget? mediumDrawer,
@@ -63,63 +62,47 @@ class ResponsiveService {
     final screenSize = ResponsiveService.getScreenSize(context);
 
     return Scaffold(
-      key: key,
-      appBar:
-          (screenSize == ScreenSize.large && largeDrawer != null) ||
-                  (screenSize == ScreenSize.medium && mediumDrawer != null)
-              ? null
-              : appBar,
-      drawer:
-          smallDrawer != null && screenSize == ScreenSize.small
-              ? smallDrawer
-              : null,
-      body: switch (screenSize) {
-        ScreenSize.small => body,
-        ScreenSize.medium =>
-          mediumDrawer != null
-              ? Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  mediumDrawer,
-                  Expanded(
-                    child: Scaffold(
-                      appBar: appBar,
-                      body: Padding(
-                        padding: const EdgeInsets.only(right: 4.0),
-                        child: body,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-              : body,
-        ScreenSize.large =>
-          largeDrawer != null
-              ? Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  largeDrawer,
-                  Expanded(
-                    child: Scaffold(
-                      appBar: appBar,
-                      body: LayoutBuilder(
-                        builder: (context, constraints) {
-                          if (constraints.maxWidth < maxBodyWidth) return body;
-                          return Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal:
-                                  (constraints.maxWidth - maxBodyWidth) / 2,
-                            ),
-                            child: body,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              )
-              : body,
+      appBar: switch (screenSize) {
+        ScreenSize.small => appBar,
+        _ => null,
       },
+      drawer: switch (screenSize) {
+        ScreenSize.small => smallDrawer,
+        _ => null,
+      },
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          switch (screenSize) {
+            ScreenSize.small => SizedBox.shrink(),
+            ScreenSize.medium => mediumDrawer ?? SizedBox.shrink(),
+            ScreenSize.large => largeDrawer ?? SizedBox.shrink(),
+          },
+          Expanded(
+            child: Scaffold(
+              appBar: switch (screenSize) {
+                ScreenSize.small => null,
+                _ => appBar,
+              },
+              body: LayoutBuilder(
+                builder: (context, constraints) {
+                  final edgeInsets = switch (screenSize) {
+                    ScreenSize.medium => EdgeInsets.only(right: 4.0),
+                    ScreenSize.large => EdgeInsets.symmetric(
+                      horizontal:
+                          constraints.maxWidth < maxBodyWidth
+                              ? 0.0
+                              : (constraints.maxWidth - maxBodyWidth) / 2,
+                    ),
+                    _ => EdgeInsets.zero,
+                  };
+                  return Padding(padding: edgeInsets, child: body);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
