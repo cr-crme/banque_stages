@@ -78,3 +78,7 @@ class BanqueStagesApp extends StatelessWidget {
     );
   }
 }
+
+// TODO limit the page for "Inscrire un stagiaire"
+// TODO limit the page for "Ajouter une entreprise"
+// TODO limit the page for "date picker"

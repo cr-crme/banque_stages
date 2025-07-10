@@ -115,12 +115,12 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
         Padding(
           padding: const EdgeInsets.only(left: 24.0, right: 24, top: 8),
           child: evaluations.isEmpty
-              ? const Center(
+              ? Center(
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 12.0),
-                    child:
-                        Text('L\'entreprise n\'a pas encore été évaluée dans '
-                            'ce programme.'),
+                    child: Text(
+                        'L\'entreprise n\'a pas encore été évaluée pour des '
+                        'élèves de $_currentProgramToShow.'),
                   ),
                 )
               : Column(
