@@ -1,32 +1,26 @@
 import 'package:common/models/enterprises/enterprise.dart';
-import 'package:common/models/enterprises/job.dart';
-import 'package:common/models/enterprises/job_list.dart';
-import 'package:common/models/persons/teacher.dart';
+import 'package:common/models/generic/address.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/helpers/form_service.dart';
 import 'package:common_flutter/helpers/responsive_service.dart';
-import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
-import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/address_list_tile.dart';
+import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
-import 'package:common_flutter/widgets/show_snackbar.dart';
-import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
-import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
+import 'package:common_flutter/widgets/phone_list_tile.dart';
+import 'package:common_flutter/widgets/web_site_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
-import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class EnterpriseAboutPage extends StatefulWidget {
   const EnterpriseAboutPage({
     super.key,
     required this.enterprise,
-    required this.onAddInternshipRequest,
   });
 
   final Enterprise enterprise;
-  final Function(Enterprise) onAddInternshipRequest;
 
   @override
   State<EnterpriseAboutPage> createState() => EnterpriseAboutPageState();
@@ -35,84 +29,117 @@ class EnterpriseAboutPage extends StatefulWidget {
 class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String? _name;
-  late final _activityTypesController = EnterpriseActivityTypeListController(
-      initial: {...widget.enterprise.activityTypes});
-  final Map<String, int> _positionOffered = {};
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    final authProvider = AuthProvider.of(context, listen: false);
-    if (authProvider.schoolId == null) {
-      showSnackBar(context,
-          message: 'Impossible de charger les informations de l\'école.');
-      return;
-    }
-    _name = widget.enterprise.name;
-
-    _positionOffered.clear();
-    for (var job in widget.enterprise.availablejobs(context)) {
-      _positionOffered[job.id] =
-          job.positionsOffered[authProvider.schoolId] ?? 0;
-    }
-  }
+  late final _contactInfoController =
+      _ContactInfoController(enterprise: widget.enterprise);
+  late final _enterpriseInfoController = _EnterpriseInfoController(
+      enterprise: widget.enterprise,
+      onAddressChanged: (address) {
+        if (!mounted) return;
+        if (_taxesInfoController.useSameAddress) {
+          _taxesInfoController.address.address =
+              address?.copyWith(id: _taxesInfoController.address.address?.id);
+        }
+        setState(() {});
+      });
+  late final _taxesInfoController =
+      _TaxesInfoController(enterprise: widget.enterprise);
 
   bool _editing = false;
   bool get editing => _editing;
 
-  void toggleEdit({bool save = true}) {
+  Future<void> toggleEdit({bool save = true}) async {
     if (_editing) {
-      _editing = false;
       if (!save) {
+        _editing = false;
+        _contactInfoController.reset();
+        _enterpriseInfoController.reset();
+        _taxesInfoController.reset();
         setState(() {});
         return;
       }
     } else {
-      setState(() => _editing = true);
+      _editing = true;
+      setState(() {});
       return;
     }
 
-    if (!FormService.validateForm(_formKey, save: true)) {
+    // Validate address
+    final status = await _enterpriseInfoController.address.requestValidation();
+    if (!mounted) return;
+    if (status != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(status)));
       return;
     }
+    _editing = false;
 
-    final schoolId = AuthProvider.of(context, listen: false).schoolId;
-    if (schoolId == null) {
-      showSnackBar(context,
-          message: 'Impossible de sauvegarder, l\'école est introuvable.');
-      return;
-    }
-    if (_name != widget.enterprise.name ||
-        areSetsNotEqual(_activityTypesController.activityTypes,
-            widget.enterprise.activityTypes) ||
-        areMapsNotEqual(_positionOffered, {
-          for (var job in widget.enterprise.availablejobs(context))
-            job.id: job.positionsOffered[schoolId],
-        })) {
-      EnterprisesProvider.of(context, listen: false).replace(
-        widget.enterprise.copyWith(
-            name: _name,
-            activityTypes: _activityTypesController.activityTypes,
-            jobs: JobList()
-              ..addAll(widget.enterprise.availablejobs(context).map((job) {
-                return job.copyWith(
-                    positionsOffered: {schoolId: _positionOffered[job.id]!});
-              }))),
-      );
+    if (!_taxesInfoController.useSameAddress) {
+      // Validate headquarter address
+      final status = await _taxesInfoController.address.requestValidation();
+      if (!mounted) return;
+      if (status != null) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(status)));
+        return;
+      }
     }
 
-    setState(() => _editing = false);
+    if (!mounted) return;
+    if (!FormService.validateForm(_formKey, save: true)) return;
+
+    final newEnteprise = widget.enterprise.copyWith(
+      name: _enterpriseInfoController.name.text,
+      activityTypes: _enterpriseInfoController.activityTypes.activityTypes,
+      contact: widget.enterprise.contact.copyWith(
+        firstName: _contactInfoController.firstName.text,
+        lastName: _contactInfoController.lastName.text,
+        phone: _contactInfoController.contactPhone.text == ''
+            ? null
+            : PhoneNumber.fromString(_contactInfoController.contactPhone.text,
+                id: widget.enterprise.contact.phone?.id),
+        email: _contactInfoController.contactEmail.text,
+      ),
+      contactFunction: _contactInfoController.contactFunction.text == ''
+          ? null
+          : _contactInfoController.contactFunction.text,
+      address: _enterpriseInfoController.address.address,
+      phone: _enterpriseInfoController.phone.text == ''
+          ? null
+          : PhoneNumber.fromString(_enterpriseInfoController.phone.text,
+              id: widget.enterprise.phone?.id),
+      fax: _enterpriseInfoController.fax.text == ''
+          ? null
+          : PhoneNumber.fromString(_enterpriseInfoController.fax.text,
+              id: widget.enterprise.fax?.id),
+      website: _enterpriseInfoController.website.text == ''
+          ? null
+          : _enterpriseInfoController.website.text,
+      headquartersAddress: _taxesInfoController.useSameAddress
+          ? _enterpriseInfoController.address.address
+              ?.copyWith(id: _taxesInfoController.address.address?.id)
+          : _taxesInfoController.address.address,
+      neq: _taxesInfoController.neq.text == ''
+          ? null
+          : _taxesInfoController.neq.text,
+    );
+    if (widget.enterprise.getDifference(newEnteprise).isEmpty) return;
+    EnterprisesProvider.of(context, listen: false).replace(newEnteprise);
+
+    setState(() {});
   }
 
   bool _canPop = false;
 
   @override
-  Widget build(BuildContext context) {
-    // Register so the build is triggered if the enterprises are changed
-    EnterprisesProvider.of(context, listen: true);
+  void dispose() {
+    _contactInfoController.dispose();
+    _enterpriseInfoController.dispose();
+    _taxesInfoController.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return PopScope(
       canPop: _canPop,
       onPopInvokedWithResult: (didPop, result) async {
@@ -148,32 +175,37 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _GeneralInformation(
-                  enterprise: widget.enterprise,
-                  editMode: _editing,
-                  onSaved: (name) => _name = name),
-              _AvailablePlace(
-                initial: _positionOffered.map(
-                  (key, value) => MapEntry(
-                      widget.enterprise
-                          .availablejobs(context)
-                          .firstWhere((e) => e.id == key),
-                      value),
-                ),
+                controller: _enterpriseInfoController,
                 editMode: _editing,
-                onChanged: (Job job, int newValue) =>
-                    setState(() => _positionOffered[job.id] = newValue),
+              ),
+              _ContactInfo(
+                controller: _contactInfoController,
+                editMode: _editing,
               ),
               _ActivityType(
-                  controller: _activityTypesController,
-                  editMode: _editing,
-                  setState: setState),
-              _RecrutedBy(enterprise: widget.enterprise),
-              _AddInternshipButton(
-                editingMode: _editing,
-                onPressed: () async =>
-                    await widget.onAddInternshipRequest(widget.enterprise),
+                controller: _enterpriseInfoController,
+                editMode: _editing,
               ),
-              const SizedBox(height: 24),
+              _EnterpriseInfo(
+                controller: _enterpriseInfoController,
+                editMode: _editing,
+              ),
+              _TaxesInfo(
+                controller: _taxesInfoController,
+                editMode: _editing,
+                useSameAddress: _taxesInfoController.useSameAddress,
+                onChangedUseSame: (newValue) => setState(() {
+                  _taxesInfoController.useSameAddress = newValue!;
+                  if (_taxesInfoController.useSameAddress) {
+                    _taxesInfoController.address.address =
+                        _enterpriseInfoController.address.address?.copyWith(
+                            id: _taxesInfoController.address.address?.id);
+                  } else {
+                    _taxesInfoController.address.address = Address.empty;
+                  }
+                }),
+              ),
+              const SizedBox(height: 12),
             ],
           ),
         ),
@@ -183,14 +215,13 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
 }
 
 class _GeneralInformation extends StatelessWidget {
-  const _GeneralInformation(
-      {required this.enterprise,
-      required this.editMode,
-      required this.onSaved});
+  const _GeneralInformation({
+    required this.controller,
+    required this.editMode,
+  });
 
-  final Enterprise enterprise;
+  final _EnterpriseInfoController controller;
   final bool editMode;
-  final Function(String?) onSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -205,10 +236,8 @@ class _GeneralInformation extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        controller:
-                            TextEditingController(text: enterprise.name),
+                        controller: controller.name,
                         enabled: editMode,
-                        onSaved: onSaved,
                         validator: (text) => text!.isEmpty
                             ? 'Ajouter le nom de l\'entreprise.'
                             : null,
@@ -223,105 +252,230 @@ class _GeneralInformation extends StatelessWidget {
   }
 }
 
-class _AvailablePlace extends StatelessWidget {
-  const _AvailablePlace({
-    required this.initial,
+class _ContactInfoController {
+  Enterprise enterprise;
+  final firstName = TextEditingController();
+  final lastName = TextEditingController();
+  final contactFunction = TextEditingController();
+  final contactPhone = TextEditingController();
+  final contactEmail = TextEditingController();
+
+  _ContactInfoController({required this.enterprise}) {
+    reset();
+  }
+
+  void reset() {
+    firstName.text = enterprise.contact.firstName;
+    lastName.text = enterprise.contact.lastName;
+    contactFunction.text = enterprise.contactFunction;
+    contactPhone.text = enterprise.contact.phone.toString();
+    contactEmail.text = enterprise.contact.email ?? '';
+  }
+
+  void dispose() {
+    firstName.dispose();
+    lastName.dispose();
+    contactFunction.dispose();
+    contactPhone.dispose();
+    contactEmail.dispose();
+  }
+}
+
+class _ContactInfo extends StatelessWidget {
+  const _ContactInfo({
+    required this.controller,
     required this.editMode,
-    required this.onChanged,
   });
 
-  final Map<Job, int> initial;
   final bool editMode;
-  final Function(Job job, int newValue) onChanged;
+  final _ContactInfoController controller;
 
   @override
   Widget build(BuildContext context) {
-    final schoolId = AuthProvider.of(context, listen: true).schoolId;
-    if (schoolId == null) {
-      return const Center(child: Text('Impossible de charger les stages.'));
-    }
-
-    final jobs = initial.keys.toList();
-    jobs.sort(
-      (a, b) => a.specialization.name
-          .toLowerCase()
-          .compareTo(b.specialization.name.toLowerCase()),
-    );
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Places de stage disponibles'),
-        if (jobs.isEmpty)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: Text(
-                'Aucun stage disponible pour cette entreprise.',
-                style: Theme.of(context).textTheme.bodyMedium,
+        const SubTitle('Entreprise représentée par'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              TextFormField(
+                controller: controller.firstName,
+                decoration: const InputDecoration(
+                  labelText: '* Prénom',
+                  labelStyle: styleOverride,
+                  disabledBorder: InputBorder.none,
+                ),
+                style: styleOverride,
+                enabled: editMode,
+                validator: (text) => text!.isEmpty
+                    ? 'Ajouter le nom de la personne représentant l\'entreprise.'
+                    : null,
+                maxLines: null,
               ),
-            ),
+              TextFormField(
+                controller: controller.lastName,
+                decoration: const InputDecoration(
+                  labelText: '* Nom',
+                  labelStyle: styleOverride,
+                  disabledBorder: InputBorder.none,
+                ),
+                style: styleOverride,
+                enabled: editMode,
+                validator: (text) => text!.isEmpty
+                    ? 'Ajouter le nom de la personne représentant l\'entreprise.'
+                    : null,
+                maxLines: null,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: controller.contactFunction,
+                decoration: const InputDecoration(
+                  labelText: '* Fonction',
+                  labelStyle: styleOverride,
+                  disabledBorder: InputBorder.none,
+                ),
+                style: styleOverride,
+                enabled: editMode,
+                validator: (text) => text!.isEmpty
+                    ? 'Ajouter la fonction de cette personne.'
+                    : null,
+              ),
+              const SizedBox(height: 8),
+              PhoneListTile(
+                controller: controller.contactPhone,
+                titleStyle: styleOverride,
+                contentStyle: styleOverride,
+                isMandatory: true,
+                enabled: editMode,
+              ),
+              const SizedBox(height: 8),
+              EmailListTile(
+                controller: controller.contactEmail,
+                titleStyle: styleOverride,
+                contentStyle: styleOverride,
+                enabled: editMode,
+                isMandatory: true,
+              ),
+            ],
           ),
-        if (jobs.isNotEmpty)
-          Column(
-            children: jobs.map(
-              (job) {
-                final int positionsOffered = initial[job]!;
-                final positionsRemaining =
-                    positionsOffered - job.positionsOccupied(context);
+        )
+      ],
+    );
+  }
+}
 
-                return ListTile(
-                  visualDensity: VisualDensity.compact,
-                  leading: DisponibilityCircle(
-                    positionsOffered: positionsOffered,
-                    positionsOccupied: job.positionsOccupied(context),
-                  ),
-                  title: Text(job.specialization.idWithName),
-                  trailing: editMode
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                                onPressed: positionsOffered == 0
-                                    ? null
-                                    : () =>
-                                        onChanged(job, positionsOffered - 1),
-                                icon: Icon(Icons.remove,
-                                    color: positionsRemaining == 0
-                                        ? Colors.grey
-                                        : Colors.black)),
-                            Text(
-                              '$positionsRemaining / $positionsOffered',
-                            ),
-                            IconButton(
-                                onPressed: () =>
-                                    onChanged(job, positionsOffered + 1),
-                                icon:
-                                    const Icon(Icons.add, color: Colors.black)),
-                          ],
-                        )
-                      : Text(
-                          '${job.positionsRemaining(context, schoolId: schoolId)} / $positionsOffered',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                );
-              },
-            ).toList(),
-          )
+class _EnterpriseInfoController {
+  Enterprise enterprise;
+  Function(Address?) onAddressChanged;
+
+  final name = TextEditingController();
+  final address = AddressController();
+  final phone = TextEditingController();
+  final fax = TextEditingController();
+  final website = TextEditingController();
+
+  late final activityTypes = EnterpriseActivityTypeListController(
+      initial: {...enterprise.activityTypes});
+
+  _EnterpriseInfoController(
+      {required this.enterprise, required this.onAddressChanged}) {
+    address.onAddressChangedCallback = () => onAddressChanged(address.address);
+    reset();
+  }
+
+  void reset() {
+    name.text = enterprise.name;
+    activityTypes.activityTypes = enterprise.activityTypes;
+    address.initialValue = enterprise.address;
+    phone.text = enterprise.phone?.toString() ?? '';
+    fax.text = enterprise.fax?.toString() ?? '';
+    website.text = enterprise.website ?? '';
+  }
+
+  void dispose() {
+    name.dispose();
+    activityTypes.dispose();
+    address.dispose();
+    phone.dispose();
+    fax.dispose();
+    website.dispose();
+  }
+}
+
+class _EnterpriseInfo extends StatelessWidget {
+  const _EnterpriseInfo({
+    required this.controller,
+    required this.editMode,
+  });
+
+  final _EnterpriseInfoController controller;
+  final bool editMode;
+
+  @override
+  Widget build(BuildContext context) {
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Coordonnées de l\'établissement'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              AddressListTile(
+                title: 'Adresse de l\'établissement',
+                titleStyle: styleOverride,
+                contentStyle: styleOverride,
+                addressController: controller.address,
+                isMandatory: true,
+                enabled: editMode,
+              ),
+              const SizedBox(height: 8),
+              PhoneListTile(
+                  controller: controller.phone,
+                  titleStyle: styleOverride,
+                  contentStyle: styleOverride,
+                  isMandatory: false,
+                  enabled: editMode),
+              const SizedBox(height: 8),
+              PhoneListTile(
+                  title: 'Télécopieur',
+                  titleStyle: styleOverride,
+                  contentStyle: styleOverride,
+                  controller: controller.fax,
+                  icon: Icons.fax,
+                  isMandatory: false,
+                  enabled: editMode),
+              const SizedBox(height: 8),
+              WebSiteListTile(
+                controller: controller.website,
+                titleStyle: styleOverride,
+                contentStyle: styleOverride,
+                enabled: editMode,
+              ),
+            ],
+          ),
+        )
       ],
     );
   }
 }
 
 class _ActivityType extends StatelessWidget {
-  const _ActivityType(
-      {required this.controller,
-      required this.editMode,
-      required this.setState});
+  const _ActivityType({
+    required this.controller,
+    required this.editMode,
+  });
 
-  final EnterpriseActivityTypeListController controller;
+  final _EnterpriseInfoController controller;
   final bool editMode;
-  final Function(Function()) setState;
 
   @override
   Widget build(BuildContext context) {
@@ -335,7 +489,11 @@ class _ActivityType extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: EnterpriseActivityTypeListTile(
               hideTitle: true,
-              controller: controller,
+              controller: controller.activityTypes,
+              direction:
+                  ResponsiveService.getScreenSize(context) == ScreenSize.small
+                      ? Axis.vertical
+                      : Axis.horizontal,
               editMode: editMode,
               activityTabAtTop: true,
               tilePadding: const EdgeInsets.all(0),
@@ -347,100 +505,98 @@ class _ActivityType extends StatelessWidget {
   }
 }
 
-class _RecrutedBy extends StatelessWidget {
-  const _RecrutedBy({required this.enterprise});
+class _TaxesInfoController {
+  Enterprise enterprise;
+  bool useSameAddress = false;
+  final address = AddressController();
+  final neq = TextEditingController();
 
-  final Enterprise enterprise;
-
-  void _sendEmail(Teacher teacher) {
-    final Uri emailLaunchUri = Uri(
-      scheme: 'mailto',
-      path: teacher.email!,
-    );
-    launchUrl(emailLaunchUri);
+  _TaxesInfoController({required this.enterprise}) {
+    reset();
+    address.initialValue = enterprise.headquartersAddress ??
+        enterprise.address?.copyWith(id: Address.empty.id);
   }
 
-  Future<Teacher?> _getTeacherFromId(BuildContext context) async {
-    if (enterprise.recruiterId.isEmpty) return null;
-
-    while (true) {
-      if (!context.mounted) return null;
-      final teachers = TeachersProvider.of(context);
-      final teacher = teachers.fromIdOrNull(enterprise.recruiterId);
-      if (teacher != null) return teacher;
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
+  void reset() {
+    address.address = enterprise.headquartersAddress;
+    neq.text = enterprise.neq ?? '';
+    useSameAddress = enterprise.address.toString() ==
+        enterprise.headquartersAddress.toString();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _getTeacherFromId(context),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final teacher = snapshot.data as Teacher?;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SubTitle('Entreprise recrutée par'),
-              teacher == null
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 24.0),
-                      child: Text(
-                        'Aucun enseignant n\'est assigné à cette entreprise.',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: teacher.email == null
-                          ? null
-                          : () => _sendEmail(teacher),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 24.0),
-                        child: Text(
-                          teacher.fullName,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(
-                                decoration: teacher.email == null
-                                    ? null
-                                    : TextDecoration.underline,
-                                color:
-                                    teacher.email == null ? null : Colors.blue,
-                              ),
-                        ),
-                      ),
-                    )
-            ],
-          );
-        });
+  void dispose() {
+    address.dispose();
+    neq.dispose();
   }
 }
 
-class _AddInternshipButton extends StatelessWidget {
-  const _AddInternshipButton({
-    required this.editingMode,
-    required this.onPressed,
+class _TaxesInfo extends StatefulWidget {
+  const _TaxesInfo({
+    required this.controller,
+    required this.editMode,
+    required this.useSameAddress,
+    required this.onChangedUseSame,
   });
 
-  final bool editingMode;
-  final Function() onPressed;
+  final _TaxesInfoController controller;
+  final bool editMode;
+  final bool useSameAddress;
+  final Function(bool?) onChangedUseSame;
 
   @override
+  State<_TaxesInfo> createState() => _TaxesInfoState();
+}
+
+class _TaxesInfoState extends State<_TaxesInfo> {
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 40.0),
-        child: editingMode
-            ? Container()
-            : ElevatedButton(
-                onPressed: onPressed,
-                child: const Text('Inscrire un stagiaire')),
-      ),
+    // ThemeData does not work anymore so we have to override the style manually
+    const styleOverride = TextStyle(color: Colors.black);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Informations pour le crédit d\'impôt'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(children: [
+            if (widget.editMode)
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Flexible(
+                  child: Text(
+                    'Adresse du siège social identique à l\'adresse de l\'établissement',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                Switch(
+                  value: widget.useSameAddress,
+                  onChanged: widget.onChangedUseSame,
+                )
+              ]),
+            AddressListTile(
+              title: 'Adresse du siège social',
+              titleStyle: styleOverride,
+              contentStyle: styleOverride,
+              addressController: widget.controller.address,
+              isMandatory: false,
+              enabled: widget.editMode && !widget.useSameAddress,
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: widget.controller.neq,
+              decoration: const InputDecoration(
+                labelText: 'Numéro d\'entreprise du Québec (NEQ)',
+                labelStyle: styleOverride,
+                disabledBorder: InputBorder.none,
+              ),
+              style: styleOverride,
+              enabled: widget.editMode,
+              validator: null,
+              keyboardType: TextInputType.number,
+            ),
+          ]),
+        ),
+      ],
     );
   }
 }

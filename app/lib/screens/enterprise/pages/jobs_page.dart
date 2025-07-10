@@ -1,18 +1,25 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/persons/teacher.dart';
 import 'package:common/utils.dart';
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
+import 'package:common_flutter/providers/school_boards_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
+import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_sst_event_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_text_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/job_creator_dialog.dart';
+import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/storage_service.dart';
 import 'package:crcrme_banque_stages/screens/enterprise/pages/jobs_expansion_panels/incidents_expansion_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'jobs_expansion_panels/comments_expansion_panel.dart';
 import 'jobs_expansion_panels/photo_expansion_panel.dart';
@@ -24,9 +31,11 @@ class JobsPage extends StatefulWidget {
   const JobsPage({
     super.key,
     required this.enterprise,
+    required this.onAddInternshipRequest,
   });
 
   final Enterprise enterprise;
+  final Function(Enterprise) onAddInternshipRequest;
 
   @override
   State<JobsPage> createState() => JobsPageState();
@@ -175,6 +184,8 @@ class JobsPageState extends State<JobsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = AuthProvider.of(context, listen: false);
+
     _updateSectionsIfNeeded();
 
     final jobs = [...widget.enterprise.availablejobs(context)];
@@ -196,7 +207,39 @@ class JobsPageState extends State<JobsPage> {
 
               return AnimatedExpandingCard(
                 key: _cardKey[job.id],
-                header: SubTitle(job.specialization.name, top: 12, bottom: 12),
+                header: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SubTitle(job.specialization.name, top: 12, bottom: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _AvailablePlace(
+                                positionsOffered: job.positionsOffered[
+                                        authProvider.schoolId ?? ''] ??
+                                    0,
+                                positionsOccupied:
+                                    job.positionsOccupied(context),
+                              ),
+                              _RecrutedBy(enterprise: widget.enterprise),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: ElevatedButton(
+                              onPressed: () => widget
+                                  .onAddInternshipRequest(widget.enterprise),
+                              child: const Text('Inscrire un\nstagiaire',
+                                  textAlign: TextAlign.center)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
                 initialExpandedState: jobs.length == 1,
                 child: ExpansionPanelList(
                   expansionCallback: (panelIndex, isExpanded) async {
@@ -270,5 +313,115 @@ class JobsPageState extends State<JobsPage> {
               );
             },
           );
+  }
+}
+
+class _AvailablePlace extends StatelessWidget {
+  const _AvailablePlace({
+    required this.positionsOffered,
+    required this.positionsOccupied,
+  });
+
+  final int positionsOffered;
+  final int positionsOccupied;
+
+  @override
+  Widget build(BuildContext context) {
+    final schoolId = AuthProvider.of(context, listen: true).schoolId;
+    if (schoolId == null) {
+      return const Center(child: Text('Impossible de charger les stages.'));
+    }
+    final positionsRemaining = positionsOffered - positionsOccupied;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          visualDensity: VisualDensity.compact,
+          leading: DisponibilityCircle(
+              positionsOffered: positionsOffered,
+              positionsOccupied: positionsOccupied),
+          title: Text('Nombre de places de stages disponibles'),
+          trailing: Text(
+            '$positionsRemaining / $positionsOffered',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class _RecrutedBy extends StatelessWidget {
+  const _RecrutedBy({required this.enterprise});
+
+  final Enterprise enterprise;
+
+  void _sendEmail(Teacher teacher) {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: teacher.email!,
+    );
+    launchUrl(emailLaunchUri);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final teachers = TeachersProvider.of(context);
+    final teacher = teachers.fromIdOrNull(enterprise.recruiterId);
+
+    final school = SchoolBoardsProvider.of(context)
+        .fromIdOrNull(teacher?.schoolBoardId ?? '')
+        ?.schools
+        .firstWhereOrNull(
+          (school) => school.id == teacher?.schoolId,
+        );
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 24.0, bottom: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+              'Entreprise démarchée pour la 1ère fois pour ce métier par :'),
+          teacher == null
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 24.0),
+                  child: Text(
+                    'Aucun enseignant n\'est assigné à cette entreprise.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                )
+              : LayoutBuilder(builder: (context, constraints) {
+                  return Flex(
+                    direction: constraints.maxWidth < 300
+                        ? Axis.vertical
+                        : Axis.horizontal,
+                    children: [
+                      GestureDetector(
+                        onTap: teacher.email == null
+                            ? null
+                            : () => _sendEmail(teacher),
+                        child: Text(
+                          teacher.fullName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                decoration: teacher.email == null
+                                    ? null
+                                    : TextDecoration.underline,
+                                color:
+                                    teacher.email == null ? null : Colors.blue,
+                              ),
+                        ),
+                      ),
+                      Text(' - ${school?.name ?? 'École inconnue'}'),
+                    ],
+                  );
+                })
+        ],
+      ),
+    );
   }
 }

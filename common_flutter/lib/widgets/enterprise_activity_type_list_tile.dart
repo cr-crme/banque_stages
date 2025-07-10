@@ -5,9 +5,16 @@ import 'package:flutter/material.dart';
 class EnterpriseActivityTypeListController {
   final Set<ActivityTypes> _activityTypes;
   Set<ActivityTypes> get activityTypes => {..._activityTypes};
+  set activityTypes(Set<ActivityTypes> value) {
+    _activityTypes.clear();
+    _activityTypes.addAll(value);
+    if (_forceRefresh != null) _forceRefresh!();
+  }
 
   EnterpriseActivityTypeListController({required Set<ActivityTypes> initial})
     : _activityTypes = {...initial};
+
+  Function? _forceRefresh;
 
   void dispose() {
     _activityTypes.clear();
@@ -19,6 +26,7 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
     super.key,
     required this.controller,
     required this.editMode,
+    this.direction = Axis.horizontal,
     this.hideTitle = false,
     this.activityTabAtTop = true,
     this.tilePadding = const EdgeInsets.only(left: 24.0),
@@ -27,6 +35,7 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
   final EnterpriseActivityTypeListController controller;
   final bool editMode;
   final bool hideTitle;
+  final Axis direction;
   final bool activityTabAtTop;
   final EdgeInsets tilePadding;
 
@@ -44,8 +53,12 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
                   ? _ActivityTypesPickerFormField(
                     controller: controller,
                     activityTabAtTop: activityTabAtTop,
+                    direction: direction,
                   )
-                  : _ActivityTypeCards(controller: controller),
+                  : _ActivityTypeCards(
+                    controller: controller,
+                    direction: direction,
+                  ),
             ],
           ),
         ),
@@ -55,14 +68,20 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
 }
 
 class _ActivityTypeCards extends StatelessWidget {
-  const _ActivityTypeCards({required this.controller, this.onDeleted});
+  const _ActivityTypeCards({
+    required this.controller,
+    required this.direction,
+    this.onDeleted,
+  });
 
+  final Axis direction;
   final EnterpriseActivityTypeListController controller;
   final void Function(ActivityTypes activityType)? onDeleted;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Flex(
+      direction: direction,
       crossAxisAlignment: CrossAxisAlignment.start,
       children:
           controller._activityTypes
@@ -100,6 +119,7 @@ class _ActivityTypeCards extends StatelessWidget {
 class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
   _ActivityTypesPickerFormField({
     required this.controller,
+    required this.direction,
     String? Function(Set<ActivityTypes>? activityTypes)? validator,
     required this.activityTabAtTop,
   }) : super(
@@ -109,6 +129,7 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
        );
 
   final bool activityTabAtTop;
+  final Axis direction;
   final EnterpriseActivityTypeListController controller;
 
   static String? _validator(Set<ActivityTypes>? activityTypes) {
@@ -122,11 +143,14 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
     late FocusNode textFieldFocusNode;
     final controller =
         (state.widget as _ActivityTypesPickerFormField).controller;
+    controller._forceRefresh = () => state.didChange(controller._activityTypes);
+    final direction = (state.widget as _ActivityTypesPickerFormField).direction;
     final activityTabAtTop =
         (state.widget as _ActivityTypesPickerFormField).activityTabAtTop;
 
     final activityTabs = _ActivityTypeCards(
       controller: controller,
+      direction: direction,
       onDeleted: (activityType) {
         state.value!.remove(activityType);
         controller._activityTypes.remove(activityType);

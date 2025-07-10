@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'pages/about_page.dart';
-import 'pages/contact_page.dart';
 import 'pages/internships_page.dart';
 import 'pages/jobs_page.dart';
 
@@ -32,26 +31,21 @@ class EnterpriseScreen extends StatefulWidget {
 class _EnterpriseScreenState extends State<EnterpriseScreen>
     with SingleTickerProviderStateMixin {
   late final _tabController =
-      TabController(initialIndex: widget.pageIndex, length: 4, vsync: this);
+      TabController(initialIndex: widget.pageIndex, length: 3, vsync: this);
 
   late IconButton _actionButton;
 
   final _aboutPageKey = GlobalKey<EnterpriseAboutPageState>();
-  final _contactPageKey = GlobalKey<ContactPageState>();
   final _jobsPageKey = GlobalKey<JobsPageState>();
   final _stagePageKey = GlobalKey<InternshipsPageState>();
 
   bool get _editing =>
       (_aboutPageKey.currentState?.editing ?? false) ||
-      (_contactPageKey.currentState?.editing ?? false) ||
       (_jobsPageKey.currentState?.isEditing ?? false);
 
   void cancelEditing() {
     if (_aboutPageKey.currentState?.editing != null) {
       _aboutPageKey.currentState!.toggleEdit(save: false);
-    }
-    if (_contactPageKey.currentState?.editing != null) {
-      _contactPageKey.currentState!.toggleEdit(save: false);
     }
     if (_jobsPageKey.currentState?.isEditing != null) {
       _jobsPageKey.currentState!.cancelEditing();
@@ -63,26 +57,18 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
     late Icon icon;
 
     if (_tabController.index == 0) {
+      icon = const Icon(Icons.add);
+    } else if (_tabController.index == 1) {
       icon = _aboutPageKey.currentState?.editing ?? false
           ? const Icon(Icons.save)
           : const Icon(Icons.edit);
-    } else if (_tabController.index == 1) {
-      icon = _contactPageKey.currentState?.editing ?? false
-          ? const Icon(Icons.save)
-          : const Icon(Icons.edit);
     } else if (_tabController.index == 2) {
-      icon = const Icon(Icons.add);
-    } else if (_tabController.index == 3) {
       icon = const Icon(Icons.add);
     }
     _actionButton = IconButton(
       icon: icon,
       onPressed: () async {
         if (_tabController.index == 0) {
-          _aboutPageKey.currentState?.toggleEdit();
-        } else if (_tabController.index == 1) {
-          await _contactPageKey.currentState?.toggleEdit();
-        } else if (_tabController.index == 2) {
           if (_jobsPageKey.currentState!.isEditing) {
             if (!await ConfirmExitDialog.show(context,
                 content: Text.rich(TextSpan(children: [
@@ -107,7 +93,9 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
             cancelEditing();
           }
           await _jobsPageKey.currentState?.addJob();
-        } else if (_tabController.index == 3) {
+        } else if (_tabController.index == 1) {
+          await _aboutPageKey.currentState?.toggleEdit();
+        } else if (_tabController.index == 2) {
           await _stagePageKey.currentState?.addStage();
         }
 
@@ -205,9 +193,10 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
               },
               controller: _tabController,
               tabs: const [
+                Tab(
+                    icon: Icon(Icons.business_center_rounded),
+                    text: 'Métiers offerts'),
                 Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
-                Tab(icon: Icon(Icons.contact_phone), text: 'Contact'),
-                Tab(icon: Icon(Icons.business_center_rounded), text: 'Postes'),
                 Tab(icon: Icon(Icons.assignment), text: 'Stages'),
               ],
             ),
@@ -216,13 +205,12 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
             controller: _tabController,
             physics: _editing ? const NeverScrollableScrollPhysics() : null,
             children: [
-              EnterpriseAboutPage(
-                key: _aboutPageKey,
+              JobsPage(
+                key: _jobsPageKey,
                 enterprise: enterprise,
                 onAddInternshipRequest: addInternship,
               ),
-              ContactPage(key: _contactPageKey, enterprise: enterprise),
-              JobsPage(key: _jobsPageKey, enterprise: enterprise),
+              EnterpriseAboutPage(key: _aboutPageKey, enterprise: enterprise),
               InternshipsPage(
                 key: _stagePageKey,
                 enterprise: enterprise,

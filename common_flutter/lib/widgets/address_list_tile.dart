@@ -6,11 +6,11 @@ class AddressController {
   Function()? onAddressChangedCallback;
   AddressController({
     this.onAddressChangedCallback,
-    this.initialValue,
+    Address? initialValue,
     this.fromStringOverrideForDebug,
     this.confirmAddressForDebug,
   }) {
-    _textController.text = initialValue?.toString() ?? '';
+    this.initialValue = initialValue;
   }
 
   Future<Address?> Function(String)? fromStringOverrideForDebug;
@@ -21,7 +21,12 @@ class AddressController {
   Address? Function()? _getAddress;
   Address? Function(Address)? _setAddress;
   bool Function()? _isMandatory;
-  Address? initialValue;
+  Address? _initialValue;
+  set initialValue(Address? value) {
+    _initialValue = value;
+    _textController.text = value?.toString() ?? '';
+  }
+
   final TextEditingController _textController = TextEditingController();
 
   // Interface to expose to the user
@@ -98,7 +103,7 @@ class _AddressListTileState extends State<AddressListTile> {
     widget.addressController._getAddress = getAddress;
     widget.addressController._setAddress = setAddress;
     widget.addressController._isMandatory = () => widget.isMandatory;
-    _address = widget.addressController.initialValue;
+    _address = widget.addressController._initialValue;
 
     if (_address == null) {
       // Add the search icon if address is empty
