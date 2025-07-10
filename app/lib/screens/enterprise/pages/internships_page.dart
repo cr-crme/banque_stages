@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
@@ -21,7 +22,7 @@ class InternshipsPage extends StatefulWidget {
   });
 
   final Enterprise enterprise;
-  final Function(Enterprise) onAddInternshipRequest;
+  final Function(Enterprise, Specialization?) onAddInternshipRequest;
 
   @override
   State<InternshipsPage> createState() => InternshipsPageState();
@@ -29,7 +30,7 @@ class InternshipsPage extends StatefulWidget {
 
 class InternshipsPageState extends State<InternshipsPage> {
   Future<void> addStage() async =>
-      widget.onAddInternshipRequest(widget.enterprise);
+      widget.onAddInternshipRequest(widget.enterprise, null);
 
   List<Internship> _getActiveInternships(List<Internship> internships) {
     final List<Internship> out = [];

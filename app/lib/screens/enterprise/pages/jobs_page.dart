@@ -1,6 +1,7 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/persons/teacher.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
@@ -35,7 +36,7 @@ class JobsPage extends StatefulWidget {
   });
 
   final Enterprise enterprise;
-  final Function(Enterprise) onAddInternshipRequest;
+  final Function(Enterprise, Specialization) onAddInternshipRequest;
 
   @override
   State<JobsPage> createState() => JobsPageState();
@@ -188,7 +189,8 @@ class JobsPageState extends State<JobsPage> {
 
     _updateSectionsIfNeeded();
 
-    final jobs = [...widget.enterprise.availablejobs(context)];
+    final jobs = [...widget.enterprise.jobs];
+    final availableJobs = [...widget.enterprise.availablejobs(context)];
     jobs.sort(
       (a, b) => a.specialization.name
           .toLowerCase()
@@ -205,6 +207,16 @@ class JobsPageState extends State<JobsPage> {
             itemBuilder: (context, index) {
               final job = jobs[index];
 
+              final offered =
+                  job.positionsOffered[authProvider.schoolId ?? ''] ?? 0;
+              final occupied = job.positionsOccupied(context);
+              final remaining = offered - occupied;
+
+              final availablePlaceType = _AvailablePlaceType.fromJob(context,
+                  enterprise: widget.enterprise,
+                  job: job,
+                  availableJobs: availableJobs);
+
               return AnimatedExpandingCard(
                 key: _cardKey[job.id],
                 header: Column(
@@ -218,21 +230,23 @@ class JobsPageState extends State<JobsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _AvailablePlace(
-                                positionsOffered: job.positionsOffered[
-                                        authProvider.schoolId ?? ''] ??
-                                    0,
-                                positionsOccupied:
-                                    job.positionsOccupied(context),
+                                positionsOffered: offered,
+                                positionsOccupied: occupied,
+                                type: availablePlaceType,
                               ),
-                              _RecrutedBy(enterprise: widget.enterprise),
+                              if (availablePlaceType.isEnabled)
+                                _RecrutedBy(enterprise: widget.enterprise),
                             ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
+                          padding: const EdgeInsets.only(
+                              left: 8.0, top: 4.0, bottom: 4.0),
                           child: ElevatedButton(
-                              onPressed: () => widget
-                                  .onAddInternshipRequest(widget.enterprise),
+                              onPressed: remaining > 0
+                                  ? () => widget.onAddInternshipRequest(
+                                      widget.enterprise, job.specialization)
+                                  : null,
                               child: const Text('Inscrire un\nstagiaire',
                                   textAlign: TextAlign.center)),
                         ),
@@ -316,14 +330,76 @@ class JobsPageState extends State<JobsPage> {
   }
 }
 
+enum _AvailablePlaceType {
+  isClosed,
+  isNewForThatSchool,
+  isReserved,
+  isFull,
+  isAvailable;
+
+  static _AvailablePlaceType fromJob(BuildContext context,
+      {required Enterprise enterprise,
+      required Job job,
+      required List<Job> availableJobs}) {
+    final hasJob = enterprise.jobs
+        .any((job) => job.positionsOffered.values.any((e) => e > 0));
+    if (!hasJob) return _AvailablePlaceType.isClosed;
+
+    final isUnavailable =
+        availableJobs.every((availableJob) => availableJob.id != job.id);
+    if (isUnavailable) return _AvailablePlaceType.isReserved;
+
+    final schoolId = AuthProvider.of(context, listen: false).schoolId ?? '';
+    final offered = job.positionsOffered[schoolId] ?? 0;
+
+    if (offered == 0) return _AvailablePlaceType.isNewForThatSchool;
+
+    final occupied = job.positionsOccupied(context);
+    final remaining = offered - occupied;
+    if (remaining <= 0) return _AvailablePlaceType.isFull;
+
+    return _AvailablePlaceType.isAvailable;
+  }
+
+  bool get isEnabled {
+    switch (this) {
+      case _AvailablePlaceType.isClosed:
+      case _AvailablePlaceType.isReserved:
+        return false;
+      case _AvailablePlaceType.isNewForThatSchool:
+      case _AvailablePlaceType.isFull:
+      case _AvailablePlaceType.isAvailable:
+        return true;
+    }
+  }
+
+  String get message {
+    switch (this) {
+      case _AvailablePlaceType.isClosed:
+        return 'Cette entreprise ne prend pas de stagiaires.';
+      case _AvailablePlaceType.isReserved:
+        return 'Stage réservé à un\u00b7e enseignant\u00b7e\n'
+            'Aucun autre stagiaire ne sera accepté';
+      case _AvailablePlaceType.isNewForThatSchool:
+        return 'Cette entreprise n\'a jamais accueilli de stagiaires de votre école.';
+      case _AvailablePlaceType.isFull:
+        return 'Aucune place de stage disponible';
+      case _AvailablePlaceType.isAvailable:
+        return 'Nombre de places de stages disponibles';
+    }
+  }
+}
+
 class _AvailablePlace extends StatelessWidget {
   const _AvailablePlace({
     required this.positionsOffered,
     required this.positionsOccupied,
+    required this.type,
   });
 
   final int positionsOffered;
   final int positionsOccupied;
+  final _AvailablePlaceType type;
 
   @override
   Widget build(BuildContext context) {
@@ -331,6 +407,7 @@ class _AvailablePlace extends StatelessWidget {
     if (schoolId == null) {
       return const Center(child: Text('Impossible de charger les stages.'));
     }
+
     final positionsRemaining = positionsOffered - positionsOccupied;
 
     return Column(
@@ -339,13 +416,17 @@ class _AvailablePlace extends StatelessWidget {
         ListTile(
           visualDensity: VisualDensity.compact,
           leading: DisponibilityCircle(
-              positionsOffered: positionsOffered,
-              positionsOccupied: positionsOccupied),
-          title: Text('Nombre de places de stages disponibles'),
-          trailing: Text(
-            '$positionsRemaining / $positionsOffered',
-            style: Theme.of(context).textTheme.titleMedium,
+            positionsOffered: positionsOffered,
+            positionsOccupied: positionsOccupied,
+            enabled: type.isEnabled,
           ),
+          title: Text(type.message),
+          trailing: type.isEnabled
+              ? Text(
+                  '$positionsRemaining / $positionsOffered',
+                  style: Theme.of(context).textTheme.titleMedium,
+                )
+              : null,
         )
       ],
     );

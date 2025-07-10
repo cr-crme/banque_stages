@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 
 class NumberedTablet extends StatelessWidget {
   const NumberedTablet(
-      {super.key, required this.number, this.hideIfEmpty = false, this.color});
+      {super.key,
+      required this.number,
+      this.hideIfEmpty = false,
+      this.color,
+      this.enabled = true});
 
   final int number;
   final bool hideIfEmpty;
   final Color? color;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +46,7 @@ class NumberedTablet extends StatelessWidget {
                 size: 30,
               ),
               Text(
-                number.toString(),
+                enabled ? number.toString() : '\u2014',
                 style: const TextStyle(
                     color: Colors.white, fontWeight: FontWeight.bold),
               ),

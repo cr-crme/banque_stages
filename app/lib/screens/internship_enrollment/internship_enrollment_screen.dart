@@ -1,9 +1,12 @@
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/helpers/form_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
@@ -22,11 +25,13 @@ import 'steps/schedule_step.dart';
 class InternshipEnrollmentScreen extends StatefulWidget {
   const InternshipEnrollmentScreen({
     super.key,
-    required this.enterpriseId,
+    required this.enterprise,
+    this.specifiedSpecialization,
   });
 
   static const route = '/enrollment';
-  final String enterpriseId;
+  final Enterprise enterprise;
+  final Specialization? specifiedSpecialization;
 
   @override
   State<InternshipEnrollmentScreen> createState() =>
@@ -82,7 +87,7 @@ class _InternshipEnrollmentScreenState
     _generalInfoKey.currentState!.formKey.currentState!.save();
     _scheduleKey.currentState!.formKey.currentState!.save();
     final enterprise = EnterprisesProvider.of(context, listen: false)
-        .fromIdOrNull(_generalInfoKey.currentState!.enterprise!.id);
+        .fromIdOrNull(_generalInfoKey.currentState!.enterprise.id);
     if (enterprise == null) return;
 
     final signatoryTeacher =
@@ -104,7 +109,7 @@ class _InternshipEnrollmentScreenState
       studentId: _generalInfoKey.currentState!.student!.id,
       signatoryTeacherId: signatoryTeacher.id,
       extraSupervisingTeacherIds: [],
-      enterpriseId: _generalInfoKey.currentState!.enterprise!.id,
+      enterpriseId: _generalInfoKey.currentState!.enterprise.id,
       jobId: enterprise.jobs
           .firstWhere((job) =>
               job.specialization ==
@@ -170,15 +175,11 @@ class _InternshipEnrollmentScreenState
 
   @override
   Widget build(BuildContext context) {
-    final enterprises = EnterprisesProvider.of(context);
-    final enterprise = enterprises.fromIdOrNull(widget.enterpriseId);
-    if (enterprise == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inscrire un stagiaire chez\n${enterprise.name}'),
+        title: Text(
+            'Inscrire un stagiaire chez${ResponsiveService.getScreenSize(context) == ScreenSize.small ? '\n' : ' '}'
+            '${widget.enterprise.name}'),
         leading:
             IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
       ),
@@ -201,7 +202,12 @@ class _InternshipEnrollmentScreenState
               isActive: _currentStep == 0,
               title: const Text('Général'),
               content: GeneralInformationsStep(
-                  key: _generalInfoKey, enterprise: enterprise),
+                  key: _generalInfoKey,
+                  enterprise: widget.enterprise,
+                  specifiedSpecialization:
+                      widget.specifiedSpecialization == null
+                          ? null
+                          : [widget.specifiedSpecialization!]),
             ),
             Step(
               state: _stepStatus[1],

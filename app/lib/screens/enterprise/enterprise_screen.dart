@@ -1,10 +1,9 @@
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
-import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
-import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/internship_enrollment_screen.dart';
@@ -105,26 +104,11 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
     setState(() {});
   }
 
-  Future<void> addInternship(Enterprise enterprise) async {
+  Future<void> addInternship(
+      Enterprise enterprise, Specialization? specialization) async {
     final schoolId = Provider.of<AuthProvider>(context, listen: false).schoolId;
     if (schoolId == null) {
       showSnackBar(context, message: 'Vous n\'êtes pas connecté à une école');
-      return;
-    }
-
-    if (enterprise.availablejobs(context).fold<int>(
-            0,
-            (prev, e) =>
-                prev + e.positionsRemaining(context, schoolId: schoolId)) ==
-        0) {
-      await showDialog(
-        context: context,
-        builder: (ctx) => const AlertDialog(
-          title: Text('Plus de stage disponible'),
-          content:
-              Text('Il n\'y a plus de stage disponible dans cette entreprise'),
-        ),
-      );
       return;
     }
 
@@ -132,7 +116,10 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
         barrierDismissible: false,
         context: context,
         builder: (context) => Dialog(
-            child: InternshipEnrollmentScreen(enterpriseId: enterprise.id)));
+                child: InternshipEnrollmentScreen(
+              enterprise: enterprise,
+              specifiedSpecialization: specialization,
+            )));
   }
 
   @override

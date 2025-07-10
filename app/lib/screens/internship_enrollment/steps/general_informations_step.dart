@@ -1,6 +1,7 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/persons/student.dart';
+import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
@@ -24,9 +25,11 @@ List<Student> _studentsWithoutInternship(context, List<Student> students) {
 }
 
 class GeneralInformationsStep extends StatefulWidget {
-  const GeneralInformationsStep({super.key, required this.enterprise});
+  const GeneralInformationsStep(
+      {super.key, required this.enterprise, this.specifiedSpecialization});
 
   final Enterprise enterprise;
+  final List<Specialization>? specifiedSpecialization;
 
   @override
   State<GeneralInformationsStep> createState() =>
@@ -36,24 +39,24 @@ class GeneralInformationsStep extends StatefulWidget {
 class GeneralInformationsStepState extends State<GeneralInformationsStep> {
   final formKey = GlobalKey<FormState>();
 
-  late Enterprise? enterprise = widget.enterprise;
-
   late final studentController = StudentPickerController(
     schoolBoardId: AuthProvider.of(context, listen: false).schoolBoardId!,
     studentWhiteList: _studentsWithoutInternship(
         context, StudentsHelpers.studentsInMyGroups(context)),
   );
+  Enterprise get enterprise => widget.enterprise;
   Student? get student => studentController.student;
 
   late final primaryJobController = EnterpriseJobListController(
     job: widget.enterprise.availablejobs(context).length == 1
-        ? enterprise!.availablejobs(context).first
+        ? widget.enterprise.availablejobs(context).first
         : Job.empty,
-    specializationWhiteList: widget.enterprise
-        .withRemainingPositions(context,
-            schoolId: AuthProvider.of(context, listen: false).schoolId!)
-        .map((job) => job.specialization)
-        .toList(),
+    specializationWhiteList: widget.specifiedSpecialization ??
+        widget.enterprise
+            .withRemainingPositions(context,
+                schoolId: AuthProvider.of(context, listen: false).schoolId!)
+            .map((job) => job.specialization)
+            .toList(),
   );
   final extraJobControllers = <EnterpriseJobListController>[];
 
@@ -80,7 +83,7 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
               _ExtraSpecialization(
                   controllers: extraJobControllers, setState: setState),
             _SupervisonInformation(
-              enterprise: enterprise,
+              enterprise: widget.enterprise,
               onSavedFirstName: (name) => supervisorFirstName = name!,
               onSavedLastName: (name) => supervisorLastName = name!,
               onSavedPhone: (phone) => supervisorPhone = phone!,
