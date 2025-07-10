@@ -3,6 +3,7 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_form_field.dart';
@@ -50,14 +51,12 @@ class SupervisionExpansionPanel extends ExpansionPanel {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
         child: InkWell(
           borderRadius: BorderRadius.circular(25),
-          onTap: () =>
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  duration: Duration(seconds: 6),
-                  content: Text('Les résultats sont le cumul des '
-                      'évaluations des personnes ayant '
-                      'supervisé des stagiaires dans cette entreprise. '
-                      '\nIls sont différenciés entre stages '
-                      'FMS et FPT.'))),
+          onTap: () => showSnackBar(context,
+              message: 'Les résultats sont le cumul des '
+                  'évaluations des personnes ayant '
+                  'supervisé des stagiaires dans cette entreprise. '
+                  '\nIls sont différenciés entre stages '
+                  'FMS et FPT.'),
           child: Icon(
             Icons.info,
             color: Theme.of(context).primaryColor,

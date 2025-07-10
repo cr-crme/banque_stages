@@ -1,4 +1,5 @@
 import 'package:common/models/enterprises/job.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -30,13 +31,11 @@ class PhotoExpansionPanel extends ExpansionPanel {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
         child: InkWell(
           borderRadius: BorderRadius.circular(25),
-          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  duration: Duration(seconds: 6),
-                  content: Text(
-                      'Les photos doivent représenter un poste de travail vide, ou '
-                      'encore des travailleurs de dos.\n'
-                      'Ne pas prendre des photos où on peut les reconnaitre.'))),
+          onTap: () => showSnackBar(context,
+              message:
+                  'Les photos doivent représenter un poste de travail vide, ou '
+                  'encore des travailleurs de dos.\n'
+                  'Ne pas prendre des photos où on peut les reconnaitre.'),
           child: Icon(
             Icons.info,
             color: Theme.of(context).primaryColor,

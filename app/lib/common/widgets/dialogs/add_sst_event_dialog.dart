@@ -1,4 +1,5 @@
 import 'package:common_flutter/helpers/form_service.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/text_with_form.dart';
 import 'package:flutter/material.dart';
 
@@ -38,9 +39,7 @@ class _AddSstEventDialogState extends State<AddSstEventDialog> {
 
   void _onConfirm() {
     if (_eventType == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sélectionner un type d\'incident.')),
-      );
+      showSnackBar(context, message: 'Sélectionner un type d\'incident.');
       return;
     }
 

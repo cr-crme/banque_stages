@@ -3,6 +3,7 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:flutter/material.dart';
@@ -41,8 +42,8 @@ class _EnterpriseEvaluationScreenState
 
   void _showInvalidFieldsSnakBar([String? message]) {
     ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message ?? 'Remplir tous les champs avec un *.')));
+    showSnackBar(context,
+        message: message ?? 'Remplir tous les champs avec un *.');
   }
 
   void _nextStep() async {

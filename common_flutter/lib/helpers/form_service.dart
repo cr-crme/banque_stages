@@ -1,4 +1,5 @@
 import 'package:common/models/generic/phone_number.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 
 abstract class FormService {
@@ -15,8 +16,9 @@ abstract class FormService {
 
     if (!formKey.currentState!.validate()) {
       if (showSnackbarError) {
-        ScaffoldMessenger.of(formKey.currentContext!).showSnackBar(
-          const SnackBar(content: Text('Remplir tous les champs avec un *.')),
+        showSnackBar(
+          formKey.currentContext!,
+          message: 'Remplir tous les champs avec un *.',
         );
       }
       return false;

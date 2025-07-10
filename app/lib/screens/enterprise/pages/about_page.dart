@@ -9,6 +9,7 @@ import 'package:common_flutter/widgets/address_list_tile.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:common_flutter/widgets/web_site_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
@@ -67,8 +68,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
     final status = await _enterpriseInfoController.address.requestValidation();
     if (!mounted) return;
     if (status != null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(status)));
+      showSnackBar(context, message: status);
       return;
     }
     _editing = false;
@@ -78,8 +78,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
       final status = await _taxesInfoController.address.requestValidation();
       if (!mounted) return;
       if (status != null) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(status)));
+        showSnackBar(context, message: status);
         return;
       }
     }

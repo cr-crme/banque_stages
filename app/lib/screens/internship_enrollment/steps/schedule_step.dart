@@ -2,6 +2,7 @@ import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:common_flutter/widgets/custom_time_picker.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/extensions/time_of_day_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
@@ -57,9 +58,10 @@ class WeeklySchedulesController {
 
   void removedDailyScheduleTime(context, int weeklyIndex, int dailyIndex) {
     if (weeklySchedules[weeklyIndex].schedule.length == 1) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Au moins une plage horaire est nécessaire'),
-      ));
+      showSnackBar(
+        context,
+        message: 'Au moins une plage horaire est nécessaire',
+      );
       return;
     }
     weeklySchedules[weeklyIndex].schedule.removeAt(dailyIndex);

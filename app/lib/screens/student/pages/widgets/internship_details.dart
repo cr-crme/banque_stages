@@ -8,6 +8,7 @@ import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
@@ -102,11 +103,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
       if (!_internshipController.supervisorFormKey.currentState!.validate()) {
         // Prevent from exiting the edit mode if the field can't be validated
         _editMode = true;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Remplir tous les champs avec un *.'),
-          ),
-        );
+        showSnackBar(context, message: 'Remplir tous les champs avec un *.');
         return;
       }
     }
