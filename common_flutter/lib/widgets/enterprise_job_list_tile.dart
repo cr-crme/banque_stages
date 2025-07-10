@@ -355,7 +355,10 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                           ),
                   icon: Icon(
                     Icons.remove,
-                    color: positionsRemaining == 0 ? Colors.grey : Colors.black,
+                    color:
+                        _positionOffered(school.id) == 0
+                            ? Colors.grey
+                            : Colors.black,
                   ),
                 ),
                 Text('$positionsRemaining / ${_positionOffered(school.id)}'),

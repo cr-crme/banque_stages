@@ -89,7 +89,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
         EnterpriseJobListController(
           job: job,
           reservedForPickerController: EntityPickerController(
-            schools: _currentSchoolBoard?.schools ?? [],
+            schools: [],
             teachers: [...TeachersProvider.of(context, listen: false)],
             initialId: job.reservedForId,
           ),
@@ -281,9 +281,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
           children: [
             _buildName(),
             const SizedBox(height: 8),
-            _buildActivityTypes(),
-            const SizedBox(height: 8),
-            _buildJob(),
+            _buildJobs(),
             const SizedBox(height: 8),
             _buildRecruiter(),
             const SizedBox(height: 8),
@@ -301,7 +299,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
             const SizedBox(height: 8),
             _buildNeq(),
             const SizedBox(height: 8),
-            _buildReservedFor(),
+            _buildActivityTypes(),
           ],
         ),
       ),
@@ -358,7 +356,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     setState(() => _jobControllers.remove(id));
   }
 
-  Widget _buildJob() {
+  Widget _buildJobs() {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
       child: Column(
@@ -560,25 +558,6 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
         ),
         style: TextStyle(color: Colors.black),
       ),
-    );
-  }
-
-  Widget _buildReservedFor() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Réserver cette entreprise à une école ou enseignant\u00b7e',
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 12.0, right: 36.0),
-          child: EntityPickerTile(
-            controller: _reservedForPickerController,
-            editMode: _isEditing,
-          ),
-        ),
-      ],
     );
   }
 }
