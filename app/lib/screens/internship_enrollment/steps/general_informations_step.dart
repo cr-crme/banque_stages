@@ -54,7 +54,8 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
     specializationWhiteList: widget.specifiedSpecialization ??
         widget.enterprise
             .withRemainingPositions(context,
-                schoolId: AuthProvider.of(context, listen: false).schoolId!)
+                schoolId: AuthProvider.of(context, listen: false).schoolId!,
+                listen: false)
             .map((job) => job.specialization)
             .toList(),
   );

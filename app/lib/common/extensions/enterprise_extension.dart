@@ -43,9 +43,11 @@ extension EnterpriseExtension on Enterprise {
         job.reservedForId != myTeacherId);
   }
 
-  Iterable<Job> withRemainingPositions(context, {required String schoolId}) {
+  Iterable<Job> withRemainingPositions(context,
+      {required String schoolId, bool listen = false}) {
     return jobs.where((job) =>
-        (job.positionsOffered[schoolId] ?? 0) - job.positionsOccupied(context) >
+        (job.positionsOffered[schoolId] ?? 0) -
+            job.positionsOccupied(context, listen: listen) >
         0);
   }
 }

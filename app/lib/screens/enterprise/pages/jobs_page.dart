@@ -209,7 +209,7 @@ class JobsPageState extends State<JobsPage> {
 
               final offered =
                   job.positionsOffered[authProvider.schoolId ?? ''] ?? 0;
-              final occupied = job.positionsOccupied(context);
+              final occupied = job.positionsOccupied(context, listen: true);
               final remaining = offered - occupied;
 
               final availablePlaceType = _AvailablePlaceType.fromJob(context,
@@ -354,7 +354,7 @@ enum _AvailablePlaceType {
 
     if (offered == 0) return _AvailablePlaceType.isNewForThatSchool;
 
-    final occupied = job.positionsOccupied(context);
+    final occupied = job.positionsOccupied(context, listen: true);
     final remaining = offered - occupied;
     if (remaining <= 0) return _AvailablePlaceType.isFull;
 

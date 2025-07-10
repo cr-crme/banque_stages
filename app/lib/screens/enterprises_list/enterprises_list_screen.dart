@@ -5,6 +5,7 @@ import 'package:common/models/itineraries/waypoint.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
+import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
@@ -153,7 +154,9 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
       // Remove if should not be shown by filter availability filter
       if (_hideNotAvailable &&
           enterprise.availablejobs(context).every((job) =>
-              job.positionsRemaining(context, schoolId: schoolId) <= 0)) {
+              job.positionsRemaining(context,
+                  schoolId: schoolId, listen: true) <=
+              0)) {
         return false;
       }
 
@@ -185,6 +188,9 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
 
   @override
   Widget build(BuildContext context) {
+    // Register to the enterprises provider to refresh the list if it changes
+    EnterprisesProvider.of(context, listen: true);
+
     final enterprises =
         _sortEnterprisesByName(_filterSelectedEnterprises(widget.enterprises));
 
@@ -241,7 +247,8 @@ class _EnterprisesByMap extends StatelessWidget {
       final color = i == 0
           ? Colors.purple
           : enterprise
-                  .withRemainingPositions(context, schoolId: schoolId)
+                  .withRemainingPositions(context,
+                      schoolId: schoolId, listen: true)
                   .isNotEmpty
               ? Colors.green
               : Colors.red;
