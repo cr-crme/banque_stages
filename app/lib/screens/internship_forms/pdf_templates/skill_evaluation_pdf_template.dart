@@ -1,0 +1,16 @@
+part of 'package:crcrme_banque_stages/screens/internship_forms/generate_documents.dart';
+
+Future<Uint8List> _generateSkillEvaluationPdf(format,
+    {required Internship internship, required int evaluationIndex}) async {
+  final document = pw.Document();
+
+  document.addPage(
+    pw.Page(
+      build: (pw.Context context) => pw.Center(
+          child: pw.Text(
+              'Évaluation des compétences du ${DateFormat('yMd', 'fr_CA').format(internship.skillEvaluations[evaluationIndex].date)}')),
+    ),
+  );
+
+  return document.save();
+}
