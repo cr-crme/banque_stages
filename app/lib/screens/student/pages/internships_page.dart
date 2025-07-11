@@ -3,9 +3,7 @@ import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/common/extensions/internship_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
-import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -130,11 +128,6 @@ class _StudentInternshipListViewState
     }
   }
 
-  bool _isSupervisingInternship(Internship internship) {
-    final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
-    return internship.supervisingTeacherIds.contains(myId);
-  }
-
   @override
   Widget build(BuildContext context) {
     _prepareExpander(widget.internships);
@@ -154,8 +147,6 @@ class _StudentInternshipListViewState
                     _expanded[widget.internships[panelIndex].id] = isExpanded),
             children: widget.internships.asMap().keys.map((index) {
               final internship = widget.internships[index];
-              final canChangeSupervisingStatus =
-                  internship.signatoryTeacherId != myId;
 
               final endDate = internship.isActive
                   ? DateFormat.yMMMd('fr_CA').format(internship.dates.end)
@@ -182,31 +173,6 @@ class _StudentInternshipListViewState
                         .copyWith(color: Colors.black),
                   ),
                   subtitle: Text(specializationIdWithName),
-                  trailing: Tooltip(
-                    message: 'Ajouter ou retirer l\'élève à votre tableau '
-                        'de supervision',
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(25),
-                      onTap: canChangeSupervisingStatus
-                          ? () => InternshipsProvider.of(context, listen: false)
-                              .replace(_isSupervisingInternship(internship)
-                                  ? internship.copyWithoutTeacher(context,
-                                      teacherId: myId)
-                                  : internship.copyWithTeacher(context,
-                                      teacherId: myId))
-                          : null,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(
-                            _isSupervisingInternship(internship)
-                                ? Icons.person_add
-                                : Icons.person_remove,
-                            color: canChangeSupervisingStatus
-                                ? Theme.of(context).primaryColor
-                                : disabled),
-                      ),
-                    ),
-                  ),
                 ),
                 body: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
