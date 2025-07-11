@@ -52,6 +52,7 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
               initialExpandedState: true,
               editMode: true,
               showHeader: false,
+              availabilityIsMandatory: true,
             ),
           ),
           actions: [

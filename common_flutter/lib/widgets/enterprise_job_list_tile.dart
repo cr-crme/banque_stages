@@ -86,6 +86,7 @@ class EnterpriseJobListTile extends StatefulWidget {
     this.elevation = 10.0,
     this.specializationOnly = false,
     this.showHeader = true,
+    this.availabilityIsMandatory = false,
   });
 
   final EnterpriseJobListController controller;
@@ -97,6 +98,7 @@ class EnterpriseJobListTile extends StatefulWidget {
   final double elevation;
   final bool specializationOnly;
   final bool showHeader;
+  final bool availabilityIsMandatory;
 
   @override
   State<EnterpriseJobListTile> createState() => _EnterpriseJobListTileState();
@@ -340,37 +342,62 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Flexible(child: Text('Places disponibles à ${school.name}')),
+        Flexible(
+          child: Text(
+            '${widget.availabilityIsMandatory ? '* ' : ''}Places disponibles à ${school.name}',
+          ),
+        ),
         widget.editMode
-            ? Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  onPressed:
-                      _positionOffered(school.id) == 0
-                          ? null
-                          : () => _updatePositions(
-                            school.id,
-                            _positionOffered(school.id) - 1,
+            ? FormField(
+              validator:
+                  (value) =>
+                      widget.availabilityIsMandatory &&
+                              _positionOffered(school.id) == 0
+                          ? 'Ajouter au moins une place.'
+                          : null,
+              builder:
+                  (state) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            onPressed:
+                                _positionOffered(school.id) == 0
+                                    ? null
+                                    : () => _updatePositions(
+                                      school.id,
+                                      _positionOffered(school.id) - 1,
+                                    ),
+                            icon: Icon(
+                              Icons.remove,
+                              color:
+                                  _positionOffered(school.id) == 0
+                                      ? Colors.grey
+                                      : Colors.black,
+                            ),
                           ),
-                  icon: Icon(
-                    Icons.remove,
-                    color:
-                        _positionOffered(school.id) == 0
-                            ? Colors.grey
-                            : Colors.black,
-                  ),
-                ),
-                Text('$positionsRemaining / ${_positionOffered(school.id)}'),
-                IconButton(
-                  onPressed:
-                      () => _updatePositions(
-                        school.id,
-                        _positionOffered(school.id) + 1,
+                          Text(
+                            '$positionsRemaining / ${_positionOffered(school.id)}',
+                          ),
+                          IconButton(
+                            onPressed:
+                                () => _updatePositions(
+                                  school.id,
+                                  _positionOffered(school.id) + 1,
+                                ),
+                            icon: const Icon(Icons.add, color: Colors.black),
+                          ),
+                        ],
                       ),
-                  icon: const Icon(Icons.add, color: Colors.black),
-                ),
-              ],
+                      if (state.hasError)
+                        Text(
+                          state.errorText!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                    ],
+                  ),
             )
             : Text(
               '$positionsRemaining / ${_positionOffered(school.id)}',
