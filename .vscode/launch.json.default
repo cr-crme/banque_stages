@@ -49,5 +49,11 @@
                 "BANQUE_STAGE_SUPERADMIN_EMAIL": "<PUT EMAIL OF THE SUPERADMIN ACCOUNT HERE>",
             },
         },
+        {
+            "name": "Widget tester",
+            "request": "launch",
+            "type": "dart",
+            "program": "app/lib/main_widget.dart",
+        },
     ]
 }
