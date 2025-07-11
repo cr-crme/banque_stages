@@ -175,48 +175,51 @@ class _InternshipEnrollmentScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-            'Inscrire un stagiaire chez${ResponsiveService.getScreenSize(context) == ScreenSize.small ? '\n' : ' '}'
-            '${widget.enterprise.name}'),
-        leading:
-            IconButton(onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
-      ),
-      body: PopScope(
-        child: ScrollableStepper(
-          type: StepperType.horizontal,
-          scrollController: _scrollController,
-          currentStep: _currentStep,
-          onTapContinue: _nextStep,
-          onStepTapped: (int tapped) {
-            setState(() {
-              _currentStep = tapped;
-              _scrollController.jumpTo(0);
-            });
-          },
-          onTapCancel: _cancel,
-          steps: [
-            Step(
-              state: _stepStatus[0],
-              isActive: _currentStep == 0,
-              title: const Text('Général'),
-              content: GeneralInformationsStep(
-                  key: _generalInfoKey,
-                  enterprise: widget.enterprise,
-                  specifiedSpecialization:
-                      widget.specifiedSpecialization == null
-                          ? null
-                          : [widget.specifiedSpecialization!]),
-            ),
-            Step(
-              state: _stepStatus[1],
-              isActive: _currentStep == 1,
-              title: const Text('Horaire'),
-              content: ScheduleStep(key: _scheduleKey),
-            ),
-          ],
-          controlsBuilder: _controlBuilder,
+    return SizedBox(
+      width: ResponsiveService.maxBodyWidth,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+              'Inscrire un stagiaire chez${ResponsiveService.getScreenSize(context) == ScreenSize.small ? '\n' : ' '}'
+              '${widget.enterprise.name}'),
+          leading: IconButton(
+              onPressed: _cancel, icon: const Icon(Icons.arrow_back)),
+        ),
+        body: PopScope(
+          child: ScrollableStepper(
+            type: StepperType.horizontal,
+            scrollController: _scrollController,
+            currentStep: _currentStep,
+            onTapContinue: _nextStep,
+            onStepTapped: (int tapped) {
+              setState(() {
+                _currentStep = tapped;
+                _scrollController.jumpTo(0);
+              });
+            },
+            onTapCancel: _cancel,
+            steps: [
+              Step(
+                state: _stepStatus[0],
+                isActive: _currentStep == 0,
+                title: const Text('Général'),
+                content: GeneralInformationsStep(
+                    key: _generalInfoKey,
+                    enterprise: widget.enterprise,
+                    specifiedSpecialization:
+                        widget.specifiedSpecialization == null
+                            ? null
+                            : [widget.specifiedSpecialization!]),
+              ),
+              Step(
+                state: _stepStatus[1],
+                isActive: _currentStep == 1,
+                title: const Text('Horaire'),
+                content: ScheduleStep(key: _scheduleKey),
+              ),
+            ],
+            controlsBuilder: _controlBuilder,
+          ),
         ),
       ),
     );

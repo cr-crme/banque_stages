@@ -2,6 +2,7 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
@@ -167,41 +168,45 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Ajouter une entreprise'),
-        ),
-        body: ScrollableStepper(
-          type: StepperType.horizontal,
-          scrollController: _scrollController,
-          currentStep: _currentStep,
-          onTapContinue: _nextStep,
-          onStepTapped: (int tapped) => setState(() {
-            _scrollController.jumpTo(0);
-            _currentStep = tapped;
-          }),
-          onTapCancel: _cancel,
-          steps: [
-            Step(
-              state: _stepStatus[0],
-              isActive: _currentStep == 0,
-              title: const Text('Informations'),
-              content: InformationsPage(key: _informationsKey),
-            ),
-            Step(
-              state: _stepStatus[1],
-              isActive: _currentStep == 1,
-              title: const Text('Contact'),
-              content: ContactPage(key: _contactKey),
-            ),
-            Step(
-              state: _stepStatus[2],
-              isActive: _currentStep == 2,
-              title: const Text('Postes'),
-              content: JobsPage(key: _jobsKey),
-            ),
-          ],
-          controlsBuilder: _controlBuilder,
+      child: SizedBox(
+        width: ResponsiveService.maxBodyWidth,
+        child: Scaffold(
+          appBar: AppBar(
+              title: const Text('Ajouter une entreprise'),
+              leading: IconButton(
+                  onPressed: _cancel, icon: const Icon(Icons.arrow_back))),
+          body: ScrollableStepper(
+            type: StepperType.horizontal,
+            scrollController: _scrollController,
+            currentStep: _currentStep,
+            onTapContinue: _nextStep,
+            onStepTapped: (int tapped) => setState(() {
+              _scrollController.jumpTo(0);
+              _currentStep = tapped;
+            }),
+            onTapCancel: _cancel,
+            steps: [
+              Step(
+                state: _stepStatus[0],
+                isActive: _currentStep == 0,
+                title: const Text('Informations'),
+                content: InformationsPage(key: _informationsKey),
+              ),
+              Step(
+                state: _stepStatus[1],
+                isActive: _currentStep == 1,
+                title: const Text('Contact'),
+                content: ContactPage(key: _contactKey),
+              ),
+              Step(
+                state: _stepStatus[2],
+                isActive: _currentStep == 2,
+                title: const Text('Postes'),
+                content: JobsPage(key: _jobsKey),
+              ),
+            ],
+            controlsBuilder: _controlBuilder,
+          ),
         ),
       ),
     );
