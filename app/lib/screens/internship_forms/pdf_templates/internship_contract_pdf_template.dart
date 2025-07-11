@@ -19,6 +19,7 @@ String _title(student_model.Program program) {
 Future<Uint8List> _generateInternshipContractPdf(format,
     {required Internship internship, required int versionIndex}) async {
   final document = pw.Document(pageMode: PdfPageMode.outlines);
+  final headerHeight = 300;
 
   document.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.letter,
@@ -46,14 +47,14 @@ Future<Uint8List> _generateInternshipContractPdf(format,
       },
       build: (context) => [
             pw.SizedBox(
-              height:
-                  PdfPageFormat.letter.height - 300, // leave space for header
-              child: _coverPage(internship),
-            ),
+                height: PdfPageFormat.letter.height - headerHeight,
+                child: _coverPage(internship)),
             pw.NewPage(),
             _studentObligations(internship),
             pw.NewPage(),
             _contract(internship),
+            pw.NewPage(),
+            _studentInformations(internship),
           ]));
 
   return document.save();
@@ -568,11 +569,119 @@ pw.Widget _signature(String person) {
       ]);
 }
 
-// pw.Page(
-//   build: (pw.Context context) => pw.Center(
-//       child: pw.Text('Contrat de stage pour le stage de '
-//           '${DateFormat('yMd', 'fr_CA').format(internship.creationDateFrom(versionIndex))}')),
-// ),
+pw.Widget _studentInformations(Internship internship) {
+  final studentName = _studentName(internship.studentId).toUpperCase();
+
+  // TODO Fill this form automatically with the student data
+  return pw.Column(
+    mainAxisSize: pw.MainAxisSize.max,
+    children: [
+      pw.SizedBox(width: double.infinity),
+      pw.Text('RENSEIGNEMENTS SUR LE STAGIAIRE',
+          style: _textStyleBold.copyWith(fontSize: 18)),
+      pw.SizedBox(height: 16),
+      _richTextCell(title: 'Nom du stagiaire', content: studentName),
+      pw.Row(children: [
+        pw.Expanded(
+            child: _richTextCell(
+          title: 'Téléphone',
+          content: '(555) 123-4567',
+        )),
+        pw.Expanded(
+            child: _richTextCell(
+          title: 'Téléphone d\'urgence',
+          content: '(555) 765-4321',
+        )),
+      ]),
+      _richTextCell(title: 'Âge', content: '17 ans'),
+      _checkBoxCell(
+          title: 'Transport',
+          content: {'Oui': true, 'Non': false, 'Billet': true, 'Passe': false}),
+      _richTextCell(
+        title: 'Date de début du stage',
+        content: '2025-05-02',
+      ),
+      _richTextCell(
+        title: 'Horaire de travail (et heure de la pause)',
+        content: '\nCoucou',
+      ),
+      _richTextCell(
+        title: 'Fréquence de visites du superviseur',
+        content: '\nCoucou',
+      ),
+      _richTextCell(
+        title: 'Nom de l\'enseignant responsable',
+        content: '\nCoucou',
+      ),
+      _richTextCell(
+        title: 'Adresse et téléphone de l\'école',
+        content: '\nCoucou',
+      ),
+      _richTextCell(
+        title: 'Nom, adresse et téléphone de l\'entreprise',
+        content: '\nCoucou',
+      ),
+      _richTextCell(
+        title: 'Nom du travailleur parrain dans l\'entreprise',
+        content: '\nCoucou',
+      ),
+      _richTextCell(
+        title: 'Code et nom du métier semi-spécialisé',
+        content: '\nCoucou',
+      ),
+    ],
+  );
+}
+
+pw.Widget _richTextCell({String? title, String? content}) {
+  return pw.Container(
+    width: double.infinity,
+    padding: const pw.EdgeInsets.symmetric(horizontal: 4.0, vertical: 6.0),
+    decoration: pw.BoxDecoration(border: pw.Border.all(color: PdfColors.black)),
+    child: pw.RichText(
+        text: pw.TextSpan(
+      children: [
+        if (title != null)
+          pw.TextSpan(
+              text: '$title : ', style: _textStyleBold.copyWith(fontSize: 14)),
+        if (content != null)
+          pw.TextSpan(text: content, style: _textStyle.copyWith(fontSize: 14)),
+      ],
+    )),
+  );
+}
+
+pw.Widget _checkBoxCell({String? title, required Map<String, bool> content}) {
+  return pw.Container(
+      width: double.infinity,
+      padding: const pw.EdgeInsets.symmetric(horizontal: 4.0, vertical: 6.0),
+      decoration:
+          pw.BoxDecoration(border: pw.Border.all(color: PdfColors.black)),
+      child: pw.Row(children: [
+        pw.Text('$title : ', style: _textStyleBold.copyWith(fontSize: 14)),
+        pw.Expanded(
+            child: pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+          children: content.entries.map((entry) {
+            return pw.Row(mainAxisSize: pw.MainAxisSize.min, children: [
+              pw.Text(entry.key, style: _textStyle.copyWith(fontSize: 14)),
+              pw.SizedBox(width: 6.0),
+              pw.Container(
+                  decoration: entry.value
+                      ? pw.BoxDecoration(
+                          border: pw.Border.all(color: PdfColors.black))
+                      : null,
+                  child: pw.Checkbox(
+                    value: entry.value,
+                    name: entry.key,
+                    checkColor: PdfColors.black,
+                    activeColor: PdfColors.white,
+                  )),
+            ]);
+          }).toList(),
+        ))
+      ]));
+}
 
 // TODO: Make these dynamic
 String _schoolBoardName(String schoolBoardId) =>
