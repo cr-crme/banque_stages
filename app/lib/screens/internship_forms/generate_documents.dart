@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/persons/student.dart' as student_model;
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;

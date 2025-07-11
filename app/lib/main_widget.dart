@@ -1,10 +1,10 @@
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/generate_documents.dart';
 import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
-import 'package:common/models/internships/time_utils.dart' as time_utils;
 
 void main() async {
   runApp(MaterialApp(
