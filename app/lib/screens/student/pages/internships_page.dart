@@ -147,6 +147,8 @@ class _StudentInternshipListViewState
                     _expanded[widget.internships[panelIndex].id] = isExpanded),
             children: widget.internships.asMap().keys.map((index) {
               final internship = widget.internships[index];
+              final enterprise =
+                  EnterprisesProvider.of(context)[internship.enterpriseId];
 
               final endDate = internship.isActive
                   ? DateFormat.yMMMd('fr_CA').format(internship.dates.end)
@@ -172,7 +174,22 @@ class _StudentInternshipListViewState
                         .titleLarge!
                         .copyWith(color: Colors.black),
                   ),
-                  subtitle: Text(specializationIdWithName),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          '${enterprise.name} ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Text(specializationIdWithName),
+                    ],
+                  ),
                 ),
                 body: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

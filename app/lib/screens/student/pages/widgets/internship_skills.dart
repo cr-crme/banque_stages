@@ -5,6 +5,7 @@ import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_screen.dart';
@@ -28,7 +29,6 @@ class _InternshipSkillsState extends State<InternshipSkills> {
 
   @override
   Widget build(BuildContext context) {
-    final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
     final internship =
         InternshipsProvider.of(context).fromId(widget.internshipId);
 
@@ -42,7 +42,7 @@ class _InternshipSkillsState extends State<InternshipSkills> {
           ExpansionPanel(
             isExpanded: _isExpanded,
             canTapOnHeader: true,
-            headerBuilder: (context, isExpanded) => Text('Compétences',
+            headerBuilder: (context, isExpanded) => Text('Évaluations',
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
@@ -50,67 +50,13 @@ class _InternshipSkillsState extends State<InternshipSkills> {
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Stack(
-                  alignment: Alignment.topRight,
-                  children: [
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: _SpecificSkillBody(
-                            internship: internship,
-                            evaluation: internship.skillEvaluations)),
-                    Visibility(
-                      visible: internship.supervisingTeacherIds.contains(myId),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 3),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18))),
-                        child: IconButton(
-                          onPressed: () => showSkillEvaluationDialog(
-                            context: context,
-                            internshipId: internship.id,
-                            editMode: true,
-                          ),
-                          icon: const Icon(Icons.add_chart_rounded),
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                _SpecificSkillBody(
+                    internship: internship,
+                    evaluation: internship.skillEvaluations),
                 const SizedBox(height: 16.0),
-                Stack(
-                  alignment: Alignment.topRight,
-                  children: [
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: _AttitudeBody(
-                            internship: internship,
-                            evaluation: internship.attitudeEvaluations)),
-                    Visibility(
-                      visible: internship.supervisingTeacherIds.contains(myId),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 3),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18))),
-                        child: IconButton(
-                          onPressed: () => showAttitudeEvaluationDialog(
-                              context: context,
-                              formController: AttitudeEvaluationFormController(
-                                  internshipId: internship.id),
-                              editMode: true),
-                          icon: const Icon(Icons.playlist_add_sharp),
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    )
-                  ],
-                )
+                _AttitudeBody(
+                    internship: internship,
+                    evaluation: internship.attitudeEvaluations)
               ],
             ),
           )
@@ -312,6 +258,8 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
 
   @override
   Widget build(BuildContext context) {
+    final teacherId = TeachersProvider.of(context, listen: false).myTeacher?.id;
+
     _resetIndex();
 
     late final Specialization specialization;
@@ -330,40 +278,69 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('C1. Compétences spécifiques du métier',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        if (widget.evaluation.isEmpty)
-          const Padding(
-            padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
-            child: Text('Aucune évaluation disponible pour ce stage.'),
-          ),
-        if (widget.evaluation.isNotEmpty)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSelectEvaluationFromDate(),
-              _buildPresentAtMeeting(),
-              _buillSkillSection(specialization),
-              if (widget.internship.extraSpecializationIds.isNotEmpty)
-                ...widget.internship.extraSpecializationIds
-                    .asMap()
-                    .keys
-                    .map((index) => Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buillSkillSection(
-                                ActivitySectorsService.specialization(widget
-                                    .internship.extraSpecializationIds[index])),
-                          ],
-                        )),
-              _buildComment(),
-              _buildShowOtherDate(),
-            ],
+    return AnimatedExpandingCard(
+      elevation: 0.0,
+      header: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const Text('C1. Compétences spécifiques du métier',
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          Visibility(
+            visible:
+                widget.internship.supervisingTeacherIds.contains(teacherId),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Theme.of(context).colorScheme.primary, width: 3),
+                  borderRadius: const BorderRadius.all(Radius.circular(18))),
+              child: IconButton(
+                onPressed: () => showSkillEvaluationDialog(
+                  context: context,
+                  internshipId: widget.internship.id,
+                  editMode: true,
+                ),
+                icon: const Icon(Icons.add_chart_rounded),
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
           )
-      ],
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.evaluation.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
+              child: Text('Aucune évaluation disponible pour ce stage.'),
+            ),
+          if (widget.evaluation.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSelectEvaluationFromDate(),
+                _buildPresentAtMeeting(),
+                _buillSkillSection(specialization),
+                if (widget.internship.extraSpecializationIds.isNotEmpty)
+                  ...widget.internship.extraSpecializationIds
+                      .asMap()
+                      .keys
+                      .map((index) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buillSkillSection(
+                                  ActivitySectorsService.specialization(widget
+                                      .internship
+                                      .extraSpecializationIds[index])),
+                            ],
+                          )),
+                _buildComment(),
+                _buildShowOtherDate(),
+              ],
+            )
+        ],
+      ),
     );
   }
 }
@@ -522,31 +499,58 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
 
   @override
   Widget build(BuildContext context) {
+    final teacherId = TeachersProvider.of(context, listen: false).myTeacher?.id;
     _resetIndex();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('C2. Attitudes et comportements',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        if (widget.evaluation.isEmpty)
-          const Padding(
-            padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
-            child: Text('Aucune évaluation disponible pour ce stage.'),
-          ),
-        if (widget.evaluation.isNotEmpty)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildLastEvaluation(),
-              _buildAttitudeIsGood(),
-              _buildAttitudeIsBad(),
-              _buildGeneralAppreciation(),
-              _buildComment(),
-              _buildShowOtherForms(),
-            ],
-          )
-      ],
-    );
+    return AnimatedExpandingCard(
+        elevation: 0.0,
+        header: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const Text('C2. Attitudes et comportements',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            Visibility(
+              visible:
+                  widget.internship.supervisingTeacherIds.contains(teacherId),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Theme.of(context).colorScheme.primary, width: 3),
+                    borderRadius: const BorderRadius.all(Radius.circular(18))),
+                child: IconButton(
+                  onPressed: () => showAttitudeEvaluationDialog(
+                      context: context,
+                      formController: AttitudeEvaluationFormController(
+                          internshipId: widget.internship.id),
+                      editMode: true),
+                  icon: const Icon(Icons.playlist_add_sharp),
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            )
+          ],
+        ),
+        child: Column(
+          children: [
+            if (widget.evaluation.isEmpty)
+              const Padding(
+                padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
+                child: Text('Aucune évaluation disponible pour ce stage.'),
+              ),
+            if (widget.evaluation.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildLastEvaluation(),
+                  _buildAttitudeIsGood(),
+                  _buildAttitudeIsBad(),
+                  _buildGeneralAppreciation(),
+                  _buildComment(),
+                  _buildShowOtherForms(),
+                ],
+              )
+          ],
+        ));
   }
 }

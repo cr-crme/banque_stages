@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:common/models/internships/internship.dart';
-import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/generate_documents.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -19,14 +18,6 @@ class InternshipDocuments extends StatefulWidget {
 
 class _InternshipDocumentsState extends State<InternshipDocuments> {
   bool _isExpanded = false;
-
-  int _getInternshipSectorNumber() {
-    final specialization = EnterprisesProvider.of(context,
-            listen: false)[widget.internship.enterpriseId]
-        .jobs[widget.internship.jobId]
-        .specialization;
-    return int.parse(specialization.sector.id);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +40,6 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildPdfTile(
-                    context,
-                    title: 'Formulaire d\'identification du stagiaire',
-                    pdfGeneratorCallback:
-                        GenerateDocuments.generateStudentIdentificationPdf,
-                  ),
                   ...List.generate(
                     widget.internship.nbVersions,
                     (index) => _buildPdfTile(
@@ -68,37 +53,6 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                               versionIndex: index),
                     ),
                   ),
-                  _buildPdfTile(
-                    context,
-                    title: 'Formulaire pour la CNESST',
-                    pdfGeneratorCallback: GenerateDocuments.generateCnesstPdf,
-                  ),
-                  _buildPdfTile(
-                    context,
-                    title: 'Formulaire d\'autorisation de prise de photos',
-                    pdfGeneratorCallback:
-                        GenerateDocuments.generatePhotoAutorisationPdf,
-                  ),
-                  _buildPdfTile(
-                    context,
-                    title: 'Formulaire pour le crédit d\'impôts',
-                    pdfGeneratorCallback:
-                        GenerateDocuments.generateTaxeCreditFormPdf,
-                  ),
-                  if (_getInternshipSectorNumber() == 10)
-                    _buildPdfTile(
-                      context,
-                      title: 'Formulaire de demande de carte de stage au Club '
-                          'paritaire de l\'automobile',
-                      pdfGeneratorCallback:
-                          GenerateDocuments.generateInternshipAutomotiveCardPdf,
-                    ),
-                  _buildPdfTile(
-                    context,
-                    title: 'Preuve de couverture d\'assurances',
-                    pdfGeneratorCallback:
-                        GenerateDocuments.generateInsurancePdf,
-                  ),
                   _buildEvaluations(
                       title: 'Évaluation des compétences',
                       evaluations: widget.internship.skillEvaluations,
@@ -109,6 +63,11 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                       evaluations: widget.internship.attitudeEvaluations,
                       pdfGeneratorCallback:
                           GenerateDocuments.generateAttitudeEvaluationPdf),
+                  _buildPdfTile(
+                    context,
+                    title: 'VISA',
+                    pdfGeneratorCallback: GenerateDocuments.generateVisaPdf,
+                  ),
                 ],
               ),
             )
@@ -134,22 +93,25 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: GestureDetector(
-        onTap: () => showDialog(
-            context: context,
-            builder: (ctx) => PdfPreview(
-                  allowPrinting: true,
-                  allowSharing: true,
-                  canChangeOrientation: false,
-                  canChangePageFormat: false,
-                  canDebug: false,
-                  build: (format) => pdfGeneratorCallback(format,
-                      internship: widget.internship),
-                )),
-        child: Text(
-          title,
-          style: const TextStyle(
-              color: Colors.blue, decoration: TextDecoration.underline),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () => showDialog(
+              context: context,
+              builder: (ctx) => PdfPreview(
+                    allowPrinting: true,
+                    allowSharing: true,
+                    canChangeOrientation: false,
+                    canChangePageFormat: false,
+                    canDebug: false,
+                    build: (format) => pdfGeneratorCallback(format,
+                        internship: widget.internship),
+                  )),
+          child: Text(
+            title,
+            style: const TextStyle(
+                color: Colors.blue, decoration: TextDecoration.underline),
+          ),
         ),
       ),
     );
