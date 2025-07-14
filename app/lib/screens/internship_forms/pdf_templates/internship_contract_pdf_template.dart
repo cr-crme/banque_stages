@@ -603,25 +603,9 @@ pw.Widget _studentInformations(Internship internship) {
           content: student.dateBirth?.year == null
               ? 'N/A'
               : '${DateTime.now().difference(student.dateBirth!).inDays ~/ 365} ans'),
-      _checkBoxCell(
-          title: 'Transport',
-          content: {'Oui': true, 'Non': false, 'Billet': true, 'Passe': false}),
-      _textCell(
-        title: 'Date de début du stage',
-        content: DateFormat('yyyy-MM-dd').format(internship.dates.start),
-      ),
-      _schedulesCell(
-        title: 'Horaire de travail (et heure de la pause)',
-        content: internship.weeklySchedules,
-      ),
-      _textCell(
-          title: 'Fréquence de visites du superviseur',
-          content: 'Coucou',
-          sameLine: false),
       _textCell(
         title: 'Nom de l\'enseignant responsable',
         content: teacher.fullName.toUpperCase(),
-        sameLine: false,
       ),
       _textCell(
         title: 'Adresse et téléphone de l\'école',
@@ -629,21 +613,36 @@ pw.Widget _studentInformations(Internship internship) {
             '${school.phone.toString()}',
         sameLine: false,
       ),
+      pw.SizedBox(height: 12),
       _textCell(
-        title: 'Nom, adresse et téléphone de l\'entreprise',
-        content: '${enterprise.address.toString()}\n'
-            '${enterprise.phone.toString()}',
-        sameLine: false,
+        title: 'Date de début du stage',
+        content: DateFormat('yyyy-MM-dd').format(internship.dates.start),
       ),
       _textCell(
-        title: 'Nom du travailleur parrain dans l\'entreprise',
-        content: internship.supervisor.fullName.toUpperCase(),
+          title: 'Nom du parrain dans l\'entreprise',
+          content: internship.supervisor.fullName.toUpperCase()),
+      _textCell(
+        title: 'Nom, adresse et téléphone de l\'entreprise',
+        content: '${enterprise.name.toUpperCase()}\n'
+            '${enterprise.address.toString()}\n'
+            '${enterprise.phone.toString()}',
         sameLine: false,
       ),
       _textCell(
           title: 'Code et nom du métier semi-spécialisé',
           content: specialization.idWithName,
           sameLine: false),
+      _checkBoxCell(
+          title: 'Transport',
+          content: {'Oui': true, 'Non': false, 'Billet': true, 'Passe': false}),
+      _textCell(
+          title: 'Fréquence de visites du superviseur',
+          content: 'Coucou',
+          sameLine: false),
+      _schedulesCell(
+        title: 'Horaire de travail (et heure de la pause)',
+        content: internship.weeklySchedules,
+      ),
     ],
   );
 }
