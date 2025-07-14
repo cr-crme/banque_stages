@@ -736,28 +736,40 @@ pw.Widget _schedulesCell(
                                       style: _textStyleBold.copyWith(
                                           fontSize: 14))),
                             pw.Padding(
-                                padding: pw.EdgeInsets.only(
-                                    left: content.length > 1 ? 4.0 : 0.0,
-                                    bottom: weeklySchedule != content.last
-                                        ? 8.0
-                                        : 0.0),
-                                child: pw.Table(
-                                  children: weeklySchedule.schedule
-                                      .map((daily) => pw.TableRow(children: [
-                                            pw.Text(daily.dayOfWeek.name,
-                                                style: style),
-                                            pw.SizedBox(width: 20.0),
-                                            pw.Text(
-                                                '${daily.start.hour}:${daily.start.minute.toString().padLeft(2, '0')}',
-                                                style: style),
-                                            pw.Text(mid, style: style),
-                                            pw.Text(
-                                                '${daily.end.hour}:${daily.end.minute.toString().padLeft(2, '0')}',
-                                                style: style),
-                                            pw.SizedBox(width: double.infinity),
-                                          ]))
-                                      .toList(),
-                                )),
+                              padding: pw.EdgeInsets.only(
+                                  left: content.length > 1 ? 4.0 : 0.0,
+                                  bottom: weeklySchedule != content.last
+                                      ? 8.0
+                                      : 0.0),
+                              child: pw.Table(
+                                children: weeklySchedule.schedule
+                                    .map(
+                                      (daily) => pw.TableRow(children: [
+                                        pw.Text(daily.dayOfWeek.name,
+                                            style: style),
+                                        pw.SizedBox(width: 20.0),
+                                        pw.Text(
+                                            '${daily.start.hour}:${daily.start.minute.toString().padLeft(2, '0')}',
+                                            style: style),
+                                        pw.Text(mid, style: style),
+                                        pw.Text(
+                                            '${daily.end.hour}:${daily.end.minute.toString().padLeft(2, '0')}',
+                                            style: style),
+                                        if (daily.breakStart != null &&
+                                            daily.breakEnd != null)
+                                          pw.Padding(
+                                              padding: const pw.EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: pw.Text(
+                                                  '(${daily.breakStart!.hour}:${daily.breakStart!.minute.toString().padLeft(2, '0')} - '
+                                                  '${daily.breakEnd!.hour}:${daily.breakEnd!.minute.toString().padLeft(2, '0')})',
+                                                  style: style)),
+                                        pw.SizedBox(width: double.infinity),
+                                      ]),
+                                    )
+                                    .toList(),
+                              ),
+                            ),
                           ],
                         ),
                       )
@@ -795,23 +807,33 @@ Internship _internship({required String internshipId}) => Internship(
               DailySchedule(
                   dayOfWeek: Day.monday,
                   start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
+                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
               DailySchedule(
                   dayOfWeek: Day.tuesday,
                   start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
+                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
               DailySchedule(
                   dayOfWeek: Day.wednesday,
                   start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
+                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
               DailySchedule(
                   dayOfWeek: Day.thursday,
                   start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
+                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
               DailySchedule(
                   dayOfWeek: Day.friday,
                   start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
+                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
             ],
             period: time_utils.DateTimeRange(
                 start: DateTime(2025, 5, 2), end: DateTime(2025, 6, 2))),
@@ -820,23 +842,33 @@ Internship _internship({required String internshipId}) => Internship(
               DailySchedule(
                   dayOfWeek: Day.monday,
                   start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
+                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
               DailySchedule(
                   dayOfWeek: Day.tuesday,
                   start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
+                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
               DailySchedule(
                   dayOfWeek: Day.wednesday,
                   start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
+                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
               DailySchedule(
                   dayOfWeek: Day.thursday,
                   start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
+                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
               DailySchedule(
                   dayOfWeek: Day.friday,
                   start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
+                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
             ],
             period: time_utils.DateTimeRange(
                 start: DateTime(2025, 5, 2), end: DateTime(2025, 6, 2))),

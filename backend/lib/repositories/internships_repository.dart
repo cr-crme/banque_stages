@@ -287,7 +287,11 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                   'starting_hour',
                   'starting_minute',
                   'ending_hour',
-                  'ending_minute'
+                  'ending_minute',
+                  'break_start_hour',
+                  'break_start_minute',
+                  'break_end_hour',
+                  'break_end_minute',
                 ],
                 idNameToDataTable: 'weekly_schedule_id',
               ),
@@ -302,7 +306,15 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                 'id': day['id'],
                 'day': day['day'],
                 'start': [day['starting_hour'], day['starting_minute']],
-                'end': [day['ending_hour'], day['ending_minute']]
+                'end': [day['ending_hour'], day['ending_minute']],
+                'break_start': day['break_start_hour'] != null &&
+                        day['break_start_minute'] != null
+                    ? [day['break_start_hour'], day['break_start_minute']]
+                    : null,
+                'break_end': day['break_end_hour'] != null &&
+                        day['break_end_minute'] != null
+                    ? [day['break_end_hour'], day['break_end_minute']]
+                    : null,
               }
           ];
         }
@@ -668,6 +680,10 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                 'starting_minute': day['start'][1],
                 'ending_hour': day['end'][0],
                 'ending_minute': day['end'][1],
+                'break_start_hour': day['break_start']?[0],
+                'break_start_minute': day['break_start']?[1],
+                'break_end_hour': day['break_end']?[0],
+                'break_end_minute': day['break_end']?[1],
               });
         }
       }
@@ -954,15 +970,21 @@ class InternshipsRepositoryMock extends InternshipsRepository {
                 DailySchedule(
                     dayOfWeek: Day.monday,
                     start: TimeOfDay(hour: 8, minute: 0),
-                    end: TimeOfDay(hour: 16, minute: 0)),
+                    end: TimeOfDay(hour: 16, minute: 0),
+                    breakStart: TimeOfDay(hour: 12, minute: 0),
+                    breakEnd: TimeOfDay(hour: 13, minute: 0)),
                 DailySchedule(
                     dayOfWeek: Day.wednesday,
                     start: TimeOfDay(hour: 8, minute: 0),
-                    end: TimeOfDay(hour: 16, minute: 0)),
+                    end: TimeOfDay(hour: 16, minute: 0),
+                    breakStart: TimeOfDay(hour: 12, minute: 0),
+                    breakEnd: TimeOfDay(hour: 13, minute: 0)),
                 DailySchedule(
                     dayOfWeek: Day.friday,
                     start: TimeOfDay(hour: 8, minute: 0),
-                    end: TimeOfDay(hour: 12, minute: 0)),
+                    end: TimeOfDay(hour: 12, minute: 0),
+                    breakStart: TimeOfDay(hour: 12, minute: 0),
+                    breakEnd: TimeOfDay(hour: 13, minute: 0)),
               ],
               period: DateTimeRange(
                   start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)))
@@ -998,11 +1020,15 @@ class InternshipsRepositoryMock extends InternshipsRepository {
                 DailySchedule(
                     dayOfWeek: Day.tuesday,
                     start: TimeOfDay(hour: 9, minute: 0),
-                    end: TimeOfDay(hour: 17, minute: 0)),
+                    end: TimeOfDay(hour: 17, minute: 0),
+                    breakStart: TimeOfDay(hour: 12, minute: 0),
+                    breakEnd: TimeOfDay(hour: 13, minute: 0)),
                 DailySchedule(
                     dayOfWeek: Day.thursday,
                     start: TimeOfDay(hour: 9, minute: 0),
-                    end: TimeOfDay(hour: 17, minute: 0)),
+                    end: TimeOfDay(hour: 17, minute: 0),
+                    breakStart: TimeOfDay(hour: 12, minute: 0),
+                    breakEnd: TimeOfDay(hour: 13, minute: 0)),
               ],
               period: DateTimeRange(
                   start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)))

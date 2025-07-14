@@ -80,19 +80,43 @@ const time_utils.TimeOfDay _defaultStart =
     time_utils.TimeOfDay(hour: 9, minute: 0);
 const time_utils.TimeOfDay _defaultEnd =
     time_utils.TimeOfDay(hour: 15, minute: 0);
+const time_utils.TimeOfDay _defaultBreakStart =
+    time_utils.TimeOfDay(hour: 12, minute: 0);
+const time_utils.TimeOfDay _defaultBreakEnd =
+    time_utils.TimeOfDay(hour: 13, minute: 0);
 
 WeeklySchedule _fillNewScheduleList(time_utils.DateTimeRange dateRange) {
   return WeeklySchedule(schedule: [
     DailySchedule(
-        dayOfWeek: Day.monday, start: _defaultStart, end: _defaultEnd),
+        dayOfWeek: Day.monday,
+        start: _defaultStart,
+        end: _defaultEnd,
+        breakStart: _defaultBreakStart,
+        breakEnd: _defaultBreakEnd),
     DailySchedule(
-        dayOfWeek: Day.tuesday, start: _defaultStart, end: _defaultEnd),
+        dayOfWeek: Day.tuesday,
+        start: _defaultStart,
+        end: _defaultEnd,
+        breakStart: _defaultBreakStart,
+        breakEnd: _defaultBreakEnd),
     DailySchedule(
-        dayOfWeek: Day.wednesday, start: _defaultStart, end: _defaultEnd),
+        dayOfWeek: Day.wednesday,
+        start: _defaultStart,
+        end: _defaultEnd,
+        breakStart: _defaultBreakStart,
+        breakEnd: _defaultBreakEnd),
     DailySchedule(
-        dayOfWeek: Day.thursday, start: _defaultStart, end: _defaultEnd),
+        dayOfWeek: Day.thursday,
+        start: _defaultStart,
+        end: _defaultEnd,
+        breakStart: _defaultBreakStart,
+        breakEnd: _defaultBreakEnd),
     DailySchedule(
-        dayOfWeek: Day.friday, start: _defaultStart, end: _defaultEnd),
+        dayOfWeek: Day.friday,
+        start: _defaultStart,
+        end: _defaultEnd,
+        breakStart: _defaultBreakStart,
+        breakEnd: _defaultBreakEnd),
   ], period: dateRange);
 }
 
@@ -328,6 +352,7 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
     final day = await _promptDay(context);
     if (day == null || !mounted) return;
 
+    // TODO: add break time support
     final start =
         await promptTime(title: 'Heure de début', initial: _defaultStart);
     if (start == null || !mounted) return;
@@ -336,7 +361,13 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
     if (end == null) return;
 
     widget.scheduleController.addToDailySchedule(
-        weeklyIndex, DailySchedule(dayOfWeek: day, start: start, end: end));
+        weeklyIndex,
+        DailySchedule(
+            dayOfWeek: day,
+            start: start,
+            end: end,
+            breakStart: null,
+            breakEnd: null));
     setState(() {});
   }
 

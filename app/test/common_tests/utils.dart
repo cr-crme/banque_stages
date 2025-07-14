@@ -316,6 +316,8 @@ DailySchedule dummyDailySchedule(
     dayOfWeek: dayOfWeek,
     start: const TimeOfDay(hour: 9, minute: 00),
     end: const TimeOfDay(hour: 15, minute: 00),
+    breakStart: const TimeOfDay(hour: 12, minute: 00),
+    breakEnd: const TimeOfDay(hour: 13, minute: 00),
   );
 }
 

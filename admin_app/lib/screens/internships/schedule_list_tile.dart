@@ -13,6 +13,7 @@ extension TimeOfDayExtension on time_utils.TimeOfDay {
   }
 }
 
+// TODO Add break time support in the UI and PDF generation
 class InternshipHelpers {
   static List<WeeklySchedule> copySchedules(
     List<WeeklySchedule> schedules, {
@@ -40,6 +41,20 @@ class InternshipHelpers {
                             hour: day.end.hour,
                             minute: day.end.minute,
                           ),
+                          breakStart:
+                              day.breakStart == null
+                                  ? null
+                                  : time_utils.TimeOfDay(
+                                    hour: day.breakStart!.hour,
+                                    minute: day.breakStart!.minute,
+                                  ),
+                          breakEnd:
+                              day.breakEnd == null
+                                  ? null
+                                  : time_utils.TimeOfDay(
+                                    hour: day.breakEnd!.hour,
+                                    minute: day.breakEnd!.minute,
+                                  ),
                         ),
                       )
                       .toList(),
@@ -174,6 +189,14 @@ const time_utils.TimeOfDay _defaultEnd = time_utils.TimeOfDay(
   hour: 15,
   minute: 0,
 );
+const time_utils.TimeOfDay _defaultBreakStart = time_utils.TimeOfDay(
+  hour: 12,
+  minute: 0,
+);
+const time_utils.TimeOfDay _defaultBreakEnd = time_utils.TimeOfDay(
+  hour: 13,
+  minute: 0,
+);
 
 WeeklySchedule _fillNewScheduleList(time_utils.DateTimeRange dateRange) {
   return WeeklySchedule(
@@ -182,26 +205,36 @@ WeeklySchedule _fillNewScheduleList(time_utils.DateTimeRange dateRange) {
         dayOfWeek: Day.monday,
         start: _defaultStart,
         end: _defaultEnd,
+        breakStart: _defaultBreakStart,
+        breakEnd: _defaultBreakEnd,
       ),
       DailySchedule(
         dayOfWeek: Day.tuesday,
         start: _defaultStart,
         end: _defaultEnd,
+        breakStart: _defaultBreakStart,
+        breakEnd: _defaultBreakEnd,
       ),
       DailySchedule(
         dayOfWeek: Day.wednesday,
         start: _defaultStart,
         end: _defaultEnd,
+        breakStart: _defaultBreakStart,
+        breakEnd: _defaultBreakEnd,
       ),
       DailySchedule(
         dayOfWeek: Day.thursday,
         start: _defaultStart,
         end: _defaultEnd,
+        breakStart: _defaultBreakStart,
+        breakEnd: _defaultBreakEnd,
       ),
       DailySchedule(
         dayOfWeek: Day.friday,
         start: _defaultStart,
         end: _defaultEnd,
+        breakStart: _defaultBreakStart,
+        breakEnd: _defaultBreakEnd,
       ),
     ],
     period: dateRange,
@@ -430,7 +463,7 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
 
     final day = await _promptDay(context);
     if (day == null || !mounted) return;
-
+    // TODO: add break time support
     final start = await promptTime(
       title: 'Heure de début',
       initial: _defaultStart,
@@ -442,7 +475,13 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
 
     widget.scheduleController.addToDailySchedule(
       weeklyIndex,
-      DailySchedule(dayOfWeek: day, start: start, end: end),
+      DailySchedule(
+        dayOfWeek: day,
+        start: start,
+        end: end,
+        breakStart: null,
+        breakEnd: null,
+      ),
     );
     setState(() {});
   }

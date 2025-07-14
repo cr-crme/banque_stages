@@ -36,11 +36,15 @@ class DailySchedule extends ItemSerializable {
     required this.dayOfWeek,
     required this.start,
     required this.end,
+    required this.breakStart,
+    required this.breakEnd,
   });
 
   final Day dayOfWeek;
   final TimeOfDay start;
   final TimeOfDay end;
+  final TimeOfDay? breakStart;
+  final TimeOfDay? breakEnd;
 
   DailySchedule.fromSerialized(super.map)
       : dayOfWeek = map['day'] == null ? Day.monday : Day.values[map['day']],
@@ -50,6 +54,13 @@ class DailySchedule extends ItemSerializable {
         end = map['end'] == null
             ? const TimeOfDay(hour: 0, minute: 0)
             : TimeOfDay(hour: map['end'][0], minute: map['end'][1]),
+        breakStart = map['break_start'] == null
+            ? null
+            : TimeOfDay(
+                hour: map['break_start'][0], minute: map['break_start'][1]),
+        breakEnd = map['break_end'] == null
+            ? null
+            : TimeOfDay(hour: map['break_end'][0], minute: map['break_end'][1]),
         super.fromSerialized();
 
   @override
@@ -58,6 +69,10 @@ class DailySchedule extends ItemSerializable {
         'day': dayOfWeek.index,
         'start': [start.hour, start.minute],
         'end': [end.hour, end.minute],
+        'break_start':
+            breakStart != null ? [breakStart!.hour, breakStart!.minute] : null,
+        'break_end':
+            breakEnd != null ? [breakEnd!.hour, breakEnd!.minute] : null,
       };
 
   ///
@@ -66,6 +81,8 @@ class DailySchedule extends ItemSerializable {
         dayOfWeek: dayOfWeek,
         start: start,
         end: end,
+        breakStart: breakStart,
+        breakEnd: breakEnd,
       );
 
   DailySchedule copyWith({
@@ -73,12 +90,16 @@ class DailySchedule extends ItemSerializable {
     Day? dayOfWeek,
     TimeOfDay? start,
     TimeOfDay? end,
+    TimeOfDay? breakStart,
+    TimeOfDay? breakEnd,
   }) =>
       DailySchedule(
         id: id ?? this.id,
         dayOfWeek: dayOfWeek ?? this.dayOfWeek,
         start: start ?? this.start,
         end: end ?? this.end,
+        breakStart: breakStart ?? this.breakStart,
+        breakEnd: breakEnd ?? this.breakEnd,
       );
 
   @override
