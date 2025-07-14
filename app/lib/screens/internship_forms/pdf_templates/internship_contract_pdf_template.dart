@@ -594,7 +594,7 @@ pw.Widget _studentInformations(Internship internship) {
         )),
         pw.Expanded(
             child: _textCell(
-          title: 'Téléphone d\'urgence',
+          title: 'Téléphone urgence',
           content: student.contact.phone?.toString() ?? 'N/A',
         )),
       ]),
@@ -606,6 +606,7 @@ pw.Widget _studentInformations(Internship internship) {
       _textCell(
         title: 'Nom de l\'enseignant responsable',
         content: teacher.fullName.toUpperCase(),
+        sameLine: false,
       ),
       _textCell(
         title: 'Nom, adresse et téléphone de l\'école',
@@ -620,19 +621,10 @@ pw.Widget _studentInformations(Internship internship) {
         content: DateFormat('yyyy-MM-dd').format(internship.dates.start),
       ),
       _textCell(
-          title: 'Nom du parrain dans l\'entreprise',
-          content: internship.supervisor.fullName.toUpperCase()),
-      _textCell(
-        title: 'Nom, adresse et téléphone de l\'entreprise',
-        content: '${enterprise.name.toUpperCase()}\n'
-            '${enterprise.address.toString()}\n'
-            '${enterprise.phone.toString()}',
+        title: 'Code et nom du métier semi-spécialisé',
+        content: specialization.idWithName,
         sameLine: false,
       ),
-      _textCell(
-          title: 'Code et nom du métier semi-spécialisé',
-          content: specialization.idWithName,
-          sameLine: false),
       _checkBoxCell(
           title: 'Transport',
           content: Transportation.values.asMap().map((key, value) {
@@ -641,9 +633,22 @@ pw.Widget _studentInformations(Internship internship) {
                 internship.transportations.contains(transportation));
           })),
       _textCell(
-          title: 'Fréquence de visites du superviseur',
-          content: internship.visitFrequencies,
-          sameLine: false),
+        title: 'Fréquence de visites du superviseur',
+        content: internship.visitFrequencies,
+        sameLine: false,
+      ),
+      _textCell(
+        title: 'Nom du parrain dans l\'entreprise',
+        content: internship.supervisor.fullName.toUpperCase(),
+        sameLine: false,
+      ),
+      _textCell(
+        title: 'Nom, adresse et téléphone de l\'entreprise',
+        content: '${enterprise.name.toUpperCase()}\n'
+            '${enterprise.address.toString()}\n'
+            '${enterprise.phone.toString()}',
+        sameLine: false,
+      ),
       _schedulesCell(
         title: 'Horaire de travail (et heure de la pause)',
         content: internship.weeklySchedules,
@@ -707,7 +712,6 @@ pw.Widget _checkBoxCell({String? title, required Map<String, bool> content}) {
 
 pw.Widget _schedulesCell(
     {required String title, required List<WeeklySchedule> content}) {
-  // TODO Deal with multiple schedules
   final mid = ' - ';
   final style = _textStyle.copyWith(fontSize: 14);
   return pw.Container(
