@@ -26,6 +26,7 @@ class _AddSchoolDialogState extends State<AddSchoolBoardDialog> {
     Navigator.of(context).pop();
   }
 
+  // TODO Add cnesst number field
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

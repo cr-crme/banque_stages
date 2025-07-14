@@ -27,7 +27,11 @@ void expectNear(double a, double b, {double epsilon = 1e-8}) {
 School dummySchool({
   String? id,
 }) =>
-    School(id: id, name: 'Meine Schule', address: Address.empty);
+    School(
+        id: id,
+        name: 'Meine Schule',
+        address: Address.empty,
+        phone: PhoneNumber.empty);
 
 Teacher dummyTeacher(
         {String id = 'teacherId',

@@ -111,6 +111,7 @@ CREATE TABLE admins (
 CREATE TABLE school_boards (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
+    cnesst_number VARCHAR(20) NOT NULL,
     FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE
 );
 

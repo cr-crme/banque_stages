@@ -40,18 +40,14 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ...List.generate(
-                    widget.internship.nbVersions,
-                    (index) => _buildPdfTile(
-                      context,
-                      title: 'Contrat de stage - Version du '
-                          '${DateFormat('yMd', 'fr_CA').format(widget.internship.creationDateFrom(index))}',
-                      pdfGeneratorCallback: (format, {required internship}) =>
-                          GenerateDocuments.generateInternshipContractPdf(
-                              format,
-                              internship: internship,
-                              versionIndex: index),
-                    ),
+                  _buildPdfTile(
+                    context,
+                    title: 'Contrat de stage',
+                    pdfGeneratorCallback: (context, format,
+                            {required internshipId}) =>
+                        GenerateDocuments.generateInternshipContractPdf(
+                            context, format,
+                            internshipId: internshipId),
                   ),
                   _buildEvaluations(
                       title: 'Évaluation des compétences',
@@ -87,8 +83,9 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
   Widget _buildPdfTile(
     BuildContext context, {
     required String title,
-    required Future<Uint8List> Function(PdfPageFormat format,
-            {required Internship internship})
+    required Future<Uint8List> Function(
+            BuildContext context, PdfPageFormat format,
+            {required String internshipId})
         pdfGeneratorCallback,
   }) {
     return Padding(
@@ -104,8 +101,8 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                     canChangeOrientation: false,
                     canChangePageFormat: false,
                     canDebug: false,
-                    build: (format) => pdfGeneratorCallback(format,
-                        internship: widget.internship),
+                    build: (format) => pdfGeneratorCallback(context, format,
+                        internshipId: widget.internship.id),
                   )),
           child: Text(
             title,
@@ -120,8 +117,9 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
   Widget _buildEvaluations(
       {required String title,
       evaluations,
-      required Future<Uint8List> Function(PdfPageFormat format,
-              {required Internship internship, required int evaluationIndex})
+      required Future<Uint8List> Function(
+              BuildContext context, PdfPageFormat format,
+              {required String internshipId, required int evaluationIndex})
           pdfGeneratorCallback}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
@@ -141,10 +139,10 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                           context,
                           title: 'Formulaire du '
                               '${DateFormat('yMd', 'fr_CA').format(evaluations[index].date)}',
-                          pdfGeneratorCallback: (format,
-                                  {required internship}) =>
-                              pdfGeneratorCallback(format,
-                                  internship: internship,
+                          pdfGeneratorCallback: (context, format,
+                                  {required internshipId}) =>
+                              pdfGeneratorCallback(context, format,
+                                  internshipId: internshipId,
                                   evaluationIndex: index),
                         ),
                       ),

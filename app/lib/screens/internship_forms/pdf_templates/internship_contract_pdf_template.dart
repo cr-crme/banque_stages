@@ -16,10 +16,12 @@ String _title(student_model.Program program) {
 
 // TODO Use feminine form?
 
-Future<Uint8List> _generateInternshipContractPdf(format,
-    {required Internship internship, required int versionIndex}) async {
+Future<Uint8List> _generateInternshipContractPdf(
+    BuildContext context, PdfPageFormat format,
+    {required String internshipId}) async {
   final document = pw.Document(pageMode: PdfPageMode.outlines);
   final headerHeight = 300;
+  final internship = _internship(internshipId: internshipId);
 
   document.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.letter,
@@ -72,8 +74,8 @@ pw.Widget _logo({double sizeFactor = 1.0}) {
 }
 
 pw.Widget _coverPage(Internship internship) {
-  final schoolBoardName = _schoolBoardName(internship.schoolBoardId);
-  final program = _program(internship);
+  final schoolBoard = _schoolBoard(schoolBoardId: internship.schoolBoardId);
+  final program = _student(studentId: internship.studentId).program;
   final dash = '-';
 
   return pw.Center(
@@ -103,7 +105,7 @@ pw.Widget _coverPage(Internship internship) {
                   style: _textStyle.copyWith(fontSize: 16),
                 ),
                 pw.Text(
-                    '${schoolBoardName.toUpperCase()} $dash ELEVE $dash ENTREPRISE $dash SUPERVISEUR DE STAGE $dash ECOLE',
+                    '${schoolBoard.name.toUpperCase()} $dash ELEVE $dash ENTREPRISE $dash SUPERVISEUR DE STAGE $dash ECOLE',
                     style: _textStyle.copyWith(fontSize: 16),
                     textAlign: pw.TextAlign.center),
               ],
@@ -116,10 +118,10 @@ pw.Widget _coverPage(Internship internship) {
 }
 
 pw.Widget _studentObligations(Internship internship) {
-  final schoolBoardName =
-      _schoolBoardName(internship.schoolBoardId).toUpperCase();
-  final schoolName = _schoolName(internship.schoolBoardId).toUpperCase();
-  final studentName = _studentName(internship.studentId).toUpperCase();
+  final schoolBoard = _schoolBoard(schoolBoardId: internship.schoolBoardId);
+  final student = _student(studentId: internship.studentId);
+  final school =
+      _school(schoolBoardId: student.schoolBoardId, schoolId: student.schoolId);
   final mid = '\u00b7';
 
   return pw.Column(
@@ -139,7 +141,7 @@ pw.Widget _studentObligations(Internship internship) {
             text: pw.TextSpan(children: [
           pw.TextSpan(text: 'Je, soussigné${mid}e, ', style: _textStyle),
           pw.TextSpan(
-              text: studentName,
+              text: student.fullName.toUpperCase(),
               style:
                   _textStyle.copyWith(decoration: pw.TextDecoration.underline)),
           pw.TextSpan(text: ', m\'engage :', style: _textStyle),
@@ -157,7 +159,7 @@ pw.Widget _studentObligations(Internship internship) {
                       'de l\'entreprise et l\'école secondaire ',
                   style: _textStyle),
               pw.TextSpan(
-                  text: schoolName,
+                  text: school.name.toUpperCase(),
                   style: _textStyle.copyWith(
                       decoration: pw.TextDecoration.underline)),
               pw.TextSpan(text: ';', style: _textStyle),
@@ -176,7 +178,7 @@ pw.Widget _studentObligations(Internship internship) {
                       'de l\'école secondaire ',
                   style: _textStyle),
               pw.TextSpan(
-                  text: schoolName,
+                  text: school.name.toUpperCase(),
                   style: _textStyle.copyWith(
                       decoration: pw.TextDecoration.underline)),
               pw.TextSpan(
@@ -217,7 +219,7 @@ pw.Widget _studentObligations(Internship internship) {
                       'À faire toute la période de formation exigée par l\'école secondaire ',
                   style: _textStyle),
               pw.TextSpan(
-                  text: schoolName,
+                  text: school.name.toUpperCase(),
                   style: _textStyle.copyWith(
                       decoration: pw.TextDecoration.underline)),
               pw.TextSpan(
@@ -251,7 +253,7 @@ pw.Widget _studentObligations(Internship internship) {
           textAlign: pw.TextAlign.justify,
           text: pw.TextSpan(
               text:
-                  'À suivre les règlements de l\'ENTREPRISE et du ${schoolBoardName.toUpperCase()} '
+                  'À suivre les règlements de l\'ENTREPRISE et du ${schoolBoard.name.toUpperCase()} '
                   'en me conformant aux politiques, directives et pratiques courantes dont on m\'aura '
                   'préalablement informé${mid}e, notamment les règles d\'utilisation du matériel '
                   'informatique et technologique (cellulaire, internet, réseaux sociaux, etc.);',
@@ -296,13 +298,11 @@ pw.Widget _studentObligations(Internship internship) {
 }
 
 pw.Widget _contract(Internship internship) {
-  final schoolBoardName =
-      _schoolBoardName(internship.schoolBoardId).toUpperCase();
-  final schoolBoardCnesstNumber =
-      _schoolBoardCnesstNumber(internship.schoolBoardId);
-  final schoolName = _schoolName(internship.schoolBoardId).toUpperCase();
-  final program = _program(internship);
-  final enterpriseName = _enterpriseName(internship.enterpriseId).toUpperCase();
+  final schoolBoard = _schoolBoard(schoolBoardId: internship.schoolBoardId);
+  final student = _student(studentId: internship.studentId);
+  final school =
+      _school(schoolBoardId: student.schoolBoardId, schoolId: student.schoolId);
+  final enterprise = _enterprise(enterpriseId: internship.enterpriseId);
 
   return pw.Column(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -320,7 +320,7 @@ pw.Widget _contract(Internship internship) {
           ),
           padding:
               const pw.EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-          child: pw.Text('Entre le $schoolBoardName',
+          child: pw.Text('Entre le ${schoolBoard.name.toUpperCase()}',
               style: _textStyleBold.copyWith(fontSize: 16))),
       pw.SizedBox(height: 16),
       pw.Container(
@@ -330,7 +330,7 @@ pw.Widget _contract(Internship internship) {
           ),
           padding:
               const pw.EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-          child: pw.Text('L\'école $schoolName',
+          child: pw.Text('L\'école ${school.name.toUpperCase()}',
               style: _textStyleBold.copyWith(fontSize: 16))),
       pw.SizedBox(height: 16),
       pw.Container(
@@ -340,7 +340,7 @@ pw.Widget _contract(Internship internship) {
           ),
           padding:
               const pw.EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-          child: pw.Text('Et l\'entreprise $enterpriseName',
+          child: pw.Text('Et l\'entreprise ${enterprise.name}',
               style: _textStyleBold.copyWith(fontSize: 16))),
       pw.SizedBox(height: 24),
       pw.Padding(
@@ -351,7 +351,7 @@ pw.Widget _contract(Internship internship) {
               ),
               padding:
                   const pw.EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-              child: pw.Text('Objet : ${_title(program)}',
+              child: pw.Text('Objet : ${_title(student.program)}',
                   style: _textStyleBold.copyWith(fontSize: 14)))),
       pw.SizedBox(height: 24),
       pw.RichText(
@@ -429,7 +429,7 @@ pw.Widget _contract(Internship internship) {
                       'ou l\'enseignante responsable des stages de l\'école secondaire ',
                   style: _textStyle),
               pw.TextSpan(
-                  text: schoolName,
+                  text: school.name.toUpperCase(),
                   style: _textStyle.copyWith(
                       decoration: pw.TextDecoration.underline)),
               pw.TextSpan(text: ';', style: _textStyle)
@@ -465,7 +465,7 @@ pw.Widget _contract(Internship internship) {
             children: [
               pw.TextSpan(text: 'Que le ', style: _textStyle),
               pw.TextSpan(
-                  text: schoolBoardName,
+                  text: schoolBoard.name.toUpperCase(),
                   style: _textStyle.copyWith(
                       decoration: pw.TextDecoration.underline)),
               pw.TextSpan(
@@ -473,7 +473,7 @@ pw.Widget _contract(Internship internship) {
                       'la protection assurée par la Loi. Le numéro de dossier du ',
                   style: _textStyle),
               pw.TextSpan(
-                  text: schoolBoardName,
+                  text: schoolBoard.name.toUpperCase(),
                   style: _textStyle.copyWith(
                       decoration: pw.TextDecoration.underline)),
               pw.TextSpan(
@@ -481,7 +481,7 @@ pw.Widget _contract(Internship internship) {
                       'santé et de la sécurité du travail (CNESST) est: ',
                   style: _textStyle),
               pw.TextSpan(
-                  text: schoolBoardCnesstNumber,
+                  text: schoolBoard.cnesstNumber,
                   style: _textStyle.copyWith(
                       decoration: pw.TextDecoration.underline)),
               pw.TextSpan(text: ';', style: _textStyle),
@@ -496,7 +496,7 @@ pw.Widget _contract(Internship internship) {
             children: [
               pw.TextSpan(text: 'Que le ', style: _textStyle),
               pw.TextSpan(
-                  text: schoolBoardName,
+                  text: schoolBoard.name.toUpperCase(),
                   style: _textStyle.copyWith(
                       decoration: pw.TextDecoration.underline)),
               pw.TextSpan(
@@ -570,9 +570,13 @@ pw.Widget _signature(String person) {
 }
 
 pw.Widget _studentInformations(Internship internship) {
-  final studentName = _studentName(internship.studentId).toUpperCase();
+  final student = _student(studentId: internship.studentId);
+  final school =
+      _school(schoolBoardId: student.schoolBoardId, schoolId: student.schoolId);
+  final teacher = _teacher(teacherId: internship.signatoryTeacherId);
+  final enterprise = _enterprise(enterpriseId: internship.enterpriseId);
+  final specialization = _job(jobId: internship.jobId).specialization;
 
-  // TODO Fill this form automatically with the student data
   return pw.Column(
     mainAxisSize: pw.MainAxisSize.max,
     children: [
@@ -580,75 +584,89 @@ pw.Widget _studentInformations(Internship internship) {
       pw.Text('RENSEIGNEMENTS SUR LE STAGIAIRE',
           style: _textStyleBold.copyWith(fontSize: 18)),
       pw.SizedBox(height: 16),
-      _richTextCell(title: 'Nom du stagiaire', content: studentName),
+      _textCell(
+          title: 'Nom du stagiaire', content: student.fullName.toUpperCase()),
       pw.Row(children: [
         pw.Expanded(
-            child: _richTextCell(
+            child: _textCell(
           title: 'Téléphone',
-          content: '(555) 123-4567',
+          content: student.phone?.toString() ?? 'N/A',
         )),
         pw.Expanded(
-            child: _richTextCell(
+            child: _textCell(
           title: 'Téléphone d\'urgence',
-          content: '(555) 765-4321',
+          content: student.contact.phone?.toString() ?? 'N/A',
         )),
       ]),
-      _richTextCell(title: 'Âge', content: '17 ans'),
+      _textCell(
+          title: 'Âge',
+          content: student.dateBirth?.year == null
+              ? 'N/A'
+              : '${DateTime.now().difference(student.dateBirth!).inDays ~/ 365} ans'),
       _checkBoxCell(
           title: 'Transport',
           content: {'Oui': true, 'Non': false, 'Billet': true, 'Passe': false}),
-      _richTextCell(
+      _textCell(
         title: 'Date de début du stage',
-        content: '2025-05-02',
+        content: DateFormat('yyyy-MM-dd').format(internship.dates.start),
       ),
-      _richTextCell(
+      _schedulesCell(
         title: 'Horaire de travail (et heure de la pause)',
-        content: '\nCoucou',
+        content: internship.weeklySchedules,
       ),
-      _richTextCell(
-        title: 'Fréquence de visites du superviseur',
-        content: '\nCoucou',
-      ),
-      _richTextCell(
+      _textCell(
+          title: 'Fréquence de visites du superviseur',
+          content: 'Coucou',
+          sameLine: false),
+      _textCell(
         title: 'Nom de l\'enseignant responsable',
-        content: '\nCoucou',
+        content: teacher.fullName.toUpperCase(),
+        sameLine: false,
       ),
-      _richTextCell(
+      _textCell(
         title: 'Adresse et téléphone de l\'école',
-        content: '\nCoucou',
+        content: '${school.address.toString()}\n'
+            '${school.phone.toString()}',
+        sameLine: false,
       ),
-      _richTextCell(
+      _textCell(
         title: 'Nom, adresse et téléphone de l\'entreprise',
-        content: '\nCoucou',
+        content: '${enterprise.address.toString()}\n'
+            '${enterprise.phone.toString()}',
+        sameLine: false,
       ),
-      _richTextCell(
+      _textCell(
         title: 'Nom du travailleur parrain dans l\'entreprise',
-        content: '\nCoucou',
+        content: internship.supervisor.fullName.toUpperCase(),
+        sameLine: false,
       ),
-      _richTextCell(
-        title: 'Code et nom du métier semi-spécialisé',
-        content: '\nCoucou',
-      ),
+      _textCell(
+          title: 'Code et nom du métier semi-spécialisé',
+          content: specialization.idWithName,
+          sameLine: false),
     ],
   );
 }
 
-pw.Widget _richTextCell({String? title, String? content}) {
+pw.Widget _textCell({String? title, String? content, bool sameLine = true}) {
   return pw.Container(
-    width: double.infinity,
-    padding: const pw.EdgeInsets.symmetric(horizontal: 4.0, vertical: 6.0),
-    decoration: pw.BoxDecoration(border: pw.Border.all(color: PdfColors.black)),
-    child: pw.RichText(
-        text: pw.TextSpan(
-      children: [
-        if (title != null)
-          pw.TextSpan(
-              text: '$title : ', style: _textStyleBold.copyWith(fontSize: 14)),
-        if (content != null)
-          pw.TextSpan(text: content, style: _textStyle.copyWith(fontSize: 14)),
-      ],
-    )),
-  );
+      width: double.infinity,
+      padding: const pw.EdgeInsets.symmetric(horizontal: 4.0, vertical: 6.0),
+      decoration:
+          pw.BoxDecoration(border: pw.Border.all(color: PdfColors.black)),
+      child: pw.Flex(
+        direction: sameLine ? pw.Axis.horizontal : pw.Axis.vertical,
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          if (title != null)
+            pw.Text('$title : ', style: _textStyleBold.copyWith(fontSize: 14)),
+          if (content != null)
+            pw.Padding(
+              padding: pw.EdgeInsets.only(left: sameLine ? 0.0 : 12.0),
+              child: pw.Text(content, style: _textStyle.copyWith(fontSize: 14)),
+            ),
+        ],
+      ));
 }
 
 pw.Widget _checkBoxCell({String? title, required Map<String, bool> content}) {
@@ -683,17 +701,254 @@ pw.Widget _checkBoxCell({String? title, required Map<String, bool> content}) {
       ]));
 }
 
+pw.Widget _schedulesCell(
+    {required String title, required List<WeeklySchedule> content}) {
+  // TODO Deal with multiple schedules
+  final mid = ' - ';
+  final style = _textStyle.copyWith(fontSize: 14);
+  return pw.Container(
+      width: double.infinity,
+      padding: const pw.EdgeInsets.symmetric(horizontal: 4.0, vertical: 6.0),
+      decoration:
+          pw.BoxDecoration(border: pw.Border.all(color: PdfColors.black)),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text('$title : ', style: _textStyleBold.copyWith(fontSize: 14)),
+          pw.Padding(
+            padding: const pw.EdgeInsets.only(left: 12.0),
+            child: pw.Column(
+              mainAxisAlignment: pw.MainAxisAlignment.start,
+              children: content.isEmpty
+                  ? [pw.Text('Aucun horaire défini', style: style)]
+                  : content
+                      .map(
+                        (weeklySchedule) => pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            if (content.length > 1)
+                              pw.Padding(
+                                  padding: const pw.EdgeInsets.only(
+                                      top: 4.0, bottom: 2.0),
+                                  child: pw.Text(
+                                      'Du ${DateFormat('yyyy-MM-dd').format(weeklySchedule.period.start)} '
+                                      'au ${DateFormat('yyyy-MM-dd').format(weeklySchedule.period.end)}',
+                                      style: _textStyleBold.copyWith(
+                                          fontSize: 14))),
+                            pw.Padding(
+                                padding: pw.EdgeInsets.only(
+                                    left: content.length > 1 ? 4.0 : 0.0,
+                                    bottom: weeklySchedule != content.last
+                                        ? 8.0
+                                        : 0.0),
+                                child: pw.Table(
+                                  children: weeklySchedule.schedule
+                                      .map((daily) => pw.TableRow(children: [
+                                            pw.Text(daily.dayOfWeek.name,
+                                                style: style),
+                                            pw.SizedBox(width: 20.0),
+                                            pw.Text(
+                                                '${daily.start.hour}:${daily.start.minute.toString().padLeft(2, '0')}',
+                                                style: style),
+                                            pw.Text(mid, style: style),
+                                            pw.Text(
+                                                '${daily.end.hour}:${daily.end.minute.toString().padLeft(2, '0')}',
+                                                style: style),
+                                            pw.SizedBox(width: double.infinity),
+                                          ]))
+                                      .toList(),
+                                )),
+                          ],
+                        ),
+                      )
+                      .toList(),
+            ),
+          ),
+        ],
+      ));
+}
+
 // TODO: Make these dynamic
-String _schoolBoardName(String schoolBoardId) =>
-    'CENTRE DE SERVICES SCOLAIRES DES AFFLUENTS';
+Internship _internship({required String internshipId}) => Internship(
+      schoolBoardId: '0',
+      studentId: '0',
+      signatoryTeacherId: '0',
+      extraSupervisingTeacherIds: [],
+      enterpriseId: '0',
+      jobId: '0',
+      extraSpecializationIds: [],
+      creationDate: DateTime(2025, 5, 2),
+      supervisor: Person(
+        firstName: 'Me',
+        middleName: null,
+        lastName: 'And I',
+        dateBirth: null,
+        phone: null,
+        email: null,
+        address: null,
+      ),
+      dates: time_utils.DateTimeRange(
+          start: DateTime(2025, 5, 2), end: DateTime(2025, 6, 2)),
+      weeklySchedules: [
+        WeeklySchedule(
+            schedule: [
+              DailySchedule(
+                  dayOfWeek: Day.monday,
+                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.tuesday,
+                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.wednesday,
+                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.thursday,
+                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.friday,
+                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+            ],
+            period: time_utils.DateTimeRange(
+                start: DateTime(2025, 5, 2), end: DateTime(2025, 6, 2))),
+        WeeklySchedule(
+            schedule: [
+              DailySchedule(
+                  dayOfWeek: Day.monday,
+                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.tuesday,
+                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.wednesday,
+                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.thursday,
+                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.friday,
+                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
+                  end: time_utils.TimeOfDay(hour: 16, minute: 0)),
+            ],
+            period: time_utils.DateTimeRange(
+                start: DateTime(2025, 5, 2), end: DateTime(2025, 6, 2))),
+      ],
+      expectedDuration: 100,
+      achievedDuration: 0,
+      visitingPriority: VisitingPriority.low,
+      endDate: DateTime(2025, 6, 2),
+    );
 
-String _schoolBoardCnesstNumber(String schoolBoardId) => '1234567890';
+Job _job({required String jobId}) => Job(
+      id: jobId,
+      positionsOffered: {},
+      specialization: ActivitySectorsService.specializationOrNull('8343'),
+      minimumAge: 15,
+      preInternshipRequests:
+          PreInternshipRequests(requests: [], other: null, isApplicable: false),
+      uniforms: Uniforms(status: UniformStatus.none),
+      protections: Protections(status: ProtectionsStatus.none),
+      sstEvaluation: JobSstEvaluation(questions: {}),
+      incidents: Incidents(),
+      reservedForId: '',
+    );
 
-String _schoolName(String schoolBoardId) => 'ÉCOLE SECONDAIRE DES FLEURS';
+SchoolBoard _schoolBoard({required String schoolBoardId}) => SchoolBoard(
+      id: schoolBoardId,
+      name: 'Commission scolaire de la Rive-Sud',
+      cnesstNumber: '1234567890',
+      schools: [
+        School(
+          name: 'École secondaire des Fleurs',
+          address: Address(
+            civicNumber: 123,
+            street: 'Rue de la Rive-Sud',
+            city: 'Longueuil',
+            postalCode: 'J4K 5G6',
+          ),
+          phone: PhoneNumber.fromString('514 123 4567'),
+        )
+      ],
+    );
 
-String _enterpriseName(String enterpriseId) => 'Les jardins de la technologie';
+School _school({required String schoolBoardId, required String schoolId}) =>
+    _schoolBoard(schoolBoardId: schoolBoardId).schools[0];
 
-String _studentName(String studentId) => 'Jean Dupont';
+Enterprise _enterprise({required String enterpriseId}) => Enterprise(
+    schoolBoardId: '0',
+    id: enterpriseId,
+    name: 'Les jardins de la technologie',
+    address: Address(
+      civicNumber: 456,
+      street: 'Boulevard des Technologies',
+      city: 'Montréal',
+      postalCode: 'H1A 2B3',
+    ),
+    phone: PhoneNumber.fromString('(555) 456-7890'),
+    activityTypes: {},
+    recruiterId: '0',
+    jobs: JobList(),
+    reservedForId: '',
+    contact: Person(
+        firstName: 'Pierre',
+        middleName: null,
+        lastName: 'Martin',
+        phone: PhoneNumber.fromString('(555) 321-6540'),
+        email: 'pierre.martin@mon_entreprise.com',
+        dateBirth: null,
+        address: null));
 
-student_model.Program _program(Internship internship) =>
-    student_model.Program.fpt;
+Teacher _teacher({required String teacherId}) => Teacher(
+      firstName: 'Jane',
+      schoolBoardId: '0',
+      schoolId: '0',
+      middleName: null,
+      lastName: 'Doe',
+      email: 'jane.doe@mon_ecole.com',
+      phone: PhoneNumber.fromString('(555) 987-6543'),
+      dateBirth: null,
+      address: Address(
+        street: '456 Avenue des Écoles',
+        city: 'Montréal',
+        postalCode: 'H1A 2B3',
+      ),
+      hasRegisteredAccount: true,
+      groups: ['550', '551'],
+      itineraries: [],
+    );
+
+student_model.Student _student({required String studentId}) =>
+    student_model.Student(
+      schoolBoardId: '0',
+      schoolId: '0',
+      firstName: 'Jean',
+      lastName: 'Dupont',
+      dateBirth: DateTime(2005, 5, 15),
+      phone: PhoneNumber.fromString('(555) 123-4567'),
+      email: 'jean.dupont@mon_ecole.com',
+      address: Address(
+        street: '123 Rue des Fleurs',
+        city: 'Montréal',
+        postalCode: 'H1A 2B3',
+      ),
+      program: student_model.Program.fpt,
+      group: '550',
+      contact: Person(
+        firstName: 'Marie',
+        middleName: null,
+        lastName: 'Dupont',
+        phone: PhoneNumber.fromString('(555) 765-4321'),
+        email: 'marie.dupont@mon_ecole.com',
+        dateBirth: null,
+        address: null,
+      ),
+      contactLink: 'mère',
+    );

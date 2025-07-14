@@ -170,6 +170,13 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
           filters: {'entity_id': schoolId},
         );
         school['address'] = address.first;
+        final phone = await MySqlHelpers.performSelectQuery(
+          connection: connection,
+          user: user,
+          tableName: 'phone_numbers',
+          filters: {'entity_id': schoolId},
+        );
+        school['phone'] = phone.first;
       }
       schoolBoard['schools'] = schools;
 
@@ -200,7 +207,11 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     await MySqlHelpers.performInsertQuery(
         connection: connection,
         tableName: 'school_boards',
-        data: {'id': schoolBoard.id, 'name': schoolBoard.name});
+        data: {
+          'id': schoolBoard.id,
+          'name': schoolBoard.name,
+          'cnesst_number': schoolBoard.cnesstNumber
+        });
   }
 
   Future<void> _updateToSchoolBoards(
@@ -208,18 +219,26 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     SchoolBoard previous, {
     required DatabaseUser user,
   }) async {
-    final toUpdate = schoolBoard.getDifference(previous);
-    if (toUpdate.isNotEmpty && user.accessLevel < AccessLevel.superAdmin) {
+    final differences = schoolBoard.getDifference(previous);
+    if (differences.isNotEmpty && user.accessLevel < AccessLevel.superAdmin) {
       throw InvalidRequestException(
           'You must be a super admin to update a school board');
     }
 
-    if (toUpdate.contains('name')) {
+    final toUpdate = <String, dynamic>{};
+    if (differences.contains('name')) {
+      toUpdate['name'] = schoolBoard.name.serialize();
+    }
+    if (differences.contains('cnesst_number')) {
+      toUpdate['cnesst_number'] = schoolBoard.cnesstNumber.serialize();
+    }
+
+    if (toUpdate.isNotEmpty) {
       await MySqlHelpers.performUpdateQuery(
         connection: connection,
         tableName: 'school_boards',
         filters: {'id': schoolBoard.id},
-        data: {'name': schoolBoard.name},
+        data: toUpdate,
       );
     }
   }
@@ -245,6 +264,9 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
 
     await MySqlHelpers.performInsertAddress(
         connection: connection, address: school.address, entityId: school.id);
+
+    await MySqlHelpers.performInsertPhoneNumber(
+        connection: connection, phoneNumber: school.phone, entityId: school.id);
   }
 
   Future<void> _updateToSchools(School school, School previous,
@@ -267,6 +289,13 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
         connection: connection,
         address: school.address,
         previous: previous.address,
+      );
+    }
+    if (toUpdate.contains('phone')) {
+      await MySqlHelpers.performUpdatePhoneNumber(
+        connection: connection,
+        phoneNumber: school.phone,
+        previous: previous.phone,
       );
     }
   }
@@ -358,8 +387,10 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
 class SchoolBoardsRepositoryMock extends SchoolBoardsRepository {
   // Simulate a database with a map
   final _dummyDatabase = {
-    '0': SchoolBoard(id: '0', name: 'This one', schools: []),
-    '1': SchoolBoard(id: '1', name: 'This second', schools: []),
+    '0': SchoolBoard(
+        id: '0', name: 'This one', schools: [], cnesstNumber: '1234567890'),
+    '1': SchoolBoard(
+        id: '1', name: 'This second', schools: [], cnesstNumber: '0987654321'),
   };
 
   @override

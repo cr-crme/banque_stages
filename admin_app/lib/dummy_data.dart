@@ -130,6 +130,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
         city: 'Montréal',
         postalCode: 'H2N 1Y5',
       ),
+      phone: PhoneNumber.fromString('555 123 4567'),
     ),
     School(
       name: _mySchoolName,
@@ -139,10 +140,15 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
         city: 'Montréal',
         postalCode: 'H2N 1Y5',
       ),
+      phone: PhoneNumber.fromString('555 123 7654'),
     ),
   ];
   schoolBoards.add(
-    SchoolBoard(name: _mySchoolBoardName, schools: schools.toList()),
+    SchoolBoard(
+      name: _mySchoolBoardName,
+      schools: schools.toList(),
+      cnesstNumber: '1234567890',
+    ),
   );
 
   schools.clear();
@@ -155,6 +161,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
         city: 'Montréal',
         postalCode: 'H3G 1Z2',
       ),
+      phone: PhoneNumber.fromString('555 987 6543'),
     ),
   );
   schools.add(
@@ -166,6 +173,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
         city: 'Montréal',
         postalCode: 'H2V 4W5',
       ),
+      phone: PhoneNumber.fromString('555 456 7890'),
     ),
   );
   schools.add(
@@ -178,6 +186,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
         city: 'Montréal',
         postalCode: 'H2X 3Y7',
       ),
+      phone: PhoneNumber.fromString('555 321 4321'),
     ),
   );
   schoolBoards.add(
@@ -185,6 +194,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
       id: 'dummy_school_board_id_2',
       name: 'Commission scolaire de l\'Île-de-Montréal',
       schools: schools.toList(),
+      cnesstNumber: '0987654321',
     ),
   );
 

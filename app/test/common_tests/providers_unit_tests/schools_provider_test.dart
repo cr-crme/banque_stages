@@ -10,9 +10,11 @@ import '../utils.dart';
 
 void _initializeTeacher(BuildContext context) {
   SchoolBoardsProvider.of(context, listen: false).add(SchoolBoard(
-      id: 'SchoolBoardId',
-      name: 'Test SchoolBoard',
-      schools: [dummySchool(id: 'SchoolId')]));
+    id: 'SchoolBoardId',
+    name: 'Test SchoolBoard',
+    schools: [dummySchool(id: 'SchoolId')],
+    cnesstNumber: '1234567890',
+  ));
 
   final teachers = TeachersProvider.of(context, listen: false);
   teachers.add(dummyTeacher(

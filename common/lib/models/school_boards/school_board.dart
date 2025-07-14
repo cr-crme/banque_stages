@@ -7,14 +7,17 @@ class SchoolBoard extends ExtendedItemSerializable {
   static final String _currentVersion = '1.0.0';
   final String name;
   final List<School> schools;
+  final String cnesstNumber;
 
   SchoolBoard({
     super.id,
     required this.name,
     required this.schools,
+    required this.cnesstNumber,
   });
 
-  static SchoolBoard get empty => SchoolBoard(name: '', schools: []);
+  static SchoolBoard get empty =>
+      SchoolBoard(name: '', schools: [], cnesstNumber: '');
 
   SchoolBoard.fromSerialized(super.map)
       : name = StringExt.from(map['name']) ?? 'Unnamed',
@@ -23,21 +26,27 @@ class SchoolBoard extends ExtendedItemSerializable {
               deserializer: (e) => School.fromSerialized(e),
             ) ??
             [],
+        cnesstNumber = StringExt.from(map['cnesst_number']) ?? '',
         super.fromSerialized();
 
   @override
-  Map<String, dynamic> serializedMap() =>
-      {'name': name.serialize(), 'schools': schools.serialize()};
+  Map<String, dynamic> serializedMap() => {
+        'name': name.serialize(),
+        'schools': schools.serialize(),
+        'cnesst_number': cnesstNumber.serialize(),
+      };
 
   SchoolBoard copyWith({
     String? id,
     String? name,
     List<School>? schools,
+    String? cnesstNumber,
   }) =>
       SchoolBoard(
         id: id ?? this.id,
         name: name ?? this.name,
         schools: schools ?? this.schools,
+        cnesstNumber: cnesstNumber ?? this.cnesstNumber,
       );
 
   @override
@@ -47,6 +56,7 @@ class SchoolBoard extends ExtendedItemSerializable {
       'name',
       'version',
       'schools',
+      'cnesst_number',
     ];
     // Make sure data does not contain unrecognized fields
     if (data.keys.any((key) => !availableFields.contains(key))) {
@@ -68,6 +78,7 @@ class SchoolBoard extends ExtendedItemSerializable {
             deserializer: (e) => School.fromSerialized(e),
           ) ??
           schools,
+      cnesstNumber: StringExt.from(data['cnesst_number']) ?? cnesstNumber,
     );
   }
 
