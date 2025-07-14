@@ -47,8 +47,6 @@ class MainDrawer extends StatelessWidget {
     ]);
     if (!context.mounted) return;
 
-    // Pop the drawer and navigate to the login screen
-    if (canPop) Navigator.pop(context);
     GoRouter.of(context).goNamed(Screens.login);
   }
 
@@ -133,14 +131,6 @@ class MainDrawer extends StatelessWidget {
                           iconOnly: iconOnly,
                           canPop: canPop,
                         ),
-                        // _DrawerItem(
-                        //   titleText: 'Documents',
-                        //   icon: const Icon(Icons.document_scanner_rounded),
-                        //   route: Screens...,
-                        //   onTap: () {},
-                        //   iconOnly: iconOnly,
-                        //   canPop: canPop,
-                        // ),
                       ],
                     ),
                   if (authProvider.isAuthenticatorSignedIn)

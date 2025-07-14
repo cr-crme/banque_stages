@@ -388,7 +388,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
               padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
               child: TextButton(
                 onPressed: _addJob,
-                child: const Text('Enregitrer un stage'),
+                child: const Text('Enregistrer un stage'),
               ),
             ),
         ],

@@ -1,6 +1,7 @@
 import 'package:admin_app/screens/teachers/teacher_list_tile.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:flutter/material.dart';
 
 class AddTeacherDialog extends StatefulWidget {
@@ -30,30 +31,33 @@ class _AddTeacherDialogState extends State<AddTeacherDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Text(
-                'Nouveau·elle enseignant·e',
-                style: Theme.of(context).textTheme.titleMedium,
+      content: SizedBox(
+        width: ResponsiveService.maxBodyWidth,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Text(
+                  'Nouveau·elle enseignant·e',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            const SizedBox(height: 12),
-            Text('Compléter les informations personnelles'),
-            const SizedBox(height: 8),
-            TeacherListTile(
-              key: _editingKey,
-              teacher: Teacher.empty,
-              isExpandable: false,
-              forceEditingMode: true,
-              schoolBoard: widget.schoolBoard,
-            ),
-          ],
+              const SizedBox(height: 12),
+              Text('Compléter les informations personnelles'),
+              const SizedBox(height: 8),
+              TeacherListTile(
+                key: _editingKey,
+                teacher: Teacher.empty,
+                isExpandable: false,
+                forceEditingMode: true,
+                schoolBoard: widget.schoolBoard,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [

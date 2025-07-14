@@ -12,7 +12,24 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({super.key});
+  const MainDrawer({
+    super.key,
+    this.showTitle = true,
+    this.iconOnly = false,
+    this.canPop = true,
+    this.roundedCorners = true,
+  });
+
+  static MainDrawer get small => const MainDrawer();
+  static MainDrawer get medium =>
+      const MainDrawer(iconOnly: true, canPop: false, roundedCorners: false);
+  static MainDrawer get large =>
+      const MainDrawer(canPop: false, roundedCorners: false);
+
+  final bool showTitle;
+  final bool iconOnly;
+  final bool canPop;
+  final bool roundedCorners;
 
   void _logOut(BuildContext context) async {
     await AuthProvider.of(context).signOut();
@@ -32,8 +49,6 @@ class MainDrawer extends StatelessWidget {
     ]);
     if (!context.mounted) return;
 
-    // Pop the drawer and navigate to the login screen
-    Navigator.pop(context);
     GoRouter.of(context).goNamed(Screens.login);
   }
 
@@ -42,76 +57,121 @@ class MainDrawer extends StatelessWidget {
     final authProvider = AuthProvider.of(context, listen: true);
 
     return Drawer(
+      width: iconOnly ? 80.0 : null,
+      shape:
+          roundedCorners
+              ? null
+              : RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0.0),
+              ),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Banque de Stages')),
-        body:
-            authProvider.isFullySignedIn
-                ? Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
+        appBar:
+            showTitle
+                ? AppBar(
+                  title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.menu),
+                      SizedBox(width: 8.0),
+                      if (!iconOnly) const Text('Menu'),
+                    ],
+                  ),
+                  automaticallyImplyLeading: false,
+                )
+                : null,
+        body: SizedBox.expand(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              if (authProvider.isAuthenticatorSignedIn &&
+                  !authProvider.isFullySignedIn)
+                _DrawerItem(
+                  titleText: 'Se déconnecter',
+                  icon: Icons.logout,
+                  onTap: () => _logOut(context),
+                  iconOnly: iconOnly,
+                  canPop: canPop,
+                ),
+              if (authProvider.isFullySignedIn)
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
                       children: [
                         if (authProvider.databaseAccessLevel >=
                             AccessLevel.admin)
-                          const _DrawerItem(
+                          _DrawerItem(
                             titleText: 'Écoles',
                             icon: Icons.school,
                             route: Screens.schoolBoardsListScreen,
+                            iconOnly: iconOnly,
+                            canPop: canPop,
                           ),
                         if (authProvider.databaseAccessLevel >=
                             AccessLevel.superAdmin)
-                          const _DrawerItem(
+                          _DrawerItem(
                             titleText: 'Administrateurs·trices',
                             icon: Icons.admin_panel_settings,
                             route: Screens.adminsListScreen,
+                            iconOnly: iconOnly,
+                            canPop: canPop,
                           ),
-                        const _DrawerItem(
+                        _DrawerItem(
                           titleText: 'Enseignant·e·s',
                           icon: Icons.person,
                           route: Screens.teachersListScreen,
+                          iconOnly: iconOnly,
+                          canPop: canPop,
                         ),
-                        const _DrawerItem(
+                        _DrawerItem(
                           titleText: 'Élèves',
-                          icon: Icons.person,
+                          icon: Icons.group,
                           route: Screens.studentsListScreen,
+                          iconOnly: iconOnly,
+                          canPop: canPop,
                         ),
-                        const _DrawerItem(
+                        _DrawerItem(
                           titleText: 'Entreprises',
                           icon: Icons.business,
                           route: Screens.enterprisesListScreen,
+                          iconOnly: iconOnly,
+                          canPop: canPop,
                         ),
-                        const _DrawerItem(
+                        _DrawerItem(
                           titleText: 'Stages',
                           icon: Icons.work,
                           route: Screens.internshipsListScreen,
+                          iconOnly: iconOnly,
+                          canPop: canPop,
                         ),
                         _DrawerItem(
                           titleText: 'Se déconnecter',
                           icon: Icons.logout,
                           onTap: () => _logOut(context),
+                          iconOnly: iconOnly,
+                          canPop: canPop,
                         ),
                       ],
                     ),
-                    if (authProvider.databaseAccessLevel ==
-                        AccessLevel.superAdmin)
-                      _DrawerItem(
-                        titleText: 'Réinitialiser la base de données',
-                        icon: Icons.restore_from_trash_outlined,
-                        onTap: () async {
-                          await resetDummyData(context);
-                          if (context.mounted) Navigator.pop(context);
-                        },
-                        tileColor: Colors.red,
-                      ),
-                  ],
-                )
-                : authProvider.isAuthenticatorSignedIn
-                ? _DrawerItem(
-                  titleText: 'Se déconnecter',
-                  icon: Icons.logout,
-                  onTap: () => _logOut(context),
-                )
-                : Container(),
+                  ),
+                ),
+              if (authProvider.isFullySignedIn &&
+                  authProvider.databaseAccessLevel == AccessLevel.superAdmin)
+                _DrawerItem(
+                  titleText: 'Réinitialiser la base de données',
+                  icon: Icons.restore_from_trash_outlined,
+                  onTap: () async {
+                    await resetDummyData(context);
+                    if (context.mounted) Navigator.pop(context);
+                  },
+                  tileColor: Colors.red,
+                  iconOnly: iconOnly,
+                  canPop: canPop,
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -120,48 +180,66 @@ class MainDrawer extends StatelessWidget {
 class _DrawerItem extends StatelessWidget {
   const _DrawerItem({
     required this.titleText,
-    this.icon,
+    required this.icon,
     this.route,
     this.onTap,
     this.tileColor,
+    required this.iconOnly,
+    required this.canPop,
   }) : assert(
          (route != null || onTap != null) && (route == null || onTap == null),
          'One parameter has to be null while the other one is not.',
        );
 
   final String? route;
-  final IconData? icon;
+  final IconData icon;
   final String titleText;
   final void Function()? onTap;
   final Color? tileColor;
+  final bool iconOnly;
+  final bool canPop;
 
   @override
   Widget build(BuildContext context) {
     final isCurrentlySelectedTile =
         ModalRoute.of(context)!.settings.name == route;
+
+    final onPressed =
+        onTap ??
+        () {
+          if (isCurrentlySelectedTile && canPop) Navigator.pop(context);
+          GoRouter.of(context).goNamed(route!);
+        };
+
+    final leadingIcon = Icon(
+      icon,
+      color:
+          isCurrentlySelectedTile
+              ? Theme.of(context).primaryColor
+              : Colors.black54,
+    );
+
     return Card(
-      child: ListTile(
-        onTap:
-            onTap ??
-            () {
-              if (isCurrentlySelectedTile) Navigator.pop(context);
-              GoRouter.of(context).goNamed(route!);
-            },
-        tileColor:
-            isCurrentlySelectedTile
-                ? Theme.of(context).primaryColor.withAlpha(40)
-                : tileColor,
-        leading:
-            icon == null
-                ? null
-                : Icon(
-                  icon,
-                  color:
-                      isCurrentlySelectedTile
-                          ? Theme.of(context).primaryColor
-                          : null,
-                ),
-        title: Text(titleText, style: Theme.of(context).textTheme.titleMedium),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.0),
+          color:
+              tileColor ??
+              (isCurrentlySelectedTile
+                  ? Theme.of(context).primaryColor.withAlpha(40)
+                  : null),
+        ),
+        child: ListTile(
+          onTap: onPressed,
+          leading: leadingIcon,
+          title:
+              iconOnly
+                  ? null
+                  : Text(
+                    titleText,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+        ),
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
@@ -99,7 +100,8 @@ class InternshipsListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final schoolBoardInternships = _getInternships(context);
 
-    return Scaffold(
+    return ResponsiveService.scaffoldOf(
+      context,
       appBar: AppBar(
         title: const Text('Liste des stages'),
         actions: [
@@ -109,8 +111,9 @@ class InternshipsListScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const MainDrawer(),
-
+      smallDrawer: MainDrawer.small,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
       body: SingleChildScrollView(
         child: Column(children: _buildTiles(context, schoolBoardInternships)),
       ),

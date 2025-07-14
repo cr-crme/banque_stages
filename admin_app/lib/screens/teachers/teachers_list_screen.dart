@@ -6,6 +6,7 @@ import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
@@ -69,7 +70,8 @@ class TeachersListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ResponsiveService.scaffoldOf(
+      context,
       appBar: AppBar(
         title: const Text('Liste des enseignant·e·s'),
         actions: [
@@ -79,7 +81,9 @@ class TeachersListScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const MainDrawer(),
+      smallDrawer: MainDrawer.small,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
 
       body: SingleChildScrollView(
         child: Column(

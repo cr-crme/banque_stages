@@ -1,6 +1,7 @@
 import 'package:admin_app/screens/enterprises/enterprise_list_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:flutter/material.dart';
 
 class AddEnterpriseDialog extends StatefulWidget {
@@ -30,31 +31,34 @@ class _AddEnterpriseDialogState extends State<AddEnterpriseDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Text(
-                'Nouvelle entreprise',
-                style: Theme.of(context).textTheme.titleMedium,
+      content: SizedBox(
+        width: ResponsiveService.maxBodyWidth,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Text(
+                  'Nouvelle entreprise',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            const SizedBox(height: 12),
-            Text('Compléter les informations'),
-            const SizedBox(height: 8),
-            EnterpriseListTile(
-              key: _editingKey,
-              enterprise: Enterprise.empty.copyWith(
-                schoolBoardId: widget.schoolBoard.id,
+              const SizedBox(height: 12),
+              Text('Compléter les informations'),
+              const SizedBox(height: 8),
+              EnterpriseListTile(
+                key: _editingKey,
+                enterprise: Enterprise.empty.copyWith(
+                  schoolBoardId: widget.schoolBoard.id,
+                ),
+                isExpandable: false,
+                forceEditingMode: true,
               ),
-              isExpandable: false,
-              forceEditingMode: true,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       actions: [

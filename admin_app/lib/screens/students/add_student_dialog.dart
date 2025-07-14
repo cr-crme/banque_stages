@@ -1,6 +1,7 @@
 import 'package:admin_app/screens/students/student_list_tile.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:flutter/material.dart';
 
 class AddStudentDialog extends StatefulWidget {
@@ -30,30 +31,33 @@ class _AddStudentDialogState extends State<AddStudentDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Text(
-                'Nouveau·elle élève',
-                style: Theme.of(context).textTheme.titleMedium,
+      content: SizedBox(
+        width: ResponsiveService.maxBodyWidth,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Text(
+                  'Nouveau·elle élève',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            const SizedBox(height: 12),
-            Text('Compléter les informations personnelles'),
-            const SizedBox(height: 8),
-            StudentListTile(
-              key: _editingKey,
-              student: Student.empty,
-              schoolBoard: widget.schoolBoard,
-              isExpandable: false,
-              forceEditingMode: true,
-            ),
-          ],
+              const SizedBox(height: 12),
+              Text('Compléter les informations personnelles'),
+              const SizedBox(height: 8),
+              StudentListTile(
+                key: _editingKey,
+                student: Student.empty,
+                schoolBoard: widget.schoolBoard,
+                isExpandable: false,
+                forceEditingMode: true,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [

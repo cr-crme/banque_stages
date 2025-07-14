@@ -3,6 +3,7 @@ import 'package:admin_app/screens/admins/admin_list_tile.dart';
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:common/models/persons/admin.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
@@ -69,7 +70,8 @@ class AdminsListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final schoolBoardAdmins = _getAdmins(context);
 
-    return Scaffold(
+    return ResponsiveService.scaffoldOf(
+      context,
       appBar: AppBar(
         title: const Text('Liste des administrateurs·trices'),
         actions: [
@@ -79,8 +81,9 @@ class AdminsListScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const MainDrawer(),
-
+      smallDrawer: MainDrawer.small,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

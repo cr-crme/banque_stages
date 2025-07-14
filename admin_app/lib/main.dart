@@ -75,7 +75,7 @@ class Home extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
-        onGenerateTitle: (context) => 'Banque de stages',
+        onGenerateTitle: (context) => 'Adminstration de Banque de stages',
         theme: crcrmeMaterialTheme,
         routerConfig: router,
         localizationsDelegates: const [

@@ -388,8 +388,7 @@ class _DateRangeState extends State<_DateRange> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 2 - 36,
+                    Expanded(
                       child: TextFormField(
                         decoration: const InputDecoration(
                           labelText: 'Date de début',
@@ -406,7 +405,7 @@ class _DateRangeState extends State<_DateRange> {
                         enabled: false,
                       ),
                     ),
-                    Flexible(
+                    Expanded(
                       child: TextFormField(
                         decoration: const InputDecoration(
                           labelText: 'Date de fin',
@@ -764,6 +763,7 @@ class _ScheduleSelector extends StatelessWidget {
             children: [
               if (editMode)
                 const Text('* Modifier les jours et les horaires de stage'),
+              // TODO Add break time support here
               Table(
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                 columnWidths: const {

@@ -325,14 +325,10 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             connection: connection,
             user: user,
             tableName: 'internship_transportations',
-            filters: {'mutable_data_id': mutable['id']});
-        mutable['transportations'] = [
-          for (final transportation in (transportations as List? ?? []))
-            Transportation.deserialize(transportation)
-        ];
-
-        mutable['visit_frequencies'] =
-            (mutable['visit_frequencies'] as List?)?.firstOrNull;
+            filters: {'id': mutable['id']});
+        mutable['transportations'] = (transportations as List? ?? [])
+            .map((e) => e['transportation'])
+            .toList();
 
         mutable['schedules'] = schedules;
       }
@@ -669,7 +665,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             'supervisor_id': internship.supervisor.id,
             'starting_date': mutable['starting_date'],
             'ending_date': mutable['ending_date'],
-            'visit_frequencies': mutable['visiting_priority'],
+            'visit_frequencies': mutable['visit_frequencies'],
           });
 
       // Insert the weekly schedules
@@ -710,7 +706,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         await MySqlHelpers.performInsertQuery(
             connection: connection,
             tableName: 'internship_transportations',
-            data: {'id': mutable['id'], 'type': transportation});
+            data: {'id': mutable['id'], 'transportation': transportation});
       }
     }
   }

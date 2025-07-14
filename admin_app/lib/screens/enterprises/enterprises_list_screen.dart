@@ -5,6 +5,7 @@ import 'package:admin_app/widgets/select_school_board_dialog.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
@@ -67,7 +68,8 @@ class EnterprisesListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final schoolBoards = _getEnterprises(context);
 
-    return Scaffold(
+    return ResponsiveService.scaffoldOf(
+      context,
       appBar: AppBar(
         title: const Text('Liste des entreprises'),
         actions: [
@@ -77,8 +79,9 @@ class EnterprisesListScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const MainDrawer(),
-
+      smallDrawer: MainDrawer.small,
+      mediumDrawer: MainDrawer.medium,
+      largeDrawer: MainDrawer.large,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

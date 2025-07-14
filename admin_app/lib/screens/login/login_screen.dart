@@ -1,6 +1,7 @@
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/router.dart';
 import 'package:common_flutter/helpers/form_service.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
@@ -58,11 +59,15 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
 
+    final notSignedIn =
+        !authProvider.isAuthenticatorSignedIn && !authProvider.isFullySignedIn;
     return PopScope(
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Banque de stages')),
-        drawer:
-            authProvider.isAuthenticatorSignedIn ? const MainDrawer() : null,
+      child: ResponsiveService.scaffoldOf(
+        context,
+        appBar: AppBar(title: const Text('Administration de Banque de stages')),
+        smallDrawer: notSignedIn ? null : MainDrawer.small,
+        mediumDrawer: notSignedIn ? null : MainDrawer.medium,
+        largeDrawer: notSignedIn ? null : MainDrawer.large,
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(

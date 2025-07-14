@@ -1,5 +1,6 @@
 import 'package:admin_app/screens/admins/admin_list_tile.dart';
 import 'package:common/models/persons/admin.dart';
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:flutter/material.dart';
 
 class AddAdminDialog extends StatefulWidget {
@@ -27,29 +28,32 @@ class _AddAdminDialogState extends State<AddAdminDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Text(
-                'Nouveau·elle administrateur·trice',
-                style: Theme.of(context).textTheme.titleMedium,
+      content: SizedBox(
+        width: ResponsiveService.maxBodyWidth,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Text(
+                  'Nouveau·elle administrateur·trice',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            const SizedBox(height: 12),
-            Text('Compléter les informations personnelles'),
-            const SizedBox(height: 8),
-            AdminListTile(
-              key: _editingKey,
-              admin: Admin.empty,
-              isExpandable: false,
-              forceEditingMode: true,
-            ),
-          ],
+              const SizedBox(height: 12),
+              Text('Compléter les informations personnelles'),
+              const SizedBox(height: 8),
+              AdminListTile(
+                key: _editingKey,
+                admin: Admin.empty,
+                isExpandable: false,
+                forceEditingMode: true,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [
