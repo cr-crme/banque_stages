@@ -128,6 +128,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
                   _internshipController.supervisorPhoneController.text),
               email: _internshipController.supervisorEmailController.text),
           dates: _internshipController.weeklyScheduleController.dateRange!,
+          visitFrequencies: 'TODO', // TODO Add a field for visit frequency
           weeklySchedules: _internshipController
               .weeklyScheduleController.weeklySchedules
               .map((e) => e.duplicate())

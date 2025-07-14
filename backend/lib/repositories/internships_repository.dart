@@ -168,6 +168,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               'supervisor_id',
               'starting_date',
               'ending_date',
+              'visit_frequencies',
             ],
             idNameToDataTable: 'internship_id',
           ),
@@ -318,6 +319,8 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               }
           ];
         }
+        mutable['visiting_priority'] =
+            (mutable['visit_frequencies'] as List?)?.firstOrNull;
         mutable['schedules'] = schedules;
       }
 
@@ -653,6 +656,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             'supervisor_id': internship.supervisor.id,
             'starting_date': mutable['starting_date'],
             'ending_date': mutable['ending_date'],
+            'visit_frequencies': mutable['visiting_priority'],
           });
 
       // Insert the weekly schedules
@@ -945,99 +949,103 @@ class InternshipsRepositoryMock extends InternshipsRepository {
   // Simulate a database with a map
   final _dummyDatabase = {
     '0': Internship(
-        id: '0',
-        schoolBoardId: '0',
-        studentId: '12345',
-        signatoryTeacherId: '67890',
-        extraSupervisingTeacherIds: [],
-        enterpriseId: '12345',
-        jobId: '67890',
-        extraSpecializationIds: ['12345'],
-        dates: DateTimeRange(
-            start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)),
-        supervisor: Person(
-            firstName: 'Mine',
-            middleName: null,
-            lastName: 'Yours',
-            dateBirth: null,
-            address: Address.empty,
-            phone: PhoneNumber.empty,
-            email: null),
-        creationDate: DateTime(2000, 1, 1),
-        weeklySchedules: [
-          WeeklySchedule(
-              schedule: [
-                DailySchedule(
-                    dayOfWeek: Day.monday,
-                    start: TimeOfDay(hour: 8, minute: 0),
-                    end: TimeOfDay(hour: 16, minute: 0),
-                    breakStart: TimeOfDay(hour: 12, minute: 0),
-                    breakEnd: TimeOfDay(hour: 13, minute: 0)),
-                DailySchedule(
-                    dayOfWeek: Day.wednesday,
-                    start: TimeOfDay(hour: 8, minute: 0),
-                    end: TimeOfDay(hour: 16, minute: 0),
-                    breakStart: TimeOfDay(hour: 12, minute: 0),
-                    breakEnd: TimeOfDay(hour: 13, minute: 0)),
-                DailySchedule(
-                    dayOfWeek: Day.friday,
-                    start: TimeOfDay(hour: 8, minute: 0),
-                    end: TimeOfDay(hour: 12, minute: 0),
-                    breakStart: TimeOfDay(hour: 12, minute: 0),
-                    breakEnd: TimeOfDay(hour: 13, minute: 0)),
-              ],
-              period: DateTimeRange(
-                  start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)))
-        ],
-        expectedDuration: 30,
-        achievedDuration: -1,
-        visitingPriority: VisitingPriority.low,
-        endDate: DateTime(0),
-        teacherNotes: 'Nope'),
+      id: '0',
+      schoolBoardId: '0',
+      studentId: '12345',
+      signatoryTeacherId: '67890',
+      extraSupervisingTeacherIds: [],
+      enterpriseId: '12345',
+      jobId: '67890',
+      extraSpecializationIds: ['12345'],
+      dates: DateTimeRange(
+          start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)),
+      supervisor: Person(
+          firstName: 'Mine',
+          middleName: null,
+          lastName: 'Yours',
+          dateBirth: null,
+          address: Address.empty,
+          phone: PhoneNumber.empty,
+          email: null),
+      creationDate: DateTime(2000, 1, 1),
+      weeklySchedules: [
+        WeeklySchedule(
+            schedule: [
+              DailySchedule(
+                  dayOfWeek: Day.monday,
+                  start: TimeOfDay(hour: 8, minute: 0),
+                  end: TimeOfDay(hour: 16, minute: 0),
+                  breakStart: TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: TimeOfDay(hour: 13, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.wednesday,
+                  start: TimeOfDay(hour: 8, minute: 0),
+                  end: TimeOfDay(hour: 16, minute: 0),
+                  breakStart: TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: TimeOfDay(hour: 13, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.friday,
+                  start: TimeOfDay(hour: 8, minute: 0),
+                  end: TimeOfDay(hour: 12, minute: 0),
+                  breakStart: TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: TimeOfDay(hour: 13, minute: 0)),
+            ],
+            period: DateTimeRange(
+                start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)))
+      ],
+      expectedDuration: 30,
+      achievedDuration: -1,
+      visitingPriority: VisitingPriority.low,
+      endDate: DateTime(0),
+      teacherNotes: 'Nope',
+      visitFrequencies: 'Toutes les semaines',
+    ),
     '1': Internship(
-        id: '1',
-        schoolBoardId: '0',
-        studentId: '54321',
-        signatoryTeacherId: '09876',
-        extraSupervisingTeacherIds: ['54321'],
-        enterpriseId: '54321',
-        jobId: '09876',
-        extraSpecializationIds: ['54321', '09876'],
-        dates: DateTimeRange(
-            start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)),
-        supervisor: Person(
-            firstName: 'Mine',
-            middleName: null,
-            lastName: 'Yours',
-            dateBirth: null,
-            address: Address.empty,
-            phone: PhoneNumber.empty,
-            email: null),
-        creationDate: DateTime(2000, 2, 1),
-        weeklySchedules: [
-          WeeklySchedule(
-              schedule: [
-                DailySchedule(
-                    dayOfWeek: Day.tuesday,
-                    start: TimeOfDay(hour: 9, minute: 0),
-                    end: TimeOfDay(hour: 17, minute: 0),
-                    breakStart: TimeOfDay(hour: 12, minute: 0),
-                    breakEnd: TimeOfDay(hour: 13, minute: 0)),
-                DailySchedule(
-                    dayOfWeek: Day.thursday,
-                    start: TimeOfDay(hour: 9, minute: 0),
-                    end: TimeOfDay(hour: 17, minute: 0),
-                    breakStart: TimeOfDay(hour: 12, minute: 0),
-                    breakEnd: TimeOfDay(hour: 13, minute: 0)),
-              ],
-              period: DateTimeRange(
-                  start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)))
-        ],
-        expectedDuration: 20,
-        achievedDuration: -1,
-        visitingPriority: VisitingPriority.mid,
-        endDate: DateTime(0),
-        teacherNotes: 'Yes'),
+      id: '1',
+      schoolBoardId: '0',
+      studentId: '54321',
+      signatoryTeacherId: '09876',
+      extraSupervisingTeacherIds: ['54321'],
+      enterpriseId: '54321',
+      jobId: '09876',
+      extraSpecializationIds: ['54321', '09876'],
+      dates: DateTimeRange(
+          start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)),
+      supervisor: Person(
+          firstName: 'Mine',
+          middleName: null,
+          lastName: 'Yours',
+          dateBirth: null,
+          address: Address.empty,
+          phone: PhoneNumber.empty,
+          email: null),
+      creationDate: DateTime(2000, 2, 1),
+      weeklySchedules: [
+        WeeklySchedule(
+            schedule: [
+              DailySchedule(
+                  dayOfWeek: Day.tuesday,
+                  start: TimeOfDay(hour: 9, minute: 0),
+                  end: TimeOfDay(hour: 17, minute: 0),
+                  breakStart: TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: TimeOfDay(hour: 13, minute: 0)),
+              DailySchedule(
+                  dayOfWeek: Day.thursday,
+                  start: TimeOfDay(hour: 9, minute: 0),
+                  end: TimeOfDay(hour: 17, minute: 0),
+                  breakStart: TimeOfDay(hour: 12, minute: 0),
+                  breakEnd: TimeOfDay(hour: 13, minute: 0)),
+            ],
+            period: DateTimeRange(
+                start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)))
+      ],
+      expectedDuration: 20,
+      achievedDuration: -1,
+      visitingPriority: VisitingPriority.mid,
+      endDate: DateTime(0),
+      teacherNotes: 'Yes',
+      visitFrequencies: 'Toutes les deux semaines',
+    ),
   };
 
   @override

@@ -152,11 +152,13 @@ class InternshipMutableElements extends ItemSerializable {
     required this.supervisor,
     required this.dates,
     required this.weeklySchedules,
+    required this.visitFrequencies,
   });
   final DateTime creationDate;
   final Person supervisor;
   final DateTimeRange dates;
   final List<WeeklySchedule> weeklySchedules;
+  final String visitFrequencies;
 
   InternshipMutableElements.fromSerialized(super.map)
       : creationDate = DateTimeExt.from(map['creation_date']) ?? DateTime.now(),
@@ -167,6 +169,7 @@ class InternshipMutableElements extends ItemSerializable {
         weeklySchedules = (map['schedules'] as List)
             .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
+        visitFrequencies = StringExt.from(map['visit_frequencies']) ?? 'N/A',
         super.fromSerialized();
 
   @override
@@ -177,6 +180,7 @@ class InternshipMutableElements extends ItemSerializable {
         'starting_date': dates.start.serialize(),
         'ending_date': dates.end.serialize(),
         'schedules': weeklySchedules.map((e) => e.serialize()).toList(),
+        'visit_frequencies': visitFrequencies.serialize(),
       };
 
   @override
@@ -221,6 +225,9 @@ class Internship extends ExtendedItemSerializable {
   List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
   List<WeeklySchedule> weeklySchedulesFrom(int version) =>
       _mutables[version].weeklySchedules;
+  String get visitFrequencies => _mutables.last.visitFrequencies;
+  String visitFrequenciesFrom(int version) =>
+      _mutables[version].visitFrequencies;
   List<Map<String, dynamic>> get serializedMutables =>
       _mutables.map((e) => e.serialize()).toList();
 
@@ -323,6 +330,7 @@ class Internship extends ExtendedItemSerializable {
     required Person supervisor,
     required DateTimeRange dates,
     required List<WeeklySchedule> weeklySchedules,
+    required String visitFrequencies,
     required this.expectedDuration,
     required this.achievedDuration,
     required this.visitingPriority,
@@ -337,6 +345,7 @@ class Internship extends ExtendedItemSerializable {
             supervisor: supervisor,
             dates: dates,
             weeklySchedules: weeklySchedules,
+            visitFrequencies: visitFrequencies,
           )
         ],
         skillEvaluations = skillEvaluations ?? [],
@@ -424,12 +433,14 @@ class Internship extends ExtendedItemSerializable {
     required Person supervisor,
     required DateTimeRange dates,
     required List<WeeklySchedule> weeklySchedules,
+    required String visitFrequencies,
   }) {
     _mutables.add(InternshipMutableElements(
       creationDate: creationDate,
       supervisor: supervisor,
       dates: dates,
       weeklySchedules: weeklySchedules,
+      visitFrequencies: visitFrequencies,
     ));
   }
 

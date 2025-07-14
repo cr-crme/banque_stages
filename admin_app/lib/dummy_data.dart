@@ -1518,6 +1518,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      visitFrequencies: 'Une visite par semaine',
     ),
   );
 
@@ -1599,6 +1600,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      visitFrequencies: 'Une visite par semaine',
     ),
   );
 
@@ -1664,6 +1666,7 @@ Future<void> _addDummyInternships(
         period: period,
       ),
     ],
+    visitFrequencies: 'Une visite par mois',
   );
   internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
     internshipId: internship.id,
@@ -1741,6 +1744,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      visitFrequencies: 'Une visite par semaine',
     ),
   );
 
@@ -1801,6 +1805,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      visitFrequencies: 'Une visite par semaine',
     ),
   );
 
@@ -1876,6 +1881,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      visitFrequencies: 'Jamais',
     ),
   );
 
@@ -1950,6 +1956,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      visitFrequencies: 'Une visite par semaine',
     ),
   );
 
@@ -2003,6 +2010,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      visitFrequencies: 'Une visite par semaine',
     ),
   );
 
@@ -2056,6 +2064,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      visitFrequencies: 'Tous les jours',
     ),
   );
   await _waitForDatabaseUpdate(internships, 9);

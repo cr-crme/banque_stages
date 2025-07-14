@@ -134,6 +134,7 @@ class _InternshipEnrollmentScreenState
       endDate: DateTime(0),
       weeklySchedules:
           _scheduleKey.currentState!.weeklyScheduleController.weeklySchedules,
+      visitFrequencies: 'TODO', // TODO Add a field for visit frequency
       visitingPriority: VisitingPriority.low,
     );
 

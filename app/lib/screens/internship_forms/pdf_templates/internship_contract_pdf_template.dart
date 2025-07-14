@@ -608,8 +608,9 @@ pw.Widget _studentInformations(Internship internship) {
         content: teacher.fullName.toUpperCase(),
       ),
       _textCell(
-        title: 'Adresse et téléphone de l\'école',
-        content: '${school.address.toString()}\n'
+        title: 'Nom, adresse et téléphone de l\'école',
+        content: '${school.name.toUpperCase()}\n'
+            '${school.address.toString()}\n'
             '${school.phone.toString()}',
         sameLine: false,
       ),
@@ -637,7 +638,7 @@ pw.Widget _studentInformations(Internship internship) {
           content: {'Oui': true, 'Non': false, 'Billet': true, 'Passe': false}),
       _textCell(
           title: 'Fréquence de visites du superviseur',
-          content: 'Coucou',
+          content: internship.visitFrequencies,
           sameLine: false),
       _schedulesCell(
         title: 'Horaire de travail (et heure de la pause)',
@@ -876,6 +877,7 @@ Internship _internship({required String internshipId}) => Internship(
       achievedDuration: 0,
       visitingPriority: VisitingPriority.low,
       endDate: DateTime(2025, 6, 2),
+      visitFrequencies: 'Tous les jours',
     );
 
 Job _job({required String jobId}) => Job(

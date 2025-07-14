@@ -306,6 +306,7 @@ Internship dummyInternship({
     weeklySchedules: [dummyWeeklySchedule(period: period)],
     skillEvaluations: [dummyInternshipEvaluationSkill()],
     attitudeEvaluations: [dummyInternshipEvaluationAttitude()],
+    visitFrequencies: 'Tous les jours',
   );
 }
 

@@ -131,6 +131,7 @@ class ScheduleStepState extends State<ScheduleStep> {
   final formKey = GlobalKey<FormState>();
 
   late final weeklyScheduleController = WeeklySchedulesController();
+  // TODO Add a field for visit frequency
   int internshipDuration = 0;
 
   void onScheduleChanged() {

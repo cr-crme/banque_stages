@@ -112,6 +112,7 @@ class InternshipListTileState extends State<InternshipListTile> {
             ? widget.internship.weeklySchedules
             : null,
   );
+  // TODO : Add a field for the visit frequency
   late final _expectedDurationController = TextEditingController(
     text:
         widget.internship.expectedDuration > 0
@@ -182,6 +183,7 @@ class InternshipListTileState extends State<InternshipListTile> {
           _schedulesController.weeklySchedules,
           keepId: false,
         ),
+        visitFrequencies: 'TODO', // TODO fix this
       );
       (serialized['mutables'] as List).add(newVersion.serialize());
       internship = Internship.fromSerialized(serialized);

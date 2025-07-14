@@ -389,6 +389,7 @@ CREATE TABLE internship_mutable_data (
     supervisor_id VARCHAR(36) NOT NULL,
     starting_date BIGINT NOT NULL,
     ending_date BIGINT NOT NULL,
+    visit_frequencies VARCHAR(255) NOT NULL,
     FOREIGN KEY (supervisor_id) REFERENCES persons(id),
     FOREIGN KEY (internship_id) REFERENCES internships(id) ON DELETE CASCADE
 );

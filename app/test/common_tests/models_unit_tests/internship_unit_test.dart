@@ -55,20 +55,20 @@ void main() {
       expect(internship.weeklySchedulesFrom(0), internship.weeklySchedules);
 
       internship.addVersion(
-        creationDate: DateTime(2020, 2, 4),
-        weeklySchedules: [dummyWeeklySchedule(id: 'newWeeklyScheduleId')],
-        dates: DateTimeRange(
-            start: DateTime(2000, 1, 1), end: DateTime(2001, 1, 1)),
-        supervisor: Person(
-          firstName: 'New',
-          middleName: null,
-          lastName: 'Supervisor',
-          dateBirth: null,
-          phone: PhoneNumber.empty,
-          address: Address.empty,
-          email: null,
-        ),
-      );
+          creationDate: DateTime(2020, 2, 4),
+          weeklySchedules: [dummyWeeklySchedule(id: 'newWeeklyScheduleId')],
+          dates: DateTimeRange(
+              start: DateTime(2000, 1, 1), end: DateTime(2001, 1, 1)),
+          supervisor: Person(
+            firstName: 'New',
+            middleName: null,
+            lastName: 'Supervisor',
+            dateBirth: null,
+            phone: PhoneNumber.empty,
+            address: Address.empty,
+            email: null,
+          ),
+          visitFrequencies: 'Toutes les semaines');
 
       expect(internship.nbVersions, 2);
       expect(internship.creationDate.millisecondsSinceEpoch,
