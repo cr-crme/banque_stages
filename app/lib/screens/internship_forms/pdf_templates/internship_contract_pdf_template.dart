@@ -635,7 +635,11 @@ pw.Widget _studentInformations(Internship internship) {
           sameLine: false),
       _checkBoxCell(
           title: 'Transport',
-          content: {'Oui': true, 'Non': false, 'Billet': true, 'Passe': false}),
+          content: Transportation.values.asMap().map((key, value) {
+            final transportation = Transportation.deserialize(key);
+            return MapEntry(transportation.toString(),
+                internship.transportations.contains(transportation));
+          })),
       _textCell(
           title: 'Fréquence de visites du superviseur',
           content: internship.visitFrequencies,
@@ -877,6 +881,11 @@ Internship _internship({required String internshipId}) => Internship(
       achievedDuration: 0,
       visitingPriority: VisitingPriority.low,
       endDate: DateTime(2025, 6, 2),
+      transportations: [
+        Transportation.none,
+        Transportation.pass,
+        Transportation.ticket
+      ],
       visitFrequencies: 'Tous les jours',
     );
 

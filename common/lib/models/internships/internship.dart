@@ -5,6 +5,7 @@ import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart';
+import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
@@ -152,12 +153,14 @@ class InternshipMutableElements extends ItemSerializable {
     required this.supervisor,
     required this.dates,
     required this.weeklySchedules,
+    required this.transportations,
     required this.visitFrequencies,
   });
   final DateTime creationDate;
   final Person supervisor;
   final DateTimeRange dates;
   final List<WeeklySchedule> weeklySchedules;
+  final List<Transportation> transportations;
   final String visitFrequencies;
 
   InternshipMutableElements.fromSerialized(super.map)
@@ -169,6 +172,9 @@ class InternshipMutableElements extends ItemSerializable {
         weeklySchedules = (map['schedules'] as List)
             .map((e) => WeeklySchedule.fromSerialized(e))
             .toList(),
+        transportations = ListExt.from(map['transportations'],
+                deserializer: (e) => Transportation.deserialize(e)) ??
+            [],
         visitFrequencies = StringExt.from(map['visit_frequencies']) ?? 'N/A',
         super.fromSerialized();
 
@@ -180,6 +186,7 @@ class InternshipMutableElements extends ItemSerializable {
         'starting_date': dates.start.serialize(),
         'ending_date': dates.end.serialize(),
         'schedules': weeklySchedules.map((e) => e.serialize()).toList(),
+        'transportations': transportations.map((e) => e.serialize()).toList(),
         'visit_frequencies': visitFrequencies.serialize(),
       };
 
@@ -225,6 +232,9 @@ class Internship extends ExtendedItemSerializable {
   List<WeeklySchedule> get weeklySchedules => _mutables.last.weeklySchedules;
   List<WeeklySchedule> weeklySchedulesFrom(int version) =>
       _mutables[version].weeklySchedules;
+  List<Transportation> get transportations => _mutables.last.transportations;
+  List<Transportation> transportationsFrom(int version) =>
+      _mutables[version].transportations;
   String get visitFrequencies => _mutables.last.visitFrequencies;
   String visitFrequenciesFrom(int version) =>
       _mutables[version].visitFrequencies;
@@ -330,6 +340,7 @@ class Internship extends ExtendedItemSerializable {
     required Person supervisor,
     required DateTimeRange dates,
     required List<WeeklySchedule> weeklySchedules,
+    required List<Transportation> transportations,
     required String visitFrequencies,
     required this.expectedDuration,
     required this.achievedDuration,
@@ -345,6 +356,7 @@ class Internship extends ExtendedItemSerializable {
             supervisor: supervisor,
             dates: dates,
             weeklySchedules: weeklySchedules,
+            transportations: transportations,
             visitFrequencies: visitFrequencies,
           )
         ],
@@ -433,6 +445,7 @@ class Internship extends ExtendedItemSerializable {
     required Person supervisor,
     required DateTimeRange dates,
     required List<WeeklySchedule> weeklySchedules,
+    required List<Transportation> transportations,
     required String visitFrequencies,
   }) {
     _mutables.add(InternshipMutableElements(
@@ -440,6 +453,7 @@ class Internship extends ExtendedItemSerializable {
       supervisor: supervisor,
       dates: dates,
       weeklySchedules: weeklySchedules,
+      transportations: transportations,
       visitFrequencies: visitFrequencies,
     ));
   }

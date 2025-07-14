@@ -9,6 +9,7 @@ import 'package:common/models/internships/internship_evaluation_skill.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/task_appreciation.dart';
 import 'package:common/models/internships/time_utils.dart';
+import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/itineraries/itinerary.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/itineraries/waypoint.dart';
@@ -306,6 +307,7 @@ Internship dummyInternship({
     weeklySchedules: [dummyWeeklySchedule(period: period)],
     skillEvaluations: [dummyInternshipEvaluationSkill()],
     attitudeEvaluations: [dummyInternshipEvaluationAttitude()],
+    transportations: [Transportation.none],
     visitFrequencies: 'Tous les jours',
   );
 }

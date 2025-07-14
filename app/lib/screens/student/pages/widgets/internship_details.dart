@@ -54,6 +54,8 @@ class _InternshipController {
   }
 
   WeeklySchedulesController weeklyScheduleController;
+  // TODO Add a field for transportations
+  // TODO Add a field for visit frequency
 }
 
 class InternshipDetails extends StatefulWidget {
@@ -128,6 +130,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
                   _internshipController.supervisorPhoneController.text),
               email: _internshipController.supervisorEmailController.text),
           dates: _internshipController.weeklyScheduleController.dateRange!,
+          transportations: [], // TODO Add a field for transportations
           visitFrequencies: 'TODO', // TODO Add a field for visit frequency
           weeklySchedules: _internshipController
               .weeklyScheduleController.weeklySchedules

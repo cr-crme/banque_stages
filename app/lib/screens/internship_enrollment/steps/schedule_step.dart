@@ -20,6 +20,7 @@ class WeeklySchedulesController {
       : _dateRange = dateRange,
         weeklySchedules = weeklySchedules ?? [];
 
+  // TODO: Add a field for visit frequency
   bool get hasChanged => _hasChanged;
   set dateRange(time_utils.DateTimeRange? newRange) {
     _dateRange = newRange;
@@ -131,6 +132,7 @@ class ScheduleStepState extends State<ScheduleStep> {
   final formKey = GlobalKey<FormState>();
 
   late final weeklyScheduleController = WeeklySchedulesController();
+  // TODO Add a field for transportations
   // TODO Add a field for visit frequency
   int internshipDuration = 0;
 

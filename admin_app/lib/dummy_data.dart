@@ -11,6 +11,7 @@ import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
+import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/admin.dart';
 import 'package:common/models/persons/person.dart';
@@ -1518,6 +1519,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      transportations: [Transportation.yes, Transportation.pass],
       visitFrequencies: 'Une visite par semaine',
     ),
   );
@@ -1600,6 +1602,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      transportations: [Transportation.pass],
       visitFrequencies: 'Une visite par semaine',
     ),
   );
@@ -1666,6 +1669,7 @@ Future<void> _addDummyInternships(
         period: period,
       ),
     ],
+    transportations: [Transportation.none],
     visitFrequencies: 'Une visite par mois',
   );
   internship.enterpriseEvaluation = PostInternshipEnterpriseEvaluation(
@@ -1744,6 +1748,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      transportations: [Transportation.yes],
       visitFrequencies: 'Une visite par semaine',
     ),
   );
@@ -1805,6 +1810,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      transportations: [Transportation.ticket],
       visitFrequencies: 'Une visite par semaine',
     ),
   );
@@ -1881,6 +1887,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      transportations: [Transportation.none],
       visitFrequencies: 'Jamais',
     ),
   );
@@ -1956,6 +1963,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      transportations: [Transportation.none],
       visitFrequencies: 'Une visite par semaine',
     ),
   );
@@ -2010,6 +2018,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      transportations: [Transportation.none],
       visitFrequencies: 'Une visite par semaine',
     ),
   );
@@ -2064,6 +2073,7 @@ Future<void> _addDummyInternships(
           period: period,
         ),
       ],
+      transportations: [Transportation.none],
       visitFrequencies: 'Tous les jours',
     ),
   );

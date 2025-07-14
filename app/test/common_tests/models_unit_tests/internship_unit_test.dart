@@ -2,6 +2,7 @@ import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/time_utils.dart';
+import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
@@ -68,6 +69,7 @@ void main() {
             address: Address.empty,
             email: null,
           ),
+          transportations: [Transportation.none],
           visitFrequencies: 'Toutes les semaines');
 
       expect(internship.nbVersions, 2);

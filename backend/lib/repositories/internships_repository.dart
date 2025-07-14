@@ -9,6 +9,7 @@ import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart';
+import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/utils.dart';
@@ -319,8 +320,20 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               }
           ];
         }
-        mutable['visiting_priority'] =
+
+        final transportations = await MySqlHelpers.performSelectQuery(
+            connection: connection,
+            user: user,
+            tableName: 'internship_transportations',
+            filters: {'mutable_data_id': mutable['id']});
+        mutable['transportations'] = [
+          for (final transportation in (transportations as List? ?? []))
+            Transportation.deserialize(transportation)
+        ];
+
+        mutable['visit_frequencies'] =
             (mutable['visit_frequencies'] as List?)?.firstOrNull;
+
         mutable['schedules'] = schedules;
       }
 
@@ -691,6 +704,14 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               });
         }
       }
+
+      // Insert the transportations
+      for (final transportation in mutable['transportations'] as List) {
+        await MySqlHelpers.performInsertQuery(
+            connection: connection,
+            tableName: 'internship_transportations',
+            data: {'id': mutable['id'], 'type': transportation});
+      }
     }
   }
 
@@ -998,6 +1019,7 @@ class InternshipsRepositoryMock extends InternshipsRepository {
       visitingPriority: VisitingPriority.low,
       endDate: DateTime(0),
       teacherNotes: 'Nope',
+      transportations: [Transportation.pass],
       visitFrequencies: 'Toutes les semaines',
     ),
     '1': Internship(
@@ -1044,6 +1066,7 @@ class InternshipsRepositoryMock extends InternshipsRepository {
       visitingPriority: VisitingPriority.mid,
       endDate: DateTime(0),
       teacherNotes: 'Yes',
+      transportations: [Transportation.yes, Transportation.ticket],
       visitFrequencies: 'Toutes les deux semaines',
     ),
   };

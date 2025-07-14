@@ -42,6 +42,7 @@ DROP TABLE IF EXISTS internship_extra_specializations;
 DROP TABLE IF EXISTS internship_mutable_data;
 DROP TABLE IF EXISTS internship_weekly_schedules;
 DROP TABLE IF EXISTS internship_daily_schedules;
+DROP TABLE IF EXISTS internship_transportations;
 DROP TABLE IF EXISTS internship_skill_evaluations;
 DROP TABLE IF EXISTS internship_skill_evaluation_persons;
 DROP TABLE IF EXISTS internship_skill_evaluation_items;
@@ -415,6 +416,12 @@ CREATE TABLE internship_daily_schedules (
     break_end_hour INT,
     break_end_minute INT,
     FOREIGN KEY (weekly_schedule_id) REFERENCES internship_weekly_schedules(id) ON DELETE CASCADE
+);
+
+CREATE TABLE internship_transportations (
+    id VARCHAR(36) NOT NULL,
+    transportation INT NOT NULL, 
+    FOREIGN KEY (id) REFERENCES internship_mutable_data(id) ON DELETE CASCADE
 );
 
 CREATE TABLE internship_skill_evaluations (
