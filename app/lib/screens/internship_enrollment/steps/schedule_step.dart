@@ -1,5 +1,6 @@
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
+import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:common_flutter/widgets/custom_time_picker.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
@@ -48,12 +49,17 @@ class WeeklySchedulesController {
     _hasChanged = true;
   }
 
-  void updateDailyScheduleTime(int weeklyIndex, int dailyIndex,
-      time_utils.TimeOfDay start, time_utils.TimeOfDay end) {
+  void updateDailyScheduleTime(
+    int weeklyIndex,
+    int dailyIndex, {
+    required time_utils.TimeOfDay start,
+    required time_utils.TimeOfDay end,
+    required time_utils.TimeOfDay breakStart,
+    required time_utils.TimeOfDay breakEnd,
+  }) {
     weeklySchedules[weeklyIndex].schedule[dailyIndex] =
-        weeklySchedules[weeklyIndex]
-            .schedule[dailyIndex]
-            .copyWith(start: start, end: end);
+        weeklySchedules[weeklyIndex].schedule[dailyIndex].copyWith(
+            start: start, end: end, breakStart: breakStart, breakEnd: breakEnd);
     _hasChanged = true;
   }
 
@@ -355,13 +361,20 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
     final day = await _promptDay(context);
     if (day == null || !mounted) return;
 
-    // TODO: add break time support
     final start =
         await promptTime(title: 'Heure de début', initial: _defaultStart);
     if (start == null || !mounted) return;
 
     final end = await promptTime(title: 'Heure de fin', initial: _defaultEnd);
-    if (end == null) return;
+    if (end == null || !mounted) return;
+
+    final breakStart = await promptTime(
+        title: 'Heure de début de pause', initial: _defaultBreakStart);
+    if (breakStart == null || !mounted) return;
+
+    final breakEnd = await promptTime(
+        title: 'Heure de fin de pause', initial: _defaultBreakEnd);
+    if (breakEnd == null || !mounted) return;
 
     widget.scheduleController.addToDailySchedule(
         weeklyIndex,
@@ -369,8 +382,8 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
             dayOfWeek: day,
             start: start,
             end: end,
-            breakStart: null,
-            breakEnd: null));
+            breakStart: breakStart,
+            breakEnd: breakEnd));
     setState(() {});
   }
 
@@ -389,10 +402,24 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
         title: 'Heure de fin',
         initial: widget.scheduleController.weeklySchedules[weeklyIndex]
             .schedule[dailyIndex].end);
-    if (end == null) return;
+    if (end == null || !mounted) return;
 
-    widget.scheduleController
-        .updateDailyScheduleTime(weeklyIndex, dailyIndex, start, end);
+    final breakStart = await promptTime(
+        title: 'Heure de début de pause',
+        initial: widget.scheduleController.weeklySchedules[weeklyIndex]
+                .schedule[dailyIndex].breakStart ??
+            _defaultBreakStart);
+    if (breakStart == null || !mounted) return;
+
+    final breakEnd = await promptTime(
+        title: 'Heure de fin de pause',
+        initial: widget.scheduleController.weeklySchedules[weeklyIndex]
+                .schedule[dailyIndex].breakEnd ??
+            _defaultBreakEnd);
+    if (breakEnd == null || !mounted) return;
+
+    widget.scheduleController.updateDailyScheduleTime(weeklyIndex, dailyIndex,
+        start: start, end: end, breakStart: breakStart, breakEnd: breakEnd);
     setState(() {});
   }
 
@@ -597,26 +624,31 @@ class _ScheduleSelector extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (editMode)
-              const Text('* Modifier les jours et les horaires de stage'),
+              const Text(
+                  '* Modifier les jours et les horaires de stage (pause)'),
             Table(
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              defaultVerticalAlignment:
+                  ResponsiveService.getScreenSize(context) == ScreenSize.small
+                      ? TableCellVerticalAlignment.top
+                      : TableCellVerticalAlignment.middle,
               columnWidths: const {
-                0: FlexColumnWidth(2),
-                1: FlexColumnWidth(1),
-                2: FlexColumnWidth(2),
-                3: FlexColumnWidth(2),
-                4: FlexColumnWidth(1),
-                5: FlexColumnWidth(1),
+                0: FlexColumnWidth(1.7),
+                1: FlexColumnWidth(3),
+                2: FlexColumnWidth(3),
+                3: FlexColumnWidth(0.7),
+                4: FlexColumnWidth(0.7),
               },
               children: [
                 ...weeklySchedule.schedule.asMap().keys.map(
                       (i) => TableRow(
                         children: [
                           Text(weeklySchedule.schedule[i].dayOfWeek.name),
-                          Container(),
                           Text(
-                              weeklySchedule.schedule[i].start.format(context)),
-                          Text(weeklySchedule.schedule[i].end.format(context)),
+                              '${weeklySchedule.schedule[i].start.format(context)} / '
+                              '${weeklySchedule.schedule[i].end.format(context)}'),
+                          Text(
+                              '(${weeklySchedule.schedule[i].breakStart?.format(context) ?? ''} / '
+                              '${weeklySchedule.schedule[i].breakEnd?.format(context) ?? ''})'),
                           if (editMode)
                             InkWell(
                               onTap: () => onUpdateDailyScheduleTime(i),
@@ -634,7 +666,6 @@ class _ScheduleSelector extends StatelessWidget {
                     ),
                 if (editMode)
                   TableRow(children: [
-                    Container(),
                     Container(),
                     Container(),
                     Container(),

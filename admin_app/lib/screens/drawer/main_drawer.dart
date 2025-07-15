@@ -163,7 +163,7 @@ class MainDrawer extends StatelessWidget {
                   icon: Icons.restore_from_trash_outlined,
                   onTap: () async {
                     await resetDummyData(context);
-                    if (context.mounted) Navigator.pop(context);
+                    if (context.mounted && canPop) Navigator.pop(context);
                   },
                   tileColor: Colors.red,
                   iconOnly: iconOnly,
