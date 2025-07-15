@@ -1,5 +1,6 @@
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
+import 'package:common/models/internships/transportation.dart';
 import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:common_flutter/widgets/custom_time_picker.dart';
@@ -137,7 +138,7 @@ class ScheduleStepState extends State<ScheduleStep> {
   final formKey = GlobalKey<FormState>();
 
   late final weeklyScheduleController = WeeklySchedulesController();
-  // TODO Add a field for transportations
+  List<Transportation> transportations = [];
   int internshipDuration = 0;
   String visitFrequencies = '';
 
@@ -175,6 +176,10 @@ class ScheduleStepState extends State<ScheduleStep> {
                     _Hours(
                         onSaved: (value) =>
                             internshipDuration = int.parse(value!)),
+                    _Transportations(
+                      withTitle: true,
+                      transportations: transportations,
+                    ),
                     _VisitFrequencies(
                         onSaved: (value) => visitFrequencies = value!)
                   ],
@@ -352,6 +357,69 @@ class _VisitFrequencies extends StatelessWidget {
             keyboardType: TextInputType.number,
             onSaved: onSaved,
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Transportations extends StatefulWidget {
+  const _Transportations({
+    required this.withTitle,
+    required this.transportations,
+  });
+
+  final bool withTitle;
+  final List<Transportation> transportations;
+
+  @override
+  State<_Transportations> createState() => _TransportationsState();
+}
+
+class _TransportationsState extends State<_Transportations> {
+  void _updateTransportations(Transportation transportation) {
+    if (!widget.transportations.contains(transportation)) {
+      widget.transportations.add(transportation);
+    } else {
+      widget.transportations.remove(transportation);
+    }
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.withTitle)
+          const SubTitle('Transport vers l\'entreprise', left: 0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: Transportation.values.map((e) {
+            return MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () => _updateTransportations(e),
+                child: Row(
+                  children: [
+                    Text(e.toString()),
+                    Checkbox(
+                      value: widget.transportations.contains(e),
+                      side: WidgetStateBorderSide.resolveWith(
+                        (states) => BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 2.0,
+                        ),
+                      ),
+                      fillColor: WidgetStatePropertyAll(Colors.transparent),
+                      checkColor: Colors.black,
+                      onChanged: (value) => _updateTransportations(e),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );

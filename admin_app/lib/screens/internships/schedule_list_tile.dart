@@ -275,7 +275,6 @@ class _ScheduleListTileState extends State<ScheduleListTile> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(MediaQuery.of(context).size.width.toString());
     return FocusScope(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

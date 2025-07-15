@@ -2,8 +2,10 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/services/job_data_file_service.dart';
+import 'package:common/utils.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
@@ -25,6 +27,8 @@ class _InternshipController {
               .toList(),
           dateRange: internship.dates,
         ),
+        transportations =
+            internship.hasVersions ? [...internship.transportations] : [],
         visitFrequenciesController = TextEditingController(
             text: internship.hasVersions ? internship.visitFrequencies : '');
 
@@ -56,7 +60,7 @@ class _InternshipController {
   }
 
   WeeklySchedulesController weeklyScheduleController;
-  // TODO Add a field for transportations
+  final List<Transportation> transportations;
   final TextEditingController visitFrequenciesController;
 
   void dispose() {
@@ -128,11 +132,17 @@ class InternshipDetailsState extends State<InternshipDetails> {
       hasChanged = true;
     }
 
+    final transportationsHasChanged = areListsNotEqual(
+      _internship.transportations,
+      _internshipController.transportations,
+    );
     final visitFrequenciesHasChanged = _internship.visitFrequencies !=
         _internshipController.visitFrequenciesController.text;
 
     // Saving the values that require an extra version
-    if (_internshipController.hasChanged || visitFrequenciesHasChanged) {
+    if (_internshipController.hasChanged ||
+        visitFrequenciesHasChanged ||
+        transportationsHasChanged) {
       _internship.addVersion(
           creationDate: DateTime.now(),
           supervisor: _internship.supervisor.copyWith(
@@ -143,7 +153,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
                   _internshipController.supervisorPhoneController.text),
               email: _internshipController.supervisorEmailController.text),
           dates: _internshipController.weeklyScheduleController.dateRange!,
-          transportations: [], // TODO Add a field for transportations
+          transportations: _internshipController.transportations,
           visitFrequencies:
               _internshipController.visitFrequenciesController.text,
           weeklySchedules: _internshipController
@@ -577,9 +587,85 @@ class _InternshipBody extends StatelessWidget {
           _buildDates(),
           _buildTime(),
           _buildSchedule(),
+          _Transportations(
+              editMode: editMode,
+              transportations: internshipController.transportations),
           _buildVisitFrequencies(),
         ],
       ),
+    );
+  }
+}
+
+class _Transportations extends StatefulWidget {
+  const _Transportations({
+    required this.editMode,
+    required this.transportations,
+  });
+
+  final bool editMode;
+  final List<Transportation> transportations;
+
+  @override
+  State<_Transportations> createState() => _TransportationsState();
+}
+
+class _TransportationsState extends State<_Transportations> {
+  @override
+  void didUpdateWidget(covariant _Transportations oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.editMode != widget.editMode) setState(() {});
+  }
+
+  void _updateTransportations(Transportation transportation) {
+    if (!widget.transportations.contains(transportation)) {
+      widget.transportations.add(transportation);
+    } else {
+      widget.transportations.remove(transportation);
+    }
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Transport vers l\'entreprise',
+            style: _InternshipBody._titleStyle),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: Transportation.values.map((e) {
+            return MouseRegion(
+              cursor: widget.editMode
+                  ? SystemMouseCursors.click
+                  : SystemMouseCursors.basic,
+              child: GestureDetector(
+                onTap: widget.editMode ? () => _updateTransportations(e) : null,
+                child: Row(
+                  children: [
+                    Text(e.toString()),
+                    Checkbox(
+                      value: widget.transportations.contains(e),
+                      side: WidgetStateBorderSide.resolveWith(
+                        (states) => BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 2.0,
+                        ),
+                      ),
+                      fillColor: WidgetStatePropertyAll(Colors.transparent),
+                      checkColor: Colors.black,
+                      onChanged: widget.editMode
+                          ? (value) => _updateTransportations(e)
+                          : null,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

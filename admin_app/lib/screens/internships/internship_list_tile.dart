@@ -5,6 +5,7 @@ import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/persons/teacher.dart';
@@ -116,13 +117,16 @@ class InternshipListTileState extends State<InternshipListTile> {
             ? widget.internship.weeklySchedules
             : null,
   );
-  // TODO : Add a field for the transportations
   late final _expectedDurationController = TextEditingController(
     text:
         widget.internship.expectedDuration > 0
             ? widget.internship.expectedDuration.toString()
             : '',
   );
+  late final _transportations =
+      widget.internship.hasVersions
+          ? [...widget.internship.transportations]
+          : <Transportation>[];
   late final _visitFrequenciesController = TextEditingController(
     text:
         widget.internship.hasVersions ? widget.internship.visitFrequencies : '',
@@ -163,6 +167,10 @@ class InternshipListTileState extends State<InternshipListTile> {
         ) ||
         widget.internship.dates != _schedulesController.dateRange;
 
+    final transportationsChanged = areListsNotEqual(
+      widget.internship.hasVersions ? widget.internship.transportations : [],
+      _transportations,
+    );
     final visitFrequenciesChanged =
         (widget.internship.hasVersions
             ? widget.internship.visitFrequencies
@@ -185,6 +193,7 @@ class InternshipListTileState extends State<InternshipListTile> {
 
     if (schedulesHasChanged ||
         visitFrequenciesChanged ||
+        transportationsChanged ||
         previousSupervisor.getDifference(supervisor).isNotEmpty) {
       // If a mutable has changed, we cannot edit it from here. We have to
       // create a deep copy of the internship and modify this new instance.
@@ -198,7 +207,7 @@ class InternshipListTileState extends State<InternshipListTile> {
           _schedulesController.weeklySchedules,
           keepId: false,
         ),
-        transportations: [], // TODO fix this
+        transportations: _transportations,
         visitFrequencies: _visitFrequenciesController.text,
       );
       (serialized['mutables'] as List).add(newVersion.serialize());
@@ -333,6 +342,8 @@ class InternshipListTileState extends State<InternshipListTile> {
             _buildWeeklySchedule(),
             const SizedBox(height: 8.0),
             _buildExpectedDuration(),
+            const SizedBox(height: 8.0),
+            _buildTransportation(),
             const SizedBox(height: 8.0),
             _buildVisitFrequencies(),
             const SizedBox(height: 8.0),
@@ -514,6 +525,22 @@ class InternshipListTileState extends State<InternshipListTile> {
     setState(() {});
   }
 
+  Widget _buildTransportation() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Transport vers l\'entreprise'),
+          _Transportations(
+            isEditing: _isEditing,
+            transportations: _transportations,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildVisitFrequencies() {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
@@ -611,6 +638,79 @@ class InternshipListTileState extends State<InternshipListTile> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _Transportations extends StatefulWidget {
+  const _Transportations({
+    required this.isEditing,
+    required this.transportations,
+  });
+
+  final bool isEditing;
+  final List<Transportation> transportations;
+
+  @override
+  State<_Transportations> createState() => _TransportationsState();
+}
+
+class _TransportationsState extends State<_Transportations> {
+  @override
+  void didUpdateWidget(covariant _Transportations oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isEditing != widget.isEditing) setState(() {});
+  }
+
+  void _updateTransportations(Transportation transportation) {
+    if (!widget.transportations.contains(transportation)) {
+      widget.transportations.add(transportation);
+    } else {
+      widget.transportations.remove(transportation);
+    }
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children:
+            Transportation.values.map((e) {
+              return MouseRegion(
+                cursor:
+                    widget.isEditing
+                        ? SystemMouseCursors.click
+                        : SystemMouseCursors.basic,
+                child: GestureDetector(
+                  onTap:
+                      widget.isEditing ? () => _updateTransportations(e) : null,
+                  child: Row(
+                    children: [
+                      Text(e.toString()),
+                      Checkbox(
+                        value: widget.transportations.contains(e),
+                        side: WidgetStateBorderSide.resolveWith(
+                          (states) => BorderSide(
+                            color: Theme.of(context).primaryColor,
+                            width: 2.0,
+                          ),
+                        ),
+                        fillColor: WidgetStatePropertyAll(Colors.transparent),
+                        checkColor: Colors.black,
+                        onChanged:
+                            widget.isEditing
+                                ? (value) => _updateTransportations(e)
+                                : null,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
       ),
     );
   }
