@@ -12,6 +12,7 @@ void _initializeTeacher(BuildContext context) {
   SchoolBoardsProvider.of(context, listen: false).add(SchoolBoard(
     id: 'SchoolBoardId',
     name: 'Test SchoolBoard',
+    logo: null,
     schools: [dummySchool(id: 'SchoolId')],
     cnesstNumber: '1234567890',
   ));

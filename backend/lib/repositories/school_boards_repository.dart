@@ -204,12 +204,14 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
         connection: connection,
         tableName: 'entities',
         data: {'shared_id': schoolBoard.id});
+    // TODO Make sure the logo is 150x80 pixels
     await MySqlHelpers.performInsertQuery(
         connection: connection,
         tableName: 'school_boards',
         data: {
           'id': schoolBoard.id,
           'name': schoolBoard.name,
+          'logo': schoolBoard.logo,
           'cnesst_number': schoolBoard.cnesstNumber
         });
   }
@@ -235,6 +237,10 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     }
     if (differences.contains('cnesst_number')) {
       toUpdate['cnesst_number'] = schoolBoard.cnesstNumber.serialize();
+    }
+    if (differences.contains('logo')) {
+      // TODO Make sure the logo is 150x80 pixels
+      toUpdate['logo'] = schoolBoard.logo;
     }
 
     if (toUpdate.isNotEmpty) {

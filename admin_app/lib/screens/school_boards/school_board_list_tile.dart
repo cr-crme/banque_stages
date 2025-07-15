@@ -180,7 +180,12 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildName(), _buildCnesst(), _buildSchoolNames()],
+          children: [
+            _buildName(),
+            _buildLogo(),
+            _buildCnesst(),
+            _buildSchoolNames(),
+          ],
         ),
       ),
     );
@@ -208,6 +213,16 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
           ),
         )
         : Container();
+  }
+
+  Widget _buildLogo() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [Text('Logo de la commission scolaire')],
+      ),
+    );
   }
 
   Widget _buildCnesst() {

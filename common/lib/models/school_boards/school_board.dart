@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:common/exceptions.dart';
 import 'package:common/models/generic/extended_item_serializable.dart';
 import 'package:common/models/generic/serializable_elements.dart';
@@ -6,21 +8,24 @@ import 'package:common/models/school_boards/school.dart';
 class SchoolBoard extends ExtendedItemSerializable {
   static final String _currentVersion = '1.0.0';
   final String name;
+  final Uint8List logo;
   final List<School> schools;
   final String cnesstNumber;
 
   SchoolBoard({
     super.id,
     required this.name,
+    required Uint8List? logo,
     required this.schools,
     required this.cnesstNumber,
-  });
+  }) : logo = logo ?? Uint8List(0);
 
   static SchoolBoard get empty =>
-      SchoolBoard(name: '', schools: [], cnesstNumber: '');
+      SchoolBoard(name: '', logo: Uint8List(0), schools: [], cnesstNumber: '');
 
   SchoolBoard.fromSerialized(super.map)
       : name = StringExt.from(map['name']) ?? 'Unnamed',
+        logo = map['logo'] as Uint8List,
         schools = ListExt.from(
               map['schools'],
               deserializer: (e) => School.fromSerialized(e),
@@ -32,6 +37,7 @@ class SchoolBoard extends ExtendedItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'name': name.serialize(),
+        'logo': logo,
         'schools': schools.serialize(),
         'cnesst_number': cnesstNumber.serialize(),
       };
@@ -39,12 +45,14 @@ class SchoolBoard extends ExtendedItemSerializable {
   SchoolBoard copyWith({
     String? id,
     String? name,
+    Uint8List? logo,
     List<School>? schools,
     String? cnesstNumber,
   }) =>
       SchoolBoard(
         id: id ?? this.id,
         name: name ?? this.name,
+        logo: logo ?? this.logo,
         schools: schools ?? this.schools,
         cnesstNumber: cnesstNumber ?? this.cnesstNumber,
       );
@@ -54,6 +62,7 @@ class SchoolBoard extends ExtendedItemSerializable {
     final availableFields = [
       'id',
       'name',
+      'logo',
       'version',
       'schools',
       'cnesst_number',
@@ -73,6 +82,7 @@ class SchoolBoard extends ExtendedItemSerializable {
     return SchoolBoard(
       id: StringExt.from(data['id']) ?? id,
       name: data['name'] ?? name,
+      logo: data['logo'] as Uint8List? ?? logo,
       schools: ListExt.from(
             data['schools'],
             deserializer: (e) => School.fromSerialized(e),

@@ -147,6 +147,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   schoolBoards.add(
     SchoolBoard(
       name: _mySchoolBoardName,
+      logo: null,
       schools: schools.toList(),
       cnesstNumber: '1234567890',
     ),
@@ -194,6 +195,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
     SchoolBoard(
       id: 'dummy_school_board_id_2',
       name: 'Commission scolaire de l\'Île-de-Montréal',
+      logo: null,
       schools: schools.toList(),
       cnesstNumber: '0987654321',
     ),
