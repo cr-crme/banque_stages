@@ -14,8 +14,6 @@ String _title(student_model.Program program) {
   }
 }
 
-// TODO Use feminine form?
-
 Future<Uint8List> _generateInternshipContractPdf(
     BuildContext mainContext, PdfPageFormat format,
     {required String internshipId}) async {
