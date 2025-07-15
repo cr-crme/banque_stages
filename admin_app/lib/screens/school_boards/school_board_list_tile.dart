@@ -17,11 +17,13 @@ class SchoolBoardListTile extends StatefulWidget {
     required this.schoolBoard,
     this.isExpandable = true,
     this.forceEditingMode = false,
-  });
+    double? elevation,
+  }) : elevation = elevation ?? 5.0;
 
   final bool isExpandable;
   final bool forceEditingMode;
   final SchoolBoard schoolBoard;
+  final double elevation;
 
   @override
   State<SchoolBoardListTile> createState() => SchoolBoardListTileState();
@@ -45,6 +47,13 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
   bool _isExpanded = true;
   bool _isEditing = false;
   late final bool _canEdit =
+      AuthProvider.of(context, listen: false).databaseAccessLevel >=
+          AccessLevel.superAdmin ||
+      (AuthProvider.of(context, listen: false).databaseAccessLevel ==
+              AccessLevel.admin &&
+          widget.schoolBoard.id ==
+              AuthProvider.of(context, listen: false).schoolBoardId);
+  late final bool _canDelete =
       AuthProvider.of(context, listen: false).databaseAccessLevel >=
       AccessLevel.superAdmin;
 
@@ -122,7 +131,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
     return widget.isExpandable
         ? AnimatedExpandingCard(
           initialExpandedState: _isExpanded,
-          elevation: 5.0,
+          elevation: widget.elevation,
           onTapHeader: (isExpanded) => setState(() => _isExpanded = isExpanded),
           header: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,20 +148,22 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
                   ),
                 ),
               ),
-              if (_isExpanded && _canEdit)
+              if (_isExpanded)
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: _onClickedDeleting,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        _isEditing ? Icons.save : Icons.edit,
-                        color: Theme.of(context).primaryColor,
+                    if (_canDelete)
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: _onClickedDeleting,
                       ),
-                      onPressed: _onClickedEditing,
-                    ),
+                    if (_canEdit)
+                      IconButton(
+                        icon: Icon(
+                          _isEditing ? Icons.save : Icons.edit,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onPressed: _onClickedEditing,
+                      ),
                   ],
                 ),
             ],
@@ -269,6 +280,8 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
                         school: school,
                         schoolBoard: widget.schoolBoard,
                         elevation: 0,
+                        canEdit: _canEdit,
+                        canDelete: _canDelete,
                       ),
                     ),
                   ),

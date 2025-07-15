@@ -70,16 +70,21 @@ class TeachersListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = AuthProvider.of(context, listen: true);
+
     return ResponsiveService.scaffoldOf(
       context,
       appBar: AppBar(
         title: const Text('Liste des enseignant·e·s'),
-        actions: [
-          IconButton(
-            onPressed: () => _showAddTeacherDialog(context),
-            icon: Icon(Icons.add),
-          ),
-        ],
+        actions:
+            authProvider.databaseAccessLevel >= AccessLevel.admin
+                ? [
+                  IconButton(
+                    onPressed: () => _showAddTeacherDialog(context),
+                    icon: Icon(Icons.add),
+                  ),
+                ]
+                : null,
       ),
       smallDrawer: MainDrawer.small,
       mediumDrawer: MainDrawer.medium,

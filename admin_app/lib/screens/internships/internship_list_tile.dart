@@ -30,11 +30,15 @@ class InternshipListTile extends StatefulWidget {
     required this.internship,
     this.isExpandable = true,
     this.forceEditingMode = false,
+    required this.canEdit,
+    required this.canDelete,
   });
 
   final Internship internship;
   final bool isExpandable;
   final bool forceEditingMode;
+  final bool canEdit;
+  final bool canDelete;
 
   @override
   State<InternshipListTile> createState() => InternshipListTileState();
@@ -297,17 +301,19 @@ class InternshipListTileState extends State<InternshipListTile> {
               if (_isExpanded)
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: _onClickedDeleting,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        _isEditing ? Icons.save : Icons.edit,
-                        color: Theme.of(context).primaryColor,
+                    if (widget.canDelete)
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: _onClickedDeleting,
                       ),
-                      onPressed: _onClickedEditing,
-                    ),
+                    if (widget.canEdit)
+                      IconButton(
+                        icon: Icon(
+                          _isEditing ? Icons.save : Icons.edit,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onPressed: _onClickedEditing,
+                      ),
                   ],
                 ),
             ],

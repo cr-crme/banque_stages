@@ -78,18 +78,22 @@ class StudentsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = AuthProvider.of(context, listen: true);
     final schoolBoardStudents = _getStudents(context);
 
     return ResponsiveService.scaffoldOf(
       context,
       appBar: AppBar(
         title: const Text('Liste des élèves'),
-        actions: [
-          IconButton(
-            onPressed: () => _showAddStudentDialog(context),
-            icon: Icon(Icons.add),
-          ),
-        ],
+        actions:
+            authProvider.databaseAccessLevel >= AccessLevel.admin
+                ? [
+                  IconButton(
+                    onPressed: () => _showAddStudentDialog(context),
+                    icon: Icon(Icons.add),
+                  ),
+                ]
+                : null,
       ),
       smallDrawer: MainDrawer.small,
       mediumDrawer: MainDrawer.medium,

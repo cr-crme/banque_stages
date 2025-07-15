@@ -245,6 +245,9 @@ class _InternshipsByTeachers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = AuthProvider.of(context, listen: true);
+    final canDelete = authProvider.databaseAccessLevel >= AccessLevel.admin;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -268,6 +271,8 @@ class _InternshipsByTeachers extends StatelessWidget {
                     return InternshipListTile(
                       key: ValueKey(internship.id),
                       internship: internship,
+                      canEdit: true,
+                      canDelete: canDelete,
                     );
                   }),
                 ],

@@ -23,12 +23,16 @@ class TeacherListTile extends StatefulWidget {
     required this.schoolBoard,
     this.isExpandable = true,
     this.forceEditingMode = false,
+    required this.canEdit,
+    required this.canDelete,
   });
 
   final Teacher teacher;
   final SchoolBoard schoolBoard;
   final bool isExpandable;
   final bool forceEditingMode;
+  final bool canEdit;
+  final bool canDelete;
 
   @override
   State<TeacherListTile> createState() => TeacherListTileState();
@@ -173,17 +177,19 @@ class TeacherListTileState extends State<TeacherListTile> {
               if (_isExpanded)
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: _onClickedDeleting,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        _isEditing ? Icons.save : Icons.edit,
-                        color: Theme.of(context).primaryColor,
+                    if (widget.canDelete)
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: _onClickedDeleting,
                       ),
-                      onPressed: _onClickedEditing,
-                    ),
+                    if (widget.canEdit)
+                      IconButton(
+                        icon: Icon(
+                          _isEditing ? Icons.save : Icons.edit,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onPressed: _onClickedEditing,
+                      ),
                   ],
                 ),
             ],

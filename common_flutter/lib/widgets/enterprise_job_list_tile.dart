@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 
 class EnterpriseJobListController {
   late Specialization? _specialization = _job.specializationOrNull;
+  Specialization? get specialization => _specialization;
 
   final List<Specialization>? _specializationsWhiteList;
   final List<Specialization>? _specializationBlacklist;

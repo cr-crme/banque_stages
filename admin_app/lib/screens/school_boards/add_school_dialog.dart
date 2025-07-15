@@ -55,6 +55,8 @@ class _AddSchoolDialogState extends State<AddSchoolDialog> {
                 schoolBoard: widget.schoolBoard,
                 isExpandable: false,
                 forceEditingMode: true,
+                canDelete: false,
+                canEdit: false,
               ),
             ],
           ),

@@ -1,7 +1,9 @@
 import 'package:admin_app/screens/students/student_list_tile.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart' as utils;
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -77,6 +79,7 @@ class _GroupStudentsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = AuthProvider.of(context, listen: true);
     final teachers =
         TeachersProvider.of(
           context,
@@ -108,6 +111,8 @@ class _GroupStudentsCard extends StatelessWidget {
               key: ValueKey(student.id),
               student: student,
               schoolBoard: schoolBoard,
+              canEdit: authProvider.databaseAccessLevel >= AccessLevel.admin,
+              canDelete: authProvider.databaseAccessLevel >= AccessLevel.admin,
             ),
           ),
       ],

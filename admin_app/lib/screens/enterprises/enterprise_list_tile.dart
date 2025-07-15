@@ -379,6 +379,9 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
                       schools: _currentSchoolBoard?.schools ?? [],
                       editMode: _isEditing,
                       onRequestDelete: () => _deleteJob(jobId),
+                      initialExpandedState:
+                          _jobControllers[jobId]!.specialization?.idWithName ==
+                          null,
                     ),
                   ),
                 ],

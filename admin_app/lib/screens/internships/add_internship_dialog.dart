@@ -56,6 +56,8 @@ class _AddInternshipDialogState extends State<AddInternshipDialog> {
                 ),
                 isExpandable: false,
                 forceEditingMode: true,
+                canEdit: false,
+                canDelete: false,
               ),
             ],
           ),

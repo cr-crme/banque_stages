@@ -59,7 +59,7 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
     required Map<String, dynamic> data,
     required DatabaseUser user,
   }) async {
-    if (user.isNotVerified || user.accessLevel < AccessLevel.superAdmin) {
+    if (user.isNotVerified || user.accessLevel < AccessLevel.admin) {
       _logger.severe(
           'User ${user.userId} does not have permission to put school boards');
       throw InvalidRequestException(
@@ -220,9 +220,13 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     required DatabaseUser user,
   }) async {
     final differences = schoolBoard.getDifference(previous);
-    if (differences.isNotEmpty && user.accessLevel < AccessLevel.superAdmin) {
+    final isOkay = differences.isEmpty ||
+        user.accessLevel >= AccessLevel.superAdmin ||
+        (user.accessLevel == AccessLevel.admin &&
+            schoolBoard.id == user.schoolBoardId);
+    if (!isOkay) {
       throw InvalidRequestException(
-          'You must be a super admin to update a school board');
+          'You must be an admin to update a school board');
     }
 
     final toUpdate = <String, dynamic>{};
@@ -272,8 +276,13 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
   Future<void> _updateToSchools(School school, School previous,
       {required DatabaseUser user}) async {
     final toUpdate = school.getDifference(previous);
-    if (toUpdate.isNotEmpty && user.accessLevel < AccessLevel.admin) {
-      throw InvalidRequestException('You must be a admin to update a school');
+    final isOkay = toUpdate.isEmpty ||
+        user.accessLevel >= AccessLevel.superAdmin ||
+        (user.accessLevel == AccessLevel.admin &&
+            school.id == user.schoolBoardId);
+    if (!isOkay) {
+      throw InvalidRequestException(
+          'You must be a valid admin to update a school');
     }
 
     if (toUpdate.contains('name')) {

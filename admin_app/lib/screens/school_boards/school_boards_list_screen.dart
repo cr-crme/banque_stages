@@ -61,12 +61,15 @@ class SchoolBoardsListScreen extends StatelessWidget {
               ? 'Liste des commissions scolaires'
               : 'Liste des écoles',
         ),
-        actions: [
-          IconButton(
-            onPressed: () => _showAddSchoolBoardDialog(context),
-            icon: Icon(Icons.add),
-          ),
-        ],
+        actions:
+            authProvider.databaseAccessLevel >= AccessLevel.superAdmin
+                ? [
+                  IconButton(
+                    onPressed: () => _showAddSchoolBoardDialog(context),
+                    icon: Icon(Icons.add),
+                  ),
+                ]
+                : null,
       ),
       smallDrawer: MainDrawer.small,
       mediumDrawer: MainDrawer.medium,
@@ -89,22 +92,28 @@ class SchoolBoardsListScreen extends StatelessWidget {
     }
 
     return switch (authProvider.databaseAccessLevel) {
-      AccessLevel.superAdmin =>
+      AccessLevel.superAdmin || AccessLevel.admin =>
         schoolBoards
             .map(
               (schoolBoard) => SchoolBoardListTile(
                 key: ValueKey(schoolBoard.id),
                 schoolBoard: schoolBoard,
+                elevation:
+                    authProvider.databaseAccessLevel == AccessLevel.admin
+                        ? 0
+                        : null,
               ),
             )
             .toList(),
-      AccessLevel.admin || AccessLevel.teacher || AccessLevel.invalid =>
+      AccessLevel.teacher || AccessLevel.invalid =>
         schoolBoards.firstOrNull?.schools
                 .map(
                   (school) => SchoolListTile(
                     key: ValueKey(school.id),
                     school: school,
                     schoolBoard: schoolBoards.firstOrNull ?? SchoolBoard.empty,
+                    canEdit: false,
+                    canDelete: false,
                   ),
                 )
                 .toList() ??

@@ -99,15 +99,13 @@ class MainDrawer extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        if (authProvider.databaseAccessLevel >=
-                            AccessLevel.admin)
-                          _DrawerItem(
-                            titleText: 'Écoles',
-                            icon: Icons.school,
-                            route: Screens.schoolBoardsListScreen,
-                            iconOnly: iconOnly,
-                            canPop: canPop,
-                          ),
+                        _DrawerItem(
+                          titleText: 'Écoles',
+                          icon: Icons.school,
+                          route: Screens.schoolBoardsListScreen,
+                          iconOnly: iconOnly,
+                          canPop: canPop,
+                        ),
                         if (authProvider.databaseAccessLevel >=
                             AccessLevel.superAdmin)
                           _DrawerItem(

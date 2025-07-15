@@ -1,7 +1,9 @@
 import 'package:admin_app/screens/teachers/teacher_list_tile.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart' as utils;
+import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 
 class SchoolTeachersCard extends StatelessWidget {
@@ -18,6 +20,8 @@ class SchoolTeachersCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = AuthProvider.of(context, listen: true);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -34,13 +38,22 @@ class SchoolTeachersCard extends StatelessWidget {
         if (teachers.isEmpty)
           Center(child: Text('Aucun enseignant·e inscrit·e')),
         if (teachers.isNotEmpty)
-          ...teachers.map(
-            (Teacher teacher) => TeacherListTile(
+          ...teachers.map((Teacher teacher) {
+            final canEdit =
+                authProvider.databaseAccessLevel >= AccessLevel.admin ||
+                (authProvider.databaseAccessLevel == AccessLevel.teacher &&
+                    authProvider.teacherId == teacher.id);
+            final canDelete =
+                authProvider.databaseAccessLevel >= AccessLevel.admin;
+
+            return TeacherListTile(
               key: ValueKey(teacher.id),
               teacher: teacher,
               schoolBoard: schoolBoard,
-            ),
-          ),
+              canEdit: canEdit,
+              canDelete: canDelete,
+            );
+          }),
       ],
     );
   }
