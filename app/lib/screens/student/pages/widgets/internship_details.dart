@@ -24,7 +24,9 @@ class _InternshipController {
               .map((e) => e.copyWith(schedule: [...e.schedule]))
               .toList(),
           dateRange: internship.dates,
-        );
+        ),
+        visitFrequenciesController = TextEditingController(
+            text: internship.hasVersions ? internship.visitFrequencies : '');
 
   bool get hasChanged =>
       weeklyScheduleController.hasChanged || supervisorChanged;
@@ -55,7 +57,15 @@ class _InternshipController {
 
   WeeklySchedulesController weeklyScheduleController;
   // TODO Add a field for transportations
-  // TODO Add a field for visit frequency
+  final TextEditingController visitFrequenciesController;
+
+  void dispose() {
+    supervisorFirstNameController.dispose();
+    supervisorLastNameController.dispose();
+    supervisorPhoneController.dispose();
+    supervisorEmailController.dispose();
+    visitFrequenciesController.dispose();
+  }
 }
 
 class InternshipDetails extends StatefulWidget {
@@ -118,8 +128,11 @@ class InternshipDetailsState extends State<InternshipDetails> {
       hasChanged = true;
     }
 
+    final visitFrequenciesHasChanged = _internship.visitFrequencies !=
+        _internshipController.visitFrequenciesController.text;
+
     // Saving the values that require an extra version
-    if (_internshipController.hasChanged) {
+    if (_internshipController.hasChanged || visitFrequenciesHasChanged) {
       _internship.addVersion(
           creationDate: DateTime.now(),
           supervisor: _internship.supervisor.copyWith(
@@ -131,7 +144,8 @@ class InternshipDetailsState extends State<InternshipDetails> {
               email: _internshipController.supervisorEmailController.text),
           dates: _internshipController.weeklyScheduleController.dateRange!,
           transportations: [], // TODO Add a field for transportations
-          visitFrequencies: 'TODO', // TODO Add a field for visit frequency
+          visitFrequencies:
+              _internshipController.visitFrequenciesController.text,
           weeklySchedules: _internshipController
               .weeklyScheduleController.weeklySchedules
               .map((e) => e.duplicate())
@@ -190,6 +204,12 @@ class InternshipDetailsState extends State<InternshipDetails> {
         isEditing: editMode);
     if (shouldQuit) _toggleEditMode(save: false);
     return !shouldQuit;
+  }
+
+  @override
+  void dispose() {
+    _internshipController.dispose();
+    super.dispose();
   }
 
   @override
@@ -484,6 +504,27 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
+  Widget _buildVisitFrequencies() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Fréquence des visites de l\'enseignant\u00b7e',
+            style: _titleStyle),
+        editMode
+            ? Padding(
+                padding: const EdgeInsets.only(top: 2, bottom: _interline),
+                child: TextFormField(
+                  controller: internshipController.visitFrequenciesController,
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.only(top: 2, bottom: _interline),
+                child: Text(internship.visitFrequencies),
+              )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final teachers = TeachersProvider.of(context);
@@ -536,6 +577,7 @@ class _InternshipBody extends StatelessWidget {
           _buildDates(),
           _buildTime(),
           _buildSchedule(),
+          _buildVisitFrequencies(),
         ],
       ),
     );

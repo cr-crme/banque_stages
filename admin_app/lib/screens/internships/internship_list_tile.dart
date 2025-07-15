@@ -49,6 +49,10 @@ class InternshipListTileState extends State<InternshipListTile> {
 
   @override
   void dispose() {
+    _studentPickerController.dispose();
+    _teacherPickerController.dispose();
+    _enterprisePickerController.dispose();
+    _visitFrequenciesController.dispose();
     _teacherNotesController.dispose();
     _contactFirstNameController.dispose();
     _contactLastNameController.dispose();
@@ -113,12 +117,15 @@ class InternshipListTileState extends State<InternshipListTile> {
             : null,
   );
   // TODO : Add a field for the transportations
-  // TODO : Add a field for the visit frequency
   late final _expectedDurationController = TextEditingController(
     text:
         widget.internship.expectedDuration > 0
             ? widget.internship.expectedDuration.toString()
             : '',
+  );
+  late final _visitFrequenciesController = TextEditingController(
+    text:
+        widget.internship.hasVersions ? widget.internship.visitFrequencies : '',
   );
   late DateTime _endDate = widget.internship.endDate;
   bool get _isActive => _endDate == DateTime(0);
@@ -156,6 +163,12 @@ class InternshipListTileState extends State<InternshipListTile> {
         ) ||
         widget.internship.dates != _schedulesController.dateRange;
 
+    final visitFrequenciesChanged =
+        (widget.internship.hasVersions
+            ? widget.internship.visitFrequencies
+            : '') !=
+        _visitFrequenciesController.text;
+
     final previousSupervisor =
         widget.internship.hasVersions
             ? widget.internship.supervisor
@@ -171,6 +184,7 @@ class InternshipListTileState extends State<InternshipListTile> {
     );
 
     if (schedulesHasChanged ||
+        visitFrequenciesChanged ||
         previousSupervisor.getDifference(supervisor).isNotEmpty) {
       // If a mutable has changed, we cannot edit it from here. We have to
       // create a deep copy of the internship and modify this new instance.
@@ -185,7 +199,7 @@ class InternshipListTileState extends State<InternshipListTile> {
           keepId: false,
         ),
         transportations: [], // TODO fix this
-        visitFrequencies: 'TODO', // TODO fix this
+        visitFrequencies: _visitFrequenciesController.text,
       );
       (serialized['mutables'] as List).add(newVersion.serialize());
       internship = Internship.fromSerialized(serialized);
@@ -319,6 +333,8 @@ class InternshipListTileState extends State<InternshipListTile> {
             _buildWeeklySchedule(),
             const SizedBox(height: 8.0),
             _buildExpectedDuration(),
+            const SizedBox(height: 8.0),
+            _buildVisitFrequencies(),
             const SizedBox(height: 8.0),
             _buildEndDate(),
             const SizedBox(height: 8.0),
@@ -496,6 +512,30 @@ class InternshipListTileState extends State<InternshipListTile> {
     if (date == null) return;
     _endDate = date;
     setState(() {});
+  }
+
+  Widget _buildVisitFrequencies() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Visites de l\'entreprise'),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: TextFormField(
+              controller: _visitFrequenciesController,
+              enabled: _isEditing,
+              style: TextStyle(color: Colors.black),
+              decoration: const InputDecoration(
+                labelText: 'Fréquence des visites de l\'enseignant\u00b7e',
+                labelStyle: TextStyle(color: Colors.black),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildEndDate() {

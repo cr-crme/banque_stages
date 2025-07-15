@@ -21,7 +21,6 @@ class WeeklySchedulesController {
       : _dateRange = dateRange,
         weeklySchedules = weeklySchedules ?? [];
 
-  // TODO: Add a field for visit frequency
   bool get hasChanged => _hasChanged;
   set dateRange(time_utils.DateTimeRange? newRange) {
     _dateRange = newRange;
@@ -139,8 +138,8 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   late final weeklyScheduleController = WeeklySchedulesController();
   // TODO Add a field for transportations
-  // TODO Add a field for visit frequency
   int internshipDuration = 0;
+  String visitFrequencies = '';
 
   void onScheduleChanged() {
     if (weeklyScheduleController.dateRange != null &&
@@ -176,6 +175,8 @@ class ScheduleStepState extends State<ScheduleStep> {
                     _Hours(
                         onSaved: (value) =>
                             internshipDuration = int.parse(value!)),
+                    _VisitFrequencies(
+                        onSaved: (value) => visitFrequencies = value!)
                   ],
                 )),
           ],
@@ -323,6 +324,31 @@ class _Hours extends StatelessWidget {
                 labelText: '* Nombre total d\'heures de stage à faire'),
             validator: (text) =>
                 text!.isEmpty ? 'Indiquer un nombre d\'heures.' : null,
+            keyboardType: TextInputType.number,
+            onSaved: onSaved,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _VisitFrequencies extends StatelessWidget {
+  const _VisitFrequencies({required this.onSaved});
+
+  final void Function(String?) onSaved;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SubTitle('Visites de l\'entreprise', left: 0, bottom: 0),
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: TextFormField(
+            decoration: const InputDecoration(
+                labelText: '* Fréquence des visites de l\'enseignant\u00b7e'),
             keyboardType: TextInputType.number,
             onSaved: onSaved,
           ),

@@ -135,7 +135,7 @@ class _InternshipEnrollmentScreenState
       weeklySchedules:
           _scheduleKey.currentState!.weeklyScheduleController.weeklySchedules,
       transportations: [], // TODO Add a field for transportations
-      visitFrequencies: 'TODO', // TODO Add a field for visit frequency
+      visitFrequencies: _scheduleKey.currentState!.visitFrequencies,
       visitingPriority: VisitingPriority.low,
     );
 
