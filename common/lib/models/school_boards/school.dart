@@ -37,10 +37,12 @@ class School extends ItemSerializable {
     };
   }
 
-  School copyWith({String? id, String? name, Address? address}) => School(
+  School copyWith(
+          {String? id, String? name, Address? address, PhoneNumber? phone}) =>
+      School(
         id: id ?? this.id,
         name: name ?? this.name,
         address: address ?? this.address,
-        phone: phone,
+        phone: phone ?? this.phone,
       );
 }

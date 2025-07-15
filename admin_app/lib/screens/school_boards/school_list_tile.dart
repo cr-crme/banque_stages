@@ -1,5 +1,6 @@
 import 'package:admin_app/screens/school_boards/confirm_delete_school_dialog.dart';
 import 'package:common/models/generic/access_level.dart';
+import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
@@ -7,6 +8,7 @@ import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/address_list_tile.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
+import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 
@@ -35,6 +37,7 @@ class SchoolListTileState extends State<SchoolListTile> {
   Future<bool> validate() async {
     // We do both like so, so all the fields get validated even if one is not valid
     await _addressController.waitForValidation();
+
     bool isValid = _formKey.currentState?.validate() ?? false;
     isValid = _addressController.isValid && isValid;
     return isValid;
@@ -44,6 +47,7 @@ class SchoolListTileState extends State<SchoolListTile> {
   void dispose() {
     _nameController.dispose();
     _addressController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -57,10 +61,17 @@ class SchoolListTileState extends State<SchoolListTile> {
   late final _addressController = AddressController(
     initialValue: widget.school.address,
   );
+  late final _phoneController = TextEditingController(
+    text: widget.school.phone.toString(),
+  );
 
   School get editedSchool => widget.school.copyWith(
     name: _nameController.text,
     address: _addressController.address,
+    phone: PhoneNumber.fromString(
+      _phoneController.text,
+      id: widget.school.phone.id,
+    ),
   );
 
   @override
@@ -172,7 +183,7 @@ class SchoolListTileState extends State<SchoolListTile> {
         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildName(), _buildAddress()],
+          children: [_buildName(), _buildAddress(), _buildPhone()],
         ),
       ),
     );
@@ -206,6 +217,18 @@ class SchoolListTileState extends State<SchoolListTile> {
       child: AddressListTile(
         title: 'Adresse de l\'école',
         addressController: _addressController,
+        isMandatory: true,
+        enabled: _isEditing,
+      ),
+    );
+  }
+
+  Widget _buildPhone() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: PhoneListTile(
+        title: 'Téléphone',
+        controller: _phoneController,
         isMandatory: true,
         enabled: _isEditing,
       ),

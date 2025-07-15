@@ -13,7 +13,6 @@ class AddSchoolDialog extends StatefulWidget {
   State<AddSchoolDialog> createState() => _AddSchoolDialogState();
 }
 
-// TODO: Add phone number field to the dialog
 class _AddSchoolDialogState extends State<AddSchoolDialog> {
   final _editingKey = GlobalKey();
 
