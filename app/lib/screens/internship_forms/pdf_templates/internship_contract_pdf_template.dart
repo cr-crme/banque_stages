@@ -17,11 +17,10 @@ String _title(student_model.Program program) {
 // TODO Use feminine form?
 
 Future<Uint8List> _generateInternshipContractPdf(
-    BuildContext context, PdfPageFormat format,
+    BuildContext mainContext, PdfPageFormat format,
     {required String internshipId}) async {
   final document = pw.Document(pageMode: PdfPageMode.outlines);
   final headerHeight = 300;
-  final internship = _internship(internshipId: internshipId);
 
   document.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.letter,
@@ -50,13 +49,13 @@ Future<Uint8List> _generateInternshipContractPdf(
       build: (context) => [
             pw.SizedBox(
                 height: PdfPageFormat.letter.height - headerHeight,
-                child: _coverPage(internship)),
+                child: _coverPage(mainContext, internshipId: internshipId)),
             pw.NewPage(),
-            _studentObligations(internship),
+            _studentObligations(mainContext, internshipId: internshipId),
             pw.NewPage(),
-            _contract(internship),
+            _contract(mainContext, internshipId: internshipId),
             pw.NewPage(),
-            _studentInformations(internship),
+            _studentInformations(mainContext, internshipId: internshipId),
           ]));
 
   return document.save();
@@ -73,9 +72,11 @@ pw.Widget _logo({double sizeFactor = 1.0}) {
   );
 }
 
-pw.Widget _coverPage(Internship internship) {
-  final schoolBoard = _schoolBoard(schoolBoardId: internship.schoolBoardId);
-  final program = _student(studentId: internship.studentId).program;
+pw.Widget _coverPage(BuildContext context, {required String internshipId}) {
+  final internship = _internship(context, internshipId: internshipId);
+  final schoolBoard =
+      _schoolBoard(context, schoolBoardId: internship.schoolBoardId);
+  final program = _student(context, studentId: internship.studentId).program;
   final dash = '-';
 
   return pw.Center(
@@ -117,11 +118,14 @@ pw.Widget _coverPage(Internship internship) {
   ));
 }
 
-pw.Widget _studentObligations(Internship internship) {
-  final schoolBoard = _schoolBoard(schoolBoardId: internship.schoolBoardId);
-  final student = _student(studentId: internship.studentId);
-  final school =
-      _school(schoolBoardId: student.schoolBoardId, schoolId: student.schoolId);
+pw.Widget _studentObligations(BuildContext context,
+    {required String internshipId}) {
+  final internship = _internship(context, internshipId: internshipId);
+  final schoolBoard =
+      _schoolBoard(context, schoolBoardId: internship.schoolBoardId);
+  final student = _student(context, studentId: internship.studentId);
+  final school = _school(context,
+      schoolBoardId: student.schoolBoardId, schoolId: student.schoolId);
   final mid = '\u00b7';
 
   return pw.Column(
@@ -297,12 +301,15 @@ pw.Widget _studentObligations(Internship internship) {
   );
 }
 
-pw.Widget _contract(Internship internship) {
-  final schoolBoard = _schoolBoard(schoolBoardId: internship.schoolBoardId);
-  final student = _student(studentId: internship.studentId);
-  final school =
-      _school(schoolBoardId: student.schoolBoardId, schoolId: student.schoolId);
-  final enterprise = _enterprise(enterpriseId: internship.enterpriseId);
+pw.Widget _contract(BuildContext context, {required String internshipId}) {
+  final internship = _internship(context, internshipId: internshipId);
+  final schoolBoard =
+      _schoolBoard(context, schoolBoardId: internship.schoolBoardId);
+  final student = _student(context, studentId: internship.studentId);
+  final school = _school(context,
+      schoolBoardId: student.schoolBoardId, schoolId: student.schoolId);
+  final enterprise =
+      _enterprise(context, enterpriseId: internship.enterpriseId);
 
   return pw.Column(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -569,13 +576,18 @@ pw.Widget _signature(String person) {
       ]);
 }
 
-pw.Widget _studentInformations(Internship internship) {
-  final student = _student(studentId: internship.studentId);
-  final school =
-      _school(schoolBoardId: student.schoolBoardId, schoolId: student.schoolId);
-  final teacher = _teacher(teacherId: internship.signatoryTeacherId);
-  final enterprise = _enterprise(enterpriseId: internship.enterpriseId);
-  final specialization = _job(jobId: internship.jobId).specialization;
+pw.Widget _studentInformations(BuildContext context,
+    {required String internshipId}) {
+  final internship = _internship(context, internshipId: internshipId);
+  final student = _student(context, studentId: internship.studentId);
+  final school = _school(context,
+      schoolBoardId: student.schoolBoardId, schoolId: student.schoolId);
+  final teacher = _teacher(context, teacherId: internship.signatoryTeacherId);
+  final enterprise =
+      _enterprise(context, enterpriseId: internship.enterpriseId);
+  final specialization =
+      _job(context, enterpriseId: enterprise.id, jobId: internship.jobId)
+          .specialization;
 
   return pw.Column(
     mainAxisSize: pw.MainAxisSize.max,
@@ -788,213 +800,29 @@ pw.Widget _schedulesCell(
       ));
 }
 
-// TODO: Make these dynamic
-Internship _internship({required String internshipId}) => Internship(
-      schoolBoardId: '0',
-      studentId: '0',
-      signatoryTeacherId: '0',
-      extraSupervisingTeacherIds: [],
-      enterpriseId: '0',
-      jobId: '0',
-      extraSpecializationIds: [],
-      creationDate: DateTime(2025, 5, 2),
-      supervisor: Person(
-        firstName: 'Me',
-        middleName: null,
-        lastName: 'And I',
-        dateBirth: null,
-        phone: null,
-        email: null,
-        address: null,
-      ),
-      dates: time_utils.DateTimeRange(
-          start: DateTime(2025, 5, 2), end: DateTime(2025, 6, 2)),
-      weeklySchedules: [
-        WeeklySchedule(
-            schedule: [
-              DailySchedule(
-                  dayOfWeek: Day.monday,
-                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
-                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.tuesday,
-                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
-                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.wednesday,
-                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
-                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.thursday,
-                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
-                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.friday,
-                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
-                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
-            ],
-            period: time_utils.DateTimeRange(
-                start: DateTime(2025, 5, 2), end: DateTime(2025, 6, 2))),
-        WeeklySchedule(
-            schedule: [
-              DailySchedule(
-                  dayOfWeek: Day.monday,
-                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
-                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.tuesday,
-                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
-                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.wednesday,
-                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
-                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.thursday,
-                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
-                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.friday,
-                  start: time_utils.TimeOfDay(hour: 9, minute: 0),
-                  end: time_utils.TimeOfDay(hour: 16, minute: 0),
-                  breakStart: time_utils.TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: time_utils.TimeOfDay(hour: 13, minute: 0)),
-            ],
-            period: time_utils.DateTimeRange(
-                start: DateTime(2025, 5, 2), end: DateTime(2025, 6, 2))),
-      ],
-      expectedDuration: 100,
-      achievedDuration: 0,
-      visitingPriority: VisitingPriority.low,
-      endDate: DateTime(2025, 6, 2),
-      transportations: [
-        Transportation.none,
-        Transportation.pass,
-        Transportation.ticket
-      ],
-      visitFrequencies: 'Tous les jours',
-    );
+Internship _internship(BuildContext context, {required String internshipId}) =>
+    InternshipsProvider.of(context, listen: false).fromId(internshipId);
 
-Job _job({required String jobId}) => Job(
-      id: jobId,
-      positionsOffered: {},
-      specialization: ActivitySectorsService.specializationOrNull('8343'),
-      minimumAge: 15,
-      preInternshipRequests:
-          PreInternshipRequests(requests: [], other: null, isApplicable: false),
-      uniforms: Uniforms(status: UniformStatus.none),
-      protections: Protections(status: ProtectionsStatus.none),
-      sstEvaluation: JobSstEvaluation(questions: {}),
-      incidents: Incidents(),
-      reservedForId: '',
-    );
+Job _job(BuildContext context,
+        {required String enterpriseId, required String jobId}) =>
+    _enterprise(context, enterpriseId: enterpriseId).jobs[jobId];
 
-SchoolBoard _schoolBoard({required String schoolBoardId}) => SchoolBoard(
-      id: schoolBoardId,
-      name: 'Commission scolaire de la Rive-Sud',
-      cnesstNumber: '1234567890',
-      schools: [
-        School(
-          name: 'École secondaire des Fleurs',
-          address: Address(
-            civicNumber: 123,
-            street: 'Rue de la Rive-Sud',
-            city: 'Longueuil',
-            postalCode: 'J4K 5G6',
-          ),
-          phone: PhoneNumber.fromString('514 123 4567'),
-        )
-      ],
-    );
+SchoolBoard _schoolBoard(BuildContext context,
+        {required String schoolBoardId}) =>
+    SchoolBoardsProvider.of(context, listen: false).fromId(schoolBoardId);
 
-School _school({required String schoolBoardId, required String schoolId}) =>
-    _schoolBoard(schoolBoardId: schoolBoardId).schools[0];
+School _school(BuildContext context,
+        {required String schoolBoardId, required String schoolId}) =>
+    _schoolBoard(context, schoolBoardId: schoolBoardId)
+        .schools
+        .firstWhere((school) => school.id == schoolId);
 
-Enterprise _enterprise({required String enterpriseId}) => Enterprise(
-    schoolBoardId: '0',
-    id: enterpriseId,
-    name: 'Les jardins de la technologie',
-    address: Address(
-      civicNumber: 456,
-      street: 'Boulevard des Technologies',
-      city: 'Montréal',
-      postalCode: 'H1A 2B3',
-    ),
-    phone: PhoneNumber.fromString('(555) 456-7890'),
-    activityTypes: {},
-    recruiterId: '0',
-    jobs: JobList(),
-    reservedForId: '',
-    contact: Person(
-        firstName: 'Pierre',
-        middleName: null,
-        lastName: 'Martin',
-        phone: PhoneNumber.fromString('(555) 321-6540'),
-        email: 'pierre.martin@mon_entreprise.com',
-        dateBirth: null,
-        address: null));
+Enterprise _enterprise(BuildContext context, {required String enterpriseId}) =>
+    EnterprisesProvider.of(context, listen: false).fromId(enterpriseId);
 
-Teacher _teacher({required String teacherId}) => Teacher(
-      firstName: 'Jane',
-      schoolBoardId: '0',
-      schoolId: '0',
-      middleName: null,
-      lastName: 'Doe',
-      email: 'jane.doe@mon_ecole.com',
-      phone: PhoneNumber.fromString('(555) 987-6543'),
-      dateBirth: null,
-      address: Address(
-        street: '456 Avenue des Écoles',
-        city: 'Montréal',
-        postalCode: 'H1A 2B3',
-      ),
-      hasRegisteredAccount: true,
-      groups: ['550', '551'],
-      itineraries: [],
-    );
+Teacher _teacher(BuildContext context, {required String teacherId}) =>
+    TeachersProvider.of(context, listen: false).fromId(teacherId);
 
-student_model.Student _student({required String studentId}) =>
-    student_model.Student(
-      schoolBoardId: '0',
-      schoolId: '0',
-      firstName: 'Jean',
-      lastName: 'Dupont',
-      dateBirth: DateTime(2005, 5, 15),
-      phone: PhoneNumber.fromString('(555) 123-4567'),
-      email: 'jean.dupont@mon_ecole.com',
-      address: Address(
-        street: '123 Rue des Fleurs',
-        city: 'Montréal',
-        postalCode: 'H1A 2B3',
-      ),
-      program: student_model.Program.fpt,
-      group: '550',
-      contact: Person(
-        firstName: 'Marie',
-        middleName: null,
-        lastName: 'Dupont',
-        phone: PhoneNumber.fromString('(555) 765-4321'),
-        email: 'marie.dupont@mon_ecole.com',
-        dateBirth: null,
-        address: null,
-      ),
-      contactLink: 'mère',
-    );
+student_model.Student _student(BuildContext context,
+        {required String studentId}) =>
+    StudentsProvider.of(context, listen: false).fromId(studentId);
