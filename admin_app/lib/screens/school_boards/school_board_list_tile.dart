@@ -38,6 +38,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
   @override
   void dispose() {
     _nameController.dispose();
+    _cnesstController.dispose();
     super.dispose();
   }
 
@@ -50,9 +51,14 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
   late final _nameController = TextEditingController(
     text: widget.schoolBoard.name,
   );
+  late final _cnesstController = TextEditingController(
+    text: widget.schoolBoard.cnesstNumber,
+  );
 
-  SchoolBoard get editedSchoolBoard =>
-      widget.schoolBoard.copyWith(name: _nameController.text);
+  SchoolBoard get editedSchoolBoard => widget.schoolBoard.copyWith(
+    name: _nameController.text,
+    cnesstNumber: _cnesstController.text,
+  );
 
   @override
   void initState() {
@@ -163,7 +169,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildName(), _buildSchoolNames()],
+          children: [_buildName(), _buildCnesst(), _buildSchoolNames()],
         ),
       ),
     );
@@ -172,7 +178,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
   Widget _buildName() {
     return _isEditing
         ? Padding(
-          padding: const EdgeInsets.only(right: 12.0),
+          padding: const EdgeInsets.only(right: 12.0, bottom: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -191,6 +197,26 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
           ),
         )
         : Container();
+  }
+
+  Widget _buildCnesst() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: _cnesstController,
+            enabled: _isEditing,
+            decoration: const InputDecoration(
+              labelText: 'Numéro de dossier à la CNESST',
+              labelStyle: TextStyle(color: Colors.black),
+            ),
+            style: TextStyle(color: Colors.black),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _showAddSchoolDialog(SchoolBoard schoolBoard) async {
@@ -225,7 +251,14 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
       child: Column(
         children: [
           schools.isEmpty
-              ? const Text('Aucune école associée')
+              ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: const Text(
+                    'Aucune école n\'a été associée pour l\'instant',
+                  ),
+                ),
+              )
               : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
