@@ -1,14 +1,18 @@
+import 'dart:typed_data';
+
 import 'package:admin_app/screens/school_boards/add_school_dialog.dart';
 import 'package:admin_app/screens/school_boards/confirm_delete_school_board_dialog.dart';
 import 'package:admin_app/screens/school_boards/school_list_tile.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common/services/image_helpers.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 class SchoolBoardListTile extends StatefulWidget {
@@ -38,6 +42,17 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
   }
 
   @override
+  void didUpdateWidget(covariant SchoolBoardListTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.schoolBoard.getDifference(oldWidget.schoolBoard).isNotEmpty) {
+      // The logo controller won't update automatically, so we need to do it manually
+      setState(() {
+        _logoController = Uint8List.fromList([...widget.schoolBoard.logo]);
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _cnesstController.dispose();
@@ -60,12 +75,16 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
   late final _nameController = TextEditingController(
     text: widget.schoolBoard.name,
   );
+  late Uint8List _logoController = Uint8List.fromList([
+    ...widget.schoolBoard.logo,
+  ]);
   late final _cnesstController = TextEditingController(
     text: widget.schoolBoard.cnesstNumber,
   );
 
   SchoolBoard get editedSchoolBoard => widget.schoolBoard.copyWith(
     name: _nameController.text,
+    logo: _logoController,
     cnesstNumber: _cnesstController.text,
   );
 
@@ -220,7 +239,71 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
       padding: const EdgeInsets.only(right: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [Text('Logo de la commission scolaire')],
+        children: [
+          Text('Logo de la commission scolaire'),
+          _logoController.isEmpty
+              ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: const Text(
+                    'Aucun logo n\'a été téléversé',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+              : Center(
+                child: Image.memory(
+                  _logoController,
+                  height: 80,
+                  width: 190,
+                  fit: BoxFit.fill,
+                ),
+              ),
+          if (_isEditing)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        final result = await FilePicker.platform.pickFiles();
+                        if (result == null ||
+                            result.files.first.bytes == null ||
+                            !mounted) {
+                          return;
+                        }
+                        setState(() {
+                          _logoController = ImageHelpers.resizeImage(
+                            result.files.first.bytes!,
+                            width: ImageHelpers.logoWidth,
+                            height: ImageHelpers.logoHeight,
+                          );
+                        });
+                      },
+                      icon: Icon(
+                        Icons.upload_file_rounded,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      tooltip: 'Téléverser un logo',
+                    ),
+                    if (_logoController.isNotEmpty)
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _logoController = Uint8List(0);
+                          });
+                        },
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        tooltip: 'Supprimer le logo',
+                      ),
+                  ],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

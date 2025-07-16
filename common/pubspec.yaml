@@ -14,6 +14,7 @@ dependencies:
   latlong2: ^0.9.1
   routing_client_dart: ^1.0.7
   uuid: ^4.5.1
+  image: ^4.5.4
 
 dependency_overrides:
   enhanced_containers_foundation:

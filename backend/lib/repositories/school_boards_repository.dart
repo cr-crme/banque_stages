@@ -7,6 +7,7 @@ import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/models/school_boards/school_board.dart';
+import 'package:common/services/image_helpers.dart';
 import 'package:common/utils.dart';
 import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
@@ -154,6 +155,8 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     for (final schoolBoard in schoolBoards) {
       final id = schoolBoard['id'].toString();
 
+      schoolBoard['logo'] = (schoolBoard['logo'] as Blob).toBytes();
+
       final schools = await MySqlHelpers.performSelectQuery(
         connection: connection,
         user: user,
@@ -204,14 +207,17 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
         connection: connection,
         tableName: 'entities',
         data: {'shared_id': schoolBoard.id});
-    // TODO Make sure the logo is 150x80 pixels
     await MySqlHelpers.performInsertQuery(
         connection: connection,
         tableName: 'school_boards',
         data: {
           'id': schoolBoard.id,
           'name': schoolBoard.name,
-          'logo': schoolBoard.logo,
+          'logo': schoolBoard.logo.isEmpty
+              ? schoolBoard.logo
+              : ImageHelpers.resizeImage(schoolBoard.logo,
+                  width: ImageHelpers.logoWidth,
+                  height: ImageHelpers.logoHeight),
           'cnesst_number': schoolBoard.cnesstNumber
         });
   }
@@ -239,8 +245,10 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
       toUpdate['cnesst_number'] = schoolBoard.cnesstNumber.serialize();
     }
     if (differences.contains('logo')) {
-      // TODO Make sure the logo is 150x80 pixels
-      toUpdate['logo'] = schoolBoard.logo;
+      toUpdate['logo'] = schoolBoard.logo.isEmpty
+          ? schoolBoard.logo
+          : ImageHelpers.resizeImage(schoolBoard.logo,
+              width: ImageHelpers.logoWidth, height: ImageHelpers.logoHeight);
     }
 
     if (toUpdate.isNotEmpty) {
@@ -403,9 +411,17 @@ class SchoolBoardsRepositoryMock extends SchoolBoardsRepository {
   // Simulate a database with a map
   final _dummyDatabase = {
     '0': SchoolBoard(
-        id: '0', name: 'This one', schools: [], cnesstNumber: '1234567890'),
+        id: '0',
+        name: 'This one',
+        logo: null,
+        schools: [],
+        cnesstNumber: '1234567890'),
     '1': SchoolBoard(
-        id: '1', name: 'This second', schools: [], cnesstNumber: '0987654321'),
+        id: '1',
+        name: 'This second',
+        logo: null,
+        schools: [],
+        cnesstNumber: '0987654321'),
   };
 
   @override

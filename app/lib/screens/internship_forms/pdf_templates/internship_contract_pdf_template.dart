@@ -23,7 +23,9 @@ Future<Uint8List> _generateInternshipContractPdf(
   document.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.letter,
       header: (context) => pw.Container(
-          child: _logo(sizeFactor: context.pageNumber == 1 ? 1.0 : 0.7),
+          child: _logo(mainContext,
+              internshipId: internshipId,
+              sizeFactor: context.pageNumber == 1 ? 1.0 : 0.7),
           padding: const pw.EdgeInsets.only(bottom: 12.0)),
       footer: (pw.Context context) {
         return pw.Stack(children: [
@@ -59,15 +61,20 @@ Future<Uint8List> _generateInternshipContractPdf(
   return document.save();
 }
 
-pw.Widget _logo({double sizeFactor = 1.0}) {
-  return pw.Container(
-    width: 150 * sizeFactor,
-    height: 80 * sizeFactor,
-    decoration: pw.BoxDecoration(
-      border: pw.Border.all(color: PdfColors.black),
-    ),
-    child: pw.Center(child: pw.Text('LOGO')),
-  );
+pw.Widget _logo(BuildContext context,
+    {required String internshipId, double sizeFactor = 1.0}) {
+  final internship = _internship(context, internshipId: internshipId);
+  final schoolBoard =
+      _schoolBoard(context, schoolBoardId: internship.schoolBoardId);
+
+  return schoolBoard.logo.isEmpty
+      ? pw.Container()
+      : pw.Image(
+          pw.MemoryImage(schoolBoard.logo),
+          fit: pw.BoxFit.fill,
+          width: ImageHelpers.logoWidth * sizeFactor,
+          height: ImageHelpers.logoHeight * sizeFactor,
+        );
 }
 
 pw.Widget _coverPage(BuildContext context, {required String internshipId}) {

@@ -25,7 +25,7 @@ class SchoolBoard extends ExtendedItemSerializable {
 
   SchoolBoard.fromSerialized(super.map)
       : name = StringExt.from(map['name']) ?? 'Unnamed',
-        logo = map['logo'] as Uint8List,
+        logo = Uint8List.fromList((map['logo'] as List? ?? []).cast<int>()),
         schools = ListExt.from(
               map['schools'],
               deserializer: (e) => School.fromSerialized(e),
@@ -82,7 +82,9 @@ class SchoolBoard extends ExtendedItemSerializable {
     return SchoolBoard(
       id: StringExt.from(data['id']) ?? id,
       name: data['name'] ?? name,
-      logo: data['logo'] as Uint8List? ?? logo,
+      logo: data['logo'] == null
+          ? logo
+          : Uint8List.fromList((data['logo'] as List).cast<int>()),
       schools: ListExt.from(
             data['schools'],
             deserializer: (e) => School.fromSerialized(e),
