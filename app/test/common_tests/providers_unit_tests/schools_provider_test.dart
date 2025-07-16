@@ -1,7 +1,7 @@
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/program_initializer.dart';
+import 'package:crcrme_banque_stages/program_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

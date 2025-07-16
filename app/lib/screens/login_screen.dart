@@ -11,6 +11,9 @@ import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('LoginScreen');
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _password;
 
   void _signIn() async {
+    _logger.info('Attempting to sign in with email: $_email');
     if (!FormService.validateForm(_formKey, save: true)) return;
 
     try {

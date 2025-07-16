@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:backend/server/connexions.dart';
+import 'package:backend/server/bug_report_management.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:backend/utils/network_rate_limiter.dart';
 import 'package:logging/logging.dart';
@@ -29,6 +30,8 @@ class HttpRequestHandler {
         return await _answerOptionsRequest(request);
       } else if (request.method == 'GET') {
         return await _answerGetRequest(request);
+      } else if (request.method == 'POST') {
+        return await _answerPostRequest(request);
       } else {
         // Handle other HTTP methods
         return await _sendConnexionRefused(request);
@@ -56,7 +59,7 @@ class HttpRequestHandler {
     // Handle preflight requests
     request.response.headers
       ..set('Access-Control-Allow-Origin', '*')
-      ..set('Access-Control-Allow-Methods', 'GET, OPTIONS')
+      ..set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
       // ..set('X-Frame-Options', 'ALLOWALL') // Uncomment this line if InAppWebView is used
       ..set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -73,6 +76,16 @@ class HttpRequestHandler {
         _logger.severe('Error during WebSocket upgrade: $e');
         throw ConnexionRefusedException('WebSocket upgrade failed');
       }
+    } else if (request.uri.path == '/admin') {
+      throw ConnexionRefusedException('Invalid endpoint');
+    } else {
+      throw ConnexionRefusedException('Invalid endpoint');
+    }
+  }
+
+  Future<void> _answerPostRequest(HttpRequest request) async {
+    if (request.uri.path == '/bug-report') {
+      await answerBugReportRequest(request);
     } else if (request.uri.path == '/admin') {
       throw ConnexionRefusedException('Invalid endpoint');
     } else {

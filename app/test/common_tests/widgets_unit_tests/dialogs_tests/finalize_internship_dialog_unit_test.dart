@@ -1,5 +1,5 @@
 import 'package:crcrme_banque_stages/common/widgets/dialogs/finalize_internship_dialog.dart';
-import 'package:crcrme_banque_stages/program_initializer.dart';
+import 'package:crcrme_banque_stages/program_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

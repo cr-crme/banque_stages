@@ -1,5 +1,5 @@
 import 'package:crcrme_banque_stages/main.dart';
-import 'package:crcrme_banque_stages/program_initializer.dart';
+import 'package:crcrme_banque_stages/program_helpers.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/widgets/enterprise_card.dart';
 import 'package:crcrme_banque_stages/screens/students_list/widgets/student_card.dart';
 import 'package:flutter/material.dart';

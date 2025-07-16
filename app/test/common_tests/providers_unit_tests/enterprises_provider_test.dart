@@ -4,7 +4,7 @@ import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
-import 'package:crcrme_banque_stages/program_initializer.dart';
+import 'package:crcrme_banque_stages/program_helpers.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../utils.dart';

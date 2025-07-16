@@ -1,6 +1,6 @@
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/program_initializer.dart';
+import 'package:crcrme_banque_stages/program_helpers.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils.dart';

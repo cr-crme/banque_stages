@@ -1,5 +1,5 @@
 import 'package:common/services/job_data_file_service.dart';
-import 'package:crcrme_banque_stages/program_initializer.dart';
+import 'package:crcrme_banque_stages/program_helpers.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:common/services/job_data_file_service.dart';
 import 'package:crcrme_banque_stages/firebase_options.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
@@ -5,7 +7,9 @@ import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_banque_stages/misc/storage_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:logging/logging.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 class ProgramInitializer {
@@ -35,5 +39,35 @@ class ProgramInitializer {
     setPathUrlStrategy();
 
     _initialized = true;
+  }
+}
+
+class BugReporter {
+  static final _breadcrumbs = <String, dynamic>{};
+
+  static loggerSetup() {
+    Logger.root.level = Level.ALL;
+    Logger.root.onRecord.listen((record) {
+      _breadcrumbs[record.time.toIso8601String()] = {
+        'level': record.level.name,
+        'message': record.message,
+        'error': record.error?.toString(),
+        'stackTrace': record.stackTrace?.toString(),
+      };
+    });
+  }
+
+  static report(Object error, StackTrace stackTrace,
+      {required errorReportUri}) async {
+    // Handle uncaught errors
+    await http.post(errorReportUri,
+        body: jsonEncode({
+          'breadcrumbs': _breadcrumbs,
+          'error': error.toString(),
+          'stack_trace': stackTrace.toString()
+        }));
+
+    debugPrint('Uncaught error: $error');
+    debugPrint('Stack trace: $stackTrace');
   }
 }

@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
-import 'package:crcrme_banque_stages/program_initializer.dart';
+import 'package:crcrme_banque_stages/program_helpers.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:flutter/material.dart';
@@ -13,17 +15,26 @@ import 'package:provider/provider.dart';
 
 // coverage:ignore-start
 void main() async {
+  BugReporter.loggerSetup();
   const showDebugElements = true;
   const useMockers = false;
 
-  WidgetsFlutterBinding.ensureInitialized();
-  await ProgramInitializer.initialize(
-      showDebugElements: showDebugElements, mockMe: useMockers);
-  runApp(const BanqueStagesApp(useMockers: useMockers));
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await ProgramInitializer.initialize(
+          showDebugElements: showDebugElements, mockMe: useMockers);
+
+      runApp(const BanqueStagesApp(useMockers: useMockers));
+    },
+    (error, stackTrace) =>
+        BugReporter.report(error, stackTrace, errorReportUri: _errorReportUri),
+  );
 }
 // coverage:ignore-end
 
 final Uri _backendUri = Uri.parse('ws://localhost:3456/connect');
+final Uri _errorReportUri = Uri.parse('http://localhost:3456/bug-report');
 
 class BanqueStagesApp extends StatelessWidget {
   const BanqueStagesApp({super.key, this.useMockers = false});

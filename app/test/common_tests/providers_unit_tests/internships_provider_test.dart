@@ -1,6 +1,6 @@
 import 'package:common/models/itineraries/visiting_priority.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
-import 'package:crcrme_banque_stages/program_initializer.dart';
+import 'package:crcrme_banque_stages/program_helpers.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../utils.dart';
