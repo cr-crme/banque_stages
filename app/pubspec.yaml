@@ -59,6 +59,7 @@ dependencies:
     dart_jsonwebtoken: ^2.17.0
     web_socket_client: ^0.2.0
     uuid: 4.5.1
+    aad_oauth: ^1.0.1
     common:
         path: ../common
     common_flutter:
