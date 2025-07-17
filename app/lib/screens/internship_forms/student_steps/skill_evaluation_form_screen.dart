@@ -12,6 +12,9 @@ import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('SkillEvaluationFormScreen');
 
 class SkillEvaluationFormScreen extends StatefulWidget {
   const SkillEvaluationFormScreen({
@@ -51,18 +54,24 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
   }
 
   void _nextStep() {
+    _logger.finer('Moving to next step: $_currentStep');
+
     _currentStep++;
     _scrollToCurrentTab();
     setState(() {});
   }
 
   void _previousStep() {
+    _logger.finer('Moving to previous step: $_currentStep');
+
     _currentStep--;
     _scrollToCurrentTab();
     setState(() {});
   }
 
   void _cancel() async {
+    _logger.info('User requested to cancel the evaluation form');
+
     final answer = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'),
         isEditing: widget.editMode);
@@ -72,11 +81,13 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
       widget.formController.dispose();
     });
 
+    _logger.fine('User confirmed cancellation, disposing form controller');
     if (!widget.rootContext.mounted) return;
     Navigator.of(widget.rootContext).pop();
   }
 
   void _submit() async {
+    _logger.info('Submitting skill evaluation form');
     // Confirm the user is really ready to submit
 
     if (!widget.formController.allAppreciationsAreDone) {
@@ -115,6 +126,7 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
       widget.formController.dispose();
     });
 
+    _logger.fine('Skill evaluation form submitted successfully');
     if (!widget.rootContext.mounted) return;
     Navigator.of(widget.rootContext).pop();
   }
@@ -158,6 +170,9 @@ class _SkillEvaluationFormScreenState extends State<SkillEvaluationFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building SkillEvaluationFormScreen for internship: ${widget.formController.internshipId} '
+        'and editMode: ${widget.editMode}');
     if (_isDisposed) return Container();
 
     final internship = widget.formController.internship(context);

@@ -1,4 +1,4 @@
-part of 'package:crcrme_banque_stages/screens/internship_forms/generate_documents.dart';
+part of 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/generate_documents.dart';
 
 final _textStyle = pw.TextStyle(font: pw.Font.times());
 final _textStyleBold = pw.TextStyle(font: pw.Font.timesBold());
@@ -17,6 +17,9 @@ String _title(student_model.Program program) {
 Future<Uint8List> _generateInternshipContractPdf(
     BuildContext mainContext, PdfPageFormat format,
     {required String internshipId}) async {
+  _logger
+      .info('Generating internship contract PDF for internship: $internshipId');
+
   final document = pw.Document(pageMode: PdfPageMode.outlines);
   final headerHeight = 300;
 

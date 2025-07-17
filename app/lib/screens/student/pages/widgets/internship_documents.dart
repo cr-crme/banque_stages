@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:common/models/internships/internship.dart';
-import 'package:crcrme_banque_stages/screens/internship_forms/generate_documents.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/generate_documents.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';

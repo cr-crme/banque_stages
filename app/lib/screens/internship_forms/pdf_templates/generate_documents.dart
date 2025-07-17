@@ -17,6 +17,7 @@ import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -24,6 +25,8 @@ part 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/attitu
 part 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/internship_contract_pdf_template.dart';
 part 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/skill_evaluation_pdf_template.dart';
 part 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/visa_pdf_template.dart';
+
+final _logger = Logger('GenerateDocuments');
 
 class GenerateDocuments {
   static Future<Uint8List> generateInternshipContractPdf(

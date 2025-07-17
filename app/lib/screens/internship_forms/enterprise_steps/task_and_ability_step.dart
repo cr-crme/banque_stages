@@ -7,6 +7,9 @@ import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('TaskAndAbilityStep');
 
 enum _RequiredSkills {
   communicateInWriting,
@@ -69,6 +72,8 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
   List<String> get requiredSkills => _skillKey.currentState!.values;
 
   Future<String?> validate() async {
+    _logger.finer('Validating TaskAndAbilityStep');
+
     if (!_formKey.currentState!.validate() ||
         taskVariety == null ||
         trainingPlan == null) {
@@ -80,6 +85,9 @@ class TaskAndAbilityStepState extends State<TaskAndAbilityStep> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building TaskAndAbilityStep for internship: ${widget.internship.id}');
+
     final enterprise = EnterprisesProvider.of(context, listen: false)
         .firstWhereOrNull((e) => e.id == widget.internship.enterpriseId);
 

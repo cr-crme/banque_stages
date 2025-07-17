@@ -1,6 +1,9 @@
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('SpecializedStudentsStep');
 
 enum _Disabilities {
   autismSpectrumDisorder,
@@ -82,6 +85,8 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
           : -1;
 
   Future<String?> validate() async {
+    _logger.finer('Validating SpecializedStudentsStep');
+
     if (!_formKey.currentState!.validate()) {
       return 'Remplir tous les champs avec un *.';
     }
@@ -91,6 +96,8 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building SpecializedStudentsStep');
+
     return Form(
       key: _formKey,
       child: SingleChildScrollView(

@@ -6,12 +6,14 @@ import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/specialized_students_step.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/supervision_step.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/task_and_ability_step.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
-import 'specialized_students_step.dart';
-import 'supervision_step.dart';
-import 'task_and_ability_step.dart';
+final _logger = Logger('EnterpriseEvaluationScreen');
 
 class EnterpriseEvaluationScreen extends StatefulWidget {
   const EnterpriseEvaluationScreen({super.key, required this.id});
@@ -47,6 +49,8 @@ class _EnterpriseEvaluationScreenState
   }
 
   void _nextStep() async {
+    _logger.finer('Next step called, current step: $_currentStep');
+
     bool valid = false;
     String? message;
     if (_currentStep >= 0) {
@@ -102,6 +106,8 @@ class _EnterpriseEvaluationScreenState
   }
 
   void _previousStep() {
+    _logger.finer('Previous step called, current step: $_currentStep');
+
     _currentStep--;
     _scrollToCurrentTab();
     setState(() {});
@@ -115,6 +121,8 @@ class _EnterpriseEvaluationScreenState
   }
 
   void _submit() {
+    _logger.info('Submitting evaluation for internship: ${widget.id}');
+
     // Add the evaluation to a copy of the internship
     final internships = InternshipsProvider.of(context, listen: false);
     final internship = internships.firstWhere((e) => e.id == widget.id);
@@ -146,19 +154,26 @@ class _EnterpriseEvaluationScreenState
     // Pass the evaluation data to the rest of the app
     internships.replace(internship);
 
+    _logger
+        .fine('Evaluation submitted successfully for internship: ${widget.id}');
     Navigator.pop(context);
   }
 
   void _cancel() async {
+    _logger.info('Cancel called, current step: $_currentStep');
     final navigator = Navigator.of(context);
     final answer = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'));
     if (!mounted || !answer) return;
+    _logger.fine('User confirmed exit, navigating back');
     navigator.pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    _logger.fine(
+        'Building EnterpriseEvaluationScreen for internship: ${widget.id}');
+
     final internships = InternshipsProvider.of(context, listen: false);
     final internship = internships.firstWhere((e) => e.id == widget.id);
 

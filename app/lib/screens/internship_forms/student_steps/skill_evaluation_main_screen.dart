@@ -14,11 +14,16 @@ import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skil
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('SkillEvaluationDialog');
 
 Future<T?> showSkillEvaluationDialog<T>(
     {required BuildContext context,
     required String internshipId,
     required bool editMode}) async {
+  _logger.info('Showing SkillEvaluationDialog with editMode: $editMode');
+
   return await showDialog<T>(
       context: context,
       barrierDismissible: false,
@@ -72,18 +77,23 @@ class _SkillEvaluationMainScreenState extends State<SkillEvaluationMainScreen> {
   }
 
   void _cancel() async {
+    _logger.info('User requested to cancel the skill evaluation dialog');
+
     final answer = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'),
         isEditing: widget.editMode);
     if (!mounted || !answer) return;
 
     _formController.dispose();
+    _logger.fine('User confirmed cancellation, disposing form controller');
     if (!widget.rootContext.mounted) return;
     Navigator.of(widget.rootContext).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building SkillEvaluationMainScreen for internship: ${widget.internshipId}');
     final internship = InternshipsProvider.of(context)[widget.internshipId];
 
     final student = StudentsHelpers.studentsInMyGroups(context)

@@ -2,6 +2,9 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:crcrme_banque_stages/common/widgets/form_fields/low_high_slider_form_field.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('SupervisionStep');
 
 List<String> labelAbsenceAcceptance = [
   'Aucune\ntolérance',
@@ -53,6 +56,8 @@ class SupervisionStepState extends State<SupervisionStep> {
   String get supervisionComments => _commentsController.text;
 
   Future<String?> validate() async {
+    _logger.finer('Validating SupervisionStep');
+
     if (!_formKey.currentState!.validate()) {
       return 'Remplir tous les champs avec un *.';
     }
@@ -62,6 +67,8 @@ class SupervisionStepState extends State<SupervisionStep> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building SupervisionStep');
+
     return Form(
       key: _formKey,
       child: SingleChildScrollView(

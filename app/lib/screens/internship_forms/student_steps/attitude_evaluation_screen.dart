@@ -8,16 +8,20 @@ import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.da
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/attitude_evaluation_form_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 
-import 'attitude_evaluation_form_controller.dart';
+final _logger = Logger('AttitudeEvaluationScreen');
 
 Future<T?> showAttitudeEvaluationDialog<T>({
   required BuildContext context,
   required AttitudeEvaluationFormController formController,
   required bool editMode,
 }) async {
+  _logger.info('Showing AttitudeEvaluationDialog with editMode: $editMode');
+
   return await showDialog<T>(
       context: context,
       barrierDismissible: false,
@@ -61,6 +65,8 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
   ];
 
   void _previousStep() {
+    _logger.finer('Going back to previous step from step $_currentStep');
+
     if (_currentStep == 0) return;
 
     _currentStep -= 1;
@@ -69,6 +75,8 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
   }
 
   void _nextStep() {
+    _logger.finer('Going to next step from step $_currentStep');
+
     _stepStatus[0] = StepState.complete;
     if (_currentStep >= 1) {
       _stepStatus[1] = widget.formController.isAttitudeCompleted
@@ -98,16 +106,19 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
   }
 
   void _cancel() async {
+    _logger.info('Cancelling AttitudeEvaluationDialog');
     final answer = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'),
         isEditing: widget.editMode);
     if (!mounted || !answer) return;
 
+    _logger.fine('User confirmed cancellation, closing dialog');
     if (!widget.rootContext.mounted) return;
     Navigator.of(widget.rootContext).pop();
   }
 
   Future<void> _submit() async {
+    _logger.info('Submitting attitude evaluation form');
     if (!widget.formController.isCompleted) {
       await showDialog(
           context: context,
@@ -128,6 +139,7 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
         .add(widget.formController.toInternshipEvaluation());
     internships.replace(internship);
 
+    _logger.fine('Attitude evaluation form submitted successfully');
     if (!widget.rootContext.mounted) return;
     Navigator.of(widget.rootContext).pop();
   }
@@ -161,6 +173,9 @@ class _AttitudeEvaluationScreenState extends State<AttitudeEvaluationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building AttitudeEvaluationScreen for internship: ${widget.formController.internshipId}');
+
     final internship =
         InternshipsProvider.of(context)[widget.formController.internshipId];
     final student = StudentsHelpers.studentsInMyGroups(context)
