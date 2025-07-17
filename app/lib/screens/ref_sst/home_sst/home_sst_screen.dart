@@ -2,10 +2,12 @@ import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/widgets/sst_main_card.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/home_sst/widgets/sst_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
 
-import 'widgets/sst_search_bar.dart';
+final _logger = Logger('HomeSstScreen');
 
 class HomeSstScreen extends StatefulWidget {
   const HomeSstScreen({super.key});
@@ -29,6 +31,8 @@ class _HomeSstScreenState extends State<HomeSstScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building HomeSstScreen');
+
     Widget body;
     body = ListView(
       children: [

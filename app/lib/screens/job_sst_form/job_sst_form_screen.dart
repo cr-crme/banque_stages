@@ -11,13 +11,18 @@ import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final _logger = Logger('JobSstFormScreen');
 
 Future<T?> showJobSstFormDialog<T>(
   BuildContext context, {
   required String enterpriseId,
   required String jobId,
 }) {
+  _logger.info('Showing JobSstFormDialog for jobId: $jobId');
+
   return showDialog<T>(
       context: context,
       barrierDismissible: false,
@@ -53,6 +58,8 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
   final _questionsKey = GlobalKey<_QuestionsStepState>();
 
   void _submit() {
+    _logger.info('Submitting JobSstFormScreen for jobId: ${widget.jobId}');
+
     if (!FormService.validateForm(_questionsKey.currentState!.formKey)) {
       setState(() {});
       return;
@@ -69,22 +76,28 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
     enterprises.replaceJob(widget.enterpriseId,
         enterprises[widget.enterpriseId].jobs[widget.jobId]);
 
+    _logger.fine(
+        'JobSstFormScreen submitted successfully for jobId: ${widget.jobId}');
     if (!widget.rootContext.mounted) return;
     Navigator.of(widget.rootContext).pop();
   }
 
   void _cancel() async {
+    _logger.info('Cancelling JobSstFormScreen for jobId: ${widget.jobId}');
     final answer = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'));
     // If the user cancelled the closing of the dialog, we do nothing
     if (!answer) return;
 
     // If the user confirmed, we close the dialog and return to the previous screen
+    _logger.fine('User confirmed exit, navigating back');
     if (!widget.rootContext.mounted) return;
     Navigator.of(widget.rootContext).pop();
   }
 
   void _showHelp({required bool force}) async {
+    _logger.info('Showing help for JobSstFormScreen');
+
     bool shouldShowHelp = force;
     if (!shouldShowHelp) {
       final prefs = await SharedPreferences.getInstance();
@@ -203,6 +216,8 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building JobSstFormScreen for jobId: ${widget.jobId}');
+
     _showHelp(force: false);
 
     final enterprise =
@@ -232,7 +247,7 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  QuestionsStep(
+                  _QuestionsStep(
                     key: _questionsKey,
                     enterprise: enterprise,
                     job: enterprise.jobs[widget.jobId],
@@ -267,8 +282,8 @@ class _JobSstFormScreenState extends State<JobSstFormScreen> {
   }
 }
 
-class QuestionsStep extends StatefulWidget {
-  const QuestionsStep({
+class _QuestionsStep extends StatefulWidget {
+  const _QuestionsStep({
     super.key,
     required this.enterprise,
     required this.job,
@@ -278,10 +293,10 @@ class QuestionsStep extends StatefulWidget {
   final Job job;
 
   @override
-  State<QuestionsStep> createState() => _QuestionsStepState();
+  State<_QuestionsStep> createState() => _QuestionsStepState();
 }
 
-class _QuestionsStepState extends State<QuestionsStep> {
+class _QuestionsStepState extends State<_QuestionsStep> {
   final Map<String, TextEditingController> _followUpController = {};
 
   final formKey = GlobalKey<FormState>();

@@ -7,6 +7,9 @@ import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/models/incidents_by_enterprise.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/incident_history/widgets/incident_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('IncidentHistoryScreen');
 
 enum _FilterType {
   bySpecialization,
@@ -75,17 +78,23 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
 
   List<Specialization> _filterBySpecialization(
       Map<Specialization, IncidentsByEnterprise> incidents) {
+    _logger
+        .finer('Filtering by specialization with ${incidents.length} entries');
     return incidents.keys.sorted((a, b) => a.name.compareTo(b.name)).toList();
   }
 
   List<Specialization> _filterByNumberOfIncident(
       Map<Specialization, IncidentsByEnterprise> incidents) {
+    _logger.finer(
+        'Filtering by number of incidents with ${incidents.length} entries');
     return incidents.keys
         .sorted((a, b) => incidents[b]!.length - incidents[a]!.length);
   }
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building IncidentHistoryScreen');
+
     final incidents = _fetchAllIncidents(context);
 
     late List<Specialization> sortedSpecializationId;
@@ -181,6 +190,8 @@ class _FilterTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building FilterTile for $title');
+
     return InkWell(
       onTap: onTap,
       child: Card(

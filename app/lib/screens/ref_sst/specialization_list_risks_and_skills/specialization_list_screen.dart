@@ -6,7 +6,10 @@ import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/common/risk.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/specialization_list_risks_and_skills/widgets/tile_job_risk.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final _logger = Logger('SpecializationListScreen');
 
 class SpecializationListScreen extends StatelessWidget {
   static const route = '/job-risks';
@@ -32,6 +35,9 @@ class SpecializationListScreen extends StatelessWidget {
   }
 
   List<Risk> _extractAllRisks(Specialization specialization) {
+    _logger.finer(
+        'Extracting all risks for specialization: ${specialization.name}');
+
     final out = <String>[];
     for (final skill in specialization.skills) {
       for (final risk in skill.risks) {
@@ -73,6 +79,7 @@ class SpecializationListScreen extends StatelessWidget {
     if (!shouldShowHelp) return;
 
     if (!context.mounted) return;
+    _logger.info('Showing help dialog, force: $force');
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -105,6 +112,8 @@ class SpecializationListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building SpecializationListScreen for ID: $id');
+
     _showHelp(context, force: false);
 
     final specialization = ActivitySectorsService.specialization(id);

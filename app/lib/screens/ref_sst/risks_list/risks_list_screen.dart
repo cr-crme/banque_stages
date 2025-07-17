@@ -1,11 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
-import 'package:flutter/material.dart';
-
 import 'package:crcrme_banque_stages/misc/risk_data_file_service.dart';
 import 'package:crcrme_banque_stages/screens/ref_sst/risk_card/risk_card_screen.dart';
-import 'widgets/clickable_risk_tile.dart';
+import 'package:crcrme_banque_stages/screens/ref_sst/risks_list/widgets/clickable_risk_tile.dart';
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('RisksListScreen');
 
 class SstCardsScreen extends StatefulWidget {
   const SstCardsScreen({super.key});
@@ -40,11 +42,16 @@ class _SstCardsScreenState extends State<SstCardsScreen>
   }
 
   void _navigate(int page) {
+    _logger.finer('Navigating to page: $page');
+
     _tabController.index = page;
     setState(() {});
   }
 
   void _onTapBack() {
+    _logger.finer(
+        'Back button tapped, current tab index: ${_tabController.index}');
+
     if (_tabController.index != 0) {
       _tabController.index = 0;
       setState(() {});
@@ -64,6 +71,9 @@ class _SstCardsScreenState extends State<SstCardsScreen>
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building SstCardsScreen with tab index: ${_tabController.index}');
+
     return ResponsiveService.scaffoldOf(
       context,
       appBar: ResponsiveService.appBarOf(

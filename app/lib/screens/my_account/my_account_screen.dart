@@ -18,7 +18,7 @@ class MyAccountScreen extends StatelessWidget {
       smallDrawer: MainDrawer.small,
       mediumDrawer: MainDrawer.medium,
       largeDrawer: MainDrawer.large,
-      body: Text('TODO'),
+      body: Center(child: Text('À venir')),
     );
   }
 }
