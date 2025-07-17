@@ -43,17 +43,18 @@ class ProgramInitializer {
 }
 
 class BugReporter {
-  static final _breadcrumbs = <String, dynamic>{};
+  static final _breadcrumbs = [];
 
   static loggerSetup() {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen((record) {
-      _breadcrumbs[record.time.toIso8601String()] = {
+      _breadcrumbs.add({
+        'time': record.time.toIso8601String(),
         'level': record.level.name,
         'message': record.message,
         'error': record.error?.toString(),
         'stackTrace': record.stackTrace?.toString(),
-      };
+      });
     });
   }
 

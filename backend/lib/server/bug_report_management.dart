@@ -18,11 +18,18 @@ Future<void> answerBugReportRequest(HttpRequest request) async {
   // Parse the data
   final error = data['error'] ?? 'No error provided';
   final stackTrace = data['stack_trace'] ?? 'No stack trace';
-  final breadcrumbs = data['breadcrumbs'] ?? 'No breadcrumbs';
+  final breadcrumbs = data['breadcrumbs'] as List? ?? [];
+  // Breadcrumbs is a map containing the following keys: [time, level, message, error, stackTrace].
+
   final content = '''
 Breadcrumbs:
-$breadcrumbs
-
+${breadcrumbs.map((b) => '''
+Time: ${b['time']}
+\tLevel: ${b['level']}
+\tMessage: ${b['message']}
+\tError: ${b['error']}
+\tStack Trace: ${b['stackTrace']}
+''').join('\n')}
 --------------------------
 
 Error:

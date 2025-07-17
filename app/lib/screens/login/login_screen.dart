@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _password;
 
   void _signIn() async {
-    _logger.fine('Attempting to sign in with email: $_email');
+    _logger.info('Attempting to sign in with email: $_email');
     if (!FormService.validateForm(_formKey, save: true)) return;
 
     try {
@@ -42,11 +42,16 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       showSnackBar(context, message: 'Erreur de connexion');
     }
+
+    _logger.fine('Sign in successful');
+    if (!mounted) return;
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building LoginScreen');
+
     // Calling the provider jumps start the authentication process and ensures data arrival
     final schoolBoardsProvider = SchoolBoardsProvider.of(context, listen: true);
     EnterprisesProvider.of(context, listen: false);

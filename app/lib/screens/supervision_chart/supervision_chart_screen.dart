@@ -19,6 +19,9 @@ import 'package:crcrme_banque_stages/screens/visiting_students/itinerary_screen.
 import 'package:crcrme_material_theme/crcrme_material_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('SupervisionChart');
 
 class _InternshipMetaData {
   final Internship internship;
@@ -139,6 +142,8 @@ class _SupervisionChartState extends State<SupervisionChart>
   void _toggleEditMode(BuildContext context,
       {required List<_InternshipMetaData> internships}) {
     if (_editMode) {
+      _logger.info('Saving changes in edit mode');
+
       final teacherId =
           TeachersProvider.of(context, listen: false).myTeacher?.id;
       if (teacherId == null) {
@@ -163,6 +168,7 @@ class _SupervisionChartState extends State<SupervisionChart>
 
         // Update the internship with the new values
         internshipsProvided.replace(newInternship);
+        _logger.fine('Updated internship: ${newInternship.id}');
       }
     }
 
@@ -173,6 +179,9 @@ class _SupervisionChartState extends State<SupervisionChart>
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building SupervisionChart with tab index: ${_tabController.index}');
+
     final internships = _InternshipMetaDataList._internshipsOf(context,
         visibilityFilters: _visibilityFilters.keys
             .where((priority) => _visibilityFilters[priority] ?? false)

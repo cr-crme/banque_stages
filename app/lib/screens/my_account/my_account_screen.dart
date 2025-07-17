@@ -1,6 +1,9 @@
 import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('MyAccountScreen');
 
 class MyAccountScreen extends StatelessWidget {
   const MyAccountScreen({super.key});
@@ -9,6 +12,8 @@ class MyAccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building MyAccountScreen');
+
     return ResponsiveService.scaffoldOf(
       context,
       appBar: ResponsiveService.appBarOf(

@@ -16,6 +16,9 @@ import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.da
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('TasksToDoScreen');
 
 int numberOfTasksToDo(context) {
   final taskFunctions = [
@@ -58,6 +61,7 @@ List<_JobEnterpriseInternshipStudent> _enterprisesToEvaluate(context) {
     }
   }
 
+  _logger.fine('Found ${out.length} enterprises to evaluate');
   return out;
 }
 
@@ -92,6 +96,7 @@ List<_JobEnterpriseInternshipStudent> _internshipsToTerminate(context) {
     }
   }
 
+  _logger.fine('Found ${out.length} internships to terminate');
   return out;
 }
 
@@ -125,6 +130,7 @@ List<_JobEnterpriseInternshipStudent> _postInternshipEvaluationToDo(context) {
     }
   }
 
+  _logger.fine('Found ${out.length} post-internship evaluations to do');
   return out;
 }
 
@@ -135,6 +141,8 @@ class TasksToDoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building TasksToDoScreen');
+
     int nbTasksToDo = numberOfTasksToDo(context);
 
     return ResponsiveService.scaffoldOf(

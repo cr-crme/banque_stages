@@ -15,6 +15,9 @@ import 'package:crcrme_banque_stages/screens/visiting_students/widgets/waypoint_
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('ItineraryMainScreen');
 
 class ItineraryMainScreen extends StatefulWidget {
   const ItineraryMainScreen({super.key});
@@ -36,6 +39,7 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
   }
 
   Future<void> _fillAllWaypoints() async {
+    _logger.fine('Filling all waypoints');
     final internships = InternshipsProvider.of(context, listen: false);
 
     var school = SchoolBoardsProvider.of(context, listen: false).mySchool;
@@ -93,6 +97,9 @@ class _ItineraryMainScreenState extends State<ItineraryMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building ItineraryMainScreen with ${_waypoints.length} waypoints');
+
     return RawScrollbar(
       controller: _scrollController,
       thumbVisibility: true,
@@ -168,6 +175,8 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building ItineraryMainScreen for date: $_currentDate');
+
     // We need to define small 200px over actual small screen width because of the
     // row nature of the page.
     final isSmall = MediaQuery.of(context).size.width <

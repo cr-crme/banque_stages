@@ -16,7 +16,10 @@ import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+final _logger = Logger('SupervisionStudentDetailsScreen');
 
 class SupervisionStudentDetailsScreen extends StatelessWidget {
   const SupervisionStudentDetailsScreen({super.key, required this.studentId});
@@ -76,6 +79,9 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building SupervisionStudentDetailsScreen for student: $studentId');
+
     return ResponsiveService.scaffoldOf(
       context,
       appBar: ResponsiveService.appBarOf(
@@ -88,6 +94,13 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
               _getStudent(context),
             ]),
             builder: (context, snapshot) {
+              _logger.finer(
+                  'Building app bar for SupervisionStudentDetailsScreen with: '
+                  'hasInternship: ${snapshot.data?[0] != null}, '
+                  'hasEnterprise: ${snapshot.data?[1] != null}, '
+                  'hasJob: ${snapshot.data?[2] != null}, '
+                  'hasStudent: ${snapshot.data?[3] != null}');
+
               if (snapshot.connectionState == ConnectionState.waiting ||
                   snapshot.data == null) {
                 return Text('En attente des données');
