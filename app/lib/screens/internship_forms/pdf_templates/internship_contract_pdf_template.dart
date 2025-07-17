@@ -71,8 +71,7 @@ pw.Widget _logo(BuildContext context,
       ? pw.Container()
       : pw.Image(
           pw.MemoryImage(schoolBoard.logo),
-          fit: pw.BoxFit.fill,
-          width: ImageHelpers.logoWidth * sizeFactor,
+          fit: pw.BoxFit.scaleDown,
           height: ImageHelpers.logoHeight * sizeFactor,
         );
 }

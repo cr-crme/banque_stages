@@ -216,8 +216,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
           'logo': schoolBoard.logo.isEmpty
               ? schoolBoard.logo
               : ImageHelpers.resizeImage(schoolBoard.logo,
-                  width: ImageHelpers.logoWidth,
-                  height: ImageHelpers.logoHeight),
+                  width: null, height: ImageHelpers.logoHeight),
           'cnesst_number': schoolBoard.cnesstNumber
         });
   }
@@ -248,7 +247,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
       toUpdate['logo'] = schoolBoard.logo.isEmpty
           ? schoolBoard.logo
           : ImageHelpers.resizeImage(schoolBoard.logo,
-              width: ImageHelpers.logoWidth, height: ImageHelpers.logoHeight);
+              width: null, height: ImageHelpers.logoHeight);
     }
 
     if (toUpdate.isNotEmpty) {

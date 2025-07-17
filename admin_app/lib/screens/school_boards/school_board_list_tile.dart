@@ -252,14 +252,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
                   ),
                 ),
               )
-              : Center(
-                child: Image.memory(
-                  _logoController,
-                  height: 80,
-                  width: 190,
-                  fit: BoxFit.fill,
-                ),
-              ),
+              : Center(child: Image.memory(_logoController)),
           if (_isEditing)
             Center(
               child: Padding(
@@ -278,7 +271,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
                         setState(() {
                           _logoController = ImageHelpers.resizeImage(
                             result.files.first.bytes!,
-                            width: ImageHelpers.logoWidth,
+                            width: null,
                             height: ImageHelpers.logoHeight,
                           );
                         });

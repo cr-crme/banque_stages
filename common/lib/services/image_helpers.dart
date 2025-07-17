@@ -7,8 +7,8 @@ class ImageHelpers {
 
   static Uint8List resizeImage(
     Uint8List imageData, {
-    required int width,
-    required int height,
+    required int? width,
+    required int? height,
   }) {
     // Decode the image from the Uint8List
     Image? image = decodeImage(imageData);
