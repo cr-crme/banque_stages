@@ -3,11 +3,13 @@ import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:crcrme_banque_stages/common/extensions/students_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
+import 'package:crcrme_banque_stages/screens/student/pages/about_page.dart';
+import 'package:crcrme_banque_stages/screens/student/pages/internships_page.dart';
 import 'package:crcrme_banque_stages/screens/student/pages/skills_page.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
-import 'pages/about_page.dart';
-import 'pages/internships_page.dart';
+final _logger = Logger('StudentScreen');
 
 class StudentScreen extends StatefulWidget {
   const StudentScreen({
@@ -55,14 +57,19 @@ class _StudentScreenState extends State<StudentScreen>
   }
 
   void _onTapBack() async {
+    _logger.finer(
+        'Back button tapped, current tab index: ${_tabController.index}');
     if (await _preventIfEditing(_tabController.index)) return;
 
+    _logger.finer('Navigating back from StudentScreen');
     if (!mounted) return;
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building StudentScreen for ID: ${widget.id}');
+
     final student = StudentsHelpers.studentsInMyGroups(context)
         .firstWhereOrNull((e) => e.id == widget.id);
 

@@ -16,6 +16,9 @@ import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('InternshipDetails');
 
 class _InternshipController {
   _InternshipController(Internship internship)
@@ -113,6 +116,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
       });
       return;
     }
+    _logger.info('Validating internship before toggling edit mode');
 
     // Validate before starting to save
     if (_internshipController.supervisorChanged) {
@@ -166,6 +170,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
 
     if (hasChanged) {
       InternshipsProvider.of(context, listen: false).replace(_internship);
+      _logger.fine('Internship updated: ${_internship.id}');
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -193,6 +198,8 @@ class InternshipDetailsState extends State<InternshipDetails> {
   }
 
   Future<bool> preventClosingIfEditing() async {
+    _logger.finer('Preventing closing if editing, edit mode: $_editMode');
+
     final shouldQuit = await ConfirmExitDialog.show(context,
         content: Text.rich(TextSpan(children: [
           const TextSpan(
@@ -224,6 +231,8 @@ class InternshipDetailsState extends State<InternshipDetails> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building InternshipDetails for ID: ${widget.internshipId}');
+
     final myId = TeachersProvider.of(context).myTeacher?.id;
     if (myId == null) {
       return const Center(child: Text('Vous n\'êtes pas connecté.'));
@@ -537,6 +546,8 @@ class _InternshipBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building _InternshipBody for internship: ${internship.id}');
+
     final teachers = TeachersProvider.of(context);
     final enterprises = EnterprisesProvider.of(context);
 
@@ -556,6 +567,9 @@ class _InternshipBody extends StatelessWidget {
         teachers.where((e) => internship.supervisingTeacherIds.contains(e.id));
     final signatoryTeacher =
         teachers.firstWhere((e) => e.id == internship.signatoryTeacherId);
+
+    _logger.finer(
+        'with ${supervisors.length} supervisors and signatory teacher: ${signatoryTeacher.id}');
 
     return FocusScope(
       child: Column(

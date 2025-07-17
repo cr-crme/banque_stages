@@ -5,10 +5,12 @@ import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.da
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/students_list/widgets/student_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
 
-import 'widgets/student_card.dart';
+final _logger = Logger('StudentsListScreen');
 
 class StudentsListScreen extends StatefulWidget {
   const StudentsListScreen({super.key});
@@ -25,6 +27,7 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
 
   List<Student> _filterSelectedStudents(List<Student> students) {
     final textToSearch = _searchController.text.toLowerCase().trim();
+    _logger.finer('Filtering students with search text: "$textToSearch"');
 
     return students.where((student) {
       if (student.fullName.toLowerCase().contains(textToSearch) ||
@@ -50,6 +53,7 @@ class _StudentsListScreenState extends State<StudentsListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building StudentsListScreen');
     final students =
         _filterSelectedStudents(StudentsHelpers.studentsInMyGroups(context));
 

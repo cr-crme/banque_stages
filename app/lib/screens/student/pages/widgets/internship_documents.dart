@@ -4,8 +4,11 @@ import 'package:common/models/internships/internship.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/generate_documents.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
+
+final _logger = Logger('InternshipDocuments');
 
 class InternshipDocuments extends StatefulWidget {
   const InternshipDocuments({super.key, required this.internship});
@@ -21,6 +24,9 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building InternshipDocuments for internship: ${widget.internship.id}');
+
     try {
       return Padding(
         padding: const EdgeInsets.only(left: 24, right: 24),

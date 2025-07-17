@@ -6,6 +6,9 @@ import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('AboutPage');
 
 class AboutPage extends StatefulWidget {
   const AboutPage({
@@ -34,6 +37,8 @@ class AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building AboutPage for student: ${widget.student.id}');
+
     return Theme(
       data: Theme.of(context).copyWith(disabledColor: Colors.black),
       child: Form(

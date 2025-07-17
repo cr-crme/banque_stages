@@ -14,6 +14,9 @@ import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skil
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('InternshipSkills');
 
 class InternshipSkills extends StatefulWidget {
   const InternshipSkills({super.key, required this.internshipId});
@@ -29,6 +32,8 @@ class _InternshipSkillsState extends State<InternshipSkills> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building InternshipSkills for internship: ${widget.internshipId}');
     final internship =
         InternshipsProvider.of(context).fromId(widget.internshipId);
 

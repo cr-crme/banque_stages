@@ -4,13 +4,15 @@ import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/screens/student/pages/widgets/internship_details.dart';
+import 'package:crcrme_banque_stages/screens/student/pages/widgets/internship_documents.dart';
+import 'package:crcrme_banque_stages/screens/student/pages/widgets/internship_quick_access.dart';
+import 'package:crcrme_banque_stages/screens/student/pages/widgets/internship_skills.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 
-import 'widgets/internship_details.dart';
-import 'widgets/internship_documents.dart';
-import 'widgets/internship_quick_access.dart';
-import 'widgets/internship_skills.dart';
+final _logger = Logger('InternshipsPage');
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({super.key, required this.student});
@@ -27,6 +29,9 @@ class InternshipsPageState extends State<InternshipsPage> {
   final toEvaluateKey = GlobalKey<_StudentInternshipListViewState>();
 
   List<Internship> _getActiveInternships(List<Internship> internships) {
+    _logger
+        .finer('Fetching active internships for student: ${widget.student.id}');
+
     final List<Internship> out = [];
     for (final internship in internships) {
       if (internship.isActive) out.add(internship);
@@ -36,6 +41,9 @@ class InternshipsPageState extends State<InternshipsPage> {
   }
 
   List<Internship> _getClosedInternships(List<Internship> internships) {
+    _logger
+        .finer('Fetching closed internships for student: ${widget.student.id}');
+
     final List<Internship> out = [];
     for (final internship in internships) {
       if (internship.isClosed) out.add(internship);
@@ -45,6 +53,9 @@ class InternshipsPageState extends State<InternshipsPage> {
   }
 
   List<Internship> _getToEvaluateInternships(List<Internship> internships) {
+    _logger.finer(
+        'Fetching internships to evaluate for student: ${widget.student.id}');
+
     final List<Internship> out = [];
     for (final internship in internships) {
       if (internship.isEnterpriseEvaluationPending) out.add(internship);
@@ -54,11 +65,15 @@ class InternshipsPageState extends State<InternshipsPage> {
   }
 
   void _sortByDate(List<Internship> internships) {
+    _logger.finer(
+        'Sorting internships by start date for student: ${widget.student.id}');
     internships.sort((a, b) => a.dates.start.compareTo(b.dates.start));
   }
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building InternshipsPage for student: ${widget.student.id}');
+
     final internships =
         InternshipsProvider.of(context).byStudentId(widget.student.id);
     final toEvaluateInternships = _getToEvaluateInternships(internships);

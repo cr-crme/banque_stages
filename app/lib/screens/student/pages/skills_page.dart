@@ -7,6 +7,9 @@ import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('SkillsPage');
 
 class SkillsPage extends StatefulWidget {
   const SkillsPage({super.key, required this.student});
@@ -20,6 +23,8 @@ class SkillsPage extends StatefulWidget {
 class SkillsPageState extends State<SkillsPage> {
   Map<Specialization, List<SkillEvaluation>> _getAcquiredSkills(
       Map<Specialization, List<SkillEvaluation>> skills) {
+    _logger.finer('Fetching acquired skills for student: ${widget.student.id}');
+
     final Map<Specialization, List<SkillEvaluation>> out = {};
     for (final specialization in skills.keys) {
       out[specialization] = [];
@@ -34,6 +39,9 @@ class SkillsPageState extends State<SkillsPage> {
 
   Map<Specialization, List<SkillEvaluation>> _getToPursuitSkills(
       Map<Specialization, List<SkillEvaluation>> skills) {
+    _logger
+        .finer('Fetching skills to pursue for student: ${widget.student.id}');
+
     // Make sure no previously acheived evaluation overrides to fail
     final acquired = _getAcquiredSkills(skills);
 
@@ -54,6 +62,8 @@ class SkillsPageState extends State<SkillsPage> {
 
   Map<Specialization, List<SkillEvaluation>> _getAllStudentSkills(
       BuildContext context) {
+    _logger.finer('Fetching all skills for student: ${widget.student.id}');
+
     final enterprises = EnterprisesProvider.of(context, listen: false);
     final internships = InternshipsProvider.of(context, listen: false)
         .byStudentId(widget.student.id);
@@ -97,6 +107,7 @@ class SkillsPageState extends State<SkillsPage> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building SkillsPage for student: ${widget.student.id}');
     final skills = _getAllStudentSkills(context);
 
     return SingleChildScrollView(
