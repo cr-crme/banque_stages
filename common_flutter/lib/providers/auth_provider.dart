@@ -46,6 +46,11 @@ class AuthProvider extends ChangeNotifier {
     return user;
   }
 
+  Future<void> updatePassword(String newPassword) async {
+    await _firebaseAuth.currentUser!.updatePassword(newPassword);
+    notifyListeners();
+  }
+
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
     teacherId = null;
