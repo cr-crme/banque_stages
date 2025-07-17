@@ -13,14 +13,16 @@ import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
 import 'package:crcrme_banque_stages/common/widgets/search.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/add_enterprise/add_enterprise_screen.dart';
+import 'package:crcrme_banque_stages/screens/enterprises_list/widgets/enterprise_card.dart';
 import 'package:crcrme_banque_stages/screens/visiting_students/widgets/zoom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:logging/logging.dart';
 
-import 'widgets/enterprise_card.dart';
+final _logger = Logger('EnterprisesListScreen');
 
 class EnterprisesListScreen extends StatefulWidget {
   const EnterprisesListScreen({super.key});
@@ -44,6 +46,8 @@ class _EnterprisesListScreenState extends State<EnterprisesListScreen>
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building EnterprisesListScreen');
+
     final appBar = ResponsiveService.appBarOf(
       context,
       title: const Text('Entreprises'),
@@ -141,12 +145,18 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
     ..addListener(() => setState(() {}));
 
   List<Enterprise> _sortEnterprisesByName(List<Enterprise> enterprises) {
+    _logger.finer('Sorting enterprises by name');
+
     final res = List<Enterprise>.from(enterprises);
     res.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     return res.toList();
   }
 
   List<Enterprise> _filterSelectedEnterprises(List<Enterprise> enterprises) {
+    _logger.finer('Filtering enterprises based on search and availability '
+        '(searchController.text: ${searchController.text}, '
+        'hideNotAvailable: $_hideNotAvailable)');
+
     final schoolId = AuthProvider.of(context, listen: false).schoolId;
     if (schoolId == null) return enterprises;
 
@@ -188,6 +198,8 @@ class _EnterprisesByListState extends State<_EnterprisesByList> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building _EnterprisesByList');
+
     // Register to the enterprises provider to refresh the list if it changes
     EnterprisesProvider.of(context, listen: true);
 
@@ -231,6 +243,8 @@ class _EnterprisesByMap extends StatelessWidget {
 
   List<Marker> _latlngToMarkers(
       context, Map<Enterprise, Waypoint> enterprises) {
+    _logger.finer(
+        'Converting enterprises to markers (enterprises: ${enterprises.length})');
     List<Marker> out = [];
 
     final schoolId = AuthProvider.of(context, listen: false).schoolId;
@@ -299,6 +313,8 @@ class _EnterprisesByMap extends StatelessWidget {
 
   Future<Map<Enterprise, Waypoint>> _fetchEnterprisesCoordinates(
       BuildContext context) async {
+    _logger.finer(
+        'Fetching enterprises coordinates (enterprises: ${enterprises.length})');
     final Map<Enterprise, Waypoint> out = {};
 
     final schoolBoard =
@@ -329,6 +345,8 @@ class _EnterprisesByMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building _EnterprisesByMap');
+
     return SingleChildScrollView(
       physics: const ScrollPhysics(),
       child: FutureBuilder<Map<Enterprise, Waypoint>>(

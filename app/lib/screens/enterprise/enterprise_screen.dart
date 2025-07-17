@@ -6,13 +6,15 @@ import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/main_drawer.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/pages/about_page.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/pages/internships_page.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/pages/jobs_page.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/internship_enrollment_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
-import 'pages/about_page.dart';
-import 'pages/internships_page.dart';
-import 'pages/jobs_page.dart';
+final _logger = Logger('EnterpriseScreen');
 
 class EnterpriseScreen extends StatefulWidget {
   const EnterpriseScreen(
@@ -43,16 +45,19 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
       (_jobsPageKey.currentState?.isEditing ?? false);
 
   void cancelEditing() {
+    _logger.info('Canceling editing in EnterpriseScreen');
     if (_aboutPageKey.currentState?.editing != null) {
       _aboutPageKey.currentState!.toggleEdit(save: false);
     }
     if (_jobsPageKey.currentState?.isEditing != null) {
       _jobsPageKey.currentState!.cancelEditing();
     }
+    _logger.fine('Editing cancelled in EnterpriseScreen');
     setState(() {});
   }
 
   void _updateActionButton() {
+    _logger.finer('Updating action button in EnterpriseScreen');
     late Icon icon;
 
     if (_tabController.index == 0) {
@@ -101,11 +106,14 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
         _updateActionButton();
       },
     );
+    _logger.finer('Action button updated in EnterpriseScreen');
     setState(() {});
   }
 
   Future<void> addInternship(
       Enterprise enterprise, Specialization? specialization) async {
+    _logger.info('Adding internship for enterprise: ${enterprise.name}');
+
     final schoolId = Provider.of<AuthProvider>(context, listen: false).schoolId;
     if (schoolId == null) {
       showSnackBar(context, message: 'Vous n\'êtes pas connecté à une école');
@@ -120,6 +128,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
               enterprise: enterprise,
               specifiedSpecialization: specialization,
             )));
+    _logger.fine('Internship added for enterprise: ${enterprise.name}');
   }
 
   @override
@@ -131,6 +140,8 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building EnterpriseScreen with id: ${widget.id}');
+
     return Selector<EnterprisesProvider, Enterprise?>(
       builder: (context, enterprise, _) {
         if (enterprise == null) {

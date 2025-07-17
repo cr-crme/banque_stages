@@ -12,7 +12,10 @@ import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+final _logger = Logger('InternshipsPage');
 
 class InternshipsPage extends StatefulWidget {
   const InternshipsPage({
@@ -33,6 +36,9 @@ class InternshipsPageState extends State<InternshipsPage> {
       widget.onAddInternshipRequest(widget.enterprise, null);
 
   List<Internship> _getActiveInternships(List<Internship> internships) {
+    _logger.finer(
+        'Getting active internships for enterprise: ${widget.enterprise.id}');
+
     final List<Internship> out = [];
     for (final internship in internships) {
       if (internship.isActive) out.add(internship);
@@ -42,6 +48,9 @@ class InternshipsPageState extends State<InternshipsPage> {
   }
 
   List<Internship> _getClosedInternships(List<Internship> internships) {
+    _logger.finer(
+        'Getting closed internships for enterprise: ${widget.enterprise.id}');
+
     final List<Internship> out = [];
     for (final internship in internships) {
       if (internship.isClosed) out.add(internship);
@@ -50,6 +59,9 @@ class InternshipsPageState extends State<InternshipsPage> {
   }
 
   List<Internship> _getToEvaluateInternships(List<Internship> internships) {
+    _logger.finer(
+        'Getting internships to evaluate for enterprise: ${widget.enterprise.id}');
+
     final List<Internship> out = [];
     for (final internship in internships) {
       if (internship.isEnterpriseEvaluationPending) out.add(internship);
@@ -59,6 +71,9 @@ class InternshipsPageState extends State<InternshipsPage> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building InternshipsPage for enterprise: ${widget.enterprise.id}');
+
     final internships = widget.enterprise.internships(context, listen: true);
 
     final toEvaluate = _getToEvaluateInternships(internships);
@@ -171,6 +186,9 @@ class _InternshipListState extends State<_InternshipList> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building InternshipList for enterprise: ${widget.enterprise.id}');
+
     _prepareExpander(widget.internships);
     final teachers = TeachersProvider.of(context);
 

@@ -14,6 +14,9 @@ import 'package:common_flutter/widgets/web_site_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('EnterpriseAboutPage');
 
 class EnterpriseAboutPage extends StatefulWidget {
   const EnterpriseAboutPage({
@@ -50,15 +53,19 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
 
   Future<void> toggleEdit({bool save = true}) async {
     if (_editing) {
+      _logger.info('Saving enterprise information');
+
       if (!save) {
         _editing = false;
         _contactInfoController.reset();
         _enterpriseInfoController.reset();
         _taxesInfoController.reset();
+        _logger.fine('Edit mode disabled without saving changes');
         setState(() {});
         return;
       }
     } else {
+      _logger.info('Entering edit mode for enterprise information');
       _editing = true;
       setState(() {});
       return;
@@ -124,6 +131,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
     if (widget.enterprise.getDifference(newEnteprise).isEmpty) return;
     EnterprisesProvider.of(context, listen: false).replace(newEnteprise);
 
+    _logger.fine('Enterprise information saved successfully');
     setState(() {});
   }
 
@@ -139,6 +147,9 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building EnterpriseAboutPage for enterprise: ${widget.enterprise.id}');
+
     return PopScope(
       canPop: _canPop,
       onPopInvokedWithResult: (didPop, result) async {
@@ -224,6 +235,9 @@ class _GeneralInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger
+        .finer('Building General Information section with editMode: $editMode');
+
     return editMode
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,6 +305,9 @@ class _ContactInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger
+        .finer('Building Contact Information section with editMode: $editMode');
+
     // ThemeData does not work anymore so we have to override the style manually
     const styleOverride = TextStyle(color: Colors.black);
 
@@ -417,6 +434,9 @@ class _EnterpriseInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building Enterprise Information section with editMode: $editMode');
+
     // ThemeData does not work anymore so we have to override the style manually
     const styleOverride = TextStyle(color: Colors.black);
 
@@ -478,6 +498,8 @@ class _ActivityType extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building Activity Type section with editMode: $editMode');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -549,6 +571,9 @@ class _TaxesInfo extends StatefulWidget {
 class _TaxesInfoState extends State<_TaxesInfo> {
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building Taxes Information section with editMode: ${widget.editMode}');
+
     // ThemeData does not work anymore so we have to override the style manually
     const styleOverride = TextStyle(color: Colors.black);
 

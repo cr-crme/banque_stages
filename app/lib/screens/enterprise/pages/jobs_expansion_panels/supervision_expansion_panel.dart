@@ -11,6 +11,9 @@ import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/supervision_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('SupervisionExpansionPanel');
 
 double _meanOf(
     List list, double Function(PostInternshipEnterpriseEvaluation) value) {
@@ -107,6 +110,9 @@ class _SupervisionBodyState extends State<_SupervisionBody> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building SupervisionExpansionPanel for job: ${widget.job.specialization.name}');
+
     final evaluations = _getFilteredEvaluations();
 
     return Column(

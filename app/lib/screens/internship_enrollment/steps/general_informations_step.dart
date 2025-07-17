@@ -7,13 +7,16 @@ import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
+import 'package:common_flutter/widgets/student_picker_tile.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/students_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
-import 'package:common_flutter/widgets/student_picker_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('GeneralInformationsStep');
 
 List<Student> _studentsWithoutInternship(context, List<Student> students) {
   final List<Student> out = [];
@@ -68,6 +71,9 @@ class GeneralInformationsStepState extends State<GeneralInformationsStep> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building GeneralInformationsStep for enterprise: ${enterprise.id}');
+
     return FocusScope(
       child: Form(
         key: formKey,
@@ -106,6 +112,9 @@ class _GeneralInformations extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building _GeneralInformations with selected student: ${studentController.student?.id}');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -138,6 +147,9 @@ class _MainJob extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger
+        .finer('Building _MainJob with controller job: ${controller.job.id}');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -218,6 +230,9 @@ class _ExtraSpecialization extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building _ExtraSpecialization with ${controllers.length} controllers');
+
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, top: 24.0),
       child: Column(
@@ -298,6 +313,10 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building _SupervisionInformation for enterprise: ${widget.enterprise?.id} '
+        'and contact id: ${widget.enterprise?.contact.id}');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

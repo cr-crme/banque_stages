@@ -3,6 +3,9 @@ import 'package:common/models/enterprises/job_list.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('JobsPage');
 
 class JobsPage extends StatefulWidget {
   const JobsPage({super.key});
@@ -16,6 +19,8 @@ class JobsPageState extends State<JobsPage> {
   final _jobsControllers = <EnterpriseJobListController>[];
 
   bool validate() {
+    _logger.finer('Validating JobsPage with ${_jobsControllers.length} jobs');
+
     _formKey.currentState!.save();
 
     if (_jobsControllers.isEmpty) return false;
@@ -38,6 +43,8 @@ class JobsPageState extends State<JobsPage> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building JobsPage with ${_jobsControllers.length} jobs');
+
     return FocusScope(
       child: Form(
         key: _formKey,

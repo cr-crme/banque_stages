@@ -2,6 +2,9 @@ import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common_flutter/widgets/address_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('InformationsPage');
 
 class InformationsPage extends StatefulWidget {
   const InformationsPage({super.key});
@@ -24,6 +27,8 @@ class InformationsPageState extends State<InformationsPage> {
       _activityTypesController.activityTypes;
 
   Future<String?> validate() async {
+    _logger.finer('Validating InformationsPage with name: $name');
+
     await addressController.requestValidation();
 
     if (!_formKey.currentState!.validate()) {
@@ -37,6 +42,8 @@ class InformationsPageState extends State<InformationsPage> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building InformationsPage of with name: $name');
+
     return Form(
       key: _formKey,
       child: SingleChildScrollView(

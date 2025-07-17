@@ -1,6 +1,9 @@
 import 'package:common/models/enterprises/job.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('CommentsExpansionPanel');
 
 class CommentsExpansionPanel extends ExpansionPanel {
   CommentsExpansionPanel({
@@ -27,6 +30,9 @@ class _SstBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building CommentsExpansionPanel for job: ${job.specialization.name}');
+
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(

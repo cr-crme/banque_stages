@@ -5,6 +5,9 @@ import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('EnterpriseCard');
 
 class EnterpriseCard extends StatelessWidget {
   const EnterpriseCard({
@@ -18,6 +21,9 @@ class EnterpriseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building EnterpriseCard for enterprise with id: ${enterprise.id}');
+
     final schoolId = AuthProvider.of(context, listen: false).schoolId ?? '';
 
     final jobs = enterprise.availablejobs(context);

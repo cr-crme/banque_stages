@@ -24,6 +24,7 @@ dependencies:
   flutter_map_cancellable_tile_provider: ^3.1.0
   latlong2: ^0.9.1
   url_launcher: ^6.1.10
+  logging: ^1.0.3
 
 dependency_overrides:
   enhanced_containers_foundation:

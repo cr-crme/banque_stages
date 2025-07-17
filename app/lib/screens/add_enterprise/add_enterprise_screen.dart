@@ -10,10 +10,13 @@ import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
 import 'pages/contact_page.dart';
 import 'pages/informations_page.dart';
 import 'pages/jobs_page.dart';
+
+final _logger = Logger('AddEnterpriseScreen');
 
 class AddEnterpriseScreen extends StatefulWidget {
   const AddEnterpriseScreen({super.key});
@@ -45,6 +48,8 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   }
 
   void _previousStep() {
+    _logger.finer('Previous step in AddEnterpriseScreen: $_currentStep');
+
     if (_currentStep == 0) return;
 
     _currentStep -= 1;
@@ -53,6 +58,8 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   }
 
   void _nextStep() async {
+    _logger.finer('Next step in AddEnterpriseScreen: $_currentStep');
+
     bool valid = false;
     String? message;
     if (_currentStep >= 0) {
@@ -106,6 +113,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   }
 
   void _submit() async {
+    _logger.info('Submitting enterprise form');
     final teachers = TeachersProvider.of(context, listen: false);
     final enterprises = EnterprisesProvider.of(context, listen: false);
     final myTeacher = teachers.myTeacher;
@@ -153,20 +161,25 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
               ],
             ));
 
+    _logger.fine('Entreprise added: ${enterprise.name}');
     if (mounted) Navigator.pop(context);
   }
 
   void _cancel() async {
+    _logger.info('Canceling enterprise form');
     final navigator = Navigator.of(context);
     final result = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'));
     if (!mounted || !result) return;
 
+    _logger.fine('AddEnterpriseScreen cancelled by user.');
     navigator.pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building AddEnterpriseScreen');
+
     return PopScope(
       child: SizedBox(
         width: ResponsiveService.maxBodyWidth,

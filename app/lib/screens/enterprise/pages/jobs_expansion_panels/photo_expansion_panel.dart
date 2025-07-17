@@ -2,6 +2,9 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('PhotoExpansionPanel');
 
 class PhotoExpansionPanel extends ExpansionPanel {
   PhotoExpansionPanel({
@@ -110,6 +113,9 @@ class _PhotoBodyState extends State<_PhotoBody> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building PhotoExpansionPanel for job: ${widget.job.specialization.name}');
+
     final canLeftScroll =
         _scrollController.hasClients && _scrollController.offset > 0;
 

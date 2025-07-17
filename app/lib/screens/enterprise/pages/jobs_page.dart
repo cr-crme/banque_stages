@@ -17,16 +17,18 @@ import 'package:crcrme_banque_stages/common/widgets/dialogs/job_creator_dialog.d
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/misc/storage_service.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/pages/jobs_expansion_panels/comments_expansion_panel.dart';
 import 'package:crcrme_banque_stages/screens/enterprise/pages/jobs_expansion_panels/incidents_expansion_panel.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/pages/jobs_expansion_panels/photo_expansion_panel.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/pages/jobs_expansion_panels/prerequisites_expansion_panel.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/pages/jobs_expansion_panels/sst_expansion_panel.dart';
+import 'package:crcrme_banque_stages/screens/enterprise/pages/jobs_expansion_panels/supervision_expansion_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'jobs_expansion_panels/comments_expansion_panel.dart';
-import 'jobs_expansion_panels/photo_expansion_panel.dart';
-import 'jobs_expansion_panels/prerequisites_expansion_panel.dart';
-import 'jobs_expansion_panels/sst_expansion_panel.dart';
-import 'jobs_expansion_panels/supervision_expansion_panel.dart';
+final _logger = Logger('JobsPage');
 
 class JobsPage extends StatefulWidget {
   const JobsPage({
@@ -51,18 +53,21 @@ class JobsPageState extends State<JobsPage> {
 
   bool get isEditing => _isEditingPrerequisites.containsValue(true);
   void cancelEditing() {
+    _logger.info('Canceling editing in JobsPage');
     for (final e in _isEditingPrerequisites.keys) {
       _isEditingPrerequisites[e] = false;
     }
+    _logger.fine('Editing cancelled in JobsPage');
     setState(() {});
   }
 
   Future<void> addJob() async {
+    _logger.finer('Adding job for enterprise: ${widget.enterprise.id}');
     final enterprises = EnterprisesProvider.of(context, listen: false);
 
     // Building the dialog in a Scaffold allows for the Snackbar to be shown
     // over the dialog box
-    final newJob = await showDialog(
+    final newJob = await showDialog<Job>(
       context: context,
       builder: (context) => Scaffold(
         backgroundColor: Colors.transparent,
@@ -73,9 +78,11 @@ class JobsPageState extends State<JobsPage> {
     if (newJob == null) return;
     widget.enterprise.jobs.add(newJob);
     enterprises.replace(widget.enterprise);
+    _logger.finer('Job added: ${newJob.specialization.name}');
   }
 
   void _addImage(Job job, ImageSource source) async {
+    _logger.finer('Adding image to job: ${job.specialization.name}');
     final enterprises = EnterprisesProvider.of(context, listen: false);
 
     late List<XFile?> images;
@@ -92,17 +99,21 @@ class JobsPageState extends State<JobsPage> {
     }
 
     enterprises.replace(widget.enterprise);
+    _logger.finer('Image(s) added to job: ${job.specialization.name}');
   }
 
   void _removeImage(Job job, int index) async {
+    _logger.finer('Removing image from job: ${job.specialization.name}');
     final enterprises = EnterprisesProvider.of(context, listen: false);
     await StorageService.instance.removeJobImage(job.photosUrl[index]);
     job.photosUrl.removeAt(index);
 
     enterprises.replace(widget.enterprise);
+    _logger.finer('Image removed from job: ${job.specialization.name}');
   }
 
   void _addSstEvent(Job job) async {
+    _logger.finer('Adding SST event to job: ${job.specialization.name}');
     final enterprises = EnterprisesProvider.of(context, listen: false);
 
     final result = await showDialog(
@@ -125,9 +136,11 @@ class JobsPageState extends State<JobsPage> {
         break;
     }
     enterprises.replaceJob(widget.enterprise, job);
+    _logger.finer('SST event added to job: ${job.specialization.name}');
   }
 
   void _addComment(Job job) async {
+    _logger.finer('Adding comment to job: ${job.specialization.name}');
     final enterprises = EnterprisesProvider.of(context, listen: false);
 
     final newComment = await showDialog(
@@ -141,6 +154,7 @@ class JobsPageState extends State<JobsPage> {
     if (newComment == null) return;
     job.comments.add(newComment);
     enterprises.replace(widget.enterprise);
+    _logger.finer('Comment added to job: ${job.specialization.name}');
   }
 
   void _updateSectionsIfNeeded() {
@@ -185,6 +199,8 @@ class JobsPageState extends State<JobsPage> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building JobsPage for enterprise: ${widget.enterprise.id}');
+
     final authProvider = AuthProvider.of(context, listen: false);
 
     _updateSectionsIfNeeded();

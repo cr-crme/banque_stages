@@ -2,6 +2,9 @@ import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('ContactPage');
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -23,6 +26,7 @@ class ContactPageState extends State<ContactPage> {
   /// Validate if all the fields are correct
   ///
   Future<String?> validate() async {
+    _logger.finer('Validating ContactPage');
     _formKey.currentState!.save();
 
     if (!_formKey.currentState!.validate()) {
@@ -34,6 +38,8 @@ class ContactPageState extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building ContactPage');
+
     return Form(
       key: _formKey,
       child: SingleChildScrollView(

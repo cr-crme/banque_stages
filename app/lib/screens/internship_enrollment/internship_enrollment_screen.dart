@@ -16,11 +16,13 @@ import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.da
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/general_informations_step.dart';
+import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
 
-import 'steps/general_informations_step.dart';
-import 'steps/schedule_step.dart';
+final _logger = Logger('InternshipEnrollmentScreen');
 
 class InternshipEnrollmentScreen extends StatefulWidget {
   const InternshipEnrollmentScreen({
@@ -49,6 +51,8 @@ class _InternshipEnrollmentScreenState
   final List<StepState> _stepStatus = [StepState.indexed, StepState.indexed];
 
   void _previousStep() {
+    _logger.finer('Going to previous step: $_currentStep');
+
     if (_currentStep == 0) return;
     _currentStep -= 1;
     _scrollController.jumpTo(0);
@@ -56,6 +60,8 @@ class _InternshipEnrollmentScreenState
   }
 
   void _nextStep() async {
+    _logger.finer('Going to next step: $_currentStep');
+
     final formKeys = [
       _generalInfoKey.currentState!.formKey,
       _scheduleKey.currentState!.formKey,
@@ -84,6 +90,7 @@ class _InternshipEnrollmentScreenState
     }
 
     // Submit
+    _logger.info('Submitting internship enrollment form');
     _generalInfoKey.currentState!.formKey.currentState!.save();
     _scheduleKey.currentState!.formKey.currentState!.save();
     final enterprise = EnterprisesProvider.of(context, listen: false)
@@ -157,6 +164,7 @@ class _InternshipEnrollmentScreenState
               ],
             ));
 
+    _logger.finer('Internship enrollment form submitted successfully');
     if (!mounted) return;
     Navigator.pop(context);
     GoRouter.of(context).pushNamed(
@@ -167,16 +175,21 @@ class _InternshipEnrollmentScreenState
   }
 
   void _cancel() async {
+    _logger.info('Canceling internship enrollment form');
     final navigator = Navigator.of(context);
     final answer = await ConfirmExitDialog.show(context,
         content: const Text('Toutes les modifications seront perdues.'));
     if (!mounted || !answer) return;
 
+    _logger.finer('Internship enrollment form canceled');
     navigator.pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building InternshipEnrollmentScreen for enterprise: ${widget.enterprise.id}');
+
     return SizedBox(
       width: ResponsiveService.maxBodyWidth,
       child: Scaffold(

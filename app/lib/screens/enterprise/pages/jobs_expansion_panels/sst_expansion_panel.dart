@@ -5,6 +5,9 @@ import 'package:crcrme_banque_stages/misc/question_file_service.dart';
 import 'package:crcrme_banque_stages/screens/job_sst_form/job_sst_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('SstExpansionPanel');
 
 class SstExpansionPanel extends ExpansionPanel {
   SstExpansionPanel({
@@ -34,6 +37,9 @@ class _SstBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building SstExpansionPanel for job: ${job.specialization.name}');
+
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(

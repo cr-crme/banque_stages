@@ -9,6 +9,9 @@ import 'package:crcrme_banque_stages/common/extensions/time_of_day_extension.dar
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('ScheduleStep');
 
 class WeeklySchedulesController {
   List<WeeklySchedule> weeklySchedules = [];
@@ -32,16 +35,23 @@ class WeeklySchedulesController {
   }
 
   void addWeeklySchedule(WeeklySchedule newSchedule) {
+    _logger.finer('Adding new weekly schedule: ${newSchedule.id}');
+
     weeklySchedules.add(newSchedule);
     _hasChanged = true;
   }
 
   void removedWeeklySchedule(int weeklyIndex) {
+    _logger.finer('Removing weekly schedule at index: $weeklyIndex');
+
     weeklySchedules.removeAt(weeklyIndex);
     _hasChanged = true;
   }
 
   void addToDailySchedule(int weeklyIndex, DailySchedule newDay) {
+    _logger.finer(
+        'Adding new daily (id: ${newDay.id}) schedule to weekly index: $weeklyIndex');
+
     weeklySchedules[weeklyIndex].schedule.add(newDay);
     weeklySchedules[weeklyIndex]
         .schedule
@@ -57,6 +67,9 @@ class WeeklySchedulesController {
     required time_utils.TimeOfDay breakStart,
     required time_utils.TimeOfDay breakEnd,
   }) {
+    _logger.finer(
+        'Updating daily schedule (weekly index: $weeklyIndex, daily index: $dailyIndex)');
+
     weeklySchedules[weeklyIndex].schedule[dailyIndex] =
         weeklySchedules[weeklyIndex].schedule[dailyIndex].copyWith(
             start: start, end: end, breakStart: breakStart, breakEnd: breakEnd);
@@ -64,6 +77,9 @@ class WeeklySchedulesController {
   }
 
   void removedDailyScheduleTime(context, int weeklyIndex, int dailyIndex) {
+    _logger.finer(
+        'Removing daily schedule (weekly index: $weeklyIndex, daily index: $dailyIndex)');
+
     if (weeklySchedules[weeklyIndex].schedule.length == 1) {
       showSnackBar(
         context,
@@ -77,6 +93,8 @@ class WeeklySchedulesController {
 
   void updateDailyScheduleRange(
       int weeklyIndex, time_utils.DateTimeRange newRange) {
+    _logger.finer(
+        'Updating date range for weekly schedule at index: $weeklyIndex');
     weeklySchedules[weeklyIndex] =
         weeklySchedules[weeklyIndex].copyWith(period: newRange);
     _hasChanged = true;
@@ -153,6 +171,8 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer('Building ScheduleStep widget');
+
     return FocusScope(
       child: Form(
         key: formKey,

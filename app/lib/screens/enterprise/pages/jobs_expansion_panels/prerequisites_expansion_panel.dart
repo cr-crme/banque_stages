@@ -6,6 +6,9 @@ import 'package:common_flutter/widgets/radio_with_follow_up.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
+
+final _logger = Logger('PrerequisitesExpansionPanel');
 
 class PrerequisitesExpansionPanel extends ExpansionPanel {
   PrerequisitesExpansionPanel({
@@ -94,6 +97,9 @@ class PrerequisitesBodyState extends State<_PrerequisitesBody> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.finer(
+        'Building PrerequisitesExpansionPanel for job: ${widget.job.specialization.name}');
+
     return FocusScope(
       child: Form(
         key: formKey,

@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _password;
 
   void _signIn() async {
-    _logger.info('Attempting to sign in with email: $_email');
+    _logger.fine('Attempting to sign in with email: $_email');
     if (!FormService.validateForm(_formKey, save: true)) return;
 
     try {
