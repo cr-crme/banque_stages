@@ -5,3 +5,6 @@
 # Build and coverage
 build/
 coverage/
+
+# The database production information
+resources/database/production/docker-compose.yml

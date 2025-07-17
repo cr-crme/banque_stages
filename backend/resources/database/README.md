@@ -23,11 +23,13 @@ The service will be started automatically.
 # Debug
 
 If you are developping, you may want to run your own version of the database. 
-To do so, use the `docker-compose.yml` file provide by running the following command from the ROOT/database directory:
+To do so, use the `docker-compose.yml` file provide by running the following command from the ROOT/database/[dev or production] directory:
 `docker-compose up -d`
 
 To stop the database, you can run the following command:
 `docker-compose down`
+
+NOTE: Please note that the production directory does not directly contain the `docker-compose.yml` file, but rather a `docker-compose.yml.default` file which must be copy-pasted and filled to `docker-compose.yml` before running the command.
 
 To interact with the database, you can run the following command: 
 `docker exec -it banque_stage_container mysql -u devuser -p`

@@ -1,15 +1,15 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: banque_stage_container
+    container_name: banque_stage_production
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=dev_db
-      - MYSQL_USER=devuser
-      - MYSQL_PASSWORD=devpassword
+      - MYSQL_ROOT_PASSWORD=<FILL_PASSWORD>
+      - MYSQL_DATABASE=production_db
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=<ADMIN_PASSWORD>
     ports:
-      - "3306:3306"
+      - "3307:3307"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:

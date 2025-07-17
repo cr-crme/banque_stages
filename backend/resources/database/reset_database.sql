@@ -1,5 +1,8 @@
 /* Use the database (create if not exist) */
 USE dev_db;
+/* WARNING: Uncommenting the following line will switch to the production database */
+/* which will clear all data. This is irreversible and probably not what you want to do. */
+/* USE production_db; */
 
 /* Clear the database */
 SET FOREIGN_KEY_CHECKS = 0;
