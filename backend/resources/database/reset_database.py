@@ -26,7 +26,7 @@ else:
     if not _password:
         raise ValueError("Environment variable DATABASE_PRODUCTION_ADMIN_PASSWORD is not set.")
 
-_base_docker_command = f"docker exec -i {_container_name} mysql -u {_user} -p{_password}".split()
+_base_docker_command = f"docker exec -i {_container_name} mysql -vvv -u {_user} -p{_password} {_database}"
 
 
 def main(super_admin_email: str):
@@ -55,14 +55,14 @@ def main(super_admin_email: str):
 
 def reset_database(sql_filepath: str) -> bool:
     # Run the command to reset the database
-    with open(sql_filepath, "rb") as sql_file:
-        result = subprocess.run(_base_docker_command, stdin=sql_file, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    cmd = f"cat {sql_filepath} | {_base_docker_command}"
+    result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     # Check if the command was successful
     if result.returncode == 0:
         return True
     else:
-        print(result.stderr.decode())
+        print(result.stderr)
         return False
 
 
@@ -77,7 +77,7 @@ def add_super_admin_user(super_admin_email: str) -> bool:
     if not _perform_query(query):
         return False
 
-    query = f"""
+    query = f"""    
     INSERT INTO admins (id, school_board_id, first_name, last_name, email, access_level) 
     VALUES ('{id}', '', 'Super', 'Admin', '{super_admin_email}', 3);
     """
@@ -89,11 +89,10 @@ def add_super_admin_user(super_admin_email: str) -> bool:
 
 def _perform_query(query: str) -> bool:
     # Run the query against the database
-    result = subprocess.run(
-        _base_docker_command + [_database, "-e", query], stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
+    cmd = f'{_base_docker_command} -e "{query}"'
+    result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     if result.returncode != 0:
-        print(f"Error executing query: {result.stderr.decode()}")
+        print(f"Error executing query: {result.stderr}")
         return False
     return True
 
