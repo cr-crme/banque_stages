@@ -1,4 +1,5 @@
 class BackendHelpers {
+  // TODO Change the SECRET
   static String backendProtocol({required bool isSecured}) =>
       isSecured ? 'wss' : 'ws';
   static const String backendIp = 'localhost';
