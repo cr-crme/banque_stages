@@ -17,10 +17,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   final useMockers = false;
-  final backendUri = BackendHelpers.backendUri(
-    isSecured: !useMockers,
-    isDev: useMockers,
-  );
+  final backendUri = BackendHelpers.backendUri(isSecured: false, isDev: true);
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

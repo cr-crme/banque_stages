@@ -19,12 +19,9 @@ void main() async {
   BugReporter.loggerSetup();
   const showDebugElements = true;
   const useMockers = false;
-  final backendUri = BackendHelpers.backendUri(
-    isSecured: !useMockers,
-    isDev: useMockers,
-  );
+  final backendUri = BackendHelpers.backendUri(isSecured: false, isDev: false);
   final errorReportUri =
-      BackendHelpers.backendUriForBugReport(isSecured: !useMockers);
+      BackendHelpers.backendUriForBugReport(isSecured: false);
 
   await runZonedGuarded(
     () async {
