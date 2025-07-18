@@ -4,6 +4,7 @@ import 'package:backend/server/connexions.dart';
 import 'package:backend/server/bug_report_management.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:backend/utils/network_rate_limiter.dart';
+import 'package:common/services/backend_helpers.dart';
 import 'package:logging/logging.dart';
 
 final _logger = Logger('AnswerHttpRequest');
@@ -71,7 +72,8 @@ class HttpRequestHandler {
   }
 
   Future<void> _answerGetRequest(HttpRequest request) async {
-    if (request.uri.path == '/connect') {
+    if (request.uri.path ==
+        '/${BackendHelpers.connectEndpoint(isDev: false)}') {
       _logger.info('Received a connection request to the production database');
       try {
         _productionConnexions.add(await WebSocketTransformer.upgrade(request));
@@ -80,7 +82,8 @@ class HttpRequestHandler {
         _logger.severe('Error during WebSocket upgrade: $e');
         throw ConnexionRefusedException('WebSocket upgrade failed');
       }
-    } else if (request.uri.path == '/dev-connect') {
+    } else if (request.uri.path ==
+        '/${BackendHelpers.connectEndpoint(isDev: true)}') {
       _logger.info('Received a connection request to the development database');
       try {
         _devConnexions?.add(await WebSocketTransformer.upgrade(request));
@@ -89,18 +92,14 @@ class HttpRequestHandler {
         _logger.severe('Error during WebSocket upgrade: $e');
         throw ConnexionRefusedException('WebSocket upgrade failed');
       }
-    } else if (request.uri.path == '/admin') {
-      throw ConnexionRefusedException('Invalid endpoint');
     } else {
       throw ConnexionRefusedException('Invalid endpoint');
     }
   }
 
   Future<void> _answerPostRequest(HttpRequest request) async {
-    if (request.uri.path == '/bug-report') {
+    if (request.uri.path == '/${BackendHelpers.bugReportEndpoint}') {
       await answerBugReportRequest(request);
-    } else if (request.uri.path == '/admin') {
-      throw ConnexionRefusedException('Invalid endpoint');
     } else {
       throw ConnexionRefusedException('Invalid endpoint');
     }

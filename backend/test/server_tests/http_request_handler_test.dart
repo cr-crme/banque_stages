@@ -91,17 +91,4 @@ void main() {
     final response = request.response as HttpResponseMock;
     expect(response.response, null);
   });
-
-  test(
-      'Send a GET request to the /admin endpoint (refused as not implemented yet)',
-      () async {
-    final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/admin'));
-    final requestHandler = HttpRequestHandler(
-        devConnexions: _mockedConnexions,
-        productionConnexions: _mockedConnexions);
-    await requestHandler.answer(request);
-
-    final response = request.response as HttpResponseMock;
-    expect(response.response, 'Unauthorized: Invalid endpoint');
-  });
 }

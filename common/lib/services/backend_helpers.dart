@@ -3,13 +3,15 @@ class BackendHelpers {
       isSecured ? 'wss' : 'ws';
   static const String backendIp = 'localhost';
   static const int backendPort = 3456;
-  static String backendEndpoint({required bool isDev}) =>
+  static String connectEndpoint({required bool isDev}) =>
       '${isDev ? 'dev-' : ''}connect';
+  static String get bugReportEndpoint => 'bug-report';
+
   static Uri backendUri({required bool isSecured, required bool isDev}) =>
       Uri.parse(
-          '${backendProtocol(isSecured: isSecured)}://$backendIp:$backendPort/${backendEndpoint(isDev: isDev)}');
+          '${backendProtocol(isSecured: isSecured)}://$backendIp:$backendPort/${connectEndpoint(isDev: isDev)}');
   static Uri backendUriForBugReport({required bool isSecured}) => Uri.parse(
-      '${isSecured ? 'https' : 'http'}://$backendIp:$backendPort/bug-report');
+      '${isSecured ? 'https' : 'http'}://$backendIp:$backendPort/$bugReportEndpoint');
 
   static const String devDatabaseName = 'dev_db';
   static const int devDatabasePort = 3306;
