@@ -19,7 +19,7 @@ void main() async {
   BugReporter.loggerSetup();
   const showDebugElements = true;
   const useMockers = false;
-  final backendUri = BackendHelpers.backendUri(isSecured: false, isDev: false);
+  final backendUri = BackendHelpers.backendUri(isSecured: false, isDev: true);
   final errorReportUri =
       BackendHelpers.backendUriForBugReport(isSecured: false);
 
