@@ -42,6 +42,50 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {});
   }
 
+  Future<void> _showForgotPasswordDialog() async {
+    final emailController = TextEditingController(text: _email);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Réinitialiser le mot de passe'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Un lien de réinitialisation du mot de passe sera envoyé\n'
+                'à l\'adresse courriel.',
+              ),
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.mail),
+                  labelText: 'Courriel',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            OutlinedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Annuler'),
+            ),
+            TextButton(
+              onPressed: () {
+                AuthProvider.of(context).resetPassword(emailController.text);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Réinitialiser'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Calling the provider jumps start the authentication process and ensures data arrival
@@ -103,7 +147,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             validator: FormService.emailValidator,
                             keyboardType: TextInputType.emailAddress,
-                            onSaved: (email) => _email = email,
+                            onChanged: (email) => _email = email,
+                            onFieldSubmitted: (_) => _signIn(),
                           ),
                           const SizedBox(height: 8),
                           TextFormField(
@@ -117,11 +162,22 @@ class _LoginScreenState extends State<LoginScreen> {
                             enableSuggestions: false,
                             autocorrect: false,
                             onSaved: (password) => _password = password,
+                            onFieldSubmitted: (_) => _signIn(),
                           ),
                           const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: _signIn,
                             child: const Text('Se connecter'),
+                          ),
+                          const SizedBox(height: 8),
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: () {
+                                _showForgotPasswordDialog();
+                              },
+                              child: Text('Mot de passe oublié ?'),
+                            ),
                           ),
                         ],
                       ),
