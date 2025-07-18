@@ -1,5 +1,6 @@
 import 'package:admin_app/firebase_options.dart';
 import 'package:admin_app/screens/router.dart';
+import 'package:common/services/backend_helpers.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
@@ -16,13 +17,16 @@ import 'package:provider/provider.dart';
 
 void main() async {
   final useMockers = false;
-  final backendUrl = Uri.parse('ws://localhost:3456/connect');
+  final backendUri = BackendHelpers.backendUri(
+    isSecured: !useMockers,
+    isDev: useMockers,
+  );
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   initializeDateFormatting('fr_CA');
 
-  runApp(Home(useMockers: useMockers, backendUri: backendUrl));
+  runApp(Home(useMockers: useMockers, backendUri: backendUri));
 }
 
 class Home extends StatelessWidget {

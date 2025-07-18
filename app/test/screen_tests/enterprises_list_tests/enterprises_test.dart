@@ -1,3 +1,4 @@
+import 'package:common/services/backend_helpers.dart';
 import 'package:crcrme_banque_stages/main.dart';
 import 'package:crcrme_banque_stages/program_helpers.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/widgets/enterprise_card.dart';
@@ -11,7 +12,10 @@ void main() {
     ProgramInitializer.initialize(showDebugElements: true, mockMe: true);
 
     testWidgets('About page', (WidgetTester tester) async {
-      await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
+      await tester.pumpWidget(BanqueStagesApp(
+          useMockers: true,
+          backendUri:
+              BackendHelpers.backendUri(isSecured: false, isDev: true)));
       await tester.loadDummyData();
 
       await tester.navigateToScreen(ScreenTest.enterprises);

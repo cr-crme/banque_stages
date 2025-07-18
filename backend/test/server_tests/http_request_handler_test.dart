@@ -27,7 +27,9 @@ Connexions get _mockedConnexions => Connexions(
 void main() {
   test('Send an a preflight request', () async {
     final request = HttpRequestMock(method: 'OPTIONS', uri: Uri.parse('/'));
-    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
+    final requestHandler = HttpRequestHandler(
+        devConnexions: _mockedConnexions,
+        productionConnexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
@@ -42,7 +44,9 @@ void main() {
 
   test('Send a POST request', () async {
     final request = HttpRequestMock(method: 'POST', uri: Uri.parse('/'));
-    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
+    final requestHandler = HttpRequestHandler(
+        devConnexions: _mockedConnexions,
+        productionConnexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
@@ -51,7 +55,9 @@ void main() {
 
   test('Send a GET resquest to an invalid endpoit', () async {
     final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/'));
-    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
+    final requestHandler = HttpRequestHandler(
+        devConnexions: _mockedConnexions,
+        productionConnexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
@@ -63,7 +69,9 @@ void main() {
         method: 'GET',
         uri: Uri.parse('/connect'),
         forceFailToUpgradeToWebSocket: true);
-    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
+    final requestHandler = HttpRequestHandler(
+        devConnexions: _mockedConnexions,
+        productionConnexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;
@@ -72,7 +80,9 @@ void main() {
 
   test('Send a GET request to the /connect endpoint', () async {
     final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/connect'));
-    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
+    final requestHandler = HttpRequestHandler(
+        devConnexions: _mockedConnexions,
+        productionConnexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     // This test creates a true WebSocket connection (as opposed to a mock)
@@ -86,7 +96,9 @@ void main() {
       'Send a GET request to the /admin endpoint (refused as not implemented yet)',
       () async {
     final request = HttpRequestMock(method: 'GET', uri: Uri.parse('/admin'));
-    final requestHandler = HttpRequestHandler(connexions: _mockedConnexions);
+    final requestHandler = HttpRequestHandler(
+        devConnexions: _mockedConnexions,
+        productionConnexions: _mockedConnexions);
     await requestHandler.answer(request);
 
     final response = request.response as HttpResponseMock;

@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: banque_stage_dev
+    container_name: banque_stages_dev
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root
@@ -13,11 +13,11 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - dev_network
+      - network
 
 volumes:
   mysql_data:
 
 
 networks:
-  dev_network:
+  network:

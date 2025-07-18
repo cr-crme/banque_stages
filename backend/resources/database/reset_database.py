@@ -6,11 +6,31 @@ import subprocess
 import uuid
 
 
-_database = "dev_db"
-_base_docker_command = "docker exec -i banque_stage_container mysql -u devuser -pdevpassword".split()
+_use_dev_database = True  # Set to False for production
+if _use_dev_database:
+    _database = "dev_db"
+    _container_name = "banque_stages_dev"
+    _user = "devuser"
+    _password = "devpassword"
+else:
+    # raise ValueError(
+    #     "This script is intended for development use only.\n"
+    #     "If you REALLY want to reset the production database, comment this line.\n"
+    #     "If you do so, do not forget to uncomment the 'USE production_db;' line in reset_database.sql"
+    # )
+    # For production, you might want to change this to your production database name
+    _database = "production_db"
+    _container_name = "banque_stages_production"
+    _user = "admin"
+    _password = os.getenv("DATABASE_PRODUCTION_ADMIN_PASSWORD")
+    if not _password:
+        raise ValueError("Environment variable DATABASE_PRODUCTION_ADMIN_PASSWORD is not set.")
+
+_base_docker_command = f"docker exec -i {_container_name} mysql -u {_user} -p{_password}".split()
 
 
 def main(super_admin_email: str):
+
     # Get the path to the SQL file
     sql_filename = "reset_database.sql"
     sql_file_path = os.path.join(os.path.dirname(__file__), sql_filename)
@@ -35,7 +55,6 @@ def main(super_admin_email: str):
 
 def reset_database(sql_filepath: str) -> bool:
     # Run the command to reset the database
-    # docker exec -i banque_stage_container mysql -u devuser -pdevpassword < reset_database.sql
     with open(sql_filepath, "rb") as sql_file:
         result = subprocess.run(_base_docker_command, stdin=sql_file, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 

@@ -10,6 +10,7 @@ import 'package:backend/server/connexions.dart';
 import 'package:backend/server/database_manager.dart';
 import 'package:backend/server/http_request_handler.dart';
 import 'package:backend/utils/network_rate_limiter.dart';
+import 'package:common/services/backend_helpers.dart';
 import 'package:firebase_admin/firebase_admin.dart';
 import 'package:firebase_admin/src/auth/credential.dart';
 import 'package:logging/logging.dart';
@@ -18,6 +19,23 @@ import 'package:mysql1/mysql1.dart';
 final _logger = Logger('BackendServer');
 
 enum DatabaseBackend { mysql, mock }
+
+final _databaseBackend = DatabaseBackend.mysql;
+final _backendIp = InternetAddress.loopbackIPv4;
+final _backendPort = BackendHelpers.backendPort;
+final _devSettings = ConnectionSettings(
+    host: 'localhost',
+    port: BackendHelpers.devDatabasePort,
+    user: 'devuser',
+    password: 'devpassword',
+    db: BackendHelpers.devDatabaseName);
+final _productionSettings = ConnectionSettings(
+  host: 'localhost',
+  port: BackendHelpers.productionDatabasePort,
+  user: 'admin',
+  password: null,
+  db: BackendHelpers.productionDatabaseName,
+);
 
 void main() async {
   // Set up logging
@@ -41,26 +59,57 @@ void main() async {
     exit(1);
   }
 
-  // Set up the database backend
-  final databaseBackend = DatabaseBackend.mysql;
+  // Create an HTTP server listening on localhost:_backendPort
+  var server = await HttpServer.bind(_backendIp, _backendPort);
+  _logger.info('Server running on http://${_backendIp.address}:$_backendPort/');
+  _logger.info('Using database backend: ${_databaseBackend.name}');
 
-  // Create an HTTP server listening on localhost:3456
-  var server = await HttpServer.bind(InternetAddress.loopbackIPv4, 3456);
-  _logger.info('Server running on http://localhost:3456');
+  final devConnexions = await _connectDatabase(
+      databaseBackend: _databaseBackend,
+      firebaseApiKey: firebaseApiKey,
+      settings: _devSettings);
 
-  _logger.info('Using database backend: ${databaseBackend.name}');
+  _productionSettings.password =
+      Platform.environment['DATABASE_PRODUCTION_ADMIN_PASSWORD'];
+  if (_productionSettings.password == null ||
+      _productionSettings.password!.isEmpty) {
+    _logger.severe(
+        'DATABASE_PRODUCTION_ADMIN_PASSWORD environment variable is not set.');
+    exit(1);
+  }
+  final productionConnexions = await _connectDatabase(
+      databaseBackend: _databaseBackend,
+      firebaseApiKey: firebaseApiKey,
+      settings: _productionSettings);
+
+  _logger.info('Waiting for requests...');
+  final requestHandler = HttpRequestHandler(
+      devConnexions: devConnexions, productionConnexions: productionConnexions);
+
+  final rateLimiter =
+      NetworkRateLimiter(maxRequests: 50, duration: Duration(minutes: 1));
+  await for (HttpRequest request in server) {
+    requestHandler.answer(request, rateLimiter: rateLimiter);
+  }
+
+  if (_databaseBackend == DatabaseBackend.mysql) {
+    await devConnexions.database.connection.close();
+    await productionConnexions.database.connection.close();
+  }
+}
+
+Future<Connexions> _connectDatabase({
+  required DatabaseBackend databaseBackend,
+  required String firebaseApiKey,
+  required ConnectionSettings settings,
+}) async {
   final connection = switch (databaseBackend) {
     DatabaseBackend.mock => null,
-    DatabaseBackend.mysql => await MySqlConnection.connect(ConnectionSettings(
-        host: 'localhost',
-        port: 3306,
-        user: 'devuser',
-        password: 'devpassword',
-        db: 'dev_db',
-      ))
+    DatabaseBackend.mysql => await MySqlConnection.connect(settings)
   };
-  await Future.delayed(
-      Duration(milliseconds: 100)); // Give a bit of time just in case
+  // Give a bit of time just in case
+  await Future.delayed(Duration(milliseconds: 100));
+
   final connexions = Connexions(
       firebaseApiKey: firebaseApiKey,
       database: DatabaseManager(
@@ -96,16 +145,5 @@ void main() async {
           DatabaseBackend.mock => InternshipsRepositoryMock()
         },
       ));
-
-  _logger.info('Waiting for requests...');
-  final requestHandler = HttpRequestHandler(connexions: connexions);
-  final rateLimiter =
-      NetworkRateLimiter(maxRequests: 50, duration: Duration(minutes: 1));
-  await for (HttpRequest request in server) {
-    requestHandler.answer(request, rateLimiter: rateLimiter);
-  }
-
-  if (databaseBackend == DatabaseBackend.mysql) {
-    await connection.close();
-  }
+  return connexions;
 }

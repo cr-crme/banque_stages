@@ -11,6 +11,7 @@
             "program": "bin/backend.dart",
             "env": {
                 "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
+                "DATABASE_PRODUCTION_ADMIN_PASSWORD": "<PUT YOUR DATABASE PASSWORD HERE>",
             },
         },
         {
@@ -21,6 +22,7 @@
             "console": "integratedTerminal",
             "env": {
                 "BANQUE_STAGE_SUPERADMIN_EMAIL": "<PUT EMAIL OF THE SUPERADMIN ACCOUNT HERE>",
+                "DATABASE_PRODUCTION_ADMIN_PASSWORD": "<PUT YOUR DATABASE PASSWORD HERE>",
             },
         },
     ]

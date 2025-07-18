@@ -9,7 +9,11 @@ sudo snap start docker
 docker-compose down
 
 # Start the Docker container for the database
+cd dev
 docker-compose up -d
+cd ../production
+docker-compose up -d
+cd ..
 
 # Reset the database
 docker exec -i dev_banque_stage mysql -u devuser < reset_database.sql

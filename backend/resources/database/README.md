@@ -32,7 +32,7 @@ To stop the database, you can run the following command:
 NOTE: Please note that the production directory does not directly contain the `docker-compose.yml` file, but rather a `docker-compose.yml.default` file which must be copy-pasted and filled to `docker-compose.yml` before running the command.
 
 To interact with the database, you can run the following command: 
-`docker exec -it banque_stage_container mysql -u devuser -p`
+`docker exec -it banque_stages_dev mysql -u devuser -p`
 
 
 # Database structure
@@ -46,7 +46,7 @@ This file contains the SQL commands to create the database and all the tables.
 ## Reset the database
 
 To reset the database, you can run the following command:
-`docker exec -i banque_stage_container mysql -u devuser -pdevpassword < reset_database.sql`
+`docker exec -i banque_stages_dev mysql -u devuser -pdevpassword < reset_database.sql`
 Make sure not to put space between the `-p` and the password.
 This will drop the database and create it again with the tables defined in the `reset_database.sql` file.
 

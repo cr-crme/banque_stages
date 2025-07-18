@@ -9,6 +9,7 @@
       "options": {
         "env": {
           "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
+          "DATABASE_PRODUCTION_ADMIN_PASSWORD": "<PUT YOUR DATABASE PASSWORD HERE>",
         }
       },
       "problemMatcher": [ ],

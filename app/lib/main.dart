@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:common/services/backend_helpers.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
@@ -18,6 +19,12 @@ void main() async {
   BugReporter.loggerSetup();
   const showDebugElements = true;
   const useMockers = false;
+  final backendUri = BackendHelpers.backendUri(
+    isSecured: !useMockers,
+    isDev: useMockers,
+  );
+  final errorReportUri =
+      BackendHelpers.backendUriForBugReport(isSecured: !useMockers);
 
   await runZonedGuarded(
     () async {
@@ -25,21 +32,20 @@ void main() async {
       await ProgramInitializer.initialize(
           showDebugElements: showDebugElements, mockMe: useMockers);
 
-      runApp(const BanqueStagesApp(useMockers: useMockers));
+      runApp(BanqueStagesApp(useMockers: useMockers, backendUri: backendUri));
     },
     (error, stackTrace) =>
-        BugReporter.report(error, stackTrace, errorReportUri: _errorReportUri),
+        BugReporter.report(error, stackTrace, errorReportUri: errorReportUri),
   );
 }
 // coverage:ignore-end
 
-final Uri _backendUri = Uri.parse('ws://localhost:3456/connect');
-final Uri _errorReportUri = Uri.parse('http://localhost:3456/bug-report');
-
 class BanqueStagesApp extends StatelessWidget {
-  const BanqueStagesApp({super.key, this.useMockers = false});
+  const BanqueStagesApp(
+      {super.key, this.useMockers = false, required this.backendUri});
 
   final bool useMockers;
+  final Uri backendUri;
 
   @override
   Widget build(BuildContext context) {
@@ -49,27 +55,27 @@ class BanqueStagesApp extends StatelessWidget {
             create: (context) => AuthProvider(mockMe: useMockers)),
         ChangeNotifierProxyProvider<AuthProvider, SchoolBoardsProvider>(
           create: (context) =>
-              SchoolBoardsProvider(uri: _backendUri, mockMe: useMockers),
+              SchoolBoardsProvider(uri: backendUri, mockMe: useMockers),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
         ChangeNotifierProxyProvider<AuthProvider, EnterprisesProvider>(
           create: (context) =>
-              EnterprisesProvider(uri: _backendUri, mockMe: useMockers),
+              EnterprisesProvider(uri: backendUri, mockMe: useMockers),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
         ChangeNotifierProxyProvider<AuthProvider, InternshipsProvider>(
           create: (context) =>
-              InternshipsProvider(uri: _backendUri, mockMe: useMockers),
+              InternshipsProvider(uri: backendUri, mockMe: useMockers),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
         ChangeNotifierProxyProvider<AuthProvider, TeachersProvider>(
           create: (context) =>
-              TeachersProvider(uri: _backendUri, mockMe: useMockers),
+              TeachersProvider(uri: backendUri, mockMe: useMockers),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
         ChangeNotifierProxyProvider<AuthProvider, StudentsProvider>(
           create: (context) =>
-              StudentsProvider(uri: _backendUri, mockMe: useMockers),
+              StudentsProvider(uri: backendUri, mockMe: useMockers),
           update: (context, auth, previous) => previous!..initializeAuth(auth),
         ),
       ],

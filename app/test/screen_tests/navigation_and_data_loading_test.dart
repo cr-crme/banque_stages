@@ -1,3 +1,4 @@
+import 'package:common/services/backend_helpers.dart';
 import 'package:crcrme_banque_stages/main.dart';
 import 'package:crcrme_banque_stages/program_helpers.dart';
 import 'package:crcrme_banque_stages/screens/enterprises_list/widgets/enterprise_card.dart';
@@ -15,7 +16,10 @@ void main() {
     testWidgets('Then opening page is My enterprises',
         (WidgetTester tester) async {
       // Load the app and navigate to the home page.
-      await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
+      await tester.pumpWidget(BanqueStagesApp(
+          useMockers: true,
+          backendUri:
+              BackendHelpers.backendUri(isSecured: false, isDev: true)));
 
       // Verify that the home page is "My students"
       expect(find.text(ScreenTest.enterprises.name), findsOneWidget);
@@ -24,7 +28,10 @@ void main() {
     testWidgets('The drawer navigates and closes on click',
         (WidgetTester tester) async {
       // Load the app and navigate and open the drawer.
-      await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
+      await tester.pumpWidget(BanqueStagesApp(
+          useMockers: true,
+          backendUri:
+              BackendHelpers.backendUri(isSecured: false, isDev: true)));
 
       // Verify that the drawer contains the expected tiles
       for (final screenNameOuter in ScreenTest.values) {
@@ -53,7 +60,10 @@ void main() {
       await ProgramInitializer.initialize(
           showDebugElements: false, mockMe: true);
       // Load the app and navigate to the home page (My enterprises).
-      await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
+      await tester.pumpWidget(BanqueStagesApp(
+          useMockers: true,
+          backendUri:
+              BackendHelpers.backendUri(isSecured: false, isDev: true)));
 
       // Verify the reinitialized button is hidden (as in production)
       await tester.openDrawer();
@@ -77,7 +87,10 @@ void main() {
     testWidgets('The dummy data are properly loaded',
         (WidgetTester tester) async {
       // Load the app and navigate to the home page.
-      await tester.pumpWidget(const BanqueStagesApp(useMockers: true));
+      await tester.pumpWidget(BanqueStagesApp(
+          useMockers: true,
+          backendUri:
+              BackendHelpers.backendUri(isSecured: false, isDev: true)));
 
       // Verify the home page is empty
       for (final enterprise in EnterpriseTest.values) {

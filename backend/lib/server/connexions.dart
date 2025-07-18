@@ -22,6 +22,7 @@ class Connexions {
   final Map<WebSocket, DatabaseUser> _clients = {};
   int get clientCount => _clients.length;
   final DatabaseManager _database;
+  DatabaseManager get database => _database;
   final Duration _timeout;
   final String _firebaseApiKey;
 

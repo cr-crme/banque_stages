@@ -9,10 +9,14 @@ import 'package:logging/logging.dart';
 final _logger = Logger('AnswerHttpRequest');
 
 class HttpRequestHandler {
-  final Connexions _connexions;
+  final Connexions? _devConnexions;
+  final Connexions _productionConnexions;
 
-  HttpRequestHandler({required Connexions connexions})
-      : _connexions = connexions;
+  HttpRequestHandler(
+      {required Connexions? devConnexions,
+      required Connexions productionConnexions})
+      : _devConnexions = devConnexions,
+        _productionConnexions = productionConnexions;
 
   Future<void> answer(HttpRequest request,
       {NetworkRateLimiter? rateLimiter}) async {
@@ -68,9 +72,18 @@ class HttpRequestHandler {
 
   Future<void> _answerGetRequest(HttpRequest request) async {
     if (request.uri.path == '/connect') {
-      _logger.info('Received a connection request');
+      _logger.info('Received a connection request to the production database');
       try {
-        _connexions.add(await WebSocketTransformer.upgrade(request));
+        _productionConnexions.add(await WebSocketTransformer.upgrade(request));
+        return;
+      } catch (e) {
+        _logger.severe('Error during WebSocket upgrade: $e');
+        throw ConnexionRefusedException('WebSocket upgrade failed');
+      }
+    } else if (request.uri.path == '/dev-connect') {
+      _logger.info('Received a connection request to the development database');
+      try {
+        _devConnexions?.add(await WebSocketTransformer.upgrade(request));
         return;
       } catch (e) {
         _logger.severe('Error during WebSocket upgrade: $e');
