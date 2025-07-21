@@ -44,8 +44,8 @@ class SchoolBoardsListScreen extends StatelessWidget {
       context,
       message:
           isSuccess
-              ? 'Commission scolaire ajoutée avec succès'
-              : 'Échec de l\'ajout de la commission scolaire',
+              ? 'Centre de services scolaire ajoutée avec succès'
+              : 'Échec de l\'ajout de la centre de services scolaire',
     );
   }
 
@@ -88,7 +88,9 @@ class SchoolBoardsListScreen extends StatelessWidget {
     List<SchoolBoard> schoolBoards,
   ) {
     if (schoolBoards.isEmpty) {
-      return [const Center(child: Text('Aucune commission scolaire inscrite'))];
+      return [
+        const Center(child: Text('Aucun centre de services scolaire inscrit')),
+      ];
     }
 
     return switch (authProvider.databaseAccessLevel) {

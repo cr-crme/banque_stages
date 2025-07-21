@@ -11,11 +11,11 @@ final _logger = Logger('AnswerHttpRequest');
 
 class HttpRequestHandler {
   final Connexions? _devConnexions;
-  final Connexions _productionConnexions;
+  final Connexions? _productionConnexions;
 
   HttpRequestHandler(
       {required Connexions? devConnexions,
-      required Connexions productionConnexions})
+      required Connexions? productionConnexions})
       : _devConnexions = devConnexions,
         _productionConnexions = productionConnexions;
 
@@ -76,7 +76,7 @@ class HttpRequestHandler {
         '/${BackendHelpers.connectEndpoint(isDev: false)}') {
       _logger.info('Received a connection request to the production database');
       try {
-        _productionConnexions.add(await WebSocketTransformer.upgrade(request));
+        _productionConnexions?.add(await WebSocketTransformer.upgrade(request));
         return;
       } catch (e) {
         _logger.severe('Error during WebSocket upgrade: $e');

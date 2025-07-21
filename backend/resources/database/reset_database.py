@@ -55,8 +55,10 @@ def main(super_admin_email: str):
 
 def reset_database(sql_filepath: str) -> bool:
     # Run the command to reset the database
-    cmd = f"cat {sql_filepath} | {_base_docker_command}"
-    result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    with open(sql_filepath, "rb") as sql_file:
+        result = subprocess.run(
+            _base_docker_command.split(), stdin=sql_file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        )
 
     # Check if the command was successful
     if result.returncode == 0:
@@ -70,17 +72,14 @@ def add_super_admin_user(super_admin_email: str) -> bool:
     # Use uuid v4 to generate a random ID
     id = str(uuid.uuid4())
 
-    query = f"""
-    INSERT INTO entities (shared_id) 
-    VALUES ('{id}');
-    """
+    query = f"INSERT INTO entities (shared_id) " f"VALUES ('{id}');"
     if not _perform_query(query):
         return False
 
-    query = f"""    
-    INSERT INTO admins (id, school_board_id, first_name, last_name, email, access_level) 
-    VALUES ('{id}', '', 'Super', 'Admin', '{super_admin_email}', 3);
-    """
+    query = (
+        f"INSERT INTO admins (id, school_board_id, first_name, last_name, email, access_level) "
+        f"VALUES ('{id}', '', 'Super', 'Admin', '{super_admin_email}', 3);"
+    )
     if not _perform_query(query):
         return False
 

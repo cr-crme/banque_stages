@@ -89,7 +89,9 @@ class AdminsListScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (schoolBoardAdmins.isEmpty)
-              const Center(child: Text('Aucune commission scolaire inscrite')),
+              const Center(
+                child: Text('Aucun centre de services scolaire inscrit'),
+              ),
             if (schoolBoardAdmins.isNotEmpty)
               ...schoolBoardAdmins.entries.map(
                 (schoolBoardEntry) => Padding(

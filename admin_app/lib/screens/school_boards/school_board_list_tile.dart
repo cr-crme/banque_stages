@@ -113,8 +113,8 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
       context,
       message:
           isSuccess
-              ? 'Commission scolaire supprimée avec succès'
-              : 'Échec de la suppression de la commission scolaire',
+              ? 'Centre de services scolaire supprimé avec succès'
+              : 'Échec de la suppression de la centre de services scolaire',
     );
   }
 
@@ -136,8 +136,8 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
           context,
           message:
               isSuccess
-                  ? 'Commission scolaire modifiée avec succès'
-                  : 'Échec de la modification de la commission scolaire',
+                  ? 'Centre de services scolaire modifiée avec succès'
+                  : 'Échec de la modification de la centre de services scolaire',
         );
       }
     }
@@ -222,10 +222,10 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
                 validator:
                     (value) =>
                         value?.isEmpty == true
-                            ? 'Le nom de la commission scolaire est obligatoire'
+                            ? 'Le nom du centre de services scolaire est obligatoire'
                             : null,
                 decoration: const InputDecoration(
-                  labelText: 'Nom de la commission scolaire',
+                  labelText: 'Nom du centre de services scolaire',
                 ),
               ),
             ],
@@ -240,7 +240,7 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Logo de la commission scolaire'),
+          Text('Logo du centre de services scolaire'),
           _logoController.isEmpty
               ? Center(
                 child: Padding(

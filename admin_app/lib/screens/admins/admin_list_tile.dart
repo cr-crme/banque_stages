@@ -195,13 +195,13 @@ class AdminListTileState extends State<AdminListTile> {
           name: 'School board selection',
           orientation: OptionsOrientation.vertical,
           decoration: InputDecoration(
-            labelText: 'Assigner à une commission scolaire',
+            labelText: 'Assigner à un centre de services scolaire',
           ),
           onChanged:
               (value) => setState(() => _selectedSchoolId = value ?? '-1'),
           validator: (_) {
             return _selectedSchoolId == '-1'
-                ? 'Sélectionner une commission scolaire'
+                ? 'Sélectionner un centre de services scolaire'
                 : null;
           },
           options:

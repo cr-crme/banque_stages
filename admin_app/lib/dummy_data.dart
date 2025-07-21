@@ -29,7 +29,7 @@ import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:flutter/material.dart';
 
-String _mySchoolBoardName = 'Ma première commission scolaire';
+String _mySchoolBoardName = 'Mon premier centre de services scolaire';
 String _mySchoolName = 'Ma deuxième école';
 String _adminEmail = 'bb@bb.bb';
 String _myEmail = 'cc@cc.cc';
@@ -194,7 +194,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   schoolBoards.add(
     SchoolBoard(
       id: 'dummy_school_board_id_2',
-      name: 'Commission scolaire de l\'Île-de-Montréal',
+      name: 'Centre de services scolaire de l\'Île-de-Montréal',
       logo: null,
       schools: schools.toList(),
       cnesstNumber: '0987654321',

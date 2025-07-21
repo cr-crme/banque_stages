@@ -28,7 +28,7 @@
             },
         },
         {
-            "name": "Admin Banque de Stages ",
+            "name": "Admin Banque de Stages",
             "request": "launch",
             "type": "dart",
             "program": "admin_app/lib/main.dart",

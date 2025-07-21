@@ -39,7 +39,7 @@ class _AddSchoolDialogState extends State<AddSchoolBoardDialog> {
             children: [
               Center(
                 child: Text(
-                  'Nouvelle commission scolaire',
+                  'Nouveau centre de services scolaire',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
