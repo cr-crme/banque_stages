@@ -1,6 +1,7 @@
 # This script resets the database by executing a SQL file within a Docker container.
 
 import os
+import platform
 import sys
 import subprocess
 import uuid
@@ -55,10 +56,14 @@ def main(super_admin_email: str):
 
 def reset_database(sql_filepath: str) -> bool:
     # Run the command to reset the database
-    with open(sql_filepath, "rb") as sql_file:
-        result = subprocess.run(
-            _base_docker_command.split(), stdin=sql_file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        )
+    if platform.system() == "Windows":
+        with open(sql_filepath, "rb") as sql_file:
+            result = subprocess.run(
+                _base_docker_command.split(), stdin=sql_file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+    else:
+        cmd = f"cat {sql_filepath} | {_base_docker_command}"
+        result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     # Check if the command was successful
     if result.returncode == 0:
