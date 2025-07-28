@@ -245,10 +245,23 @@ class SchoolBoardListTileState extends State<SchoolBoardListTile> {
               ? Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: const Text(
-                    'Aucun logo n\'a été téléversé',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                    textAlign: TextAlign.center,
+                  child: Container(
+                    width: ImageHelpers.logoWidth.toDouble(),
+                    height: ImageHelpers.logoHeight.toDouble(),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Center(
+                      child: const Text(
+                        'Aucun logo n\'a été téléversé',
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
                 ),
               )
