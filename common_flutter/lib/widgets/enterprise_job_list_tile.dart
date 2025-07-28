@@ -66,7 +66,7 @@ class EnterpriseJobListController {
     reservedForId:
         _reservedForPickerController == null
             ? _job.reservedForId
-            : _reservedForPickerController.selectionId,
+            : (_reservedForPickerController.selectionId ?? ''),
   );
 
   void dispose() {
@@ -177,6 +177,14 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                       ),
                     ),
                     const SizedBox(height: 8),
+                    if (widget.controller._reservedForPickerController != null)
+                      Column(
+                        children: [
+                          _buildReservedFor(),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    const SizedBox(height: 8),
                   ],
                 ),
               )
@@ -208,14 +216,6 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                   _buildUniform(),
                   const SizedBox(height: 8),
                   _buildProtections(),
-                  const SizedBox(height: 8),
-                  if (widget.controller._reservedForPickerController != null)
-                    Column(
-                      children: [
-                        _buildReservedFor(),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
                 ],
               ),
           ],
@@ -463,8 +463,8 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Réserver ce poste à une école ou enseignant\u00b7e',
-          style: Theme.of(context).textTheme.bodyLarge,
+          'Réserver ce poste à un\u00b7e enseignant\u00b7e',
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         Padding(
           padding: const EdgeInsets.only(left: 12.0, right: 36.0),

@@ -141,7 +141,6 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       ),
       contactFunction: _contactKey.currentState!.contactFunction!,
       address: _informationsKey.currentState!.addressController.address!,
-      reservedForId: '',
     );
 
     enterprises.add(enterprise);

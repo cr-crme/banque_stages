@@ -8,6 +8,7 @@ import 'package:common/models/persons/teacher.dart';
 import 'package:common/models/school_boards/school_board.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
+import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/address_list_tile.dart';
@@ -135,11 +136,6 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   late final _neqController = TextEditingController(
     text: widget.enterprise.neq,
   );
-  late final _reservedForPickerController = EntityPickerController(
-    schools: _currentSchoolBoard?.schools ?? [],
-    teachers: [...TeachersProvider.of(context, listen: false)],
-    initialId: widget.enterprise.reservedForId,
-  );
 
   Enterprise get editedEnterprise => widget.enterprise.copyWith(
     name: _nameController.text,
@@ -171,7 +167,6 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     ),
     contactFunction: _contactFunctionController.text,
     neq: _neqController.text,
-    reservedForId: _reservedForPickerController.selectionId ?? '',
   );
 
   @override
@@ -211,6 +206,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       if (!(await validate()) || !mounted) return;
 
       // Finish editing
+      // TODO: Add a block Backend side that prevents from removing an enterprise or a job if they have at least one internship
       final newEnterprise = editedEnterprise;
       if (newEnterprise.getDifference(widget.enterprise).isNotEmpty) {
         final isSuccess = await EnterprisesProvider.of(
@@ -234,6 +230,11 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
 
   @override
   Widget build(BuildContext context) {
+    final internships = InternshipsProvider.of(context, listen: true);
+    final hasInternship = internships.any(
+      (internship) => internship.enterpriseId == widget.enterprise.id,
+    );
+
     return widget.isExpandable
         ? AnimatedExpandingCard(
           initialExpandedState: _isExpanded,
@@ -251,10 +252,11 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
               if (_isExpanded)
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: _onClickedDeleting,
-                    ),
+                    if (!hasInternship)
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: _onClickedDeleting,
+                      ),
                     IconButton(
                       icon: Icon(
                         _isEditing ? Icons.save : Icons.edit,
@@ -372,18 +374,28 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
               )
               : Column(
                 children: [
-                  ..._jobControllers.keys.map(
-                    (jobId) => EnterpriseJobListTile(
+                  ..._jobControllers.keys.map((jobId) {
+                    final hasInternship = InternshipsProvider.of(
+                      context,
+                      listen: true,
+                    ).any(
+                      (internship) =>
+                          internship.enterpriseId == widget.enterprise.id &&
+                          internship.jobId == jobId,
+                    );
+
+                    return EnterpriseJobListTile(
                       key: ValueKey(jobId),
                       controller: _jobControllers[jobId]!,
                       schools: _currentSchoolBoard?.schools ?? [],
                       editMode: _isEditing,
-                      onRequestDelete: () => _deleteJob(jobId),
+                      onRequestDelete:
+                          hasInternship ? null : () => _deleteJob(jobId),
                       initialExpandedState:
                           _jobControllers[jobId]!.specialization?.idWithName ==
                           null,
-                    ),
-                  ),
+                    );
+                  }),
                 ],
               ),
           if (_isEditing)
@@ -391,7 +403,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
               padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
               child: TextButton(
                 onPressed: _addJob,
-                child: const Text('Enregistrer un stage'),
+                child: const Text('Ajouter un nouveau stage'),
               ),
             ),
         ],

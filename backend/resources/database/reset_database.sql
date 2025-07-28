@@ -223,10 +223,8 @@ CREATE TABLE enterprises (
     contact_function VARCHAR(255) NOT NULL,
     website VARCHAR(255),
     neq VARCHAR(50),
-    reserved_for_id VARCHAR(36),
     FOREIGN KEY (id) REFERENCES entities(shared_id) ON DELETE CASCADE,
-    FOREIGN KEY (school_board_id) REFERENCES school_boards(id) ON DELETE CASCADE,
-    FOREIGN KEY (reserved_for_id) REFERENCES entities(shared_id) ON DELETE SET NULL
+    FOREIGN KEY (school_board_id) REFERENCES school_boards(id) ON DELETE CASCADE
 );
 
 CREATE TABLE enterprise_contacts(

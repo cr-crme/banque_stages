@@ -421,9 +421,6 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         'contact_function': enterprise.contactFunction.serialize(),
         'website': enterprise.website?.serialize(),
         'neq': enterprise.neq?.serialize(),
-        'reserved_for_id': enterprise.reservedForId.isEmpty
-            ? null
-            : enterprise.reservedForId.serialize(),
       },
     );
   }
@@ -460,11 +457,6 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     }
     if (differences.contains('neq')) {
       toUpdate['neq'] = enterprise.neq?.serialize();
-    }
-    if (differences.contains('reserved_for_id')) {
-      toUpdate['reserved_for_id'] = enterprise.reservedForId.isEmpty
-          ? null
-          : enterprise.reservedForId.serialize();
     }
 
     if (toUpdate.isNotEmpty) {
@@ -1218,7 +1210,6 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       address: Address.empty,
       phone: PhoneNumber.fromString('123-456-7890'),
       fax: PhoneNumber.fromString('098-765-4321'),
-      reservedForId: '',
     ),
     '1': Enterprise(
       id: '1',
@@ -1235,7 +1226,6 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       address: Address.empty,
       phone: PhoneNumber.fromString('123-456-7890'),
       fax: PhoneNumber.fromString('098-765-4321'),
-      reservedForId: '',
     )
   };
 

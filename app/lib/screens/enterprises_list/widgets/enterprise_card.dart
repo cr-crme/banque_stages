@@ -59,7 +59,7 @@ class EnterpriseCard extends StatelessWidget {
                       padding:
                           const EdgeInsets.only(left: 12, top: 8, bottom: 4),
                       child: Text(
-                        'Aucun poste disponible pour le moment',
+                        'Aucun métier actif pour cette entreprise',
                         style: TextStyle(color: Colors.grey[800]),
                       ),
                     )

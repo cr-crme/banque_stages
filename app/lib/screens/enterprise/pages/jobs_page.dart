@@ -255,17 +255,20 @@ class JobsPageState extends State<JobsPage> {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 8.0, top: 4.0, bottom: 4.0),
-                          child: ElevatedButton(
-                              onPressed: remaining > 0
-                                  ? () => widget.onAddInternshipRequest(
-                                      widget.enterprise, job.specialization)
-                                  : null,
-                              child: const Text('Inscrire un\nstagiaire',
-                                  textAlign: TextAlign.center)),
-                        ),
+                        if (remaining > 0 &&
+                            availablePlaceType ==
+                                _AvailablePlaceType.isAvailable)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8.0, top: 4.0, bottom: 4.0),
+                            child: ElevatedButton(
+                                onPressed: () => widget.onAddInternshipRequest(
+                                    widget.enterprise, job.specialization),
+                                child: const Text('Inscrire un\nstagiaire',
+                                    textAlign: TextAlign.center)),
+                          )
+                        else
+                          (SizedBox(height: 100)),
                       ],
                     ),
                   ],
@@ -397,7 +400,7 @@ enum _AvailablePlaceType {
         return 'Stage réservé à un\u00b7e enseignant\u00b7e\n'
             'Aucun autre stagiaire ne sera accepté';
       case _AvailablePlaceType.isNewForThatSchool:
-        return 'Cette entreprise n\'a jamais accueilli de stagiaires de votre école.';
+        return 'Cette entreprise n\'accueille pas de stagiaires de votre école pour ce métier.';
       case _AvailablePlaceType.isFull:
         return 'Aucune place de stage disponible';
       case _AvailablePlaceType.isAvailable:

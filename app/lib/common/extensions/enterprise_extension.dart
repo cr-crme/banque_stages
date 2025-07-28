@@ -17,11 +17,7 @@ extension EnterprisesProviderExtension on EnterprisesProvider {
       return [];
     }
 
-    return [...EnterprisesProvider.of(context, listen: listen)]..removeWhere(
-        (enterprise) =>
-            enterprise.reservedForId.isNotEmpty &&
-            enterprise.reservedForId != mySchoolId &&
-            enterprise.reservedForId != myTeacherId);
+    return [...EnterprisesProvider.of(context, listen: listen)];
   }
 }
 

@@ -331,7 +331,6 @@ class _EnterprisesByMap extends StatelessWidget {
       jobs: JobList(),
       contact: Person.empty,
       address: school.address,
-      reservedForId: '',
     );
     out[schoolAsEnterprise] =
         await Waypoint.fromAddress(title: school.name, address: school.address);
