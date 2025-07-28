@@ -336,14 +336,14 @@ class _SupervisionChartState extends State<SupervisionChart>
     return ResponsiveService.getScreenSize(context) == ScreenSize.small
         ? Column(
             children: [
-              _buildFlagFilter(),
               _buildSearchBar(),
+              _buildFlagFilter(),
             ],
           )
         : Row(
             children: [
-              Expanded(child: _buildFlagFilter()),
               Expanded(child: _buildSearchBar()),
+              Expanded(child: _buildFlagFilter()),
             ],
           );
   }

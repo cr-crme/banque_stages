@@ -184,19 +184,27 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
     return Column(
       children: [
-        _showDate(),
         Flex(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment:
               isSmall ? CrossAxisAlignment.center : CrossAxisAlignment.start,
           direction: isSmall ? Axis.vertical : Axis.horizontal,
           children: [
-            Flexible(flex: 3, child: _map()),
+            Flexible(
+                flex: 3,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _showDate(),
+                    _map(),
+                  ],
+                )),
             Flexible(
               flex: 2,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (!isSmall) SizedBox(height: 60),
                   _Distance(_routingController.distances,
                       itinerary: currentItinerary),
                   if (_routingController.hasChanged)

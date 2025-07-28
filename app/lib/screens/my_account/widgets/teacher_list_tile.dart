@@ -119,6 +119,7 @@ class TeacherListTileState extends State<TeacherListTile> {
       initialExpandedState: true,
       elevation: 0.0,
       onTapHeader: null,
+      canChangeExpandedState: false,
       header: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
