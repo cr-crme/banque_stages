@@ -21,9 +21,7 @@ import 'package:logging/logging.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-part 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/attitude_evaluation_pdf_template.dart';
 part 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/internship_contract_pdf_template.dart';
-part 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/skill_evaluation_pdf_template.dart';
 part 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/visa_pdf_template.dart';
 
 final _logger = Logger('GenerateDocuments');
@@ -39,16 +37,4 @@ class GenerateDocuments {
           BuildContext context, PdfPageFormat format,
           {required String internshipId}) async =>
       await _generateVisaPdf(context, format, internshipId: internshipId);
-
-  static Future<Uint8List> generateSkillEvaluationPdf(
-          BuildContext context, PdfPageFormat format,
-          {required String internshipId, required int evaluationIndex}) async =>
-      await _generateSkillEvaluationPdf(context, format,
-          internshipId: internshipId, evaluationIndex: evaluationIndex);
-
-  static Future<Uint8List> generateAttitudeEvaluationPdf(
-          BuildContext context, PdfPageFormat format,
-          {required String internshipId, required int evaluationIndex}) async =>
-      await _generateAttitudeEvaluationPdf(context, format,
-          internshipId: internshipId, evaluationIndex: evaluationIndex);
 }

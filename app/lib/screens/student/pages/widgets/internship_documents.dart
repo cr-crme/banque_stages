@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:common/models/internships/internship.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/pdf_templates/generate_documents.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
@@ -55,16 +54,6 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                             context, format,
                             internshipId: internshipId),
                   ),
-                  _buildEvaluations(
-                      title: 'Évaluation des compétences',
-                      evaluations: widget.internship.skillEvaluations,
-                      pdfGeneratorCallback:
-                          GenerateDocuments.generateSkillEvaluationPdf),
-                  _buildEvaluations(
-                      title: 'Évaluation des attitudes et comportements',
-                      evaluations: widget.internship.attitudeEvaluations,
-                      pdfGeneratorCallback:
-                          GenerateDocuments.generateAttitudeEvaluationPdf),
                   _buildPdfTile(
                     context,
                     title: 'VISA',
@@ -116,46 +105,6 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
                 color: Colors.blue, decoration: TextDecoration.underline),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildEvaluations(
-      {required String title,
-      evaluations,
-      required Future<Uint8List> Function(
-              BuildContext context, PdfPageFormat format,
-              {required String internshipId, required int evaluationIndex})
-          pdfGeneratorCallback}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title),
-          Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (evaluations.isEmpty) const Text('Aucune évalution'),
-                if (evaluations.isNotEmpty)
-                  ...evaluations.asMap().keys.map(
-                        (index) => _buildPdfTile(
-                          context,
-                          title: 'Formulaire du '
-                              '${DateFormat('yMd', 'fr_CA').format(evaluations[index].date)}',
-                          pdfGeneratorCallback: (context, format,
-                                  {required internshipId}) =>
-                              pdfGeneratorCallback(context, format,
-                                  internshipId: internshipId,
-                                  evaluationIndex: index),
-                        ),
-                      ),
-              ],
-            ),
-          )
-        ],
       ),
     );
   }
