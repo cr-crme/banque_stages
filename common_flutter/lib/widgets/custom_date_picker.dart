@@ -13,13 +13,9 @@ import 'package:flutter/services.dart';
 // The M3 sizes are coming from the tokens, but are hand coded,
 // as the current token DB does not contain landscape versions.
 const Size _calendarPortraitDialogSize = Size(330.0, 518.0);
-const Size _calendarLandscapeDialogSize = Size(496.0, 346.0);
 const Size _inputPortraitDialogSize = Size(330.0, 270.0);
-const Size _inputLandscapeDialogSize = Size(496, 160.0);
-const Size _inputRangeLandscapeDialogSize = Size(496, 164.0);
 const Duration _dialogSizeAnimationDuration = Duration(milliseconds: 200);
 const double _inputFormPortraitHeight = 98.0;
-const double _inputFormLandscapeHeight = 108.0;
 const double _kMaxTextScaleFactor = 1.3;
 
 /// Shows a dialog containing a Material Design date picker.
@@ -200,7 +196,8 @@ Future<DateTime?> showCustomDatePicker({
     builder: (BuildContext context) {
       return Dialog(
         child: SizedBox(
-          width: ResponsiveService.maxBodyWidth * 0.7,
+          width: ResponsiveService.smallScreenWidth * 0.7,
+          height: 460,
           child: builder == null ? dialog : builder(context, dialog),
         ),
       );
@@ -440,25 +437,14 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
   }
 
   Size _dialogSize(BuildContext context) {
-    final Orientation orientation = MediaQuery.orientationOf(context);
-
     switch (_entryMode.value) {
       case DatePickerEntryMode.calendar:
       case DatePickerEntryMode.calendarOnly:
-        switch (orientation) {
-          case Orientation.portrait:
-            return _calendarPortraitDialogSize;
-          case Orientation.landscape:
-            return _calendarLandscapeDialogSize;
-        }
+        return _calendarPortraitDialogSize;
+
       case DatePickerEntryMode.input:
       case DatePickerEntryMode.inputOnly: // coverage:ignore-line
-        switch (orientation) {
-          case Orientation.portrait:
-            return _inputPortraitDialogSize;
-          case Orientation.landscape:
-            return _inputLandscapeDialogSize;
-        }
+        return _inputPortraitDialogSize;
     }
   }
 
@@ -474,7 +460,6 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
     final MaterialLocalizations localizations = MaterialLocalizations.of(
       context,
     );
-    final Orientation orientation = MediaQuery.orientationOf(context);
     final DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
     final DatePickerThemeData defaults = DatePickerTheme.defaults(context);
     final TextTheme textTheme = theme.textTheme;
@@ -484,10 +469,7 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
     // date picker's header fits in landscape mode, we override the M3
     // default here.
     TextStyle? headlineStyle;
-    headlineStyle =
-        orientation == Orientation.landscape
-            ? textTheme.headlineSmall
-            : textTheme.headlineMedium; // coverage:ignore-line
+    headlineStyle = textTheme.headlineMedium; // coverage:ignore-line
 
     final Color? headerForegroundColor =
         datePickerTheme.headerForegroundColor ?? defaults.headerForegroundColor;
@@ -531,10 +513,7 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
         autovalidateMode: _autovalidateMode.value,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          height:
-              orientation == Orientation.portrait
-                  ? _inputFormPortraitHeight
-                  : _inputFormLandscapeHeight,
+          height: _inputFormPortraitHeight,
           child: Shortcuts(
             shortcuts: _formShortcutMap,
             child: Column(
@@ -602,8 +581,7 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
       helpText: widget.helpText ?? localizations.datePickerHelpText,
       titleText: localizations.formatMediumDate(_selectedDate.value),
       titleStyle: headlineStyle?.copyWith(color: Colors.white),
-      orientation: orientation,
-      isShort: orientation == Orientation.landscape,
+      isShort: false,
       entryModeButton: entryModeButton,
     );
 
@@ -644,33 +622,11 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog>
           // coverage:ignore-start
           child: Builder(
             builder: (BuildContext context) {
-              switch (orientation) {
-                case Orientation.portrait:
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      header,
-                      Expanded(child: picker),
-                      actions,
-                    ],
-                  );
-                case Orientation.landscape:
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      header,
-                      Flexible(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[Expanded(child: picker), actions],
-                        ),
-                      ),
-                    ],
-                  );
-              }
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[header, Expanded(child: picker), actions],
+              );
               // coverage:ignore-end
             },
           ),
@@ -755,14 +711,11 @@ class _DatePickerHeader extends StatelessWidget {
     required this.titleText,
     this.titleSemanticsLabel,
     required this.titleStyle,
-    required this.orientation,
     this.isShort = false,
     this.entryModeButton,
   });
 
-  static const double _datePickerHeaderLandscapeWidth = 152.0;
   static const double _datePickerHeaderPortraitHeight = 120.0;
-  static const double _headerPaddingLandscape = 16.0;
 
   /// The text that is displayed at the top of the header.
   ///
@@ -777,9 +730,6 @@ class _DatePickerHeader extends StatelessWidget {
 
   /// The [TextStyle] that the title text is displayed with.
   final TextStyle? titleStyle;
-
-  /// The orientation is used to decide how to layout its children.
-  final Orientation orientation;
 
   /// Indicates the header is being displayed in a shorter/narrower context.
   ///
@@ -809,71 +759,33 @@ class _DatePickerHeader extends StatelessWidget {
       titleText,
       semanticsLabel: titleSemanticsLabel ?? titleText,
       style: titleStyle?.copyWith(color: Colors.white),
-      maxLines: orientation == Orientation.portrait ? 1 : 2,
+      maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
 
-    switch (orientation) {
-      case Orientation.portrait:
-        // coverage:ignore-start
-        return SizedBox(
-          height: _datePickerHeaderPortraitHeight,
-          child: Material(
-            color: backgroundColor,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(start: 24, end: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return SizedBox(
+      height: _datePickerHeaderPortraitHeight,
+      child: Material(
+        color: backgroundColor,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(start: 24, end: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(height: 16),
+              help,
+              const Flexible(child: SizedBox(height: 26)),
+              Row(
                 children: <Widget>[
-                  const SizedBox(height: 16),
-                  help,
-                  const Flexible(child: SizedBox(height: 26)),
-                  Row(
-                    children: <Widget>[
-                      Expanded(child: title),
-                      if (entryModeButton != null) entryModeButton!,
-                    ],
-                  ),
+                  Expanded(child: title),
+                  if (entryModeButton != null) entryModeButton!,
                 ],
               ),
-            ),
+            ],
           ),
-        );
-      // coverage:ignore-end
-      case Orientation.landscape:
-        return SizedBox(
-          width: _datePickerHeaderLandscapeWidth,
-          child: Material(
-            color: backgroundColor,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: _headerPaddingLandscape,
-                  ),
-                  child: help,
-                ),
-                SizedBox(height: isShort ? 16 : 56),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: _headerPaddingLandscape,
-                    ),
-                    child: title,
-                  ),
-                ),
-                if (entryModeButton != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: entryModeButton,
-                  ),
-              ],
-            ),
-          ),
-        );
-    }
+        ),
+      ),
+    );
   }
 }
 
@@ -1683,7 +1595,6 @@ class _CustomDateRangePickerDialogState
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final Orientation orientation = MediaQuery.orientationOf(context);
     final MaterialLocalizations localizations = MaterialLocalizations.of(
       context,
     );
@@ -1751,10 +1662,7 @@ class _CustomDateRangePickerDialogState
           currentDate: widget.currentDate,
           picker: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            height:
-                orientation == Orientation.portrait
-                    ? _inputFormPortraitHeight
-                    : _inputFormLandscapeHeight,
+            height: _inputFormPortraitHeight,
             child: Column(
               children: <Widget>[
                 const Spacer(),
@@ -1798,10 +1706,7 @@ class _CustomDateRangePickerDialogState
           helpText: widget.helpText ?? localizations.dateRangePickerHelpText,
         );
         final dialogTheme = theme.dialogTheme;
-        size =
-            orientation == Orientation.portrait
-                ? _inputPortraitDialogSize
-                : _inputRangeLandscapeDialogSize;
+        size = _inputPortraitDialogSize;
         elevation = datePickerTheme.elevation ?? dialogTheme.elevation ?? 24;
         shadowColor = datePickerTheme.shadowColor ?? defaults.shadowColor;
         surfaceTintColor =
@@ -3197,7 +3102,6 @@ class _InputDateRangePickerDialog extends StatelessWidget {
     final MaterialLocalizations localizations = MaterialLocalizations.of(
       context,
     );
-    final Orientation orientation = MediaQuery.orientationOf(context);
     final DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
     final DatePickerThemeData defaults = DatePickerTheme.defaults(context);
 
@@ -3207,10 +3111,7 @@ class _InputDateRangePickerDialog extends StatelessWidget {
     // the M3 default here.
     // coverage:ignore-start
     TextStyle? headlineStyle =
-        (orientation == Orientation.portrait)
-            ? datePickerTheme.headerHeadlineStyle ??
-                defaults.headerHeadlineStyle
-            : Theme.of(context).textTheme.headlineSmall;
+        datePickerTheme.headerHeadlineStyle ?? defaults.headerHeadlineStyle;
     // coverage:ignore-end
 
     final Color? headerForegroundColor =
@@ -3235,8 +3136,7 @@ class _InputDateRangePickerDialog extends StatelessWidget {
       titleText: dateText,
       titleSemanticsLabel: semanticDateText,
       titleStyle: headlineStyle,
-      orientation: orientation,
-      isShort: orientation == Orientation.landscape,
+      isShort: false,
       entryModeButton: entryModeButton,
     );
 
@@ -3261,32 +3161,11 @@ class _InputDateRangePickerDialog extends StatelessWidget {
       ),
     );
 
-    // coverage:ignore-start
-    switch (orientation) {
-      case Orientation.portrait:
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[header, Expanded(child: picker), actions],
-        );
-
-      case Orientation.landscape:
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            header,
-            Flexible(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[Expanded(child: picker), actions],
-              ),
-            ),
-          ],
-        );
-    }
-    // coverage:ignore-end
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[header, Expanded(child: picker), actions],
+    );
   }
 }
 
