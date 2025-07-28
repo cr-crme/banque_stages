@@ -230,14 +230,6 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
       ...(widget.controller._specializationsWhiteList ??
           ActivitySectorsService.allSpecializations),
     ];
-    if (widget.controller._specializationBlacklist != null) {
-      // Remove the blacklisted specializations
-      out.removeWhere(
-        (s) => widget.controller._specializationBlacklist!.any(
-          (blacklisted) => blacklisted.id == s.id,
-        ),
-      );
-    }
     out.sort((a, b) => a.name.compareTo(b.name)); // Sort them by name
     return out;
   }
@@ -277,9 +269,16 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
           controller: controller,
           focusNode: focusNode,
           validator: (value) {
-            return widget.controller._specialization == null
-                ? 'Sélectionner un métier.'
-                : null;
+            if (widget.controller._specialization == null) {
+              return 'Sélectionner un métier.';
+            }
+            if (widget.controller._specializationBlacklist?.contains(
+                  widget.controller._specialization,
+                ) ??
+                false) {
+              return 'Ce métier existe déjà pour cette entreprise.';
+            }
+            return null;
           },
           enabled: _availableSpecialization.length != 1,
           decoration: InputDecoration(

@@ -370,7 +370,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
                   top: 8.0,
                   bottom: 4.0,
                 ),
-                child: Text('Aucun stage proposé pour le moment.'),
+                child: Text('Aucun métier proposé pour le moment.'),
               )
               : Column(
                 children: [
@@ -403,7 +403,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
               padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
               child: TextButton(
                 onPressed: _addJob,
-                child: const Text('Ajouter un nouveau stage'),
+                child: const Text('Ajouter un nouveau métier'),
               ),
             ),
         ],
