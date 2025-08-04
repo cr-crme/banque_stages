@@ -45,49 +45,11 @@ class _StickyHeadExpansionPanelListState
   final ScrollController _innerScrollController = ScrollController();
 
   double get _getHeaderPosition {
-    final box = _headerKey.currentContext!.findRenderObject() as RenderBox;
-    return box.localToGlobal(Offset.zero).dy;
+    final box = _headerKey.currentContext?.findRenderObject() as RenderBox?;
+    return box?.localToGlobal(Offset.zero).dy ?? 0;
   }
 
-  double _prevOuter = 0;
-  double _prevInner = 0;
   Future<void> _handleScroll() async {
-    // First, get the size of the scrolling
-    final outerDiff = widget.outerScrollController.offset - _prevOuter;
-    final innerDiff = _innerScrollController.offset - _prevInner;
-    // No change in scroll position
-    if (outerDiff == 0 && innerDiff == 0) return;
-
-    // Immediately reset the scroll positions
-    if (outerDiff != 0) {
-      _prevOuter = widget.outerScrollController.offset - outerDiff;
-      widget.outerScrollController.jumpTo(_prevOuter);
-    } else if (innerDiff != 0) {
-      _prevInner = _innerScrollController.offset - innerDiff;
-      _innerScrollController.jumpTo(_prevInner);
-    }
-    // Wait for the scroll callback to be done
-    await Future.delayed(Duration.zero);
-
-    // Compute the actual diff to perform
-    final headerPosition = _getHeaderPosition;
-    double diff = outerDiff + innerDiff;
-
-    if ((headerPosition < widget.headerTarget + widget.scrollHeight / 2) &&
-        (headerPosition > widget.headerTarget - widget.scrollHeight / 2) &&
-        (_prevInner + diff >= 0) &&
-        (_prevInner + diff <=
-            _innerScrollController.position.maxScrollExtent)) {
-      // If the header is between the sticky target, move the inner scroll
-      _prevInner += diff;
-      _innerScrollController.jumpTo(_prevInner);
-      _prevOuter += (headerPosition - widget.headerTarget);
-      widget.outerScrollController.jumpTo(_prevOuter);
-    } else {
-      // If the header is not between the sticky target, move the outer scroll
-      _prevOuter += diff;
-      widget.outerScrollController.jumpTo(_prevOuter);
-    }
     setState(() {});
   }
 
@@ -122,6 +84,11 @@ class _StickyHeadExpansionPanelListState
 
   @override
   Widget build(BuildContext context) {
+    final isHeaderAtTop =
+        (_getHeaderPosition >
+            widget.headerTarget - (widget.scrollHeight / 2)) &&
+        (_getHeaderPosition < widget.headerTarget + (widget.scrollHeight / 2));
+
     return ExpansionPanelList(
       elevation: widget.elevation ?? 2,
       expansionCallback: widget.expansionCallback,
@@ -142,6 +109,10 @@ class _StickyHeadExpansionPanelListState
                     ),
                     child: SingleChildScrollView(
                       controller: _innerScrollController,
+                      physics:
+                          isHeaderAtTop
+                              ? const ClampingScrollPhysics()
+                              : const NeverScrollableScrollPhysics(),
                       child: sticky.body,
                     ),
                   ),

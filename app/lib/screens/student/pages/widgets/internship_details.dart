@@ -248,7 +248,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
       padding: const EdgeInsets.only(left: 24, right: 24),
       child: StickyHeadExpansionPanelList(
         elevation: 0,
-        headerTarget: 150,
+        headerTarget: 160,
         outerScrollController: widget.scrollController,
         expansionCallback: (index, isExpanded) async {
           if (_isExpanded && _editMode) {
