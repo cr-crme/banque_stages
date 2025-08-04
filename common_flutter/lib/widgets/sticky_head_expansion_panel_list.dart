@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 
 class StickyHeadExpansionPanel {
   final bool isExpanded;
+  final bool canTapOnHeader;
   final Widget Function(BuildContext context, Key key, bool isExpanded)
   headerBuilder;
-  final Widget child;
+  final Widget body;
 
   StickyHeadExpansionPanel({
     required this.headerBuilder,
-    required this.child,
     required this.isExpanded,
+    this.canTapOnHeader = false,
+    required this.body,
   });
 }
 
@@ -17,15 +19,17 @@ class StickyHeadExpansionPanelList extends StatefulWidget {
   const StickyHeadExpansionPanelList({
     super.key,
     required this.outerScrollController,
-    required this.headerStickyTarget,
-    required this.headerHeight,
+    required this.headerTarget,
+    this.scrollHeight = 80,
     required this.expansionCallback,
+    this.elevation,
     required this.children,
   });
 
+  final double? elevation;
   final ScrollController outerScrollController;
-  final double headerStickyTarget;
-  final double headerHeight;
+  final double headerTarget;
+  final double scrollHeight;
   final ExpansionPanelCallback expansionCallback;
   final List<StickyHeadExpansionPanel> children;
 
@@ -34,116 +38,92 @@ class StickyHeadExpansionPanelList extends StatefulWidget {
       _StickyHeadExpansionPanelListState();
 }
 
-enum _HeaderDirection { up, down, static }
-
 class _StickyHeadExpansionPanelListState
     extends State<StickyHeadExpansionPanelList> {
   final _headerKey = GlobalKey();
 
   final ScrollController _innerScrollController = ScrollController();
 
-  int _calls = 0;
-  int _skipCount = 0;
-  double? _headerPosition;
-  _HeaderDirection _headerDirection = _HeaderDirection.down;
-  void _handleScroll2() {
-    setState(() {});
-  }
-
-  void _handleScroll() {
-    print('Calls #${++_calls} (skipCount: $_skipCount)');
-    if (_skipCount > 0) {
-      _skipCount--;
-      return;
-    }
-
-    if (!widget.children[0].isExpanded || _headerKey.currentContext == null) {
-      _headerPosition = null;
-      return;
-    }
-
-    // Get the position of the header relative to the screen
+  double get _getHeaderPosition {
     final box = _headerKey.currentContext!.findRenderObject() as RenderBox;
-    final newHeaderPosition = box.localToGlobal(Offset.zero).dy;
-    _headerDirection =
-        newHeaderPosition == (_headerPosition ?? 0)
-            ? _HeaderDirection.static
-            : (newHeaderPosition > (_headerPosition ?? 0)
-                ? _HeaderDirection.down
-                : _HeaderDirection.up);
-
-    switch (_headerDirection) {
-      case _HeaderDirection.static:
-        // print('static');
-        // _dealWithUpwardScrolling(_headerPosition!, newHeaderPosition);
-        break;
-      case _HeaderDirection.down:
-        // print('down');
-        break;
-      case _HeaderDirection.up:
-        // print('up');
-        _dealWithUpwardScrolling(_headerPosition!, newHeaderPosition);
-        break;
-    }
-
-    _headerPosition = newHeaderPosition;
-
-    // setState(() {});
+    return box.localToGlobal(Offset.zero).dy;
   }
 
-  void _dealWithUpwardScrolling(double previousPosition, double newPosition) {
-    if (previousPosition < widget.headerStickyTarget + widget.headerHeight &&
-        _innerScrollController.offset <
-            _innerScrollController.position.maxScrollExtent) {
-      print('Sticky header (${newPosition - previousPosition})');
-      _skipCount += 1;
-      final diff = widget.headerStickyTarget - newPosition;
+  double _prevOuter = 0;
+  double _prevInner = 0;
+  Future<void> _handleScroll() async {
+    // First, get the size of the scrolling
+    final outerDiff = widget.outerScrollController.offset - _prevOuter;
+    final innerDiff = _innerScrollController.offset - _prevInner;
+    // No change in scroll position
+    if (outerDiff == 0 && innerDiff == 0) return;
 
-      widget.outerScrollController.jumpTo(
-        widget.outerScrollController.offset - diff,
-      );
-      //_innerScrollController.jumpTo(_innerScrollController.offset + diff);
-    } else {
-      // // In between the sticky target
-      // print('Moving header');
-      // widget.outerScrollController.jumpTo(widget.outerScrollController.offset);
+    // Immediately reset the scroll positions
+    if (outerDiff != 0) {
+      _prevOuter = widget.outerScrollController.offset - outerDiff;
+      widget.outerScrollController.jumpTo(_prevOuter);
+    } else if (innerDiff != 0) {
+      _prevInner = _innerScrollController.offset - innerDiff;
+      _innerScrollController.jumpTo(_prevInner);
     }
+    // Wait for the scroll callback to be done
+    await Future.delayed(Duration.zero);
+
+    // Compute the actual diff to perform
+    final headerPosition = _getHeaderPosition;
+    double diff = outerDiff + innerDiff;
+
+    if ((headerPosition < widget.headerTarget + widget.scrollHeight / 2) &&
+        (headerPosition > widget.headerTarget - widget.scrollHeight / 2) &&
+        (_prevInner + diff >= 0) &&
+        (_prevInner + diff <=
+            _innerScrollController.position.maxScrollExtent)) {
+      // If the header is between the sticky target, move the inner scroll
+      _prevInner += diff;
+      _innerScrollController.jumpTo(_prevInner);
+      _prevOuter += (headerPosition - widget.headerTarget);
+      widget.outerScrollController.jumpTo(_prevOuter);
+    } else {
+      // If the header is not between the sticky target, move the outer scroll
+      _prevOuter += diff;
+      widget.outerScrollController.jumpTo(_prevOuter);
+    }
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
 
-    widget.outerScrollController.addListener(_handleScroll2);
-    _innerScrollController.addListener(_handleScroll2);
+    widget.outerScrollController.addListener(_handleScroll);
+    _innerScrollController.addListener(_handleScroll);
   }
 
   @override
   void didUpdateWidget(covariant StickyHeadExpansionPanelList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // // Make sure not to add multiple listeners
-    // widget.outerScrollController.removeListener(_handleScroll);
-    // _innerScrollController.removeListener(_handleScroll);
+    // Make sure not to add multiple listeners
+    widget.outerScrollController.removeListener(_handleScroll);
+    _innerScrollController.removeListener(_handleScroll);
 
-    // // Add listeners to the scroll controllers
-    // widget.outerScrollController.addListener(_handleScroll);
-    // _innerScrollController.addListener(_handleScroll);
+    // Add listeners to the scroll controllers
+    widget.outerScrollController.addListener(_handleScroll);
+    _innerScrollController.addListener(_handleScroll);
   }
 
   @override
   void dispose() {
-    widget.outerScrollController.removeListener(_handleScroll2);
-    _innerScrollController.removeListener(_handleScroll2);
+    widget.outerScrollController.removeListener(_handleScroll);
+    _innerScrollController.removeListener(_handleScroll);
     _innerScrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    _handleScroll();
-    print('Build');
     return ExpansionPanelList(
+      elevation: widget.elevation ?? 2,
       expansionCallback: widget.expansionCallback,
       children:
           widget.children
@@ -152,16 +132,19 @@ class _StickyHeadExpansionPanelListState
                   headerBuilder:
                       (context, isExpanded) =>
                           sticky.headerBuilder(context, _headerKey, isExpanded),
+                  canTapOnHeader: sticky.canTapOnHeader,
+                  isExpanded: sticky.isExpanded,
                   body: ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height * 0.4,
+                      maxHeight:
+                          MediaQuery.of(context).size.height -
+                          widget.headerTarget,
                     ),
                     child: SingleChildScrollView(
                       controller: _innerScrollController,
-                      child: sticky.child,
+                      child: sticky.body,
                     ),
                   ),
-                  isExpanded: sticky.isExpanded,
                 ),
               )
               .toList(),

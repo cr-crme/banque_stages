@@ -24,6 +24,8 @@ class InternshipsPage extends StatefulWidget {
 }
 
 class InternshipsPageState extends State<InternshipsPage> {
+  final scrollController = ScrollController();
+
   final activeKey = GlobalKey<_StudentInternshipListViewState>();
   final closedKey = GlobalKey<_StudentInternshipListViewState>();
   final toEvaluateKey = GlobalKey<_StudentInternshipListViewState>();
@@ -71,6 +73,12 @@ class InternshipsPageState extends State<InternshipsPage> {
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _logger.finer('Building InternshipsPage for student: ${widget.student.id}');
 
@@ -81,12 +89,14 @@ class InternshipsPageState extends State<InternshipsPage> {
     final closedInternships = _getClosedInternships(internships);
 
     return SingleChildScrollView(
+      controller: scrollController,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (activeInternships.isNotEmpty)
             _StudentInternshipListView(
               key: activeKey,
+              scrollController: scrollController,
               title: 'En cours',
               internships: activeInternships,
             ),
@@ -95,6 +105,7 @@ class InternshipsPageState extends State<InternshipsPage> {
           if (toEvaluateInternships.isNotEmpty)
             _StudentInternshipListView(
                 key: toEvaluateKey,
+                scrollController: scrollController,
                 title: 'Évaluations post-stage',
                 internships: toEvaluateInternships),
           if (toEvaluateInternships.isNotEmpty && closedInternships.isNotEmpty)
@@ -102,6 +113,7 @@ class InternshipsPageState extends State<InternshipsPage> {
           if (closedInternships.isNotEmpty)
             _StudentInternshipListView(
                 key: closedKey,
+                scrollController: scrollController,
                 title: 'Historique des stages',
                 internships: closedInternships),
         ],
@@ -111,11 +123,16 @@ class InternshipsPageState extends State<InternshipsPage> {
 }
 
 class _StudentInternshipListView extends StatefulWidget {
-  const _StudentInternshipListView(
-      {super.key, required this.title, required this.internships});
+  const _StudentInternshipListView({
+    super.key,
+    required this.title,
+    required this.internships,
+    required this.scrollController,
+  });
 
   final String title;
   final List<Internship> internships;
+  final ScrollController scrollController;
 
   @override
   State<_StudentInternshipListView> createState() =>
@@ -211,8 +228,10 @@ class _StudentInternshipListViewState
                     children: [
                       InternshipQuickAccess(internshipId: internship.id),
                       InternshipDetails(
-                          key: detailKeys[internship.id],
-                          internshipId: internship.id),
+                        key: detailKeys[internship.id],
+                        internshipId: internship.id,
+                        scrollController: widget.scrollController,
+                      ),
                       InternshipSkills(internshipId: internship.id),
                       InternshipDocuments(internship: internship),
                     ]),

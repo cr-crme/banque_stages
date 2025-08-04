@@ -11,6 +11,7 @@ import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
+import 'package:common_flutter/widgets/sticky_head_expansion_panel_list.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
@@ -76,9 +77,14 @@ class _InternshipController {
 }
 
 class InternshipDetails extends StatefulWidget {
-  const InternshipDetails({super.key, required this.internshipId});
+  const InternshipDetails({
+    super.key,
+    required this.internshipId,
+    required this.scrollController,
+  });
 
   final String internshipId;
+  final ScrollController scrollController;
 
   @override
   State<InternshipDetails> createState() => InternshipDetailsState();
@@ -240,8 +246,10 @@ class InternshipDetailsState extends State<InternshipDetails> {
 
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 24),
-      child: ExpansionPanelList(
+      child: StickyHeadExpansionPanelList(
         elevation: 0,
+        headerTarget: 150,
+        outerScrollController: widget.scrollController,
         expansionCallback: (index, isExpanded) async {
           if (_isExpanded && _editMode) {
             if (await preventClosingIfEditing()) return;
@@ -249,10 +257,11 @@ class InternshipDetailsState extends State<InternshipDetails> {
           setState(() => _isExpanded = !_isExpanded);
         },
         children: [
-          ExpansionPanel(
+          StickyHeadExpansionPanel(
             isExpanded: _isExpanded,
             canTapOnHeader: true,
-            headerBuilder: (context, isExpanded) => Row(
+            headerBuilder: (context, headerKey, isExpanded) => Row(
+              key: headerKey,
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
