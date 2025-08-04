@@ -295,6 +295,8 @@ CREATE TABLE enterprise_job_photo_urls(
 
 CREATE TABLE enterprise_job_comments(
     job_id VARCHAR(36) NOT NULL,
+    teacher_id VARCHAR(36) NOT NULL,
+    date BIGINT NOT NULL,
     comment VARCHAR(255) NOT NULL,
     FOREIGN KEY (job_id) REFERENCES enterprise_jobs(id) ON DELETE CASCADE
 );

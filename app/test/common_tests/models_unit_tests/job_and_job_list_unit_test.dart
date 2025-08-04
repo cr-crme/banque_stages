@@ -1,4 +1,5 @@
 import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/enterprises/job_comment.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
@@ -60,7 +61,12 @@ void main() {
         photosUrl: ['newUrl'],
         sstEvaluation: dummyJobSstEvaluation(id: 'newSstEvaluationId'),
         incidents: dummyIncidents(id: 'newIncidentsId'),
-        comments: ['newComment'],
+        comments: [
+          JobComment(
+              comment: 'newComment',
+              teacherId: 'teacherId',
+              date: DateTime(2023, 10, 1))
+        ],
       );
 
       expect(jobDifferent.id, 'newId');
@@ -74,7 +80,12 @@ void main() {
       expect(jobDifferent.photosUrl, ['newUrl']);
       expect(jobDifferent.sstEvaluation.id, 'newSstEvaluationId');
       expect(jobDifferent.incidents.id, 'newIncidentsId');
-      expect(jobDifferent.comments, ['newComment']);
+      expect(jobDifferent.comments, [
+        JobComment(
+            comment: 'newComment',
+            teacherId: 'teacherId',
+            date: DateTime(2023, 10, 1))
+      ]);
     });
 
     test('has the rigt amount', () {

@@ -1,4 +1,5 @@
 import 'package:common/exceptions.dart';
+import 'package:common/models/enterprises/job_comment.dart';
 import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
@@ -43,7 +44,7 @@ class Job extends ItemSerializable {
   final Incidents incidents;
 
   // Comments
-  final List<String> comments;
+  final List<JobComment> comments;
 
   Job({
     super.id,
@@ -56,7 +57,7 @@ class Job extends ItemSerializable {
     List<String>? photosUrl,
     required this.sstEvaluation,
     required this.incidents,
-    List<String>? comments,
+    List<JobComment>? comments,
     required this.reservedForId,
   })  : _specialization = specialization,
         photosUrl = photosUrl ?? [],
@@ -73,7 +74,7 @@ class Job extends ItemSerializable {
     List<String>? photosUrl,
     JobSstEvaluation? sstEvaluation,
     Incidents? incidents,
-    List<String>? comments,
+    List<JobComment>? comments,
     String? reservedForId,
   }) {
     return Job(
@@ -160,7 +161,7 @@ class Job extends ItemSerializable {
             .map((key, value) => MapEntry(key, value))
           ..addAll({'id': map['id']})),
         comments = ListExt.from(map['comments'],
-                deserializer: (e) => StringExt.from(e) ?? '') ??
+                deserializer: (e) => JobComment.fromSerialized(e)) ??
             [],
         reservedForId = StringExt.from(map['reserved_for_id']) ?? '',
         super.fromSerialized();

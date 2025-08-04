@@ -78,7 +78,6 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
       showSnackBar(context, message: status);
       return;
     }
-    _editing = false;
 
     if (!_taxesInfoController.useSameAddress) {
       // Validate headquarter address
@@ -92,6 +91,7 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
 
     if (!mounted) return;
     if (!FormService.validateForm(_formKey, save: true)) return;
+    _editing = false;
 
     final newEnteprise = widget.enterprise.copyWith(
       name: _enterpriseInfoController.name.text,
@@ -184,10 +184,6 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _GeneralInformation(
-                controller: _enterpriseInfoController,
-                editMode: _editing,
-              ),
               _ContactInfo(
                 controller: _contactInfoController,
                 editMode: _editing,
@@ -221,47 +217,6 @@ class EnterpriseAboutPageState extends State<EnterpriseAboutPage> {
         ),
       ),
     );
-  }
-}
-
-class _GeneralInformation extends StatelessWidget {
-  const _GeneralInformation({
-    required this.controller,
-    required this.editMode,
-  });
-
-  final _EnterpriseInfoController controller;
-  final bool editMode;
-
-  @override
-  Widget build(BuildContext context) {
-    _logger
-        .finer('Building General Information section with editMode: $editMode');
-
-    return editMode
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SubTitle('Nom de l\'entreprise'),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: controller.name,
-                        enabled: editMode,
-                        validator: (text) => text!.isEmpty
-                            ? 'Ajouter le nom de l\'entreprise.'
-                            : null,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          )
-        : Container();
   }
 }
 
@@ -321,8 +276,8 @@ class _ContactInfo extends StatelessWidget {
             children: [
               TextFormField(
                 controller: controller.firstName,
-                decoration: const InputDecoration(
-                  labelText: '* Prénom',
+                decoration: InputDecoration(
+                  labelText: editMode ? '* Prénom' : 'Prénom',
                   labelStyle: styleOverride,
                   disabledBorder: InputBorder.none,
                 ),
@@ -335,8 +290,8 @@ class _ContactInfo extends StatelessWidget {
               ),
               TextFormField(
                 controller: controller.lastName,
-                decoration: const InputDecoration(
-                  labelText: '* Nom',
+                decoration: InputDecoration(
+                  labelText: editMode ? '* Nom' : 'Nom',
                   labelStyle: styleOverride,
                   disabledBorder: InputBorder.none,
                 ),
@@ -350,8 +305,8 @@ class _ContactInfo extends StatelessWidget {
               const SizedBox(height: 8),
               TextFormField(
                 controller: controller.contactFunction,
-                decoration: const InputDecoration(
-                  labelText: '* Fonction',
+                decoration: InputDecoration(
+                  labelText: editMode ? '* Fonction' : 'Fonction',
                   labelStyle: styleOverride,
                   disabledBorder: InputBorder.none,
                 ),

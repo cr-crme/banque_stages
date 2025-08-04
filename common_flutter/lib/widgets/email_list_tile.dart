@@ -59,7 +59,8 @@ class _EmailListTileState extends State<EmailListTile> {
             controller: _emailController,
             decoration: InputDecoration(
               icon: const SizedBox(width: 30),
-              labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
+              labelText:
+                  '${widget.isMandatory && widget.enabled ? '* ' : ''}${widget.title}',
               labelStyle:
                   widget.titleStyle ?? const TextStyle(color: Colors.black),
               disabledBorder: InputBorder.none,

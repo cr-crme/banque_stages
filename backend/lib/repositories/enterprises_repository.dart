@@ -6,6 +6,7 @@ import 'package:backend/utils/exceptions.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/enterprises/job_comment.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/access_level.dart';
 import 'package:common/models/generic/address.dart';
@@ -290,7 +291,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               dataTableName: 'enterprise_job_comments',
               asName: 'comments',
               idNameToDataTable: 'job_id',
-              fieldsToFetch: ['comment']),
+              fieldsToFetch: ['comment', 'teacher_id', 'date']),
           MySqlSelectSubQuery(
               dataTableName: 'enterprise_job_pre_internship_requests',
               asName: 'pre_internship_requests',
@@ -328,8 +329,15 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         jobs[job['id']]['photos_url'] =
             (job['photo_url'] as List?)?.map((e) => e['photo_url']).toList() ??
                 [];
-        jobs[job['id']]['comments'] =
-            (job['comments'] as List?)?.map((e) => e['comment']).toList() ?? [];
+        jobs[job['id']]['comments'] = (job['comments'] as List?)
+                ?.map((e) => {
+                      'id': e['job_id'],
+                      'comment': e['comment'],
+                      'teacher_id': e['teacher_id'],
+                      'date': e['date']
+                    })
+                .toList() ??
+            [];
         jobs[job['id']]['pre_internship_requests'] =
             ((job['pre_internship_requests'] as List?)?.first as Map?) ?? {};
         jobs[job['id']]['pre_internship_requests']['is_applicable'] =
@@ -524,7 +532,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     await Future.wait(toWait);
   }
 
-  Future<void> _insertJobComments(List<String> comments, String jobId) async {
+  Future<void> _insertJobComments(
+      List<JobComment> comments, String jobId) async {
     final toWait = <Future>[];
     for (final comment in comments) {
       toWait.add(MySqlHelpers.performInsertQuery(
@@ -532,7 +541,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           tableName: 'enterprise_job_comments',
           data: {
             'job_id': jobId.serialize(),
-            'comment': comment.serialize(),
+            'teacher_id': comment.teacherId.serialize(),
+            'date': comment.date.serialize(),
+            'comment': comment.comment.serialize(),
           }));
     }
     await Future.wait(toWait);
@@ -1039,6 +1050,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     required DatabaseUser user,
     required InternshipsRepository internshipsRepository,
   }) async {
+    // TODO Check here if the user updated the comments, doing so requires that they previously had at least one internship with this enterprise
+
     if (previous == null) {
       await _insertToEnterprises(enterprise);
     } else {

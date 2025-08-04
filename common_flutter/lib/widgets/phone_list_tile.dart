@@ -74,7 +74,8 @@ class _PhoneListTileState extends State<PhoneListTile> {
               controller: _phoneController,
               decoration: InputDecoration(
                 icon: const SizedBox(width: 30),
-                labelText: '${widget.isMandatory ? '* ' : ''}${widget.title}',
+                labelText:
+                    '${widget.isMandatory && widget.enabled ? '* ' : ''}${widget.title}',
                 labelStyle: widget.titleStyle ?? TextStyle(color: Colors.black),
                 disabledBorder: InputBorder.none,
               ),

@@ -1,6 +1,8 @@
 import 'package:common/models/enterprises/job.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 final _logger = Logger('CommentsExpansionPanel');
@@ -33,6 +35,8 @@ class _SstBody extends StatelessWidget {
     _logger.finer(
         'Building CommentsExpansionPanel for job: ${job.specialization.name}');
 
+    final teachers = TeachersProvider.of(context);
+
     return SizedBox(
       width: Size.infinite.width,
       child: Padding(
@@ -45,7 +49,15 @@ class _SstBody extends StatelessWidget {
             const SizedBox(height: 8),
             job.comments.isEmpty
                 ? const Text('Il n\'y a présentement aucun commentaire.')
-                : ItemizedText(job.comments, interline: 8),
+                : ItemizedText(
+                    job.comments
+                        .map(
+                          (e) =>
+                              '${teachers.fromId(e.teacherId).fullName} (${DateFormat.yMMMEd('fr_CA').format(e.date)}) - '
+                              '${e.comment}',
+                        )
+                        .toList(),
+                    interline: 8),
             Center(
               child: IconButton(
                 onPressed: () => addComment(job),

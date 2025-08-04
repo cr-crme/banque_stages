@@ -267,7 +267,7 @@ class _AddressListTileState extends State<AddressListTile> {
               controller: widget.addressController._textController,
               decoration: InputDecoration(
                 labelText:
-                    '${widget.isMandatory ? '* ' : ''}${widget.title ?? 'Adresse'}',
+                    '${widget.isMandatory && widget.enabled ? '* ' : ''}${widget.title ?? 'Adresse'}',
                 labelStyle: widget.titleStyle ?? TextStyle(color: Colors.black),
                 // Add an invisible icon so the text wraps
                 suffixIcon: Icon(

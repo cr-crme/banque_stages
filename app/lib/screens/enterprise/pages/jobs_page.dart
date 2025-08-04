@@ -1,5 +1,6 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/enterprises/job_comment.dart';
 import 'package:common/models/persons/teacher.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common/utils.dart';
@@ -141,6 +142,16 @@ class JobsPageState extends State<JobsPage> {
 
   void _addComment(Job job) async {
     _logger.finer('Adding comment to job: ${job.specialization.name}');
+    final teacherId = TeachersProvider.of(context, listen: false).myTeacher?.id;
+    if (teacherId == null) {
+      _logger.warning('No teacher ID found when adding comment to job.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content:
+                Text('Vous devez être connecté pour ajouter un commentaire.')),
+      );
+      return;
+    }
     final enterprises = EnterprisesProvider.of(context, listen: false);
 
     final newComment = await showDialog(
@@ -152,7 +163,8 @@ class JobsPageState extends State<JobsPage> {
     );
 
     if (newComment == null) return;
-    job.comments.add(newComment);
+    job.comments.add(JobComment(
+        comment: newComment, teacherId: teacherId, date: DateTime.now()));
     enterprises.replace(widget.enterprise);
     _logger.finer('Comment added to job: ${job.specialization.name}');
   }
