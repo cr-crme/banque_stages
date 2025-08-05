@@ -7,7 +7,8 @@ import 'utils.dart';
 void main() {
   group('AddJobButton', () {
     testWidgets('renders a button with an icon and a text', (tester) async {
-      await tester.pumpWidget(declareWidget(AddJobButton(onPressed: () {})));
+      await tester.pumpWidget(
+          declareWidget(AddJobButton(controllers: [], onJobAdded: () {})));
 
       expect(find.byIcon(Icons.business_center_rounded), findsOneWidget);
       expect(find.text('Ajouter un métier'), findsOneWidget);
@@ -15,7 +16,8 @@ void main() {
 
     testWidgets('renders a button with a custom style', (tester) async {
       await tester.pumpWidget(declareWidget(AddJobButton(
-        onPressed: () {},
+        controllers: [],
+        onJobAdded: () {},
         style: TextButton.styleFrom(backgroundColor: Colors.red),
       )));
 
@@ -27,7 +29,8 @@ void main() {
         (tester) async {
       bool wasClicked = false;
       await tester.pumpWidget(declareWidget(AddJobButton(
-        onPressed: () {
+        controllers: [],
+        onJobAdded: () {
           wasClicked = true;
         },
       )));

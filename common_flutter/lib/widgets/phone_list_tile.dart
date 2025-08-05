@@ -76,7 +76,9 @@ class _PhoneListTileState extends State<PhoneListTile> {
                 icon: const SizedBox(width: 30),
                 labelText:
                     '${widget.isMandatory && widget.enabled ? '* ' : ''}${widget.title}',
-                labelStyle: widget.titleStyle ?? TextStyle(color: Colors.black),
+                labelStyle:
+                    widget.titleStyle ??
+                    (widget.enabled ? null : TextStyle(color: Colors.black)),
                 disabledBorder: InputBorder.none,
               ),
               validator: (value) {
@@ -88,7 +90,8 @@ class _PhoneListTileState extends State<PhoneListTile> {
                 return FormService.phoneValidator(value);
               },
               style:
-                  widget.contentStyle ?? const TextStyle(color: Colors.black),
+                  widget.contentStyle ??
+                  (widget.enabled ? null : TextStyle(color: Colors.black)),
               enabled: widget.enabled,
               onSaved: widget.onSaved,
               keyboardType: TextInputType.phone,

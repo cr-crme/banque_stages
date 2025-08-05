@@ -24,6 +24,7 @@ class EnterpriseActivityTypeListController {
 class EnterpriseActivityTypeListTile extends StatelessWidget {
   const EnterpriseActivityTypeListTile({
     super.key,
+    this.subtitle,
     required this.controller,
     required this.editMode,
     this.direction = Axis.horizontal,
@@ -32,6 +33,7 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
     this.tilePadding = const EdgeInsets.only(left: 24.0),
   });
 
+  final String? subtitle;
   final EnterpriseActivityTypeListController controller;
   final bool editMode;
   final bool hideTitle;
@@ -51,6 +53,7 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
             children: [
               editMode
                   ? _ActivityTypesPickerFormField(
+                    title: subtitle,
                     controller: controller,
                     activityTabAtTop: activityTabAtTop,
                     direction: direction,
@@ -118,6 +121,7 @@ class _ActivityTypeCards extends StatelessWidget {
 
 class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
   _ActivityTypesPickerFormField({
+    this.title,
     required this.controller,
     required this.direction,
     String? Function(Set<ActivityTypes>? activityTypes)? validator,
@@ -128,6 +132,7 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
          builder: _builder,
        );
 
+  final String? title;
   final bool activityTabAtTop;
   final Axis direction;
   final EnterpriseActivityTypeListController controller;
@@ -147,6 +152,7 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
     final direction = (state.widget as _ActivityTypesPickerFormField).direction;
     final activityTabAtTop =
         (state.widget as _ActivityTypesPickerFormField).activityTabAtTop;
+    final title = (state.widget as _ActivityTypesPickerFormField).title;
 
     final activityTabs = _ActivityTypeCards(
       controller: controller,
@@ -198,7 +204,7 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
               controller: controller,
               focusNode: focusNode,
               decoration: InputDecoration(
-                labelText: '* Choisir le type d\'activité',
+                labelText: title ?? '* Choisir le type d\'activité',
                 errorText: state.errorText,
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.clear),

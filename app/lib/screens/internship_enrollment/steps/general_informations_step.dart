@@ -247,9 +247,8 @@ class _ExtraSpecialization extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           AddJobButton(
-            onPressed: () => setState(() {
-              controllers.add(EnterpriseJobListController(job: Job.empty));
-            }),
+            controllers: controllers,
+            onJobAdded: setState(() {}),
             style: Theme.of(context).textButtonTheme.style!.copyWith(
                 backgroundColor: Theme.of(context)
                     .elevatedButtonTheme

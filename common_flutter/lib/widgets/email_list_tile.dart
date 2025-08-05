@@ -62,10 +62,15 @@ class _EmailListTileState extends State<EmailListTile> {
               labelText:
                   '${widget.isMandatory && widget.enabled ? '* ' : ''}${widget.title}',
               labelStyle:
-                  widget.titleStyle ?? const TextStyle(color: Colors.black),
+                  widget.titleStyle ??
+                  (widget.enabled
+                      ? null
+                      : const TextStyle(color: Colors.black)),
               disabledBorder: InputBorder.none,
             ),
-            style: widget.contentStyle ?? const TextStyle(color: Colors.black),
+            style:
+                widget.contentStyle ??
+                (widget.enabled ? null : const TextStyle(color: Colors.black)),
             validator: (value) {
               if (!widget.enabled) return null;
 

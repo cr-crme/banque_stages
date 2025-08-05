@@ -268,7 +268,9 @@ class _AddressListTileState extends State<AddressListTile> {
               decoration: InputDecoration(
                 labelText:
                     '${widget.isMandatory && widget.enabled ? '* ' : ''}${widget.title ?? 'Adresse'}',
-                labelStyle: widget.titleStyle ?? TextStyle(color: Colors.black),
+                labelStyle:
+                    widget.titleStyle ??
+                    (widget.enabled ? null : TextStyle(color: Colors.black)),
                 // Add an invisible icon so the text wraps
                 suffixIcon: Icon(
                   addressHasChanged ? Icons.search : Icons.map,
@@ -276,7 +278,9 @@ class _AddressListTileState extends State<AddressListTile> {
                 ),
                 disabledBorder: InputBorder.none,
               ),
-              style: widget.contentStyle ?? TextStyle(color: Colors.black),
+              style:
+                  widget.contentStyle ??
+                  (widget.enabled ? null : TextStyle(color: Colors.black)),
               enabled: widget.enabled && !isValidating,
               maxLines: null,
               onSaved: (newAddress) => validate(),

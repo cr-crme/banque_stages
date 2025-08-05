@@ -319,7 +319,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
             },
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: TextStyle(color: Colors.black),
+            style: (widget.editMode ? null : TextStyle(color: Colors.black)),
           ),
         ),
       ],
