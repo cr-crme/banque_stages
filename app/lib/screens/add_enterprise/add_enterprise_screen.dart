@@ -18,7 +18,7 @@ final _logger = Logger('AddEnterpriseScreen');
 class AddEnterpriseScreen extends StatefulWidget {
   const AddEnterpriseScreen({super.key});
 
-  static const route = '/add';
+  static const route = '/add-enterprise';
 
   @override
   State<AddEnterpriseScreen> createState() => _AddEnterpriseScreenState();
@@ -47,7 +47,6 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     _logger.finer('Previous step in AddEnterpriseScreen: $_currentStep');
 
     if (_currentStep == 0) return;
-
     _currentStep -= 1;
     _scrollController.jumpTo(0);
     setState(() {});
@@ -74,25 +73,16 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       return;
     }
     if (!mounted) return;
-
     ScaffoldMessenger.of(context).clearSnackBars();
 
     if (_currentStep == 2) {
-      if ((await _aboutKey.currentState!.validate()) != null) {
-        setState(() {
-          _currentStep = 0;
-          _scrollController.jumpTo(0);
-          _scrollController.jumpTo(0);
-        });
-        return;
-      }
-
-      _submit();
+      return await _submit();
     } else {
       setState(() {
         _currentStep += 1;
         _scrollController.jumpTo(0);
       });
+      return;
     }
   }
 
@@ -126,7 +116,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     setState(() {});
   }
 
-  void _submit() async {
+  Future<void> _submit() async {
     _logger.info('Submitting enterprise form');
     final teachers = TeachersProvider.of(context, listen: false);
     final enterprises = EnterprisesProvider.of(context, listen: false);
