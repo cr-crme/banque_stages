@@ -10,6 +10,7 @@ import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
@@ -174,6 +175,14 @@ class _InternshipListState extends State<_InternshipList> {
     launchUrl(emailLaunchUri);
   }
 
+  void _evaluateEnterprise(context, Internship internship) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) =>
+            Dialog(child: EnterpriseEvaluationScreen(id: internship.id)));
+  }
+
   /// Returns if the current teacher can control the internship that has the
   /// id [internshipId].
   bool _canSeeDetails({required String internshipId}) {
@@ -278,24 +287,40 @@ class _InternshipListState extends State<_InternshipList> {
                         padding: const EdgeInsets.only(top: 10.0, bottom: 15),
                         child: _dateBuild(internship),
                       ),
-                      if (canSeeDetails)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 8.0, right: 12),
-                            child: TextButton(
-                              onPressed: () => GoRouter.of(context).pushNamed(
-                                Screens.student,
-                                pathParameters: Screens.params(student),
-                                queryParameters:
-                                    Screens.queryParams(pageIndex: '1'),
-                              ),
-                              child: const Text('Détails du stage',
-                                  textAlign: TextAlign.center),
-                            ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(bottom: 8.0, right: 12),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (internship.isEnterpriseEvaluationPending)
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: canSeeDetails ? 16.0 : 0.0),
+                                  child: TextButton(
+                                      onPressed: () => _evaluateEnterprise(
+                                          context, internship),
+                                      child:
+                                          const Text('Évaluer l\'entreprise')),
+                                ),
+                              if (canSeeDetails)
+                                TextButton(
+                                  onPressed: () =>
+                                      GoRouter.of(context).pushNamed(
+                                    Screens.student,
+                                    pathParameters: Screens.params(student),
+                                    queryParameters:
+                                        Screens.queryParams(pageIndex: '1'),
+                                  ),
+                                  child: const Text('Détails du stage',
+                                      textAlign: TextAlign.center),
+                                ),
+                            ],
                           ),
                         ),
+                      )
                     ],
                   ),
                 ),
