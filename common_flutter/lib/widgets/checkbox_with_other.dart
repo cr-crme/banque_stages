@@ -7,6 +7,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
     this.titleStyle,
     required this.elements,
     this.initialValues,
+    this.subWidgetBuilder,
     this.hasNotApplicableOption = false,
     this.showOtherOption = true,
     this.errorMessageOther = 'Préciser au moins un élément',
@@ -19,6 +20,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
   final TextStyle? titleStyle;
   final List<T> elements;
   final List<String>? initialValues;
+  final Widget Function(T element, bool isSelected)? subWidgetBuilder;
   final bool showOtherOption;
   final bool hasNotApplicableOption;
   final String errorMessageOther;
@@ -122,24 +124,31 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
             style: widget.titleStyle ?? Theme.of(context).textTheme.titleSmall,
           ),
         ..._elementValues.keys.map(
-          (element) => CheckboxListTile(
-            visualDensity: VisualDensity.compact,
-            dense: true,
-            controlAffinity: ListTileControlAffinity.leading,
-            title: Text(
-              element.toString(),
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            enabled: widget.enabled && !_isNotApplicable,
-            value: _elementValues[element]!,
-            onChanged: (newValue) {
-              _elementValues[element] = newValue!;
-              _checkForShowingChild();
-              setState(() {});
-              if (widget.onOptionSelected != null) {
-                widget.onOptionSelected!(values);
-              }
-            },
+          (element) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CheckboxListTile(
+                visualDensity: VisualDensity.compact,
+                dense: true,
+                controlAffinity: ListTileControlAffinity.leading,
+                title: Text(
+                  element.toString(),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                enabled: widget.enabled && !_isNotApplicable,
+                value: _elementValues[element]!,
+                onChanged: (newValue) {
+                  _elementValues[element] = newValue!;
+                  _checkForShowingChild();
+                  setState(() {});
+                  if (widget.onOptionSelected != null) {
+                    widget.onOptionSelected!(values);
+                  }
+                },
+              ),
+              if (widget.subWidgetBuilder != null)
+                widget.subWidgetBuilder!(element, _elementValues[element]!),
+            ],
           ),
         ),
         if (widget.hasNotApplicableOption)

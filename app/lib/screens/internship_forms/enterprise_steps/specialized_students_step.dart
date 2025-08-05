@@ -94,6 +94,64 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
     return null;
   }
 
+  Key _disabilityKey(_Disabilities disability) {
+    switch (disability) {
+      case _Disabilities.autismSpectrumDisorder:
+        return const Key('acceptanceTSA');
+      case _Disabilities.languageDisorder:
+        return const Key('acceptanceLanguageDisorder');
+      case _Disabilities.intellectualDisability:
+        return const Key('acceptanceIntellectualDisability');
+      case _Disabilities.physicalDisability:
+        return const Key('acceptancePhysicalDisability');
+      case _Disabilities.mentalHealthDisorder:
+        return const Key('acceptanceMentalHealthDisorder');
+      case _Disabilities.behavioralDifficulties:
+        return const Key('acceptanceBehaviorDifficulties');
+    }
+  }
+
+  double _getDisabilityValue(_Disabilities disability) {
+    switch (disability) {
+      case _Disabilities.autismSpectrumDisorder:
+        return _acceptanceTsa;
+      case _Disabilities.languageDisorder:
+        return _acceptanceLanguageDisorder;
+      case _Disabilities.intellectualDisability:
+        return _acceptanceIntellectualDisability;
+      case _Disabilities.physicalDisability:
+        return _acceptancePhysicalDisability;
+      case _Disabilities.mentalHealthDisorder:
+        return _acceptanceMentalHealthDisorder;
+      case _Disabilities.behavioralDifficulties:
+        return _acceptanceBehaviorDifficulties;
+    }
+  }
+
+  void _setDisabilityValue(_Disabilities disability, double value) {
+    switch (disability) {
+      case _Disabilities.autismSpectrumDisorder:
+        _acceptanceTsa = value;
+        break;
+      case _Disabilities.languageDisorder:
+        _acceptanceLanguageDisorder = value;
+        break;
+      case _Disabilities.intellectualDisability:
+        _acceptanceIntellectualDisability = value;
+        break;
+      case _Disabilities.physicalDisability:
+        _acceptancePhysicalDisability = value;
+        break;
+      case _Disabilities.mentalHealthDisorder:
+        _acceptanceMentalHealthDisorder = value;
+        break;
+      case _Disabilities.behavioralDifficulties:
+        _acceptanceBehaviorDifficulties = value;
+        break;
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     _logger.finer('Building SpecializedStudentsStep');
@@ -112,90 +170,36 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
                   setState(() => _hasStudentHadDisabilities = value),
             ),
             if (_hasStudentHadDisabilities)
-              CheckboxWithOther(
+              CheckboxWithOther<_Disabilities>(
                 key: _hasDisabilitiesKey,
                 title: '* Est-ce que le ou la stagiaire avait\u00a0:',
                 titleStyle: Theme.of(context).textTheme.titleSmall,
                 elements: _Disabilities.values,
                 showOtherOption: false,
+                subWidgetBuilder: (element, isSelected) {
+                  return isSelected
+                      ? Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 24.0),
+                            child: _RatingBarForm(
+                              key: _disabilityKey(element),
+                              title:
+                                  'Évaluer la prise en charge de l\'élève par l\'entreprise\u00a0: ',
+                              initialValue: _getDisabilityValue(element),
+                              validator: (value) => value! <= 0
+                                  ? 'Sélectionner une valeur'
+                                  : null,
+                              onRatingChanged: (newValue) =>
+                                  _setDisabilityValue(element, newValue!),
+                            ),
+                          ),
+                        )
+                      : Container();
+                },
                 onOptionSelected: (value) => setState(() =>
                     _disabilities = _hasDisabilitiesKey.currentState!.selected),
               ),
-            if (_disabilities.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                child: Text(
-                    '* Évaluer la prise en charge de l\'élève par '
-                    'l\'entreprise par rapport à\u00a0:',
-                    style: Theme.of(context).textTheme.titleSmall),
-              ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (_disabilities
-                    .contains(_Disabilities.autismSpectrumDisorder))
-                  _RatingBarForm(
-                    key: const Key('acceptanceTSA'),
-                    title: 'Son trouble du spectre de l\'autisme (TSA)\u00a0?',
-                    initialValue: _acceptanceTsa,
-                    validator: (value) =>
-                        value! <= 0 ? 'Sélectionner une valeur' : null,
-                    onRatingChanged: (newValue) => _acceptanceTsa = newValue!,
-                  ),
-                if (_disabilities.contains(_Disabilities.languageDisorder))
-                  _RatingBarForm(
-                    key: const Key('acceptanceLanguageDisorder'),
-                    title: 'Son trouble du langage\u00a0?',
-                    initialValue: _acceptanceLanguageDisorder,
-                    validator: (value) =>
-                        value! <= 0 ? 'Sélectionner une valeur' : null,
-                    onRatingChanged: (newValue) =>
-                        _acceptanceLanguageDisorder = newValue!,
-                  ),
-                if (_disabilities
-                    .contains(_Disabilities.intellectualDisability))
-                  _RatingBarForm(
-                    key: const Key('acceptanceIntellectualDisability'),
-                    title: 'Sa déficience intellectuelle\u00a0?',
-                    initialValue: _acceptanceIntellectualDisability,
-                    validator: (value) =>
-                        value! <= 0 ? 'Sélectionner une valeur' : null,
-                    onRatingChanged: (newValue) =>
-                        _acceptanceIntellectualDisability = newValue!,
-                  ),
-                if (_disabilities.contains(_Disabilities.physicalDisability))
-                  _RatingBarForm(
-                    key: const Key('acceptancePhysicalDisability'),
-                    title: 'Sa déficience physique\u00a0?',
-                    initialValue: _acceptancePhysicalDisability,
-                    validator: (value) =>
-                        value! <= 0 ? 'Sélectionner une valeur' : null,
-                    onRatingChanged: (newValue) =>
-                        _acceptancePhysicalDisability = newValue!,
-                  ),
-                if (_disabilities.contains(_Disabilities.mentalHealthDisorder))
-                  _RatingBarForm(
-                    key: const Key('acceptanceMentalHealthDisorder'),
-                    title: 'Son trouble de santé mentale\u00a0?',
-                    initialValue: _acceptanceMentalHealthDisorder,
-                    validator: (value) =>
-                        value! <= 0 ? 'Sélectionner une valeur' : null,
-                    onRatingChanged: (newValue) =>
-                        _acceptanceMentalHealthDisorder = newValue!,
-                  ),
-                if (_disabilities
-                    .contains(_Disabilities.behavioralDifficulties))
-                  _RatingBarForm(
-                    key: const Key('_acceptanceBehaviorDifficulties'),
-                    title: 'Ses difficultés comportementales\u00a0?',
-                    initialValue: _acceptanceBehaviorDifficulties,
-                    validator: (value) =>
-                        value! <= 0 ? 'Sélectionner une valeur' : null,
-                    onRatingChanged: (newValue) =>
-                        _acceptanceBehaviorDifficulties = newValue!,
-                  ),
-              ],
-            ),
           ],
         ),
       ),

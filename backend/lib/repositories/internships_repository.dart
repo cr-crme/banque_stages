@@ -915,9 +915,14 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       Internship internship, Internship previous) async {
     final toUpdate = internship.getDifference(previous);
     if (toUpdate.contains('enterprise_evaluation')) {
-      _logger.severe('Enterprise evaluation cannot be changed');
-      throw InvalidRequestException('Enterprise evaluation cannot be changed');
+      if (previous.enterpriseEvaluation != null) {
+        _logger.severe('Enterprise evaluation cannot be changed');
+        throw InvalidRequestException('Enterprise evaluation cannot be changed');
+      }
+
+      await _insertToEnterpriseEvaluation(internship);
     }
+
   }
 
   @override
