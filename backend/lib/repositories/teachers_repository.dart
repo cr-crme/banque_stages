@@ -31,6 +31,12 @@ abstract class TeachersRepository implements RepositoryAbstract {
     }
 
     final teachers = await _getAllTeachers(user: user);
+
+    // Filter teachers based on user access level (this should already be done, but just in case)
+    teachers.removeWhere((key, value) =>
+        user.accessLevel <= AccessLevel.admin &&
+        value.schoolBoardId != user.schoolBoardId);
+
     return RepositoryResponse(
         data: teachers.map(
             (key, value) => MapEntry(key, value.serializeWithFields(fields))));
@@ -52,6 +58,12 @@ abstract class TeachersRepository implements RepositoryAbstract {
     final teacher = await _getTeacherById(id: id, user: user);
     if (teacher == null) throw MissingDataException('Teacher not found');
 
+    // Prevent from getting a teacher that the user does not have access to (this should already be done, but just in case)
+    if (user.accessLevel <= AccessLevel.admin &&
+        teacher.schoolBoardId != user.schoolBoardId) {
+      throw MissingDataException('Teacher not found');
+    }
+
     return RepositoryResponse(data: teacher.serializeWithFields(fields));
   }
 
@@ -70,8 +82,15 @@ abstract class TeachersRepository implements RepositoryAbstract {
 
     // Update if exists, insert if not
     final previous = await _getTeacherById(id: id, user: user);
+    final newTeacher = previous?.copyWithData(data) ??
+        Teacher.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
+
     // If the user is not at least an admin, they cannot insert new teachers
-    if (user.accessLevel < AccessLevel.admin) {
+    if (user.accessLevel == AccessLevel.admin &&
+        newTeacher.schoolBoardId != user.schoolBoardId) {
+      throw InvalidRequestException(
+          'You do not have permission to put this teacher');
+    } else if (user.accessLevel < AccessLevel.admin) {
       if (previous == null) {
         _logger.severe(
             'User ${user.userId} does not have permission to insert teachers');
@@ -84,9 +103,6 @@ abstract class TeachersRepository implements RepositoryAbstract {
             'You do not have permission to update teachers');
       }
     }
-
-    final newTeacher = previous?.copyWithData(data) ??
-        Teacher.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
 
     await _putTeacher(teacher: newTeacher, previous: previous, user: user);
     return RepositoryResponse(updatedData: {
@@ -104,6 +120,13 @@ abstract class TeachersRepository implements RepositoryAbstract {
           'User ${user.userId} does not have permission to delete teachers');
       throw InvalidRequestException(
           'You do not have permission to delete teachers');
+    }
+
+    if (user.accessLevel <= AccessLevel.admin &&
+        (await _getTeacherById(id: id, user: user))?.schoolBoardId !=
+            user.schoolBoardId) {
+      throw InvalidRequestException(
+          'You do not have permission to delete this teacher');
     }
 
     final removedId = await _deleteTeacher(id: id);

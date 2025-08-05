@@ -32,6 +32,12 @@ abstract class StudentsRepository implements RepositoryAbstract {
     }
 
     final students = await _getAllStudents(user: user);
+
+    // Filter students based on user access level (this should already be done, but just in case)
+    students.removeWhere((key, value) =>
+        user.accessLevel <= AccessLevel.admin &&
+        value.schoolBoardId != user.schoolBoardId);
+
     return RepositoryResponse(
         data: students.map(
             (key, value) => MapEntry(key, value.serializeWithFields(fields))));
@@ -53,6 +59,12 @@ abstract class StudentsRepository implements RepositoryAbstract {
     final student = await _getStudentById(id: id, user: user);
     if (student == null) throw MissingDataException('Student not found');
 
+    // Prevent from getting a student that the user does not have access to (this should already be done, but just in case)
+    if (user.accessLevel <= AccessLevel.admin &&
+        student.schoolBoardId != user.schoolBoardId) {
+      throw MissingDataException('Student not found');
+    }
+
     return RepositoryResponse(data: student.serializeWithFields(fields));
   }
 
@@ -71,9 +83,14 @@ abstract class StudentsRepository implements RepositoryAbstract {
 
     // Update if exists, insert if not
     final previous = await _getStudentById(id: id, user: user);
-
     final newStudent = previous?.copyWithData(data) ??
         Student.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
+
+    if (user.accessLevel <= AccessLevel.admin &&
+        newStudent.schoolBoardId != user.schoolBoardId) {
+      throw InvalidRequestException(
+          'You do not have permission to put this student');
+    }
 
     await _putStudent(student: newStudent, previous: previous, user: user);
     return RepositoryResponse(updatedData: {
@@ -91,6 +108,13 @@ abstract class StudentsRepository implements RepositoryAbstract {
           'User ${user.userId} does not have permission to delete students');
       throw InvalidRequestException(
           'You do not have permission to delete students');
+    }
+
+    if (user.accessLevel <= AccessLevel.admin &&
+        (await _getStudentById(id: id, user: user))?.schoolBoardId !=
+            user.schoolBoardId) {
+      throw InvalidRequestException(
+          'You do not have permission to delete this student');
     }
 
     final removedId = await _deleteStudent(id: id, user: user);

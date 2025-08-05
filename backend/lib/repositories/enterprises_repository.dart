@@ -36,6 +36,12 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
     }
 
     final enterprises = await _getAllEnterprises(user: user);
+
+    // Filter enterprises based on user access level (this should already be done, but just in case)
+    enterprises.removeWhere((key, value) =>
+        user.accessLevel <= AccessLevel.admin &&
+        value.schoolBoardId != user.schoolBoardId);
+
     return RepositoryResponse(
         data: enterprises.map(
             (key, value) => MapEntry(key, value.serializeWithFields(fields))));
@@ -56,6 +62,12 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
 
     final enterprise = await _getEnterpriseById(id: id, user: user);
     if (enterprise == null) throw MissingDataException('Enterprise not found');
+
+    // Prevent from getting an enterprise that the user does not have access to (this should already be done, but just in case)
+    if (user.accessLevel <= AccessLevel.admin &&
+        enterprise.schoolBoardId != user.schoolBoardId) {
+      throw MissingDataException('Enterprise not found');
+    }
 
     return RepositoryResponse(data: enterprise.serializeWithFields(fields));
   }
@@ -81,9 +93,14 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
 
     // Update if exists, insert if not
     final previous = await _getEnterpriseById(id: id, user: user);
-
     final newEnterprise = previous?.copyWithData(data) ??
         Enterprise.fromSerialized(<String, dynamic>{'id': id}..addAll(data));
+
+    if (user.accessLevel <= AccessLevel.admin &&
+        newEnterprise.schoolBoardId != user.schoolBoardId) {
+      throw InvalidRequestException(
+          'You do not have permission to put this enterprise');
+    }
 
     // Put enterprise can remove internships if a job is removed
     final deletedData = await _putEnterprise(
@@ -113,6 +130,26 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
           'User ${user.userId} does not have permission to delete enterprises');
       throw InvalidRequestException(
           'You do not have permission to delete enterprises');
+    }
+
+    if (user.accessLevel <= AccessLevel.admin &&
+        (await _getEnterpriseById(id: id, user: user))?.schoolBoardId !=
+            user.schoolBoardId) {
+      throw InvalidRequestException(
+          'You do not have permission to delete this enterprise');
+    }
+
+    // Prevent from deleting an enterprise that has at least one internship
+    if (user.accessLevel < AccessLevel.superAdmin) {
+      final internships =
+          (await internshipsRepository?.getAll(user: user))?.data ?? {};
+      if (internships.values
+          .any((internship) => internship['enterprise_id'] == id)) {
+        _logger.severe(
+            'You cannot delete this enterprise because it has active internships');
+        throw InvalidRequestException(
+            'You cannot delete this enterprise because it has active internships');
+      }
     }
 
     final response = await _deleteEnterprise(
@@ -815,6 +852,23 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       }
 
       if (differences.contains('comments')) {
+        // Make sure the user has the permission to update the comments
+        // i.e. it is an admin or the teacher has supervised at least one internship in this enterprise
+        if (user.accessLevel < AccessLevel.admin) {
+          final internships = (await internshipsRepository.getAll(user: user));
+          final teacherHasSupervizedInThisEnterprise = internships.data?.values
+                  .where((internship) =>
+                      internship['enterprise_id'] == enterprise.id &&
+                      (internship['signatory_teacher_id'] == user.userId ||
+                          (internship['extra_supervising_teacher_ids'] as List)
+                              .contains(user.userId)))
+                  .isNotEmpty ??
+              false;
+          if (!teacherHasSupervizedInThisEnterprise) {
+            throw InvalidRequestException(
+                'You do not have permission to update this enterprise');
+          }
+        }
         toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
             connection: connection,
             tableName: 'enterprise_job_comments',
@@ -1050,8 +1104,6 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     required DatabaseUser user,
     required InternshipsRepository internshipsRepository,
   }) async {
-    // TODO Check here if the user updated the comments, doing so requires that they previously had at least one internship with this enterprise
-
     if (previous == null) {
       await _insertToEnterprises(enterprise);
     } else {

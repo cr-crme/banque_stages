@@ -206,7 +206,6 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       if (!(await validate()) || !mounted) return;
 
       // Finish editing
-      // TODO: Add a block Backend side that prevents from removing an enterprise or a job if they have at least one internship
       final newEnterprise = editedEnterprise;
       if (newEnterprise.getDifference(widget.enterprise).isNotEmpty) {
         final isSuccess = await EnterprisesProvider.of(

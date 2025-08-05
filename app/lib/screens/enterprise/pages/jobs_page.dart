@@ -6,9 +6,11 @@ import 'package:common/services/job_data_file_service.dart';
 import 'package:common/utils.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
+import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
+import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_sst_event_dialog.dart';
@@ -145,14 +147,23 @@ class JobsPageState extends State<JobsPage> {
     final teacherId = TeachersProvider.of(context, listen: false).myTeacher?.id;
     if (teacherId == null) {
       _logger.warning('No teacher ID found when adding comment to job.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content:
-                Text('Vous devez être connecté pour ajouter un commentaire.')),
-      );
+      showSnackBar(context,
+          message: 'Vous devez être connecté pour ajouter un commentaire.');
       return;
     }
     final enterprises = EnterprisesProvider.of(context, listen: false);
+    final internship = InternshipsProvider.of(context, listen: false).where(
+        (internship) =>
+            internship.enterpriseId == widget.enterprise.id &&
+            internship.supervisingTeacherIds.contains(teacherId));
+    if (internship.isEmpty) {
+      _logger.warning(
+          'No internship found for teacher ID when adding comment to job: $teacherId');
+      showSnackBar(context,
+          message:
+              'Vous devez avoir supervisé au moins un stage dans cette entreprise pour y ajouter un commentaire.');
+      return;
+    }
 
     final newComment = await showDialog(
       barrierDismissible: false,
