@@ -604,7 +604,7 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.withTitle) const SubTitle('Horaire', left: 0),
+        if (widget.withTitle) const SubTitle('Horaire du stage', left: 0),
         ...widget.scheduleController.weeklySchedules
             .asMap()
             .keys

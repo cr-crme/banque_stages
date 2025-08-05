@@ -16,7 +16,7 @@ import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.da
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
 import 'package:crcrme_banque_stages/router.dart';
-import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/general_informations_step.dart';
+import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/caracteristics_step.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -44,7 +44,7 @@ class _InternshipEnrollmentScreenState
     extends State<InternshipEnrollmentScreen> {
   final _scrollController = ScrollController();
 
-  final _caracteristicsKey = GlobalKey<GeneralInformationsStepState>();
+  final _caracteristicsKey = GlobalKey<CaracteristicsStepState>();
   final _scheduleKey = GlobalKey<ScheduleStepState>();
 
   int _currentStep = 0;
@@ -236,7 +236,7 @@ class _InternshipEnrollmentScreenState
                 state: _stepStatus[0],
                 isActive: _currentStep == 0,
                 title: const Text('Caractéristiques'),
-                content: GeneralInformationsStep(
+                content: CaracteristicsStep(
                     key: _caracteristicsKey,
                     enterprise: widget.enterprise,
                     specifiedSpecialization:
@@ -254,7 +254,7 @@ class _InternshipEnrollmentScreenState
                 state: _stepStatus[2],
                 isActive: _currentStep == 2,
                 title: const Text('Validation des\ninformations'),
-                content: ScheduleStep(key: _scheduleKey),
+                content: Container(),
               ),
             ],
             controlsBuilder: _controlBuilder,
@@ -276,10 +276,12 @@ class _InternshipEnrollmentScreenState
           const SizedBox(width: 20),
           TextButton(
             onPressed: details.onStepContinue,
-            child: _currentStep == 1
-                ? const Text('Confirmer')
-                : const Text('Suivant'),
-          )
+            child: Text(_currentStep == 2
+                ? 'Valider'
+                : _currentStep == 1
+                    ? 'Enregistrer'
+                    : 'Suivant'),
+          ),
         ],
       ),
     );

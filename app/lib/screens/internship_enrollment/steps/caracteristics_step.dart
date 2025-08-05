@@ -27,19 +27,18 @@ List<Student> _studentsWithoutInternship(context, List<Student> students) {
   return out;
 }
 
-class GeneralInformationsStep extends StatefulWidget {
-  const GeneralInformationsStep(
+class CaracteristicsStep extends StatefulWidget {
+  const CaracteristicsStep(
       {super.key, required this.enterprise, this.specifiedSpecialization});
 
   final Enterprise enterprise;
   final List<Specialization>? specifiedSpecialization;
 
   @override
-  State<GeneralInformationsStep> createState() =>
-      GeneralInformationsStepState();
+  State<CaracteristicsStep> createState() => CaracteristicsStepState();
 }
 
-class GeneralInformationsStepState extends State<GeneralInformationsStep> {
+class CaracteristicsStepState extends State<CaracteristicsStep> {
   final formKey = GlobalKey<FormState>();
 
   late final studentController = StudentPickerController(
@@ -248,7 +247,7 @@ class _ExtraSpecialization extends StatelessWidget {
           const SizedBox(height: 8),
           AddJobButton(
             controllers: controllers,
-            onJobAdded: setState(() {}),
+            onJobAdded: () => setState(() {}),
             style: Theme.of(context).textButtonTheme.style!.copyWith(
                 backgroundColor: Theme.of(context)
                     .elevatedButtonTheme

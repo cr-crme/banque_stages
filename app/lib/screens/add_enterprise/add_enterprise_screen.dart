@@ -229,11 +229,11 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
               ),
               TextButton(
                 onPressed: details.onStepContinue,
-                child: Text(_currentStep == 0
-                    ? 'Suivant'
-                    : _currentStep == 2
-                        ? 'Valider'
-                        : 'Enregistrer'),
+                child: Text(_currentStep == 2
+                    ? 'Valider'
+                    : _currentStep == 1
+                        ? 'Enregistrer'
+                        : 'Suivant'),
               )
             ],
           ),
