@@ -61,7 +61,11 @@ class _InternshipSkillsState extends State<InternshipSkills> {
                 const SizedBox(height: 16.0),
                 _AttitudeBody(
                     internship: internship,
-                    evaluation: internship.attitudeEvaluations)
+                    evaluation: internship.attitudeEvaluations),
+                const SizedBox(height: 16.0),
+                _VisaBody(
+                    internship: internship,
+                    evaluation: internship.visaEvaluations),
               ],
             ),
           )
@@ -557,5 +561,152 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
               )
           ],
         ));
+  }
+}
+
+class _VisaBody extends StatefulWidget {
+  const _VisaBody({
+    required this.internship,
+    required this.evaluation,
+  });
+
+  final Internship internship;
+  final List<InternshipEvaluationVisa> evaluation;
+
+  @override
+  State<_VisaBody> createState() => _VisaBodyState();
+}
+
+class _VisaBodyState extends State<_VisaBody> {
+  static const _interline = 12.0;
+  int _currentEvaluationIndex = -1;
+  int _nbPreviousEvaluations = -1;
+
+  void _resetIndex() {
+    if (_nbPreviousEvaluations != widget.evaluation.length) {
+      _currentEvaluationIndex = widget.evaluation.length - 1;
+      _nbPreviousEvaluations = widget.evaluation.length;
+    }
+  }
+
+  Widget _buildSelectEvaluationFromDate() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Row(
+        children: [
+          const Text('Évaluation du\u00a0: '),
+          DropdownButton<int>(
+            value: _currentEvaluationIndex,
+            onChanged: (value) =>
+                setState(() => _currentEvaluationIndex = value!),
+            items: widget.evaluation
+                .asMap()
+                .keys
+                .map((index) => DropdownMenuItem(
+                    value: index,
+                    child: Text(DateFormat('dd MMMM yyyy', 'fr_CA')
+                        .format(widget.evaluation[index].date))))
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShowOtherDate() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Center(
+        child: OutlinedButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) => Dialog(
+                          child: SkillEvaluationFormScreen(
+                        rootContext: context,
+                        formController:
+                            SkillEvaluationFormController.fromInternshipId(
+                          context,
+                          internshipId: widget.internship.id,
+                          evaluationIndex: _currentEvaluationIndex,
+                          canModify: false,
+                        ),
+                        editMode: false,
+                      )));
+            },
+            child: const Text('Voir l\'évaluation détaillée')),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final teacherId = TeachersProvider.of(context, listen: false).myTeacher?.id;
+
+    _resetIndex();
+
+    late final Specialization specialization;
+    try {
+      specialization = EnterprisesProvider.of(context)
+          .fromId(widget.internship.enterpriseId)
+          .jobs
+          .fromId(widget.internship.jobId)
+          .specialization;
+    } catch (e) {
+      return SizedBox(
+        height: 50,
+        child: Center(
+            child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor)),
+      );
+    }
+
+    return AnimatedExpandingCard(
+      elevation: 0.0,
+      header: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const Text('VISA', style: TextStyle(fontWeight: FontWeight.bold)),
+          Visibility(
+            visible:
+                widget.internship.supervisingTeacherIds.contains(teacherId),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Theme.of(context).colorScheme.primary, width: 3),
+                  borderRadius: const BorderRadius.all(Radius.circular(18))),
+              child: IconButton(
+                onPressed: () => showVisaEvaluationDialog(
+                  context: context,
+                  internshipId: widget.internship.id,
+                  editMode: true,
+                ),
+                icon: const Icon(Icons.note_add),
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.evaluation.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
+              child: Text('Aucune évaluation disponible pour ce stage.'),
+            ),
+          if (widget.evaluation.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSelectEvaluationFromDate(),
+                _buildShowOtherDate(),
+              ],
+            )
+        ],
+      ),
+    );
   }
 }

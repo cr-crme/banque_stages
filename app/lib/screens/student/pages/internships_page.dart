@@ -1,14 +1,18 @@
+import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:crcrme_banque_stages/common/widgets/dialogs/finalize_internship_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
+import 'package:crcrme_banque_stages/router.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/enterprise_steps/enterprise_evaluation_screen.dart';
 import 'package:crcrme_banque_stages/screens/student/pages/widgets/internship_details.dart';
 import 'package:crcrme_banque_stages/screens/student/pages/widgets/internship_documents.dart';
-import 'package:crcrme_banque_stages/screens/student/pages/widgets/internship_quick_access.dart';
 import 'package:crcrme_banque_stages/screens/student/pages/widgets/internship_skills.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
@@ -160,6 +164,47 @@ class _StudentInternshipListViewState
     }
   }
 
+  Widget _buildEnterpriseName(context, {required Enterprise enterprise}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          enterprise.name,
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge!
+              .copyWith(color: Colors.black),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: InkWell(
+            onTap: () => GoRouter.of(context).pushNamed(
+              Screens.enterprise,
+              pathParameters: Screens.params(enterprise),
+              queryParameters: Screens.queryParams(pageIndex: '3'),
+            ),
+            borderRadius: BorderRadius.circular(25),
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Icon(
+                Icons.open_in_new,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  void _evaluateEnterprise(context, Internship internship) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) =>
+            Dialog(child: EnterpriseEvaluationScreen(id: internship.id)));
+  }
+
   @override
   Widget build(BuildContext context) {
     _prepareExpander(widget.internships);
@@ -199,34 +244,51 @@ class _StudentInternshipListViewState
                 canTapOnHeader: true,
                 isExpanded: _expanded[internship.id]!,
                 headerBuilder: (context, isExpanded) => ListTile(
-                  title: Text(
-                    '${DateFormat.yMMMd('fr_CA').format(internship.dates.start)} - $endDate',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(color: Colors.black),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4.0),
-                        child: Text(
-                          '${enterprise.name} ',
+                  title: _buildEnterpriseName(context, enterprise: enterprise),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          enterprise.address?.toString() ?? '',
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      Text(specializationIdWithName),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Text(specializationIdWithName),
+                        ),
+                        Text(
+                            '${DateFormat.yMMMd('fr_CA').format(internship.dates.start)} - $endDate'),
+                        if (internship.isActive)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                                onPressed: () => showDialog(
+                                    context: context,
+                                    builder: (context) =>
+                                        FinalizeInternshipDialog(
+                                            internshipId: internship.id)),
+                                child: const Text('Terminer le stage')),
+                          ),
+                        if (internship.isEnterpriseEvaluationPending)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                                onPressed: () =>
+                                    _evaluateEnterprise(context, internship),
+                                child: const Text('Évaluer l\'entreprise')),
+                          )
+                      ],
+                    ),
                   ),
                 ),
                 body: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InternshipQuickAccess(internshipId: internship.id),
                       InternshipDetails(
                         key: detailKeys[internship.id],
                         internshipId: internship.id,
