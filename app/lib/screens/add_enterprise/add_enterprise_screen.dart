@@ -1,20 +1,17 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
-import 'package:common/models/persons/person.dart';
 import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
-import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
+import 'package:crcrme_banque_stages/screens/add_enterprise/pages/about_page.dart';
+import 'package:crcrme_banque_stages/screens/add_enterprise/pages/jobs_page.dart';
+import 'package:crcrme_banque_stages/screens/add_enterprise/pages/validation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-
-import 'pages/contact_page.dart';
-import 'pages/informations_page.dart';
-import 'pages/jobs_page.dart';
 
 final _logger = Logger('AddEnterpriseScreen');
 
@@ -30,9 +27,8 @@ class AddEnterpriseScreen extends StatefulWidget {
 class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
   final _scrollController = ScrollController();
 
-  final _informationsKey = GlobalKey<InformationsPageState>();
+  final _aboutKey = GlobalKey<AboutPageState>();
   final _jobsKey = GlobalKey<JobsPageState>();
-  final _contactKey = GlobalKey<ContactPageState>();
 
   int _currentStep = 0;
   final List<StepState> _stepStatus = [
@@ -63,18 +59,13 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     bool valid = false;
     String? message;
     if (_currentStep >= 0) {
-      message = await _informationsKey.currentState!.validate();
+      message = await _aboutKey.currentState!.validate();
       valid = message == null;
       _stepStatus[0] = valid ? StepState.complete : StepState.error;
     }
     if (_currentStep >= 1) {
-      message = await _contactKey.currentState!.validate();
-      valid = message == null;
-      _stepStatus[1] = valid ? StepState.complete : StepState.error;
-    }
-    if (_currentStep >= 2) {
       valid = _jobsKey.currentState!.validate();
-      _stepStatus[2] = valid ? StepState.complete : StepState.error;
+      _stepStatus[1] = valid ? StepState.complete : StepState.error;
     }
     setState(() {});
 
@@ -87,7 +78,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     ScaffoldMessenger.of(context).clearSnackBars();
 
     if (_currentStep == 2) {
-      if ((await _informationsKey.currentState!.validate()) != null) {
+      if ((await _aboutKey.currentState!.validate()) != null) {
         setState(() {
           _currentStep = 0;
           _scrollController.jumpTo(0);
@@ -96,13 +87,6 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
         return;
       }
 
-      if ((await _contactKey.currentState!.validate()) != null) {
-        setState(() {
-          _currentStep = 1;
-          _scrollController.jumpTo(0);
-        });
-        return;
-      }
       _submit();
     } else {
       setState(() {
@@ -110,6 +94,36 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
         _scrollController.jumpTo(0);
       });
     }
+  }
+
+  late Enterprise _currentEnterprise = Enterprise.empty.copyWith(
+    schoolBoardId:
+        TeachersProvider.of(context, listen: false).myTeacher?.schoolBoardId,
+    recruiterId: TeachersProvider.of(context, listen: false).myTeacher?.id,
+  );
+
+  void _updateEnterprise() {
+    final about = _aboutKey.currentState;
+
+    _currentEnterprise = _currentEnterprise.copyWith(
+      name: about?.name,
+      neq: about?.neq,
+      activityTypes: about?.activityTypes,
+      jobs: _jobsKey.currentState!.jobs,
+      contact: _currentEnterprise.contact.copyWith(
+        firstName: about?.contactFirstName,
+        middleName: null,
+        lastName: about?.contactLastName,
+        dateBirth: null,
+        phone: PhoneNumber.fromString(about?.contactPhone ?? ''),
+        address: Address.empty,
+        email: about?.contactEmail,
+      ),
+      contactFunction: about?.contactFunction,
+      address: about?.addressController.address,
+      phone: PhoneNumber.fromString(about?.phoneController.text ?? ''),
+    );
+    setState(() {});
   }
 
   void _submit() async {
@@ -123,33 +137,15 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       return;
     }
 
-    Enterprise enterprise = Enterprise(
-      schoolBoardId: myTeacher.schoolBoardId,
-      name: _informationsKey.currentState!.name!,
-      neq: _informationsKey.currentState?.neq,
-      activityTypes: _informationsKey.currentState!.activityTypes,
-      recruiterId: myTeacher.id,
-      jobs: _jobsKey.currentState!.jobs,
-      contact: Person(
-        firstName: _contactKey.currentState!.contactFirstName!,
-        middleName: null,
-        lastName: _contactKey.currentState!.contactLastName!,
-        dateBirth: null,
-        phone: PhoneNumber.fromString(_contactKey.currentState!.contactPhone!),
-        address: Address.empty,
-        email: _contactKey.currentState!.contactEmail!,
-      ),
-      contactFunction: _contactKey.currentState!.contactFunction!,
-      address: _informationsKey.currentState!.addressController.address!,
-    );
-
-    enterprises.add(enterprise);
+    if (_aboutKey.currentState == null) return;
+    _updateEnterprise();
+    enterprises.add(_currentEnterprise);
 
     await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
               content: Text(
-                  'L\'entreprise ${enterprise.name} a bien été ajoutée à la banque '
+                  'L\'entreprise ${_currentEnterprise.name} a bien été ajoutée à la banque '
                   'de stages.\n\n'
                   'Vous pouvez maintenant y inscrire des stagiaires.'),
               actions: [
@@ -160,7 +156,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
               ],
             ));
 
-    _logger.fine('Entreprise added: ${enterprise.name}');
+    _logger.fine('Entreprise added: ${_currentEnterprise.name}');
     if (mounted) Navigator.pop(context);
   }
 
@@ -193,6 +189,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
             currentStep: _currentStep,
             onTapContinue: _nextStep,
             onStepTapped: (int tapped) => setState(() {
+              _updateEnterprise();
               _scrollController.jumpTo(0);
               _currentStep = tapped;
             }),
@@ -201,20 +198,20 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
               Step(
                 state: _stepStatus[0],
                 isActive: _currentStep == 0,
-                title: const Text('Informations'),
-                content: InformationsPage(key: _informationsKey),
+                title: const Text('À propos'),
+                content: AboutPage(key: _aboutKey),
               ),
               Step(
                 state: _stepStatus[1],
                 isActive: _currentStep == 1,
-                title: const Text('Contact'),
-                content: ContactPage(key: _contactKey),
+                title: const Text('Métiers\nofferts'),
+                content: JobsPage(key: _jobsKey),
               ),
               Step(
                 state: _stepStatus[2],
                 isActive: _currentStep == 2,
-                title: const Text('Postes'),
-                content: JobsPage(key: _jobsKey),
+                title: const Text('Validation des\ninformations'),
+                content: ValidationPage(enterprise: _currentEnterprise),
               ),
             ],
             controlsBuilder: _controlBuilder,
@@ -230,20 +227,6 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Visibility(
-            visible: _currentStep == 2,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 12.0),
-              child: AddJobButton(
-                onPressed: () => _jobsKey.currentState!.addJobToForm(),
-                style: Theme.of(context).textButtonTheme.style!.copyWith(
-                    backgroundColor: Theme.of(context)
-                        .elevatedButtonTheme
-                        .style!
-                        .backgroundColor),
-              ),
-            ),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -256,9 +239,11 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
               ),
               TextButton(
                 onPressed: details.onStepContinue,
-                child: _currentStep == 2
-                    ? const Text('Terminer')
-                    : const Text('Suivant'),
+                child: Text(_currentStep == 0
+                    ? 'Suivant'
+                    : _currentStep == 2
+                        ? 'Valider'
+                        : 'Enregistrer'),
               )
             ],
           ),

@@ -2,6 +2,7 @@ import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
+import 'package:crcrme_banque_stages/common/widgets/add_job_button.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -16,7 +17,9 @@ class JobsPage extends StatefulWidget {
 
 class JobsPageState extends State<JobsPage> {
   final _formKey = GlobalKey<FormState>();
-  final _jobsControllers = <EnterpriseJobListController>[];
+  final _jobsControllers = <EnterpriseJobListController>[
+    EnterpriseJobListController(job: Job.empty)
+  ];
 
   bool validate() {
     _logger.finer('Validating JobsPage with ${_jobsControllers.length} jobs');
@@ -26,11 +29,6 @@ class JobsPageState extends State<JobsPage> {
     if (_jobsControllers.isEmpty) return false;
 
     return _formKey.currentState!.validate();
-  }
-
-  void addJobToForm() {
-    _jobsControllers.add(EnterpriseJobListController(job: Job.empty));
-    setState(() {});
   }
 
   JobList get jobs {
@@ -48,12 +46,32 @@ class JobsPageState extends State<JobsPage> {
     return FocusScope(
       child: Form(
         key: _formKey,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: _jobsControllers.length,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (BuildContext context, int index) =>
-              _buildNewJobsForm(index),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: _jobsControllers.length,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) =>
+                  _buildNewJobsForm(index),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: AddJobButton(
+                  controllers: _jobsControllers,
+                  onJobAdded: () => setState(() {}),
+                  style: Theme.of(context).textButtonTheme.style!.copyWith(
+                      backgroundColor: Theme.of(context)
+                          .elevatedButtonTheme
+                          .style!
+                          .backgroundColor),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -87,6 +105,7 @@ class JobsPageState extends State<JobsPage> {
             schools: [
               SchoolBoardsProvider.of(context, listen: false).mySchool!
             ],
+            availabilityIsMandatory: true,
             elevation: 0,
             canChangeExpandedState: false,
             initialExpandedState: true,
