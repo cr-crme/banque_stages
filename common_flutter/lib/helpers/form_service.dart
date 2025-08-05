@@ -76,7 +76,7 @@ abstract class FormService {
     if (password == null || password.isEmpty) {
       return 'Le champ ne peut pas être vide.';
     } else if (password.length < 8) {
-      return 'Le mot de passe n\'est pas valide.';
+      return 'Le mot de passe ne répond pas aux critères.';
     }
     return null;
   }
@@ -90,7 +90,7 @@ abstract class FormService {
     }
 
     if (confirmPassword != password) {
-      return 'Les mots de passe ne correspondent pas.';
+      return 'Les mots de passe ne sont pas identiques.';
     }
     return null;
   }

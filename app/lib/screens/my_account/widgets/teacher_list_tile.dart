@@ -263,6 +263,11 @@ class TeacherListTileState extends State<TeacherListTile> {
                       return null;
                     },
                   ),
+                  SizedBox(height: 24.0),
+                  Text(
+                    'Le mot de passe doit contenir au moins 8 caractères.',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
                   TextFormField(
                     controller: newPasswordController,
                     decoration: const InputDecoration(
