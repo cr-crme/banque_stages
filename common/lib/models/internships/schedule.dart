@@ -28,27 +28,34 @@ enum Day {
         return 'Dimanche';
     }
   }
+
+  static fromName(String name) {
+    return Day.values.firstWhere(
+      (element) => element.name.toLowerCase() == name.toLowerCase(),
+      orElse: () => Day.monday,
+    );
+  }
+
+  @override
+  String toString() => name;
 }
 
 class DailySchedule extends ItemSerializable {
   DailySchedule({
     super.id,
-    required this.dayOfWeek,
     required this.start,
     required this.end,
     required this.breakStart,
     required this.breakEnd,
   });
 
-  final Day dayOfWeek;
   final TimeOfDay start;
   final TimeOfDay end;
   final TimeOfDay? breakStart;
   final TimeOfDay? breakEnd;
 
   DailySchedule.fromSerialized(super.map)
-      : dayOfWeek = map['day'] == null ? Day.monday : Day.values[map['day']],
-        start = map['start'] == null
+      : start = map['start'] == null
             ? const TimeOfDay(hour: 0, minute: 0)
             : TimeOfDay(hour: map['start'][0], minute: map['start'][1]),
         end = map['end'] == null
@@ -66,7 +73,6 @@ class DailySchedule extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'day': dayOfWeek.index,
         'start': [start.hour, start.minute],
         'end': [end.hour, end.minute],
         'break_start':
@@ -78,7 +84,6 @@ class DailySchedule extends ItemSerializable {
   ///
   /// Similar to [copyWith], but enforce the change of id
   DailySchedule duplicate() => DailySchedule(
-        dayOfWeek: dayOfWeek,
         start: start,
         end: end,
         breakStart: breakStart,
@@ -87,7 +92,6 @@ class DailySchedule extends ItemSerializable {
 
   DailySchedule copyWith({
     String? id,
-    Day? dayOfWeek,
     TimeOfDay? start,
     TimeOfDay? end,
     TimeOfDay? breakStart,
@@ -95,7 +99,6 @@ class DailySchedule extends ItemSerializable {
   }) =>
       DailySchedule(
         id: id ?? this.id,
-        dayOfWeek: dayOfWeek ?? this.dayOfWeek,
         start: start ?? this.start,
         end: end ?? this.end,
         breakStart: breakStart ?? this.breakStart,
@@ -104,7 +107,7 @@ class DailySchedule extends ItemSerializable {
 
   @override
   String toString() {
-    return 'DailySchedule(id: $id, dayOfWeek: ${dayOfWeek.name}, start: $start, end: $end)';
+    return 'DailySchedule(id: $id, start: $start, end: $end)';
   }
 }
 
@@ -115,14 +118,13 @@ class WeeklySchedule extends ItemSerializable {
     required this.period,
   });
 
-  final List<DailySchedule> schedule;
+  final Map<Day, DailySchedule?> schedule;
   final DateTimeRange period;
 
   WeeklySchedule.fromSerialized(super.map)
-      : schedule = (map['days'] as List?)
-                ?.map((e) => DailySchedule.fromSerialized(e))
-                .toList() ??
-            [],
+      : schedule = (map['days'] as Map?)?.map((day, e) =>
+                MapEntry(Day.values[day], DailySchedule.fromSerialized(e))) ??
+            {},
         period = DateTimeRange(
             start: DateTime.fromMillisecondsSinceEpoch(map['start'] ?? 0),
             end: DateTime.fromMillisecondsSinceEpoch(map['end'] ?? 0)),
@@ -131,7 +133,7 @@ class WeeklySchedule extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'days': schedule.map((e) => e.serialize()).toList(),
+        'days': schedule.map((day, e) => MapEntry(day.index, e?.serialize())),
         'start': period.start.millisecondsSinceEpoch,
         'end': period.end.millisecondsSinceEpoch,
       };
@@ -139,13 +141,13 @@ class WeeklySchedule extends ItemSerializable {
   ///
   /// Similar to [copyWith], but enforce the change of id
   WeeklySchedule duplicate() => WeeklySchedule(
-        schedule: schedule.map((e) => e.duplicate()).toList(),
+        schedule: schedule.map((day, e) => MapEntry(day, e?.duplicate())),
         period: period,
       );
 
   WeeklySchedule copyWith({
     String? id,
-    List<DailySchedule>? schedule,
+    Map<Day, DailySchedule>? schedule,
     DateTimeRange? period,
   }) =>
       WeeklySchedule(
@@ -157,5 +159,94 @@ class WeeklySchedule extends ItemSerializable {
   @override
   String toString() {
     return 'WeeklySchedule(id: $id, schedule: $schedule, period: $period)';
+  }
+}
+
+class InternshipHelpers {
+  static List<WeeklySchedule> copySchedules(
+    List<WeeklySchedule>? schedules, {
+    bool keepId = true,
+  }) =>
+      schedules
+          ?.map(
+            (schedule) => WeeklySchedule(
+              id: keepId ? schedule.id : null,
+              period: DateTimeRange(
+                start: schedule.period.start,
+                end: schedule.period.end,
+              ),
+              schedule: schedule.schedule.map(
+                (day, entry) => MapEntry(
+                  day,
+                  entry == null
+                      ? null
+                      : DailySchedule(
+                          id: keepId ? entry.id : null,
+                          start: TimeOfDay(
+                            hour: entry.start.hour,
+                            minute: entry.start.minute,
+                          ),
+                          end: TimeOfDay(
+                            hour: entry.end.hour,
+                            minute: entry.end.minute,
+                          ),
+                          breakStart: entry.breakStart == null
+                              ? null
+                              : TimeOfDay(
+                                  hour: entry.breakStart!.hour,
+                                  minute: entry.breakStart!.minute,
+                                ),
+                          breakEnd: entry.breakEnd == null
+                              ? null
+                              : TimeOfDay(
+                                  hour: entry.breakEnd!.hour,
+                                  minute: entry.breakEnd!.minute,
+                                ),
+                        ),
+                ),
+              ),
+            ),
+          )
+          .toList() ??
+      [];
+
+  static bool areSchedulesEqual(
+    List<WeeklySchedule> listA,
+    List<WeeklySchedule> listB,
+  ) {
+    if (listA.length != listB.length) return false;
+
+    for (int i = 0; i < listA.length; i++) {
+      final a = listA[i];
+      final b = listB[i];
+
+      if (a.period.start != b.period.start || a.period.end != b.period.end) {
+        return false;
+      }
+
+      if (a.schedule.length != b.schedule.length) return false;
+
+      if (a.schedule.keys.length != b.schedule.keys.length) return false;
+      if (a.schedule.keys
+          .toSet()
+          .difference(b.schedule.keys.toSet())
+          .isNotEmpty) {
+        return false;
+      }
+
+      final days = a.schedule.keys.toList();
+      for (final day in days) {
+        final dayA = a.schedule[day]!;
+        final dayB = b.schedule[day]!;
+
+        if (dayA.start.hour != dayB.start.hour ||
+            dayA.start.minute != dayB.start.minute ||
+            dayA.end.hour != dayB.end.hour ||
+            dayA.end.minute != dayB.end.minute) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }

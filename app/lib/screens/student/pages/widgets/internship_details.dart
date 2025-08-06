@@ -1,5 +1,6 @@
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/utils.dart';
@@ -24,9 +25,8 @@ class _InternshipController {
       : supervisor = internship.supervisor.copyWith(),
         _achievedLength = internship.achievedDuration,
         weeklyScheduleController = WeeklySchedulesController(
-          weeklySchedules: internship.weeklySchedules
-              .map((e) => e.copyWith(schedule: [...e.schedule]))
-              .toList(),
+          weeklySchedules:
+              InternshipHelpers.copySchedules(internship.weeklySchedules),
           dateRange: internship.dates,
         ),
         transportations =

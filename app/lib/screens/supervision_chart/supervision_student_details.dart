@@ -514,17 +514,21 @@ class _Schedule extends StatelessWidget {
                 1: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
                 2: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
               },
-              children: weeklySchedule.schedule
-                  .map<TableRow>((e) => TableRow(
-                        children: [
-                          Text(e.dayOfWeek.name),
-                          Text(
-                              textAlign: TextAlign.end,
-                              e.start.format(context)),
-                          Text(textAlign: TextAlign.end, e.end.format(context)),
-                        ],
-                      ))
-                  .toList(),
+              children: weeklySchedule.schedule.entries.map((pair) {
+                final day = pair.key;
+                final entry = pair.value;
+                return TableRow(
+                  children: [
+                    Text(day.name),
+                    Text(
+                        textAlign: TextAlign.end,
+                        entry?.start.format(context) ?? 'Aucune heure'),
+                    Text(
+                        textAlign: TextAlign.end,
+                        entry?.end.format(context) ?? 'Aucune heure'),
+                  ],
+                );
+              }).toList(),
             ),
           ),
         ],

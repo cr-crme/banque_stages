@@ -1111,26 +1111,23 @@ class InternshipsRepositoryMock extends InternshipsRepository {
       creationDate: DateTime(2000, 1, 1),
       weeklySchedules: [
         WeeklySchedule(
-            schedule: [
-              DailySchedule(
-                  dayOfWeek: Day.monday,
+            schedule: {
+              Day.monday: DailySchedule(
                   start: TimeOfDay(hour: 8, minute: 0),
                   end: TimeOfDay(hour: 16, minute: 0),
                   breakStart: TimeOfDay(hour: 12, minute: 0),
                   breakEnd: TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.wednesday,
+              Day.wednesday: DailySchedule(
                   start: TimeOfDay(hour: 8, minute: 0),
                   end: TimeOfDay(hour: 16, minute: 0),
                   breakStart: TimeOfDay(hour: 12, minute: 0),
                   breakEnd: TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.friday,
+              Day.friday: DailySchedule(
                   start: TimeOfDay(hour: 8, minute: 0),
                   end: TimeOfDay(hour: 12, minute: 0),
                   breakStart: TimeOfDay(hour: 12, minute: 0),
                   breakEnd: TimeOfDay(hour: 13, minute: 0)),
-            ],
+            },
             period: DateTimeRange(
                 start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)))
       ],
@@ -1164,20 +1161,18 @@ class InternshipsRepositoryMock extends InternshipsRepository {
       creationDate: DateTime(2000, 2, 1),
       weeklySchedules: [
         WeeklySchedule(
-            schedule: [
-              DailySchedule(
-                  dayOfWeek: Day.tuesday,
+            schedule: {
+              Day.tuesday: DailySchedule(
                   start: TimeOfDay(hour: 9, minute: 0),
                   end: TimeOfDay(hour: 17, minute: 0),
                   breakStart: TimeOfDay(hour: 12, minute: 0),
                   breakEnd: TimeOfDay(hour: 13, minute: 0)),
-              DailySchedule(
-                  dayOfWeek: Day.thursday,
+              Day.thursday: DailySchedule(
                   start: TimeOfDay(hour: 9, minute: 0),
                   end: TimeOfDay(hour: 17, minute: 0),
                   breakStart: TimeOfDay(hour: 12, minute: 0),
                   breakEnd: TimeOfDay(hour: 13, minute: 0)),
-            ],
+            },
             period: DateTimeRange(
                 start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)))
       ],

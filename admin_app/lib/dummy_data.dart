@@ -1468,43 +1468,38 @@ Future<void> _addDummyInternships(
       teacherNotes: 'Un stage de rêve, mais pas pour l\'élève.',
       weeklySchedules: [
         WeeklySchedule(
-          schedule: [
-            DailySchedule(
-              dayOfWeek: Day.monday,
+          schedule: {
+            Day.monday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.tuesday,
+            Day.tuesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.wednesday,
+            Day.wednesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.thursday,
+            Day.thursday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.friday,
+            Day.friday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-          ],
+          },
           period: period,
         ),
       ],
@@ -1551,43 +1546,38 @@ Future<void> _addDummyInternships(
       endDate: DateTime(0),
       weeklySchedules: [
         WeeklySchedule(
-          schedule: [
-            DailySchedule(
-              dayOfWeek: Day.monday,
+          schedule: {
+            Day.monday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.tuesday,
+            Day.tuesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.wednesday,
+            Day.wednesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.thursday,
+            Day.thursday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.friday,
+            Day.friday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-          ],
+          },
           period: period,
         ),
       ],
@@ -1625,36 +1615,32 @@ Future<void> _addDummyInternships(
     achievedDuration: 125,
     weeklySchedules: [
       WeeklySchedule(
-        schedule: [
-          DailySchedule(
-            dayOfWeek: Day.monday,
+        schedule: {
+          Day.monday: DailySchedule(
             start: const time_utils.TimeOfDay(hour: 9, minute: 00),
             end: const time_utils.TimeOfDay(hour: 15, minute: 00),
             breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
             breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
           ),
-          DailySchedule(
-            dayOfWeek: Day.tuesday,
+          Day.tuesday: DailySchedule(
             start: const time_utils.TimeOfDay(hour: 9, minute: 00),
             end: const time_utils.TimeOfDay(hour: 15, minute: 00),
             breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
             breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
           ),
-          DailySchedule(
-            dayOfWeek: Day.wednesday,
+          Day.wednesday: DailySchedule(
             start: const time_utils.TimeOfDay(hour: 9, minute: 00),
             end: const time_utils.TimeOfDay(hour: 15, minute: 00),
             breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
             breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
           ),
-          DailySchedule(
-            dayOfWeek: Day.thursday,
+          Day.thursday: DailySchedule(
             start: const time_utils.TimeOfDay(hour: 9, minute: 00),
             end: const time_utils.TimeOfDay(hour: 15, minute: 00),
             breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
             breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
           ),
-        ],
+        },
         period: period,
       ),
     ],
@@ -1711,29 +1697,26 @@ Future<void> _addDummyInternships(
       endDate: DateTime(0),
       weeklySchedules: [
         WeeklySchedule(
-          schedule: [
-            DailySchedule(
-              dayOfWeek: Day.monday,
+          schedule: {
+            Day.monday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.tuesday,
+            Day.tuesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.wednesday,
+            Day.wednesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-          ],
+          },
           period: period,
         ),
       ],
@@ -1773,29 +1756,26 @@ Future<void> _addDummyInternships(
       achievedDuration: -1,
       weeklySchedules: [
         WeeklySchedule(
-          schedule: [
-            DailySchedule(
-              dayOfWeek: Day.monday,
+          schedule: {
+            Day.monday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.wednesday,
+            Day.wednesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.friday,
+            Day.friday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-          ],
+          },
           period: period,
         ),
       ],
@@ -1836,43 +1816,38 @@ Future<void> _addDummyInternships(
       endDate: DateTime(0),
       weeklySchedules: [
         WeeklySchedule(
-          schedule: [
-            DailySchedule(
-              dayOfWeek: Day.monday,
+          schedule: {
+            Day.monday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.tuesday,
+            Day.tuesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.wednesday,
+            Day.wednesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.thursday,
+            Day.thursday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.friday,
+            Day.friday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-          ],
+          },
           period: period,
         ),
       ],
@@ -1912,43 +1887,38 @@ Future<void> _addDummyInternships(
       endDate: DateTime(0),
       weeklySchedules: [
         WeeklySchedule(
-          schedule: [
-            DailySchedule(
-              dayOfWeek: Day.monday,
+          schedule: {
+            Day.monday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.tuesday,
+            Day.tuesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.wednesday,
+            Day.wednesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.thursday,
+            Day.thursday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.friday,
+            Day.friday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-          ],
+          },
           period: period,
         ),
       ],
@@ -1988,22 +1958,20 @@ Future<void> _addDummyInternships(
       achievedDuration: 100,
       weeklySchedules: [
         WeeklySchedule(
-          schedule: [
-            DailySchedule(
-              dayOfWeek: Day.monday,
+          schedule: {
+            Day.monday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.tuesday,
+            Day.tuesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-          ],
+          },
           period: period,
         ),
       ],
@@ -2043,22 +2011,20 @@ Future<void> _addDummyInternships(
       achievedDuration: 100,
       weeklySchedules: [
         WeeklySchedule(
-          schedule: [
-            DailySchedule(
-              dayOfWeek: Day.monday,
+          schedule: {
+            Day.monday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-            DailySchedule(
-              dayOfWeek: Day.tuesday,
+            Day.tuesday: DailySchedule(
               start: const time_utils.TimeOfDay(hour: 9, minute: 00),
               end: const time_utils.TimeOfDay(hour: 15, minute: 00),
               breakStart: const time_utils.TimeOfDay(hour: 12, minute: 00),
               breakEnd: const time_utils.TimeOfDay(hour: 13, minute: 00),
             ),
-          ],
+          },
           period: period,
         ),
       ],

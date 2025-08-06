@@ -769,32 +769,34 @@ pw.Widget _schedulesCell(
                                       ? 8.0
                                       : 0.0),
                               child: pw.Table(
-                                children: weeklySchedule.schedule
-                                    .map(
-                                      (daily) => pw.TableRow(children: [
-                                        pw.Text(daily.dayOfWeek.name,
-                                            style: style),
-                                        pw.SizedBox(width: 20.0),
-                                        pw.Text(
-                                            '${daily.start.hour}:${daily.start.minute.toString().padLeft(2, '0')}',
-                                            style: style),
-                                        pw.Text(mid, style: style),
-                                        pw.Text(
-                                            '${daily.end.hour}:${daily.end.minute.toString().padLeft(2, '0')}',
-                                            style: style),
-                                        if (daily.breakStart != null &&
-                                            daily.breakEnd != null)
-                                          pw.Padding(
-                                              padding: const pw.EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: pw.Text(
-                                                  '(${daily.breakStart!.hour}:${daily.breakStart!.minute.toString().padLeft(2, '0')} - '
-                                                  '${daily.breakEnd!.hour}:${daily.breakEnd!.minute.toString().padLeft(2, '0')})',
-                                                  style: style)),
-                                        pw.SizedBox(width: double.infinity),
-                                      ]),
-                                    )
-                                    .toList(),
+                                children: weeklySchedule.schedule.entries
+                                    .map<pw.TableRow>(
+                                  (pair) {
+                                    final day = pair.key;
+                                    final entry = pair.value;
+                                    return pw.TableRow(children: [
+                                      pw.Text(day.name, style: style),
+                                      pw.SizedBox(width: 20.0),
+                                      pw.Text(
+                                          '${entry?.start.hour}:${entry?.start.minute.toString().padLeft(2, '0')}',
+                                          style: style),
+                                      pw.Text(mid, style: style),
+                                      pw.Text(
+                                          '${entry?.end.hour}:${entry?.end.minute.toString().padLeft(2, '0')}',
+                                          style: style),
+                                      if (entry?.breakStart != null &&
+                                          entry?.breakEnd != null)
+                                        pw.Padding(
+                                            padding: const pw.EdgeInsets.only(
+                                                left: 8.0),
+                                            child: pw.Text(
+                                                '(${entry?.breakStart!.hour}:${entry?.breakStart!.minute.toString().padLeft(2, '0')} - '
+                                                '${entry?.breakEnd!.hour}:${entry?.breakEnd!.minute.toString().padLeft(2, '0')})',
+                                                style: style)),
+                                      pw.SizedBox(width: double.infinity),
+                                    ]);
+                                  },
+                                ).toList(),
                               ),
                             ),
                           ],

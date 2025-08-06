@@ -5,6 +5,7 @@ import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
+import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/persons/person.dart';
 import 'package:common/models/persons/student.dart';
@@ -65,7 +66,7 @@ class InternshipListTileState extends State<InternshipListTile> {
     _contactEmailController.dispose();
     _expectedDurationController.dispose();
     _achievedDurationController.dispose();
-    _schedulesController.dispose();
+    _weeklySchedulesController.dispose();
     super.dispose();
   }
 
@@ -114,7 +115,7 @@ class InternshipListTileState extends State<InternshipListTile> {
     text:
         widget.internship.hasVersions ? widget.internship.supervisor.email : '',
   );
-  late final _schedulesController = SchedulesController(
+  late final _weeklySchedulesController = WeeklySchedulesController(
     dateRange: widget.internship.hasVersions ? widget.internship.dates : null,
     weeklySchedules:
         widget.internship.hasVersions
@@ -167,9 +168,9 @@ class InternshipListTileState extends State<InternshipListTile> {
         !widget.internship.hasVersions ||
         !InternshipHelpers.areSchedulesEqual(
           widget.internship.weeklySchedules,
-          _schedulesController.weeklySchedules,
+          _weeklySchedulesController.weeklySchedules,
         ) ||
-        widget.internship.dates != _schedulesController.dateRange;
+        widget.internship.dates != _weeklySchedulesController.dateRange;
 
     final transportationsChanged = areListsNotEqual(
       widget.internship.hasVersions ? widget.internship.transportations : [],
@@ -206,9 +207,9 @@ class InternshipListTileState extends State<InternshipListTile> {
       final newVersion = InternshipMutableElements(
         creationDate: DateTime.now(),
         supervisor: supervisor,
-        dates: _schedulesController.dateRange!,
+        dates: _weeklySchedulesController.dateRange!,
         weeklySchedules: InternshipHelpers.copySchedules(
-          _schedulesController.weeklySchedules,
+          _weeklySchedulesController.weeklySchedules,
           keepId: false,
         ),
         transportations: _transportations,
@@ -484,7 +485,7 @@ class InternshipListTileState extends State<InternshipListTile> {
 
   Widget _buildWeeklySchedule() {
     return ScheduleListTile(
-      scheduleController: _schedulesController,
+      scheduleController: _weeklySchedulesController,
       editMode: _isEditing && _isActive,
     );
   }

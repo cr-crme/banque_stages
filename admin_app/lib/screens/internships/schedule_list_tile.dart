@@ -3,9 +3,10 @@ import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:common_flutter/widgets/custom_time_picker.dart';
-import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+// TODO Check this file
 
 extension TimeOfDayExtension on time_utils.TimeOfDay {
   String format(context) {
@@ -14,107 +15,19 @@ extension TimeOfDayExtension on time_utils.TimeOfDay {
   }
 }
 
-class InternshipHelpers {
-  static List<WeeklySchedule> copySchedules(
-    List<WeeklySchedule> schedules, {
-    bool keepId = true,
-  }) =>
-      schedules
-          .map(
-            (schedule) => WeeklySchedule(
-              id: keepId ? schedule.id : null,
-              period: time_utils.DateTimeRange(
-                start: schedule.period.start,
-                end: schedule.period.end,
-              ),
-              schedule:
-                  schedule.schedule
-                      .map(
-                        (day) => DailySchedule(
-                          id: keepId ? day.id : null,
-                          dayOfWeek: day.dayOfWeek,
-                          start: time_utils.TimeOfDay(
-                            hour: day.start.hour,
-                            minute: day.start.minute,
-                          ),
-                          end: time_utils.TimeOfDay(
-                            hour: day.end.hour,
-                            minute: day.end.minute,
-                          ),
-                          breakStart:
-                              day.breakStart == null
-                                  ? null
-                                  : time_utils.TimeOfDay(
-                                    hour: day.breakStart!.hour,
-                                    minute: day.breakStart!.minute,
-                                  ),
-                          breakEnd:
-                              day.breakEnd == null
-                                  ? null
-                                  : time_utils.TimeOfDay(
-                                    hour: day.breakEnd!.hour,
-                                    minute: day.breakEnd!.minute,
-                                  ),
-                        ),
-                      )
-                      .toList(),
-            ),
-          )
-          .toList();
-
-  static bool areSchedulesEqual(
-    List<WeeklySchedule> listA,
-    List<WeeklySchedule> listB,
-  ) {
-    if (listA.length != listB.length) return false;
-
-    for (int i = 0; i < listA.length; i++) {
-      final a = listA[i];
-      final b = listB[i];
-
-      if (a.period.start != b.period.start || a.period.end != b.period.end) {
-        return false;
-      }
-
-      if (a.schedule.length != b.schedule.length) return false;
-
-      for (int i = 0; i < a.schedule.length; i++) {
-        final dayA = a.schedule[i];
-        final dayB = b.schedule[i];
-
-        if (dayA.dayOfWeek != dayB.dayOfWeek ||
-            dayA.start.hour != dayB.start.hour ||
-            dayA.start.minute != dayB.start.minute ||
-            dayA.end.hour != dayB.end.hour ||
-            dayA.end.minute != dayB.end.minute) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-}
-
-class SchedulesController {
+class WeeklySchedulesController {
   List<WeeklySchedule> weeklySchedules = [];
   time_utils.DateTimeRange? _dateRange;
   time_utils.DateTimeRange? get dateRange => _dateRange;
   bool _hasChanged = false;
-
-  SchedulesController({
+  WeeklySchedulesController({
     List<WeeklySchedule>? weeklySchedules,
     time_utils.DateTimeRange? dateRange,
-  }) : _dateRange =
-           dateRange == null
-               ? null
-               : time_utils.DateTimeRange(
-                 start: dateRange.start,
-                 end: dateRange.end,
-               ),
-       weeklySchedules =
-           weeklySchedules == null
-               ? []
-               : InternshipHelpers.copySchedules(weeklySchedules, keepId: true);
+  }) : _dateRange = dateRange?.copy(),
+       weeklySchedules = InternshipHelpers.copySchedules(
+         weeklySchedules,
+         keepId: true,
+       );
 
   bool get hasChanged => _hasChanged;
   set dateRange(time_utils.DateTimeRange? newRange) {
@@ -135,41 +48,24 @@ class SchedulesController {
     _hasChanged = true;
   }
 
-  void addToDailySchedule(int weeklyIndex, DailySchedule newDay) {
-    weeklySchedules[weeklyIndex].schedule.add(newDay);
-    weeklySchedules[weeklyIndex].schedule.sort(
-      (a, b) => a.dayOfWeek.index - b.dayOfWeek.index,
-    );
-    _hasChanged = true;
-  }
-
   void updateDailyScheduleTime(
     int weeklyIndex,
-    int dailyIndex, {
-    required time_utils.TimeOfDay start,
-    required time_utils.TimeOfDay end,
-    required time_utils.TimeOfDay breakStart,
-    required time_utils.TimeOfDay breakEnd,
+    Day day, {
+    required DailySchedule? schedule,
   }) {
-    weeklySchedules[weeklyIndex].schedule[dailyIndex] =
-        weeklySchedules[weeklyIndex].schedule[dailyIndex].copyWith(
-          start: start,
-          end: end,
-          breakStart: breakStart,
-          breakEnd: breakEnd,
-        );
-    _hasChanged = true;
-  }
-
-  void removedDailyScheduleTime(context, int weeklyIndex, int dailyIndex) {
-    if (weeklySchedules[weeklyIndex].schedule.length == 1) {
-      showSnackBar(
-        context,
-        message: 'Au moins une plage horaire est nécessaire',
-      );
-      return;
+    if (schedule == null) {
+      weeklySchedules[weeklyIndex].schedule.remove(day);
+    } else {
+      weeklySchedules[weeklyIndex].schedule[day] =
+          weeklySchedules[weeklyIndex].schedule[day]?.copyWith(
+            start: schedule.start,
+            end: schedule.end,
+            breakStart: schedule.breakStart,
+            breakEnd: schedule.breakEnd,
+          ) ??
+          schedule;
     }
-    weeklySchedules[weeklyIndex].schedule.removeAt(dailyIndex);
+
     _hasChanged = true;
   }
 
@@ -204,46 +100,7 @@ const time_utils.TimeOfDay _defaultBreakEnd = time_utils.TimeOfDay(
 );
 
 WeeklySchedule _fillNewScheduleList(time_utils.DateTimeRange dateRange) {
-  return WeeklySchedule(
-    schedule: [
-      DailySchedule(
-        dayOfWeek: Day.monday,
-        start: _defaultStart,
-        end: _defaultEnd,
-        breakStart: _defaultBreakStart,
-        breakEnd: _defaultBreakEnd,
-      ),
-      DailySchedule(
-        dayOfWeek: Day.tuesday,
-        start: _defaultStart,
-        end: _defaultEnd,
-        breakStart: _defaultBreakStart,
-        breakEnd: _defaultBreakEnd,
-      ),
-      DailySchedule(
-        dayOfWeek: Day.wednesday,
-        start: _defaultStart,
-        end: _defaultEnd,
-        breakStart: _defaultBreakStart,
-        breakEnd: _defaultBreakEnd,
-      ),
-      DailySchedule(
-        dayOfWeek: Day.thursday,
-        start: _defaultStart,
-        end: _defaultEnd,
-        breakStart: _defaultBreakStart,
-        breakEnd: _defaultBreakEnd,
-      ),
-      DailySchedule(
-        dayOfWeek: Day.friday,
-        start: _defaultStart,
-        end: _defaultEnd,
-        breakStart: _defaultBreakStart,
-        breakEnd: _defaultBreakEnd,
-      ),
-    ],
-    period: dateRange,
-  );
+  return WeeklySchedule(schedule: {}, period: dateRange);
 }
 
 class ScheduleListTile extends StatefulWidget {
@@ -254,7 +111,7 @@ class ScheduleListTile extends StatefulWidget {
   });
 
   final bool editMode;
-  final SchedulesController scheduleController;
+  final WeeklySchedulesController scheduleController;
 
   @override
   State<ScheduleListTile> createState() => _ScheduleListTileState();
@@ -305,7 +162,7 @@ class _DateRange extends StatefulWidget {
     required this.editMode,
   });
 
-  final SchedulesController scheduleController;
+  final WeeklySchedulesController scheduleController;
   final Function() onScheduleChanged;
   final bool editMode;
 
@@ -448,7 +305,7 @@ class ScheduleSelector extends StatefulWidget {
     this.periodTextSize,
   });
 
-  final SchedulesController scheduleController;
+  final WeeklySchedulesController scheduleController;
   final bool editMode;
   final bool withTitle;
   final double? leftPadding;
@@ -459,14 +316,12 @@ class ScheduleSelector extends StatefulWidget {
 }
 
 class _ScheduleSelectorState extends State<ScheduleSelector> {
-  void _promptNewDayToDailySchedule(weeklyIndex) async {
+  void _promptNewDayToDailySchedule(int weeklyIndex, Day day) async {
     Future<time_utils.TimeOfDay?> promptTime({
       required time_utils.TimeOfDay initial,
       String? title,
     }) async => _promptTime(context, initial: initial, title: title);
 
-    final day = await _promptDay(context);
-    if (day == null || !mounted) return;
     final start = await promptTime(
       title: 'Heure de début',
       initial: _defaultStart,
@@ -488,10 +343,10 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
     );
     if (breakEnd == null || !mounted) return;
 
-    widget.scheduleController.addToDailySchedule(
+    widget.scheduleController.updateDailyScheduleTime(
       weeklyIndex,
-      DailySchedule(
-        dayOfWeek: day,
+      day,
+      schedule: DailySchedule(
         start: start,
         end: end,
         breakStart: breakStart,
@@ -499,100 +354,6 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
       ),
     );
     setState(() {});
-  }
-
-  void _promptUpdateToDailySchedule(int weeklyIndex, int dailyIndex) async {
-    Future<time_utils.TimeOfDay?> promptTime({
-      required time_utils.TimeOfDay initial,
-      String? title,
-    }) async => _promptTime(context, initial: initial, title: title);
-
-    final start = await _promptTime(
-      context,
-      title: 'Heure de début',
-      initial:
-          widget
-              .scheduleController
-              .weeklySchedules[weeklyIndex]
-              .schedule[dailyIndex]
-              .start,
-    );
-    if (start == null || !mounted) return;
-
-    final end = await promptTime(
-      title: 'Heure de fin',
-      initial:
-          widget
-              .scheduleController
-              .weeklySchedules[weeklyIndex]
-              .schedule[dailyIndex]
-              .end,
-    );
-    if (end == null || !mounted) return;
-
-    final breakStart = await promptTime(
-      title: 'Heure de début de pause',
-      initial:
-          widget
-              .scheduleController
-              .weeklySchedules[weeklyIndex]
-              .schedule[dailyIndex]
-              .breakStart ??
-          _defaultBreakStart,
-    );
-    if (breakStart == null || !mounted) return;
-
-    final breakEnd = await promptTime(
-      title: 'Heure de fin de pause',
-      initial:
-          widget
-              .scheduleController
-              .weeklySchedules[weeklyIndex]
-              .schedule[dailyIndex]
-              .breakEnd ??
-          _defaultBreakEnd,
-    );
-    if (breakEnd == null || !mounted) return;
-
-    widget.scheduleController.updateDailyScheduleTime(
-      weeklyIndex,
-      dailyIndex,
-      start: start,
-      end: end,
-      breakStart: breakStart,
-      breakEnd: breakEnd,
-    );
-    setState(() {});
-  }
-
-  Future<Day?> _promptDay(BuildContext context) async {
-    final choice = (await showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Sélectionner la journée'),
-            content: Padding(
-              padding: const EdgeInsets.only(left: 12.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    Day.values
-                        .map(
-                          (day) => GestureDetector(
-                            onTap: () => Navigator.of(context).pop(day),
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12.0),
-                              child: Text(day.name),
-                            ),
-                          ),
-                        )
-                        .toList(),
-              ),
-            ),
-          ),
-    ));
-    return choice;
   }
 
   Future<time_utils.TimeOfDay?> _promptTime(
@@ -661,16 +422,15 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
                     )
                     : null,
             onAddDayToDailySchedule:
-                () => _promptNewDayToDailySchedule(weeklyIndex),
-            onUpdateDailyScheduleTime:
-                (dailyIndex) =>
-                    _promptUpdateToDailySchedule(weeklyIndex, dailyIndex),
+                (day) => _promptNewDayToDailySchedule(weeklyIndex, day),
+            onUpdateDailyScheduleTime: (dailyIndex) {},
+            // TODO THIS: _promptTime(weeklyIndex, dailyIndex),
             onRemovedDailyScheduleTime:
-                (dailyIndex) => setState(
-                  () => widget.scheduleController.removedDailyScheduleTime(
-                    context,
+                (day) => setState(
+                  () => widget.scheduleController.updateDailyScheduleTime(
                     weeklyIndex,
-                    dailyIndex,
+                    day,
+                    schedule: null,
                   ),
                 ),
             promptChangeWeeks: () => _promptChangeWeek(weeklyIndex),
@@ -716,9 +476,9 @@ class _ScheduleSelector extends StatelessWidget {
   final double? periodTextSize;
   final WeeklySchedule weeklySchedule;
   final Function()? onRemoveWeeklySchedule;
-  final Function() onAddDayToDailySchedule;
-  final Function(int) onUpdateDailyScheduleTime;
-  final Function(int) onRemovedDailyScheduleTime;
+  final Function(Day) onAddDayToDailySchedule;
+  final Function(Day) onUpdateDailyScheduleTime;
+  final Function(Day) onRemovedDailyScheduleTime;
   final Function() promptChangeWeeks;
   final bool editMode;
 
@@ -820,21 +580,21 @@ class _ScheduleSelector extends StatelessWidget {
                   4: FlexColumnWidth(0.7),
                 },
                 children: [
-                  ...weeklySchedule.schedule.asMap().keys.map(
-                    (i) => TableRow(
+                  ...weeklySchedule.schedule.keys.map(
+                    (day) => TableRow(
                       children: [
-                        Text(weeklySchedule.schedule[i].dayOfWeek.name),
+                        Text(day.name),
                         Text(
-                          '${weeklySchedule.schedule[i].start.format(context)} / '
-                          '${weeklySchedule.schedule[i].end.format(context)}',
+                          '${weeklySchedule.schedule[day]?.start.format(context)} / '
+                          '${weeklySchedule.schedule[day]?.end.format(context)}',
                         ),
                         Text(
-                          '(${weeklySchedule.schedule[i].breakStart?.format(context) ?? ''} / '
-                          '${weeklySchedule.schedule[i].breakEnd?.format(context) ?? ''})',
+                          '(${weeklySchedule.schedule[day]?.breakStart?.format(context) ?? ''} / '
+                          '${weeklySchedule.schedule[day]?.breakEnd?.format(context) ?? ''})',
                         ),
                         if (editMode)
                           InkWell(
-                            onTap: () => onUpdateDailyScheduleTime(i),
+                            onTap: () => onUpdateDailyScheduleTime(day),
                             child: const Icon(
                               Icons.access_time,
                               color: Colors.black,
@@ -842,25 +602,12 @@ class _ScheduleSelector extends StatelessWidget {
                           ),
                         if (editMode)
                           InkWell(
-                            onTap: () => onRemovedDailyScheduleTime(i),
+                            onTap: () => onRemovedDailyScheduleTime(day),
                             child: const Icon(Icons.delete, color: Colors.red),
                           ),
                       ],
                     ),
                   ),
-                  if (editMode)
-                    TableRow(
-                      children: [
-                        Container(),
-                        Container(),
-                        Container(),
-                        InkWell(
-                          onTap: onAddDayToDailySchedule,
-                          child: const Icon(Icons.add, color: Colors.black),
-                        ),
-                        Container(),
-                      ],
-                    ),
                 ],
               ),
             ],

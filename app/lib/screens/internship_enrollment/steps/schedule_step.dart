@@ -2,9 +2,8 @@ import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:common/models/internships/transportation.dart';
 import 'package:common_flutter/helpers/responsive_service.dart';
+import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
-import 'package:common_flutter/widgets/custom_time_picker.dart';
-import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/extensions/time_of_day_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +18,12 @@ class WeeklySchedulesController {
   time_utils.DateTimeRange? get dateRange => _dateRange;
   bool _hasChanged = false;
 
-  WeeklySchedulesController(
-      {List<WeeklySchedule>? weeklySchedules,
-      time_utils.DateTimeRange? dateRange})
-      : _dateRange = dateRange,
-        weeklySchedules = weeklySchedules ?? [];
+  WeeklySchedulesController({
+    List<WeeklySchedule>? weeklySchedules,
+    time_utils.DateTimeRange? dateRange,
+  })  : _dateRange = dateRange?.copy(),
+        weeklySchedules =
+            InternshipHelpers.copySchedules(weeklySchedules, keepId: true);
 
   bool get hasChanged => _hasChanged;
   set dateRange(time_utils.DateTimeRange? newRange) {
@@ -48,46 +48,27 @@ class WeeklySchedulesController {
     _hasChanged = true;
   }
 
-  void addToDailySchedule(int weeklyIndex, DailySchedule newDay) {
-    _logger.finer(
-        'Adding new daily (id: ${newDay.id}) schedule to weekly index: $weeklyIndex');
-
-    weeklySchedules[weeklyIndex].schedule.add(newDay);
-    weeklySchedules[weeklyIndex]
-        .schedule
-        .sort((a, b) => a.dayOfWeek.index - b.dayOfWeek.index);
-    _hasChanged = true;
-  }
-
   void updateDailyScheduleTime(
     int weeklyIndex,
-    int dailyIndex, {
-    required time_utils.TimeOfDay start,
-    required time_utils.TimeOfDay end,
-    required time_utils.TimeOfDay breakStart,
-    required time_utils.TimeOfDay breakEnd,
+    Day day, {
+    required DailySchedule? schedule,
   }) {
     _logger.finer(
-        'Updating daily schedule (weekly index: $weeklyIndex, daily index: $dailyIndex)');
+        'Updating daily schedule (weekly index: $weeklyIndex, day: $day)');
 
-    weeklySchedules[weeklyIndex].schedule[dailyIndex] =
-        weeklySchedules[weeklyIndex].schedule[dailyIndex].copyWith(
-            start: start, end: end, breakStart: breakStart, breakEnd: breakEnd);
-    _hasChanged = true;
-  }
-
-  void removedDailyScheduleTime(context, int weeklyIndex, int dailyIndex) {
-    _logger.finer(
-        'Removing daily schedule (weekly index: $weeklyIndex, daily index: $dailyIndex)');
-
-    if (weeklySchedules[weeklyIndex].schedule.length == 1) {
-      showSnackBar(
-        context,
-        message: 'Au moins une plage horaire est nécessaire',
-      );
-      return;
+    if (schedule == null) {
+      weeklySchedules[weeklyIndex].schedule.remove(day);
+    } else {
+      weeklySchedules[weeklyIndex].schedule[day] =
+          weeklySchedules[weeklyIndex].schedule[day]?.copyWith(
+                    start: schedule.start,
+                    end: schedule.end,
+                    breakStart: schedule.breakStart,
+                    breakEnd: schedule.breakEnd,
+                  ) ??
+              schedule;
     }
-    weeklySchedules[weeklyIndex].schedule.removeAt(dailyIndex);
+
     _hasChanged = true;
   }
 
@@ -99,6 +80,8 @@ class WeeklySchedulesController {
         weeklySchedules[weeklyIndex].copyWith(period: newRange);
     _hasChanged = true;
   }
+
+  void dispose() {}
 }
 
 const time_utils.TimeOfDay _defaultStart =
@@ -111,38 +94,7 @@ const time_utils.TimeOfDay _defaultBreakEnd =
     time_utils.TimeOfDay(hour: 13, minute: 0);
 
 WeeklySchedule _fillNewScheduleList(time_utils.DateTimeRange dateRange) {
-  return WeeklySchedule(schedule: [
-    DailySchedule(
-        dayOfWeek: Day.monday,
-        start: _defaultStart,
-        end: _defaultEnd,
-        breakStart: _defaultBreakStart,
-        breakEnd: _defaultBreakEnd),
-    DailySchedule(
-        dayOfWeek: Day.tuesday,
-        start: _defaultStart,
-        end: _defaultEnd,
-        breakStart: _defaultBreakStart,
-        breakEnd: _defaultBreakEnd),
-    DailySchedule(
-        dayOfWeek: Day.wednesday,
-        start: _defaultStart,
-        end: _defaultEnd,
-        breakStart: _defaultBreakStart,
-        breakEnd: _defaultBreakEnd),
-    DailySchedule(
-        dayOfWeek: Day.thursday,
-        start: _defaultStart,
-        end: _defaultEnd,
-        breakStart: _defaultBreakStart,
-        breakEnd: _defaultBreakEnd),
-    DailySchedule(
-        dayOfWeek: Day.friday,
-        start: _defaultStart,
-        end: _defaultEnd,
-        breakStart: _defaultBreakStart,
-        breakEnd: _defaultBreakEnd),
-  ], period: dateRange);
+  return WeeklySchedule(schedule: {}, period: dateRange);
 }
 
 class ScheduleStep extends StatefulWidget {
@@ -467,116 +419,11 @@ class ScheduleSelector extends StatefulWidget {
 }
 
 class _ScheduleSelectorState extends State<ScheduleSelector> {
-  void _promptNewDayToDailySchedule(weeklyIndex) async {
-    Future<time_utils.TimeOfDay?> promptTime(
-            {required time_utils.TimeOfDay initial, String? title}) async =>
-        _promptTime(context, initial: initial, title: title);
-
-    final day = await _promptDay(context);
-    if (day == null || !mounted) return;
-
-    final start =
-        await promptTime(title: 'Heure de début', initial: _defaultStart);
-    if (start == null || !mounted) return;
-
-    final end = await promptTime(title: 'Heure de fin', initial: _defaultEnd);
-    if (end == null || !mounted) return;
-
-    final breakStart = await promptTime(
-        title: 'Heure de début de pause', initial: _defaultBreakStart);
-    if (breakStart == null || !mounted) return;
-
-    final breakEnd = await promptTime(
-        title: 'Heure de fin de pause', initial: _defaultBreakEnd);
-    if (breakEnd == null || !mounted) return;
-
-    widget.scheduleController.addToDailySchedule(
-        weeklyIndex,
-        DailySchedule(
-            dayOfWeek: day,
-            start: start,
-            end: end,
-            breakStart: breakStart,
-            breakEnd: breakEnd));
+  void _updateDailySchedule(int weeklyIndex, Day day,
+      {required DailySchedule? schedule}) async {
+    widget.scheduleController
+        .updateDailyScheduleTime(weeklyIndex, day, schedule: schedule);
     setState(() {});
-  }
-
-  void _promptUpdateToDailySchedule(int weeklyIndex, int dailyIndex) async {
-    Future<time_utils.TimeOfDay?> promptTime(
-            {required time_utils.TimeOfDay initial, String? title}) async =>
-        _promptTime(context, initial: initial, title: title);
-
-    final start = await _promptTime(context,
-        title: 'Heure de début',
-        initial: widget.scheduleController.weeklySchedules[weeklyIndex]
-            .schedule[dailyIndex].start);
-    if (start == null || !mounted) return;
-
-    final end = await promptTime(
-        title: 'Heure de fin',
-        initial: widget.scheduleController.weeklySchedules[weeklyIndex]
-            .schedule[dailyIndex].end);
-    if (end == null || !mounted) return;
-
-    final breakStart = await promptTime(
-        title: 'Heure de début de pause',
-        initial: widget.scheduleController.weeklySchedules[weeklyIndex]
-                .schedule[dailyIndex].breakStart ??
-            _defaultBreakStart);
-    if (breakStart == null || !mounted) return;
-
-    final breakEnd = await promptTime(
-        title: 'Heure de fin de pause',
-        initial: widget.scheduleController.weeklySchedules[weeklyIndex]
-                .schedule[dailyIndex].breakEnd ??
-            _defaultBreakEnd);
-    if (breakEnd == null || !mounted) return;
-
-    widget.scheduleController.updateDailyScheduleTime(weeklyIndex, dailyIndex,
-        start: start, end: end, breakStart: breakStart, breakEnd: breakEnd);
-    setState(() {});
-  }
-
-  Future<Day?> _promptDay(BuildContext context) async {
-    final choice = (await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-          title: const Text('Sélectionner la journée'),
-          content: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: Day.values
-                  .map((day) => GestureDetector(
-                      onTap: () => Navigator.of(context).pop(day),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: Text(day.name),
-                      )))
-                  .toList(),
-            ),
-          )),
-    ));
-    return choice;
-  }
-
-  Future<time_utils.TimeOfDay?> _promptTime(BuildContext context,
-      {required time_utils.TimeOfDay initial, String? title}) async {
-    final time = await showCustomTimePicker(
-      cancelText: 'Annuler',
-      confirmText: 'Confirmer',
-      helpText: title,
-      context: context,
-      initialTime: TimeOfDay(hour: initial.hour, minute: initial.minute),
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-        child: child ?? Container(),
-      ),
-    );
-
-    if (time == null) return null;
-    return time_utils.TimeOfDay(hour: time.hour, minute: time.minute);
   }
 
   void _promptChangeWeek(weeklyIndex) async {
@@ -621,13 +468,22 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
                           ? () => setState(() => widget.scheduleController
                               .removedWeeklySchedule(weeklyIndex))
                           : null,
-                  onAddDayToDailySchedule: () =>
-                      _promptNewDayToDailySchedule(weeklyIndex),
-                  onUpdateDailyScheduleTime: (dailyIndex) =>
-                      _promptUpdateToDailySchedule(weeklyIndex, dailyIndex),
-                  onRemovedDailyScheduleTime: (dailyIndex) => setState(() =>
-                      widget.scheduleController.removedDailyScheduleTime(
-                          context, weeklyIndex, dailyIndex)),
+                  onAddDailyScheduleTime: (day) => _updateDailySchedule(
+                      weeklyIndex, day,
+                      schedule: DailySchedule(
+                          start: _defaultStart,
+                          end: _defaultEnd,
+                          breakStart: _defaultBreakStart,
+                          breakEnd: _defaultBreakEnd)),
+                  onUpdateDailyScheduleTime: (day) => _updateDailySchedule(
+                      weeklyIndex, day,
+                      schedule: DailySchedule(
+                          start: _defaultStart,
+                          end: _defaultEnd,
+                          breakStart: _defaultBreakStart,
+                          breakEnd: _defaultBreakEnd)),
+                  onRemovedDailyScheduleTime: (day) =>
+                      _updateDailySchedule(weeklyIndex, day, schedule: null),
                   promptChangeWeeks: () => _promptChangeWeek(weeklyIndex),
                   editMode: widget.editMode,
                   leftPadding: widget.leftPadding,
@@ -655,7 +511,7 @@ class _ScheduleSelector extends StatelessWidget {
     required this.periodTextSize,
     required this.weeklySchedule,
     required this.onRemoveWeeklySchedule,
-    required this.onAddDayToDailySchedule,
+    required this.onAddDailyScheduleTime,
     required this.onUpdateDailyScheduleTime,
     required this.onRemovedDailyScheduleTime,
     required this.promptChangeWeeks,
@@ -668,11 +524,68 @@ class _ScheduleSelector extends StatelessWidget {
   final double? periodTextSize;
   final WeeklySchedule weeklySchedule;
   final Function()? onRemoveWeeklySchedule;
-  final Function() onAddDayToDailySchedule;
-  final Function(int) onUpdateDailyScheduleTime;
-  final Function(int) onRemovedDailyScheduleTime;
+  final Function(Day) onAddDailyScheduleTime;
+  final Function(Day) onUpdateDailyScheduleTime;
+  final Function(Day) onRemovedDailyScheduleTime;
   final Function() promptChangeWeeks;
   final bool editMode;
+
+  Widget _daySelectorFormField(BuildContext context) {
+    return FormField(
+      validator: (value) {
+        if (!editMode) return null;
+        if (weeklySchedule.schedule.isEmpty) {
+          return 'Veuillez sélectionner au moins un jour.';
+        }
+        return null;
+      },
+      builder: (state) {
+        return editMode
+            ? Padding(
+                padding: const EdgeInsets.only(left: 12.0, bottom: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '* Sélectionner les journées de stage',
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    CheckboxWithOther<Day>(
+                      enabled: editMode,
+                      elements: [...Day.values],
+                      onOptionSelected: (values) {
+                        for (final dayName in values) {
+                          final day = Day.fromName(dayName);
+                          if (weeklySchedule.schedule[day] == null) {
+                            onAddDailyScheduleTime(day);
+                          }
+                        }
+
+                        for (final day in weeklySchedule.schedule.keys) {
+                          if (!values.contains(day.name)) {
+                            onRemovedDailyScheduleTime(day);
+                          }
+                        }
+                      },
+                      showOtherOption: false,
+                    ),
+                    if (state.hasError)
+                      Text(
+                        state.errorText ?? '',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(color: Colors.red),
+                      ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -732,6 +645,7 @@ class _ScheduleSelector extends StatelessWidget {
             ],
           ),
         ),
+      _daySelectorFormField(context),
       Padding(
         padding: const EdgeInsets.only(left: 12.0),
         child: Column(
@@ -753,42 +667,25 @@ class _ScheduleSelector extends StatelessWidget {
                 4: FlexColumnWidth(0.7),
               },
               children: [
-                ...weeklySchedule.schedule.asMap().keys.map(
-                      (i) => TableRow(
-                        children: [
-                          Text(weeklySchedule.schedule[i].dayOfWeek.name),
-                          Text(
-                              '${weeklySchedule.schedule[i].start.format(context)} / '
-                              '${weeklySchedule.schedule[i].end.format(context)}'),
-                          Text(
-                              '(${weeklySchedule.schedule[i].breakStart?.format(context) ?? ''} / '
-                              '${weeklySchedule.schedule[i].breakEnd?.format(context) ?? ''})'),
-                          if (editMode)
-                            InkWell(
-                              onTap: () => onUpdateDailyScheduleTime(i),
-                              child: const Icon(Icons.access_time,
-                                  color: Colors.black),
-                            ),
-                          if (editMode)
-                            InkWell(
-                              onTap: () => onRemovedDailyScheduleTime(i),
-                              child:
-                                  const Icon(Icons.delete, color: Colors.red),
-                            ),
-                        ],
-                      ),
-                    ),
-                if (editMode)
-                  TableRow(children: [
-                    Container(),
-                    Container(),
-                    Container(),
-                    InkWell(
-                      onTap: onAddDayToDailySchedule,
-                      child: const Icon(Icons.add, color: Colors.black),
-                    ),
-                    Container(),
-                  ]),
+                ...weeklySchedule.schedule.keys.map(
+                  (day) => TableRow(
+                    children: [
+                      Text(day.name),
+                      Text(
+                          '${weeklySchedule.schedule[day]?.start.format(context)} / '
+                          '${weeklySchedule.schedule[day]?.end.format(context)}'),
+                      Text(
+                          '(${weeklySchedule.schedule[day]?.breakStart?.format(context) ?? ''} / '
+                          '${weeklySchedule.schedule[day]?.breakEnd?.format(context) ?? ''})'),
+                      if (editMode)
+                        InkWell(
+                          onTap: () => onUpdateDailyScheduleTime(day),
+                          child: const Icon(Icons.access_time,
+                              color: Colors.black),
+                        ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ],

@@ -24,6 +24,10 @@ class DateTimeRange {
   final DateTime end;
   const DateTimeRange({required this.start, required this.end});
 
+  DateTimeRange copy() {
+    return DateTimeRange(start: start, end: end);
+  }
+
   @override
   String toString() {
     return 'DateTimeRange(start: $start, end: $end)';

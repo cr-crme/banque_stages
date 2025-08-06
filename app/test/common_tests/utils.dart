@@ -311,11 +311,9 @@ Internship dummyInternship({
   );
 }
 
-DailySchedule dummyDailySchedule(
-    {String id = 'dailyScheduleId', Day dayOfWeek = Day.monday}) {
+DailySchedule dummyDailySchedule({String id = 'dailyScheduleId'}) {
   return DailySchedule(
     id: id,
-    dayOfWeek: dayOfWeek,
     start: const TimeOfDay(hour: 9, minute: 00),
     end: const TimeOfDay(hour: 15, minute: 00),
     breakStart: const TimeOfDay(hour: 12, minute: 00),
@@ -327,13 +325,13 @@ WeeklySchedule dummyWeeklySchedule(
     {String id = 'weeklyScheduleId', DateTimeRange? period}) {
   return WeeklySchedule(
     id: id,
-    schedule: [
-      dummyDailySchedule(id: 'dailyScheduleId1', dayOfWeek: Day.monday),
-      dummyDailySchedule(id: 'dailyScheduleId2', dayOfWeek: Day.tuesday),
-      dummyDailySchedule(id: 'dailyScheduleId3', dayOfWeek: Day.wednesday),
-      dummyDailySchedule(id: 'dailyScheduleId4', dayOfWeek: Day.thursday),
-      dummyDailySchedule(id: 'dailyScheduleId5', dayOfWeek: Day.friday),
-    ],
+    schedule: {
+      Day.monday: dummyDailySchedule(id: 'dailyScheduleId1'),
+      Day.tuesday: dummyDailySchedule(id: 'dailyScheduleId2'),
+      Day.wednesday: dummyDailySchedule(id: 'dailyScheduleId3'),
+      Day.thursday: dummyDailySchedule(id: 'dailyScheduleId4'),
+      Day.friday: dummyDailySchedule(id: 'dailyScheduleId5'),
+    },
     period: period ??
         DateTimeRange(start: DateTime(2026, 1, 2), end: DateTime(2026, 1, 22)),
   );

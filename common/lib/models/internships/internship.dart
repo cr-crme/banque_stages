@@ -275,9 +275,18 @@ class Internship extends ExtendedItemSerializable {
       });
 
       for (final schedule in mutable.weeklySchedules) {
-        schedule.schedule.sort((a, b) {
-          if (a.dayOfWeek.index < b.dayOfWeek.index) return -1;
-          if (a.dayOfWeek.index > b.dayOfWeek.index) return 1;
+        schedule.schedule.entries.toList().sort((pairA, pairB) {
+          final dayA = pairA.key;
+          final dayB = pairB.key;
+          final a = pairA.value;
+          final b = pairB.value;
+
+          if (a == null && b == null) return 0;
+          if (a == null) return 1;
+          if (b == null) return -1;
+
+          if (dayA.index < dayB.index) return -1;
+          if (dayA.index > dayB.index) return 1;
 
           if (a.start.hour < b.start.hour) return -1;
           if (a.start.hour > b.start.hour) return 1;
