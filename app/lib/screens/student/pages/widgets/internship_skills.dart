@@ -1,3 +1,4 @@
+import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart'
     as attitude;
@@ -39,8 +40,22 @@ class _InternshipSkillsState extends State<InternshipSkills> {
   Widget build(BuildContext context) {
     _logger.finer(
         'Building InternshipSkills for internship: ${widget.internshipId}');
+
     final internship =
         InternshipsProvider.of(context).fromId(widget.internshipId);
+
+    final enterprises = EnterprisesProvider.of(context);
+    late final Job job;
+    try {
+      job = enterprises[internship.enterpriseId].jobs[internship.jobId];
+    } catch (e) {
+      return SizedBox(
+        height: 50,
+        child: Center(
+            child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor)),
+      );
+    }
 
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 24),
@@ -60,6 +75,19 @@ class _InternshipSkillsState extends State<InternshipSkills> {
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _buildJob(
+                    'Métier${internship.extraSpecializationIds.isNotEmpty ? ' principal' : ''}',
+                    specialization: job.specialization),
+                if (internship.extraSpecializationIds.isNotEmpty)
+                  ...internship.extraSpecializationIds
+                      .asMap()
+                      .keys
+                      .map((indexExtra) => _buildJob(
+                            'Métier supplémentaire${internship.extraSpecializationIds.length > 1 ? ' (${indexExtra + 1})' : ''}',
+                            specialization:
+                                ActivitySectorsService.specialization(internship
+                                    .extraSpecializationIds[indexExtra]),
+                          )),
                 _SpecificSkillBody(
                     internship: internship,
                     evaluation: internship.skillEvaluations),
@@ -74,6 +102,32 @@ class _InternshipSkillsState extends State<InternshipSkills> {
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  static const _interline = 12.0;
+  static const TextStyle _titleStyle = TextStyle(fontWeight: FontWeight.bold);
+
+  Widget _buildJob(
+    String title, {
+    required Specialization specialization,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: _titleStyle),
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(specialization.idWithName),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text('Secteur ${specialization.sector.idWithName}'),
+          ),
         ],
       ),
     );

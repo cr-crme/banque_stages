@@ -1,15 +1,13 @@
-import 'package:common/models/enterprises/enterprise.dart';
-import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/generic/phone_number.dart';
 import 'package:common/models/internships/internship.dart';
 import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/persons/person.dart';
-import 'package:common/services/job_data_file_service.dart';
 import 'package:common/utils.dart';
-import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
+import 'package:common_flutter/widgets/email_list_tile.dart';
+import 'package:common_flutter/widgets/phone_list_tile.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:common_flutter/widgets/sticky_head_expansion_panel_list.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
@@ -330,42 +328,6 @@ class _InternshipBody extends StatelessWidget {
     );
   }
 
-  Widget _buildJob(
-    String title, {
-    required Specialization specialization,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: _interline),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: _titleStyle),
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: Text(specialization.idWithName),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: Text('Secteur ${specialization.sector.idWithName}'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAddress({required Enterprise enterprise}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Adresse de l\'entreprise', style: _titleStyle),
-        Padding(
-          padding: const EdgeInsets.only(top: 2, bottom: _interline),
-          child: Text(enterprise.address.toString()),
-        )
-      ],
-    );
-  }
-
   Widget _buildSupervisorInfo() {
     return Form(
       key: internshipController.supervisorFormKey,
@@ -378,7 +340,6 @@ class _InternshipBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (!editMode) const Text('Nom'),
                 editMode
                     ? Column(
                         children: [
@@ -402,23 +363,14 @@ class _InternshipBody extends StatelessWidget {
                       )
                     : Text(internship.supervisor.fullName),
                 const SizedBox(height: 8),
-                const Text('Numéro de téléphone'),
-                editMode
-                    ? TextFormField(
-                        controller:
-                            internshipController.supervisorPhoneController,
-                        keyboardType: TextInputType.phone,
-                      )
-                    : Text(internship.supervisor.phone.toString()),
+                PhoneListTile(
+                    isMandatory: false,
+                    enabled: editMode,
+                    controller: internshipController.supervisorPhoneController),
                 const SizedBox(height: 8),
-                const Text('Courriel'),
-                editMode
-                    ? TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        controller:
-                            internshipController.supervisorEmailController,
-                      )
-                    : Text(internship.supervisor.email ?? 'Aucun'),
+                EmailListTile(
+                    controller: internshipController.supervisorEmailController,
+                    enabled: editMode),
                 const SizedBox(height: 8),
               ],
             ),
@@ -558,19 +510,6 @@ class _InternshipBody extends StatelessWidget {
     _logger.finer('Building _InternshipBody for internship: ${internship.id}');
 
     final teachers = TeachersProvider.of(context);
-    final enterprises = EnterprisesProvider.of(context);
-
-    late final Job job;
-    try {
-      job = enterprises[internship.enterpriseId].jobs[internship.jobId];
-    } catch (e) {
-      return SizedBox(
-        height: 50,
-        child: Center(
-            child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor)),
-      );
-    }
 
     final supervisors =
         teachers.where((e) => internship.supervisingTeacherIds.contains(e.id));
@@ -584,29 +523,7 @@ class _InternshipBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTeachers(
-              supervisors: supervisors.map((e) => e.fullName).toList(),
-              signatoryTeacher: signatoryTeacher.fullName),
-          _buildJob(
-              'Métier${internship.extraSpecializationIds.isNotEmpty ? ' principal' : ''}',
-              specialization: job.specialization),
-          if (internship.extraSpecializationIds.isNotEmpty)
-            ...internship.extraSpecializationIds
-                .asMap()
-                .keys
-                .map((indexExtra) => _buildJob(
-                      'Métier supplémentaire${internship.extraSpecializationIds.length > 1 ? ' (${indexExtra + 1})' : ''}',
-                      specialization: ActivitySectorsService.specialization(
-                          internship.extraSpecializationIds[indexExtra]),
-                    )),
-          _buildAddress(enterprise: enterprises[internship.enterpriseId]),
-          Stack(
-            alignment: Alignment.topLeft,
-            children: [
-              SizedBox(width: MediaQuery.of(context).size.width),
-              _buildSupervisorInfo(),
-            ],
-          ),
+          _buildSupervisorInfo(),
           _buildDates(),
           _buildTime(),
           _buildSchedule(),
@@ -614,6 +531,9 @@ class _InternshipBody extends StatelessWidget {
               editMode: editMode,
               transportations: internshipController.transportations),
           _buildVisitFrequencies(),
+          _buildTeachers(
+              supervisors: supervisors.map((e) => e.fullName).toList(),
+              signatoryTeacher: signatoryTeacher.fullName),
         ],
       ),
     );
