@@ -1,6 +1,9 @@
 import 'package:common/models/internships/internship.dart';
-import 'package:common/models/internships/internship_evaluation_attitude.dart';
+import 'package:common/models/internships/internship_evaluation_attitude.dart'
+    as attitude;
 import 'package:common/models/internships/internship_evaluation_skill.dart';
+import 'package:common/models/internships/internship_evaluation_visa.dart'
+    as visa;
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
@@ -12,6 +15,8 @@ import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/atti
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_controller.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_form_screen.dart';
 import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/skill_evaluation_main_screen.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/visa_evaluation_form_controller.dart';
+import 'package:crcrme_banque_stages/screens/internship_forms/student_steps/visa_evaluation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
@@ -361,7 +366,7 @@ class _AttitudeBody extends StatefulWidget {
   });
 
   final Internship internship;
-  final List<InternshipEvaluationAttitude> evaluation;
+  final List<attitude.InternshipEvaluationAttitude> evaluation;
 
   @override
   State<_AttitudeBody> createState() => _AttitudeBodyState();
@@ -455,7 +460,8 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 12.0),
-            child: Text(GeneralAppreciation
+            child: Text(attitude
+                .GeneralAppreciation
                 .values[widget.evaluation[_currentEvaluationIndex].attitude
                     .generalAppreciation.index]
                 .name),
@@ -571,7 +577,7 @@ class _VisaBody extends StatefulWidget {
   });
 
   final Internship internship;
-  final List<InternshipEvaluationVisa> evaluation;
+  final List<visa.InternshipEvaluationVisa> evaluation;
 
   @override
   State<_VisaBody> createState() => _VisaBodyState();
@@ -589,7 +595,7 @@ class _VisaBodyState extends State<_VisaBody> {
     }
   }
 
-  Widget _buildSelectEvaluationFromDate() {
+  Widget _buildLastEvaluation() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
       child: Row(
@@ -613,27 +619,82 @@ class _VisaBodyState extends State<_VisaBody> {
     );
   }
 
-  Widget _buildShowOtherDate() {
+  Widget _buildAttitudeIsGood() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Conformes aux exigences',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: ItemizedText(widget.evaluation[_currentEvaluationIndex]
+                .attitude.meetsRequirements),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAttitudeIsBad() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'À améliorer',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: ItemizedText(widget.evaluation[_currentEvaluationIndex]
+                .attitude.doesNotMeetRequirements),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGeneralAppreciation() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _interline),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Appréciation générale',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(visa
+                .GeneralAppreciation
+                .values[widget.evaluation[_currentEvaluationIndex].attitude
+                    .generalAppreciation.index]
+                .name),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShowOtherForms() {
     return Padding(
       padding: const EdgeInsets.only(bottom: _interline),
       child: Center(
         child: OutlinedButton(
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (context) => Dialog(
-                          child: SkillEvaluationFormScreen(
-                        rootContext: context,
-                        formController:
-                            SkillEvaluationFormController.fromInternshipId(
-                          context,
-                          internshipId: widget.internship.id,
-                          evaluationIndex: _currentEvaluationIndex,
-                          canModify: false,
-                        ),
-                        editMode: false,
-                      )));
-            },
+            onPressed: () => showVisaEvaluationDialog(
+                context: context,
+                formController: VisaEvaluationFormController.fromInternshipId(
+                  context,
+                  internshipId: widget.internship.id,
+                  evaluationIndex: _currentEvaluationIndex,
+                ),
+                editMode: false),
             child: const Text('Voir l\'évaluation détaillée')),
       ),
     );
@@ -642,71 +703,55 @@ class _VisaBodyState extends State<_VisaBody> {
   @override
   Widget build(BuildContext context) {
     final teacherId = TeachersProvider.of(context, listen: false).myTeacher?.id;
-
     _resetIndex();
 
-    late final Specialization specialization;
-    try {
-      specialization = EnterprisesProvider.of(context)
-          .fromId(widget.internship.enterpriseId)
-          .jobs
-          .fromId(widget.internship.jobId)
-          .specialization;
-    } catch (e) {
-      return SizedBox(
-        height: 50,
-        child: Center(
-            child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor)),
-      );
-    }
-
     return AnimatedExpandingCard(
-      elevation: 0.0,
-      header: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          const Text('VISA', style: TextStyle(fontWeight: FontWeight.bold)),
-          Visibility(
-            visible:
-                widget.internship.supervisingTeacherIds.contains(teacherId),
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Theme.of(context).colorScheme.primary, width: 3),
-                  borderRadius: const BorderRadius.all(Radius.circular(18))),
-              child: IconButton(
-                onPressed: () => showVisaEvaluationDialog(
-                  context: context,
-                  internshipId: widget.internship.id,
-                  editMode: true,
+        elevation: 0.0,
+        header: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const Text('VISA', style: TextStyle(fontWeight: FontWeight.bold)),
+            Visibility(
+              visible:
+                  widget.internship.supervisingTeacherIds.contains(teacherId),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Theme.of(context).colorScheme.primary, width: 3),
+                    borderRadius: const BorderRadius.all(Radius.circular(18))),
+                child: IconButton(
+                  onPressed: () => showVisaEvaluationDialog(
+                      context: context,
+                      formController: VisaEvaluationFormController(
+                          internshipId: widget.internship.id),
+                      editMode: true),
+                  icon: const Icon(Icons.post_add),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-                icon: const Icon(Icons.note_add),
-                color: Theme.of(context).colorScheme.primary,
               ),
-            ),
-          )
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (widget.evaluation.isEmpty)
-            const Padding(
-              padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
-              child: Text('Aucune évaluation disponible pour ce stage.'),
-            ),
-          if (widget.evaluation.isNotEmpty)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildSelectEvaluationFromDate(),
-                _buildShowOtherDate(),
-              ],
             )
-        ],
-      ),
-    );
+          ],
+        ),
+        child: Column(
+          children: [
+            if (widget.evaluation.isEmpty)
+              const Padding(
+                padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
+                child: Text('Aucune évaluation disponible pour ce stage.'),
+              ),
+            if (widget.evaluation.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildLastEvaluation(),
+                  _buildAttitudeIsGood(),
+                  _buildAttitudeIsBad(),
+                  _buildGeneralAppreciation(),
+                  _buildShowOtherForms(),
+                ],
+              )
+          ],
+        ));
   }
 }

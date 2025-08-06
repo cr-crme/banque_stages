@@ -216,6 +216,12 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             idNameToDataTable: 'internship_id',
           ),
           MySqlSelectSubQuery(
+            dataTableName: 'internship_visa_evaluations',
+            asName: 'visa_evaluations',
+            fieldsToFetch: ['id', 'date', 'form_version'],
+            idNameToDataTable: 'internship_id',
+          ),
+          MySqlSelectSubQuery(
             dataTableName: 'post_internship_enterprise_evaluations',
             asName: 'enterprise_evaluation',
             fieldsToFetch: [
@@ -470,6 +476,45 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         attitudeEvaluations.add(evaluation);
       }
       internship['attitude_evaluations'] = attitudeEvaluations;
+
+      final visaEvaluations = [];
+      for (final Map<String, dynamic> evaluation
+          in (internship['visa_evaluations'] as List? ?? [])) {
+        final evaluationSubquery = (await MySqlHelpers.performSelectQuery(
+                connection: connection,
+                user: user,
+                tableName: 'internship_visa_evaluations',
+                filters: {
+              'id': evaluation['id']
+            },
+                subqueries: [
+              MySqlSelectSubQuery(
+                dataTableName: 'internship_visa_evaluation_items',
+                asName: 'visa',
+                fieldsToFetch: [
+                  'id',
+                  'evaluation_id',
+                  'inattendance',
+                  'ponctuality',
+                  'sociability',
+                  'politeness',
+                  'motivation',
+                  'dressCode',
+                  'quality_of_work',
+                  'productivity',
+                  'autonomy',
+                  'cautiousness',
+                  'general_appreciation',
+                ],
+                idNameToDataTable: 'evaluation_id',
+              ),
+            ]))
+            .first;
+
+        evaluation['attitude'] = (evaluationSubquery['visa'] as List).first;
+        visaEvaluations.add(evaluation);
+      }
+      internship['visa_evaluations'] = visaEvaluations;
 
       internship['enterprise_evaluation'] =
           (internship['enterprise_evaluation'] as List?)?.firstOrNull;
@@ -869,6 +914,54 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     _insertToAttitudeEvaluations(internship, previous);
   }
 
+  Future<void> _insertToVisaEvaluations(Internship internship,
+      [Internship? previous]) async {
+    for (final evaluation in internship.visaEvaluations.serialize()) {
+      if (previous?.visaEvaluations.any((e) => e.id == evaluation['id']) ??
+          false) {
+        // Skip if the evaluation already exists
+        continue;
+      }
+
+      await MySqlHelpers.performInsertQuery(
+          connection: connection,
+          tableName: 'internship_visa_evaluations',
+          data: {
+            'id': evaluation['id'],
+            'internship_id': internship.id,
+            'date': evaluation['date'],
+            'form_version': evaluation['form_version'],
+          });
+
+      // Insert the attitude
+      await MySqlHelpers.performInsertQuery(
+          connection: connection,
+          tableName: 'internship_visa_evaluation_items',
+          data: {
+            'id': evaluation['attitude']['id'],
+            'evaluation_id': evaluation['id'],
+            'inattendance': evaluation['attitude']['inattendance'],
+            'ponctuality': evaluation['attitude']['ponctuality'],
+            'sociability': evaluation['attitude']['sociability'],
+            'politeness': evaluation['attitude']['politeness'],
+            'motivation': evaluation['attitude']['motivation'],
+            'dressCode': evaluation['attitude']['dressCode'],
+            'quality_of_work': evaluation['attitude']['quality_of_work'],
+            'productivity': evaluation['attitude']['productivity'],
+            'autonomy': evaluation['attitude']['autonomy'],
+            'cautiousness': evaluation['attitude']['cautiousness'],
+            'general_appreciation': evaluation['attitude']
+                ['general_appreciation']
+          });
+    }
+  }
+
+  Future<void> _updateToVisaEvaluations(
+      Internship internship, Internship previous) async {
+    // Attitude evaluations are not updated, but stacked
+    _insertToVisaEvaluations(internship, previous);
+  }
+
   Future<void> _insertToEnterpriseEvaluation(Internship internship) async {
     if (internship.enterpriseEvaluation != null) {
       final evaluation = internship.enterpriseEvaluation!.serialize();
@@ -917,12 +1010,12 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     if (toUpdate.contains('enterprise_evaluation')) {
       if (previous.enterpriseEvaluation != null) {
         _logger.severe('Enterprise evaluation cannot be changed');
-        throw InvalidRequestException('Enterprise evaluation cannot be changed');
+        throw InvalidRequestException(
+            'Enterprise evaluation cannot be changed');
       }
 
       await _insertToEnterpriseEvaluation(internship);
     }
-
   }
 
   @override
@@ -945,6 +1038,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       toWait.add(_insertToMutables(internship, user: user));
       toWait.add(_insertToSkillEvaluations(internship));
       toWait.add(_insertToAttitudeEvaluations(internship));
+      toWait.add(_insertToVisaEvaluations(internship));
       toWait.add(_insertToEnterpriseEvaluation(internship));
     } else {
       toWait.add(_updateToSupervisingTeachers(internship, previous));
@@ -952,6 +1046,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       toWait.add(_updateToMutables(internship, previous, user));
       toWait.add(_updateToSkillEvaluations(internship, previous));
       toWait.add(_updateToAttitudeEvaluations(internship, previous));
+      toWait.add(_updateToVisaEvaluations(internship, previous));
       toWait.add(_updateToEnterpriseEvaluation(internship, previous));
     }
     await Future.wait(toWait);

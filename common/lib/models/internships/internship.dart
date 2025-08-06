@@ -3,6 +3,7 @@ import 'package:common/models/generic/extended_item_serializable.dart';
 import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/models/internships/internship_evaluation_attitude.dart';
 import 'package:common/models/internships/internship_evaluation_skill.dart';
+import 'package:common/models/internships/internship_evaluation_visa.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart';
 import 'package:common/models/internships/transportation.dart';
@@ -250,6 +251,7 @@ class Internship extends ExtendedItemSerializable {
 
   final List<InternshipEvaluationSkill> skillEvaluations;
   final List<InternshipEvaluationAttitude> attitudeEvaluations;
+  final List<InternshipEvaluationVisa> visaEvaluations;
 
   PostInternshipEnterpriseEvaluation? enterpriseEvaluation;
 
@@ -303,6 +305,11 @@ class Internship extends ExtendedItemSerializable {
       if (a.date.isAfter(b.date)) return 1;
       return 0;
     });
+    visaEvaluations.sort((a, b) {
+      if (a.date.isBefore(b.date)) return -1;
+      if (a.date.isAfter(b.date)) return 1;
+      return 0;
+    });
   }
 
   Internship._({
@@ -322,6 +329,7 @@ class Internship extends ExtendedItemSerializable {
     required this.endDate,
     required this.skillEvaluations,
     required this.attitudeEvaluations,
+    required this.visaEvaluations,
     required this.enterpriseEvaluation,
   }) : _mutables = mutables {
     _finalizeInitialization();
@@ -349,6 +357,7 @@ class Internship extends ExtendedItemSerializable {
     required this.endDate,
     List<InternshipEvaluationSkill>? skillEvaluations,
     List<InternshipEvaluationAttitude>? attitudeEvaluations,
+    List<InternshipEvaluationVisa>? visaEvaluations,
     this.enterpriseEvaluation,
   })  : _mutables = [
           InternshipMutableElements(
@@ -361,7 +370,8 @@ class Internship extends ExtendedItemSerializable {
           )
         ],
         skillEvaluations = skillEvaluations ?? [],
-        attitudeEvaluations = attitudeEvaluations ?? [] {
+        attitudeEvaluations = attitudeEvaluations ?? [],
+        visaEvaluations = visaEvaluations ?? [] {
     _finalizeInitialization();
   }
 
@@ -381,6 +391,7 @@ class Internship extends ExtendedItemSerializable {
         endDate: DateTime(0),
         skillEvaluations: [],
         attitudeEvaluations: [],
+        visaEvaluations: [],
         enterpriseEvaluation: null,
       );
 
@@ -413,6 +424,9 @@ class Internship extends ExtendedItemSerializable {
         attitudeEvaluations = ListExt.from(map['attitude_evaluations'],
                 deserializer: InternshipEvaluationAttitude.fromSerialized) ??
             [],
+        visaEvaluations = ListExt.from(map['visa_evaluations'],
+                deserializer: InternshipEvaluationVisa.fromSerialized) ??
+            [],
         enterpriseEvaluation = PostInternshipEnterpriseEvaluation.deserialize(
             map['enterprise_evaluation']),
         super.fromSerialized() {
@@ -437,6 +451,7 @@ class Internship extends ExtendedItemSerializable {
         'end_date': endDate.serialize(),
         'skill_evaluations': skillEvaluations.serialize(),
         'attitude_evaluations': attitudeEvaluations.serialize(),
+        'visa_evaluations': visaEvaluations.serialize(),
         'enterprise_evaluation': enterpriseEvaluation?.serialize(),
       };
 
@@ -474,6 +489,7 @@ class Internship extends ExtendedItemSerializable {
     DateTime? endDate,
     List<InternshipEvaluationSkill>? skillEvaluations,
     List<InternshipEvaluationAttitude>? attitudeEvaluations,
+    List<InternshipEvaluationVisa>? visaEvaluations,
     PostInternshipEnterpriseEvaluation? enterpriseEvaluation,
   }) {
     return Internship._(
@@ -496,6 +512,7 @@ class Internship extends ExtendedItemSerializable {
       skillEvaluations: skillEvaluations?.toList() ?? this.skillEvaluations,
       attitudeEvaluations:
           attitudeEvaluations?.toList() ?? this.attitudeEvaluations,
+      visaEvaluations: visaEvaluations?.toList() ?? this.visaEvaluations,
       enterpriseEvaluation: enterpriseEvaluation ?? this.enterpriseEvaluation,
     );
   }
@@ -520,6 +537,7 @@ class Internship extends ExtendedItemSerializable {
       'end_date',
       'skill_evaluations',
       'attitude_evaluations',
+      'visa_evaluations',
       'enterprise_evaluation',
     ];
     // Make sure data does not contain unrecognized fields
@@ -567,6 +585,9 @@ class Internship extends ExtendedItemSerializable {
       attitudeEvaluations: ListExt.from(data['attitude_evaluations'],
               deserializer: InternshipEvaluationAttitude.fromSerialized) ??
           attitudeEvaluations,
+      visaEvaluations: ListExt.from(data['visa_evaluations'],
+              deserializer: InternshipEvaluationVisa.fromSerialized) ??
+          visaEvaluations,
       enterpriseEvaluation: PostInternshipEnterpriseEvaluation.deserialize(
               data['enterprise_evaluation']) ??
           enterpriseEvaluation,
@@ -589,6 +610,7 @@ class Internship extends ExtendedItemSerializable {
         'endDate: $endDate, '
         'skillEvaluations: $skillEvaluations, '
         'attitudeEvaluations: $attitudeEvaluations, '
+        'visaEvaluations: $visaEvaluations, '
         'enterpriseEvaluation: $enterpriseEvaluation'
         '}';
   }
