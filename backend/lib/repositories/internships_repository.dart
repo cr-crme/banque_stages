@@ -329,13 +329,12 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         for (final schedule in schedules) {
           schedule['start'] = schedule['starting_date'];
           schedule['end'] = schedule['ending_date'];
-          schedule['days'] = <int, List>{};
+          schedule['days'] = {};
           for (final map in (schedule['daily_schedules'] as List? ?? [])) {
             if (schedule['days'][map['day']] == null) {
-              schedule['days'][map['day']] = [];
+              schedule['days'][map['day']] = {'id': map['id'], 'blocks': []};
             }
-            (schedule['days'][map['day']] as List).add({
-              'id': map['id'],
+            (schedule['days'][map['day']]['blocks'] as List).add({
               'sort_index': map['block_index'] ?? 0, // TODO remove 0
               'start': [map['starting_hour'], map['starting_minute']],
               'end': [map['ending_hour'], map['ending_minute']],

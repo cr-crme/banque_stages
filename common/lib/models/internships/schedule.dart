@@ -79,7 +79,7 @@ class DailySchedule extends ItemSerializable {
   final List<TimeBlock> blocks;
 
   DailySchedule.fromSerialized(super.map)
-      : blocks = ListExt.from(map,
+      : blocks = ListExt.from(map['blocks'] as List?,
                 deserializer: (element) => TimeBlock.fromSerialized(element)) ??
             [],
         super.fromSerialized();
