@@ -613,19 +613,20 @@ class _ScheduleSelector extends StatelessWidget {
               )
           ],
         ),
-      if (periodName == null)
-        Text('* Sélectionner les journées et heures du stage',
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall!
-                .copyWith(fontWeight: FontWeight.bold))
-      else
-        Text(
-            '* Sélectionner les dates, journées et heures de la période de stage',
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall!
-                .copyWith(fontWeight: FontWeight.bold)),
+      if (editMode)
+        if (periodName == null)
+          Text('* Sélectionner les journées et heures du stage',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall!
+                  .copyWith(fontWeight: FontWeight.bold))
+        else
+          Text(
+              '* Sélectionner les dates, journées et heures de la période de stage',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall!
+                  .copyWith(fontWeight: FontWeight.bold)),
       if (periodName != null)
         Padding(
           padding: EdgeInsets.only(
@@ -640,12 +641,12 @@ class _ScheduleSelector extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(children: [
-                    const Text('* Date de début'),
+                    Text('${editMode ? '* ' : ''}Date de début'),
                     Text(DateFormat.yMMMEd('fr_CA')
                         .format(weeklySchedule.period.start))
                   ]),
                   Column(children: [
-                    const Text('* Date de fin'),
+                    Text('${editMode ? '* ' : ''}Date de fin'),
                     Text(DateFormat.yMMMEd('fr_CA')
                         .format(weeklySchedule.period.end))
                   ]),
@@ -788,6 +789,10 @@ class _ScheduleSelector extends StatelessWidget {
             }
           }
         : null;
+    if (!editMode && schedule == null) {
+      return SizedBox.shrink();
+    }
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -797,13 +802,19 @@ class _ScheduleSelector extends StatelessWidget {
             width: 150,
             child: Row(
               children: [
-                Checkbox(
-                  value: schedule != null,
-                  onChanged: (_) {
-                    if (checkboxCallback != null) {
-                      checkboxCallback();
-                    }
-                  },
+                Visibility(
+                  visible: editMode,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  maintainSize: true,
+                  child: Checkbox(
+                    value: schedule != null,
+                    onChanged: (_) {
+                      if (checkboxCallback != null) {
+                        checkboxCallback();
+                      }
+                    },
+                  ),
                 ),
                 Text(day.name),
               ],
@@ -821,8 +832,9 @@ class _ScheduleSelector extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text('Bloc ${i + 1}'),
-                      const SizedBox(width: 16.0),
+                      const SizedBox(width: 32.0),
                       _ClickableTextField(
+                        enabled: editMode,
                         schedule!.blocks[i].start.format(context),
                         onTap: canChangeTime
                             ? () => _updateBlockStart(context,
@@ -834,6 +846,7 @@ class _ScheduleSelector extends StatelessWidget {
                         child: Text('à'),
                       ),
                       _ClickableTextField(
+                        enabled: editMode,
                         schedule.blocks[i].end.format(context),
                         onTap: canChangeTime
                             ? () => _updateBlockEnd(context,
@@ -842,22 +855,41 @@ class _ScheduleSelector extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 4.0),
-                        child: i == 0
-                            ? Visibility(
-                                visible: schedule.blocks.length == 1,
-                                maintainAnimation: true,
-                                maintainState: true,
-                                maintainSize: true,
-                                child: _TimeBlockIconButton(
+                        child: editMode
+                            ? (i == 0
+                                ? Visibility(
+                                    visible: schedule.blocks.length == 1,
+                                    maintainAnimation: true,
+                                    maintainState: true,
+                                    maintainSize: true,
+                                    child: _TimeBlockIconButton(
+                                        onTap: canChangeTime
+                                            ? () {
+                                                schedule.blocks.add(
+                                                    _currentDefaultDaily
+                                                                .blocks.length >
+                                                            1
+                                                        ? _currentDefaultDaily
+                                                            .blocks[1]
+                                                        : _defaultDaily
+                                                            .blocks[1]);
+                                                _currentDefaultDaily =
+                                                    schedule.duplicate();
+                                                onUpdateDailyScheduleTime(
+                                                    day, schedule);
+                                              }
+                                            : null,
+                                        icon: Icon(
+                                          Icons.add,
+                                          color: canChangeTime
+                                              ? Colors.green
+                                              : Colors.grey,
+                                        )),
+                                  )
+                                : _TimeBlockIconButton(
                                     onTap: canChangeTime
                                         ? () {
-                                            schedule.blocks.add(
-                                                _currentDefaultDaily
-                                                            .blocks.length >
-                                                        1
-                                                    ? _currentDefaultDaily
-                                                        .blocks[1]
-                                                    : _defaultDaily.blocks[1]);
+                                            schedule.blocks.removeAt(i);
                                             _currentDefaultDaily =
                                                 schedule.duplicate();
                                             onUpdateDailyScheduleTime(
@@ -865,27 +897,12 @@ class _ScheduleSelector extends StatelessWidget {
                                           }
                                         : null,
                                     icon: Icon(
-                                      Icons.add,
+                                      Icons.remove,
                                       color: canChangeTime
-                                          ? Colors.green
+                                          ? Colors.red
                                           : Colors.grey,
-                                    )),
-                              )
-                            : _TimeBlockIconButton(
-                                onTap: canChangeTime
-                                    ? () {
-                                        schedule.blocks.removeAt(i);
-                                        _currentDefaultDaily =
-                                            schedule.duplicate();
-                                        onUpdateDailyScheduleTime(
-                                            day, schedule);
-                                      }
-                                    : null,
-                                icon: Icon(
-                                  Icons.remove,
-                                  color:
-                                      canChangeTime ? Colors.red : Colors.grey,
-                                )),
+                                    )))
+                            : Container(),
                       ),
                     ],
                   ),
@@ -926,26 +943,33 @@ class _TimeBlockIconButton extends StatelessWidget {
 }
 
 class _ClickableTextField extends StatelessWidget {
-  const _ClickableTextField(this.text, {required this.onTap});
+  const _ClickableTextField(this.text,
+      {required this.onTap, required this.enabled});
 
   final String text;
+  final bool enabled;
   final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Ink(
-        width: 66,
-        height: 28,
-        decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(4.0),
-            color: onTap == null ? Colors.grey[200] : Colors.white),
-        child: Center(
-          child: Text(text),
-        ),
-      ),
-    );
+    return enabled
+        ? InkWell(
+            onTap: onTap,
+            child: Ink(
+              width: 66,
+              height: 28,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(4.0),
+                  color: onTap == null ? Colors.grey[200] : Colors.white),
+              child: Center(
+                child: Text(text),
+              ),
+            ),
+          )
+        : SizedBox(
+            width: 50,
+            child: Center(child: Text(text)),
+          );
   }
 }
