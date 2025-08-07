@@ -522,10 +522,12 @@ class _Schedule extends StatelessWidget {
                     Text(day.name),
                     Text(
                         textAlign: TextAlign.end,
-                        entry?.start.format(context) ?? 'Aucune heure'),
+                        entry?.blocks.first.start.format(context) ??
+                            'Aucune heure'),
                     Text(
                         textAlign: TextAlign.end,
-                        entry?.end.format(context) ?? 'Aucune heure'),
+                        entry?.blocks.first.end.format(context) ??
+                            'Aucune heure'),
                   ],
                 );
               }).toList(),

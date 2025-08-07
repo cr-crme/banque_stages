@@ -17,6 +17,10 @@ class TimeOfDay {
 
   @override
   int get hashCode => hour.hashCode ^ minute.hashCode;
+
+  TimeOfDay copy() {
+    return TimeOfDay(hour: hour, minute: minute);
+  }
 }
 
 class DateTimeRange {

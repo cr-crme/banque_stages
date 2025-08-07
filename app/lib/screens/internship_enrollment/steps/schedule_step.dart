@@ -1,9 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:common/models/internships/schedule.dart';
 import 'package:common/models/internships/time_utils.dart' as time_utils;
 import 'package:common/models/internships/transportation.dart';
-import 'package:common_flutter/helpers/responsive_service.dart';
-import 'package:common_flutter/widgets/checkbox_with_other.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
+import 'package:common_flutter/widgets/custom_time_picker.dart';
 import 'package:crcrme_banque_stages/common/extensions/time_of_day_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +13,7 @@ import 'package:logging/logging.dart';
 final _logger = Logger('ScheduleStep');
 
 class WeeklySchedulesController {
+  final List<bool> _useSameScheduleForAllDays = [];
   List<WeeklySchedule> weeklySchedules = [];
   time_utils.DateTimeRange? _dateRange;
   time_utils.DateTimeRange? get dateRange => _dateRange;
@@ -38,6 +39,9 @@ class WeeklySchedulesController {
     _logger.finer('Adding new weekly schedule: ${newSchedule.id}');
 
     weeklySchedules.add(newSchedule);
+    _useSameScheduleForAllDays.add(_useSameScheduleForAllDays.isEmpty
+        ? true
+        : _useSameScheduleForAllDays.last);
     _hasChanged = true;
   }
 
@@ -45,30 +49,33 @@ class WeeklySchedulesController {
     _logger.finer('Removing weekly schedule at index: $weeklyIndex');
 
     weeklySchedules.removeAt(weeklyIndex);
+    _useSameScheduleForAllDays.removeAt(weeklyIndex);
     _hasChanged = true;
   }
 
-  void updateDailyScheduleTime(
-    int weeklyIndex,
-    Day day, {
-    required DailySchedule? schedule,
-  }) {
+  void updateDailyScheduleTime(int weeklyIndex, Day day,
+      {required DailySchedule schedule}) {
     _logger.finer(
         'Updating daily schedule (weekly index: $weeklyIndex, day: $day)');
+    weeklySchedules[weeklyIndex].schedule[day] = weeklySchedules[weeklyIndex]
+            .schedule[day]
+            ?.copyWith(blocks: schedule.blocks) ??
+        schedule;
 
-    if (schedule == null) {
-      weeklySchedules[weeklyIndex].schedule.remove(day);
-    } else {
-      weeklySchedules[weeklyIndex].schedule[day] =
-          weeklySchedules[weeklyIndex].schedule[day]?.copyWith(
-                    start: schedule.start,
-                    end: schedule.end,
-                    breakStart: schedule.breakStart,
-                    breakEnd: schedule.breakEnd,
-                  ) ??
-              schedule;
+    if (_useSameScheduleForAllDays[weeklyIndex]) {
+      applySameScheduleForAllDays(weeklyIndex);
     }
+    _hasChanged = true;
+  }
 
+  void removeDailyScheduleTime(int weeklyIndex, Day day) {
+    _logger.finer(
+        'Updating daily schedule (weekly index: $weeklyIndex, day: $day)');
+    weeklySchedules[weeklyIndex].schedule.remove(day);
+
+    if (_useSameScheduleForAllDays[weeklyIndex]) {
+      applySameScheduleForAllDays(weeklyIndex);
+    }
     _hasChanged = true;
   }
 
@@ -78,23 +85,63 @@ class WeeklySchedulesController {
         'Updating date range for weekly schedule at index: $weeklyIndex');
     weeklySchedules[weeklyIndex] =
         weeklySchedules[weeklyIndex].copyWith(period: newRange);
+
+    if (_useSameScheduleForAllDays[weeklyIndex]) {
+      applySameScheduleForAllDays(weeklyIndex);
+    }
+
+    _hasChanged = true;
+  }
+
+  void switchApplyToAllDays({required bool value, required int weeklyIndex}) {
+    _useSameScheduleForAllDays[weeklyIndex] = value;
+    if (_useSameScheduleForAllDays[weeklyIndex]) {
+      applySameScheduleForAllDays(weeklyIndex);
+    }
+    _hasChanged = true;
+  }
+
+  void applySameScheduleForAllDays(int weeklyIndex) {
+    final schedules = weeklySchedules[weeklyIndex].schedule;
+    if (schedules.isEmpty) return;
+
+    // Reference day is the first day with a schedule
+    final referenceDay =
+        Day.values.firstWhereOrNull((day) => schedules[day] != null);
+    if (referenceDay == null) return;
+
+    schedules.forEach((day, schedule) {
+      if (day != referenceDay) {
+        schedules[day] = schedules[referenceDay]?.duplicate();
+      }
+    });
     _hasChanged = true;
   }
 
   void dispose() {}
 }
 
-const time_utils.TimeOfDay _defaultStart =
-    time_utils.TimeOfDay(hour: 9, minute: 0);
-const time_utils.TimeOfDay _defaultEnd =
-    time_utils.TimeOfDay(hour: 15, minute: 0);
-const time_utils.TimeOfDay _defaultBreakStart =
-    time_utils.TimeOfDay(hour: 12, minute: 0);
-const time_utils.TimeOfDay _defaultBreakEnd =
-    time_utils.TimeOfDay(hour: 13, minute: 0);
+final _defaultDaily = DailySchedule(
+  blocks: [
+    TimeBlock(
+      start: time_utils.TimeOfDay(hour: 9, minute: 0),
+      end: time_utils.TimeOfDay(hour: 12, minute: 0),
+    ),
+    TimeBlock(
+      start: time_utils.TimeOfDay(hour: 13, minute: 0),
+      end: time_utils.TimeOfDay(hour: 15, minute: 0),
+    ),
+  ],
+);
+var _currentDefaultDaily = _defaultDaily.duplicate();
 
-WeeklySchedule _fillNewScheduleList(time_utils.DateTimeRange dateRange) {
-  return WeeklySchedule(schedule: {}, period: dateRange);
+WeeklySchedule _fillNewScheduleList({
+  required Map<Day, DailySchedule?> schedule,
+  required time_utils.DateTimeRange periode,
+}) {
+  return WeeklySchedule(schedule: {
+    for (var key in schedule.keys) key: schedule[key]?.duplicate()
+  }, period: periode);
 }
 
 class ScheduleStep extends StatefulWidget {
@@ -115,8 +162,11 @@ class ScheduleStepState extends State<ScheduleStep> {
   void onScheduleChanged() {
     if (weeklyScheduleController.dateRange != null &&
         weeklyScheduleController.weeklySchedules.isEmpty) {
-      weeklyScheduleController.weeklySchedules
-          .add(_fillNewScheduleList(weeklyScheduleController.dateRange!));
+      weeklyScheduleController.weeklySchedules.add(_fillNewScheduleList(
+          schedule: weeklyScheduleController.weeklySchedules.isEmpty
+              ? {}
+              : weeklyScheduleController.weeklySchedules.last.schedule,
+          periode: weeklyScheduleController.dateRange!));
     }
     setState(() {});
   }
@@ -419,13 +469,6 @@ class ScheduleSelector extends StatefulWidget {
 }
 
 class _ScheduleSelectorState extends State<ScheduleSelector> {
-  void _updateDailySchedule(int weeklyIndex, Day day,
-      {required DailySchedule? schedule}) async {
-    widget.scheduleController
-        .updateDailyScheduleTime(weeklyIndex, day, schedule: schedule);
-    setState(() {});
-  }
-
   void _promptChangeWeek(weeklyIndex) async {
     final period =
         widget.scheduleController.weeklySchedules[weeklyIndex].period;
@@ -456,6 +499,7 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
             .asMap()
             .keys
             .map<Widget>((weeklyIndex) => _ScheduleSelector(
+                  key: ValueKey(weeklyIndex),
                   periodName:
                       widget.scheduleController.weeklySchedules.length > 1
                           ? 'Période ${weeklyIndex + 1}'
@@ -468,32 +512,41 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
                           ? () => setState(() => widget.scheduleController
                               .removedWeeklySchedule(weeklyIndex))
                           : null,
-                  onAddDailyScheduleTime: (day) => _updateDailySchedule(
-                      weeklyIndex, day,
-                      schedule: DailySchedule(
-                          start: _defaultStart,
-                          end: _defaultEnd,
-                          breakStart: _defaultBreakStart,
-                          breakEnd: _defaultBreakEnd)),
-                  onUpdateDailyScheduleTime: (day) => _updateDailySchedule(
-                      weeklyIndex, day,
-                      schedule: DailySchedule(
-                          start: _defaultStart,
-                          end: _defaultEnd,
-                          breakStart: _defaultBreakStart,
-                          breakEnd: _defaultBreakEnd)),
-                  onRemovedDailyScheduleTime: (day) =>
-                      _updateDailySchedule(weeklyIndex, day, schedule: null),
+                  onAddDailyScheduleTime: (day) => setState(() {
+                    widget.scheduleController.updateDailyScheduleTime(
+                        weeklyIndex, day,
+                        schedule: _currentDefaultDaily.duplicate());
+                  }),
+                  onUpdateDailyScheduleTime: (day, schedule) => setState(() {
+                    widget.scheduleController.updateDailyScheduleTime(
+                        weeklyIndex, day,
+                        schedule: schedule);
+                  }),
+                  onRemovedDailyScheduleTime: (day) => setState(() {
+                    widget.scheduleController
+                        .removeDailyScheduleTime(weeklyIndex, day);
+                  }),
                   promptChangeWeeks: () => _promptChangeWeek(weeklyIndex),
+                  useSameScheduleForAllDays: widget.scheduleController
+                      ._useSameScheduleForAllDays[weeklyIndex],
+                  onChangedUseSameScheduleForAllDays: (value) {
+                    widget.scheduleController.switchApplyToAllDays(
+                        value: value, weeklyIndex: weeklyIndex);
+                    setState(() {});
+                  },
                   editMode: widget.editMode,
                   leftPadding: widget.leftPadding,
                 )),
         if (widget.editMode)
           TextButton(
-            onPressed: () => setState(() => widget.scheduleController
-                .addWeeklySchedule(_fillNewScheduleList(
-                    widget.scheduleController.dateRange!))),
-            style: Theme.of(context).textButtonTheme.style!.copyWith(
+            onPressed: () => setState(() {
+              widget.scheduleController.addWeeklySchedule(_fillNewScheduleList(
+                  schedule: widget.scheduleController.weeklySchedules.isEmpty
+                      ? {}
+                      : widget.scheduleController.weeklySchedules.last.schedule,
+                  periode: widget.scheduleController.dateRange!));
+            }),
+            style: Theme.of(context).textButtonTheme.style?.copyWith(
                 backgroundColor: Theme.of(context)
                     .elevatedButtonTheme
                     .style!
@@ -507,6 +560,7 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
 
 class _ScheduleSelector extends StatelessWidget {
   const _ScheduleSelector({
+    super.key,
     required this.periodName,
     required this.periodTextSize,
     required this.weeklySchedule,
@@ -515,6 +569,8 @@ class _ScheduleSelector extends StatelessWidget {
     required this.onUpdateDailyScheduleTime,
     required this.onRemovedDailyScheduleTime,
     required this.promptChangeWeeks,
+    required this.useSameScheduleForAllDays,
+    required this.onChangedUseSameScheduleForAllDays,
     required this.editMode,
     this.leftPadding,
   });
@@ -525,70 +581,17 @@ class _ScheduleSelector extends StatelessWidget {
   final WeeklySchedule weeklySchedule;
   final Function()? onRemoveWeeklySchedule;
   final Function(Day) onAddDailyScheduleTime;
-  final Function(Day) onUpdateDailyScheduleTime;
+  final Function(Day, DailySchedule) onUpdateDailyScheduleTime;
   final Function(Day) onRemovedDailyScheduleTime;
   final Function() promptChangeWeeks;
+  final bool useSameScheduleForAllDays;
+  final Function(bool value) onChangedUseSameScheduleForAllDays;
   final bool editMode;
-
-  Widget _daySelectorFormField(BuildContext context) {
-    return FormField(
-      validator: (value) {
-        if (!editMode) return null;
-        if (weeklySchedule.schedule.isEmpty) {
-          return 'Veuillez sélectionner au moins un jour.';
-        }
-        return null;
-      },
-      builder: (state) {
-        return editMode
-            ? Padding(
-                padding: const EdgeInsets.only(left: 12.0, bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '* Sélectionner les journées de stage',
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    CheckboxWithOther<Day>(
-                      enabled: editMode,
-                      elements: [...Day.values],
-                      onOptionSelected: (values) {
-                        for (final dayName in values) {
-                          final day = Day.fromName(dayName);
-                          if (weeklySchedule.schedule[day] == null) {
-                            onAddDailyScheduleTime(day);
-                          }
-                        }
-
-                        for (final day in weeklySchedule.schedule.keys) {
-                          if (!values.contains(day.name)) {
-                            onRemovedDailyScheduleTime(day);
-                          }
-                        }
-                      },
-                      showOtherOption: false,
-                    ),
-                    if (state.hasError)
-                      Text(
-                        state.errorText ?? '',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall!
-                            .copyWith(color: Colors.red),
-                      ),
-                  ],
-                ),
-              )
-            : SizedBox.shrink();
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    int? referenceDayIndex; // Used to determine if it's the first checked day
+
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       if (periodName != null)
         Row(
@@ -610,9 +613,23 @@ class _ScheduleSelector extends StatelessWidget {
               )
           ],
         ),
+      if (periodName == null)
+        Text('* Sélectionner les journées et heures du stage',
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall!
+                .copyWith(fontWeight: FontWeight.bold))
+      else
+        Text(
+            '* Sélectionner les dates, journées et heures de la période de stage',
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall!
+                .copyWith(fontWeight: FontWeight.bold)),
       if (periodName != null)
         Padding(
           padding: EdgeInsets.only(
+              top: 8.0,
               left: 8.0,
               right: editMode ? 8.0 : 24.0,
               bottom: leftPadding ?? 12),
@@ -645,52 +662,290 @@ class _ScheduleSelector extends StatelessWidget {
             ],
           ),
         ),
-      _daySelectorFormField(context),
-      Padding(
-        padding: const EdgeInsets.only(left: 12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (editMode)
-              const Text(
-                  '* Modifier les jours et les horaires de stage (pause)'),
-            Table(
-              defaultVerticalAlignment:
-                  ResponsiveService.getScreenSize(context) == ScreenSize.small
-                      ? TableCellVerticalAlignment.top
-                      : TableCellVerticalAlignment.middle,
-              columnWidths: const {
-                0: FlexColumnWidth(1.7),
-                1: FlexColumnWidth(3),
-                2: FlexColumnWidth(3),
-                3: FlexColumnWidth(0.7),
-                4: FlexColumnWidth(0.7),
-              },
-              children: [
-                ...weeklySchedule.schedule.keys.map(
-                  (day) => TableRow(
-                    children: [
-                      Text(day.name),
-                      Text(
-                          '${weeklySchedule.schedule[day]?.start.format(context)} / '
-                          '${weeklySchedule.schedule[day]?.end.format(context)}'),
-                      Text(
-                          '(${weeklySchedule.schedule[day]?.breakStart?.format(context) ?? ''} / '
-                          '${weeklySchedule.schedule[day]?.breakEnd?.format(context) ?? ''})'),
-                      if (editMode)
-                        InkWell(
-                          onTap: () => onUpdateDailyScheduleTime(day),
-                          child: const Icon(Icons.access_time,
-                              color: Colors.black),
-                        ),
-                    ],
-                  ),
+      if (editMode)
+        Align(
+          alignment: Alignment.centerRight,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                  'Appliquer le même horaire\n' 'pour tous les jours du stage'),
+              SizedBox(width: 8.0),
+              Switch(
+                  value: useSameScheduleForAllDays,
+                  onChanged: onChangedUseSameScheduleForAllDays),
+            ],
+          ),
+        ),
+      FormField(validator: (value) {
+        if (!editMode) return null;
+        if (weeklySchedule.schedule.isEmpty) {
+          return 'Veuillez sélectionner au moins un jour.';
+        }
+        return null;
+      }, builder: (state) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, top: 8.0),
+                child: Column(
+                  children: Day.values
+                      .asMap()
+                      .keys
+                      .map(
+                        (dayIndex) => Builder(builder: (context) {
+                          final day = Day.values[dayIndex];
+
+                          bool isEnabled = true;
+                          if (useSameScheduleForAllDays &&
+                              weeklySchedule.schedule[day] != null) {
+                            if (referenceDayIndex == null) {
+                              referenceDayIndex = dayIndex;
+                            } else {
+                              isEnabled = false;
+                            }
+                          }
+
+                          return _buildDailyScheduleTile(context,
+                              day: day, canChangeTime: isEnabled);
+                        }),
+                      )
+                      .toList(),
                 ),
+              ),
+            ],
+          ),
+        );
+      }),
+    ]);
+  }
+
+  Future<time_utils.TimeOfDay?> _promptTime(BuildContext context,
+      {required time_utils.TimeOfDay? initial, String? title}) async {
+    final time = await showCustomTimePicker(
+      cancelText: 'Annuler',
+      confirmText: 'Confirmer',
+      helpText: title,
+      context: context,
+      initialTime:
+          TimeOfDay(hour: initial?.hour ?? 12, minute: initial?.minute ?? 0),
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child ?? Container(),
+      ),
+    );
+
+    if (time == null) return null;
+    return time_utils.TimeOfDay(hour: time.hour, minute: time.minute);
+  }
+
+  void _updateBlockStart(
+    BuildContext context, {
+    required DailySchedule schedule,
+    required int blockIndex,
+    required Day day,
+  }) async {
+    final time =
+        await _promptTime(context, initial: schedule.blocks[blockIndex].start);
+    if (time == null) return;
+    schedule.blocks[blockIndex] =
+        schedule.blocks[blockIndex].copyWith(start: time);
+
+    // Use this update as the reference for the next updates
+    _currentDefaultDaily = schedule.duplicate();
+    onUpdateDailyScheduleTime(day, schedule);
+  }
+
+  void _updateBlockEnd(
+    BuildContext context, {
+    required DailySchedule schedule,
+    required int blockIndex,
+    required Day day,
+  }) async {
+    final time =
+        await _promptTime(context, initial: schedule.blocks[blockIndex].end);
+    if (time == null) return;
+    schedule.blocks[blockIndex] =
+        schedule.blocks[blockIndex].copyWith(end: time);
+
+    // Use this update as the reference for the next updates
+    _currentDefaultDaily = schedule.duplicate();
+    onUpdateDailyScheduleTime(day, schedule);
+  }
+
+  Widget _buildDailyScheduleTile(BuildContext context,
+      {required Day day, required bool canChangeTime}) {
+    final schedule = weeklySchedule.schedule[day];
+    final checkboxCallback = editMode
+        ? () {
+            if (schedule == null) {
+              onAddDailyScheduleTime(day);
+            } else {
+              onRemovedDailyScheduleTime(day);
+            }
+          }
+        : null;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: checkboxCallback,
+          child: SizedBox(
+            width: 150,
+            child: Row(
+              children: [
+                Checkbox(
+                  value: schedule != null,
+                  onChanged: (_) {
+                    if (checkboxCallback != null) {
+                      checkboxCallback();
+                    }
+                  },
+                ),
+                Text(day.name),
               ],
             ),
-          ],
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 4.0, top: 8.0),
+            child: Column(
+              children: (schedule?.blocks ?? []).asMap().keys.map((i) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Bloc ${i + 1}'),
+                      const SizedBox(width: 16.0),
+                      _ClickableTextField(
+                        schedule!.blocks[i].start.format(context),
+                        onTap: canChangeTime
+                            ? () => _updateBlockStart(context,
+                                schedule: schedule, blockIndex: i, day: day)
+                            : null,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text('à'),
+                      ),
+                      _ClickableTextField(
+                        schedule.blocks[i].end.format(context),
+                        onTap: canChangeTime
+                            ? () => _updateBlockEnd(context,
+                                schedule: schedule, blockIndex: i, day: day)
+                            : null,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: i == 0
+                            ? Visibility(
+                                visible: schedule.blocks.length == 1,
+                                maintainAnimation: true,
+                                maintainState: true,
+                                maintainSize: true,
+                                child: _TimeBlockIconButton(
+                                    onTap: canChangeTime
+                                        ? () {
+                                            schedule.blocks.add(
+                                                _currentDefaultDaily
+                                                            .blocks.length >
+                                                        1
+                                                    ? _currentDefaultDaily
+                                                        .blocks[1]
+                                                    : _defaultDaily.blocks[1]);
+                                            _currentDefaultDaily =
+                                                schedule.duplicate();
+                                            onUpdateDailyScheduleTime(
+                                                day, schedule);
+                                          }
+                                        : null,
+                                    icon: Icon(
+                                      Icons.add,
+                                      color: canChangeTime
+                                          ? Colors.green
+                                          : Colors.grey,
+                                    )),
+                              )
+                            : _TimeBlockIconButton(
+                                onTap: canChangeTime
+                                    ? () {
+                                        schedule.blocks.removeAt(i);
+                                        _currentDefaultDaily =
+                                            schedule.duplicate();
+                                        onUpdateDailyScheduleTime(
+                                            day, schedule);
+                                      }
+                                    : null,
+                                icon: Icon(
+                                  Icons.remove,
+                                  color:
+                                      canChangeTime ? Colors.red : Colors.grey,
+                                )),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+        Container(),
+      ],
+    );
+  }
+}
+
+class _TimeBlockIconButton extends StatelessWidget {
+  const _TimeBlockIconButton({
+    required this.onTap,
+    required this.icon,
+  });
+
+  final Function()? onTap;
+  final Icon icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 28,
+      height: 28,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(25.0),
+        hoverColor: icon.color?.withAlpha(10),
+        splashColor: icon.color?.withAlpha(30),
+        onTap: onTap,
+        child: icon,
+      ),
+    );
+  }
+}
+
+class _ClickableTextField extends StatelessWidget {
+  const _ClickableTextField(this.text, {required this.onTap});
+
+  final String text;
+  final Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Ink(
+        width: 66,
+        height: 28,
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(4.0),
+            color: onTap == null ? Colors.grey[200] : Colors.white),
+        child: Center(
+          child: Text(text),
         ),
       ),
-    ]);
+    );
   }
 }

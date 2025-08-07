@@ -1112,21 +1112,30 @@ class InternshipsRepositoryMock extends InternshipsRepository {
       weeklySchedules: [
         WeeklySchedule(
             schedule: {
-              Day.monday: DailySchedule(
-                  start: TimeOfDay(hour: 8, minute: 0),
-                  end: TimeOfDay(hour: 16, minute: 0),
-                  breakStart: TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: TimeOfDay(hour: 13, minute: 0)),
-              Day.wednesday: DailySchedule(
-                  start: TimeOfDay(hour: 8, minute: 0),
-                  end: TimeOfDay(hour: 16, minute: 0),
-                  breakStart: TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: TimeOfDay(hour: 13, minute: 0)),
-              Day.friday: DailySchedule(
-                  start: TimeOfDay(hour: 8, minute: 0),
-                  end: TimeOfDay(hour: 12, minute: 0),
-                  breakStart: TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: TimeOfDay(hour: 13, minute: 0)),
+              Day.monday: DailySchedule(blocks: [
+                TimeBlock(
+                    start: TimeOfDay(hour: 8, minute: 0),
+                    end: TimeOfDay(hour: 12, minute: 0)),
+                TimeBlock(
+                    start: TimeOfDay(hour: 13, minute: 0),
+                    end: TimeOfDay(hour: 16, minute: 0))
+              ]),
+              Day.wednesday: DailySchedule(blocks: [
+                TimeBlock(
+                    start: TimeOfDay(hour: 8, minute: 0),
+                    end: TimeOfDay(hour: 12, minute: 0)),
+                TimeBlock(
+                    start: TimeOfDay(hour: 13, minute: 0),
+                    end: TimeOfDay(hour: 16, minute: 0))
+              ]),
+              Day.friday: DailySchedule(blocks: [
+                TimeBlock(
+                    start: TimeOfDay(hour: 8, minute: 0),
+                    end: TimeOfDay(hour: 12, minute: 0)),
+                TimeBlock(
+                    start: TimeOfDay(hour: 13, minute: 0),
+                    end: TimeOfDay(hour: 16, minute: 0))
+              ]),
             },
             period: DateTimeRange(
                 start: DateTime(1990, 1, 1), end: DateTime(1990, 1, 31)))
@@ -1163,15 +1172,23 @@ class InternshipsRepositoryMock extends InternshipsRepository {
         WeeklySchedule(
             schedule: {
               Day.tuesday: DailySchedule(
-                  start: TimeOfDay(hour: 9, minute: 0),
-                  end: TimeOfDay(hour: 17, minute: 0),
-                  breakStart: TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: TimeOfDay(hour: 13, minute: 0)),
-              Day.thursday: DailySchedule(
-                  start: TimeOfDay(hour: 9, minute: 0),
-                  end: TimeOfDay(hour: 17, minute: 0),
-                  breakStart: TimeOfDay(hour: 12, minute: 0),
-                  breakEnd: TimeOfDay(hour: 13, minute: 0)),
+                blocks: [
+                  TimeBlock(
+                      start: TimeOfDay(hour: 9, minute: 0),
+                      end: TimeOfDay(hour: 12, minute: 0)),
+                  TimeBlock(
+                      start: TimeOfDay(hour: 13, minute: 0),
+                      end: TimeOfDay(hour: 17, minute: 0))
+                ],
+              ),
+              Day.thursday: DailySchedule(blocks: [
+                TimeBlock(
+                    start: TimeOfDay(hour: 9, minute: 0),
+                    end: TimeOfDay(hour: 12, minute: 0)),
+                TimeBlock(
+                    start: TimeOfDay(hour: 13, minute: 0),
+                    end: TimeOfDay(hour: 17, minute: 0))
+              ]),
             },
             period: DateTimeRange(
                 start: DateTime(1990, 2, 1), end: DateTime(1990, 2, 28)))

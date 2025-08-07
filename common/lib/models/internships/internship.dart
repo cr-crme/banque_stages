@@ -288,17 +288,6 @@ class Internship extends ExtendedItemSerializable {
           if (dayA.index < dayB.index) return -1;
           if (dayA.index > dayB.index) return 1;
 
-          if (a.start.hour < b.start.hour) return -1;
-          if (a.start.hour > b.start.hour) return 1;
-
-          if (a.start.minute < b.start.minute) return -1;
-          if (a.start.minute > b.start.minute) return 1;
-
-          if (a.end.hour < b.end.hour) return -1;
-          if (a.end.hour > b.end.hour) return 1;
-
-          if (a.end.minute < b.end.minute) return -1;
-          if (a.end.minute > b.end.minute) return 1;
           return 0;
         });
       }

@@ -22,19 +22,27 @@ void main() {
 
       final dailyScheduleSame = dailySchedule.copyWith();
       expect(dailyScheduleSame.id, dailySchedule.id);
-      expect(
-          dailyScheduleSame.start.toString(), dailySchedule.start.toString());
-      expect(dailyScheduleSame.end.toString(), dailySchedule.end.toString());
+      expect(dailyScheduleSame.blocks.length, dailySchedule.blocks.length);
+      expect(dailyScheduleSame.blocks.first.start.toString(),
+          dailySchedule.blocks.first.start.toString());
+      expect(dailyScheduleSame.blocks.first.end.toString(),
+          dailySchedule.blocks.first.end.toString());
 
       final dailyScheduleDifferent = dailySchedule.copyWith(
         id: 'newId',
-        start: const TimeOfDay(hour: 1, minute: 2),
-        end: const TimeOfDay(hour: 3, minute: 4),
+        blocks: [
+          TimeBlock(
+            start: const TimeOfDay(hour: 1, minute: 2),
+            end: const TimeOfDay(hour: 3, minute: 4),
+          )
+        ],
       );
 
       expect(dailyScheduleDifferent.id, 'newId');
-      expect(dailyScheduleDifferent.start, const TimeOfDay(hour: 1, minute: 2));
-      expect(dailyScheduleDifferent.end, const TimeOfDay(hour: 3, minute: 4));
+      expect(dailyScheduleDifferent.blocks.first.start,
+          const TimeOfDay(hour: 1, minute: 2));
+      expect(dailyScheduleDifferent.blocks.first.end,
+          const TimeOfDay(hour: 3, minute: 4));
     });
 
     test('serialization and deserialization works', () {
@@ -49,14 +57,16 @@ void main() {
       });
 
       expect(deserialized.id, dailySchedule.id);
-      expect(deserialized.start, dailySchedule.start);
-      expect(deserialized.end, dailySchedule.end);
+      expect(deserialized.blocks.first.start, dailySchedule.blocks.first.start);
+      expect(deserialized.blocks.first.end, dailySchedule.blocks.first.end);
 
       // Test for empty deserialize to make sure it doesn't crash
       final emptyDeserialized = DailySchedule.fromSerialized({'id': 'emptyId'});
       expect(emptyDeserialized.id, 'emptyId');
-      expect(emptyDeserialized.start, const TimeOfDay(hour: 0, minute: 0));
-      expect(emptyDeserialized.end, const TimeOfDay(hour: 0, minute: 0));
+      expect(emptyDeserialized.blocks.first.start,
+          const TimeOfDay(hour: 0, minute: 0));
+      expect(emptyDeserialized.blocks.first.end,
+          const TimeOfDay(hour: 0, minute: 0));
     });
   });
 

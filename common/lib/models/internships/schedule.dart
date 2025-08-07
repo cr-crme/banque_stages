@@ -1,4 +1,6 @@
+import 'package:common/models/generic/serializable_elements.dart';
 import 'package:common/models/internships/time_utils.dart';
+import 'package:common/utils.dart';
 import 'package:enhanced_containers_foundation/enhanced_containers_foundation.dart';
 
 enum Day {
@@ -40,74 +42,73 @@ enum Day {
   String toString() => name;
 }
 
-class DailySchedule extends ItemSerializable {
-  DailySchedule({
-    super.id,
+class TimeBlock extends ItemSerializable {
+  TimeBlock({
     required this.start,
     required this.end,
-    required this.breakStart,
-    required this.breakEnd,
   });
 
   final TimeOfDay start;
   final TimeOfDay end;
-  final TimeOfDay? breakStart;
-  final TimeOfDay? breakEnd;
+
+  TimeBlock.fromSerialized(super.map)
+      : start = TimeOfDay(hour: map['start'][0], minute: map['start'][1]),
+        end = TimeOfDay(hour: map['end'][0], minute: map['end'][1]),
+        super.fromSerialized();
+
+  @override
+  Map<String, dynamic> serializedMap() => {
+        'start': [start.hour, start.minute],
+        'end': [end.hour, end.minute],
+      };
+
+  TimeBlock copyWith({
+    TimeOfDay? start,
+    TimeOfDay? end,
+  }) {
+    return TimeBlock(
+      start: (start ?? this.start).copy(),
+      end: (end ?? this.end).copy(),
+    );
+  }
+}
+
+class DailySchedule extends ItemSerializable {
+  DailySchedule({super.id, required this.blocks});
+
+  final List<TimeBlock> blocks;
 
   DailySchedule.fromSerialized(super.map)
-      : start = map['start'] == null
-            ? const TimeOfDay(hour: 0, minute: 0)
-            : TimeOfDay(hour: map['start'][0], minute: map['start'][1]),
-        end = map['end'] == null
-            ? const TimeOfDay(hour: 0, minute: 0)
-            : TimeOfDay(hour: map['end'][0], minute: map['end'][1]),
-        breakStart = map['break_start'] == null
-            ? null
-            : TimeOfDay(
-                hour: map['break_start'][0], minute: map['break_start'][1]),
-        breakEnd = map['break_end'] == null
-            ? null
-            : TimeOfDay(hour: map['break_end'][0], minute: map['break_end'][1]),
+      : blocks = ListExt.from(map,
+                deserializer: (element) => TimeBlock.fromSerialized(element)) ??
+            [],
         super.fromSerialized();
 
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'start': [start.hour, start.minute],
-        'end': [end.hour, end.minute],
-        'break_start':
-            breakStart != null ? [breakStart!.hour, breakStart!.minute] : null,
-        'break_end':
-            breakEnd != null ? [breakEnd!.hour, breakEnd!.minute] : null,
+        'blocks': blocks.map((block) => block.serialize()).toList(),
       };
 
   ///
   /// Similar to [copyWith], but enforce the change of id
   DailySchedule duplicate() => DailySchedule(
-        start: start,
-        end: end,
-        breakStart: breakStart,
-        breakEnd: breakEnd,
+        blocks: blocks.map((block) => block.copyWith()).toList(),
       );
 
   DailySchedule copyWith({
     String? id,
-    TimeOfDay? start,
-    TimeOfDay? end,
-    TimeOfDay? breakStart,
-    TimeOfDay? breakEnd,
+    List<TimeBlock>? blocks,
   }) =>
       DailySchedule(
         id: id ?? this.id,
-        start: start ?? this.start,
-        end: end ?? this.end,
-        breakStart: breakStart ?? this.breakStart,
-        breakEnd: breakEnd ?? this.breakEnd,
+        blocks:
+            (blocks ?? this.blocks).map((block) => block.copyWith()).toList(),
       );
 
   @override
   String toString() {
-    return 'DailySchedule(id: $id, start: $start, end: $end)';
+    return 'DailySchedule(id: $id, blocks: $blocks)';
   }
 }
 
@@ -182,27 +183,9 @@ class InternshipHelpers {
                       ? null
                       : DailySchedule(
                           id: keepId ? entry.id : null,
-                          start: TimeOfDay(
-                            hour: entry.start.hour,
-                            minute: entry.start.minute,
-                          ),
-                          end: TimeOfDay(
-                            hour: entry.end.hour,
-                            minute: entry.end.minute,
-                          ),
-                          breakStart: entry.breakStart == null
-                              ? null
-                              : TimeOfDay(
-                                  hour: entry.breakStart!.hour,
-                                  minute: entry.breakStart!.minute,
-                                ),
-                          breakEnd: entry.breakEnd == null
-                              ? null
-                              : TimeOfDay(
-                                  hour: entry.breakEnd!.hour,
-                                  minute: entry.breakEnd!.minute,
-                                ),
-                        ),
+                          blocks: entry.blocks
+                              .map((block) => block.copyWith())
+                              .toList()),
                 ),
               ),
             ),
@@ -239,12 +222,8 @@ class InternshipHelpers {
         final dayA = a.schedule[day]!;
         final dayB = b.schedule[day]!;
 
-        if (dayA.start.hour != dayB.start.hour ||
-            dayA.start.minute != dayB.start.minute ||
-            dayA.end.hour != dayB.end.hour ||
-            dayA.end.minute != dayB.end.minute) {
-          return false;
-        }
+        if (dayA.blocks.length != dayB.blocks.length) return false;
+        if (areListsEqual(dayA.blocks, dayB.blocks)) return false;
       }
     }
     return true;

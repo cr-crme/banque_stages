@@ -314,10 +314,16 @@ Internship dummyInternship({
 DailySchedule dummyDailySchedule({String id = 'dailyScheduleId'}) {
   return DailySchedule(
     id: id,
-    start: const TimeOfDay(hour: 9, minute: 00),
-    end: const TimeOfDay(hour: 15, minute: 00),
-    breakStart: const TimeOfDay(hour: 12, minute: 00),
-    breakEnd: const TimeOfDay(hour: 13, minute: 00),
+    blocks: [
+      TimeBlock(
+        start: const TimeOfDay(hour: 9, minute: 0),
+        end: const TimeOfDay(hour: 12, minute: 0),
+      ),
+      TimeBlock(
+        start: const TimeOfDay(hour: 13, minute: 0),
+        end: const TimeOfDay(hour: 15, minute: 0),
+      ),
+    ],
   );
 }
 

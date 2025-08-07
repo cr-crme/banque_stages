@@ -778,20 +778,19 @@ pw.Widget _schedulesCell(
                                       pw.Text(day.name, style: style),
                                       pw.SizedBox(width: 20.0),
                                       pw.Text(
-                                          '${entry?.start.hour}:${entry?.start.minute.toString().padLeft(2, '0')}',
+                                          '${entry?.blocks.first.start.hour}:${entry?.blocks.first.start.minute.toString().padLeft(2, '0')}',
                                           style: style),
                                       pw.Text(mid, style: style),
                                       pw.Text(
-                                          '${entry?.end.hour}:${entry?.end.minute.toString().padLeft(2, '0')}',
+                                          '${entry?.blocks.first.end.hour}:${entry?.blocks.first.end.minute.toString().padLeft(2, '0')}',
                                           style: style),
-                                      if (entry?.breakStart != null &&
-                                          entry?.breakEnd != null)
+                                      if ((entry?.blocks.length ?? 0) > 1)
                                         pw.Padding(
                                             padding: const pw.EdgeInsets.only(
                                                 left: 8.0),
                                             child: pw.Text(
-                                                '(${entry?.breakStart!.hour}:${entry?.breakStart!.minute.toString().padLeft(2, '0')} - '
-                                                '${entry?.breakEnd!.hour}:${entry?.breakEnd!.minute.toString().padLeft(2, '0')})',
+                                                '(${entry?.blocks[1].start.hour}:${entry?.blocks[1].start.minute.toString().padLeft(2, '0')} - '
+                                                '${entry?.blocks[1].end.hour}:${entry?.blocks[1].end.minute.toString().padLeft(2, '0')})',
                                                 style: style)),
                                       pw.SizedBox(width: double.infinity),
                                     ]);
