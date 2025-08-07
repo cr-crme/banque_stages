@@ -316,14 +316,11 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                 fieldsToFetch: [
                   'id',
                   'day',
+                  // TODO 'block_index',
                   'starting_hour',
                   'starting_minute',
                   'ending_hour',
                   'ending_minute',
-                  'break_start_hour',
-                  'break_start_minute',
-                  'break_end_hour',
-                  'break_end_minute',
                 ],
                 idNameToDataTable: 'weekly_schedule_id',
               ),
@@ -332,23 +329,18 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         for (final schedule in schedules) {
           schedule['start'] = schedule['starting_date'];
           schedule['end'] = schedule['ending_date'];
-          schedule['days'] = [
-            for (final day in (schedule['daily_schedules'] as List? ?? []))
-              {
-                'id': day['id'],
-                'day': day['day'],
-                'start': [day['starting_hour'], day['starting_minute']],
-                'end': [day['ending_hour'], day['ending_minute']],
-                'break_start': day['break_start_hour'] != null &&
-                        day['break_start_minute'] != null
-                    ? [day['break_start_hour'], day['break_start_minute']]
-                    : null,
-                'break_end': day['break_end_hour'] != null &&
-                        day['break_end_minute'] != null
-                    ? [day['break_end_hour'], day['break_end_minute']]
-                    : null,
-              }
-          ];
+          schedule['days'] = <int, List>{};
+          for (final map in (schedule['daily_schedules'] as List? ?? [])) {
+            if (schedule['days'][map['day']] == null) {
+              schedule['days'][map['day']] = [];
+            }
+            (schedule['days'][map['day']] as List).add({
+              'id': map['id'],
+              'sort_index': map['block_index'] ?? 0, // TODO remove 0
+              'start': [map['starting_hour'], map['starting_minute']],
+              'end': [map['ending_hour'], map['ending_minute']],
+            });
+          }
         }
 
         final transportations = await MySqlHelpers.performSelectQuery(

@@ -409,14 +409,11 @@ CREATE TABLE internship_daily_schedules (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     weekly_schedule_id VARCHAR(36) NOT NULL,
     day INT NOT NULL,
+    block_index INT NOT NULL,
     starting_hour INT NOT NULL,
     starting_minute INT NOT NULL,
     ending_hour INT NOT NULL,
     ending_minute INT NOT NULL,
-    break_start_hour INT,
-    break_start_minute INT,
-    break_end_hour INT,
-    break_end_minute INT,
     FOREIGN KEY (weekly_schedule_id) REFERENCES internship_weekly_schedules(id) ON DELETE CASCADE
 );
 

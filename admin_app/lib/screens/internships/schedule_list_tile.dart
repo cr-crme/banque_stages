@@ -58,10 +58,10 @@ class WeeklySchedulesController {
     } else {
       weeklySchedules[weeklyIndex].schedule[day] =
           weeklySchedules[weeklyIndex].schedule[day]?.copyWith(
-            start: schedule.start,
-            end: schedule.end,
-            breakStart: schedule.breakStart,
-            breakEnd: schedule.breakEnd,
+            firstBlockStart: schedule.firstBlockStart,
+            firstBlockEnd: schedule.firstBlockEnd,
+            secondBlockStart: schedule.secondBlockStart,
+            secondBlockEnd: schedule.secondBlockEnd,
           ) ??
           schedule;
     }
@@ -322,35 +322,38 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
       String? title,
     }) async => _promptTime(context, initial: initial, title: title);
 
-    final start = await promptTime(
+    final firstBlockStart = await promptTime(
       title: 'Heure de début',
       initial: _defaultStart,
     );
-    if (start == null || !mounted) return;
+    if (firstBlockStart == null || !mounted) return;
 
-    final end = await promptTime(title: 'Heure de fin', initial: _defaultEnd);
-    if (end == null || !mounted) return;
+    final firstBlockEnd = await promptTime(
+      title: 'Heure de fin',
+      initial: _defaultEnd,
+    );
+    if (firstBlockEnd == null || !mounted) return;
 
-    final breakStart = await promptTime(
+    final secondBlockStart = await promptTime(
       title: 'Heure de début de pause',
       initial: _defaultBreakStart,
     );
-    if (breakStart == null || !mounted) return;
+    if (secondBlockStart == null || !mounted) return;
 
-    final breakEnd = await promptTime(
+    final secondBlockEnd = await promptTime(
       title: 'Heure de fin de pause',
       initial: _defaultBreakEnd,
     );
-    if (breakEnd == null || !mounted) return;
+    if (secondBlockEnd == null || !mounted) return;
 
     widget.scheduleController.updateDailyScheduleTime(
       weeklyIndex,
       day,
       schedule: DailySchedule(
-        start: start,
-        end: end,
-        breakStart: breakStart,
-        breakEnd: breakEnd,
+        firstBlockStart: firstBlockStart,
+        firstBlockEnd: firstBlockEnd,
+        secondBlockStart: secondBlockStart,
+        secondBlockEnd: secondBlockEnd,
       ),
     );
     setState(() {});
@@ -585,12 +588,12 @@ class _ScheduleSelector extends StatelessWidget {
                       children: [
                         Text(day.name),
                         Text(
-                          '${weeklySchedule.schedule[day]?.start.format(context)} / '
-                          '${weeklySchedule.schedule[day]?.end.format(context)}',
+                          '${weeklySchedule.schedule[day]?.firstBlockStart.format(context)} / '
+                          '${weeklySchedule.schedule[day]?.firstBlockEnd.format(context)}',
                         ),
                         Text(
-                          '(${weeklySchedule.schedule[day]?.breakStart?.format(context) ?? ''} / '
-                          '${weeklySchedule.schedule[day]?.breakEnd?.format(context) ?? ''})',
+                          '(${weeklySchedule.schedule[day]?.secondBlockStart?.format(context) ?? ''} / '
+                          '${weeklySchedule.schedule[day]?.secondBlockEnd?.format(context) ?? ''})',
                         ),
                         if (editMode)
                           InkWell(

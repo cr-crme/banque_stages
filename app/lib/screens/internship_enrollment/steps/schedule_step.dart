@@ -831,8 +831,6 @@ class _ScheduleSelector extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Bloc ${i + 1}'),
-                      const SizedBox(width: 32.0),
                       _ClickableTextField(
                         enabled: editMode,
                         schedule!.blocks[i].start.format(context),
