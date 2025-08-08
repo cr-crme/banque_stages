@@ -1,4 +1,5 @@
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/phone_number.dart';
@@ -21,6 +22,7 @@ void main() {
       enterprises.add(Enterprise(
         schoolBoardId: 'Test',
         name: 'Test Enterprise',
+        status: EnterpriseStatus.active,
         activityTypes: {},
         recruiterId: 'Nobody',
         jobs: JobList()..add(dummyJob()),

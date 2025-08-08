@@ -1,4 +1,5 @@
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
@@ -223,6 +224,7 @@ Enterprise dummyEnterprise({bool addJob = false}) {
     schoolBoardId: 'schoolBoardId',
     id: 'enterpriseId',
     name: 'Not named',
+    status: EnterpriseStatus.active,
     activityTypes: {},
     recruiterId: 'Nobody',
     jobs: jobs,

@@ -1,4 +1,5 @@
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
@@ -30,7 +31,10 @@ class _ValidationPageState extends State<ValidationPage> {
     _enterpriseJobControllers.clear();
     _enterpriseJobControllers.addAll(
       [...widget.enterprise.jobs].asMap().map(
-            (_, job) => MapEntry(job.id, EnterpriseJobListController(job: job)),
+            (_, job) => MapEntry(
+                job.id,
+                EnterpriseJobListController(
+                    enterpriseStatus: EnterpriseStatus.active, job: job)),
           ),
     );
 

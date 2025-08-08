@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
@@ -53,7 +54,7 @@ class EnterpriseCard extends StatelessWidget {
                 style: TextStyle(color: Colors.grey[800]),
               ),
             ),
-            ...(jobs.isEmpty
+            ...(enterprise.status != EnterpriseStatus.active
                 ? [
                     Padding(
                       padding:
@@ -64,21 +65,33 @@ class EnterpriseCard extends StatelessWidget {
                       ),
                     )
                   ]
-                : jobs.map((job) => Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Row(children: [
-                      DisponibilityCircle(
-                          positionsOffered: job.positionsOffered[schoolId] ?? 0,
-                          positionsOccupied:
-                              job.positionsOccupied(context, listen: true)),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          job.specialization.idWithName,
-                          style: TextStyle(color: Colors.grey[800]),
-                        ),
-                      ),
-                    ])))),
+                : jobs.isEmpty
+                    ? [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 12, top: 8, bottom: 4),
+                          child: Text(
+                            'Aucun métier actif pour cette entreprise',
+                            style: TextStyle(color: Colors.grey[800]),
+                          ),
+                        )
+                      ]
+                    : jobs.map((job) => Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Row(children: [
+                          DisponibilityCircle(
+                              positionsOffered:
+                                  job.positionsOffered[schoolId] ?? 0,
+                              positionsOccupied:
+                                  job.positionsOccupied(context, listen: true)),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              job.specialization.idWithName,
+                              style: TextStyle(color: Colors.grey[800]),
+                            ),
+                          ),
+                        ])))),
           ],
         ),
         trailing: Visibility(

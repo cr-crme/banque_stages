@@ -1,6 +1,7 @@
 import 'package:admin_app/screens/enterprises/confirm_delete_enterprise_dialog.dart';
 import 'package:admin_app/widgets/teacher_picker_tile.dart';
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/phone_number.dart';
@@ -18,6 +19,7 @@ import 'package:common_flutter/widgets/enterprise_activity_type_list_tile.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:common_flutter/widgets/entity_picker_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
+import 'package:common_flutter/widgets/radio_with_follow_up.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:common_flutter/widgets/web_site_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +82,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   late final _nameController = TextEditingController(
     text: widget.enterprise.name,
   );
+  late EnterpriseStatus _enterpriseStatus = widget.enterprise.status;
   late final _activityTypeController = EnterpriseActivityTypeListController(
     initial: widget.enterprise.activityTypes,
   );
@@ -88,8 +91,10 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       (job) => MapEntry(
         job.id,
         EnterpriseJobListController(
+          enterpriseStatus: _enterpriseStatus,
           job: job,
           reservedForPickerController: EntityPickerController(
+            allElementsTitle: 'Tous les enseignant\u00b7e\u00b7s',
             schools: [],
             teachers: [...TeachersProvider.of(context, listen: false)],
             initialId: job.reservedForId,
@@ -139,6 +144,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
 
   Enterprise get editedEnterprise => widget.enterprise.copyWith(
     name: _nameController.text,
+    status: _enterpriseStatus,
     activityTypes: _activityTypeController.activityTypes,
     recruiterId: _teacherPickerController.teacher?.id ?? '',
     phone: PhoneNumber.fromString(
@@ -282,6 +288,8 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
           children: [
             _buildName(),
             const SizedBox(height: 8),
+            _buildEnterpriseStatus(),
+            const SizedBox(height: 8),
             _buildJobs(),
             const SizedBox(height: 8),
             _buildRecruiter(),
@@ -331,6 +339,24 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
         : Container();
   }
 
+  Widget _buildEnterpriseStatus() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: RadioWithFollowUp(
+        elements: EnterpriseStatus.values,
+        initialValue: _enterpriseStatus,
+        enabled: _isEditing,
+        onChanged:
+            (value) => setState(() {
+              if (value != null) _enterpriseStatus = value;
+              _jobControllers.forEach((_, controller) {
+                controller.enterpriseStatus = _enterpriseStatus;
+              });
+            }),
+      ),
+    );
+  }
+
   Widget _buildActivityTypes() {
     return EnterpriseActivityTypeListTile(
       controller: _activityTypeController,
@@ -343,8 +369,10 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     setState(
       () =>
           _jobControllers[job.id] = EnterpriseJobListController(
+            enterpriseStatus: _enterpriseStatus,
             job: job,
             reservedForPickerController: EntityPickerController(
+              allElementsTitle: 'Tous les enseignant\u00b7e\u00b7s',
               schools: _currentSchoolBoard?.schools ?? [],
               teachers: [...TeachersProvider.of(context, listen: false)],
               initialId: job.reservedForId,

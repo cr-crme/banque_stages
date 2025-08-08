@@ -1,4 +1,5 @@
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_comment.dart';
 import 'package:common/models/persons/teacher.dart';
@@ -374,6 +375,7 @@ class JobsPageState extends State<JobsPage> {
 
 enum _AvailablePlaceType {
   isClosed,
+  isBanned,
   isNewForThatSchool,
   isReserved,
   isFull,
@@ -383,9 +385,12 @@ enum _AvailablePlaceType {
       {required Enterprise enterprise,
       required Job job,
       required List<Job> availableJobs}) {
-    final hasJob = enterprise.jobs
-        .any((job) => job.positionsOffered.values.any((e) => e > 0));
-    if (!hasJob) return _AvailablePlaceType.isClosed;
+    if (enterprise.status == EnterpriseStatus.noLongerAcceptingInternships) {
+      return _AvailablePlaceType.isClosed;
+    } else if (enterprise.status ==
+        EnterpriseStatus.bannedFromAcceptingInternships) {
+      return _AvailablePlaceType.isBanned;
+    }
 
     final isUnavailable =
         availableJobs.every((availableJob) => availableJob.id != job.id);
@@ -406,6 +411,7 @@ enum _AvailablePlaceType {
   bool get isEnabled {
     switch (this) {
       case _AvailablePlaceType.isClosed:
+      case _AvailablePlaceType.isBanned:
       case _AvailablePlaceType.isReserved:
         return false;
       case _AvailablePlaceType.isNewForThatSchool:
@@ -418,7 +424,9 @@ enum _AvailablePlaceType {
   String get message {
     switch (this) {
       case _AvailablePlaceType.isClosed:
-        return 'Cette entreprise ne prend pas de stagiaires.';
+        return 'Cette entreprise n’accepte plus d’élèves en stage.';
+      case _AvailablePlaceType.isBanned:
+        return 'Cette entreprise n’est plus autorisée à accueillir de stagiaires.';
       case _AvailablePlaceType.isReserved:
         return 'Stage réservé à un\u00b7e enseignant\u00b7e\n'
             'Aucun autre stagiaire ne sera accepté';

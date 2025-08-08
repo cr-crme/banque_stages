@@ -1,4 +1,5 @@
 import 'package:common/exceptions.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/generic/extended_item_serializable.dart';
@@ -15,6 +16,7 @@ class Enterprise extends ExtendedItemSerializable {
   final String schoolBoardId;
 
   final String name;
+  final EnterpriseStatus status;
   final Set<ActivityTypes> activityTypes;
   List<int> get activityTypesSerialized =>
       activityTypes.map((e) => e._toInt(_currentVersion)).toList();
@@ -34,26 +36,28 @@ class Enterprise extends ExtendedItemSerializable {
   final Address? headquartersAddress;
   final String? neq;
 
-  Enterprise(
-      {super.id,
-      required this.schoolBoardId,
-      required this.name,
-      required this.activityTypes,
-      required this.recruiterId,
-      required JobList jobs,
-      required this.contact,
-      this.contactFunction = '',
-      this.address,
-      this.phone,
-      this.fax,
-      this.website = '',
-      this.headquartersAddress,
-      this.neq = ''})
-      : _jobs = jobs;
+  Enterprise({
+    super.id,
+    required this.schoolBoardId,
+    required this.name,
+    required this.status,
+    required this.activityTypes,
+    required this.recruiterId,
+    required JobList jobs,
+    required this.contact,
+    this.contactFunction = '',
+    this.address,
+    this.phone,
+    this.fax,
+    this.website = '',
+    this.headquartersAddress,
+    this.neq = '',
+  }) : _jobs = jobs;
 
   static Enterprise get empty => Enterprise(
         schoolBoardId: '-1',
         name: '',
+        status: EnterpriseStatus.active,
         activityTypes: {},
         recruiterId: '-1',
         jobs: JobList(),
@@ -64,6 +68,7 @@ class Enterprise extends ExtendedItemSerializable {
     String? id,
     String? schoolBoardId,
     String? name,
+    EnterpriseStatus? status,
     Set<ActivityTypes>? activityTypes,
     String? recruiterId,
     JobList? jobs,
@@ -80,6 +85,7 @@ class Enterprise extends ExtendedItemSerializable {
       id: id ?? this.id,
       schoolBoardId: schoolBoardId ?? this.schoolBoardId,
       name: name ?? this.name,
+      status: status ?? this.status,
       activityTypes: activityTypes ?? this.activityTypes,
       recruiterId: recruiterId ?? this.recruiterId,
       jobs: jobs ?? _jobs,
@@ -101,6 +107,7 @@ class Enterprise extends ExtendedItemSerializable {
       'school_board_id',
       'version',
       'name',
+      'status',
       'activity_types',
       'recruiter_id',
       'jobs',
@@ -129,6 +136,9 @@ class Enterprise extends ExtendedItemSerializable {
       id: StringExt.from(data['id']) ?? id,
       schoolBoardId: data['school_board_id'] ?? schoolBoardId,
       name: data['name'] ?? name,
+      status: data['status'] == null
+          ? status
+          : EnterpriseStatus.values[data['status'] as int],
       activityTypes: data['activity_types'] == null
           ? activityTypes
           : (data['activity_types'] as List)
@@ -154,6 +164,7 @@ class Enterprise extends ExtendedItemSerializable {
     return {
       'school_board_id': schoolBoardId.serialize(),
       'name': name.serialize(),
+      'status': status.serialize(),
       'version': _currentVersion.serialize(),
       'activity_types': activityTypesSerialized,
       'recruiter_id': recruiterId.serialize(),
@@ -173,6 +184,8 @@ class Enterprise extends ExtendedItemSerializable {
   Enterprise.fromSerialized(super.map)
       : schoolBoardId = StringExt.from(map['school_board_id']) ?? '-1',
         name = StringExt.from(map['name']) ?? 'Unnamed enterprise',
+        status =
+            EnterpriseStatus.from(map['status']) ?? EnterpriseStatus.active,
         activityTypes = (map['activity_types'] as List? ?? [])
             .map((e) => ActivityTypes._fromInt(e, map['version']))
             .toSet(),

@@ -4,9 +4,12 @@ import 'package:common/utils.dart';
 import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:flutter/material.dart';
 
+// TODO Finalize putting "All teachers" (i.e. should return an id of null)
+
 class EntityPickerController {
   TextEditingController? _textController;
 
+  final String allElementsTitle;
   final Map<String, String> _allElements = {};
 
   String? _selection;
@@ -20,6 +23,7 @@ class EntityPickerController {
   }
 
   EntityPickerController({
+    required this.allElementsTitle,
     required String? initialId,
     required List<School> schools,
     required List<Teacher> teachers,
@@ -28,7 +32,7 @@ class EntityPickerController {
     _allElements.addAll(
       teachers.asMap().map((k, v) => MapEntry(v.id, v.fullName)),
     );
-    _selection = _allElements[initialId];
+    _selection = _allElements[initialId] ?? allElementsTitle;
   }
 
   final _formKey = GlobalKey<FormFieldState<String>>();
@@ -71,7 +75,10 @@ class EntityPickerTile extends StatelessWidget {
         // We show everything if there is no text. Otherwise, we show only if
         // the names containing that approach the text.
         if (textEditingValue.text.isEmpty) {
-          return controller._allElements.values;
+          return [
+            controller.allElementsTitle,
+            ...controller._allElements.values,
+          ];
         }
         return controller._allElements.values.where(
           (e) =>
@@ -99,15 +106,18 @@ class EntityPickerTile extends StatelessWidget {
             labelText: title ?? 'Sélectionner dans la liste',
             labelStyle: const TextStyle(color: Colors.black),
             errorText: state.errorText,
-            suffixIcon: IconButton(
-              onPressed: () {
-                if (focusNode.hasFocus) focusNode.previousFocus();
-                controller.selection = null;
-                textController.clear();
-                state.didChange(null);
-              },
-              icon: const Icon(Icons.clear),
-            ),
+            suffixIcon:
+                editMode
+                    ? IconButton(
+                      onPressed: () {
+                        if (focusNode.hasFocus) focusNode.previousFocus();
+                        controller.selection = null;
+                        textController.clear();
+                        state.didChange(null);
+                      },
+                      icon: const Icon(Icons.clear),
+                    )
+                    : null,
           ),
         );
       },

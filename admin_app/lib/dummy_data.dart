@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/access_level.dart';
@@ -735,6 +736,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'Metro Gagnon',
+      status: EnterpriseStatus.active,
       activityTypes: {
         ActivityTypes.boucherie,
         ActivityTypes.commerce,
@@ -790,6 +792,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'Jean Coutu',
+      status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
       recruiterId: myTeacherId,
       jobs: jobs,
@@ -864,6 +867,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'Auto Care',
+      status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.garage},
       recruiterId: myPartnerTeacherId,
       jobs: jobs,
@@ -914,6 +918,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'Auto Repair',
+      status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.garage, ActivityTypes.mecanique},
       recruiterId: 'dummy_teacher_id_1',
       jobs: jobs,
@@ -967,6 +972,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'Boucherie Marien',
+      status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.boucherie, ActivityTypes.commerce},
       recruiterId: myPartnerTeacherId,
       jobs: jobs,
@@ -1019,6 +1025,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'IGA',
+      status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.epicerie, ActivityTypes.supermarche},
       recruiterId: myPartnerTeacherId,
       jobs: jobs,
@@ -1071,6 +1078,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'Pharmaprix',
+      status: EnterpriseStatus.noLongerAcceptingInternships,
       activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
       recruiterId: 'dummy_teacher_id_2',
       jobs: jobs,
@@ -1123,6 +1131,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'Subway',
+      status: EnterpriseStatus.active,
       activityTypes: {
         ActivityTypes.restaurationRapide,
         ActivityTypes.sandwicherie,
@@ -1172,6 +1181,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'Walmart',
+      status: EnterpriseStatus.bannedFromAcceptingInternships,
       activityTypes: {
         ActivityTypes.commerce,
         ActivityTypes.magasin,
@@ -1242,6 +1252,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'Le jardin de Joanie',
+      status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.commerce, ActivityTypes.fleuriste},
       recruiterId: myPartnerTeacherId,
       jobs: jobs,
@@ -1307,6 +1318,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: mySchoolBoardId,
       name: 'Fleuriste Joli',
+      status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.fleuriste, ActivityTypes.magasin},
       recruiterId: myPartnerTeacherId,
       jobs: jobs,
@@ -1378,6 +1390,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: 'dummy_school_board_id_2',
       name: 'Fleuriste Pasjoli',
+      status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.fleuriste, ActivityTypes.magasin},
       recruiterId: myPartnerTeacherId,
       jobs: jobs,

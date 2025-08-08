@@ -221,6 +221,7 @@ CREATE TABLE enterprises (
     version VARCHAR(36) NOT NULL,
     school_board_id VARCHAR(36) NOT NULL,
     name VARCHAR(50) NOT NULL,
+    status INT NOT NULL,
     recruiter_id VARCHAR(36), 
     contact_function VARCHAR(255) NOT NULL,
     website VARCHAR(255),

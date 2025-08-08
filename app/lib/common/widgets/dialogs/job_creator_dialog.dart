@@ -29,6 +29,7 @@ class _JobCreatorDialogState extends State<JobCreatorDialog> {
   }
 
   late final controller = EnterpriseJobListController(
+    enterpriseStatus: widget.enterprise.status,
     job: Job.empty,
     specializationBlackList:
         widget.enterprise.jobs.map((e) => e.specialization).toList(),

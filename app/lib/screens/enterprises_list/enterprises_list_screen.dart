@@ -1,4 +1,5 @@
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common/models/generic/address.dart';
 import 'package:common/models/itineraries/waypoint.dart';
@@ -325,6 +326,7 @@ class _EnterprisesByMap extends StatelessWidget {
 
     final schoolAsEnterprise = Enterprise(
       schoolBoardId: schoolBoard.id,
+      status: EnterpriseStatus.active,
       name: school.name,
       activityTypes: {},
       recruiterId: '',

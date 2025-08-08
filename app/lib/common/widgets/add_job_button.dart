@@ -1,3 +1,4 @@
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common_flutter/widgets/enterprise_job_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,8 @@ class AddJobButton extends StatelessWidget {
     return TextButton.icon(
         key: key,
         onPressed: () {
-          controllers.add(EnterpriseJobListController(job: Job.empty));
+          controllers.add(EnterpriseJobListController(
+              enterpriseStatus: EnterpriseStatus.active, job: Job.empty));
           if (onJobAdded != null) {
             onJobAdded!();
           }

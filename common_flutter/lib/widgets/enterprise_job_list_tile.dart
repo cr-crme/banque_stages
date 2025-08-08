@@ -1,3 +1,4 @@
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/school_boards/school.dart';
 import 'package:common/services/job_data_file_service.dart';
@@ -12,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class EnterpriseJobListController {
+  EnterpriseStatus enterpriseStatus;
+
   late Specialization? _specialization = _job.specializationOrNull;
   Specialization? get specialization => _specialization;
 
@@ -24,7 +27,13 @@ class EnterpriseJobListController {
   late Map<String, int> _positionsOffered = _job.positionsOffered.map(
     (key, value) => MapEntry(key, value),
   );
+  Map<String, int> get positionsOffered =>
+      enterpriseStatus == EnterpriseStatus.active
+          ? _positionsOffered
+          : _positionsOffered.map((key, value) => MapEntry(key, 0));
   final Map<String, int> _positionsOccupied = {};
+  Map<String, int> get positionsOccupied =>
+      enterpriseStatus == EnterpriseStatus.active ? _positionsOccupied : {};
 
   var _preInternshipRequests = PreInternshipRequests.empty;
   late var _uniformStatus = _job.uniforms.status;
@@ -38,6 +47,7 @@ class EnterpriseJobListController {
 
   final Job _job;
   EnterpriseJobListController({
+    required this.enterpriseStatus,
     required Job job,
     List<Specialization>? specializationWhiteList,
     List<Specialization>? specializationBlackList,
@@ -50,7 +60,7 @@ class EnterpriseJobListController {
   Job get job => _job.copyWith(
     specialization: _specialization,
     minimumAge: int.tryParse(_minimumAgeController.text),
-    positionsOffered: _positionsOffered,
+    positionsOffered: positionsOffered,
     preInternshipRequests: _preInternshipRequests,
     uniforms: _job.uniforms.copyWith(
       status: _uniformStatus,
@@ -327,11 +337,11 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   }
 
   int _positionOffered(String schoolId) {
-    return widget.controller._positionsOffered[schoolId] ?? 0;
+    return widget.controller.positionsOffered[schoolId] ?? 0;
   }
 
   int _positionOccupied(String schoolId) {
-    return widget.controller._positionsOccupied[schoolId] ?? 0;
+    return widget.controller.positionsOccupied[schoolId] ?? 0;
   }
 
   int _positionRemaining(String schoolId) =>
@@ -383,11 +393,21 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                           ),
                           IconButton(
                             onPressed:
-                                () => _updatePositions(
-                                  school.id,
-                                  _positionOffered(school.id) + 1,
-                                ),
-                            icon: const Icon(Icons.add, color: Colors.black),
+                                widget.controller.enterpriseStatus ==
+                                        EnterpriseStatus.active
+                                    ? () => _updatePositions(
+                                      school.id,
+                                      _positionOffered(school.id) + 1,
+                                    )
+                                    : null,
+                            icon: Icon(
+                              Icons.add,
+                              color:
+                                  widget.controller.enterpriseStatus ==
+                                          EnterpriseStatus.active
+                                      ? Colors.black
+                                      : Colors.grey,
+                            ),
                           ),
                         ],
                       ),

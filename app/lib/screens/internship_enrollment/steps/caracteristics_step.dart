@@ -1,4 +1,5 @@
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/services/job_data_file_service.dart';
@@ -50,6 +51,7 @@ class CaracteristicsStepState extends State<CaracteristicsStep> {
   Student? get student => studentController.student;
 
   late final primaryJobController = EnterpriseJobListController(
+    enterpriseStatus: EnterpriseStatus.active,
     job: widget.enterprise.availablejobs(context).length == 1
         ? widget.enterprise.availablejobs(context).first
         : Job.empty,

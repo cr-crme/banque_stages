@@ -5,6 +5,7 @@ import 'package:backend/utils/database_user.dart';
 import 'package:backend/utils/exceptions.dart';
 import 'package:common/communication_protocol.dart';
 import 'package:common/models/enterprises/enterprise.dart';
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_comment.dart';
 import 'package:common/models/enterprises/job_list.dart';
@@ -460,6 +461,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         'school_board_id': enterprise.schoolBoardId.serialize(),
         'version': Enterprise.currentVersion.serialize(),
         'name': enterprise.name.serialize(),
+        'status': enterprise.status.serialize(),
         'recruiter_id': enterprise.recruiterId.isEmpty
             ? null
             : enterprise.recruiterId.serialize(),
@@ -488,6 +490,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     final toUpdate = <String, dynamic>{};
     if (differences.contains('name')) {
       toUpdate['name'] = enterprise.name.serialize();
+    }
+    if (differences.contains('status')) {
+      toUpdate['status'] = enterprise.status.serialize();
     }
     if (differences.contains('recruiter_id')) {
       toUpdate['recruiter_id'] = enterprise.recruiterId.isEmpty
@@ -1268,6 +1273,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       id: '0',
       schoolBoardId: '0',
       name: 'My First Enterprise',
+      status: EnterpriseStatus.active,
       jobs: JobList(),
       activityTypes: {ActivityTypes.magasin, ActivityTypes.entreposage},
       recruiterId: 'Recruiter 1',
@@ -1280,6 +1286,7 @@ class EnterprisesRepositoryMock extends EnterprisesRepository {
       id: '1',
       schoolBoardId: '0',
       name: 'My Second Enterprise',
+      status: EnterpriseStatus.active,
       jobs: JobList(),
       activityTypes: {
         ActivityTypes.magasin,

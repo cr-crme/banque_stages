@@ -1,3 +1,4 @@
+import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job.dart';
 import 'package:common/models/enterprises/job_list.dart';
 import 'package:common_flutter/providers/school_boards_provider.dart';
@@ -18,7 +19,8 @@ class JobsPage extends StatefulWidget {
 class JobsPageState extends State<JobsPage> {
   final _formKey = GlobalKey<FormState>();
   final _jobsControllers = <EnterpriseJobListController>[
-    EnterpriseJobListController(job: Job.empty)
+    EnterpriseJobListController(
+        enterpriseStatus: EnterpriseStatus.active, job: Job.empty)
   ];
 
   bool validate() {
