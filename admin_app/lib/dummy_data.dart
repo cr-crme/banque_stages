@@ -1470,49 +1470,64 @@ Future<void> _addDummyInternships(
         WeeklySchedule(
           schedule: {
             Day.monday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.tuesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.wednesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.thursday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.friday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
           },
           period: period,
@@ -1563,49 +1578,64 @@ Future<void> _addDummyInternships(
         WeeklySchedule(
           schedule: {
             Day.monday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.tuesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.wednesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.thursday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.friday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
           },
           period: period,
@@ -1647,28 +1677,52 @@ Future<void> _addDummyInternships(
       WeeklySchedule(
         schedule: {
           Day.monday: DailySchedule(
-            firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-            firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-            secondBlockStart: const time_utils.TimeOfDay(hour: 13, minute: 00),
-            secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            blocks: [
+              TimeBlock(
+                start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+              ),
+              TimeBlock(
+                start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              ),
+            ],
           ),
           Day.tuesday: DailySchedule(
-            firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-            firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-            secondBlockStart: const time_utils.TimeOfDay(hour: 13, minute: 00),
-            secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            blocks: [
+              TimeBlock(
+                start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+              ),
+              TimeBlock(
+                start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              ),
+            ],
           ),
           Day.wednesday: DailySchedule(
-            firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-            firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-            secondBlockStart: const time_utils.TimeOfDay(hour: 13, minute: 00),
-            secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            blocks: [
+              TimeBlock(
+                start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+              ),
+              TimeBlock(
+                start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              ),
+            ],
           ),
           Day.thursday: DailySchedule(
-            firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-            firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-            secondBlockStart: const time_utils.TimeOfDay(hour: 13, minute: 00),
-            secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+            blocks: [
+              TimeBlock(
+                start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+              ),
+              TimeBlock(
+                start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              ),
+            ],
           ),
         },
         period: period,
@@ -1729,31 +1783,40 @@ Future<void> _addDummyInternships(
         WeeklySchedule(
           schedule: {
             Day.monday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.tuesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.wednesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
           },
           period: period,
@@ -1797,31 +1860,40 @@ Future<void> _addDummyInternships(
         WeeklySchedule(
           schedule: {
             Day.monday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.wednesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.friday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
           },
           period: period,
@@ -1866,49 +1938,64 @@ Future<void> _addDummyInternships(
         WeeklySchedule(
           schedule: {
             Day.monday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.tuesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.wednesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.thursday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.friday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
           },
           period: period,
@@ -1952,49 +2039,64 @@ Future<void> _addDummyInternships(
         WeeklySchedule(
           schedule: {
             Day.monday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.tuesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.wednesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.thursday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.friday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
           },
           period: period,
@@ -2038,22 +2140,28 @@ Future<void> _addDummyInternships(
         WeeklySchedule(
           schedule: {
             Day.monday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.tuesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
           },
           period: period,
@@ -2097,22 +2205,28 @@ Future<void> _addDummyInternships(
         WeeklySchedule(
           schedule: {
             Day.monday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
             Day.tuesday: DailySchedule(
-              firstBlockStart: const time_utils.TimeOfDay(hour: 9, minute: 00),
-              firstBlockEnd: const time_utils.TimeOfDay(hour: 12, minute: 00),
-              secondBlockStart: const time_utils.TimeOfDay(
-                hour: 13,
-                minute: 00,
-              ),
-              secondBlockEnd: const time_utils.TimeOfDay(hour: 15, minute: 00),
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
             ),
           },
           period: period,

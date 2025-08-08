@@ -19,6 +19,7 @@ import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
+import 'package:common_flutter/widgets/schedule_selector.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:common_flutter/widgets/student_picker_tile.dart';
 import 'package:flutter/material.dart';

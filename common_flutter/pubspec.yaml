@@ -25,6 +25,7 @@ dependencies:
   latlong2: ^0.9.1
   url_launcher: ^6.1.10
   logging: ^1.0.3
+  collection: ^1.16.0
 
 dependency_overrides:
   enhanced_containers_foundation:

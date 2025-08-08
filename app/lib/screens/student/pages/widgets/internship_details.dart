@@ -9,11 +9,11 @@ import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:common_flutter/widgets/email_list_tile.dart';
 import 'package:common_flutter/widgets/phone_list_tile.dart';
+import 'package:common_flutter/widgets/schedule_selector.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:common_flutter/widgets/sticky_head_expansion_panel_list.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/itemized_text.dart';
-import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
@@ -473,7 +473,6 @@ class _InternshipBody extends StatelessWidget {
         children: [
           const Text('Horaire du stage', style: _titleStyle),
           ScheduleSelector(
-            withTitle: false,
             editMode: editMode,
             scheduleController: internshipController.weeklyScheduleController,
             leftPadding: 0,
