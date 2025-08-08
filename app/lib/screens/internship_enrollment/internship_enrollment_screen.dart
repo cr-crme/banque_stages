@@ -185,7 +185,8 @@ class _InternshipEnrollmentScreenState
           .id,
       extraSpecializationIds: _caracteristicsKey
           .currentState!.extraJobControllers
-          .map<String>((e) => e.job.specialization.id)
+          .map<String>((e) => e.job.specializationOrNull?.id ?? '')
+          .where((e) => e.isNotEmpty)
           .toList(),
       supervisor: Person(
           firstName: _caracteristicsKey.currentState!.supervisorFirstName ?? '',
@@ -278,6 +279,8 @@ class _InternshipEnrollmentScreenState
                 title: const Text('Validation des\ninformations'),
                 content: ValidationStep(
                   internship: _newInternship,
+                  weeklySchedulesController:
+                      _scheduleKey.currentState?.weeklyScheduleController,
                 ),
               ),
             ],

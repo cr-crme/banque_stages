@@ -158,7 +158,13 @@ class WeeklySchedulesController {
     );
   }
 
-  void dispose() {}
+  void dispose() {
+    _logger.finer('Disposing WeeklySchedulesController');
+    weeklySchedules.clear();
+    _useSameScheduleForAllDays.clear();
+    _dateRange = null;
+    _hasChanged = false;
+  }
 }
 
 class ScheduleSelector extends StatefulWidget {
@@ -189,15 +195,15 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
       children: [
         if (widget.title != null) widget.title!,
         ...widget.scheduleController.weeklySchedules.asMap().keys.map<Widget>(
-          (weeklyIndex) => _ScheduleSelector(
+          (weekIndex) => _ScheduleSelector(
             key: ValueKey(
-              widget.scheduleController.weeklySchedules[weeklyIndex].hashCode,
+              widget.scheduleController.weeklySchedules[weekIndex].hashCode,
             ),
             controller: widget.scheduleController,
-            weekIndex: weeklyIndex,
+            weekIndex: weekIndex,
             periodName:
                 widget.scheduleController.weeklySchedules.length > 1
-                    ? 'Période ${weeklyIndex + 1}'
+                    ? 'Période ${weekIndex + 1}'
                     : null,
             periodTextSize: widget.periodTextSize,
             onShouldRefresh: () => setState(() {}),
@@ -410,6 +416,15 @@ class _ScheduleSelector extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 16.0, top: 8.0),
                     child: Column(
                       children: [
+                        if (controller
+                            .weeklySchedules[weekIndex]
+                            .schedule
+                            .values
+                            .every((e) => e == null))
+                          Text(
+                            'Aucun horaire sélectionné pour cette période.',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
                         ...Day.values.asMap().keys.map(
                           (dayIndex) => Builder(
                             builder: (context) {

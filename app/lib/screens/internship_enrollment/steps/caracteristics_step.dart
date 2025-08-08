@@ -63,10 +63,18 @@ class CaracteristicsStepState extends State<CaracteristicsStep> {
   );
   final extraJobControllers = <EnterpriseJobListController>[];
 
-  String? supervisorFirstName;
-  String? supervisorLastName;
-  String? supervisorPhone;
-  String? supervisorEmail;
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+  String? get supervisorFirstName =>
+      _firstNameController.text.isEmpty ? null : _firstNameController.text;
+  String? get supervisorLastName =>
+      _lastNameController.text.isEmpty ? null : _lastNameController.text;
+  String? get supervisorPhone =>
+      _phoneController.text.isEmpty ? null : _phoneController.text;
+  String? get supervisorEmail =>
+      _emailController.text.isEmpty ? null : _emailController.text;
 
   @override
   Widget build(BuildContext context) {
@@ -90,10 +98,10 @@ class CaracteristicsStepState extends State<CaracteristicsStep> {
                   controllers: extraJobControllers, setState: setState),
             _SupervisonInformation(
               enterprise: widget.enterprise,
-              onSavedFirstName: (name) => supervisorFirstName = name!,
-              onSavedLastName: (name) => supervisorLastName = name!,
-              onSavedPhone: (phone) => supervisorPhone = phone!,
-              onSavedEmail: (email) => supervisorEmail = email!,
+              firstNameController: _firstNameController,
+              lastNameController: _lastNameController,
+              phoneController: _phoneController,
+              emailController: _emailController,
             ),
           ],
         ),
@@ -263,17 +271,17 @@ class _ExtraSpecialization extends StatelessWidget {
 class _SupervisonInformation extends StatefulWidget {
   const _SupervisonInformation({
     required this.enterprise,
-    required this.onSavedFirstName,
-    required this.onSavedLastName,
-    required this.onSavedPhone,
-    required this.onSavedEmail,
+    required this.firstNameController,
+    required this.lastNameController,
+    required this.phoneController,
+    required this.emailController,
   });
 
   final Enterprise? enterprise;
-  final Function(String?) onSavedFirstName;
-  final Function(String?) onSavedLastName;
-  final Function(String?) onSavedPhone;
-  final Function(String?) onSavedEmail;
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
+  final TextEditingController phoneController;
+  final TextEditingController emailController;
 
   @override
   State<_SupervisonInformation> createState() => _SupervisonInformationState();
@@ -288,23 +296,21 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
     _toggleUseContactInfo();
   }
 
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _emailController = TextEditingController();
-
   void _toggleUseContactInfo() {
     _useContactInfo = !_useContactInfo;
     if (_useContactInfo) {
-      _firstNameController.text = widget.enterprise?.contact.firstName ?? '';
-      _lastNameController.text = widget.enterprise?.contact.lastName ?? '';
-      _phoneController.text = widget.enterprise?.contact.phone.toString() ?? '';
-      _emailController.text = widget.enterprise?.contact.email ?? '';
+      widget.firstNameController.text =
+          widget.enterprise?.contact.firstName ?? '';
+      widget.lastNameController.text =
+          widget.enterprise?.contact.lastName ?? '';
+      widget.phoneController.text =
+          widget.enterprise?.contact.phone.toString() ?? '';
+      widget.emailController.text = widget.enterprise?.contact.email ?? '';
     } else {
-      _firstNameController.text = '';
-      _lastNameController.text = '';
-      _phoneController.text = '';
-      _emailController.text = '';
+      widget.firstNameController.text = '';
+      widget.lastNameController.text = '';
+      widget.phoneController.text = '';
+      widget.emailController.text = '';
     }
     setState(() {});
   }
@@ -341,33 +347,29 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                controller: _firstNameController,
+                controller: widget.firstNameController,
                 decoration: const InputDecoration(labelText: '* Prénom'),
                 validator: (text) =>
                     text!.isEmpty ? 'Ajouter un prénom.' : null,
-                onSaved: widget.onSavedFirstName,
                 enabled: !_useContactInfo,
               ),
               TextFormField(
-                controller: _lastNameController,
+                controller: widget.lastNameController,
                 decoration:
                     const InputDecoration(labelText: '* Nom de famille'),
                 validator: (text) =>
                     text!.isEmpty ? 'Ajouter un nom de famille.' : null,
-                onSaved: widget.onSavedLastName,
                 enabled: !_useContactInfo,
               ),
               PhoneListTile(
-                controller: _phoneController,
-                onSaved: widget.onSavedPhone,
+                controller: widget.phoneController,
                 isMandatory: true,
                 canCall: false,
                 enabled: !_useContactInfo,
               ),
               EmailListTile(
-                controller: _emailController,
+                controller: widget.emailController,
                 isMandatory: true,
-                onSaved: widget.onSavedEmail,
                 enabled: !_useContactInfo,
                 canMail: false,
               ),

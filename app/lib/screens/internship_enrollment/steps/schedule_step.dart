@@ -20,8 +20,13 @@ class ScheduleStepState extends State<ScheduleStep> {
 
   late final weeklyScheduleController = WeeklySchedulesController();
   List<Transportation> transportations = [];
-  int internshipDuration = 0;
-  String visitFrequencies = '';
+
+  final _internshipDurationController = TextEditingController();
+  int get internshipDuration =>
+      int.tryParse(_internshipDurationController.text) ?? 0;
+
+  final _visitFrequenciesController = TextEditingController();
+  String get visitFrequencies => _visitFrequenciesController.text;
 
   void onScheduleChanged() {
     if (weeklyScheduleController.dateRange != null &&
@@ -34,6 +39,14 @@ class ScheduleStepState extends State<ScheduleStep> {
               periode: weeklyScheduleController.dateRange!));
     }
     setState(() {});
+  }
+
+  @override
+  void dispose() {
+    weeklyScheduleController.dispose();
+    _internshipDurationController.dispose();
+    _visitFrequenciesController.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,17 +73,15 @@ class ScheduleStepState extends State<ScheduleStep> {
                       scheduleController: weeklyScheduleController,
                       editMode: true,
                     ),
-                    _Hours(
-                        onSaved: (value) =>
-                            internshipDuration = int.parse(value!)),
-                    _Transportations(
-                      withTitle: true,
-                      transportations: transportations,
-                    ),
-                    _VisitFrequencies(
-                        onSaved: (value) => visitFrequencies = value!)
+                    _Hours(controller: _internshipDurationController),
                   ],
                 )),
+            TransportationsCheckBoxes(
+              withTitle: true,
+              editMode: true,
+              transportations: transportations,
+            ),
+            _VisitFrequencies(controller: _visitFrequenciesController),
           ],
         ),
       ),
@@ -166,7 +177,9 @@ class _DateRangeState extends State<_DateRange> {
                       child: TextField(
                         decoration: const InputDecoration(
                             labelText: 'Date de début',
+                            labelStyle: TextStyle(color: Colors.black),
                             border: InputBorder.none),
+                        style: TextStyle(color: Colors.black),
                         controller: TextEditingController(
                             text: widget.scheduleController.dateRange == null
                                 ? null
@@ -178,7 +191,10 @@ class _DateRangeState extends State<_DateRange> {
                     Flexible(
                       child: TextField(
                         decoration: const InputDecoration(
-                            labelText: 'Date de fin', border: InputBorder.none),
+                            labelText: 'Date de fin',
+                            labelStyle: TextStyle(color: Colors.black),
+                            border: InputBorder.none),
+                        style: TextStyle(color: Colors.black),
                         controller: TextEditingController(
                             text: widget.scheduleController.dateRange == null
                                 ? null
@@ -199,9 +215,9 @@ class _DateRangeState extends State<_DateRange> {
 }
 
 class _Hours extends StatelessWidget {
-  const _Hours({required this.onSaved});
+  const _Hours({required this.controller});
 
-  final void Function(String?) onSaved;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -212,12 +228,12 @@ class _Hours extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: TextFormField(
+            controller: controller,
             decoration: const InputDecoration(
                 labelText: '* Nombre total d\'heures de stage à faire'),
             validator: (text) =>
                 text!.isEmpty ? 'Indiquer un nombre d\'heures.' : null,
             keyboardType: TextInputType.number,
-            onSaved: onSaved,
           ),
         ),
       ],
@@ -226,9 +242,9 @@ class _Hours extends StatelessWidget {
 }
 
 class _VisitFrequencies extends StatelessWidget {
-  const _VisitFrequencies({required this.onSaved});
+  const _VisitFrequencies({required this.controller});
 
-  final void Function(String?) onSaved;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -239,10 +255,10 @@ class _VisitFrequencies extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: TextFormField(
+            controller: controller,
             decoration: const InputDecoration(
                 labelText: 'Fréquence des visites de l\'enseignant\u00b7e'),
             keyboardType: TextInputType.number,
-            onSaved: onSaved,
           ),
         ),
       ],
@@ -250,20 +266,24 @@ class _VisitFrequencies extends StatelessWidget {
   }
 }
 
-class _Transportations extends StatefulWidget {
-  const _Transportations({
+class TransportationsCheckBoxes extends StatefulWidget {
+  const TransportationsCheckBoxes({
+    super.key,
     required this.withTitle,
     required this.transportations,
+    required this.editMode,
   });
 
   final bool withTitle;
   final List<Transportation> transportations;
+  final bool editMode;
 
   @override
-  State<_Transportations> createState() => _TransportationsState();
+  State<TransportationsCheckBoxes> createState() =>
+      _TransportationsCheckBoxesState();
 }
 
-class _TransportationsState extends State<_Transportations> {
+class _TransportationsCheckBoxesState extends State<TransportationsCheckBoxes> {
   void _updateTransportations(Transportation transportation) {
     if (!widget.transportations.contains(transportation)) {
       widget.transportations.add(transportation);
@@ -283,10 +303,10 @@ class _TransportationsState extends State<_Transportations> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: Transportation.values.map((e) {
-            return MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () => _updateTransportations(e),
+            return InkWell(
+              onTap: widget.editMode ? () => _updateTransportations(e) : null,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 12.0, right: 8.0),
                 child: Row(
                   children: [
                     Text(e.toString()),
@@ -300,7 +320,9 @@ class _TransportationsState extends State<_Transportations> {
                       ),
                       fillColor: WidgetStatePropertyAll(Colors.transparent),
                       checkColor: Colors.black,
-                      onChanged: (value) => _updateTransportations(e),
+                      onChanged: widget.editMode
+                          ? (value) => _updateTransportations(e)
+                          : null,
                     ),
                   ],
                 ),
