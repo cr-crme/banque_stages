@@ -123,8 +123,8 @@ class WeeklySchedule extends ItemSerializable {
   final DateTimeRange period;
 
   WeeklySchedule.fromSerialized(super.map)
-      : schedule = (map['days'] as Map?)?.map((day, e) =>
-                MapEntry(Day.values[day], DailySchedule.fromSerialized(e))) ??
+      : schedule = (map['days'] as Map?)?.map((day, e) => MapEntry(
+                Day.values[int.parse(day)], DailySchedule.fromSerialized(e))) ??
             {},
         period = DateTimeRange(
             start: DateTime.fromMillisecondsSinceEpoch(map['start'] ?? 0),
@@ -134,7 +134,8 @@ class WeeklySchedule extends ItemSerializable {
   @override
   Map<String, dynamic> serializedMap() => {
         'id': id,
-        'days': schedule.map((day, e) => MapEntry(day.index, e?.serialize())),
+        'days': schedule
+            .map((day, e) => MapEntry(day.index.toString(), e?.serialize())),
         'start': period.start.millisecondsSinceEpoch,
         'end': period.end.millisecondsSinceEpoch,
       };

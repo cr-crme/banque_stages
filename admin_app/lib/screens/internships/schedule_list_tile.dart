@@ -23,7 +23,7 @@ class _ScheduleListTileState extends State<ScheduleListTile> {
   void onScheduleChanged() {
     if (widget.scheduleController.dateRange != null &&
         widget.scheduleController.weeklySchedules.isEmpty) {
-      widget.scheduleController.weeklySchedules.add(
+      widget.scheduleController.addWeeklySchedule(
         WeeklySchedulesController.fillNewScheduleList(
           schedule:
               widget.scheduleController.weeklySchedules.isEmpty

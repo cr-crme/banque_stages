@@ -316,7 +316,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                 fieldsToFetch: [
                   'id',
                   'day',
-                  // TODO 'block_index',
+                  'block_index',
                   'starting_hour',
                   'starting_minute',
                   'ending_hour',
@@ -331,14 +331,22 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           schedule['end'] = schedule['ending_date'];
           schedule['days'] = {};
           for (final map in (schedule['daily_schedules'] as List? ?? [])) {
-            if (schedule['days'][map['day']] == null) {
-              schedule['days'][map['day']] = {'id': map['id'], 'blocks': []};
+            final dayKey = map['day'].toString();
+            if (schedule['days'][dayKey] == null) {
+              schedule['days'][dayKey] = {'id': map['id'], 'blocks': []};
             }
-            (schedule['days'][map['day']]['blocks'] as List).add({
-              'sort_index': map['block_index'] ?? 0, // TODO remove 0
+            (schedule['days'][dayKey]['blocks'] as List).add({
+              'sort_index': map['block_index'],
               'start': [map['starting_hour'], map['starting_minute']],
               'end': [map['ending_hour'], map['ending_minute']],
             });
+          }
+
+          for (final day in (schedule['days'] as Map).keys) {
+            (schedule['days'][day]['blocks'] as List).sort(
+              (a, b) =>
+                  (a['sort_index'] as int).compareTo(b['sort_index'] as int),
+            );
           }
         }
 
@@ -741,23 +749,26 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             });
 
         // Insert the daily schedules
-        for (final day in schedule['days'] as List) {
-          await MySqlHelpers.performInsertQuery(
-              connection: connection,
-              tableName: 'internship_daily_schedules',
-              data: {
-                'id': day['id'],
-                'weekly_schedule_id': schedule['id'],
-                'day': day['day'],
-                'starting_hour': day['start'][0],
-                'starting_minute': day['start'][1],
-                'ending_hour': day['end'][0],
-                'ending_minute': day['end'][1],
-                'break_start_hour': day['break_start']?[0],
-                'break_start_minute': day['break_start']?[1],
-                'break_end_hour': day['break_end']?[0],
-                'break_end_minute': day['break_end']?[1],
-              });
+        for (final pair in (schedule['days'] as Map? ?? {}).entries) {
+          final day = int.parse(pair.key);
+          final entry = pair.value;
+          for (int blockIndex = 0;
+              blockIndex < (entry['blocks'] as List).length;
+              blockIndex++) {
+            await MySqlHelpers.performInsertQuery(
+                connection: connection,
+                tableName: 'internship_daily_schedules',
+                data: {
+                  'id': entry['id'],
+                  'weekly_schedule_id': schedule['id'],
+                  'day': day,
+                  'block_index': blockIndex,
+                  'starting_hour': entry['blocks'][blockIndex]['start'][0],
+                  'starting_minute': entry['blocks'][blockIndex]['start'][1],
+                  'ending_hour': entry['blocks'][blockIndex]['end'][0],
+                  'ending_minute': entry['blocks'][blockIndex]['end'][1],
+                });
+          }
         }
       }
 

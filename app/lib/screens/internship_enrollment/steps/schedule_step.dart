@@ -26,7 +26,7 @@ class ScheduleStepState extends State<ScheduleStep> {
   void onScheduleChanged() {
     if (weeklyScheduleController.dateRange != null &&
         weeklyScheduleController.weeklySchedules.isEmpty) {
-      weeklyScheduleController.weeklySchedules.add(
+      weeklyScheduleController.addWeeklySchedule(
           WeeklySchedulesController.fillNewScheduleList(
               schedule: weeklyScheduleController.weeklySchedules.isEmpty
                   ? {}
@@ -240,7 +240,7 @@ class _VisitFrequencies extends StatelessWidget {
           padding: const EdgeInsets.only(left: 12.0),
           child: TextFormField(
             decoration: const InputDecoration(
-                labelText: '* Fréquence des visites de l\'enseignant\u00b7e'),
+                labelText: 'Fréquence des visites de l\'enseignant\u00b7e'),
             keyboardType: TextInputType.number,
             onSaved: onSaved,
           ),
@@ -279,7 +279,7 @@ class _TransportationsState extends State<_Transportations> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.withTitle)
-          const SubTitle('Transport vers l\'entreprise', left: 0),
+          const SubTitle('Transport de l\'élève vers l\'entreprise', left: 0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: Transportation.values.map((e) {

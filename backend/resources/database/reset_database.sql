@@ -406,7 +406,7 @@ CREATE TABLE internship_weekly_schedules (
 );
 
 CREATE TABLE internship_daily_schedules (
-    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    id VARCHAR(36) NOT NULL,
     weekly_schedule_id VARCHAR(36) NOT NULL,
     day INT NOT NULL,
     block_index INT NOT NULL,

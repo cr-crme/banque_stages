@@ -190,7 +190,9 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
         if (widget.title != null) widget.title!,
         ...widget.scheduleController.weeklySchedules.asMap().keys.map<Widget>(
           (weeklyIndex) => _ScheduleSelector(
-            key: ValueKey(weeklyIndex), // TODO Check this value key
+            key: ValueKey(
+              widget.scheduleController.weeklySchedules[weeklyIndex].hashCode,
+            ),
             controller: widget.scheduleController,
             weekIndex: weeklyIndex,
             periodName:
@@ -395,37 +397,43 @@ class _ScheduleSelector extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (state.hasError)
+                    Center(
+                      child: Text(
+                        state.errorText ?? '',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, top: 8.0),
                     child: Column(
-                      children:
-                          Day.values
-                              .asMap()
-                              .keys
-                              .map(
-                                (dayIndex) => Builder(
-                                  builder: (context) {
-                                    final day = Day.values[dayIndex];
+                      children: [
+                        ...Day.values.asMap().keys.map(
+                          (dayIndex) => Builder(
+                            builder: (context) {
+                              final day = Day.values[dayIndex];
 
-                                    bool isEnabled = true;
-                                    if (useSameScheduleForAllDays &&
-                                        weeklySchedule.schedule[day] != null) {
-                                      if (referenceDayIndex == null) {
-                                        referenceDayIndex = dayIndex;
-                                      } else {
-                                        isEnabled = false;
-                                      }
-                                    }
+                              bool isEnabled = true;
+                              if (useSameScheduleForAllDays &&
+                                  weeklySchedule.schedule[day] != null) {
+                                if (referenceDayIndex == null) {
+                                  referenceDayIndex = dayIndex;
+                                } else {
+                                  isEnabled = false;
+                                }
+                              }
 
-                                    return _buildDailyScheduleTile(
-                                      context,
-                                      day: day,
-                                      canChangeTime: isEnabled,
-                                    );
-                                  },
-                                ),
-                              )
-                              .toList(),
+                              return _buildDailyScheduleTile(
+                                context,
+                                day: day,
+                                canChangeTime: isEnabled,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
