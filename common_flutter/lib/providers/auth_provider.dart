@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AuthProvider extends ChangeNotifier {
-  AuthProvider({bool mockMe = false, bool automaticallySignInIfMocked = true})
-    : _mockMe = mockMe {
+  AuthProvider({
+    bool mockMe = false,
+    bool automaticallySignInIfMocked = true,
+    this.requiredAdminAccess = false,
+  }) : _mockMe = mockMe {
     if (_mockMe) {
       _mockMe = true;
       _mockFirebaseAuth = MockFirebaseAuth(
@@ -21,6 +24,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  final bool requiredAdminAccess;
   bool _mockMe;
   bool get mockMe => _mockMe;
   FirebaseAuth get _firebaseAuth =>
@@ -99,6 +103,14 @@ class AuthProvider extends ChangeNotifier {
       _databaseAccessLevel ?? AccessLevel.invalid;
   set databaseAccessLevel(AccessLevel? level) {
     _databaseAccessLevel = level;
+
+    if (level != null && requiredAdminAccess && level < AccessLevel.admin) {
+      signOut();
+      throw Exception(
+        'You must have admin access to perform this action. Current access level: $level',
+      );
+    }
+
     notifyListeners();
   }
 

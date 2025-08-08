@@ -1,5 +1,6 @@
 import 'package:admin_app/screens/drawer/main_drawer.dart';
 import 'package:admin_app/screens/router.dart';
+import 'package:common/models/generic/access_level.dart';
 import 'package:common_flutter/helpers/form_service.dart';
 import 'package:common_flutter/helpers/responsive_service.dart';
 import 'package:common_flutter/providers/admins_provider.dart';
@@ -39,7 +40,30 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       showSnackBar(context, message: 'Erreur de connexion');
     }
+    if (!mounted) return;
+
     setState(() {});
+  }
+
+  void _navigateIfConnected() {
+    final authProvider = AuthProvider.of(context, listen: false);
+    if (authProvider.isFullySignedIn) {
+      if (authProvider.databaseAccessLevel < AccessLevel.admin) {
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => showSnackBar(
+            context,
+            message:
+                'Vous n\'êtes pas un administrateur de la banque de stage.\n'
+                'Connectez-vous sur le site web client pour accéder à votre compte.',
+          ),
+        );
+        return;
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => GoRouter.of(context).goNamed(Screens.home),
+        );
+      }
+    }
   }
 
   Future<void> _showForgotPasswordDialog() async {
@@ -97,11 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
     TeachersProvider.of(context, listen: false);
 
     final authProvider = AuthProvider.of(context, listen: true);
-    if (authProvider.isFullySignedIn) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => GoRouter.of(context).goNamed(Screens.home),
-      );
-    }
+    _navigateIfConnected();
 
     final notSignedIn =
         !authProvider.isAuthenticatorSignedIn && !authProvider.isFullySignedIn;
