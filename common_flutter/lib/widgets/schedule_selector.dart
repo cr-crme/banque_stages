@@ -39,7 +39,11 @@ class WeeklySchedulesController {
        weeklySchedules = InternshipHelpers.copySchedules(
          weeklySchedules,
          keepId: true,
-       );
+       ) {
+    for (var _ in weeklySchedules ?? []) {
+      _useSameScheduleForAllDays.add(false);
+    }
+  }
 
   bool get hasChanged => _hasChanged;
   set dateRange(time_utils.DateTimeRange? newRange) {

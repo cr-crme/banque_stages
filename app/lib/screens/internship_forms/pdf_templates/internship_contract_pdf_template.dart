@@ -782,15 +782,17 @@ pw.Widget _schedulesCell(
                                           style: style),
                                       pw.Text(mid, style: style),
                                       pw.Text(
-                                          '${entry?.blocks.first.end.hour}:${entry?.blocks.first.end.minute.toString().padLeft(2, '0')}',
+                                          (entry?.blocks.length ?? 0) > 1
+                                              ? '${entry?.blocks[1].end.hour}:${entry?.blocks[1].end.minute.toString().padLeft(2, '0')}'
+                                              : '${entry?.blocks.first.end.hour}:${entry?.blocks.first.end.minute.toString().padLeft(2, '0')}',
                                           style: style),
                                       if ((entry?.blocks.length ?? 0) > 1)
                                         pw.Padding(
                                             padding: const pw.EdgeInsets.only(
                                                 left: 8.0),
                                             child: pw.Text(
-                                                '(${entry?.blocks[1].start.hour}:${entry?.blocks[1].start.minute.toString().padLeft(2, '0')} - '
-                                                '${entry?.blocks[1].end.hour}:${entry?.blocks[1].end.minute.toString().padLeft(2, '0')})',
+                                                '(${entry?.blocks[0].end.hour}:${entry?.blocks[0].end.minute.toString().padLeft(2, '0')} - '
+                                                '${entry?.blocks[1].start.hour}:${entry?.blocks[1].start.minute.toString().padLeft(2, '0')})',
                                                 style: style)),
                                       pw.SizedBox(width: double.infinity),
                                     ]);
