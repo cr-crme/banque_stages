@@ -254,57 +254,69 @@ class _AddressListTileState extends State<AddressListTile> {
 
   @override
   Widget build(BuildContext context) {
+    final searchIsClickable =
+        addressHasChanged &&
+        widget.addressController._textController.text.isNotEmpty &&
+        !isValidating;
+
     return Focus(
       onFocusChange: (hasFocus) {
         if (!hasFocus) validate();
       },
       child: InkWell(
         onTap: widget.enabled ? null : () => _showAddress(context),
-        child: Stack(
-          alignment: Alignment.centerRight,
+        child: Row(
           children: [
-            TextFormField(
-              controller: widget.addressController._textController,
-              decoration: InputDecoration(
-                labelText:
-                    '${widget.isMandatory && widget.enabled ? '* ' : ''}${widget.title ?? 'Adresse'}',
-                labelStyle:
-                    widget.titleStyle ??
-                    (widget.enabled ? null : TextStyle(color: Colors.black)),
-                // Add an invisible icon so the text wraps
-                suffixIcon: Icon(
-                  addressHasChanged ? Icons.search : Icons.map,
-                  color: Colors.white,
+            Padding(
+              padding: const EdgeInsets.only(right: 6.0),
+              child: IconButton(
+                onPressed: () => _showAddress(context),
+                icon: Icon(Icons.map, color: Theme.of(context).primaryColor),
+              ),
+            ),
+            Expanded(
+              child: TextFormField(
+                controller: widget.addressController._textController,
+                decoration: InputDecoration(
+                  labelText:
+                      '${widget.isMandatory && widget.enabled ? '* ' : ''}${widget.title ?? 'Adresse'}',
+                  labelStyle:
+                      widget.titleStyle ??
+                      (widget.enabled ? null : TextStyle(color: Colors.black)),
+                  disabledBorder: InputBorder.none,
                 ),
-                disabledBorder: InputBorder.none,
-              ),
-              style:
-                  widget.contentStyle ??
-                  (widget.enabled ? null : TextStyle(color: Colors.black)),
-              enabled: widget.enabled && !isValidating,
-              maxLines: null,
-              onSaved: (newAddress) => validate(),
-              validator:
-                  (_) => _isValid() ? null : 'Entrer une adresse valide.',
-              keyboardType: TextInputType.streetAddress,
-              onChanged:
-                  (value) => setState(() {
-                    addressHasChanged = true;
-                  }),
-            ),
-            IconButton(
-              onPressed:
-                  addressHasChanged ? validate : () => _showAddress(context),
-              icon: Icon(
-                addressHasChanged ? Icons.search : Icons.map,
-                color:
-                    addressHasChanged
-                        ? (widget.addressController._textController.text == ''
-                            ? Colors.grey
-                            : Theme.of(context).primaryColor)
-                        : Theme.of(context).primaryColor,
+                style:
+                    widget.contentStyle ??
+                    (widget.enabled ? null : TextStyle(color: Colors.black)),
+                enabled: widget.enabled && !isValidating,
+                maxLines: null,
+                onSaved: (newAddress) => validate(),
+                validator:
+                    (_) => _isValid() ? null : 'Entrer une adresse valide.',
+                keyboardType: TextInputType.streetAddress,
+                onChanged:
+                    (value) => setState(() {
+                      addressHasChanged = true;
+                    }),
               ),
             ),
+            if (widget.enabled)
+              InkWell(
+                onTap: searchIsClickable ? validate : null,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4.0,
+                    horizontal: 8.0,
+                  ),
+                  child: Icon(
+                    Icons.search,
+                    color:
+                        searchIsClickable
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
