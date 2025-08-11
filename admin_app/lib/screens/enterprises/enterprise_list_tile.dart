@@ -91,6 +91,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       (job) => MapEntry(
         job.id,
         EnterpriseJobListController(
+          context: context,
           enterpriseStatus: _enterpriseStatus,
           job: job,
           reservedForPickerController: EntityPickerController(
@@ -369,6 +370,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     setState(
       () =>
           _jobControllers[job.id] = EnterpriseJobListController(
+            context: context,
             enterpriseStatus: _enterpriseStatus,
             job: job,
             reservedForPickerController: EntityPickerController(

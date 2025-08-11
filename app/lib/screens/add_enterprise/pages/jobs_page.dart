@@ -18,9 +18,11 @@ class JobsPage extends StatefulWidget {
 
 class JobsPageState extends State<JobsPage> {
   final _formKey = GlobalKey<FormState>();
-  final _jobsControllers = <EnterpriseJobListController>[
+  late final _jobsControllers = <EnterpriseJobListController>[
     EnterpriseJobListController(
-        enterpriseStatus: EnterpriseStatus.active, job: Job.empty)
+        context: context,
+        enterpriseStatus: EnterpriseStatus.active,
+        job: Job.empty)
   ];
 
   bool validate() {

@@ -173,7 +173,7 @@ class _DateRangeState extends State<_DateRange> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width / 2 - 36,
+                      width: 180,
                       child: TextField(
                         decoration: const InputDecoration(
                             labelText: 'Date de début',
@@ -188,7 +188,8 @@ class _DateRangeState extends State<_DateRange> {
                         enabled: false,
                       ),
                     ),
-                    Flexible(
+                    SizedBox(
+                      width: 180,
                       child: TextField(
                         decoration: const InputDecoration(
                             labelText: 'Date de fin',
@@ -251,7 +252,7 @@ class _VisitFrequencies extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SubTitle('Visites de l\'entreprise', left: 0, bottom: 0),
+        const SubTitle('Visites de supervision', left: 0, bottom: 0),
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: TextFormField(

@@ -107,6 +107,8 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
       },
     );
     _logger.finer('Action button updated in EnterpriseScreen');
+
+    if (!mounted) return;
     setState(() {});
   }
 

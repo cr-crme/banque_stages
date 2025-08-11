@@ -51,6 +51,7 @@ class CaracteristicsStepState extends State<CaracteristicsStep> {
   Student? get student => studentController.student;
 
   late final primaryJobController = EnterpriseJobListController(
+    context: context,
     enterpriseStatus: EnterpriseStatus.active,
     job: widget.enterprise.availablejobs(context).length == 1
         ? widget.enterprise.availablejobs(context).first

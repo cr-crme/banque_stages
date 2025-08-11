@@ -555,7 +555,7 @@ class InternshipListTileState extends State<InternshipListTile> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Visites de l\'entreprise'),
+          Text('Visites de supervision'),
           Padding(
             padding: const EdgeInsets.only(left: 12.0),
             child: TextFormField(

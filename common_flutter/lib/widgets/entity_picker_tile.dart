@@ -8,6 +8,16 @@ import 'package:flutter/material.dart';
 
 class EntityPickerController {
   TextEditingController? _textController;
+  // Allows to listen to changes to the _textController
+  final List<VoidCallback> _listeners = [];
+  void addListener(VoidCallback listener) {
+    _listeners.add(listener);
+  }
+
+  void removeListener(VoidCallback listener) {
+    _textController?.removeListener(listener);
+    _listeners.remove(listener);
+  }
 
   final String allElementsTitle;
   final Map<String, String> _allElements = {};
@@ -95,6 +105,9 @@ class EntityPickerTile extends StatelessWidget {
       onSelected: (item) => controller.selection = item.isEmpty ? null : item,
       fieldViewBuilder: (_, textController, focusNode, onSubmitted) {
         controller._textController = textController;
+        for (final listener in controller._listeners) {
+          textController.addListener(listener);
+        }
 
         return TextField(
           controller: controller._textController,

@@ -254,7 +254,7 @@ class TeacherListTileState extends State<TeacherListTile> {
                   TextFormField(
                     controller: oldPasswordController,
                     decoration: const InputDecoration(
-                        labelText: 'Entrez l\'ancien mot de passe'),
+                        labelText: 'Entrer l\'ancien mot de passe'),
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -271,7 +271,7 @@ class TeacherListTileState extends State<TeacherListTile> {
                   TextFormField(
                     controller: newPasswordController,
                     decoration: const InputDecoration(
-                        labelText: 'Entrez le nouveau mot de passe'),
+                        labelText: 'Entrer le nouveau mot de passe'),
                     obscureText: true,
                     validator: (value) {
                       return FormService.passwordValidator(value);

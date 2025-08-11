@@ -4,6 +4,7 @@ import 'package:common/models/school_boards/school.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/students_provider.dart';
+import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:common_flutter/widgets/checkbox_with_other.dart';
@@ -13,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class EnterpriseJobListController {
+  BuildContext context;
+
   EnterpriseStatus enterpriseStatus;
 
   late Specialization? _specialization = _job.specializationOrNull;
@@ -27,10 +30,25 @@ class EnterpriseJobListController {
   late Map<String, int> _positionsOffered = _job.positionsOffered.map(
     (key, value) => MapEntry(key, value),
   );
-  Map<String, int> get positionsOffered =>
-      enterpriseStatus == EnterpriseStatus.active
-          ? _positionsOffered
-          : _positionsOffered.map((key, value) => MapEntry(key, 0));
+  Map<String, int> get _realPositionsOffered {
+    final statuses =
+        enterpriseStatus == EnterpriseStatus.active
+            ? _positionsOffered.map((key, value) => MapEntry(key, value))
+            : _positionsOffered.map((key, value) => MapEntry(key, 0));
+
+    if (_reservedForPickerController?.selection != null) {
+      final schoolId = _reservedForSchoolId;
+      if (schoolId != null) {
+        for (final element in statuses.keys) {
+          if (element != schoolId) {
+            statuses[element] = 0;
+          }
+        }
+      }
+    }
+    return statuses;
+  }
+
   final Map<String, int> _positionsOccupied = {};
   Map<String, int> get positionsOccupied =>
       enterpriseStatus == EnterpriseStatus.active ? _positionsOccupied : {};
@@ -44,9 +62,17 @@ class EnterpriseJobListController {
   late var _protections = _job.protections.protections;
 
   final EntityPickerController? _reservedForPickerController;
+  String? get _reservedForSchoolId =>
+      context.mounted && _reservedForPickerController?.selectionId != null
+          ? TeachersProvider.of(
+            context,
+            listen: false,
+          ).fromIdOrNull(_reservedForPickerController!.selectionId!)?.schoolId
+          : null;
 
   final Job _job;
   EnterpriseJobListController({
+    required this.context,
     required this.enterpriseStatus,
     required Job job,
     List<Specialization>? specializationWhiteList,
@@ -60,7 +86,7 @@ class EnterpriseJobListController {
   Job get job => _job.copyWith(
     specialization: _specialization,
     minimumAge: int.tryParse(_minimumAgeController.text),
-    positionsOffered: positionsOffered,
+    positionsOffered: _realPositionsOffered,
     preInternshipRequests: _preInternshipRequests,
     uniforms: _job.uniforms.copyWith(
       status: _uniformStatus,
@@ -119,6 +145,14 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   Job get job => widget.controller.job;
 
   @override
+  void initState() {
+    super.initState();
+    widget.controller._reservedForPickerController?.addListener(_refresh);
+  }
+
+  void _refresh() => setState(() {});
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
@@ -148,7 +182,19 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   }
 
   @override
+  void dispose() {
+    widget.controller._reservedForPickerController?.removeListener(_refresh);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final schools = widget.schools.where(
+      (school) =>
+          widget.controller._reservedForSchoolId == null ||
+          widget.controller._reservedForSchoolId == school.id,
+    );
+
     return AnimatedExpandingCard(
       elevation: widget.elevation,
       canChangeExpandedState: widget.canChangeExpandedState,
@@ -158,6 +204,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
               ? Padding(
                 padding: const EdgeInsets.only(left: 12.0, top: 8.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -165,7 +212,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                         Flexible(
                           child: Text(
                             widget.controller._specialization?.idWithName ??
-                                'Aucune spécialisation sélectionnée',
+                                'Aucun métier sélectionné',
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
@@ -177,7 +224,21 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                       ],
                     ),
                     SizedBox(height: 4.0),
-                    ...widget.schools.map(
+                    if (widget.controller._reservedForPickerController != null)
+                      Column(
+                        children: [
+                          _buildReservedFor(),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.editMode
+                          ? '* Indiquer le nombre de places de stages disponibles :'
+                          : 'Nombre de places de stages disponibles :',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    ...schools.map(
                       (school) => Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12.0,
@@ -186,14 +247,6 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                         child: _buildAvailability(school: school),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    if (widget.controller._reservedForPickerController != null)
-                      Column(
-                        children: [
-                          _buildReservedFor(),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
                     const SizedBox(height: 8),
                   ],
                 ),
@@ -214,8 +267,14 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                   const SizedBox(height: 8),
                   if (!widget.showHeader)
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ...widget.schools.map(
+                        Text(
+                          widget.editMode
+                              ? '* Indiquer le nombre de places de stages disponibles :'
+                              : 'Nombre de places de stages disponibles :',
+                        ),
+                        ...schools.map(
                           (school) => _buildAvailability(school: school),
                         ),
                         const SizedBox(height: 8),
@@ -337,7 +396,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   }
 
   int _positionOffered(String schoolId) {
-    return widget.controller.positionsOffered[schoolId] ?? 0;
+    return widget.controller._realPositionsOffered[schoolId] ?? 0;
   }
 
   int _positionOccupied(String schoolId) {
@@ -349,80 +408,88 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
 
   Widget _buildAvailability({required School school}) {
     final positionsRemaining = _positionRemaining(school.id);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Flexible(
-          child: Text(
-            '${widget.availabilityIsMandatory ? '* ' : ''}Places disponibles à ${school.name}',
-          ),
-        ),
-        widget.editMode
-            ? FormField(
-              validator:
-                  (value) =>
-                      widget.availabilityIsMandatory &&
-                              _positionOffered(school.id) == 0
-                          ? 'Ajouter au moins une place.'
-                          : null,
-              builder:
-                  (state) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            onPressed:
-                                _positionOffered(school.id) == 0
-                                    ? null
-                                    : () => _updatePositions(
-                                      school.id,
-                                      _positionOffered(school.id) - 1,
-                                    ),
-                            icon: Icon(
-                              Icons.remove,
-                              color:
-                                  _positionOffered(school.id) == 0
-                                      ? Colors.grey
-                                      : Colors.black,
-                            ),
-                          ),
-                          Text(
-                            '$positionsRemaining / ${_positionOffered(school.id)}',
-                          ),
-                          IconButton(
-                            onPressed:
-                                widget.controller.enterpriseStatus ==
-                                        EnterpriseStatus.active
-                                    ? () => _updatePositions(
-                                      school.id,
-                                      _positionOffered(school.id) + 1,
-                                    )
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            SizedBox(
+              width: widget.editMode ? 140 : 75,
+              child:
+                  widget.editMode
+                      ? FormField(
+                        validator:
+                            (value) =>
+                                widget.availabilityIsMandatory &&
+                                        _positionOffered(school.id) == 0
+                                    ? 'Ajouter au moins une place.'
                                     : null,
-                            icon: Icon(
-                              Icons.add,
-                              color:
-                                  widget.controller.enterpriseStatus ==
-                                          EnterpriseStatus.active
-                                      ? Colors.black
-                                      : Colors.grey,
+                        builder:
+                            (state) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed:
+                                          _positionOffered(school.id) == 0
+                                              ? null
+                                              : () => _updatePositions(
+                                                school.id,
+                                                _positionOffered(school.id) - 1,
+                                              ),
+                                      icon: Icon(
+                                        Icons.remove,
+                                        color:
+                                            _positionOffered(school.id) == 0
+                                                ? Colors.grey
+                                                : Colors.black,
+                                      ),
+                                    ),
+                                    Text(
+                                      '$positionsRemaining / ${_positionOffered(school.id)}',
+                                    ),
+                                    IconButton(
+                                      onPressed:
+                                          widget.controller.enterpriseStatus ==
+                                                  EnterpriseStatus.active
+                                              ? () => _updatePositions(
+                                                school.id,
+                                                _positionOffered(school.id) + 1,
+                                              )
+                                              : null,
+                                      icon: Icon(
+                                        Icons.add,
+                                        color:
+                                            widget
+                                                        .controller
+                                                        .enterpriseStatus ==
+                                                    EnterpriseStatus.active
+                                                ? Colors.black
+                                                : Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (state.hasError)
+                                  Text(
+                                    state.errorText!,
+                                    style: const TextStyle(color: Colors.red),
+                                  ),
+                              ],
                             ),
-                          ),
-                        ],
+                      )
+                      : Text(
+                        '$positionsRemaining / ${_positionOffered(school.id)}',
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
-                      if (state.hasError)
-                        Text(
-                          state.errorText!,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                    ],
-                  ),
-            )
-            : Text(
-              '$positionsRemaining / ${_positionOffered(school.id)}',
-              style: Theme.of(context).textTheme.titleMedium,
             ),
+            Text(school.name),
+          ],
+        ),
       ],
     );
   }
@@ -478,21 +545,25 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
   }
 
   Widget _buildReservedFor() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Réserver ce poste à un\u00b7e enseignant\u00b7e',
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 12.0, right: 36.0),
-          child: EntityPickerTile(
+    return Padding(
+      padding: const EdgeInsets.only(left: 12.0, right: 36.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.editMode
+                ? 'Indiquer si les stages pour ce métier sont accessibles à tous les '
+                    'enseignants ou s\'ils sont réservés à un.e enseignant.e '
+                : 'Stages pour ce métier sont accessibles à :',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          EntityPickerTile(
+            title: widget.editMode ? null : '',
             controller: widget.controller._reservedForPickerController!,
             editMode: widget.editMode,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

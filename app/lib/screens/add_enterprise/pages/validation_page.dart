@@ -34,7 +34,9 @@ class _ValidationPageState extends State<ValidationPage> {
             (_, job) => MapEntry(
                 job.id,
                 EnterpriseJobListController(
-                    enterpriseStatus: EnterpriseStatus.active, job: job)),
+                    context: context,
+                    enterpriseStatus: EnterpriseStatus.active,
+                    job: job)),
           ),
     );
 

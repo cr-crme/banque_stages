@@ -21,7 +21,9 @@ class AddJobButton extends StatelessWidget {
         key: key,
         onPressed: () {
           controllers.add(EnterpriseJobListController(
-              enterpriseStatus: EnterpriseStatus.active, job: Job.empty));
+              context: context,
+              enterpriseStatus: EnterpriseStatus.active,
+              job: Job.empty));
           if (onJobAdded != null) {
             onJobAdded!();
           }
