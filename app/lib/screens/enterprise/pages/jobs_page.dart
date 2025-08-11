@@ -12,6 +12,7 @@ import 'package:common_flutter/providers/school_boards_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
+import 'package:crcrme_banque_stages/common/extensions/availability_status.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/add_sst_event_dialog.dart';
@@ -250,9 +251,8 @@ class JobsPageState extends State<JobsPage> {
               final offered =
                   job.positionsOffered[authProvider.schoolId ?? ''] ?? 0;
               final occupied = job.positionsOccupied(context, listen: true);
-              final remaining = offered - occupied;
 
-              final availablePlaceType = _AvailablePlaceType.fromJob(context,
+              final status = AvailabilityStatus.fromJob(context,
                   enterprise: widget.enterprise,
                   job: job,
                   availableJobs: availableJobs);
@@ -272,22 +272,25 @@ class JobsPageState extends State<JobsPage> {
                               _AvailablePlace(
                                 positionsOffered: offered,
                                 positionsOccupied: occupied,
-                                type: availablePlaceType,
+                                status: status,
                               ),
-                              if (availablePlaceType.isEnabled)
+                              if (widget.enterprise.status ==
+                                  EnterpriseStatus.active)
                                 _RecrutedBy(enterprise: widget.enterprise),
                             ],
                           ),
                         ),
-                        if (remaining > 0 &&
-                            availablePlaceType ==
-                                _AvailablePlaceType.isAvailable)
+                        if (status == AvailabilityStatus.isAvailable ||
+                            status == AvailabilityStatus.isFull)
                           Padding(
                             padding: const EdgeInsets.only(
                                 left: 8.0, top: 4.0, bottom: 4.0),
                             child: ElevatedButton(
-                                onPressed: () => widget.onAddInternshipRequest(
-                                    widget.enterprise, job.specialization),
+                                onPressed: status ==
+                                        AvailabilityStatus.isAvailable
+                                    ? () => widget.onAddInternshipRequest(
+                                        widget.enterprise, job.specialization)
+                                    : null,
                                 child: const Text('Inscrire un\nstagiaire',
                                     textAlign: TextAlign.center)),
                           )
@@ -373,83 +376,16 @@ class JobsPageState extends State<JobsPage> {
   }
 }
 
-enum _AvailablePlaceType {
-  isClosed,
-  isBanned,
-  isNewForThatSchool,
-  isReserved,
-  isFull,
-  isAvailable;
-
-  static _AvailablePlaceType fromJob(BuildContext context,
-      {required Enterprise enterprise,
-      required Job job,
-      required List<Job> availableJobs}) {
-    if (enterprise.status == EnterpriseStatus.noLongerAcceptingInternships) {
-      return _AvailablePlaceType.isClosed;
-    } else if (enterprise.status ==
-        EnterpriseStatus.bannedFromAcceptingInternships) {
-      return _AvailablePlaceType.isBanned;
-    }
-
-    final isUnavailable =
-        availableJobs.every((availableJob) => availableJob.id != job.id);
-    if (isUnavailable) return _AvailablePlaceType.isReserved;
-
-    final schoolId = AuthProvider.of(context, listen: false).schoolId ?? '';
-    final offered = job.positionsOffered[schoolId] ?? 0;
-
-    if (offered == 0) return _AvailablePlaceType.isNewForThatSchool;
-
-    final occupied = job.positionsOccupied(context, listen: true);
-    final remaining = offered - occupied;
-    if (remaining <= 0) return _AvailablePlaceType.isFull;
-
-    return _AvailablePlaceType.isAvailable;
-  }
-
-  bool get isEnabled {
-    switch (this) {
-      case _AvailablePlaceType.isClosed:
-      case _AvailablePlaceType.isBanned:
-      case _AvailablePlaceType.isReserved:
-        return false;
-      case _AvailablePlaceType.isNewForThatSchool:
-      case _AvailablePlaceType.isFull:
-      case _AvailablePlaceType.isAvailable:
-        return true;
-    }
-  }
-
-  String get message {
-    switch (this) {
-      case _AvailablePlaceType.isClosed:
-        return 'Cette entreprise n’accepte plus d’élèves en stage.';
-      case _AvailablePlaceType.isBanned:
-        return 'Cette entreprise n’est plus autorisée à accueillir de stagiaires.';
-      case _AvailablePlaceType.isReserved:
-        return 'Stage réservé à un\u00b7e enseignant\u00b7e\n'
-            'Aucun autre stagiaire ne sera accepté';
-      case _AvailablePlaceType.isNewForThatSchool:
-        return 'Cette entreprise n\'accueille pas de stagiaires de votre école pour ce métier.';
-      case _AvailablePlaceType.isFull:
-        return 'Aucune place de stage disponible';
-      case _AvailablePlaceType.isAvailable:
-        return 'Nombre de places de stages disponibles';
-    }
-  }
-}
-
 class _AvailablePlace extends StatelessWidget {
   const _AvailablePlace({
     required this.positionsOffered,
     required this.positionsOccupied,
-    required this.type,
+    required this.status,
   });
 
   final int positionsOffered;
   final int positionsOccupied;
-  final _AvailablePlaceType type;
+  final AvailabilityStatus status;
 
   @override
   Widget build(BuildContext context) {
@@ -468,10 +404,10 @@ class _AvailablePlace extends StatelessWidget {
           leading: DisponibilityCircle(
             positionsOffered: positionsOffered,
             positionsOccupied: positionsOccupied,
-            enabled: type.isEnabled,
+            enabled: status.isEnabled,
           ),
-          title: Text(type.message),
-          trailing: type.isEnabled
+          title: Text(status.message),
+          trailing: status.isEnabled
               ? Text(
                   '$positionsRemaining / $positionsOffered',
                   style: Theme.of(context).textTheme.titleMedium,
