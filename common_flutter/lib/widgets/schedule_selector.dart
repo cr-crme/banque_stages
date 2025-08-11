@@ -755,7 +755,7 @@ class _TimeBlockIconButton extends StatelessWidget {
   }
 }
 
-class _ClickableTextField extends StatelessWidget {
+class _ClickableTextField extends StatefulWidget {
   const _ClickableTextField(
     this.text, {
     required this.onTap,
@@ -767,21 +767,38 @@ class _ClickableTextField extends StatelessWidget {
   final Function()? onTap;
 
   @override
+  State<_ClickableTextField> createState() => _ClickableTextFieldState();
+}
+
+class _ClickableTextFieldState extends State<_ClickableTextField> {
+  bool _isHovering = false;
+
+  @override
   Widget build(BuildContext context) {
-    return enabled
+    return widget.enabled
         ? InkWell(
-          onTap: onTap,
-          child: Ink(
+          onTap: widget.onTap,
+          onHover: (hovering) {
+            setState(() {
+              _isHovering = hovering;
+            });
+          },
+          child: Container(
             width: 66,
             height: 28,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(4.0),
-              color: onTap == null ? Colors.grey[200] : Colors.white,
+              color:
+                  _isHovering
+                      ? Colors.grey[200]
+                      : (widget.onTap == null
+                          ? Colors.grey[200]
+                          : Colors.white),
             ),
-            child: Center(child: Text(text)),
+            child: Center(child: Text(widget.text)),
           ),
         )
-        : SizedBox(width: 50, child: Center(child: Text(text)));
+        : SizedBox(width: 50, child: Center(child: Text(widget.text)));
   }
 }

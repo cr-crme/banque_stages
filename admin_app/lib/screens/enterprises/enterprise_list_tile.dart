@@ -392,6 +392,17 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
       padding: const EdgeInsets.only(right: 12.0),
       child: Column(
         children: [
+          if (_isEditing)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
+                child: TextButton(
+                  onPressed: _addJob,
+                  child: const Text('Ajouter un nouveau métier'),
+                ),
+              ),
+            ),
           _jobControllers.isEmpty
               ? Padding(
                 padding: const EdgeInsets.only(
@@ -427,14 +438,6 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
                   }),
                 ],
               ),
-          if (_isEditing)
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
-              child: TextButton(
-                onPressed: _addJob,
-                child: const Text('Ajouter un nouveau métier'),
-              ),
-            ),
         ],
       ),
     );
