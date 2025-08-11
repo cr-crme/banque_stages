@@ -225,11 +225,11 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                     ),
                     SizedBox(height: 4.0),
                     if (widget.controller._reservedForPickerController != null)
-                      Column(
-                        children: [
-                          _buildReservedFor(),
-                          const SizedBox(height: 20),
-                        ],
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: widget.editMode ? 20 : 12,
+                        ),
+                        child: _buildReservedFor(),
                       ),
                     const SizedBox(height: 8),
                     Text(
@@ -546,7 +546,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
 
   Widget _buildReservedFor() {
     return Padding(
-      padding: const EdgeInsets.only(left: 12.0, right: 36.0),
+      padding: const EdgeInsets.only(right: 36.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -557,10 +557,23 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                 : 'Stages pour ce métier sont accessibles à :',
             style: Theme.of(context).textTheme.titleSmall,
           ),
-          EntityPickerTile(
-            title: widget.editMode ? null : '',
-            controller: widget.controller._reservedForPickerController!,
-            editMode: widget.editMode,
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child:
+                widget.editMode
+                    ? EntityPickerTile(
+                      title: widget.editMode ? null : '',
+                      controller:
+                          widget.controller._reservedForPickerController!,
+                      editMode: widget.editMode,
+                    )
+                    : Text(
+                      widget
+                              .controller
+                              ._reservedForPickerController!
+                              .selection ??
+                          'Tous les enseignant\u00b7e\u00b7s',
+                    ),
           ),
         ],
       ),
