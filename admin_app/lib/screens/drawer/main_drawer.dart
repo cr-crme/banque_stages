@@ -101,7 +101,7 @@ class MainDrawer extends StatelessWidget {
                       children: [
                         _DrawerItem(
                           titleText: 'Écoles',
-                          icon: Icons.business,
+                          icon: Icons.school,
                           route: Screens.schoolBoardsListScreen,
                           iconOnly: iconOnly,
                           canPop: canPop,
@@ -117,14 +117,14 @@ class MainDrawer extends StatelessWidget {
                           ),
                         _DrawerItem(
                           titleText: 'Enseignant·e·s',
-                          icon: Icons.supervisor_account,
+                          icon: Icons.groups_3_outlined,
                           route: Screens.teachersListScreen,
                           iconOnly: iconOnly,
                           canPop: canPop,
                         ),
                         _DrawerItem(
                           titleText: 'Élèves',
-                          icon: Icons.school,
+                          icon: Icons.face,
                           route: Screens.studentsListScreen,
                           iconOnly: iconOnly,
                           canPop: canPop,

@@ -93,7 +93,7 @@ class MainDrawer extends StatelessWidget {
                         ),
                         _DrawerItem(
                           titleText: 'Mes élèves',
-                          icon: Icons.school_rounded,
+                          icon: Icons.face,
                           route: Screens.studentsList,
                           iconOnly: iconOnly,
                           canPop: canPop,
@@ -126,7 +126,7 @@ class MainDrawer extends StatelessWidget {
                         ),
                         _DrawerItem(
                           titleText: 'Mon compte',
-                          icon: Icons.person,
+                          icon: Icons.manage_accounts,
                           route: Screens.myAccountScreen,
                           iconOnly: iconOnly,
                           canPop: canPop,
