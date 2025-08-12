@@ -15,7 +15,7 @@ class SstSearchBar extends StatelessWidget {
       children: [
         Container(
           width: 50,
-          height: 75,
+          height: 70,
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(8),

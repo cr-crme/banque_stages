@@ -131,7 +131,7 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
             children: [
               Expanded(
                 child: _FilterTile(
-                  title: 'Nom métier',
+                  title: 'Tri par métier',
                   icon: Icons.business_center_rounded,
                   onTap: () => setState(
                       () => _currentFilter = _FilterType.bySpecialization),
@@ -140,7 +140,7 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
               ),
               Expanded(
                 child: _FilterTile(
-                  title: 'Nombre accidents',
+                  title: 'Tri par nombre accidents',
                   icon: Icons.personal_injury,
                   onTap: () => setState(
                       () => _currentFilter = _FilterType.byNumberOfIncident),

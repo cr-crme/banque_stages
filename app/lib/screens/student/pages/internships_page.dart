@@ -110,7 +110,7 @@ class InternshipsPageState extends State<InternshipsPage> {
             _StudentInternshipListView(
                 key: toEvaluateKey,
                 scrollController: scrollController,
-                title: 'Évaluations post-stage',
+                title: 'Entreprises à évaluer',
                 internships: toEvaluateInternships),
           if (toEvaluateInternships.isNotEmpty && closedInternships.isNotEmpty)
             const SizedBox(height: 12),

@@ -87,7 +87,7 @@ class InternshipsPageState extends State<InternshipsPage> {
         children: [
           if (toEvaluate.isNotEmpty)
             _InternshipList(
-              title: 'Évaluations post-stage',
+              title: 'Stages à évaluer',
               internships: toEvaluate,
               enterprise: widget.enterprise,
             ),
