@@ -14,14 +14,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+// TODO: Add Icon to web app
+bool _compileProduction = true;
+
 // coverage:ignore-start
 void main() async {
   BugReporter.loggerSetup();
   const showDebugElements = true;
   const useMockers = false;
-  final backendUri = BackendHelpers.backendUri(isSecured: false, isDev: true);
+  final backendUri = BackendHelpers.backendUri(
+      isSecured: _compileProduction, isDev: !_compileProduction);
   final errorReportUri =
-      BackendHelpers.backendUriForBugReport(isSecured: false);
+      BackendHelpers.backendUriForBugReport(isSecured: _compileProduction);
 
   await runZonedGuarded(
     () async {

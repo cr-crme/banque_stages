@@ -57,5 +57,19 @@
             "type": "dart",
             "program": "app/lib/main_widget.dart",
         },
+        {
+            "name": "Release app",
+            "request": "launch",
+            "type": "dart",
+            "program": "app/lib/main.dart",
+            "preLaunchTask": "Release app",
+        },
+        {
+            "name": "Release admin app",
+            "request": "launch",
+            "type": "dart",
+            "program": "admin_app/lib/main.dart",
+            "preLaunchTask": "Release admin app",
+        },
     ]
 }

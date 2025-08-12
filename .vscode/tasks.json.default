@@ -18,6 +18,22 @@
         "kind": "build",
         "isDefault": true
       },
-    }
+    },
+    {
+      "label": "Release app",
+      "type": "shell",
+      "command": "flutter",
+      "args": [ "build", "web", "--release", "--base-href=/stagess/" ],
+      "problemMatcher": [ ],
+      "options": { "cwd": "${workspaceFolder}/app" },
+    },
+    {
+      "label": "Release admin app",
+      "type": "shell",
+      "command": "flutter",
+      "args": [ "build", "web", "--release", "--base-href=/admin-stagess/" ],
+      "problemMatcher": [ ],
+      "options": { "cwd": "${workspaceFolder}/admin_app" },
+    },
   ]
 }

@@ -15,9 +15,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
+bool _compileProduction = true;
+
 void main() async {
   final useMockers = false;
-  final backendUri = BackendHelpers.backendUri(isSecured: false, isDev: true);
+  final backendUri = BackendHelpers.backendUri(
+    isSecured: _compileProduction,
+    isDev: !_compileProduction,
+  );
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
