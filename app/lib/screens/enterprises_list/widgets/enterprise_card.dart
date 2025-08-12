@@ -27,7 +27,12 @@ class EnterpriseCard extends StatelessWidget {
 
     final schoolId = AuthProvider.of(context, listen: false).schoolId ?? '';
 
-    final jobs = enterprise.availablejobs(context);
+    final jobs = [...enterprise.availablejobs(context)];
+    jobs.sort(
+      (a, b) => a.specialization.name
+          .toLowerCase()
+          .compareTo(b.specialization.name.toLowerCase()),
+    );
 
     return Card(
       elevation: 10,

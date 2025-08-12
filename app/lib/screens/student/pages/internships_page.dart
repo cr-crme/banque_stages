@@ -250,17 +250,17 @@ class _StudentInternshipListViewState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          enterprise.address?.toString() ?? '',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
                         Padding(
                           padding: const EdgeInsets.only(top: 4.0),
-                          child: Text(specializationIdWithName),
+                          child: Text(
+                            specializationIdWithName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
                         ),
+                        Text(enterprise.address?.toString() ?? ''),
                         Text(
                             '${DateFormat.yMMMd('fr_CA').format(internship.dates.start)} - $endDate'),
                         if (internship.isActive)

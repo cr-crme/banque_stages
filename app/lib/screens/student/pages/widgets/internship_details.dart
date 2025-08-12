@@ -282,6 +282,7 @@ class InternshipDetailsState extends State<InternshipDetails> {
             body: _InternshipBody(
               internship: _internship,
               editMode: _editMode,
+              onSave: _toggleEditMode,
               onRequestChangedDates: _promptDateRange,
               internshipController: _internshipController,
             ),
@@ -296,6 +297,7 @@ class _InternshipBody extends StatelessWidget {
   const _InternshipBody({
     required this.internship,
     required this.editMode,
+    required this.onSave,
     required this.onRequestChangedDates,
     required this.internshipController,
   });
@@ -303,6 +305,7 @@ class _InternshipBody extends StatelessWidget {
   final Internship internship;
   final bool editMode;
 
+  final Function() onSave;
   final Function() onRequestChangedDates;
   final _InternshipController internshipController;
 
@@ -533,6 +536,11 @@ class _InternshipBody extends StatelessWidget {
           _buildTeachers(
               supervisors: supervisors.map((e) => e.fullName).toList(),
               signatoryTeacher: signatoryTeacher.fullName),
+          if (editMode)
+            Align(
+                alignment: Alignment.centerRight,
+                child:
+                    TextButton(onPressed: onSave, child: Text('Sauvegarder'))),
         ],
       ),
     );

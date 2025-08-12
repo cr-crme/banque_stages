@@ -229,20 +229,34 @@ class _InternshipListState extends State<_InternshipList> {
                 isExpanded: _expanded[internship.id] ?? false,
                 headerBuilder: (context, isExpanded) => Padding(
                   padding: const EdgeInsets.only(left: 12.0),
-                  child: Row(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        internship.dates.start.year.toString(),
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      const SizedBox(width: 24),
-                      Flexible(
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                         child: Text(
-                          specialization.idWithName,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                          maxLines: null,
+                          student.fullName,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
+                      Row(
+                        children: [
+                          Text(
+                            internship.dates.start.year.toString(),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const SizedBox(width: 24),
+                          Flexible(
+                            child: Text(
+                              specialization.idWithName,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              maxLines: null,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (!isExpanded) SizedBox(height: 8.0)
                     ],
                   ),
                 ),
