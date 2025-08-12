@@ -378,13 +378,14 @@ class _ScheduleSelector extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Appliquer le même horaire\n'
-                  'pour tous les jours du stage',
+                Flexible(
+                  child: Text(
+                    'Appliquer le même horaire pour tous les jours du stage',
+                  ),
                 ),
-                SizedBox(width: 8.0),
                 Switch(
                   value: useSameScheduleForAllDays,
                   onChanged: (value) {

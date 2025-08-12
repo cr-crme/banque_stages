@@ -66,10 +66,13 @@ class ScheduleStepState extends State<ScheduleStep> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ScheduleSelector(
-                      title: const SubTitle('Horaire du stage', left: 0),
-                      scheduleController: weeklyScheduleController,
-                      editMode: true,
+                    const SubTitle('Horaire du stage', left: 0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: ScheduleSelector(
+                        scheduleController: weeklyScheduleController,
+                        editMode: true,
+                      ),
                     ),
                     _Hours(controller: _internshipDurationController),
                     _VisitFrequencies(controller: _visitFrequenciesController),

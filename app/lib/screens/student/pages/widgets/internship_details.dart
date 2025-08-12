@@ -522,26 +522,29 @@ class _InternshipBody extends StatelessWidget {
         'with ${supervisors.length} supervisors and signatory teacher: ${signatoryTeacher.id}');
 
     return FocusScope(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSupervisorInfo(),
-          _buildDates(),
-          _buildTime(),
-          _buildSchedule(),
-          _Transportations(
-              editMode: editMode,
-              transportations: internshipController.transportations),
-          _buildVisitFrequencies(),
-          _buildTeachers(
-              supervisors: supervisors.map((e) => e.fullName).toList(),
-              signatoryTeacher: signatoryTeacher.fullName),
-          if (editMode)
-            Align(
-                alignment: Alignment.centerRight,
-                child:
-                    TextButton(onPressed: onSave, child: Text('Sauvegarder'))),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.only(right: 12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSupervisorInfo(),
+            _buildDates(),
+            _buildTime(),
+            _buildSchedule(),
+            _Transportations(
+                editMode: editMode,
+                transportations: internshipController.transportations),
+            _buildVisitFrequencies(),
+            _buildTeachers(
+                supervisors: supervisors.map((e) => e.fullName).toList(),
+                signatoryTeacher: signatoryTeacher.fullName),
+            if (editMode)
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                      onPressed: onSave, child: Text('Sauvegarder'))),
+          ],
+        ),
       ),
     );
   }
