@@ -132,6 +132,7 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
               Expanded(
                 child: _FilterTile(
                   title: 'Nom métier',
+                  icon: Icons.business_center_rounded,
                   onTap: () => setState(
                       () => _currentFilter = _FilterType.bySpecialization),
                   isSelected: _currentFilter == _FilterType.bySpecialization,
@@ -140,6 +141,7 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
               Expanded(
                 child: _FilterTile(
                   title: 'Nombre accidents',
+                  icon: Icons.personal_injury,
                   onTap: () => setState(
                       () => _currentFilter = _FilterType.byNumberOfIncident),
                   isSelected: _currentFilter == _FilterType.byNumberOfIncident,
@@ -180,6 +182,7 @@ class _IncidentHistoryScreenState extends State<IncidentHistoryScreen> {
 class _FilterTile extends StatelessWidget {
   const _FilterTile({
     required this.title,
+    required this.icon,
     required this.isSelected,
     required this.onTap,
   });
@@ -187,6 +190,7 @@ class _FilterTile extends StatelessWidget {
   final String title;
   final bool isSelected;
   final Function() onTap;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -200,14 +204,11 @@ class _FilterTile extends StatelessWidget {
         child: Row(
           children: [
             const SizedBox(height: 48, width: 12),
+            Icon(icon, color: Colors.black),
+            const SizedBox(width: 8),
             Text(
               title,
               style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(width: 4),
-            const Icon(
-              Icons.swap_vert,
-              color: Colors.black,
             ),
           ],
         ),
