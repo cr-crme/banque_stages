@@ -26,7 +26,7 @@ extension VisitingPrioritiesExtension on VisitingPriority {
       case (VisitingPriority.high):
         return Icons.looks_one;
       case (VisitingPriority.school):
-        return Icons.school;
+        return Icons.business;
       case (VisitingPriority.notApplicable):
         return Icons.cancel;
     }
