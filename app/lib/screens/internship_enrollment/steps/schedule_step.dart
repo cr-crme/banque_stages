@@ -1,4 +1,3 @@
-import 'package:common/models/internships/transportation.dart';
 import 'package:common_flutter/widgets/custom_date_picker.dart';
 import 'package:common_flutter/widgets/schedule_selector.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';

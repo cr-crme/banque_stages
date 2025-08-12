@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
+import 'package:crcrme_banque_stages/common/extensions/availability_status.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/extensions/job_extension.dart';
 import 'package:crcrme_banque_stages/common/widgets/disponibility_circle.dart';
@@ -27,7 +28,8 @@ class EnterpriseCard extends StatelessWidget {
 
     final schoolId = AuthProvider.of(context, listen: false).schoolId ?? '';
 
-    final jobs = [...enterprise.availablejobs(context)];
+    final jobs = [...enterprise.jobs];
+    final availableJobs = [...enterprise.availablejobs(context)];
     jobs.sort(
       (a, b) => a.specialization.name
           .toLowerCase()
@@ -81,22 +83,30 @@ class EnterpriseCard extends StatelessWidget {
                           ),
                         )
                       ]
-                    : jobs.map((job) => Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Row(children: [
-                          DisponibilityCircle(
-                              positionsOffered:
-                                  job.positionsOffered[schoolId] ?? 0,
-                              positionsOccupied:
-                                  job.positionsOccupied(context, listen: true)),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              job.specialization.idWithName,
-                              style: TextStyle(color: Colors.grey[800]),
-                            ),
-                          ),
-                        ])))),
+                    : jobs.map((job) {
+                        final status = AvailabilityStatus.fromJob(context,
+                            enterprise: enterprise,
+                            job: job,
+                            availableJobs: availableJobs);
+
+                        return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Row(children: [
+                              DisponibilityCircle(
+                                  positionsOffered:
+                                      job.positionsOffered[schoolId] ?? 0,
+                                  positionsOccupied: job
+                                      .positionsOccupied(context, listen: true),
+                                  enabled: status.isEnabled),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  job.specialization.idWithName,
+                                  style: TextStyle(color: Colors.grey[800]),
+                                ),
+                              ),
+                            ]));
+                      })),
           ],
         ),
         trailing: Visibility(

@@ -26,7 +26,7 @@ class DisponibilityCircle extends StatelessWidget {
         enabled: enabled,
         color: enabled
             ? (remainning > 0 ? Colors.green[800] : Colors.red[800])
-            : Colors.grey[800],
+            : Colors.grey[600],
       ),
     );
   }
