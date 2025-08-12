@@ -194,7 +194,7 @@ class _EnterpriseScreenState extends State<EnterpriseScreen>
               controller: _tabController,
               tabs: const [
                 Tab(
-                    icon: Icon(Icons.business_center_rounded),
+                    icon: Icon(Icons.work),
                     text: 'Métiers offerts'),
                 Tab(icon: Icon(Icons.info_outlined), text: 'À propos'),
                 Tab(icon: Icon(Icons.assignment), text: 'Stages'),
