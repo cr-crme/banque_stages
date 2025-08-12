@@ -15,7 +15,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
-bool _compileProduction = true;
+bool _compileProduction = false;
 
 void main() async {
   final useMockers = false;

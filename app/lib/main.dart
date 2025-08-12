@@ -15,7 +15,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 // TODO: Add Icon to web app
-bool _compileProduction = true;
+bool _compileProduction = false;
 
 // coverage:ignore-start
 void main() async {
