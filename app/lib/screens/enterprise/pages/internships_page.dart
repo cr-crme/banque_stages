@@ -267,8 +267,6 @@ class _InternshipListState extends State<_InternshipList> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                          'Stagiaire\u00a0: ${student.fullName} (${student.program})'),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Row(
