@@ -4,8 +4,6 @@ import 'package:common/utils.dart';
 import 'package:common_flutter/widgets/autocomplete_options_builder.dart';
 import 'package:flutter/material.dart';
 
-// TODO Finalize putting "All teachers" (i.e. should return an id of null)
-
 class EntityPickerController {
   TextEditingController? _textController;
   // Allows to listen to changes to the _textController
