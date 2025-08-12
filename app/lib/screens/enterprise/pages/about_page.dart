@@ -466,10 +466,6 @@ class _ActivityType extends StatelessWidget {
             child: EnterpriseActivityTypeListTile(
               hideTitle: true,
               controller: controller.activityTypes,
-              direction:
-                  ResponsiveService.getScreenSize(context) == ScreenSize.small
-                      ? Axis.vertical
-                      : Axis.horizontal,
               editMode: editMode,
               activityTabAtTop: true,
               tilePadding: const EdgeInsets.all(0),

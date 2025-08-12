@@ -349,21 +349,41 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: widget.firstNameController,
-                decoration: const InputDecoration(labelText: '* Prénom'),
-                validator: (text) =>
-                    text!.isEmpty ? 'Ajouter un prénom.' : null,
-                enabled: !_useContactInfo,
-              ),
-              TextFormField(
-                controller: widget.lastNameController,
-                decoration:
-                    const InputDecoration(labelText: '* Nom de famille'),
-                validator: (text) =>
-                    text!.isEmpty ? 'Ajouter un nom de famille.' : null,
-                enabled: !_useContactInfo,
-              ),
+              if (_useContactInfo)
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Nom du contact de l\'entreprise',
+                          style: Theme.of(context).textTheme.titleSmall),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12.0, bottom: 8.0),
+                        child: Text(
+                          widget.enterprise?.contact.fullName ?? '',
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  TextFormField(
+                    controller: widget.firstNameController,
+                    decoration: const InputDecoration(labelText: '* Prénom'),
+                    validator: (text) =>
+                        text!.isEmpty ? 'Ajouter un prénom.' : null,
+                    enabled: !_useContactInfo,
+                  ),
+                  TextFormField(
+                    controller: widget.lastNameController,
+                    decoration:
+                        const InputDecoration(labelText: '* Nom de famille'),
+                    validator: (text) =>
+                        text!.isEmpty ? 'Ajouter un nom de famille.' : null,
+                    enabled: !_useContactInfo,
+                  ),
+                ]),
               PhoneListTile(
                 controller: widget.phoneController,
                 isMandatory: true,

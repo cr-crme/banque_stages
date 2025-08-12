@@ -349,9 +349,11 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
             }
             return null;
           },
+          style: const TextStyle(color: Colors.black),
           enabled: _availableSpecialization.length != 1,
           decoration: InputDecoration(
             labelText: '* Métier semi-spécialisé',
+            labelStyle: TextStyle(color: Colors.black),
             hintText: 'Saisir nom ou n° de métier',
             suffixIcon:
                 _availableSpecialization.length == 1

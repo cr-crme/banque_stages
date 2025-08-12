@@ -27,7 +27,6 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
     this.subtitle,
     required this.controller,
     required this.editMode,
-    this.direction = Axis.horizontal,
     this.hideTitle = false,
     this.activityTabAtTop = true,
     this.tilePadding = const EdgeInsets.only(left: 24.0),
@@ -37,7 +36,6 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
   final EnterpriseActivityTypeListController controller;
   final bool editMode;
   final bool hideTitle;
-  final Axis direction;
   final bool activityTabAtTop;
   final EdgeInsets tilePadding;
 
@@ -56,12 +54,8 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
                     title: subtitle,
                     controller: controller,
                     activityTabAtTop: activityTabAtTop,
-                    direction: direction,
                   )
-                  : _ActivityTypeCards(
-                    controller: controller,
-                    direction: direction,
-                  ),
+                  : _ActivityTypeCards(controller: controller),
             ],
           ),
         ),
@@ -71,21 +65,15 @@ class EnterpriseActivityTypeListTile extends StatelessWidget {
 }
 
 class _ActivityTypeCards extends StatelessWidget {
-  const _ActivityTypeCards({
-    required this.controller,
-    required this.direction,
-    this.onDeleted,
-  });
+  const _ActivityTypeCards({required this.controller, this.onDeleted});
 
-  final Axis direction;
   final EnterpriseActivityTypeListController controller;
   final void Function(ActivityTypes activityType)? onDeleted;
 
   @override
   Widget build(BuildContext context) {
-    return Flex(
-      direction: direction,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Wrap(
+      direction: Axis.horizontal,
       children:
           controller._activityTypes
               .map(
@@ -123,7 +111,6 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
   _ActivityTypesPickerFormField({
     this.title,
     required this.controller,
-    required this.direction,
     String? Function(Set<ActivityTypes>? activityTypes)? validator,
     required this.activityTabAtTop,
   }) : super(
@@ -134,7 +121,6 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
 
   final String? title;
   final bool activityTabAtTop;
-  final Axis direction;
   final EnterpriseActivityTypeListController controller;
 
   static String? _validator(Set<ActivityTypes>? activityTypes) {
@@ -149,14 +135,12 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
     final controller =
         (state.widget as _ActivityTypesPickerFormField).controller;
     controller._forceRefresh = () => state.didChange(controller._activityTypes);
-    final direction = (state.widget as _ActivityTypesPickerFormField).direction;
     final activityTabAtTop =
         (state.widget as _ActivityTypesPickerFormField).activityTabAtTop;
     final title = (state.widget as _ActivityTypesPickerFormField).title;
 
     final activityTabs = _ActivityTypeCards(
       controller: controller,
-      direction: direction,
       onDeleted: (activityType) {
         state.value!.remove(activityType);
         controller._activityTypes.remove(activityType);
@@ -177,7 +161,7 @@ class _ActivityTypesPickerFormField extends FormField<Set<ActivityTypes>> {
                       activity.toLowerCase().contains(
                         textEditingValue.text.toLowerCase().trim(),
                       ) &&
-                      !state.value!.contains(
+                      !controller._activityTypes.contains(
                         ActivityTypes.fromString(activity),
                       ),
                 );

@@ -234,27 +234,29 @@ class _InternshipListState extends State<_InternshipList> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                        child: Text(
-                          student.fullName,
-                          style: Theme.of(context).textTheme.titleMedium,
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              internship.dates.start.year.toString(),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(width: 24),
+                            Text(
+                              student.fullName,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
                         ),
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            internship.dates.start.year.toString(),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                          const SizedBox(width: 24),
-                          Flexible(
-                            child: Text(
-                              specialization.idWithName,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                              maxLines: null,
-                            ),
-                          ),
-                        ],
+                      Text('Stagiaire ${student.program}',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Flexible(
+                        child: Text(
+                          specialization.idWithName,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          maxLines: null,
+                        ),
                       ),
                       if (!isExpanded) SizedBox(height: 8.0)
                     ],
@@ -271,7 +273,8 @@ class _InternshipListState extends State<_InternshipList> {
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Row(
                           children: [
-                            const Text('Signataire du contrat\u00a0: '),
+                            const Text(
+                                'Enseignant\u00b7e\u00b7s superviseur\u00b7e\u00b7s de stage\u00a0: '),
                             GestureDetector(
                                 onTap: signatoryTeacher.email == null
                                     ? null
