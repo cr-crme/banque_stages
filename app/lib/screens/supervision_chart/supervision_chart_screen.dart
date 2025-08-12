@@ -262,14 +262,14 @@ class _SupervisionChartState extends State<SupervisionChart>
         Tab(
           child: _TabIcon(
             title: 'Élèves à superviser',
-            icon: Icons.supervisor_account,
+            icon: Icons.diversity_3,
             isColumn: isColumn,
           ),
         ),
         Tab(
           child: _TabIcon(
             title: 'Itinéraire de visites',
-            icon: Icons.map,
+            icon: Icons.roundabout_right,
             isColumn: isColumn,
           ),
         ),

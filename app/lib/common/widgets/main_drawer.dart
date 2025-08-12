@@ -86,7 +86,7 @@ class MainDrawer extends StatelessWidget {
                       children: [
                         _DrawerItem(
                           titleText: 'Entreprises',
-                          icon: Icons.location_city_rounded,
+                          icon: Icons.factory_rounded,
                           route: Screens.enterprisesList,
                           iconOnly: iconOnly,
                           canPop: canPop,
@@ -119,7 +119,7 @@ class MainDrawer extends StatelessWidget {
                         ),
                         _DrawerItem(
                           titleText: 'Santé et Sécurité au PFAE',
-                          icon: Icons.security,
+                          icon: Icons.health_and_safety,
                           route: Screens.homeSst,
                           iconOnly: iconOnly,
                           canPop: canPop,
