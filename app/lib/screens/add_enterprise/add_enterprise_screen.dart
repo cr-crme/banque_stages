@@ -7,6 +7,7 @@ import 'package:common_flutter/providers/teachers_provider.dart';
 import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/screens/add_enterprise/pages/about_page.dart';
 import 'package:crcrme_banque_stages/screens/add_enterprise/pages/jobs_page.dart';
 import 'package:crcrme_banque_stages/screens/add_enterprise/pages/validation_page.dart';
@@ -134,10 +135,20 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-              content: Text(
-                  'L\'entreprise ${_currentEnterprise.name} a bien été ajoutée à la banque '
-                  'de stages.\n\n'
-                  'Vous pouvez maintenant y inscrire des stagiaires.'),
+              title: const SubTitle('Entreprise ajoutée', left: 0, bottom: 0),
+              content: RichText(
+                text: TextSpan(
+                  children: [
+                    const TextSpan(text: 'L\'entreprise '),
+                    TextSpan(
+                        text: _currentEnterprise.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const TextSpan(
+                        text: ' a bien été ajoutée à la banque de stages.\n\n'
+                            'Vous pouvez maintenant y inscrire des stagiaires.'),
+                  ],
+                ),
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),

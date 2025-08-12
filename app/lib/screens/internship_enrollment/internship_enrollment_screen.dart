@@ -16,6 +16,7 @@ import 'package:common_flutter/widgets/show_snackbar.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/confirm_exit_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/scrollable_stepper.dart';
+import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/caracteristics_step.dart';
 import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
@@ -129,9 +130,24 @@ class _InternshipEnrollmentScreenState
     await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-              content: Text(
-                  '${student.fullName} a bien été inscrit comme stagiaire chez ${enterprise.name}.'
-                  '\n\nVous pouvez maintenant accéder aux documents administratifs du stage.'),
+              title: const SubTitle('Inscription réussie', left: 0, bottom: 0),
+              content: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                        text: '${student.fullName} ',
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const TextSpan(
+                        text: ' a bien été inscrit comme stagiaire chez '),
+                    TextSpan(
+                        text: enterprise.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const TextSpan(
+                        text:
+                            '.\n\nVous pouvez maintenant accéder au contrat de stage dans la section "Documents".'),
+                  ],
+                ),
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
