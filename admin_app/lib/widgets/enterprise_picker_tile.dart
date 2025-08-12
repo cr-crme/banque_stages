@@ -147,11 +147,7 @@ class EnterprisePickerTile extends StatelessWidget {
         ? Container()
         : FormBuilderRadioGroup(
           name: 'job',
-          validator:
-              (value) =>
-                  value == null
-                      ? 'Veuillez sélectionner une spécialisation'
-                      : null,
+          validator: (value) => value == null ? 'Sélectionner un métier' : null,
           initialValue:
               controller._selectedEnterprise.jobs.length == 1
                   ? controller._selectedEnterprise.jobs.first

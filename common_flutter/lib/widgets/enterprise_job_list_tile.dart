@@ -123,6 +123,7 @@ class EnterpriseJobListTile extends StatefulWidget {
     this.elevation = 10.0,
     this.specializationOnly = false,
     this.showHeader = true,
+    this.jobPickerPadding,
     this.availabilityIsMandatory = false,
   });
 
@@ -135,6 +136,7 @@ class EnterpriseJobListTile extends StatefulWidget {
   final double elevation;
   final bool specializationOnly;
   final bool showHeader;
+  final EdgeInsets? jobPickerPadding;
   final bool availabilityIsMandatory;
 
   @override
@@ -253,7 +255,9 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
               )
               : const SizedBox.shrink(),
       child: Padding(
-        padding: const EdgeInsets.only(left: 24.0, top: 12.0, right: 24.0),
+        padding:
+            widget.jobPickerPadding ??
+            const EdgeInsets.only(left: 24.0, top: 12.0, right: 24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

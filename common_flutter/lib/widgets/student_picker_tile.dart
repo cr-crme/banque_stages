@@ -123,7 +123,7 @@ class StudentPickerTile extends StatelessWidget {
           validator:
               (value) =>
                   isMandatory && (value?.isEmpty ?? true)
-                      ? 'Veuillez sélectionner un·e élève'
+                      ? 'Sélectionner un·e élève'
                       : null,
           decoration: InputDecoration(
             labelText:

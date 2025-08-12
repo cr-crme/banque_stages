@@ -1,6 +1,7 @@
 import 'package:common/models/enterprises/enterprise.dart';
 import 'package:common/models/enterprises/enterprise_status.dart';
 import 'package:common/models/enterprises/job.dart';
+import 'package:common/models/internships/transportation.dart';
 import 'package:common/models/persons/student.dart';
 import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/auth_provider.dart';
@@ -79,6 +80,8 @@ class CaracteristicsStepState extends State<CaracteristicsStep> {
   String? get supervisorEmail =>
       _emailController.text.isEmpty ? null : _emailController.text;
 
+  List<Transportation> transportations = [];
+
   @override
   Widget build(BuildContext context) {
     _logger.finer(
@@ -105,6 +108,11 @@ class CaracteristicsStepState extends State<CaracteristicsStep> {
               lastNameController: _lastNameController,
               phoneController: _phoneController,
               emailController: _emailController,
+            ),
+            TransportationsCheckBoxes(
+              withTitle: true,
+              editMode: true,
+              transportations: transportations,
             ),
           ],
         ),
@@ -164,30 +172,29 @@ class _MainJob extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SubTitle('Métier', left: 0),
-        Padding(
-          padding: const EdgeInsets.only(left: 12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (extraJobControllers.isNotEmpty)
-                Text(
-                  'Métier principal',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              EnterpriseJobListTile(
-                controller: controller,
-                schools: [
-                  SchoolBoardsProvider.of(context, listen: false).mySchool!
-                ],
-                editMode: true,
-                specializationOnly: true,
-                canChangeExpandedState: false,
-                initialExpandedState: true,
-                elevation: 0.0,
-                showHeader: false,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (extraJobControllers.isNotEmpty)
+              Text(
+                'Métier principal',
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-            ],
-          ),
+            EnterpriseJobListTile(
+              controller: controller,
+              schools: [
+                SchoolBoardsProvider.of(context, listen: false).mySchool!
+              ],
+              editMode: true,
+              specializationOnly: true,
+              canChangeExpandedState: false,
+              initialExpandedState: true,
+              elevation: 0.0,
+              jobPickerPadding:
+                  const EdgeInsets.only(left: 8, top: 12, right: 24),
+              showHeader: false,
+            ),
+          ],
         )
       ],
     );
@@ -349,41 +356,28 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (_useContactInfo)
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Nom du contact de l\'entreprise',
-                          style: Theme.of(context).textTheme.titleSmall),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12.0, bottom: 8.0),
-                        child: Text(
-                          widget.enterprise?.contact.fullName ?? '',
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              else
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  TextFormField(
-                    controller: widget.firstNameController,
-                    decoration: const InputDecoration(labelText: '* Prénom'),
-                    validator: (text) =>
-                        text!.isEmpty ? 'Ajouter un prénom.' : null,
-                    enabled: !_useContactInfo,
-                  ),
-                  TextFormField(
-                    controller: widget.lastNameController,
-                    decoration:
-                        const InputDecoration(labelText: '* Nom de famille'),
-                    validator: (text) =>
-                        text!.isEmpty ? 'Ajouter un nom de famille.' : null,
-                    enabled: !_useContactInfo,
-                  ),
-                ]),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                TextFormField(
+                  controller: widget.firstNameController,
+                  decoration: const InputDecoration(
+                      labelText: '* Prénom',
+                      labelStyle: TextStyle(color: Colors.black)),
+                  style: TextStyle(color: Colors.black),
+                  validator: (text) =>
+                      text!.isEmpty ? 'Ajouter un prénom.' : null,
+                  enabled: !_useContactInfo,
+                ),
+                TextFormField(
+                  controller: widget.lastNameController,
+                  decoration: const InputDecoration(
+                      labelText: '* Nom de famille',
+                      labelStyle: TextStyle(color: Colors.black)),
+                  style: TextStyle(color: Colors.black),
+                  validator: (text) =>
+                      text!.isEmpty ? 'Ajouter un nom de famille.' : null,
+                  enabled: !_useContactInfo,
+                ),
+              ]),
               PhoneListTile(
                 controller: widget.phoneController,
                 isMandatory: true,
@@ -398,6 +392,75 @@ class _SupervisonInformationState extends State<_SupervisonInformation> {
               ),
             ],
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class TransportationsCheckBoxes extends StatefulWidget {
+  const TransportationsCheckBoxes({
+    super.key,
+    required this.withTitle,
+    required this.transportations,
+    required this.editMode,
+  });
+
+  final bool withTitle;
+  final List<Transportation> transportations;
+  final bool editMode;
+
+  @override
+  State<TransportationsCheckBoxes> createState() =>
+      _TransportationsCheckBoxesState();
+}
+
+class _TransportationsCheckBoxesState extends State<TransportationsCheckBoxes> {
+  void _updateTransportations(Transportation transportation) {
+    if (!widget.transportations.contains(transportation)) {
+      widget.transportations.add(transportation);
+    } else {
+      widget.transportations.remove(transportation);
+    }
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.withTitle)
+          const SubTitle('Transport de l\'élève vers l\'entreprise', left: 0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: Transportation.values.map((e) {
+            return InkWell(
+              onTap: widget.editMode ? () => _updateTransportations(e) : null,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 12.0, right: 8.0),
+                child: Row(
+                  children: [
+                    Text(e.toString()),
+                    Checkbox(
+                      value: widget.transportations.contains(e),
+                      side: WidgetStateBorderSide.resolveWith(
+                        (states) => BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 2.0,
+                        ),
+                      ),
+                      fillColor: WidgetStatePropertyAll(Colors.transparent),
+                      checkColor: Colors.black,
+                      onChanged: widget.editMode
+                          ? (value) => _updateTransportations(e)
+                          : null,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );

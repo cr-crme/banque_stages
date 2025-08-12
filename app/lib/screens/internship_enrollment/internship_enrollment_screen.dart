@@ -115,7 +115,7 @@ class _InternshipEnrollmentScreenState
     final internship = _newInternship;
     if (internship == null) {
       _logger.warning('Failed to create internship, missing data.');
-      showSnackBar(context, message: 'Veuillez remplir tous les champs.');
+      showSnackBar(context, message: 'Remplir tous les champs.');
       return;
     }
 
@@ -209,7 +209,7 @@ class _InternshipEnrollmentScreenState
       weeklySchedules:
           _scheduleKey.currentState?.weeklyScheduleController.weeklySchedules ??
               [],
-      transportations: _scheduleKey.currentState?.transportations ?? [],
+      transportations: _caracteristicsKey.currentState?.transportations ?? [],
       visitFrequencies: _scheduleKey.currentState?.visitFrequencies ?? '',
       visitingPriority: VisitingPriority.low,
     );

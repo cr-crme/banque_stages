@@ -216,28 +216,33 @@ class _ScheduleSelectorState extends State<ScheduleSelector> {
           ),
         ),
         if (widget.editMode)
-          TextButton(
-            onPressed:
-                () => setState(() {
-                  widget.scheduleController.addWeeklySchedule(
-                    WeeklySchedulesController.fillNewScheduleList(
-                      schedule:
-                          widget.scheduleController.weeklySchedules.isEmpty
-                              ? {}
-                              : widget
-                                  .scheduleController
-                                  .weeklySchedules
-                                  .last
-                                  .schedule,
-                      periode: widget.scheduleController.dateRange!,
-                    ),
-                  );
-                }),
-            style: Theme.of(context).textButtonTheme.style?.copyWith(
-              backgroundColor:
-                  Theme.of(context).elevatedButtonTheme.style!.backgroundColor,
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: TextButton(
+              onPressed:
+                  () => setState(() {
+                    widget.scheduleController.addWeeklySchedule(
+                      WeeklySchedulesController.fillNewScheduleList(
+                        schedule:
+                            widget.scheduleController.weeklySchedules.isEmpty
+                                ? {}
+                                : widget
+                                    .scheduleController
+                                    .weeklySchedules
+                                    .last
+                                    .schedule,
+                        periode: widget.scheduleController.dateRange!,
+                      ),
+                    );
+                  }),
+              style: Theme.of(context).textButtonTheme.style?.copyWith(
+                backgroundColor:
+                    Theme.of(
+                      context,
+                    ).elevatedButtonTheme.style!.backgroundColor,
+              ),
+              child: const Text('Ajouter une période'),
             ),
-            child: const Text('Ajouter une période'),
           ),
       ],
     );
@@ -397,7 +402,7 @@ class _ScheduleSelector extends StatelessWidget {
           validator: (value) {
             if (!editMode) return null;
             if (weeklySchedule.schedule.isEmpty) {
-              return 'Veuillez sélectionner au moins un jour.';
+              return 'Sélectionner au moins un jour.';
             }
             return null;
           },
@@ -407,28 +412,10 @@ class _ScheduleSelector extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (state.hasError)
-                    Center(
-                      child: Text(
-                        state.errorText ?? '',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ),
-                    ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, top: 8.0),
                     child: Column(
                       children: [
-                        if (controller
-                            .weeklySchedules[weekIndex]
-                            .schedule
-                            .values
-                            .every((e) => e == null))
-                          Text(
-                            'Aucun horaire sélectionné pour cette période.',
-                            style: TextStyle(fontStyle: FontStyle.italic),
-                          ),
                         ...Day.values.asMap().keys.map(
                           (dayIndex) => Builder(
                             builder: (context) {
@@ -455,6 +442,15 @@ class _ScheduleSelector extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (state.hasError)
+                    Center(
+                      child: Text(
+                        state.errorText ?? '',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             );

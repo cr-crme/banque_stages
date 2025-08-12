@@ -5,7 +5,7 @@ import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/widgets/schedule_selector.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
-import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/schedule_step.dart';
+import 'package:crcrme_banque_stages/screens/internship_enrollment/steps/caracteristics_step.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';

@@ -19,7 +19,6 @@ class ScheduleStepState extends State<ScheduleStep> {
   final formKey = GlobalKey<FormState>();
 
   late final weeklyScheduleController = WeeklySchedulesController();
-  List<Transportation> transportations = [];
 
   final _internshipDurationController = TextEditingController();
   int get internshipDuration =>
@@ -74,14 +73,9 @@ class ScheduleStepState extends State<ScheduleStep> {
                       editMode: true,
                     ),
                     _Hours(controller: _internshipDurationController),
+                    _VisitFrequencies(controller: _visitFrequenciesController),
                   ],
                 )),
-            TransportationsCheckBoxes(
-              withTitle: true,
-              editMode: true,
-              transportations: transportations,
-            ),
-            _VisitFrequencies(controller: _visitFrequenciesController),
           ],
         ),
       ),
@@ -261,75 +255,6 @@ class _VisitFrequencies extends StatelessWidget {
                 labelText: 'Fréquence des visites de l\'enseignant\u00b7e'),
             keyboardType: TextInputType.number,
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class TransportationsCheckBoxes extends StatefulWidget {
-  const TransportationsCheckBoxes({
-    super.key,
-    required this.withTitle,
-    required this.transportations,
-    required this.editMode,
-  });
-
-  final bool withTitle;
-  final List<Transportation> transportations;
-  final bool editMode;
-
-  @override
-  State<TransportationsCheckBoxes> createState() =>
-      _TransportationsCheckBoxesState();
-}
-
-class _TransportationsCheckBoxesState extends State<TransportationsCheckBoxes> {
-  void _updateTransportations(Transportation transportation) {
-    if (!widget.transportations.contains(transportation)) {
-      widget.transportations.add(transportation);
-    } else {
-      widget.transportations.remove(transportation);
-    }
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (widget.withTitle)
-          const SubTitle('Transport de l\'élève vers l\'entreprise', left: 0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: Transportation.values.map((e) {
-            return InkWell(
-              onTap: widget.editMode ? () => _updateTransportations(e) : null,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 12.0, right: 8.0),
-                child: Row(
-                  children: [
-                    Text(e.toString()),
-                    Checkbox(
-                      value: widget.transportations.contains(e),
-                      side: WidgetStateBorderSide.resolveWith(
-                        (states) => BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 2.0,
-                        ),
-                      ),
-                      fillColor: WidgetStatePropertyAll(Colors.transparent),
-                      checkColor: Colors.black,
-                      onChanged: widget.editMode
-                          ? (value) => _updateTransportations(e)
-                          : null,
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
         ),
       ],
     );
