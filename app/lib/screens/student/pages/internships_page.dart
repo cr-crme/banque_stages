@@ -4,6 +4,7 @@ import 'package:common/models/persons/student.dart';
 import 'package:common_flutter/providers/enterprises_provider.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:crcrme_banque_stages/common/widgets/dialogs/finalize_internship_dialog.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
 import 'package:crcrme_banque_stages/router.dart';
@@ -218,11 +219,9 @@ class _StudentInternshipListViewState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SubTitle(widget.title),
-        ExpansionPanelList(
-            expansionCallback: (int panelIndex, bool isExpanded) => setState(
-                () =>
-                    _expanded[widget.internships[panelIndex].id] = isExpanded),
-            children: widget.internships.asMap().keys.map((index) {
+        Column(
+          children: [
+            ...widget.internships.asMap().keys.map((index) {
               final internship = widget.internships[index];
               final enterprise =
                   EnterprisesProvider.of(context)[internship.enterpriseId];
@@ -240,10 +239,9 @@ class _StudentInternshipListViewState
                           .idWithName ??
                       '';
 
-              return ExpansionPanel(
-                canTapOnHeader: true,
-                isExpanded: _expanded[internship.id]!,
-                headerBuilder: (context, isExpanded) => ListTile(
+              return AnimatedExpandingCard(
+                initialExpandedState: _expanded[internship.id]!,
+                header: ListTile(
                   title: _buildEnterpriseName(context, enterprise: enterprise),
                   subtitle: Padding(
                     padding: const EdgeInsets.only(left: 12.0),
@@ -286,7 +284,7 @@ class _StudentInternshipListViewState
                     ),
                   ),
                 ),
-                body: Column(
+                child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       InternshipDetails(
@@ -298,7 +296,9 @@ class _StudentInternshipListViewState
                       InternshipDocuments(internship: internship),
                     ]),
               );
-            }).toList()),
+            })
+          ],
+        ),
       ],
     );
   }

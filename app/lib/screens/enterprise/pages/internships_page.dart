@@ -6,6 +6,7 @@ import 'package:common/services/job_data_file_service.dart';
 import 'package:common_flutter/providers/internships_provider.dart';
 import 'package:common_flutter/providers/students_provider.dart';
 import 'package:common_flutter/providers/teachers_provider.dart';
+import 'package:common_flutter/widgets/animated_expanding_card.dart';
 import 'package:crcrme_banque_stages/common/extensions/enterprise_extension.dart';
 import 'package:crcrme_banque_stages/common/provider_helpers/students_helpers.dart';
 import 'package:crcrme_banque_stages/common/widgets/sub_title.dart';
@@ -205,11 +206,9 @@ class _InternshipListState extends State<_InternshipList> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SubTitle(widget.title),
-        ExpansionPanelList(
-          expansionCallback: (panelIndex, isExpanded) => setState(
-              () => _expanded[widget.internships[panelIndex].id] = isExpanded),
-          children: widget.internships.map(
-            (internship) {
+        Column(
+          children: [
+            ...widget.internships.map((internship) {
               final specialization =
                   widget.enterprise.jobs[internship.jobId].specialization;
               final student = StudentsProvider.of(context)
@@ -218,131 +217,129 @@ class _InternshipListState extends State<_InternshipList> {
                   .firstWhere((e) => e.id == internship.signatoryTeacherId);
               final canSeeDetails = _canSeeDetails(internshipId: internship.id);
 
-              if (student == null) {
-                return ExpansionPanel(
-                    headerBuilder: ((context, isExpanded) => Container()),
-                    body: Container());
-              }
+              if (student == null) return Container();
 
-              return ExpansionPanel(
-                canTapOnHeader: true,
-                isExpanded: _expanded[internship.id] ?? false,
-                headerBuilder: (context, isExpanded) => Padding(
-                  padding: const EdgeInsets.only(left: 12.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              internship.dates.start.year.toString(),
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            const SizedBox(width: 24),
-                            Text(
-                              student.fullName,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
+              return AnimatedExpandingCard(
+                  initialExpandedState: _expanded[internship.id] ?? false,
+                  onTapHeader: (newState) => setState(
+                        () => _expanded[internship.id] = newState,
                       ),
-                      Text('Stagiaire ${student.program}',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Flexible(
-                        child: Text(
-                          specialization.idWithName,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          maxLines: null,
-                        ),
-                      ),
-                      if (!isExpanded) SizedBox(height: 8.0)
-                    ],
-                  ),
-                ),
-                body: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Row(
-                          children: [
-                            const Text(
-                                'Enseignant\u00b7e\u00b7s superviseur\u00b7e\u00b7s de stage\u00a0: '),
-                            GestureDetector(
-                                onTap: signatoryTeacher.email == null
-                                    ? null
-                                    : () => _sendEmail(signatoryTeacher),
-                                child: Text(
-                                  signatoryTeacher.fullName,
-                                  style: signatoryTeacher.email == null
-                                      ? null
-                                      : Theme.of(context)
-                                          .textTheme
-                                          .titleSmall!
-                                          .copyWith(
-                                            decoration:
-                                                TextDecoration.underline,
-                                            color: Colors.blue,
-                                          ),
-                                ))
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                            'Responsable en milieu de stage\u00a0: ${widget.internships.last.supervisor.fullName}'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0, bottom: 15),
-                        child: _dateBuild(internship),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: 8.0, right: 12),
+                  header: Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
                           child: Row(
-                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              if (internship.isEnterpriseEvaluationPending)
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      right: canSeeDetails ? 16.0 : 0.0),
-                                  child: TextButton(
-                                      onPressed: () => _evaluateEnterprise(
-                                          context, internship),
-                                      child:
-                                          const Text('Évaluer l\'entreprise')),
-                                ),
-                              if (canSeeDetails)
-                                TextButton(
-                                  onPressed: () =>
-                                      GoRouter.of(context).pushNamed(
-                                    Screens.student,
-                                    pathParameters: Screens.params(student),
-                                    queryParameters:
-                                        Screens.queryParams(pageIndex: '1'),
-                                  ),
-                                  child: const Text('Détails du stage',
-                                      textAlign: TextAlign.center),
-                                ),
+                              Text(
+                                internship.dates.start.year.toString(),
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(width: 24),
+                              Text(
+                                student.fullName,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
                             ],
                           ),
                         ),
-                      )
-                    ],
+                        Text('Stagiaire ${student.program}',
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Flexible(
+                          child: Text(
+                            specialization.idWithName,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            maxLines: null,
+                          ),
+                        ),
+                        if (!(_expanded[internship.id] ?? false))
+                          SizedBox(height: 8.0)
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
-          ).toList(),
-        )
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Row(
+                            children: [
+                              const Text(
+                                  'Enseignant\u00b7e\u00b7s superviseur\u00b7e\u00b7s de stage\u00a0: '),
+                              GestureDetector(
+                                  onTap: signatoryTeacher.email == null
+                                      ? null
+                                      : () => _sendEmail(signatoryTeacher),
+                                  child: Text(
+                                    signatoryTeacher.fullName,
+                                    style: signatoryTeacher.email == null
+                                        ? null
+                                        : Theme.of(context)
+                                            .textTheme
+                                            .titleSmall!
+                                            .copyWith(
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              color: Colors.blue,
+                                            ),
+                                  ))
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                              'Responsable en milieu de stage\u00a0: ${widget.internships.last.supervisor.fullName}'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0, bottom: 15),
+                          child: _dateBuild(internship),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 8.0, right: 12),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (internship.isEnterpriseEvaluationPending)
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        right: canSeeDetails ? 16.0 : 0.0),
+                                    child: TextButton(
+                                        onPressed: () => _evaluateEnterprise(
+                                            context, internship),
+                                        child: const Text(
+                                            'Évaluer l\'entreprise')),
+                                  ),
+                                if (canSeeDetails)
+                                  TextButton(
+                                    onPressed: () =>
+                                        GoRouter.of(context).pushNamed(
+                                      Screens.student,
+                                      pathParameters: Screens.params(student),
+                                      queryParameters:
+                                          Screens.queryParams(pageIndex: '1'),
+                                    ),
+                                    child: const Text('Détails du stage',
+                                        textAlign: TextAlign.center),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ));
+            }),
+          ],
+        ),
       ],
     );
   }
