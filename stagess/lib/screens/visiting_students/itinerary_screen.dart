@@ -207,10 +207,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                   if (!isSmall) SizedBox(height: 60),
                   _Distance(_routingController.distances,
                       itinerary: currentItinerary),
-                  if (_routingController.hasChanged)
-                    TextButton(
-                        onPressed: () => _selectItinerary(_currentDate),
-                        child: Text('Enregistrer l\'itinéraire')),
                   _studentsToVisitWidget(context),
                 ],
               ),

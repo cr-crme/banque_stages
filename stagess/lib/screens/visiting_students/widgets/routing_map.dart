@@ -186,34 +186,36 @@ class _RoutingMapState extends State<RoutingMap> {
               Alignment(0.8, 0.4 * previous), // Centered almost at max right,
           width: markerSize + nameWidth,
           height: markerSize + nameHeight,
-          child: Row(
-            children: [
-              GestureDetector(
+          child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
                 onTap: () => widget.controller.addToItinerary(i),
                 onLongPress: () => _toggleName(i),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(75),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    waypoint.priority.icon,
-                    color: waypoint.priority.color,
-                    size: markerSize,
-                  ),
+                child: Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(75),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        waypoint.priority.icon,
+                        color: waypoint.priority.color,
+                        size: markerSize,
+                      ),
+                    ),
+                    if (waypoint.showTitle)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 2),
+                        decoration: BoxDecoration(
+                            color: Colors.white.withAlpha(125),
+                            shape: BoxShape.rectangle),
+                        child: Text(waypoint.title),
+                      )
+                  ],
                 ),
-              ),
-              if (waypoint.showTitle)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                  decoration: BoxDecoration(
-                      color: Colors.white.withAlpha(125),
-                      shape: BoxShape.rectangle),
-                  child: Text(waypoint.title),
-                )
-            ],
-          ),
+              )),
         ),
       );
     }
