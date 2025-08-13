@@ -21,6 +21,14 @@ class TimeOfDay {
   TimeOfDay copy() {
     return TimeOfDay(hour: hour, minute: minute);
   }
+
+  bool isAfter(TimeOfDay other) {
+    return hour > other.hour || (hour == other.hour && minute > other.minute);
+  }
+
+  bool isBefore(TimeOfDay other) {
+    return hour < other.hour || (hour == other.hour && minute < other.minute);
+  }
 }
 
 class DateTimeRange {

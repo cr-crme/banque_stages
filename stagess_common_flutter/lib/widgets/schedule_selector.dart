@@ -419,8 +419,19 @@ class _ScheduleSelector extends StatelessWidget {
                     child: Column(
                       children: [
                         ...Day.values.asMap().keys.map(
-                          (dayIndex) => Builder(
-                            builder: (context) {
+                          (dayIndex) => FormField(
+                            validator: (value) {
+                              final day = Day.values[dayIndex];
+                              final schedule = weeklySchedule.schedule[day];
+                              for (final block
+                                  in schedule?.blocks ?? <TimeBlock>[]) {
+                                if (block.end.isBefore(block.start)) {
+                                  return 'La fin du bloc horaire ne peut pas être avant le début.';
+                                }
+                              }
+                              return null;
+                            },
+                            builder: (state) {
                               final day = Day.values[dayIndex];
 
                               bool isEnabled = true;
@@ -433,10 +444,27 @@ class _ScheduleSelector extends StatelessWidget {
                                 }
                               }
 
-                              return _buildDailyScheduleTile(
-                                context,
-                                day: day,
-                                canChangeTime: isEnabled,
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _buildDailyScheduleTile(
+                                    context,
+                                    day: day,
+                                    canChangeTime: isEnabled,
+                                  ),
+                                  if (state.hasError && isEnabled)
+                                    Center(
+                                      child: Text(
+                                        state.errorText ?? '',
+                                        style: TextStyle(
+                                          color:
+                                              Theme.of(
+                                                context,
+                                              ).colorScheme.error,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               );
                             },
                           ),
