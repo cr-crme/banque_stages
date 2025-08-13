@@ -5,7 +5,7 @@
       "label": "Run Backend Server",
       "type": "shell",
       "command": "dart",
-      "args": [ "backend/bin/backend.dart" ],
+      "args": [ "stagess_backend/bin/backend.dart" ],
       "options": {
         "env": {
           "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
@@ -20,20 +20,20 @@
       },
     },
     {
-      "label": "Release app",
+      "label": "Release StageSS",
       "type": "shell",
       "command": "flutter",
       "args": [ "build", "web", "--release", "--base-href=/stagess/" ],
       "problemMatcher": [ ],
-      "options": { "cwd": "${workspaceFolder}/app" },
+      "options": { "cwd": "${workspaceFolder}/stagess" },
     },
     {
-      "label": "Release admin app",
+      "label": "Release StageSS Admin",
       "type": "shell",
       "command": "flutter",
-      "args": [ "build", "web", "--release", "--base-href=/admin-stagess/" ],
+      "args": [ "build", "web", "--release", "--base-href=/stagess-admin/" ],
       "problemMatcher": [ ],
-      "options": { "cwd": "${workspaceFolder}/admin_app" },
+      "options": { "cwd": "${workspaceFolder}/stagess_admin" },
     },
   ]
 }

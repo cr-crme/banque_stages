@@ -1,0 +1,114 @@
+name: stagess
+description: An application that helps teachers manage their students.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: "none"
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+1
+
+environment:
+    sdk: ">=2.17.5 <3.0.0"
+
+dependencies:
+    flutter:
+        sdk: flutter
+
+    flutter_localizations:
+        sdk: flutter
+
+    provider: ^6.0.3
+    flutter_spinbox: ^0.13.1
+    flutter_rating_bar: ^4.0.1
+    image_picker: ^1.1.2
+    firebase_core: ^3.10.1
+    firebase_storage: ^12.4.1 
+    firebase_storage_mocks: ^0.7.0
+    path: ^1.8.1
+    nanoid: ^1.0.0
+    collection: ^1.16.0
+    mockito: ^5.3.2
+    build_runner: ^2.3.0
+    latlong2: ^0.9.1
+    flutter_map: ^8.1.1
+    flutter_map_cancellable_tile_provider: ^3.1.0
+    routing_client_dart: ^1.0.7
+    osrm: ^0.0.8
+    enhanced_containers_foundation:
+    enhanced_containers:
+    crcrme_material_theme:
+        path: ../external/crcrme_material_theme
+    go_router: ^14.2.7
+    url_strategy: ^0.3.0
+    url_launcher: ^6.1.10
+    auto_size_text: ^3.0.0
+    pdf: ^3.10.1
+    printing: ^5.10.3
+    intl: ^0.20.2
+    shared_preferences: ^2.2.0
+    lorem_ipsum: ^0.0.3
+    http: ^1.4.0
+    dart_jsonwebtoken: ^2.17.0
+    web_socket_client: ^0.2.0
+    uuid: 4.5.1
+    aad_oauth: ^1.0.1
+    logging: ^1.0.3
+    stagess_common:
+        path: ../stagess_common
+    stagess_common_flutter:
+        path: ../stagess_common_flutter
+
+dependency_overrides:
+    enhanced_containers_foundation:
+        path: ../external/enhanced_containers/plugins/enhanced_containers_foundation
+    enhanced_containers:
+        path: ../external/enhanced_containers/
+
+dev_dependencies:
+    flutter_test:
+        sdk: flutter
+    flutter_lints: ^5.0.0
+    flutter_gen:
+
+flutter:
+    generate: true
+    uses-material-design: true
+
+    assets:
+        - assets/jobs-data.json
+        - assets/risks-data.json
+        - assets/questions.json
+        - assets/images-sst/1.png
+        - assets/images-sst/2.png
+        - assets/images-sst/3.png
+        - assets/images-sst/4.png
+        - assets/images-sst/5.png
+        - assets/images-sst/6.png
+        - assets/images-sst/7.png
+        - assets/images-sst/8.png
+        - assets/images-sst/9.png
+        - assets/images-sst/10.png
+        - assets/images-sst/11.png
+        - assets/images-sst/12.png
+        - assets/images-sst/13.png
+        - assets/images-sst/14.png
+        - assets/images-sst/15.png
+        - assets/images-sst/16.png
+        - assets/images-sst/17.png
+        - assets/images-sst/18.png
+        - assets/images-sst/19.png
+        - assets/images-sst/20.png
+        - assets/images-sst/21.png
+        - assets/images-sst/22.png
+        - assets/images-sst/23.png
+        - assets/images-sst/24.png
+        - assets/images-sst/25.png
+        - assets/images-sst/26.png

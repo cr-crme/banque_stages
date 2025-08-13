@@ -1,0 +1,42 @@
+name: stagess_common_flutter
+description: "Common resources shared between the admin and user apps of StageSS"
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  stagess_common:
+    path: ../stagess_common
+  intl: ^0.20.2
+  provider: ^6.0.3
+  enhanced_containers_foundation:
+  enhanced_containers:
+  cupertino_icons: ^1.0.8
+  firebase_core: ^3.10.1
+  firebase_auth: ^5.4.1
+  firebase_auth_mocks: ^0.14.1
+  web_socket_client: ^0.2.0
+  flutter_map: ^8.1.1
+  flutter_map_cancellable_tile_provider: ^3.1.0
+  latlong2: ^0.9.1
+  url_launcher: ^6.1.10
+  logging: ^1.0.3
+  collection: ^1.16.0
+
+dependency_overrides:
+  enhanced_containers_foundation:
+    path: ../external/enhanced_containers/plugins/enhanced_containers_foundation
+  enhanced_containers:
+    path: ../external/enhanced_containers/
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

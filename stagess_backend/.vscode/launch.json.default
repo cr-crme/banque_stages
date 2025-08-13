@@ -1,0 +1,29 @@
+{
+    // Utilisez IntelliSense pour en savoir plus sur les attributs possibles.
+    // Pointez pour afficher la description des attributs existants.
+    // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Backend",
+            "request": "launch",
+            "type": "dart",
+            "program": "bin/backend.dart",
+            "env": {
+                "FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
+                "DATABASE_PRODUCTION_ADMIN_PASSWORD": "<PUT YOUR DATABASE PASSWORD HERE>",
+            },
+        },
+        {
+            "name": "Reset database",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "resources/database/reset_database.py",
+            "console": "integratedTerminal",
+            "env": {
+                "STAGESS_SUPERADMIN_EMAIL": "<PUT EMAIL OF THE SUPERADMIN ACCOUNT HERE>",
+                "DATABASE_PRODUCTION_ADMIN_PASSWORD": "<PUT YOUR DATABASE PASSWORD HERE>",
+            },
+        },
+    ]
+}

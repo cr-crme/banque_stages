@@ -43,14 +43,14 @@ call flutter pub get
 popd
 popd
 
-@REM Pub get in the app directory
-pushd app
-echo "Running pub get in app directory..."
+@REM Pub get in the stagess directory
+pushd stagess
+echo "Running pub get in stagess directory..."
 call flutter pub get
 popd
 
-@REM Pub get in the admin_app directory
-pushd admin_app
-echo "Running pub get in admin_app directory..."
+@REM Pub get in the stagess_admin directory
+pushd stagess_admin
+echo "Running pub get in stagess_admin directory..."
 call flutter pub get
 popd
