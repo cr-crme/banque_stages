@@ -239,6 +239,7 @@ class _ExtraSpecialization extends StatelessWidget {
           canChangeExpandedState: false,
           initialExpandedState: true,
           elevation: 0.0,
+          jobPickerPadding: const EdgeInsets.only(left: 8, top: 12, right: 24),
           showHeader: false,
         ),
       ],
@@ -251,7 +252,7 @@ class _ExtraSpecialization extends StatelessWidget {
         'Building _ExtraSpecialization with ${controllers.length} controllers');
 
     return Padding(
-      padding: const EdgeInsets.only(left: 12.0, top: 24.0),
+      padding: const EdgeInsets.only(top: 24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

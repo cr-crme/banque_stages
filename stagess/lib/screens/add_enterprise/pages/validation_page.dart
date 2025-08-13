@@ -128,6 +128,8 @@ class _ValidationPageState extends State<ValidationPage> {
                 elevation: 0,
                 initialExpandedState: true,
                 canChangeExpandedState: false,
+                jobPickerPadding:
+                    const EdgeInsets.only(left: 12.0, right: 24.0),
                 controller: _enterpriseJobControllers[job.id]!,
               )),
         ],

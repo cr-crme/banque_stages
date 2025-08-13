@@ -255,7 +255,8 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                             child: _buildAvailability(school: school),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        if (widget.canChangeExpandedState)
+                          const SizedBox(height: 8),
                       ],
                     ),
                   )
@@ -267,8 +268,11 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (widget.editMode) _buildJobPicker(),
-            const SizedBox(height: 8),
+            if (widget.editMode)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: _buildJobPicker(),
+              ),
             if (!widget.specializationOnly)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

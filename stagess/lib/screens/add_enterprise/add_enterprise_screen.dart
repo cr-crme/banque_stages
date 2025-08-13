@@ -144,7 +144,8 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
                         text: _currentEnterprise.name,
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                     const TextSpan(
-                        text: ' a bien été ajoutée à la banque de stages.\n\n'
+                        text:
+                            ' a bien été ajoutée à la liste des entreprises.\n\n'
                             'Vous pouvez maintenant y inscrire des stagiaires.'),
                   ],
                 ),
