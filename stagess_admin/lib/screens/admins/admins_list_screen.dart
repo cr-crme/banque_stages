@@ -97,13 +97,14 @@ class AdminsListScreen extends StatelessWidget {
                 (schoolBoardEntry) => Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: AnimatedExpandingCard(
-                    header: Text(
-                      schoolBoardEntry.key?.name ??
-                          'Super administrateurs·trices',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleLarge!.copyWith(color: Colors.black),
-                    ),
+                    header:
+                        (ctx, isExpanded) => Text(
+                          schoolBoardEntry.key?.name ??
+                              'Super administrateurs·trices',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                        ),
                     elevation: 0.0,
                     initialExpandedState: true,
                     child: Column(

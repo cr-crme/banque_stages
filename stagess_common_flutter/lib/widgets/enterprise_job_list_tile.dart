@@ -202,58 +202,64 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
       canChangeExpandedState: widget.canChangeExpandedState,
       initialExpandedState: widget.initialExpandedState,
       header:
-          widget.showHeader
-              ? Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          (ctx, isExpanded) =>
+              widget.showHeader
+                  ? Padding(
+                    padding: const EdgeInsets.only(left: 12.0, top: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Flexible(
-                          child: Text(
-                            widget.controller._specialization?.idWithName ??
-                                'Aucun métier sélectionné',
-                            style: Theme.of(context).textTheme.titleMedium,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                widget.controller._specialization?.idWithName ??
+                                    'Aucun métier sélectionné',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ),
+                            if (widget.editMode &&
+                                widget.onRequestDelete != null)
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                onPressed: widget.onRequestDelete,
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: 4.0),
+                        if (widget.controller._reservedForPickerController !=
+                            null)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              bottom: widget.editMode ? 20 : 12,
+                            ),
+                            child: _buildReservedFor(),
+                          ),
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.editMode
+                              ? '* Indiquer le nombre de places de stages disponibles :'
+                              : 'Nombre de places de stages disponibles :',
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        ...schools.map(
+                          (school) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12.0,
+                              vertical: 2.0,
+                            ),
+                            child: _buildAvailability(school: school),
                           ),
                         ),
-                        if (widget.editMode && widget.onRequestDelete != null)
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: widget.onRequestDelete,
-                          ),
+                        const SizedBox(height: 8),
                       ],
                     ),
-                    SizedBox(height: 4.0),
-                    if (widget.controller._reservedForPickerController != null)
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: widget.editMode ? 20 : 12,
-                        ),
-                        child: _buildReservedFor(),
-                      ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.editMode
-                          ? '* Indiquer le nombre de places de stages disponibles :'
-                          : 'Nombre de places de stages disponibles :',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    ...schools.map(
-                      (school) => Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 2.0,
-                        ),
-                        child: _buildAvailability(school: school),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                ),
-              )
-              : const SizedBox.shrink(),
+                  )
+                  : const SizedBox.shrink(),
       child: Padding(
         padding:
             widget.jobPickerPadding ??

@@ -136,15 +136,16 @@ class InternshipsListScreen extends StatelessWidget {
         schoolBoardInternships.entries
             .map(
               (schoolBoardEntry) => AnimatedExpandingCard(
-                header: Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
-                  child: Text(
-                    schoolBoardEntry.key.name,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleLarge!.copyWith(color: Colors.black),
-                  ),
-                ),
+                header:
+                    (ctx, isExpanded) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4.0),
+                      child: Text(
+                        schoolBoardEntry.key.name,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleLarge!.copyWith(color: Colors.black),
+                      ),
+                    ),
                 elevation: 0.0,
                 initialExpandedState: true,
                 child: Column(
@@ -193,13 +194,14 @@ class _InternshipsByActive extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedExpandingCard(
-      header: Padding(
-        padding: const EdgeInsets.only(left: 12.0, top: 12, bottom: 8.0),
-        child: Text(
-          areActive ? 'Stages actifs' : 'Stages terminés',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-      ),
+      header:
+          (ctx, isExpanded) => Padding(
+            padding: const EdgeInsets.only(left: 12.0, top: 12, bottom: 8.0),
+            child: Text(
+              areActive ? 'Stages actifs' : 'Stages terminés',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
       initialExpandedState: areActive,
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0),
@@ -225,10 +227,11 @@ class _InternshipsBySchools extends StatelessWidget {
 
             return AnimatedExpandingCard(
               key: ValueKey(school.id),
-              header: Text(
-                school.name,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              header:
+                  (ctx, isExpanded) => Text(
+                    school.name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
               initialExpandedState: true,
               elevation: 0,
               child: _InternshipsByTeachers(teachers: teachers),
@@ -259,10 +262,11 @@ class _InternshipsByTeachers extends StatelessWidget {
             padding: const EdgeInsets.only(left: 12.0),
             child: AnimatedExpandingCard(
               key: ValueKey(teacher.id),
-              header: Text(
-                teacher.fullName,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              header:
+                  (ctx, isExpanded) => Text(
+                    teacher.fullName,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
               elevation: 0,
               initialExpandedState: true,
               child: Column(

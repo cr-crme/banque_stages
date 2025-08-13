@@ -245,35 +245,40 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
         ? AnimatedExpandingCard(
           initialExpandedState: _isExpanded,
           onTapHeader: (isExpanded) => setState(() => _isExpanded = isExpanded),
-          header: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
-                child: Text(
-                  widget.enterprise.name,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              if (_isExpanded)
-                Row(
-                  children: [
-                    if (!hasInternship)
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: _onClickedDeleting,
-                      ),
-                    IconButton(
-                      icon: Icon(
-                        _isEditing ? Icons.save : Icons.edit,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      onPressed: _onClickedEditing,
+          header:
+              (ctx, isExpanded) => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 12.0,
+                      top: 8,
+                      bottom: 8,
                     ),
-                  ],
-                ),
-            ],
-          ),
+                    child: Text(
+                      widget.enterprise.name,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  if (_isExpanded)
+                    Row(
+                      children: [
+                        if (!hasInternship)
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: _onClickedDeleting,
+                          ),
+                        IconButton(
+                          icon: Icon(
+                            _isEditing ? Icons.save : Icons.edit,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          onPressed: _onClickedEditing,
+                        ),
+                      ],
+                    ),
+                ],
+              ),
           child: _buildEditingForm(),
         )
         : _buildEditingForm();
@@ -283,33 +288,54 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     return Form(
       key: _formKey,
       child: Padding(
-        padding: const EdgeInsets.only(left: 24.0, bottom: 8),
+        padding: const EdgeInsets.only(left: 24.0, bottom: 24.0, right: 24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildName(),
-            const SizedBox(height: 8),
             _buildEnterpriseStatus(),
             const SizedBox(height: 8),
             _buildJobs(),
             const SizedBox(height: 8),
-            _buildRecruiter(),
-            const SizedBox(height: 8),
-            _buildAddress(),
-            const SizedBox(height: 8),
-            _buildPhone(),
-            const SizedBox(height: 8),
-            _buildFax(),
-            const SizedBox(height: 8),
-            _buildWebsite(),
-            const SizedBox(height: 8),
-            _buildHeadquartersAddress(),
-            const SizedBox(height: 8),
-            _buildContact(),
-            const SizedBox(height: 8),
-            _buildNeq(),
-            const SizedBox(height: 8),
-            _buildActivityTypes(),
+            AnimatedExpandingCard(
+              elevation: 0.0,
+              header:
+                  (ctx, isExpanded) => Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      isExpanded
+                          ? 'Détails de l\'entreprise'
+                          : 'Plus de détails sur l\'entreprise...',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildName(),
+                    const SizedBox(height: 8),
+                    _buildRecruiter(),
+                    const SizedBox(height: 8),
+                    _buildAddress(),
+                    const SizedBox(height: 8),
+                    _buildPhone(),
+                    const SizedBox(height: 8),
+                    _buildFax(),
+                    const SizedBox(height: 8),
+                    _buildWebsite(),
+                    const SizedBox(height: 8),
+                    _buildHeadquartersAddress(),
+                    const SizedBox(height: 8),
+                    _buildContact(),
+                    const SizedBox(height: 8),
+                    _buildNeq(),
+                    const SizedBox(height: 8),
+                    _buildActivityTypes(),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -388,58 +414,51 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
   }
 
   Widget _buildJobs() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 12.0),
-      child: Column(
-        children: [
-          if (_isEditing)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
-                child: TextButton(
-                  onPressed: _addJob,
-                  child: const Text('Ajouter un nouveau métier'),
-                ),
+    return Column(
+      children: [
+        if (_isEditing)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
+              child: TextButton(
+                onPressed: _addJob,
+                child: const Text('Ajouter un nouveau métier'),
               ),
             ),
-          _jobControllers.isEmpty
-              ? Padding(
-                padding: const EdgeInsets.only(
-                  left: 12.0,
-                  top: 8.0,
-                  bottom: 4.0,
-                ),
-                child: Text('Aucun métier proposé pour le moment.'),
-              )
-              : Column(
-                children: [
-                  ..._jobControllers.keys.map((jobId) {
-                    final hasInternship = InternshipsProvider.of(
-                      context,
-                      listen: true,
-                    ).any(
-                      (internship) =>
-                          internship.enterpriseId == widget.enterprise.id &&
-                          internship.jobId == jobId,
-                    );
+          ),
+        _jobControllers.isEmpty
+            ? Padding(
+              padding: const EdgeInsets.only(left: 12.0, top: 8.0, bottom: 4.0),
+              child: Text('Aucun métier proposé pour le moment.'),
+            )
+            : Column(
+              children: [
+                ..._jobControllers.keys.map((jobId) {
+                  final hasInternship = InternshipsProvider.of(
+                    context,
+                    listen: true,
+                  ).any(
+                    (internship) =>
+                        internship.enterpriseId == widget.enterprise.id &&
+                        internship.jobId == jobId,
+                  );
 
-                    return EnterpriseJobListTile(
-                      key: ValueKey(jobId),
-                      controller: _jobControllers[jobId]!,
-                      schools: _currentSchoolBoard?.schools ?? [],
-                      editMode: _isEditing,
-                      onRequestDelete:
-                          hasInternship ? null : () => _deleteJob(jobId),
-                      initialExpandedState:
-                          _jobControllers[jobId]!.specialization?.idWithName ==
-                          null,
-                    );
-                  }),
-                ],
-              ),
-        ],
-      ),
+                  return EnterpriseJobListTile(
+                    key: ValueKey(jobId),
+                    controller: _jobControllers[jobId]!,
+                    schools: _currentSchoolBoard?.schools ?? [],
+                    editMode: _isEditing,
+                    onRequestDelete:
+                        hasInternship ? null : () => _deleteJob(jobId),
+                    initialExpandedState:
+                        _jobControllers[jobId]!.specialization?.idWithName ==
+                        null,
+                  );
+                }),
+              ],
+            ),
+      ],
     );
   }
 

@@ -58,7 +58,7 @@ class SchoolBoardsListScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           authProvider.databaseAccessLevel == AccessLevel.superAdmin
-              ? 'Liste des commissions scolaires'
+              ? 'Liste des centres de services scolaires'
               : 'Liste des écoles',
         ),
         actions:

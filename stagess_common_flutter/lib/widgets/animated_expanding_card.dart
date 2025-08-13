@@ -13,7 +13,7 @@ class AnimatedExpandingCard extends StatefulWidget {
   });
 
   final Duration expandingDuration;
-  final Widget header;
+  final Widget Function(BuildContext, bool isExpanded) header;
   final Function(bool newState)? onTapHeader;
   final Widget child;
   final bool canChangeExpandedState;
@@ -68,7 +68,7 @@ class _AnimatedExpandingCardState extends State<AnimatedExpandingCard>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Flexible(child: widget.header),
+                Flexible(child: widget.header(context, _isExpanded)),
                 widget.canChangeExpandedState
                     ? Padding(
                       padding: const EdgeInsets.only(left: 12.0, right: 16.0),

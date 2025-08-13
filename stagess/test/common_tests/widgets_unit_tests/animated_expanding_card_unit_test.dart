@@ -7,8 +7,8 @@ import 'utils.dart';
 void main() {
   group('AnimatedExpandingCard', () {
     testWidgets('Header is always displayed', (tester) async {
-      await tester.pumpWidget(declareWidget(const AnimatedExpandingCard(
-        header: Text('Header'),
+      await tester.pumpWidget(declareWidget(AnimatedExpandingCard(
+        header: (ctx, isExpanded) => Text('Header'),
         child: Text('Child'),
       )));
 
@@ -22,8 +22,8 @@ void main() {
     });
 
     testWidgets('tapping expands the card', (tester) async {
-      await tester.pumpWidget(declareWidget(const AnimatedExpandingCard(
-        header: Text('Header'),
+      await tester.pumpWidget(declareWidget(AnimatedExpandingCard(
+        header: (ctx, isExpanded) => Text('Header'),
         child: Text('Child'),
       )));
 
@@ -46,8 +46,8 @@ void main() {
     });
 
     testWidgets('icon changes when card is expanded', (tester) async {
-      await tester.pumpWidget(declareWidget(const AnimatedExpandingCard(
-        header: Text('Header'),
+      await tester.pumpWidget(declareWidget(AnimatedExpandingCard(
+        header: (ctx, isExpanded) => Text('Header'),
         child: Text('Child'),
       )));
 
@@ -70,8 +70,8 @@ void main() {
     });
 
     testWidgets('can start expanded', (tester) async {
-      await tester.pumpWidget(declareWidget(const AnimatedExpandingCard(
-        header: Text('Header'),
+      await tester.pumpWidget(declareWidget(AnimatedExpandingCard(
+        header: (ctx, isExpanded) => Text('Header'),
         initialExpandedState: true,
         child: Text('Child'),
       )));

@@ -241,7 +241,7 @@ class _StudentInternshipListViewState
 
               return AnimatedExpandingCard(
                 initialExpandedState: _expanded[internship.id]!,
-                header: ListTile(
+                header: (ctx, isExpanded) => ListTile(
                   title: _buildEnterpriseName(context, enterprise: enterprise),
                   subtitle: Padding(
                     padding: const EdgeInsets.only(left: 12.0),

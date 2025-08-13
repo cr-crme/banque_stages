@@ -348,7 +348,7 @@ class _SpecificSkillBodyState extends State<_SpecificSkillBody> {
 
     return AnimatedExpandingCard(
       elevation: 0.0,
-      header: Row(
+      header: (ctx, isExpanded) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -573,33 +573,35 @@ class _AttitudeBodyState extends State<_AttitudeBody> {
 
     return AnimatedExpandingCard(
         elevation: 0.0,
-        header: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            const Text('C2. Attitudes et comportements',
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            Visibility(
-              visible:
-                  widget.internship.supervisingTeacherIds.contains(teacherId),
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: Theme.of(context).colorScheme.primary, width: 3),
-                    borderRadius: const BorderRadius.all(Radius.circular(18))),
-                child: IconButton(
-                  onPressed: () => showAttitudeEvaluationDialog(
-                      context: context,
-                      formController: AttitudeEvaluationFormController(
-                          internshipId: widget.internship.id),
-                      editMode: true),
-                  icon: const Icon(Icons.playlist_add_sharp),
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            )
-          ],
-        ),
+        header: (ctx, isExpanded) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const Text('C2. Attitudes et comportements',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Visibility(
+                  visible: widget.internship.supervisingTeacherIds
+                      .contains(teacherId),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 3),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(18))),
+                    child: IconButton(
+                      onPressed: () => showAttitudeEvaluationDialog(
+                          context: context,
+                          formController: AttitudeEvaluationFormController(
+                              internshipId: widget.internship.id),
+                          editMode: true),
+                      icon: const Icon(Icons.playlist_add_sharp),
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                )
+              ],
+            ),
         child: Column(
           children: [
             if (widget.evaluation.isEmpty)
@@ -761,32 +763,35 @@ class _VisaBodyState extends State<_VisaBody> {
 
     return AnimatedExpandingCard(
         elevation: 0.0,
-        header: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            const Text('VISA', style: TextStyle(fontWeight: FontWeight.bold)),
-            Visibility(
-              visible:
-                  widget.internship.supervisingTeacherIds.contains(teacherId),
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: Theme.of(context).colorScheme.primary, width: 3),
-                    borderRadius: const BorderRadius.all(Radius.circular(18))),
-                child: IconButton(
-                  onPressed: () => showVisaEvaluationDialog(
-                      context: context,
-                      formController: VisaEvaluationFormController(
-                          internshipId: widget.internship.id),
-                      editMode: true),
-                  icon: const Icon(Icons.post_add),
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            )
-          ],
-        ),
+        header: (ctx, isExpanded) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const Text('VISA',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Visibility(
+                  visible: widget.internship.supervisingTeacherIds
+                      .contains(teacherId),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 3),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(18))),
+                    child: IconButton(
+                      onPressed: () => showVisaEvaluationDialog(
+                          context: context,
+                          formController: VisaEvaluationFormController(
+                              internshipId: widget.internship.id),
+                          editMode: true),
+                      icon: const Icon(Icons.post_add),
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                )
+              ],
+            ),
         child: Column(
           children: [
             if (widget.evaluation.isEmpty)

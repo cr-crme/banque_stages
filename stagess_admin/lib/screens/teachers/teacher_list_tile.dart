@@ -164,36 +164,41 @@ class TeacherListTileState extends State<TeacherListTile> {
         ? AnimatedExpandingCard(
           initialExpandedState: _isExpanded,
           onTapHeader: (isExpanded) => setState(() => _isExpanded = isExpanded),
-          header: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 8, bottom: 8),
-                child: Text(
-                  '${widget.teacher.firstName} ${widget.teacher.lastName}',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+          header:
+              (ctx, isExpanded) => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 12.0,
+                      top: 8,
+                      bottom: 8,
+                    ),
+                    child: Text(
+                      '${widget.teacher.firstName} ${widget.teacher.lastName}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  if (_isExpanded)
+                    Row(
+                      children: [
+                        if (widget.canDelete)
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: _onClickedDeleting,
+                          ),
+                        if (widget.canEdit)
+                          IconButton(
+                            icon: Icon(
+                              _isEditing ? Icons.save : Icons.edit,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            onPressed: _onClickedEditing,
+                          ),
+                      ],
+                    ),
+                ],
               ),
-              if (_isExpanded)
-                Row(
-                  children: [
-                    if (widget.canDelete)
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: _onClickedDeleting,
-                      ),
-                    if (widget.canEdit)
-                      IconButton(
-                        icon: Icon(
-                          _isEditing ? Icons.save : Icons.edit,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        onPressed: _onClickedEditing,
-                      ),
-                  ],
-                ),
-            ],
-          ),
           child: _buildEditingForm(),
         )
         : _buildEditingForm();

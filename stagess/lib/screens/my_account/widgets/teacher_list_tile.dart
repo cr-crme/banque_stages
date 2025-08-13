@@ -120,7 +120,7 @@ class TeacherListTileState extends State<TeacherListTile> {
       elevation: 0.0,
       onTapHeader: null,
       canChangeExpandedState: false,
-      header: Row(
+      header: (ctx, isExpanded) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(

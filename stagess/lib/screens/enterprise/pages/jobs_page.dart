@@ -259,7 +259,7 @@ class JobsPageState extends State<JobsPage> {
 
               return AnimatedExpandingCard(
                 key: _cardKey[job.id],
-                header: Column(
+                header: (ctx, isExpanded) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SubTitle(job.specialization.name, top: 12, bottom: 12),

@@ -224,42 +224,44 @@ class _InternshipListState extends State<_InternshipList> {
                   onTapHeader: (newState) => setState(
                         () => _expanded[internship.id] = newState,
                       ),
-                  header: Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                internship.dates.start.year.toString(),
-                                style: Theme.of(context).textTheme.titleMedium,
+                  header: (ctx, isExpanded) => Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    internship.dates.start.year.toString(),
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  const SizedBox(width: 24),
+                                  Text(
+                                    student.fullName,
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: 24),
-                              Text(
-                                student.fullName,
-                                style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Text('Stagiaire ${student.program}',
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            Flexible(
+                              child: Text(
+                                specialization.idWithName,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                maxLines: null,
                               ),
-                            ],
-                          ),
+                            ),
+                            if (!(_expanded[internship.id] ?? false))
+                              SizedBox(height: 8.0)
+                          ],
                         ),
-                        Text('Stagiaire ${student.program}',
-                            style: Theme.of(context).textTheme.bodyMedium),
-                        Flexible(
-                          child: Text(
-                            specialization.idWithName,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            maxLines: null,
-                          ),
-                        ),
-                        if (!(_expanded[internship.id] ?? false))
-                          SizedBox(height: 8.0)
-                      ],
-                    ),
-                  ),
+                      ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: Column(
