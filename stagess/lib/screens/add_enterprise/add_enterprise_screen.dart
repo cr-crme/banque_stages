@@ -99,7 +99,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
     _currentEnterprise = _currentEnterprise.copyWith(
       name: about?.name,
       neq: about?.neq,
-      activityTypes: about?.activityTypes,
+      activityTypes: about?.activityTypesController.activityTypes,
       jobs: _jobsKey.currentState!.jobs,
       contact: _currentEnterprise.contact.copyWith(
         firstName: about?.contactFirstName,
@@ -213,7 +213,11 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
                 state: _stepStatus[2],
                 isActive: _currentStep == 2,
                 title: const Text('Validation des\ninformations'),
-                content: ValidationPage(enterprise: _currentEnterprise),
+                content: ValidationPage(
+                    enterprise: _currentEnterprise,
+                    activityTypeController:
+                        _aboutKey.currentState?.activityTypesController,
+                    jobControllers: _jobsKey.currentState?.jobsControllers),
               ),
             ],
             controlsBuilder: _controlBuilder,

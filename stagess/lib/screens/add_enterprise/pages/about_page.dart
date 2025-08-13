@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:stagess/common/widgets/sub_title.dart';
-import 'package:stagess_common/models/enterprises/enterprise.dart';
 import 'package:stagess_common_flutter/widgets/address_list_tile.dart';
 import 'package:stagess_common_flutter/widgets/email_list_tile.dart';
 import 'package:stagess_common_flutter/widgets/enterprise_activity_type_list_tile.dart';
@@ -35,8 +34,8 @@ class AboutPageState extends State<AboutPage> {
   final _activityTypesController = EnterpriseActivityTypeListController(
     initial: {},
   );
-  Set<ActivityTypes> get activityTypes =>
-      _activityTypesController.activityTypes;
+  EnterpriseActivityTypeListController get activityTypesController =>
+      _activityTypesController;
 
   Future<String?> validate() async {
     _logger.finer('Validating InformationsPage with name: $name');

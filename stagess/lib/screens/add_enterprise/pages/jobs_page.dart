@@ -24,6 +24,7 @@ class JobsPageState extends State<JobsPage> {
         enterpriseStatus: EnterpriseStatus.active,
         job: Job.empty)
   ];
+  List<EnterpriseJobListController> get jobsControllers => _jobsControllers;
 
   bool validate() {
     _logger.finer('Validating JobsPage with ${_jobsControllers.length} jobs');
