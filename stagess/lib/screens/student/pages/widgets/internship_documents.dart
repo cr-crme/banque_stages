@@ -90,14 +90,34 @@ class _InternshipDocumentsState extends State<InternshipDocuments> {
         child: GestureDetector(
           onTap: () => showDialog(
               context: context,
-              builder: (ctx) => PdfPreview(
-                    allowPrinting: true,
-                    allowSharing: true,
-                    canChangeOrientation: false,
-                    canChangePageFormat: false,
-                    canDebug: false,
-                    build: (format) => pdfGeneratorCallback(context, format,
-                        internshipId: widget.internship.id),
+              builder: (ctx) => Dialog(
+                    backgroundColor: Colors.grey[700],
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Align(
+                            alignment: Alignment.topRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 12.0),
+                              child: IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () => Navigator.of(ctx).pop(),
+                              ),
+                            )),
+                        Expanded(
+                          child: PdfPreview(
+                            allowPrinting: true,
+                            allowSharing: true,
+                            canChangeOrientation: false,
+                            canChangePageFormat: false,
+                            canDebug: false,
+                            build: (format) => pdfGeneratorCallback(
+                                context, format,
+                                internshipId: widget.internship.id),
+                          ),
+                        ),
+                      ],
+                    ),
                   )),
           child: Text(
             title,

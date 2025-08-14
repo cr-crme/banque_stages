@@ -234,12 +234,15 @@ class _InternshipListState extends State<_InternshipList> {
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Row(
                                 children: [
-                                  Text(
-                                    internship.dates.start.year.toString(),
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  const SizedBox(width: 24),
+                                  SizedBox(
+                                      width: 120,
+                                      child: Text(
+                                        '${internship.dates.start.year.toString()}'
+                                        '${internship.dates.end.year == internship.dates.start.year ? '' : ' \u2014 ${internship.dates.end.year.toString()}'}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      )),
                                   Text(
                                     student.fullName,
                                     style:

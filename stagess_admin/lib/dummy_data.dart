@@ -1921,7 +1921,7 @@ Future<void> _addDummyInternships(
   startingPeriod = DateTime.now().subtract(const Duration(days: 100));
   period = time_utils.DateTimeRange(
     start: startingPeriod,
-    end: startingPeriod.add(Duration(days: rng.nextInt(90))),
+    end: startingPeriod.add(Duration(days: rng.nextInt(90) + 360)),
   );
   internships.add(
     Internship(
