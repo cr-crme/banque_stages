@@ -25,7 +25,7 @@ void main() {
     testWidgets('renders the proper title', (tester) async {
       await _initializedDrawer(tester);
 
-      expect(find.text('StageSS'), findsOneWidget);
+      expect(find.text('Stagess'), findsOneWidget);
     });
 
     testWidgets('The drawer tiles content', (WidgetTester tester) async {

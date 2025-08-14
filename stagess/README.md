@@ -1,4 +1,4 @@
-# CRCRME - Banque de stages (StageSS)
+# CRCRME - Banque de stages (Stagess)
 
 ## Installation
 

@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "StageSS",
+            "name": "Stagess",
             "request": "launch",
             "type": "dart",
             "program": "stagess/lib/main.dart",
@@ -21,13 +21,13 @@
             },
         },
         {
-            "name": "StageSS Admin",
+            "name": "Stagess Admin",
             "request": "launch",
             "type": "dart",
             "program": "stagess_admin/lib/main.dart",
         },
         {
-            "name": "StageSS Admin (with Backend)",
+            "name": "Stagess Admin (with Backend)",
             "request": "launch",
             "type": "dart",
             "program": "stagess_admin/lib/main.dart",
@@ -51,18 +51,18 @@
             "program": "stagess/lib/main_widget.dart",
         },
         {
-            "name": "Release StageSS au Travail",
+            "name": "Release Stagess au Travail",
             "request": "launch",
             "type": "dart",
             "program": "stagess/lib/main.dart",
-            "preLaunchTask": "Release StageSS",
+            "preLaunchTask": "Release Stagess",
         },
         {
-            "name": "Release StageSS Admin",
+            "name": "Release Stagess Admin",
             "request": "launch",
             "type": "dart",
             "program": "stagess_admin/lib/main.dart",
-            "preLaunchTask": "Release StageSS Admin",
+            "preLaunchTask": "Release Stagess Admin",
         },
     ]
 }

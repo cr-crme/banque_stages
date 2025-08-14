@@ -173,7 +173,7 @@ void expectStyle({
   if (!skipFontSize) expect(of.style!.fontSize, comparedTo.fontSize);
 }
 
-const drawerTitle = 'StageSS';
+const drawerTitle = 'Stagess';
 const reinitializedDataButtonText = 'Réinitialiser la base de données';
 
 enum ScreenTest {

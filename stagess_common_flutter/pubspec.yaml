@@ -1,5 +1,5 @@
 name: stagess_common_flutter
-description: "Common resources shared between the admin and user apps of StageSS"
+description: "Common resources shared between the admin and user apps of Stagess"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1

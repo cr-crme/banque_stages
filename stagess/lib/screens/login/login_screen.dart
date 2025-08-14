@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return PopScope(
       child: ResponsiveService.scaffoldOf(
         context,
-        appBar: AppBar(title: const Text('StageSS')),
+        appBar: AppBar(title: const Text('Stagess')),
         smallDrawer:
             authProvider.isAuthenticatorSignedIn ? const MainDrawer() : null,
         mediumDrawer: authProvider.isAuthenticatorSignedIn

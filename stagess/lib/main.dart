@@ -80,7 +80,7 @@ class StageSsApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
-        onGenerateTitle: (context) => 'StageSS',
+        onGenerateTitle: (context) => 'Stagess',
         theme: crcrmeMaterialTheme,
         routerConfig: router,
         localizationsDelegates: const [

@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
           (_) => showSnackBar(
             context,
             message:
-                'Vous n\'êtes pas un administrateur de StageSS.\n'
+                'Vous n\'êtes pas un administrateur de Stagess.\n'
                 'Connectez-vous sur le site web client pour accéder à votre compte.',
           ),
         );
@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return PopScope(
       child: ResponsiveService.scaffoldOf(
         context,
-        appBar: AppBar(title: const Text('Administration de StageSS')),
+        appBar: AppBar(title: const Text('Administration de Stagess')),
         smallDrawer: notSignedIn ? null : MainDrawer.small,
         mediumDrawer: notSignedIn ? null : MainDrawer.medium,
         largeDrawer: notSignedIn ? null : MainDrawer.large,
