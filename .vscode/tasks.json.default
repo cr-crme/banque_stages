@@ -35,5 +35,21 @@
       "problemMatcher": [ ],
       "options": { "cwd": "${workspaceFolder}/stagess_admin" },
     },
+    {
+      "label": "Release StageSS Tutorial",
+      "type": "shell",
+      "command": "flutter",
+      "args": [ "build", "web", "--release", "--base-href=/tutoriel-stagess/" ],
+      "problemMatcher": [ ],
+      "options": { "cwd": "${workspaceFolder}/stagess" },
+    },
+    {
+      "label": "Release StageSS Admin Tutorial",
+      "type": "shell",
+      "command": "flutter",
+      "args": [ "build", "web", "--release", "--base-href=/tutoriel-stagess-admin/" ],
+      "problemMatcher": [ ],
+      "options": { "cwd": "${workspaceFolder}/stagess_admin" },
+    },
   ]
 }

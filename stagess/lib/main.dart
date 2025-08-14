@@ -14,7 +14,6 @@ import 'package:stagess_common_flutter/providers/school_boards_provider.dart';
 import 'package:stagess_common_flutter/providers/students_provider.dart';
 import 'package:stagess_common_flutter/providers/teachers_provider.dart';
 
-// TODO: Add Icon to web app
 bool _compileProduction = false;
 
 // coverage:ignore-start
