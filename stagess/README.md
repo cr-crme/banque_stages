@@ -23,7 +23,7 @@ Rouler la commande suivante pour cloner le dépôt [CRCRME Material Theme](https
 3. Se connecter avec un compte ayant accès au projet Firebase et configurer le projet avec les paramètres par défaut.
 
         firebase login
-        flutterfire configure --project=banquestages
+        flutterfire configure --project=stagess-39d8f
 
 Pour plus d'informations, visitez [cette page](https://firebase.google.com/docs/flutter/setup).
 
