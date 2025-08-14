@@ -221,30 +221,44 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Text(
-            'Faire l\'itinéraire du\n${DateFormat('d MMMM yyyy', 'fr_CA').format(_currentDate)}',
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 20)),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              GestureDetector(
-                onTap: _showDatePicker,
-                child: Container(
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        shape: BoxShape.circle),
-                    child: const Padding(
-                      padding: EdgeInsets.all(6.0),
-                      child: Icon(
-                        Icons.calendar_month,
-                        size: 30,
-                      ),
-                    )),
-              ),
-            ],
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+                'Faire l\'itinéraire du\n${DateFormat('d MMMM yyyy', 'fr_CA').format(_currentDate)}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 20)),
+            const SizedBox(width: 12),
+            InkWell(
+              onTap: _showDatePicker,
+              borderRadius: BorderRadius.circular(30.0),
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.circle),
+                  child: const Padding(
+                    padding: EdgeInsets.all(6.0),
+                    child: Icon(
+                      Icons.calendar_month,
+                      size: 24,
+                    ),
+                  )),
+            ),
+          ],
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: IconButton(
+              onPressed: _routingController.hasChanged
+                  ? () => _selectItinerary(_currentDate)
+                  : null,
+              icon: Icon(Icons.save,
+                  color: _routingController.hasChanged
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey),
+            ),
           ),
         ),
       ],
