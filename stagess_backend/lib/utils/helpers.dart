@@ -24,8 +24,8 @@ Future<Map<String, dynamic>?> extractJwt(String token) async {
     // Verify the JWT with the public key
     jwt = JWT.verify(token, jwk); // Throws if verification fails
 
-// Step 4: Validate claims
-    final projectName = 'banquestages';
+    // Step 4: Validate claims
+    final projectName = 'stagess-39d8f';
     if (jwt.payload['aud'] != projectName) return null;
 
     if (jwt.payload['iss'] != 'https://securetoken.google.com/$projectName') {
