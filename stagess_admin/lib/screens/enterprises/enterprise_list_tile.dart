@@ -44,6 +44,8 @@ class EnterpriseListTile extends StatefulWidget {
 class EnterpriseListTileState extends State<EnterpriseListTile> {
   final _formKey = GlobalKey<FormState>();
   Future<bool> validate() async {
+    if (!_wasDetailsExpanded) return true;
+
     // We do both like so, so all the fields get validated even if one is not valid
     await _addressController.waitForValidation();
     await _headquartersAddressController.waitForValidation();
@@ -76,6 +78,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
     super.dispose();
   }
 
+  bool _wasDetailsExpanded = false;
   bool _isExpanded = false;
   bool _isEditing = false;
 
@@ -298,6 +301,7 @@ class EnterpriseListTileState extends State<EnterpriseListTile> {
             const SizedBox(height: 8),
             AnimatedExpandingCard(
               elevation: 0.0,
+              onTapHeader: (newState) => _wasDetailsExpanded = true,
               header:
                   (ctx, isExpanded) => Padding(
                     padding: const EdgeInsets.all(12.0),
