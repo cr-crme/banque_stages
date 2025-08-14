@@ -853,7 +853,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   Future<void> _updateToSkillEvaluations(
       Internship internship, Internship previous) async {
     // Skill evaluations are not updated, but stacked
-    _insertToSkillEvaluations(internship, previous);
+    await _insertToSkillEvaluations(internship, previous);
   }
 
   Future<void> _insertToAttitudeEvaluations(Internship internship,
