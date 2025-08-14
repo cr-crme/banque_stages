@@ -724,13 +724,9 @@ class _ScrollableStepperState extends State<ScrollableStepper>
             physics: widget.physics,
             padding: const EdgeInsets.all(24.0),
             children: <Widget>[
-              AnimatedSize(
-                curve: Curves.fastOutSlowIn,
-                duration: kThemeAnimationDuration,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: stepPanels),
-              ),
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: stepPanels),
               _buildVerticalControls(widget.currentStep),
             ],
           ),

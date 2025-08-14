@@ -83,7 +83,7 @@ class Home extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
-        onGenerateTitle: (context) => 'Adminstration de StageSS',
+        onGenerateTitle: (context) => 'Administration de StageSS',
         theme: crcrmeMaterialTheme,
         routerConfig: router,
         localizationsDelegates: const [

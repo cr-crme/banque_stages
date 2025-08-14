@@ -7,6 +7,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
     this.titleStyle,
     required this.elements,
     this.initialValues,
+    this.elementStyleBuilder,
     this.subWidgetBuilder,
     this.hasNotApplicableOption = false,
     this.showOtherOption = true,
@@ -20,6 +21,7 @@ class CheckboxWithOther<T> extends StatefulWidget {
   final TextStyle? titleStyle;
   final List<T> elements;
   final List<String>? initialValues;
+  final TextStyle Function(T element, bool isSelected)? elementStyleBuilder;
   final Widget Function(T element, bool isSelected)? subWidgetBuilder;
   final bool showOtherOption;
   final bool hasNotApplicableOption;
@@ -133,7 +135,13 @@ class CheckboxWithOtherState<T> extends State<CheckboxWithOther<T>> {
                 controlAffinity: ListTileControlAffinity.leading,
                 title: Text(
                   element.toString(),
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style:
+                      widget.elementStyleBuilder == null
+                          ? Theme.of(context).textTheme.bodyMedium
+                          : widget.elementStyleBuilder!(
+                            element,
+                            _elementValues[element]!,
+                          ),
                 ),
                 enabled: widget.enabled && !_isNotApplicable,
                 value: _elementValues[element]!,

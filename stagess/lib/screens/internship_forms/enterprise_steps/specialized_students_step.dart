@@ -158,34 +158,57 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
 
     return Form(
       key: _formKey,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _YesOrNoRadioTile(
-              title: '* Est-ce que le ou la stagiaire avait des besoins '
-                  'particuliers\u00a0?',
-              value: _hasStudentHadDisabilities,
-              onChanged: (value) =>
-                  setState(() => _hasStudentHadDisabilities = value),
-            ),
-            if (_hasStudentHadDisabilities)
-              CheckboxWithOther<_Disabilities>(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _YesOrNoRadioTile(
+            title: '* Est-ce que le ou la stagiaire avait des besoins '
+                'particuliers\u00a0?',
+            value: _hasStudentHadDisabilities,
+            onChanged: (value) =>
+                setState(() => _hasStudentHadDisabilities = value),
+          ),
+          if (_hasStudentHadDisabilities)
+            FormField(
+              validator: (value) {
+                for (final element
+                    in _hasDisabilitiesKey.currentState!.selected) {
+                  if (_getDisabilityValue(element) <= 0) {
+                    return 'Sélectionner une valeur pour $element';
+                  }
+                }
+                return null;
+              },
+              builder: (errorState) => CheckboxWithOther<_Disabilities>(
                 key: _hasDisabilitiesKey,
-                title: '* Est-ce que le ou la stagiaire avait\u00a0:',
+                title:
+                    '* Évaluer la prise en charge de l\'entreprise par rapport '
+                    'aux différents besoins de l\'élève s\'il ou elle avait:\u00a0:',
                 titleStyle: Theme.of(context).textTheme.titleSmall,
                 elements: _Disabilities.values,
+                elementStyleBuilder: (element, isSelected) {
+                  var out = Theme.of(context).textTheme.titleSmall!;
+
+                  if (errorState.hasError &&
+                      _hasDisabilitiesKey.currentState!.selected
+                          .contains(element) &&
+                      _getDisabilityValue(element) <= 0) {
+                    out = out.copyWith(
+                        color: Theme.of(context).colorScheme.error);
+                  }
+
+                  return out;
+                },
                 showOtherOption: false,
                 subWidgetBuilder: (element, isSelected) {
                   return isSelected
                       ? Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 24.0),
+                            padding:
+                                const EdgeInsets.only(left: 24.0, bottom: 8.0),
                             child: _RatingBarForm(
                               key: _disabilityKey(element),
-                              title:
-                                  'Évaluer la prise en charge de l\'élève par l\'entreprise\u00a0: ',
                               initialValue: _getDisabilityValue(element),
                               validator: (value) => value! <= 0
                                   ? 'Sélectionner une valeur'
@@ -200,8 +223,8 @@ class SpecializedStudentsStepState extends State<SpecializedStudentsStep> {
                 onOptionSelected: (value) => setState(() =>
                     _disabilities = _hasDisabilitiesKey.currentState!.selected),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
@@ -262,49 +285,36 @@ class _YesOrNoRadioTile extends StatelessWidget {
 class _RatingBarForm extends FormField<double> {
   const _RatingBarForm({
     super.key,
-    required this.title,
     super.initialValue = -1,
     super.validator,
     required void Function(double? rating) onRatingChanged,
   }) : super(onSaved: onRatingChanged, builder: _builder);
 
-  final String title;
-
   static Widget _builder(FormFieldState<double> state) {
-    final title = (state.widget as _RatingBarForm).title;
     final onRatingChanged = state.widget.onSaved!;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title),
-          Padding(
-            padding: const EdgeInsets.only(left: 12.0, top: 4.0),
-            child: RatingBar(
-              initialRating: state.value!,
-              ratingWidget: RatingWidget(
-                full: Icon(
-                  Icons.star,
-                  color: Theme.of(state.context).colorScheme.secondary,
-                ),
-                half: Icon(
-                  Icons.star_half,
-                  color: Theme.of(state.context).colorScheme.secondary,
-                ),
-                empty: Icon(
-                  Icons.star_border,
-                  color: Theme.of(state.context).colorScheme.secondary,
-                ),
-              ),
-              onRatingUpdate: (double value) {
-                state.didChange(value);
-                onRatingChanged(value);
-              },
-            ),
+      padding: const EdgeInsets.only(left: 30, right: 12.0),
+      child: RatingBar(
+        initialRating: state.value!,
+        ratingWidget: RatingWidget(
+          full: Icon(
+            Icons.star,
+            color: Theme.of(state.context).colorScheme.secondary,
           ),
-        ],
+          half: Icon(
+            Icons.star_half,
+            color: Theme.of(state.context).colorScheme.secondary,
+          ),
+          empty: Icon(
+            Icons.star_border,
+            color: Theme.of(state.context).colorScheme.secondary,
+          ),
+        ),
+        onRatingUpdate: (double value) {
+          state.didChange(value);
+          onRatingChanged(value);
+        },
       ),
     );
   }
