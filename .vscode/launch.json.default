@@ -37,7 +37,7 @@
             "name": "Reset database",
             "type": "debugpy",
             "request": "launch",
-            "program": "backend/resources/database/reset_database.py",
+            "program": "stagess_backend/resources/database/reset_database.py",
             "console": "integratedTerminal",
             "env": {
                 "STAGESS_SUPERADMIN_EMAIL": "<PUT EMAIL OF THE SUPERADMIN ACCOUNT HERE>",
