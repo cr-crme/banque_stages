@@ -58,6 +58,7 @@ class _AddEnterpriseScreenState extends State<AddEnterpriseScreen> {
 
     bool valid = false;
     String? message;
+    _updateEnterprise();
     if (_currentStep >= 0) {
       message = await _aboutKey.currentState!.validate();
       valid = message == null;
