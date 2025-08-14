@@ -287,6 +287,7 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
                           widget.editMode
                               ? '* Indiquer le nombre de places de stages disponibles :'
                               : 'Nombre de places de stages disponibles :',
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         ...schools.map(
                           (school) => _buildAvailability(school: school),
@@ -390,7 +391,12 @@ class _EnterpriseJobListTileState extends State<EnterpriseJobListTile> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(child: Text('* Âge minimum des stagiaires (ans)')),
+        Expanded(
+          child: Text(
+            '* Âge minimum des stagiaires (ans)',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.24,
           child: TextFormField(
