@@ -75,5 +75,3 @@ backendFirebaseServiceAccountKey.json
 backend/.vscode/launch.json
 
 .vscode/tasks.json
-
-stagess_backend/makefile
