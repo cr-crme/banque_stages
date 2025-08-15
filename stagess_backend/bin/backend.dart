@@ -24,18 +24,18 @@ final _databaseBackend = DatabaseBackend.mysql;
 final _backendIp = InternetAddress.loopbackIPv4;
 final _backendPort = BackendHelpers.backendPort;
 final _devSettings = ConnectionSettings(
-  host: _getFromEnvironment('DATABASE_DEV_HOST'),
-  port: int.parse(_getFromEnvironment('DATABASE_DEV_PORT')),
-  user: _getFromEnvironment('DATABASE_DEV_USER'),
-  password: _getFromEnvironment('DATABASE_DEV_PASSWORD'),
-  db: _getFromEnvironment('DATABASE_DEV_NAME'),
+  host: 'localhost',
+  port: int.parse(_getFromEnvironment('STAGESS_DATABASE_DEV_PORT')),
+  user: _getFromEnvironment('STAGESS_DATABASE_DEV_USER'),
+  password: _getFromEnvironment('STAGESS_DATABASE_DEV_PASSWORD'),
+  db: _getFromEnvironment('STAGESS_DATABASE_DEV_NAME'),
 );
 final _productionSettings = ConnectionSettings(
-  host: _getFromEnvironment('DATABASE_PRODUCTION_HOST'),
-  port: int.parse(_getFromEnvironment('DATABASE_PRODUCTION_PORT')),
-  user: _getFromEnvironment('DATABASE_PRODUCTION_USER'),
-  password: _getFromEnvironment('DATABASE_PRODUCTION_PASSWORD'),
-  db: _getFromEnvironment('DATABASE_PRODUCTION_NAME'),
+  host: 'localhost',
+  port: int.parse(_getFromEnvironment('STAGESS_DATABASE_PRODUCTION_PORT')),
+  user: _getFromEnvironment('STAGESS_DATABASE_PRODUCTION_USER'),
+  password: _getFromEnvironment('STAGESS_DATABASE_PRODUCTION_PASSWORD'),
+  db: _getFromEnvironment('STAGESS_DATABASE_PRODUCTION_NAME'),
 );
 
 void main() async {
@@ -53,7 +53,7 @@ void main() async {
     ),
   );
   // Get the Firebase API key from the environment variable
-  final firebaseApiKey = _getFromEnvironment('FIREBASE_WEB_API_KEY');
+  final firebaseApiKey = _getFromEnvironment('STAGESS_FIREBASE_WEB_API_KEY');
 
   // Create an HTTP server listening on localhost:_backendPort
   var server = await HttpServer.bind(_backendIp, _backendPort);
