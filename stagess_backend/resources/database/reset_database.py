@@ -9,29 +9,36 @@ import uuid
 
 _use_dev_database = True  # Set to False for production
 if _use_dev_database:
-    _database = "dev_db"
-    _container_name = "stagess_dev"
-    _user = "devuser"
-    _password = "devpassword"
+    _container_name = os.getenv("STAGESS_DATABASE_DEV_DOCKER")
+    _database = os.getenv("STAGESS_DATABASE_DEV_NAME")
+    _user = os.getenv("STAGESS_DATABASE_DEV_USER")
+    _password = os.getenv("STAGESS_DATABASE_DEV_PASSWORD")
 else:
-    # raise ValueError(
-    #     "This script is intended for development use only.\n"
-    #     "If you REALLY want to reset the production database, comment this line.\n"
-    #     "If you do so, do not forget to uncomment the 'USE production_db;' line in reset_database.sql"
-    # )
+    raise ValueError(
+        "This script is intended for development use only.\n"
+        "If you REALLY want to reset the production database, comment this line and restart the script."
+    )
     # For production, you might want to change this to your production database name
-    _database = "production_db"
-    _container_name = "stagess_production"
-    _user = "admin"
-    _password = os.getenv("DATABASE_PRODUCTION_ADMIN_PASSWORD")
-    if not _password:
-        raise ValueError("Environment variable DATABASE_PRODUCTION_ADMIN_PASSWORD is not set.")
+    _database = os.getenv("STAGESS_DATABASE_PRODUCTION_NAME")
+    _container_name = os.getenv("STAGESS_DATABASE_PRODUCTION_DOCKER")
+    _user = os.getenv("STAGESS_DATABASE_PRODUCTION_USER")
+    _password = os.getenv("STAGESS_DATABASE_PRODUCTION_PASSWORD")
 
-_base_docker_command = f"docker exec -i {_container_name} mysql -vvv -u {_user} -p{_password} {_database}"
+if not _database or not _user or not _password:
+    print("Environment variables for database configuration are not set.")
+    sys.exit(1)
+
+_sql_command = os.getenv("STAGESS_SQL_COMMAND")
+if not _sql_command:
+    print("Environment variable STAGESS_SQL_COMMAND is not set.")
+    sys.exit(1)
+
+_base_command = f"mysql -vvv -u {_user} -p{_password} {_database}"
+if _container_name:
+    _base_command = f"docker exec -i {_container_name} { _base_command }"
 
 
 def main(super_admin_email: str):
-
     # Get the path to the SQL file
     sql_filename = "reset_database.sql"
     sql_file_path = os.path.join(os.path.dirname(__file__), sql_filename)
@@ -59,10 +66,10 @@ def reset_database(sql_filepath: str) -> bool:
     if platform.system() == "Windows":
         with open(sql_filepath, "rb") as sql_file:
             result = subprocess.run(
-                _base_docker_command.split(), stdin=sql_file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+                _base_command.split(), stdin=sql_file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
             )
     else:
-        cmd = f"cat {sql_filepath} | {_base_docker_command}"
+        cmd = f"cat {sql_filepath} | {_base_command}"
         result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     # Check if the command was successful
@@ -93,7 +100,7 @@ def add_super_admin_user(super_admin_email: str) -> bool:
 
 def _perform_query(query: str) -> bool:
     # Run the query against the database
-    cmd = f'{_base_docker_command} -e "{query}"'
+    cmd = f'{_base_command} -e "{query}"'
     result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     if result.returncode != 0:
         print(f"Error executing query: {result.stderr}")

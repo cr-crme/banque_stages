@@ -12,10 +12,4 @@ class BackendHelpers {
           '${backendProtocol(isSecured: isSecured)}://$backendIp:$backendPort/${connectEndpoint(isDev: isDev)}');
   static Uri backendUriForBugReport({required bool isSecured}) => Uri.parse(
       '${isSecured ? 'https' : 'http'}://$backendIp:$backendPort/$bugReportEndpoint');
-
-  static const String devDatabaseName = 'dev_db';
-  static const int devDatabasePort = 3306;
-
-  static const String productionDatabaseName = 'production_db';
-  static const int productionDatabasePort = 3307;
 }

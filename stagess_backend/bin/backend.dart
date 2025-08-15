@@ -24,17 +24,18 @@ final _databaseBackend = DatabaseBackend.mysql;
 final _backendIp = InternetAddress.loopbackIPv4;
 final _backendPort = BackendHelpers.backendPort;
 final _devSettings = ConnectionSettings(
-    host: 'localhost',
-    port: BackendHelpers.devDatabasePort,
-    user: 'devuser',
-    password: 'devpassword',
-    db: BackendHelpers.devDatabaseName);
+  host: _getFromEnvironment('DATABASE_DEV_HOST'),
+  port: int.parse(_getFromEnvironment('DATABASE_DEV_PORT')),
+  user: _getFromEnvironment('DATABASE_DEV_USER'),
+  password: _getFromEnvironment('DATABASE_DEV_PASSWORD'),
+  db: _getFromEnvironment('DATABASE_DEV_NAME'),
+);
 final _productionSettings = ConnectionSettings(
-  host: 'localhost',
-  port: BackendHelpers.productionDatabasePort,
-  user: 'admin',
-  password: null,
-  db: BackendHelpers.productionDatabaseName,
+  host: _getFromEnvironment('DATABASE_PRODUCTION_HOST'),
+  port: int.parse(_getFromEnvironment('DATABASE_PRODUCTION_PORT')),
+  user: _getFromEnvironment('DATABASE_PRODUCTION_USER'),
+  password: _getFromEnvironment('DATABASE_PRODUCTION_PASSWORD'),
+  db: _getFromEnvironment('DATABASE_PRODUCTION_NAME'),
 );
 
 void main() async {
@@ -52,11 +53,7 @@ void main() async {
     ),
   );
   // Get the Firebase API key from the environment variable
-  final firebaseApiKey = Platform.environment['FIREBASE_WEB_API_KEY'];
-  if (firebaseApiKey == null || firebaseApiKey.isEmpty) {
-    _logger.severe('FIREBASE_WEB_API_KEY environment variable is not set.');
-    exit(1);
-  }
+  final firebaseApiKey = _getFromEnvironment('FIREBASE_WEB_API_KEY');
 
   // Create an HTTP server listening on localhost:_backendPort
   var server = await HttpServer.bind(_backendIp, _backendPort);
@@ -68,14 +65,6 @@ void main() async {
       firebaseApiKey: firebaseApiKey,
       settings: _devSettings);
 
-  _productionSettings.password =
-      Platform.environment['DATABASE_PRODUCTION_ADMIN_PASSWORD'];
-  if (_productionSettings.password == null ||
-      _productionSettings.password!.isEmpty) {
-    _logger.severe(
-        'DATABASE_PRODUCTION_ADMIN_PASSWORD environment variable is not set.');
-    exit(1);
-  }
   final productionConnexions = await _connectDatabase(
       databaseBackend: _databaseBackend,
       firebaseApiKey: firebaseApiKey,
@@ -95,6 +84,15 @@ void main() async {
     await devConnexions.database.connection.close();
     await productionConnexions.database.connection.close();
   }
+}
+
+String _getFromEnvironment(String key) {
+  final value = Platform.environment[key];
+  if (value == null || value.isEmpty) {
+    _logger.severe('$key environment variable is not set.');
+    exit(1);
+  }
+  return value;
 }
 
 Future<Connexions> _connectDatabase({
