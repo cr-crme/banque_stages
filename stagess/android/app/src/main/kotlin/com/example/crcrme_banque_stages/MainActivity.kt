@@ -1,4 +1,4 @@
-package ca.crcrme.banque_stages
+package org.crcrme.stagess
 
 import io.flutter.embedding.android.FlutterActivity
 

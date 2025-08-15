@@ -45,7 +45,6 @@ void main() async {
   });
 
   // Connect to the authentication service
-  Credentials.firebaseAdminCredentialPath;
   FirebaseAdmin.instance.initializeApp(
     AppOptions(
       credential:
