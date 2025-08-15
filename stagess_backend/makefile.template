@@ -2,6 +2,7 @@
 
 # Project name (output executable)
 TARGET = stagess_backend
+API_KEY_FILE = backendFirebaseServiceAccountKey.json
 
 # Main Dart file
 MAIN = bin/backend.dart
@@ -28,6 +29,7 @@ compile:
 
 service:
 	mkdir -p $(BUILD_DIR)
+	cp $(API_KEY_FILE) ${BUILD_DIR}/
 	echo "[Unit]" | tee ${BUILD_DIR}/$(SERVICE_FILE_NAME)
 	echo "Description=$(TARGET) Dart Service" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
 	echo "After=network.target" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
@@ -52,6 +54,7 @@ clean:
 deploy: all
 	mkdir -p $(INSTALL_DIR)
 	cp $(BUILD_DIR)/$(TARGET) $(INSTALL_DIR)/
+	cp $(BUILD_DIR)/$(API_KEY_FILE) $(INSTALL_DIR)/
 	cp $(BUILD_DIR)/$(SERVICE_FILE_NAME) $(SERVICE_FILE)
 	sudo systemctl daemon-reload
 	sudo systemctl enable $(TARGET)
