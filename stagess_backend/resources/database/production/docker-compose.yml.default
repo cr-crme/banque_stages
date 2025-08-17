@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:8.0
+    image: mariadb:11.4
     container_name: stagess_production
     restart: always
     environment:

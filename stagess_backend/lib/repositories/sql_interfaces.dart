@@ -160,7 +160,8 @@ class MySqlInterface implements SqlInterface {
       for (final sublist in subqueries) {
         final tableRow = map[sublist.tableName];
         if (tableRow == null) continue;
-        map[sublist.tableName] = jsonDecode(tableRow);
+        map[sublist.tableName] =
+            jsonDecode((tableRow is String ? tableRow : tableRow.toString()));
       }
       list.add(map);
     }
@@ -474,6 +475,43 @@ class MariaDbSqlInterface extends MySqlInterface {
   MariaDbSqlInterface({required super.connection});
 
   @override
+  Future<Results> tryQuery(String query, [List<Object?>? values]) async {
+    // MariaDB fails when a JSON_OBJECT is used with a non-null values. When this
+    // happens, we need to collapse the "?" in the query ourselves. NOTE: This is
+    // dangerous, as it can lead to SQL injection if the query is not properly
+    // sanitized.
+
+    if (values != null && values.isNotEmpty) {
+      for (final value in values) {
+        final escaped = _escapeValue(value); // safe escaping
+        // replace only the first "?" at a time
+        query = query.replaceFirst('?', escaped);
+      }
+    }
+    return super.tryQuery(query);
+  }
+
+  String _escapeValue(Object? value) {
+    if (value == null) return 'NULL';
+
+    if (value is num) return value.toString();
+    if (value is bool) return value ? '1' : '0';
+
+    // For DateTime, format as MySQL DATETIME
+    if (value is DateTime) {
+      return "'${value.toUtc().toIso8601String().replaceFirst('T', ' ').split('.').first}'";
+    }
+
+    // Fallback: treat as string
+    var s = value.toString();
+    // Escape backslashes and quotes
+    s = s.replaceAll(r'\', r'\\');
+    s = s.replaceAll("'", r"\'");
+    s = s.replaceAll('"', r'\"');
+    return "'$s'";
+  }
+
+  @override
   MySqlTableAccessor joinSubquery({
     required String dataTableName,
     String? asName,
@@ -644,16 +682,17 @@ class _MariaDbJoinSubQuery extends MySqlTableAccessor {
 
   @override
   String _craft({required String mainTableAlias}) {
-    return '''IFNULL((
+    return '''
+      IFNULL((
         SELECT CONCAT(
-            '[',
+          '[',
             GROUP_CONCAT(
               JSON_OBJECT(
-              ${_dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'st')}
-              ),
+                ${_dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'st')}
+              )
               SEPARATOR ','
-            )
-            ']'
+            ),
+          ']'
         )
         FROM $relationTableName idt
         JOIN $dataTableName st ON idt.$idNameToDataTable = st.$dataTableIdName
@@ -685,16 +724,17 @@ class _MariaDbSelectSubQuery extends MySqlTableAccessor {
 
   @override
   String _craft({required String mainTableAlias}) {
-    return '''IFNULL((
+    return '''
+      IFNULL((
         SELECT CONCAT(
-            '[',
+          '[',
             GROUP_CONCAT(
               JSON_OBJECT(
                 ${_dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'st')}
               )
               SEPARATOR ','
             ),
-            ']'
+          ']'
         )
         FROM $dataTableName st
         WHERE st.$idNameToDataTable = $mainTableAlias.$idNameToMainTable

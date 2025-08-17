@@ -33,7 +33,7 @@ if not _sql_command:
     print("Environment variable STAGESS_SQL_COMMAND is not set.")
     sys.exit(1)
 
-_base_command = f"mysql -vvv -u {_user} -p{_password} {_database}"
+_base_command = f"{_sql_command} -vvv -u {_user} -p{_password} {_database}"
 if _container_name:
     _base_command = f"docker exec -i {_container_name} { _base_command }"
 
