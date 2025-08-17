@@ -652,13 +652,13 @@ class _MariaDbJoinSubQuery extends MySqlTableAccessor {
               ${_dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'st')}
               ),
               SEPARATOR ','
-            ),
+            )
             ']'
         )
         FROM $relationTableName idt
         JOIN $dataTableName st ON idt.$idNameToDataTable = st.$dataTableIdName
         WHERE idt.$idNameToMainTable = $mainTableAlias.$mainTableIdName
-      ), JSON_ARRAY()) AS $tableName''';
+      ), '[]') AS $tableName''';
   }
 }
 
@@ -691,13 +691,13 @@ class _MariaDbSelectSubQuery extends MySqlTableAccessor {
             GROUP_CONCAT(
               JSON_OBJECT(
                 ${_dispatchFieldsToFetch(fieldsToFetch: fieldsToFetch, tableElementAlias: 'st')}
-              ),
+              )
               SEPARATOR ','
             ),
             ']'
         )
         FROM $dataTableName st
         WHERE st.$idNameToDataTable = $mainTableAlias.$idNameToMainTable
-      ), JSON_ARRAY()) AS $tableName''';
+      ), '[]') AS $tableName''';
   }
 }

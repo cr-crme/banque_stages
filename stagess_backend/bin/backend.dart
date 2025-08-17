@@ -125,6 +125,10 @@ Future<Connexions> _connectDatabase({
     DatabaseBackend.mariadb =>
       MariaDbSqlInterface(connection: await MySqlConnection.connect(settings)),
   };
+  if (databaseBackend == DatabaseBackend.mariadb) {
+    await sqlInterface!.tryQuery('SET SESSION group_concat_max_len = 1000000');
+  }
+
   // Give a bit of time just in case
   await Future.delayed(Duration(milliseconds: 100));
 
