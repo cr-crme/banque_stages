@@ -67,7 +67,7 @@
             "program": "stagess/lib/main_widget.dart",
         },
         {
-            "name": "Release Stagess au Travail",
+            "name": "Release Stagess",
             "request": "launch",
             "type": "dart",
             "program": "stagess/lib/main.dart",
