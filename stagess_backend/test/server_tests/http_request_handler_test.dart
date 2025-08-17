@@ -2,6 +2,7 @@ import 'package:stagess_backend/repositories/admins_repository.dart';
 import 'package:stagess_backend/repositories/enterprises_repository.dart';
 import 'package:stagess_backend/repositories/internships_repository.dart';
 import 'package:stagess_backend/repositories/school_boards_repository.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/repositories/students_repository.dart';
 import 'package:stagess_backend/repositories/teachers_repository.dart';
 import 'package:stagess_backend/server/connexions.dart';
@@ -13,7 +14,7 @@ import '../mockers/http_request_mock.dart';
 
 Connexions get _mockedConnexions => Connexions(
       database: DatabaseManager(
-        connection: null, // No real database connection in tests
+        sqlInterface: MySqlInterface(connection: null),
         schoolBoardsDatabase: SchoolBoardsRepositoryMock(),
         adminsDatabase: AdminsRepositoryMock(),
         teachersDatabase: TeachersRepositoryMock(),

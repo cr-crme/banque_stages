@@ -1,4 +1,4 @@
-import 'package:stagess_backend/repositories/mysql_helpers.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:test/test.dart';
 
 String _cleanQuery(String query) {
@@ -11,29 +11,33 @@ String _cleanQuery(String query) {
 void main() {
   test('MySql query crafter all table', () {
     // Remove spaces and new lines for comparison
+    final sqlInterface = MySqlInterface(connection: null);
     final query =
-        _cleanQuery(MySqlHelpers.craftSelectQuery(tableName: 'my_table'));
+        _cleanQuery(sqlInterface.craftSelectQuery(tableName: 'my_table'));
 
     expect(query, 'SELECT t.* FROM my_table t');
   });
 
   test('MySql query crafter element in table', () {
-    final query = _cleanQuery(MySqlHelpers.craftSelectQuery(
-        tableName: 'my_table', filters: {'id': 'my_id'}));
+    final sqlInterface = MySqlInterface(connection: null);
+    final query = _cleanQuery(sqlInterface
+        .craftSelectQuery(tableName: 'my_table', filters: {'id': 'my_id'}));
 
     expect(query, 'SELECT t.* FROM my_table t WHERE t.id = ?');
   });
 
   test('MySql query crafter element in table with specific id', () {
-    final query = _cleanQuery(MySqlHelpers.craftSelectQuery(
+    final sqlInterface = MySqlInterface(connection: null);
+    final query = _cleanQuery(sqlInterface.craftSelectQuery(
         tableName: 'my_table', filters: {'my_named_id': 'my_id'}));
 
     expect(query, 'SELECT t.* FROM my_table t WHERE t.my_named_id = ?');
   });
 
   test('MySql query crafter with table', () {
+    final sqlInterface = MySqlInterface(connection: null);
     final query = _cleanQuery(
-        MySqlHelpers.craftSelectQuery(tableName: 'my_table', sublists: [
+        sqlInterface.craftSelectQuery(tableName: 'my_table', sublists: [
       MySqlSelectSubQuery(
           dataTableName: 'table_name',
           idNameToDataTable: 'subtable_id',
@@ -49,8 +53,9 @@ void main() {
   });
 
   test('MySql query crafter with normalized table', () {
+    final sqlInterface = MySqlInterface(connection: null);
     final query = _cleanQuery(
-        MySqlHelpers.craftSelectQuery(tableName: 'my_table', filters: {
+        sqlInterface.craftSelectQuery(tableName: 'my_table', filters: {
       'my_named_id': 'my_id'
     }, sublists: [
       MySqlJoinSubQuery(
@@ -73,14 +78,16 @@ void main() {
   });
 
   test('MySql query crafter insert element', () {
-    final query = _cleanQuery(MySqlHelpers.craftInsertQuery(
+    final sqlInterface = MySqlInterface(connection: null);
+    final query = _cleanQuery(sqlInterface.craftInsertQuery(
         tableName: 'my_table', data: {'field1': 'value1', 'field2': 'value2'}));
 
     expect(query, 'INSERT INTO my_table (field1, field2) VALUES (?, ?)');
   });
 
   test('MySql query crafter update element', () {
-    final query = _cleanQuery(MySqlHelpers.craftUpdateQuery(
+    final sqlInterface = MySqlInterface(connection: null);
+    final query = _cleanQuery(sqlInterface.craftUpdateQuery(
         tableName: 'my_table',
         filters: {'my_id': 'any_value'},
         data: {'field1': 'value1', 'field2': 'value2'}));
@@ -89,7 +96,8 @@ void main() {
   });
 
   test('MySql query crafter delete element', () {
-    final query = _cleanQuery(MySqlHelpers.craftDeleteQuery(
+    final sqlInterface = MySqlInterface(connection: null);
+    final query = _cleanQuery(sqlInterface.craftDeleteQuery(
         tableName: 'my_table', filters: {'my_id': 'any_values'}));
 
     expect(query, 'DELETE FROM my_table WHERE my_id = ?');

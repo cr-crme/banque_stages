@@ -1,8 +1,7 @@
 import 'package:logging/logging.dart';
-import 'package:mysql1/mysql1.dart';
 import 'package:stagess_backend/repositories/internships_repository.dart';
-import 'package:stagess_backend/repositories/mysql_helpers.dart';
 import 'package:stagess_backend/repositories/repository_abstract.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/utils/database_user.dart';
 import 'package:stagess_backend/utils/exceptions.dart';
 import 'package:stagess_common/communication_protocol.dart';
@@ -189,16 +188,15 @@ abstract class EnterprisesRepository implements RepositoryAbstract {
 
 class MySqlEnterprisesRepository extends EnterprisesRepository {
   // coverage:ignore-start
-  final MySqlConnection connection;
-  MySqlEnterprisesRepository({required this.connection});
+  final SqlInterface sqlInterface;
+  MySqlEnterprisesRepository({required this.sqlInterface});
 
   @override
   Future<Map<String, Enterprise>> _getAllEnterprises({
     String? enterpriseId,
     required DatabaseUser user,
   }) async {
-    final enterprises = await MySqlHelpers.performSelectQuery(
-      connection: connection,
+    final enterprises = await sqlInterface.performSelectQuery(
       user: user,
       tableName: 'enterprises',
       filters: (enterpriseId == null ? {} : {'id': enterpriseId})
@@ -269,30 +267,26 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           (enterprise['contact'] as List?)?.map((e) => e['id']).firstOrNull;
       final contacts = contactId == null
           ? null
-          : await MySqlHelpers.performSelectQuery(
-              connection: connection,
-              user: user,
-              tableName: 'persons',
-              filters: {
-                  'id': contactId
-                },
-              subqueries: [
-                  MySqlSelectSubQuery(
-                      dataTableName: 'addresses',
-                      idNameToDataTable: 'entity_id',
-                      fieldsToFetch: [
-                        'id',
-                        'civic',
-                        'street',
-                        'apartment',
-                        'city',
-                        'postal_code'
-                      ]),
-                  MySqlSelectSubQuery(
-                      dataTableName: 'phone_numbers',
-                      idNameToDataTable: 'entity_id',
-                      fieldsToFetch: ['id', 'phone_number']),
-                ]);
+          : await sqlInterface
+              .performSelectQuery(user: user, tableName: 'persons', filters: {
+              'id': contactId
+            }, subqueries: [
+              MySqlSelectSubQuery(
+                  dataTableName: 'addresses',
+                  idNameToDataTable: 'entity_id',
+                  fieldsToFetch: [
+                    'id',
+                    'civic',
+                    'street',
+                    'apartment',
+                    'city',
+                    'postal_code'
+                  ]),
+              MySqlSelectSubQuery(
+                  dataTableName: 'phone_numbers',
+                  idNameToDataTable: 'entity_id',
+                  fieldsToFetch: ['id', 'phone_number']),
+            ]);
       enterprise['contact'] = contacts?.firstOrNull ?? {};
       enterprise['contact']['address'] =
           (enterprise['contact']['addresses'] as List?)?.firstOrNull ?? {};
@@ -309,8 +303,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       enterprise['headquarters_address'] =
           (enterprise['headquarters_address'] as List?)?.firstOrNull ?? {};
 
-      final jobsTp = await MySqlHelpers.performSelectQuery(
-        connection: connection,
+      final jobsTp = await sqlInterface.performSelectQuery(
         user: user,
         tableName: 'enterprise_jobs',
         filters: {'enterprise_id': enterprise['id']},
@@ -381,8 +374,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         jobs[job['id']]['pre_internship_requests']['is_applicable'] =
             jobs[job['id']]['pre_internship_requests']['is_applicable'] == 1;
         jobs[job['id']]['pre_internship_requests']['requests'] =
-            (await MySqlHelpers.performSelectQuery(
-                  connection: connection,
+            (await sqlInterface.performSelectQuery(
                   user: user,
                   tableName: 'enterprise_job_pre_internship_request_items',
                   filters: {
@@ -449,12 +441,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       (await _getAllEnterprises(enterpriseId: id, user: user))[id];
 
   Future<void> _insertToEnterprises(Enterprise enterprise) async {
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'entities',
-        data: {'shared_id': enterprise.id.serialize()});
-    await MySqlHelpers.performInsertQuery(
-      connection: connection,
+    await sqlInterface.performInsertQuery(
+        tableName: 'entities', data: {'shared_id': enterprise.id.serialize()});
+    await sqlInterface.performInsertQuery(
       tableName: 'enterprises',
       data: {
         'id': enterprise.id.serialize(),
@@ -510,8 +499,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     }
 
     if (toUpdate.isNotEmpty) {
-      await MySqlHelpers.performUpdateQuery(
-        connection: connection,
+      await sqlInterface.performUpdateQuery(
         tableName: 'enterprises',
         filters: {'id': previous.id},
         data: toUpdate,
@@ -521,13 +509,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
   Future<void> _insertToEnterprisesActivityTypes(Enterprise enterprise) async {
     for (final activityType in enterprise.activityTypesSerialized) {
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'enterprise_activity_types',
-          data: {
-            'enterprise_id': enterprise.id.serialize(),
-            'activity_type': activityType,
-          });
+      await sqlInterface
+          .performInsertQuery(tableName: 'enterprise_activity_types', data: {
+        'enterprise_id': enterprise.id.serialize(),
+        'activity_type': activityType,
+      });
     }
   }
 
@@ -537,8 +523,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     if (!toUpdate.contains('activity_types')) return;
 
     // This is a bit tricky to simply update, so we delete and reinsert
-    await MySqlHelpers.performDeleteQuery(
-        connection: connection,
+    await sqlInterface.performDeleteQuery(
         tableName: 'enterprise_activity_types',
         filters: {'enterprise_id': previous.id});
     await _insertToEnterprisesActivityTypes(enterprise);
@@ -548,8 +533,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       Map<String, int> positionOffered, String jobId) async {
     final toWait = <Future>[];
     for (final entry in positionOffered.entries) {
-      toWait.add(MySqlHelpers.performInsertQuery(
-          connection: connection,
+      toWait.add(sqlInterface.performInsertQuery(
           tableName: 'enterprise_job_positions_offered',
           data: {
             'job_id': jobId.serialize(),
@@ -563,13 +547,11 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   Future<void> _insertJobPhotoUrls(List<String> urls, String jobId) async {
     final toWait = <Future>[];
     for (final url in urls) {
-      toWait.add(MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'enterprise_job_photo_urls',
-          data: {
-            'job_id': jobId.serialize(),
-            'photo_url': url.serialize(),
-          }));
+      toWait.add(sqlInterface
+          .performInsertQuery(tableName: 'enterprise_job_photo_urls', data: {
+        'job_id': jobId.serialize(),
+        'photo_url': url.serialize(),
+      }));
     }
     await Future.wait(toWait);
   }
@@ -578,15 +560,13 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       List<JobComment> comments, String jobId) async {
     final toWait = <Future>[];
     for (final comment in comments) {
-      toWait.add(MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'enterprise_job_comments',
-          data: {
-            'job_id': jobId.serialize(),
-            'teacher_id': comment.teacherId.serialize(),
-            'date': comment.date.serialize(),
-            'comment': comment.comment.serialize(),
-          }));
+      toWait.add(sqlInterface
+          .performInsertQuery(tableName: 'enterprise_job_comments', data: {
+        'job_id': jobId.serialize(),
+        'teacher_id': comment.teacherId.serialize(),
+        'date': comment.date.serialize(),
+        'comment': comment.comment.serialize(),
+      }));
     }
     await Future.wait(toWait);
   }
@@ -595,8 +575,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       PreInternshipRequests requests, String jobId) async {
     // Insert pre-internship requests for the job
     final preInternshipRequests = requests.serialize();
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
+    await sqlInterface.performInsertQuery(
         tableName: 'enterprise_job_pre_internship_requests',
         data: {
           'id': preInternshipRequests['id'],
@@ -607,8 +586,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
     final toWait = <Future>[];
     for (final request in (preInternshipRequests['requests'] as List)) {
-      toWait.add(MySqlHelpers.performInsertQuery(
-          connection: connection,
+      toWait.add(sqlInterface.performInsertQuery(
           tableName: 'enterprise_job_pre_internship_request_items',
           data: {
             'internship_request_id': preInternshipRequests['id'],
@@ -622,14 +600,12 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     final status = uniforms.serialize()['status'];
     final toWait = <Future>[];
     for (final uniform in uniforms.uniforms) {
-      toWait.add(MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'enterprise_job_uniforms',
-          data: {
-            'job_id': jobId.serialize(),
-            'status': status,
-            'uniform': uniform.serialize(),
-          }));
+      toWait.add(sqlInterface
+          .performInsertQuery(tableName: 'enterprise_job_uniforms', data: {
+        'job_id': jobId.serialize(),
+        'status': status,
+        'uniform': uniform.serialize(),
+      }));
     }
     await Future.wait(toWait);
   }
@@ -639,14 +615,12 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     final status = protections.serialize()['status'];
     final toWait = <Future>[];
     for (final protection in protections.protections) {
-      toWait.add(MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'enterprise_job_protections',
-          data: {
-            'job_id': jobId.serialize(),
-            'status': status,
-            'protection': protection.serialize(),
-          }));
+      toWait.add(sqlInterface
+          .performInsertQuery(tableName: 'enterprise_job_protections', data: {
+        'job_id': jobId.serialize(),
+        'status': status,
+        'protection': protection.serialize(),
+      }));
     }
     await Future.wait(toWait);
   }
@@ -657,16 +631,14 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     for (final incidentType in serialized.keys) {
       if (incidentType == 'id') continue;
       for (final incident in serialized[incidentType]) {
-        toWait.add(MySqlHelpers.performInsertQuery(
-            connection: connection,
-            tableName: 'enterprise_job_incidents',
-            data: {
-              'id': incident['id'],
-              'job_id': jobId.serialize(),
-              'incident_type': incidentType.serialize(),
-              'incident': incident['incident'],
-              'date': incident['date'],
-            }));
+        toWait.add(sqlInterface
+            .performInsertQuery(tableName: 'enterprise_job_incidents', data: {
+          'id': incident['id'],
+          'job_id': jobId.serialize(),
+          'incident_type': incidentType.serialize(),
+          'incident': incident['incident'],
+          'date': incident['date'],
+        }));
       }
     }
     await Future.wait(toWait);
@@ -678,8 +650,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         sstEvaluation.serialize()['questions'] as Map<String, dynamic>;
     final toWait = <Future>[];
     for (final question in serialized.keys) {
-      toWait.add(MySqlHelpers.performInsertQuery(
-          connection: connection,
+      toWait.add(sqlInterface.performInsertQuery(
           tableName: 'enterprise_job_sst_evaluation_questions',
           data: {
             'job_id': jobId.serialize(),
@@ -692,18 +663,15 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   }
 
   Future<void> _insertToEnterprisesJob(String enterpriseId, Job job) async {
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'enterprise_jobs',
-        data: {
-          'id': job.id.serialize(),
-          'version': Job.currentVersion.serialize(),
-          'enterprise_id': enterpriseId.serialize(),
-          'specialization_id': job.specialization.id.serialize(),
-          'minimum_age': job.minimumAge.serialize(),
-          'reserved_for_id':
-              job.reservedForId.isEmpty ? null : job.reservedForId.serialize(),
-        });
+    await sqlInterface.performInsertQuery(tableName: 'enterprise_jobs', data: {
+      'id': job.id.serialize(),
+      'version': Job.currentVersion.serialize(),
+      'enterprise_id': enterpriseId.serialize(),
+      'specialization_id': job.specialization.id.serialize(),
+      'minimum_age': job.minimumAge.serialize(),
+      'reserved_for_id':
+          job.reservedForId.isEmpty ? null : job.reservedForId.serialize(),
+    });
 
     final toWait = <Future>[];
     toWait
@@ -751,10 +719,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         await _deleteInternshipsFromJob(job.id,
             user: user, internshipsRepository: internshipsRepository);
 
-        await MySqlHelpers.performDeleteQuery(
-            connection: connection,
-            tableName: 'enterprise_jobs',
-            filters: {'id': job.id});
+        await sqlInterface.performDeleteQuery(
+            tableName: 'enterprise_jobs', filters: {'id': job.id});
 
         out.deletedData ??= {};
         out.deletedData![RequestFields.internship] ??= [];
@@ -812,8 +778,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       }
 
       if (toUpdate.isNotEmpty) {
-        await MySqlHelpers.performUpdateQuery(
-          connection: connection,
+        await sqlInterface.performUpdateQuery(
           tableName: 'enterprise_jobs',
           filters: {'id': job.id},
           data: toUpdate,
@@ -826,8 +791,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       final toWaitDeleted = <Future>[];
       toWait.clear();
       if (differences.contains('positions_offered')) {
-        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
-          connection: connection,
+        toWaitDeleted.add(sqlInterface.performDeleteQuery(
           tableName: 'enterprise_job_positions_offered',
           filters: {'job_id': job.id},
         ));
@@ -849,8 +813,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       }
       if (differences.contains('photos_url')) {
         // This is a bit tricky to simply update, so we delete and reinsert
-        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
-            connection: connection,
+        toWaitDeleted.add(sqlInterface.performDeleteQuery(
             tableName: 'enterprise_job_photo_urls',
             filters: {'job_id': job.id}));
         toWait.add(_insertJobPhotoUrls(job.photosUrl, job.id.serialize()));
@@ -874,10 +837,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                 'You do not have permission to update this enterprise');
           }
         }
-        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
-            connection: connection,
-            tableName: 'enterprise_job_comments',
-            filters: {'job_id': job.id}));
+        toWaitDeleted.add(sqlInterface.performDeleteQuery(
+            tableName: 'enterprise_job_comments', filters: {'job_id': job.id}));
         toWait.add(_insertJobComments(job.comments, job.id.serialize()));
       }
 
@@ -885,8 +846,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       // is not so important, so we use the same trick of deleting and reinserting.
       // It helps to keep the code simple and consistent and also helps for the items.
       if (differences.contains('pre_internship_requests')) {
-        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
-            connection: connection,
+        toWaitDeleted.add(sqlInterface.performDeleteQuery(
             tableName: 'enterprise_job_pre_internship_requests',
             filters: {'job_id': job.id}));
         toWait.add(_insertJobPreintershipRequests(
@@ -894,24 +854,20 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       }
 
       if (differences.contains('uniforms')) {
-        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
-            connection: connection,
-            tableName: 'enterprise_job_uniforms',
-            filters: {'job_id': job.id}));
+        toWaitDeleted.add(sqlInterface.performDeleteQuery(
+            tableName: 'enterprise_job_uniforms', filters: {'job_id': job.id}));
         toWait.add(_insertJobUniforms(job.uniforms, job.id.serialize()));
       }
 
       if (differences.contains('protections')) {
-        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
-            connection: connection,
+        toWaitDeleted.add(sqlInterface.performDeleteQuery(
             tableName: 'enterprise_job_protections',
             filters: {'job_id': job.id}));
         toWait.add(_insertJobProtections(job.protections, job.id.serialize()));
       }
 
       if (differences.contains('incidents')) {
-        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
-            connection: connection,
+        toWaitDeleted.add(sqlInterface.performDeleteQuery(
             tableName: 'enterprise_job_incidents',
             filters: {'job_id': job.id}));
         toWait.add(_insertJobIncidents(job.incidents, job.id.serialize()));
@@ -921,8 +877,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       // it is not so important, so we use the same trick of deleting and
       // reinserting.
       if (differences.contains('sst_evaluations')) {
-        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
-            connection: connection,
+        toWaitDeleted.add(sqlInterface.performDeleteQuery(
             tableName: 'enterprise_job_sst_evaluation_questions',
             filters: {'job_id': job.id}));
         toWait.add(
@@ -938,10 +893,8 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
 
   Future<void> _insertToContact(Enterprise enterprise) async {
     // Insert the contact
-    await MySqlHelpers.performInsertPerson(
-        connection: connection, person: enterprise.contact);
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
+    await sqlInterface.performInsertPerson(person: enterprise.contact);
+    await sqlInterface.performInsertQuery(
         tableName: 'enterprise_contacts',
         data: {
           'enterprise_id': enterprise.id,
@@ -960,20 +913,15 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
           'Cannot update the contact id of an enterprise');
     }
 
-    await MySqlHelpers.performUpdatePerson(
-        connection: connection,
-        person: enterprise.contact,
-        previous: previous.contact);
+    await sqlInterface.performUpdatePerson(
+        person: enterprise.contact, previous: previous.contact);
   }
 
   Future<void> _insertToEnterpriseAddress(Enterprise enterprise) async {
     if (enterprise.address == null) return;
-    await MySqlHelpers.performInsertAddress(
-        connection: connection,
-        address: enterprise.address!,
-        entityId: enterprise.id);
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
+    await sqlInterface.performInsertAddress(
+        address: enterprise.address!, entityId: enterprise.id);
+    await sqlInterface.performInsertQuery(
         tableName: 'enterprise_addresses',
         data: {
           'enterprise_id': enterprise.id,
@@ -989,13 +937,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     if (previous.address == null) {
       await _insertToEnterpriseAddress(enterprise);
     } else if (enterprise.address == null) {
-      await MySqlHelpers.performDeleteAddress(
-          connection: connection, address: previous.address!);
+      await sqlInterface.performDeleteAddress(address: previous.address!);
     } else {
-      await MySqlHelpers.performUpdateAddress(
-          connection: connection,
-          address: enterprise.address!,
-          previous: previous.address!);
+      await sqlInterface.performUpdateAddress(
+          address: enterprise.address!, previous: previous.address!);
     }
   }
 
@@ -1003,12 +948,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
       Enterprise enterprise) async {
     if (enterprise.headquartersAddress == null) return;
 
-    await MySqlHelpers.performInsertAddress(
-        connection: connection,
-        address: enterprise.headquartersAddress!,
-        entityId: enterprise.id);
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
+    await sqlInterface.performInsertAddress(
+        address: enterprise.headquartersAddress!, entityId: enterprise.id);
+    await sqlInterface.performInsertQuery(
         tableName: 'enterprise_headquarters_addresses',
         data: {
           'enterprise_id': enterprise.id,
@@ -1024,11 +966,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     if (previous.headquartersAddress == null) {
       await _insertToEnterpriseHeadquartersAddress(enterprise);
     } else if (enterprise.headquartersAddress == null) {
-      await MySqlHelpers.performDeleteAddress(
-          connection: connection, address: previous.headquartersAddress!);
+      await sqlInterface.performDeleteAddress(
+          address: previous.headquartersAddress!);
     } else {
-      await MySqlHelpers.performUpdateAddress(
-          connection: connection,
+      await sqlInterface.performUpdateAddress(
           address: enterprise.headquartersAddress!,
           previous: previous.headquartersAddress!);
     }
@@ -1037,12 +978,9 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
   Future<void> _insertToEnterprisePhoneNumber(Enterprise enterprise) async {
     if (enterprise.phone == null) return;
 
-    await MySqlHelpers.performInsertPhoneNumber(
-        connection: connection,
-        phoneNumber: enterprise.phone!,
-        entityId: enterprise.id);
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
+    await sqlInterface.performInsertPhoneNumber(
+        phoneNumber: enterprise.phone!, entityId: enterprise.id);
+    await sqlInterface.performInsertQuery(
         tableName: 'enterprise_phone_numbers',
         data: {
           'enterprise_id': enterprise.id,
@@ -1058,25 +996,19 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     if (previous.phone == null) {
       await _insertToEnterprisePhoneNumber(enterprise);
     } else if (enterprise.phone == null) {
-      await MySqlHelpers.performDeletePhoneNumber(
-          connection: connection, phoneNumber: previous.phone!);
+      await sqlInterface.performDeletePhoneNumber(phoneNumber: previous.phone!);
     } else {
-      await MySqlHelpers.performUpdatePhoneNumber(
-          connection: connection,
-          phoneNumber: enterprise.phone!,
-          previous: previous.phone!);
+      await sqlInterface.performUpdatePhoneNumber(
+          phoneNumber: enterprise.phone!, previous: previous.phone!);
     }
   }
 
   Future<void> _insertToEnterpriseFax(Enterprise enterprise) async {
     if (enterprise.fax == null) return;
 
-    await MySqlHelpers.performInsertPhoneNumber(
-        connection: connection,
-        phoneNumber: enterprise.fax!,
-        entityId: enterprise.id);
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
+    await sqlInterface.performInsertPhoneNumber(
+        phoneNumber: enterprise.fax!, entityId: enterprise.id);
+    await sqlInterface.performInsertQuery(
         tableName: 'enterprise_fax_numbers',
         data: {
           'enterprise_id': enterprise.id,
@@ -1092,13 +1024,10 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     if (previous.fax == null) {
       await _insertToEnterpriseFax(enterprise);
     } else if (enterprise.fax == null) {
-      await MySqlHelpers.performDeletePhoneNumber(
-          connection: connection, phoneNumber: previous.fax!);
+      await sqlInterface.performDeletePhoneNumber(phoneNumber: previous.fax!);
     } else {
-      await MySqlHelpers.performUpdatePhoneNumber(
-          connection: connection,
-          phoneNumber: enterprise.fax!,
-          previous: previous.fax!);
+      await sqlInterface.performUpdatePhoneNumber(
+          phoneNumber: enterprise.fax!, previous: previous.fax!);
     }
   }
 
@@ -1157,8 +1086,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
     required DatabaseUser user,
     required InternshipsRepository internshipsRepository,
   }) async {
-    final internships = await MySqlHelpers.performSelectQuery(
-        connection: connection,
+    final internships = await sqlInterface.performSelectQuery(
         user: user,
         tableName: 'internships',
         filters: {'job_id': jobId.serialize()}..addAll(
@@ -1202,54 +1130,46 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         }
       }
 
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
+      await sqlInterface.performDeleteQuery(
         tableName: 'enterprise_addresses',
         filters: {'enterprise_id': id},
       );
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
+      await sqlInterface.performDeleteQuery(
         tableName: 'enterprise_headquarters_addresses',
         filters: {'enterprise_id': id},
       );
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
+      await sqlInterface.performDeleteQuery(
         tableName: 'entities',
         filters: {'shared_id': id},
       );
 
       if (enterprise?.address?.id != null) {
-        await MySqlHelpers.performDeleteQuery(
-          connection: connection,
+        await sqlInterface.performDeleteQuery(
           tableName: 'addresses',
           filters: {'entity_id': enterprise!.address!.id},
         );
       }
       if (enterprise?.headquartersAddress?.id != null) {
-        await MySqlHelpers.performDeleteQuery(
-          connection: connection,
+        await sqlInterface.performDeleteQuery(
           tableName: 'addresses',
           filters: {'entity_id': enterprise!.headquartersAddress!.id},
         );
       }
       if (enterprise?.phone?.id != null) {
-        await MySqlHelpers.performDeleteQuery(
-          connection: connection,
+        await sqlInterface.performDeleteQuery(
           tableName: 'phone_numbers',
           filters: {'entity_id': enterprise!.phone!.id},
         );
       }
       if (enterprise?.fax?.id != null) {
-        await MySqlHelpers.performDeleteQuery(
-          connection: connection,
+        await sqlInterface.performDeleteQuery(
           tableName: 'phone_numbers',
           filters: {'entity_id': enterprise!.fax!.id},
         );
       }
 
       if (enterprise?.contact.id != null) {
-        await MySqlHelpers.performDeleteQuery(
-          connection: connection,
+        await sqlInterface.performDeleteQuery(
           tableName: 'entities',
           filters: {'shared_id': enterprise!.contact.id},
         );

@@ -6,6 +6,7 @@ import 'package:stagess_backend/repositories/admins_repository.dart';
 import 'package:stagess_backend/repositories/enterprises_repository.dart';
 import 'package:stagess_backend/repositories/internships_repository.dart';
 import 'package:stagess_backend/repositories/school_boards_repository.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/repositories/students_repository.dart';
 import 'package:stagess_backend/repositories/teachers_repository.dart';
 import 'package:stagess_backend/server/connexions.dart';
@@ -26,7 +27,7 @@ String _prepareHandshake() {
 }
 
 DatabaseManager get _mockedDatabase => DatabaseManager(
-      connection: null,
+      sqlInterface: MySqlInterface(connection: null),
       schoolBoardsDatabase: SchoolBoardsRepositoryMock(),
       adminsDatabase: AdminsRepositoryMock(),
       teachersDatabase: TeachersRepositoryMock(),

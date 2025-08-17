@@ -1,7 +1,6 @@
 import 'package:logging/logging.dart';
-import 'package:mysql1/mysql1.dart';
-import 'package:stagess_backend/repositories/mysql_helpers.dart';
 import 'package:stagess_backend/repositories/repository_abstract.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/utils/database_user.dart';
 import 'package:stagess_backend/utils/exceptions.dart';
 import 'package:stagess_common/communication_protocol.dart';
@@ -155,16 +154,15 @@ abstract class InternshipsRepository implements RepositoryAbstract {
 
 class MySqlInternshipsRepository extends InternshipsRepository {
   // coverage:ignore-start
-  final MySqlConnection connection;
-  MySqlInternshipsRepository({required this.connection});
+  final SqlInterface sqlInterface;
+  MySqlInternshipsRepository({required this.sqlInterface});
 
   @override
   Future<Map<String, Internship>> _getAllInternships({
     String? internshipId,
     required DatabaseUser user,
   }) async {
-    final internships = await MySqlHelpers.performSelectQuery(
-        connection: connection,
+    final internships = await sqlInterface.performSelectQuery(
         user: user,
         tableName: 'internships',
         filters: (internshipId == null ? {} : {'id': internshipId})
@@ -271,8 +269,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               [];
 
       for (final mutable in (internship['mutables'] as List? ?? [])) {
-        mutable['supervisor'] = (await MySqlHelpers.performSelectQuery(
-                    connection: connection,
+        mutable['supervisor'] = (await sqlInterface.performSelectQuery(
                     user: user,
                     tableName: 'persons',
                     filters: {
@@ -302,8 +299,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         mutable['supervisor']['address'] =
             (mutable['supervisor']['addresses'] as List?)?.firstOrNull;
 
-        final schedules = await MySqlHelpers.performSelectQuery(
-            connection: connection,
+        final schedules = await sqlInterface.performSelectQuery(
             user: user,
             tableName: 'internship_weekly_schedules',
             filters: {
@@ -350,8 +346,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           }
         }
 
-        final transportations = await MySqlHelpers.performSelectQuery(
-            connection: connection,
+        final transportations = await sqlInterface.performSelectQuery(
             user: user,
             tableName: 'internship_transportations',
             filters: {'id': mutable['id']});
@@ -365,8 +360,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       final skillEvaluations = [];
       for (final Map<String, dynamic> evaluation
           in (internship['skill_evaluations'] as List? ?? [])) {
-        final evaluationSubquery = (await MySqlHelpers.performSelectQuery(
-                connection: connection,
+        final evaluationSubquery = (await sqlInterface.performSelectQuery(
                 user: user,
                 tableName: 'internship_skill_evaluations',
                 filters: {
@@ -396,8 +390,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
         evaluation['skills'] = [];
         for (final skill in (evaluationSubquery['skills'] as List? ?? [])) {
-          final tasks = await MySqlHelpers.performSelectQuery(
-            connection: connection,
+          final tasks = await sqlInterface.performSelectQuery(
             user: user,
             tableName: 'internship_skill_evaluation_item_tasks',
             filters: {'evaluation_item_id': skill['id']},
@@ -430,8 +423,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       final attitudeEvaluations = [];
       for (final Map<String, dynamic> evaluation
           in (internship['attitude_evaluations'] as List? ?? [])) {
-        final evaluationSubquery = (await MySqlHelpers.performSelectQuery(
-                connection: connection,
+        final evaluationSubquery = (await sqlInterface.performSelectQuery(
                 user: user,
                 tableName: 'internship_attitude_evaluations',
                 filters: {
@@ -479,8 +471,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       final visaEvaluations = [];
       for (final Map<String, dynamic> evaluation
           in (internship['visa_evaluations'] as List? ?? [])) {
-        final evaluationSubquery = (await MySqlHelpers.performSelectQuery(
-                connection: connection,
+        final evaluationSubquery = (await sqlInterface.performSelectQuery(
                 user: user,
                 tableName: 'internship_visa_evaluations',
                 filters: {
@@ -518,8 +509,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       internship['enterprise_evaluation'] =
           (internship['enterprise_evaluation'] as List?)?.firstOrNull;
       if (internship['enterprise_evaluation'] != null) {
-        final skills = await MySqlHelpers.performSelectQuery(
-            connection: connection,
+        final skills = await sqlInterface.performSelectQuery(
             user: user,
             tableName: 'post_internship_enterprise_evaluation_skills',
             filters: {
@@ -544,25 +534,20 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
   Future<void> _insertToInternships(Internship internship) async {
     // Insert the internship
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'entities',
-        data: {'shared_id': internship.id});
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'internships',
-        data: {
-          'id': internship.id,
-          'school_board_id': internship.schoolBoardId.serialize(),
-          'student_id': internship.studentId.serialize(),
-          'enterprise_id': internship.enterpriseId.serialize(),
-          'job_id': internship.jobId.serialize(),
-          'expected_duration': internship.expectedDuration.serialize(),
-          'achieved_duration': internship.achievedDuration.serialize(),
-          'visiting_priority': internship.visitingPriority.serialize(),
-          'teacher_notes': internship.teacherNotes.serialize(),
-          'end_date': internship.endDate.serialize(),
-        });
+    await sqlInterface.performInsertQuery(
+        tableName: 'entities', data: {'shared_id': internship.id});
+    await sqlInterface.performInsertQuery(tableName: 'internships', data: {
+      'id': internship.id,
+      'school_board_id': internship.schoolBoardId.serialize(),
+      'student_id': internship.studentId.serialize(),
+      'enterprise_id': internship.enterpriseId.serialize(),
+      'job_id': internship.jobId.serialize(),
+      'expected_duration': internship.expectedDuration.serialize(),
+      'achieved_duration': internship.achievedDuration.serialize(),
+      'visiting_priority': internship.visitingPriority.serialize(),
+      'teacher_notes': internship.teacherNotes.serialize(),
+      'end_date': internship.endDate.serialize(),
+    });
   }
 
   Future<void> _updateToInternships(
@@ -603,8 +588,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       toUpdate['end_date'] = internship.endDate.serialize();
     }
     if (toUpdate.isNotEmpty) {
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
+      await sqlInterface.performUpdateQuery(
           tableName: 'internships',
           filters: {'id': internship.id},
           data: toUpdate);
@@ -614,8 +598,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   Future<void> _insertToSupervisingTeachers(Internship internship) async {
     final toWait = <Future>[];
     for (final teacherId in internship.supervisingTeacherIds) {
-      toWait.add(MySqlHelpers.performInsertQuery(
-          connection: connection,
+      toWait.add(sqlInterface.performInsertQuery(
           tableName: 'internship_supervising_teachers',
           data: {
             'internship_id': internship.id,
@@ -632,8 +615,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     if (toUpdate.contains('signatory_teacher_id') ||
         toUpdate.contains('extra_supervising_teacher_ids')) {
       // This is a bit tricky to simply update, so we delete and reinsert
-      await MySqlHelpers.performDeleteQuery(
-          connection: connection,
+      await sqlInterface.performDeleteQuery(
           tableName: 'internship_supervising_teachers',
           filters: {'internship_id': internship.id});
 
@@ -643,8 +625,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
   Future<void> _insertExtraSpecializations(Internship internship) async {
     for (final specializationId in internship.extraSpecializationIds) {
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
+      await sqlInterface.performInsertQuery(
           tableName: 'internship_extra_specializations',
           data: {
             'internship_id': internship.id,
@@ -658,8 +639,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     final toUpdate = internship.getDifference(previous);
     if (toUpdate.contains('extra_specialization_ids')) {
       // This is a bit tricky to simply update, so we delete and reinsert
-      await MySqlHelpers.performDeleteQuery(
-          connection: connection,
+      await sqlInterface.performDeleteQuery(
           tableName: 'internship_extra_specializations',
           filters: {'internship_id': internship.id});
 
@@ -677,8 +657,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         continue;
       }
       if (!supervisorIsUpdated) {
-        final previousSupervisor = (await MySqlHelpers.performSelectQuery(
-                    connection: connection,
+        final previousSupervisor = (await sqlInterface.performSelectQuery(
                     user: user,
                     tableName: 'persons',
                     filters: {
@@ -711,35 +690,30 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         }
 
         if (previousSupervisor.isEmpty) {
-          await MySqlHelpers.performInsertPerson(
-              connection: connection, person: internship.supervisor);
+          await sqlInterface.performInsertPerson(person: internship.supervisor);
         } else {
           // Update the person (without the phone numbers and addresses of previous as they were removed)
-          await MySqlHelpers.performUpdatePerson(
-              connection: connection,
+          await sqlInterface.performUpdatePerson(
               person: internship.supervisor,
               previous: Person.fromSerialized(previousSupervisor));
         }
         supervisorIsUpdated = true;
       }
 
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'internship_mutable_data',
-          data: {
-            'id': mutable['id'],
-            'internship_id': internship.id,
-            'creation_date': mutable['creation_date'],
-            'supervisor_id': internship.supervisor.id,
-            'starting_date': mutable['starting_date'],
-            'ending_date': mutable['ending_date'],
-            'visit_frequencies': mutable['visit_frequencies'],
-          });
+      await sqlInterface
+          .performInsertQuery(tableName: 'internship_mutable_data', data: {
+        'id': mutable['id'],
+        'internship_id': internship.id,
+        'creation_date': mutable['creation_date'],
+        'supervisor_id': internship.supervisor.id,
+        'starting_date': mutable['starting_date'],
+        'ending_date': mutable['ending_date'],
+        'visit_frequencies': mutable['visit_frequencies'],
+      });
 
       // Insert the weekly schedules
       for (final schedule in mutable['schedules'] as List) {
-        await MySqlHelpers.performInsertQuery(
-            connection: connection,
+        await sqlInterface.performInsertQuery(
             tableName: 'internship_weekly_schedules',
             data: {
               'id': schedule['id'],
@@ -755,8 +729,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           for (int blockIndex = 0;
               blockIndex < (entry['blocks'] as List).length;
               blockIndex++) {
-            await MySqlHelpers.performInsertQuery(
-                connection: connection,
+            await sqlInterface.performInsertQuery(
                 tableName: 'internship_daily_schedules',
                 data: {
                   'id': entry['id'],
@@ -774,8 +747,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
       // Insert the transportations
       for (final transportation in mutable['transportations'] as List) {
-        await MySqlHelpers.performInsertQuery(
-            connection: connection,
+        await sqlInterface.performInsertQuery(
             tableName: 'internship_transportations',
             data: {'id': mutable['id'], 'transportation': transportation});
       }
@@ -797,22 +769,19 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         continue;
       }
 
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'internship_skill_evaluations',
-          data: {
-            'id': evaluation['id'],
-            'internship_id': internship.id,
-            'date': evaluation['date'],
-            'skill_granularity': evaluation['skill_granularity'],
-            'comments': evaluation['comments'],
-            'form_version': evaluation['form_version'],
-          });
+      await sqlInterface
+          .performInsertQuery(tableName: 'internship_skill_evaluations', data: {
+        'id': evaluation['id'],
+        'internship_id': internship.id,
+        'date': evaluation['date'],
+        'skill_granularity': evaluation['skill_granularity'],
+        'comments': evaluation['comments'],
+        'form_version': evaluation['form_version'],
+      });
 
       // Insert the persons present at the evaluation
       for (final name in evaluation['present'] as List) {
-        await MySqlHelpers.performInsertQuery(
-            connection: connection,
+        await sqlInterface.performInsertQuery(
             tableName: 'internship_skill_evaluation_persons',
             data: {
               'evaluation_id': evaluation['id'],
@@ -822,8 +791,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
       // Insert the skills
       for (final skill in evaluation['skills'] as List) {
-        await MySqlHelpers.performInsertQuery(
-            connection: connection,
+        await sqlInterface.performInsertQuery(
             tableName: 'internship_skill_evaluation_items',
             data: {
               'id': skill['id'],
@@ -836,8 +804,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
         // Insert the tasks
         for (final task in skill['tasks'] as List) {
-          await MySqlHelpers.performInsertQuery(
-              connection: connection,
+          await sqlInterface.performInsertQuery(
               tableName: 'internship_skill_evaluation_item_tasks',
               data: {
                 'id': task['id'],
@@ -865,8 +832,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         continue;
       }
 
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
+      await sqlInterface.performInsertQuery(
           tableName: 'internship_attitude_evaluations',
           data: {
             'id': evaluation['id'],
@@ -878,8 +844,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
 
       // Insert the persons present at the evaluation
       for (final name in evaluation['present'] as List) {
-        await MySqlHelpers.performInsertQuery(
-            connection: connection,
+        await sqlInterface.performInsertQuery(
             tableName: 'internship_attitude_evaluation_persons',
             data: {
               'evaluation_id': evaluation['id'],
@@ -888,8 +853,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
       }
 
       // Insert the attitude
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
+      await sqlInterface.performInsertQuery(
           tableName: 'internship_attitude_evaluation_items',
           data: {
             'id': evaluation['attitude']['id'],
@@ -925,19 +889,16 @@ class MySqlInternshipsRepository extends InternshipsRepository {
         continue;
       }
 
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
-          tableName: 'internship_visa_evaluations',
-          data: {
-            'id': evaluation['id'],
-            'internship_id': internship.id,
-            'date': evaluation['date'],
-            'form_version': evaluation['form_version'],
-          });
+      await sqlInterface
+          .performInsertQuery(tableName: 'internship_visa_evaluations', data: {
+        'id': evaluation['id'],
+        'internship_id': internship.id,
+        'date': evaluation['date'],
+        'form_version': evaluation['form_version'],
+      });
 
       // Insert the attitude
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
+      await sqlInterface.performInsertQuery(
           tableName: 'internship_visa_evaluation_items',
           data: {
             'id': evaluation['attitude']['id'],
@@ -967,8 +928,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
   Future<void> _insertToEnterpriseEvaluation(Internship internship) async {
     if (internship.enterpriseEvaluation != null) {
       final evaluation = internship.enterpriseEvaluation!.serialize();
-      await MySqlHelpers.performInsertQuery(
-          connection: connection,
+      await sqlInterface.performInsertQuery(
           tableName: 'post_internship_enterprise_evaluations',
           data: {
             'id': evaluation['id'],
@@ -995,8 +955,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
           });
 
       for (final skill in evaluation['skills_required'] as List) {
-        await MySqlHelpers.performInsertQuery(
-            connection: connection,
+        await sqlInterface.performInsertQuery(
             tableName: 'post_internship_enterprise_evaluation_skills',
             data: {
               'post_evaluation_id': evaluation['id'],
@@ -1060,22 +1019,19 @@ class MySqlInternshipsRepository extends InternshipsRepository {
     required DatabaseUser user,
   }) async {
     try {
-      final mutable = (await MySqlHelpers.performSelectQuery(
-        connection: connection,
+      final mutable = (await sqlInterface.performSelectQuery(
         user: user,
         tableName: 'internship_mutable_data',
         filters: {'internship_id': id},
       ))
           .lastOrNull;
 
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
+      await sqlInterface.performDeleteQuery(
         tableName: 'entities',
         filters: {'shared_id': id},
       );
       if (mutable != null) {
-        await MySqlHelpers.performDeleteQuery(
-          connection: connection,
+        await sqlInterface.performDeleteQuery(
           tableName: 'entities',
           filters: {'shared_id': mutable['supervisor_id']},
         );

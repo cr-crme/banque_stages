@@ -7,6 +7,7 @@ import 'package:mysql1/mysql1.dart';
 import 'package:stagess_backend/repositories/admins_repository.dart';
 import 'package:stagess_backend/repositories/enterprises_repository.dart';
 import 'package:stagess_backend/repositories/internships_repository.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/repositories/school_boards_repository.dart';
 import 'package:stagess_backend/repositories/students_repository.dart';
 import 'package:stagess_backend/repositories/teachers_repository.dart';
@@ -18,9 +19,9 @@ import 'package:stagess_common/services/backend_helpers.dart';
 
 final _logger = Logger('BackendServer');
 
-enum DatabaseBackend { mysql, mock }
+enum DatabaseBackend { mariadb, mysql, mock }
 
-final _databaseBackend = DatabaseBackend.mysql;
+final _databaseBackend = DatabaseBackend.mariadb;
 final _backendIp = InternetAddress.loopbackIPv4;
 final _backendPort = BackendHelpers.backendPort;
 final _devSettings = ConnectionSettings(
@@ -81,8 +82,11 @@ void main() async {
   }
 
   if (_databaseBackend == DatabaseBackend.mysql) {
-    await devConnexions.database.connection.close();
-    await productionConnexions.database.connection.close();
+    await (devConnexions.database.sqlInterface.connection as MySqlConnection)
+        .close();
+    await (productionConnexions.database.sqlInterface.connection
+            as MySqlConnection)
+        .close();
   }
 }
 
@@ -100,9 +104,12 @@ Future<Connexions> _connectDatabase({
   required String firebaseApiKey,
   required ConnectionSettings settings,
 }) async {
-  final connection = switch (databaseBackend) {
+  final sqlInterface = switch (databaseBackend) {
     DatabaseBackend.mock => null,
-    DatabaseBackend.mysql => await MySqlConnection.connect(settings)
+    DatabaseBackend.mysql =>
+      MySqlInterface(connection: await MySqlConnection.connect(settings)),
+    DatabaseBackend.mariadb =>
+      MariaDbSqlInterface(connection: await MySqlConnection.connect(settings)),
   };
   // Give a bit of time just in case
   await Future.delayed(Duration(milliseconds: 100));
@@ -110,35 +117,41 @@ Future<Connexions> _connectDatabase({
   final connexions = Connexions(
       firebaseApiKey: firebaseApiKey,
       database: DatabaseManager(
-        connection: connection!,
+        sqlInterface: sqlInterface!,
         schoolBoardsDatabase: switch (databaseBackend) {
-          DatabaseBackend.mysql =>
-            MySqlSchoolBoardsRepository(connection: connection),
+          DatabaseBackend.mysql ||
+          DatabaseBackend.mariadb =>
+            MySqlSchoolBoardsRepository(sqlInterface: sqlInterface),
           DatabaseBackend.mock => SchoolBoardsRepositoryMock()
         },
         adminsDatabase: switch (databaseBackend) {
-          DatabaseBackend.mysql =>
-            MySqlAdminsRepository(connection: connection),
+          DatabaseBackend.mysql ||
+          DatabaseBackend.mariadb =>
+            MySqlAdminsRepository(sqlInterface: sqlInterface),
           DatabaseBackend.mock => AdminsRepositoryMock()
         },
         teachersDatabase: switch (databaseBackend) {
-          DatabaseBackend.mysql =>
-            MySqlTeachersRepository(connection: connection),
+          DatabaseBackend.mysql ||
+          DatabaseBackend.mariadb =>
+            MySqlTeachersRepository(sqlInterface: sqlInterface),
           DatabaseBackend.mock => TeachersRepositoryMock()
         },
         studentsDatabase: switch (databaseBackend) {
-          DatabaseBackend.mysql =>
-            MySqlStudentsRepository(connection: connection),
+          DatabaseBackend.mysql ||
+          DatabaseBackend.mariadb =>
+            MySqlStudentsRepository(sqlInterface: sqlInterface),
           DatabaseBackend.mock => StudentsRepositoryMock()
         },
         enterprisesDatabase: switch (databaseBackend) {
-          DatabaseBackend.mysql =>
-            MySqlEnterprisesRepository(connection: connection),
+          DatabaseBackend.mysql ||
+          DatabaseBackend.mariadb =>
+            MySqlEnterprisesRepository(sqlInterface: sqlInterface),
           DatabaseBackend.mock => EnterprisesRepositoryMock()
         },
         internshipsDatabase: switch (databaseBackend) {
-          DatabaseBackend.mysql =>
-            MySqlInternshipsRepository(connection: connection),
+          DatabaseBackend.mysql ||
+          DatabaseBackend.mariadb =>
+            MySqlInternshipsRepository(sqlInterface: sqlInterface),
           DatabaseBackend.mock => InternshipsRepositoryMock()
         },
       ));

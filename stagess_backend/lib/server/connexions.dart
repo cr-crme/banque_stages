@@ -4,9 +4,8 @@ import 'dart:io';
 import 'package:firebase_admin/firebase_admin.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
-import 'package:mysql1/mysql1.dart';
-import 'package:stagess_backend/repositories/mysql_helpers.dart';
 import 'package:stagess_backend/repositories/repository_abstract.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/server/database_manager.dart';
 import 'package:stagess_backend/utils/database_user.dart';
 import 'package:stagess_backend/utils/exceptions.dart';
@@ -139,7 +138,7 @@ class Connexions {
               }
               user = await _getTeacherFromDatabase(
                   user: _clients[client]!,
-                  connection: _database.connection,
+                  sqlInterface: _database.sqlInterface,
                   email: email);
               break;
             case AccessLevel.admin:
@@ -149,7 +148,7 @@ class Connexions {
               }
               user = await _getAdminFromDatabase(
                   user: _clients[client]!,
-                  connection: _database.connection,
+                  sqlInterface: _database.sqlInterface,
                   email: email);
               break;
             case AccessLevel.superAdmin:
@@ -250,7 +249,7 @@ class Connexions {
               }
               user = await _getTeacherFromDatabase(
                   user: _clients[client]!,
-                  connection: _database.connection,
+                  sqlInterface: _database.sqlInterface,
                   email: email);
               break;
             case AccessLevel.admin:
@@ -260,7 +259,7 @@ class Connexions {
               }
               user = await _getAdminFromDatabase(
                   user: _clients[client]!,
-                  connection: _database.connection,
+                  sqlInterface: _database.sqlInterface,
                   email: email);
               break;
             case AccessLevel.superAdmin:
@@ -407,7 +406,7 @@ class Connexions {
     }
 
     // Get the user information from the database to first verify its identity
-    final user = await _getValidatedUser(_database.connection,
+    final user = await _getValidatedUser(_database.sqlInterface,
         id: authenticatorId, email: email);
     if (user == null) throw ConnexionRefusedException('Invalid token payload');
     _clients[client] = user;
@@ -431,7 +430,7 @@ class Connexions {
   }
 }
 
-Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
+Future<DatabaseUser?> _getValidatedUser(SqlInterface sqlInterface,
     {required String id, required String email}) async {
   // There are 3 possible cases:
   // 1. The user has previously connected so they will be in the 'users' table.
@@ -451,7 +450,7 @@ Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
   // to fetch the user information.
   // First, try to login via the 'users' table
   var users = await _getAdminFromDatabase(
-      user: user, connection: connection, email: email);
+      user: user, sqlInterface: sqlInterface, email: email);
 
   user = user.copyWith(
     userId: users?['id'],
@@ -465,7 +464,7 @@ Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
   // If there is information missing in the user structure, then we are not admin (case 1)
   // We therefore try to log using the information from the 'teachers' table
   final teacher = await _getTeacherFromDatabase(
-      user: user, connection: connection, email: email);
+      user: user, sqlInterface: sqlInterface, email: email);
   // If there is no teacher with that email, the user is not valid (case 3)
   if (teacher == null) return null;
   (teacher as Map).addAll((teacher['teachers'] as List).firstOrNull);
@@ -485,10 +484,9 @@ Future<DatabaseUser?> _getValidatedUser(MySqlConnection connection,
 
 Future<Map<String, dynamic>?> _getTeacherFromDatabase(
     {required DatabaseUser user,
-    required MySqlConnection connection,
+    required SqlInterface sqlInterface,
     required String email}) async {
-  final teacher = (await MySqlHelpers.performSelectQuery(
-          connection: connection,
+  final teacher = (await sqlInterface.performSelectQuery(
           user: user.copyWith(accessLevel: AccessLevel.superAdmin),
           tableName: 'persons',
           fieldsToFetch: [
@@ -518,10 +516,9 @@ Future<Map<String, dynamic>?> _getTeacherFromDatabase(
 
 Future<Map<String, dynamic>?> _getAdminFromDatabase(
     {required DatabaseUser user,
-    required MySqlConnection connection,
+    required SqlInterface sqlInterface,
     required String email}) async {
-  return (await MySqlHelpers.performSelectQuery(
-    connection: connection,
+  return (await sqlInterface.performSelectQuery(
     user: user,
     tableName: 'admins',
     filters: {'email': email},

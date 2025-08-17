@@ -1,7 +1,6 @@
 import 'package:logging/logging.dart';
-import 'package:mysql1/mysql1.dart';
-import 'package:stagess_backend/repositories/mysql_helpers.dart';
 import 'package:stagess_backend/repositories/repository_abstract.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/utils/database_user.dart';
 import 'package:stagess_backend/utils/exceptions.dart';
 import 'package:stagess_common/communication_protocol.dart';
@@ -148,16 +147,15 @@ abstract class StudentsRepository implements RepositoryAbstract {
 
 class MySqlStudentsRepository extends StudentsRepository {
   // coverage:ignore-start
-  final MySqlConnection connection;
-  MySqlStudentsRepository({required this.connection});
+  final SqlInterface sqlInterface;
+  MySqlStudentsRepository({required this.sqlInterface});
 
   @override
   Future<Map<String, Student>> _getAllStudents({
     String? studentId,
     required DatabaseUser user,
   }) async {
-    final students = await MySqlHelpers.performSelectQuery(
-        connection: connection,
+    final students = await sqlInterface.performSelectQuery(
         user: user,
         tableName: 'students',
         filters: (studentId == null ? {} : {'id': studentId})
@@ -208,30 +206,26 @@ class MySqlStudentsRepository extends StudentsRepository {
           (student['contact'] as List?)?.map((e) => e['id']).firstOrNull;
       final contacts = contactId == null
           ? null
-          : await MySqlHelpers.performSelectQuery(
-              connection: connection,
-              user: user,
-              tableName: 'persons',
-              filters: {
-                  'id': contactId
-                },
-              subqueries: [
-                  MySqlSelectSubQuery(
-                      dataTableName: 'addresses',
-                      idNameToDataTable: 'entity_id',
-                      fieldsToFetch: [
-                        'id',
-                        'civic',
-                        'street',
-                        'apartment',
-                        'city',
-                        'postal_code'
-                      ]),
-                  MySqlSelectSubQuery(
-                      dataTableName: 'phone_numbers',
-                      idNameToDataTable: 'entity_id',
-                      fieldsToFetch: ['id', 'phone_number']),
-                ]);
+          : await sqlInterface
+              .performSelectQuery(user: user, tableName: 'persons', filters: {
+              'id': contactId
+            }, subqueries: [
+              MySqlSelectSubQuery(
+                  dataTableName: 'addresses',
+                  idNameToDataTable: 'entity_id',
+                  fieldsToFetch: [
+                    'id',
+                    'civic',
+                    'street',
+                    'apartment',
+                    'city',
+                    'postal_code'
+                  ]),
+              MySqlSelectSubQuery(
+                  dataTableName: 'phone_numbers',
+                  idNameToDataTable: 'entity_id',
+                  fieldsToFetch: ['id', 'phone_number']),
+            ]);
       student['contact'] = contacts?.firstOrNull ?? {};
       if (student['contact']['phone_numbers'] != null) {
         student['contact']['phone'] =
@@ -266,21 +260,17 @@ class MySqlStudentsRepository extends StudentsRepository {
       (await _getAllStudents(studentId: id, user: user))[id];
 
   Future<void> _insertToStudents(Student student) async {
-    await MySqlHelpers.performInsertPerson(
-        connection: connection, person: student);
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'students',
-        data: {
-          'id': student.id.serialize(),
-          'school_board_id': student.schoolBoardId.serialize(),
-          'school_id': student.schoolId.serialize(),
-          'version': Student.currentVersion.serialize(),
-          'photo': student.photo.serialize(),
-          'program': student.programSerialized,
-          'group_name': student.group.serialize(),
-          'contact_link': student.contactLink.serialize(),
-        });
+    await sqlInterface.performInsertPerson(person: student);
+    await sqlInterface.performInsertQuery(tableName: 'students', data: {
+      'id': student.id.serialize(),
+      'school_board_id': student.schoolBoardId.serialize(),
+      'school_id': student.schoolId.serialize(),
+      'version': Student.currentVersion.serialize(),
+      'photo': student.photo.serialize(),
+      'program': student.programSerialized,
+      'group_name': student.group.serialize(),
+      'contact_link': student.contactLink.serialize(),
+    });
   }
 
   Future<void> _updateToStudents(
@@ -296,8 +286,7 @@ class MySqlStudentsRepository extends StudentsRepository {
       if (user.accessLevel < AccessLevel.admin) {
         _logger.severe('Cannot update school_id for the students');
       } else {
-        await MySqlHelpers.performUpdateQuery(
-            connection: connection,
+        await sqlInterface.performUpdateQuery(
             tableName: 'students',
             filters: {'id': student.id},
             data: {'school_id': student.schoolId});
@@ -305,8 +294,7 @@ class MySqlStudentsRepository extends StudentsRepository {
     }
 
     // Update the persons table if needed
-    await MySqlHelpers.performUpdatePerson(
-        connection: connection, person: student, previous: previous);
+    await sqlInterface.performUpdatePerson(person: student, previous: previous);
 
     final toUpdate = <String, dynamic>{};
     if (student.photo != previous.photo) {
@@ -322,19 +310,14 @@ class MySqlStudentsRepository extends StudentsRepository {
       toUpdate['contact_link'] = student.contactLink.serialize();
     }
     if (toUpdate.isNotEmpty) {
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'students',
-          filters: {'id': student.id},
-          data: toUpdate);
+      await sqlInterface.performUpdateQuery(
+          tableName: 'students', filters: {'id': student.id}, data: toUpdate);
     }
   }
 
   Future<void> _insertToContacts(Student student) async {
-    await MySqlHelpers.performInsertPerson(
-        connection: connection, person: student.contact);
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
+    await sqlInterface.performInsertPerson(person: student.contact);
+    await sqlInterface.performInsertQuery(
         tableName: 'student_contacts',
         data: {'student_id': student.id, 'contact_id': student.contact.id});
   }
@@ -346,10 +329,8 @@ class MySqlStudentsRepository extends StudentsRepository {
   }) async {
     final differences = student.getDifference(previous);
     if (differences.contains('contact')) {
-      await MySqlHelpers.performUpdatePerson(
-          connection: connection,
-          person: student.contact,
-          previous: previous.contact);
+      await sqlInterface.performUpdatePerson(
+          person: student.contact, previous: previous.contact);
     }
   }
 
@@ -376,29 +357,25 @@ class MySqlStudentsRepository extends StudentsRepository {
     // Note: This will fail if the student was involved in an internship. The
     // data from the internship needs to be deleted first.
     try {
-      final contacts = (await MySqlHelpers.performSelectQuery(
-        connection: connection,
+      final contacts = (await sqlInterface.performSelectQuery(
         user: user,
         tableName: 'student_contacts',
         filters: {'student_id': id},
       ));
 
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
+      await sqlInterface.performDeleteQuery(
         tableName: 'student_contacts',
         filters: {'student_id': id},
       );
 
       for (final contact in contacts) {
-        await MySqlHelpers.performDeleteQuery(
-          connection: connection,
+        await sqlInterface.performDeleteQuery(
           tableName: 'entities',
           filters: {'shared_id': contact['contact_id']},
         );
       }
 
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
+      await sqlInterface.performDeleteQuery(
         tableName: 'entities',
         filters: {'shared_id': id},
       );

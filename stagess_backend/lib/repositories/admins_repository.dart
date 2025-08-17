@@ -1,7 +1,6 @@
 import 'package:logging/logging.dart';
-import 'package:mysql1/mysql1.dart';
-import 'package:stagess_backend/repositories/mysql_helpers.dart';
 import 'package:stagess_backend/repositories/repository_abstract.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/utils/database_user.dart';
 import 'package:stagess_backend/utils/exceptions.dart';
 import 'package:stagess_common/communication_protocol.dart';
@@ -126,16 +125,16 @@ abstract class AdminsRepository implements RepositoryAbstract {
 
 class MySqlAdminsRepository extends AdminsRepository {
   // coverage:ignore-start
-  final MySqlConnection connection;
-  MySqlAdminsRepository({required this.connection});
+  final MySqlInterface sqlInterface;
+
+  MySqlAdminsRepository({required this.sqlInterface});
 
   @override
   Future<Map<String, Admin>> _getAllAdmins({
     String? adminId,
     required DatabaseUser user,
   }) async {
-    final users = await MySqlHelpers.performSelectQuery(
-      connection: connection,
+    final users = await sqlInterface.performSelectQuery(
       user: user,
       tableName: 'admins',
       filters: (adminId == null ? {} : {'id': adminId}),
@@ -157,23 +156,18 @@ class MySqlAdminsRepository extends AdminsRepository {
       (await _getAllAdmins(adminId: id, user: user))[id];
 
   Future<void> _insertToAdmins(Admin admin) async {
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'entities',
-        data: {'shared_id': admin.id});
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'admins',
-        data: {
-          'id': admin.id.serialize(),
-          'school_board_id': admin.schoolBoardId.serialize(),
-          'has_registered_account': admin.hasRegisteredAccount,
-          'first_name': admin.firstName.serialize(),
-          'middle_name': admin.middleName?.serialize(),
-          'last_name': admin.lastName.serialize(),
-          'email': admin.email?.serialize(),
-          'access_level': AccessLevel.admin.serialize(),
-        });
+    await sqlInterface.performInsertQuery(
+        tableName: 'entities', data: {'shared_id': admin.id});
+    await sqlInterface.performInsertQuery(tableName: 'admins', data: {
+      'id': admin.id.serialize(),
+      'school_board_id': admin.schoolBoardId.serialize(),
+      'has_registered_account': admin.hasRegisteredAccount,
+      'first_name': admin.firstName.serialize(),
+      'middle_name': admin.middleName?.serialize(),
+      'last_name': admin.lastName.serialize(),
+      'email': admin.email?.serialize(),
+      'access_level': AccessLevel.admin.serialize(),
+    });
   }
 
   Future<void> _updateToAdmins(Admin admin, Admin previous) async {
@@ -204,11 +198,8 @@ class MySqlAdminsRepository extends AdminsRepository {
     }
 
     if (toUpdate.isNotEmpty) {
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'admins',
-          filters: {'id': admin.id},
-          data: toUpdate);
+      await sqlInterface.performUpdateQuery(
+          tableName: 'admins', filters: {'id': admin.id}, data: toUpdate);
     }
   }
 
@@ -226,8 +217,7 @@ class MySqlAdminsRepository extends AdminsRepository {
   Future<String?> _deleteAdmin({required String id}) async {
     // Delete the administrator from the database
     try {
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
+      await sqlInterface.performDeleteQuery(
         tableName: 'entities',
         filters: {'shared_id': id},
       );

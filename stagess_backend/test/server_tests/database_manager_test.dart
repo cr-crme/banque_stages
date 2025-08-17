@@ -2,6 +2,7 @@ import 'package:stagess_backend/repositories/admins_repository.dart';
 import 'package:stagess_backend/repositories/enterprises_repository.dart';
 import 'package:stagess_backend/repositories/internships_repository.dart';
 import 'package:stagess_backend/repositories/school_boards_repository.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/repositories/students_repository.dart';
 import 'package:stagess_backend/repositories/teachers_repository.dart';
 import 'package:stagess_backend/server/database_manager.dart';
@@ -23,7 +24,7 @@ InternshipsRepository get _mockedDatabaseInternships =>
 void main() {
   test('Get teachers from DatabaseManagers', () async {
     final database = DatabaseManager(
-      connection: null,
+      sqlInterface: MySqlInterface(connection: null),
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
@@ -48,7 +49,7 @@ void main() {
 
   test('Get teacher from DatabaseManagers', () async {
     final database = DatabaseManager(
-      connection: null,
+      sqlInterface: MySqlInterface(connection: null),
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
@@ -68,7 +69,7 @@ void main() {
 
   test('Get teacher from DatabaseManagers with invalid id', () async {
     final database = DatabaseManager(
-      connection: null,
+      sqlInterface: MySqlInterface(connection: null),
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
@@ -89,7 +90,7 @@ void main() {
 
   test('Get teacher from DatabaseManagers without id', () async {
     final database = DatabaseManager(
-      connection: null,
+      sqlInterface: MySqlInterface(connection: null),
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
@@ -111,7 +112,7 @@ void main() {
 
   test('Put without data in DatabaseManagers', () async {
     final database = DatabaseManager(
-      connection: null,
+      sqlInterface: MySqlInterface(connection: null),
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
@@ -133,7 +134,7 @@ void main() {
 
   test('Set all teachers to DatabaseManagers', () async {
     final database = DatabaseManager(
-      connection: null,
+      sqlInterface: MySqlInterface(connection: null),
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
@@ -155,7 +156,7 @@ void main() {
 
   test('Set teacher to DatabaseManagers', () async {
     final database = DatabaseManager(
-      connection: null,
+      sqlInterface: MySqlInterface(connection: null),
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
@@ -179,7 +180,7 @@ void main() {
 
   test('Set new teacher to DatabaseManagers', () async {
     final database = DatabaseManager(
-      connection: null,
+      sqlInterface: MySqlInterface(connection: null),
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,
@@ -203,7 +204,7 @@ void main() {
 
   test('Set teacher to DatabaseManagers without id', () async {
     final database = DatabaseManager(
-      connection: null,
+      sqlInterface: MySqlInterface(connection: null),
       schoolBoardsDatabase: _mockedDatabaseSchoolBoards,
       adminsDatabase: _mockedAdminsDatabase,
       teachersDatabase: _mockedDatabaseTeachers,

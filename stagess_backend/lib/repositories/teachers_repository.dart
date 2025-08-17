@@ -1,7 +1,6 @@
 import 'package:logging/logging.dart';
-import 'package:mysql1/mysql1.dart';
-import 'package:stagess_backend/repositories/mysql_helpers.dart';
 import 'package:stagess_backend/repositories/repository_abstract.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/utils/database_user.dart';
 import 'package:stagess_backend/utils/exceptions.dart';
 import 'package:stagess_common/communication_protocol.dart';
@@ -157,16 +156,15 @@ abstract class TeachersRepository implements RepositoryAbstract {
 
 class MySqlTeachersRepository extends TeachersRepository {
   // coverage:ignore-start
-  final MySqlConnection connection;
-  MySqlTeachersRepository({required this.connection});
+  final SqlInterface sqlInterface;
+  MySqlTeachersRepository({required this.sqlInterface});
 
   @override
   Future<Map<String, Teacher>> _getAllTeachers({
     String? teacherId,
     required DatabaseUser user,
   }) async {
-    final teachers = await MySqlHelpers.performSelectQuery(
-        connection: connection,
+    final teachers = await sqlInterface.performSelectQuery(
         user: user,
         tableName: 'teachers',
         filters: (teacherId == null ? {} : {'id': teacherId})
@@ -223,8 +221,7 @@ class MySqlTeachersRepository extends TeachersRepository {
       if (teacher['itineraries'] != null) {
         final itineraries = teacher['itineraries'] as List;
         for (final itinerary in itineraries) {
-          final waypoints = await MySqlHelpers.performSelectQuery(
-            connection: connection,
+          final waypoints = await sqlInterface.performSelectQuery(
             user: user,
             tableName: 'teacher_itinerary_waypoints',
             filters: {'itinerary_id': itinerary['id']},
@@ -263,27 +260,21 @@ class MySqlTeachersRepository extends TeachersRepository {
       (await _getAllTeachers(teacherId: id, user: user))[id];
 
   Future<void> _insertToTeachers(Teacher teacher) async {
-    final entity = (await MySqlHelpers.performSelectQuery(
-            connection: connection,
+    final entity = (await sqlInterface.performSelectQuery(
             tableName: 'entities',
             filters: {'shared_id': teacher.id},
             user: DatabaseUser.empty()
                 .copyWith(accessLevel: AccessLevel.superAdmin)) as List)
         .firstOrNull;
 
-    await MySqlHelpers.performInsertPerson(
-        connection: connection,
-        person: teacher,
-        skipAddingEntity: entity != null);
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'teachers',
-        data: {
-          'id': teacher.id,
-          'school_board_id': teacher.schoolBoardId,
-          'school_id': teacher.schoolId,
-          'has_registered_account': teacher.hasRegisteredAccount,
-        });
+    await sqlInterface.performInsertPerson(
+        person: teacher, skipAddingEntity: entity != null);
+    await sqlInterface.performInsertQuery(tableName: 'teachers', data: {
+      'id': teacher.id,
+      'school_board_id': teacher.schoolBoardId,
+      'school_id': teacher.schoolId,
+      'has_registered_account': teacher.hasRegisteredAccount,
+    });
   }
 
   Future<void> _updateToTeachers(
@@ -316,23 +307,18 @@ class MySqlTeachersRepository extends TeachersRepository {
             'You do not have permission to insert teachers');
       }
 
-      await MySqlHelpers.performUpdateQuery(
-          connection: connection,
-          tableName: 'teachers',
-          filters: {'id': teacher.id},
-          data: toUpdate);
+      await sqlInterface.performUpdateQuery(
+          tableName: 'teachers', filters: {'id': teacher.id}, data: toUpdate);
     }
 
     // Update the persons table if needed
-    await MySqlHelpers.performUpdatePerson(
-        connection: connection, person: teacher, previous: previous);
+    await sqlInterface.performUpdatePerson(person: teacher, previous: previous);
   }
 
   Future<void> _insertToGroups(Teacher teacher) async {
     final toWait = <Future>[];
     for (final group in teacher.groups) {
-      toWait.add(MySqlHelpers.performInsertQuery(
-          connection: connection,
+      toWait.add(sqlInterface.performInsertQuery(
           tableName: 'teaching_groups',
           data: {'teacher_id': teacher.id, 'group_name': group}));
     }
@@ -354,8 +340,7 @@ class MySqlTeachersRepository extends TeachersRepository {
 
     // This is a bit tricky to update the groups, so we delete the old ones
     // and reinsert the new ones
-    await MySqlHelpers.performDeleteQuery(
-      connection: connection,
+    await sqlInterface.performDeleteQuery(
       tableName: 'teaching_groups',
       filters: {'teacher_id': teacher.id},
     );
@@ -364,7 +349,7 @@ class MySqlTeachersRepository extends TeachersRepository {
 
   Future<void> _insertToItineraries(Teacher teacher) async {
     for (final itinerary in teacher.itineraries) {
-      await _sendItineraries(connection, teacher, itinerary);
+      await _sendItineraries(sqlInterface, teacher, itinerary);
     }
   }
 
@@ -384,13 +369,12 @@ class MySqlTeachersRepository extends TeachersRepository {
       // This is a bit tricky to update the itineraries, so we delete the old
       // ones and reinsert the new ones
       if (previousItinerary != null) {
-        toWaitDeleted.add(MySqlHelpers.performDeleteQuery(
-          connection: connection,
+        toWaitDeleted.add(sqlInterface.performDeleteQuery(
           tableName: 'teacher_itineraries',
           filters: {'id': previousItinerary.id},
         ));
       }
-      toWait.add(_sendItineraries(connection, teacher, itinerary));
+      toWait.add(_sendItineraries(sqlInterface, teacher, itinerary));
     }
 
     await Future.wait(toWaitDeleted);
@@ -427,8 +411,7 @@ class MySqlTeachersRepository extends TeachersRepository {
 
     // Delete the teacher from the database
     try {
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
+      await sqlInterface.performDeleteQuery(
         tableName: 'entities',
         filters: {'shared_id': id},
       );
@@ -440,36 +423,32 @@ class MySqlTeachersRepository extends TeachersRepository {
 }
 
 Future<void> _sendItineraries(
-    MySqlConnection connection, Teacher teacher, Itinerary itinerary) async {
+    SqlInterface sqlInterface, Teacher teacher, Itinerary itinerary) async {
   final serialized = itinerary.serialize();
-  await MySqlHelpers.performInsertQuery(
-      connection: connection,
-      tableName: 'teacher_itineraries',
-      data: {
-        'id': serialized['id'],
-        'teacher_id': teacher.id,
-        'date': serialized['date'],
-      });
+  await sqlInterface
+      .performInsertQuery(tableName: 'teacher_itineraries', data: {
+    'id': serialized['id'],
+    'teacher_id': teacher.id,
+    'date': serialized['date'],
+  });
 
   for (int i = 0; i < serialized['waypoints'].length; i++) {
     final waypoint = serialized['waypoints'][i];
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'teacher_itinerary_waypoints',
-        data: {
-          'step_index': i,
-          'itinerary_id': serialized['id'],
-          'title': waypoint['title'],
-          'subtitle': waypoint['subtitle'],
-          'latitude': waypoint['latitude'],
-          'longitude': waypoint['longitude'],
-          'address_civic': waypoint['address']['civic'],
-          'address_street': waypoint['address']['street'],
-          'address_apartment': waypoint['address']['apartment'],
-          'address_city': waypoint['address']['city'],
-          'address_postal_code': waypoint['address']['postal_code'],
-          'visiting_priority': waypoint['priority'],
-        });
+    await sqlInterface
+        .performInsertQuery(tableName: 'teacher_itinerary_waypoints', data: {
+      'step_index': i,
+      'itinerary_id': serialized['id'],
+      'title': waypoint['title'],
+      'subtitle': waypoint['subtitle'],
+      'latitude': waypoint['latitude'],
+      'longitude': waypoint['longitude'],
+      'address_civic': waypoint['address']['civic'],
+      'address_street': waypoint['address']['street'],
+      'address_apartment': waypoint['address']['apartment'],
+      'address_city': waypoint['address']['city'],
+      'address_postal_code': waypoint['address']['postal_code'],
+      'visiting_priority': waypoint['priority'],
+    });
   }
 
   // coverage:ignore-end

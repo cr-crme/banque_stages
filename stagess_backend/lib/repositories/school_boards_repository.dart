@@ -1,7 +1,7 @@
 import 'package:logging/logging.dart';
 import 'package:mysql1/mysql1.dart';
-import 'package:stagess_backend/repositories/mysql_helpers.dart';
 import 'package:stagess_backend/repositories/repository_abstract.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/utils/database_user.dart';
 import 'package:stagess_backend/utils/exceptions.dart';
 import 'package:stagess_common/communication_protocol.dart';
@@ -127,8 +127,8 @@ abstract class SchoolBoardsRepository implements RepositoryAbstract {
 
 class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
   // coverage:ignore-start
-  final MySqlConnection connection;
-  MySqlSchoolBoardsRepository({required this.connection});
+  final SqlInterface sqlInterface;
+  MySqlSchoolBoardsRepository({required this.sqlInterface});
 
   @override
   Future<Map<String, SchoolBoard>> _getAllSchoolBoards({
@@ -144,8 +144,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
       }
     }
 
-    final schoolBoards = await MySqlHelpers.performSelectQuery(
-      connection: connection,
+    final schoolBoards = await sqlInterface.performSelectQuery(
       user: user,
       tableName: 'school_boards',
       filters: schoolBoardId == null ? null : {'id': schoolBoardId},
@@ -157,8 +156,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
 
       schoolBoard['logo'] = (schoolBoard['logo'] as Blob).toBytes();
 
-      final schools = await MySqlHelpers.performSelectQuery(
-        connection: connection,
+      final schools = await sqlInterface.performSelectQuery(
         user: user,
         tableName: 'schools',
         filters: {'school_board_id': id},
@@ -166,15 +164,13 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
 
       for (final school in schools) {
         final schoolId = school['id'].toString();
-        final address = await MySqlHelpers.performSelectQuery(
-          connection: connection,
+        final address = await sqlInterface.performSelectQuery(
           user: user,
           tableName: 'addresses',
           filters: {'entity_id': schoolId},
         );
         school['address'] = address.first;
-        final phone = await MySqlHelpers.performSelectQuery(
-          connection: connection,
+        final phone = await sqlInterface.performSelectQuery(
           user: user,
           tableName: 'phone_numbers',
           filters: {'entity_id': schoolId},
@@ -203,22 +199,17 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     }
 
     // Insert the school board
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'entities',
-        data: {'shared_id': schoolBoard.id});
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'school_boards',
-        data: {
-          'id': schoolBoard.id,
-          'name': schoolBoard.name,
-          'logo': schoolBoard.logo.isEmpty
-              ? schoolBoard.logo
-              : ImageHelpers.resizeImage(schoolBoard.logo,
-                  width: null, height: ImageHelpers.logoHeight),
-          'cnesst_number': schoolBoard.cnesstNumber
-        });
+    await sqlInterface.performInsertQuery(
+        tableName: 'entities', data: {'shared_id': schoolBoard.id});
+    await sqlInterface.performInsertQuery(tableName: 'school_boards', data: {
+      'id': schoolBoard.id,
+      'name': schoolBoard.name,
+      'logo': schoolBoard.logo.isEmpty
+          ? schoolBoard.logo
+          : ImageHelpers.resizeImage(schoolBoard.logo,
+              width: null, height: ImageHelpers.logoHeight),
+      'cnesst_number': schoolBoard.cnesstNumber
+    });
   }
 
   Future<void> _updateToSchoolBoards(
@@ -251,8 +242,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     }
 
     if (toUpdate.isNotEmpty) {
-      await MySqlHelpers.performUpdateQuery(
-        connection: connection,
+      await sqlInterface.performUpdateQuery(
         tableName: 'school_boards',
         filters: {'id': schoolBoard.id},
         data: toUpdate,
@@ -266,24 +256,19 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
       throw InvalidRequestException('You must be a admin to create a school');
     }
 
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'entities',
-        data: {'shared_id': school.id});
-    await MySqlHelpers.performInsertQuery(
-        connection: connection,
-        tableName: 'schools',
-        data: {
-          'id': school.id.serialize(),
-          'school_board_id': schoolBoard.id.serialize(),
-          'name': school.name.serialize(),
-        });
+    await sqlInterface.performInsertQuery(
+        tableName: 'entities', data: {'shared_id': school.id});
+    await sqlInterface.performInsertQuery(tableName: 'schools', data: {
+      'id': school.id.serialize(),
+      'school_board_id': schoolBoard.id.serialize(),
+      'name': school.name.serialize(),
+    });
 
-    await MySqlHelpers.performInsertAddress(
-        connection: connection, address: school.address, entityId: school.id);
+    await sqlInterface.performInsertAddress(
+        address: school.address, entityId: school.id);
 
-    await MySqlHelpers.performInsertPhoneNumber(
-        connection: connection, phoneNumber: school.phone, entityId: school.id);
+    await sqlInterface.performInsertPhoneNumber(
+        phoneNumber: school.phone, entityId: school.id);
   }
 
   Future<void> _updateToSchools(School school, School previous,
@@ -299,23 +284,20 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     }
 
     if (toUpdate.contains('name')) {
-      await MySqlHelpers.performUpdateQuery(
-        connection: connection,
+      await sqlInterface.performUpdateQuery(
         tableName: 'schools',
         filters: {'id': school.id.serialize()},
         data: {'name': school.name.serialize()},
       );
     }
     if (toUpdate.contains('address')) {
-      await MySqlHelpers.performUpdateAddress(
-        connection: connection,
+      await sqlInterface.performUpdateAddress(
         address: school.address,
         previous: previous.address,
       );
     }
     if (toUpdate.contains('phone')) {
-      await MySqlHelpers.performUpdatePhoneNumber(
-        connection: connection,
+      await sqlInterface.performUpdatePhoneNumber(
         phoneNumber: school.phone,
         previous: previous.phone,
       );
@@ -365,8 +347,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
 
     _logger.warning(
         'The school with id: $schoolId is being deleted by user: ${user.userId}');
-    await MySqlHelpers.performDeleteQuery(
-      connection: connection,
+    await sqlInterface.performDeleteQuery(
       tableName: 'entities',
       filters: {'shared_id': schoolId},
     );
@@ -383,8 +364,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
     }
 
     try {
-      final schools = await MySqlHelpers.performSelectQuery(
-        connection: connection,
+      final schools = await sqlInterface.performSelectQuery(
         user: user,
         tableName: 'schools',
         filters: {'school_board_id': id},
@@ -393,8 +373,7 @@ class MySqlSchoolBoardsRepository extends SchoolBoardsRepository {
         await _deleteFromSchools(school['id'].toString(), user: user);
       }
 
-      await MySqlHelpers.performDeleteQuery(
-        connection: connection,
+      await sqlInterface.performDeleteQuery(
         tableName: 'entities',
         filters: {'shared_id': id},
       );

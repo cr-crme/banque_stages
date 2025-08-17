@@ -1,9 +1,9 @@
-import 'package:mysql1/mysql1.dart';
 import 'package:stagess_backend/repositories/admins_repository.dart';
 import 'package:stagess_backend/repositories/enterprises_repository.dart';
 import 'package:stagess_backend/repositories/internships_repository.dart';
 import 'package:stagess_backend/repositories/repository_abstract.dart';
 import 'package:stagess_backend/repositories/school_boards_repository.dart';
+import 'package:stagess_backend/repositories/sql_interfaces.dart';
 import 'package:stagess_backend/repositories/students_repository.dart';
 import 'package:stagess_backend/repositories/teachers_repository.dart';
 import 'package:stagess_backend/utils/database_user.dart';
@@ -18,17 +18,17 @@ String _getId(Map<String, dynamic>? data, {required String messageOnNull}) {
 
 class DatabaseManager {
   DatabaseManager({
-    required MySqlConnection? connection,
+    required SqlInterface sqlInterface,
     required this.schoolBoardsDatabase,
     required this.adminsDatabase,
     required this.teachersDatabase,
     required this.studentsDatabase,
     required this.enterprisesDatabase,
     required this.internshipsDatabase,
-  }) : _connection = connection;
+  }) : _sqlInterface = sqlInterface;
 
-  final MySqlConnection? _connection;
-  MySqlConnection get connection => _connection!;
+  final SqlInterface? _sqlInterface;
+  SqlInterface get sqlInterface => _sqlInterface!;
   final SchoolBoardsRepository schoolBoardsDatabase;
   final AdminsRepository adminsDatabase;
   final TeachersRepository teachersDatabase;
