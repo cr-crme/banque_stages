@@ -170,19 +170,19 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               ? {}
               : {'school_board_id': user.schoolBoardId ?? ''}),
         subqueries: [
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'internship_supervising_teachers',
             asName: 'supervising_teachers',
             fieldsToFetch: ['teacher_id', 'is_signatory_teacher'],
             idNameToDataTable: 'internship_id',
           ),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'internship_extra_specializations',
             asName: 'extra_specializations',
             fieldsToFetch: ['specialization_id'],
             idNameToDataTable: 'internship_id',
           ),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'internship_mutable_data',
             asName: 'mutables',
             fieldsToFetch: [
@@ -195,7 +195,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             ],
             idNameToDataTable: 'internship_id',
           ),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'internship_skill_evaluations',
             asName: 'skill_evaluations',
             fieldsToFetch: [
@@ -207,19 +207,19 @@ class MySqlInternshipsRepository extends InternshipsRepository {
             ],
             idNameToDataTable: 'internship_id',
           ),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'internship_attitude_evaluations',
             asName: 'attitude_evaluations',
             fieldsToFetch: ['id', 'date', 'comments', 'form_version'],
             idNameToDataTable: 'internship_id',
           ),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'internship_visa_evaluations',
             asName: 'visa_evaluations',
             fieldsToFetch: ['id', 'date', 'form_version'],
             idNameToDataTable: 'internship_id',
           ),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'post_internship_enterprise_evaluations',
             asName: 'enterprise_evaluation',
             fieldsToFetch: [
@@ -276,11 +276,11 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                   'id': mutable['supervisor_id']
                 },
                     subqueries: [
-                  MySqlSelectSubQuery(
+                  sqlInterface.selectSubquery(
                       dataTableName: 'phone_numbers',
                       idNameToDataTable: 'entity_id',
                       fieldsToFetch: ['id', 'phone_number']),
-                  MySqlSelectSubQuery(
+                  sqlInterface.selectSubquery(
                       dataTableName: 'addresses',
                       idNameToDataTable: 'entity_id',
                       fieldsToFetch: [
@@ -306,7 +306,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               'mutable_data_id': mutable['id']
             },
             subqueries: [
-              MySqlSelectSubQuery(
+              sqlInterface.selectSubquery(
                 dataTableName: 'internship_daily_schedules',
                 asName: 'daily_schedules',
                 fieldsToFetch: [
@@ -367,13 +367,13 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               'id': evaluation['id']
             },
                 subqueries: [
-              MySqlSelectSubQuery(
+              sqlInterface.selectSubquery(
                 dataTableName: 'internship_skill_evaluation_persons',
                 asName: 'present',
                 fieldsToFetch: ['person_name'],
                 idNameToDataTable: 'evaluation_id',
               ),
-              MySqlSelectSubQuery(
+              sqlInterface.selectSubquery(
                 dataTableName: 'internship_skill_evaluation_items',
                 asName: 'skills',
                 fieldsToFetch: [
@@ -430,13 +430,13 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               'id': evaluation['id']
             },
                 subqueries: [
-              MySqlSelectSubQuery(
+              sqlInterface.selectSubquery(
                 dataTableName: 'internship_attitude_evaluation_persons',
                 asName: 'present',
                 fieldsToFetch: ['person_name'],
                 idNameToDataTable: 'evaluation_id',
               ),
-              MySqlSelectSubQuery(
+              sqlInterface.selectSubquery(
                 dataTableName: 'internship_attitude_evaluation_items',
                 asName: 'attitude',
                 fieldsToFetch: [
@@ -478,7 +478,7 @@ class MySqlInternshipsRepository extends InternshipsRepository {
               'id': evaluation['id']
             },
                 subqueries: [
-              MySqlSelectSubQuery(
+              sqlInterface.selectSubquery(
                 dataTableName: 'internship_visa_evaluation_items',
                 asName: 'visa',
                 fieldsToFetch: [
@@ -664,11 +664,11 @@ class MySqlInternshipsRepository extends InternshipsRepository {
                   'id': mutable['supervisor']['id']
                 },
                     subqueries: [
-                  MySqlSelectSubQuery(
+                  sqlInterface.selectSubquery(
                       dataTableName: 'phone_numbers',
                       idNameToDataTable: 'entity_id',
                       fieldsToFetch: ['id', 'phone_number']),
-                  MySqlSelectSubQuery(
+                  sqlInterface.selectSubquery(
                       dataTableName: 'addresses',
                       idNameToDataTable: 'entity_id',
                       fieldsToFetch: [

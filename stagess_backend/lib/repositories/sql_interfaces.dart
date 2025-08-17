@@ -444,7 +444,7 @@ class MySqlInterface implements SqlInterface {
     String mainTableIdName = 'id',
     required List<String> fieldsToFetch,
   }) =>
-      MySqlJoinSubQuery(
+      _MySqlJoinSubQuery(
           dataTableName: dataTableName,
           asName: asName,
           dataTableIdName: dataTableIdName,
@@ -462,7 +462,7 @@ class MySqlInterface implements SqlInterface {
     String idNameToMainTable = 'id',
     required List<String> fieldsToFetch,
   }) =>
-      MySqlSelectSubQuery(
+      _MySqlSelectSubQuery(
           dataTableName: dataTableName,
           asName: asName,
           idNameToDataTable: idNameToDataTable,
@@ -484,7 +484,7 @@ class MariaDbSqlInterface extends MySqlInterface {
     String mainTableIdName = 'id',
     required List<String> fieldsToFetch,
   }) =>
-      MariaDbJoinSubQuery(
+      _MariaDbJoinSubQuery(
           dataTableName: dataTableName,
           asName: asName,
           dataTableIdName: dataTableIdName,
@@ -502,7 +502,7 @@ class MariaDbSqlInterface extends MySqlInterface {
     String idNameToMainTable = 'id',
     required List<String> fieldsToFetch,
   }) =>
-      MariaDbSelectSubQuery(
+      _MariaDbSelectSubQuery(
           dataTableName: dataTableName,
           asName: asName,
           idNameToDataTable: idNameToDataTable,
@@ -532,7 +532,7 @@ abstract class MySqlTableAccessor {
   }
 }
 
-class MySqlJoinSubQuery extends MySqlTableAccessor {
+class _MySqlJoinSubQuery extends MySqlTableAccessor {
   // Data table
   final String dataTableName;
   final String asName;
@@ -551,7 +551,7 @@ class MySqlJoinSubQuery extends MySqlTableAccessor {
   final String mainTableIdName;
   final List<String> fieldsToFetch;
 
-  MySqlJoinSubQuery({
+  _MySqlJoinSubQuery({
     required this.dataTableName,
     String? asName,
     this.dataTableIdName = 'id',
@@ -577,7 +577,7 @@ class MySqlJoinSubQuery extends MySqlTableAccessor {
   }
 }
 
-class MySqlSelectSubQuery extends MySqlTableAccessor {
+class _MySqlSelectSubQuery extends MySqlTableAccessor {
   final String dataTableName;
   final String asName;
   @override
@@ -590,7 +590,7 @@ class MySqlSelectSubQuery extends MySqlTableAccessor {
 
   final List<String> fieldsToFetch;
 
-  MySqlSelectSubQuery({
+  _MySqlSelectSubQuery({
     required this.dataTableName,
     String? asName,
     this.idNameToDataTable = 'id',
@@ -612,7 +612,7 @@ class MySqlSelectSubQuery extends MySqlTableAccessor {
   }
 }
 
-class MariaDbJoinSubQuery extends MySqlTableAccessor {
+class _MariaDbJoinSubQuery extends MySqlTableAccessor {
   // Data table
   final String dataTableName;
   final String asName;
@@ -631,7 +631,7 @@ class MariaDbJoinSubQuery extends MySqlTableAccessor {
   final String mainTableIdName;
   final List<String> fieldsToFetch;
 
-  MariaDbJoinSubQuery({
+  _MariaDbJoinSubQuery({
     required this.dataTableName,
     String? asName,
     this.dataTableIdName = 'id',
@@ -662,7 +662,7 @@ class MariaDbJoinSubQuery extends MySqlTableAccessor {
   }
 }
 
-class MariaDbSelectSubQuery extends MySqlTableAccessor {
+class _MariaDbSelectSubQuery extends MySqlTableAccessor {
   final String dataTableName;
   final String asName;
   @override
@@ -675,7 +675,7 @@ class MariaDbSelectSubQuery extends MySqlTableAccessor {
 
   final List<String> fieldsToFetch;
 
-  MariaDbSelectSubQuery({
+  _MariaDbSelectSubQuery({
     required this.dataTableName,
     String? asName,
     this.idNameToDataTable = 'id',

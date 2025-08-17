@@ -172,15 +172,15 @@ class MySqlTeachersRepository extends TeachersRepository {
               ? {}
               : {'school_board_id': user.schoolBoardId ?? ''}),
         subqueries: [
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'persons',
             fieldsToFetch: ['first_name', 'middle_name', 'last_name', 'email'],
           ),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'phone_numbers',
               idNameToDataTable: 'entity_id',
               fieldsToFetch: ['id', 'phone_number']),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'addresses',
               idNameToDataTable: 'entity_id',
               fieldsToFetch: [
@@ -191,12 +191,12 @@ class MySqlTeachersRepository extends TeachersRepository {
                 'city',
                 'postal_code'
               ]),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'teaching_groups',
             idNameToDataTable: 'teacher_id',
             fieldsToFetch: ['group_name'],
           ),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'teacher_itineraries',
             asName: 'itineraries',
             idNameToDataTable: 'teacher_id',

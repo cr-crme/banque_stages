@@ -11,6 +11,7 @@
             "program": "bin/backend.dart",
             "env": {
                 "STAGESS_FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
+                "STAGESS_DATABASE_BACKEND": "< mariadb | mysql | mock >",
                 "STAGESS_DATABASE_DEV_PORT": "<PUT YOUR DEV DATABASE PORT HERE>",
                 "STAGESS_DATABASE_DEV_NAME": "<PUT YOUR DEV DATABASE NAME HERE>",
                 "STAGESS_DATABASE_DEV_USER": "<PUT YOUR DEV DATABASE USER HERE>",

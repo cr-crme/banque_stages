@@ -163,7 +163,7 @@ class MySqlStudentsRepository extends StudentsRepository {
               ? {}
               : {'school_board_id': user.schoolBoardId ?? ''}),
         subqueries: [
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
             dataTableName: 'persons',
             fieldsToFetch: [
               'first_name',
@@ -173,11 +173,11 @@ class MySqlStudentsRepository extends StudentsRepository {
               'email'
             ],
           ),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'phone_numbers',
               idNameToDataTable: 'entity_id',
               fieldsToFetch: ['id', 'phone_number']),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'addresses',
               idNameToDataTable: 'entity_id',
               fieldsToFetch: [
@@ -188,7 +188,7 @@ class MySqlStudentsRepository extends StudentsRepository {
                 'city',
                 'postal_code'
               ]),
-          MySqlJoinSubQuery(
+          sqlInterface.joinSubquery(
               dataTableName: 'persons',
               asName: 'contact',
               idNameToDataTable: 'contact_id',
@@ -210,7 +210,7 @@ class MySqlStudentsRepository extends StudentsRepository {
               .performSelectQuery(user: user, tableName: 'persons', filters: {
               'id': contactId
             }, subqueries: [
-              MySqlSelectSubQuery(
+              sqlInterface.selectSubquery(
                   dataTableName: 'addresses',
                   idNameToDataTable: 'entity_id',
                   fieldsToFetch: [
@@ -221,7 +221,7 @@ class MySqlStudentsRepository extends StudentsRepository {
                     'city',
                     'postal_code'
                   ]),
-              MySqlSelectSubQuery(
+              sqlInterface.selectSubquery(
                   dataTableName: 'phone_numbers',
                   idNameToDataTable: 'entity_id',
                   fieldsToFetch: ['id', 'phone_number']),

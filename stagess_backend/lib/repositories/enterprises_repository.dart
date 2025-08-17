@@ -204,14 +204,14 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
             ? {}
             : {'school_board_id': user.schoolBoardId ?? ''}),
       subqueries: [
-        MySqlJoinSubQuery(
+        sqlInterface.joinSubquery(
             dataTableName: 'persons',
             asName: 'contact',
             idNameToDataTable: 'contact_id',
             idNameToMainTable: 'enterprise_id',
             relationTableName: 'enterprise_contacts',
             fieldsToFetch: ['id']),
-        MySqlJoinSubQuery(
+        sqlInterface.joinSubquery(
             dataTableName: 'addresses',
             asName: 'address',
             idNameToDataTable: 'address_id',
@@ -225,7 +225,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               'city',
               'postal_code'
             ]),
-        MySqlJoinSubQuery(
+        sqlInterface.joinSubquery(
             dataTableName: 'addresses',
             asName: 'headquarters_address',
             idNameToDataTable: 'address_id',
@@ -239,21 +239,21 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               'city',
               'postal_code'
             ]),
-        MySqlJoinSubQuery(
+        sqlInterface.joinSubquery(
             dataTableName: 'phone_numbers',
             asName: 'phone_number',
             idNameToDataTable: 'phone_number_id',
             idNameToMainTable: 'enterprise_id',
             relationTableName: 'enterprise_phone_numbers',
             fieldsToFetch: ['id', 'phone_number']),
-        MySqlJoinSubQuery(
+        sqlInterface.joinSubquery(
             dataTableName: 'phone_numbers',
             asName: 'fax_number',
             idNameToDataTable: 'fax_number_id',
             idNameToMainTable: 'enterprise_id',
             relationTableName: 'enterprise_fax_numbers',
             fieldsToFetch: ['id', 'phone_number']),
-        MySqlSelectSubQuery(
+        sqlInterface.selectSubquery(
             dataTableName: 'enterprise_activity_types',
             asName: 'activity_types',
             idNameToDataTable: 'enterprise_id',
@@ -271,7 +271,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
               .performSelectQuery(user: user, tableName: 'persons', filters: {
               'id': contactId
             }, subqueries: [
-              MySqlSelectSubQuery(
+              sqlInterface.selectSubquery(
                   dataTableName: 'addresses',
                   idNameToDataTable: 'entity_id',
                   fieldsToFetch: [
@@ -282,7 +282,7 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
                     'city',
                     'postal_code'
                   ]),
-              MySqlSelectSubQuery(
+              sqlInterface.selectSubquery(
                   dataTableName: 'phone_numbers',
                   idNameToDataTable: 'entity_id',
                   fieldsToFetch: ['id', 'phone_number']),
@@ -308,42 +308,42 @@ class MySqlEnterprisesRepository extends EnterprisesRepository {
         tableName: 'enterprise_jobs',
         filters: {'enterprise_id': enterprise['id']},
         subqueries: [
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'enterprise_job_positions_offered',
               asName: 'positions_offered',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['school_id', 'positions']),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'enterprise_job_photo_urls',
               asName: 'photo_url',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['photo_url']),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'enterprise_job_comments',
               asName: 'comments',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['comment', 'teacher_id', 'date']),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'enterprise_job_pre_internship_requests',
               asName: 'pre_internship_requests',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['id', 'other', 'is_applicable']),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'enterprise_job_uniforms',
               asName: 'uniforms',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['status', 'uniform']),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'enterprise_job_protections',
               asName: 'protections',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['status', 'protection']),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'enterprise_job_incidents',
               asName: 'incidents',
               idNameToDataTable: 'job_id',
               fieldsToFetch: ['id', 'incident_type', 'incident', 'date']),
-          MySqlSelectSubQuery(
+          sqlInterface.selectSubquery(
               dataTableName: 'enterprise_job_sst_evaluation_questions',
               asName: 'sst_evaluations',
               idNameToDataTable: 'job_id',

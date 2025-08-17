@@ -38,7 +38,7 @@ void main() {
     final sqlInterface = MySqlInterface(connection: null);
     final query = _cleanQuery(
         sqlInterface.craftSelectQuery(tableName: 'my_table', sublists: [
-      MySqlSelectSubQuery(
+      sqlInterface.selectSubquery(
           dataTableName: 'table_name',
           idNameToDataTable: 'subtable_id',
           idNameToMainTable: 'table_id',
@@ -58,7 +58,7 @@ void main() {
         sqlInterface.craftSelectQuery(tableName: 'my_table', filters: {
       'my_named_id': 'my_id'
     }, sublists: [
-      MySqlJoinSubQuery(
+      sqlInterface.joinSubquery(
         dataTableName: 'subtable_name',
         dataTableIdName: 'subtable_id',
         relationTableName: 'my_relation_table_name',

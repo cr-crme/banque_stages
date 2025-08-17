@@ -19,10 +19,24 @@ import 'package:stagess_common/services/backend_helpers.dart';
 
 final _logger = Logger('BackendServer');
 
-enum DatabaseBackend { mariadb, mysql, mock }
+enum DatabaseBackend {
+  mariadb,
+  mysql,
+  mock;
 
-final _databaseBackend = DatabaseBackend.mariadb;
-final _backendIp = InternetAddress.loopbackIPv4;
+  static DatabaseBackend fromString(String value) {
+    return switch (value.toLowerCase()) {
+      'mariadb' => DatabaseBackend.mariadb,
+      'mysql' => DatabaseBackend.mysql,
+      'mock' => DatabaseBackend.mock,
+      _ => throw ArgumentError('Unknown database backend: $value'),
+    };
+  }
+}
+
+final _databaseBackend =
+    DatabaseBackend.fromString(_getFromEnvironment('STAGESS_DATABASE_BACKEND'));
+final _backendIp = BackendHelpers.backendIp;
 final _backendPort = BackendHelpers.backendPort;
 final _devSettings = ConnectionSettings(
   host: 'localhost',
@@ -58,7 +72,7 @@ void main() async {
 
   // Create an HTTP server listening on localhost:_backendPort
   var server = await HttpServer.bind(_backendIp, _backendPort);
-  _logger.info('Server running on http://${_backendIp.address}:$_backendPort/');
+  _logger.info('Server running on http://$_backendIp:$_backendPort/');
   _logger.info('Using database backend: ${_databaseBackend.name}');
 
   final devConnexions = await _connectDatabase(

@@ -496,7 +496,7 @@ Future<Map<String, dynamic>?> _getTeacherFromDatabase(
         'email': email
       },
           subqueries: [
-        MySqlSelectSubQuery(
+        sqlInterface.selectSubquery(
           dataTableName: 'teachers',
           idNameToDataTable: 'id',
           fieldsToFetch: [
@@ -523,7 +523,7 @@ Future<Map<String, dynamic>?> _getAdminFromDatabase(
     tableName: 'admins',
     filters: {'email': email},
     subqueries: [
-      MySqlSelectSubQuery(
+      sqlInterface.selectSubquery(
           dataTableName: 'teachers',
           idNameToDataTable: 'id',
           fieldsToFetch: ['school_id'])
