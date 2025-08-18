@@ -1,6 +1,5 @@
 // coverage:ignore-file
 import 'dart:developer' as dev;
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:stagess_common/models/enterprises/enterprise.dart';
@@ -31,13 +30,7 @@ import 'package:stagess_common_flutter/providers/school_boards_provider.dart';
 import 'package:stagess_common_flutter/providers/students_provider.dart';
 import 'package:stagess_common_flutter/providers/teachers_provider.dart';
 
-String _mySchoolBoardName = 'Mon premier centre de services scolaire';
-String _mySchoolName = 'Ma deuxième école';
-String _adminEmail = 'bb@bb.bb';
-String _myEmail = 'cc@cc.cc';
-String _myParternerEmail = 'romeo.montaigu@shakespeare.qc';
-
-Future<void> resetDummyData(BuildContext context) async {
+Future<void> resetDummyDataTutorial(BuildContext context) async {
   final schoolBoards = SchoolBoardsProvider.of(context, listen: false);
   final admins = AdminsProvider.of(context, listen: false);
   final teachers = TeachersProvider.of(context, listen: false);
@@ -126,7 +119,7 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   // Test the add function
   final schools = [
     School(
-      name: 'Ma première école',
+      name: 'École A',
       address: Address(
         civicNumber: 9105,
         street: 'Rue Verville',
@@ -136,7 +129,17 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
       phone: PhoneNumber.fromString('555 123 4567'),
     ),
     School(
-      name: _mySchoolName,
+      name: 'École B',
+      address: Address(
+        civicNumber: 9105,
+        street: 'Rue Verville',
+        city: 'Montréal',
+        postalCode: 'H2N 1Y5',
+      ),
+      phone: PhoneNumber.fromString('555 123 7654'),
+    ),
+    School(
+      name: 'École C',
       address: Address(
         civicNumber: 9105,
         street: 'Rue Verville',
@@ -148,62 +151,14 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
   ];
   schoolBoards.add(
     SchoolBoard(
-      name: _mySchoolBoardName,
+      name: 'Mon centre de services scolaire',
       logo: null,
       schools: schools.toList(),
       cnesstNumber: '1234567890',
     ),
   );
 
-  schools.clear();
-  schools.add(
-    School(
-      name: 'École de la Montagne',
-      address: Address(
-        civicNumber: 1234,
-        street: 'Rue de la Montagne',
-        city: 'Montréal',
-        postalCode: 'H3G 1Z2',
-      ),
-      phone: PhoneNumber.fromString('555 987 6543'),
-    ),
-  );
-  schools.add(
-    School(
-      name: 'École du Parc',
-      address: Address(
-        civicNumber: 5678,
-        street: 'Avenue du Parc',
-        city: 'Montréal',
-        postalCode: 'H2V 4W5',
-      ),
-      phone: PhoneNumber.fromString('555 456 7890'),
-    ),
-  );
-  schools.add(
-    School(
-      id: 'dummy_school_id_1_of_2',
-      name: 'École des Arts',
-      address: Address(
-        civicNumber: 9101,
-        street: 'Boulevard des Arts',
-        city: 'Montréal',
-        postalCode: 'H2X 3Y7',
-      ),
-      phone: PhoneNumber.fromString('555 321 4321'),
-    ),
-  );
-  schoolBoards.add(
-    SchoolBoard(
-      id: 'dummy_school_board_id_2',
-      name: 'Centre de services scolaire de l\'Île-de-Montréal',
-      logo: null,
-      schools: schools.toList(),
-      cnesstNumber: '0987654321',
-    ),
-  );
-
-  await _waitForDatabaseUpdate(schoolBoards, 2);
+  await _waitForDatabaseUpdate(schoolBoards, 1);
 }
 
 Future<void> _addDummyAdmins(
@@ -212,9 +167,12 @@ Future<void> _addDummyAdmins(
 }) async {
   dev.log('Adding dummy admins');
 
-  final mySchoolBoardId =
+  final schoolBoardId =
       schoolBoards
-          .firstWhere((schoolBoard) => schoolBoard.name == _mySchoolBoardName)
+          .firstWhere(
+            (schoolBoard) =>
+                schoolBoard.name == 'Mon centre de services scolaire',
+          )
           .id;
 
   admins.add(
@@ -222,25 +180,14 @@ Future<void> _addDummyAdmins(
       firstName: 'Jean',
       middleName: null,
       lastName: 'Dupont',
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       hasRegisteredAccount: false,
-      email: _adminEmail,
-      accessLevel: AccessLevel.admin,
-    ),
-  );
-  admins.add(
-    Admin(
-      firstName: 'Marie',
-      middleName: null,
-      lastName: 'Lefebvre',
-      schoolBoardId: 'dummy_school_board_id_2',
-      hasRegisteredAccount: false,
-      email: 'marie.lefebvre@monecole.qc',
+      email: 'admin@moncentre.qc',
       accessLevel: AccessLevel.admin,
     ),
   );
 
-  await _waitForDatabaseUpdate(admins, 2);
+  await _waitForDatabaseUpdate(admins, 1);
 }
 
 Future<void> _addDummyTeachers(
@@ -249,25 +196,27 @@ Future<void> _addDummyTeachers(
 }) async {
   dev.log('Adding dummy teachers');
 
-  final mySchoolBoard = schoolBoards.firstWhere(
-    (schoolBoard) => schoolBoard.name == _mySchoolBoardName,
+  final schoolBoard = schoolBoards.firstWhere(
+    (schoolBoard) => schoolBoard.name == 'Mon centre de services scolaire',
   );
-  final mySchoolBoardId = mySchoolBoard.id;
-  final mySchoolId =
-      mySchoolBoard.schools
-          .firstWhere((school) => school.name == _mySchoolName)
-          .id;
+  final schoolBoardId = schoolBoard.id;
+  final schoolAId =
+      schoolBoard.schools.firstWhere((school) => school.name == 'École A').id;
+  final schoolBId =
+      schoolBoard.schools.firstWhere((school) => school.name == 'École B').id;
+  final schoolCId =
+      schoolBoard.schools.firstWhere((school) => school.name == 'École C').id;
 
   teachers.add(
     Teacher(
-      firstName: 'Roméo',
+      firstName: 'Enseignant',
       middleName: null,
-      lastName: 'Montaigu',
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      lastName: 'A1',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
       hasRegisteredAccount: false,
-      groups: ['550', '551'],
-      email: 'romeo.montaigu@shakespeare.qc',
+      groups: ['110', '120'],
+      email: 'a1@moncentre.qc',
       phone: null,
       address: null,
       dateBirth: null,
@@ -277,14 +226,14 @@ Future<void> _addDummyTeachers(
 
   teachers.add(
     Teacher(
-      firstName: 'Juliette',
+      firstName: 'Enseignant',
       middleName: null,
-      lastName: 'Capulet',
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      lastName: 'B1',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolBId,
       hasRegisteredAccount: false,
-      groups: ['550', '551'],
-      email: _myEmail,
+      groups: ['110', '120'],
+      email: 'b1@moncentre.qc',
       phone: null,
       address: null,
       dateBirth: null,
@@ -294,15 +243,14 @@ Future<void> _addDummyTeachers(
 
   teachers.add(
     Teacher(
-      id: 'dummy_teacher_id_1',
-      firstName: 'Tybalt',
+      firstName: 'Enseignant',
       middleName: null,
-      lastName: 'Capulet',
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      lastName: 'C1',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
       hasRegisteredAccount: false,
-      groups: ['550', '551'],
-      email: 'tybalt.capulet@shakespeare.qc',
+      groups: ['110', '120'],
+      email: 'c1@moncentre.qc',
       phone: null,
       address: null,
       dateBirth: null,
@@ -310,24 +258,7 @@ Future<void> _addDummyTeachers(
     ),
   );
 
-  teachers.add(
-    Teacher(
-      id: 'dummy_teacher_id_2',
-      firstName: 'Benvolio',
-      middleName: null,
-      lastName: 'Montaigu',
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
-      hasRegisteredAccount: false,
-      groups: ['552'],
-      email: 'benvolio.montaigu@shakespeare.qc',
-      phone: null,
-      address: null,
-      dateBirth: null,
-      itineraries: [],
-    ),
-  );
-  await _waitForDatabaseUpdate(teachers, 1);
+  await _waitForDatabaseUpdate(teachers, 3);
 }
 
 Future<void> _addDummyStudents(
@@ -336,19 +267,21 @@ Future<void> _addDummyStudents(
 }) async {
   dev.log('Adding dummy students');
 
-  final mySchoolBoard = schoolBoards.firstWhere(
-    (schoolBoard) => schoolBoard.name == _mySchoolBoardName,
+  final schoolBoard = schoolBoards.firstWhere(
+    (schoolBoard) => schoolBoard.name == 'Mon centre de services scolaire',
   );
-  final mySchoolBoardId = mySchoolBoard.id;
-  final mySchoolId =
-      mySchoolBoard.schools
-          .firstWhere((school) => school.name == _mySchoolName)
-          .id;
+  final schoolBoardId = schoolBoard.id;
+  final schoolAId =
+      schoolBoard.schools.firstWhere((school) => school.name == 'École A').id;
+  final schoolBId =
+      schoolBoard.schools.firstWhere((school) => school.name == 'École B').id;
+  final schoolCId =
+      schoolBoard.schools.firstWhere((school) => school.name == 'École C').id;
 
   students.add(
     Student(
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
       firstName: 'Cedric',
       lastName: 'Masson',
       dateBirth: DateTime(2005, 5, 20),
@@ -377,8 +310,8 @@ Future<void> _addDummyStudents(
 
   students.add(
     Student(
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
       firstName: 'Thomas',
       lastName: 'Caron',
       dateBirth: null,
@@ -407,8 +340,8 @@ Future<void> _addDummyStudents(
 
   students.add(
     Student(
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
       firstName: 'Mikael',
       lastName: 'Boucher',
       dateBirth: null,
@@ -437,8 +370,8 @@ Future<void> _addDummyStudents(
 
   students.add(
     Student(
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
       firstName: 'Kevin',
       lastName: 'Leblanc',
       dateBirth: null,
@@ -467,8 +400,8 @@ Future<void> _addDummyStudents(
 
   students.add(
     Student(
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
       firstName: 'Simon',
       lastName: 'Gingras',
       dateBirth: null,
@@ -497,8 +430,8 @@ Future<void> _addDummyStudents(
 
   students.add(
     Student(
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
       firstName: 'Diego',
       lastName: 'Vargas',
       dateBirth: null,
@@ -527,8 +460,8 @@ Future<void> _addDummyStudents(
 
   students.add(
     Student(
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
       firstName: 'Jeanne',
       lastName: 'Tremblay',
       dateBirth: null,
@@ -557,8 +490,8 @@ Future<void> _addDummyStudents(
 
   students.add(
     Student(
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
       firstName: 'Vincent',
       lastName: 'Picard',
       dateBirth: null,
@@ -587,8 +520,8 @@ Future<void> _addDummyStudents(
 
   students.add(
     Student(
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolBId,
       firstName: 'Vanessa',
       lastName: 'Monette',
       dateBirth: null,
@@ -617,8 +550,8 @@ Future<void> _addDummyStudents(
 
   students.add(
     Student(
-      schoolBoardId: mySchoolBoardId,
-      schoolId: mySchoolId,
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
       firstName: 'Melissa',
       lastName: 'Poulain',
       dateBirth: null,
@@ -655,30 +588,30 @@ Future<void> _addDummyEnterprises(
 }) async {
   dev.log('Adding dummy enterprises');
 
-  final mySchoolBoard = schoolBoards.firstWhere(
-    (schoolBoard) => schoolBoard.name == _mySchoolBoardName,
+  final schoolBoard = schoolBoards.firstWhere(
+    (schoolBoard) => schoolBoard.name == 'Mon centre de services scolaire',
   );
-  final mySchoolBoardId = mySchoolBoard.id;
-  final mySchoolId =
-      mySchoolBoard.schools
-          .firstWhere((school) => school.name == _mySchoolName)
-          .id;
-  final otherSchoolId =
-      mySchoolBoard.schools
-          .firstWhere((school) => school.name != _mySchoolName)
-          .id;
+  final schoolBoardId = schoolBoard.id;
+  final schoolAId =
+      schoolBoard.schools.firstWhere((school) => school.name == 'École A').id;
+  final schoolBId =
+      schoolBoard.schools.firstWhere((school) => school.name == 'École B').id;
+  final schoolCId =
+      schoolBoard.schools.firstWhere((school) => school.name == 'École C').id;
 
-  final myTeacherId =
-      teachers.firstWhere((teacher) => teacher.email == _myEmail).id;
-  final myPartnerTeacherId =
-      teachers.firstWhere((teacher) => teacher.email == _myParternerEmail).id;
+  final teacherA1Id =
+      teachers.firstWhere((teacher) => teacher.email == 'a1@moncentre.com').id;
+  final teacherB1Id =
+      teachers.firstWhere((teacher) => teacher.email == 'b1@moncentre.com').id;
+  final teacherC1Id =
+      teachers.firstWhere((teacher) => teacher.email == 'c1@moncentre.com').id;
 
   JobList jobs = JobList();
   jobs.add(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[9],
-      positionsOffered: {mySchoolId: 2, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 2, schoolBId: 5, schoolCId: 1},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents(
         severeInjuries: [Incident('Vaut mieux ne pas détailler...')],
@@ -707,7 +640,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[0].specializations[7],
-      positionsOffered: {mySchoolId: 3, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 3, schoolBId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents(
         minorInjuries: [
@@ -737,7 +670,7 @@ Future<void> _addDummyEnterprises(
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'Metro Gagnon',
       status: EnterpriseStatus.active,
       activityTypes: {
@@ -745,7 +678,7 @@ Future<void> _addDummyEnterprises(
         ActivityTypes.commerce,
         ActivityTypes.epicerie,
       },
-      recruiterId: myPartnerTeacherId,
+      recruiterId: teacherA1Id,
       jobs: jobs,
       contact: Person(
         firstName: 'Marc',
@@ -781,23 +714,23 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[0].specializations[7],
-      positionsOffered: {mySchoolId: 3, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 3, schoolBId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
-      reservedForId: myPartnerTeacherId,
+      reservedForId: teacherB1Id,
     ),
   );
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'Jean Coutu',
       status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
-      recruiterId: myTeacherId,
+      recruiterId: teacherA1Id,
       jobs: jobs,
       contact: Person(
         firstName: 'Caroline',
@@ -833,7 +766,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[9].specializations[3],
-      positionsOffered: {mySchoolId: 3, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 3, schoolBId: 5},
       sstEvaluation: JobSstEvaluation(
         questions: {
           'Q1': ['Oui'],
@@ -862,17 +795,17 @@ Future<void> _addDummyEnterprises(
         status: ProtectionsStatus.suppliedBySchool,
         protections: ['Masque', 'Un masque de protection'],
       ),
-      reservedForId: myTeacherId,
+      reservedForId: teacherC1Id,
     ),
   );
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'Auto Care',
       status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.garage},
-      recruiterId: myPartnerTeacherId,
+      recruiterId: teacherC1Id,
       jobs: jobs,
       contact: Person(
         firstName: 'Denis',
@@ -907,19 +840,19 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[9].specializations[3],
-      positionsOffered: {mySchoolId: 2, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 2, schoolBId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
-      reservedForId: mySchoolId,
+      reservedForId: '',
     ),
   );
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'Auto Repair',
       status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.garage, ActivityTypes.mecanique},
@@ -959,25 +892,24 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[9],
-      positionsOffered: {mySchoolId: 2, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 2, schoolBId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
       preInternshipRequests: PreInternshipRequests.fromStrings([]),
       uniforms: Uniforms(status: UniformStatus.none),
       protections: Protections(status: ProtectionsStatus.none),
-      reservedForId:
-          mySchoolBoard.schools.firstWhere((e) => e.id != mySchoolId).id,
+      reservedForId: '',
     ),
   );
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'Boucherie Marien',
       status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.boucherie, ActivityTypes.commerce},
-      recruiterId: myPartnerTeacherId,
+      recruiterId: teacherC1Id,
       jobs: jobs,
       contact: Person(
         firstName: 'Brigitte',
@@ -1013,7 +945,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[7],
-      positionsOffered: {mySchoolId: 1, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 1, schoolBId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -1026,11 +958,11 @@ Future<void> _addDummyEnterprises(
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'IGA',
       status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.epicerie, ActivityTypes.supermarche},
-      recruiterId: myPartnerTeacherId,
+      recruiterId: teacherC1Id,
       jobs: jobs,
       contact: Person(
         firstName: 'Gabrielle',
@@ -1066,7 +998,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[0].specializations[7],
-      positionsOffered: {mySchoolId: 2, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 2, schoolBId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -1079,7 +1011,7 @@ Future<void> _addDummyEnterprises(
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'Pharmaprix',
       status: EnterpriseStatus.noLongerAcceptingInternships,
       activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
@@ -1119,7 +1051,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[14],
-      positionsOffered: {mySchoolId: 1, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 1, schoolBId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -1132,7 +1064,7 @@ Future<void> _addDummyEnterprises(
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'Subway',
       status: EnterpriseStatus.active,
       activityTypes: {
@@ -1169,7 +1101,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[0].specializations[7],
-      positionsOffered: {mySchoolId: 3, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 3, schoolBId: 5},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -1182,7 +1114,7 @@ Future<void> _addDummyEnterprises(
 
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'Walmart',
       status: EnterpriseStatus.bannedFromAcceptingInternships,
       activityTypes: {
@@ -1190,7 +1122,7 @@ Future<void> _addDummyEnterprises(
         ActivityTypes.magasin,
         ActivityTypes.supermarche,
       },
-      recruiterId: myPartnerTeacherId,
+      recruiterId: teacherA1Id,
       jobs: jobs,
       contact: Person(
         firstName: 'France',
@@ -1226,7 +1158,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[1].specializations[2],
-      positionsOffered: {mySchoolId: 1, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 1, schoolBId: 5},
       sstEvaluation: JobSstEvaluation(
         questions: {
           'Q1': ['Oui'],
@@ -1253,11 +1185,11 @@ Future<void> _addDummyEnterprises(
   );
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'Le jardin de Joanie',
       status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.commerce, ActivityTypes.fleuriste},
-      recruiterId: myPartnerTeacherId,
+      recruiterId: teacherC1Id,
       jobs: jobs,
       contact: Person(
         firstName: 'Joanie',
@@ -1292,7 +1224,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[1].specializations[2],
-      positionsOffered: {mySchoolId: 1, otherSchoolId: 5},
+      positionsOffered: {schoolAId: 1, schoolBId: 5},
       sstEvaluation: JobSstEvaluation(
         questions: {
           'Q1': ['Oui'],
@@ -1319,83 +1251,11 @@ Future<void> _addDummyEnterprises(
   );
   enterprises.add(
     Enterprise(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       name: 'Fleuriste Joli',
       status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.fleuriste, ActivityTypes.magasin},
-      recruiterId: myPartnerTeacherId,
-      jobs: jobs,
-      contact: Person(
-        firstName: 'Gaëtan',
-        middleName: null,
-        lastName: 'Munger',
-        dateBirth: null,
-        phone: PhoneNumber.fromString('514 987 6543'),
-        address: null,
-        email: 'g.munger@email.com',
-      ),
-      contactFunction: 'Gérant',
-      address: Address(
-        civicNumber: 70,
-        street: 'Rue Chabanel Ouest',
-        city: 'Montréal',
-        postalCode: 'H2N 1E7',
-      ),
-      phone: PhoneNumber.fromString('514 987 6543'),
-      website: '',
-      headquartersAddress: Address(
-        civicNumber: 70,
-        street: 'Rue Chabanel Ouest',
-        city: 'Montréal',
-        postalCode: 'H2N 1E7',
-      ),
-      neq: '5679055590',
-    ),
-  );
-
-  final randomSchoolId =
-      schoolBoards
-          .firstWhere((schoolBoard) => schoolBoard.name != _mySchoolBoardName)
-          .schools
-          .firstWhere((school) => school.name != 'dummy_school_id_1_of_2')
-          .id;
-  jobs = JobList();
-  jobs.add(
-    Job(
-      specialization:
-          ActivitySectorsService.activitySectors[1].specializations[2],
-      positionsOffered: {'dummy_school_id_1_of_2': 3, randomSchoolId: 5},
-      sstEvaluation: JobSstEvaluation(
-        questions: {
-          'Q1': ['Oui'],
-          'Q1+t': [
-            'En début et en fin de journée, surtout des pots de fleurs.',
-          ],
-          'Q3': ['Un diable'],
-          'Q5': ['Un couteau', 'Des ciseaux'],
-          'Q7': ['Des pesticides', 'Engrais'],
-          'Q12': ['__NOT_APPLICABLE_INTERNAL__'],
-          'Q15': ['Oui'],
-          'Q15+t': ['Mais pourquoi donc??'],
-          'Q16': ['Beurk'],
-          'Q18': ['Non'],
-        },
-      ),
-      incidents: Incidents.empty,
-      minimumAge: 15,
-      preInternshipRequests: PreInternshipRequests.fromStrings([]),
-      uniforms: Uniforms(status: UniformStatus.none),
-      protections: Protections(status: ProtectionsStatus.none),
-      reservedForId: '',
-    ),
-  );
-  enterprises.add(
-    Enterprise(
-      schoolBoardId: 'dummy_school_board_id_2',
-      name: 'Fleuriste Pasjoli',
-      status: EnterpriseStatus.active,
-      activityTypes: {ActivityTypes.fleuriste, ActivityTypes.magasin},
-      recruiterId: myPartnerTeacherId,
+      recruiterId: teacherB1Id,
       jobs: jobs,
       contact: Person(
         firstName: 'Gaëtan',
@@ -1438,28 +1298,30 @@ Future<void> _addDummyInternships(
 }) async {
   dev.log('Adding dummy internships');
 
-  final mySchoolBoard = schoolBoards.firstWhere(
-    (schoolBoard) => schoolBoard.name == _mySchoolBoardName,
+  final schoolBoard = schoolBoards.firstWhere(
+    (schoolBoard) => schoolBoard.name == 'Mon centre de services scolaire',
   );
-  final mySchoolBoardId = mySchoolBoard.id;
+  final schoolBoardId = schoolBoard.id;
 
-  final myTeacherId =
-      teachers.firstWhere((teacher) => teacher.email == _myEmail).id;
-  final myPartnerTeacherId =
-      teachers.firstWhere((teacher) => teacher.email == _myParternerEmail).id;
+  final teacherA1Id =
+      teachers.firstWhere((teacher) => teacher.email == 'a1@moncentre.qc').id;
+  final teacherB1Id =
+      teachers.firstWhere((teacher) => teacher.email == 'b1@moncentre.qc').id;
+  final teacherC1Id =
+      teachers.firstWhere((teacher) => teacher.email == 'c1@moncentre.qc').id;
+  DateTime startingPeriod;
 
-  final rng = Random();
-
+  startingPeriod = DateTime.now();
   var period = time_utils.DateTimeRange(
-    start: DateTime.now(),
-    end: DateTime.now().add(Duration(days: rng.nextInt(90))),
+    start: startingPeriod,
+    end: startingPeriod.add(Duration(days: 180)),
   );
   internships.add(
     Internship(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Cedric Masson').id,
-      signatoryTeacherId: myTeacherId,
+      signatoryTeacherId: teacherA1Id,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Care').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Auto Care').jobs[0].id,
@@ -1554,19 +1416,17 @@ Future<void> _addDummyInternships(
     ),
   );
 
-  var startingPeriod = DateTime.now().subtract(
-    Duration(days: rng.nextInt(50) + 60),
-  );
+  startingPeriod = DateTime.now().add(Duration(days: 15));
   period = time_utils.DateTimeRange(
     start: startingPeriod,
-    end: startingPeriod.add(Duration(days: rng.nextInt(50))),
+    end: startingPeriod.add(Duration(days: 180)),
   );
   internships.add(
     Internship(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Thomas Caron').id,
-      signatoryTeacherId: myTeacherId,
+      signatoryTeacherId: teacherB1Id,
       extraSupervisingTeacherIds: [],
       enterpriseId:
           enterprises.firstWhere((e) => e.name == 'Boucherie Marien').id,
@@ -1662,15 +1522,16 @@ Future<void> _addDummyInternships(
     ),
   );
 
+  startingPeriod = DateTime.now();
   period = time_utils.DateTimeRange(
-    start: DateTime.now(),
-    end: DateTime.now().add(Duration(days: rng.nextInt(90))),
+    start: startingPeriod,
+    end: startingPeriod.add(Duration(days: 180)),
   );
   var internship = Internship(
-    schoolBoardId: mySchoolBoardId,
+    schoolBoardId: schoolBoardId,
     creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
-    signatoryTeacherId: myTeacherId,
+    signatoryTeacherId: teacherC1Id,
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
@@ -1767,16 +1628,17 @@ Future<void> _addDummyInternships(
   );
   internships.add(internship);
 
+  startingPeriod = DateTime.now().subtract(Duration(days: 10));
   period = time_utils.DateTimeRange(
-    start: DateTime.now(),
-    end: DateTime.now().add(Duration(days: rng.nextInt(90))),
+    start: startingPeriod,
+    end: startingPeriod.add(Duration(days: 120)),
   );
   internships.add(
     Internship(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Vincent Picard').id,
-      signatoryTeacherId: myTeacherId,
+      signatoryTeacherId: teacherA1Id,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'IGA').id,
       jobId: enterprises.firstWhere((e) => e.name == 'IGA').jobs[0].id,
@@ -1843,17 +1705,18 @@ Future<void> _addDummyInternships(
     ),
   );
 
+  startingPeriod = DateTime.now();
   period = time_utils.DateTimeRange(
-    start: DateTime.now(),
-    end: DateTime.now().add(Duration(days: rng.nextInt(90))),
+    start: startingPeriod,
+    end: startingPeriod.add(Duration(days: 120)),
   );
   internships.add(
     Internship(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Simon Gingras').id,
       // This is a Roméo Montaigu's student
-      signatoryTeacherId: myPartnerTeacherId,
+      signatoryTeacherId: teacherB1Id,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Auto Repair').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Auto Repair').jobs[0].id,
@@ -1923,15 +1786,14 @@ Future<void> _addDummyInternships(
   startingPeriod = DateTime.now().subtract(const Duration(days: 100));
   period = time_utils.DateTimeRange(
     start: startingPeriod,
-    end: startingPeriod.add(Duration(days: rng.nextInt(90) + 360)),
+    end: startingPeriod.add(Duration(days: 400)),
   );
   internships.add(
     Internship(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Jeanne Tremblay').id,
-      // This is a Roméo Montaigu's student
-      signatoryTeacherId: myPartnerTeacherId,
+      signatoryTeacherId: teacherA1Id,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[0].id,
@@ -2022,18 +1884,18 @@ Future<void> _addDummyInternships(
     ),
   );
 
+  startingPeriod = DateTime.now();
   period = time_utils.DateTimeRange(
-    start: DateTime.now(),
-    end: DateTime.now().add(Duration(days: rng.nextInt(90))),
+    start: startingPeriod,
+    end: startingPeriod.add(Duration(days: 120)),
   );
   internships.add(
     Internship(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
-      // This is a Roméo Montaigu's student
-      signatoryTeacherId: myPartnerTeacherId,
-      extraSupervisingTeacherIds: [myTeacherId],
+      signatoryTeacherId: teacherA1Id,
+      extraSupervisingTeacherIds: [teacherB1Id],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
       extraSpecializationIds: [],
@@ -2123,17 +1985,17 @@ Future<void> _addDummyInternships(
     ),
   );
 
-  startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(250)));
+  startingPeriod = DateTime.now().subtract(Duration(days: 30));
   period = time_utils.DateTimeRange(
     start: startingPeriod,
-    end: startingPeriod.add(Duration(days: rng.nextInt(50))),
+    end: startingPeriod.add(Duration(days: 180)),
   );
   internships.add(
     Internship(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
-      signatoryTeacherId: myTeacherId,
+      signatoryTeacherId: teacherC1Id,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').jobs[0].id,
@@ -2188,17 +2050,17 @@ Future<void> _addDummyInternships(
     ),
   );
 
-  startingPeriod = DateTime.now().subtract(Duration(days: rng.nextInt(200)));
+  startingPeriod = DateTime.now().subtract(Duration(days: 30));
   period = time_utils.DateTimeRange(
     start: startingPeriod,
-    end: startingPeriod.add(Duration(days: rng.nextInt(50))),
+    end: startingPeriod.add(Duration(days: 180)),
   );
   internships.add(
     Internship(
-      schoolBoardId: mySchoolBoardId,
+      schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
-      signatoryTeacherId: myTeacherId,
+      signatoryTeacherId: teacherA1Id,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Pharmaprix').jobs[0].id,
