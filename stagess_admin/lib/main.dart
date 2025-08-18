@@ -15,11 +15,13 @@ import 'package:stagess_common_flutter/providers/school_boards_provider.dart';
 import 'package:stagess_common_flutter/providers/students_provider.dart';
 import 'package:stagess_common_flutter/providers/teachers_provider.dart';
 
+bool _useLocalDatabase = true;
 bool _compileProduction = false;
 
 void main() async {
   final useMockers = false;
   final backendUri = BackendHelpers.backendUri(
+    useLocal: _useLocalDatabase,
     isSecured: _compileProduction,
     isDev: !_compileProduction,
   );

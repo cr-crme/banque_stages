@@ -14,8 +14,8 @@ void main() {
     testWidgets('About page', (WidgetTester tester) async {
       await tester.pumpWidget(StageSsApp(
           useMockers: true,
-          backendUri:
-              BackendHelpers.backendUri(isSecured: false, isDev: true)));
+          backendUri: BackendHelpers.backendUri(
+              useLocal: true, isSecured: false, isDev: true)));
       await tester.loadDummyData();
 
       await tester.navigateToScreen(ScreenTest.enterprises);
