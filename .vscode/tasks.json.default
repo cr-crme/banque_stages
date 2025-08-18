@@ -27,37 +27,5 @@
         "isDefault": true
       },
     },
-    {
-      "label": "Release Stagess",
-      "type": "shell",
-      "command": "flutter",
-      "args": [ "build", "web", "--release", "--base-href=/stagess/" ],
-      "problemMatcher": [ ],
-      "options": { "cwd": "${workspaceFolder}/stagess" },
-    },
-    {
-      "label": "Release Stagess Admin",
-      "type": "shell",
-      "command": "flutter",
-      "args": [ "build", "web", "--release", "--base-href=/admin-stagess/" ],
-      "problemMatcher": [ ],
-      "options": { "cwd": "${workspaceFolder}/stagess_admin" },
-    },
-    {
-      "label": "Release Stagess Tutorial",
-      "type": "shell",
-      "command": "flutter",
-      "args": [ "build", "web", "--release", "--base-href=/tutoriel-stagess/" ],
-      "problemMatcher": [ ],
-      "options": { "cwd": "${workspaceFolder}/stagess" },
-    },
-    {
-      "label": "Release Stagess Admin Tutorial",
-      "type": "shell",
-      "command": "flutter",
-      "args": [ "build", "web", "--release", "--base-href=/tutoriel-admin-stagess/" ],
-      "problemMatcher": [ ],
-      "options": { "cwd": "${workspaceFolder}/stagess_admin" },
-    },
   ]
 }

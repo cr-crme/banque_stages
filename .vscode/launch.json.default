@@ -66,19 +66,5 @@
             "type": "dart",
             "program": "stagess/lib/main_widget.dart",
         },
-        {
-            "name": "Release Stagess",
-            "request": "launch",
-            "type": "dart",
-            "program": "stagess/lib/main.dart",
-            "preLaunchTask": "Release Stagess",
-        },
-        {
-            "name": "Release Stagess Admin",
-            "request": "launch",
-            "type": "dart",
-            "program": "stagess_admin/lib/main.dart",
-            "preLaunchTask": "Release Stagess Admin",
-        },
     ]
 }
