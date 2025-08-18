@@ -1,6 +1,6 @@
 .PHONY: all backend web
 
-all: backend
+all: web
 
 WEB_BUILD_DIR = build
 
