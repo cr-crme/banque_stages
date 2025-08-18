@@ -15,13 +15,16 @@ import 'package:stagess_common_flutter/providers/school_boards_provider.dart';
 import 'package:stagess_common_flutter/providers/students_provider.dart';
 import 'package:stagess_common_flutter/providers/teachers_provider.dart';
 
-bool _compileProduction = false;
+bool _useLocalDatabase = true;
+bool _useSecured = false;
+bool _useDevDatabase = true;
 
 void main() async {
   final useMockers = false;
   final backendUri = BackendHelpers.backendUri(
-    isSecured: _compileProduction,
-    isDev: !_compileProduction,
+    isLocal: _useLocalDatabase,
+    isSecured: _useSecured,
+    isDev: _useDevDatabase,
   );
 
   WidgetsFlutterBinding.ensureInitialized();

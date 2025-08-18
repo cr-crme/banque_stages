@@ -36,7 +36,8 @@ enum DatabaseBackend {
 
 final _databaseBackend =
     DatabaseBackend.fromString(_getFromEnvironment('STAGESS_DATABASE_BACKEND'));
-final _backendIp = BackendHelpers.backendIp;
+final _backendIp = BackendHelpers.backendIp(
+    useLocal: _getFromEnvironment('STAGESS_USE_LOCAL_DATABASE') == 'true');
 final _backendPort = BackendHelpers.backendPort;
 final _devSettings = ConnectionSettings(
   host: 'localhost',
@@ -71,8 +72,11 @@ void main() async {
   final firebaseApiKey = _getFromEnvironment('STAGESS_FIREBASE_WEB_API_KEY');
 
   // Create an HTTP server listening on localhost:_backendPort
-  var server = await HttpServer.bind(_backendIp, _backendPort);
-  _logger.info('Server running on http://$_backendIp:$_backendPort/');
+  final useSecure = _getFromEnvironment('STAGESS_USE_SECURE') == 'true';
+  final server = await _bindServer(useSecure: useSecure);
+
+  _logger.info(
+      'Server running on ${useSecure ? 'https' : 'http'}://$_backendIp:$_backendPort/');
   _logger.info('Using database backend: ${_databaseBackend.name}');
 
   final devConnexions = await _connectDatabase(
@@ -111,6 +115,27 @@ String _getFromEnvironment(String key) {
     exit(1);
   }
   return value;
+}
+
+Future<HttpServer> _bindServer({required bool useSecure}) async {
+  if (useSecure) {
+    final certPem = _getFromEnvironment('STAGESS_CERT_PEM');
+    final keyPem = _getFromEnvironment('STAGESS_KEY_PEM');
+    if (certPem.isEmpty || keyPem.isEmpty) {
+      _logger.severe(
+          'STAGESS_CERT_PEM and STAGESS_KEY_PEM environment variables must be set for secure connections.');
+      exit(1);
+    }
+
+    return await HttpServer.bindSecure(
+        _backendIp,
+        _backendPort,
+        SecurityContext()
+          ..useCertificateChain(certPem)
+          ..usePrivateKey(keyPem));
+  } else {
+    return await HttpServer.bind(_backendIp, _backendPort);
+  }
 }
 
 Future<Connexions> _connectDatabase({

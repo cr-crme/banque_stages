@@ -14,7 +14,9 @@ import 'package:stagess_common_flutter/providers/school_boards_provider.dart';
 import 'package:stagess_common_flutter/providers/students_provider.dart';
 import 'package:stagess_common_flutter/providers/teachers_provider.dart';
 
-bool _compileProduction = false;
+bool _useLocalDatabase = true;
+bool _useSecured = false;
+bool _useDevDatabase = true;
 
 // coverage:ignore-start
 void main() async {
@@ -22,9 +24,11 @@ void main() async {
   const showDebugElements = true;
   const useMockers = false;
   final backendUri = BackendHelpers.backendUri(
-      isSecured: _compileProduction, isDev: !_compileProduction);
-  final errorReportUri =
-      BackendHelpers.backendUriForBugReport(isSecured: _compileProduction);
+      isLocal: _useLocalDatabase,
+      isSecured: _useSecured,
+      isDev: _useDevDatabase);
+  final errorReportUri = BackendHelpers.backendUriForBugReport(
+      isLocal: _useLocalDatabase, isSecured: _useSecured);
 
   await runZonedGuarded(
     () async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stagess_admin/dummy_data.dart';
+import 'package:stagess_admin/dummy_data_tutorial.dart';
 import 'package:stagess_admin/screens/router.dart';
 import 'package:stagess_common/models/generic/access_level.dart';
 import 'package:stagess_common_flutter/providers/admins_provider.dart';
@@ -163,7 +164,7 @@ class MainDrawer extends StatelessWidget {
                       titleText: 'Réinitialiser la base de données (Tutoriel)',
                       icon: Icons.restore_from_trash_outlined,
                       onTap: () async {
-                        await resetDummyData(context);
+                        await resetDummyDataTutorial(context);
                         if (context.mounted && canPop) Navigator.pop(context);
                       },
                       tileColor: Colors.red,
