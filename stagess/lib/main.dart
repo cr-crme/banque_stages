@@ -14,9 +14,11 @@ import 'package:stagess_common_flutter/providers/school_boards_provider.dart';
 import 'package:stagess_common_flutter/providers/students_provider.dart';
 import 'package:stagess_common_flutter/providers/teachers_provider.dart';
 
-bool _useLocalDatabase = true;
-bool _useSecured = false;
-bool _useDevDatabase = true;
+bool _useLocalDatabase =
+    bool.fromEnvironment('STAGESS_WEB_USE_LOCAL_DB', defaultValue: true);
+bool _useSsl = bool.fromEnvironment('STAGESS_WEB_USE_SSL', defaultValue: false);
+bool _useDevDatabase =
+    bool.fromEnvironment('STAGESS_WEB_USE_DEV_DB', defaultValue: true);
 
 // coverage:ignore-start
 void main() async {
@@ -24,11 +26,9 @@ void main() async {
   const showDebugElements = true;
   const useMockers = false;
   final backendUri = BackendHelpers.backendUri(
-      isLocal: _useLocalDatabase,
-      isSecured: _useSecured,
-      isDev: _useDevDatabase);
+      isLocal: _useLocalDatabase, useSsl: _useSsl, isDev: _useDevDatabase);
   final errorReportUri = BackendHelpers.backendUriForBugReport(
-      isLocal: _useLocalDatabase, isSecured: _useSecured);
+      isLocal: _useLocalDatabase, useSsl: _useSsl);
 
   await runZonedGuarded(
     () async {

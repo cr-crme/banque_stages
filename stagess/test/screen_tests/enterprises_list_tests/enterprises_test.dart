@@ -15,7 +15,7 @@ void main() {
       await tester.pumpWidget(StageSsApp(
           useMockers: true,
           backendUri: BackendHelpers.backendUri(
-              isLocal: true, isSecured: false, isDev: true)));
+              isLocal: true, useSsl: false, isDev: true)));
       await tester.loadDummyData();
 
       await tester.navigateToScreen(ScreenTest.enterprises);
