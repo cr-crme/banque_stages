@@ -1,4 +1,4 @@
-.PHONY: all backend stagess admin
+.PHONY: all backend web
 
 all: backend
 
