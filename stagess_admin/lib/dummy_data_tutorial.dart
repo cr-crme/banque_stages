@@ -209,13 +209,13 @@ Future<void> _addDummyTeachers(
 
   teachers.add(
     Teacher(
-      firstName: 'Enseignant',
+      firstName: 'Suzanne',
       middleName: null,
-      lastName: 'A1',
+      lastName: 'Bien-Aimé',
       schoolBoardId: schoolBoardId,
       schoolId: schoolAId,
       hasRegisteredAccount: false,
-      groups: ['550'],
+      groups: ['550','551'],
       email: 'a1@moncentre.qc',
       phone: null,
       address: null,
@@ -241,16 +241,16 @@ teachers.add(
     ),
   );
 
-  teachers.add(
+teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
-      lastName: 'B1',
+      lastName: 'A3',
       schoolBoardId: schoolBoardId,
-      schoolId: schoolBId,
+      schoolId: schoolAId,
       hasRegisteredAccount: false,
       groups: ['550'],
-      email: 'b1@moncentre.qc',
+      email: 'a3@moncentre.qc',
       phone: null,
       address: null,
       dateBirth: null,
@@ -262,11 +262,197 @@ teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
+      lastName: 'A4',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
+      hasRegisteredAccount: false,
+      groups: ['550'],
+      email: 'a4@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+  
+teachers.add(
+    Teacher(
+      firstName: 'Enseignant',
+      middleName: null,
+      lastName: 'A5',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
+      hasRegisteredAccount: false,
+      groups: ['550'],
+      email: 'a5@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+  
+teachers.add(
+    Teacher(
+      firstName: 'Enseignant',
+      middleName: null,
+      lastName: 'A6',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
+      hasRegisteredAccount: false,
+      groups: ['550'],
+      email: 'a6@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+
+  teachers.add(
+    Teacher(
+      firstName: 'Enseignant',
+      middleName: null,
+      lastName: 'A7',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
+      hasRegisteredAccount: false,
+      groups: ['550'],
+      email: 'a7@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+  
+teachers.add(
+    Teacher(
+      firstName: 'Enseignant',
+      middleName: null,
+      lastName: 'A8',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
+      hasRegisteredAccount: false,
+      groups: ['550'],
+      email: 'a8@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+
+teachers.add(
+    Teacher(
+      firstName: 'Enseignant',
+      middleName: null,
+      lastName: 'A9',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
+      hasRegisteredAccount: false,
+      groups: ['551'],
+      email: 'a9@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+
+teachers.add(
+    Teacher(
+      firstName: 'Enseignant',
+      middleName: null,
+      lastName: 'A10',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
+      hasRegisteredAccount: false,
+      groups: ['551'],
+      email: 'a10@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+
+teachers.add(
+    Teacher(
+      firstName: 'Enseignant',
+      middleName: null,
+      lastName: 'A11',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
+      hasRegisteredAccount: false,
+      groups: ['551'],
+      email: 'a11@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+  
+teachers.add(
+    Teacher(
+      firstName: 'Enseignant',
+      middleName: null,
+      lastName: 'A12',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
+      hasRegisteredAccount: false,
+      groups: ['551'],
+      email: 'a12@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+
+  teachers.add(
+    Teacher(
+      firstName: 'Émilien',
+      middleName: null,
+      lastName: 'Delcourt',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolBId,
+      hasRegisteredAccount: false,
+      groups: ['201'],
+      email: 'b1@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+
+  teachers.add(
+    Teacher(
+      firstName: 'Mortimer',
+      middleName: null,
+      lastName: 'Vaillant',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolBId,
+      hasRegisteredAccount: false,
+      groups: ['200'],
+      email: 'b2@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+  teachers.add(
+    Teacher(
+      firstName: 'Enseignant',
+      middleName: null,
       lastName: 'C1',
       schoolBoardId: schoolBoardId,
       schoolId: schoolCId,
       hasRegisteredAccount: false,
-      groups: ['550'],
+      groups: ['300'],
       email: 'c1@moncentre.qc',
       phone: null,
       address: null,
@@ -418,13 +604,13 @@ Future<void> _addDummyStudents(
   students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolAId,
+      schoolId: schoolBId,
       firstName: 'Simon',
       lastName: 'Gingras',
       dateBirth: null,
       email: 's.gingras@email.com',
       program: Program.fms,
-      group: '552',
+      group: '201',
       contact: Person(
         firstName: 'Raoul',
         middleName: null,
@@ -482,7 +668,7 @@ Future<void> _addDummyStudents(
       firstName: 'Jeanne',
       lastName: 'Tremblay',
       dateBirth: null,
-      email: 'g.tremblay@email.com',
+      email: 'j.tremblay@email.com',
       program: Program.fpt,
       group: '550',
       contact: Person(
@@ -538,7 +724,7 @@ Future<void> _addDummyStudents(
   students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolBId,
+      schoolId: schoolAId,
       firstName: 'Vanessa',
       lastName: 'Monette',
       dateBirth: null,
@@ -568,7 +754,7 @@ Future<void> _addDummyStudents(
   students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Melissa',
       lastName: 'Poulain',
       dateBirth: null,
@@ -598,7 +784,7 @@ Future<void> _addDummyStudents(
 students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Caroline',
       lastName: 'Viger',
       dateBirth: null,
@@ -628,7 +814,7 @@ students.add(
 students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Virginie',
       lastName: 'Marien',
       dateBirth: null,
@@ -658,7 +844,7 @@ students.add(
 students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Fabien',
       lastName: 'Lamotte',
       dateBirth: null,
@@ -688,7 +874,7 @@ students.add(
 students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Frédéric',
       lastName: 'Dorval',
       dateBirth: null,
@@ -718,7 +904,7 @@ students.add(
   students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Jérémy',
       lastName: 'Cloutier',
       dateBirth: null,
@@ -748,7 +934,7 @@ students.add(
   students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Jacob',
       lastName: 'Labbé',
       dateBirth: null,
@@ -778,7 +964,7 @@ students.add(
   students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Benoit',
       lastName: 'Girard',
       dateBirth: null,
@@ -808,7 +994,7 @@ students.add(
   students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Julien',
       lastName: 'Adam',
       dateBirth: null,
@@ -838,7 +1024,7 @@ students.add(
   students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Dave',
       lastName: 'Vachon',
       dateBirth: null,
@@ -868,7 +1054,7 @@ students.add(
   students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolCId,
+      schoolId: schoolAId,
       firstName: 'Guillaume',
       lastName: 'Robin',
       dateBirth: null,
@@ -894,7 +1080,7 @@ students.add(
       phone: PhoneNumber.fromString('514 567 9988'),
     ),
   );
-  await _waitForDatabaseUpdate(students, 10);
+  await _waitForDatabaseUpdate(students, 15);
 }
 
 Future<void> _addDummyEnterprises(
@@ -916,11 +1102,11 @@ Future<void> _addDummyEnterprises(
       schoolBoard.schools.firstWhere((school) => school.name == 'École C').id;
 
   final teacherA1Id =
-      teachers.firstWhere((teacher) => teacher.email == 'a1@moncentre.com').id;
+      teachers.firstWhere((teacher) => teacher.email == 'a1@moncentre.qc').id;
   final teacherB1Id =
-      teachers.firstWhere((teacher) => teacher.email == 'b1@moncentre.com').id;
+      teachers.firstWhere((teacher) => teacher.email == 'b1@moncentre.qc').id;
   final teacherC1Id =
-      teachers.firstWhere((teacher) => teacher.email == 'c1@moncentre.com').id;
+      teachers.firstWhere((teacher) => teacher.email == 'c1@moncentre.qc').id;
 
   JobList jobs = JobList();
   jobs.add(
@@ -930,23 +1116,22 @@ Future<void> _addDummyEnterprises(
       positionsOffered: {schoolAId: 2, schoolBId: 5, schoolCId: 1},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents(
-        severeInjuries: [Incident('Vaut mieux ne pas détailler...')],
+        severeInjuries: [Incident('L\'élève s\'est sectionné le tendon du pouce en coupant un morceau de viande.')],
       ),
-      minimumAge: 12,
+      minimumAge: 15,
       preInternshipRequests: PreInternshipRequests.fromStrings([
-        'Manger de la poutine',
+        'Ne pas avoir peur de travailler dans le froid',
         PreInternshipRequestTypes.soloInterview.index.toString(),
       ]),
       uniforms: Uniforms(
         status: UniformStatus.suppliedByEnterprise,
-        uniforms: ['Un beau chapeu bleu'],
+        uniforms: ['Un pantalon de cuisine, un tablier'],
       ),
       protections: Protections(
         status: ProtectionsStatus.suppliedByEnterprise,
         protections: [
-          'Une veste de mithril',
-          'Une cotte de maille',
-          'Une drole de bague',
+          'Une veste chaude',
+          'Un gant en cotte de maille',
         ],
       ),
       reservedForId: '',
@@ -960,24 +1145,22 @@ Future<void> _addDummyEnterprises(
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents(
         minorInjuries: [
-          Incident('Juste un petit couteau de 5cm dans la main'),
-          Incident('Une deuxième fois, mais seulement 5 points de suture'),
+          Incident('L\'élève a eu une entorse de cheville en tombant de l\'escabeau.'),
+          Incident('Une élève s\'est fait mal au dos en soulevant des boites de lessive'),
         ],
       ),
       minimumAge: 15,
       preInternshipRequests: PreInternshipRequests.fromStrings([
-        'Manger de la tarte',
+        'Savoir manoeuvrer un transpalette électrique',
       ]),
       uniforms: Uniforms(
         status: UniformStatus.suppliedByEnterprise,
-        uniforms: ['Deux dents en or'],
+        uniforms: ['Un pantalon noir et un polo vert'],
       ),
       protections: Protections(
         status: ProtectionsStatus.suppliedByEnterprise,
         protections: [
-          'Une veste de mithril',
-          'Une cotte de maille',
-          'Une drole de bague',
+          'Une veste pour aller dans les frigos'
         ],
       ),
       reservedForId: '',
@@ -1105,13 +1288,13 @@ Future<void> _addDummyEnterprises(
       ]),
       uniforms: Uniforms(
         status: UniformStatus.suppliedByEnterprise,
-        uniforms: ['Un beau chapeau bleu'],
+        uniforms: ['Un bleu de travail'],
       ),
       protections: Protections(
         status: ProtectionsStatus.suppliedBySchool,
         protections: ['Masque', 'Un masque de protection'],
       ),
-      reservedForId: teacherC1Id,
+      reservedForId: teacherA1Id,
     ),
   );
 
@@ -1121,7 +1304,7 @@ Future<void> _addDummyEnterprises(
       name: 'Auto Care',
       status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.garage},
-      recruiterId: teacherC1Id,
+      recruiterId: teacherA1Id,
       jobs: jobs,
       contact: Person(
         firstName: 'Denis',
@@ -1172,7 +1355,7 @@ Future<void> _addDummyEnterprises(
       name: 'Auto Repair',
       status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.garage, ActivityTypes.mecanique},
-      recruiterId: 'dummy_teacher_id_1',
+      recruiterId: 'Jacque Dallaire',
       jobs: jobs,
       contact: Person(
         firstName: 'Claudio',
@@ -1387,7 +1570,7 @@ Future<void> _addDummyEnterprises(
         ActivityTypes.restaurationRapide,
         ActivityTypes.sandwicherie,
       },
-      recruiterId: 'dummy_teacher_id_2',
+      recruiterId: '',
       jobs: jobs,
       contact: Person(
         firstName: 'Carlos',
@@ -1552,8 +1735,8 @@ Future<void> _addDummyEnterprises(
           'Q7': ['Des pesticides', 'Engrais'],
           'Q12': ['__NOT_APPLICABLE_INTERNAL__'],
           'Q15': ['Oui'],
-          'Q15+t': ['Mais pourquoi donc??'],
-          'Q16': ['Beurk'],
+          'Q15+t': ['Aucun'],
+          'Q16': ['Ranger le local avant de quitter'],
           'Q18': ['Non'],
         },
       ),
@@ -1647,9 +1830,9 @@ Future<void> _addDummyInternships(
       ],
       visitingPriority: VisitingPriority.values[0],
       supervisor: Person(
-        firstName: 'Nobody',
+        firstName: 'Robert',
         middleName: null,
-        lastName: 'Forever',
+        lastName: 'Marceau',
         dateBirth: null,
         phone: PhoneNumber.fromString('514-555-1234'),
         address: null,
@@ -1659,7 +1842,7 @@ Future<void> _addDummyInternships(
       expectedDuration: 135,
       achievedDuration: -1,
       endDate: DateTime(0),
-      teacherNotes: 'Un stage de rêve, mais pas pour l\'élève.',
+      teacherNotes: 'Sonner à l\'interphone à l\'arrière du garage pour entrer',
       weeklySchedules: [
         WeeklySchedule(
           schedule: {
@@ -1754,9 +1937,9 @@ Future<void> _addDummyInternships(
       extraSpecializationIds: [],
       visitingPriority: VisitingPriority.values[0],
       supervisor: Person(
-        firstName: 'Nobody',
+        firstName: 'Claude',
         middleName: null,
-        lastName: 'Forever',
+        lastName: 'Simard',
         dateBirth: null,
         phone: null,
         address: null,
@@ -1854,9 +2037,9 @@ Future<void> _addDummyInternships(
     extraSpecializationIds: [],
     visitingPriority: VisitingPriority.values[0],
     supervisor: Person(
-      firstName: 'Nobody',
+      firstName: 'Carole',
       middleName: null,
-      lastName: 'Forever',
+      lastName: 'Moisan',
       dateBirth: null,
       phone: null,
       address: null,
@@ -1961,9 +2144,9 @@ Future<void> _addDummyInternships(
       extraSpecializationIds: [],
       visitingPriority: VisitingPriority.values[0],
       supervisor: Person(
-        firstName: 'Nobody',
+        firstName: 'Charles',
         middleName: null,
-        lastName: 'Forever',
+        lastName: 'Villeneuve',
         dateBirth: null,
         phone: null,
         address: null,
@@ -2039,9 +2222,9 @@ Future<void> _addDummyInternships(
       extraSpecializationIds: [],
       visitingPriority: VisitingPriority.values[0],
       supervisor: Person(
-        firstName: 'Nobody',
+        firstName: 'Thomas',
         middleName: null,
-        lastName: 'Forever',
+        lastName: 'Giroud',
         dateBirth: null,
         phone: null,
         address: null,
@@ -2116,9 +2299,9 @@ Future<void> _addDummyInternships(
       extraSpecializationIds: [],
       visitingPriority: VisitingPriority.values[0],
       supervisor: Person(
-        firstName: 'Nobody',
+        firstName: 'Maxime',
         middleName: null,
-        lastName: 'Forever',
+        lastName: 'Lefrançois',
         dateBirth: null,
         phone: PhoneNumber.fromString('123-456-7890'),
         address: null,
@@ -2217,9 +2400,9 @@ Future<void> _addDummyInternships(
       extraSpecializationIds: [],
       visitingPriority: VisitingPriority.values[0],
       supervisor: Person(
-        firstName: 'Nobody',
+        firstName: 'Mathilde',
         middleName: null,
-        lastName: 'Forever',
+        lastName: 'Delaume',
         dateBirth: null,
         phone: null,
         address: null,
@@ -2318,9 +2501,9 @@ Future<void> _addDummyInternships(
       extraSpecializationIds: [],
       visitingPriority: VisitingPriority.values[0],
       supervisor: Person(
-        firstName: 'Un',
+        firstName: 'Francis',
         middleName: null,
-        lastName: 'Ami',
+        lastName: 'Beaudet',
         dateBirth: null,
         phone: null,
         address: null,
@@ -2383,9 +2566,9 @@ Future<void> _addDummyInternships(
       extraSpecializationIds: [],
       visitingPriority: VisitingPriority.values[0],
       supervisor: Person(
-        firstName: 'Deux',
+        firstName: 'Thierry',
         middleName: null,
-        lastName: 'Amis',
+        lastName: 'Joly',
         dateBirth: null,
         phone: null,
         address: null,
