@@ -72,7 +72,7 @@ void main() async {
   final firebaseApiKey = _getFromEnvironment('STAGESS_FIREBASE_WEB_API_KEY');
 
   // Create an HTTP server listening on localhost:_backendPort
-  final useSecure = _getFromEnvironment('STAGESS_USE_SECURE') == 'true';
+  final useSecure = _getFromEnvironment('STAGESS_USE_SSL') == 'true';
   final server = await _bindServer(useSecure: useSecure);
 
   _logger.info(

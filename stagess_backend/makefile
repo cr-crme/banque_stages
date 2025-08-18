@@ -41,7 +41,7 @@ service:
 	echo "RestartSec=5" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
 	echo "User=www-data" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
 	echo "Environment=STAGESS_FIREBASE_WEB_API_KEY="${STAGESS_FIREBASE_WEB_API_KEY}"" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
-	echo "Environment=STAGESS_USE_SECURE="${STAGESS_USE_SECURE}"" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
+	echo "Environment=STAGESS_USE_SSL="${STAGESS_USE_SSL}"" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
 	echo "Environment=STAGESS_CERT_PEM="${STAGESS_CERT_PEM}"" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
 	echo "Environment=STAGESS_KEY_PEM="${STAGESS_KEY_PEM}"" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
 	echo "Environment=STAGESS_USE_LOCAL_DATABASE="${STAGESS_USE_LOCAL_DATABASE}"" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
