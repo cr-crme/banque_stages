@@ -19,7 +19,7 @@ void main() {
       await tester.pumpWidget(StageSsApp(
           useMockers: true,
           backendUri: BackendHelpers.backendUri(
-              useLocal: true, isSecured: false, isDev: true)));
+              isLocal: true, isSecured: false, isDev: true)));
 
       // Verify that the home page is "My students"
       expect(find.text(ScreenTest.enterprises.name), findsOneWidget);
@@ -31,7 +31,7 @@ void main() {
       await tester.pumpWidget(StageSsApp(
           useMockers: true,
           backendUri: BackendHelpers.backendUri(
-              useLocal: true, isSecured: false, isDev: true)));
+              isLocal: true, isSecured: false, isDev: true)));
 
       // Verify that the drawer contains the expected tiles
       for (final screenNameOuter in ScreenTest.values) {
@@ -63,7 +63,7 @@ void main() {
       await tester.pumpWidget(StageSsApp(
           useMockers: true,
           backendUri: BackendHelpers.backendUri(
-              useLocal: true, isSecured: false, isDev: true)));
+              isLocal: true, isSecured: false, isDev: true)));
 
       // Verify the reinitialized button is hidden (as in production)
       await tester.openDrawer();
@@ -90,7 +90,7 @@ void main() {
       await tester.pumpWidget(StageSsApp(
           useMockers: true,
           backendUri: BackendHelpers.backendUri(
-              useLocal: true, isSecured: false, isDev: true)));
+              isLocal: true, isSecured: false, isDev: true)));
 
       // Verify the home page is empty
       for (final enterprise in EnterpriseTest.values) {

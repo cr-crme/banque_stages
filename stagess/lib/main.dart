@@ -15,7 +15,8 @@ import 'package:stagess_common_flutter/providers/students_provider.dart';
 import 'package:stagess_common_flutter/providers/teachers_provider.dart';
 
 bool _useLocalDatabase = true;
-bool _compileProduction = false;
+bool _useSecured = false;
+bool _useDevDatabase = true;
 
 // coverage:ignore-start
 void main() async {
@@ -23,11 +24,11 @@ void main() async {
   const showDebugElements = true;
   const useMockers = false;
   final backendUri = BackendHelpers.backendUri(
-      useLocal: _useLocalDatabase,
-      isSecured: _compileProduction,
-      isDev: !_compileProduction);
+      isLocal: _useLocalDatabase,
+      isSecured: _useSecured,
+      isDev: _useDevDatabase);
   final errorReportUri = BackendHelpers.backendUriForBugReport(
-      useLocal: _useLocalDatabase, isSecured: _compileProduction);
+      isLocal: _useLocalDatabase, isSecured: _useSecured);
 
   await runZonedGuarded(
     () async {

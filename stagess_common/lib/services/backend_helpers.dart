@@ -9,13 +9,13 @@ class BackendHelpers {
   static String get bugReportEndpoint => 'bug-report';
 
   static Uri backendUri(
-          {required bool useLocal,
+          {required bool isLocal,
           required bool isSecured,
           required bool isDev}) =>
       Uri.parse(
-          '${backendProtocol(isSecured: isSecured)}://${backendIp(useLocal: useLocal)}:$backendPort/${connectEndpoint(isDev: isDev)}');
+          '${backendProtocol(isSecured: isSecured)}://${backendIp(useLocal: isLocal)}:$backendPort/${connectEndpoint(isDev: isDev)}');
   static Uri backendUriForBugReport(
-          {required bool useLocal, required bool isSecured}) =>
+          {required bool isLocal, required bool isSecured}) =>
       Uri.parse(
-          '${isSecured ? 'https' : 'http'}://${backendIp(useLocal: useLocal)}:$backendPort/$bugReportEndpoint');
+          '${isSecured ? 'https' : 'http'}://${backendIp(useLocal: isLocal)}:$backendPort/$bugReportEndpoint');
 }
