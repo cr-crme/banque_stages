@@ -121,30 +121,30 @@ Future<void> _addDummySchoolBoards(SchoolBoardsProvider schoolBoards) async {
     School(
       name: 'École A',
       address: Address(
-        civicNumber: 9105,
-        street: 'Rue Verville',
-        city: 'Montréal',
-        postalCode: 'H2N 1Y5',
+        civicNumber: 630,
+        street: 'rue Léon-Martel',
+        city: 'Terrebonne',
+        postalCode: 'J6W 2J8',
       ),
       phone: PhoneNumber.fromString('555 123 4567'),
     ),
     School(
       name: 'École B',
       address: Address(
-        civicNumber: 9105,
-        street: 'Rue Verville',
-        city: 'Montréal',
-        postalCode: 'H2N 1Y5',
+        civicNumber: 1846,
+        street: 'Rue de Louvières',
+        city: 'Terrebonne',
+        postalCode: 'J6X 3N2',
       ),
       phone: PhoneNumber.fromString('555 123 7654'),
     ),
     School(
       name: 'École C',
       address: Address(
-        civicNumber: 9105,
-        street: 'Rue Verville',
-        city: 'Montréal',
-        postalCode: 'H2N 1Y5',
+        civicNumber: 45,
+        street: 'Rue de la Concorde',
+        city: 'Repentigny',
+        postalCode: 'J6A 3V9',
       ),
       phone: PhoneNumber.fromString('555 123 7654'),
     ),
@@ -215,8 +215,25 @@ Future<void> _addDummyTeachers(
       schoolBoardId: schoolBoardId,
       schoolId: schoolAId,
       hasRegisteredAccount: false,
-      groups: ['110', '120'],
+      groups: ['550'],
       email: 'a1@moncentre.qc',
+      phone: null,
+      address: null,
+      dateBirth: null,
+      itineraries: [],
+    ),
+  );
+
+teachers.add(
+    Teacher(
+      firstName: 'Enseignant',
+      middleName: null,
+      lastName: 'A2',
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolAId,
+      hasRegisteredAccount: false,
+      groups: ['550'],
+      email: 'a2@moncentre.qc',
       phone: null,
       address: null,
       dateBirth: null,
@@ -232,7 +249,7 @@ Future<void> _addDummyTeachers(
       schoolBoardId: schoolBoardId,
       schoolId: schoolBId,
       hasRegisteredAccount: false,
-      groups: ['110', '120'],
+      groups: ['550'],
       email: 'b1@moncentre.qc',
       phone: null,
       address: null,
@@ -249,7 +266,7 @@ Future<void> _addDummyTeachers(
       schoolBoardId: schoolBoardId,
       schoolId: schoolCId,
       hasRegisteredAccount: false,
-      groups: ['110', '120'],
+      groups: ['550'],
       email: 'c1@moncentre.qc',
       phone: null,
       address: null,
@@ -497,7 +514,7 @@ Future<void> _addDummyStudents(
       dateBirth: null,
       email: 'v.picard@email.com',
       program: Program.fms,
-      group: '550',
+      group: '551',
       contact: Person(
         firstName: 'Jean-François',
         middleName: null,
@@ -557,7 +574,7 @@ Future<void> _addDummyStudents(
       dateBirth: null,
       email: 'm.poulain@email.com',
       program: Program.fms,
-      group: '550',
+      group: '551',
       contact: Person(
         firstName: 'Mathieu',
         middleName: null,
@@ -578,6 +595,305 @@ Future<void> _addDummyStudents(
     ),
   );
 
+students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Caroline',
+      lastName: 'Viger',
+      dateBirth: null,
+      email: 'c.viger@email.com',
+      program: Program.fms,
+      group: '551',
+      contact: Person(
+        firstName: 'Sandrine',
+        middleName: null,
+        lastName: 'Poulain',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 321 9876'),
+        address: null,
+        email: 's.poulain@email.com',
+      ),
+      contactLink: 'Mère',
+      address: Address(
+        civicNumber: 22,
+        street: 'Rue Villebon',
+        city: 'Repentigny',
+        postalCode: 'J6A 1P5',
+      ),
+      phone: PhoneNumber.fromString('514 567 9999'),
+    ),
+  );
+
+students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Virginie',
+      lastName: 'Marien',
+      dateBirth: null,
+      email: 'd.marien@email.com',
+      program: Program.fpt,
+      group: '550',
+      contact: Person(
+        firstName: 'Dominique',
+        middleName: null,
+        lastName: 'Marien',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 321 9876'),
+        address: null,
+        email: 'd.marien@email.com',
+      ),
+      contactLink: 'Père',
+      address: Address(
+        civicNumber: 22,
+        street: 'Rue Mauriac',
+        city: 'Repentigny',
+        postalCode: 'J6A 5S2',
+      ),
+      phone: PhoneNumber.fromString('514 567 1111'),
+    ),
+  );
+
+students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Fabien',
+      lastName: 'Lamotte',
+      dateBirth: null,
+      email: 'f.lamotte@email.com',
+      program: Program.fpt,
+      group: '550',
+      contact: Person(
+        firstName: 'Antoine',
+        middleName: null,
+        lastName: 'Lamotte',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 321 9876'),
+        address: null,
+        email: 'a.lamotte@email.com',
+      ),
+      contactLink: 'Père',
+      address: Address(
+        civicNumber: 53,
+        street: 'Rue Jasmin',
+        city: 'Repentigny',
+        postalCode: 'J6A 6V3',
+      ),
+      phone: PhoneNumber.fromString('514 567 1111'),
+    ),
+  );
+
+students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Frédéric',
+      lastName: 'Dorval',
+      dateBirth: null,
+      email: 'f.dorval@email.com',
+      program: Program.fpt,
+      group: '550',
+      contact: Person(
+        firstName: 'Marie',
+        middleName: null,
+        lastName: 'Lerouge',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 321 0987'),
+        address: null,
+        email: 'm.lerouge@email.com',
+      ),
+      contactLink: 'Père',
+      address: Address(
+        civicNumber: 43,
+        street: 'Rue De Bienville',
+        city: 'Repentigny',
+        postalCode: 'J6A 3K7',
+      ),
+      phone: PhoneNumber.fromString('514 567 2222'),
+    ),
+  );
+
+  students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Jérémy',
+      lastName: 'Cloutier',
+      dateBirth: null,
+      email: 'j.cloutier@email.com',
+      program: Program.fpt,
+      group: '551',
+      contact: Person(
+        firstName: 'François',
+        middleName: null,
+        lastName: 'Cloutier',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 321 1012'),
+        address: null,
+        email: 'f.cloutier@email.com',
+      ),
+      contactLink: 'Père',
+      address: Address(
+        civicNumber: 43,
+        street: 'Rue Lépine',
+        city: 'Repentigny',
+        postalCode: 'J6A 5P2',
+      ),
+      phone: PhoneNumber.fromString('514 567 2222'),
+    ),
+  );
+
+  students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Jacob',
+      lastName: 'Labbé',
+      dateBirth: null,
+      email: 'j.labbé@email.com',
+      program: Program.fpt,
+      group: '551',
+      contact: Person(
+        firstName: 'Martine',
+        middleName: null,
+        lastName: 'Rousseau',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 321 4567'),
+        address: null,
+        email: 'm.rousseau@email.com',
+      ),
+      contactLink: 'Mère',
+      address: Address(
+        civicNumber: 827,
+        street: 'Bd de Terrebonne',
+        city: 'Terrebonne',
+        postalCode: 'J6W 2H4',
+      ),
+      phone: PhoneNumber.fromString('514 567 9988'),
+    ),
+  );
+
+  students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Benoit',
+      lastName: 'Girard',
+      dateBirth: null,
+      email: 'b.girard@email.com',
+      program: Program.fpt,
+      group: '550',
+      contact: Person(
+        firstName: 'Jessica',
+        middleName: null,
+        lastName: 'Brière',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 321 4567'),
+        address: null,
+        email: 'j.briere@email.com',
+      ),
+      contactLink: 'Mère',
+      address: Address(
+        civicNumber: 1024,
+        street: 'Rue de Daine',
+        city: 'Terrebonne',
+        postalCode: 'J6X 1P2',
+      ),
+      phone: PhoneNumber.fromString('514 567 9988'),
+    ),
+  );
+
+  students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Julien',
+      lastName: 'Adam',
+      dateBirth: null,
+      email: 'j.adam@email.com',
+      program: Program.fpt,
+      group: '550',
+      contact: Person(
+        firstName: 'Daniel',
+        middleName: null,
+        lastName: 'Adam',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 321 4567'),
+        address: null,
+        email: 'd.adam@email.com',
+      ),
+      contactLink: 'Père',
+      address: Address(
+        civicNumber: 1590,
+        street: 'Rue Bouvier',
+        city: 'Terrebonne',
+        postalCode: 'J6X 1P4',
+      ),
+      phone: PhoneNumber.fromString('514 567 9988'),
+    ),
+  );
+
+  students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Dave',
+      lastName: 'Vachon',
+      dateBirth: null,
+      email: 'd.vachon@email.com',
+      program: Program.fpt,
+      group: '550',
+      contact: Person(
+        firstName: 'Romain',
+        middleName: null,
+        lastName: 'Vachon',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 321 4567'),
+        address: null,
+        email: 'r.vachon@email.com',
+      ),
+      contactLink: 'Père',
+      address: Address(
+        civicNumber: 3725,
+        street: 'Rue de Brest',
+        city: 'Terrebonne',
+        postalCode: 'J6X 3N3',
+      ),
+      phone: PhoneNumber.fromString('514 567 9988'),
+    ),
+  );
+
+  students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Guillaume',
+      lastName: 'Robin',
+      dateBirth: null,
+      email: 'g.robin@email.com',
+      program: Program.fpt,
+      group: '551',
+      contact: Person(
+        firstName: 'Patricia',
+        middleName: null,
+        lastName: 'Leduc',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 321 0987'),
+        address: null,
+        email: '@email.com',
+      ),
+      contactLink: 'Mère',
+      address: Address(
+        civicNumber: 3945,
+        street: 'Rue Daniel',
+        city: 'Terrebonne',
+        postalCode: 'J6X 2P9',
+      ),
+      phone: PhoneNumber.fromString('514 567 9988'),
+    ),
+  );
   await _waitForDatabaseUpdate(students, 10);
 }
 
