@@ -17,6 +17,7 @@
             "program": "stagess_backend/bin/backend.dart",
             "env": {
                 "STAGESS_FIREBASE_WEB_API_KEY": "<PUT YOUR FIREBASE WEB API KEY HERE>",
+                "STAGESS_USE_LOCAL_DATABASE": "< true | false >",
                 "STAGESS_DATABASE_BACKEND": "< mariadb | mysql | mock >",
                 "STAGESS_DATABASE_DEV_PORT": "<PUT YOUR DEV DATABASE PORT HERE>",
                 "STAGESS_DATABASE_DEV_NAME": "<PUT YOUR DEV DATABASE NAME HERE>",
@@ -50,7 +51,6 @@
             "env": {
                 "STAGESS_SQL_COMMAND": "<PUT THE SQL COMMAND HERE">",
                 "STAGESS_SUPERADMIN_EMAIL": "<PUT EMAIL OF THE SUPERADMIN ACCOUNT HERE>",
-                "STAGESS_USE_LOCAL_DATABASE": "< true | false >",
                 "STAGESS_DATABASE_DEV_DOCKER": "<PUT THE NAME OF THE DEV DOCKER CONTAINER HERE, DO NOT SET IF NO DOCKER IS USED>",
                 "STAGESS_DATABASE_DEV_NAME": "<PUT YOUR DEV DATABASE NAME HERE>",
                 "STAGESS_DATABASE_DEV_USER": "<PUT YOUR DEV DATABASE USER HERE>",
