@@ -15,15 +15,21 @@ import 'package:stagess_common_flutter/providers/school_boards_provider.dart';
 import 'package:stagess_common_flutter/providers/students_provider.dart';
 import 'package:stagess_common_flutter/providers/teachers_provider.dart';
 
-bool _useLocalDatabase = true;
-bool _useSecured = false;
-bool _useDevDatabase = true;
+bool _useLocalDatabase = bool.fromEnvironment(
+  'STAGESS_WEB_USE_LOCAL_DB',
+  defaultValue: true,
+);
+bool _useSsl = bool.fromEnvironment('STAGESS_WEB_USE_SSL', defaultValue: false);
+bool _useDevDatabase = bool.fromEnvironment(
+  'STAGESS_WEB_USE_DEV_DB',
+  defaultValue: true,
+);
 
 void main() async {
   final useMockers = false;
   final backendUri = BackendHelpers.backendUri(
     isLocal: _useLocalDatabase,
-    isSecured: _useSecured,
+    useSsl: _useSsl,
     isDev: _useDevDatabase,
   );
 
