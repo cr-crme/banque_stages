@@ -37,7 +37,7 @@ enum DatabaseBackend {
 final _databaseBackend =
     DatabaseBackend.fromString(_getFromEnvironment('STAGESS_DATABASE_BACKEND'));
 final _backendIp = BackendHelpers.backendIp(
-    useLocal: _getFromEnvironment('STAGESS_LOCAL_DATABASE') == 'true');
+    useLocal: _getFromEnvironment('STAGESS_USE_LOCAL_DATABASE') == 'true');
 final _backendPort = BackendHelpers.backendPort;
 final _devSettings = ConnectionSettings(
   host: 'localhost',
