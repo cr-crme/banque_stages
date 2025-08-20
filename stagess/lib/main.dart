@@ -14,10 +14,11 @@ import 'package:stagess_common_flutter/providers/school_boards_provider.dart';
 import 'package:stagess_common_flutter/providers/students_provider.dart';
 import 'package:stagess_common_flutter/providers/teachers_provider.dart';
 
-bool _useLocalDatabase =
+const _useLocalDatabase =
     bool.fromEnvironment('STAGESS_WEB_USE_LOCAL_DB', defaultValue: true);
-bool _useSsl = bool.fromEnvironment('STAGESS_WEB_USE_SSL', defaultValue: false);
-bool _useDevDatabase =
+const _useSsl =
+    bool.fromEnvironment('STAGESS_WEB_USE_SSL', defaultValue: false);
+const _useDevDatabase =
     bool.fromEnvironment('STAGESS_WEB_USE_DEV_DB', defaultValue: true);
 
 // coverage:ignore-start
