@@ -634,13 +634,13 @@ Future<void> _addDummyStudents(
   students.add(
     Student(
       schoolBoardId: schoolBoardId,
-      schoolId: schoolAId,
+      schoolId: schoolBId,
       firstName: 'Diego',
       lastName: 'Vargas',
       dateBirth: null,
       email: 'd.vargas@email.com',
       program: Program.fpt,
-      group: '550',
+      group: '200',
       contact: Person(
         firstName: 'Laura',
         middleName: null,
@@ -818,7 +818,7 @@ students.add(
       firstName: 'Virginie',
       lastName: 'Marien',
       dateBirth: null,
-      email: 'd.marien@email.com',
+      email: 'v.marien@email.com',
       program: Program.fpt,
       group: '550',
       contact: Person(
@@ -890,7 +890,7 @@ students.add(
         address: null,
         email: 'm.lerouge@email.com',
       ),
-      contactLink: 'Père',
+      contactLink: 'Mère',
       address: Address(
         civicNumber: 43,
         street: 'Rue De Bienville',
@@ -909,7 +909,7 @@ students.add(
       lastName: 'Cloutier',
       dateBirth: null,
       email: 'j.cloutier@email.com',
-      program: Program.fpt,
+      program: Program.fms,
       group: '551',
       contact: Person(
         firstName: 'François',
@@ -922,7 +922,7 @@ students.add(
       ),
       contactLink: 'Père',
       address: Address(
-        civicNumber: 43,
+        civicNumber: 73,
         street: 'Rue Lépine',
         city: 'Repentigny',
         postalCode: 'J6A 5P2',
@@ -939,7 +939,7 @@ students.add(
       lastName: 'Labbé',
       dateBirth: null,
       email: 'j.labbé@email.com',
-      program: Program.fpt,
+      program: Program.fms,
       group: '551',
       contact: Person(
         firstName: 'Martine',
@@ -1059,7 +1059,7 @@ students.add(
       lastName: 'Robin',
       dateBirth: null,
       email: 'g.robin@email.com',
-      program: Program.fpt,
+      program: Program.fms,
       group: '551',
       contact: Person(
         firstName: 'Patricia',
@@ -1068,7 +1068,7 @@ students.add(
         dateBirth: null,
         phone: PhoneNumber.fromString('514 321 0987'),
         address: null,
-        email: '@email.com',
+        email: 'p.leduc@email.com',
       ),
       contactLink: 'Mère',
       address: Address(
@@ -1080,7 +1080,36 @@ students.add(
       phone: PhoneNumber.fromString('514 567 9988'),
     ),
   );
-  await _waitForDatabaseUpdate(students, 15);
+  students.add(
+    Student(
+      schoolBoardId: schoolBoardId,
+      schoolId: schoolCId,
+      firstName: 'Sébastien',
+      lastName: 'Desmarais',
+      dateBirth: null,
+      email: 's.desmarais@email.com',
+      program: Program.fpt,
+      group: '300',
+      contact: Person(
+        firstName: 'Tony',
+        middleName: null,
+        lastName: 'Desmarais',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('450 234 5678'),
+        address: null,
+        email: 't.desmarais@email.com',
+      ),
+      contactLink: 'Père',
+      address: Address(
+        civicNumber: 1466,
+        street: 'Av Châteaubriant',
+        city: 'Mascouche',
+        postalCode: 'J7K 2B4',
+      ),
+      phone: PhoneNumber.fromString('514 567 9988'),
+    ),
+  );
+  await _waitForDatabaseUpdate(students, 21);
 }
 
 Future<void> _addDummyEnterprises(
@@ -1925,7 +1954,7 @@ Future<void> _addDummyInternships(
       schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Thomas Caron').id,
-      signatoryTeacherId: teacherB1Id,
+      signatoryTeacherId: teacherA1Id,
       extraSupervisingTeacherIds: [],
       enterpriseId:
           enterprises.firstWhere((e) => e.name == 'Boucherie Marien').id,
@@ -2030,7 +2059,7 @@ Future<void> _addDummyInternships(
     schoolBoardId: schoolBoardId,
     creationDate: DateTime.now(),
     studentId: students.firstWhere((e) => e.fullName == 'Melissa Poulain').id,
-    signatoryTeacherId: teacherC1Id,
+    signatoryTeacherId: teacherA1Id,
     extraSupervisingTeacherIds: [],
     enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
     jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
@@ -2393,7 +2422,7 @@ Future<void> _addDummyInternships(
       schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Diego Vargas').id,
-      signatoryTeacherId: teacherA1Id,
+      signatoryTeacherId: teacherB1Id,
       extraSupervisingTeacherIds: [teacherB1Id],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Metro Gagnon').jobs[1].id,
@@ -2494,7 +2523,7 @@ Future<void> _addDummyInternships(
       schoolBoardId: schoolBoardId,
       creationDate: DateTime.now(),
       studentId: students.firstWhere((e) => e.fullName == 'Vanessa Monette').id,
-      signatoryTeacherId: teacherC1Id,
+      signatoryTeacherId: teacherA1Id,
       extraSupervisingTeacherIds: [],
       enterpriseId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').id,
       jobId: enterprises.firstWhere((e) => e.name == 'Jean Coutu').jobs[0].id,
