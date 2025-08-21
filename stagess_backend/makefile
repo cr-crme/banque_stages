@@ -56,6 +56,7 @@ launcher:
 	echo "" | tee -a ${BUILD_DIR}/$(LAUNCHER_FILE_NAME)
 	echo "# Run the backend" | tee -a ${BUILD_DIR}/$(LAUNCHER_FILE_NAME)
 	echo "./$(TARGET) > $(LOG_FILE) 2>&1" | tee -a ${BUILD_DIR}/$(LAUNCHER_FILE_NAME)
+	chmod +x ${BUILD_DIR}/$(LAUNCHER_FILE_NAME)
 
 service:
 	mkdir -p $(BUILD_DIR)
