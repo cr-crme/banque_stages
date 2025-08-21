@@ -18,14 +18,16 @@ class SchoolBoard extends ExtendedItemSerializable {
     required Uint8List? logo,
     required this.schools,
     required this.cnesstNumber,
-  }) : logo = logo ?? Uint8List(0);
+  }) : logo = (logo != null && logo.length > 2) ? logo : Uint8List(0);
 
   static SchoolBoard get empty =>
       SchoolBoard(name: '', logo: Uint8List(0), schools: [], cnesstNumber: '');
 
   SchoolBoard.fromSerialized(super.map)
       : name = StringExt.from(map['name']) ?? 'Unnamed',
-        logo = Uint8List.fromList((map['logo'] as List? ?? []).cast<int>()),
+        logo = map['logo'] is List && (map['logo'] as List).length > 2
+            ? Uint8List.fromList((map['logo'] as List).cast<int>())
+            : Uint8List(0),
         schools = ListExt.from(
               map['schools'],
               deserializer: (e) => School.fromSerialized(e),
@@ -52,7 +54,7 @@ class SchoolBoard extends ExtendedItemSerializable {
       SchoolBoard(
         id: id ?? this.id,
         name: name ?? this.name,
-        logo: logo ?? this.logo,
+        logo: logo != null && logo.length > 2 ? logo : this.logo,
         schools: schools ?? this.schools,
         cnesstNumber: cnesstNumber ?? this.cnesstNumber,
       );
@@ -82,9 +84,9 @@ class SchoolBoard extends ExtendedItemSerializable {
     return SchoolBoard(
       id: StringExt.from(data['id']) ?? id,
       name: data['name'] ?? name,
-      logo: data['logo'] == null
-          ? logo
-          : Uint8List.fromList((data['logo'] as List).cast<int>()),
+      logo: (data['logo'] is List && (data['logo'] as List).length > 2)
+          ? Uint8List.fromList((data['logo'] as List).cast<int>())
+          : logo,
       schools: ListExt.from(
             data['schools'],
             deserializer: (e) => School.fromSerialized(e),
