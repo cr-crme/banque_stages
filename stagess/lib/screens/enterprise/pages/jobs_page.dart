@@ -274,28 +274,55 @@ class JobsPageState extends State<JobsPage> {
                                 positionsOccupied: occupied,
                                 status: status,
                               ),
-                              if (widget.enterprise.status ==
-                                  EnterpriseStatus.active)
-                                _RecrutedBy(enterprise: widget.enterprise),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  if (widget.enterprise.status ==
+                                      EnterpriseStatus.active)
+                                    Expanded(
+                                        child: _RecrutedBy(
+                                            enterprise: widget.enterprise)),
+                                  if (status ==
+                                          AvailabilityStatus.isAvailable ||
+                                      status == AvailabilityStatus.isFull)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, top: 4.0, bottom: 4.0),
+                                      child: TextButton(
+                                          onPressed: status ==
+                                                  AvailabilityStatus.isAvailable
+                                              ? () =>
+                                                  widget.onAddInternshipRequest(
+                                                      widget.enterprise,
+                                                      job.specialization)
+                                              : null,
+                                          style: Theme.of(context)
+                                              .textButtonTheme
+                                              .style!
+                                              .copyWith(
+                                                backgroundColor:
+                                                    WidgetStateProperty.resolveWith<
+                                                        Color>((states) => states
+                                                            .contains(
+                                                                WidgetState
+                                                                    .disabled)
+                                                        ? Theme.of(context)
+                                                            .disabledColor
+                                                        : Theme.of(context)
+                                                            .primaryColor),
+                                              ),
+                                          child: const Text(
+                                              'Inscrire un\nstagiaire',
+                                              textAlign: TextAlign.center)),
+                                    )
+                                  else
+                                    (SizedBox(height: 100)),
+                                ],
+                              )
                             ],
                           ),
                         ),
-                        if (status == AvailabilityStatus.isAvailable ||
-                            status == AvailabilityStatus.isFull)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 8.0, top: 4.0, bottom: 4.0),
-                            child: ElevatedButton(
-                                onPressed: status ==
-                                        AvailabilityStatus.isAvailable
-                                    ? () => widget.onAddInternshipRequest(
-                                        widget.enterprise, job.specialization)
-                                    : null,
-                                child: const Text('Inscrire un\nstagiaire',
-                                    textAlign: TextAlign.center)),
-                          )
-                        else
-                          (SizedBox(height: 100)),
                       ],
                     ),
                   ],
@@ -396,25 +423,27 @@ class _AvailablePlace extends StatelessWidget {
 
     final positionsRemaining = positionsOffered - positionsOccupied;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          visualDensity: VisualDensity.compact,
-          leading: DisponibilityCircle(
-            positionsOffered: positionsOffered,
-            positionsOccupied: positionsOccupied,
-            enabled: status.isEnabled,
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+      child: Row(children: [
+        DisponibilityCircle(
+          positionsOffered: positionsOffered,
+          positionsOccupied: positionsOccupied,
+          enabled: status.isEnabled,
+        ),
+        SizedBox(width: 8.0),
+        Flexible(
+            child: Text(status.message,
+                style: Theme.of(context).textTheme.titleSmall)),
+        if (status.isEnabled)
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text(
+              '$positionsRemaining / $positionsOffered',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
-          title: Text(status.message),
-          trailing: status.isEnabled
-              ? Text(
-                  '$positionsRemaining / $positionsOffered',
-                  style: Theme.of(context).textTheme.titleMedium,
-                )
-              : null,
-        )
-      ],
+      ]),
     );
   }
 }

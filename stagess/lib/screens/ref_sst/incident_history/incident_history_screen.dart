@@ -204,11 +204,14 @@ class _FilterTile extends StatelessWidget {
         child: Row(
           children: [
             const SizedBox(height: 48, width: 12),
-            Icon(icon, color: Colors.black),
+            Icon(icon, color: isSelected ? Colors.white : Colors.black),
             const SizedBox(width: 8),
             Text(
               title,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: isSelected ? Colors.white : null),
             ),
           ],
         ),

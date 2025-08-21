@@ -456,7 +456,10 @@ class _FilterTile extends StatelessWidget {
             const SizedBox(height: 48, width: 12),
             Text(
               title,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: isSelected ? Colors.white : null),
             ),
           ],
         ),

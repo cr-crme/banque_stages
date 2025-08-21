@@ -14,9 +14,9 @@ import 'package:stagess_common/models/internships/internship.dart';
 import 'package:stagess_common/models/internships/schedule.dart';
 import 'package:stagess_common/models/persons/student.dart';
 import 'package:stagess_common_flutter/helpers/responsive_service.dart';
-import 'package:stagess_common_flutter/helpers/time_of_day_extension.dart';
 import 'package:stagess_common_flutter/providers/enterprises_provider.dart';
 import 'package:stagess_common_flutter/providers/internships_provider.dart';
+import 'package:stagess_common_flutter/widgets/schedule_selector.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final _logger = Logger('SupervisionStudentDetailsScreen');
@@ -150,30 +150,35 @@ class SupervisionStudentDetailsScreen extends StatelessWidget {
               if (student == null) {
                 return const Center(child: Text('Aucun élève trouvé'));
               }
+              if (internship == null) {
+                return const Center(child: Text('Aucun stage trouvé'));
+              }
+              if (enterprise == null) {
+                return const Center(child: Text('Aucune entreprise trouvée'));
+              }
+              if (job == null) {
+                return const Center(child: Text('Aucun emploi trouvé'));
+              }
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (internship == null)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 10.0),
-                      child: Center(child: Text('Aucun stage pour l\'élève')),
-                    ),
-                  if (internship != null)
-                    _IsOver(
-                      studentId: studentId,
-                      onTapGoToInternship: () =>
-                          _navigateToStudentInternship(context),
-                    ),
-                  if (internship != null)
-                    _Contact(
-                        student: student,
-                        enterprise: enterprise!,
-                        internship: internship),
-                  if (internship != null)
-                    _PersonalNotes(internship: internship),
-                  if (internship != null) _Schedule(internship: internship),
-                  if (internship != null) _buildUniformAndEpi(context, job!),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: Center(child: Text('Aucun stage pour l\'élève')),
+                  ),
+                  _IsOver(
+                    studentId: studentId,
+                    onTapGoToInternship: () =>
+                        _navigateToStudentInternship(context),
+                  ),
+                  _Contact(
+                      student: student,
+                      enterprise: enterprise,
+                      internship: internship),
+                  _PersonalNotes(internship: internship),
+                  _Schedule(internship: internship),
+                  _buildUniformAndEpi(context, job),
                   _MoreInfoButton(
                     studentId: studentId,
                     onTap: () => _navigateToStudentInternship(context),
@@ -490,52 +495,19 @@ class _Contact extends StatelessWidget {
 class _Schedule extends StatelessWidget {
   const _Schedule({required this.internship});
 
-  final Internship? internship;
+  final Internship internship;
 
   Widget _scheduleBuilder(
       BuildContext context, List<WeeklySchedule> schedules) {
-    return Column(
-        children: schedules.asMap().keys.map((index) {
-      final weeklySchedule = schedules[index];
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (schedules.length > 1)
-            Text(
-              'Période ${index + 1}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          Padding(
-            padding: EdgeInsets.only(
-                bottom: index != schedules.length - 1 ? 8 : 0, right: 40),
-            child: Table(
-              columnWidths: {
-                0: FixedColumnWidth(MediaQuery.of(context).size.width / 3),
-                1: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
-                2: FixedColumnWidth(MediaQuery.of(context).size.width / 6),
-              },
-              children: weeklySchedule.schedule.entries.map((pair) {
-                final day = pair.key;
-                final entry = pair.value;
-                return TableRow(
-                  children: [
-                    Text(day.name),
-                    Text(
-                        textAlign: TextAlign.end,
-                        entry?.blocks.first.start.format(context) ??
-                            'Aucune heure'),
-                    Text(
-                        textAlign: TextAlign.end,
-                        entry?.blocks.first.end.format(context) ??
-                            'Aucune heure'),
-                  ],
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      );
-    }).toList());
+    return ScheduleSelector(
+      editMode: false,
+      scheduleController: WeeklySchedulesController(
+        weeklySchedules: internship.weeklySchedules,
+        dateRange: internship.dates,
+      ),
+      leftPadding: 0,
+      periodTextSize: 14,
+    );
   }
 
   @override
@@ -546,9 +518,7 @@ class _Schedule extends StatelessWidget {
         const SubTitle('Horaire de stage'),
         Padding(
           padding: const EdgeInsets.only(left: 32),
-          child: internship != null
-              ? _scheduleBuilder(context, internship!.weeklySchedules)
-              : const Text('Aucun stage'),
+          child: _scheduleBuilder(context, internship.weeklySchedules),
         ),
       ],
     );
