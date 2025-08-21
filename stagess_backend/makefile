@@ -21,7 +21,7 @@ SERVICE_FILE_NAME = $(TARGET).service
 SERVICE_FILE_PATH = /etc/systemd/system/$(SERVICE_FILE_NAME)
 
 # Default target
-all: compile launcher service
+all: compile launcher
 
 # Compile Dart to native executable
 compile:
@@ -74,9 +74,11 @@ service:
 	echo "[Install]" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
 	echo "WantedBy=multi-user.target" | tee -a ${BUILD_DIR}/$(SERVICE_FILE_NAME)
 
-# Clean build files
-clean:
-	rm -rf $(BUILD_DIR)
+deamon: service
+	sudo cp $(BUILD_DIR)/$(SERVICE_FILE_NAME) $(SERVICE_FILE_PATH)
+	sudo systemctl daemon-reload
+	sudo systemctl enable $(TARGET)
+	sudo systemctl start $(TARGET)
 
 install: all
 	mkdir -p $(INSTALL_DIR)
@@ -84,11 +86,11 @@ install: all
 	cp $(BUILD_DIR)/$(API_KEY_FILE) $(INSTALL_DIR)/
 	cp $(BUILD_DIR)/$(LAUNCHER_FILE_NAME) $(INSTALL_DIR)/
 
-deploy: install
-	sudo cp $(BUILD_DIR)/$(SERVICE_FILE_NAME) $(SERVICE_FILE_PATH)
-	sudo systemctl daemon-reload
-	sudo systemctl enable $(TARGET)
-	sudo systemctl start $(TARGET)
+deploy: install deamon
+
+# Clean build files
+clean:
+	rm -rf $(BUILD_DIR)
 
 # Phony targets (not files)
-.PHONY: all run clean
+.PHONY: all clean deamon
