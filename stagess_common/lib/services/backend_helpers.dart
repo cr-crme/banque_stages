@@ -2,7 +2,7 @@ class BackendHelpers {
   static String backendProtocol({required bool useSsl}) =>
       useSsl ? 'wss' : 'ws';
   static String backendIp({required bool useLocal}) =>
-      useLocal ? 'localhost' : '159.203.9.197';
+      useLocal ? 'localhost' : 'stagessserver.adoprevit.org';
   static const int backendPort = 3456;
   static String connectEndpoint({required bool isDev}) =>
       '${isDev ? 'dev-' : ''}connect';
