@@ -11,14 +11,14 @@ build/%.zip: .FORCE
 	rm -rf $(OUT_DIR)/$*
 	flutter build web --base-href=/$*/ \
 		--dart-define=STAGESS_WEB_USE_LOCAL_DB=false \
-		--dart-define=STAGESS_WEB_USE_SSL=false \
+		--dart-define=STAGESS_WEB_USE_SSL=true \
 		--dart-define=STAGESS_WEB_USE_DEV_DB=$(DEV_DB)
 	mv $(OUT_DIR)/web $(OUT_DIR)/$*
 	cd $(OUT_DIR) && $(ZIP) $*.zip $*
 
 # Named targets
 main: DEV_DB=false
-main: build/admin-stagess.zip
+main: build/admin.zip
 
 tutorial: DEV_DB=true
-tutorial: build/tutoriel-admin-stagess.zip
+tutorial: build/tutoriel-admin.zip
