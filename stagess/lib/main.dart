@@ -23,6 +23,11 @@ const _useDevDatabase =
 
 // coverage:ignore-start
 void main() async {
+  debugPrint('Welcome to Stagess!');
+  debugPrint('Is using local database: $_useLocalDatabase');
+  debugPrint('Is using SSL: $_useSsl');
+  debugPrint('Is using dev database: $_useDevDatabase');
+
   BugReporter.loggerSetup();
   const showDebugElements = true;
   const useMockers = false;

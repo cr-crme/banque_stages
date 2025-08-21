@@ -29,6 +29,11 @@ const _useDevDatabase = bool.fromEnvironment(
 );
 
 void main() async {
+  debugPrint('Welcome to Stagess!');
+  debugPrint('Is using local database: $_useLocalDatabase');
+  debugPrint('Is using SSL: $_useSsl');
+  debugPrint('Is using dev database: $_useDevDatabase');
+
   final useMockers = false;
   final backendUri = BackendHelpers.backendUri(
     isLocal: _useLocalDatabase,

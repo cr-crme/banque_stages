@@ -455,7 +455,7 @@ class _RecrutedBy extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.only(left: 24.0),
                   child: Text(
-                    'Aucun enseignant n\'est assigné à cette entreprise.',
+                    'Enseignant\u00b7e non reconnu\u00b7e.',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 )

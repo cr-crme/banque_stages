@@ -305,25 +305,24 @@ class _InternshipListState extends State<_InternshipList> {
                           padding: const EdgeInsets.only(top: 10.0, bottom: 15),
                           child: _dateBuild(internship),
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 8.0, right: 12),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (internship.isEnterpriseEvaluationPending)
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        right: canSeeDetails ? 16.0 : 0.0),
-                                    child: TextButton(
-                                        onPressed: () => _evaluateEnterprise(
-                                            context, internship),
-                                        child: const Text(
-                                            'Évaluer l\'entreprise')),
-                                  ),
-                                if (canSeeDetails)
+                        if (canSeeDetails)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 8.0, right: 12),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (internship.isEnterpriseEvaluationPending)
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 16.0),
+                                      child: TextButton(
+                                          onPressed: () => _evaluateEnterprise(
+                                              context, internship),
+                                          child: const Text(
+                                              'Évaluer l\'entreprise')),
+                                    ),
                                   TextButton(
                                     onPressed: () =>
                                         GoRouter.of(context).pushNamed(
@@ -335,10 +334,10 @@ class _InternshipListState extends State<_InternshipList> {
                                     child: const Text('Détails du stage',
                                         textAlign: TextAlign.center),
                                   ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        )
+                          )
                       ],
                     ),
                   ));

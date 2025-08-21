@@ -215,7 +215,7 @@ Future<void> _addDummyTeachers(
       schoolBoardId: schoolBoardId,
       schoolId: schoolAId,
       hasRegisteredAccount: false,
-      groups: ['550','551'],
+      groups: ['550', '551'],
       email: 'a1@moncentre.qc',
       phone: null,
       address: null,
@@ -224,7 +224,7 @@ Future<void> _addDummyTeachers(
     ),
   );
 
-teachers.add(
+  teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
@@ -241,7 +241,7 @@ teachers.add(
     ),
   );
 
-teachers.add(
+  teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
@@ -274,8 +274,8 @@ teachers.add(
       itineraries: [],
     ),
   );
-  
-teachers.add(
+
+  teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
@@ -291,8 +291,8 @@ teachers.add(
       itineraries: [],
     ),
   );
-  
-teachers.add(
+
+  teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
@@ -325,8 +325,8 @@ teachers.add(
       itineraries: [],
     ),
   );
-  
-teachers.add(
+
+  teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
@@ -343,7 +343,7 @@ teachers.add(
     ),
   );
 
-teachers.add(
+  teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
@@ -360,7 +360,7 @@ teachers.add(
     ),
   );
 
-teachers.add(
+  teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
@@ -377,7 +377,7 @@ teachers.add(
     ),
   );
 
-teachers.add(
+  teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
@@ -393,8 +393,8 @@ teachers.add(
       itineraries: [],
     ),
   );
-  
-teachers.add(
+
+  teachers.add(
     Teacher(
       firstName: 'Enseignant',
       middleName: null,
@@ -461,7 +461,7 @@ teachers.add(
     ),
   );
 
-  await _waitForDatabaseUpdate(teachers, 3);
+  await _waitForDatabaseUpdate(teachers, 15);
 }
 
 Future<void> _addDummyStudents(
@@ -781,7 +781,7 @@ Future<void> _addDummyStudents(
     ),
   );
 
-students.add(
+  students.add(
     Student(
       schoolBoardId: schoolBoardId,
       schoolId: schoolAId,
@@ -811,7 +811,7 @@ students.add(
     ),
   );
 
-students.add(
+  students.add(
     Student(
       schoolBoardId: schoolBoardId,
       schoolId: schoolAId,
@@ -841,7 +841,7 @@ students.add(
     ),
   );
 
-students.add(
+  students.add(
     Student(
       schoolBoardId: schoolBoardId,
       schoolId: schoolAId,
@@ -871,7 +871,7 @@ students.add(
     ),
   );
 
-students.add(
+  students.add(
     Student(
       schoolBoardId: schoolBoardId,
       schoolId: schoolAId,
@@ -1145,7 +1145,11 @@ Future<void> _addDummyEnterprises(
       positionsOffered: {schoolAId: 2, schoolBId: 5, schoolCId: 1},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents(
-        severeInjuries: [Incident('L\'élève s\'est sectionné le tendon du pouce en coupant un morceau de viande.')],
+        severeInjuries: [
+          Incident(
+            'L\'élève s\'est sectionné le tendon du pouce en coupant un morceau de viande.',
+          ),
+        ],
       ),
       minimumAge: 15,
       preInternshipRequests: PreInternshipRequests.fromStrings([
@@ -1158,10 +1162,7 @@ Future<void> _addDummyEnterprises(
       ),
       protections: Protections(
         status: ProtectionsStatus.suppliedByEnterprise,
-        protections: [
-          'Une veste chaude',
-          'Un gant en cotte de maille',
-        ],
+        protections: ['Une veste chaude', 'Un gant en cotte de maille'],
       ),
       reservedForId: '',
     ),
@@ -1174,8 +1175,12 @@ Future<void> _addDummyEnterprises(
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents(
         minorInjuries: [
-          Incident('L\'élève a eu une entorse de cheville en tombant de l\'escabeau.'),
-          Incident('Une élève s\'est fait mal au dos en soulevant des boites de lessive'),
+          Incident(
+            'L\'élève a eu une entorse de cheville en tombant de l\'escabeau.',
+          ),
+          Incident(
+            'Une élève s\'est fait mal au dos en soulevant des boites de lessive',
+          ),
         ],
       ),
       minimumAge: 15,
@@ -1188,9 +1193,7 @@ Future<void> _addDummyEnterprises(
       ),
       protections: Protections(
         status: ProtectionsStatus.suppliedByEnterprise,
-        protections: [
-          'Une veste pour aller dans les frigos'
-        ],
+        protections: ['Une veste pour aller dans les frigos'],
       ),
       reservedForId: '',
     ),
@@ -1384,7 +1387,7 @@ Future<void> _addDummyEnterprises(
       name: 'Auto Repair',
       status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.garage, ActivityTypes.mecanique},
-      recruiterId: 'Jacque Dallaire',
+      recruiterId: teacherA1Id,
       jobs: jobs,
       contact: Person(
         firstName: 'Claudio',
@@ -1541,7 +1544,7 @@ Future<void> _addDummyEnterprises(
     Enterprise(
       schoolBoardId: schoolBoardId,
       name: 'Pharmaprix',
-      status: EnterpriseStatus.noLongerAcceptingInternships,
+      status: EnterpriseStatus.active,
       activityTypes: {ActivityTypes.commerce, ActivityTypes.pharmacie},
       recruiterId: 'dummy_teacher_id_2',
       jobs: jobs,
@@ -1579,7 +1582,7 @@ Future<void> _addDummyEnterprises(
     Job(
       specialization:
           ActivitySectorsService.activitySectors[2].specializations[14],
-      positionsOffered: {schoolAId: 1, schoolBId: 5},
+      positionsOffered: {schoolAId: 1, schoolBId: 5, schoolCId: 1},
       sstEvaluation: JobSstEvaluation.empty,
       incidents: Incidents.empty,
       minimumAge: 15,
@@ -2642,7 +2645,73 @@ Future<void> _addDummyInternships(
       visitFrequencies: 'Tous les jours',
     ),
   );
-  await _waitForDatabaseUpdate(internships, 9);
+
+  startingPeriod = DateTime.now().subtract(Duration(days: 30));
+  period = time_utils.DateTimeRange(
+    start: startingPeriod,
+    end: startingPeriod.add(Duration(days: 180)),
+  );
+  internships.add(
+    Internship(
+      schoolBoardId: schoolBoardId,
+      creationDate: DateTime.now(),
+      studentId:
+          students.firstWhere((e) => e.fullName == 'Sébastien Desmarais').id,
+      signatoryTeacherId: teacherC1Id,
+      extraSupervisingTeacherIds: [],
+      enterpriseId: enterprises.firstWhere((e) => e.name == 'Subway').id,
+      jobId: enterprises.firstWhere((e) => e.name == 'Subway').jobs[0].id,
+      extraSpecializationIds: [],
+      visitingPriority: VisitingPriority.values[0],
+      supervisor: Person(
+        firstName: 'Carlos',
+        middleName: null,
+        lastName: 'Rodriguez',
+        dateBirth: null,
+        phone: PhoneNumber.fromString('514 555 3333'),
+        address: null,
+        email: 'c.rodriguez@email.com',
+      ),
+      dates: period,
+      endDate: period.end,
+      expectedDuration: 135,
+      achievedDuration: 100,
+      weeklySchedules: [
+        WeeklySchedule(
+          schedule: {
+            Day.monday: DailySchedule(
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
+            ),
+            Day.tuesday: DailySchedule(
+              blocks: [
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 9, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 12, minute: 00),
+                ),
+                TimeBlock(
+                  start: const time_utils.TimeOfDay(hour: 13, minute: 00),
+                  end: const time_utils.TimeOfDay(hour: 15, minute: 00),
+                ),
+              ],
+            ),
+          },
+          period: period,
+        ),
+      ],
+      transportations: [Transportation.none],
+      visitFrequencies: 'Tous les jours',
+    ),
+  );
+  await _waitForDatabaseUpdate(internships, 10);
 }
 
 Future<void> _waitForDatabaseUpdate(

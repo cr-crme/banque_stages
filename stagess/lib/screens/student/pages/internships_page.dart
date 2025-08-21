@@ -210,8 +210,8 @@ class _StudentInternshipListViewState
   Widget build(BuildContext context) {
     _prepareExpander(widget.internships);
 
-    final myId = TeachersProvider.of(context, listen: false).myTeacher?.id;
-    if (myId == null) {
+    final teacherId = TeachersProvider.of(context, listen: false).myTeacher?.id;
+    if (teacherId == null) {
       return const Center(child: Text('Vous n\'êtes pas connecté.'));
     }
 
@@ -261,7 +261,9 @@ class _StudentInternshipListViewState
                         Text(enterprise.address?.toString() ?? ''),
                         Text(
                             '${DateFormat.yMMMd('fr_CA').format(internship.dates.start)} - $endDate'),
-                        if (internship.isActive)
+                        if (internship.isActive &&
+                            internship.supervisingTeacherIds
+                                .contains(teacherId))
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
@@ -272,7 +274,9 @@ class _StudentInternshipListViewState
                                             internshipId: internship.id)),
                                 child: const Text('Terminer le stage')),
                           ),
-                        if (internship.isEnterpriseEvaluationPending)
+                        if (internship.isEnterpriseEvaluationPending &&
+                            internship.supervisingTeacherIds
+                                .contains(teacherId))
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
@@ -293,7 +297,8 @@ class _StudentInternshipListViewState
                         scrollController: widget.scrollController,
                       ),
                       InternshipSkills(internshipId: internship.id),
-                      InternshipDocuments(internship: internship),
+                      if (internship.supervisingTeacherIds.contains(teacherId))
+                        InternshipDocuments(internship: internship),
                     ]),
               );
             })
